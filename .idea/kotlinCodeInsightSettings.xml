@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="KotlinCodeInsightWorkspaceSettings">
+    <option name="addUnambiguousImportsOnTheFly" value="true" />
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+</project>

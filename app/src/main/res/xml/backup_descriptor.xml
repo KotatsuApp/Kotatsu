@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+	<!-- TODO: Exclude specific shared preferences that contain GCM registration Id -->
+	<!-- https://developer.android.com/guide/topics/data/autobackup -->
+</full-backup-content>
