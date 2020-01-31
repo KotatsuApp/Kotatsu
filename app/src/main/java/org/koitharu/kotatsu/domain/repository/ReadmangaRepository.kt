@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.domain.exceptions.ParseException
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.parseHtml
 import org.koitharu.kotatsu.utils.ext.safe
+import org.koitharu.kotatsu.utils.ext.withDomain
 
 class ReadmangaRepository(loaderContext: MangaLoaderContext) : MangaRepository(loaderContext) {
 
@@ -23,7 +24,8 @@ class ReadmangaRepository(loaderContext: MangaLoaderContext) : MangaRepository(l
 		return root.select("div.tile").mapNotNull { node ->
 			val imgDiv = node.selectFirst("div.img") ?: return@mapNotNull null
 			val descDiv = node.selectFirst("div.desc") ?: return@mapNotNull null
-			val href = imgDiv.selectFirst("a").attr("href") ?: return@mapNotNull null
+			val href = imgDiv.selectFirst("a").attr("href")?.withDomain("readmanga.me")
+				?: return@mapNotNull null
 			val title = descDiv.selectFirst("h3")?.selectFirst("a")?.text()
 				?: return@mapNotNull null
 			Manga(

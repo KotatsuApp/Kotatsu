@@ -6,10 +6,9 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koitharu.kotatsu.utils.ext.await
 
-class MangaLoaderContext(context: Context) : KoinComponent {
+class MangaLoaderContext : KoinComponent {
 
 	private val okHttp by inject<OkHttpClient>()
-	private val preferences = context.getSharedPreferences("sources", Context.MODE_PRIVATE)
 
 	suspend fun get(url: String, block: (Request.Builder.() -> Unit)? = null): Response {
 		val request = Request.Builder()
@@ -38,11 +37,4 @@ class MangaLoaderContext(context: Context) : KoinComponent {
 		}
 		return okHttp.newCall(request.build()).await()
 	}
-
-	fun getStringOption(name: String, default: String? = null) =
-		preferences.getString(name, default)
-
-	fun getIntOption(name: String, default: Int) = preferences.getInt(name, default)
-
-	fun getBooleanOption(name: String, default: Boolean) = preferences.getBoolean(name, default)
 }

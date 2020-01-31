@@ -74,4 +74,5 @@ dependencies {
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
 
 	testImplementation 'junit:junit:4.13'
+	testImplementation 'org.mockito:mockito-core:2.23.0'
 }

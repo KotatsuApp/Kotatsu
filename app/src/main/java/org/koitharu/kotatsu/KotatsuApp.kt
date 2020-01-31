@@ -29,7 +29,7 @@ class KotatsuApp : Application() {
 					}
 				}, module {
 					single {
-						MangaLoaderContext(applicationContext)
+						MangaLoaderContext()
 					}
 				}, module {
 					single {

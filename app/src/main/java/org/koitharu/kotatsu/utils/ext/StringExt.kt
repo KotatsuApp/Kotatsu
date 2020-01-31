@@ -8,3 +8,8 @@ fun String.longHashCode(): Long {
 	}
 	return h
 }
+
+fun String.withDomain(domain: String) = when {
+	this.startsWith("/") -> "http://$domain"
+	else -> this
+}
