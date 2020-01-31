@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.ui.main.list
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
@@ -12,6 +14,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
 import org.koitharu.kotatsu.ui.common.list.SpacingItemDecoration
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hasItems
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -29,7 +32,8 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 		adapter = MangaListAdapter {
 
 		}
-		recyclerView.addItemDecoration(SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)))
+//		recyclerView.addItemDecoration(SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)))
+		recyclerView.addItemDecoration(DividerItemDecoration(view.context, RecyclerView.VERTICAL))
 		recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
 		swipeRefreshLayout.setOnRefreshListener {
@@ -52,6 +56,12 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 
 	override fun onListAppended(list: List<Manga>) {
 		adapter.appendData(list)
+	}
+
+	override fun onError(e: Exception) {
+		if (recyclerView.hasItems) {
+			Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
+		}
 	}
 
 	override fun onLoadingChanged(isLoading: Boolean) {

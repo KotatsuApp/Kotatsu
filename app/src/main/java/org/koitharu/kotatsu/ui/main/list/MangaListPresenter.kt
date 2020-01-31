@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BasePresenter
@@ -25,7 +26,10 @@ class MangaListPresenter : BasePresenter<MangaListView>() {
 					viewState.onListAppended(list)
 				}
 			} catch (e: Exception) {
-				e.printStackTrace()
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
+				viewState.onError(e)
 			} finally {
 				viewState.onLoadingChanged(false)
 			}

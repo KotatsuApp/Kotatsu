@@ -1,10 +1,7 @@
 package org.koitharu.kotatsu.ui.main.list
 
 import moxy.MvpView
-import moxy.viewstate.strategy.AddToEndSingleStrategy
-import moxy.viewstate.strategy.AddToEndSingleTagStrategy
-import moxy.viewstate.strategy.AddToEndStrategy
-import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.*
 import org.koitharu.kotatsu.core.model.Manga
 
 interface MangaListView : MvpView {
@@ -17,4 +14,7 @@ interface MangaListView : MvpView {
 
 	@StateStrategyType(AddToEndSingleStrategy::class)
 	fun onLoadingChanged(isLoading: Boolean)
+
+	@StateStrategyType(OneExecutionStateStrategy::class)
+	fun onError(e: Exception)
 }

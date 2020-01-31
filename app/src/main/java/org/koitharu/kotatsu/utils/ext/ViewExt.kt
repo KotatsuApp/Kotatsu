@@ -9,6 +9,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -52,4 +54,11 @@ var TextView.drawableEnd: Drawable?
 	set(value) {
 		val old = compoundDrawablesRelative
 		setCompoundDrawablesRelativeWithIntrinsicBounds(old[0], old[1], value, old[3])
+	}
+
+var TextView.textAndVisible: CharSequence?
+	get() = text?.takeIf { visibility == View.VISIBLE }
+	set(value) {
+		text = value
+		isGone = value.isNullOrEmpty()
 	}

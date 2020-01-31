@@ -16,8 +16,7 @@
 			android:layout_height="match_parent"
 			android:orientation="vertical"
 			android:scrollbars="vertical"
-			app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-			app:spanCount="3" />
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
