@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.KoinComponent
 import org.koitharu.kotatsu.utils.ext.replaceWith
 
-abstract class BaseRecyclerAdapter<T>(private val onItemClickListener: ((T) -> Unit)? = null) :
+abstract class BaseRecyclerAdapter<T>(private val onItemClickListener: OnRecyclerItemClickListener<T>? = null) :
 	RecyclerView.Adapter<BaseViewHolder<T>>(),
 	KoinComponent {
 
@@ -65,13 +65,7 @@ abstract class BaseRecyclerAdapter<T>(private val onItemClickListener: ((T) -> U
 	final override fun getItemCount() = dataSet.size
 
 	final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
-		return onCreateViewHolder(parent).also { holder ->
-			if (onItemClickListener != null) {
-				holder.itemView.setOnClickListener {
-					onItemClickListener.invoke(holder.requireData())
-				}
-			}
-		}.also(this::onViewHolderCreated)
+		return onCreateViewHolder(parent).setOnItemClickListener(onItemClickListener).also(this::onViewHolderCreated)
 	}
 
 	protected open fun onViewHolderCreated(holder: BaseViewHolder<T>) = Unit

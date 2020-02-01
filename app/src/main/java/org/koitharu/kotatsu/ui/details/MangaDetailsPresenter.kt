@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.main.details
+package org.koitharu.kotatsu.ui.details
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

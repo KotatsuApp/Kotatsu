@@ -28,5 +28,17 @@ abstract class BaseViewHolder<T> protected constructor(view: View) :
 
 	fun requireData() = boundData ?: throw IllegalStateException("Calling requireData() before bind()")
 
+	fun setOnItemClickListener(listener: OnRecyclerItemClickListener<T>?): BaseViewHolder<T> {
+		if (listener != null) {
+			itemView.setOnClickListener {
+				listener.onItemClick(boundData ?: return@setOnClickListener, adapterPosition, it)
+			}
+			itemView.setOnLongClickListener {
+				listener.onItemLongClick(boundData ?: return@setOnLongClickListener false, adapterPosition, it)
+			}
+		}
+		return this
+	}
+
 	abstract fun onBind(data: T)
 }

@@ -20,7 +20,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".ui.main.details.MangaDetailsActivity" />
+		<activity android:name="org.koitharu.kotatsu.ui.details.MangaDetailsActivity" />
 	</application>
 
 </manifest>

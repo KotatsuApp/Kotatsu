@@ -1,11 +1,9 @@
-package org.koitharu.kotatsu.ui.main.details
+package org.koitharu.kotatsu.ui.details
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_details.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R

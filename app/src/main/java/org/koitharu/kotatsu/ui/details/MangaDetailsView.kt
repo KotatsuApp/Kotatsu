@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.main.details
+package org.koitharu.kotatsu.ui.details
 
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy

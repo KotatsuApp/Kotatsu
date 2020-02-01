@@ -1,11 +1,9 @@
-package org.koitharu.kotatsu.ui.main.details
+package org.koitharu.kotatsu.ui.details
 
-import android.os.Bundle
 import androidx.core.view.isVisible
 import coil.api.load
 import kotlinx.android.synthetic.main.fragment_details.*
 import moxy.ktx.moxyPresenter
-import org.koin.core.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.ui.common.BaseFragment

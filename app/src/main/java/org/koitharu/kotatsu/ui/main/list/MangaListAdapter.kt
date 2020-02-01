@@ -4,8 +4,9 @@ import android.view.ViewGroup
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
+import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 
-class MangaListAdapter(onItemClickListener: ((Manga) -> Unit)?) :
+class MangaListAdapter(onItemClickListener: OnRecyclerItemClickListener<Manga>) :
 	BaseRecyclerAdapter<Manga>(onItemClickListener) {
 
 	var listMode: ListMode = ListMode.LIST

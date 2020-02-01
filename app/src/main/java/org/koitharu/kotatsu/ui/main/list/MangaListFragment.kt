@@ -19,13 +19,14 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BaseFragment
+import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
 import org.koitharu.kotatsu.ui.common.list.SpacingItemDecoration
-import org.koitharu.kotatsu.ui.main.details.MangaDetailsActivity
+import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.*
 
 class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
-	PaginationScrollListener.Callback {
+	PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga> {
 
 	private val presenter by moxyPresenter(factory = ::MangaListPresenter)
 
@@ -40,9 +41,7 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = MangaListAdapter {
-			startActivity(MangaDetailsActivity.newIntent(context ?: return@MangaListAdapter, it))
-		}
+		adapter = MangaListAdapter(this)
 		initListMode(settings.listMode)
 		recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
@@ -73,6 +72,10 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
+	}
+
+	override fun onItemClick(item: Manga, position: Int, view: View) {
+		startActivity(MangaDetailsActivity.newIntent(context ?: return, item))
 	}
 
 	override fun onRequestMoreItems(offset: Int) {

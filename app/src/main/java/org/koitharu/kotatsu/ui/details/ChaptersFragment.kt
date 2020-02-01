@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.main.details
+package org.koitharu.kotatsu.ui.details
 
 import android.os.Bundle
 import android.view.View
@@ -9,9 +9,12 @@ import kotlinx.android.synthetic.main.fragment_chapters.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.ui.common.BaseFragment
+import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 
-class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsView {
+class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsView,
+	OnRecyclerItemClickListener<MangaChapter> {
 
 	@Suppress("unused")
 	private val presenter by moxyPresenter { (activity as MangaDetailsActivity).presenter }
@@ -20,9 +23,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = ChaptersAdapter {
-
-		}
+		adapter = ChaptersAdapter(this)
 		recyclerView_chapters.addItemDecoration(DividerItemDecoration(view.context, RecyclerView.VERTICAL))
 		recyclerView_chapters.adapter = adapter
 	}
@@ -37,5 +38,9 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 
 	override fun onError(e: Exception) {
 
+	}
+
+	override fun onItemClick(item: MangaChapter, position: Int, view: View) {
+		//TODO
 	}
 }

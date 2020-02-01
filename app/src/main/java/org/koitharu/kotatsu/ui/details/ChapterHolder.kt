@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.main.details
+package org.koitharu.kotatsu.ui.details
 
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_chapter.*

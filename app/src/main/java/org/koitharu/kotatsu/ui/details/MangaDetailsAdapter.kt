@@ -1,10 +1,9 @@
-package org.koitharu.kotatsu.ui.main.details
+package org.koitharu.kotatsu.ui.details
 
 import android.content.res.Resources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import org.koitharu.kotatsu.R
 
 class MangaDetailsAdapter(private val resources: Resources, fm: FragmentManager) : FragmentPagerAdapter(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
