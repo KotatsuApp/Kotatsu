@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:padding="16dp"
+	android:orientation="vertical">
+
+	<com.google.android.material.button.MaterialButtonToggleGroup
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		app:selectionRequired="true"
+		app:singleSelection="true">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_list"
+			style="@style/AppToggleButton"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/list"
+			app:icon="@drawable/ic_list" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_list_detailed"
+			style="@style/AppToggleButton"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/detailed_list"
+			app:icon="@drawable/ic_list_detailed" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_grid"
+			style="@style/AppToggleButton"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/grid"
+			app:icon="@drawable/ic_grid" />
+
+	</com.google.android.material.button.MaterialButtonToggleGroup>
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/button_ok"
+		style="@style/Widget.MaterialComponents.Button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="16dp"
+		android:layout_gravity="center_horizontal"
+		android:text="@android:string/ok" />
+</LinearLayout>

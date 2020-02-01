@@ -2,12 +2,19 @@ package org.koitharu.kotatsu.ui.main.list
 
 import android.view.ViewGroup
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
 
 class MangaListAdapter(onItemClickListener: ((Manga) -> Unit)?) :
 	BaseRecyclerAdapter<Manga>(onItemClickListener) {
 
-	override fun onCreateViewHolder(parent: ViewGroup) = MangaListHolder(parent)
+	var listMode: ListMode = ListMode.LIST
+
+	override fun onCreateViewHolder(parent: ViewGroup) = when(listMode) {
+		ListMode.LIST -> MangaListHolder(parent)
+		ListMode.DETAILED_LIST -> MangaListDetailsHolder(parent)
+		ListMode.GRID -> MangaGridHolder(parent)
+	}
 
 	override fun onGetItemId(item: Manga) = item.id
 }

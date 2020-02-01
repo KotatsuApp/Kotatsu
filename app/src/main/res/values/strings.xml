@@ -9,4 +9,8 @@
 	<string name="network_error">Network connection error</string>
 	<string name="details">Details</string>
 	<string name="chapters">Chapters</string>
+	<string name="list">List</string>
+	<string name="detailed_list">Detailed list</string>
+	<string name="grid">Grid</string>
+	<string name="list_mode">List mode</string>
 </resources>

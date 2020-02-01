@@ -12,9 +12,11 @@ import androidx.annotation.LayoutRes
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import kotlinx.android.synthetic.main.fragment_list.view.*
 import org.koitharu.kotatsu.ui.common.ChipsFactory
 
 fun View.hideKeyboard() {
@@ -74,3 +76,18 @@ fun <T> ChipGroup.setChips(data: Iterable<T>, action: ChipsFactory.(T) -> Chip) 
 		addView(chip)
 	}
 }
+
+fun RecyclerView.clearItemDecorations() {
+	while (itemDecorationCount > 0) {
+		removeItemDecorationAt(0)
+	}
+}
+
+var RecyclerView.firstItem: Int
+	get() = (layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+		?: RecyclerView.NO_POSITION
+	set(value) {
+		if (value != RecyclerView.NO_POSITION) {
+			(layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(value, 0)
+		}
+	}
