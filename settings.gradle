@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "OpenManga Next"
+rootProject.name = "Kotatsu"

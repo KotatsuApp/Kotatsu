@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<ImageView
+			android:id="@+id/imageView_cover"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			app:layout_constraintDimensionRatio="13:18"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintWidth_percent="0.3" />
+
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+			android:textColor="?android:textColorPrimary"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="@tools:sample/lorem" />
+
+		<TextView
+			android:id="@+id/textView_subtitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+			android:textColor="?android:textColorSecondary"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@id/textView_title"
+			tools:text="@tools:sample/lorem" />
+
+		<androidx.constraintlayout.widget.Barrier
+			android:id="@+id/barrier_title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:barrierDirection="bottom"
+			app:constraint_referenced_ids="imageView_cover, textView_subtitle" />
+
+		<com.google.android.material.chip.ChipGroup
+			android:id="@+id/chips_tags"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="4dp"
+			android:padding="6dp"
+			app:lineSpacing="2dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/barrier_title" />
+
+		<TextView
+			android:id="@+id/textView_description"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:justificationMode="inter_word"
+			android:padding="12dp"
+			android:lineSpacingMultiplier="1.2"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/chips_tags"
+			tools:text="@tools:sample/lorem/random" />
+
+		<ProgressBar
+			android:id="@+id/progressBar"
+			style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:indeterminate="true"
+			android:visibility="gone"
+			app:layout_constraintBottom_toBottomOf="@id/chips_tags"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/chips_tags"
+			tools:visibility="visible" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

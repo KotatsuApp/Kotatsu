@@ -9,7 +9,15 @@ fun String.longHashCode(): Long {
 	return h
 }
 
-fun String.withDomain(domain: String) = when {
-	this.startsWith("/") -> "http://$domain"
+fun String.withDomain(domain: String, ssl: Boolean = true) = when {
+	this.startsWith("/") -> buildString {
+		append("http")
+		if (ssl) {
+			append('s')
+		}
+		append("://")
+		append(domain)
+		append(this@withDomain)
+	}
 	else -> this
 }

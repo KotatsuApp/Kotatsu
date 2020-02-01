@@ -7,4 +7,6 @@
 	<string name="history">History</string>
     <string name="error_occurred">An error has occurred</string>
 	<string name="network_error">Network connection error</string>
+	<string name="details">Details</string>
+	<string name="chapters">Chapters</string>
 </resources>

@@ -13,6 +13,9 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import org.koitharu.kotatsu.ui.common.ChipsFactory
 
 fun View.hideKeyboard() {
 	val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -62,3 +65,12 @@ var TextView.textAndVisible: CharSequence?
 		text = value
 		isGone = value.isNullOrEmpty()
 	}
+
+fun <T> ChipGroup.setChips(data: Iterable<T>, action: ChipsFactory.(T) -> Chip) {
+	removeAllViews()
+	val factory = ChipsFactory(context)
+	data.forEach {
+		val chip = factory.action(it)
+		addView(chip)
+	}
+}

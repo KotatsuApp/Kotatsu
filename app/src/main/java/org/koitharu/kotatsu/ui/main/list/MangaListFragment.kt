@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
 import org.koitharu.kotatsu.ui.common.list.SpacingItemDecoration
+import org.koitharu.kotatsu.ui.main.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hasItems
 import org.koitharu.kotatsu.utils.ext.withArgs
@@ -30,7 +31,7 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		adapter = MangaListAdapter {
-
+			startActivity(MangaDetailsActivity.newIntent(context ?: return@MangaListAdapter, it))
 		}
 //		recyclerView.addItemDecoration(SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)))
 		recyclerView.addItemDecoration(DividerItemDecoration(view.context, RecyclerView.VERTICAL))

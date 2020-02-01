@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="@dimen/chapter_list_item_height"
+	android:background="?selectableItemBackground"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
+	android:paddingStart="12dp"
+	android:paddingEnd="12dp">
+
+	<TextView
+		android:id="@+id/textView_number"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/bg_round_rect"
+		android:gravity="center"
+		android:minWidth="26dp"
+		android:textColor="?android:textColorSecondaryInverse"
+		tools:text="13" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="10dp"
+		android:ellipsize="end"
+		android:maxLines="2"
+		android:text="?android:textColorPrimary"
+		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+		tools:text="@tools:sample/lorem[15]" />
+
+</LinearLayout>
