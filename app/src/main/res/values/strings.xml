@@ -13,4 +13,6 @@
 	<string name="detailed_list">Detailed list</string>
 	<string name="grid">Grid</string>
 	<string name="list_mode">List mode</string>
+	<string name="settings">Settings</string>
+	<string name="remote_sources">Remote sources</string>
 </resources>

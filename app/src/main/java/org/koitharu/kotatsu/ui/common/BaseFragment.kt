@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.common
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Parcelable
 import androidx.annotation.IdRes
@@ -21,4 +22,13 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) :
 	fun <T : Parcelable> arg(name: String) = ParcelableArgumentDelegate<T>(name)
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) = Unit
+
+	open fun getTitle(): CharSequence? = null
+
+	override fun onAttach(context: Context) {
+		super.onAttach(context)
+		getTitle()?.let {
+			activity?.title = it
+		}
+	}
 }

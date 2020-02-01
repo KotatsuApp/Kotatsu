@@ -9,7 +9,7 @@ data class Manga(
 	val title: String,
 	val localizedTitle: String? = null,
 	val url: String,
-	val rating: Float = -1f, //normalized value [0..1] or -1
+	val rating: Float = NO_RATING, //normalized value [0..1] or -1
 	val coverUrl: String,
 	val largeCoverUrl: String? = null,
 	val summary: String,
@@ -18,4 +18,10 @@ data class Manga(
 	val state: MangaState? = null,
 	val chapters: List<MangaChapter>? = null,
 	val source: MangaSource
-) : Parcelable
+) : Parcelable {
+
+	companion object {
+
+		const val NO_RATING = -1f
+	}
+}

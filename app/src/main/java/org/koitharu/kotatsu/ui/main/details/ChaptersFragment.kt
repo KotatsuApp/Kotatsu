@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.ui.common.BaseFragment
 
 class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsView {
 
+	@Suppress("unused")
 	private val presenter by moxyPresenter { (activity as MangaDetailsActivity).presenter }
 
 	private lateinit var adapter: ChaptersAdapter

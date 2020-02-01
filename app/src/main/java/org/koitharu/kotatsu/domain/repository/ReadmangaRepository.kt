@@ -40,7 +40,7 @@ class ReadmangaRepository(loaderContext: MangaLoaderContext) : MangaRepository(l
                         ?.substringBefore(' ')
                         ?.toFloatOrNull()
                         ?.div(10f)
-                } ?: -1f,
+                } ?: Manga.NO_RATING,
                 tags = safe {
                     descDiv.selectFirst("div.tile-info")
                         ?.select("a.element-link")

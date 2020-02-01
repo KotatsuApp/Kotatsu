@@ -100,6 +100,10 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 		swipeRefreshLayout.isEnabled = !progressBar.isVisible
 	}
 
+	override fun getTitle(): CharSequence? {
+		return source.title
+	}
+
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
 		when(key) {
 			getString(R.string.key_list_mode) -> initListMode(settings.listMode)
@@ -119,8 +123,8 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 		}
 		recyclerView.adapter = adapter
 		recyclerView.addItemDecoration(when(mode) {
-			ListMode.DETAILED_LIST,
 			ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)
+			ListMode.DETAILED_LIST,
 			ListMode.GRID -> SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
 		})
 		adapter.notifyDataSetChanged()

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
@@ -38,22 +39,32 @@
 			android:id="@+id/textView_subtitle"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="8dp"
 			android:layout_marginTop="8dp"
-			android:layout_marginEnd="8dp"
 			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 			android:textColor="?android:textColorSecondary"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintEnd_toEndOf="@id/textView_title"
+			app:layout_constraintStart_toStartOf="@id/textView_title"
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
 			tools:text="@tools:sample/lorem" />
+
+		<RatingBar
+			android:id="@+id/ratingBar"
+			style="@style/Widget.AppCompat.RatingBar.Small"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:isIndicator="true"
+			android:max="100"
+			tools:progress="70"
+			app:layout_constraintStart_toStartOf="@id/textView_title"
+			app:layout_constraintTop_toBottomOf="@id/textView_subtitle" />
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/barrier_title"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
-			app:constraint_referenced_ids="imageView_cover, textView_subtitle" />
+			app:constraint_referenced_ids="imageView_cover, textView_subtitle, ratingBar" />
 
 		<com.google.android.material.chip.ChipGroup
 			android:id="@+id/chips_tags"
@@ -61,18 +72,18 @@
 			android:layout_height="wrap_content"
 			android:layout_marginTop="4dp"
 			android:padding="6dp"
-			app:lineSpacing="2dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/barrier_title" />
+			app:layout_constraintTop_toBottomOf="@id/barrier_title"
+			app:lineSpacing="2dp" />
 
 		<TextView
 			android:id="@+id/textView_description"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:justificationMode="inter_word"
-			android:padding="12dp"
 			android:lineSpacingMultiplier="1.2"
+			android:padding="12dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/chips_tags"

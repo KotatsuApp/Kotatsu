@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<group>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<group android:checkableBehavior="single">
 		<item
 			android:id="@+id/nav_local_storage"
 			android:icon="@drawable/ic_storage"
@@ -15,22 +16,22 @@
 			android:title="@string/history" />
 	</group>
 
-	<group android:id="@+id/group_menu">
+	<item
+		android:id="@+id/nav_remote_sources"
+		android:title="@string/remote_sources">
+		<menu>
+			<group
+				android:id="@+id/group_remote_sources"
+				android:checkableBehavior="single" />
+		</menu>
+	</item>
+
+	<group
+		android:id="@+id/group1"
+		android:checkableBehavior="none">
 		<item
-			android:id="@+id/nav_test"
-			android:title="Test" />
+			android:id="@+id/nav_action_settings"
+			android:icon="@drawable/ic_settings"
+			android:title="@string/settings" />
 	</group>
-	<!--
-		<item android:title="Title 1">
-			<menu>
-				<item
-					android:id="@+id/nav_item_six"
-					android:icon="@drawable/ic_drafts_black_24dp"
-					android:title="Item 6" />
-				<item
-					android:id="@+id/nav_item_seven"
-					android:icon="@drawable/ic_drafts_black_24dp"
-					android:title="Item 7" />
-			</menu>
-		</item>-->
 </menu>
