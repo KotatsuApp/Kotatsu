@@ -34,7 +34,7 @@ abstract class HistoryDao {
     suspend fun update(entity: HistoryWithManga) = update(entity.manga.id, entity.history.page, entity.history.chapterId, entity.history.updatedAt)
 
     @Transaction
-    suspend open fun upsert(entity: HistoryWithManga) {
+    open suspend fun upsert(entity: HistoryWithManga) {
         if (update(entity) == 0) {
             insertManga(entity.manga)
             insert(entity.history)

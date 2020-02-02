@@ -3,9 +3,7 @@ package org.koitharu.kotatsu.ui.common
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Parcelable
-import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import moxy.MvpAppCompatFragment
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.core.prefs.AppSettings

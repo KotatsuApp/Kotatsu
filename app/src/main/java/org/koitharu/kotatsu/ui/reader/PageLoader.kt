@@ -1,16 +1,13 @@
 package org.koitharu.kotatsu.ui.reader
 
 import android.content.Context
-import android.util.LongSparseArray
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.longHashCode
-import java.io.Closeable
 import java.io.File
 import kotlin.coroutines.CoroutineContext
 

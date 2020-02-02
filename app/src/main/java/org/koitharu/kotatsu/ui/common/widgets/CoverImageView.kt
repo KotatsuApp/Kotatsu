@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.res.use
-import moxy.MvpFacade.init
 import org.koitharu.kotatsu.R
 
 

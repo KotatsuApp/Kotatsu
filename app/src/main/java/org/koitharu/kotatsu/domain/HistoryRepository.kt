@@ -6,12 +6,11 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.HistoryEntity
 import org.koitharu.kotatsu.core.db.entity.HistoryWithManga
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
-import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.core.parser.MangaRepository
-import java.io.Closeable
+import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaHistory
 import java.util.*
 
-class HistoryRepository() : KoinComponent {
+class HistoryRepository : KoinComponent {
 
 	private val db: MangaDatabase by inject()
 

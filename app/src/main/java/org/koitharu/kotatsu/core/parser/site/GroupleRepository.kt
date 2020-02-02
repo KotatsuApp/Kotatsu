@@ -5,7 +5,6 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.BaseMangaRepository
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
-import kotlin.text.removeSurrounding
 
 abstract class GroupleRepository(
 	private val source: MangaSource,

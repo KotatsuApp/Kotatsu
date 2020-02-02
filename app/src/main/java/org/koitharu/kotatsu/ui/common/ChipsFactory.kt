@@ -1,12 +1,8 @@
 package org.koitharu.kotatsu.ui.common
 
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.view.View
 import androidx.annotation.DrawableRes
 import com.google.android.material.chip.Chip
-import com.google.android.material.shape.CornerFamily
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class ChipsFactory(private val context: Context) {

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.annotation.SuppressLint
-import org.intellij.lang.annotations.PrintFormat
 import java.text.SimpleDateFormat
 import java.util.*
 

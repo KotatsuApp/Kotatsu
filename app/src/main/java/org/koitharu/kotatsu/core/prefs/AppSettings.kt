@@ -7,7 +7,7 @@ import androidx.preference.PreferenceManager
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.delegates.prefs.EnumPreferenceDelegate
 
-class AppSettings private constructor(private val resources: Resources, private val prefs: SharedPreferences) : SharedPreferences by prefs {
+class AppSettings private constructor(resources: Resources, private val prefs: SharedPreferences) : SharedPreferences by prefs {
 
 	constructor(context: Context) : this(context.resources, PreferenceManager.getDefaultSharedPreferences(context))
 

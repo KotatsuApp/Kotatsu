@@ -31,7 +31,7 @@ class ReaderActivity : BaseActivity(), ReaderView {
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		bottomBar.inflateMenu(R.menu.opt_reader_bottom)
 
-		state = savedInstanceState?.getParcelable<ReaderState>(EXTRA_STATE)
+		state = savedInstanceState?.getParcelable(EXTRA_STATE)
 			?: intent.getParcelableExtra<ReaderState>(EXTRA_STATE)
 					?: let {
 				Toast.makeText(this, R.string.error_occurred, Toast.LENGTH_SHORT).show()

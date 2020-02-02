@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.domain
 
-import android.content.Context
-import okhttp3.*
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koitharu.kotatsu.utils.ext.await

@@ -10,13 +10,11 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import kotlinx.android.synthetic.main.fragment_list.view.*
 import org.koitharu.kotatsu.ui.common.ChipsFactory
 
 fun View.hideKeyboard() {

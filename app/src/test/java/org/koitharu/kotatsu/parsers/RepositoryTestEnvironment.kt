@@ -6,9 +6,8 @@ import org.junit.BeforeClass
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.parsers.repository.ReadmangaRuTest
+import org.koitharu.kotatsu.domain.MangaLoaderContext
 
 abstract class RepositoryTestEnvironment {
 
