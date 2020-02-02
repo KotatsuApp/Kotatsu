@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_chapter.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.domain.ChapterExtra
+import org.koitharu.kotatsu.domain.history.ChapterExtra
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 

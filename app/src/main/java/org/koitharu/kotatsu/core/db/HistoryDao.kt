@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.core.db
 import androidx.room.*
 import org.koitharu.kotatsu.core.db.entity.HistoryEntity
 import org.koitharu.kotatsu.core.db.entity.HistoryWithManga
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
 
 
 @Dao
@@ -25,19 +24,15 @@ abstract class HistoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insert(entity: HistoryEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertManga(manga: MangaEntity): Long
-
     @Query("UPDATE history SET page = :page, chapter_id = :chapterId, updated_at = :updatedAt WHERE manga_id = :mangaId")
     abstract suspend fun update(mangaId: Long, page: Int, chapterId: Long, updatedAt: Long): Int
 
-    suspend fun update(entity: HistoryWithManga) = update(entity.manga.id, entity.history.page, entity.history.chapterId, entity.history.updatedAt)
+    suspend fun update(entity: HistoryEntity) = update(entity.mangaId, entity.page, entity.chapterId, entity.updatedAt)
 
     @Transaction
-    open suspend fun upsert(entity: HistoryWithManga) {
+    open suspend fun upsert(entity: HistoryEntity) {
         if (update(entity) == 0) {
-            insertManga(entity.manga)
-            insert(entity.history)
+            insert(entity)
         }
     }
 

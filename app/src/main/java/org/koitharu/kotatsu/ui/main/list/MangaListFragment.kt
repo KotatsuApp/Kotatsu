@@ -79,7 +79,12 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 
 	override fun onListChanged(list: List<Manga>) {
 		adapter.replaceData(list)
-		layout_holder.isVisible = list.isEmpty()
+		if (list.isEmpty()) {
+			setUpEmptyListHolder()
+			layout_holder.isVisible = true
+		} else {
+			layout_holder.isVisible = false
+		}
 	}
 
 	override fun onListAppended(list: List<Manga>) {
@@ -89,6 +94,10 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 	override fun onError(e: Exception) {
 		if (recyclerView.hasItems) {
 			Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
+		} else {
+			textView_holder.text = e.getDisplayMessage(resources)
+			textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_error_large, 0, 0)
+			layout_holder.isVisible = true
 		}
 	}
 
@@ -106,6 +115,11 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 		when(key) {
 			getString(R.string.key_list_mode) -> initListMode(settings.listMode)
 		}
+	}
+
+	protected open fun setUpEmptyListHolder() {
+		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null)
+		textView_holder.setText(R.string.nothing_found)
 	}
 
 	private fun initListMode(mode: ListMode) {

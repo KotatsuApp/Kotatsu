@@ -24,4 +24,5 @@
 	<string name="history_is_empty">History is empty</string>
 	<string name="read">Read</string>
 	<string name="continue_">Continue</string>
+	<string name="add_bookmark">Add bookmark</string>
 </resources>

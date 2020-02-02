@@ -3,18 +3,20 @@ package org.koitharu.kotatsu.ui.details
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.domain.ChapterExtra
+import org.koitharu.kotatsu.domain.history.ChapterExtra
 import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 
 class ChaptersAdapter(onItemClickListener: OnRecyclerItemClickListener<MangaChapter>) :
 	BaseRecyclerAdapter<MangaChapter, ChapterExtra>(onItemClickListener) {
 
-	var currentChapterPosition = RecyclerView.NO_POSITION
+	var currentChapterId: Long? = null
 		set(value) {
 			field = value
-			notifyDataSetChanged()
+			updateCurrentPosition()
 		}
+
+	private var currentChapterPosition = RecyclerView.NO_POSITION
 
 	override fun onCreateViewHolder(parent: ViewGroup) = ChapterHolder(parent)
 
@@ -26,5 +28,20 @@ class ChaptersAdapter(onItemClickListener: OnRecyclerItemClickListener<MangaChap
 		currentChapterPosition < position -> ChapterExtra.UNREAD
 		currentChapterPosition > position -> ChapterExtra.READ
 		else -> ChapterExtra.UNREAD
+	}
+
+	override fun onDataSetChanged() {
+		super.onDataSetChanged()
+		updateCurrentPosition()
+	}
+
+	private fun updateCurrentPosition() {
+		val pos = currentChapterId?.let {
+			dataSet.indexOfFirst { x -> x.id == it }
+		} ?: RecyclerView.NO_POSITION
+		if (pos != currentChapterPosition) {
+			currentChapterPosition = pos
+			notifyDataSetChanged()
+		}
 	}
 }

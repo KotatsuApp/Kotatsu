@@ -17,6 +17,12 @@ android {
 		versionName "0.1"
 
 		buildConfigField 'String', 'GIT_BRANCH', "\"${gitBranch}\""
+
+		kapt {
+			arguments {
+				arg("room.schemaLocation", "$projectDir/schemas".toString())
+			}
+		}
 	}
 	archivesBaseName = "kotatsu_${gitCommits}"
 	compileOptions {

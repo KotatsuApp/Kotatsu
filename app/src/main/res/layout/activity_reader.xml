@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.circularreveal.CircularRevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.circularreveal.CircularRevealFrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
@@ -9,23 +10,43 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
 
-	<com.google.android.material.appbar.MaterialToolbar
-		android:id="@id/toolbar"
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appbar_top"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:background="@color/dim"
+		android:elevation="0dp"
 		android:fitsSystemWindows="true"
 		android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-		app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+		app:elevation="0dp">
 
-	<com.google.android.material.appbar.MaterialToolbar
-		android:id="@+id/bottomBar"
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appbar_bottom"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
 		android:background="@color/dim"
+		android:elevation="0dp"
+		android:fitsSystemWindows="true"
 		android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-		app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+		app:elevation="0dp">
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@+id/toolbar_bottom"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top"
+			app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+
+	</com.google.android.material.appbar.AppBarLayout>
 
 	<LinearLayout
 		android:id="@+id/layout_loading"

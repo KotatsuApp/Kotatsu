@@ -91,8 +91,7 @@
 			android:padding="6dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/barrier_title"
-			app:lineSpacing="2dp" />
+			app:layout_constraintTop_toBottomOf="@id/barrier_title" />
 
 		<TextView
 			android:id="@+id/textView_description"

@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaState
+import org.koitharu.kotatsu.core.model.MangaTag
 
 @Entity(tableName = "manga")
 data class MangaEntity(
@@ -22,7 +23,7 @@ data class MangaEntity(
 	@ColumnInfo(name = "source") val source: String
 ) {
 
-	fun toManga() = Manga(
+	fun toManga(tags: Set<MangaTag> = emptySet()) = Manga(
 		id = this.id,
 		title = this.title,
 		localizedTitle = this.localizedTitle,
@@ -32,8 +33,8 @@ data class MangaEntity(
 		url = this.url,
 		coverUrl = this.coverUrl,
 		largeCoverUrl = this.largeCoverUrl,
-		source = MangaSource.valueOf(this.source)
-//		tags = this.tags.map(TagEntity::toMangaTag).toSet()
+		source = MangaSource.valueOf(this.source),
+		tags = tags
 	)
 
 	companion object {

@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<item android:id="@+id/action_settings"
-		android:title="@string/settings" />
+	<item
+		android:id="@+id/action_bookmark_add"
+		android:icon="@drawable/ic_bookmark_add"
+		android:title="@string/add_bookmark"
+		app:showAsAction="ifRoom" />
 
+	<item
+		android:id="@+id/action_settings"
+		android:icon="@drawable/ic_tune"
+		android:title="@string/settings"
+		app:showAsAction="ifRoom" />
 
 </menu>

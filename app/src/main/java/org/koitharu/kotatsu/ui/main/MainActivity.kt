@@ -31,6 +31,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 		if (!supportFragmentManager.isStateSaved) {
 			navigationView.setCheckedItem(R.id.nav_history)
+			setPrimaryFragment(HistoryListFragment.newInstance())
 		}
 	}
 

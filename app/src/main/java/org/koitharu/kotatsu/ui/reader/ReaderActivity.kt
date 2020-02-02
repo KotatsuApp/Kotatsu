@@ -6,17 +6,19 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import kotlinx.android.synthetic.main.activity_reader.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
 import org.koitharu.kotatsu.utils.ext.showDialog
 
-class ReaderActivity : BaseActivity(), ReaderView {
+class ReaderActivity : BaseFullscreenActivity(), ReaderView {
 
 	private val presenter by moxyPresenter { ReaderPresenter() }
 
@@ -29,7 +31,7 @@ class ReaderActivity : BaseActivity(), ReaderView {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_reader)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		bottomBar.inflateMenu(R.menu.opt_reader_bottom)
+		toolbar_bottom.inflateMenu(R.menu.opt_reader_bottom)
 
 		state = savedInstanceState?.getParcelable(EXTRA_STATE)
 			?: intent.getParcelableExtra<ReaderState>(EXTRA_STATE)
@@ -43,6 +45,11 @@ class ReaderActivity : BaseActivity(), ReaderView {
 		state.manga.chapters?.run {
 			supportActionBar?.subtitle =
 				getString(R.string.chapter_d_of_d, state.chapter?.number ?: 0, size)
+		}
+
+		appbar_bottom.setOnApplyWindowInsetsListener { view, insets ->
+			view.updatePadding(bottom = insets.systemWindowInsetBottom)
+			insets
 		}
 
 		loader = PageLoader(this)
@@ -90,6 +97,11 @@ class ReaderActivity : BaseActivity(), ReaderView {
 			setMessage(e.message)
 			setPositiveButton(R.string.close, null)
 		}
+	}
+
+	override fun onFullscreenModeChanged(isFullscreen: Boolean) {
+		appbar_top.isGone = isFullscreen
+		appbar_bottom.isGone = isFullscreen
 	}
 
 	companion object {

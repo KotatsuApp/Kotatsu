@@ -9,7 +9,7 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 	RecyclerView.Adapter<BaseViewHolder<T, E>>(),
 	KoinComponent {
 
-	private val dataSet = ArrayList<T>()
+	protected val dataSet = ArrayList<T>()
 
 	init {
 		@Suppress("LeakingThis")
@@ -34,21 +34,25 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 		val updater = AdapterUpdater(dataSet, newData, this::onGetItemId)
 		dataSet.replaceWith(newData)
 		updater(this)
+		onDataSetChanged()
 	}
 
 	fun appendData(newData: List<T>) {
 		val pos = dataSet.size
 		dataSet.addAll(newData)
 		notifyItemRangeInserted(pos, newData.size)
+		onDataSetChanged()
 	}
 
 	fun appendItem(newItem: T) {
 		dataSet.add(newItem)
 		notifyItemInserted(dataSet.lastIndex)
+		onDataSetChanged()
 	}
 
 	fun removeItem(item: T) {
 		removeItemAt(dataSet.indexOf(item))
+		onDataSetChanged()
 	}
 
 	fun removeItemAt(position: Int) {
@@ -56,11 +60,13 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 			dataSet.removeAt(position)
 			notifyItemRemoved(position)
 		}
+		onDataSetChanged()
 	}
 
 	fun clearData() {
 		dataSet.clear()
 		notifyDataSetChanged()
+		onDataSetChanged()
 	}
 
 	final override fun getItemCount() = dataSet.size
@@ -69,6 +75,8 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 		return onCreateViewHolder(parent).setOnItemClickListener(onItemClickListener)
 			.also(this::onViewHolderCreated)
 	}
+
+	protected open fun onDataSetChanged() = Unit
 
 	protected abstract fun getExtra(item: T, position: Int): E
 

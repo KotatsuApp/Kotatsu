@@ -9,8 +9,8 @@ import org.koitharu.kotatsu.core.parser.site.SelfMangaRepository
 
 @Suppress("SpellCheckingInspection")
 @Parcelize
-enum class MangaSource(val title: String, val cls: Class<out MangaRepository>): Parcelable {
-	READMANGA_RU("ReadManga", ReadmangaRepository::class.java),
-	MINTMANGA("MintManga", MintMangaRepository::class.java),
-	SELFMANGA("SelfManga", SelfMangaRepository::class.java)
+enum class MangaSource(val title: String, val locale: String, val cls: Class<out MangaRepository>): Parcelable {
+	READMANGA_RU("ReadManga", "ru", ReadmangaRepository::class.java),
+	MINTMANGA("MintManga", "ru", MintMangaRepository::class.java),
+	SELFMANGA("SelfManga", "ru", SelfMangaRepository::class.java)
 }

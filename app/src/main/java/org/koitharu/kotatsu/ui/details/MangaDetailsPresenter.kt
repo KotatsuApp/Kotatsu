@@ -6,26 +6,29 @@ import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.domain.HistoryRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
+import org.koitharu.kotatsu.domain.history.HistoryRepository
+import org.koitharu.kotatsu.domain.history.OnHistoryChangeListener
 import org.koitharu.kotatsu.ui.common.BasePresenter
 
 @InjectViewState
-class MangaDetailsPresenter : BasePresenter<MangaDetailsView>() {
+class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChangeListener {
 
 	private lateinit var historyRepository: HistoryRepository
 
-	private var isLoaded = false
+	private var manga: Manga? = null
 
 	override fun onFirstViewAttach() {
 		historyRepository = HistoryRepository()
 		super.onFirstViewAttach()
+		HistoryRepository.subscribe(this)
 	}
 
 	fun loadDetails(manga: Manga, force: Boolean = false) {
-		if (!force && isLoaded) {
+		if (!force && this.manga == manga) {
 			return
 		}
+		loadHistory(manga)
 		viewState.onMangaUpdated(manga)
 		launch {
 			try {
@@ -34,7 +37,7 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>() {
 					MangaProviderFactory.create(manga.source).getDetails(manga)
 				}
 				viewState.onMangaUpdated(data)
-				isLoaded = true
+				this@MangaDetailsPresenter.manga = data
 			} catch (e: Exception) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
@@ -46,7 +49,7 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>() {
 		}
 	}
 
-	fun loadHistory(manga: Manga) {
+	private fun loadHistory(manga: Manga) {
 		launch {
 			try {
 				val history = withContext(Dispatchers.IO) {
@@ -59,5 +62,14 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>() {
 				}
 			}
 		}
+	}
+
+	override fun onHistoryChanged() {
+		loadHistory(manga ?: return)
+	}
+
+	override fun onDestroy() {
+		HistoryRepository.unsubscribe(this)
+		super.onDestroy()
 	}
 }

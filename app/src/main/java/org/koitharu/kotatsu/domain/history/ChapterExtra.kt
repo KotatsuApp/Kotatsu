@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.domain
+package org.koitharu.kotatsu.domain.history
 
 enum class ChapterExtra {
 

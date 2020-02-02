@@ -27,7 +27,7 @@
 			android:layout_marginEnd="6dp"
 			android:layout_toEndOf="@id/imageView_cover"
 			android:ellipsize="end"
-			android:lines="2"
+			android:maxLines="2"
 			android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
 			tools:text="@tools:sample/lorem[6]" />
 
@@ -43,7 +43,7 @@
 			android:layout_marginBottom="6dp"
 			android:layout_toEndOf="@id/imageView_cover"
 			android:ellipsize="end"
-			android:lines="1"
+			android:maxLines="1"
 			android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
 			android:textColor="?android:textColorSecondary"
 			tools:text="@tools:sample/lorem[6]" />

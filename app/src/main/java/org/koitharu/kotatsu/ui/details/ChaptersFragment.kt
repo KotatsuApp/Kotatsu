@@ -51,9 +51,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	}
 
 	override fun onHistoryChanged(history: MangaHistory?) {
-		adapter.currentChapterPosition = history?.let {
-			manga?.chapters?.indexOfFirst { x -> x.id == it.chapterId }
-		} ?: RecyclerView.NO_POSITION
+		adapter.currentChapterId = history?.chapterId
 	}
 
 	override fun onItemClick(item: MangaChapter, position: Int, view: View) {

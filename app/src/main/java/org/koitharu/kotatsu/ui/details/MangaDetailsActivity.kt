@@ -24,15 +24,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		tabs.setupWithViewPager(pager)
 		intent?.getParcelableExtra<Manga>(EXTRA_MANGA)?.let {
 			presenter.loadDetails(it)
-			presenter.loadHistory(it)
 		} ?: finish()
-	}
-
-	override fun onResume() {
-		super.onResume()
-		intent?.getParcelableExtra<Manga>(EXTRA_MANGA)?.let {
-			presenter.loadHistory(it)
-		}
 	}
 
 	override fun onMangaUpdated(manga: Manga) {
