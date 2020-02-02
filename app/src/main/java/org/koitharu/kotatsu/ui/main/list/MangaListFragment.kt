@@ -13,26 +13,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
-import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaInfo
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
 import org.koitharu.kotatsu.ui.common.list.SpacingItemDecoration
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.clearItemDecorations
+import org.koitharu.kotatsu.utils.ext.firstItem
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.hasItems
 
-class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
-	PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga> {
+abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), MangaListView<E>,
+	PaginationScrollListener.Callback, OnRecyclerItemClickListener<MangaInfo<E>> {
 
-	private val presenter by moxyPresenter(factory = ::MangaListPresenter)
-
-	private val source by arg<MangaSource>(ARG_SOURCE)
-
-	private lateinit var adapter: MangaListAdapter
+	private lateinit var adapter: MangaListAdapter<E>
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -46,7 +43,7 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 		recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
 		swipeRefreshLayout.setOnRefreshListener {
-			presenter.loadList(source, 0)
+			onRequestMoreItems(0)
 		}
 		settings.subscribe(this)
 	}
@@ -58,7 +55,9 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		presenter.loadList(source, 0)
+		if (!recyclerView.hasItems) {
+			onRequestMoreItems(0)
+		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -74,19 +73,16 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onItemClick(item: Manga, position: Int, view: View) {
-		startActivity(MangaDetailsActivity.newIntent(context ?: return, item))
+	override fun onItemClick(item: MangaInfo<E>, position: Int, view: View) {
+		startActivity(MangaDetailsActivity.newIntent(context ?: return, item.manga))
 	}
 
-	override fun onRequestMoreItems(offset: Int) {
-		presenter.loadList(source, offset)
-	}
-
-	override fun onListChanged(list: List<Manga>) {
+	override fun onListChanged(list: List<MangaInfo<E>>) {
 		adapter.replaceData(list)
+		layout_holder.isVisible = list.isEmpty()
 	}
 
-	override fun onListAppended(list: List<Manga>) {
+	override fun onListAppended(list: List<MangaInfo<E>>) {
 		adapter.appendData(list)
 	}
 
@@ -101,10 +97,9 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 		progressBar.isVisible = isLoading && !hasItems
 		swipeRefreshLayout.isRefreshing = isLoading && hasItems
 		swipeRefreshLayout.isEnabled = !progressBar.isVisible
-	}
-
-	override fun getTitle(): CharSequence? {
-		return source.title
+		if (isLoading) {
+			layout_holder.isVisible = false
+		}
 	}
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
@@ -132,14 +127,5 @@ class MangaListFragment : BaseFragment(R.layout.fragment_list), MangaListView,
 		})
 		adapter.notifyDataSetChanged()
 		recyclerView.firstItem = position
-	}
-
-	companion object {
-
-		private const val ARG_SOURCE = "provider"
-
-		fun newInstance(provider: MangaSource) = MangaListFragment().withArgs(1) {
-			putParcelable(ARG_SOURCE, provider)
-		}
 	}
 }

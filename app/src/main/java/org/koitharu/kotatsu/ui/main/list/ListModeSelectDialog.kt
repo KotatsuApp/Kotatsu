@@ -46,6 +46,8 @@ class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), Vie
 
 		private const val TAG = "ListModeSelectDialog"
 
-		fun show(fm: FragmentManager) = ListModeSelectDialog().show(fm, TAG)
+		fun show(fm: FragmentManager) = ListModeSelectDialog().show(fm,
+			TAG
+		)
 	}
 }

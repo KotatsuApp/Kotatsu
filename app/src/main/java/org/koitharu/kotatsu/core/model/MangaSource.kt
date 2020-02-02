@@ -4,7 +4,6 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import org.koitharu.kotatsu.domain.MangaRepository
 import org.koitharu.kotatsu.domain.repository.ReadmangaRepository
-import kotlin.reflect.KClass
 
 @Parcelize
 enum class MangaSource(val title: String, val cls: Class<out MangaRepository>): Parcelable {

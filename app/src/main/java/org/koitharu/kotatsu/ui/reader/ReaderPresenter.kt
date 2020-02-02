@@ -5,12 +5,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.domain.HistoryRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BasePresenter
 
 @InjectViewState
-class ReaderPresenter() : BasePresenter<ReaderView>() {
+class ReaderPresenter : BasePresenter<ReaderView>() {
 
 	fun loadChapter(chapter: MangaChapter) {
 		launch {
@@ -27,6 +29,14 @@ class ReaderPresenter() : BasePresenter<ReaderView>() {
 				viewState.onError(e)
 			} finally {
 				viewState.onLoadingStateChanged(isLoading = false)
+			}
+		}
+	}
+
+	fun addToHistory(manga: Manga, chapterId: Long, page: Int) {
+		launch(Dispatchers.IO) {
+			HistoryRepository().use {
+				it.addOrUpdate(manga, chapterId, page)
 			}
 		}
 	}

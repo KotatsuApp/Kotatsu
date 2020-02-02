@@ -19,4 +19,7 @@
 	<string name="chapter_d_of_d">Chapter %d of %d</string>
 	<string name="close">Close</string>
 	<string name="try_again">Try again</string>
+    <string name="clear_history">Clear history</string>
+	<string name="nothing_found">Nothing found</string>
+	<string name="history_is_empty">History is empty</string>
 </resources>

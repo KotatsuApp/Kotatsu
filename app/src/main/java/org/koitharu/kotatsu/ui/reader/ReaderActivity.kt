@@ -6,12 +6,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.view.isVisible
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.utils.ext.showDialog
@@ -56,6 +54,11 @@ class ReaderActivity : BaseActivity(), ReaderView {
 	override fun onDestroy() {
 		loader.dispose()
 		super.onDestroy()
+	}
+
+	override fun onPause() {
+		presenter.addToHistory(manga, chapterId, pager.currentItem)
+		super.onPause()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {

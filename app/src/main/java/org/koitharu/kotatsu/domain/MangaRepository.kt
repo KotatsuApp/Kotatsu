@@ -1,18 +1,21 @@
 package org.koitharu.kotatsu.domain
 
-import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.model.SortOrder
 
-abstract class MangaRepository(protected val loaderContext: MangaLoaderContext) {
+interface MangaRepository {
 
-	open val sortOrders: Set<SortOrder> get() = emptySet()
+	val sortOrders: Set<SortOrder>
 
-	open val isSearchAvailable get() = true
+	val isSearchAvailable: Boolean
 
-	abstract suspend fun getList(offset: Int, query: String? = null, sortOrder: SortOrder? = null, tags: Set<String>? = null): List<Manga>
+	suspend fun getList(offset: Int, query: String? = null, sortOrder: SortOrder? = null, tags: Set<String>? = null): List<Manga>
 
-	abstract suspend fun getDetails(manga: Manga) : Manga
+	suspend fun getDetails(manga: Manga) : Manga
 
-	abstract suspend fun getPages(chapter: MangaChapter) : List<MangaPage>
+	suspend fun getPages(chapter: MangaChapter) : List<MangaPage>
 
-	open suspend fun getPageFullUrl(page: MangaPage) : String = page.url
+	suspend fun getPageFullUrl(page: MangaPage) : String
 }

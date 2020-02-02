@@ -10,7 +10,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.common.BaseActivity
-import org.koitharu.kotatsu.ui.main.list.MangaListFragment
+import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
+import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -29,7 +30,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		navigationView.setNavigationItemSelectedListener(this)
 
 		if (!supportFragmentManager.isStateSaved) {
-			setPrimaryFragment(MangaListFragment.newInstance(MangaSource.READMANGA_RU))
+			setPrimaryFragment(RemoteListFragment.newInstance(MangaSource.READMANGA_RU))
 		}
 	}
 
@@ -51,9 +52,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	override fun onNavigationItemSelected(item: MenuItem): Boolean {
 		if (item.groupId == R.id.group_remote_sources) {
 			val source = MangaSource.values().getOrNull(item.itemId) ?: return false
-			setPrimaryFragment(MangaListFragment.newInstance(source))
+			setPrimaryFragment(RemoteListFragment.newInstance(source))
 		} else when (item.itemId) {
-			R.id.nav_history -> Unit
+			R.id.nav_history -> setPrimaryFragment(HistoryListFragment.newInstance())
 			R.id.nav_favourites -> Unit
 			R.id.nav_local_storage -> Unit
 			else -> return false

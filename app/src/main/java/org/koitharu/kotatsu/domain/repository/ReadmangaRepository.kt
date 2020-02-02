@@ -1,14 +1,13 @@
 package org.koitharu.kotatsu.domain.repository
 
-import androidx.core.text.HtmlCompat
 import androidx.core.text.parseAsHtml
 import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.domain.BaseMangaRepository
 import org.koitharu.kotatsu.domain.MangaLoaderContext
-import org.koitharu.kotatsu.domain.MangaRepository
 import org.koitharu.kotatsu.domain.exceptions.ParseException
 import org.koitharu.kotatsu.utils.ext.*
 
-class ReadmangaRepository(loaderContext: MangaLoaderContext) : MangaRepository(loaderContext) {
+class ReadmangaRepository(loaderContext: MangaLoaderContext) : BaseMangaRepository(loaderContext) {
 
 	override suspend fun getList(
 		offset: Int,
@@ -47,7 +46,8 @@ class ReadmangaRepository(loaderContext: MangaLoaderContext) : MangaRepository(l
 						?.map {
 							MangaTag(
 								title = it.text(),
-								key = it.attr("href").substringAfterLast('/')
+								key = it.attr("href").substringAfterLast('/'),
+								source = MangaSource.READMANGA_RU
 							)
 						}?.toSet()
 				}.orEmpty(),

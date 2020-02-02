@@ -2,15 +2,15 @@ package org.koitharu.kotatsu.ui.main.list
 
 import moxy.MvpView
 import moxy.viewstate.strategy.*
-import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaInfo
 
-interface MangaListView : MvpView {
+interface MangaListView<E> : MvpView {
 
 	@StateStrategyType(AddToEndSingleTagStrategy::class, tag = "content")
-	fun onListChanged(list: List<Manga>)
+	fun onListChanged(list: List<MangaInfo<E>>)
 
 	@StateStrategyType(AddToEndStrategy::class, tag = "content")
-	fun onListAppended(list: List<Manga>)
+	fun onListAppended(list: List<MangaInfo<E>>)
 
 	@StateStrategyType(AddToEndSingleStrategy::class)
 	fun onLoadingChanged(isLoading: Boolean)

@@ -1,16 +1,18 @@
-package org.koitharu.kotatsu.ui.main.list
+package org.koitharu.kotatsu.ui.main.list.remote
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.model.MangaInfo
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.ui.main.list.MangaListView
 
 @InjectViewState
-class MangaListPresenter : BasePresenter<MangaListView>() {
+class RemoteListPresenter : BasePresenter<MangaListView<Unit>>() {
 
 	fun loadList(source: MangaSource, offset: Int) {
 		launch {
@@ -19,6 +21,7 @@ class MangaListPresenter : BasePresenter<MangaListView>() {
 				val list = withContext(Dispatchers.IO) {
 					MangaProviderFactory.create(source)
 						.getList(offset)
+						.map { MangaInfo(it, Unit) }
 				}
 				if (offset == 0) {
 					viewState.onListChanged(list)
