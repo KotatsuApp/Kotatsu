@@ -9,7 +9,6 @@ import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
-import org.koitharu.kotatsu.core.model.MangaInfo
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
@@ -25,12 +24,22 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		tabs.setupWithViewPager(pager)
 		intent?.getParcelableExtra<Manga>(EXTRA_MANGA)?.let {
 			presenter.loadDetails(it)
+			presenter.loadHistory(it)
 		} ?: finish()
 	}
 
-	override fun onMangaUpdated(data: MangaInfo<MangaHistory?>) {
-		title = data.manga.title
+	override fun onResume() {
+		super.onResume()
+		intent?.getParcelableExtra<Manga>(EXTRA_MANGA)?.let {
+			presenter.loadHistory(it)
+		}
 	}
+
+	override fun onMangaUpdated(manga: Manga) {
+		title = manga.title
+	}
+
+	override fun onHistoryChanged(history: MangaHistory?) = Unit
 
 	override fun onLoadingStateChanged(isLoading: Boolean) = Unit
 

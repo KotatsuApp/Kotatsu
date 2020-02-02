@@ -13,7 +13,7 @@
 		android:id="@+id/textView_number"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="@drawable/bg_round_rect"
+		android:background="@drawable/bg_badge_default"
 		android:gravity="center"
 		android:minWidth="26dp"
 		android:textColor="?android:textColorSecondaryInverse"

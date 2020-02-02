@@ -27,25 +27,27 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="8dp"
 			android:layout_marginTop="8dp"
+			android:maxLines="3"
 			android:layout_marginEnd="8dp"
 			android:textAppearance="@style/TextAppearance.AppCompat.Body2"
 			android:textColor="?android:textColorPrimary"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@tools:sample/lorem" />
+			tools:text="@tools:sample/lorem[20]" />
 
 		<TextView
 			android:id="@+id/textView_subtitle"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
+			android:layout_marginTop="4dp"
 			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 			android:textColor="?android:textColorSecondary"
+			android:maxLines="2"
 			app:layout_constraintEnd_toEndOf="@id/textView_title"
 			app:layout_constraintStart_toStartOf="@id/textView_title"
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
-			tools:text="@tools:sample/lorem" />
+			tools:text="@tools:sample/lorem[20]" />
 
 		<RatingBar
 			android:id="@+id/ratingBar"

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaInfo
+import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
@@ -27,9 +27,9 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hasItems
 
 abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), MangaListView<E>,
-	PaginationScrollListener.Callback, OnRecyclerItemClickListener<MangaInfo<E>> {
+	PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga> {
 
-	private lateinit var adapter: MangaListAdapter<E>
+	private lateinit var adapter: MangaListAdapter
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -73,16 +73,16 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onItemClick(item: MangaInfo<E>, position: Int, view: View) {
-		startActivity(MangaDetailsActivity.newIntent(context ?: return, item.manga))
+	override fun onItemClick(item: Manga, position: Int, view: View) {
+		startActivity(MangaDetailsActivity.newIntent(context ?: return, item))
 	}
 
-	override fun onListChanged(list: List<MangaInfo<E>>) {
+	override fun onListChanged(list: List<Manga>) {
 		adapter.replaceData(list)
 		layout_holder.isVisible = list.isEmpty()
 	}
 
-	override fun onListAppended(list: List<MangaInfo<E>>) {
+	override fun onListAppended(list: List<Manga>) {
 		adapter.appendData(list)
 	}
 

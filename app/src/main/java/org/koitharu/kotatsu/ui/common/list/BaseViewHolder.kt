@@ -8,7 +8,7 @@ import kotlinx.android.extensions.LayoutContainer
 import org.koin.core.KoinComponent
 import org.koitharu.kotatsu.utils.ext.inflate
 
-abstract class BaseViewHolder<T> protected constructor(view: View) :
+abstract class BaseViewHolder<T, E> protected constructor(view: View) :
 	RecyclerView.ViewHolder(view), LayoutContainer, KoinComponent {
 
 	constructor(parent: ViewGroup, @LayoutRes resId: Int) : this(parent.inflate(resId))
@@ -21,14 +21,14 @@ abstract class BaseViewHolder<T> protected constructor(view: View) :
 
 	val context get() = itemView.context!!
 
-	fun bind(data: T) {
+	fun bind(data: T, extra: E) {
 		boundData = data
-		onBind(data)
+		onBind(data, extra)
 	}
 
 	fun requireData() = boundData ?: throw IllegalStateException("Calling requireData() before bind()")
 
-	fun setOnItemClickListener(listener: OnRecyclerItemClickListener<T>?): BaseViewHolder<T> {
+	fun setOnItemClickListener(listener: OnRecyclerItemClickListener<T>?): BaseViewHolder<T, E> {
 		if (listener != null) {
 			itemView.setOnClickListener {
 				listener.onItemClick(boundData ?: return@setOnClickListener, adapterPosition, it)
@@ -40,5 +40,5 @@ abstract class BaseViewHolder<T> protected constructor(view: View) :
 		return this
 	}
 
-	abstract fun onBind(data: T)
+	abstract fun onBind(data: T, extra: E)
 }

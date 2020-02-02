@@ -11,43 +11,14 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import java.io.Closeable
 import java.util.*
 
-class HistoryRepository() : KoinComponent,
-    MangaRepository, Closeable {
+class HistoryRepository() : KoinComponent {
 
 	private val db: MangaDatabase by inject()
 
-	override val sortOrders: Set<SortOrder> = setOf(SortOrder.NEWEST, SortOrder.POPULARITY)
-
-	override val isSearchAvailable = false
-
-	override suspend fun getList(
-		offset: Int,
-		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
-	): List<Manga> = getHistory(offset, query, sortOrder, tag).map { x -> x.manga }
-
-	suspend fun getHistory(
-		offset: Int,
-		query: String? = null,
-		sortOrder: SortOrder? = null,
-		tag: MangaTag? = null
-	): List<MangaInfo<MangaHistory>> {
+	suspend fun getList(offset: Int) : List<Manga> {
 		val entities = db.historyDao().getAll(offset, 20, "updated_by")
-		return entities.map { x -> MangaInfo(x.manga.toManga(), x.history.toMangaHistory()) }
+		return entities.map { it.manga.toManga() }
 	}
-
-	override suspend fun getDetails(manga: Manga): Manga {
-		throw UnsupportedOperationException("History repository does not support getDetails() method")
-	}
-
-	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		throw UnsupportedOperationException("History repository does not support getPages() method")
-	}
-
-	override suspend fun getPageFullUrl(page: MangaPage) = page.url
-
-	override suspend fun getTags() = emptySet<MangaTag>()
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int) {
 		val dao = db.historyDao()
@@ -66,7 +37,7 @@ class HistoryRepository() : KoinComponent,
 		)
 	}
 
-	suspend fun getHistory(manga: Manga): MangaHistory? {
+	suspend fun getOne(manga: Manga): MangaHistory? {
 		return db.historyDao().getOneOrNull(manga.id)?.let {
 			MangaHistory(
 				createdAt = Date(it.createdAt),
@@ -79,9 +50,5 @@ class HistoryRepository() : KoinComponent,
 
 	suspend fun clear() {
 		db.historyDao().clear()
-	}
-
-	override fun close() {
-		db.close()
 	}
 }

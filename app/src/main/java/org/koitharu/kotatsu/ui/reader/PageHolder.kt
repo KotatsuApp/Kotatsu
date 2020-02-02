@@ -11,17 +11,17 @@ import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class PageHolder(parent: ViewGroup, private val loader: PageLoader) : BaseViewHolder<MangaPage>(parent, R.layout.item_page),
+class PageHolder(parent: ViewGroup, private val loader: PageLoader) : BaseViewHolder<MangaPage, Unit>(parent, R.layout.item_page),
 	SubsamplingScaleImageView.OnImageEventListener {
 
 	init {
 		ssiv.setOnImageEventListener(this)
 		button_retry.setOnClickListener {
-			onBind(boundData ?: return@setOnClickListener)
+			onBind(boundData ?: return@setOnClickListener, Unit)
 		}
 	}
 
-	override fun onBind(data: MangaPage) {
+	override fun onBind(data: MangaPage, extra: Unit) {
 		layout_error.isVisible = false
 		progressBar.show()
 		ssiv.recycle()

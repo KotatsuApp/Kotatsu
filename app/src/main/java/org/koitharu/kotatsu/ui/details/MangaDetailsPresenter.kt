@@ -1,13 +1,11 @@
 package org.koitharu.kotatsu.ui.details
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaInfo
 import org.koitharu.kotatsu.domain.HistoryRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BasePresenter
@@ -15,24 +13,25 @@ import org.koitharu.kotatsu.ui.common.BasePresenter
 @InjectViewState
 class MangaDetailsPresenter : BasePresenter<MangaDetailsView>() {
 
+	private lateinit var historyRepository: HistoryRepository
+
 	private var isLoaded = false
 
-	fun loadDetails(manga: Manga) {
-		if (isLoaded) {
+	override fun onFirstViewAttach() {
+		historyRepository = HistoryRepository()
+		super.onFirstViewAttach()
+	}
+
+	fun loadDetails(manga: Manga, force: Boolean = false) {
+		if (!force && isLoaded) {
 			return
 		}
-		viewState.onMangaUpdated(MangaInfo(manga, null))
+		viewState.onMangaUpdated(manga)
 		launch {
 			try {
 				viewState.onLoadingStateChanged(true)
 				val data = withContext(Dispatchers.IO) {
-					val details = async {
-						MangaProviderFactory.create(manga.source).getDetails(manga)
-					}
-					val history = async {
-						HistoryRepository().use { it.getHistory(manga) }
-					}
-					MangaInfo(details.await(), history.await())
+					MangaProviderFactory.create(manga.source).getDetails(manga)
 				}
 				viewState.onMangaUpdated(data)
 				isLoaded = true
@@ -43,6 +42,21 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>() {
 				viewState.onError(e)
 			} finally {
 				viewState.onLoadingStateChanged(false)
+			}
+		}
+	}
+
+	fun loadHistory(manga: Manga) {
+		launch {
+			try {
+				val history = withContext(Dispatchers.IO) {
+					historyRepository.getOne(manga)
+				}
+				viewState.onHistoryChanged(history)
+			} catch (e: Exception) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
 			}
 		}
 	}

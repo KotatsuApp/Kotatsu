@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.KoinComponent
 import org.koitharu.kotatsu.utils.ext.replaceWith
 
-abstract class BaseRecyclerAdapter<T>(private val onItemClickListener: OnRecyclerItemClickListener<T>? = null) :
-	RecyclerView.Adapter<BaseViewHolder<T>>(),
+abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecyclerItemClickListener<T>? = null) :
+	RecyclerView.Adapter<BaseViewHolder<T, E>>(),
 	KoinComponent {
 
 	private val dataSet = ArrayList<T>()
@@ -16,8 +16,9 @@ abstract class BaseRecyclerAdapter<T>(private val onItemClickListener: OnRecycle
 		setHasStableIds(true)
 	}
 
-	override fun onBindViewHolder(holder: BaseViewHolder<T>, position: Int) {
-		holder.bind(dataSet[position])
+	override fun onBindViewHolder(holder: BaseViewHolder<T, E>, position: Int) {
+		val item = dataSet[position]
+		holder.bind(item, getExtra(item, position))
 	}
 
 	fun getItem(position: Int) = dataSet[position]
@@ -64,13 +65,16 @@ abstract class BaseRecyclerAdapter<T>(private val onItemClickListener: OnRecycle
 
 	final override fun getItemCount() = dataSet.size
 
-	final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
-		return onCreateViewHolder(parent).setOnItemClickListener(onItemClickListener).also(this::onViewHolderCreated)
+	final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, E> {
+		return onCreateViewHolder(parent).setOnItemClickListener(onItemClickListener)
+			.also(this::onViewHolderCreated)
 	}
 
-	protected open fun onViewHolderCreated(holder: BaseViewHolder<T>) = Unit
+	protected abstract fun getExtra(item: T, position: Int): E
 
-	protected abstract fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<T>
+	protected open fun onViewHolderCreated(holder: BaseViewHolder<T, E>) = Unit
+
+	protected abstract fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<T, E>
 
 	protected abstract fun onGetItemId(item: T): Long
 }

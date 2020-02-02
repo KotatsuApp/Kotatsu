@@ -9,7 +9,7 @@ import org.koitharu.kotatsu.core.model.MangaPage
 interface ReaderView : MvpView {
 
 	@StateStrategyType(AddToEndSingleStrategy::class)
-	fun onPagesReady(pages: List<MangaPage>)
+	fun onPagesReady(pages: List<MangaPage>, index: Int)
 
 	@StateStrategyType(AddToEndSingleStrategy::class)
 	fun onLoadingStateChanged(isLoading: Boolean)

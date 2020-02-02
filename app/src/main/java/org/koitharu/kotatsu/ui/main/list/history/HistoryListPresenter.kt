@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
-import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.domain.HistoryRepository
@@ -26,7 +25,7 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 			viewState.onLoadingChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
-					repository.getHistory(offset = offset)
+					repository.getList(offset = offset)
 				}
 				if (offset == 0) {
 					viewState.onListChanged(list)
@@ -61,10 +60,5 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 				viewState.onLoadingChanged(false)
 			}
 		}
-	}
-
-	override fun onDestroy() {
-		repository.closeQuietly()
-		super.onDestroy()
 	}
 }

@@ -14,14 +14,18 @@ import org.koitharu.kotatsu.ui.common.BasePresenter
 @InjectViewState
 class ReaderPresenter : BasePresenter<ReaderView>() {
 
-	fun loadChapter(chapter: MangaChapter) {
+	fun loadChapter(state: ReaderState) {
 		launch {
 			viewState.onLoadingStateChanged(isLoading = true)
 			try {
 				val pages = withContext(Dispatchers.IO) {
-					MangaProviderFactory.create(chapter.source).getPages(chapter)
+					val repo = MangaProviderFactory.create(state.manga.source)
+					val chapter = state.chapter ?: repo.getDetails(state.manga).chapters
+						?.first { it.id == state.chapterId }
+						?: throw RuntimeException("Chapter ${state.chapterId} not found")
+					repo.getPages(chapter)
 				}
-				viewState.onPagesReady(pages)
+				viewState.onPagesReady(pages, state.page)
 			} catch (e: Exception) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
@@ -33,11 +37,13 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 		}
 	}
 
-	fun addToHistory(manga: Manga, chapterId: Long, page: Int) {
+	fun saveState(state: ReaderState) {
 		launch(Dispatchers.IO) {
-			HistoryRepository().use {
-				it.addOrUpdate(manga, chapterId, page)
-			}
+			HistoryRepository().addOrUpdate(
+				manga = state.manga,
+				chapterId = state.chapterId,
+				page = state.page
+			)
 		}
 	}
 

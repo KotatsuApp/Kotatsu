@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_chapters.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaHistory
-import org.koitharu.kotatsu.core.model.MangaInfo
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
@@ -21,7 +21,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	@Suppress("unused")
 	private val presenter by moxyPresenter { (activity as MangaDetailsActivity).presenter }
 
-	private var data: MangaInfo<MangaHistory?>? = null
+	private var manga: Manga? = null
 
 	private lateinit var adapter: ChaptersAdapter
 
@@ -37,9 +37,9 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 		recyclerView_chapters.adapter = adapter
 	}
 
-	override fun onMangaUpdated(data: MangaInfo<MangaHistory?>) {
-		this.data = data
-		adapter.replaceData(data.manga.chapters.orEmpty())
+	override fun onMangaUpdated(manga: Manga) {
+		this.manga = manga
+		adapter.replaceData(manga.chapters.orEmpty())
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
@@ -50,11 +50,17 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 
 	}
 
+	override fun onHistoryChanged(history: MangaHistory?) {
+		adapter.currentChapterPosition = history?.let {
+			manga?.chapters?.indexOfFirst { x -> x.id == it.chapterId }
+		} ?: RecyclerView.NO_POSITION
+	}
+
 	override fun onItemClick(item: MangaChapter, position: Int, view: View) {
 		startActivity(
 			ReaderActivity.newIntent(
 				context ?: return,
-				data?.manga ?: return,
+				manga ?: return,
 				item.id
 			)
 		)
