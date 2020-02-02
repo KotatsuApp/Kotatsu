@@ -1,11 +1,14 @@
 package org.koitharu.kotatsu.ui.details
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaInfo
+import org.koitharu.kotatsu.domain.HistoryRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BasePresenter
 
@@ -18,14 +21,20 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>() {
 		if (isLoaded) {
 			return
 		}
-		viewState.onMangaUpdated(manga)
+		viewState.onMangaUpdated(MangaInfo(manga, null))
 		launch {
 			try {
 				viewState.onLoadingStateChanged(true)
-				val details = withContext(Dispatchers.IO) {
-					MangaProviderFactory.create(manga.source).getDetails(manga)
+				val data = withContext(Dispatchers.IO) {
+					val details = async {
+						MangaProviderFactory.create(manga.source).getDetails(manga)
+					}
+					val history = async {
+						HistoryRepository().use { it.getHistory(manga) }
+					}
+					MangaInfo(details.await(), history.await())
 				}
-				viewState.onMangaUpdated(details)
+				viewState.onMangaUpdated(data)
 				isLoaded = true
 			} catch (e: Exception) {
 				if (BuildConfig.DEBUG) {

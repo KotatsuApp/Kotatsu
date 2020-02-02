@@ -8,6 +8,8 @@ import kotlinx.android.synthetic.main.activity_details.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.MangaInfo
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
@@ -26,8 +28,8 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		} ?: finish()
 	}
 
-	override fun onMangaUpdated(manga: Manga) {
-		title = manga.title
+	override fun onMangaUpdated(data: MangaInfo<MangaHistory?>) {
+		title = data.manga.title
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) = Unit

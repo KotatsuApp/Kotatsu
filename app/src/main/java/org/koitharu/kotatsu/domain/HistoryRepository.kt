@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.core.db.entity.HistoryWithManga
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.model.*
 import java.io.Closeable
+import java.util.*
 
 class HistoryRepository() : KoinComponent, MangaRepository, Closeable {
 
@@ -59,6 +60,17 @@ class HistoryRepository() : KoinComponent, MangaRepository, Closeable {
 				manga = MangaEntity.from(manga)
 			)
 		)
+	}
+
+	suspend fun getHistory(manga: Manga): MangaHistory? {
+		return db.historyDao().getOneOrNull(manga.id)?.let {
+			MangaHistory(
+				createdAt = Date(it.createdAt),
+				updatedAt = Date(it.updatedAt),
+				chapterId = it.chapterId,
+				page = it.page
+			)
+		}
 	}
 
 	suspend fun clear() {
