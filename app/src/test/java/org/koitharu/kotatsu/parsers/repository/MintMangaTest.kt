@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.utils.TestUtil
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class ReadmangaRuTest : MangaParserTest {
+class MintMangaTest : MangaParserTest {
 
 	@Test
 	override fun testMangaList() {
@@ -23,7 +23,7 @@ class ReadmangaRuTest : MangaParserTest {
 		Assert.assertTrue(item.rating in 0f..1f)
 		TestUtil.assertValidUrl(item.url)
 		TestUtil.assertValidUrl(item.coverUrl)
-		Assert.assertEquals(item.source, MangaSource.READMANGA_RU)
+		Assert.assertEquals(item.source, MangaSource.MINTMANGA)
 	}
 
 	@Test
@@ -33,7 +33,7 @@ class ReadmangaRuTest : MangaParserTest {
 		TestUtil.assertValidUrl(manga.largeCoverUrl!!)
 		Assert.assertNotNull(manga.chapters)
 		val chapter = manga.chapters!!.last()
-		Assert.assertEquals(chapter.source, MangaSource.READMANGA_RU)
+		Assert.assertEquals(chapter.source, MangaSource.MINTMANGA)
 		TestUtil.assertValidUrl(chapter.url)
 	}
 
@@ -42,7 +42,7 @@ class ReadmangaRuTest : MangaParserTest {
 		val chapter = getMangaItem().chapters!!.first()
 		val pages = runBlocking { repository.getPages(chapter) }
 		Assert.assertFalse(pages.isEmpty())
-		Assert.assertEquals(pages.first().source, MangaSource.READMANGA_RU)
+		Assert.assertEquals(pages.first().source, MangaSource.MINTMANGA)
 		TestUtil.assertValidUrl(runBlocking { repository.getPageFullUrl(pages.first()) })
 		TestUtil.assertValidUrl(runBlocking { repository.getPageFullUrl(pages.last()) })
 	}
@@ -53,14 +53,14 @@ class ReadmangaRuTest : MangaParserTest {
 		Assert.assertFalse(tags.isEmpty())
 		val tag = tags.first()
 		Assert.assertFalse(tag.title.isBlank())
-		Assert.assertEquals(tag.source, MangaSource.READMANGA_RU)
-		TestUtil.assertValidUrl("https://readmanga.me/list/genre/${tag.key}")
+		Assert.assertEquals(tag.source, MangaSource.MINTMANGA)
+		TestUtil.assertValidUrl("https://mintmanga.live/list/genre/${tag.key}")
 	}
 
 	companion object : RepositoryTestEnvironment() {
 
 		@JvmStatic
 		@BeforeClass
-		fun setUp() = initialize(MangaSource.READMANGA_RU)
+		fun setUp() = initialize(MangaSource.MINTMANGA)
 	}
 }

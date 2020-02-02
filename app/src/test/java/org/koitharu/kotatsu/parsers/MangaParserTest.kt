@@ -7,4 +7,6 @@ interface MangaParserTest {
     fun testMangaDetails()
 
     fun testMangaPages()
+
+    fun testTags()
 }

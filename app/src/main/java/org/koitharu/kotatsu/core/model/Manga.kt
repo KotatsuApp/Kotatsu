@@ -13,7 +13,7 @@ data class Manga(
 	val coverUrl: String,
 	val largeCoverUrl: String? = null,
 	val summary: String,
-	val description: CharSequence? = null,
+	val description: String? = null, //HTML
 	val tags: Set<MangaTag> = emptySet(),
 	val state: MangaState? = null,
 	val chapters: List<MangaChapter>? = null,

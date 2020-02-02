@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.details
 
+import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import coil.api.load
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -22,7 +23,7 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 		imageView_cover.load(data.manga.largeCoverUrl ?: data.manga.coverUrl)
 		textView_title.text = data.manga.title
 		textView_subtitle.text = data.manga.localizedTitle
-		textView_description.text = data.manga.description
+		textView_description.text = data.manga.description?.parseAsHtml()
 		if (data.manga.rating == Manga.NO_RATING) {
 			ratingBar.isVisible = false
 		} else {

@@ -7,10 +7,12 @@ import org.koitharu.kotatsu.core.db.entity.HistoryEntity
 import org.koitharu.kotatsu.core.db.entity.HistoryWithManga
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import java.io.Closeable
 import java.util.*
 
-class HistoryRepository() : KoinComponent, MangaRepository, Closeable {
+class HistoryRepository() : KoinComponent,
+    MangaRepository, Closeable {
 
 	private val db: MangaDatabase by inject()
 
@@ -22,14 +24,14 @@ class HistoryRepository() : KoinComponent, MangaRepository, Closeable {
 		offset: Int,
 		query: String?,
 		sortOrder: SortOrder?,
-		tags: Set<String>?
-	): List<Manga> = getHistory(offset, query, sortOrder, tags).map { x -> x.manga }
+		tag: MangaTag?
+	): List<Manga> = getHistory(offset, query, sortOrder, tag).map { x -> x.manga }
 
 	suspend fun getHistory(
 		offset: Int,
 		query: String? = null,
 		sortOrder: SortOrder? = null,
-		tags: Set<String>? = null
+		tag: MangaTag? = null
 	): List<MangaInfo<MangaHistory>> {
 		val entities = db.historyDao().getAll(offset, 20, "updated_by")
 		return entities.map { x -> MangaInfo(x.manga.toManga(), x.history.toMangaHistory()) }
@@ -44,6 +46,8 @@ class HistoryRepository() : KoinComponent, MangaRepository, Closeable {
 	}
 
 	override suspend fun getPageFullUrl(page: MangaPage) = page.url
+
+	override suspend fun getTags() = emptySet<MangaTag>()
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int) {
 		val dao = db.historyDao()

@@ -1,28 +1,44 @@
-package org.koitharu.kotatsu.domain.repository
+package org.koitharu.kotatsu.core.parser.site
 
-import androidx.core.text.parseAsHtml
+import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.domain.BaseMangaRepository
+import org.koitharu.kotatsu.core.parser.BaseMangaRepository
 import org.koitharu.kotatsu.domain.MangaLoaderContext
-import org.koitharu.kotatsu.domain.exceptions.ParseException
 import org.koitharu.kotatsu.utils.ext.*
+import kotlin.text.removeSurrounding
 
-class ReadmangaRepository(loaderContext: MangaLoaderContext) : BaseMangaRepository(loaderContext) {
+abstract class GroupleRepository(
+	private val source: MangaSource,
+	loaderContext: MangaLoaderContext
+) :
+	BaseMangaRepository(loaderContext) {
+
+	protected abstract val domain: String
+
+	override val sortOrders = setOf(
+		SortOrder.ALPHABETICAL, SortOrder.POPULARITY,
+		SortOrder.UPDATED, SortOrder.NEWEST, SortOrder.RATING
+	)
 
 	override suspend fun getList(
 		offset: Int,
 		query: String?,
 		sortOrder: SortOrder?,
-		tags: Set<String>?
+		tag: MangaTag?
 	): List<Manga> {
-		val doc = loaderContext.get("https://readmanga.me/list?sortType=updated&offset=$offset")
+		val url = if (tag == null) {
+			"https://$domain/list?sortType=${getSortKey(sortOrder)}&offset=$offset"
+		} else {
+			"https://$domain/list/genre/${tag.key}?sortType=${getSortKey(sortOrder)}&offset=$offset"
+		}
+		val doc = loaderContext.get(url)
 			.parseHtml()
 		val root = doc.body().getElementById("mangaBox")
 			?.selectFirst("div.tiles.row") ?: throw ParseException("Cannot find root")
 		return root.select("div.tile").mapNotNull { node ->
 			val imgDiv = node.selectFirst("div.img") ?: return@mapNotNull null
 			val descDiv = node.selectFirst("div.desc") ?: return@mapNotNull null
-			val href = imgDiv.selectFirst("a").attr("href")?.withDomain("readmanga.me")
+			val href = imgDiv.selectFirst("a").attr("href")?.withDomain(domain)
 				?: return@mapNotNull null
 			val title = descDiv.selectFirst("h3")?.selectFirst("a")?.text()
 				?: return@mapNotNull null
@@ -47,7 +63,7 @@ class ReadmangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposito
 							MangaTag(
 								title = it.text(),
 								key = it.attr("href").substringAfterLast('/'),
-								source = MangaSource.READMANGA_RU
+								source = source
 							)
 						}?.toSet()
 				}.orEmpty(),
@@ -56,7 +72,7 @@ class ReadmangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposito
 						?.selectFirst("span.mangaCompleted") != null -> MangaState.FINISHED
 					else -> null
 				},
-				source = MangaSource.READMANGA_RU
+				source = source
 			)
 		}
 	}
@@ -65,27 +81,27 @@ class ReadmangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposito
 		val doc = loaderContext.get(manga.url).parseHtml()
 		val root = doc.body().getElementById("mangaBox")
 		return manga.copy(
-			description = root.selectFirst("div.manga-description").firstChild()?.html()?.parseAsHtml(),
+			description = root.selectFirst("div.manga-description").firstChild()?.html(),
 			largeCoverUrl = root.selectFirst("div.subject-cower")?.selectFirst("img")?.attr(
 				"data-full"
 			),
 			chapters = root.selectFirst("div.chapters-link")?.selectFirst("table")
 				?.select("a")?.asReversed()?.mapIndexedNotNull { i, a ->
 					val href =
-						a.attr("href")?.withDomain("readmanga.me") ?: return@mapIndexedNotNull null
+						a.attr("href")?.withDomain(domain) ?: return@mapIndexedNotNull null
 					MangaChapter(
 						id = href.longHashCode(),
 						name = a.ownText(),
 						number = i + 1,
 						url = href,
-						source = MangaSource.READMANGA_RU
+						source = source
 					)
 				}
 		)
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = loaderContext.get(chapter.url).parseHtml()
+		val doc = loaderContext.get(chapter.url + "?mtr=1").parseHtml()
 		val scripts = doc.select("script")
 		for (script in scripts) {
 			val data = script.html()
@@ -103,10 +119,32 @@ class ReadmangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposito
 				MangaPage(
 					id = url.longHashCode(),
 					url = url,
-					source = MangaSource.READMANGA_RU
+					source = source
 				)
 			}
 		}
 		throw ParseException("Pages list not found at ${chapter.url}")
+	}
+
+	override suspend fun getTags(): Set<MangaTag> {
+		val doc = loaderContext.get("https://$domain/list/genres/sort_name").parseHtml()
+		val root = doc.body().getElementById("mangaBox").selectFirst("div.leftContent")
+			.selectFirst("table.table")
+		return root.select("a.element-link").map { a ->
+			MangaTag(
+				title = a.text(),
+				key = a.attr("href").substringAfterLast('/'),
+				source = source
+			)
+		}.toSet()
+	}
+
+	private fun getSortKey(sortOrder: SortOrder?) = when (sortOrder) {
+		SortOrder.ALPHABETICAL -> "name"
+		SortOrder.POPULARITY -> "rate"
+		SortOrder.UPDATED -> "updated"
+		SortOrder.NEWEST -> "created"
+		SortOrder.RATING -> "votes"
+		null -> "updated"
 	}
 }

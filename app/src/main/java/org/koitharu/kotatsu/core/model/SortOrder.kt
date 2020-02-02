@@ -1,5 +1,5 @@
 package org.koitharu.kotatsu.core.model
 
 enum class SortOrder {
-	ALPHABETICAL, POPULARITY, UPDATED, NEWEST
+	ALPHABETICAL, POPULARITY, UPDATED, NEWEST, RATING
 }
