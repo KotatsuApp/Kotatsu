@@ -5,9 +5,12 @@ import kotlinx.android.parcel.Parcelize
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.site.MintMangaRepository
 import org.koitharu.kotatsu.core.parser.site.ReadmangaRepository
+import org.koitharu.kotatsu.core.parser.site.SelfMangaRepository
 
+@Suppress("SpellCheckingInspection")
 @Parcelize
 enum class MangaSource(val title: String, val cls: Class<out MangaRepository>): Parcelable {
 	READMANGA_RU("ReadManga", ReadmangaRepository::class.java),
-	MINTMANGA("MintManga", MintMangaRepository::class.java)
+	MINTMANGA("MintManga", MintMangaRepository::class.java),
+	SELFMANGA("SelfManga", SelfMangaRepository::class.java)
 }

@@ -35,7 +35,7 @@ abstract class RepositoryTestEnvironment {
 
 	fun getMangaList() = runBlocking { repository.getList(2) }
 
-	fun getMangaItem() = runBlocking { repository.getDetails(repository.getList(4).last()) }
+	fun getMangaItem() = runBlocking { repository.getDetails(repository.getList(5).last()) }
 
 	fun getTags() = runBlocking { repository.getTags() }
 }

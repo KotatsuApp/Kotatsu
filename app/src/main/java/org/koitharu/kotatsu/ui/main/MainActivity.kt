@@ -30,7 +30,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		navigationView.setNavigationItemSelectedListener(this)
 
 		if (!supportFragmentManager.isStateSaved) {
-			setPrimaryFragment(RemoteListFragment.newInstance(MangaSource.READMANGA_RU))
+			navigationView.setCheckedItem(R.id.nav_history)
 		}
 	}
 
