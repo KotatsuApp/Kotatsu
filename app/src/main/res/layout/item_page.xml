@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+		android:id="@+id/ssiv"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+
+	<androidx.core.widget.ContentLoadingProgressBar
+		android:id="@+id/progressBar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center" />
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:orientation="vertical"
+		android:layout_marginStart="60dp"
+		android:layout_marginEnd="60dp"
+		android:gravity="center_horizontal"
+		android:id="@+id/layout_error" >
+
+		<TextView
+			android:drawableTop="@drawable/ic_error_large"
+			android:id="@+id/textView_error"
+			android:layout_width="wrap_content"
+			tools:text="@tools:sample/lorem[6]"
+			android:drawablePadding="12dp"
+			android:textAppearance="@style/TextAppearance.AppCompat.Small"
+			android:gravity="center_horizontal"
+			android:layout_height="wrap_content" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_retry"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+			android:text="@string/try_again" />
+
+	</LinearLayout>
+
+</FrameLayout>

@@ -8,7 +8,7 @@
 			android:title="@string/local_storage" />
 		<item
 			android:id="@+id/nav_favourites"
-			android:icon="@drawable/ic_star_half"
+			android:icon="@drawable/ic_favourites"
 			android:title="@string/favourites" />
 		<item
 			android:id="@+id/nav_history"

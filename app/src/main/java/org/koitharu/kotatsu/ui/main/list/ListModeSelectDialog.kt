@@ -1,36 +1,23 @@
 package org.koitharu.kotatsu.ui.main.list
 
-import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.dialog_list_mode.*
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.ui.common.AlertDialogFragment
 
-class ListModeSelectDialog : DialogFragment(), View.OnClickListener {
+class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), View.OnClickListener {
 
 	private val setting by inject<AppSettings>()
 
-	override fun onCreateView(
-		inflater: LayoutInflater,
-		container: ViewGroup?,
-		savedInstanceState: Bundle?
-	): View? {
-		return inflater.inflate(R.layout.dialog_list_mode, container, false)
-	}
-
-	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		return super.onCreateDialog(savedInstanceState).apply {
-			setTitle(R.string.list_mode)
-		}
+	override fun onBuildDialog(builder: AlertDialog.Builder) {
+		builder.setTitle(R.string.list_mode)
+			.setCancelable(true)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,7 +44,7 @@ class ListModeSelectDialog : DialogFragment(), View.OnClickListener {
 
 	companion object {
 
-		private const val TAG = "LIST_MODE"
+		private const val TAG = "ListModeSelectDialog"
 
 		fun show(fm: FragmentManager) = ListModeSelectDialog().show(fm, TAG)
 	}

@@ -13,14 +13,15 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
-		<activity android:name="org.koitharu.kotatsu.ui.main.MainActivity">
+		<activity android:name=".ui.main.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name="org.koitharu.kotatsu.ui.details.MangaDetailsActivity" />
+		<activity android:name=".ui.details.MangaDetailsActivity" />
+		<activity android:name=".ui.reader.ReaderActivity" />
 	</application>
 
 </manifest>

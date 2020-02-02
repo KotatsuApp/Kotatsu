@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.circularreveal.CircularRevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<androidx.viewpager2.widget.ViewPager2
+		android:id="@+id/pager"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/dim"
+		android:fitsSystemWindows="true"
+		android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+		app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/bottomBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:background="@color/dim"
+		android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+		app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+
+	<LinearLayout
+		android:id="@+id/layout_loading"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:gravity="center_horizontal"
+		android:orientation="vertical">
+
+		<ProgressBar
+			android:id="@+id/progressBar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:indeterminate="true" />
+
+		<TextView
+			android:id="@+id/textView_loading"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:text="@string/loading_"
+			android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
+
+	</LinearLayout>
+
+</com.google.android.material.circularreveal.CircularRevealFrameLayout>

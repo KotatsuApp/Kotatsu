@@ -4,7 +4,7 @@ import org.junit.Assert
 import java.net.HttpURLConnection
 import java.net.URL
 
-object MyAsserts {
+object TestUtil {
 
     private val VALID_RESPONSE_CODES = arrayOf(
         HttpURLConnection.HTTP_OK,

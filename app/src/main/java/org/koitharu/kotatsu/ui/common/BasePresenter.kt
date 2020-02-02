@@ -1,9 +1,6 @@
 package org.koitharu.kotatsu.ui.common
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.*
 import moxy.MvpPresenter
 import moxy.MvpView
 import org.koin.core.KoinComponent
@@ -17,7 +14,7 @@ abstract class BasePresenter<V : MvpView> : MvpPresenter<V>(), KoinComponent, Co
 		get() = Dispatchers.Main + job
 
 	override fun onDestroy() {
-		coroutineContext.cancelChildren()
+		coroutineContext.cancel()
 		super.onDestroy()
 	}
 }

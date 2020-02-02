@@ -21,3 +21,15 @@ fun String.withDomain(domain: String, ssl: Boolean = true) = when {
 	}
 	else -> this
 }
+
+fun String.removeSurrounding(vararg chars: Char): String {
+	if (length == 0) {
+		return this
+	}
+	for (c in chars) {
+		if (first() == c && last() == c) {
+			return substring(1, length - 1)
+		}
+	}
+	return this
+}

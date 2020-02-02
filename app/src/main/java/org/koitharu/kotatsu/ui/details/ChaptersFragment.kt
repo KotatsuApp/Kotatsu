@@ -12,12 +12,15 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.reader.ReaderActivity
 
 class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsView,
 	OnRecyclerItemClickListener<MangaChapter> {
 
 	@Suppress("unused")
 	private val presenter by moxyPresenter { (activity as MangaDetailsActivity).presenter }
+
+	private var manga: Manga? = null
 
 	private lateinit var adapter: ChaptersAdapter
 
@@ -29,6 +32,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	}
 
 	override fun onMangaUpdated(manga: Manga) {
+		this.manga = manga
 		adapter.replaceData(manga.chapters.orEmpty())
 	}
 
@@ -41,6 +45,10 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	}
 
 	override fun onItemClick(item: MangaChapter, position: Int, view: View) {
-		//TODO
+		startActivity(ReaderActivity.newIntent(
+			context ?: return,
+			manga ?: return,
+			item.id
+		))
 	}
 }
