@@ -1,0 +1,17 @@
+language: android
+dist: trusty
+jdk:
+  - oraclejdk8
+android:
+  components:
+    - tools
+    - build-tools
+    - android-29
+
+before_install:
+  - yes | sdkmanager "platforms;android-29"
+script: ./gradlew -Dorg.gradle.jvmargs=-Xmx1536m assembleDebug lintDebug
+licenses:
+  - 'android-sdk-license-.+'
+  - 'android-sdk-preview-license-.+'
+  - 'android-sdk-arm-dbt-license-.+'
