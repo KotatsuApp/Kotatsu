@@ -25,4 +25,5 @@
 	<string name="read">Read</string>
 	<string name="continue_">Continue</string>
 	<string name="add_bookmark">Add bookmark</string>
+    <string name="you_have_not_favourites_yet">You have not favourites yet</string>
 </resources>

@@ -54,5 +54,5 @@ class KotatsuApp : Application() {
 		applicationContext,
 		MangaDatabase::class.java,
 		"kotatsu-db"
-	).fallbackToDestructiveMigration() //TODO remove
+	)
 }
