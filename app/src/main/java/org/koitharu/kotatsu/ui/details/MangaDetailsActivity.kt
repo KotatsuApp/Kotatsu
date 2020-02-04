@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.ui.details
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_details.*
 import moxy.ktx.moxyPresenter
@@ -39,11 +41,24 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		Snackbar.make(pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		menuInflater.inflate(R.menu.opt_details, menu)
+		return super.onCreateOptionsMenu(menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+		R.id.action_favourite -> {
+			true
+		}
+		else -> super.onOptionsItemSelected(item)
+	}
+
 	companion object {
 
 		private const val EXTRA_MANGA = "manga"
 
-		fun newIntent(context: Context, manga: Manga) = Intent(context, MangaDetailsActivity::class.java)
-			.putExtra(EXTRA_MANGA, manga)
+		fun newIntent(context: Context, manga: Manga) =
+			Intent(context, MangaDetailsActivity::class.java)
+				.putExtra(EXTRA_MANGA, manga)
 	}
 }

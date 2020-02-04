@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.main.list.favourites.FavouritesListFragment
 import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
 import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
 
@@ -56,7 +57,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			setPrimaryFragment(RemoteListFragment.newInstance(source))
 		} else when (item.itemId) {
 			R.id.nav_history -> setPrimaryFragment(HistoryListFragment.newInstance())
-			R.id.nav_favourites -> Unit
+			R.id.nav_favourites -> setPrimaryFragment(FavouritesListFragment.newInstance())
 			R.id.nav_local_storage -> Unit
 			else -> return false
 		}

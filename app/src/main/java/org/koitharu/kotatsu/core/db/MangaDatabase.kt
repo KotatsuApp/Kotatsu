@@ -2,12 +2,14 @@ package org.koitharu.kotatsu.core.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import org.koitharu.kotatsu.core.db.entity.HistoryEntity
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
-import org.koitharu.kotatsu.core.db.entity.MangaTagsEntity
-import org.koitharu.kotatsu.core.db.entity.TagEntity
+import org.koitharu.kotatsu.core.db.entity.*
 
-@Database(entities = [MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class], version = 1)
+@Database(
+	entities = [
+		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
+		FavouriteCategoryEntity::class, FavouriteEntity::class
+	], version = 1
+)
 abstract class MangaDatabase : RoomDatabase() {
 
 	abstract fun historyDao(): HistoryDao
@@ -15,4 +17,8 @@ abstract class MangaDatabase : RoomDatabase() {
 	abstract fun tagsDao(): TagsDao
 
 	abstract fun mangaDao(): MangaDao
+
+	abstract fun favouritesDao(): FavouritesDao
+
+	abstract fun favouriteCategoriesDao(): FavouriteCategoriesDao
 }
