@@ -27,8 +27,8 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="8dp"
 			android:layout_marginTop="8dp"
-			android:maxLines="3"
 			android:layout_marginEnd="8dp"
+			android:maxLines="3"
 			android:textAppearance="@style/TextAppearance.AppCompat.Body2"
 			android:textColor="?android:textColorPrimary"
 			app:layout_constraintEnd_toEndOf="parent"
@@ -41,9 +41,9 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="4dp"
+			android:maxLines="2"
 			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 			android:textColor="?android:textColorSecondary"
-			android:maxLines="2"
 			app:layout_constraintEnd_toEndOf="@id/textView_title"
 			app:layout_constraintStart_toStartOf="@id/textView_title"
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
@@ -63,18 +63,33 @@
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_read"
+			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginEnd="4dp"
+			android:enabled="false"
 			android:text="@string/read"
-			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 			app:icon="@drawable/ic_read"
 			app:iconPadding="12dp"
-			android:enabled="false"
-			android:layout_marginEnd="4dp"
 			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="@id/textView_title"
 			app:layout_constraintTop_toBottomOf="@id/ratingBar"
 			app:layout_constraintVertical_bias="1" />
+
+		<ImageView
+			android:id="@+id/imageView_favourite"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_marginEnd="4dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:contentDescription="@string/add_to_favourites"
+			android:scaleType="center"
+			android:src="@drawable/ic_favourites"
+			android:tint="?colorAccent"
+			app:layout_constraintBottom_toBottomOf="@id/button_read"
+			app:layout_constraintDimensionRatio="1:1"
+			app:layout_constraintEnd_toStartOf="@id/button_read"
+			app:layout_constraintTop_toTopOf="@id/button_read" />
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/barrier_title"

@@ -3,6 +3,11 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	app:cardElevation="0dp"
+	app:strokeColor="?android:textColorPrimary"
+	app:strokeWidth="1px"
+	app:cardBackgroundColor="?android:windowBackground"
 	android:layout_height="@dimen/manga_list_details_item_height">
 
 	<RelativeLayout

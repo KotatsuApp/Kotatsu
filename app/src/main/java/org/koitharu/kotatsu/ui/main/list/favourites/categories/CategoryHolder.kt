@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.main.list.favourites
+package org.koitharu.kotatsu.ui.main.list.favourites.categories
 
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_caegory_checkable.*

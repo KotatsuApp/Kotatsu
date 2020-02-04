@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:paddingStart="14dp"
+	android:paddingTop="8dp"
+	android:paddingEnd="14dp">
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/inputLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:boxBackgroundMode="filled">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/inputEdit"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:imeOptions="actionDone"
+			android:maxLines="1"
+			tools:text="@tools:sample/lorem[2]" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+</FrameLayout>

@@ -18,6 +18,6 @@ abstract class FavouritesDao {
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun add(favourite: FavouriteEntity)
 
-	@Delete
-	abstract suspend fun delete(favourite: FavouriteEntity)
+	@Query("DELETE FROM favourites WHERE manga_id = :mangaId AND category_id = :categoryId")
+	abstract suspend fun delete(categoryId: Long, mangaId: Long)
 }

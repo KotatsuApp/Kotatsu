@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.view.isGone
+import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -89,3 +90,10 @@ var RecyclerView.firstItem: Int
 			(layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(value, 0)
 		}
 	}
+
+fun View.disableFor(timeInMillis: Long) {
+	isEnabled = false
+	postDelayed(timeInMillis) {
+		isEnabled = true
+	}
+}

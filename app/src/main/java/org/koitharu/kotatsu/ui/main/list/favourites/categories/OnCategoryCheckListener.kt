@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.main.list.favourites
+package org.koitharu.kotatsu.ui.main.list.favourites.categories
 
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 

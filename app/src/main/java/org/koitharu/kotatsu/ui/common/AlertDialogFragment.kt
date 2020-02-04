@@ -6,8 +6,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import moxy.MvpAppCompatDialogFragment
 
-abstract class AlertDialogFragment(@LayoutRes private val layoutResId: Int) : DialogFragment() {
+abstract class AlertDialogFragment(@LayoutRes private val layoutResId: Int) : MvpAppCompatDialogFragment() {
 
 	private var rootView: View? = null
 

@@ -4,6 +4,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:orientation="vertical"
+	android:paddingTop="12dp"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content">
 
@@ -16,16 +17,21 @@
 		android:scrollbars="vertical"
 		tools:listitem="@layout/item_caegory_checkable" />
 
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="?android:listDivider" />
+
 	<TextView
 		android:id="@+id/textView_add"
 		android:layout_width="match_parent"
-		android:layout_height="?listPreferredItemHeightSmall"
-		android:background="?selectableItemBackground"
+		android:layout_height="?android:listPreferredItemHeightSmall"
+		android:background="?android:selectableItemBackground"
 		android:gravity="start|center_vertical"
-		android:paddingStart="?listPreferredItemPaddingStart"
-		android:paddingEnd="?listPreferredItemPaddingEnd"
+		android:paddingStart="?android:listPreferredItemPaddingStart"
+		android:paddingEnd="?android:listPreferredItemPaddingEnd"
 		android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
 		android:textColor="?android:textColorPrimary"
-		android:text="" />
+		android:text="@string/add_new_category" />
 
 </LinearLayout>

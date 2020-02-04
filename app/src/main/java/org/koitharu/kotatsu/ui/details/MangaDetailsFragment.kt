@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.ui.common.BaseFragment
+import org.koitharu.kotatsu.ui.main.list.favourites.categories.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.setChips
 import kotlin.math.roundToInt
@@ -39,6 +40,9 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 				iconRes = R.drawable.ic_chip_tag,
 				tag = it
 			)
+		}
+		imageView_favourite.setOnClickListener {
+			FavouriteCategoriesDialog.show(childFragmentManager, manga)
 		}
 		updateReadButton()
 	}
