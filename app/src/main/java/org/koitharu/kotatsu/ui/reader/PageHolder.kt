@@ -23,23 +23,23 @@ class PageHolder(parent: ViewGroup, private val loader: PageLoader) : BaseViewHo
 
 	override fun onBind(data: MangaPage, extra: Unit) {
 		layout_error.isVisible = false
-		progressBar.show()
+		progressBar.isVisible = true
 		ssiv.recycle()
 		loader.load(data.url) {
 			ssiv.setImage(ImageSource.uri(it.toUri()))
 		}
 	}
 
-	override fun onReady() {
-		progressBar.hide()
-	}
+	override fun onReady() = Unit
 
 	override fun onImageLoadError(e: Exception) {
 		textView_error.text = e.getDisplayMessage(context.resources)
 		layout_error.isVisible = true
 	}
 
-	override fun onImageLoaded() = Unit
+	override fun onImageLoaded() {
+		progressBar.isVisible = false
+	}
 
 	override fun onTileLoadError(e: Exception?) = Unit
 

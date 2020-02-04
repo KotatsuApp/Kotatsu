@@ -76,7 +76,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView {
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.action_chapters -> {
-			ChaptersDialog.show(supportFragmentManager, state.manga.chapters.orEmpty())
+			ChaptersDialog.show(supportFragmentManager, state.manga.chapters.orEmpty(), state.chapterId)
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
@@ -99,9 +99,15 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView {
 		}
 	}
 
-	override fun onFullscreenModeChanged(isFullscreen: Boolean) {
-		appbar_top.isGone = isFullscreen
-		appbar_bottom.isGone = isFullscreen
+	private fun onTapCenter() {
+		if (appbar_top.isVisible) {
+			appbar_top.isGone = false
+			appbar_bottom.isGone = false
+		} else {
+			appbar_top.isGone = true
+			appbar_bottom.isGone = true
+			showSystemUI()
+		}
 	}
 
 	companion object {

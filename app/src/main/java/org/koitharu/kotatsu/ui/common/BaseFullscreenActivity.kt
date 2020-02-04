@@ -1,13 +1,8 @@
 package org.koitharu.kotatsu.ui.common
 
-import android.os.Bundle
 import android.view.View
 
 abstract class BaseFullscreenActivity : BaseActivity() {
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-	}
 
 	override fun onWindowFocusChanged(hasFocus: Boolean) {
 		super.onWindowFocusChanged(hasFocus)
@@ -28,6 +23,4 @@ abstract class BaseFullscreenActivity : BaseActivity() {
 				or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 				or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 	}
-
-	abstract fun onFullscreenModeChanged(isFullscreen: Boolean)
 }

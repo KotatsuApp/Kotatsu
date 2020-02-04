@@ -16,7 +16,8 @@ class ChaptersAdapter(onItemClickListener: OnRecyclerItemClickListener<MangaChap
 			updateCurrentPosition()
 		}
 
-	private var currentChapterPosition = RecyclerView.NO_POSITION
+	var currentChapterPosition = RecyclerView.NO_POSITION
+		private set
 
 	override fun onCreateViewHolder(parent: ViewGroup) = ChapterHolder(parent)
 
