@@ -13,10 +13,10 @@ abstract class HistoryDao {
      */
     @Transaction
     @Query("SELECT * FROM history ORDER BY :orderBy LIMIT :limit OFFSET :offset")
-    abstract suspend fun getAll(offset: Int, limit: Int, orderBy: String): List<HistoryWithManga>
+    abstract suspend fun findAll(offset: Int, limit: Int, orderBy: String): List<HistoryWithManga>
 
     @Query("SELECT * FROM history WHERE manga_id = :id")
-    abstract suspend fun getOneOrNull(id: Long): HistoryEntity?
+    abstract suspend fun find(id: Long): HistoryEntity?
 
     @Query("DELETE FROM history")
     abstract suspend fun clear()

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -16,9 +17,10 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
+import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ext.showDialog
 
-class ReaderActivity : BaseFullscreenActivity(), ReaderView {
+class ReaderActivity : BaseFullscreenActivity(), ReaderView, GridTouchHelper.OnGridTouchListener {
 
 	private val presenter by moxyPresenter { ReaderPresenter() }
 
@@ -26,11 +28,13 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView {
 
 	private lateinit var loader: PageLoader
 	private lateinit var adapter: PagesAdapter
+	private lateinit var touchHelper: GridTouchHelper
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_reader)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		touchHelper = GridTouchHelper(this, this)
 		toolbar_bottom.inflateMenu(R.menu.opt_reader_bottom)
 
 		state = savedInstanceState?.getParcelable(EXTRA_STATE)
@@ -76,7 +80,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView {
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.action_chapters -> {
-			ChaptersDialog.show(supportFragmentManager, state.manga.chapters.orEmpty(), state.chapterId)
+			ChaptersDialog.show(
+				supportFragmentManager,
+				state.manga.chapters.orEmpty(),
+				state.chapterId
+			)
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
@@ -99,15 +107,41 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView {
 		}
 	}
 
-	private fun onTapCenter() {
-		if (appbar_top.isVisible) {
-			appbar_top.isGone = false
-			appbar_bottom.isGone = false
-		} else {
-			appbar_top.isGone = true
-			appbar_bottom.isGone = true
-			showSystemUI()
+	override fun onSystemUiShown() {
+		appbar_top.isGone = true
+		appbar_bottom.isGone = true
+	}
+
+	override fun onSystemUiHidden() {
+		appbar_top.isGone = false
+		appbar_bottom.isGone = false
+	}
+
+	override fun onGridTouch(area: Int) {
+		when (area) {
+			GridTouchHelper.AREA_CENTER -> {
+				if (appbar_top.isVisible) {
+					appbar_top.isVisible = false
+					appbar_bottom.isVisible = false
+				} else {
+					appbar_top.isVisible = true
+					appbar_bottom.isVisible = true
+				}
+			}
+			GridTouchHelper.AREA_TOP,
+			GridTouchHelper.AREA_LEFT -> {
+				pager.setCurrentItem(pager.currentItem - 1, true)
+			}
+			GridTouchHelper.AREA_BOTTOM,
+			GridTouchHelper.AREA_RIGHT -> {
+				pager.setCurrentItem(pager.currentItem + 1, true)
+			}
 		}
+	}
+
+	override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+		touchHelper.dispatchTouchEvent(ev)
+		return super.dispatchTouchEvent(ev)
 	}
 
 	companion object {

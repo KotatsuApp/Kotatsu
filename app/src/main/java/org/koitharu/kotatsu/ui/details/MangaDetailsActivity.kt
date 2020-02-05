@@ -12,11 +12,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 
 	val presenter by moxyPresenter(factory = ::MangaDetailsPresenter)
+
+	private var manga: Manga? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -30,6 +33,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 	}
 
 	override fun onMangaUpdated(manga: Manga) {
+		this.manga = manga
 		title = manga.title
 	}
 
@@ -47,7 +51,10 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_favourite -> {
+		R.id.action_share -> {
+			manga?.let {
+				ShareHelper.shareMangaLink(this, it)
+			}
 			true
 		}
 		else -> super.onOptionsItemSelected(item)

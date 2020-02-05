@@ -30,4 +30,8 @@
 	<string name="add_new_category">Add new category</string>
 	<string name="add">Add</string>
 	<string name="enter_category_name">Enter category name</string>
+	<string name="save">Save</string>
+	<string name="share">Share</string>
+	<string name="create_shortcut">Create shortcut…</string>
+	<string name="share_s">Share %s</string>
 </resources>
