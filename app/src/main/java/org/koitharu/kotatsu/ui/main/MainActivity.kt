@@ -57,7 +57,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return drawerToggle.onOptionsItemSelected(item) || when(item.itemId) {
-
 			else -> super.onOptionsItemSelected(item)
 		}
 	}

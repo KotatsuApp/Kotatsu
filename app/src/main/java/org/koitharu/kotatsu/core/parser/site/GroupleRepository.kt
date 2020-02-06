@@ -25,13 +25,11 @@ abstract class GroupleRepository(
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
-		val url = if (tag == null) {
-			"https://$domain/list?sortType=${getSortKey(sortOrder)}&offset=$offset"
-		} else {
-			"https://$domain/list/genre/${tag.key}?sortType=${getSortKey(sortOrder)}&offset=$offset"
-		}
-		val doc = loaderContext.get(url)
-			.parseHtml()
+		val doc = when {
+			!query.isNullOrEmpty() -> loaderContext.post("https://$domain/search", mapOf("q" to query))
+			tag == null -> loaderContext.get("https://$domain/list?sortType=${getSortKey(sortOrder)}&offset=$offset")
+			else -> loaderContext.get( "https://$domain/list/genre/${tag.key}?sortType=${getSortKey(sortOrder)}&offset=$offset")
+		}.parseHtml()
 		val root = doc.body().getElementById("mangaBox")
 			?.selectFirst("div.tiles.row") ?: throw ParseException("Cannot find root")
 		return root.select("div.tile").mapNotNull { node ->

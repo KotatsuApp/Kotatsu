@@ -35,4 +35,6 @@
 	<string name="create_shortcut">Create shortcut…</string>
 	<string name="share_s">Share %s</string>
 	<string name="search">Search</string>
+    <string name="search_manga">Search manga</string>
+	<string name="search_results">Search results</string>
 </resources>

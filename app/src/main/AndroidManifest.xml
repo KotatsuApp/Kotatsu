@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.koitharu.kotatsu">
 
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -16,12 +17,22 @@
 		<activity android:name=".ui.main.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
-
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+			<meta-data
+				android:name="android.app.default_searchable"
+				android:value=".ui.search.SearchActivity" />
 		</activity>
 		<activity android:name=".ui.details.MangaDetailsActivity" />
 		<activity android:name=".ui.reader.ReaderActivity" />
+		<activity android:name=".ui.search.SearchActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+			</intent-filter>
+			<meta-data
+				android:name="android.app.searchable"
+				android:resource="@xml/search" />
+		</activity>
 	</application>
 
 </manifest>
