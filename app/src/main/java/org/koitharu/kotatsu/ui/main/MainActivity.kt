@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.ui.main
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.ui.main.list.favourites.FavouritesListFragment
 import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
 import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
+import org.koitharu.kotatsu.utils.SearchHelper
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -47,8 +49,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		drawerToggle.onConfigurationChanged(newConfig)
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		menuInflater.inflate(R.menu.opt_main, menu)
+		menu?.findItem(R.id.action_search)?.let(SearchHelper::setupSearchView)
+		return super.onCreateOptionsMenu(menu)
+	}
+
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)
+		return drawerToggle.onOptionsItemSelected(item) || when(item.itemId) {
+
+			else -> super.onOptionsItemSelected(item)
+		}
 	}
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean {
