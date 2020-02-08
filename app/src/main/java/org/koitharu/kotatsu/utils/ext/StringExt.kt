@@ -33,3 +33,28 @@ fun String.removeSurrounding(vararg chars: Char): String {
 	}
 	return this
 }
+
+fun String.transliterate(skipMissing: Boolean): String {
+	val cyr = charArrayOf(
+		'a', 'б', 'в', 'г', 'д', 'ё', 'ж', 'з', 'и', 'к', 'л', 'м', 'н',
+		'п', 'р', 'с', 'т', 'у', 'ў', 'ф', 'х', 'ц', 'ш', 'щ', 'ы', 'э', 'ю', 'я'
+	)
+	val lat = arrayOf(
+		"a", "b", "v", "g", "d", "jo", "zh", "z", "i", "k", "l", "m", "n",
+		"p", "r", "s", "t", "u", "w", "f", "h", "ts", "sh", "sch", "", "e", "ju", "ja"
+	)
+	return buildString(length + 5) {
+		for (c in this@transliterate) {
+			val p = cyr.binarySearch(c)
+			if (p in lat.indices) {
+				append(lat[p])
+			} else if (!skipMissing) {
+				append(c)
+			}
+		}
+	}
+}
+
+fun String.toFileName() = this.transliterate(false)
+	.replace(Regex("[^a-z0-9_\\-]", setOf(RegexOption.IGNORE_CASE)), " ")
+	.replace(Regex("\\s+"), "_")

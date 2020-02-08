@@ -3,12 +3,15 @@ package org.koitharu.kotatsu.utils.ext
 import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.annotation.MenuRes
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isGone
 import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.GridLayoutManager
@@ -96,4 +99,11 @@ fun View.disableFor(timeInMillis: Long) {
 	postDelayed(timeInMillis) {
 		isEnabled = true
 	}
+}
+
+fun View.showPopupMenu(@MenuRes menuRes: Int, onItemClick: (MenuItem) -> Boolean) {
+	val menu = PopupMenu(context, this)
+	menu.inflate(menuRes)
+	menu.setOnMenuItemClickListener(onItemClick)
+	menu.show()
 }

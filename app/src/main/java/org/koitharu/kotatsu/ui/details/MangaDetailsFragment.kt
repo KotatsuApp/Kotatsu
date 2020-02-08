@@ -26,7 +26,7 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 		this.manga = manga
 		imageView_cover.load(manga.largeCoverUrl ?: manga.coverUrl)
 		textView_title.text = manga.title
-		textView_subtitle.text = manga.localizedTitle
+		textView_subtitle.text = manga.altTitle
 		textView_description.text = manga.description?.parseAsHtml()
 		if (manga.rating == Manga.NO_RATING) {
 			ratingBar.isVisible = false

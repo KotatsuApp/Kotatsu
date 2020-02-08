@@ -13,7 +13,9 @@ import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.download.DownloadService
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
+import org.koitharu.kotatsu.utils.ext.showPopupMenu
 
 class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsView,
 	OnRecyclerItemClickListener<MangaChapter> {
@@ -62,5 +64,22 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 				item.id
 			)
 		)
+	}
+
+	override fun onItemLongClick(item: MangaChapter, position: Int, view: View): Boolean {
+		view.showPopupMenu(R.menu.popup_chapter) {
+			val ctx = context ?: return@showPopupMenu false
+			val m = manga ?: return@showPopupMenu false
+			when (it.itemId) {
+				R.id.action_save_this -> DownloadService.start(ctx, m, setOf(item.id))
+				R.id.action_save_this_next -> DownloadService.start(ctx, m, m.chapters.orEmpty()
+					.filter { x -> x.number >= item.number }.map { x -> x.id })
+				R.id.action_save_this_prev -> DownloadService.start(ctx, m, m.chapters.orEmpty()
+					.filter { x -> x.number <= item.number }.map { x -> x.id })
+				else -> return@showPopupMenu false
+			}
+			true
+		}
+		return true
 	}
 }

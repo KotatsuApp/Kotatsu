@@ -13,12 +13,11 @@ data class MangaEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val id: Long,
 	@ColumnInfo(name = "title") val title: String,
-	@ColumnInfo(name = "localized_title") val localizedTitle: String? = null,
+	@ColumnInfo(name = "alt_title") val altTitle: String? = null,
 	@ColumnInfo(name = "url") val url: String,
 	@ColumnInfo(name = "rating") val rating: Float = Manga.NO_RATING, //normalized value [0..1] or -1
 	@ColumnInfo(name = "cover_url") val coverUrl: String,
 	@ColumnInfo(name = "large_cover_url") val largeCoverUrl: String? = null,
-	@ColumnInfo(name = "summary") val summary: String,
 	@ColumnInfo(name = "state") val state: String? = null,
 	@ColumnInfo(name = "source") val source: String
 ) {
@@ -26,8 +25,7 @@ data class MangaEntity(
 	fun toManga(tags: Set<MangaTag> = emptySet()) = Manga(
 		id = this.id,
 		title = this.title,
-		localizedTitle = this.localizedTitle,
-		summary = this.summary,
+		altTitle = this.altTitle,
 		state = this.state?.let { MangaState.valueOf(it) },
 		rating = this.rating,
 		url = this.url,
@@ -45,10 +43,9 @@ data class MangaEntity(
 			source = manga.source.name,
 			largeCoverUrl = manga.largeCoverUrl,
 			coverUrl = manga.coverUrl,
-			localizedTitle = manga.localizedTitle,
+			altTitle = manga.altTitle,
 			rating = manga.rating,
 			state = manga.state?.name,
-			summary = manga.summary,
 //			tags = manga.tags.map(TagEntity.Companion::fromMangaTag),
 			title = manga.title
 		)

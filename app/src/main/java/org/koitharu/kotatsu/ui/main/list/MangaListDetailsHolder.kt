@@ -21,7 +21,7 @@ class MangaListDetailsHolder(parent: ViewGroup) : BaseViewHolder<Manga, MangaHis
 	override fun onBind(data: Manga, extra: MangaHistory?) {
 		coverRequest?.dispose()
 		textView_title.text = data.title
-		textView_subtitle.textAndVisible = data.localizedTitle
+		textView_subtitle.textAndVisible = data.altTitle
 		coverRequest = imageView_cover.load(data.coverUrl) {
 			crossfade(true)
 		}

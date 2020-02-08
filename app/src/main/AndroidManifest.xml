@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.koitharu.kotatsu">
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
 
 	<application
 		android:name="org.koitharu.kotatsu.KotatsuApp"
@@ -33,6 +34,8 @@
 				android:name="android.app.searchable"
 				android:resource="@xml/search" />
 		</activity>
+
+		<service android:name=".ui.download.DownloadService" />
 	</application>
 
 </manifest>

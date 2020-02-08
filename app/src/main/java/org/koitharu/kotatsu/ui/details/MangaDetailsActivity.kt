@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.download.DownloadService
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
@@ -54,6 +55,12 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		R.id.action_share -> {
 			manga?.let {
 				ShareHelper.shareMangaLink(this, it)
+			}
+			true
+		}
+		R.id.action_save -> {
+			manga?.let {
+				DownloadService.start(this, it)
 			}
 			true
 		}

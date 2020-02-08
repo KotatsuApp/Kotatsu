@@ -42,10 +42,9 @@ abstract class GroupleRepository(
 			Manga(
 				id = href.longHashCode(),
 				url = href,
-				localizedTitle = title,
-				title = descDiv.selectFirst("h4")?.text() ?: title,
+				title = title,
+				altTitle = descDiv.selectFirst("h4")?.text(),
 				coverUrl = imgDiv.selectFirst("img.lazy")?.attr("data-original").orEmpty(),
-				summary = "",
 				rating = safe {
 					node.selectFirst("div.rating")
 						?.attr("title")

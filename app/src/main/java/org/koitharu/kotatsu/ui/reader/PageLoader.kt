@@ -6,8 +6,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.utils.ext.await
-import org.koitharu.kotatsu.utils.ext.longHashCode
 import java.io.File
 import kotlin.coroutines.CoroutineContext
 
@@ -16,13 +16,7 @@ class PageLoader(context: Context) : KoinComponent, CoroutineScope, DisposableHa
 	private val job = SupervisorJob()
 	private val tasks = HashMap<String, Job>()
 	private val okHttp by inject<OkHttpClient>()
-	private val cacheDir = File(context.externalCacheDir ?: context.cacheDir, "pages")
-
-	init {
-		if (!cacheDir.exists()) {
-			cacheDir.mkdir()
-		}
-	}
+	private val cache by inject<PagesCache>()
 
 	override val coroutineContext: CoroutineContext
 		get() = Dispatchers.Main + job
@@ -35,19 +29,20 @@ class PageLoader(context: Context) : KoinComponent, CoroutineScope, DisposableHa
 	}
 
 	private suspend fun loadFile(url: String, force: Boolean): File {
-		val file = File(cacheDir, url.longHashCode().toString())
-		if (!force && file.exists()) {
-			return file
+		if (!force) {
+			cache[url]?.let {
+
+				return it
+			}
 		}
 		val request = Request.Builder()
 			.url(url)
 			.get()
 			.build()
-		okHttp.newCall(request).await().use { response ->
-			file.outputStream().use { out ->
+		return okHttp.newCall(request).await().use { response ->
+			cache.put(url) { out ->
 				response.body!!.byteStream().copyTo(out)
 			}
-			return file
 		}
 	}
 
