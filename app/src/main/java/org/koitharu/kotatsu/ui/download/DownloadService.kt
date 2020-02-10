@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.ui.download
 
 import android.content.Context
 import android.content.Intent
+import android.webkit.MimeTypeMap
 import androidx.core.content.ContextCompat
 import coil.Coil
 import coil.api.get
@@ -65,8 +66,9 @@ class DownloadService : BaseService() {
 				val data = if (manga.chapters == null) repo.getDetails(manga) else manga
 				output = MangaZip.findInDir(destination, data)
 				output.prepare(data)
-				downloadPage(data.largeCoverUrl ?: data.coverUrl, destination).let {  file ->
-					output.addCover(file)
+				val coverUrl = data.largeCoverUrl ?: data.coverUrl
+				downloadPage(coverUrl, destination).let { file ->
+					output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
 				}
 				val chapters = if (chaptersIds == null) {
 					data.chapters.orEmpty()
@@ -79,7 +81,12 @@ class DownloadService : BaseService() {
 						for ((pageIndex, page) in pages.withIndex()) {
 							val url = repo.getPageFullUrl(page)
 							val file = cache[url] ?: downloadPage(url, destination)
-							output.addPage(page, chapter, file, pageIndex)
+							output.addPage(
+								chapter,
+								file,
+								pageIndex,
+								MimeTypeMap.getFileExtensionFromUrl(url)
+							)
 							withContext(Dispatchers.Main) {
 								notification.setProgress(
 									chapters.size,

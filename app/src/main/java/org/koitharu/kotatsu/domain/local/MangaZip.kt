@@ -1,12 +1,8 @@
 package org.koitharu.kotatsu.domain.local
 
 import androidx.annotation.WorkerThread
-import org.json.JSONArray
-import org.json.JSONObject
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.utils.ext.sub
 import org.koitharu.kotatsu.utils.ext.takeIfReadable
 import org.koitharu.kotatsu.utils.ext.toFileName
@@ -21,32 +17,11 @@ class MangaZip(private val file: File) {
 	private val dir = file.parentFile?.sub(file.name + ".dir")?.takeIf { it.mkdir() }
 		?: throw RuntimeException("Cannot create temporary directory")
 
-	private lateinit var index: JSONObject
+	private val index = MangaIndex(dir.sub(INDEX_ENTRY).takeIfReadable()?.readText())
 
 	fun prepare(manga: Manga) {
 		extract()
-		index = dir.sub("index.json").takeIfReadable()?.readText()?.let { JSONObject(it) } ?: JSONObject()
-
-		index.put("id", manga.id)
-		index.put("title", manga.title)
-		index.put("title_alt", manga.altTitle)
-		index.put("url", manga.url)
-		index.put("cover", manga.coverUrl)
-		index.put("description", manga.description)
-		index.put("rating", manga.rating)
-		index.put("source", manga.source.name)
-		index.put("cover_large", manga.largeCoverUrl)
-		index.put("tags", JSONArray().also { a ->
-			for (tag in manga.tags) {
-				val jo = JSONObject()
-				jo.put("key", tag.key)
-				jo.put("title", tag.title)
-				a.put(jo)
-			}
-		})
-		index.put("chapters", JSONObject())
-		index.put("app_id", BuildConfig.APPLICATION_ID)
-		index.put("app_version", BuildConfig.VERSION_CODE)
+		index.setMangaInfo(manga)
 	}
 
 	fun cleanup() {
@@ -54,7 +29,7 @@ class MangaZip(private val file: File) {
 	}
 
 	fun compress() {
-		dir.sub("index.json").writeText(index.toString(4))
+		dir.sub(INDEX_ENTRY).writeText(index.toString())
 		ZipOutputStream(file.outputStream()).use { out ->
 			for (file in dir.listFiles().orEmpty()) {
 				val entry = ZipEntry(file.name)
@@ -72,10 +47,10 @@ class MangaZip(private val file: File) {
 			return
 		}
 		ZipInputStream(file.inputStream()).use { input ->
-			while(true) {
+			while (true) {
 				val entry = input.nextEntry ?: return
 				if (!entry.isDirectory) {
-					dir.sub(entry.name).outputStream().use { out->
+					dir.sub(entry.name).outputStream().use { out ->
 						input.copyTo(out)
 					}
 				}
@@ -84,27 +59,35 @@ class MangaZip(private val file: File) {
 		}
 	}
 
-	fun addCover(file: File) {
-		val name = FILENAME_PATTERN.format(0, 0)
+	fun addCover(file: File, ext: String) {
+		val name = buildString {
+			append(FILENAME_PATTERN.format(0, 0))
+			if (ext.isNotEmpty() && ext.length <= 4) {
+				append('.')
+				append(ext)
+			}
+		}
 		file.copyTo(dir.sub(name), overwrite = true)
+		index.setCoverEntry(name)
 	}
 
-	fun addPage(page: MangaPage, chapter: MangaChapter, file: File, pageNumber: Int) {
-		val name = FILENAME_PATTERN.format(chapter.number, pageNumber)
-		file.copyTo(dir.sub(name), overwrite = true)
-		val chapters = index.getJSONObject("chapters")
-		if (!chapters.has(chapter.number.toString())) {
-			val jo = JSONObject()
-			jo.put("id", chapter.id)
-			jo.put("url", chapter.url)
-			jo.put("name", chapter.name)
-			chapters.put(chapter.number.toString(), jo)
+	fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) {
+		val name = buildString {
+			append(FILENAME_PATTERN.format(chapter.number, pageNumber))
+			if (ext.isNotEmpty() && ext.length <= 4) {
+				append('.')
+				append(ext)
+			}
 		}
+		file.copyTo(dir.sub(name), overwrite = true)
+		index.addChapter(chapter)
 	}
 
 	companion object {
 
 		private const val FILENAME_PATTERN = "%03d%03d"
+
+		const val INDEX_ENTRY = "index.json"
 
 		fun findInDir(root: File, manga: Manga): MangaZip {
 			val name = manga.title.toFileName() + ".cbz"

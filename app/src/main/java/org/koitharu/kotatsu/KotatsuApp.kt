@@ -2,6 +2,9 @@ package org.koitharu.kotatsu
 
 import android.app.Application
 import androidx.room.Room
+import coil.Coil
+import coil.ImageLoader
+import coil.util.CoilUtils
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -18,6 +21,7 @@ class KotatsuApp : Application() {
 	override fun onCreate() {
 		super.onCreate()
 		initKoin()
+		initCoil()
 	}
 
 	private fun initKoin() {
@@ -48,6 +52,16 @@ class KotatsuApp : Application() {
 				}
 			))
 		}
+	}
+
+	private fun initCoil() {
+		Coil.setDefaultImageLoader(ImageLoader(applicationContext) {
+			okHttpClient {
+				okHttp()
+					.cache(CoilUtils.createDefaultCache(applicationContext))
+					.build()
+			}
+		})
 	}
 
 	private fun okHttp() = OkHttpClient.Builder()

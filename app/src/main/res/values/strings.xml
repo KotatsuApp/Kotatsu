@@ -45,4 +45,5 @@
 	<string name="save_this_chapter_and_prev">Save this chapter and prev.</string>
 	<string name="save_this_chapter_and_next">Save this chapter and next</string>
 	<string name="save_this_chapter">Save this chapter</string>
+	<string name="no_saved_manga">No saved manga</string>
 </resources>

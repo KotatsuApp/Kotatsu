@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.ui.main.list.favourites.FavouritesListFragment
 import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
+import org.koitharu.kotatsu.ui.main.list.local.LocalListFragment
 import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
 import org.koitharu.kotatsu.utils.SearchHelper
 
@@ -33,15 +34,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		navigationView.setNavigationItemSelectedListener(this)
 
 		if (!supportFragmentManager.isStateSaved) {
-			navigationView.setCheckedItem(R.id.nav_history)
-			setPrimaryFragment(HistoryListFragment.newInstance())
+			navigationView.setCheckedItem(R.id.nav_local_storage)
+			setPrimaryFragment(LocalListFragment.newInstance())
 		}
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
 		drawerToggle.syncState()
-		initSideMenu(MangaSource.values().asList())
+		initSideMenu(MangaSource.values().asList() - MangaSource.LOCAL)
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) {
@@ -56,7 +57,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return drawerToggle.onOptionsItemSelected(item) || when(item.itemId) {
+		return drawerToggle.onOptionsItemSelected(item) || when (item.itemId) {
 			else -> super.onOptionsItemSelected(item)
 		}
 	}
@@ -68,7 +69,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		} else when (item.itemId) {
 			R.id.nav_history -> setPrimaryFragment(HistoryListFragment.newInstance())
 			R.id.nav_favourites -> setPrimaryFragment(FavouritesListFragment.newInstance())
-			R.id.nav_local_storage -> Unit
+			R.id.nav_local_storage -> setPrimaryFragment(LocalListFragment.newInstance())
 			else -> return false
 		}
 		drawer.closeDrawers()
