@@ -11,7 +11,8 @@ import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class PageHolder(parent: ViewGroup, private val loader: PageLoader) : BaseViewHolder<MangaPage, Unit>(parent, R.layout.item_page),
+class PageHolder(parent: ViewGroup, private val loader: PageLoader) :
+	BaseViewHolder<MangaPage, Unit>(parent, R.layout.item_page),
 	SubsamplingScaleImageView.OnImageEventListener {
 
 	init {
@@ -26,16 +27,20 @@ class PageHolder(parent: ViewGroup, private val loader: PageLoader) : BaseViewHo
 		progressBar.isVisible = true
 		ssiv.recycle()
 		loader.load(data.url) {
-			ssiv.setImage(ImageSource.uri(it.toUri()))
+			val uri = it.getOrNull()?.toUri()
+			if (uri != null) {
+				ssiv.setImage(ImageSource.uri(uri))
+			}
+			val error = it.exceptionOrNull()
+			if (error != null) {
+				onError(error)
+			}
 		}
 	}
 
 	override fun onReady() = Unit
 
-	override fun onImageLoadError(e: Exception) {
-		textView_error.text = e.getDisplayMessage(context.resources)
-		layout_error.isVisible = true
-	}
+	override fun onImageLoadError(e: Exception) = onError(e)
 
 	override fun onImageLoaded() {
 		progressBar.isVisible = false
@@ -46,4 +51,10 @@ class PageHolder(parent: ViewGroup, private val loader: PageLoader) : BaseViewHo
 	override fun onPreviewReleased() = Unit
 
 	override fun onPreviewLoadError(e: Exception?) = Unit
+
+	private fun onError(e: Throwable) {
+		textView_error.text = e.getDisplayMessage(context.resources)
+		layout_error.isVisible = true
+		progressBar.isVisible = false
+	}
 }

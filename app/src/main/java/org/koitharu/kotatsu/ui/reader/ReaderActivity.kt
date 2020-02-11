@@ -56,7 +56,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, GridTouchHelper.OnG
 			insets
 		}
 
-		loader = PageLoader(this)
+		loader = PageLoader()
 		adapter = PagesAdapter(loader)
 		pager.adapter = adapter
 		presenter.loadChapter(state)

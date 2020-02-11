@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.domain.local.MangaIndex
 import org.koitharu.kotatsu.domain.local.MangaZip
+import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.safe
@@ -43,7 +44,7 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 				.filter { x -> !x.isDirectory && x.name.substringBefore('.').matches(pattern) }
 		} else {
 			zip.entries().asSequence().filter { x -> !x.isDirectory }
-		}
+		}.toList().sortedWith(compareBy(AlphanumComparator()) { x -> x.name})
 		return entries.map { x ->
 			val uri = zipUri(file, x.name)
 			MangaPage(
@@ -51,7 +52,7 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 				url = uri,
 				source = MangaSource.LOCAL
 			)
-		}.toList()
+		}
 	}
 
 	private fun getDetails(file: File): Manga {
