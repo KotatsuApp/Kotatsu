@@ -11,6 +11,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.local.CbzFetcher
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
@@ -60,6 +61,9 @@ class KotatsuApp : Application() {
 				okHttp()
 					.cache(CoilUtils.createDefaultCache(applicationContext))
 					.build()
+			}
+			componentRegistry {
+				add(CbzFetcher())
 			}
 		})
 	}

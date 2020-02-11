@@ -69,7 +69,7 @@ class MangaIndex(source: String?) {
 			jo.put("url", chapter.url)
 			jo.put("name", chapter.name)
 			jo.put("entries", "%03d\\d{3}".format(chapter.number))
-			chapters.put(chapter.number.toString(), jo)
+			chapters.put(chapter.id.toString(), jo)
 		}
 	}
 

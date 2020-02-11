@@ -90,5 +90,5 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 	}
 
 	private fun zipUri(file: File, entryName: String) =
-		Uri.fromParts("zip", file.path, entryName).toString()
+		Uri.fromParts("cbz", file.path, entryName).toString()
 }
