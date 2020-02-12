@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_details.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -43,6 +44,8 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 	}
 
 	override fun onHistoryChanged(history: MangaHistory?) = Unit
+
+	override fun onFavouriteChanged(categories: List<FavouriteCategory>) = Unit
 
 	override fun onLoadingStateChanged(isLoading: Boolean) = Unit
 

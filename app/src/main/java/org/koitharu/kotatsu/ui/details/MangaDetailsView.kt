@@ -4,6 +4,7 @@ import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.StateStrategyType
+import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 
@@ -20,4 +21,7 @@ interface MangaDetailsView : MvpView {
 
 	@StateStrategyType(AddToEndSingleStrategy::class)
 	fun onHistoryChanged(history: MangaHistory?)
+
+	@StateStrategyType(AddToEndSingleStrategy::class)
+	fun onFavouriteChanged(categories: List<FavouriteCategory>)
 }

@@ -6,6 +6,7 @@ import coil.api.load
 import kotlinx.android.synthetic.main.fragment_details.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.ui.common.BaseFragment
@@ -50,6 +51,16 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 	override fun onHistoryChanged(history: MangaHistory?) {
 		this.history = history
 		updateReadButton()
+	}
+
+	override fun onFavouriteChanged(categories: List<FavouriteCategory>) {
+		imageView_favourite.setImageResource(
+			if (categories.isEmpty()) {
+				R.drawable.ic_tag_heart_outline
+			} else {
+				R.drawable.ic_tag_heart
+			}
+		)
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {

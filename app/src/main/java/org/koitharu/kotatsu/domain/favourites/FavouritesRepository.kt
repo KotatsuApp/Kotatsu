@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.domain.favourites
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -9,6 +11,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
+import java.util.*
 
 class FavouritesRepository : KoinComponent {
 
@@ -49,9 +52,30 @@ class FavouritesRepository : KoinComponent {
 		db.mangaDao().upsert(MangaEntity.from(manga), tags)
 		val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
 		db.favouritesDao().add(entity)
+		notifyFavouritesChanged(manga.id)
 	}
 
 	suspend fun removeFromCategory(manga: Manga, categoryId: Long) {
 		db.favouritesDao().delete(categoryId, manga.id)
+		notifyFavouritesChanged(manga.id)
+	}
+
+	companion object {
+
+		private val listeners = HashSet<OnFavouritesChangeListener>()
+
+		fun subscribe(listener: OnFavouritesChangeListener) {
+			listeners += listener
+		}
+
+		fun unsubscribe(listener: OnFavouritesChangeListener) {
+			listeners += listener
+		}
+
+		private suspend fun notifyFavouritesChanged(mangaId: Long) {
+			withContext(Dispatchers.Main) {
+				listeners.forEach { x -> x.onFavouritesChanged(mangaId) }
+			}
+		}
 	}
 }

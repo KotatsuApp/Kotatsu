@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.widget.Button
 import android.widget.Toast
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import kotlinx.android.synthetic.main.activity_reader.*
@@ -18,6 +18,8 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
+import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
+import org.koitharu.kotatsu.utils.ext.hitTest
 import org.koitharu.kotatsu.utils.ext.showDialog
 
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, GridTouchHelper.OnGridTouchListener {
@@ -107,25 +109,17 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, GridTouchHelper.OnG
 		}
 	}
 
-	override fun onSystemUiShown() {
-		appbar_top.isGone = true
-		appbar_bottom.isGone = true
-	}
-
-	override fun onSystemUiHidden() {
-		appbar_top.isGone = false
-		appbar_bottom.isGone = false
-	}
-
 	override fun onGridTouch(area: Int) {
 		when (area) {
 			GridTouchHelper.AREA_CENTER -> {
 				if (appbar_top.isVisible) {
 					appbar_top.isVisible = false
 					appbar_bottom.isVisible = false
+					hideSystemUI()
 				} else {
 					appbar_top.isVisible = true
 					appbar_bottom.isVisible = true
+					showSystemUI()
 				}
 			}
 			GridTouchHelper.AREA_TOP,
@@ -136,6 +130,15 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, GridTouchHelper.OnG
 			GridTouchHelper.AREA_RIGHT -> {
 				pager.setCurrentItem(pager.currentItem + 1, true)
 			}
+		}
+	}
+
+	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
+		return if (appbar_top.hasGlobalPoint(rawX, rawY) || appbar_bottom.hasGlobalPoint(rawX, rawY)) {
+			false
+		} else {
+			val target = rootLayout.hitTest(rawX, rawY)
+			target !is Button
 		}
 	}
 

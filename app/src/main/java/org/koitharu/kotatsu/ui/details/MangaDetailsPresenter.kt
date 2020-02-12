@@ -7,21 +7,27 @@ import moxy.InjectViewState
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.MangaProviderFactory
+import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
+import org.koitharu.kotatsu.domain.favourites.OnFavouritesChangeListener
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.domain.history.OnHistoryChangeListener
 import org.koitharu.kotatsu.ui.common.BasePresenter
 
 @InjectViewState
-class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChangeListener {
+class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChangeListener,
+	OnFavouritesChangeListener {
 
 	private lateinit var historyRepository: HistoryRepository
+	private lateinit var favouritesRepository: FavouritesRepository
 
 	private var manga: Manga? = null
 
 	override fun onFirstViewAttach() {
 		historyRepository = HistoryRepository()
+		favouritesRepository = FavouritesRepository()
 		super.onFirstViewAttach()
 		HistoryRepository.subscribe(this)
+		FavouritesRepository.subscribe(this)
 	}
 
 	fun loadDetails(manga: Manga, force: Boolean = false) {
@@ -30,6 +36,7 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChange
 		}
 		loadHistory(manga)
 		viewState.onMangaUpdated(manga)
+		loadFavourite(manga)
 		launch {
 			try {
 				viewState.onLoadingStateChanged(true)
@@ -64,12 +71,34 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChange
 		}
 	}
 
+	private fun loadFavourite(manga: Manga) {
+		launch {
+			try {
+				val categories = withContext(Dispatchers.IO) {
+					favouritesRepository.getCategories(manga.id)
+				}
+				viewState.onFavouriteChanged(categories)
+			} catch (e: Exception) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
+			}
+		}
+	}
+
 	override fun onHistoryChanged() {
 		loadHistory(manga ?: return)
 	}
 
+	override fun onFavouritesChanged(mangaId: Long) {
+		if (mangaId == manga?.id) {
+			loadFavourite(manga!!)
+		}
+	}
+
 	override fun onDestroy() {
 		HistoryRepository.unsubscribe(this)
+		FavouritesRepository.unsubscribe(this)
 		super.onDestroy()
 	}
 }

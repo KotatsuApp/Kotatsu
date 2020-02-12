@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.dialog_input.view.*
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.hideKeyboard
 import org.koitharu.kotatsu.utils.ext.showKeyboard
 
 class TextInputDialog private constructor(private val delegate: AlertDialog) :
@@ -16,7 +17,11 @@ class TextInputDialog private constructor(private val delegate: AlertDialog) :
 
 	init {
 		delegate.setOnShowListener {
-			delegate.currentFocus?.showKeyboard()
+			val view = delegate.findViewById<TextView>(R.id.inputEdit)?:return@setOnShowListener
+			view.post {
+				view.requestFocus()
+				view.showKeyboard()
+			}
 		}
 	}
 
@@ -29,6 +34,10 @@ class TextInputDialog private constructor(private val delegate: AlertDialog) :
 
 		private val delegate = AlertDialog.Builder(context)
 			.setView(view)
+			.setOnDismissListener {
+				val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+				imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+			}
 
 		fun setTitle(@StringRes titleResId: Int): Builder {
 			delegate.setTitle(titleResId)
@@ -52,7 +61,6 @@ class TextInputDialog private constructor(private val delegate: AlertDialog) :
 
 		fun setPositiveButton(@StringRes textId: Int, listener: (DialogInterface, String) -> Unit): Builder {
 			delegate.setPositiveButton(textId) { dialog, _ ->
-				view.hideKeyboard()
 				listener(dialog, view.inputEdit.text?.toString().orEmpty())
 			}
 			return this

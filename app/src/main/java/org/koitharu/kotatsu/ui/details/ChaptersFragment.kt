@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_chapters.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaHistory
@@ -55,6 +56,8 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	override fun onHistoryChanged(history: MangaHistory?) {
 		adapter.currentChapterId = history?.chapterId
 	}
+
+	override fun onFavouriteChanged(categories: List<FavouriteCategory>) = Unit
 
 	override fun onItemClick(item: MangaChapter, position: Int, view: View) {
 		startActivity(

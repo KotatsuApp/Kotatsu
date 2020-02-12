@@ -3,18 +3,23 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:orientation="vertical"
-	android:paddingTop="12dp"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:paddingTop="12dp">
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="?android:listDivider" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_categories"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		android:scrollbars="vertical"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_caegory_checkable" />
 
 	<View
@@ -27,11 +32,12 @@
 		android:layout_width="match_parent"
 		android:layout_height="?android:listPreferredItemHeightSmall"
 		android:background="?android:selectableItemBackground"
+		android:drawableEnd="@drawable/ic_add"
 		android:gravity="start|center_vertical"
 		android:paddingStart="?android:listPreferredItemPaddingStart"
 		android:paddingEnd="?android:listPreferredItemPaddingEnd"
+		android:text="@string/add_new_category"
 		android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-		android:textColor="?android:textColorPrimary"
-		android:text="@string/add_new_category" />
+		android:textColor="?android:textColorPrimary" />
 
 </LinearLayout>

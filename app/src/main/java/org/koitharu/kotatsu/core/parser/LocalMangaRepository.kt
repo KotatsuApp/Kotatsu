@@ -32,7 +32,9 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 		return files.mapNotNull { x -> safe { getDetails(x) } }
 	}
 
-	override suspend fun getDetails(manga: Manga) = manga
+	override suspend fun getDetails(manga: Manga) = if (manga.chapters == null) {
+		getDetails(Uri.parse(manga.url).toFile())
+	} else manga
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val file = Uri.parse(chapter.url).toFile()
@@ -44,7 +46,7 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 				.filter { x -> !x.isDirectory && x.name.substringBefore('.').matches(pattern) }
 		} else {
 			zip.entries().asSequence().filter { x -> !x.isDirectory }
-		}.toList().sortedWith(compareBy(AlphanumComparator()) { x -> x.name})
+		}.toList().sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
 		return entries.map { x ->
 			val uri = zipUri(file, x.name)
 			MangaPage(

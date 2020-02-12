@@ -22,6 +22,9 @@ class GridTouchHelper(context: Context, private val listener: OnGridTouchListene
 	}
 
 	override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
+		if (!listener.onProcessTouch(event.rawX.toInt(), event.rawY.toInt())) {
+			return false
+		}
 		val xIndex = (event.rawX * 2f / width).roundToInt()
 		val yIndex = (event.rawY * 2f / height).roundToInt()
 		listener.onGridTouch(
@@ -54,5 +57,7 @@ class GridTouchHelper(context: Context, private val listener: OnGridTouchListene
 	interface OnGridTouchListener {
 
 		fun onGridTouch(area: Int)
+
+		fun onProcessTouch(rawX: Int, rawY: Int): Boolean
 	}
 }
