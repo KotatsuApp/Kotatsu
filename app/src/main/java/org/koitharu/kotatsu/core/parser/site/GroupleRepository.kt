@@ -15,8 +15,9 @@ abstract class GroupleRepository(
 	protected abstract val domain: String
 
 	override val sortOrders = setOf(
-		SortOrder.ALPHABETICAL, SortOrder.POPULARITY,
-		SortOrder.UPDATED, SortOrder.NEWEST, SortOrder.RATING
+		SortOrder.UPDATED, SortOrder.POPULARITY,
+		SortOrder.NEWEST, SortOrder.RATING
+		//FIXME SortOrder.ALPHABETICAL
 	)
 
 	override suspend fun getList(
@@ -26,9 +27,16 @@ abstract class GroupleRepository(
 		tag: MangaTag?
 	): List<Manga> {
 		val doc = when {
-			!query.isNullOrEmpty() -> loaderContext.post("https://$domain/search", mapOf("q" to query))
+			!query.isNullOrEmpty() -> loaderContext.post(
+				"https://$domain/search",
+				mapOf("q" to query)
+			)
 			tag == null -> loaderContext.get("https://$domain/list?sortType=${getSortKey(sortOrder)}&offset=$offset")
-			else -> loaderContext.get( "https://$domain/list/genre/${tag.key}?sortType=${getSortKey(sortOrder)}&offset=$offset")
+			else -> loaderContext.get(
+				"https://$domain/list/genre/${tag.key}?sortType=${getSortKey(
+					sortOrder
+				)}&offset=$offset"
+			)
 		}.parseHtml()
 		val root = doc.body().getElementById("mangaBox")
 			?.selectFirst("div.tiles.row") ?: throw ParseException("Cannot find root")
@@ -128,19 +136,20 @@ abstract class GroupleRepository(
 			.selectFirst("table.table")
 		return root.select("a.element-link").map { a ->
 			MangaTag(
-				title = a.text(),
+				title = a.text().capitalize(),
 				key = a.attr("href").substringAfterLast('/'),
 				source = source
 			)
 		}.toSet()
 	}
 
-	private fun getSortKey(sortOrder: SortOrder?) = when (sortOrder) {
-		SortOrder.ALPHABETICAL -> "name"
-		SortOrder.POPULARITY -> "rate"
-		SortOrder.UPDATED -> "updated"
-		SortOrder.NEWEST -> "created"
-		SortOrder.RATING -> "votes"
-		null -> "updated"
-	}
+	private fun getSortKey(sortOrder: SortOrder?) =
+		when (sortOrder ?: sortOrders.minBy { it.ordinal }) {
+			SortOrder.ALPHABETICAL -> "name"
+			SortOrder.POPULARITY -> "rate"
+			SortOrder.UPDATED -> "updated"
+			SortOrder.NEWEST -> "created"
+			SortOrder.RATING -> "votes"
+			null -> "updated"
+		}
 }

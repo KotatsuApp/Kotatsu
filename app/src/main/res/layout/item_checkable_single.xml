@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/radio"
+	android:layout_width="match_parent"
+	android:layout_height="?android:listPreferredItemHeightSmall"
+	android:background="?android:selectableItemBackground"
+	android:drawableStart="?android:listChoiceIndicatorSingle"
+	android:drawablePadding="12dp"
+	android:gravity="center_vertical|start"
+	android:paddingStart="?android:listPreferredItemPaddingStart"
+	android:paddingEnd="?android:listPreferredItemPaddingEnd"
+	tools:text="@tools:sample/full_names" />

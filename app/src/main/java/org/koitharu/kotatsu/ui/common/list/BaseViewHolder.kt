@@ -16,7 +16,7 @@ abstract class BaseViewHolder<T, E> protected constructor(view: View) :
 	override val containerView: View?
 		get() = itemView
 
-	protected var boundData: T? = null
+	var boundData: T? = null
 		private set
 
 	val context get() = itemView.context!!

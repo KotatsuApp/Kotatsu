@@ -7,7 +7,6 @@ import androidx.core.util.set
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
-import org.koitharu.kotatsu.utils.ext.disableFor
 
 class CategoriesAdapter(private val listener: OnCategoryCheckListener) :
 	BaseRecyclerAdapter<FavouriteCategory, Boolean>() {
@@ -37,7 +36,6 @@ class CategoriesAdapter(private val listener: OnCategoryCheckListener) :
 		holder.itemView.setOnClickListener {
 			if (it !is Checkable) return@setOnClickListener
 			it.toggle()
-			it.disableFor(200)
 			if (it.isChecked) {
 				listener.onCategoryChecked(holder.requireData())
 			} else {

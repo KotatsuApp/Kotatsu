@@ -6,28 +6,41 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.CallSuper
+import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
+import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaFilter
+import org.koitharu.kotatsu.core.model.MangaTag
+import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
-import org.koitharu.kotatsu.ui.common.list.SpacingItemDecoration
+import org.koitharu.kotatsu.ui.common.list.decor.ItemTypeDividerDecoration
+import org.koitharu.kotatsu.ui.common.list.decor.SectionItemDecoration
+import org.koitharu.kotatsu.ui.common.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
-import org.koitharu.kotatsu.utils.ext.clearItemDecorations
-import org.koitharu.kotatsu.utils.ext.firstItem
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hasItems
+import org.koitharu.kotatsu.ui.main.list.filter.FilterAdapter
+import org.koitharu.kotatsu.ui.main.list.filter.OnFilterChangedListener
+import org.koitharu.kotatsu.utils.ext.*
 
-abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), MangaListView<E>,
-	PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga> {
+abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), MangaListView<E>,
+	PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga>,
+	SharedPreferences.OnSharedPreferenceChangeListener, OnFilterChangedListener,
+	SectionItemDecoration.Callback {
+
+	private val settings by inject<AppSettings>()
 
 	private lateinit var adapter: MangaListAdapter
 
@@ -38,6 +51,7 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		adapter = MangaListAdapter(this)
 		initListMode(settings.listMode)
 		recyclerView.adapter = adapter
@@ -45,6 +59,8 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 		swipeRefreshLayout.setOnRefreshListener {
 			onRequestMoreItems(0)
 		}
+		recyclerView_filter.addItemDecoration(ItemTypeDividerDecoration(view.context))
+		recyclerView_filter.addItemDecoration(SectionItemDecoration(false, this))
 		settings.subscribe(this)
 	}
 
@@ -55,7 +71,7 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		if (!recyclerView.hasItems) {
+		if (savedInstanceState?.containsKey("MoxyDelegateBundle") != true) {
 			onRequestMoreItems(0)
 		}
 	}
@@ -65,12 +81,22 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 		super.onCreateOptionsMenu(menu, inflater)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
+	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.action_list_mode -> {
 			ListModeSelectDialog.show(childFragmentManager)
 			true
 		}
+		R.id.action_filter -> {
+			drawer.toggleDrawer(GravityCompat.END)
+			true
+		}
 		else -> super.onOptionsItemSelected(item)
+	}
+
+	override fun onPrepareOptionsMenu(menu: Menu) {
+		menu.findItem(R.id.action_filter).isVisible =
+			drawer.getDrawerLockMode(GravityCompat.END) != DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+		super.onPrepareOptionsMenu(menu)
 	}
 
 	override fun onItemClick(item: Manga, position: Int, view: View) {
@@ -93,10 +119,16 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 
 	override fun onError(e: Exception) {
 		if (recyclerView.hasItems) {
-			Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
+			Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
+				.show()
 		} else {
 			textView_holder.text = e.getDisplayMessage(resources)
-			textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_error_large, 0, 0)
+			textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(
+				0,
+				R.drawable.ic_error_large,
+				0,
+				0
+			)
 			layout_holder.isVisible = true
 		}
 	}
@@ -112,9 +144,30 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 	}
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-		when(key) {
+		when (key) {
 			getString(R.string.key_list_mode) -> initListMode(settings.listMode)
 		}
+	}
+
+	override fun onInitFilter(
+		sortOrders: List<SortOrder>,
+		tags: List<MangaTag>,
+		currentFilter: MangaFilter?
+	) {
+		recyclerView_filter.adapter = FilterAdapter(sortOrders, tags, currentFilter, this)
+		drawer.setDrawerLockMode(
+			if (sortOrders.isEmpty() && tags.isEmpty()) {
+				DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+			} else {
+				DrawerLayout.LOCK_MODE_UNLOCKED
+			}
+		)
+		activity?.invalidateOptionsMenu()
+	}
+
+	@CallSuper
+	override fun onFilterChanged(filter: MangaFilter) {
+		drawer.closeDrawers()
 	}
 
 	protected open fun setUpEmptyListHolder() {
@@ -129,17 +182,35 @@ abstract class MangaListFragment <E> : BaseFragment(R.layout.fragment_list), Man
 		recyclerView.layoutManager = null
 		recyclerView.clearItemDecorations()
 		adapter.listMode = mode
-		recyclerView.layoutManager = when(mode) {
+		recyclerView.layoutManager = when (mode) {
 			ListMode.GRID -> GridLayoutManager(ctx, 3)
 			else -> LinearLayoutManager(ctx)
 		}
 		recyclerView.adapter = adapter
-		recyclerView.addItemDecoration(when(mode) {
-			ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)
-			ListMode.DETAILED_LIST,
-			ListMode.GRID -> SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
-		})
+		recyclerView.addItemDecoration(
+			when (mode) {
+				ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)
+				ListMode.DETAILED_LIST,
+				ListMode.GRID -> SpacingItemDecoration(
+					resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+				)
+			}
+		)
 		adapter.notifyDataSetChanged()
 		recyclerView.firstItem = position
+	}
+
+	override fun isSection(position: Int): Boolean {
+		return position == 0 || recyclerView_filter.adapter?.run {
+			getItemViewType(position) != getItemViewType(position - 1)
+		} ?: false
+	}
+
+	override fun getSectionTitle(position: Int): CharSequence? {
+		return when (recyclerView_filter.adapter?.getItemViewType(position)) {
+			FilterAdapter.VIEW_TYPE_SORT -> getString(R.string.sort_order)
+			FilterAdapter.VIEW_TYPE_TAG -> getString(R.string.genre)
+			else -> null
+		}
 	}
 }

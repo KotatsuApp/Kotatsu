@@ -33,7 +33,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 		navigationView.setNavigationItemSelectedListener(this)
 
-		if (!supportFragmentManager.isStateSaved) {
+		if (supportFragmentManager.findFragmentById(R.id.container) == null) {
 			navigationView.setCheckedItem(R.id.nav_local_storage)
 			setPrimaryFragment(LocalListFragment.newInstance())
 		}

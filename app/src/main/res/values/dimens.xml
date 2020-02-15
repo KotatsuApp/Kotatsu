@@ -4,4 +4,6 @@
     <dimen name="manga_list_item_height">84dp</dimen>
     <dimen name="manga_list_details_item_height">120dp</dimen>
     <dimen name="chapter_list_item_height">46dp</dimen>
+    <dimen name="preferred_grid_width">120dp</dimen>
+	<dimen name="header_height">42dp</dimen>
 </resources>

@@ -10,14 +10,15 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 
-class MangaListHolder(parent: ViewGroup) : BaseViewHolder<Manga, MangaHistory?>(parent, R.layout.item_manga_list) {
+class MangaListHolder(parent: ViewGroup) :
+	BaseViewHolder<Manga, MangaHistory?>(parent, R.layout.item_manga_list) {
 
 	private var coverRequest: RequestDisposable? = null
 
 	override fun onBind(data: Manga, extra: MangaHistory?) {
 		coverRequest?.dispose()
 		textView_title.text = data.title
-		textView_subtitle.textAndVisible = data.altTitle
+		textView_subtitle.textAndVisible = data.tags.joinToString(", ") { it.title }
 		coverRequest = imageView_cover.load(data.coverUrl) {
 			crossfade(true)
 		}

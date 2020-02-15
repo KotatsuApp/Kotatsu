@@ -13,6 +13,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
 import androidx.core.view.isGone
 import androidx.core.view.postDelayed
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -131,4 +132,12 @@ fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	val rect = Rect()
 	getGlobalVisibleRect(rect)
 	return rect.contains(x, y)
+}
+
+fun DrawerLayout.toggleDrawer(gravity: Int) {
+	if (isDrawerOpen(gravity)) {
+		closeDrawer(gravity)
+	} else {
+		openDrawer(gravity)
+	}
 }

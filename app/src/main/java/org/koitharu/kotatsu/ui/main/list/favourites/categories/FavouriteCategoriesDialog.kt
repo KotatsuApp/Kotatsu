@@ -4,19 +4,18 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.dialog_favorite_categories.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.ui.common.AlertDialogFragment
+import org.koitharu.kotatsu.ui.common.BaseBottomSheet
 import org.koitharu.kotatsu.ui.common.TextInputDialog
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class FavouriteCategoriesDialog() : AlertDialogFragment(R.layout.dialog_favorite_categories),
+class FavouriteCategoriesDialog() : BaseBottomSheet(R.layout.dialog_favorite_categories),
 	FavouriteCategoriesView,
 	OnCategoryCheckListener {
 
@@ -25,10 +24,6 @@ class FavouriteCategoriesDialog() : AlertDialogFragment(R.layout.dialog_favorite
 	private val manga get() = arguments?.getParcelable<Manga>(ARG_MANGA)
 
 	private var adapter: CategoriesAdapter? = null
-
-	override fun onBuildDialog(builder: AlertDialog.Builder) {
-		builder.setTitle(R.string.add_to_favourites)
-	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)

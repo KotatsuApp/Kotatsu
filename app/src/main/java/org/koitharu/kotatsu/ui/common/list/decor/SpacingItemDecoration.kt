@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.common.list
+package org.koitharu.kotatsu.ui.common.list.decor
 
 import android.graphics.Rect
 import android.view.View

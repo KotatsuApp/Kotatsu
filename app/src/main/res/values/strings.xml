@@ -46,4 +46,13 @@
 	<string name="save_this_chapter_and_next">Save this chapter and next</string>
 	<string name="save_this_chapter">Save this chapter</string>
 	<string name="no_saved_manga">No saved manga</string>
+	<string name="by_name">By name</string>
+	<string name="popular">Popular</string>
+	<string name="updated">Updated</string>
+	<string name="newest">Newest</string>
+	<string name="by_rating">By rating</string>
+	<string name="all">All</string>
+	<string name="sort_order">Sort order</string>
+	<string name="genre">Genre</string>
+	<string name="filter">Filter</string>
 </resources>

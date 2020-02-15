@@ -5,8 +5,15 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:paddingTop="12dp">
+	android:orientation="vertical">
+
+	<TextView
+		style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
+		android:padding="16dp"
+		android:textColor="?android:textColorSecondary"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/add_to_favourites" />
 
 	<View
 		android:layout_width="match_parent"
@@ -20,7 +27,7 @@
 		android:orientation="vertical"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		tools:listitem="@layout/item_caegory_checkable" />
+		tools:listitem="@layout/item_category_checkable" />
 
 	<View
 		android:layout_width="match_parent"
