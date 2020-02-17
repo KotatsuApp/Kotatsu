@@ -44,7 +44,7 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
 				android:gravity="center"
-				android:text="?android:textColorSecondary"
+				android:textColor="?android:textColorSecondary"
 				android:textAppearance="?android:textAppearanceMedium"
 				tools:text="@tools:sample/lorem[3]" />
 
