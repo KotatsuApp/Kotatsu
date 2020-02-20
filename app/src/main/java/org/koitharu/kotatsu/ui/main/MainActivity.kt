@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.ui.main.list.favourites.FavouritesListFragment
 import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
 import org.koitharu.kotatsu.ui.main.list.local.LocalListFragment
 import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
+import org.koitharu.kotatsu.ui.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.SearchHelper
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -70,6 +71,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			R.id.nav_history -> setPrimaryFragment(HistoryListFragment.newInstance())
 			R.id.nav_favourites -> setPrimaryFragment(FavouritesListFragment.newInstance())
 			R.id.nav_local_storage -> setPrimaryFragment(LocalListFragment.newInstance())
+			R.id.nav_action_settings -> {
+				startActivity(SettingsActivity.newIntent(this))
+				return true
+			}
 			else -> return false
 		}
 		drawer.closeDrawers()

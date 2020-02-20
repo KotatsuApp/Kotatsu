@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<Preference
+		android:key="@string/key_list_mode"
+		android:title="@string/list_mode"
+		android:persistent="false"
+		app:iconSpaceReserved="false" />
+
+</PreferenceScreen>

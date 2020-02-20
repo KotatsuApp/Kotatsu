@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.koitharu.kotatsu">
 
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -34,14 +35,17 @@
 				android:name="android.app.searchable"
 				android:resource="@xml/search" />
 		</activity>
+		<activity
+			android:name=".ui.settings.SettingsActivity"
+			android:label="@string/settings" />
 
 		<service android:name=".ui.download.DownloadService" />
 
 		<provider
 			android:name="androidx.core.content.FileProvider"
 			android:authorities="${applicationId}.files"
-			android:grantUriPermissions="true"
-			android:exported="false">
+			android:exported="false"
+			android:grantUriPermissions="true">
 			<meta-data
 				android:name="android.support.FILE_PROVIDER_PATHS"
 				android:resource="@xml/filepaths" />
