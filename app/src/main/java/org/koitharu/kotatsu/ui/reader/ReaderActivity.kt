@@ -18,9 +18,8 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
-import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
-import org.koitharu.kotatsu.utils.ext.hitTest
-import org.koitharu.kotatsu.utils.ext.showDialog
+import org.koitharu.kotatsu.utils.anim.Motion
+import org.koitharu.kotatsu.utils.ext.*
 
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, GridTouchHelper.OnGridTouchListener {
 
@@ -113,12 +112,12 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, GridTouchHelper.OnG
 		when (area) {
 			GridTouchHelper.AREA_CENTER -> {
 				if (appbar_top.isVisible) {
-					appbar_top.isVisible = false
-					appbar_bottom.isVisible = false
+					appbar_top.hideAnimated(Motion.SlideTop)
+					appbar_bottom.hideAnimated(Motion.SlideBottom)
 					hideSystemUI()
 				} else {
-					appbar_top.isVisible = true
-					appbar_bottom.isVisible = true
+					appbar_top.showAnimated(Motion.SlideTop)
+					appbar_bottom.showAnimated(Motion.SlideBottom)
 					showSystemUI()
 				}
 			}

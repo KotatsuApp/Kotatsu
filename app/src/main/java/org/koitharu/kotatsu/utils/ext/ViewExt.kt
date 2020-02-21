@@ -141,3 +141,19 @@ fun DrawerLayout.toggleDrawer(gravity: Int) {
 		openDrawer(gravity)
 	}
 }
+
+fun View.measureHeight(): Int {
+	val vh = height
+	return if (vh == 0) {
+		measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+		measuredHeight
+	} else vh
+}
+
+fun View.measureWidth(): Int {
+	val vw = width
+	return if (vw == 0) {
+		measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+		measuredWidth
+	} else vw
+}
