@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.ui.common
 
-import android.content.Context
 import androidx.annotation.StringRes
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -13,8 +12,8 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 
 	protected val settings by inject<AppSettings>()
 
-	override fun onAttach(context: Context) {
-		super.onAttach(context)
+	override fun onResume() {
+		super.onResume()
 		activity?.setTitle(titleId)
 	}
 

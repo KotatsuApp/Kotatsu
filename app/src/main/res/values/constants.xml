@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="key_list_mode">list_mode</string>
+	<string name="key_theme">theme</string>
+	<string-array name="values_theme">
+		<item>-1</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
 </resources>

@@ -56,4 +56,8 @@
 	<string name="genre">Genre</string>
 	<string name="filter">Filter</string>
 	<string name="appearance">Appearance</string>
+    <string name="theme">Theme</string>
+	<string name="light">Light</string>
+	<string name="dark">Dark</string>
+	<string name="automatic">Automatic</string>
 </resources>

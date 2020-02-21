@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
 import coil.Coil
 import coil.ImageLoader
@@ -23,6 +24,7 @@ class KotatsuApp : Application() {
 		super.onCreate()
 		initKoin()
 		initCoil()
+		AppCompatDelegate.setDefaultNightMode(AppSettings(this).theme)
 	}
 
 	private fun initKoin() {

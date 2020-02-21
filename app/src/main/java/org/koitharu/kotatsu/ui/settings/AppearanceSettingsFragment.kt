@@ -3,12 +3,15 @@ package org.koitharu.kotatsu.ui.settings
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arrayMapOf
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.main.list.ListModeSelectDialog
+import org.koitharu.kotatsu.utils.ext.bindSummary
 
 class AppearanceSettingsFragment : BasePreferenceFragment(R.string.appearance),
 	SharedPreferences.OnSharedPreferenceChangeListener {
@@ -18,6 +21,7 @@ class AppearanceSettingsFragment : BasePreferenceFragment(R.string.appearance),
 
 		findPreference<Preference>(R.string.key_list_mode)?.summary =
 			listModes[settings.listMode]?.let(::getString)
+		findPreference<ListPreference>(R.string.key_theme)?.bindSummary()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,6 +48,9 @@ class AppearanceSettingsFragment : BasePreferenceFragment(R.string.appearance),
 		when (key) {
 			getString(R.string.key_list_mode) -> findPreference<Preference>(R.string.key_list_mode)?.summary =
 				listModes[settings.listMode]?.let(::getString)
+			getString(R.string.key_theme) -> {
+				AppCompatDelegate.setDefaultNightMode(settings.theme)
+			}
 		}
 	}
 
