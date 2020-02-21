@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.android.synthetic.main.item_page.*
+import kotlinx.coroutines.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
@@ -13,27 +14,36 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class PageHolder(parent: ViewGroup, private val loader: PageLoader) :
 	BaseViewHolder<MangaPage, Unit>(parent, R.layout.item_page),
-	SubsamplingScaleImageView.OnImageEventListener {
+	SubsamplingScaleImageView.OnImageEventListener, CoroutineScope by loader {
+
+	private var job: Job? = null
 
 	init {
 		ssiv.setOnImageEventListener(this)
 		button_retry.setOnClickListener {
-			onBind(boundData ?: return@setOnClickListener, Unit)
+			doLoad(boundData ?: return@setOnClickListener, force = true)
 		}
 	}
 
 	override fun onBind(data: MangaPage, extra: Unit) {
-		layout_error.isVisible = false
-		progressBar.isVisible = true
-		ssiv.recycle()
-		loader.load(data.url) {
-			val uri = it.getOrNull()?.toUri()
-			if (uri != null) {
+		doLoad(data, force = false)
+	}
+
+	private fun doLoad(data: MangaPage, force: Boolean) {
+		job?.cancel()
+		job = launch {
+			layout_error.isVisible = false
+			progressBar.isVisible = true
+			ssiv.recycle()
+			try {
+				val uri = withContext(Dispatchers.IO) {
+					loader.loadFile(data.url, force)
+				}.toUri()
 				ssiv.setImage(ImageSource.uri(uri))
-			}
-			val error = it.exceptionOrNull()
-			if (error != null) {
-				onError(error)
+			} catch (e: CancellationException) {
+				//do nothing
+			} catch (e: Exception) {
+				onError(e)
 			}
 		}
 	}

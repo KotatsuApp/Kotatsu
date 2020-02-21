@@ -22,16 +22,7 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 	override val coroutineContext: CoroutineContext
 		get() = Dispatchers.Main + job
 
-	fun load(url: String, force: Boolean = false, callback: (Result<File>) -> Unit) = launch {
-		val result = runCatching {
-			withContext(Dispatchers.IO) {
-				loadFile(url, force)
-			}
-		}
-		callback(result)
-	}
-
-	private suspend fun loadFile(url: String, force: Boolean): File {
+	suspend fun loadFile(url: String, force: Boolean): File {
 		if (!force) {
 			cache[url]?.let {
 				return it

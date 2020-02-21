@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_reader.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
@@ -21,9 +22,10 @@ import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
 
-class ReaderActivity : BaseFullscreenActivity(), ReaderView, GridTouchHelper.OnGridTouchListener {
+class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnChapterChangeListener,
+	GridTouchHelper.OnGridTouchListener {
 
-	private val presenter by moxyPresenter { ReaderPresenter() }
+	private val presenter by moxyPresenter(factory = ::ReaderPresenter)
 
 	private lateinit var state: ReaderState
 
@@ -144,6 +146,13 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, GridTouchHelper.OnG
 	override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
 		touchHelper.dispatchTouchEvent(ev)
 		return super.dispatchTouchEvent(ev)
+	}
+
+	override fun onChapterChanged(chapter: MangaChapter) {
+		presenter.loadChapter(state.copy(
+			chapterId = chapter.id,
+			page = 0
+		))
 	}
 
 	companion object {

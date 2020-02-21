@@ -48,7 +48,16 @@ class ChaptersDialog : AlertDialogFragment(R.layout.dialog_chapters),
 	}
 
 	override fun onItemClick(item: MangaChapter, position: Int, view: View) {
+		((parentFragment as? OnChapterChangeListener)
+			?: (activity as? OnChapterChangeListener))?.let {
+			dismiss()
+			it.onChapterChanged(item)
+		}
+	}
 
+	interface OnChapterChangeListener {
+
+		fun onChapterChanged(chapter: MangaChapter)
 	}
 
 	companion object {
