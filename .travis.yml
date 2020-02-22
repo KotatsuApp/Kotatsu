@@ -5,15 +5,11 @@ jdk:
 android:
   components:
     - tools
-    - build-tools
+    - platform-tools-29.0.6
+    - build-tools-29.0.3
     - android-29
-    - extra-google-m2repository
-    - extra-android-m2repository
-
-before_install:
-  - yes | sdkmanager "platforms;android-29"
+  licenses:
+    - android-sdk-preview-license-.+
+    - android-sdk-license-.+
+    - google-gdk-license-.+
 script: ./gradlew -Dorg.gradle.jvmargs=-Xmx1536m assembleDebug lintDebug
-licenses:
-  - 'android-sdk-license-.+'
-  - 'android-sdk-preview-license-.+'
-  - 'android-sdk-arm-dbt-license-.+'
