@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.ui.common.list
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import okhttp3.internal.toImmutableList
 import org.koin.core.KoinComponent
 import org.koitharu.kotatsu.utils.ext.replaceWith
 
@@ -10,6 +11,8 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 	KoinComponent {
 
 	protected val dataSet = ArrayList<T>()
+
+	val items get() = dataSet.toImmutableList()
 
 	init {
 		@Suppress("LeakingThis")

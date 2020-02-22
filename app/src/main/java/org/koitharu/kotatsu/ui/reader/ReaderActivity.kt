@@ -18,12 +18,14 @@ import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
+import org.koitharu.kotatsu.ui.reader.thumbnails.OnPageSelectListener
+import org.koitharu.kotatsu.ui.reader.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
 
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnChapterChangeListener,
-	GridTouchHelper.OnGridTouchListener {
+	GridTouchHelper.OnGridTouchListener, OnPageSelectListener {
 
 	private val presenter by moxyPresenter(factory = ::ReaderPresenter)
 
@@ -39,6 +41,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
 		toolbar_bottom.inflateMenu(R.menu.opt_reader_bottom)
+		toolbar_bottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 
 		state = savedInstanceState?.getParcelable(EXTRA_STATE)
 			?: intent.getParcelableExtra<ReaderState>(EXTRA_STATE)
@@ -90,6 +93,13 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			)
 			true
 		}
+		R.id.action_pages_thumbs -> {
+			PagesThumbnailsSheet.show(
+				supportFragmentManager, adapter.items,
+				state.chapter?.name ?: title?.toString().orEmpty()
+			)
+			true
+		}
 		else -> super.onOptionsItemSelected(item)
 	}
 
@@ -135,7 +145,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
-		return if (appbar_top.hasGlobalPoint(rawX, rawY) || appbar_bottom.hasGlobalPoint(rawX, rawY)) {
+		return if (appbar_top.hasGlobalPoint(rawX, rawY) || appbar_bottom.hasGlobalPoint(
+				rawX,
+				rawY
+			)
+		) {
 			false
 		} else {
 			val target = rootLayout.hitTest(rawX, rawY)
@@ -149,10 +163,19 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onChapterChanged(chapter: MangaChapter) {
-		presenter.loadChapter(state.copy(
-			chapterId = chapter.id,
-			page = 0
-		))
+		presenter.loadChapter(
+			state.copy(
+				chapterId = chapter.id,
+				page = 0
+			)
+		)
+	}
+
+	override fun onPageSelected(page: MangaPage) {
+		val index = adapter.items.indexOfFirst { x -> x.id == page.id }
+		if (index != -1) {
+			pager.setCurrentItem(index, false)
+		}
 	}
 
 	companion object {

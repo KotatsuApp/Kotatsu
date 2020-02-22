@@ -7,6 +7,13 @@
 		android:id="@+id/action_bookmark_add"
 		android:icon="@drawable/ic_bookmark_add"
 		android:title="@string/add_bookmark"
+		android:visible="false"
+		app:showAsAction="ifRoom" />
+
+	<item
+		android:id="@+id/action_pages_thumbs"
+		android:icon="@drawable/ic_grid"
+		android:title="@string/pages"
 		app:showAsAction="ifRoom" />
 
 	<item

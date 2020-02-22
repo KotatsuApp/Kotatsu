@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:background="?attr/scrimBackground"
+	android:layout_height="wrap_content">
+
+	<org.koitharu.kotatsu.ui.common.widgets.CoverImageView
+		android:id="@+id/imageView_thumb"
+		android:scaleType="centerCrop"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" />
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		tools:text="2"
+		android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+		android:padding="12dp"
+		android:gravity="end|bottom"
+		android:background="?android:selectableItemBackground"
+		android:id="@+id/textView_number" />
+
+</FrameLayout>
