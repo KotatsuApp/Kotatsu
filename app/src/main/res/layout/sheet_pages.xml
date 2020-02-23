@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
@@ -44,8 +45,7 @@
 		android:layout_height="wrap_content"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		app:spanCount="3"
 		tools:listitem="@layout/item_page_thumb" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

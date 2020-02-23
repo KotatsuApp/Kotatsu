@@ -17,6 +17,9 @@ class MangaGridHolder(parent: ViewGroup) : BaseViewHolder<Manga, MangaHistory?>(
 		coverRequest?.dispose()
 		textView_title.text = data.title
 		coverRequest = imageView_cover.load(data.coverUrl) {
+			placeholder(R.drawable.ic_placeholder)
+			fallback(R.drawable.ic_placeholder)
+			error(R.drawable.ic_placeholder)
 			crossfade(true)
 		}
 	}

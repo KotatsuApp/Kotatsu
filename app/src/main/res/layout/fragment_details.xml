@@ -85,11 +85,11 @@
 			android:contentDescription="@string/add_to_favourites"
 			android:scaleType="center"
 			android:src="@drawable/ic_tag_heart_outline"
-			app:tint="?colorAccent"
 			app:layout_constraintBottom_toBottomOf="@id/button_read"
 			app:layout_constraintDimensionRatio="1:1"
 			app:layout_constraintEnd_toStartOf="@id/button_read"
-			app:layout_constraintTop_toTopOf="@id/button_read" />
+			app:layout_constraintTop_toTopOf="@id/button_read"
+			app:tint="?colorAccent" />
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/barrier_title"
@@ -97,6 +97,16 @@
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
 			app:constraint_referenced_ids="imageView_cover, button_read" />
+
+		<View
+			android:id="@+id/divider_top"
+			android:layout_width="0dp"
+			android:layout_height="1dp"
+			android:layout_marginTop="8dp"
+			android:background="?android:listDivider"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/barrier_title" />
 
 		<com.google.android.material.chip.ChipGroup
 			android:id="@+id/chips_tags"
@@ -106,7 +116,7 @@
 			android:padding="6dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/barrier_title" />
+			app:layout_constraintTop_toBottomOf="@id/divider_top" />
 
 		<TextView
 			android:id="@+id/textView_description"
@@ -127,10 +137,10 @@
 			android:layout_height="wrap_content"
 			android:indeterminate="true"
 			android:visibility="gone"
-			app:layout_constraintBottom_toBottomOf="@id/chips_tags"
+			app:layout_constraintBottom_toBottomOf="@id/divider_top"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/chips_tags"
+			app:layout_constraintTop_toBottomOf="@id/divider_top"
 			tools:visibility="visible" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

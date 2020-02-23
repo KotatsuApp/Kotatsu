@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
+import moxy.MvpDelegate
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
@@ -31,6 +32,7 @@ import org.koitharu.kotatsu.ui.common.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.ui.main.list.filter.FilterAdapter
 import org.koitharu.kotatsu.ui.main.list.filter.OnFilterChangedListener
+import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.*
 
 abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), MangaListView<E>,
@@ -70,7 +72,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		if (savedInstanceState?.containsKey("MoxyDelegateBundle") != true) {
+		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
 			onRequestMoreItems(0)
 		}
 	}
@@ -210,7 +212,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		recyclerView.clearItemDecorations()
 		adapter?.listMode = mode
 		recyclerView.layoutManager = when (mode) {
-			ListMode.GRID -> GridLayoutManager(ctx, 3)
+			ListMode.GRID -> GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx))
 			else -> LinearLayoutManager(ctx)
 		}
 		recyclerView.adapter = adapter

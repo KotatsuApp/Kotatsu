@@ -3,9 +3,9 @@
 
 	<style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 		<!-- Customize your theme here. -->
-		<item name="colorPrimary">@color/primary</item>
-		<item name="colorPrimaryDark">@color/primary_dark</item>
-		<item name="colorAccent">@color/accent</item>
+		<item name="colorPrimary">@color/blue_primary</item>
+		<item name="colorPrimaryDark">@color/blue_primary_dark</item>
+		<item name="colorAccent">@color/red_accent</item>
 		<item name="windowActionModeOverlay">true</item>
 	</style>
 

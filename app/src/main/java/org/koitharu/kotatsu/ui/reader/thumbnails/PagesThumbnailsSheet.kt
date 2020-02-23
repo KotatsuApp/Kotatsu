@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.sheet_pages.*
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.BaseBottomSheet
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.common.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.resolveDp
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -31,6 +33,7 @@ class PagesThumbnailsSheet : BaseBottomSheet(R.layout.sheet_pages),
 			dismissAllowingStateLoss()
 			return
 		}
+		(recyclerView.layoutManager as? GridLayoutManager)?.spanCount = UiUtils.resolveGridSpanCount(view.context)
 		val title = arguments?.getString(ARG_TITLE)
 		toolbar.title = title
 		toolbar.setNavigationOnClickListener { dismiss() }
@@ -56,8 +59,8 @@ class PagesThumbnailsSheet : BaseBottomSheet(R.layout.sheet_pages),
 					}
 				}
 			})
-			behavior.peekHeight = BottomSheetBehavior.PEEK_HEIGHT_AUTO
-			behavior.isFitToContents = false
+//			behavior.peekHeight = BottomSheetBehavior.PEEK_HEIGHT_AUTO
+//			behavior.isFitToContents = false
 		}
 
 	override fun onDestroyView() {

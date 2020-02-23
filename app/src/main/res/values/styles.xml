@@ -8,4 +8,6 @@
 		<item name="android:paddingBottom">10dp</item>
 	</style>
 
+	<style name="AppPopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
+
 </resources>

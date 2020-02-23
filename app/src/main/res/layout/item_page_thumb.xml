@@ -9,6 +9,7 @@
 	<org.koitharu.kotatsu.ui.common.widgets.CoverImageView
 		android:id="@+id/imageView_thumb"
 		android:scaleType="centerCrop"
+		tools:src="@drawable/ic_placeholder"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" />
 

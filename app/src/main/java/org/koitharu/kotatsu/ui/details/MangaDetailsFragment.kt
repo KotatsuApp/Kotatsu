@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.details
 
+import android.text.Spanned
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import coil.api.load
@@ -25,10 +26,14 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 
 	override fun onMangaUpdated(manga: Manga) {
 		this.manga = manga
-		imageView_cover.load(manga.largeCoverUrl ?: manga.coverUrl)
+		imageView_cover.load(manga.largeCoverUrl ?: manga.coverUrl) {
+			fallback(R.drawable.ic_placeholder)
+			crossfade(true)
+		}
 		textView_title.text = manga.title
 		textView_subtitle.text = manga.altTitle
-		textView_description.text = manga.description?.parseAsHtml()
+		textView_description.text = manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
+			?: getString(R.string.no_description)
 		if (manga.rating == Manga.NO_RATING) {
 			ratingBar.isVisible = false
 		} else {

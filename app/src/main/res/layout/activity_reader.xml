@@ -26,7 +26,7 @@
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+			app:popupTheme="@style/AppPopupTheme" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 
@@ -46,7 +46,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_gravity="top"
-			app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+			app:popupTheme="@style/AppPopupTheme" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 

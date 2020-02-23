@@ -20,6 +20,9 @@ class MangaListHolder(parent: ViewGroup) :
 		textView_title.text = data.title
 		textView_subtitle.textAndVisible = data.tags.joinToString(", ") { it.title }
 		coverRequest = imageView_cover.load(data.coverUrl) {
+			placeholder(R.drawable.ic_placeholder)
+			fallback(R.drawable.ic_placeholder)
+			error(R.drawable.ic_placeholder)
 			crossfade(true)
 		}
 	}

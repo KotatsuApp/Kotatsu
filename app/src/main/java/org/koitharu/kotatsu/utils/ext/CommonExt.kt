@@ -33,6 +33,7 @@ suspend inline fun <T, R> T.retryUntilSuccess(maxAttempts: Int, action: T.() -> 
 }
 
 fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
+	is UnsupportedOperationException -> resources.getString(R.string.operation_not_supported)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is IOException -> resources.getString(R.string.network_error)
 	else -> if (BuildConfig.DEBUG) {

@@ -23,6 +23,9 @@ class MangaListDetailsHolder(parent: ViewGroup) : BaseViewHolder<Manga, MangaHis
 		textView_title.text = data.title
 		textView_subtitle.textAndVisible = data.altTitle
 		coverRequest = imageView_cover.load(data.coverUrl) {
+			placeholder(R.drawable.ic_placeholder)
+			fallback(R.drawable.ic_placeholder)
+			error(R.drawable.ic_placeholder)
 			crossfade(true)
 		}
 		if(data.rating == Manga.NO_RATING) {

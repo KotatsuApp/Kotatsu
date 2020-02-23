@@ -6,10 +6,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toFile
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.coroutines.launch
+import moxy.MvpDelegate
 import moxy.ktx.moxyPresenter
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
@@ -18,6 +23,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.ui.download.DownloadService
 import org.koitharu.kotatsu.utils.ShareHelper
+import org.koitharu.kotatsu.utils.ShortcutUtils
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
@@ -33,7 +39,10 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		pager.adapter = MangaDetailsAdapter(resources, supportFragmentManager)
 		tabs.setupWithViewPager(pager)
 		intent?.getParcelableExtra<Manga>(EXTRA_MANGA)?.let {
-			presenter.loadDetails(it)
+			presenter.loadDetails(
+				manga = it,
+				force = savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true
+			)
 		} ?: finish()
 	}
 
@@ -61,6 +70,8 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 	override fun onPrepareOptionsMenu(menu: Menu): Boolean {
 		menu.findItem(R.id.action_save).isEnabled =
 			manga?.source != null && manga?.source != MangaSource.LOCAL
+		menu.findItem(R.id.action_shortcut).isVisible = BuildConfig.DEBUG ||
+				ShortcutManagerCompat.isRequestPinShortcutSupported(this)
 		return super.onPrepareOptionsMenu(menu)
 	}
 
@@ -78,6 +89,25 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		R.id.action_save -> {
 			manga?.let {
 				DownloadService.start(this, it)
+			}
+			true
+		}
+		R.id.action_shortcut -> {
+			manga?.let {
+				lifecycleScope.launch {
+					if (!ShortcutManagerCompat.requestPinShortcut(
+							this@MangaDetailsActivity,
+							ShortcutUtils.createShortcutInfo(this@MangaDetailsActivity, it),
+							null
+						)
+					) {
+						Snackbar.make(
+							pager,
+							R.string.operation_not_supported,
+							Snackbar.LENGTH_SHORT
+						).show()
+					}
+				}
 			}
 			true
 		}

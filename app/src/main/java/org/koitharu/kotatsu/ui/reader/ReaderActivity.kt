@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
+import moxy.MvpDelegate
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
@@ -69,7 +70,10 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		loader = PageLoader()
 		adapter = PagesAdapter(loader)
 		pager.adapter = adapter
-		presenter.loadChapter(state)
+		pager.offscreenPageLimit = 2
+		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
+			presenter.loadChapter(state)
+		}
 	}
 
 	override fun onDestroy() {
