@@ -12,6 +12,9 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.http.persistentcookiejar.PersistentCookieJar
+import org.koitharu.kotatsu.core.http.persistentcookiejar.cache.SetCookieCache
+import org.koitharu.kotatsu.core.http.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import org.koitharu.kotatsu.core.local.CbzFetcher
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -19,6 +22,10 @@ import org.koitharu.kotatsu.domain.MangaLoaderContext
 import java.util.concurrent.TimeUnit
 
 class KotatsuApp : Application() {
+
+	private val cookieJar by lazy {
+		PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(applicationContext))
+	}
 
 	override fun onCreate() {
 		super.onCreate()
@@ -74,6 +81,7 @@ class KotatsuApp : Application() {
 		.connectTimeout(20, TimeUnit.SECONDS)
 		.readTimeout(60, TimeUnit.SECONDS)
 		.writeTimeout(20, TimeUnit.SECONDS)
+		.cookieJar(cookieJar)
 
 	private fun mangaDb() = Room.databaseBuilder(
 		applicationContext,
