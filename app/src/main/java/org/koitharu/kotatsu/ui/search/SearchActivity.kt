@@ -4,6 +4,7 @@ import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.domain.search.MangaSuggestionsProvider
 import org.koitharu.kotatsu.ui.common.BaseActivity
 
 class SearchActivity : BaseActivity() {
@@ -20,6 +21,7 @@ class SearchActivity : BaseActivity() {
 			finish()
 			return
 		}
+		MangaSuggestionsProvider.saveQuery(this, query)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		title = query
 		supportActionBar?.setSubtitle(R.string.search_results)

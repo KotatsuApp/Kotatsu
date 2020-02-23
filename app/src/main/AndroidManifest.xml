@@ -42,6 +42,9 @@
 		<service android:name=".ui.download.DownloadService" />
 
 		<provider
+			android:name=".domain.search.MangaSuggestionsProvider"
+			android:authorities="${applicationId}.MangaSuggestionsProvider" />
+		<provider
 			android:name="androidx.core.content.FileProvider"
 			android:authorities="${applicationId}.files"
 			android:exported="false"
