@@ -1,15 +1,18 @@
 package org.koitharu.kotatsu.ui.reader
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
-import android.widget.Button
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
@@ -21,6 +24,7 @@ import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
 import org.koitharu.kotatsu.ui.reader.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.ui.reader.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.utils.GridTouchHelper
+import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
 
@@ -94,10 +98,26 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			true
 		}
 		R.id.action_pages_thumbs -> {
-			PagesThumbnailsSheet.show(
-				supportFragmentManager, adapter.items,
-				state.chapter?.name ?: title?.toString().orEmpty()
-			)
+			if (adapter.hasItems) {
+				PagesThumbnailsSheet.show(
+					supportFragmentManager, adapter.items,
+					state.chapter?.name ?: title?.toString().orEmpty()
+				)
+			} else {
+				showWaitWhileLoading()
+			}
+			true
+		}
+		R.id.action_save_page -> {
+			if (adapter.hasItems) {
+				requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+					if (it) {
+						presenter.savePage(contentResolver, adapter.getItem(pager.currentItem))
+					}
+				}
+			} else {
+				showWaitWhileLoading()
+			}
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
@@ -117,6 +137,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			setTitle(R.string.error_occurred)
 			setMessage(e.message)
 			setPositiveButton(R.string.close, null)
+			if (!adapter.hasItems) {
+				setOnDismissListener {
+					finish()
+				}
+			}
 		}
 	}
 
@@ -152,8 +177,8 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		) {
 			false
 		} else {
-			val target = rootLayout.hitTest(rawX, rawY)
-			target !is Button
+			val targets = rootLayout.hitTest(rawX, rawY)
+			targets.none { it.hasOnClickListeners() }
 		}
 	}
 
@@ -176,6 +201,23 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		if (index != -1) {
 			pager.setCurrentItem(index, false)
 		}
+	}
+
+	override fun onPageSaved(uri: Uri?) {
+		if (uri != null) {
+			Snackbar.make(pager, R.string.page_saved, Snackbar.LENGTH_LONG)
+				.setAction(R.string.share) {
+					ShareHelper.shareImage(this, uri)
+				}.show()
+		} else {
+			Snackbar.make(pager, R.string.error_occurred, Snackbar.LENGTH_SHORT).show()
+		}
+	}
+
+	private fun showWaitWhileLoading() {
+		Toast.makeText(this, R.string.wait_for_loading_finish, Toast.LENGTH_SHORT).apply {
+			setGravity(Gravity.CENTER, 0, 0)
+		}.show()
 	}
 
 	companion object {

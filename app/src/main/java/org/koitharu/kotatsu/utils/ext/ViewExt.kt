@@ -12,6 +12,7 @@ import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -109,20 +110,21 @@ fun View.showPopupMenu(@MenuRes menuRes: Int, onPrepare:((Menu) -> Unit)? = null
 	menu.show()
 }
 
-fun ViewGroup.hitTest(x: Int, y: Int): View? {
+fun ViewGroup.hitTest(x: Int, y: Int): Set<View> {
+	val result = HashSet<View>(4)
 	val rect = Rect()
 	for (child in children) {
-		if (child.getGlobalVisibleRect(rect)) {
+		if (child.isVisible && child.getGlobalVisibleRect(rect)) {
 			if (rect.contains(x, y)) {
-				return if (child is ViewGroup) {
-					child.hitTest(x, y)
+				if (child is ViewGroup) {
+					result += child.hitTest(x, y)
 				} else {
-					child
+					result += child
 				}
 			}
 		}
 	}
-	return null
+	return result
 }
 
 fun View.hasGlobalPoint(x: Int, y: Int): Boolean {

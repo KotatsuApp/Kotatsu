@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.reader
 
+import android.net.Uri
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.OneExecutionStateStrategy
@@ -16,4 +17,7 @@ interface ReaderView : MvpView {
 
 	@StateStrategyType(OneExecutionStateStrategy::class)
 	fun onError(e: Exception)
+
+	@StateStrategyType(OneExecutionStateStrategy::class)
+	fun onPageSaved(uri: Uri?)
 }

@@ -65,4 +65,8 @@
 	<string name="text_clear_history_prompt">Are you rally want to clear all your reading history? This action cannot be undone.</string>
 	<string name="remove">Remove</string>
 	<string name="_s_removed_from_history">\"%s\" removed from history</string>
+	<string name="wait_for_loading_finish">Wait for the load to finish</string>
+	<string name="save_page">Save page</string>
+	<string name="page_saved">Page saved successful</string>
+	<string name="share_image">Share image</string>
 </resources>

@@ -14,6 +14,8 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 
 	val items get() = dataSet.toImmutableList()
 
+	val hasItems get() = dataSet.isNotEmpty()
+
 	init {
 		@Suppress("LeakingThis")
 		setHasStableIds(true)
