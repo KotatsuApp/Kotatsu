@@ -4,6 +4,7 @@ import android.content.res.Resources
 import kotlinx.coroutines.delay
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import java.io.IOException
 
 inline fun <T, R> T.safe(action: T.() -> R?) = try {
@@ -32,6 +33,7 @@ suspend inline fun <T, R> T.retryUntilSuccess(maxAttempts: Int, action: T.() -> 
 }
 
 fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
+	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is IOException -> resources.getString(R.string.network_error)
 	else -> if (BuildConfig.DEBUG) {
 		message ?: resources.getString(R.string.error_occurred)

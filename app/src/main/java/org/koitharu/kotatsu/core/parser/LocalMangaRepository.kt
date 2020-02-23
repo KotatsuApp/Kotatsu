@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.safe
 import java.io.File
+import java.util.*
 import java.util.zip.ZipFile
 
 class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaRepository(loaderContext) {
@@ -92,6 +93,19 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 		}
 	}
 
+	fun delete(manga: Manga): Boolean {
+		val file = Uri.parse(manga.url).toFile()
+		return file.delete()
+	}
+
 	private fun zipUri(file: File, entryName: String) =
 		Uri.fromParts("cbz", file.path, entryName).toString()
+
+	companion object {
+
+		fun isFileSupported(name: String): Boolean {
+			val ext = name.substringAfterLast('.').toLowerCase(Locale.ROOT)
+			return ext == "cbz" || ext == "zip"
+		}
+	}
 }

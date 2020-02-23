@@ -65,8 +65,13 @@
 	<string name="text_clear_history_prompt">Are you rally want to clear all your reading history? This action cannot be undone.</string>
 	<string name="remove">Remove</string>
 	<string name="_s_removed_from_history">\"%s\" removed from history</string>
+	<string name="_s_deleted_from_local_storage">\"%s\" deleted from local storage</string>
 	<string name="wait_for_loading_finish">Wait for the load to finish</string>
 	<string name="save_page">Save page</string>
 	<string name="page_saved">Page saved successful</string>
 	<string name="share_image">Share image</string>
+	<string name="_import">Import</string>
+	<string name="delete">Delete</string>
+	<string name="operation_not_supported">This operation is not supported</string>
+	<string name="text_file_not_supported">Invalid file. Only ZIP and CBZ are supported.</string>
 </resources>

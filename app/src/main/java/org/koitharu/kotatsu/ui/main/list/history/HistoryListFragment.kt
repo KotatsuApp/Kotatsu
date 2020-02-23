@@ -72,7 +72,7 @@ class HistoryListFragment : MangaListFragment<MangaHistory>(), MangaListView<Man
 		Snackbar.make(
 			recyclerView, getString(
 				R.string._s_removed_from_history,
-				item.title.ellipsize(14)
+				item.title.ellipsize(16)
 			), Snackbar.LENGTH_SHORT
 		).show()
 	}
