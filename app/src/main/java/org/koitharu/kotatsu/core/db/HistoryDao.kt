@@ -27,6 +27,9 @@ abstract class HistoryDao {
     @Query("UPDATE history SET page = :page, chapter_id = :chapterId, updated_at = :updatedAt WHERE manga_id = :mangaId")
     abstract suspend fun update(mangaId: Long, page: Int, chapterId: Long, updatedAt: Long): Int
 
+    @Query("DELETE FROM history WHERE manga_id = :mangaId")
+    abstract suspend fun delete(mangaId: Long)
+
     suspend fun update(entity: HistoryEntity) = update(entity.mangaId, entity.page, entity.chapterId, entity.updatedAt)
 
     @Transaction

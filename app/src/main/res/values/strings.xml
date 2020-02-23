@@ -61,4 +61,8 @@
 	<string name="dark">Dark</string>
 	<string name="automatic">Automatic</string>
 	<string name="pages">Pages</string>
+	<string name="clear">Clear</string>
+	<string name="text_clear_history_prompt">Are you rally want to clear all your reading history? This action cannot be undone.</string>
+	<string name="remove">Remove</string>
+	<string name="_s_removed_from_history">\"%s\" removed from history</string>
 </resources>

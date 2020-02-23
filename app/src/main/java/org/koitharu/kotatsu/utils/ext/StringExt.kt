@@ -58,3 +58,7 @@ fun String.transliterate(skipMissing: Boolean): String {
 fun String.toFileName() = this.transliterate(false)
 	.replace(Regex("[^a-z0-9_\\-]", setOf(RegexOption.IGNORE_CASE)), " ")
 	.replace(Regex("\\s+"), "_")
+
+fun String.ellipsize(maxLength: Int) = if (this.length > maxLength) {
+	this.take(maxLength - 1) + Typography.ellipsis
+} else this

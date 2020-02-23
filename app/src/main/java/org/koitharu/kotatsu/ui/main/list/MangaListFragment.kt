@@ -2,11 +2,9 @@ package org.koitharu.kotatsu.ui.main.list
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.annotation.CallSuper
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -42,7 +40,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 
 	private val settings by inject<AppSettings>()
 
-	private lateinit var adapter: MangaListAdapter
+	private var adapter: MangaListAdapter? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -65,6 +63,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 	}
 
 	override fun onDestroyView() {
+		adapter = null
 		settings.unsubscribe(this)
 		super.onDestroyView()
 	}
@@ -103,8 +102,23 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		startActivity(MangaDetailsActivity.newIntent(context ?: return, item))
 	}
 
+	override fun onItemLongClick(item: Manga, position: Int, view: View): Boolean {
+		val menu = PopupMenu(context ?: return false, view)
+		onCreatePopupMenu(menu.menuInflater, menu.menu, item)
+		return if (menu.menu.hasVisibleItems()) {
+			menu.setOnMenuItemClickListener {
+				onPopupMenuItemSelected(it, item)
+			}
+			menu.gravity = GravityCompat.END or Gravity.TOP
+			menu.show()
+			true
+		} else {
+			false
+		}
+	}
+
 	override fun onListChanged(list: List<Manga>) {
-		adapter.replaceData(list)
+		adapter?.replaceData(list)
 		if (list.isEmpty()) {
 			setUpEmptyListHolder()
 			layout_holder.isVisible = true
@@ -114,7 +128,20 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 	}
 
 	override fun onListAppended(list: List<Manga>) {
-		adapter.appendData(list)
+		adapter?.appendData(list)
+	}
+
+	@CallSuper
+	override fun onItemRemoved(item: Manga) {
+		adapter?.let {
+			it.removeItem(item)
+			if (it.itemCount == 0) {
+				setUpEmptyListHolder()
+				layout_holder.isVisible = true
+			} else {
+				layout_holder.isVisible = false
+			}
+		}
 	}
 
 	override fun onError(e: Exception) {
@@ -181,7 +208,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		recyclerView.adapter = null
 		recyclerView.layoutManager = null
 		recyclerView.clearItemDecorations()
-		adapter.listMode = mode
+		adapter?.listMode = mode
 		recyclerView.layoutManager = when (mode) {
 			ListMode.GRID -> GridLayoutManager(ctx, 3)
 			else -> LinearLayoutManager(ctx)
@@ -196,7 +223,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 				)
 			}
 		)
-		adapter.notifyDataSetChanged()
+		adapter?.notifyDataSetChanged()
 		recyclerView.firstItem = position
 	}
 
@@ -213,4 +240,8 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 			else -> null
 		}
 	}
+
+	protected open fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) = Unit
+
+	protected open fun onPopupMenuItemSelected(item: MenuItem, data: Manga) = false
 }

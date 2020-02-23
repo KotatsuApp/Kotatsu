@@ -23,4 +23,7 @@ interface MangaListView<E> : MvpView {
 
 	@StateStrategyType(AddToEndSingleStrategy::class)
 	fun onInitFilter(sortOrders: List<SortOrder>, tags: List<MangaTag>, currentFilter: MangaFilter?)
+
+	@StateStrategyType(AddToEndStrategy::class)
+	fun onItemRemoved(item: Manga)
 }

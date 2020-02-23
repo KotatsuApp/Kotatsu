@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
@@ -58,6 +59,21 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 				viewState.onError(e)
 			} finally {
 				viewState.onLoadingChanged(false)
+			}
+		}
+	}
+
+	fun removeFromHistory(manga: Manga) {
+		launch {
+			try {
+				withContext(Dispatchers.IO) {
+					repository.delete(manga)
+				}
+				viewState.onItemRemoved(manga)
+			} catch (e: Exception) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
 			}
 		}
 	}

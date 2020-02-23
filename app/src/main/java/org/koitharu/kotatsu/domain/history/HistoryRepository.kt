@@ -53,6 +53,11 @@ class HistoryRepository : KoinComponent {
 		notifyHistoryChanged()
 	}
 
+	suspend fun delete(manga: Manga) {
+		db.historyDao().delete(manga.id)
+		notifyHistoryChanged()
+	}
+
 	companion object {
 
 		private val listeners = HashSet<OnHistoryChangeListener>()

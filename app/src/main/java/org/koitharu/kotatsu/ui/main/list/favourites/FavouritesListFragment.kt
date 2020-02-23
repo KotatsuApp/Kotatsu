@@ -6,6 +6,7 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.fragment_list.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.ui.main.list.MangaListFragment
 import org.koitharu.kotatsu.ui.main.list.MangaListView
 
