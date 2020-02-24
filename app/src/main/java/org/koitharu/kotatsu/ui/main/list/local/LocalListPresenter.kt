@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
+import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga
@@ -33,7 +34,7 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 	}
 
 	fun loadList() {
-		launch {
+		presenterScope.launch {
 			viewState.onLoadingChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
@@ -53,7 +54,7 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 	}
 
 	fun importFile(context: Context, uri: Uri) {
-		launch(Dispatchers.IO) {
+		presenterScope.launch(Dispatchers.IO) {
 			try {
 				val name = MediaStoreCompat.getName(context, uri)
 					?: throw IOException("Cannot fetch name from uri: $uri")
@@ -84,7 +85,7 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 	}
 
 	fun delete(manga: Manga) {
-		launch {
+		presenterScope.launch {
 			try {
 				withContext(Dispatchers.IO) {
 					repository.delete(manga) || throw IOException("Unable to delete file")

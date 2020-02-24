@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
+import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.MangaProviderFactory
@@ -14,7 +15,7 @@ import org.koitharu.kotatsu.domain.history.OnHistoryChangeListener
 import org.koitharu.kotatsu.ui.common.BasePresenter
 
 @InjectViewState
-class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChangeListener,
+class MangaDetailsPresenter private constructor(): BasePresenter<MangaDetailsView>(), OnHistoryChangeListener,
 	OnFavouritesChangeListener {
 
 	private lateinit var historyRepository: HistoryRepository
@@ -37,7 +38,7 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChange
 		loadHistory(manga)
 		viewState.onMangaUpdated(manga)
 		loadFavourite(manga)
-		launch {
+		presenterScope.launch {
 			try {
 				viewState.onLoadingStateChanged(true)
 				val data = withContext(Dispatchers.IO) {
@@ -57,7 +58,7 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChange
 	}
 
 	private fun loadHistory(manga: Manga) {
-		launch {
+		presenterScope.launch {
 			try {
 				val history = withContext(Dispatchers.IO) {
 					historyRepository.getOne(manga)
@@ -72,7 +73,7 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChange
 	}
 
 	private fun loadFavourite(manga: Manga) {
-		launch {
+		presenterScope.launch {
 			try {
 				val categories = withContext(Dispatchers.IO) {
 					favouritesRepository.getCategories(manga.id)
@@ -99,6 +100,18 @@ class MangaDetailsPresenter : BasePresenter<MangaDetailsView>(), OnHistoryChange
 	override fun onDestroy() {
 		HistoryRepository.unsubscribe(this)
 		FavouritesRepository.unsubscribe(this)
+		instance = null
 		super.onDestroy()
+	}
+
+	companion object {
+
+		private var instance: MangaDetailsPresenter? = null
+
+		fun getInstance(): MangaDetailsPresenter = instance ?: synchronized(this) {
+			MangaDetailsPresenter().also {
+				instance = it
+			}
+		}
 	}
 }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
+import moxy.presenterScope
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koitharu.kotatsu.BuildConfig
@@ -23,7 +24,7 @@ import org.koitharu.kotatsu.utils.ext.mimeType
 class ReaderPresenter : BasePresenter<ReaderView>() {
 
 	fun loadChapter(state: ReaderState) {
-		launch {
+		presenterScope.launch {
 			viewState.onLoadingStateChanged(isLoading = true)
 			try {
 				val pages = withContext(Dispatchers.IO) {
@@ -46,7 +47,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 	}
 
 	fun saveState(state: ReaderState) {
-		launch(Dispatchers.IO) {
+		presenterScope.launch(Dispatchers.IO) {
 			HistoryRepository().addOrUpdate(
 				manga = state.manga,
 				chapterId = state.chapterId,
@@ -56,7 +57,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 	}
 
 	fun savePage(resolver: ContentResolver, page: MangaPage) {
-		launch(Dispatchers.IO) {
+		presenterScope.launch(Dispatchers.IO) {
 			try {
 				val repo = MangaProviderFactory.create(page.source)
 				val url = repo.getPageFullUrl(page)

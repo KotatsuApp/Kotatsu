@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
+import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
@@ -21,7 +22,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 	}
 
 	fun loadAllCategories() {
-		launch {
+		presenterScope.launch {
 			try {
 				val categories = withContext(Dispatchers.IO) {
 					repository.getAllCategories()
@@ -37,7 +38,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 	}
 
 	fun loadMangaCategories(manga: Manga) {
-		launch {
+		presenterScope.launch {
 			try {
 				val categories = withContext(Dispatchers.IO) {
 					repository.getCategories(manga.id)
@@ -53,7 +54,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 	}
 
 	fun createCategory(name: String) {
-		launch {
+		presenterScope.launch {
 			try {
 				val categories = withContext(Dispatchers.IO) {
 					repository.addCategory(name)
@@ -70,7 +71,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 	}
 
 	fun addToCategory(manga: Manga, categoryId: Long) {
-		launch {
+		presenterScope.launch {
 			try {
 				val categories = withContext(Dispatchers.IO) {
 					repository.addToCategory(manga,categoryId)
@@ -85,7 +86,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 	}
 
 	fun removeFromCategory(manga: Manga, categoryId: Long) {
-		launch {
+		presenterScope.launch {
 			try {
 				val categories = withContext(Dispatchers.IO) {
 					repository.removeFromCategory(manga, categoryId)

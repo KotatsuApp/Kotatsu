@@ -22,7 +22,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	OnRecyclerItemClickListener<MangaChapter> {
 
 	@Suppress("unused")
-	private val presenter by moxyPresenter { (activity as MangaDetailsActivity).presenter }
+	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
 
 	private var manga: Manga? = null
 

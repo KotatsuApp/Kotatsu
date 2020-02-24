@@ -28,7 +28,7 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 
-	val presenter by moxyPresenter(factory = ::MangaDetailsPresenter)
+	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
 
 	private var manga: Manga? = null
 

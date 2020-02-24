@@ -19,7 +19,7 @@ import kotlin.math.roundToInt
 class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetailsView {
 
 	@Suppress("unused")
-	private val presenter by moxyPresenter { (activity as MangaDetailsActivity).presenter }
+	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
 
 	private var manga: Manga? = null
 	private var history: MangaHistory? = null

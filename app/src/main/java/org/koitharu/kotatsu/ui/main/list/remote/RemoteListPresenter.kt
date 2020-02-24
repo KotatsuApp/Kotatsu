@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
+import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -18,7 +19,7 @@ class RemoteListPresenter : BasePresenter<MangaListView<Unit>>() {
 	private var filter: MangaFilter? = null
 
 	fun loadList(source: MangaSource, offset: Int) {
-		launch {
+		presenterScope.launch {
 			viewState.onLoadingChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
@@ -55,7 +56,7 @@ class RemoteListPresenter : BasePresenter<MangaListView<Unit>>() {
 
 	private fun loadFilter(source: MangaSource) {
 		isFilterInitialized = true
-		launch {
+		presenterScope.launch {
 			try {
 				val (sorts, tags) = withContext(Dispatchers.IO) {
 					val repo = MangaProviderFactory.create(source)

@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
+import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
@@ -22,7 +23,7 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 	}
 
 	fun loadList(offset: Int) {
-		launch {
+		presenterScope.launch {
 			viewState.onLoadingChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
@@ -45,7 +46,7 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 	}
 
 	fun clearHistory() {
-		launch {
+		presenterScope.launch {
 			viewState.onLoadingChanged(true)
 			try {
 				withContext(Dispatchers.IO) {
@@ -64,7 +65,7 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 	}
 
 	fun removeFromHistory(manga: Manga) {
-		launch {
+		presenterScope.launch {
 			try {
 				withContext(Dispatchers.IO) {
 					repository.delete(manga)

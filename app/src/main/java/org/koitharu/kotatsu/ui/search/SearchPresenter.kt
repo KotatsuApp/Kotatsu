@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
+import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.domain.MangaProviderFactory
@@ -21,7 +22,7 @@ class SearchPresenter : BasePresenter<MangaListView<Unit>>() {
 	}
 
 	fun loadList(query: String, offset: Int) {
-		launch {
+		presenterScope.launch {
 			viewState.onLoadingChanged(true)
 			try {
 				//TODO select source

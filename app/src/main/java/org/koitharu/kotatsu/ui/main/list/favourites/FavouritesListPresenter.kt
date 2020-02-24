@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
+import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
@@ -20,7 +21,7 @@ class FavouritesListPresenter : BasePresenter<MangaListView<Unit>>() {
 	}
 
 	fun loadList(offset: Int) {
-		launch {
+		presenterScope.launch {
 			viewState.onLoadingChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
