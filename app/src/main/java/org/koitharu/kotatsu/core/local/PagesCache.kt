@@ -12,7 +12,7 @@ import java.io.OutputStream
 class PagesCache(context: Context) {
 
 	private val cacheDir = context.externalCacheDir ?: context.cacheDir
-	private val lruCache = DiskLruCache.create(cacheDir.sub("pages"), FileSizeUtils.mbToBytes(200))
+	private val lruCache = DiskLruCache.create(cacheDir.sub(Cache.PAGES.dir), FileSizeUtils.mbToBytes(200))
 
 	operator fun get(url: String): File? {
 		return lruCache.get(url)?.takeIfReadable()

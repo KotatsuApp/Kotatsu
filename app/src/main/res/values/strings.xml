@@ -75,4 +75,8 @@
 	<string name="operation_not_supported">This operation is not supported</string>
 	<string name="text_file_not_supported">Invalid file. Only ZIP and CBZ are supported.</string>
 	<string name="no_description">No description</string>
+	<string name="history_and_cache">History and cache</string>
+	<string name="clear_pages_cache">Clear pages cache</string>
+	<string name="cache">Cache</string>
+	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 </resources>

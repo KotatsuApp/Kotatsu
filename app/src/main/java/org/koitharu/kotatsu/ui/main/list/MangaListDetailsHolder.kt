@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import coil.api.load
 import coil.request.RequestDisposable
+import coil.size.Scale
 import kotlinx.android.synthetic.main.item_manga_list_details.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
@@ -26,7 +27,6 @@ class MangaListDetailsHolder(parent: ViewGroup) : BaseViewHolder<Manga, MangaHis
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_placeholder)
-			crossfade(true)
 		}
 		if(data.rating == Manga.NO_RATING) {
 			textView_rating.isVisible = false

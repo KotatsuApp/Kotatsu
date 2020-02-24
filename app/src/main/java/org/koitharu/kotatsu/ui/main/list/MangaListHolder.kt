@@ -23,7 +23,6 @@ class MangaListHolder(parent: ViewGroup) :
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_placeholder)
-			crossfade(true)
 		}
 	}
 }

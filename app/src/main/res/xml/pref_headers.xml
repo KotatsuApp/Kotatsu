@@ -8,4 +8,14 @@
 		android:icon="@drawable/ic_palette"
 		android:title="@string/appearance" />
 
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.ui.settings.sources.SourcesSettingsFragment"
+		android:icon="@drawable/ic_web"
+		android:title="@string/remote_sources" />
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.ui.settings.HistorySettingsFragment"
+		android:icon="@drawable/ic_history"
+		android:title="@string/history_and_cache" />
+
 </PreferenceScreen>

@@ -2,6 +2,7 @@
 <resources>
 	<string name="key_list_mode">list_mode</string>
 	<string name="key_theme">theme</string>
+	<string name="key_pages_cache_clear">pages_cache_clear</string>
 	<string-array name="values_theme">
 		<item>-1</item>
 		<item>1</item>

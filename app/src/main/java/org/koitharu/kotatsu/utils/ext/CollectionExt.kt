@@ -4,3 +4,19 @@ fun <T> MutableCollection<T>.replaceWith(subject: Iterable<T>) {
 	clear()
 	addAll(subject)
 }
+
+inline fun <T> Array<out T>.sumByLong(selector: (T) -> Long): Long {
+	var sum = 0L
+	for (element in this) {
+		sum += selector(element)
+	}
+	return sum
+}
+
+inline fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
+	var sum = 0L
+	for (element in this) {
+		sum += selector(element)
+	}
+	return sum
+}

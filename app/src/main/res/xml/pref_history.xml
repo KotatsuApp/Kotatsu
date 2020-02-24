@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<PreferenceCategory
+		app:iconSpaceReserved="false"
+		android:title="@string/cache">
+
+		<Preference
+			android:key="@string/key_pages_cache_clear"
+			android:persistent="false"
+			android:title="@string/clear_pages_cache"
+			app:iconSpaceReserved="false" />
+
+	</PreferenceCategory>
+
+</PreferenceScreen>
