@@ -84,4 +84,20 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 		}
 	}
 
+	override fun onDestroy() {
+		instance = null
+		super.onDestroy()
+	}
+
+	companion object {
+
+		private var instance: ReaderPresenter? = null
+
+		fun getInstance(): ReaderPresenter = instance ?: synchronized(this) {
+			ReaderPresenter().also {
+				instance = it
+			}
+		}
+	}
+
 }

@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.reader
+package org.koitharu.kotatsu.ui.reader.standard
 
 import android.view.ViewGroup
 import androidx.core.net.toUri
@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class PageHolder(parent: ViewGroup, private val loader: PageLoader) :

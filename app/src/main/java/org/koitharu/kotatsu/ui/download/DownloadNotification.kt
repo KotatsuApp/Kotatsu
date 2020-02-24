@@ -36,7 +36,6 @@ class DownloadNotification(private val context: Context) {
 		builder.setContentText(context.getString(R.string.manga_downloading_))
 		builder.setProgress(1, 0, true)
 		builder.setSmallIcon(android.R.drawable.stat_sys_download)
-		builder.setSubText(context.getText(R.string.preparing_))
 		builder.setLargeIcon(null)
 	}
 
@@ -50,19 +49,18 @@ class DownloadNotification(private val context: Context) {
 			chapter * PROGRESS_STEP + (page / pagesTotal.toFloat() * PROGRESS_STEP).roundToInt()
 		val percent = (progress / max.toFloat() * 100).roundToInt()
 		builder.setProgress(max, progress, false)
-		builder.setSubText("$percent%")
+		builder.setContentText(context.getString(R.string.downloading_d_percent, percent))
 	}
 
 	fun setPostProcessing() {
 		builder.setProgress(1, 0, true)
-		builder.setSubText(context.getString(R.string.processing_))
+		builder.setContentText(context.getString(R.string.processing_))
 	}
 
 	fun setDone() {
 		builder.setProgress(0, 0, false)
 		builder.setContentText(context.getString(R.string.download_complete))
 		builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
-		builder.setSubText(null)
 	}
 
 	fun update(id: Int = NOTIFICATION_ID) {

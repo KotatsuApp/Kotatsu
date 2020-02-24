@@ -2,22 +2,21 @@ package org.koitharu.kotatsu.ui.reader
 
 import android.net.Uri
 import moxy.MvpView
-import moxy.viewstate.strategy.AddToEndSingleStrategy
-import moxy.viewstate.strategy.OneExecutionStateStrategy
-import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 import org.koitharu.kotatsu.core.model.MangaPage
 
 interface ReaderView : MvpView {
 
-	@StateStrategyType(AddToEndSingleStrategy::class)
+	@AddToEndSingle
 	fun onPagesReady(pages: List<MangaPage>, index: Int)
 
-	@StateStrategyType(AddToEndSingleStrategy::class)
+	@AddToEndSingle
 	fun onLoadingStateChanged(isLoading: Boolean)
 
-	@StateStrategyType(OneExecutionStateStrategy::class)
+	@OneExecution
 	fun onError(e: Exception)
 
-	@StateStrategyType(OneExecutionStateStrategy::class)
+	@OneExecution
 	fun onPageSaved(uri: Uri?)
 }

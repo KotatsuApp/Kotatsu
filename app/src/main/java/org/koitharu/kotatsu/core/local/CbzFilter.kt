@@ -5,5 +5,6 @@ import java.io.FilenameFilter
 
 class CbzFilter : FilenameFilter {
 
-	override fun accept(dir: File, name: String) = name.endsWith(".cbz", ignoreCase = true)
+	override fun accept(dir: File, name: String) =
+		name.endsWith(".cbz", ignoreCase = true) || name.endsWith(".zip", ignoreCase = true)
 }

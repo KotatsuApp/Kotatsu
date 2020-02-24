@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.safe
 import java.io.File
 import java.util.*
+import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaRepository(loaderContext) {
@@ -68,7 +69,11 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 				x.copy(
 					source = MangaSource.LOCAL,
 					url = fileUri,
-					coverUrl = zipUri(file, it.getCoverEntry() ?: zip.entries().nextElement().name),
+					coverUrl = zipUri(
+						file,
+						entryName = it.getCoverEntry()
+							?: findFirstEntry(zip.entries())?.name.orEmpty()
+					),
 					chapters = x.chapters?.map { c -> c.copy(url = fileUri) }
 				)
 			}
@@ -79,7 +84,7 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 				title = title,
 				url = fileUri,
 				source = MangaSource.LOCAL,
-				coverUrl = zipUri(file, zip.entries().nextElement().name),
+				coverUrl = zipUri(file, findFirstEntry(zip.entries())?.name.orEmpty()),
 				chapters = listOf(
 					MangaChapter(
 						id = file.absolutePath.longHashCode(),
@@ -100,6 +105,13 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 
 	private fun zipUri(file: File, entryName: String) =
 		Uri.fromParts("cbz", file.path, entryName).toString()
+
+	private fun findFirstEntry(entries: Enumeration<out ZipEntry>): ZipEntry? {
+		val list = entries.toList()
+			.filterNot { it.isDirectory }
+			.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
+		return list.firstOrNull()
+	}
 
 	companion object {
 

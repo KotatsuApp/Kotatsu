@@ -4,11 +4,11 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/rootLayout"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:keepScreenOn="true">
 
-	<androidx.viewpager2.widget.ViewPager2
-		android:id="@+id/pager"
-		android:keepScreenOn="true"
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/container"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
 

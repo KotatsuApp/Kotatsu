@@ -12,6 +12,7 @@ import android.view.MotionEvent
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
 import moxy.MvpDelegate
@@ -22,6 +23,7 @@ import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
+import org.koitharu.kotatsu.ui.reader.standard.StandardReaderFragment
 import org.koitharu.kotatsu.ui.reader.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.ui.reader.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.utils.GridTouchHelper
@@ -32,13 +34,14 @@ import org.koitharu.kotatsu.utils.ext.*
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener {
 
-	private val presenter by moxyPresenter(factory = ::ReaderPresenter)
+	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
 
 	private lateinit var state: ReaderState
 
-	private lateinit var loader: PageLoader
-	private lateinit var adapter: PagesAdapter
 	private lateinit var touchHelper: GridTouchHelper
+
+	private val reader
+		get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseReaderFragment
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -67,23 +70,22 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			insets
 		}
 
-		loader = PageLoader()
-		adapter = PagesAdapter(loader)
-		pager.adapter = adapter
-		pager.offscreenPageLimit = 2
+		if (reader == null) {
+			supportFragmentManager.commit {
+				replace(R.id.container, StandardReaderFragment())
+			}
+		}
+
 		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
 			presenter.loadChapter(state)
 		}
 	}
 
-	override fun onDestroy() {
-		loader.dispose()
-		super.onDestroy()
-	}
-
 	override fun onPause() {
-		state = state.copy(page = pager.currentItem)
-		presenter.saveState(state)
+		reader?.let {
+			state = state.copy(page = it.currentPageIndex)
+			presenter.saveState(state)
+		}
 		super.onPause()
 	}
 
@@ -102,9 +104,9 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			true
 		}
 		R.id.action_pages_thumbs -> {
-			if (adapter.hasItems) {
+			if (reader?.hasItems == true) {
 				PagesThumbnailsSheet.show(
-					supportFragmentManager, adapter.items,
+					supportFragmentManager, reader!!.pages,
 					state.chapter?.name ?: title?.toString().orEmpty()
 				)
 			} else {
@@ -113,10 +115,13 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			true
 		}
 		R.id.action_save_page -> {
-			if (adapter.hasItems) {
+			if (reader?.hasItems == true) {
 				requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) {
 					if (it) {
-						presenter.savePage(contentResolver, adapter.getItem(pager.currentItem))
+						presenter.savePage(
+							resolver = contentResolver,
+							page = reader?.currentPage ?: return@requestPermission
+						)
 					}
 				}
 			} else {
@@ -128,8 +133,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onPagesReady(pages: List<MangaPage>, index: Int) {
-		adapter.replaceData(pages)
-		pager.setCurrentItem(index, false)
+
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
@@ -141,7 +145,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			setTitle(R.string.error_occurred)
 			setMessage(e.message)
 			setPositiveButton(R.string.close, null)
-			if (!adapter.hasItems) {
+			if (reader?.hasItems != true) {
 				setOnDismissListener {
 					finish()
 				}
@@ -164,20 +168,22 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			}
 			GridTouchHelper.AREA_TOP,
 			GridTouchHelper.AREA_LEFT -> {
-				pager.setCurrentItem(pager.currentItem - 1, true)
+				reader?.let {
+					it.setCurrentPage(it.currentPageIndex - 1, true)
+				}
 			}
 			GridTouchHelper.AREA_BOTTOM,
 			GridTouchHelper.AREA_RIGHT -> {
-				pager.setCurrentItem(pager.currentItem + 1, true)
+				reader?.let {
+					it.setCurrentPage(it.currentPageIndex + 1, true)
+				}
 			}
 		}
 	}
 
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
-		return if (appbar_top.hasGlobalPoint(rawX, rawY) || appbar_bottom.hasGlobalPoint(
-				rawX,
-				rawY
-			)
+		return if (appbar_top.hasGlobalPoint(rawX, rawY)
+			|| appbar_bottom.hasGlobalPoint(rawX, rawY)
 		) {
 			false
 		} else {
@@ -201,20 +207,22 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onPageSelected(page: MangaPage) {
-		val index = adapter.items.indexOfFirst { x -> x.id == page.id }
-		if (index != -1) {
-			pager.setCurrentItem(index, false)
+		reader?.let {
+			val index = it.pages.indexOfFirst { x -> x.id == page.id }
+			if (index != -1) {
+				it.setCurrentPage(index, false)
+			}
 		}
 	}
 
 	override fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
-			Snackbar.make(pager, R.string.page_saved, Snackbar.LENGTH_LONG)
+			Snackbar.make(container, R.string.page_saved, Snackbar.LENGTH_LONG)
 				.setAction(R.string.share) {
 					ShareHelper.shareImage(this, uri)
 				}.show()
 		} else {
-			Snackbar.make(pager, R.string.error_occurred, Snackbar.LENGTH_SHORT).show()
+			Snackbar.make(container, R.string.error_occurred, Snackbar.LENGTH_SHORT).show()
 		}
 	}
 
