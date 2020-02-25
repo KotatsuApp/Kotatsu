@@ -19,8 +19,7 @@ class MangaPreferencesRepository : KoinComponent {
 		)
 	}
 
-	suspend fun getReaderMode(mangaId: Long): ReaderMode {
+	suspend fun getReaderMode(mangaId: Long): ReaderMode? {
 		return db.preferencesDao().find(mangaId)?.let { ReaderMode.valueOf(it.mode) }
-			?: ReaderMode.UNKNOWN
 	}
 }

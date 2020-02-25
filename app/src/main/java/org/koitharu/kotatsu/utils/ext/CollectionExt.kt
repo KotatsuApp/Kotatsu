@@ -20,3 +20,8 @@ inline fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
 	}
 	return sum
 }
+
+fun <T> List<T>.medianOrNull(): T? = when {
+	isEmpty() -> null
+	else -> get((size / 2).coerceIn(indices))
+}
