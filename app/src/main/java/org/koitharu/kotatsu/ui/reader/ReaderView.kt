@@ -5,11 +5,12 @@ import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.prefs.ReaderMode
 
 interface ReaderView : MvpView {
 
 	@AddToEndSingle
-	fun onPagesReady(pages: List<MangaPage>, index: Int)
+	fun onInitReader(pages: List<MangaPage>, mode: ReaderMode, state: ReaderState)
 
 	@AddToEndSingle
 	fun onLoadingStateChanged(isLoading: Boolean)

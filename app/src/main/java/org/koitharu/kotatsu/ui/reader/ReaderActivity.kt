@@ -15,24 +15,25 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
-import moxy.MvpDelegate
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
 import org.koitharu.kotatsu.ui.reader.standard.StandardReaderFragment
 import org.koitharu.kotatsu.ui.reader.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.ui.reader.thumbnails.PagesThumbnailsSheet
+import org.koitharu.kotatsu.ui.reader.wetoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
 
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnChapterChangeListener,
-	GridTouchHelper.OnGridTouchListener, OnPageSelectListener {
+	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback {
 
 	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
 
@@ -70,14 +71,22 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			insets
 		}
 
-		if (reader == null) {
-			supportFragmentManager.commit {
-				replace(R.id.container, StandardReaderFragment())
-			}
-		}
+		presenter.loadChapter(state)
+	}
 
-		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
-			presenter.loadChapter(state)
+	override fun onInitReader(pages: List<MangaPage>, mode: ReaderMode, state: ReaderState) {
+		val currentReader = reader
+		when (mode) {
+			ReaderMode.WEBTOON -> if (currentReader !is WebtoonReaderFragment) {
+				supportFragmentManager.commit {
+					replace(R.id.container, WebtoonReaderFragment())
+				}
+			}
+			else -> if (currentReader !is StandardReaderFragment) {
+				supportFragmentManager.commit {
+					replace(R.id.container, StandardReaderFragment())
+				}
+			}
 		}
 	}
 
@@ -94,9 +103,20 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		return super.onCreateOptionsMenu(menu)
 	}
 
+	override fun onSaveInstanceState(outState: Bundle) {
+		super.onSaveInstanceState(outState)
+		outState.putParcelable(EXTRA_STATE, state)
+	}
+
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.action_settings -> {
-			ReaderConfigDialog.show(supportFragmentManager)
+			ReaderConfigDialog.show(
+				supportFragmentManager, when (reader) {
+					is StandardReaderFragment -> ReaderMode.STANDARD
+					is WebtoonReaderFragment -> ReaderMode.WEBTOON
+					else -> ReaderMode.UNKNOWN
+				}
+			)
 			true
 		}
 		R.id.action_chapters -> {
@@ -134,10 +154,6 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
-	}
-
-	override fun onPagesReady(pages: List<MangaPage>, index: Int) {
-
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
@@ -202,12 +218,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onChapterChanged(chapter: MangaChapter) {
-		presenter.loadChapter(
-			state.copy(
-				chapterId = chapter.id,
-				page = 0
-			)
+		state = state.copy(
+			chapterId = chapter.id,
+			page = 0
 		)
+		presenter.loadChapter(state)
 	}
 
 	override fun onPageSelected(page: MangaPage) {
@@ -217,6 +232,14 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				it.setCurrentPage(index, false)
 			}
 		}
+	}
+
+	override fun onReaderModeChanged(mode: ReaderMode) {
+		reader?.let {
+			state = state.copy(page = it.currentPageIndex)
+		}
+		presenter.saveState(state, mode)
+		recreate()
 	}
 
 	override fun onPageSaved(uri: Uri?) {

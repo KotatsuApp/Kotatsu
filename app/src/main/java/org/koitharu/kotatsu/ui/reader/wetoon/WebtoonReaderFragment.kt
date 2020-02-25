@@ -1,8 +1,8 @@
-package org.koitharu.kotatsu.ui.reader.standard
+package org.koitharu.kotatsu.ui.reader.wetoon
 
 import android.os.Bundle
 import android.view.View
-import kotlinx.android.synthetic.main.fragment_reader_standard.*
+import kotlinx.android.synthetic.main.fragment_reader_webtoon.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
@@ -11,12 +11,13 @@ import org.koitharu.kotatsu.ui.reader.BaseReaderFragment
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.ReaderPresenter
 import org.koitharu.kotatsu.ui.reader.ReaderState
+import org.koitharu.kotatsu.utils.ext.firstItem
 
-class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_standard) {
+class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoon) {
 
 	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
 
-	private var adapter: PagesAdapter? = null
+	private var adapter: WebtoonAdapter? = null
 	private lateinit var loader: PageLoader
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,15 +27,14 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = PagesAdapter(loader)
-		pager.adapter = adapter
-		pager.offscreenPageLimit = 2
+		adapter = WebtoonAdapter(loader)
+		recyclerView.adapter = adapter
 	}
 
 	override fun onInitReader(pages: List<MangaPage>, mode: ReaderMode, state: ReaderState) {
 		adapter?.let {
 			it.replaceData(pages)
-			pager.setCurrentItem(state.page, false)
+			recyclerView.firstItem = state.page
 		}
 	}
 
@@ -47,12 +47,16 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 		get() = adapter?.hasItems == true
 
 	override val currentPageIndex: Int
-		get() = pager.currentItem
+		get() = recyclerView.firstItem
 
 	override val pages: List<MangaPage>
 		get() = adapter?.items.orEmpty()
 
 	override fun setCurrentPage(index: Int, smooth: Boolean) {
-		pager.setCurrentItem(index, smooth)
+		if (smooth) {
+			recyclerView.smoothScrollToPosition(index)
+		} else {
+			recyclerView.firstItem = index
+		}
 	}
 }

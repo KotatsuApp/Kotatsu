@@ -46,7 +46,6 @@ data class MangaEntity(
 			altTitle = manga.altTitle,
 			rating = manga.rating,
 			state = manga.state?.name,
-//			tags = manga.tags.map(TagEntity.Companion::fromMangaTag),
 			title = manga.title
 		)
 	}

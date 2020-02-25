@@ -82,4 +82,5 @@
 	<string name="downloading_d_percent">Downloading: %d%%</string>
 	<string name="standard">Standard</string>
 	<string name="webtoon">Webtoon</string>
+	<string name="read_mode">Read mode</string>
 </resources>

@@ -12,6 +12,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.domain.MangaPreferencesRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
@@ -27,14 +29,14 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(isLoading = true)
 			try {
-				val pages = withContext(Dispatchers.IO) {
+				val (pages, mode) = withContext(Dispatchers.IO) {
 					val repo = MangaProviderFactory.create(state.manga.source)
 					val chapter = state.chapter ?: repo.getDetails(state.manga).chapters
 						?.first { it.id == state.chapterId }
 					?: throw RuntimeException("Chapter ${state.chapterId} not found")
-					repo.getPages(chapter)
+					repo.getPages(chapter) to MangaPreferencesRepository().getReaderMode(state.manga.id)
 				}
-				viewState.onPagesReady(pages, state.page)
+				viewState.onInitReader(pages, mode, state)
 			} catch (e: Exception) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
@@ -46,13 +48,19 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 		}
 	}
 
-	fun saveState(state: ReaderState) {
+	fun saveState(state: ReaderState, mode: ReaderMode? = null) {
 		presenterScope.launch(Dispatchers.IO) {
 			HistoryRepository().addOrUpdate(
 				manga = state.manga,
 				chapterId = state.chapterId,
 				page = state.page
 			)
+			if (mode != null) {
+				MangaPreferencesRepository().saveData(
+					mangaId = state.manga.id,
+					mode = mode
+				)
+			}
 		}
 	}
 

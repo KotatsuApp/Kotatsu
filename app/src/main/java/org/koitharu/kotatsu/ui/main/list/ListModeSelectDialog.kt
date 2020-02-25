@@ -13,7 +13,14 @@ import org.koitharu.kotatsu.ui.common.AlertDialogFragment
 
 class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), View.OnClickListener {
 
-	private val setting by inject<AppSettings>()
+	private val settings by inject<AppSettings>()
+
+	private lateinit var mode: ListMode
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		mode = settings.listMode
+	}
 
 	override fun onBuildDialog(builder: AlertDialog.Builder) {
 		builder.setTitle(R.string.list_mode)
@@ -22,7 +29,6 @@ class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), Vie
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val mode = setting.listMode
 		button_list.isChecked = mode == ListMode.LIST
 		button_list_detailed.isChecked = mode == ListMode.DETAILED_LIST
 		button_grid.isChecked = mode == ListMode.GRID
@@ -35,10 +41,13 @@ class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), Vie
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_ok -> dismiss()
-			R.id.button_list -> setting.listMode = ListMode.LIST
-			R.id.button_list_detailed -> setting.listMode = ListMode.DETAILED_LIST
-			R.id.button_grid -> setting.listMode = ListMode.GRID
+			R.id.button_ok -> {
+				settings.listMode = mode
+				dismiss()
+			}
+			R.id.button_list -> mode = ListMode.LIST
+			R.id.button_list_detailed -> mode = ListMode.DETAILED_LIST
+			R.id.button_grid -> mode = ListMode.GRID
 		}
 	}
 
