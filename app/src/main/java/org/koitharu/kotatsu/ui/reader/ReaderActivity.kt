@@ -95,6 +95,10 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+		R.id.action_settings -> {
+			ReaderConfigDialog.show(supportFragmentManager)
+			true
+		}
 		R.id.action_chapters -> {
 			ChaptersDialog.show(
 				supportFragmentManager,

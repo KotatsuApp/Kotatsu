@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:padding="16dp"
+	android:orientation="vertical">
+
+	<com.google.android.material.button.MaterialButtonToggleGroup
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		app:selectionRequired="true"
+		app:singleSelection="true">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_standard"
+			style="@style/AppToggleButton"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/standard"
+			app:icon="@drawable/ic_book_page" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_webtoon"
+			style="@style/AppToggleButton"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/webtoon"
+			app:icon="@drawable/ic_script" />
+
+	</com.google.android.material.button.MaterialButtonToggleGroup>
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/button_ok"
+		style="@style/Widget.MaterialComponents.Button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="16dp"
+		android:layout_gravity="center_horizontal"
+		android:text="@android:string/ok" />
+</LinearLayout>

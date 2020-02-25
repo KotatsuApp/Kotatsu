@@ -1,27 +1,26 @@
 package org.koitharu.kotatsu.ui.details
 
 import moxy.MvpView
-import moxy.viewstate.strategy.AddToEndSingleStrategy
-import moxy.viewstate.strategy.OneExecutionStateStrategy
-import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 
 interface MangaDetailsView : MvpView {
 
-	@StateStrategyType(AddToEndSingleStrategy::class)
+	@AddToEndSingle
 	fun onMangaUpdated(manga: Manga)
 
-	@StateStrategyType(AddToEndSingleStrategy::class)
+	@AddToEndSingle
 	fun onLoadingStateChanged(isLoading: Boolean)
 
-	@StateStrategyType(OneExecutionStateStrategy::class)
+	@OneExecution
 	fun onError(e: Exception)
 
-	@StateStrategyType(AddToEndSingleStrategy::class)
+	@AddToEndSingle
 	fun onHistoryChanged(history: MangaHistory?)
 
-	@StateStrategyType(AddToEndSingleStrategy::class)
+	@AddToEndSingle
 	fun onFavouriteChanged(categories: List<FavouriteCategory>)
 }

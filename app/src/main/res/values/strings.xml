@@ -80,4 +80,6 @@
 	<string name="cache">Cache</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="downloading_d_percent">Downloading: %d%%</string>
+	<string name="standard">Standard</string>
+	<string name="webtoon">Webtoon</string>
 </resources>
