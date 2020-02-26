@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.local.MangaZip
 import org.koitharu.kotatsu.ui.common.BaseService
+import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.retryUntilSuccess
 import org.koitharu.kotatsu.utils.ext.safe
@@ -123,6 +124,7 @@ class DownloadService : BaseService() {
 	private suspend fun downloadPage(url: String, destination: File): File {
 		val request = Request.Builder()
 			.url(url)
+			.cacheControl(CacheUtils.CONTROL_DISABLED)
 			.get()
 			.build()
 		return retryUntilSuccess(3) {

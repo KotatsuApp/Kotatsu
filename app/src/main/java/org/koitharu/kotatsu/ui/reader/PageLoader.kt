@@ -7,6 +7,7 @@ import okhttp3.Request
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koitharu.kotatsu.core.local.PagesCache
+import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
 import java.io.File
 import java.util.zip.ZipFile
@@ -41,6 +42,7 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 			val request = Request.Builder()
 				.url(url)
 				.get()
+				.cacheControl(CacheUtils.CONTROL_DISABLED)
 				.build()
 			okHttp.newCall(request).await().use { response ->
 				cache.put(url) { out ->

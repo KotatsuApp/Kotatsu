@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.local.CbzFetcher
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
+import org.koitharu.kotatsu.utils.CacheUtils
 import java.util.concurrent.TimeUnit
 
 class KotatsuApp : Application() {
@@ -41,7 +42,9 @@ class KotatsuApp : Application() {
 			modules(listOf(
 				module {
 					factory {
-						okHttp().build()
+						okHttp()
+							.cache(CacheUtils.createHttpCache(applicationContext))
+							.build()
 					}
 				}, module {
 					single {
