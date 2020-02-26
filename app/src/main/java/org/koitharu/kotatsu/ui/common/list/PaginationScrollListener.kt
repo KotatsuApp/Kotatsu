@@ -6,7 +6,7 @@ class PaginationScrollListener(offset: Int, private val callback: Callback) : Bo
 
 	private var lastTotalCount = 0
 
-	override fun onScrolledToTop(recyclerView: RecyclerView)  = Unit
+	override fun onScrolledToStart(recyclerView: RecyclerView)  = Unit
 
 	override fun onScrolledToEnd(recyclerView: RecyclerView) {
 		val total = recyclerView.adapter?.itemCount ?: 0

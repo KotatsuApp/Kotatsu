@@ -6,17 +6,16 @@ import kotlinx.android.synthetic.main.fragment_reader_standard.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.ui.reader.BaseReaderFragment
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.ReaderPresenter
-import org.koitharu.kotatsu.ui.reader.ReaderState
 
 class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_standard) {
 
 	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
 
 	private var adapter: PagesAdapter? = null
+	private var isBusy: Boolean = true
 	private lateinit var loader: PageLoader
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,11 +30,21 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 		pager.offscreenPageLimit = 2
 	}
 
-	override fun onInitReader(pages: List<MangaPage>, mode: ReaderMode, state: ReaderState) {
+	override fun onDestroyView() {
+		adapter = null
+		super.onDestroyView()
+	}
+
+	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>) {
 		adapter?.let {
 			it.replaceData(pages)
-			pager.setCurrentItem(state.page, false)
+			lastState?.let { state ->
+				if (chapterId == state.chapterId) {
+					pager.setCurrentItem(state.page, false)
+				}
+			}
 		}
+		isBusy = false
 	}
 
 	override fun onDestroy() {
@@ -54,5 +63,10 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 
 	override fun setCurrentPage(index: Int, smooth: Boolean) {
 		pager.setCurrentItem(index, smooth)
+	}
+
+	private companion object {
+
+		const val SCROLL_OFFSET = 2
 	}
 }

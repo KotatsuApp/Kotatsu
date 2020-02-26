@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.ui.common.ChipsFactory
@@ -102,7 +103,10 @@ fun View.disableFor(timeInMillis: Long) {
 	}
 }
 
-fun View.showPopupMenu(@MenuRes menuRes: Int, onPrepare:((Menu) -> Unit)? = null, onItemClick: (MenuItem) -> Boolean) {
+fun View.showPopupMenu(
+	@MenuRes menuRes: Int, onPrepare: ((Menu) -> Unit)? = null,
+	onItemClick: (MenuItem) -> Boolean
+) {
 	val menu = PopupMenu(context, this)
 	menu.inflate(menuRes)
 	menu.setOnMenuItemClickListener(onItemClick)
@@ -158,4 +162,14 @@ fun View.measureWidth(): Int {
 		measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
 		measuredWidth
 	} else vw
+}
+
+fun ViewPager2.doOnPageChanged(callback: (Int) -> Unit) {
+	registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
+		override fun onPageSelected(position: Int) {
+			super.onPageSelected(position)
+			callback(position)
+		}
+	})
 }

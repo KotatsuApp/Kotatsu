@@ -6,11 +6,9 @@ import kotlinx.android.synthetic.main.fragment_reader_webtoon.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.ui.reader.BaseReaderFragment
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.ReaderPresenter
-import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.utils.ext.firstItem
 
 class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoon) {
@@ -31,10 +29,14 @@ class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoo
 		recyclerView.adapter = adapter
 	}
 
-	override fun onInitReader(pages: List<MangaPage>, mode: ReaderMode, state: ReaderState) {
+	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>) {
 		adapter?.let {
 			it.replaceData(pages)
-			recyclerView.firstItem = state.page
+			lastState?.let { state ->
+				if (chapterId == state.chapterId) {
+					recyclerView.firstItem = state.page
+				}
+			}
 		}
 	}
 

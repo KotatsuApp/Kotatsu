@@ -49,6 +49,12 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 		onDataSetChanged()
 	}
 
+	fun prependData(newData: List<T>) {
+		dataSet.addAll(0, newData)
+		notifyItemRangeInserted(0, newData.size)
+		onDataSetChanged()
+	}
+
 	fun appendItem(newItem: T) {
 		dataSet.add(newItem)
 		notifyItemInserted(dataSet.lastIndex)

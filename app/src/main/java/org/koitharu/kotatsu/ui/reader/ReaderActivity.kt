@@ -15,6 +15,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
+import moxy.MvpDelegate
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
@@ -37,7 +38,8 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 
 	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
 
-	private lateinit var state: ReaderState
+	lateinit var state: ReaderState
+		private set
 
 	private lateinit var touchHelper: GridTouchHelper
 
@@ -71,24 +73,18 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			insets
 		}
 
-		presenter.loadChapter(state)
-	}
-
-	override fun onInitReader(pages: List<MangaPage>, mode: ReaderMode, state: ReaderState) {
-		val currentReader = reader
-		when (mode) {
-			ReaderMode.WEBTOON -> if (currentReader !is WebtoonReaderFragment) {
-				supportFragmentManager.commit {
-					replace(R.id.container, WebtoonReaderFragment())
-				}
-			}
-			else -> if (currentReader !is StandardReaderFragment) {
-				supportFragmentManager.commit {
-					replace(R.id.container, StandardReaderFragment())
-				}
-			}
+		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
+			presenter.loadChapter(state.manga, state.chapterId)
 		}
 	}
+
+	override fun onInitReader(mode: ReaderMode) {
+		if (reader == null) {
+			setReader(mode)
+		}
+	}
+
+	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>) = Unit
 
 	override fun onPause() {
 		reader?.let {
@@ -176,15 +172,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	override fun onGridTouch(area: Int) {
 		when (area) {
 			GridTouchHelper.AREA_CENTER -> {
-				if (appbar_top.isVisible) {
-					appbar_top.hideAnimated(Motion.SlideTop)
-					appbar_bottom.hideAnimated(Motion.SlideBottom)
-					hideSystemUI()
-				} else {
-					appbar_top.showAnimated(Motion.SlideTop)
-					appbar_bottom.showAnimated(Motion.SlideBottom)
-					showSystemUI()
-				}
+				setUiIsVisible(!appbar_top.isVisible)
 			}
 			GridTouchHelper.AREA_TOP,
 			GridTouchHelper.AREA_LEFT -> {
@@ -222,7 +210,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			chapterId = chapter.id,
 			page = 0
 		)
-		presenter.loadChapter(state)
+		presenter.loadChapter(state.manga, chapter.id)
 	}
 
 	override fun onPageSelected(page: MangaPage) {
@@ -239,7 +227,12 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			state = state.copy(page = it.currentPageIndex)
 		}
 		presenter.saveState(state, mode)
-		recreate()
+		setReader(mode)
+		setUiIsVisible(false)
+	}
+
+	override fun onChaptersLoader(chapters: List<MangaChapter>) {
+		state = state.copy(manga = state.manga.copy(chapters = chapters))
 	}
 
 	override fun onPageSaved(uri: Uri?) {
@@ -257,6 +250,36 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		Toast.makeText(this, R.string.wait_for_loading_finish, Toast.LENGTH_SHORT).apply {
 			setGravity(Gravity.CENTER, 0, 0)
 		}.show()
+	}
+
+	private fun setUiIsVisible(isUiVisible: Boolean) {
+		if (appbar_top.isVisible != isUiVisible) {
+			if (isUiVisible) {
+				appbar_top.showAnimated(Motion.SlideTop)
+				appbar_bottom.showAnimated(Motion.SlideBottom)
+				showSystemUI()
+			} else {
+				appbar_top.hideAnimated(Motion.SlideTop)
+				appbar_bottom.hideAnimated(Motion.SlideBottom)
+				hideSystemUI()
+			}
+		}
+	}
+
+	private fun setReader(mode: ReaderMode) {
+		val currentReader = reader
+		when (mode) {
+			ReaderMode.WEBTOON -> if (currentReader !is WebtoonReaderFragment) {
+				supportFragmentManager.commit {
+					replace(R.id.container, WebtoonReaderFragment())
+				}
+			}
+			else -> if (currentReader !is StandardReaderFragment) {
+				supportFragmentManager.commit {
+					replace(R.id.container, StandardReaderFragment())
+				}
+			}
+		}
 	}
 
 	companion object {

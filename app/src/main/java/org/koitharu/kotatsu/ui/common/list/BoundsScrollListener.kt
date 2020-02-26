@@ -13,7 +13,7 @@ abstract class BoundsScrollListener(private val offsetTop: Int, private val offs
 		val layoutManager = (recyclerView.layoutManager as? LinearLayoutManager) ?: return
 		val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 		if (firstVisibleItemPosition <= offsetTop) {
-			onScrolledToTop(recyclerView)
+			onScrolledToStart(recyclerView)
 			return
 		}
 		val visibleItemCount = layoutManager.childCount
@@ -23,7 +23,7 @@ abstract class BoundsScrollListener(private val offsetTop: Int, private val offs
 		}
 	}
 
-	abstract fun onScrolledToTop(recyclerView: RecyclerView)
+	abstract fun onScrolledToStart(recyclerView: RecyclerView)
 
 	abstract fun onScrolledToEnd(recyclerView: RecyclerView)
 }
