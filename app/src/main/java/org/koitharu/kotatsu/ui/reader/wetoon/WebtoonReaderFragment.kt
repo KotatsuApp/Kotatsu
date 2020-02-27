@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.ui.reader.BaseReaderFragment
 import org.koitharu.kotatsu.ui.reader.OnBoundsScrollListener
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.ReaderPresenter
+import org.koitharu.kotatsu.utils.ext.doOnCurrentItemChanged
 import org.koitharu.kotatsu.utils.ext.firstItem
 
 class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoon),
@@ -30,6 +31,7 @@ class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoo
 		adapter = WebtoonAdapter(loader)
 		recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(ListPaginationListener(2, this))
+		recyclerView.doOnCurrentItemChanged(::notifyPageChanged)
 	}
 
 	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: Action) {

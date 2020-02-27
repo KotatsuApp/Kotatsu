@@ -173,3 +173,20 @@ fun ViewPager2.doOnPageChanged(callback: (Int) -> Unit) {
 		}
 	})
 }
+
+fun RecyclerView.doOnCurrentItemChanged(callback: (Int) -> Unit) {
+	addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+		private var lastItem = -1
+
+		override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+			super.onScrolled(recyclerView, dx, dy)
+			val item = (recyclerView.layoutManager as? LinearLayoutManager)
+				?.findFirstVisibleItemPosition()
+			if (item != null && item != RecyclerView.NO_POSITION && item != lastItem) {
+				lastItem = item
+				callback(item)
+			}
+		}
+	})
+}

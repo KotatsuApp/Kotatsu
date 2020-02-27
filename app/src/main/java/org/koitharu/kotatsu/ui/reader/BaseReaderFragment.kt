@@ -18,7 +18,7 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 
 	abstract val hasItems: Boolean
 
-	abstract val currentPageIndex: Int
+	protected abstract val currentPageIndex: Int
 
 	abstract val pages: List<MangaPage>
 
@@ -46,6 +46,11 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 
 	override fun onChaptersLoader(chapters: List<MangaChapter>) = Unit
 
+	override fun onDestroyView() {
+		chaptersMap.clear()
+		super.onDestroyView()
+	}
+
 	final override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>) {
 		when {
 			chaptersMap.isEmpty() -> {
@@ -66,6 +71,33 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 				onPagesLoaded(chapterId, pages, Action.REPLACE)
 			}
 		}
+	}
+
+	fun switchPageBy(delta: Int) {
+		setCurrentPage(currentPageIndex + delta, true)
+	}
+
+	fun findCurrentPageIndex(chapterId: Long): Int {
+		val pages = this.pages
+		var offset = 0
+		for ((id, count) in chaptersMap) {
+			if (id == chapterId) {
+				return currentPageIndex - offset
+			}
+			offset += count
+		}
+		return -1
+	}
+
+	fun getPages(chapterId: Long): List<MangaPage>? {
+		var offset = 0
+		for ((id, count) in chaptersMap) {
+			if (id == chapterId) {
+				return pages.subList(offset, offset + count - 1)
+			}
+			offset += count
+		}
+		return null
 	}
 
 	private fun shouldAppend(chapterId: Long): Boolean {

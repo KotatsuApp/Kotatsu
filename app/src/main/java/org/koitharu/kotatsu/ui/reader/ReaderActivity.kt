@@ -89,7 +89,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 
 	override fun onPause() {
 		reader?.let {
-			state = state.copy(page = it.currentPageIndex)
+			state = state.copy(page = it.findCurrentPageIndex(state.chapterId))
 			presenter.saveState(state)
 		}
 		super.onPause()
@@ -126,10 +126,15 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 		R.id.action_pages_thumbs -> {
 			if (reader?.hasItems == true) {
-				PagesThumbnailsSheet.show(
-					supportFragmentManager, reader!!.pages,
-					state.chapter?.name ?: title?.toString().orEmpty()
-				)
+				val pages = reader?.getPages(state.chapterId)
+				if (pages != null) {
+					PagesThumbnailsSheet.show(
+						supportFragmentManager, pages,
+						state.chapter?.name ?: title?.toString().orEmpty()
+					)
+				} else {
+					showWaitWhileLoading()
+				}
 			} else {
 				showWaitWhileLoading()
 			}
@@ -154,7 +159,9 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
-		layout_loading.isVisible = isLoading
+		val hasPages = reader?.hasItems == true
+		layout_loading.isVisible = isLoading && !hasPages
+		progressBar_bottom.isVisible = isLoading && hasPages
 	}
 
 	override fun onError(e: Exception) {
@@ -177,15 +184,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			}
 			GridTouchHelper.AREA_TOP,
 			GridTouchHelper.AREA_LEFT -> {
-				reader?.let {
-					it.setCurrentPage(it.currentPageIndex - 1, true)
-				}
+				reader?.switchPageBy(-1)
 			}
 			GridTouchHelper.AREA_BOTTOM,
 			GridTouchHelper.AREA_RIGHT -> {
-				reader?.let {
-					it.setCurrentPage(it.currentPageIndex + 1, true)
-				}
+				reader?.switchPageBy(1)
 			}
 		}
 	}
@@ -225,7 +228,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 
 	override fun onReaderModeChanged(mode: ReaderMode) {
 		reader?.let {
-			state = state.copy(page = it.currentPageIndex)
+			state = state.copy(page = it.findCurrentPageIndex(state.chapterId))
 		}
 		presenter.saveState(state, mode)
 		setReader(mode)
@@ -248,10 +251,14 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onPageChanged(chapter: MangaChapter, page: Int, total: Int) {
-		title = chapter.name
-		state.manga.chapters?.run {
-			supportActionBar?.subtitle =
-				getString(R.string.chapter_d_of_d, chapter.number, size)
+		if (chapter.id != state.chapterId) {
+			title = chapter.name
+			state = state.copy(chapterId = chapter.id)
+			presenter.saveState(state)
+			state.manga.chapters?.run {
+				supportActionBar?.subtitle =
+					getString(R.string.chapter_d_of_d, chapter.number, size)
+			}
 		}
 	}
 

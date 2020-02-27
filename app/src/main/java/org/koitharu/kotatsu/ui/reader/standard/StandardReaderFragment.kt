@@ -49,7 +49,11 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 					}
 				}
 			}
-			Action.PREPEND -> adapter?.prependData(pages)
+			Action.PREPEND -> adapter?.run {
+				val pos = pager.currentItem
+				prependData(pages)
+				pager.setCurrentItem(pos + pages.size, false)
+			}
 			Action.APPEND -> adapter?.appendData(pages)
 		}
 	}
