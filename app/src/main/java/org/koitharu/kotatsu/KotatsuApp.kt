@@ -6,6 +6,7 @@ import androidx.room.Room
 import coil.Coil
 import coil.ImageLoader
 import coil.util.CoilUtils
+import com.itkacher.okhttpprofiler.OkHttpProfilerInterceptor
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -80,11 +81,15 @@ class KotatsuApp : Application() {
 		})
 	}
 
-	private fun okHttp() = OkHttpClient.Builder()
-		.connectTimeout(20, TimeUnit.SECONDS)
-		.readTimeout(60, TimeUnit.SECONDS)
-		.writeTimeout(20, TimeUnit.SECONDS)
-		.cookieJar(cookieJar)
+	private fun okHttp() = OkHttpClient.Builder().apply {
+		connectTimeout(20, TimeUnit.SECONDS)
+		readTimeout(60, TimeUnit.SECONDS)
+		writeTimeout(20, TimeUnit.SECONDS)
+		cookieJar(cookieJar)
+		if (BuildConfig.DEBUG) {
+			addInterceptor(OkHttpProfilerInterceptor())
+		}
+	}
 
 	private fun mangaDb() = Room.databaseBuilder(
 		applicationContext,

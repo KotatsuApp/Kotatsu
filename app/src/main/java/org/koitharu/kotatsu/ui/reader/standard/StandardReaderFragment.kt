@@ -7,15 +7,17 @@ import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.reader.BaseReaderFragment
+import org.koitharu.kotatsu.ui.reader.OnBoundsScrollListener
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.ReaderPresenter
+import org.koitharu.kotatsu.utils.ext.doOnPageChanged
 
-class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_standard) {
+class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_standard),
+	OnBoundsScrollListener {
 
 	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
 
 	private var adapter: PagesAdapter? = null
-	private var isBusy: Boolean = true
 	private lateinit var loader: PageLoader
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +30,8 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 		adapter = PagesAdapter(loader)
 		pager.adapter = adapter
 		pager.offscreenPageLimit = 2
+		pager.registerOnPageChangeCallback(PagerPaginationListener(adapter!!, 2, this))
+		pager.doOnPageChanged(::notifyPageChanged)
 	}
 
 	override fun onDestroyView() {
@@ -35,21 +39,38 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 		super.onDestroyView()
 	}
 
-	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>) {
-		adapter?.let {
-			it.replaceData(pages)
-			lastState?.let { state ->
-				if (chapterId == state.chapterId) {
-					pager.setCurrentItem(state.page, false)
+	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: Action) {
+		when (action) {
+			Action.REPLACE -> adapter?.let {
+				it.replaceData(pages)
+				lastState?.let { state ->
+					if (chapterId == state.chapterId) {
+						pager.setCurrentItem(state.page, false)
+					}
 				}
 			}
+			Action.PREPEND -> adapter?.prependData(pages)
+			Action.APPEND -> adapter?.appendData(pages)
 		}
-		isBusy = false
 	}
 
 	override fun onDestroy() {
 		loader.dispose()
 		super.onDestroy()
+	}
+
+	override fun onScrolledToStart() {
+		val prevChapterId = getPrevChapterId()
+		if (prevChapterId != 0L) {
+			presenter.loadChapter(lastState?.manga ?: return, prevChapterId)
+		}
+	}
+
+	override fun onScrolledToEnd() {
+		val nextChapterId = getNextChapterId()
+		if (nextChapterId != 0L) {
+			presenter.loadChapter(lastState?.manga ?: return, nextChapterId)
+		}
 	}
 
 	override val hasItems: Boolean

@@ -7,11 +7,13 @@ import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.reader.BaseReaderFragment
+import org.koitharu.kotatsu.ui.reader.OnBoundsScrollListener
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.ReaderPresenter
 import org.koitharu.kotatsu.utils.ext.firstItem
 
-class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoon) {
+class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoon),
+	OnBoundsScrollListener {
 
 	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
 
@@ -27,16 +29,37 @@ class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoo
 		super.onViewCreated(view, savedInstanceState)
 		adapter = WebtoonAdapter(loader)
 		recyclerView.adapter = adapter
+		recyclerView.addOnScrollListener(ListPaginationListener(2, this))
 	}
 
-	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>) {
-		adapter?.let {
-			it.replaceData(pages)
-			lastState?.let { state ->
-				if (chapterId == state.chapterId) {
-					recyclerView.firstItem = state.page
+	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: Action) {
+		when(action) {
+			Action.REPLACE -> {
+				adapter?.let {
+					it.replaceData(pages)
+					lastState?.let { state ->
+						if (chapterId == state.chapterId) {
+							recyclerView.firstItem = state.page
+						}
+					}
 				}
 			}
+			Action.PREPEND -> adapter?.prependData(pages)
+			Action.APPEND -> adapter?.appendData(pages)
+		}
+	}
+
+	override fun onScrolledToStart() {
+		val prevChapterId = getPrevChapterId()
+		if (prevChapterId != 0L) {
+			presenter.loadChapter(lastState?.manga ?: return, prevChapterId)
+		}
+	}
+
+	override fun onScrolledToEnd() {
+		val nextChapterId = getNextChapterId()
+		if (nextChapterId != 0L) {
+			presenter.loadChapter(lastState?.manga ?: return, nextChapterId)
 		}
 	}
 

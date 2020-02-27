@@ -34,7 +34,8 @@ import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
 
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnChapterChangeListener,
-	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback {
+	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
+	ReaderListener {
 
 	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
 
@@ -243,6 +244,14 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				}.show()
 		} else {
 			Snackbar.make(container, R.string.error_occurred, Snackbar.LENGTH_SHORT).show()
+		}
+	}
+
+	override fun onPageChanged(chapter: MangaChapter, page: Int, total: Int) {
+		title = chapter.name
+		state.manga.chapters?.run {
+			supportActionBar?.subtitle =
+				getString(R.string.chapter_d_of_d, chapter.number, size)
 		}
 	}
 
