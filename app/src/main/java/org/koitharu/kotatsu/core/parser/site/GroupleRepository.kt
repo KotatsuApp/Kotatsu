@@ -118,7 +118,7 @@ abstract class GroupleRepository(
 			val regex = Regex("['\"].*?['\"]")
 			return matches.map { x ->
 				val parts = regex.findAll(x.value).toList()
-				val url = parts[1].value.removeSurrounding('"', '\'') +
+				val url = parts[0].value.removeSurrounding('"', '\'') +
 						parts[2].value.removeSurrounding('"', '\'')
 				MangaPage(
 					id = url.longHashCode(),
