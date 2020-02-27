@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.ui.common
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 
 
 abstract class BaseFullscreenActivity : BaseActivity() {
@@ -13,6 +15,9 @@ abstract class BaseFullscreenActivity : BaseActivity() {
 			//			addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 			statusBarColor = Color.TRANSPARENT
 			navigationBarColor = Color.TRANSPARENT
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+				attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+			}
 		}
 		showSystemUI()
 	}
