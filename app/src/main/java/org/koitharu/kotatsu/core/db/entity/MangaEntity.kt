@@ -19,6 +19,7 @@ data class MangaEntity(
 	@ColumnInfo(name = "cover_url") val coverUrl: String,
 	@ColumnInfo(name = "large_cover_url") val largeCoverUrl: String? = null,
 	@ColumnInfo(name = "state") val state: String? = null,
+	@ColumnInfo(name = "author") val author: String? = null,
 	@ColumnInfo(name = "source") val source: String
 ) {
 
@@ -31,6 +32,7 @@ data class MangaEntity(
 		url = this.url,
 		coverUrl = this.coverUrl,
 		largeCoverUrl = this.largeCoverUrl,
+		author = this.author,
 		source = MangaSource.valueOf(this.source),
 		tags = tags
 	)
@@ -46,7 +48,8 @@ data class MangaEntity(
 			altTitle = manga.altTitle,
 			rating = manga.rating,
 			state = manga.state?.name,
-			title = manga.title
+			title = manga.title,
+			author = manga.author
 		)
 	}
 }

@@ -15,6 +15,7 @@ data class Manga(
 	val description: String? = null, //HTML
 	val tags: Set<MangaTag> = emptySet(),
 	val state: MangaState? = null,
+	val author: String? = null,
 	val chapters: List<MangaChapter>? = null,
 	val source: MangaSource
 ) : Parcelable {
