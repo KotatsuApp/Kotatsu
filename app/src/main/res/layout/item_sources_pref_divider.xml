@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="@dimen/header_height"
+	android:background="?attr/colorButtonNormal"
+	android:gravity="start|center_vertical"
+	android:paddingStart="?listPreferredItemPaddingStart"
+	android:paddingEnd="?listPreferredItemPaddingEnd"
+	android:text="@string/put_items_below_to_disable_it"
+	android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+	android:textColor="?android:textColorPrimary" />

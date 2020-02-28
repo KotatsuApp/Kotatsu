@@ -11,7 +11,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.main.list.ListModeSelectDialog
-import org.koitharu.kotatsu.utils.ext.bindSummary
 
 class AppearanceSettingsFragment : BasePreferenceFragment(R.string.appearance),
 	SharedPreferences.OnSharedPreferenceChangeListener {
@@ -21,7 +20,7 @@ class AppearanceSettingsFragment : BasePreferenceFragment(R.string.appearance),
 
 		findPreference<Preference>(R.string.key_list_mode)?.summary =
 			listModes[settings.listMode]?.let(::getString)
-		findPreference<ListPreference>(R.string.key_theme)?.bindSummary()
+		findPreference<ListPreference>(R.string.key_theme)?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

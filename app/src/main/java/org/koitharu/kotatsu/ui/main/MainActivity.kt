@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.main
 
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.Menu
@@ -8,8 +9,11 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.core.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.ui.main.list.favourites.FavouritesListFragment
 import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
@@ -18,8 +22,10 @@ import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
 import org.koitharu.kotatsu.ui.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.SearchHelper
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
+	SharedPreferences.OnSharedPreferenceChangeListener {
 
+	private val settings by inject<AppSettings>()
 	private lateinit var drawerToggle: ActionBarDrawerToggle
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +39,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		supportActionBar?.setHomeButtonEnabled(true)
 
 		navigationView.setNavigationItemSelectedListener(this)
+		settings.subscribe(this)
 
 		if (supportFragmentManager.findFragmentById(R.id.container) == null) {
 			navigationView.setCheckedItem(R.id.nav_history)
@@ -40,10 +47,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		}
 	}
 
+	override fun onDestroy() {
+		settings.unsubscribe(this)
+		super.onDestroy()
+	}
+
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
 		drawerToggle.syncState()
-		initSideMenu(MangaSource.values().asList() - MangaSource.LOCAL)
+		initSideMenu(MangaProviderFactory.sources)
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) {
@@ -88,6 +100,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			submenu.add(R.id.group_remote_sources, source.ordinal, index, source.title)
 		}
 		submenu.setGroupCheckable(R.id.group_remote_sources, true, true)
+	}
+
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+		when (key) {
+			getString(R.string.key_sources_order) -> initSideMenu(MangaProviderFactory.sources)
+		}
 	}
 
 	private fun setPrimaryFragment(fragment: Fragment) {

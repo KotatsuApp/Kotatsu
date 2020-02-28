@@ -83,4 +83,5 @@
 	<string name="standard">Standard</string>
 	<string name="webtoon">Webtoon</string>
 	<string name="read_mode">Read mode</string>
+	<string name="put_items_below_to_disable_it">Put items below to disable it</string>
 </resources>

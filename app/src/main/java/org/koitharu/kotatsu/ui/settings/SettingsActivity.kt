@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.ui.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.commit
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.common.BaseActivity
 
 class SettingsActivity : BaseActivity() {
@@ -17,6 +19,13 @@ class SettingsActivity : BaseActivity() {
 			supportFragmentManager.beginTransaction()
 				.replace(R.id.container, SettingsHeadersFragment())
 				.commit()
+		}
+	}
+
+	fun openMangaSourceSettings(mangaSource: MangaSource) {
+		supportFragmentManager.commit {
+			replace(R.id.container, SourceSettingsFragment.newInstance(mangaSource))
+			addToBackStack(null)
 		}
 	}
 
