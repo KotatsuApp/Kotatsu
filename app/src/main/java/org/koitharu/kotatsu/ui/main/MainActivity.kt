@@ -20,7 +20,6 @@ import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
 import org.koitharu.kotatsu.ui.main.list.local.LocalListFragment
 import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
 import org.koitharu.kotatsu.ui.settings.SettingsActivity
-import org.koitharu.kotatsu.utils.SearchHelper
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
 	SharedPreferences.OnSharedPreferenceChangeListener {
@@ -65,7 +64,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.opt_main, menu)
-		menu?.findItem(R.id.action_search)?.let(SearchHelper::setupSearchView)
 		return super.onCreateOptionsMenu(menu)
 	}
 

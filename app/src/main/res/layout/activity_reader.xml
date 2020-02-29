@@ -28,7 +28,7 @@
 		android:background="@color/dim"
 		android:elevation="0dp"
 		android:fitsSystemWindows="true"
-		android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+		android:theme="@style/AppToolbarTheme"
 		app:elevation="0dp">
 
 		<com.google.android.material.appbar.MaterialToolbar
@@ -47,7 +47,7 @@
 		android:background="@color/dim"
 		android:elevation="0dp"
 		android:fitsSystemWindows="true"
-		android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+		android:theme="@style/AppToolbarTheme"
 		app:elevation="0dp">
 
 		<com.google.android.material.appbar.MaterialToolbar

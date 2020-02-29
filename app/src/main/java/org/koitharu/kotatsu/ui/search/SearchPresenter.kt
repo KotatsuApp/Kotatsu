@@ -21,13 +21,12 @@ class SearchPresenter : BasePresenter<MangaListView<Unit>>() {
 		super.onFirstViewAttach()
 	}
 
-	fun loadList(query: String, offset: Int) {
+	fun loadList(source: MangaSource, query: String, offset: Int) {
 		presenterScope.launch {
 			viewState.onLoadingChanged(true)
 			try {
-				//TODO select source
 				val list = withContext(Dispatchers.IO) {
-					MangaProviderFactory.create(MangaSource.READMANGA_RU)
+					MangaProviderFactory.create(source)
 						.getList(offset, query = query)
 				}
 				if (offset == 0) {
