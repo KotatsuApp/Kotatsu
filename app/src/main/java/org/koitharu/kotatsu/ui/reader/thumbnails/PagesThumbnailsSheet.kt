@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.sheet_pages.*
@@ -33,17 +32,22 @@ class PagesThumbnailsSheet : BaseBottomSheet(R.layout.sheet_pages),
 			dismissAllowingStateLoss()
 			return
 		}
-		(recyclerView.layoutManager as? GridLayoutManager)?.spanCount = UiUtils.resolveGridSpanCount(view.context)
 		val title = arguments?.getString(ARG_TITLE)
 		toolbar.title = title
 		toolbar.setNavigationOnClickListener { dismiss() }
 		toolbar.subtitle = resources.getQuantityString(R.plurals.pages, pages.size, pages.size)
 		textView_title.text = title
+		if (dialog !is BottomSheetDialog) {
+			toolbar.isVisible = true
+			textView_title.isVisible = false
+			appbar.elevation = resources.getDimension(R.dimen.elevation_large)
+		}
+		recyclerView.addOnLayoutChangeListener(UiUtils.SpanCountResolver)
 	}
 
 	override fun onCreateDialog(savedInstanceState: Bundle?) =
 		super.onCreateDialog(savedInstanceState).also {
-			val behavior = (it as BottomSheetDialog).behavior
+			val behavior = (it as? BottomSheetDialog)?.behavior ?: return@also
 			behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 				private val elevation = resources.getDimension(R.dimen.elevation_large)
 
@@ -52,15 +56,16 @@ class PagesThumbnailsSheet : BaseBottomSheet(R.layout.sheet_pages),
 				override fun onStateChanged(bottomSheet: View, newState: Int) {
 					if (newState == BottomSheetBehavior.STATE_EXPANDED) {
 						toolbar.isVisible = true
+						textView_title.isVisible = false
 						appbar.elevation = elevation
 					} else {
 						toolbar.isVisible = false
+						textView_title.isVisible = true
 						appbar.elevation = 0f
 					}
 				}
 			})
-//			behavior.peekHeight = BottomSheetBehavior.PEEK_HEIGHT_AUTO
-//			behavior.isFitToContents = false
+
 		}
 
 	override fun onDestroyView() {

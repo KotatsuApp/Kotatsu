@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="?attr/colorButtonNormal"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentEnd="true"
+		android:background="?colorPrimary"
+		android:theme="@style/AppToolbarTheme">
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_scrollFlags="scroll|enterAlways"
+			app:popupTheme="@style/AppPopupTheme" />
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/container_side"
+		android:layout_width="340dp"
+		android:layout_height="match_parent"
+		android:layout_below="@id/appbar"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentBottom="true" />
+
+	<com.google.android.material.card.MaterialCardView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/appbar"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentBottom="true"
+		android:layout_margin="16dp"
+		android:layout_toEndOf="@id/container_side"
+		app:cardBackgroundColor="?android:windowBackground">
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@id/container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
+
+	</com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

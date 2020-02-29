@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.main.list.favourites.categories.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.setChips
+import org.koitharu.kotatsu.utils.ext.textAndVisible
 import kotlin.math.roundToInt
 
 class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetailsView {
@@ -31,7 +32,7 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 			crossfade(true)
 		}
 		textView_title.text = manga.title
-		textView_subtitle.text = manga.altTitle
+		textView_subtitle.textAndVisible = manga.altTitle
 		textView_description.text = manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
 			?: getString(R.string.no_description)
 		if (manga.rating == Manga.NO_RATING) {

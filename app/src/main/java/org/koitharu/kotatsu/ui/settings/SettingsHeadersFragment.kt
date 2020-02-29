@@ -9,4 +9,5 @@ class SettingsHeadersFragment : BasePreferenceFragment(R.string.settings) {
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_headers)
 	}
+
 }

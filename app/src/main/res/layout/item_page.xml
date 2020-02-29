@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	xmlns:tools="http://schemas.android.com/tools">
+	android:layout_height="match_parent">
 
 	<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 		android:id="@+id/ssiv"
@@ -17,31 +17,33 @@
 		android:layout_gravity="center" />
 
 	<LinearLayout
+		android:id="@+id/layout_error"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:orientation="vertical"
 		android:layout_marginStart="60dp"
 		android:layout_marginEnd="60dp"
 		android:gravity="center_horizontal"
-		android:id="@+id/layout_error" >
+		android:orientation="vertical"
+		android:visibility="gone"
+		tools:visibility="visible">
 
 		<TextView
-			android:drawableTop="@drawable/ic_error_large"
 			android:id="@+id/textView_error"
 			android:layout_width="wrap_content"
-			tools:text="@tools:sample/lorem[6]"
+			android:layout_height="wrap_content"
+			android:drawableTop="@drawable/ic_error_large"
 			android:drawablePadding="12dp"
-			android:textAppearance="@style/TextAppearance.AppCompat.Small"
 			android:gravity="center_horizontal"
-			android:layout_height="wrap_content" />
+			android:textAppearance="@style/TextAppearance.AppCompat.Small"
+			tools:text="@tools:sample/lorem[6]" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_retry"
+			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
-			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 			android:text="@string/try_again" />
 
 	</LinearLayout>

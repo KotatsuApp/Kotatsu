@@ -51,7 +51,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		adapter = MangaListAdapter(this)
 		initListMode(settings.listMode)
 		recyclerView.adapter = adapter
@@ -88,15 +88,15 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 			true
 		}
 		R.id.action_filter -> {
-			drawer.toggleDrawer(GravityCompat.END)
+			drawer?.toggleDrawer(GravityCompat.END)
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu) {
-		menu.findItem(R.id.action_filter).isVisible =
-			drawer.getDrawerLockMode(GravityCompat.END) != DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+		menu.findItem(R.id.action_filter).isVisible = drawer != null &&
+			drawer?.getDrawerLockMode(GravityCompat.END) != DrawerLayout.LOCK_MODE_LOCKED_CLOSED
 		super.onPrepareOptionsMenu(menu)
 	}
 
@@ -184,7 +184,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		currentFilter: MangaFilter?
 	) {
 		recyclerView_filter.adapter = FilterAdapter(sortOrders, tags, currentFilter, this)
-		drawer.setDrawerLockMode(
+		drawer?.setDrawerLockMode(
 			if (sortOrders.isEmpty() && tags.isEmpty()) {
 				DrawerLayout.LOCK_MODE_LOCKED_CLOSED
 			} else {
@@ -196,7 +196,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 
 	@CallSuper
 	override fun onFilterChanged(filter: MangaFilter) {
-		drawer.closeDrawers()
+		drawer?.closeDrawers()
 	}
 
 	protected open fun setUpEmptyListHolder() {
@@ -210,6 +210,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		recyclerView.adapter = null
 		recyclerView.layoutManager = null
 		recyclerView.clearItemDecorations()
+		recyclerView.removeOnLayoutChangeListener(UiUtils.SpanCountResolver)
 		adapter?.listMode = mode
 		recyclerView.layoutManager = when (mode) {
 			ListMode.GRID -> GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx))
@@ -225,6 +226,9 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 				)
 			}
 		)
+		if(mode == ListMode.GRID) {
+			recyclerView.addOnLayoutChangeListener(UiUtils.SpanCountResolver)
+		}
 		adapter?.notifyDataSetChanged()
 		recyclerView.firstItem = position
 	}

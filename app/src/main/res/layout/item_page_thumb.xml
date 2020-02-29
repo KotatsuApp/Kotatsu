@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:background="?attr/scrimBackground"
-	android:layout_height="wrap_content">
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?attr/scrimBackground">
 
 	<org.koitharu.kotatsu.ui.common.widgets.CoverImageView
 		android:id="@+id/imageView_thumb"
-		android:scaleType="centerCrop"
-		tools:src="@drawable/ic_placeholder"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content" />
+		android:layout_height="wrap_content"
+		android:scaleType="centerCrop"
+		tools:src="@drawable/ic_placeholder" />
 
 	<TextView
+		android:id="@+id/textView_number"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		tools:text="2"
-		android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-		android:padding="12dp"
-		android:gravity="end|bottom"
 		android:background="?android:selectableItemBackground"
-		android:id="@+id/textView_number" />
+		android:ellipsize="none"
+		android:gravity="end|bottom"
+		android:padding="12dp"
+		android:singleLine="true"
+		android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+		tools:text="2" />
 
 </FrameLayout>

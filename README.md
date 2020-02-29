@@ -11,9 +11,11 @@ _Coming soon_
 ### Main Features
 
 * Online manga catalogues
+* Search manga by name and genre
 * Reading history
 * Favourites with custom categories
 * Saving manga and reading it offline
+* Tablet-optimized modern UI
 * Reading third-party comics from CBZ
 * Standard and Webtoon-optimized reader
 
