@@ -7,6 +7,8 @@ import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.utils.ext.measureWidth
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -24,7 +26,8 @@ object UiUtils {
 
 	@JvmStatic
 	fun resolveGridSpanCount(context: Context, width: Int = 0): Int {
-		val cellWidth = context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
+		val scaleFactor = AppSettings(context).gridSize / 100f
+		val cellWidth = context.resources.getDimension(R.dimen.preferred_grid_width) * scaleFactor
 		val screenWidth = (if (width <= 0) {
 			context.resources.displayMetrics.widthPixels
 		} else width).toDouble()
@@ -49,5 +52,12 @@ object UiUtils {
 				resolveGridSpanCount(rv.context, width)
 		}
 
+		fun update(rv: RecyclerView) {
+			val width = rv.measureWidth()
+			if (width > 0) {
+				(rv.layoutManager as? GridLayoutManager)?.spanCount =
+					resolveGridSpanCount(rv.context, width)
+			}
+		}
 	}
 }

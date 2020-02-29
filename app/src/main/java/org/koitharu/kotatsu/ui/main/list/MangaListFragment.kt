@@ -175,6 +175,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
 		when (key) {
 			getString(R.string.key_list_mode) -> initListMode(settings.listMode)
+			getString(R.string.key_grid_size) -> UiUtils.SpanCountResolver.update(recyclerView)
 		}
 	}
 

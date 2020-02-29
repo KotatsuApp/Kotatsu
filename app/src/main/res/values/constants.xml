@@ -4,6 +4,7 @@
 	<string name="key_theme">theme</string>
 	<string name="key_sources_order">sources_order</string>
 	<string name="key_pages_cache_clear">pages_cache_clear</string>
+	<string name="key_grid_size">grid_size</string>
 	<string-array name="values_theme">
 		<item>-1</item>
 		<item>1</item>
