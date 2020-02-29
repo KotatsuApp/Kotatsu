@@ -43,10 +43,14 @@ abstract class GroupleRepository(
 		return root.select("div.tile").mapNotNull { node ->
 			val imgDiv = node.selectFirst("div.img") ?: return@mapNotNull null
 			val descDiv = node.selectFirst("div.desc") ?: return@mapNotNull null
+			if (descDiv.getElementsByAttributeValue("data-type", "author").isNotEmpty()) {
+				return@mapNotNull null //skip author
+			}
 			val href = imgDiv.selectFirst("a").attr("href")?.withDomain(domain)
 				?: return@mapNotNull null
 			val title = descDiv.selectFirst("h3")?.selectFirst("a")?.text()
 				?: return@mapNotNull null
+			val tileInfo = descDiv.selectFirst("div.tile-info")
 			Manga(
 				id = href.longHashCode(),
 				url = href,
@@ -60,9 +64,9 @@ abstract class GroupleRepository(
 						?.toFloatOrNull()
 						?.div(10f)
 				} ?: Manga.NO_RATING,
+				author = tileInfo?.selectFirst("a.person-link")?.text(),
 				tags = safe {
-					descDiv.selectFirst("div.tile-info")
-						?.select("a.element-link")
+					tileInfo?.select("a.element-link")
 						?.map {
 							MangaTag(
 								title = it.text(),

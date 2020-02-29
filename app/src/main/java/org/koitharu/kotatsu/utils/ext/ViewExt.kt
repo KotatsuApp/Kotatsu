@@ -72,8 +72,7 @@ var TextView.textAndVisible: CharSequence?
 		isGone = value.isNullOrEmpty()
 	}
 
-fun <T> ChipGroup.setChips(data: Iterable<T>, action: ChipsFactory.(T) -> Chip) {
-	removeAllViews()
+fun <T> ChipGroup.addChips(data: Iterable<T>, action: ChipsFactory.(T) -> Chip) {
 	val factory = ChipsFactory(context)
 	data.forEach {
 		val chip = factory.action(it)

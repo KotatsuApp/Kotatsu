@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.main.list.favourites.categories.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
-import org.koitharu.kotatsu.utils.ext.setChips
+import org.koitharu.kotatsu.utils.ext.addChips
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 import kotlin.math.roundToInt
 
@@ -41,7 +41,16 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 			ratingBar.progress = (ratingBar.max * manga.rating).roundToInt()
 			ratingBar.isVisible = true
 		}
-		chips_tags.setChips(manga.tags) {
+		chips_tags.removeAllViews()
+		manga.author?.let { a ->
+			chips_tags.addChips(listOf(a)) {
+				create(
+					text = it,
+					iconRes = R.drawable.ic_chip_user
+				)
+			}
+		}
+		chips_tags.addChips(manga.tags) {
 			create(
 				text = it.title,
 				iconRes = R.drawable.ic_chip_tag,
