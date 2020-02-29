@@ -9,13 +9,13 @@
 		android:entryValues="@array/values_theme"
 		android:key="@string/key_theme"
 		android:title="@string/theme"
-		app:allowDividerBelow="true"
 		app:iconSpaceReserved="false" />
 
 	<Preference
 		android:key="@string/key_list_mode"
 		android:persistent="false"
 		android:title="@string/list_mode"
+		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false" />
 
 	<SeekBarPreference

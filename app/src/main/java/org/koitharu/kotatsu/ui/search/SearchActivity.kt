@@ -23,7 +23,7 @@ class SearchActivity : BaseActivity() {
 
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		title = query
-		supportActionBar?.setSubtitle(R.string.search_results)
+		supportActionBar?.subtitle = getString(R.string.search_results_on_s, source.title)
 		supportFragmentManager
 			.beginTransaction()
 			.replace(R.id.container, SearchFragment.newInstance(source, query))

@@ -6,6 +6,7 @@ import android.view.*
 import androidx.annotation.CallSuper
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -191,7 +192,10 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 			} else {
 				DrawerLayout.LOCK_MODE_UNLOCKED
 			}
-		)
+		) ?: divider_filter?.let {
+			it.isGone = sortOrders.isEmpty() && tags.isEmpty()
+			recyclerView_filter.isVisible = it.isVisible
+		}
 		activity?.invalidateOptionsMenu()
 	}
 

@@ -8,7 +8,7 @@
 	app:cardBackgroundColor="?android:windowBackground"
 	app:cardElevation="0dp"
 	app:cardMaxElevation="0dp"
-	app:strokeColor="?android:textColorPrimary"
+	app:strokeColor="?android:colorControlNormal"
 	app:strokeWidth="1px">
 
 	<LinearLayout

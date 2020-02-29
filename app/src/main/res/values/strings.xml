@@ -85,4 +85,5 @@
 	<string name="read_mode">Read mode</string>
 	<string name="put_items_below_to_disable_it">Put items below to disable it</string>
 	<string name="grid_size">Grid size</string>
+	<string name="search_results_on_s">Search results on %s</string>
 </resources>
