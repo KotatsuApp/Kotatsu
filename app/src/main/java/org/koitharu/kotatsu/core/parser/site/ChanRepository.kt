@@ -68,7 +68,7 @@ abstract class ChanRepository(
 			largeCoverUrl = root.getElementById("cover")?.attr("src")?.withDomain(domain),
 			chapters = root.select("table.table_cha").flatMap { table ->
 				table.select("div.manga2")
-			}.mapNotNull { it.selectFirst("a") }.mapIndexedNotNull { i, a ->
+			}.mapNotNull { it.selectFirst("a") }.reversed().mapIndexedNotNull { i, a ->
 				val href = a.attr("href")
 					?.withDomain(domain) ?: return@mapIndexedNotNull null
 				MangaChapter(
@@ -93,8 +93,9 @@ abstract class ChanRepository(
 			}
 			val json = data.substring(pos).substringAfter('[').substringBefore(';')
 				.substringBeforeLast(']')
-			return json.split(",").map {
-				val url = it.trim().removeSurrounding('"')
+			return json.split(",").mapNotNull {
+				it.trim().removeSurrounding('"').takeUnless(String::isBlank)
+			}.map { url ->
 				MangaPage(
 					id = url.longHashCode(),
 					url = url,
