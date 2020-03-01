@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import coil.api.load
 import coil.request.RequestDisposable
-import coil.size.Scale
 import kotlinx.android.synthetic.main.item_manga_list_details.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
