@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.details
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -7,15 +8,20 @@ import moxy.InjectViewState
 import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.domain.favourites.OnFavouritesChangeListener
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.domain.history.OnHistoryChangeListener
 import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.utils.ext.safe
+import java.io.IOException
 
 @InjectViewState
-class MangaDetailsPresenter private constructor(): BasePresenter<MangaDetailsView>(), OnHistoryChangeListener,
+class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsView>(),
+	OnHistoryChangeListener,
 	OnFavouritesChangeListener {
 
 	private lateinit var historyRepository: HistoryRepository
@@ -46,6 +52,31 @@ class MangaDetailsPresenter private constructor(): BasePresenter<MangaDetailsVie
 				}
 				viewState.onMangaUpdated(data)
 				this@MangaDetailsPresenter.manga = data
+			} catch (e: Exception) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
+				viewState.onError(e)
+			} finally {
+				viewState.onLoadingStateChanged(false)
+			}
+		}
+	}
+
+	fun deleteLocal(manga: Manga) {
+		presenterScope.launch {
+			viewState.onLoadingStateChanged(true)
+			try {
+				withContext(Dispatchers.IO) {
+					val repository =
+						MangaProviderFactory.create(MangaSource.LOCAL) as LocalMangaRepository
+					repository.delete(manga) || throw IOException("Unable to delete file")
+					safe {
+						HistoryRepository().delete(manga)
+					}
+				}
+				viewState.onMangaRemoved(manga)
+			} catch (e: CancellationException) {
 			} catch (e: Exception) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()

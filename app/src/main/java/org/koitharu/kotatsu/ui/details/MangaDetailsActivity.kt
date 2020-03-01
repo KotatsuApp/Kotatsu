@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.ui.download.DownloadService
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ShortcutUtils
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.showDialog
 
 class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 
@@ -58,6 +60,14 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 
 	override fun onLoadingStateChanged(isLoading: Boolean) = Unit
 
+	override fun onMangaRemoved(manga: Manga) {
+		Toast.makeText(
+			this, getString(R.string._s_deleted_from_local_storage, manga.title),
+			Toast.LENGTH_SHORT
+		).show()
+		finish()
+	}
+
 	override fun onError(e: Exception) {
 		Snackbar.make(pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
 	}
@@ -68,9 +78,11 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-		menu.findItem(R.id.action_save).isEnabled =
+		menu.findItem(R.id.action_save).isVisible =
 			manga?.source != null && manga?.source != MangaSource.LOCAL
-		menu.findItem(R.id.action_shortcut).isVisible = BuildConfig.DEBUG ||
+		menu.findItem(R.id.action_delete).isVisible =
+			manga?.source == MangaSource.LOCAL
+		menu.findItem(R.id.action_shortcut).isVisible = BuildConfig.DEBUG &&
 				ShortcutManagerCompat.isRequestPinShortcutSupported(this)
 		return super.onPrepareOptionsMenu(menu)
 	}
@@ -82,6 +94,19 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 					ShareHelper.shareCbz(this, Uri.parse(it.url).toFile())
 				} else {
 					ShareHelper.shareMangaLink(this, it)
+				}
+			}
+			true
+		}
+		R.id.action_delete -> {
+			manga?.let { m ->
+				showDialog {
+					setTitle(R.string.delete_manga)
+					setMessage(getString(R.string.text_delete_local_manga, m.title))
+					setPositiveButton(R.string.delete) { _, _ ->
+						presenter.deleteLocal(m)
+					}
+					setNegativeButton(android.R.string.cancel, null)
 				}
 			}
 			true
@@ -117,6 +142,8 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 	companion object {
 
 		private const val EXTRA_MANGA = "manga"
+
+		const val ACTION_MANGA_VIEW = "${BuildConfig.APPLICATION_ID}.action.VIEW_MANGA"
 
 		fun newIntent(context: Context, manga: Manga) =
 			Intent(context, MangaDetailsActivity::class.java)

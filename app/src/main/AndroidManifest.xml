@@ -27,7 +27,11 @@
 				android:name="android.app.default_searchable"
 				android:value=".ui.search.SearchActivity" />
 		</activity>
-		<activity android:name=".ui.details.MangaDetailsActivity" />
+		<activity android:name=".ui.details.MangaDetailsActivity" >
+			<intent-filter>
+				<action android:name="${applicationId}.action.VIEW_MANGA" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".ui.reader.ReaderActivity" />
 		<activity
 			android:name=".ui.search.SearchActivity"

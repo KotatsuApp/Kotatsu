@@ -49,7 +49,7 @@ class DownloadNotification(private val context: Context) {
 			chapter * PROGRESS_STEP + (page / pagesTotal.toFloat() * PROGRESS_STEP).roundToInt()
 		val percent = (progress / max.toFloat() * 100).roundToInt()
 		builder.setProgress(max, progress, false)
-		builder.setContentText(context.getString(R.string.downloading_d_percent, percent))
+		builder.setContentText("%d%%".format(percent))
 	}
 
 	fun setPostProcessing() {

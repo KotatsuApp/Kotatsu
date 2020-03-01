@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.ui.main.list.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.ellipsize
+import org.koitharu.kotatsu.utils.ext.showDialog
 import java.io.File
 
 class LocalListFragment : MangaListFragment<File>() {
@@ -80,7 +81,14 @@ class LocalListFragment : MangaListFragment<File>() {
 	override fun onPopupMenuItemSelected(item: MenuItem, data: Manga): Boolean {
 		return when (item.itemId) {
 			R.id.action_delete -> {
-				presenter.delete(data)
+				context?.showDialog {
+					setTitle(R.string.delete_manga)
+					setMessage(getString(R.string.text_delete_local_manga, data.title))
+					setPositiveButton(R.string.delete) { _, _ ->
+						presenter.delete(data)
+					}
+					setNegativeButton(android.R.string.cancel, null)
+				}
 				true
 			}
 			else -> super.onPopupMenuItemSelected(item, data)

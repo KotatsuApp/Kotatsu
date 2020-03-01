@@ -49,9 +49,9 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 		progressBar.isVisible = isLoading
 	}
 
-	override fun onError(e: Exception) {
+	override fun onError(e: Exception) = Unit //handled in activity
 
-	}
+	override fun onMangaRemoved(manga: Manga) = Unit //handled in activity
 
 	override fun onHistoryChanged(history: MangaHistory?) {
 		adapter.currentChapterId = history?.chapterId

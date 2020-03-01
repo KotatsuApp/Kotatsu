@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.ui.common.BaseBottomSheet
-import org.koitharu.kotatsu.ui.common.TextInputDialog
+import org.koitharu.kotatsu.ui.common.dialog.TextInputDialog
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 

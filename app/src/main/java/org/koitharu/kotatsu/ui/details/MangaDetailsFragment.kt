@@ -82,9 +82,9 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 		progressBar.isVisible = isLoading
 	}
 
-	override fun onError(e: Exception) {
+	override fun onError(e: Exception) = Unit //handled in activity
 
-	}
+	override fun onMangaRemoved(manga: Manga) = Unit //handled in activity
 
 	private fun updateReadButton() {
 		if (manga?.chapters.isNullOrEmpty()) {

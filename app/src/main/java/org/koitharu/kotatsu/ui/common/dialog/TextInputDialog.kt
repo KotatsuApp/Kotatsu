@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.common
+package org.koitharu.kotatsu.ui.common.dialog
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -71,7 +71,8 @@ class TextInputDialog private constructor(private val delegate: AlertDialog) :
 			return this
 		}
 
-		fun create() = TextInputDialog(delegate.create())
+		fun create() =
+			TextInputDialog(delegate.create())
 
 	}
 }
