@@ -17,7 +17,7 @@ interface MangaDetailsView : MvpView {
 	fun onLoadingStateChanged(isLoading: Boolean)
 
 	@OneExecution
-	fun onError(e: Exception)
+	fun onError(e: Throwable)
 
 	@AddToEndSingle
 	fun onHistoryChanged(history: MangaHistory?)

@@ -49,7 +49,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 		progressBar.isVisible = isLoading
 	}
 
-	override fun onError(e: Exception) = Unit //handled in activity
+	override fun onError(e: Throwable) = Unit //handled in activity
 
 	override fun onMangaRemoved(manga: Manga) = Unit //handled in activity
 

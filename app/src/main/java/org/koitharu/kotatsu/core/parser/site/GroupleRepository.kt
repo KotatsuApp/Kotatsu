@@ -87,7 +87,7 @@ abstract class GroupleRepository(
 
 	override suspend fun getDetails(manga: Manga): Manga {
 		val doc = loaderContext.get(manga.url).parseHtml()
-		val root = doc.body().getElementById("mangaBox")
+		val root = doc.body().getElementById("mangaBox") ?: throw ParseException("Cannot find root")
 		return manga.copy(
 			description = root.selectFirst("div.manga-description").firstChild()?.html(),
 			largeCoverUrl = root.selectFirst("div.subject-cower")?.selectFirst("img")?.attr(

@@ -4,9 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.site.MintMangaRepository
-import org.koitharu.kotatsu.core.parser.site.ReadmangaRepository
-import org.koitharu.kotatsu.core.parser.site.SelfMangaRepository
+import org.koitharu.kotatsu.core.parser.site.*
 
 @Suppress("SpellCheckingInspection")
 @Parcelize
@@ -18,5 +16,8 @@ enum class MangaSource(
 	LOCAL("Local", null, LocalMangaRepository::class.java),
 	READMANGA_RU("ReadManga", "ru", ReadmangaRepository::class.java),
 	MINTMANGA("MintManga", "ru", MintMangaRepository::class.java),
-	SELFMANGA("SelfManga", "ru", SelfMangaRepository::class.java)
+	SELFMANGA("SelfManga", "ru", SelfMangaRepository::class.java),
+	MANGACHAN("Манга-тян", "ru", MangaChanRepository::class.java),
+	HENCHAN("Хентай-тян", "ru", HenChanRepository::class.java),
+	YAOICHAN("Яой-тян", "ru", YaoiChanRepository::class.java)
 }

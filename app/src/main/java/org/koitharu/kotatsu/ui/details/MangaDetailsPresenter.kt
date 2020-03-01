@@ -52,7 +52,7 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 				}
 				viewState.onMangaUpdated(data)
 				this@MangaDetailsPresenter.manga = data
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}

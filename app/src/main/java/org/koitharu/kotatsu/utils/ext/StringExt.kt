@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.utils.ext
 
+import java.net.URLEncoder
+
 fun String.longHashCode(): Long {
 	var h = 1125899906842597L
 	val len: Int = this.length
@@ -62,3 +64,5 @@ fun String.toFileName() = this.transliterate(false)
 fun String.ellipsize(maxLength: Int) = if (this.length > maxLength) {
 	this.take(maxLength - 1) + Typography.ellipsis
 } else this
+
+fun String.urlEncoded(): String = URLEncoder.encode(this, Charsets.UTF_8.name())

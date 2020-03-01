@@ -68,7 +68,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		finish()
 	}
 
-	override fun onError(e: Exception) {
+	override fun onError(e: Throwable) {
 		Snackbar.make(pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
 	}
 
