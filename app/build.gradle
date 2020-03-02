@@ -34,8 +34,12 @@ android {
 		jvmTarget = JavaVersion.VERSION_1_8.toString()
 	}
 	buildTypes {
+		debug {
+			applicationIdSuffix = ".debug"
+		}
 		release {
-			minifyEnabled false
+			minifyEnabled true
+			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 		}
 	}
