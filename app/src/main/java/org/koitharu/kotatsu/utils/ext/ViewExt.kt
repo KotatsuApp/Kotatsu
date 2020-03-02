@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils.ext
 import android.app.Activity
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -188,4 +189,34 @@ fun RecyclerView.doOnCurrentItemChanged(callback: (Int) -> Unit) {
 			}
 		}
 	})
+}
+
+fun RecyclerView.callOnScrollListeners() {
+	try {
+		val field = RecyclerView::class.java.getDeclaredField("mScrollListeners")
+		field.isAccessible = true
+		val listeners = field.get(this) as List<*>
+		for (x in listeners) {
+			(x as RecyclerView.OnScrollListener).onScrolled(this, 0, 0)
+		}
+	} catch (e: Throwable) {
+		Log.e(null, "RecyclerView.callOnScrollListeners() failed", e)
+	}
+}
+
+fun ViewPager2.callOnPageChaneListeners() {
+	try {
+		val field = ViewPager2::class.java.getDeclaredField("mExternalPageChangeCallbacks")
+		field.isAccessible = true
+		val compositeCallback = field.get(this)
+		val field2 = compositeCallback.javaClass.getDeclaredField("mCallbacks")
+		field2.isAccessible = true
+		val listeners = field2.get(compositeCallback) as List<*>
+		val position = currentItem
+		for (x in listeners) {
+			(x as ViewPager2.OnPageChangeCallback).onPageSelected(position)
+		}
+	} catch (e: Throwable) {
+		Log.e(null, "ViewPager2.callOnPageChaneListeners() failed", e)
+	}
 }

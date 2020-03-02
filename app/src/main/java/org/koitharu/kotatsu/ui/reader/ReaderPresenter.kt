@@ -29,7 +29,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 
 	private var isInitialized = false
 
-	fun loadChapter(manga: Manga, chapterId: Long) {
+	fun loadChapter(manga: Manga, chapterId: Long, action: ReaderAction) {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(isLoading = true)
 			try {
@@ -60,7 +60,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 						isInitialized = true
 					}
 					withContext(Dispatchers.Main) {
-						viewState.onPagesLoaded(chapterId, pages)
+						viewState.onPagesLoaded(chapterId, pages, action)
 					}
 				}
 			} catch (e: Exception) {

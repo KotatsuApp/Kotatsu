@@ -42,18 +42,21 @@
 			<TextView
 				android:id="@+id/textView_subtitle"
 				android:layout_width="match_parent"
-				android:layout_height="0dp"
+				android:layout_height="wrap_content"
 				android:layout_marginStart="6dp"
 				android:layout_marginTop="4dp"
 				android:layout_marginEnd="6dp"
 				android:layout_marginBottom="6dp"
-				android:layout_weight="1"
 				android:ellipsize="end"
 				android:maxLines="1"
 				android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
 				android:textColor="?android:textColorSecondary"
 				tools:text="@tools:sample/lorem[6]" />
 
+			<Space
+				android:layout_width="wrap_content"
+				android:layout_height="0dp"
+				android:layout_weight="1" />
 
 			<View
 				android:id="@+id/divider"

@@ -75,7 +75,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 
 		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
-			presenter.loadChapter(state.manga, state.chapterId)
+			presenter.loadChapter(state.manga, state.chapterId, ReaderAction.REPLACE)
 		}
 	}
 
@@ -85,7 +85,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 	}
 
-	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>) = Unit
+	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: ReaderAction) = Unit
 
 	override fun onPause() {
 		reader?.let {
@@ -214,7 +214,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			chapterId = chapter.id,
 			page = 0
 		)
-		presenter.loadChapter(state.manga, chapter.id)
+		presenter.loadChapter(state.manga, chapter.id, ReaderAction.REPLACE)
 	}
 
 	override fun onPageSelected(page: MangaPage) {

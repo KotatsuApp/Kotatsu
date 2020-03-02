@@ -54,12 +54,14 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		super.onViewCreated(view, savedInstanceState)
 		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		adapter = MangaListAdapter(this)
+		recyclerView.setHasFixedSize(true)
 		initListMode(settings.listMode)
 		recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
 		swipeRefreshLayout.setOnRefreshListener {
 			onRequestMoreItems(0)
 		}
+		recyclerView_filter.setHasFixedSize(true)
 		recyclerView_filter.addItemDecoration(ItemTypeDividerDecoration(view.context))
 		recyclerView_filter.addItemDecoration(SectionItemDecoration(false, this))
 		settings.subscribe(this)
@@ -128,10 +130,12 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		} else {
 			layout_holder.isVisible = false
 		}
+		recyclerView.callOnScrollListeners()
 	}
 
 	override fun onListAppended(list: List<Manga>) {
 		adapter?.appendData(list)
+		recyclerView.callOnScrollListeners()
 	}
 
 	@CallSuper

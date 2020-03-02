@@ -37,6 +37,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 				RecyclerView.VERTICAL
 			)
 		)
+		recyclerView_chapters.setHasFixedSize(true)
 		recyclerView_chapters.adapter = adapter
 	}
 

@@ -17,7 +17,7 @@ interface ReaderView : MvpView {
 	fun onChaptersLoader(chapters: List<MangaChapter>)
 
 	@AddToEndSingle
-	fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>)
+	fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: ReaderAction)
 
 	@AddToEndSingle
 	fun onLoadingStateChanged(isLoading: Boolean)

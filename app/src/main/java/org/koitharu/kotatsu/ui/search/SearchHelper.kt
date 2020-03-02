@@ -4,7 +4,6 @@ import android.app.SearchManager
 import android.content.Context
 import android.database.Cursor
 import android.view.MenuItem
-import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -17,8 +16,6 @@ object SearchHelper {
 		val view = menuItem.actionView as? SearchView ?: return
 		val context = view.context
 		view.queryHint = context.getString(R.string.search_manga)
-		view.imeOptions = EditorInfo.IME_ACTION_SEARCH
-		view.inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE
 		view.suggestionsAdapter = MangaSuggestionsProvider.getSuggestionAdapter(context)
 		view.setOnQueryTextListener(QueryListener(context, source))
 		view.setOnSuggestionListener(SuggestionListener(view))

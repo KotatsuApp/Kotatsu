@@ -6,10 +6,8 @@ import kotlinx.android.synthetic.main.fragment_reader_standard.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.ui.reader.BaseReaderFragment
-import org.koitharu.kotatsu.ui.reader.OnBoundsScrollListener
-import org.koitharu.kotatsu.ui.reader.PageLoader
-import org.koitharu.kotatsu.ui.reader.ReaderPresenter
+import org.koitharu.kotatsu.ui.reader.*
+import org.koitharu.kotatsu.utils.ext.callOnPageChaneListeners
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
 
 class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_standard),
@@ -39,9 +37,10 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 		super.onDestroyView()
 	}
 
-	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: Action) {
+	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: ReaderAction) {
+		super.onPagesLoaded(chapterId, pages, action)
 		when (action) {
-			Action.REPLACE -> adapter?.let {
+			ReaderAction.REPLACE -> adapter?.let {
 				it.replaceData(pages)
 				lastState?.let { state ->
 					if (chapterId == state.chapterId) {
@@ -49,13 +48,14 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 					}
 				}
 			}
-			Action.PREPEND -> adapter?.run {
+			ReaderAction.PREPEND -> adapter?.run {
 				val pos = pager.currentItem
 				prependData(pages)
 				pager.setCurrentItem(pos + pages.size, false)
 			}
-			Action.APPEND -> adapter?.appendData(pages)
+			ReaderAction.APPEND -> adapter?.appendData(pages)
 		}
+		pager.callOnPageChaneListeners()
 	}
 
 	override fun onDestroy() {
@@ -66,14 +66,14 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 	override fun onScrolledToStart() {
 		val prevChapterId = getPrevChapterId()
 		if (prevChapterId != 0L) {
-			presenter.loadChapter(lastState?.manga ?: return, prevChapterId)
+			presenter.loadChapter(lastState?.manga ?: return, prevChapterId, ReaderAction.PREPEND)
 		}
 	}
 
 	override fun onScrolledToEnd() {
 		val nextChapterId = getNextChapterId()
 		if (nextChapterId != 0L) {
-			presenter.loadChapter(lastState?.manga ?: return, nextChapterId)
+			presenter.loadChapter(lastState?.manga ?: return, nextChapterId, ReaderAction.APPEND)
 		}
 	}
 

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.ui.reader
 
 import android.net.Uri
+import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaPage
@@ -51,25 +52,15 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 		super.onDestroyView()
 	}
 
-	final override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>) {
-		when {
-			chaptersMap.isEmpty() -> {
-				chaptersMap.push(chapterId to pages.size)
-				onPagesLoaded(chapterId, pages, Action.REPLACE)
-			}
-			shouldAppend(chapterId) -> {
-				chaptersMap.addLast(chapterId to pages.size)
-				onPagesLoaded(chapterId, pages, Action.APPEND)
-			}
-			shouldPrepend(chapterId) -> {
-				chaptersMap.addFirst(chapterId to pages.size)
-				onPagesLoaded(chapterId, pages, Action.PREPEND)
-			}
-			else -> {
+	@CallSuper
+	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: ReaderAction) {
+		when (action) {
+			ReaderAction.REPLACE -> {
 				chaptersMap.clear()
-				chaptersMap.push(chapterId to pages.size)
-				onPagesLoaded(chapterId, pages, Action.REPLACE)
+				chaptersMap.add(chapterId to pages.size)
 			}
+			ReaderAction.PREPEND -> chaptersMap.addFirst(chapterId to pages.size)
+			ReaderAction.APPEND -> chaptersMap.addLast(chapterId to pages.size)
 		}
 	}
 
@@ -98,22 +89,6 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 			offset += count
 		}
 		return null
-	}
-
-	private fun shouldAppend(chapterId: Long): Boolean {
-		val chapters = lastState?.manga?.chapters ?: return false
-		val lastChapterId = chaptersMap.peekLast()?.first ?: return false
-		val indexOfCurrent = chapters.indexOfLast { x -> x.id == lastChapterId }
-		val indexOfNext = chapters.indexOfLast { x -> x.id == chapterId }
-		return indexOfCurrent != -1 && indexOfNext != -1 && indexOfCurrent + 1 == indexOfNext
-	}
-
-	private fun shouldPrepend(chapterId: Long): Boolean {
-		val chapters = lastState?.manga?.chapters ?: return false
-		val firstChapterId = chaptersMap.peekFirst()?.first ?: return false
-		val indexOfCurrent = chapters.indexOfFirst { x -> x.id == firstChapterId }
-		val indexOfPrev = chapters.indexOfFirst { x -> x.id == chapterId }
-		return indexOfCurrent != -1 && indexOfPrev != -1 && indexOfCurrent + 1 == indexOfPrev
 	}
 
 	protected fun getNextChapterId(): Long {
@@ -151,11 +126,5 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 			page = i + chapter.second,
 			total = chapter.second
 		)
-	}
-
-	protected abstract fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: Action)
-
-	protected enum class Action {
-		REPLACE, PREPEND, APPEND
 	}
 }
