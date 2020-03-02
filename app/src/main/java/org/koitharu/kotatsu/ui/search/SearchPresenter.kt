@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.search
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,7 +24,7 @@ class SearchPresenter : BasePresenter<MangaListView<Unit>>() {
 
 	fun loadList(source: MangaSource, query: String, offset: Int) {
 		presenterScope.launch {
-			viewState.onLoadingChanged(true)
+			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
 					MangaProviderFactory.create(source)
@@ -34,13 +35,14 @@ class SearchPresenter : BasePresenter<MangaListView<Unit>>() {
 				} else {
 					viewState.onListAppended(list)
 				}
-			} catch (e: Exception) {
+			} catch (_: CancellationException) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
 				viewState.onError(e)
 			} finally {
-				viewState.onLoadingChanged(false)
+				viewState.onLoadingStateChanged(false)
 			}
 		}
 	}

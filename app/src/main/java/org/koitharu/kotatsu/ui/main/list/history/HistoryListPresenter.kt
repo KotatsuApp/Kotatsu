@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.main.list.history
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,7 +25,7 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 
 	fun loadList(offset: Int) {
 		presenterScope.launch {
-			viewState.onLoadingChanged(true)
+			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
 					repository.getList(offset = offset)
@@ -34,32 +35,34 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 				} else {
 					viewState.onListAppended(list)
 				}
-			} catch (e: Exception) {
+			} catch (_: CancellationException) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
 				viewState.onError(e)
 			} finally {
-				viewState.onLoadingChanged(false)
+				viewState.onLoadingStateChanged(false)
 			}
 		}
 	}
 
 	fun clearHistory() {
 		presenterScope.launch {
-			viewState.onLoadingChanged(true)
+			viewState.onLoadingStateChanged(true)
 			try {
 				withContext(Dispatchers.IO) {
 					repository.clear()
 				}
 				viewState.onListChanged(emptyList())
-			} catch (e: Exception) {
+			} catch (_: CancellationException) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
 				viewState.onError(e)
 			} finally {
-				viewState.onLoadingChanged(false)
+				viewState.onLoadingStateChanged(false)
 			}
 		}
 	}
@@ -71,7 +74,8 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 					repository.delete(manga)
 				}
 				viewState.onItemRemoved(manga)
-			} catch (e: Exception) {
+			} catch (_: CancellationException) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}

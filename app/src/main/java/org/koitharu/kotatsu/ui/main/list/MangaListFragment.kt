@@ -151,7 +151,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		}
 	}
 
-	override fun onError(e: Exception) {
+	override fun onError(e: Throwable) {
 		if (recyclerView.hasItems) {
 			Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
 				.show()
@@ -167,7 +167,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		}
 	}
 
-	override fun onLoadingChanged(isLoading: Boolean) {
+	override fun onLoadingStateChanged(isLoading: Boolean) {
 		val hasItems = recyclerView.hasItems
 		progressBar.isVisible = isLoading && !hasItems
 		swipeRefreshLayout.isRefreshing = isLoading && hasItems

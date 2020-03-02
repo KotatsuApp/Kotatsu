@@ -164,7 +164,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		progressBar_bottom.isVisible = isLoading && hasPages
 	}
 
-	override fun onError(e: Exception) {
+	override fun onError(e: Throwable) {
 		showDialog {
 			setTitle(R.string.error_occurred)
 			setMessage(e.message)

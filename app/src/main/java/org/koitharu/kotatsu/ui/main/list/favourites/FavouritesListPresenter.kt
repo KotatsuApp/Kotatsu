@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.main.list.favourites
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +23,7 @@ class FavouritesListPresenter : BasePresenter<MangaListView<Unit>>() {
 
 	fun loadList(offset: Int) {
 		presenterScope.launch {
-			viewState.onLoadingChanged(true)
+			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
 					repository.getAllManga(offset = offset)
@@ -32,13 +33,14 @@ class FavouritesListPresenter : BasePresenter<MangaListView<Unit>>() {
 				} else {
 					viewState.onListAppended(list)
 				}
-			} catch (e: Exception) {
+			} catch (e: CancellationException) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
 				viewState.onError(e)
 			} finally {
-				viewState.onLoadingChanged(false)
+				viewState.onLoadingStateChanged(false)
 			}
 		}
 	}

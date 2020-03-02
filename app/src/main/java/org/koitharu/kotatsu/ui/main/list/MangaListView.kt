@@ -1,13 +1,17 @@
 package org.koitharu.kotatsu.ui.main.list
 
-import moxy.MvpView
-import moxy.viewstate.strategy.*
+import moxy.viewstate.strategy.AddToEndSingleTagStrategy
+import moxy.viewstate.strategy.AddToEndStrategy
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEnd
+import moxy.viewstate.strategy.alias.AddToEndSingle
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.ui.common.BaseMvpView
 
-interface MangaListView<E> : MvpView {
+interface MangaListView<E> : BaseMvpView {
 
 	@StateStrategyType(AddToEndSingleTagStrategy::class, tag = "content")
 	fun onListChanged(list: List<Manga>)
@@ -15,15 +19,9 @@ interface MangaListView<E> : MvpView {
 	@StateStrategyType(AddToEndStrategy::class, tag = "content")
 	fun onListAppended(list: List<Manga>)
 
-	@StateStrategyType(AddToEndSingleStrategy::class)
-	fun onLoadingChanged(isLoading: Boolean)
-
-	@StateStrategyType(OneExecutionStateStrategy::class)
-	fun onError(e: Exception)
-
-	@StateStrategyType(AddToEndSingleStrategy::class)
+	@AddToEndSingle
 	fun onInitFilter(sortOrders: List<SortOrder>, tags: List<MangaTag>, currentFilter: MangaFilter?)
 
-	@StateStrategyType(AddToEndStrategy::class)
+	@AddToEnd
 	fun onItemRemoved(item: Manga)
 }

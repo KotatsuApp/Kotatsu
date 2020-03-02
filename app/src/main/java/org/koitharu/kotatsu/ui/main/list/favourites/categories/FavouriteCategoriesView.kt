@@ -15,5 +15,5 @@ interface FavouriteCategoriesView : MvpView {
 	fun onCheckedCategoriesChanged(checkedIds: Set<Int>)
 
 	@StateStrategyType(OneExecutionStateStrategy::class)
-	fun onError(e: Exception)
+	fun onError(e: Throwable)
 }

@@ -35,7 +35,7 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 	/**
 	 * Handled by activity
 	 */
-	override fun onError(e: Exception) = Unit
+	override fun onError(e: Throwable) = Unit
 
 	/**
 	 * Handled by activity

@@ -7,17 +7,12 @@ import moxy.viewstate.strategy.alias.SingleState
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.ui.common.BaseMvpView
 
-interface MangaDetailsView : MvpView {
+interface MangaDetailsView : BaseMvpView {
 
 	@AddToEndSingle
 	fun onMangaUpdated(manga: Manga)
-
-	@AddToEndSingle
-	fun onLoadingStateChanged(isLoading: Boolean)
-
-	@OneExecution
-	fun onError(e: Throwable)
 
 	@AddToEndSingle
 	fun onHistoryChanged(history: MangaHistory?)

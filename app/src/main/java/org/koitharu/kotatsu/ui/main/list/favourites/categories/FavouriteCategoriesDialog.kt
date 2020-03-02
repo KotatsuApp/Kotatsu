@@ -58,7 +58,7 @@ class FavouriteCategoriesDialog() : BaseBottomSheet(R.layout.dialog_favorite_cat
 		presenter.removeFromCategory(manga ?: return, category.id)
 	}
 
-	override fun onError(e: Exception) {
+	override fun onError(e: Throwable) {
 		Toast.makeText(context ?: return, e.getDisplayMessage(resources), Toast.LENGTH_SHORT).show()
 	}
 

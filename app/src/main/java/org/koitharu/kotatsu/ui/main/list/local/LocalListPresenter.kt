@@ -35,20 +35,20 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 
 	fun loadList() {
 		presenterScope.launch {
-			viewState.onLoadingChanged(true)
+			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
 					repository.getList(0)
 				}
 				viewState.onListChanged(list)
 			} catch (e: CancellationException) {
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
 				viewState.onError(e)
 			} finally {
-				viewState.onLoadingChanged(false)
+				viewState.onLoadingStateChanged(false)
 			}
 		}
 	}
@@ -73,7 +73,7 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 					viewState.onListChanged(list)
 				}
 			} catch (e: CancellationException) {
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
@@ -95,7 +95,7 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 				}
 				viewState.onItemRemoved(manga)
 			} catch (e: CancellationException) {
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
