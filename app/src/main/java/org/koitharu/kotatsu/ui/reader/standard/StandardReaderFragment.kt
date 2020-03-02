@@ -44,7 +44,7 @@ class StandardReaderFragment : BaseReaderFragment(R.layout.fragment_reader_stand
 				it.replaceData(pages)
 				lastState?.let { state ->
 					if (chapterId == state.chapterId) {
-						pager.setCurrentItem(state.page, false)
+						pager.setCurrentItem(findChapterOffset(chapterId) + state.page, false)
 					}
 				}
 			}

@@ -69,11 +69,21 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 	}
 
 	fun findCurrentPageIndex(chapterId: Long): Int {
-		val pages = this.pages
 		var offset = 0
 		for ((id, count) in chaptersMap) {
 			if (id == chapterId) {
 				return currentPageIndex - offset
+			}
+			offset += count
+		}
+		return -1
+	}
+
+	fun findChapterOffset(chapterId: Long): Int {
+		var offset = 0
+		for ((id, count) in chaptersMap) {
+			if (id == chapterId) {
+				return offset
 			}
 			offset += count
 		}
@@ -113,13 +123,12 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 		}
 	}
 
-
 	protected fun notifyPageChanged(page: Int) {
 		var i = page
 		val chapters = lastState?.manga?.chapters ?: return
 		val chapter = chaptersMap.firstOrNull { x ->
 			i -= x.second
-			i <= 0
+			i < 0
 		} ?: return
 		(activity as? ReaderListener)?.onPageChanged(
 			chapter = chapters.find { x -> x.id == chapter.first } ?: return,

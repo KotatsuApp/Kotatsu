@@ -1,11 +1,9 @@
 package org.koitharu.kotatsu.ui.reader
 
 import android.content.ContentResolver
+import android.util.Log
 import android.webkit.URLUtil
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import moxy.InjectViewState
 import moxy.presenterScope
 import okhttp3.OkHttpClient
@@ -27,10 +25,12 @@ import org.koitharu.kotatsu.utils.ext.mimeType
 @InjectViewState
 class ReaderPresenter : BasePresenter<ReaderView>() {
 
+	private var loaderJob: Job? = null
 	private var isInitialized = false
 
 	fun loadChapter(manga: Manga, chapterId: Long, action: ReaderAction) {
-		presenterScope.launch {
+		loaderJob?.cancel()
+		loaderJob = presenterScope.launch {
 			viewState.onLoadingStateChanged(isLoading = true)
 			try {
 				withContext(Dispatchers.IO) {
@@ -63,6 +63,8 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 						viewState.onPagesLoaded(chapterId, pages, action)
 					}
 				}
+			} catch (e: CancellationException){
+				Log.w(null, "Loader job cancelled", e)
 			} catch (e: Exception) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
