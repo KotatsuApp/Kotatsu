@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
+	xmlns:tools="http://schemas.android.com/tools"
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	tools:ignore="AlwaysShowAction">
 
 	<item
 		android:id="@+id/action_bookmark_add"
 		android:icon="@drawable/ic_bookmark_add"
 		android:title="@string/add_bookmark"
 		android:visible="false"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
 
 	<item
 		android:id="@+id/action_save_page"
 		android:icon="@drawable/ic_page_image"
 		android:title="@string/save_page"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
 
 	<item
 		android:id="@+id/action_pages_thumbs"
 		android:icon="@drawable/ic_grid"
 		android:title="@string/pages"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
+
+	<item
+		android:id="@+id/action_reader_mode"
+		android:icon="@drawable/ic_book_page"
+		android:title="@string/read_mode"
+		app:showAsAction="always" />
 
 	<item
 		android:id="@+id/action_settings"
 		android:icon="@drawable/ic_tune"
 		android:title="@string/settings"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
 
 </menu>

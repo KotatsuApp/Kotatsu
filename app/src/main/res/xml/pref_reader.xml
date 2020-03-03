@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<MultiSelectListPreference
+		android:defaultValue="@array/values_reader_switchers_default"
+		android:entries="@array/reader_switchers"
+		android:entryValues="@array/values_reader_switchers"
+		android:key="@string/key_reader_switchers"
+		android:title="@string/switch_pages"
+		app:iconSpaceReserved="false" />
+
+</PreferenceScreen>

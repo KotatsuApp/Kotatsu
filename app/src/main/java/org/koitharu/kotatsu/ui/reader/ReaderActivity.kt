@@ -3,12 +3,10 @@ package org.koitharu.kotatsu.ui.reader
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MotionEvent
+import android.view.*
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -17,11 +15,13 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
 import moxy.MvpDelegate
 import moxy.ktx.moxyPresenter
+import org.koin.core.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
 import org.koitharu.kotatsu.ui.reader.standard.StandardReaderFragment
@@ -35,14 +35,17 @@ import org.koitharu.kotatsu.utils.ext.*
 
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
-	ReaderListener {
+	ReaderListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
+	private val settings by inject<AppSettings>()
 
 	lateinit var state: ReaderState
 		private set
 
 	private lateinit var touchHelper: GridTouchHelper
+	private var isTapSwitchEnabled = true
+	private var isVolumeKeysSwitchEnabled = false
 
 	private val reader
 		get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseReaderFragment
@@ -74,6 +77,9 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			insets
 		}
 
+		settings.subscribe(this)
+		loadSettings()
+
 		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
 			presenter.loadChapter(state.manga, state.chapterId, ReaderAction.REPLACE)
 		}
@@ -95,6 +101,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		super.onPause()
 	}
 
+	override fun onDestroy() {
+		settings.unsubscribe(this)
+		super.onDestroy()
+	}
+
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.opt_reader_top, menu)
 		return super.onCreateOptionsMenu(menu)
@@ -106,7 +117,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_settings -> {
+		R.id.action_reader_mode -> {
 			ReaderConfigDialog.show(
 				supportFragmentManager, when (reader) {
 					is StandardReaderFragment -> ReaderMode.STANDARD
@@ -114,6 +125,10 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 					else -> ReaderMode.UNKNOWN
 				}
 			)
+			true
+		}
+		R.id.action_settings -> {
+			startActivity(SimpleSettingsActivity.newReaderSettingsIntent(this))
 			true
 		}
 		R.id.action_chapters -> {
@@ -183,11 +198,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				setUiIsVisible(!appbar_top.isVisible)
 			}
 			GridTouchHelper.AREA_TOP,
-			GridTouchHelper.AREA_LEFT -> {
+			GridTouchHelper.AREA_LEFT -> if (isTapSwitchEnabled) {
 				reader?.switchPageBy(-1)
 			}
 			GridTouchHelper.AREA_BOTTOM,
-			GridTouchHelper.AREA_RIGHT -> {
+			GridTouchHelper.AREA_RIGHT -> if (isTapSwitchEnabled) {
 				reader?.switchPageBy(1)
 			}
 		}
@@ -207,6 +222,45 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
 		touchHelper.dispatchTouchEvent(ev)
 		return super.dispatchTouchEvent(ev)
+	}
+
+	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean = when (keyCode) {
+		KeyEvent.KEYCODE_VOLUME_UP -> if (isVolumeKeysSwitchEnabled) {
+			reader?.switchPageBy(-1)
+			true
+		} else {
+			super.onKeyDown(keyCode, event)
+		}
+		KeyEvent.KEYCODE_VOLUME_DOWN -> if (isVolumeKeysSwitchEnabled) {
+			reader?.switchPageBy(1)
+			true
+		} else {
+			super.onKeyDown(keyCode, event)
+		}
+		KeyEvent.KEYCODE_SPACE,
+		KeyEvent.KEYCODE_PAGE_DOWN,
+		KeyEvent.KEYCODE_DPAD_DOWN,
+		KeyEvent.KEYCODE_DPAD_RIGHT -> {
+			reader?.switchPageBy(1)
+			true
+		}
+		KeyEvent.KEYCODE_PAGE_UP,
+		KeyEvent.KEYCODE_DPAD_UP,
+		KeyEvent.KEYCODE_DPAD_LEFT -> {
+			reader?.switchPageBy(-1)
+			true
+		}
+		KeyEvent.KEYCODE_DPAD_CENTER -> {
+			setUiIsVisible(!appbar_top.isVisible)
+			true
+		}
+		else -> super.onKeyDown(keyCode, event)
+	}
+
+	override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+		return (isVolumeKeysSwitchEnabled &&
+				(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP))
+				|| super.onKeyUp(keyCode, event)
 	}
 
 	override fun onChapterChanged(chapter: MangaChapter) {
@@ -262,6 +316,10 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 	}
 
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+		loadSettings()
+	}
+
 	private fun showWaitWhileLoading() {
 		Toast.makeText(this, R.string.wait_for_loading_finish, Toast.LENGTH_SHORT).apply {
 			setGravity(Gravity.CENTER, 0, 0)
@@ -295,6 +353,17 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 					replace(R.id.container, StandardReaderFragment())
 				}
 			}
+		}
+		toolbar_bottom.menu.findItem(R.id.action_reader_mode).setIcon(when(mode) {
+			ReaderMode.WEBTOON -> R.drawable.ic_script
+			else -> R.drawable.ic_book_page
+		})
+	}
+
+	private fun loadSettings() {
+		settings.readerPageSwitch.let {
+			isTapSwitchEnabled = it.contains(AppSettings.PAGE_SWITCH_TAPS)
+			isVolumeKeysSwitchEnabled = it.contains(AppSettings.PAGE_SWITCH_VOLUME_KEYS)
 		}
 	}
 

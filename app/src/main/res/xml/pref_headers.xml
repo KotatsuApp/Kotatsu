@@ -13,6 +13,11 @@
 		android:title="@string/remote_sources" />
 
 	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.ui.settings.ReaderSettingsFragment"
+		android:icon="@drawable/ic_book"
+		android:title="@string/reader_settings" />
+
+	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.ui.settings.HistorySettingsFragment"
 		android:icon="@drawable/ic_history"
 		android:title="@string/history_and_cache" />

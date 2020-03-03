@@ -86,4 +86,8 @@
 	<string name="search_results_on_s">Результаты поиска по %s</string>
 	<string name="delete_manga">Удалить мангу</string>
 	<string name="text_delete_local_manga">Вы уверены, что хотите удалить \"%s\" с устройства? \nЭто действие нельзя будет отменить.</string>
+	<string name="reader_settings">Настройки чтения</string>
+	<string name="switch_pages">Листание страниц</string>
+	<string name="taps_on_edges">Нажатия по краям</string>
+	<string name="volume_buttons">Кнопки громкости</string>
 </resources>

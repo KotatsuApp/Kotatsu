@@ -87,4 +87,8 @@
 	<string name="search_results_on_s">Search results on %s</string>
     <string name="delete_manga">Delete manga</string>
 	<string name="text_delete_local_manga">Are you really want to delete \"%s\" from your phone\'s local storage? \nThis operation cannot be undone.</string>
+	<string name="reader_settings">Reader settings</string>
+	<string name="switch_pages">Switch pages</string>
+	<string name="taps_on_edges">Taps on edges</string>
+	<string name="volume_buttons">Volume buttons</string>
 </resources>

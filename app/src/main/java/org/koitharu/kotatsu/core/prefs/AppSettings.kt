@@ -6,10 +6,7 @@ import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.delegates.prefs.EnumPreferenceDelegate
-import org.koitharu.kotatsu.utils.delegates.prefs.IntPreferenceDelegate
-import org.koitharu.kotatsu.utils.delegates.prefs.NullableStringPreferenceDelegate
-import org.koitharu.kotatsu.utils.delegates.prefs.StringIntPreferenceDelegate
+import org.koitharu.kotatsu.utils.delegates.prefs.*
 
 class AppSettings private constructor(resources: Resources, private val prefs: SharedPreferences) :
 	SharedPreferences by prefs {
@@ -35,6 +32,11 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		100
 	)
 
+	val readerPageSwitch by StringSetPreferenceDelegate(
+		resources.getString(R.string.key_reader_switchers),
+		setOf(PAGE_SWITCH_TAPS)
+	)
+
 	private var sourcesOrderStr by NullableStringPreferenceDelegate(resources.getString(R.string.key_sources_order))
 
 	var sourcesOrder: List<Int>
@@ -49,5 +51,11 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 
 	fun unsubscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
 		prefs.unregisterOnSharedPreferenceChangeListener(listener)
+	}
+
+	companion object {
+
+		const val PAGE_SWITCH_TAPS = "taps"
+		const val PAGE_SWITCH_VOLUME_KEYS = "volume"
 	}
 }

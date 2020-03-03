@@ -27,7 +27,7 @@
 				android:name="android.app.default_searchable"
 				android:value=".ui.search.SearchActivity" />
 		</activity>
-		<activity android:name=".ui.details.MangaDetailsActivity" >
+		<activity android:name=".ui.details.MangaDetailsActivity">
 			<intent-filter>
 				<action android:name="${applicationId}.action.VIEW_MANGA" />
 			</intent-filter>
@@ -38,6 +38,9 @@
 			android:label="@string/search" />
 		<activity
 			android:name=".ui.settings.SettingsActivity"
+			android:label="@string/settings" />
+		<activity
+			android:name=".ui.reader.SimpleSettingsActivity"
 			android:label="@string/settings" />
 
 		<service android:name=".ui.download.DownloadService" />
