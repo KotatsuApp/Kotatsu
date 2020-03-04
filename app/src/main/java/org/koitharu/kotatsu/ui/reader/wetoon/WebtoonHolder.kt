@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 
 class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
-	BaseViewHolder<MangaPage, Unit>(parent, R.layout.item_page),
+	BaseViewHolder<MangaPage, Unit>(parent, R.layout.item_page_webtoon),
 	SubsamplingScaleImageView.OnImageEventListener, CoroutineScope by loader {
 
 	private var job: Job? = null
