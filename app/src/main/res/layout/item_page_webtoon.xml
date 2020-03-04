@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<org.koitharu.kotatsu.ui.reader.wetoon.WebtoonFrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<org.koitharu.kotatsu.ui.reader.wetoon.WebtoonImageView
+	<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 		android:id="@+id/ssiv"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+		android:layout_height="match_parent"
+		app:panEnabled="false" />
 
 	<ProgressBar
 		android:id="@+id/progressBar"
@@ -48,4 +50,4 @@
 
 	</LinearLayout>
 
-</FrameLayout>
+</org.koitharu.kotatsu.ui.reader.wetoon.WebtoonFrameLayout>

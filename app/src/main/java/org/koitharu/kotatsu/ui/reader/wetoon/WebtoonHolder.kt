@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.ui.reader.wetoon
 
 import android.graphics.PointF
+import android.view.Gravity
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -16,10 +17,11 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 
 class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
-	BaseViewHolder<MangaPage, Unit>(parent, R.layout.item_page_webtoon),
+	BaseViewHolder<MangaPage, Int>(parent, R.layout.item_page_webtoon),
 	SubsamplingScaleImageView.OnImageEventListener, CoroutineScope by loader {
 
 	private var job: Job? = null
+	private var yFactor = 0f
 
 	init {
 		ssiv.setOnImageEventListener(this)
@@ -28,7 +30,12 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 		}
 	}
 
-	override fun onBind(data: MangaPage, extra: Unit) {
+	override fun onBind(data: MangaPage, extra: Int) {
+		yFactor = when(extra) {
+			Gravity.TOP -> 0f
+			Gravity.BOTTOM -> 1f
+			else -> 0.5f
+		}
 		doLoad(data, force = false)
 	}
 
@@ -56,7 +63,7 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 		ssiv.minScale = ssiv.width / ssiv.sWidth.toFloat()
 		ssiv.setScaleAndCenter(
 			ssiv.minScale,
-			PointF(ssiv.sWidth / 2f, 0f)
+			PointF(ssiv.sWidth / 2f, ssiv.sHeight * yFactor)
 		)
 	}
 
