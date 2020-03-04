@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.ui.reader.wetoon
 
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import kotlinx.android.synthetic.main.fragment_reader_webtoon.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
@@ -18,6 +19,7 @@ class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoo
 
 	private var adapter: WebtoonAdapter? = null
 	private lateinit var loader: PageLoader
+	private val scrollInterpolator = AccelerateDecelerateInterpolator()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -86,5 +88,9 @@ class WebtoonReaderFragment : BaseReaderFragment(R.layout.fragment_reader_webtoo
 		} else {
 			recyclerView.firstItem = index
 		}
+	}
+
+	override fun switchPageBy(delta: Int) {
+		recyclerView.smoothScrollBy(0, (recyclerView.height * 0.9).toInt() * delta, scrollInterpolator)
 	}
 }

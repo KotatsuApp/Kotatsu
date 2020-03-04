@@ -64,7 +64,7 @@ abstract class BaseReaderFragment(@LayoutRes contentLayoutId: Int) : BaseFragmen
 		}
 	}
 
-	fun switchPageBy(delta: Int) {
+	open fun switchPageBy(delta: Int) {
 		setCurrentPage(currentPageIndex + delta, true)
 	}
 
