@@ -2,13 +2,17 @@ package org.koitharu.kotatsu.ui.reader.wetoon
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.sign
 
 class WebtoonRecyclerView @JvmOverloads constructor(
 	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
+
+	private var lastScrollDirection = 0
 
 	override fun dispatchNestedPreScroll(
 		dx: Int,
@@ -42,7 +46,21 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 			else -> null
 		} ?: return 0
 		var scrollY = dy
-		scrollY -= (child as WebtoonFrameLayout) .dispatchVerticalScroll(scrollY)
+		scrollY -= (child as WebtoonFrameLayout).dispatchVerticalScroll(scrollY)
 		return dy - scrollY
+	}
+
+	override fun onScrolled(dx: Int, dy: Int) {
+		val direction = dy.sign
+		if (direction != lastScrollDirection) {
+			(adapter as? WebtoonAdapter)?.let {
+				it.pageGravity = if (dy < 0) {
+					Gravity.BOTTOM
+				} else {
+					Gravity.TOP
+				}
+				lastScrollDirection = direction
+			}
+		}
 	}
 }

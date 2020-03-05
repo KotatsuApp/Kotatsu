@@ -23,6 +23,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.ui.common.ChipsFactory
+import kotlin.math.roundToInt
 
 fun View.hideKeyboard() {
 	val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -182,7 +183,7 @@ fun RecyclerView.doOnCurrentItemChanged(callback: (Int) -> Unit) {
 		override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 			super.onScrolled(recyclerView, dx, dy)
 			val item = (recyclerView.layoutManager as? LinearLayoutManager)
-				?.findFirstVisibleItemPosition()
+				?.findMiddleVisibleItemPosition()
 			if (item != null && item != RecyclerView.NO_POSITION && item != lastItem) {
 				lastItem = item
 				callback(item)
@@ -219,4 +220,8 @@ fun ViewPager2.callOnPageChaneListeners() {
 	} catch (e: Throwable) {
 		Log.e(null, "ViewPager2.callOnPageChaneListeners() failed", e)
 	}
+}
+
+fun LinearLayoutManager.findMiddleVisibleItemPosition(): Int {
+	return ((findFirstVisibleItemPosition() + findLastVisibleItemPosition()) / 2.0).roundToInt()
 }

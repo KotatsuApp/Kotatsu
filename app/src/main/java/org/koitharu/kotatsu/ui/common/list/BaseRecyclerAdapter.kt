@@ -10,7 +10,7 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 	RecyclerView.Adapter<BaseViewHolder<T, E>>(),
 	KoinComponent {
 
-	protected val dataSet = ArrayList<T>()
+	protected val dataSet = ArrayList<T>() //TODO make private
 
 	val items get() = dataSet.toImmutableList()
 
