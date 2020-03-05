@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.domain.MangaPreferencesRepository
+import org.koitharu.kotatsu.domain.MangaDataRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.MangaUtils
 import org.koitharu.kotatsu.domain.history.HistoryRepository
@@ -43,12 +43,12 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 						?: throw RuntimeException("Chapter ${chapterId} not found")
 					val pages = repo.getPages(chapter)
 					if (!isInitialized) {
-						val prefs = MangaPreferencesRepository()
+						val prefs = MangaDataRepository()
 						var mode = prefs.getReaderMode(manga.id)
 						if (mode == null) {
 							mode = MangaUtils.determineReaderMode(pages)
 							if (mode != null) {
-								prefs.saveData(
+								prefs.savePreferences(
 									mangaId = manga.id,
 									mode = mode
 								)
@@ -84,7 +84,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 				page = state.page
 			)
 			if (mode != null) {
-				MangaPreferencesRepository().saveData(
+				MangaDataRepository().savePreferences(
 					mangaId = state.manga.id,
 					mode = mode
 				)

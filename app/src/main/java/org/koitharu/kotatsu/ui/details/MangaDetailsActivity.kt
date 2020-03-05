@@ -40,12 +40,13 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		pager.adapter = MangaDetailsAdapter(resources, supportFragmentManager)
 		tabs.setupWithViewPager(pager)
-		intent?.getParcelableExtra<Manga>(EXTRA_MANGA)?.let {
-			presenter.loadDetails(
-				manga = it,
-				force = savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true
-			)
-		} ?: finish()
+		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
+			intent?.getParcelableExtra<Manga>(EXTRA_MANGA)?.let {
+				presenter.loadDetails(it, true)
+			} ?: intent?.getLongExtra(EXTRA_MANGA_ID, 0)?.takeUnless { it == 0L }?.let {
+				presenter.findMangaById(it)
+			} ?: finish()
+		}
 	}
 
 	override fun onMangaUpdated(manga: Manga) {
@@ -69,7 +70,12 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 	}
 
 	override fun onError(e: Throwable) {
-		Snackbar.make(pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+		if (manga == null) {
+			Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
+			finish()
+		} else {
+			Snackbar.make(pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -82,8 +88,8 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 			manga?.source != null && manga?.source != MangaSource.LOCAL
 		menu.findItem(R.id.action_delete).isVisible =
 			manga?.source == MangaSource.LOCAL
-		menu.findItem(R.id.action_shortcut).isVisible = BuildConfig.DEBUG &&
-				ShortcutManagerCompat.isRequestPinShortcutSupported(this)
+		menu.findItem(R.id.action_shortcut).isVisible =
+			ShortcutManagerCompat.isRequestPinShortcutSupported(this)
 		return super.onPrepareOptionsMenu(menu)
 	}
 
@@ -142,11 +148,16 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 	companion object {
 
 		private const val EXTRA_MANGA = "manga"
+		private const val EXTRA_MANGA_ID = "manga_id"
 
 		const val ACTION_MANGA_VIEW = "${BuildConfig.APPLICATION_ID}.action.VIEW_MANGA"
 
 		fun newIntent(context: Context, manga: Manga) =
 			Intent(context, MangaDetailsActivity::class.java)
 				.putExtra(EXTRA_MANGA, manga)
+
+		fun newIntent(context: Context, mangaId: Long) =
+			Intent(context, MangaDetailsActivity::class.java)
+				.putExtra(EXTRA_MANGA_ID, mangaId)
 	}
 }

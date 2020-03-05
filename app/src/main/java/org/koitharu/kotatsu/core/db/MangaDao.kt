@@ -3,13 +3,15 @@ package org.koitharu.kotatsu.core.db
 import androidx.room.*
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.MangaTagsEntity
+import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 
 @Dao
 abstract class MangaDao {
 
-	@Query("SELECT * FROM manga")
-	abstract suspend fun getAllManga(): List<MangaEntity>
+	@Transaction
+	@Query("SELECT * FROM manga WHERE manga_id = :id")
+	abstract suspend fun find(id: Long): MangaWithTags?
 
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(manga: MangaEntity): Long

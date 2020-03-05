@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.domain.MangaDataRepository
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.safe
 
@@ -27,6 +28,7 @@ object ShortcutUtils {
 				}.toBitmap()
 			}
 		}
+		MangaDataRepository().storeManga(manga)
 		return ShortcutInfoCompat.Builder(context, manga.id.toString())
 			.setShortLabel(manga.title)
 			.setLongLabel(manga.title)
@@ -34,7 +36,7 @@ object ShortcutUtils {
 				IconCompat.createWithBitmap(it)
 			} ?: IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground))
 			.setIntent(
-				MangaDetailsActivity.newIntent(context, manga.copy(chapters = null))
+				MangaDetailsActivity.newIntent(context, manga.id)
 					.setAction(MangaDetailsActivity.ACTION_MANGA_VIEW)
 			)
 			.build()

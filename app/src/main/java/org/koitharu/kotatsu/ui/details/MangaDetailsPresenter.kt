@@ -7,9 +7,11 @@ import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
+import org.koitharu.kotatsu.domain.MangaDataRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.domain.favourites.OnFavouritesChangeListener
@@ -37,6 +39,27 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 		FavouritesRepository.subscribe(this)
 	}
 
+	fun findMangaById(id: Long) {
+		presenterScope.launch {
+			viewState.onLoadingStateChanged(true)
+			try {
+				val manga = withContext(Dispatchers.IO) {
+					MangaDataRepository().findMangaById(id)
+				} ?: throw MangaNotFoundException("Cannot find manga by id")
+				viewState.onMangaUpdated(manga)
+				loadDetails(manga, true)
+			} catch (_: CancellationException){
+			} catch (e: Throwable) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
+				viewState.onError(e)
+			} finally {
+				viewState.onLoadingStateChanged(false)
+			}
+		}
+	}
+
 	fun loadDetails(manga: Manga, force: Boolean = false) {
 		if (!force && this.manga == manga) {
 			return
@@ -52,6 +75,7 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 				}
 				viewState.onMangaUpdated(data)
 				this@MangaDetailsPresenter.manga = data
+			} catch (_: CancellationException){
 			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
