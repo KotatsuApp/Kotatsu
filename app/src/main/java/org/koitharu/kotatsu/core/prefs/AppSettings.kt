@@ -37,6 +37,11 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		setOf(PAGE_SWITCH_TAPS)
 	)
 
+	var isTrafficWarningEnabled by BoolPreferenceDelegate(
+		resources.getString(R.string.key_traffic_warning),
+		true
+	)
+
 	private var sourcesOrderStr by NullableStringPreferenceDelegate(resources.getString(R.string.key_sources_order))
 
 	var sourcesOrder: List<Int>

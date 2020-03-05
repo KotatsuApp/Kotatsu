@@ -91,4 +91,8 @@
 	<string name="switch_pages">Switch pages</string>
 	<string name="taps_on_edges">Taps on edges</string>
 	<string name="volume_buttons">Volume buttons</string>
+	<string name="_continue">Continue</string>
+	<string name="warning">Warning</string>
+	<string name="network_consumption_warning">This operation may consume a lot of network traffic</string>
+	<string name="dont_ask_again">Don`t ask again</string>
 </resources>

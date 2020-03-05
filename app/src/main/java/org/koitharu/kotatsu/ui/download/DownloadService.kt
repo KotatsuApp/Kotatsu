@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.ui.download
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.webkit.MimeTypeMap
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import coil.Coil
 import coil.api.get
@@ -13,11 +15,14 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.inject
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.local.MangaZip
 import org.koitharu.kotatsu.ui.common.BaseService
+import org.koitharu.kotatsu.ui.common.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.retryUntilSuccess
@@ -144,12 +149,34 @@ class DownloadService : BaseService() {
 		private const val EXTRA_CHAPTERS_IDS = "chapters_ids"
 
 		fun start(context: Context, manga: Manga, chaptersIds: Collection<Long>? = null) {
-			val intent = Intent(context, DownloadService::class.java)
-			intent.putExtra(EXTRA_MANGA, manga)
-			if (chaptersIds != null) {
-				intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
+			confirmDataTransfer(context) {
+				val intent = Intent(context, DownloadService::class.java)
+				intent.putExtra(EXTRA_MANGA, manga)
+				if (chaptersIds != null) {
+					intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
+				}
+				ContextCompat.startForegroundService(context, intent)
 			}
-			ContextCompat.startForegroundService(context, intent)
+		}
+
+		private fun confirmDataTransfer(context: Context, callback: () -> Unit) {
+			val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+			val settings = AppSettings(context)
+			if (cm.isActiveNetworkMetered && settings.isTrafficWarningEnabled) {
+				CheckBoxAlertDialog.Builder(context)
+					.setTitle(R.string.warning)
+					.setMessage(R.string.network_consumption_warning)
+					.setCheckBoxText(R.string.dont_ask_again)
+					.setCheckBoxChecked(false)
+					.setNegativeButton(android.R.string.cancel, null)
+					.setPositiveButton(R.string._continue) { _, doNotAsk ->
+						settings.isTrafficWarningEnabled = !doNotAsk
+						callback()
+					}.create()
+					.show()
+			} else {
+				callback()
+			}
 		}
 	}
 }

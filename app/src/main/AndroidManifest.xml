@@ -4,6 +4,7 @@
 	package="org.koitharu.kotatsu">
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -43,7 +44,9 @@
 			android:name=".ui.reader.SimpleSettingsActivity"
 			android:label="@string/settings" />
 
-		<service android:name=".ui.download.DownloadService" />
+		<service
+			android:name=".ui.download.DownloadService"
+			android:foregroundServiceType="dataSync" />
 
 		<provider
 			android:name=".ui.search.MangaSuggestionsProvider"
