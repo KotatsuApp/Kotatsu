@@ -17,7 +17,7 @@ class HistoryRepository : KoinComponent {
 	private val db: MangaDatabase by inject()
 
 	suspend fun getList(offset: Int): List<Manga> {
-		val entities = db.historyDao().findAll(offset, 20, "updated_at")
+		val entities = db.historyDao().findAll(offset, 20, "updated_at DESC")
 		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
 	}
 
