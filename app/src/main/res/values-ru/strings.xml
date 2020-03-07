@@ -22,7 +22,6 @@
 	<string name="nothing_found">Ничего не найдено</string>
 	<string name="history_is_empty">История пуста</string>
 	<string name="read">Читать</string>
-	<string name="continue_">Продолжить</string>
 	<string name="add_bookmark">Добавить закладку</string>
 	<string name="you_have_not_favourites_yet">У Вас пока нет избранной манги</string>
 	<string name="add_to_favourites">Добавить в избранное</string>
@@ -90,4 +89,8 @@
 	<string name="switch_pages">Листание страниц</string>
 	<string name="taps_on_edges">Нажатия по краям</string>
 	<string name="volume_buttons">Кнопки громкости</string>
+	<string name="_continue">Продолжить</string>
+	<string name="warning">Предупреждение</string>
+	<string name="network_consumption_warning">Данная операция может привести к большому расходу траффика</string>
+	<string name="dont_ask_again">Больше не спрашивать</string>
 </resources>

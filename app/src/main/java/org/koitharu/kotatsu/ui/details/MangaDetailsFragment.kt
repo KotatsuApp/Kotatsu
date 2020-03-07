@@ -95,7 +95,7 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 				button_read.setText(R.string.read)
 				button_read.setIconResource(R.drawable.ic_read)
 			} else {
-				button_read.setText(R.string.continue_)
+				button_read.setText(R.string._continue)
 				button_read.setIconResource(R.drawable.ic_play)
 			}
 			button_read.setOnClickListener {

@@ -11,6 +11,7 @@ class GridTouchHelper(context: Context, private val listener: OnGridTouchListene
 	private val detector = GestureDetector(context, this)
 	private val width = context.resources.displayMetrics.widthPixels
 	private val height = context.resources.displayMetrics.heightPixels
+	private var isDispatching = false
 
 	init {
 		detector.setIsLongpressEnabled(false)
@@ -18,12 +19,15 @@ class GridTouchHelper(context: Context, private val listener: OnGridTouchListene
 	}
 
 	fun dispatchTouchEvent(event: MotionEvent) {
+		if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+			isDispatching = listener.onProcessTouch(event.rawX.toInt(), event.rawY.toInt())
+		}
 		detector.onTouchEvent(event)
 	}
 
 	override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-		if (!listener.onProcessTouch(event.rawX.toInt(), event.rawY.toInt())) {
-			return false
+		if (!isDispatching) {
+			return true
 		}
 		val xIndex = (event.rawX * 2f / width).roundToInt()
 		val yIndex = (event.rawY * 2f / height).roundToInt()

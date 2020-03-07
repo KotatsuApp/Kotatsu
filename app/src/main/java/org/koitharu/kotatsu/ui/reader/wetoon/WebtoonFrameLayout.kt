@@ -19,6 +19,9 @@ class WebtoonFrameLayout @JvmOverloads constructor(
 	}
 
 	fun dispatchVerticalScroll(dy: Int): Int {
+		if (!target.isImageLoaded) {
+			return dy //consume all scrolling
+		}
 		target.getPanRemaining(pan)
 		val c = target.center ?: return 0
 		val s = target.scale

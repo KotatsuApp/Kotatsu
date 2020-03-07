@@ -12,8 +12,8 @@ abstract class HistoryDao {
      * @hide
      */
     @Transaction
-    @Query("SELECT * FROM history ORDER BY :orderBy LIMIT :limit OFFSET :offset")
-    abstract suspend fun findAll(offset: Int, limit: Int, orderBy: String): List<HistoryWithManga>
+    @Query("SELECT * FROM history ORDER BY updated_at DESC LIMIT :limit OFFSET :offset")
+    abstract suspend fun findAll(offset: Int, limit: Int): List<HistoryWithManga>
 
     @Query("SELECT * FROM history WHERE manga_id = :id")
     abstract suspend fun find(id: Long): HistoryEntity?
