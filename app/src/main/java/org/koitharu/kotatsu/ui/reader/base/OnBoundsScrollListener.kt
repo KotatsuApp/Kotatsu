@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.reader
+package org.koitharu.kotatsu.ui.reader.base
 
 interface OnBoundsScrollListener {
 

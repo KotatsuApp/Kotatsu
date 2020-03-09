@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
@@ -24,7 +25,8 @@ import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
-import org.koitharu.kotatsu.ui.reader.standard.StandardReaderFragment
+import org.koitharu.kotatsu.ui.reader.base.AbstractReader
+import org.koitharu.kotatsu.ui.reader.standard.PagerReaderFragment
 import org.koitharu.kotatsu.ui.reader.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.ui.reader.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.ui.reader.wetoon.WebtoonReaderFragment
@@ -37,7 +39,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
 	ReaderListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
-	private val presenter by moxyPresenter(factory = ReaderPresenter.Companion::getInstance)
+	private val presenter by moxyPresenter(factory = ::ReaderPresenter)
 	private val settings by inject<AppSettings>()
 
 	lateinit var state: ReaderState
@@ -48,7 +50,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	private var isVolumeKeysSwitchEnabled = false
 
 	private val reader
-		get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseReaderFragment
+		get() = supportFragmentManager.findFragmentById(R.id.container) as? AbstractReader
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -81,24 +83,33 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		loadSettings()
 
 		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
-			presenter.loadChapter(state.manga, state.chapterId, ReaderAction.REPLACE)
+			presenter.init(state.manga)
 		}
 	}
 
-	override fun onInitReader(mode: ReaderMode) {
-		if (reader == null) {
-			setReader(mode)
+	override fun onInitReader(manga: Manga, mode: ReaderMode) {
+		val currentReader = reader
+		when (mode) {
+			ReaderMode.WEBTOON -> if (currentReader !is WebtoonReaderFragment) {
+				supportFragmentManager.commit {
+					replace(R.id.container, WebtoonReaderFragment.newInstance(state))
+				}
+			}
+			else -> if (currentReader !is PagerReaderFragment) {
+				supportFragmentManager.commit {
+					replace(R.id.container, PagerReaderFragment.newInstance(state))
+				}
+			}
 		}
-	}
-
-	override fun onPagesLoaded(chapterId: Long, pages: List<MangaPage>, action: ReaderAction) = Unit
-
-	override fun onPause() {
-		reader?.let {
-			state = state.copy(page = it.findCurrentPageIndex(state.chapterId))
-			presenter.saveState(state)
+		toolbar_bottom.menu.findItem(R.id.action_reader_mode).setIcon(
+			when (mode) {
+				ReaderMode.WEBTOON -> R.drawable.ic_script
+				else -> R.drawable.ic_book_page
+			}
+		)
+		appbar_top.postDelayed(1000) {
+			setUiIsVisible(false)
 		}
-		super.onPause()
 	}
 
 	override fun onDestroy() {
@@ -120,7 +131,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		R.id.action_reader_mode -> {
 			ReaderConfigDialog.show(
 				supportFragmentManager, when (reader) {
-					is StandardReaderFragment -> ReaderMode.STANDARD
+					is PagerReaderFragment -> ReaderMode.STANDARD
 					is WebtoonReaderFragment -> ReaderMode.WEBTOON
 					else -> ReaderMode.UNKNOWN
 				}
@@ -141,7 +152,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 		R.id.action_pages_thumbs -> {
 			if (reader?.hasItems == true) {
-				val pages = reader?.getPages(state.chapterId)
+				val pages = reader?.getPages()
 				if (pages != null) {
 					PagesThumbnailsSheet.show(
 						supportFragmentManager, pages,
@@ -171,6 +182,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
+	}
+
+	override fun saveState(chapterId: Long, page: Int) {
+		state = state.copy(chapterId = chapterId, page = page)
+		ReaderPresenter.saveState(state)
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
@@ -268,29 +284,16 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			chapterId = chapter.id,
 			page = 0
 		)
-		presenter.loadChapter(state.manga, chapter.id, ReaderAction.REPLACE)
+		reader?.updateState(chapterId = chapter.id)
 	}
 
 	override fun onPageSelected(page: MangaPage) {
-		reader?.let {
-			val index = it.pages.indexOfFirst { x -> x.id == page.id }
-			if (index != -1) {
-				it.setCurrentPage(index, false)
-			}
-		}
+		reader?.updateState(pageId = page.id)
 	}
 
 	override fun onReaderModeChanged(mode: ReaderMode) {
-		reader?.let {
-			state = state.copy(page = it.findCurrentPageIndex(state.chapterId))
-		}
-		presenter.saveState(state, mode)
-		setReader(mode)
-		setUiIsVisible(false)
-	}
-
-	override fun onChaptersLoader(chapters: List<MangaChapter>) {
-		state = state.copy(manga = state.manga.copy(chapters = chapters))
+		//TODO save state
+		presenter.setMode(state.manga, mode)
 	}
 
 	override fun onPageSaved(uri: Uri?) {
@@ -305,14 +308,10 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onPageChanged(chapter: MangaChapter, page: Int, total: Int) {
-		if (chapter.id != state.chapterId) {
-			title = chapter.name
-			state = state.copy(chapterId = chapter.id)
-			presenter.saveState(state)
-			state.manga.chapters?.run {
-				supportActionBar?.subtitle =
-					getString(R.string.chapter_d_of_d, chapter.number, size)
-			}
+		title = chapter.name
+		state.manga.chapters?.run {
+			supportActionBar?.subtitle =
+				getString(R.string.chapter_d_of_d, chapter.number, size)
 		}
 	}
 
@@ -340,25 +339,6 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 	}
 
-	private fun setReader(mode: ReaderMode) {
-		val currentReader = reader
-		when (mode) {
-			ReaderMode.WEBTOON -> if (currentReader !is WebtoonReaderFragment) {
-				supportFragmentManager.commit {
-					replace(R.id.container, WebtoonReaderFragment())
-				}
-			}
-			else -> if (currentReader !is StandardReaderFragment) {
-				supportFragmentManager.commit {
-					replace(R.id.container, StandardReaderFragment())
-				}
-			}
-		}
-		toolbar_bottom.menu.findItem(R.id.action_reader_mode).setIcon(when(mode) {
-			ReaderMode.WEBTOON -> R.drawable.ic_script
-			else -> R.drawable.ic_book_page
-		})
-	}
 
 	private fun loadSettings() {
 		settings.readerPageSwitch.let {

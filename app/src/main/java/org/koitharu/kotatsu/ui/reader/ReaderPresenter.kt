@@ -8,6 +8,7 @@ import moxy.InjectViewState
 import moxy.presenterScope
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.koin.core.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
@@ -25,50 +26,31 @@ import org.koitharu.kotatsu.utils.ext.mimeType
 @InjectViewState
 class ReaderPresenter : BasePresenter<ReaderView>() {
 
-	private var loaderJob: Job? = null
-	private var isInitialized = false
-
-	fun loadChapter(manga: Manga, chapterId: Long, action: ReaderAction) {
-		loaderJob?.cancel()
-		loaderJob = presenterScope.launch {
+	fun init(manga: Manga) {
+		presenterScope.launch {
 			viewState.onLoadingStateChanged(isLoading = true)
 			try {
-				withContext(Dispatchers.IO) {
+				val mode = withContext(Dispatchers.IO) {
 					val repo = MangaProviderFactory.create(manga.source)
-					val chapter = (manga.chapters ?: repo.getDetails(manga).chapters?.also {
-						withContext(Dispatchers.Main) {
-							viewState.onChaptersLoader(it)
+					val chapter =
+						(manga.chapters ?: throw RuntimeException("Chapters is null")).random()
+					val prefs = MangaDataRepository()
+					var mode = prefs.getReaderMode(manga.id)
+					if (mode == null) {
+						val pages = repo.getPages(chapter)
+						mode = MangaUtils.determineReaderMode(pages)
+						if (mode != null) {
+							prefs.savePreferences(
+								mangaId = manga.id,
+								mode = mode
+							)
 						}
-					})?.find { it.id == chapterId }
-						?: throw RuntimeException("Chapter ${chapterId} not found")
-					val pages = repo.getPages(chapter)
-					if (!isInitialized) {
-						val prefs = MangaDataRepository()
-						var mode = prefs.getReaderMode(manga.id)
-						if (mode == null) {
-							mode = MangaUtils.determineReaderMode(pages)
-							if (mode != null) {
-								prefs.savePreferences(
-									mangaId = manga.id,
-									mode = mode
-								)
-							}
-						}
-						withContext(Dispatchers.Main) {
-							viewState.onInitReader(mode ?: ReaderMode.UNKNOWN)
-						}
-						isInitialized = true
 					}
-					withContext(Dispatchers.Main) {
-						viewState.onPagesLoaded(chapterId, pages, action)
-					}
+					mode ?: ReaderMode.UNKNOWN
 				}
-			} catch (e: CancellationException){
-				Log.w(null, "Loader job cancelled", e)
-			} catch (e: Exception) {
-				if (BuildConfig.DEBUG) {
-					e.printStackTrace()
-				}
+				viewState.onInitReader(manga, mode)
+			} catch (_: CancellationException) {
+			} catch (e: Throwable) {
 				viewState.onError(e)
 			} finally {
 				viewState.onLoadingStateChanged(isLoading = false)
@@ -76,20 +58,14 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 		}
 	}
 
-	fun saveState(state: ReaderState, mode: ReaderMode? = null) {
+	fun setMode(manga: Manga, mode: ReaderMode) {
 		presenterScope.launch(Dispatchers.IO) {
-			HistoryRepository().addOrUpdate(
-				manga = state.manga,
-				chapterId = state.chapterId,
-				page = state.page
+			MangaDataRepository().savePreferences(
+				mangaId = manga.id,
+				mode = mode
 			)
-			if (mode != null) {
-				MangaDataRepository().savePreferences(
-					mangaId = state.manga.id,
-					mode = mode
-				)
-			}
 		}
+		viewState.onInitReader(manga, mode)
 	}
 
 	fun savePage(resolver: ContentResolver, page: MangaPage) {
@@ -101,7 +77,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 					.url(url)
 					.get()
 					.build()
-				val uri = getKoin().get<OkHttpClient>().newCall(request).await().use { response ->
+				val uri = get<OkHttpClient>().newCall(request).await().use { response ->
 					val fileName =
 						URLUtil.guessFileName(url, response.contentDisposition, response.mimeType)
 					MediaStoreCompat.insertImage(resolver, fileName) {
@@ -120,20 +96,17 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 		}
 	}
 
-	override fun onDestroy() {
-		instance = null
-		super.onDestroy()
-	}
-
 	companion object {
 
-		private var instance: ReaderPresenter? = null
-
-		fun getInstance(): ReaderPresenter = instance ?: synchronized(this) {
-			ReaderPresenter().also {
-				instance = it
+		fun saveState(state: ReaderState) {
+			GlobalScope.launch(Dispatchers.IO) {
+				HistoryRepository().addOrUpdate(
+					manga = state.manga,
+					chapterId = state.chapterId,
+					page = state.page
+				)
 			}
 		}
-	}
 
+	}
 }

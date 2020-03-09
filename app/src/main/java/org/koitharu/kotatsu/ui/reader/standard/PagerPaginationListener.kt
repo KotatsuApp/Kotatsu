@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.ui.reader.standard
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import org.koitharu.kotatsu.ui.reader.OnBoundsScrollListener
+import org.koitharu.kotatsu.ui.reader.base.OnBoundsScrollListener
 
 class PagerPaginationListener(
 	private val adapter: RecyclerView.Adapter<*>,
@@ -10,16 +10,19 @@ class PagerPaginationListener(
 	private val listener: OnBoundsScrollListener
 ) : ViewPager2.OnPageChangeCallback() {
 
-	private var lastItemCountStart = 0
-	private var lastItemCountEnd = 0
+	private var firstItemId: Long = 0
+	private var lastItemId: Long = 0
 
 	override fun onPageSelected(position: Int) {
 		val itemCount = adapter.itemCount
-		if (position <= offset && itemCount != lastItemCountStart) {
-			lastItemCountStart = itemCount
+		if (itemCount == 0) {
+			return
+		}
+		if (position <= offset && adapter.getItemId(0) != firstItemId) {
+			firstItemId = adapter.getItemId(0)
 			listener.onScrolledToStart()
-		} else if (position >= itemCount - offset && itemCount != lastItemCountEnd) {
-			lastItemCountEnd = itemCount
+		} else if (position >= itemCount - offset && adapter.getItemId(itemCount - 1) != lastItemId) {
+			lastItemId = adapter.getItemId(itemCount - 1)
 			listener.onScrolledToEnd()
 		}
 	}
