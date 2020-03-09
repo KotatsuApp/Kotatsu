@@ -5,8 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/drawer"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:openDrawer="end">
+	android:layout_height="match_parent">
 
 	<FrameLayout
 		android:layout_width="match_parent"
@@ -44,8 +43,8 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
 				android:gravity="center"
-				android:textColor="?android:textColorSecondary"
 				android:textAppearance="?android:textAppearanceMedium"
+				android:textColor="?android:textColorSecondary"
 				tools:text="@tools:sample/lorem[3]" />
 
 		</LinearLayout>

@@ -1,14 +1,20 @@
 package org.koitharu.kotatsu.ui.main
 
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import moxy.ktx.moxyPresenter
 import org.koin.core.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -19,10 +25,16 @@ import org.koitharu.kotatsu.ui.main.list.favourites.FavouritesListFragment
 import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
 import org.koitharu.kotatsu.ui.main.list.local.LocalListFragment
 import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
+import org.koitharu.kotatsu.ui.reader.ReaderActivity
+import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.ui.settings.SettingsActivity
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-	SharedPreferences.OnSharedPreferenceChangeListener {
+	SharedPreferences.OnSharedPreferenceChangeListener, MainView {
+
+	private val presenter by moxyPresenter(factory = ::MainPresenter)
 
 	private val settings by inject<AppSettings>()
 	private lateinit var drawerToggle: ActionBarDrawerToggle
@@ -40,7 +52,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		navigationView.setNavigationItemSelectedListener(this)
 		settings.subscribe(this)
 
-		if (supportFragmentManager.findFragmentById(R.id.container) == null) {
+		fab.imageTintList = ColorStateList.valueOf(Color.WHITE)
+		fab.isVisible = true
+		fab.setOnClickListener {
+			presenter.openLastReader()
+		}
+
+		supportFragmentManager.findFragmentById(R.id.container)?.let {
+			fab.isVisible = it is HistoryListFragment
+		} ?: run {
 			navigationView.setCheckedItem(R.id.nav_history)
 			setPrimaryFragment(HistoryListFragment.newInstance())
 		}
@@ -91,6 +111,27 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		return true
 	}
 
+	override fun onOpenReader(state: ReaderState) {
+		startActivity(ReaderActivity.newIntent(this, state))
+	}
+
+	override fun onError(e: Throwable) {
+		Snackbar.make(container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
+	}
+
+	override fun onLoadingStateChanged(isLoading: Boolean) {
+		fab.isEnabled = !isLoading
+		if (isLoading) {
+			fab.setImageDrawable(CircularProgressDrawable(this).also {
+				it.setColorSchemeColors(Color.WHITE)
+				it.strokeWidth = resources.resolveDp(2f)
+				it.start()
+			})
+		} else {
+			fab.setImageResource(R.drawable.ic_read_fill)
+		}
+	}
+
 	private fun initSideMenu(remoteSources: List<MangaSource>) {
 		val submenu = navigationView.menu.findItem(R.id.nav_remote_sources).subMenu
 		submenu.removeGroup(R.id.group_remote_sources)
@@ -110,5 +151,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.container, fragment)
 			.commit()
+		fab.isVisible = fragment is HistoryListFragment
 	}
 }
