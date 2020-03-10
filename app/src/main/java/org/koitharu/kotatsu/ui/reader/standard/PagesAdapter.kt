@@ -9,9 +9,7 @@ import org.koitharu.kotatsu.ui.reader.PageLoader
 class PagesAdapter(
 	pages: GroupedList<Long, MangaPage>,
 	private val loader: PageLoader
-) : BaseReaderAdapter<Unit>(pages) {
+) : BaseReaderAdapter(pages) {
 
 	override fun onCreateViewHolder(parent: ViewGroup) = PageHolder(parent, loader)
-
-	override fun getExtra(item: MangaPage, position: Int) = Unit
 }

@@ -11,10 +11,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.model.MangaState
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BaseFragment
-import org.koitharu.kotatsu.ui.reader.*
+import org.koitharu.kotatsu.ui.reader.PageLoader
+import org.koitharu.kotatsu.ui.reader.ReaderListener
+import org.koitharu.kotatsu.ui.reader.ReaderState
 
 abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayoutId),
 	OnBoundsScrollListener {
@@ -23,7 +24,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 	protected lateinit var loader: PageLoader
 		private set
 	private lateinit var pages: GroupedList<Long, MangaPage>
-	protected var adapter: BaseReaderAdapter<*>? = null
+	protected var adapter: BaseReaderAdapter? = null
 		private set
 
 	val hasItems: Boolean
@@ -218,7 +219,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 
 	protected abstract fun setCurrentItem(position: Int, isSmooth: Boolean)
 
-	protected abstract fun onCreateAdapter(dataSet: GroupedList<Long, MangaPage>): BaseReaderAdapter<*>
+	protected abstract fun onCreateAdapter(dataSet: GroupedList<Long, MangaPage>): BaseReaderAdapter
 
 	protected companion object {
 

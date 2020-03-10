@@ -5,17 +5,17 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
 
-abstract class BaseReaderAdapter<E>(private val pages: GroupedList<Long, MangaPage>) :
-	RecyclerView.Adapter<BaseViewHolder<MangaPage, E>>() {
+abstract class BaseReaderAdapter(private val pages: GroupedList<Long, MangaPage>) :
+	RecyclerView.Adapter<BaseViewHolder<MangaPage, Unit>>() {
 
 	init {
 		@Suppress("LeakingThis")
 		setHasStableIds(true)
 	}
 
-	override fun onBindViewHolder(holder: BaseViewHolder<MangaPage, E>, position: Int) {
+	override fun onBindViewHolder(holder: BaseViewHolder<MangaPage, Unit>, position: Int) {
 		val item = pages[position]
-		holder.bind(item, getExtra(item, position))
+		holder.bind(item, Unit)
 	}
 
 	fun getItem(position: Int) = pages[position]
@@ -40,13 +40,11 @@ abstract class BaseReaderAdapter<E>(private val pages: GroupedList<Long, MangaPa
 
 	final override fun getItemCount() = pages.size
 
-	final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<MangaPage, E> {
+	final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<MangaPage, Unit> {
 		return onCreateViewHolder(parent).also(this::onViewHolderCreated)
 	}
 
-	protected abstract fun getExtra(item: MangaPage, position: Int): E
+	protected open fun onViewHolderCreated(holder: BaseViewHolder<MangaPage, Unit>) = Unit
 
-	protected open fun onViewHolderCreated(holder: BaseViewHolder<MangaPage, E>) = Unit
-
-	protected abstract fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<MangaPage, E>
+	protected abstract fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<MangaPage, Unit>
 }

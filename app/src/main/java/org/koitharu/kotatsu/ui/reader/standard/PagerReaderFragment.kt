@@ -30,7 +30,7 @@ class PagerReaderFragment() : AbstractReader(R.layout.fragment_reader_standard) 
 		super.onDestroyView()
 	}
 
-	override fun onCreateAdapter(dataSet: GroupedList<Long, MangaPage>): BaseReaderAdapter<*> {
+	override fun onCreateAdapter(dataSet: GroupedList<Long, MangaPage>): BaseReaderAdapter {
 		return PagesAdapter(dataSet, loader)
 	}
 

@@ -31,7 +31,7 @@ class WebtoonReaderFragment : AbstractReader(R.layout.fragment_reader_webtoon) {
 		recyclerView.doOnCurrentItemChanged(::notifyPageChanged)
 	}
 
-	override fun onCreateAdapter(dataSet: GroupedList<Long, MangaPage>): BaseReaderAdapter<*> {
+	override fun onCreateAdapter(dataSet: GroupedList<Long, MangaPage>): BaseReaderAdapter {
 		return WebtoonAdapter(dataSet, loader)
 	}
 
