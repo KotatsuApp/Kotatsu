@@ -40,7 +40,11 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
-				viewState.onError(e)
+				if (offset == 0) {
+					viewState.onListError(e)
+				} else {
+					viewState.onError(e)
+				}
 			} finally {
 				viewState.onLoadingStateChanged(false)
 			}

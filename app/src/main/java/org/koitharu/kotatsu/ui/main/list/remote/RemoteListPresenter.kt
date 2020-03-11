@@ -40,7 +40,11 @@ class RemoteListPresenter : BasePresenter<MangaListView<Unit>>() {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
-				viewState.onError(e)
+				if (offset == 0) {
+					viewState.onListError(e)
+				} else {
+					viewState.onError(e)
+				}
 			} finally {
 				viewState.onLoadingStateChanged(false)
 			}

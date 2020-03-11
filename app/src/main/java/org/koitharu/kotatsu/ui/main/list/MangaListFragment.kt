@@ -99,7 +99,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		menu.findItem(R.id.action_filter).isVisible = drawer != null &&
-			drawer?.getDrawerLockMode(GravityCompat.END) != DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+				drawer?.getDrawerLockMode(GravityCompat.END) != DrawerLayout.LOCK_MODE_LOCKED_CLOSED
 		super.onPrepareOptionsMenu(menu)
 	}
 
@@ -151,7 +151,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		}
 	}
 
-	override fun onError(e: Throwable) {
+	override fun onListError(e: Throwable) {
 		if (recyclerView.hasItems) {
 			Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
 				.show()
@@ -165,6 +165,10 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 			)
 			layout_holder.isVisible = true
 		}
+	}
+
+	override fun onError(e: Throwable) {
+		Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
@@ -235,7 +239,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 				)
 			}
 		)
-		if(mode == ListMode.GRID) {
+		if (mode == ListMode.GRID) {
 			recyclerView.addOnLayoutChangeListener(UiUtils.SpanCountResolver)
 		}
 		adapter?.notifyDataSetChanged()

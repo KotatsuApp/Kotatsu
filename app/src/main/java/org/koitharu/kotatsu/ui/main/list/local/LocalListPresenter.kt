@@ -46,7 +46,7 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
-				viewState.onError(e)
+				viewState.onListError(e)
 			} finally {
 				viewState.onLoadingStateChanged(false)
 			}

@@ -19,6 +19,9 @@ interface MangaListView<E> : BaseMvpView {
 	@StateStrategyType(AddToEndStrategy::class, tag = "content")
 	fun onListAppended(list: List<Manga>)
 
+	@StateStrategyType(AddToEndSingleTagStrategy::class, tag = "content")
+	fun onListError(e: Throwable)
+
 	@AddToEndSingle
 	fun onInitFilter(sortOrders: List<SortOrder>, tags: List<MangaTag>, currentFilter: MangaFilter?)
 
