@@ -47,7 +47,7 @@ fun String.transliterate(skipMissing: Boolean): String {
 	)
 	return buildString(length + 5) {
 		for (c in this@transliterate) {
-			val p = cyr.binarySearch(c)
+			val p = cyr.binarySearch(c.toLowerCase())
 			if (p in lat.indices) {
 				append(lat[p])
 			} else if (!skipMissing) {

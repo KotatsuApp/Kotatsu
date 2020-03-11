@@ -31,11 +31,11 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 	): List<Manga> {
 		val files = context.getExternalFilesDirs("manga")
 			.flatMap { x -> x?.listFiles(CbzFilter())?.toList().orEmpty() }
-		return files.mapNotNull { x -> safe { getDetails(x) } }
+		return files.mapNotNull { x -> safe { getFromFile(x) } }
 	}
 
 	override suspend fun getDetails(manga: Manga) = if (manga.chapters == null) {
-		getDetails(Uri.parse(manga.url).toFile())
+		getFromFile(Uri.parse(manga.url).toFile())
 	} else manga
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
@@ -59,7 +59,13 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 		}
 	}
 
-	private fun getDetails(file: File): Manga {
+
+	fun delete(manga: Manga): Boolean {
+		val file = Uri.parse(manga.url).toFile()
+		return file.delete()
+	}
+
+	fun getFromFile(file: File): Manga {
 		val zip = ZipFile(file)
 		val fileUri = file.toUri().toString()
 		val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
@@ -96,11 +102,6 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 				)
 			)
 		}
-	}
-
-	fun delete(manga: Manga): Boolean {
-		val file = Uri.parse(manga.url).toFile()
-		return file.delete()
 	}
 
 	private fun zipUri(file: File, entryName: String) =

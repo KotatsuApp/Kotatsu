@@ -12,9 +12,9 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 @WorkerThread
-class MangaZip(private val file: File) {
+class MangaZip(val file: File) {
 
-	private val dir = file.parentFile?.sub(file.name + ".dir")?.takeIf { it.mkdir() }
+	private val dir = file.parentFile?.sub(file.name + ".tmp")?.takeIf { it.mkdir() }
 		?: throw RuntimeException("Cannot create temporary directory")
 
 	private val index = MangaIndex(dir.sub(INDEX_ENTRY).takeIfReadable()?.readText())

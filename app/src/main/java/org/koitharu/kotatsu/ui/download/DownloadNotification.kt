@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.ui.download
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -10,6 +11,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
+import org.koitharu.kotatsu.utils.ext.clearActions
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import kotlin.math.roundToInt
 
 class DownloadNotification(private val context: Context) {
@@ -37,6 +41,33 @@ class DownloadNotification(private val context: Context) {
 		builder.setProgress(1, 0, true)
 		builder.setSmallIcon(android.R.drawable.stat_sys_download)
 		builder.setLargeIcon(null)
+		builder.setContentIntent(null)
+	}
+
+	fun setCancelId(startId: Int) {
+		if (startId == 0) {
+			builder.clearActions()
+		} else {
+			val intent = DownloadService.getCancelIntent(context, startId)
+			builder.addAction(
+				R.drawable.ic_cross,
+				context.getString(android.R.string.cancel),
+				PendingIntent.getService(
+					context,
+					startId,
+					intent,
+					PendingIntent.FLAG_CANCEL_CURRENT
+				)
+			)
+		}
+	}
+
+	fun setError(e: Throwable) {
+		builder.setProgress(0, 0, false)
+		builder.setSmallIcon(android.R.drawable.stat_notify_error)
+		builder.setSubText(context.getString(R.string.error))
+		builder.setContentText(e.getDisplayMessage(context.resources))
+		builder.setContentIntent(null)
 	}
 
 	fun setLargeIcon(icon: Drawable?) {
@@ -57,14 +88,25 @@ class DownloadNotification(private val context: Context) {
 		builder.setContentText(context.getString(R.string.processing_))
 	}
 
-	fun setDone() {
+	fun setDone(manga: Manga) {
 		builder.setProgress(0, 0, false)
 		builder.setContentText(context.getString(R.string.download_complete))
+		builder.setContentIntent(createIntent(context, manga))
 		builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
+	}
+
+	fun setCancelling() {
+		builder.setProgress(1, 0, true)
+		builder.setContentText(context.getString(R.string.cancelling_))
+		builder.setContentIntent(null)
 	}
 
 	fun update(id: Int = NOTIFICATION_ID) {
 		manager.notify(id, builder.build())
+	}
+
+	fun dismiss(id: Int = NOTIFICATION_ID) {
+		manager.cancel(id)
 	}
 
 	operator fun invoke(): Notification = builder.build()
@@ -75,5 +117,13 @@ class DownloadNotification(private val context: Context) {
 		const val CHANNEL_ID = "download"
 
 		private const val PROGRESS_STEP = 20
+
+		@JvmStatic
+		private fun createIntent(context: Context, manga: Manga) = PendingIntent.getActivity(
+			context,
+			manga.hashCode(),
+			MangaDetailsActivity.newIntent(context, manga),
+			PendingIntent.FLAG_CANCEL_CURRENT
+		)
 	}
 }

@@ -94,4 +94,6 @@
 	<string name="warning">Warning</string>
 	<string name="network_consumption_warning">This operation may consume a lot of network traffic</string>
 	<string name="dont_ask_again">Don`t ask again</string>
+	<string name="cancelling_">Cancelling…</string>
+	<string name="error">Error</string>
 </resources>

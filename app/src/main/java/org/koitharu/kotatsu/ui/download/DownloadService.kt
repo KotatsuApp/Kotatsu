@@ -4,17 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.webkit.MimeTypeMap
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import coil.Coil
 import coil.api.get
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.inject
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.model.Manga
@@ -37,6 +35,8 @@ class DownloadService : BaseService() {
 
 	private val okHttp by inject<OkHttpClient>()
 	private val cache by inject<PagesCache>()
+	private val jobs = HashMap<Int, Job>()
+	private val mutex = Mutex()
 
 	override fun onCreate() {
 		super.onCreate()
@@ -44,21 +44,35 @@ class DownloadService : BaseService() {
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-		val manga = intent?.getParcelableExtra<Manga>(EXTRA_MANGA)
-		val chapters = intent?.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toSet()
-		if (manga != null) {
-			downloadManga(manga, chapters)
-		} else {
-			stopSelf(startId)
+		when (intent?.action) {
+			ACTION_DOWNLOAD_START -> {
+				val manga = intent.getParcelableExtra<Manga>(EXTRA_MANGA)
+				val chapters = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toSet()
+				if (manga != null) {
+					jobs[startId] = downloadManga(manga, chapters, startId)
+				} else {
+					stopSelf(startId)
+				}
+			}
+			ACTION_DOWNLOAD_CANCEL -> {
+				val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
+				jobs.remove(cancelId)?.cancel()
+				stopSelf(startId)
+			}
+			else -> stopSelf(startId)
 		}
 		return START_NOT_STICKY
 	}
 
-	private fun downloadManga(manga: Manga, chaptersIds: Set<Long>?) {
-		val destination = getExternalFilesDir("manga")!!
-		notification.fillFrom(manga)
-		startForeground(DownloadNotification.NOTIFICATION_ID, notification())
-		launch(Dispatchers.IO) {
+	private fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int): Job {
+		return launch(Dispatchers.IO) {
+			mutex.lock()
+			withContext(Dispatchers.Main) {
+				notification.fillFrom(manga)
+				notification.setCancelId(startId)
+				startForeground(DownloadNotification.NOTIFICATION_ID, notification())
+			}
+			val destination = getExternalFilesDir("manga")!!
 			var output: MangaZip? = null
 			try {
 				val repo = MangaProviderFactory.create(manga.source)
@@ -106,21 +120,41 @@ class DownloadService : BaseService() {
 					}
 				}
 				withContext(Dispatchers.Main) {
+					notification.setCancelId(0)
 					notification.setPostProcessing()
 					notification.update()
 				}
 				output.compress()
+				val result = MangaProviderFactory.createLocal().getFromFile(output.file)
 				withContext(Dispatchers.Main) {
-					notification.setDone()
+					notification.setDone(result)
+					notification.dismiss()
+					notification.update(manga.id.toInt().absoluteValue)
+				}
+			} catch (_: CancellationException) {
+				withContext(Dispatchers.Main + NonCancellable) {
+					notification.setCancelling()
+					notification.setCancelId(0)
+					notification.update()
+				}
+			} catch (e: Throwable) {
+				withContext(Dispatchers.Main) {
+					notification.setError(e)
+					notification.setCancelId(0)
+					notification.dismiss()
 					notification.update(manga.id.toInt().absoluteValue)
 				}
 			} finally {
 				withContext(NonCancellable) {
+					jobs.remove(startId)
 					output?.cleanup()
 					destination.sub("page.tmp").delete()
 					withContext(Dispatchers.Main) {
 						stopForeground(true)
+						notification.dismiss()
+						stopSelf(startId)
 					}
+					mutex.unlock()
 				}
 			}
 		}
@@ -145,12 +179,19 @@ class DownloadService : BaseService() {
 
 	companion object {
 
+		private const val ACTION_DOWNLOAD_START =
+			"${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_START"
+		private const val ACTION_DOWNLOAD_CANCEL =
+			"${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"
+
 		private const val EXTRA_MANGA = "manga"
 		private const val EXTRA_CHAPTERS_IDS = "chapters_ids"
+		private const val EXTRA_CANCEL_ID = "cancel_id"
 
 		fun start(context: Context, manga: Manga, chaptersIds: Collection<Long>? = null) {
 			confirmDataTransfer(context) {
 				val intent = Intent(context, DownloadService::class.java)
+				intent.action = ACTION_DOWNLOAD_START
 				intent.putExtra(EXTRA_MANGA, manga)
 				if (chaptersIds != null) {
 					intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
@@ -158,6 +199,11 @@ class DownloadService : BaseService() {
 				ContextCompat.startForegroundService(context, intent)
 			}
 		}
+
+		fun getCancelIntent(context: Context, startId: Int) =
+			Intent(context, DownloadService::class.java)
+				.setAction(ACTION_DOWNLOAD_CANCEL)
+				.putExtra(ACTION_DOWNLOAD_CANCEL, startId)
 
 		private fun confirmDataTransfer(context: Context, callback: () -> Unit) {
 			val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

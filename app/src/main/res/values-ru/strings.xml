@@ -93,4 +93,6 @@
 	<string name="warning">Предупреждение</string>
 	<string name="network_consumption_warning">Данная операция может привести к большому расходу траффика</string>
 	<string name="dont_ask_again">Больше не спрашивать</string>
+	<string name="cancelling_">Отмена…</string>
+	<string name="error">Ошибка</string>
 </resources>
