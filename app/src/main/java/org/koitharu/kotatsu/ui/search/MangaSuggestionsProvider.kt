@@ -50,13 +50,17 @@ class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
 		private const val AUTHORITY = "${BuildConfig.APPLICATION_ID}.MangaSuggestionsProvider"
 		private const val MODE = DATABASE_MODE_QUERIES
 
+		@JvmStatic
 		private val uri = Uri.Builder()
 			.scheme(ContentResolver.SCHEME_CONTENT)
 			.authority(AUTHORITY)
 			.appendPath(SearchManager.SUGGEST_URI_PATH_QUERY)
 			.build()
-		private		val projection = arrayOf("_id", SearchManager.SUGGEST_COLUMN_QUERY)
 
+		@JvmStatic
+		private val projection = arrayOf("_id", SearchManager.SUGGEST_COLUMN_QUERY)
+
+		@JvmStatic
 		fun saveQuery(context: Context, query: String) {
 			SearchRecentSuggestions(
 				context,
@@ -65,6 +69,7 @@ class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
 			).saveRecentQuery(query, null)
 		}
 
+		@JvmStatic
 		fun clearHistory(context: Context) {
 			SearchRecentSuggestions(
 				context,
@@ -73,16 +78,27 @@ class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
 			).clearHistory()
 		}
 
+		@JvmStatic
+		fun getItemsCount(context: Context) = getCursor(context)?.count ?: 0
+
+		@JvmStatic
 		private fun getCursor(context: Context): Cursor? {
 			return context.contentResolver?.query(uri, projection, null, arrayOf(""), null)
 		}
 
+		@JvmStatic
 		fun getSuggestionAdapter(context: Context): CursorAdapter? = getCursor(
 			context
 		)?.let { cursor ->
 			SearchSuggestionAdapter(context, cursor).also {
 				it.setFilterQueryProvider { q ->
-					context.contentResolver?.query(uri, projection, " ?", arrayOf(q.toString()), null)
+					context.contentResolver?.query(
+						uri,
+						projection,
+						" ?",
+						arrayOf(q.toString()),
+						null
+					)
 				}
 			}
 		}

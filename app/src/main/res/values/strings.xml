@@ -96,4 +96,9 @@
 	<string name="dont_ask_again">Don`t ask again</string>
 	<string name="cancelling_">Cancelling…</string>
 	<string name="error">Error</string>
+    <string name="nothing">Nothing</string>
+	<string name="clear_thumbs_cache">Clear thumbnails cache</string>
+    <string name="clear_search_history">Clear search history</string>
+    <string name="search_history_cleared">Search history cleared</string>
+	<string name="gestures_only">Gestures only</string>
 </resources>

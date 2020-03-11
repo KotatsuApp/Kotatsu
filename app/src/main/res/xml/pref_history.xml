@@ -3,9 +3,21 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
+	<Preference
+		android:key="@string/key_search_history_clear"
+		android:persistent="false"
+		android:title="@string/clear_search_history"
+		app:iconSpaceReserved="false" />
+
 	<PreferenceCategory
 		app:iconSpaceReserved="false"
 		android:title="@string/cache">
+
+		<Preference
+			android:key="@string/key_thumbs_cache_clear"
+			android:persistent="false"
+			android:title="@string/clear_thumbs_cache"
+			app:iconSpaceReserved="false" />
 
 		<Preference
 			android:key="@string/key_pages_cache_clear"

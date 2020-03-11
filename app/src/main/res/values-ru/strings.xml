@@ -95,4 +95,9 @@
 	<string name="dont_ask_again">Больше не спрашивать</string>
 	<string name="cancelling_">Отмена…</string>
 	<string name="error">Ошибка</string>
+    <string name="nothing">Ничего</string>
+	<string name="clear_thumbs_cache">Очистить кэш миниатюр</string>
+    <string name="clear_search_history">Очистить историю поиска</string>
+    <string name="search_history_cleared">История поиска очищена</string>
+	<string name="gestures_only">Только жесты</string>
 </resources>

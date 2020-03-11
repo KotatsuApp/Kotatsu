@@ -4,4 +4,8 @@
 		<item quantity="one">Total %1$d page</item>
 		<item quantity="other">Total %1$d pages</item>
 	</plurals>
+	<plurals name="items">
+		<item quantity="one">%1$d item</item>
+		<item quantity="other">%1$d items</item>
+	</plurals>
 </resources>
