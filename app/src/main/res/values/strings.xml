@@ -101,4 +101,6 @@
     <string name="clear_search_history">Clear search history</string>
     <string name="search_history_cleared">Search history cleared</string>
 	<string name="gestures_only">Gestures only</string>
+	<string name="internal_storage">Internal storage</string>
+	<string name="external_storage">External storage</string>
 </resources>

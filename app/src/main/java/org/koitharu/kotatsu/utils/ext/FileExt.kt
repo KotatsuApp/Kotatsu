@@ -19,3 +19,11 @@ fun File.computeSize(): Long = listFiles()?.sumByLong { x ->
 		x.length()
 	}
 } ?: 0L
+
+inline fun File.findParent(predicate: (File) -> Boolean): File? {
+	var current = this
+	while(!predicate(current)) {
+		current = current.parentFile ?: return null
+	}
+	return current
+}
