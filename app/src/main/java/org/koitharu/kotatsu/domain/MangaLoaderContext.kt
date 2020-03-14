@@ -5,14 +5,17 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.koin.core.KoinComponent
+import org.koin.core.get
 import org.koin.core.inject
+import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.prefs.SourceConfig
 import org.koitharu.kotatsu.utils.ext.await
 
 class MangaLoaderContext : KoinComponent {
 
 	private val okHttp by inject<OkHttpClient>()
 
-	suspend fun get(url: String, block: (Request.Builder.() -> Unit)? = null): Response {
+	suspend fun httpGet(url: String, block: (Request.Builder.() -> Unit)? = null): Response {
 		val request = Request.Builder()
 			.get()
 			.url(url)
@@ -22,7 +25,7 @@ class MangaLoaderContext : KoinComponent {
 		return okHttp.newCall(request.build()).await()
 	}
 
-	suspend fun post(
+	suspend fun httpPost(
 		url: String,
 		form: Map<String, String>,
 		block: (Request.Builder.() -> Unit)? = null
@@ -39,4 +42,6 @@ class MangaLoaderContext : KoinComponent {
 		}
 		return okHttp.newCall(request.build()).await()
 	}
+
+	fun getSettings(source: MangaSource) = SourceConfig(get(), source)
 }

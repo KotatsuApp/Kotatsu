@@ -1,11 +1,9 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.domain.MangaLoaderContext
 
-class ReadmangaRepository(loaderContext: MangaLoaderContext) :
-	GroupleRepository(MangaSource.READMANGA_RU, loaderContext) {
+class ReadmangaRepository : GroupleRepository() {
 
-	override val domain = "readmanga.me"
-
+	override val defaultDomain = "readmanga.me"
+	override val source = MangaSource.READMANGA_RU
 }

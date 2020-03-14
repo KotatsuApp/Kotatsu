@@ -1,18 +1,14 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.core.parser.BaseMangaRepository
-import org.koitharu.kotatsu.domain.MangaLoaderContext
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
 
-abstract class GroupleRepository(
-	private val source: MangaSource,
-	loaderContext: MangaLoaderContext
-) :
-	BaseMangaRepository(loaderContext) {
+abstract class GroupleRepository :	RemoteMangaRepository() {
 
-	protected abstract val domain: String
+	protected abstract val defaultDomain: String
 
 	override val sortOrders = setOf(
 		SortOrder.UPDATED, SortOrder.POPULARITY,
@@ -26,13 +22,14 @@ abstract class GroupleRepository(
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
+		val domain = conf.getDomain(defaultDomain)
 		val doc = when {
-			!query.isNullOrEmpty() -> loaderContext.post(
+			!query.isNullOrEmpty() -> loaderContext.httpPost(
 				"https://$domain/search",
 				mapOf("q" to query)
 			)
-			tag == null -> loaderContext.get("https://$domain/list?sortType=${getSortKey(sortOrder)}&offset=$offset")
-			else -> loaderContext.get(
+			tag == null -> loaderContext.httpGet("https://$domain/list?sortType=${getSortKey(sortOrder)}&offset=$offset")
+			else -> loaderContext.httpGet(
 				"https://$domain/list/genre/${tag.key}?sortType=${getSortKey(
 					sortOrder
 				)}&offset=$offset"
@@ -86,7 +83,8 @@ abstract class GroupleRepository(
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val doc = loaderContext.get(manga.url).parseHtml()
+		val domain = conf.getDomain(defaultDomain)
+		val doc = loaderContext.httpGet(manga.url).parseHtml()
 		val root = doc.body().getElementById("mangaBox") ?: throw ParseException("Cannot find root")
 		return manga.copy(
 			description = root.selectFirst("div.manga-description").firstChild()?.html(),
@@ -109,7 +107,7 @@ abstract class GroupleRepository(
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = loaderContext.get(chapter.url + "?mtr=1").parseHtml()
+		val doc = loaderContext.httpGet(chapter.url + "?mtr=1").parseHtml()
 		val scripts = doc.select("script")
 		for (script in scripts) {
 			val data = script.html()
@@ -135,7 +133,8 @@ abstract class GroupleRepository(
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val doc = loaderContext.get("https://$domain/list/genres/sort_name").parseHtml()
+		val domain = conf.getDomain(defaultDomain)
+		val doc = loaderContext.httpGet("https://$domain/list/genres/sort_name").parseHtml()
 		val root = doc.body().getElementById("mangaBox").selectFirst("div.leftContent")
 			.selectFirst("table.table")
 		return root.select("a.element-link").map { a ->
@@ -146,6 +145,8 @@ abstract class GroupleRepository(
 			)
 		}.toSet()
 	}
+
+	override fun onCreatePreferences() = setOf(R.string.key_parser_domain)
 
 	private fun getSortKey(sortOrder: SortOrder?) =
 		when (sortOrder ?: sortOrders.minBy { it.ordinal }) {

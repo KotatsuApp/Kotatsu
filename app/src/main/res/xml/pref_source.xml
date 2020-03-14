@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference
+        android:key="@string/key_parser_domain"
+        android:title="@string/domain"
+        app:iconSpaceReserved="false" />
+
+</PreferenceScreen>

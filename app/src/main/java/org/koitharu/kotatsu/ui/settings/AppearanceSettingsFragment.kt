@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arrayMapOf
-import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.SeekBarPreference
 import org.koitharu.kotatsu.R
@@ -21,8 +20,6 @@ class AppearanceSettingsFragment : BasePreferenceFragment(R.string.appearance),
 
 		findPreference<Preference>(R.string.key_list_mode)?.summary =
 			listModes[settings.listMode]?.let(::getString)
-		findPreference<ListPreference>(R.string.key_theme)?.summaryProvider =
-			ListPreference.SimpleSummaryProvider.getInstance()
 		findPreference<SeekBarPreference>(R.string.key_grid_size)?.run {
 			summary = "%d%%".format(value)
 			setOnPreferenceChangeListener { preference, newValue ->

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koitharu.kotatsu.core.http.persistentcookiejar.persistence
+package org.koitharu.kotatsu.core.local.cookies.persistence
 
 import android.annotation.SuppressLint
 import android.content.Context

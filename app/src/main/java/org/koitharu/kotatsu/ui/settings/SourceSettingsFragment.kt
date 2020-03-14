@@ -1,18 +1,25 @@
 package org.koitharu.kotatsu.ui.settings
 
 import android.os.Bundle
+import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import org.koin.core.KoinComponent
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.domain.MangaProviderFactory
+import org.koitharu.kotatsu.ui.settings.utils.EditTextSummaryProvider
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class SourceSettingsFragment : PreferenceFragmentCompat(), KoinComponent {
 
-	private lateinit var source: MangaSource
+	private val source by lazy(LazyThreadSafetyMode.NONE) {
+		requireArguments().getParcelable<MangaSource>(EXTRA_SOURCE)!!
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		source = requireArguments().getParcelable(EXTRA_SOURCE)!!
+		preferenceManager.sharedPreferencesName = source.name
 	}
 
 	override fun onResume() {
@@ -21,7 +28,15 @@ class SourceSettingsFragment : PreferenceFragmentCompat(), KoinComponent {
 	}
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-
+		val repo = MangaProviderFactory.create(source) as? RemoteMangaRepository ?: return
+		val keys = repo.onCreatePreferences().map(::getString)
+		addPreferencesFromResource(R.xml.pref_source)
+		for (i in 0 until preferenceScreen.preferenceCount) {
+			val pref = preferenceScreen.getPreference(i)
+			pref.isVisible = pref.key in keys
+		}
+		findPreference<EditTextPreference>(getString(R.string.key_parser_domain))?.summaryProvider =
+			EditTextSummaryProvider(R.string._default)
 	}
 
 	companion object {

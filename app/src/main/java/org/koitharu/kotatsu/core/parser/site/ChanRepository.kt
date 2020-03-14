@@ -1,17 +1,14 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.core.parser.BaseMangaRepository
-import org.koitharu.kotatsu.domain.MangaLoaderContext
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
 
-abstract class ChanRepository(
-	private val source: MangaSource,
-	loaderContext: MangaLoaderContext
-) : BaseMangaRepository(loaderContext) {
+abstract class ChanRepository : RemoteMangaRepository() {
 
-	protected abstract val domain: String
+	protected abstract val defaultDomain: String
 
 	override val sortOrders = setOf(SortOrder.NEWEST, SortOrder.POPULARITY, SortOrder.ALPHABETICAL)
 
@@ -21,12 +18,13 @@ abstract class ChanRepository(
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
+		val domain = conf.getDomain(defaultDomain)
 		val url = when {
 			query != null -> "https://$domain/?do=search&subaction=search&story=${query.urlEncoded()}"
 			tag != null -> "https://$domain/tags/${tag.key}&n=${getSortKey2(sortOrder)}?offset=$offset"
 			else -> "https://$domain/${getSortKey(sortOrder)}?offset=$offset"
 		}
-		val doc = loaderContext.get(url).parseHtml()
+		val doc = loaderContext.httpGet(url).parseHtml()
 		val root = doc.body().selectFirst("div.main_fon").getElementById("content")
 			?: throw ParseException("Cannot find root")
 		return root.select("div.content_row").mapNotNull { row ->
@@ -60,7 +58,8 @@ abstract class ChanRepository(
 
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val doc = loaderContext.get(manga.url).parseHtml()
+		val domain = conf.getDomain(defaultDomain)
+		val doc = loaderContext.httpGet(manga.url).parseHtml()
 		val root =
 			doc.body().getElementById("dle-content") ?: throw ParseException("Cannot find root")
 		return manga.copy(
@@ -83,7 +82,7 @@ abstract class ChanRepository(
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = loaderContext.get(chapter.url).parseHtml()
+		val doc = loaderContext.httpGet(chapter.url).parseHtml()
 		val scripts = doc.select("script")
 		for (script in scripts) {
 			val data = script.html()
@@ -107,7 +106,8 @@ abstract class ChanRepository(
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val doc = loaderContext.get("https://$domain/catalog").parseHtml()
+		val domain = conf.getDomain(defaultDomain)
+		val doc = loaderContext.httpGet("https://$domain/catalog").parseHtml()
 		val root = doc.body().selectFirst("div.main_fon").getElementById("side")
 			.select("ul").last()
 		return root.select("li.sidetag").map { li ->
@@ -119,6 +119,8 @@ abstract class ChanRepository(
 			)
 		}.toSet()
 	}
+
+	override fun onCreatePreferences() = setOf(R.string.key_parser_domain)
 
 	private fun getSortKey(sortOrder: SortOrder?) =
 		when (sortOrder ?: sortOrders.minBy { it.ordinal }) {

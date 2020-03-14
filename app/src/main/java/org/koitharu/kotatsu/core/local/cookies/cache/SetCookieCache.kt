@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koitharu.kotatsu.core.http.persistentcookiejar.cache
+package org.koitharu.kotatsu.core.local.cookies.cache
 
 import okhttp3.Cookie
-import org.koitharu.kotatsu.core.http.persistentcookiejar.cache.IdentifiableCookie.Companion.decorateAll
+import org.koitharu.kotatsu.core.local.cookies.cache.IdentifiableCookie.Companion.decorateAll
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 

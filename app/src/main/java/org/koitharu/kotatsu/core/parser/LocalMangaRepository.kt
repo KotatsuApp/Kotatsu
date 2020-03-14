@@ -4,10 +4,10 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koitharu.kotatsu.core.local.CbzFilter
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.domain.local.MangaIndex
 import org.koitharu.kotatsu.domain.local.MangaZip
 import org.koitharu.kotatsu.utils.AlphanumComparator
@@ -19,9 +19,9 @@ import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
-class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaRepository(loaderContext) {
+class LocalMangaRepository : MangaRepository, KoinComponent {
 
-	private val context by loaderContext.inject<Context>()
+	private val context by inject<Context>()
 
 	override suspend fun getList(
 		offset: Int,
@@ -113,6 +113,12 @@ class LocalMangaRepository(loaderContext: MangaLoaderContext) : BaseMangaReposit
 			.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
 		return list.firstOrNull()
 	}
+
+	override val sortOrders = emptySet<SortOrder>()
+
+	override suspend fun getPageFullUrl(page: MangaPage) = page.url
+
+	override suspend fun getTags() = emptySet<MangaTag>()
 
 	companion object {
 

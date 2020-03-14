@@ -103,4 +103,6 @@
 	<string name="gestures_only">Gestures only</string>
 	<string name="internal_storage">Internal storage</string>
 	<string name="external_storage">External storage</string>
+    <string name="domain">Domain</string>
+    <string name="_default">Default</string>
 </resources>

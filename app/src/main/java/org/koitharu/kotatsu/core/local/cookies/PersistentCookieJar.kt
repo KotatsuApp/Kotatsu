@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koitharu.kotatsu.core.http.persistentcookiejar
+package org.koitharu.kotatsu.core.local.cookies
 
-import org.koitharu.kotatsu.core.http.persistentcookiejar.persistence.CookiePersistor
+import org.koitharu.kotatsu.core.local.cookies.persistence.CookiePersistor
 import okhttp3.Cookie
 import okhttp3.HttpUrl
-import org.koitharu.kotatsu.core.http.persistentcookiejar.cache.CookieCache
+import org.koitharu.kotatsu.core.local.cookies.cache.CookieCache
 import java.util.*
 
 class PersistentCookieJar(

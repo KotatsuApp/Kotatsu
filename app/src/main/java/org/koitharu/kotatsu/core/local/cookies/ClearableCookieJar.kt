@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.koitharu.kotatsu.core.http.persistentcookiejar
+package org.koitharu.kotatsu.core.local.cookies
 
 import okhttp3.CookieJar
 

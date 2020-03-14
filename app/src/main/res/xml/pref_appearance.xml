@@ -9,6 +9,7 @@
 		android:entryValues="@array/values_theme"
 		android:key="@string/key_theme"
 		android:title="@string/theme"
+		app:useSimpleSummaryProvider="true"
 		app:iconSpaceReserved="false" />
 
 	<Preference

@@ -30,6 +30,7 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 		imageView_cover.load(manga.largeCoverUrl ?: manga.coverUrl) {
 			fallback(R.drawable.ic_placeholder)
 			crossfade(true)
+			lifecycle(this@MangaDetailsFragment)
 		}
 		textView_title.text = manga.title
 		textView_subtitle.textAndVisible = manga.altTitle

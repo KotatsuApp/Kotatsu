@@ -13,9 +13,9 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.http.persistentcookiejar.PersistentCookieJar
-import org.koitharu.kotatsu.core.http.persistentcookiejar.cache.SetCookieCache
-import org.koitharu.kotatsu.core.http.persistentcookiejar.persistence.SharedPrefsCookiePersistor
+import org.koitharu.kotatsu.core.local.cookies.PersistentCookieJar
+import org.koitharu.kotatsu.core.local.cookies.cache.SetCookieCache
+import org.koitharu.kotatsu.core.local.cookies.persistence.SharedPrefsCookiePersistor
 import org.koitharu.kotatsu.core.local.CbzFetcher
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -47,19 +47,15 @@ class KotatsuApp : Application() {
 							.cache(CacheUtils.createHttpCache(applicationContext))
 							.build()
 					}
-				}, module {
-					single {
-						MangaLoaderContext()
-					}
-				}, module {
 					single {
 						mangaDb().build()
 					}
-				}, module {
+					single {
+						MangaLoaderContext()
+					}
 					factory {
 						AppSettings(applicationContext)
 					}
-				}, module {
 					single {
 						PagesCache(applicationContext)
 					}

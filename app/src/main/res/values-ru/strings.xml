@@ -100,6 +100,8 @@
     <string name="clear_search_history">Очистить историю поиска</string>
     <string name="search_history_cleared">История поиска очищена</string>
 	<string name="gestures_only">Только жесты</string>
-	<string name="internal_storage">Internal storage</string>
-	<string name="external_storage">External storage</string>
+	<string name="internal_storage">Внутренний накопитель</string>
+	<string name="external_storage">Внешнее хранилище</string>
+    <string name="domain">Домен</string>
+    <string name="_default">По умолчанию</string>
 </resources>

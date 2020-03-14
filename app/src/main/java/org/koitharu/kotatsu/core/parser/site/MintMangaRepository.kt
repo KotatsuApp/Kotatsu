@@ -1,10 +1,9 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.domain.MangaLoaderContext
 
-class MintMangaRepository(loaderContext: MangaLoaderContext) :
-	GroupleRepository(MangaSource.MINTMANGA, loaderContext) {
+class MintMangaRepository : GroupleRepository() {
 
-	override val domain: String = "mintmanga.live"
+	override val source = MangaSource.MINTMANGA
+	override val defaultDomain: String = "mintmanga.live"
 }
