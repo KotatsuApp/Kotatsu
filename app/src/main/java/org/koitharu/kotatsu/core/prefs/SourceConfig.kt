@@ -10,6 +10,8 @@ class SourceConfig(context: Context, source: MangaSource) {
 
 	private val keyDomain = context.getString(R.string.key_parser_domain)
 
-	fun getDomain(defaultValue: String) = prefs.getString(keyDomain, defaultValue) ?: defaultValue
+	fun getDomain(defaultValue: String) = prefs.getString(keyDomain, defaultValue)
+		?.takeUnless(String::isBlank)
+		?: defaultValue
 
 }

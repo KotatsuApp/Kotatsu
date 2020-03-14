@@ -13,11 +13,11 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.local.CbzFetcher
+import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.local.cookies.PersistentCookieJar
 import org.koitharu.kotatsu.core.local.cookies.cache.SetCookieCache
 import org.koitharu.kotatsu.core.local.cookies.persistence.SharedPrefsCookiePersistor
-import org.koitharu.kotatsu.core.local.CbzFetcher
-import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.CacheUtils
@@ -40,27 +40,25 @@ class KotatsuApp : Application() {
 		startKoin {
 			androidLogger()
 			androidContext(applicationContext)
-			modules(listOf(
-				module {
-					factory {
-						okHttp()
-							.cache(CacheUtils.createHttpCache(applicationContext))
-							.build()
-					}
-					single {
-						mangaDb().build()
-					}
-					single {
-						MangaLoaderContext()
-					}
-					factory {
-						AppSettings(applicationContext)
-					}
-					single {
-						PagesCache(applicationContext)
-					}
+			module {
+				factory {
+					okHttp()
+						.cache(CacheUtils.createHttpCache(applicationContext))
+						.build()
 				}
-			))
+				single {
+					mangaDb().build()
+				}
+				single {
+					MangaLoaderContext()
+				}
+				factory {
+					AppSettings(applicationContext)
+				}
+				single {
+					PagesCache(applicationContext)
+				}
+			}
 		}
 	}
 

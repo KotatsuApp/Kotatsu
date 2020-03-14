@@ -26,7 +26,7 @@ abstract class GroupleRepository :	RemoteMangaRepository() {
 		val doc = when {
 			!query.isNullOrEmpty() -> loaderContext.httpPost(
 				"https://$domain/search",
-				mapOf("q" to query)
+				mapOf("q" to query, "offset" to offset.toString())
 			)
 			tag == null -> loaderContext.httpGet("https://$domain/list?sortType=${getSortKey(sortOrder)}&offset=$offset")
 			else -> loaderContext.httpGet(
@@ -40,7 +40,7 @@ abstract class GroupleRepository :	RemoteMangaRepository() {
 		return root.select("div.tile").mapNotNull { node ->
 			val imgDiv = node.selectFirst("div.img") ?: return@mapNotNull null
 			val descDiv = node.selectFirst("div.desc") ?: return@mapNotNull null
-			if (descDiv.getElementsByAttributeValue("data-type", "author").isNotEmpty()) {
+			if (descDiv.selectFirst("i.fa-user") != null) {
 				return@mapNotNull null //skip author
 			}
 			val href = imgDiv.selectFirst("a").attr("href")?.withDomain(domain)
@@ -87,7 +87,7 @@ abstract class GroupleRepository :	RemoteMangaRepository() {
 		val doc = loaderContext.httpGet(manga.url).parseHtml()
 		val root = doc.body().getElementById("mangaBox") ?: throw ParseException("Cannot find root")
 		return manga.copy(
-			description = root.selectFirst("div.manga-description").firstChild()?.html(),
+			description = root.selectFirst("div.manga-description")?.html(),
 			largeCoverUrl = root.selectFirst("div.subject-cower")?.selectFirst("img")?.attr(
 				"data-full"
 			),

@@ -16,17 +16,14 @@ abstract class RepositoryTestEnvironment {
 	@BeforeClass
 	fun initialize(source: MangaSource) {
 		startKoin {
-			modules(listOf(
-				module {
-					factory {
-						OkHttpClient()
-					}
-				}, module {
-					single {
-						MangaLoaderContext()
-					}
+			module {
+				factory {
+					OkHttpClient()
 				}
-			))
+				single {
+					MangaLoaderContext()
+				}
+			}
 		}
 		val constructor = source.cls.getConstructor(MangaLoaderContext::class.java)
 		repository = constructor.newInstance(MangaLoaderContext())
