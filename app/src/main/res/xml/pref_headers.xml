@@ -22,4 +22,9 @@
 		android:icon="@drawable/ic_history"
 		android:title="@string/history_and_cache" />
 
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.ui.settings.AboutSettingsFragment"
+		android:icon="@drawable/ic_information"
+		android:title="@string/about_app" />
+
 </PreferenceScreen>

@@ -47,6 +47,7 @@
 		<service
 			android:name=".ui.download.DownloadService"
 			android:foregroundServiceType="dataSync" />
+		<service android:name=".ui.settings.UpdateService" />
 
 		<provider
 			android:name=".ui.search.MangaSuggestionsProvider"

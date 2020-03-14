@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
@@ -28,6 +29,7 @@ import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.ui.settings.SettingsActivity
+import org.koitharu.kotatsu.ui.settings.UpdateService
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.resolveDp
 
@@ -63,6 +65,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		} ?: run {
 			navigationView.setCheckedItem(R.id.nav_history)
 			setPrimaryFragment(HistoryListFragment.newInstance())
+		}
+		drawer.postDelayed(4000) {
+			UpdateService.startIfRequired(applicationContext)
 		}
 	}
 

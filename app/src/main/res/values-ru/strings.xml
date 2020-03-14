@@ -104,4 +104,7 @@
 	<string name="external_storage">Внешнее хранилище</string>
     <string name="domain">Домен</string>
     <string name="_default">По умолчанию</string>
+    <string name="application_update">Обновление приложения</string>
+	<string name="app_update_available">Доступно обновление приложения</string>
+    <string name="about_app">О программе</string>
 </resources>

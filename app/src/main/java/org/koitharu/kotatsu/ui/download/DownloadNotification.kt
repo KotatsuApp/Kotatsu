@@ -23,7 +23,8 @@ class DownloadNotification(private val context: Context) {
 		context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 	init {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+			&& manager.getNotificationChannel(CHANNEL_ID) == null) {
 			val channel = NotificationChannel(
 				CHANNEL_ID,
 				context.getString(R.string.downloads),
@@ -67,6 +68,7 @@ class DownloadNotification(private val context: Context) {
 		builder.setSmallIcon(android.R.drawable.stat_notify_error)
 		builder.setSubText(context.getString(R.string.error))
 		builder.setContentText(e.getDisplayMessage(context.resources))
+		builder.setAutoCancel(true)
 		builder.setContentIntent(null)
 	}
 
@@ -92,6 +94,7 @@ class DownloadNotification(private val context: Context) {
 		builder.setProgress(0, 0, false)
 		builder.setContentText(context.getString(R.string.download_complete))
 		builder.setContentIntent(createIntent(context, manga))
+		builder.setAutoCancel(true)
 		builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
 	}
 

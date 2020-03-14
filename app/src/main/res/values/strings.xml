@@ -105,4 +105,7 @@
 	<string name="external_storage">External storage</string>
     <string name="domain">Domain</string>
     <string name="_default">Default</string>
+    <string name="application_update">Application update</string>
+	<string name="app_update_available">Application update is available</string>
+    <string name="about_app">About</string>
 </resources>
