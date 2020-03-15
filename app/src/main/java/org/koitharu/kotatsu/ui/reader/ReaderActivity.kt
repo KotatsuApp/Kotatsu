@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -14,6 +15,8 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import moxy.MvpDelegate
 import moxy.ktx.moxyPresenter
 import org.koin.core.inject
@@ -32,6 +35,7 @@ import org.koitharu.kotatsu.ui.reader.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.ui.reader.wetoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ShareHelper
+import org.koitharu.kotatsu.utils.ShortcutUtils
 import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
 
@@ -84,6 +88,13 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 
 		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
 			presenter.init(state.manga)
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+				GlobalScope.launch {
+					safe {
+						ShortcutUtils.addAppShortcut(applicationContext, state.manga)
+					}
+				}
+			}
 		}
 	}
 

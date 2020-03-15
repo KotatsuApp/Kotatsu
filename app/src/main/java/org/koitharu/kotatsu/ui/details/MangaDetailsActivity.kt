@@ -126,12 +126,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		R.id.action_shortcut -> {
 			manga?.let {
 				lifecycleScope.launch {
-					if (!ShortcutManagerCompat.requestPinShortcut(
-							this@MangaDetailsActivity,
-							ShortcutUtils.createShortcutInfo(this@MangaDetailsActivity, it),
-							null
-						)
-					) {
+					if (!ShortcutUtils.requestPinShortcut(this@MangaDetailsActivity, manga)) {
 						Snackbar.make(
 							pager,
 							R.string.operation_not_supported,

@@ -10,7 +10,7 @@ import java.io.IOException
 
 inline fun <T, R> T.safe(action: T.() -> R?) = try {
 	this.action()
-} catch (e: Exception) {
+} catch (e: Throwable) {
 	if (BuildConfig.DEBUG) {
 		e.printStackTrace()
 	}

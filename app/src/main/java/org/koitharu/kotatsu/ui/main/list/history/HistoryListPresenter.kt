@@ -1,17 +1,20 @@
 package org.koitharu.kotatsu.ui.main.list.history
 
+import android.os.Build
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.presenterScope
+import org.koin.core.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
 import org.koitharu.kotatsu.ui.main.list.MangaListView
+import org.koitharu.kotatsu.utils.ShortcutUtils
 
 @InjectViewState
 class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
@@ -58,6 +61,9 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 				withContext(Dispatchers.IO) {
 					repository.clear()
 				}
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+					ShortcutUtils.clearAppShortcuts(get())
+				}
 				viewState.onListChanged(emptyList())
 			} catch (_: CancellationException) {
 			} catch (e: Throwable) {
@@ -76,6 +82,9 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 			try {
 				withContext(Dispatchers.IO) {
 					repository.delete(manga)
+				}
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+					ShortcutUtils.removeAppShortcut(get(), manga)
 				}
 				viewState.onItemRemoved(manga)
 			} catch (_: CancellationException) {
