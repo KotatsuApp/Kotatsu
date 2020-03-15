@@ -28,7 +28,7 @@ abstract class ChanRepository : RemoteMangaRepository() {
 		val root = doc.body().selectFirst("div.main_fon").getElementById("content")
 			?: throw ParseException("Cannot find root")
 		return root.select("div.content_row").mapNotNull { row ->
-			val a = row.selectFirst("div.manga_row1")?.selectFirst("a.title_link")
+			val a = row.selectFirst("div.manga_row1")?.selectFirst("h2")?.selectFirst("a")
 				?: return@mapNotNull null
 			val href = a.attr("href").withDomain(domain)
 			Manga(
