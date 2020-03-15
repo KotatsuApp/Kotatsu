@@ -2,11 +2,13 @@
 
 Kotatsu is a free and open source manga reader for Android.
 
-![Android minSdk](https://img.shields.io/badge/android-5.0+-brightgreen) ![GitHub top language](https://img.shields.io/github/languages/top/nv95/Kotatsu) [![Build Status](https://travis-ci.org/nv95/Kotatsu.svg?branch=master)](https://travis-ci.org/nv95/Kotatsu) ![GitHub](https://img.shields.io/github/license/nv95/Kotatsu)
+![Android minSdk](https://img.shields.io/badge/android-5.0+-brightgreen) ![GitHub top language](https://img.shields.io/github/languages/top/nv95/Kotatsu) [![Build Status](https://travis-ci.org/nv95/Kotatsu.svg?branch=master)](https://travis-ci.org/nv95/Kotatsu) ![License](https://img.shields.io/github/license/nv95/Kotatsu) [![4pda](https://img.shields.io/badge/discuss-4pda-2982CC)](http://4pda.ru/forum/index.php?showtopic=697669)
 
 ### Download
 
-_Coming soon_
+Latest unstable build: [get here](https://github.com/nv95/Kotatsu/releases/latest)
+
+Stable release: _Coming soon_
 
 ### Main Features
 
