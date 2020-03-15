@@ -42,6 +42,16 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		true
 	)
 
+	val appUpdateAuto by BoolPreferenceDelegate(
+		resources.getString(R.string.key_app_update_auto),
+		true
+	)
+
+	var appUpdate by LongPreferenceDelegate(
+		resources.getString(R.string.key_app_update),
+		0L
+	)
+
 	private var sourcesOrderStr by NullableStringPreferenceDelegate(resources.getString(R.string.key_sources_order))
 
 	var sourcesOrder: List<Int>

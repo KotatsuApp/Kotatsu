@@ -35,10 +35,11 @@ data class VersionId(
 		@JvmStatic
 		private fun variantWeight(variantType: String) =
 			when (variantType.toLowerCase(Locale.ROOT)) {
-				"a" -> 1
-				"b" -> 2
+				"a", "alpha" -> 1
+				"b", "beta" -> 2
 				"rc" -> 4
-				else -> 8
+				"" -> 8
+				else -> 0
 			}
 
 		@JvmStatic

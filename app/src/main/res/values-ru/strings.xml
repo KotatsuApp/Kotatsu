@@ -107,4 +107,5 @@
     <string name="application_update">Обновление приложения</string>
 	<string name="app_update_available">Доступно обновление приложения</string>
     <string name="about_app">О программе</string>
+	<string name="show_notification_app_update">Показывать уведомление при наличии новой версии</string>
 </resources>

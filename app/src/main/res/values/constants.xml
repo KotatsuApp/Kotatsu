@@ -11,6 +11,7 @@
 	<string name="key_grid_size">grid_size</string>
 	<string name="key_reader_switchers">reader_switchers</string>
 	<string name="key_app_update">app_update</string>
+	<string name="key_app_update_auto">app_update_auto</string>
 
 	<string name="key_parser_domain">domain</string>
 	<string-array name="values_theme">

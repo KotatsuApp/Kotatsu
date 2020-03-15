@@ -9,8 +9,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.edit
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,11 +18,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.github.GithubRepository
 import org.koitharu.kotatsu.core.github.VersionId
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.ui.common.BaseService
 import org.koitharu.kotatsu.utils.FileSizeUtils
 import java.util.concurrent.TimeUnit
 
-class UpdateService : BaseService() {
+class AppUpdateService : BaseService() {
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		launch(Dispatchers.IO) {
@@ -38,9 +37,7 @@ class UpdateService : BaseService() {
 						showUpdateNotification(version)
 					}
 				}
-				PreferenceManager.getDefaultSharedPreferences(this@UpdateService).edit(true) {
-					putLong(getString(R.string.key_app_update), System.currentTimeMillis())
-				}
+				AppSettings(this@AppUpdateService).appUpdate = System.currentTimeMillis()
 			} catch (_: CancellationException) {
 			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
@@ -72,7 +69,7 @@ class UpdateService : BaseService() {
 		builder.setContentText(buildString {
 			append(newVersion.name)
 			append(" (")
-			append(FileSizeUtils.formatBytes(this@UpdateService, newVersion.apkSize))
+			append(FileSizeUtils.formatBytes(this@AppUpdateService, newVersion.apkSize))
 			append(')')
 		})
 		builder.setContentIntent(
@@ -96,13 +93,15 @@ class UpdateService : BaseService() {
 		private val PERIOD = TimeUnit.HOURS.toMillis(10)
 
 		fun start(context: Context) =
-			context.startService(Intent(context, UpdateService::class.java))
+			context.startService(Intent(context, AppUpdateService::class.java))
 
 		fun startIfRequired(context: Context) {
-			val lastUpdate = PreferenceManager.getDefaultSharedPreferences(context)
-				.getLong(context.getString(R.string.key_app_update), 0)
-			if (lastUpdate + PERIOD < System.currentTimeMillis()) {
-				start(context)
+			val settings = AppSettings(context)
+			if (settings.appUpdateAuto) {
+				val lastUpdate = settings.appUpdate
+				if (lastUpdate + PERIOD < System.currentTimeMillis()) {
+					start(context)
+				}
 			}
 		}
 	}

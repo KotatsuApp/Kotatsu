@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
+	<SwitchPreference
+		android:defaultValue="true"
+		android:key="@string/key_app_update_auto"
+		android:summary="@string/show_notification_app_update"
+		android:title="@string/application_update"
+		app:allowDividerBelow="true"
+		app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

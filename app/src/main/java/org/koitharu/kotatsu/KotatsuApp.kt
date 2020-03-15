@@ -40,25 +40,27 @@ class KotatsuApp : Application() {
 		startKoin {
 			androidLogger()
 			androidContext(applicationContext)
-			module {
-				factory {
-					okHttp()
-						.cache(CacheUtils.createHttpCache(applicationContext))
-						.build()
+			modules(
+				module {
+					factory {
+						okHttp()
+							.cache(CacheUtils.createHttpCache(applicationContext))
+							.build()
+					}
+					single {
+						mangaDb().build()
+					}
+					single {
+						MangaLoaderContext()
+					}
+					factory {
+						AppSettings(applicationContext)
+					}
+					single {
+						PagesCache(applicationContext)
+					}
 				}
-				single {
-					mangaDb().build()
-				}
-				single {
-					MangaLoaderContext()
-				}
-				factory {
-					AppSettings(applicationContext)
-				}
-				single {
-					PagesCache(applicationContext)
-				}
-			}
+			)
 		}
 	}
 
