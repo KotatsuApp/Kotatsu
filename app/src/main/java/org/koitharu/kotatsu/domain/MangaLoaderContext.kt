@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.SourceConfig
 import org.koitharu.kotatsu.utils.ext.await
 
-class MangaLoaderContext : KoinComponent {
+open class MangaLoaderContext : KoinComponent {
 
 	private val okHttp by inject<OkHttpClient>()
 
@@ -43,5 +43,5 @@ class MangaLoaderContext : KoinComponent {
 		return okHttp.newCall(request.build()).await()
 	}
 
-	fun getSettings(source: MangaSource) = SourceConfig(get(), source)
+	open fun getSettings(source: MangaSource) = SourceConfig(get(), source)
 }

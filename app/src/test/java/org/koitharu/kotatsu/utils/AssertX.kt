@@ -6,17 +6,23 @@ import java.net.URL
 
 object AssertX {
 
-    private val VALID_RESPONSE_CODES = arrayOf(
-        HttpURLConnection.HTTP_OK,
-        HttpURLConnection.HTTP_MOVED_PERM,
-        HttpURLConnection.HTTP_MOVED_TEMP
-    )
-
-    fun assertValidUrl(url: String) {
+    fun assertContentType(url: String, type: String, subtype: String? = null) {
+        Assert.assertFalse("URL is empty", url.isEmpty())
         val cn = URL(url).openConnection() as HttpURLConnection
+        cn.requestMethod = "HEAD"
         cn.connect()
-        val code = cn.responseCode
-        Assert.assertTrue("Invalid response code $code", code in VALID_RESPONSE_CODES)
+        when (val code = cn.responseCode) {
+            HttpURLConnection.HTTP_MOVED_PERM,
+            HttpURLConnection.HTTP_MOVED_TEMP -> assertContentType(cn.getHeaderField("Location"), type, subtype)
+            HttpURLConnection.HTTP_OK -> {
+                val ct = cn.contentType.substringBeforeLast(';').split("/")
+                Assert.assertEquals(type, ct.first())
+                if (subtype != null) {
+                    Assert.assertEquals(subtype, ct.last())
+                }
+            }
+            else -> Assert.fail("Invalid response code $code")
+        }
     }
 
 }
