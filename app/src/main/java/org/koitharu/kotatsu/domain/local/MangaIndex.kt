@@ -14,7 +14,7 @@ class MangaIndex(source: String?) {
 
 	private val json: JSONObject = source?.let(::JSONObject) ?: JSONObject()
 
-	fun setMangaInfo(manga: Manga) {
+	fun setMangaInfo(manga: Manga, append: Boolean) {
 		json.put("id", manga.id)
 		json.put("title", manga.title)
 		json.put("title_alt", manga.altTitle)
@@ -32,7 +32,9 @@ class MangaIndex(source: String?) {
 				a.put(jo)
 			}
 		})
-		json.put("chapters", JSONObject())
+		if (!append || !json.has("chapters")) {
+			json.put("chapters", JSONObject())
+		}
 		json.put("app_id", BuildConfig.APPLICATION_ID)
 		json.put("app_version", BuildConfig.VERSION_CODE)
 	}

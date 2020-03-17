@@ -3,7 +3,10 @@ package org.koitharu.kotatsu.ui.download
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.os.PowerManager
+import android.os.WorkSource
 import android.webkit.MimeTypeMap
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import coil.Coil
 import coil.api.get
@@ -27,11 +30,13 @@ import org.koitharu.kotatsu.utils.ext.retryUntilSuccess
 import org.koitharu.kotatsu.utils.ext.safe
 import org.koitharu.kotatsu.utils.ext.sub
 import java.io.File
+import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
 
 class DownloadService : BaseService() {
 
 	private lateinit var notification: DownloadNotification
+	private lateinit var wakeLock: PowerManager.WakeLock
 
 	private val okHttp by inject<OkHttpClient>()
 	private val cache by inject<PagesCache>()
@@ -41,6 +46,8 @@ class DownloadService : BaseService() {
 	override fun onCreate() {
 		super.onCreate()
 		notification = DownloadNotification(this)
+		wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
+			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -50,6 +57,7 @@ class DownloadService : BaseService() {
 				val chapters = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toSet()
 				if (manga != null) {
 					jobs[startId] = downloadManga(manga, chapters, startId)
+					Toast.makeText(this, R.string.manga_downloading_, Toast.LENGTH_SHORT).show()
 				} else {
 					stopSelf(startId)
 				}
@@ -67,6 +75,7 @@ class DownloadService : BaseService() {
 	private fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int): Job {
 		return launch(Dispatchers.IO) {
 			mutex.lock()
+			wakeLock.acquire(TimeUnit.MINUTES.toMillis(20))
 			withContext(Dispatchers.Main) {
 				notification.fillFrom(manga)
 				notification.setCancelId(startId)
@@ -154,6 +163,7 @@ class DownloadService : BaseService() {
 						notification.dismiss()
 						stopSelf(startId)
 					}
+					wakeLock.release()
 					mutex.unlock()
 				}
 			}

@@ -17,11 +17,12 @@ class MangaZip(val file: File) {
 	private val dir = file.parentFile?.sub(file.name + ".tmp")?.takeIf { it.mkdir() }
 		?: throw RuntimeException("Cannot create temporary directory")
 
-	private val index = MangaIndex(dir.sub(INDEX_ENTRY).takeIfReadable()?.readText())
+	private var index = MangaIndex(null)
 
 	fun prepare(manga: Manga) {
 		extract()
-		index.setMangaInfo(manga)
+		index = MangaIndex(dir.sub(INDEX_ENTRY).takeIfReadable()?.readText())
+		index.setMangaInfo(manga, append = true)
 	}
 
 	fun cleanup() {
