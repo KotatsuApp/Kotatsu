@@ -8,6 +8,7 @@ import coil.ImageLoader
 import coil.util.CoilUtils
 import com.itkacher.okhttpprofiler.OkHttpProfilerInterceptor
 import okhttp3.OkHttpClient
+import okhttp3.internal.userAgent
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -18,6 +19,7 @@ import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.local.cookies.PersistentCookieJar
 import org.koitharu.kotatsu.core.local.cookies.cache.SetCookieCache
 import org.koitharu.kotatsu.core.local.cookies.persistence.SharedPrefsCookiePersistor
+import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.CacheUtils
@@ -82,6 +84,7 @@ class KotatsuApp : Application() {
 		readTimeout(60, TimeUnit.SECONDS)
 		writeTimeout(20, TimeUnit.SECONDS)
 		cookieJar(cookieJar)
+		addInterceptor(UserAgentInterceptor)
 		if (BuildConfig.DEBUG) {
 			addInterceptor(OkHttpProfilerInterceptor())
 		}
