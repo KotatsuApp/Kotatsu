@@ -12,3 +12,13 @@ fun <T> JSONArray.map(block: (JSONObject) -> T): List<T> {
 	}
 	return result
 }
+
+fun <T> JSONArray.mapIndexed(block: (Int, JSONObject) -> T): List<T> {
+	val len = length()
+	val result = ArrayList<T>(len)
+	for(i in 0 until len) {
+		val jo = getJSONObject(i)
+		result.add(block(i, jo))
+	}
+	return result
+}

@@ -26,8 +26,8 @@ class RemoteRepositoryTest(source: MangaSource) {
 		val list = runBlocking { repo.getList(60) }
 		Assert.assertFalse(list.isEmpty())
 		val item = list.random()
-		AssertX.assertContentType(item.coverUrl, "image")
-		AssertX.assertContentType(item.url, "text", "html")
+		AssertX.assertContentType(item.coverUrl, "image/*")
+		AssertX.assertContentType(item.url, "text/html", "application/json")
 		Assert.assertFalse(item.title.isBlank())
 	}
 
@@ -36,8 +36,8 @@ class RemoteRepositoryTest(source: MangaSource) {
 		val list = runBlocking { repo.getList(0, query = "tail") }
 		Assert.assertFalse(list.isEmpty())
 		val item = list.random()
-		AssertX.assertContentType(item.coverUrl, "image")
-		AssertX.assertContentType(item.url, "text", "html")
+		AssertX.assertContentType(item.coverUrl, "image/*")
+		AssertX.assertContentType(item.url, "text/html", "application/json")
 		Assert.assertFalse(item.title.isBlank())
 	}
 
@@ -51,8 +51,8 @@ class RemoteRepositoryTest(source: MangaSource) {
 		val list = runBlocking { repo.getList(0, tag = tag) }
 		Assert.assertFalse(list.isEmpty())
 		val item = list.random()
-		AssertX.assertContentType(item.coverUrl, "image")
-		AssertX.assertContentType(item.url, "text", "html")
+		AssertX.assertContentType(item.coverUrl, "image/*")
+		AssertX.assertContentType(item.url, "text/html", "application/json")
 		Assert.assertFalse(item.title.isBlank())
 	}
 
@@ -64,7 +64,7 @@ class RemoteRepositoryTest(source: MangaSource) {
 		Assert.assertFalse(details.description.isNullOrEmpty())
 		val chapter = details.chapters!!.random()
 		Assert.assertFalse(chapter.name.isBlank())
-		AssertX.assertContentType(chapter.url, "text", "html")
+		AssertX.assertContentType(chapter.url, "text/html", "application/json")
 	}
 
 	@Test
@@ -75,7 +75,7 @@ class RemoteRepositoryTest(source: MangaSource) {
 		Assert.assertFalse(pages.isEmpty())
 		val page = pages.random()
 		val fullUrl = runBlocking { repo.getPageFullUrl(page) }
-		AssertX.assertContentType(fullUrl, "image")
+		AssertX.assertContentType(fullUrl, "image/*")
 	}
 
 	companion object {

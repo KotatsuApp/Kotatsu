@@ -6,22 +6,22 @@ import java.net.URL
 
 object AssertX {
 
-	fun assertContentType(url: String, type: String, subtype: String? = null) {
+	fun assertContentType(url: String, vararg types: String) {
 		Assert.assertFalse("URL is empty", url.isEmpty())
 		val cn = URL(url).openConnection() as HttpURLConnection
 		cn.requestMethod = "HEAD"
 		cn.connect()
 		when (val code = cn.responseCode) {
 			HttpURLConnection.HTTP_MOVED_PERM,
-			HttpURLConnection.HTTP_MOVED_TEMP -> assertContentType(cn.getHeaderField("Location"), type, subtype)
+			HttpURLConnection.HTTP_MOVED_TEMP -> assertContentType(cn.getHeaderField("Location"), *types)
 			HttpURLConnection.HTTP_OK -> {
 				val ct = cn.contentType.substringBeforeLast(';').split("/")
-				Assert.assertEquals(type, ct.first())
-				if (subtype != null) {
-					Assert.assertEquals(subtype, ct.last())
-				}
+				Assert.assertTrue(types.any {
+					val x = it.split('/')
+					x[0] == ct[0] && (x[1] == "*" || x[1] == ct[1])
+				})
 			}
-			else -> Assert.fail("Invalid response code $code")
+			else -> Assert.fail("Invalid response code $code at $url")
 		}
 	}
 

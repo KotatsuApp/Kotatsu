@@ -18,6 +18,7 @@ enum class MangaSource(
 	MINTMANGA("MintManga", "ru", MintMangaRepository::class.java),
 	SELFMANGA("SelfManga", "ru", SelfMangaRepository::class.java),
 	MANGACHAN("Манга-тян", "ru", MangaChanRepository::class.java),
+	DESUME("Desu.me", "ru", DesuMeRepository::class.java),
 	HENCHAN("Хентай-тян", "ru", HenChanRepository::class.java),
 	YAOICHAN("Яой-тян", "ru", YaoiChanRepository::class.java)
 }
