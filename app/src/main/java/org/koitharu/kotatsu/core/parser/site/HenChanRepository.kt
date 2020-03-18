@@ -4,6 +4,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.parseHtml
 import org.koitharu.kotatsu.utils.ext.withDomain
@@ -18,22 +19,27 @@ class HenChanRepository : ChanRepository() {
 		val doc = loaderContext.httpGet(manga.url).parseHtml()
 		val root =
 			doc.body().getElementById("dle-content") ?: throw ParseException("Cannot find root")
+		val readLink = manga.url.replace("manga", "online")
 		return manga.copy(
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
 			largeCoverUrl = root.getElementById("cover")?.attr("src")?.withDomain(domain),
-			chapters = root.getElementById("right").select("table.table_cha").flatMap { table ->
-				table.select("div.manga2")
-			}.mapNotNull { it.selectFirst("a") }.reversed().mapIndexedNotNull { i, a ->
-				val href = a.attr("href")
-					?.withDomain(domain) ?: return@mapIndexedNotNull null
-				MangaChapter(
-					id = href.longHashCode(),
-					name = a.text().trim(),
-					number = i + 1,
-					url = href,
+			tags = root.selectFirst("div.sidetags")?.select("li.sidetag")?.map {
+				val a = it.children().last()
+				MangaTag(
+					title = a.text(),
+					key = a.attr("href").substringAfterLast('/'),
 					source = source
 				)
-			}
+			}?.toSet() ?: manga.tags,
+			chapters = listOf(
+				MangaChapter(
+					id = readLink.longHashCode(),
+					url = readLink,
+					source = source,
+					number = 1,
+					name = manga.title
+				)
+			)
 		)
 	}
 }
