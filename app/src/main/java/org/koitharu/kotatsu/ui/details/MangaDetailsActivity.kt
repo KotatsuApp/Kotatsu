@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.ui.browser.BrowserActivity
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.ui.download.DownloadService
 import org.koitharu.kotatsu.utils.ShareHelper
@@ -120,6 +121,12 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		R.id.action_save -> {
 			manga?.let {
 				DownloadService.start(this, it)
+			}
+			true
+		}
+		R.id.action_browser -> {
+			manga?.let {
+				startActivity(BrowserActivity.newIntent(this, it.url))
 			}
 			true
 		}

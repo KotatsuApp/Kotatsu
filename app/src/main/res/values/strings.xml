@@ -109,4 +109,5 @@
 	<string name="app_update_available">Application update is available</string>
     <string name="about_app">About</string>
 	<string name="show_notification_app_update">Show notification if update is available</string>
+	<string name="open_in_browser">Open in browser</string>
 </resources>

@@ -43,6 +43,9 @@
 		<activity
 			android:name=".ui.reader.SimpleSettingsActivity"
 			android:label="@string/settings" />
+		<activity
+			android:name=".ui.browser.BrowserActivity"
+			android:launchMode="singleInstance" />
 
 		<service
 			android:name=".ui.download.DownloadService"
