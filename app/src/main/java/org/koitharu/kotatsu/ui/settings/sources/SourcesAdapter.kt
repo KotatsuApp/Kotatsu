@@ -6,32 +6,46 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_source_config.*
 import org.koin.core.KoinComponent
-import org.koin.core.get
+import org.koin.core.inject
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.utils.ext.safe
 
 class SourcesAdapter(private val onItemClickListener: OnRecyclerItemClickListener<MangaSource>) :
-	RecyclerView.Adapter<BaseViewHolder<*, Unit>>(), KoinComponent {
+	RecyclerView.Adapter<SourceViewHolder>(), KoinComponent {
 
-	private val dataSet = MangaProviderFactory.sources.toMutableList()
+	private val dataSet = MangaProviderFactory.getSources(includeHidden = true).toMutableList()
+	private val settings by inject<AppSettings>()
+	private val hiddenItems = settings.hiddenSources.mapNotNull {
+		safe {
+			MangaSource.valueOf(it)
+		}
+	}.toMutableSet()
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
-		ITEM_SOURCE -> SourceViewHolder(parent).also(::onViewHolderCreated)
-		ITEM_DIVIDER -> SourceDividerHolder(parent)
-		else -> throw IllegalArgumentException("Unsupported viewType $viewType")
-	}
+	override fun onCreateViewHolder(
+		parent: ViewGroup,
+		viewType: Int
+	) = SourceViewHolder(parent).also(::onViewHolderCreated)
 
 	override fun getItemCount() = dataSet.size
 
-	override fun onBindViewHolder(holder: BaseViewHolder<*, Unit>, position: Int) {
-		(holder as? SourceViewHolder)?.bind(dataSet[position], Unit)
+	override fun onBindViewHolder(holder: SourceViewHolder, position: Int) {
+		val item = dataSet[position]
+		holder.bind(item, !hiddenItems.contains(item))
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
 	private fun onViewHolderCreated(holder: SourceViewHolder) {
+		holder.imageView_hidden.setOnCheckedChangeListener {
+			if (it) {
+				hiddenItems.remove(holder.requireData())
+			} else {
+				hiddenItems.add(holder.requireData())
+			}
+			settings.hiddenSources = hiddenItems.map { x -> x.name }.toSet()
+		}
 		holder.imageView_config.setOnClickListener { v ->
 			onItemClickListener.onItemClick(holder.requireData(), holder.adapterPosition, v)
 		}
@@ -48,12 +62,6 @@ class SourcesAdapter(private val onItemClickListener: OnRecyclerItemClickListene
 		val item = dataSet.removeAt(oldPos)
 		dataSet.add(newPos, item)
 		notifyItemMoved(oldPos, newPos)
-		get<AppSettings>().sourcesOrder = dataSet.map { it.ordinal }
-	}
-
-	companion object {
-
-		const val ITEM_SOURCE = 0
-		const val ITEM_DIVIDER = 1
+		settings.sourcesOrder = dataSet.map { it.ordinal }
 	}
 }

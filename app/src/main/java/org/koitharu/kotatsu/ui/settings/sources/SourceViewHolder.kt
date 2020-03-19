@@ -7,9 +7,10 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
 
 class SourceViewHolder(parent: ViewGroup) :
-	BaseViewHolder<MangaSource, Unit>(parent, R.layout.item_source_config) {
+	BaseViewHolder<MangaSource, Boolean>(parent, R.layout.item_source_config) {
 
-    override fun onBind(data: MangaSource, extra: Unit) {
+    override fun onBind(data: MangaSource, extra: Boolean) {
         textView_title.text = data.title
+		imageView_hidden.isChecked = extra
     }
 }

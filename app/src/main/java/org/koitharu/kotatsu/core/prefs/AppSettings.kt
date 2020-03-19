@@ -60,6 +60,8 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 			sourcesOrderStr = value.joinToString("|")
 		}
 
+	var hiddenSources by StringSetPreferenceDelegate(resources.getString(R.string.key_sources_hidden))
+
 	fun subscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
 		prefs.registerOnSharedPreferenceChangeListener(listener)
 	}

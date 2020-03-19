@@ -9,15 +9,23 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 
 object MangaProviderFactory : KoinComponent {
 
-	val sources: List<MangaSource>
-		get() {
-			val list = MangaSource.values().toList() - MangaSource.LOCAL
-			val order = get<AppSettings>().sourcesOrder
-			return list.sortedBy { x ->
-				val e = order.indexOf(x.ordinal)
-				if (e == -1) order.size + x.ordinal else e
+	fun getSources(includeHidden: Boolean): List<MangaSource> {
+		val settings = get<AppSettings>()
+		val list = MangaSource.values().toList() - MangaSource.LOCAL
+		val order = settings.sourcesOrder
+		val hidden = settings.hiddenSources
+		val sorted = list.sortedBy { x ->
+			val e = order.indexOf(x.ordinal)
+			if (e == -1) order.size + x.ordinal else e
+		}
+		return if(includeHidden) {
+			sorted
+		} else {
+			sorted.filterNot { x ->
+				x.name in hidden
 			}
 		}
+	}
 
 	fun createLocal() = LocalMangaRepository()
 

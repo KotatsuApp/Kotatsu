@@ -28,8 +28,8 @@ import org.koitharu.kotatsu.ui.main.list.local.LocalListFragment
 import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.reader.ReaderState
-import org.koitharu.kotatsu.ui.settings.SettingsActivity
 import org.koitharu.kotatsu.ui.settings.AppUpdateService
+import org.koitharu.kotatsu.ui.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.resolveDp
 
@@ -79,7 +79,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
 		drawerToggle.syncState()
-		initSideMenu(MangaProviderFactory.sources)
+		initSideMenu(MangaProviderFactory.getSources(includeHidden = false))
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) {
@@ -148,7 +148,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 		when (key) {
-			getString(R.string.key_sources_order) -> initSideMenu(MangaProviderFactory.sources)
+			getString(R.string.key_sources_hidden),
+			getString(R.string.key_sources_order) -> {
+				initSideMenu(MangaProviderFactory.getSources(includeHidden = false))
+			}
 		}
 	}
 
