@@ -90,7 +90,7 @@ class AppUpdateService : BaseService() {
 
 		private const val NOTIFICATION_ID = 202
 		private const val CHANNEL_ID = "update"
-		private val PERIOD = TimeUnit.HOURS.toMillis(10)
+		private val PERIOD = TimeUnit.HOURS.toMillis(6)
 
 		fun start(context: Context) =
 			context.startService(Intent(context, AppUpdateService::class.java))

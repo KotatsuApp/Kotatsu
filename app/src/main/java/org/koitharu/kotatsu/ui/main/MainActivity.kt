@@ -66,7 +66,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			navigationView.setCheckedItem(R.id.nav_history)
 			setPrimaryFragment(HistoryListFragment.newInstance())
 		}
-		drawer.postDelayed(4000) {
+		drawer.postDelayed(2000) {
 			AppUpdateService.startIfRequired(applicationContext)
 		}
 	}
