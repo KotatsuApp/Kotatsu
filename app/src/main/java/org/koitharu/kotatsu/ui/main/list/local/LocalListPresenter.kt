@@ -2,12 +2,14 @@ package org.koitharu.kotatsu.ui.main.list.local
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.presenterScope
+import org.koin.core.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga
@@ -18,6 +20,7 @@ import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
 import org.koitharu.kotatsu.ui.main.list.MangaListView
 import org.koitharu.kotatsu.utils.MediaStoreCompat
+import org.koitharu.kotatsu.utils.ShortcutUtils
 import org.koitharu.kotatsu.utils.ext.safe
 import org.koitharu.kotatsu.utils.ext.sub
 import java.io.File
@@ -92,6 +95,9 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 					safe {
 						HistoryRepository().delete(manga)
 					}
+				}
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+					ShortcutUtils.removeAppShortcut(get(), manga)
 				}
 				viewState.onItemRemoved(manga)
 			} catch (e: CancellationException) {
