@@ -90,7 +90,9 @@ dependencies {
 	implementation 'com.tomclaw.cache:cache:1.0'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
+	debugImplementation 'com.github.ChuckerTeam.Chucker:library:3.1.2'
+	releaseImplementation 'com.github.ChuckerTeam.Chucker:library-no-op:3.1.2'
 
 	testImplementation 'junit:junit:4.13'
-	testImplementation 'org.json:json:20180813'
+	testImplementation 'org.json:json:20190722'
 }

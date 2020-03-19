@@ -6,9 +6,9 @@ import androidx.room.Room
 import coil.Coil
 import coil.ImageLoader
 import coil.util.CoilUtils
-import com.itkacher.okhttpprofiler.OkHttpProfilerInterceptor
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import okhttp3.OkHttpClient
-import okhttp3.internal.userAgent
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -31,10 +31,17 @@ class KotatsuApp : Application() {
 		PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(applicationContext))
 	}
 
+	private val chuckerCollector by lazy(LazyThreadSafetyMode.NONE) {
+		ChuckerCollector(applicationContext)
+	}
+
 	override fun onCreate() {
 		super.onCreate()
 		initKoin()
 		initCoil()
+		if (BuildConfig.DEBUG) {
+			initErrorHandler()
+		}
 		AppCompatDelegate.setDefaultNightMode(AppSettings(this).theme)
 	}
 
@@ -79,6 +86,14 @@ class KotatsuApp : Application() {
 		})
 	}
 
+	private fun initErrorHandler() {
+		val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+		Thread.setDefaultUncaughtExceptionHandler { t, e ->
+			chuckerCollector.onError("CRASH", e)
+			exceptionHandler?.uncaughtException(t, e)
+		}
+	}
+
 	private fun okHttp() = OkHttpClient.Builder().apply {
 		connectTimeout(20, TimeUnit.SECONDS)
 		readTimeout(60, TimeUnit.SECONDS)
@@ -86,7 +101,7 @@ class KotatsuApp : Application() {
 		cookieJar(cookieJar)
 		addInterceptor(UserAgentInterceptor)
 		if (BuildConfig.DEBUG) {
-			addInterceptor(OkHttpProfilerInterceptor())
+			addInterceptor(ChuckerInterceptor(applicationContext, collector = chuckerCollector))
 		}
 	}
 
