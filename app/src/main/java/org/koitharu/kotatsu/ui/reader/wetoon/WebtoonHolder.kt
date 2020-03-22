@@ -52,6 +52,7 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 	}
 
 	override fun onReady() {
+		ssiv.maxScale = 2f * ssiv.width / ssiv.sWidth.toFloat()
 		ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM)
 		ssiv.minScale = ssiv.width / ssiv.sWidth.toFloat()
 		ssiv.setScaleAndCenter(

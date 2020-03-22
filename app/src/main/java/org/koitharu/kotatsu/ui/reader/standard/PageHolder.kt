@@ -49,7 +49,10 @@ class PageHolder(parent: ViewGroup, private val loader: PageLoader) :
 		}
 	}
 
-	override fun onReady() = Unit
+	override fun onReady() {
+		ssiv.maxScale = 2f * maxOf(ssiv.width / ssiv.sWidth.toFloat(), ssiv.height / ssiv.sHeight.toFloat())
+		ssiv.resetScaleAndCenter()
+	}
 
 	override fun onImageLoadError(e: Exception) = onError(e)
 
