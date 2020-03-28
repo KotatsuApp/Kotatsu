@@ -109,4 +109,6 @@
     <string name="about_app">О программе</string>
 	<string name="show_notification_app_update">Показывать уведомление при наличии новой версии</string>
 	<string name="open_in_browser">Открыть в браузере</string>
+	<string name="large_manga_save_confirm">В этой манге %d глав. Вы уверены, что хотите сохранить их все?</string>
+	<string name="save_manga">Сохранить мангу</string>
 </resources>

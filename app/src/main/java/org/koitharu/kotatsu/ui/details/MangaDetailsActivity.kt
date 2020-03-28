@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.lifecycleScope
@@ -120,7 +121,18 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		}
 		R.id.action_save -> {
 			manga?.let {
-				DownloadService.start(this, it)
+				val chaptersCount = it.chapters?.size ?: 0
+				if (chaptersCount > 5) {
+					AlertDialog.Builder(this)
+						.setTitle(R.string.save_manga)
+						.setMessage(getString(R.string.large_manga_save_confirm, chaptersCount))
+						.setNegativeButton(android.R.string.cancel, null)
+						.setPositiveButton(R.string.save) { _, _ ->
+							DownloadService.start(this, it)
+						}.show()
+				} else {
+					DownloadService.start(this, it)
+				}
 			}
 			true
 		}
