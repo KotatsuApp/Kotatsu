@@ -61,7 +61,7 @@
 	<string name="automatic">Automatic</string>
 	<string name="pages">Pages</string>
 	<string name="clear">Clear</string>
-	<string name="text_clear_history_prompt">Are you rally want to clear all your reading history? This action cannot be undone.</string>
+	<string name="text_clear_history_prompt">Do you really want to clear all your reading history? This action cannot be undone.</string>
 	<string name="remove">Remove</string>
 	<string name="_s_removed_from_history">\"%s\" removed from history</string>
 	<string name="_s_deleted_from_local_storage">\"%s\" deleted from local storage</string>
@@ -85,7 +85,7 @@
 	<string name="grid_size">Grid size</string>
 	<string name="search_results_on_s">Search results on %s</string>
     <string name="delete_manga">Delete manga</string>
-	<string name="text_delete_local_manga">Are you really want to delete \"%s\" from your phone\'s local storage? \nThis operation cannot be undone.</string>
+	<string name="text_delete_local_manga">Do you really want to delete \"%s\" from your phone\'s local storage? \nThis operation cannot be undone.</string>
 	<string name="reader_settings">Reader settings</string>
 	<string name="switch_pages">Switch pages</string>
 	<string name="taps_on_edges">Taps on edges</string>
@@ -110,7 +110,7 @@
     <string name="about_app">About</string>
 	<string name="show_notification_app_update">Show notification if update is available</string>
 	<string name="open_in_browser">Open in browser</string>
-	<string name="large_manga_save_confirm">This manga has %d chapters. Are you want to save all of it?</string>
+	<string name="large_manga_save_confirm">This manga has %d chapters. Do you want to save all of it?</string>
 	<string name="save_manga">Save manga</string>
 	<string name="notifications">Notifications</string>
 	<string name="enabled_d_from_d">Enabled %1$d from %2$d</string>
