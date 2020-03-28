@@ -24,13 +24,13 @@ abstract class HistoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insert(entity: HistoryEntity): Long
 
-    @Query("UPDATE history SET page = :page, chapter_id = :chapterId, updated_at = :updatedAt WHERE manga_id = :mangaId")
-    abstract suspend fun update(mangaId: Long, page: Int, chapterId: Long, updatedAt: Long): Int
+    @Query("UPDATE history SET page = :page, chapter_id = :chapterId, scroll = :scroll, updated_at = :updatedAt WHERE manga_id = :mangaId")
+    abstract suspend fun update(mangaId: Long, page: Int, chapterId: Long, scroll: Float, updatedAt: Long): Int
 
     @Query("DELETE FROM history WHERE manga_id = :mangaId")
     abstract suspend fun delete(mangaId: Long)
 
-    suspend fun update(entity: HistoryEntity) = update(entity.mangaId, entity.page, entity.chapterId, entity.updatedAt)
+    suspend fun update(entity: HistoryEntity) = update(entity.mangaId, entity.page, entity.chapterId, entity.scroll, entity.updatedAt)
 
     @Transaction
     open suspend fun upsert(entity: HistoryEntity) {

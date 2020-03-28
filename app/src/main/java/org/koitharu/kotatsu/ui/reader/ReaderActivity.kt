@@ -195,8 +195,8 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun saveState(chapterId: Long, page: Int) {
-		state = state.copy(chapterId = chapterId, page = page)
+	override fun saveState(chapterId: Long, page: Int, scroll: Float) {
+		state = state.copy(chapterId = chapterId, page = page, scroll = scroll)
 		ReaderPresenter.saveState(state)
 	}
 
@@ -293,7 +293,8 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	override fun onChapterChanged(chapter: MangaChapter) {
 		state = state.copy(
 			chapterId = chapter.id,
-			page = 0
+			page = 0,
+			scroll = 0f
 		)
 		reader?.updateState(chapterId = chapter.id)
 	}
@@ -371,7 +372,8 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				manga = manga,
 				chapterId = if (chapterId == -1L) manga.chapters?.firstOrNull()?.id
 					?: -1 else chapterId,
-				page = 0
+				page = 0,
+				scroll = 0f
 			)
 		)
 
@@ -383,7 +385,8 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 					context, ReaderState(
 						manga = manga,
 						chapterId = history.chapterId,
-						page = history.page
+						page = history.page,
+						scroll = history.scroll
 					)
 				)
 			}

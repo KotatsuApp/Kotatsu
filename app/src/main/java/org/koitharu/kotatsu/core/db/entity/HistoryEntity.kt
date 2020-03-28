@@ -23,13 +23,15 @@ data class HistoryEntity(
 	@ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis(),
 	@ColumnInfo(name = "updated_at") val updatedAt: Long,
 	@ColumnInfo(name = "chapter_id") val chapterId: Long,
-	@ColumnInfo(name = "page") val page: Int
+	@ColumnInfo(name = "page") val page: Int,
+	@ColumnInfo(name = "scroll") val scroll: Float
 ) {
 
 	fun toMangaHistory() = MangaHistory(
 		createdAt = Date(createdAt),
 		updatedAt = Date(updatedAt),
 		chapterId = chapterId,
-		page = page
+		page = page,
+		scroll = scroll
 	)
 }

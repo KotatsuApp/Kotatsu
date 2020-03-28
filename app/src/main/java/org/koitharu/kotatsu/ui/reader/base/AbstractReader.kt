@@ -58,6 +58,9 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 			pages.addLast(state.chapterId, it)
 			adapter?.notifyDataSetChanged()
 			setCurrentItem(state.page, false)
+			if (state.scroll != 0f) {
+				restorePageScroll(state.page, state.scroll)
+			}
 		}
 	}
 
@@ -67,7 +70,8 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 			ARG_STATE, ReaderState(
 				manga = manga,
 				chapterId = pages.findGroupByIndex(getCurrentItem()) ?: return,
-				page = pages.getRelativeIndex(getCurrentItem())
+				page = pages.getRelativeIndex(getCurrentItem()),
+				scroll = getCurrentPageScroll()
 			)
 		)
 	}
@@ -174,7 +178,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 		val chapterId = pages.findGroupByIndex(getCurrentItem()) ?: return
 		val page = pages.getRelativeIndex(getCurrentItem())
 		if (page != -1) {
-			readerListener?.saveState(chapterId, page)
+			readerListener?.saveState(chapterId, page, getCurrentPageScroll())
 		}
 		Log.i(TAG, "saveState(chapterId=$chapterId, page=$page)")
 	}
@@ -216,6 +220,10 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 	abstract val itemsCount: Int
 
 	protected abstract fun getCurrentItem(): Int
+
+	protected abstract fun getCurrentPageScroll(): Float
+
+	protected abstract fun restorePageScroll(position: Int, scroll: Float)
 
 	protected abstract fun setCurrentItem(position: Int, isSmooth: Boolean)
 

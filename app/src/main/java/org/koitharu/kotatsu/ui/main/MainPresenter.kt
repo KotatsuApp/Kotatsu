@@ -26,7 +26,7 @@ class MainPresenter : BasePresenter<MainView>() {
 					val history = repo.getOne(manga) ?: throw EmptyHistoryException()
 					ReaderState(
 						MangaProviderFactory.create(manga.source).getDetails(manga),
-						history.chapterId, history.page
+						history.chapterId, history.page, history.scroll
 					)
 				}
 				viewState.onOpenReader(state)

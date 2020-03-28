@@ -10,7 +10,8 @@ import org.koitharu.kotatsu.core.model.MangaChapter
 data class ReaderState(
 	val manga: Manga,
 	val chapterId: Long,
-	val page: Int
+	val page: Int,
+	val scroll: Float
 ) : Parcelable {
 
 	@IgnoredOnParcel

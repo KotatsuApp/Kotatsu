@@ -9,5 +9,6 @@ data class MangaHistory(
 	val createdAt: Date,
 	val updatedAt: Date,
 	val chapterId: Long,
-	val page: Int
+	val page: Int,
+	val scroll: Float
 ) : Parcelable

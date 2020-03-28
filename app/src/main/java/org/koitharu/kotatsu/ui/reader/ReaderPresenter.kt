@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.ui.reader
 
 import android.content.ContentResolver
-import android.util.Log
 import android.webkit.URLUtil
 import kotlinx.coroutines.*
 import moxy.InjectViewState
@@ -9,7 +8,6 @@ import moxy.presenterScope
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.get
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.ReaderMode
@@ -103,7 +101,8 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 				HistoryRepository().addOrUpdate(
 					manga = state.manga,
 					chapterId = state.chapterId,
-					page = state.page
+					page = state.page,
+					scroll = state.scroll
 				)
 			}
 		}

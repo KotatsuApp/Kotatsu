@@ -20,6 +20,7 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 	SubsamplingScaleImageView.OnImageEventListener, CoroutineScope by loader {
 
 	private var job: Job? = null
+	private var scrollToRestore = 0f
 
 	init {
 		ssiv.setOnImageEventListener(this)
@@ -34,6 +35,7 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 
 	private fun doLoad(data: MangaPage, force: Boolean) {
 		job?.cancel()
+		scrollToRestore = 0f
 		job = launch {
 			layout_error.isVisible = false
 			progressBar.isVisible = true
@@ -51,6 +53,22 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 		}
 	}
 
+	fun getScrollY() = ssiv.center?.y ?: 0f
+
+	fun restoreScroll(scroll: Float) {
+		if (ssiv.isReady) {
+			ssiv.setScaleAndCenter(
+				ssiv.scale,
+				PointF(
+					ssiv.sWidth / 2f,
+					scroll
+				)
+			)
+		} else {
+			scrollToRestore = scroll
+		}
+	}
+
 	override fun onReady() {
 		ssiv.maxScale = 2f * ssiv.width / ssiv.sWidth.toFloat()
 		ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM)
@@ -59,10 +77,10 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 			ssiv.minScale,
 			PointF(
 				ssiv.sWidth / 2f,
-				if (itemView.top < 0) {
-					ssiv.sHeight.toFloat()
-				} else {
-					0f
+				when {
+					scrollToRestore != 0f -> scrollToRestore
+					itemView.top < 0 -> ssiv.sHeight.toFloat()
+					else -> 0f
 				}
 			)
 		)

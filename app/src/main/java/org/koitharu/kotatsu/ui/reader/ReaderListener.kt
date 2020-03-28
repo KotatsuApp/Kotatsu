@@ -7,5 +7,5 @@ interface ReaderListener : BaseMvpView {
 
 	fun onPageChanged(chapter: MangaChapter, page: Int, total: Int)
 
-	fun saveState(chapterId: Long, page: Int)
+	fun saveState(chapterId: Long, page: Int, scroll: Float)
 }

@@ -11,7 +11,6 @@ import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.ui.reader.base.AbstractReader
 import org.koitharu.kotatsu.ui.reader.base.BaseReaderAdapter
 import org.koitharu.kotatsu.ui.reader.base.GroupedList
-import org.koitharu.kotatsu.ui.reader.standard.PagerReaderFragment
 import org.koitharu.kotatsu.utils.ext.doOnCurrentItemChanged
 import org.koitharu.kotatsu.utils.ext.findMiddleVisibleItemPosition
 import org.koitharu.kotatsu.utils.ext.firstItem
@@ -56,7 +55,23 @@ class WebtoonReaderFragment : AbstractReader(R.layout.fragment_reader_webtoon) {
 	}
 
 	override fun switchPageBy(delta: Int) {
-		recyclerView.smoothScrollBy(0, (recyclerView.height * 0.9).toInt() * delta, scrollInterpolator)
+		recyclerView.smoothScrollBy(
+			0,
+			(recyclerView.height * 0.9).toInt() * delta,
+			scrollInterpolator
+		)
+	}
+
+	override fun getCurrentPageScroll(): Float {
+		return (recyclerView.findViewHolderForAdapterPosition(getCurrentItem()) as? WebtoonHolder)
+			?.getScrollY() ?: 0f
+	}
+
+	override fun restorePageScroll(position: Int, scroll: Float) {
+		recyclerView.post {
+			val holder = recyclerView.findViewHolderForAdapterPosition(position) ?: return@post
+			(holder as WebtoonHolder).restoreScroll(scroll)
+		}
 	}
 
 	companion object {

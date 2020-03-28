@@ -5,10 +5,10 @@ import android.view.View
 import kotlinx.android.synthetic.main.fragment_reader_standard.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.ui.reader.base.AbstractReader
 import org.koitharu.kotatsu.ui.reader.base.BaseReaderAdapter
 import org.koitharu.kotatsu.ui.reader.base.GroupedList
-import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -42,6 +42,10 @@ class PagerReaderFragment : AbstractReader(R.layout.fragment_reader_standard) {
 	override fun setCurrentItem(position: Int, isSmooth: Boolean) {
 		pager.setCurrentItem(position, isSmooth)
 	}
+
+	override fun getCurrentPageScroll() = 0f
+
+	override fun restorePageScroll(position: Int, scroll: Float) = Unit
 
 	companion object {
 

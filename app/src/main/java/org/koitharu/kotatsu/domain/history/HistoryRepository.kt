@@ -21,7 +21,7 @@ class HistoryRepository : KoinComponent {
 		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
 	}
 
-	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int) {
+	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Float) {
 		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
 		db.tagsDao().upsert(tags)
 		db.mangaDao().upsert(MangaEntity.from(manga), tags)
@@ -31,7 +31,8 @@ class HistoryRepository : KoinComponent {
 				createdAt = System.currentTimeMillis(),
 				updatedAt = System.currentTimeMillis(),
 				chapterId = chapterId,
-				page = page
+				page = page,
+				scroll = scroll
 			)
 		)
 		notifyHistoryChanged()
@@ -43,7 +44,8 @@ class HistoryRepository : KoinComponent {
 				createdAt = Date(it.createdAt),
 				updatedAt = Date(it.updatedAt),
 				chapterId = it.chapterId,
-				page = it.page
+				page = it.page,
+				scroll = it.scroll
 			)
 		}
 	}
