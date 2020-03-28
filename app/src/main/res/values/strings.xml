@@ -112,4 +112,6 @@
 	<string name="open_in_browser">Open in browser</string>
 	<string name="large_manga_save_confirm">This manga has %d chapters. Are you want to save all of it?</string>
 	<string name="save_manga">Save manga</string>
+	<string name="notifications">Notifications</string>
+	<string name="enabled_d_from_d">Enabled %1$d from %2$d</string>
 </resources>

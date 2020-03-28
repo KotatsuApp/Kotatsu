@@ -5,26 +5,47 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arrayMapOf
+import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
+import androidx.preference.PreferenceScreen
 import androidx.preference.SeekBarPreference
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.main.list.ListModeSelectDialog
+import org.koitharu.kotatsu.ui.settings.utils.MultiSummaryProvider
 
-class AppearanceSettingsFragment : BasePreferenceFragment(R.string.appearance),
+class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-		addPreferencesFromResource(R.xml.pref_appearance)
-
+		addPreferencesFromResource(R.xml.pref_main)
 		findPreference<Preference>(R.string.key_list_mode)?.summary =
-			listModes[settings.listMode]?.let(::getString)
+			LIST_MODES[settings.listMode]?.let(::getString)
 		findPreference<SeekBarPreference>(R.string.key_grid_size)?.run {
 			summary = "%d%%".format(value)
 			setOnPreferenceChangeListener { preference, newValue ->
 				preference.summary = "%d%%".format(newValue)
 				true
+			}
+		}
+		findPreference<MultiSelectListPreference>(R.string.key_reader_switchers)?.summaryProvider =
+			MultiSummaryProvider(R.string.gestures_only)
+		findPreference<PreferenceScreen>(R.string.key_remote_sources)?.run {
+			val total = MangaSource.values().size - 1
+			summary = getString(
+				R.string.enabled_d_from_d, total - settings.hiddenSources.size, total
+			)
+		}
+	}
+
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+		when (key) {
+			getString(R.string.key_list_mode) -> findPreference<Preference>(R.string.key_list_mode)?.summary =
+				LIST_MODES[settings.listMode]?.let(::getString)
+			getString(R.string.key_theme) -> {
+				AppCompatDelegate.setDefaultNightMode(settings.theme)
 			}
 		}
 	}
@@ -49,19 +70,9 @@ class AppearanceSettingsFragment : BasePreferenceFragment(R.string.appearance),
 		}
 	}
 
-	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-		when (key) {
-			getString(R.string.key_list_mode) -> findPreference<Preference>(R.string.key_list_mode)?.summary =
-				listModes[settings.listMode]?.let(::getString)
-			getString(R.string.key_theme) -> {
-				AppCompatDelegate.setDefaultNightMode(settings.theme)
-			}
-		}
-	}
-
 	private companion object {
 
-		val listModes = arrayMapOf(
+		val LIST_MODES = arrayMapOf(
 			ListMode.DETAILED_LIST to R.string.detailed_list,
 			ListMode.GRID to R.string.grid,
 			ListMode.LIST to R.string.list

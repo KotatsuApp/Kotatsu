@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.fragment.app.commit
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.settings.MainSettingsFragment
 import org.koitharu.kotatsu.ui.settings.ReaderSettingsFragment
-import org.koitharu.kotatsu.ui.settings.SettingsHeadersFragment
 
 class SimpleSettingsActivity : BaseActivity() {
 
@@ -19,7 +19,7 @@ class SimpleSettingsActivity : BaseActivity() {
 		supportFragmentManager.commit {
 			replace(R.id.container, when(section) {
 				SECTION_READER -> ReaderSettingsFragment()
-				else -> SettingsHeadersFragment()
+				else -> MainSettingsFragment()
 			})
 		}
 	}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<ListPreference
+		android:defaultValue="-1"
+		android:entries="@array/themes"
+		android:entryValues="@array/values_theme"
+		android:key="@string/key_theme"
+		android:title="@string/theme"
+		app:iconSpaceReserved="false"
+		app:useSimpleSummaryProvider="true" />
+
+	<Preference
+		android:key="@string/key_list_mode"
+		android:persistent="false"
+		android:title="@string/list_mode"
+		app:allowDividerAbove="true"
+		app:iconSpaceReserved="false" />
+
+	<SeekBarPreference
+		android:key="@string/key_grid_size"
+		android:max="150"
+		android:title="@string/grid_size"
+		app:defaultValue="100"
+		app:iconSpaceReserved="false"
+		app:min="50"
+		app:seekBarIncrement="10"
+		app:showSeekBarValue="false"
+		app:updatesContinuously="true" />
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.ui.settings.sources.SourcesSettingsFragment"
+		android:title="@string/remote_sources"
+		app:allowDividerAbove="true"
+		android:key="@string/key_remote_sources"
+		app:iconSpaceReserved="false" />
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.ui.settings.HistorySettingsFragment"
+		android:title="@string/history_and_cache"
+		app:iconSpaceReserved="false" />
+
+	<MultiSelectListPreference
+		android:defaultValue="@array/values_reader_switchers_default"
+		android:entries="@array/reader_switchers"
+		android:entryValues="@array/values_reader_switchers"
+		android:key="@string/key_reader_switchers"
+		android:title="@string/switch_pages"
+		app:allowDividerAbove="true"
+		app:iconSpaceReserved="false" />
+
+	<PreferenceCategory
+		android:title="@string/notifications"
+		app:allowDividerAbove="true"
+		app:iconSpaceReserved="false">
+
+		<SwitchPreference
+			android:defaultValue="true"
+			android:key="@string/key_app_update_auto"
+			android:summary="@string/show_notification_app_update"
+			android:title="@string/application_update"
+			app:allowDividerBelow="true"
+			app:iconSpaceReserved="false" />
+
+	</PreferenceCategory>
+
+</PreferenceScreen>

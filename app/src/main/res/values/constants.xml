@@ -10,6 +10,7 @@
 	<string name="key_search_history_clear">search_history_clear</string>
 	<string name="key_reading_history_clear">reading_history_clear</string>
 	<string name="key_grid_size">grid_size</string>
+	<string name="key_remote_sources">remote_sources</string>
 	<string name="key_reader_switchers">reader_switchers</string>
 	<string name="key_app_update">app_update</string>
 	<string name="key_app_update_auto">app_update_auto</string>
