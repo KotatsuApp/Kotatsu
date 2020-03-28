@@ -38,6 +38,7 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 		getFromFile(Uri.parse(manga.url).toFile())
 	} else manga
 
+	@Suppress("BlockingMethodInNonBlockingContext")
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val file = Uri.parse(chapter.url).toFile()
 		val zip = ZipFile(file)

@@ -41,27 +41,24 @@ class SharedPrefsCookiePersistor(private val sharedPreferences: SharedPreference
 		return cookies
 	}
 
-	@SuppressLint("ApplySharedPref")
 	override fun saveAll(cookies: Collection<Cookie>) {
 		val editor = sharedPreferences.edit()
 		for (cookie in cookies) {
 			editor.putString(createCookieKey(cookie), SerializableCookie().encode(cookie))
 		}
-		editor.commit()
+		editor.apply()
 	}
 
-	@SuppressLint("ApplySharedPref")
 	override fun removeAll(cookies: Collection<Cookie>) {
 		val editor = sharedPreferences.edit()
 		for (cookie in cookies) {
 			editor.remove(createCookieKey(cookie))
 		}
-		editor.commit()
+		editor.apply()
 	}
 
-	@SuppressLint("ApplySharedPref")
 	override fun clear() {
-		sharedPreferences.edit().clear().commit()
+		sharedPreferences.edit().clear().apply()
 	}
 
 	private companion object {

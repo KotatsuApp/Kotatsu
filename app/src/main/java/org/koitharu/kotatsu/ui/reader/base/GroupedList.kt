@@ -55,7 +55,7 @@ class GroupedList<K, T> {
 					lruGroup = entry.second
 					lruGroupKey = entry.first
 					lruGroupFirstIndex = lastIndex - entry.second.size
-					return entry.second.get(index - lruGroupFirstIndex)
+					return entry.second[index - lruGroupFirstIndex]
 				}
 				lastIndex -= entry.second.size
 			}

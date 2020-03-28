@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.ui.common.dialog.TextInputDialog
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class FavouriteCategoriesDialog() : BaseBottomSheet(R.layout.dialog_favorite_categories),
+class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categories),
 	FavouriteCategoriesView,
 	OnCategoryCheckListener {
 

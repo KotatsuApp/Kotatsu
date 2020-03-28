@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	package="org.koitharu.kotatsu">
 
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -18,7 +19,8 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme"
-		android:usesCleartextTraffic="true">
+		android:usesCleartextTraffic="true"
+		tools:ignore="UnusedAttribute">
 		<activity android:name=".ui.main.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -54,7 +56,9 @@
 
 		<provider
 			android:name=".ui.search.MangaSuggestionsProvider"
-			android:authorities="${applicationId}.MangaSuggestionsProvider" />
+			android:authorities="${applicationId}.MangaSuggestionsProvider"
+			android:exported="false" />
+
 		<provider
 			android:name="androidx.core.content.FileProvider"
 			android:authorities="${applicationId}.files"

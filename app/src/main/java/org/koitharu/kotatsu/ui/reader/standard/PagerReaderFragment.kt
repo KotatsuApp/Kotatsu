@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class PagerReaderFragment() : AbstractReader(R.layout.fragment_reader_standard) {
+class PagerReaderFragment : AbstractReader(R.layout.fragment_reader_standard) {
 
 	private var paginationListener: PagerPaginationListener? = null
 

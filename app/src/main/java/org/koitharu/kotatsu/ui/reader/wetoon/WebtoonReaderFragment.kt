@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 class WebtoonReaderFragment : AbstractReader(R.layout.fragment_reader_webtoon) {
 
 	private val scrollInterpolator = AccelerateDecelerateInterpolator()
-	protected var paginationListener: ListPaginationListener? = null
+	private var paginationListener: ListPaginationListener? = null
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)

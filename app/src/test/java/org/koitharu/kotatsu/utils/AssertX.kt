@@ -13,7 +13,9 @@ object AssertX {
 		cn.connect()
 		when (val code = cn.responseCode) {
 			HttpURLConnection.HTTP_MOVED_PERM,
-			HttpURLConnection.HTTP_MOVED_TEMP -> assertContentType(cn.getHeaderField("Location"), *types)
+			HttpURLConnection.HTTP_MOVED_TEMP -> {
+				assertContentType(cn.getHeaderField("Location"), *types)
+			}
 			HttpURLConnection.HTTP_OK -> {
 				val ct = cn.contentType.substringBeforeLast(';').split("/")
 				Assert.assertTrue(types.any {

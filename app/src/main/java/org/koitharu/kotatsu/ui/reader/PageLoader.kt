@@ -23,6 +23,7 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 	override val coroutineContext: CoroutineContext
 		get() = Dispatchers.Main + job
 
+	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun loadFile(url: String, force: Boolean): File {
 		if (!force) {
 			cache[url]?.let {

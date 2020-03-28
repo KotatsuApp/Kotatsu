@@ -15,6 +15,7 @@ import java.util.zip.ZipFile
 
 class CbzFetcher : Fetcher<Uri> {
 
+	@Suppress("BlockingMethodInNonBlockingContext")
 	override suspend fun fetch(
 		pool: BitmapPool,
 		data: Uri,
