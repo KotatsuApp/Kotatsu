@@ -105,6 +105,16 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 		}
 	}
 
+	fun getRemoteManga(localManga: Manga): Manga? {
+		val file = safe {
+			Uri.parse(localManga.url).toFile()
+		} ?: return null
+		val zip = ZipFile(file)
+		val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+		val index = entry?.let(zip::readText)?.let(::MangaIndex) ?: return null
+		return index.getMangaInfo()
+	}
+
 	private fun zipUri(file: File, entryName: String) =
 		Uri.fromParts("cbz", file.path, entryName).toString()
 

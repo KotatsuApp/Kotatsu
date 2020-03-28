@@ -94,9 +94,10 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 				withContext(Dispatchers.IO) {
 					val repository =
 						MangaProviderFactory.create(MangaSource.LOCAL) as LocalMangaRepository
+					val original = repository.getRemoteManga(manga)
 					repository.delete(manga) || throw IOException("Unable to delete file")
 					safe {
-						HistoryRepository().delete(manga)
+						HistoryRepository().deleteOrSwap(manga, original)
 					}
 				}
 				viewState.onMangaRemoved(manga)

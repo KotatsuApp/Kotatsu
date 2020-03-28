@@ -58,6 +58,17 @@ class HistoryRepository : KoinComponent {
 		notifyHistoryChanged()
 	}
 
+	/**
+	 * Try to replace one manga with another one
+	 * Useful for replacing saved manga on deleting it with remove source
+	 */
+	suspend fun deleteOrSwap(manga: Manga, alternative: Manga?) {
+		if (alternative == null || db.mangaDao().update(MangaEntity.from(alternative)) <= 0) {
+			db.historyDao().delete(manga.id)
+			notifyHistoryChanged()
+		}
+	}
+
 	companion object {
 
 		private val listeners = HashSet<OnHistoryChangeListener>()

@@ -91,9 +91,10 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 		presenterScope.launch {
 			try {
 				withContext(Dispatchers.IO) {
+					val original = repository.getRemoteManga(manga)
 					repository.delete(manga) || throw IOException("Unable to delete file")
 					safe {
-						HistoryRepository().delete(manga)
+						HistoryRepository().deleteOrSwap(manga, original)
 					}
 				}
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
