@@ -80,6 +80,17 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		}
 	}
 
+	override fun onNewChaptersChanged(newChapters: Int) {
+		val tab = tabs.getTabAt(1) ?: return
+		if (newChapters == 0) {
+			tab.removeBadge()
+		} else {
+			val badge = tab.orCreateBadge
+			badge.number = newChapters
+			badge.isVisible = true
+		}
+	}
+
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.opt_details, menu)
 		return super.onCreateOptionsMenu(menu)

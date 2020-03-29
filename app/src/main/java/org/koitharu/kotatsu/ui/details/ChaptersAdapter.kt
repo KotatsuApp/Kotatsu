@@ -16,6 +16,13 @@ class ChaptersAdapter(onItemClickListener: OnRecyclerItemClickListener<MangaChap
 			updateCurrentPosition()
 		}
 
+	var newChaptersCount: Int = 0
+		set(value) {
+			val updated = maxOf(field, value)
+			field = value
+			notifyItemRangeChanged(itemCount - updated, updated)
+		}
+
 	var currentChapterPosition = RecyclerView.NO_POSITION
 		private set
 
@@ -24,9 +31,13 @@ class ChaptersAdapter(onItemClickListener: OnRecyclerItemClickListener<MangaChap
 	override fun onGetItemId(item: MangaChapter) = item.id
 
 	override fun getExtra(item: MangaChapter, position: Int): ChapterExtra = when {
-		currentChapterPosition == RecyclerView.NO_POSITION -> ChapterExtra.UNREAD
+		currentChapterPosition == RecyclerView.NO_POSITION
+				|| currentChapterPosition < position -> if (position >= itemCount - newChaptersCount) {
+			ChapterExtra.NEW
+		} else {
+			ChapterExtra.UNREAD
+		}
 		currentChapterPosition == position -> ChapterExtra.CURRENT
-		currentChapterPosition < position -> ChapterExtra.UNREAD
 		currentChapterPosition > position -> ChapterExtra.READ
 		else -> ChapterExtra.UNREAD
 	}

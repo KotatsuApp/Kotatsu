@@ -93,6 +93,8 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 
 	override fun onMangaRemoved(manga: Manga) = Unit //handled in activity
 
+	override fun onNewChaptersChanged(newChapters: Int) = Unit
+
 	override fun onClick(v: View) {
 		if (v is Chip) {
 			when(val tag = v.tag) {

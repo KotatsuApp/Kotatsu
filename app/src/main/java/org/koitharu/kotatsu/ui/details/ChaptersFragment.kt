@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_chapters.*
 import moxy.ktx.moxyPresenter
@@ -44,6 +45,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	override fun onMangaUpdated(manga: Manga) {
 		this.manga = manga
 		adapter.replaceData(manga.chapters.orEmpty())
+		scrollToCurrent()
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
@@ -56,6 +58,11 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 
 	override fun onHistoryChanged(history: MangaHistory?) {
 		adapter.currentChapterId = history?.chapterId
+		scrollToCurrent()
+	}
+
+	override fun onNewChaptersChanged(newChapters: Int) {
+		adapter.newChaptersCount = newChapters
 	}
 
 	override fun onFavouriteChanged(categories: List<FavouriteCategory>) = Unit
@@ -85,5 +92,14 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 			true
 		}
 		return true
+	}
+
+	private fun scrollToCurrent() {
+		val pos = (recyclerView_chapters.adapter as? ChaptersAdapter)?.currentChapterPosition
+			?: RecyclerView.NO_POSITION
+		if (pos != RecyclerView.NO_POSITION) {
+			(recyclerView_chapters.layoutManager as? LinearLayoutManager)
+				?.scrollToPositionWithOffset(pos, 100)
+		}
 	}
 }

@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.ui.details
 
-import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEndSingle
-import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.SingleState
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
@@ -22,4 +20,7 @@ interface MangaDetailsView : BaseMvpView {
 
 	@SingleState
 	fun onMangaRemoved(manga: Manga)
+
+	@AddToEndSingle
+	fun onNewChaptersChanged(newChapters: Int)
 }

@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.domain.favourites.OnFavouritesChangeListener
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.domain.history.OnHistoryChangeListener
+import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
 import org.koitharu.kotatsu.utils.ext.safe
 import java.io.IOException
@@ -28,12 +29,14 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 
 	private lateinit var historyRepository: HistoryRepository
 	private lateinit var favouritesRepository: FavouritesRepository
+	private lateinit var trackingRepository: TrackingRepository
 
 	private var manga: Manga? = null
 
 	override fun onFirstViewAttach() {
 		historyRepository = HistoryRepository()
 		favouritesRepository = FavouritesRepository()
+		trackingRepository = TrackingRepository()
 		super.onFirstViewAttach()
 		HistoryRepository.subscribe(this)
 		FavouritesRepository.subscribe(this)
@@ -75,6 +78,7 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 				}
 				viewState.onMangaUpdated(data)
 				this@MangaDetailsPresenter.manga = data
+				viewState.onNewChaptersChanged(trackingRepository.getNewChaptersCount(manga.id))
 			} catch (_: CancellationException){
 			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
