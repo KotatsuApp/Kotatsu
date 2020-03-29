@@ -10,4 +10,9 @@
 		<item quantity="few">%1$d элемента</item>
 		<item quantity="many">%1$d элементов</item>
 	</plurals>
+	<plurals name="new_chapters">
+		<item quantity="one">%1$d новая глава</item>
+		<item quantity="few">%1$d новых главы</item>
+		<item quantity="many">%1$d новых глав</item>
+	</plurals>
 </resources>

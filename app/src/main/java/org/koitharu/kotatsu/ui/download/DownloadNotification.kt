@@ -5,10 +5,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.graphics.drawable.toBitmap
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
@@ -73,7 +73,7 @@ class DownloadNotification(private val context: Context) {
 	}
 
 	fun setLargeIcon(icon: Drawable?) {
-		builder.setLargeIcon((icon as? BitmapDrawable)?.bitmap)
+		builder.setLargeIcon(icon?.toBitmap())
 	}
 
 	fun setProgress(chaptersTotal: Int, pagesTotal: Int, chapter: Int, page: Int) {
