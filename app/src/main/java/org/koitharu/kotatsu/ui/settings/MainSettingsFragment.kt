@@ -32,12 +32,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		}
 		findPreference<MultiSelectListPreference>(R.string.key_reader_switchers)?.summaryProvider =
 			MultiSummaryProvider(R.string.gestures_only)
-		findPreference<PreferenceScreen>(R.string.key_remote_sources)?.run {
-			val total = MangaSource.values().size - 1
-			summary = getString(
-				R.string.enabled_d_from_d, total - settings.hiddenSources.size, total
-			)
-		}
 	}
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -58,6 +52,16 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 	override fun onDestroyView() {
 		settings.unsubscribe(this)
 		super.onDestroyView()
+	}
+
+	override fun onResume() {
+		super.onResume()
+		findPreference<PreferenceScreen>(R.string.key_remote_sources)?.run {
+			val total = MangaSource.values().size - 1
+			summary = getString(
+				R.string.enabled_d_from_d, total - settings.hiddenSources.size, total
+			)
+		}
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference?): Boolean {
