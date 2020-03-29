@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.domain.history
 
+import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
@@ -24,19 +25,22 @@ class HistoryRepository : KoinComponent {
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Float) {
 		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
-		db.tagsDao.upsert(tags)
-		db.mangaDao.upsert(MangaEntity.from(manga), tags)
-		if (db.historyDao.upsert(
-			HistoryEntity(
-				mangaId = manga.id,
-				createdAt = System.currentTimeMillis(),
-				updatedAt = System.currentTimeMillis(),
-				chapterId = chapterId,
-				page = page,
-				scroll = scroll
-			)
-		)) {
-			TrackingRepository().insertOrNothing(manga)
+		db.withTransaction {
+			db.tagsDao.upsert(tags)
+			db.mangaDao.upsert(MangaEntity.from(manga), tags)
+			if (db.historyDao.upsert(
+					HistoryEntity(
+						mangaId = manga.id,
+						createdAt = System.currentTimeMillis(),
+						updatedAt = System.currentTimeMillis(),
+						chapterId = chapterId,
+						page = page,
+						scroll = scroll
+					)
+				)
+			) {
+				TrackingRepository().insertOrNothing(manga)
+			}
 		}
 		notifyHistoryChanged()
 	}

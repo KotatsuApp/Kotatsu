@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.domain.favourites
 
+import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
@@ -48,10 +49,12 @@ class FavouritesRepository : KoinComponent {
 
 	suspend fun addToCategory(manga: Manga, categoryId: Long) {
 		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
-		db.tagsDao.upsert(tags)
-		db.mangaDao.upsert(MangaEntity.from(manga), tags)
-		val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
-		db.favouritesDao.add(entity)
+		db.withTransaction {
+			db.tagsDao.upsert(tags)
+			db.mangaDao.upsert(MangaEntity.from(manga), tags)
+			val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
+			db.favouritesDao.add(entity)
+		}
 		notifyFavouritesChanged(manga.id)
 	}
 

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.domain
 
+import androidx.room.withTransaction
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -31,6 +32,10 @@ class MangaDataRepository : KoinComponent {
 	}
 
 	suspend fun storeManga(manga: Manga) {
-		db.mangaDao.upsert(MangaEntity.from(manga), manga.tags.map(TagEntity.Companion::fromMangaTag))
+		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
+		db.withTransaction {
+			db.tagsDao.upsert(tags)
+			db.mangaDao.upsert(MangaEntity.from(manga), tags)
+		}
 	}
 }
