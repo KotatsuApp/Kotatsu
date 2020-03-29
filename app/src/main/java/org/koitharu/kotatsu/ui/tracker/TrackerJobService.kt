@@ -17,9 +17,11 @@ import coil.Coil
 import coil.api.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 import org.koitharu.kotatsu.ui.common.BaseJobService
@@ -32,6 +34,8 @@ class TrackerJobService : BaseJobService() {
 	private val notificationManager by lazy(LazyThreadSafetyMode.NONE) {
 		getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 	}
+
+	private val settings by inject<AppSettings>()
 
 	override suspend fun doWork(params: JobParameters) {
 		withContext(Dispatchers.IO) {
@@ -63,9 +67,7 @@ class TrackerJobService : BaseJobService() {
 							lastChapterId = 0L,
 							newChapters = chapters.size
 						)
-						if (chapters.isNotEmpty()) {
-							showNotification(track.manga, chapters)
-						}
+						showNotification(track.manga, chapters)
 					}
 					chapters.size == track.knownChaptersCount -> {
 						if (chapters.lastOrNull()?.id == track.lastChapterId) {
@@ -90,9 +92,7 @@ class TrackerJobService : BaseJobService() {
 									lastChapterId = track.lastChapterId,
 									newChapters = newChapters
 								)
-								if (newChapters != 0) {
-									showNotification(track.manga, chapters.takeLast(newChapters))
-								}
+								showNotification(track.manga, chapters.takeLast(newChapters))
 							}
 						}
 					}
@@ -104,9 +104,7 @@ class TrackerJobService : BaseJobService() {
 							lastChapterId = track.lastChapterId,
 							newChapters = newChapters
 						)
-						if (newChapters != 0) {
-							showNotification(track.manga, chapters.takeLast(newChapters))
-						}
+						showNotification(track.manga, chapters.takeLast(newChapters))
 					}
 				}
 				success++
@@ -118,6 +116,9 @@ class TrackerJobService : BaseJobService() {
 	}
 
 	private suspend fun showNotification(manga: Manga, newChapters: List<MangaChapter>) {
+		if (newChapters.isEmpty() || !settings.trackerNotifications) {
+			return
+		}
 		val id = manga.url.hashCode()
 		val colorPrimary = ContextCompat.getColor(this@TrackerJobService, R.color.blue_primary)
 		val builder = NotificationCompat.Builder(this, CHANNEL_ID)

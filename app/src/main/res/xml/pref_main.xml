@@ -61,7 +61,13 @@
 			android:key="@string/key_app_update_auto"
 			android:summary="@string/show_notification_app_update"
 			android:title="@string/application_update"
-			app:allowDividerBelow="true"
+			app:iconSpaceReserved="false" />
+
+		<SwitchPreference
+			android:defaultValue="true"
+			android:key="@string/key_tracker_notifications"
+			android:summary="@string/show_notification_new_chapters"
+			android:title="@string/new_chapters"
 			app:iconSpaceReserved="false" />
 
 	</PreferenceCategory>

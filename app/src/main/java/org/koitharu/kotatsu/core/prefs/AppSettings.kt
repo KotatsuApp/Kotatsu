@@ -52,6 +52,11 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		0L
 	)
 
+	val trackerNotifications by BoolPreferenceDelegate(
+		resources.getString(R.string.key_tracker_notifications),
+		true
+	)
+
 	private var sourcesOrderStr by NullableStringPreferenceDelegate(resources.getString(R.string.key_sources_order))
 
 	var sourcesOrder: List<Int>

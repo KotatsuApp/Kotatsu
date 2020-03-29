@@ -14,6 +14,7 @@
 	<string name="key_reader_switchers">reader_switchers</string>
 	<string name="key_app_update">app_update</string>
 	<string name="key_app_update_auto">app_update_auto</string>
+	<string name="key_tracker_notifications">tracker_notifications</string>
 
 	<string name="key_parser_domain">domain</string>
 	<string-array name="values_theme">
