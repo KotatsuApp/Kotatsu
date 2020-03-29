@@ -8,6 +8,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
@@ -31,9 +32,13 @@ class DownloadNotification(private val context: Context) {
 				NotificationManager.IMPORTANCE_LOW
 			)
 			channel.enableVibration(false)
+			channel.enableLights(false)
+			channel.setSound(null, null)
 			manager.createNotificationChannel(channel)
 		}
 		builder.setOnlyAlertOnce(true)
+		builder.setDefaults(0)
+		builder.color = ContextCompat.getColor(context, R.color.blue_primary)
 	}
 
 	fun fillFrom(manga: Manga) {
@@ -70,6 +75,7 @@ class DownloadNotification(private val context: Context) {
 		builder.setContentText(e.getDisplayMessage(context.resources))
 		builder.setAutoCancel(true)
 		builder.setContentIntent(null)
+		builder.setCategory(NotificationCompat.CATEGORY_ERROR)
 	}
 
 	fun setLargeIcon(icon: Drawable?) {
@@ -83,6 +89,7 @@ class DownloadNotification(private val context: Context) {
 		val percent = (progress / max.toFloat() * 100).roundToInt()
 		builder.setProgress(max, progress, false)
 		builder.setContentText("%d%%".format(percent))
+		builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 	}
 
 	fun setPostProcessing() {
@@ -96,6 +103,7 @@ class DownloadNotification(private val context: Context) {
 		builder.setContentIntent(createIntent(context, manga))
 		builder.setAutoCancel(true)
 		builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
+		builder.setCategory(null)
 	}
 
 	fun setCancelling() {
