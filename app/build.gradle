@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
-def gitCommits = 'git rev-list --all --count'.execute([], rootDir).text.trim().toInteger()
+def gitCommits = 'git rev-list --count HEAD'.execute([], rootDir).text.trim().toInteger()
 def gitBranch = 'git branch --show-current'.execute([], rootDir).text.trim()
 
 android {
