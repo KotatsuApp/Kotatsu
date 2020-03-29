@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 import java.util.*
 
 class HistoryRepository : KoinComponent {
@@ -25,7 +26,7 @@ class HistoryRepository : KoinComponent {
 		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
 		db.tagsDao.upsert(tags)
 		db.mangaDao.upsert(MangaEntity.from(manga), tags)
-		db.historyDao.upsert(
+		if (db.historyDao.upsert(
 			HistoryEntity(
 				mangaId = manga.id,
 				createdAt = System.currentTimeMillis(),
@@ -34,7 +35,9 @@ class HistoryRepository : KoinComponent {
 				page = page,
 				scroll = scroll
 			)
-		)
+		)) {
+			TrackingRepository().insertOrNothing(manga)
+		}
 		notifyHistoryChanged()
 	}
 

@@ -7,10 +7,9 @@ import androidx.annotation.CallSuper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import org.koin.core.KoinComponent
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseService : Service(), KoinComponent, CoroutineScope {
+abstract class BaseService : Service(), CoroutineScope {
 
 	private val job = SupervisorJob()
 

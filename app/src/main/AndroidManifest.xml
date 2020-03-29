@@ -9,6 +9,7 @@
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
 	<application
 		android:name="org.koitharu.kotatsu.KotatsuApp"
@@ -53,6 +54,10 @@
 			android:name=".ui.download.DownloadService"
 			android:foregroundServiceType="dataSync" />
 		<service android:name=".ui.settings.AppUpdateService" />
+
+		<service android:name=".ui.tracker.TrackerJobService"
+			android:exported="true"
+			android:permission="android.permission.BIND_JOB_SERVICE" />
 
 		<provider
 			android:name=".ui.search.MangaSuggestionsProvider"

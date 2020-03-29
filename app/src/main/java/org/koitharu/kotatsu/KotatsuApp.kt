@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.local.cookies.persistence.SharedPrefsCookiePers
 import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
+import org.koitharu.kotatsu.ui.tracker.TrackerJobService
 import org.koitharu.kotatsu.utils.CacheUtils
 import java.util.concurrent.TimeUnit
 
@@ -45,6 +46,7 @@ class KotatsuApp : Application() {
 		if (BuildConfig.DEBUG) {
 			initErrorHandler()
 		}
+		TrackerJobService.setup(this)
 		AppCompatDelegate.setDefaultNightMode(AppSettings(this).theme)
 	}
 

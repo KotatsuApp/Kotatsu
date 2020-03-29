@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.db
 import androidx.room.*
 import org.koitharu.kotatsu.core.db.entity.HistoryEntity
 import org.koitharu.kotatsu.core.db.entity.HistoryWithManga
+import org.koitharu.kotatsu.core.db.entity.MangaEntity
 
 
 @Dao
@@ -14,6 +15,9 @@ abstract class HistoryDao {
     @Transaction
     @Query("SELECT * FROM history ORDER BY updated_at DESC LIMIT :limit OFFSET :offset")
     abstract suspend fun findAll(offset: Int, limit: Int): List<HistoryWithManga>
+
+    @Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM history)")
+    abstract suspend fun findAllManga(): List<MangaEntity>
 
     @Query("SELECT * FROM history WHERE manga_id = :id")
     abstract suspend fun find(id: Long): HistoryEntity?
@@ -33,10 +37,11 @@ abstract class HistoryDao {
     suspend fun update(entity: HistoryEntity) = update(entity.mangaId, entity.page, entity.chapterId, entity.scroll, entity.updatedAt)
 
     @Transaction
-    open suspend fun upsert(entity: HistoryEntity) {
-        if (update(entity) == 0) {
+    open suspend fun upsert(entity: HistoryEntity): Boolean {
+        return if (update(entity) == 0) {
             insert(entity)
-        }
+            true
+        } else false
     }
 
 }

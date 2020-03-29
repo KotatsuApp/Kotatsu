@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.db
 import androidx.room.*
 import org.koitharu.kotatsu.core.db.entity.FavouriteEntity
 import org.koitharu.kotatsu.core.db.entity.FavouriteManga
+import org.koitharu.kotatsu.core.db.entity.MangaEntity
 
 @Dao
 abstract class FavouritesDao {
@@ -10,6 +11,9 @@ abstract class FavouritesDao {
 	@Transaction
 	@Query("SELECT * FROM favourites GROUP BY manga_id ORDER BY :orderBy LIMIT :limit OFFSET :offset")
 	abstract suspend fun findAll(offset: Int, limit: Int, orderBy: String): List<FavouriteManga>
+
+	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM favourites)")
+	abstract suspend fun findAllManga(): List<MangaEntity>
 
 	@Transaction
 	@Query("SELECT * FROM favourites WHERE manga_id = :id GROUP BY manga_id")
