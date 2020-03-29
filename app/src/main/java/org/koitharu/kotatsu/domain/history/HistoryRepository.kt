@@ -17,15 +17,15 @@ class HistoryRepository : KoinComponent {
 	private val db: MangaDatabase by inject()
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
-		val entities = db.historyDao().findAll(offset, limit)
+		val entities = db.historyDao.findAll(offset, limit)
 		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
 	}
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Float) {
 		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
-		db.tagsDao().upsert(tags)
-		db.mangaDao().upsert(MangaEntity.from(manga), tags)
-		db.historyDao().upsert(
+		db.tagsDao.upsert(tags)
+		db.mangaDao.upsert(MangaEntity.from(manga), tags)
+		db.historyDao.upsert(
 			HistoryEntity(
 				mangaId = manga.id,
 				createdAt = System.currentTimeMillis(),
@@ -39,7 +39,7 @@ class HistoryRepository : KoinComponent {
 	}
 
 	suspend fun getOne(manga: Manga): MangaHistory? {
-		return db.historyDao().find(manga.id)?.let {
+		return db.historyDao.find(manga.id)?.let {
 			MangaHistory(
 				createdAt = Date(it.createdAt),
 				updatedAt = Date(it.updatedAt),
@@ -51,12 +51,12 @@ class HistoryRepository : KoinComponent {
 	}
 
 	suspend fun clear() {
-		db.historyDao().clear()
+		db.historyDao.clear()
 		notifyHistoryChanged()
 	}
 
 	suspend fun delete(manga: Manga) {
-		db.historyDao().delete(manga.id)
+		db.historyDao.delete(manga.id)
 		notifyHistoryChanged()
 	}
 
@@ -65,8 +65,8 @@ class HistoryRepository : KoinComponent {
 	 * Useful for replacing saved manga on deleting it with remove source
 	 */
 	suspend fun deleteOrSwap(manga: Manga, alternative: Manga?) {
-		if (alternative == null || db.mangaDao().update(MangaEntity.from(alternative)) <= 0) {
-			db.historyDao().delete(manga.id)
+		if (alternative == null || db.mangaDao.update(MangaEntity.from(alternative)) <= 0) {
+			db.historyDao.delete(manga.id)
 			notifyHistoryChanged()
 		}
 	}

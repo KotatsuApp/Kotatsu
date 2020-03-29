@@ -7,20 +7,22 @@ import org.koitharu.kotatsu.core.db.entity.*
 @Database(
 	entities = [
 		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
-		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class
+		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class, TrackEntity::class
 	], version = 3
 )
 abstract class MangaDatabase : RoomDatabase() {
 
-	abstract fun historyDao(): HistoryDao
+	abstract val historyDao: HistoryDao
 
-	abstract fun tagsDao(): TagsDao
+	abstract val tagsDao: TagsDao
 
-	abstract fun mangaDao(): MangaDao
+	abstract val mangaDao: MangaDao
 
-	abstract fun favouritesDao(): FavouritesDao
+	abstract val favouritesDao: FavouritesDao
 
-	abstract fun preferencesDao(): PreferencesDao
+	abstract val preferencesDao: PreferencesDao
 
-	abstract fun favouriteCategoriesDao(): FavouriteCategoriesDao
+	abstract val favouriteCategoriesDao: FavouriteCategoriesDao
+
+	abstract val tracksDao: TracksDao
 }

@@ -10,10 +10,4 @@ data class AppVersion(
 	val url: String,
 	val apkSize: Long,
 	val apkUrl: String
-) : Parcelable {
-
-	fun isGreaterThen(version: String) {
-		val thisParts = name.substringBeforeLast('-').split('.')
-		val parts = version.substringBeforeLast('-').split('.')
-	}
-}
+) : Parcelable

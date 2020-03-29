@@ -16,6 +16,7 @@ import org.koin.dsl.module
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.migrations.Migration1To2
 import org.koitharu.kotatsu.core.db.migrations.Migration2To3
+import org.koitharu.kotatsu.core.db.migrations.Migration3To4
 import org.koitharu.kotatsu.core.local.CbzFetcher
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.local.cookies.PersistentCookieJar
@@ -111,5 +112,5 @@ class KotatsuApp : Application() {
 		applicationContext,
 		MangaDatabase::class.java,
 		"kotatsu-db"
-	).addMigrations(Migration1To2, Migration2To3)
+	).addMigrations(Migration1To2, Migration2To3, Migration3To4)
 }
