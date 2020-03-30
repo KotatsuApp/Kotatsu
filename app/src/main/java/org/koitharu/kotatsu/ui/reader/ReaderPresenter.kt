@@ -8,6 +8,7 @@ import moxy.presenterScope
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.get
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.ReaderMode
@@ -39,7 +40,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 						mode = MangaUtils.determineReaderMode(pages)
 						if (mode != null) {
 							prefs.savePreferences(
-								mangaId = manga.id,
+								manga = manga,
 								mode = mode
 							)
 						}
@@ -49,6 +50,9 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 				viewState.onInitReader(manga, mode)
 			} catch (_: CancellationException) {
 			} catch (e: Throwable) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
 				viewState.onError(e)
 			} finally {
 				viewState.onLoadingStateChanged(isLoading = false)
@@ -59,7 +63,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 	fun setMode(manga: Manga, mode: ReaderMode) {
 		presenterScope.launch(Dispatchers.IO) {
 			MangaDataRepository().savePreferences(
-				mangaId = manga.id,
+				manga = manga,
 				mode = mode
 			)
 		}

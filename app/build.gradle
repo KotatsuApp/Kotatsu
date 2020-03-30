@@ -15,7 +15,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 29
 		versionCode gitCommits
-		versionName '0.1.3'
+		versionName '0.1.4'
 
 		buildConfigField 'String', 'GIT_BRANCH', "\"${gitBranch}\""
 
@@ -36,6 +36,9 @@ android {
 	buildTypes {
 		debug {
 			applicationIdSuffix = '.debug'
+			minifyEnabled true
+			shrinkResources true
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 		}
 		release {
 			minifyEnabled true
