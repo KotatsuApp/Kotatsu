@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -80,8 +81,18 @@ class AppUpdateService : BaseService() {
 				PendingIntent.FLAG_CANCEL_CURRENT
 			)
 		)
+		builder.addAction(
+			R.drawable.ic_download, getString(R.string.download),
+			PendingIntent.getActivity(
+				this,
+				NOTIFICATION_ID + 1,
+				Intent(Intent.ACTION_VIEW, Uri.parse(newVersion.apkUrl)),
+				PendingIntent.FLAG_CANCEL_CURRENT
+			)
+		)
 		builder.setSmallIcon(R.drawable.ic_stat_update)
 		builder.setAutoCancel(true)
+		builder.setColor(ContextCompat.getColor(this, R.color.blue_primary_dark))
 		builder.setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
 		manager.notify(NOTIFICATION_ID, builder.build())
 	}
@@ -92,8 +103,12 @@ class AppUpdateService : BaseService() {
 		private const val CHANNEL_ID = "update"
 		private val PERIOD = TimeUnit.HOURS.toMillis(6)
 
-		fun start(context: Context) =
-			context.startService(Intent(context, AppUpdateService::class.java))
+		fun start(context: Context) {
+			try {
+				context.startService(Intent(context, AppUpdateService::class.java))
+			} catch (_: IllegalStateException) {
+			}
+		}
 
 		fun startIfRequired(context: Context) {
 			val settings = AppSettings(context)

@@ -115,4 +115,5 @@
 	<string name="enabled_d_from_d">Включено %1$d из %2$d</string>
 	<string name="new_chapters">Новые главы</string>
 	<string name="show_notification_new_chapters">Уведомлять об обновлении манги, которую Вы читаете</string>
+	<string name="download">Загрузить</string>
 </resources>
