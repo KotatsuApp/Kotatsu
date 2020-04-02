@@ -182,9 +182,8 @@ fun RecyclerView.doOnCurrentItemChanged(callback: (Int) -> Unit) {
 
 		override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 			super.onScrolled(recyclerView, dx, dy)
-			val item = (recyclerView.layoutManager as? LinearLayoutManager)
-				?.findMiddleVisibleItemPosition()
-			if (item != null && item != RecyclerView.NO_POSITION && item != lastItem) {
+			val item = recyclerView.findCenterViewPosition()
+			if (item != RecyclerView.NO_POSITION && item != lastItem) {
 				lastItem = item
 				callback(item)
 			}
@@ -222,6 +221,14 @@ fun ViewPager2.callOnPageChaneListeners() {
 	}
 }
 
+@Deprecated("")
 fun LinearLayoutManager.findMiddleVisibleItemPosition(): Int {
 	return ((findFirstVisibleItemPosition() + findLastVisibleItemPosition()) / 2.0).roundToInt()
+}
+
+fun RecyclerView.findCenterViewPosition(): Int {
+	val centerX = width / 2f
+	val centerY = height / 2f
+	val view = findChildViewUnder(centerX, centerY) ?: return RecyclerView.NO_POSITION
+	return getChildAdapterPosition(view)
 }

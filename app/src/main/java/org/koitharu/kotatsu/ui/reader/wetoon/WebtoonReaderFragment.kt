@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.ui.reader.wetoon
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_reader_webtoon.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
@@ -12,7 +11,7 @@ import org.koitharu.kotatsu.ui.reader.base.AbstractReader
 import org.koitharu.kotatsu.ui.reader.base.BaseReaderAdapter
 import org.koitharu.kotatsu.ui.reader.base.GroupedList
 import org.koitharu.kotatsu.utils.ext.doOnCurrentItemChanged
-import org.koitharu.kotatsu.utils.ext.findMiddleVisibleItemPosition
+import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
 import org.koitharu.kotatsu.utils.ext.firstItem
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -43,7 +42,7 @@ class WebtoonReaderFragment : AbstractReader(R.layout.fragment_reader_webtoon) {
 		get() = adapter?.itemCount ?: 0
 
 	override fun getCurrentItem(): Int {
-		return (recyclerView.layoutManager as LinearLayoutManager).findMiddleVisibleItemPosition()
+		return recyclerView.findCenterViewPosition()
 	}
 
 	override fun setCurrentItem(position: Int, isSmooth: Boolean) {

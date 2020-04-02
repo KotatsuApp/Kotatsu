@@ -15,6 +15,7 @@ class MangaGridHolder(parent: ViewGroup) : BaseViewHolder<Manga, MangaHistory?>(
 
 	override fun onBind(data: Manga, extra: MangaHistory?) {
 		coverRequest?.dispose()
+		imageView_cover.setImageDrawable(null)
 		textView_title.text = data.title
 		coverRequest = imageView_cover.load(data.coverUrl) {
 			placeholder(R.drawable.ic_placeholder)
