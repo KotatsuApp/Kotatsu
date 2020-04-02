@@ -14,13 +14,18 @@ class MangaDataRepository : KoinComponent {
 
 	private val db: MangaDatabase by inject()
 
-	suspend fun savePreferences(mangaId: Long, mode: ReaderMode) {
-		db.preferencesDao.upsert(
-			MangaPrefsEntity(
-				mangaId = mangaId,
-				mode = mode.id
+	suspend fun savePreferences(manga: Manga, mode: ReaderMode) {
+		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
+		db.withTransaction {
+			db.tagsDao.upsert(tags)
+			db.mangaDao.upsert(MangaEntity.from(manga), tags)
+			db.preferencesDao.upsert(
+				MangaPrefsEntity(
+					mangaId = manga.id,
+					mode = mode.id
+				)
 			)
-		)
+		}
 	}
 
 	suspend fun getReaderMode(mangaId: Long): ReaderMode? {
