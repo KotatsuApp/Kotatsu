@@ -27,7 +27,8 @@ class TrackingRepository : KoinComponent {
 			MangaTracking(
 				manga = m.toManga(),
 				knownChaptersCount = track?.totalChapters ?: -1,
-				lastChapterId = track?.lastChapterId ?: 0,
+				lastChapterId = track?.lastChapterId ?: 0L,
+				lastNotifiedChapterId = track?.lastNotifiedChapterId ?: 0L,
 				lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date)
 			)
 		}
@@ -37,14 +38,16 @@ class TrackingRepository : KoinComponent {
 		mangaId: Long,
 		knownChaptersCount: Int,
 		lastChapterId: Long,
-		newChapters: Int
+		newChapters: Int,
+		lastNotifiedChapterId: Long
 	) {
 		val entity = TrackEntity(
 			mangaId = mangaId,
 			newChapters = newChapters,
 			lastCheck = System.currentTimeMillis(),
 			lastChapterId = lastChapterId,
-			totalChapters = knownChaptersCount
+			totalChapters = knownChaptersCount,
+			lastNotifiedChapterId = lastNotifiedChapterId
 		)
 		db.tracksDao.upsert(entity)
 	}
@@ -56,7 +59,8 @@ class TrackingRepository : KoinComponent {
 			totalChapters = chapters.size,
 			lastChapterId = chapters.lastOrNull()?.id ?: 0L,
 			newChapters = 0,
-			lastCheck = System.currentTimeMillis()
+			lastCheck = System.currentTimeMillis(),
+			lastNotifiedChapterId = 0L
 		)
 		db.tracksDao.insert(entity)
 	}

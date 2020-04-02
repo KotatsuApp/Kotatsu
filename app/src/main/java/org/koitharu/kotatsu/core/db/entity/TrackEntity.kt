@@ -21,5 +21,6 @@ data class TrackEntity (
 	@ColumnInfo(name = "chapters_total") val totalChapters: Int,
 	@ColumnInfo(name = "last_chapter_id") val lastChapterId: Long,
 	@ColumnInfo(name = "chapters_new") val newChapters: Int,
-	@ColumnInfo(name = "last_check") val lastCheck: Long
+	@ColumnInfo(name = "last_check") val lastCheck: Long,
+	@ColumnInfo(name = "last_notified_id") val lastNotifiedChapterId: Long
 )

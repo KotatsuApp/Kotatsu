@@ -9,5 +9,6 @@ data class MangaTracking (
 	val manga: Manga,
 	val knownChaptersCount: Int,
 	val lastChapterId: Long,
+	val lastNotifiedChapterId: Long,
 	val lastCheck: Date?
 ): Parcelable

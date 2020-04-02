@@ -57,6 +57,7 @@ class TrackerJobService : BaseJobService() {
 							mangaId = track.manga.id,
 							knownChaptersCount = chapters.size,
 							lastChapterId = chapters.lastOrNull()?.id ?: 0L,
+							lastNotifiedChapterId = 0L,
 							newChapters = 0
 						)
 					}
@@ -65,6 +66,7 @@ class TrackerJobService : BaseJobService() {
 							mangaId = track.manga.id,
 							knownChaptersCount = track.knownChaptersCount,
 							lastChapterId = 0L,
+							lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
 							newChapters = chapters.size
 						)
 						showNotification(track.manga, chapters)
@@ -82,6 +84,7 @@ class TrackerJobService : BaseJobService() {
 									mangaId = track.manga.id,
 									knownChaptersCount = chapters.size,
 									lastChapterId = chapters.lastOrNull()?.id ?: 0L,
+									lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
 									newChapters = 0
 								)
 							} else {
@@ -90,9 +93,12 @@ class TrackerJobService : BaseJobService() {
 									mangaId = track.manga.id,
 									knownChaptersCount = knownChapter + 1,
 									lastChapterId = track.lastChapterId,
+									lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
 									newChapters = newChapters
 								)
-								showNotification(track.manga, chapters.takeLast(newChapters))
+								if (chapters.lastOrNull()?.id != track.lastNotifiedChapterId) {
+									showNotification(track.manga, chapters.takeLast(newChapters))
+								}
 							}
 						}
 					}
@@ -102,9 +108,12 @@ class TrackerJobService : BaseJobService() {
 							mangaId = track.manga.id,
 							knownChaptersCount = track.knownChaptersCount,
 							lastChapterId = track.lastChapterId,
+							lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
 							newChapters = newChapters
 						)
-						showNotification(track.manga, chapters.takeLast(newChapters))
+						if (chapters.lastOrNull()?.id != track.lastNotifiedChapterId) {
+							showNotification(track.manga, chapters.takeLast(newChapters))
+						}
 					}
 				}
 				success++
@@ -122,9 +131,10 @@ class TrackerJobService : BaseJobService() {
 		val id = manga.url.hashCode()
 		val colorPrimary = ContextCompat.getColor(this@TrackerJobService, R.color.blue_primary)
 		val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+		val summary = resources.getQuantityString(R.plurals.new_chapters,
+			newChapters.size, newChapters.size)
 		with(builder) {
-			setContentText(resources.getQuantityString(R.plurals.new_chapters,
-				newChapters.size, newChapters.size))
+			setContentText(summary)
 			setContentText(manga.title)
 			setNumber(newChapters.size)
 			setLargeIcon(safe {
@@ -136,6 +146,7 @@ class TrackerJobService : BaseJobService() {
 				style.addLine(chapter.name)
 			}
 			style.setSummaryText(manga.title)
+			style.setBigContentTitle(summary)
 			setStyle(style)
 			val intent = MangaDetailsActivity.newIntent(this@TrackerJobService, manga)
 			setContentIntent(PendingIntent.getActivity(this@TrackerJobService, id,
@@ -176,9 +187,9 @@ class TrackerJobService : BaseJobService() {
 				createNotificationChannel(context)
 			}
 			val scheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-			// if (scheduler.allPendingJobs != null) {
-			// 	return
-			// }
+			if (scheduler.allPendingJobs.any { it.id == JOB_ID }) {
+				return
+			}
 			val jobInfo =
 				JobInfo.Builder(JOB_ID, ComponentName(context, TrackerJobService::class.java))
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -191,7 +202,7 @@ class TrackerJobService : BaseJobService() {
 			}
 			jobInfo.setRequiresDeviceIdle(true)
 			jobInfo.setPersisted(true)
-			jobInfo.setPeriodic(TimeUnit.HOURS.toMillis(6))
+			jobInfo.setPeriodic(TimeUnit.HOURS.toMillis(4))
 			scheduler.schedule(jobInfo.build())
 		}
 	}
