@@ -3,8 +3,8 @@ package org.koitharu.kotatsu.ui.main.list
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import coil.api.clear
 import coil.api.load
-import coil.request.RequestDisposable
 import kotlinx.android.synthetic.main.item_manga_list_details.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
@@ -15,14 +15,12 @@ import kotlin.math.roundToInt
 
 class MangaListDetailsHolder(parent: ViewGroup) : BaseViewHolder<Manga, MangaHistory?>(parent, R.layout.item_manga_list_details) {
 
-	private var coverRequest: RequestDisposable? = null
-
 	@SuppressLint("SetTextI18n")
 	override fun onBind(data: Manga, extra: MangaHistory?) {
-		coverRequest?.dispose()
+		imageView_cover.clear()
 		textView_title.text = data.title
 		textView_subtitle.textAndVisible = data.altTitle
-		coverRequest = imageView_cover.load(data.coverUrl) {
+		imageView_cover.load(data.coverUrl) {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_placeholder)
@@ -36,5 +34,9 @@ class MangaListDetailsHolder(parent: ViewGroup) : BaseViewHolder<Manga, MangaHis
 		textView_tags.text = data.tags.joinToString(", ") {
 			it.title
 		}
+	}
+
+	override fun onRecycled() {
+		imageView_cover.clear()
 	}
 }

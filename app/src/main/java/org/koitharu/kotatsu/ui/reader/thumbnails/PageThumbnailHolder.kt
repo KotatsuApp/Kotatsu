@@ -50,4 +50,9 @@ class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) 
 			}
 		}
 	}
+
+	override fun onRecycled() {
+		job?.cancel()
+		imageView_thumb.setImageDrawable(null)
+	}
 }

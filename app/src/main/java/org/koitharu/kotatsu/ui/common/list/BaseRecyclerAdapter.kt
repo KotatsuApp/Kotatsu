@@ -80,6 +80,10 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 		onDataSetChanged()
 	}
 
+	override fun onViewRecycled(holder: BaseViewHolder<T, E>) {
+		holder.onRecycled()
+	}
+
 	final override fun getItemCount() = dataSet.size
 
 	final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, E> {

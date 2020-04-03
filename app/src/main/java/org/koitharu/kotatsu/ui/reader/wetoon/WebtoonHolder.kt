@@ -6,7 +6,7 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import kotlinx.android.synthetic.main.item_page.*
+import kotlinx.android.synthetic.main.item_page_webtoon.*
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
@@ -51,6 +51,11 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 				onError(e)
 			}
 		}
+	}
+
+	override fun onRecycled() {
+		job?.cancel()
+		ssiv.recycle()
 	}
 
 	fun getScrollY() = ssiv.center?.y ?: 0f

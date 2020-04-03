@@ -30,6 +30,11 @@ class PageHolder(parent: ViewGroup, private val loader: PageLoader) :
 		doLoad(data, force = false)
 	}
 
+	override fun onRecycled() {
+		job?.cancel()
+		ssiv.recycle()
+	}
+
 	private fun doLoad(data: MangaPage, force: Boolean) {
 		job?.cancel()
 		job = launch {

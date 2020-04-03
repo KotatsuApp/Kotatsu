@@ -40,5 +40,7 @@ abstract class BaseViewHolder<T, E> protected constructor(view: View) :
 		return this
 	}
 
+	open fun onRecycled() = Unit
+
 	abstract fun onBind(data: T, extra: E)
 }
