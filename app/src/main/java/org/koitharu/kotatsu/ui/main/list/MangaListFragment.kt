@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
 import moxy.MvpDelegate
@@ -39,7 +40,7 @@ import org.koitharu.kotatsu.utils.ext.*
 abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), MangaListView<E>,
 	PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga>,
 	SharedPreferences.OnSharedPreferenceChangeListener, OnFilterChangedListener,
-	SectionItemDecoration.Callback {
+	SectionItemDecoration.Callback, SwipeRefreshLayout.OnRefreshListener {
 
 	private val settings by inject<AppSettings>()
 
@@ -58,9 +59,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		initListMode(settings.listMode)
 		recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
-		swipeRefreshLayout.setOnRefreshListener {
-			onRequestMoreItems(0)
-		}
+		swipeRefreshLayout.setOnRefreshListener(this)
 		recyclerView_filter.setHasFixedSize(true)
 		recyclerView_filter.addItemDecoration(ItemTypeDividerDecoration(view.context))
 		recyclerView_filter.addItemDecoration(SectionItemDecoration(false, this))
@@ -122,6 +121,10 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		}
 	}
 
+	final override fun onRefresh() {
+		onRequestMoreItems(0)
+	}
+
 	override fun onListChanged(list: List<Manga>) {
 		adapter?.replaceData(list)
 		if (list.isEmpty()) {
@@ -171,6 +174,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
 	}
 
+	@CallSuper
 	override fun onLoadingStateChanged(isLoading: Boolean) {
 		val hasItems = recyclerView.hasItems
 		progressBar.isVisible = isLoading && !hasItems
@@ -181,6 +185,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		}
 	}
 
+	@CallSuper
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
 		if (context == null) {
 			return
@@ -249,13 +254,13 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		recyclerView.firstItem = position
 	}
 
-	override fun isSection(position: Int): Boolean {
+	final override fun isSection(position: Int): Boolean {
 		return position == 0 || recyclerView_filter.adapter?.run {
 			getItemViewType(position) != getItemViewType(position - 1)
 		} ?: false
 	}
 
-	override fun getSectionTitle(position: Int): CharSequence? {
+	final override fun getSectionTitle(position: Int): CharSequence? {
 		return when (recyclerView_filter.adapter?.getItemViewType(position)) {
 			FilterAdapter.VIEW_TYPE_SORT -> getString(R.string.sort_order)
 			FilterAdapter.VIEW_TYPE_TAG -> getString(R.string.genre)
