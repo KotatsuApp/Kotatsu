@@ -19,9 +19,6 @@ class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) 
 	private	val thumbSize: Size
 
 	init {
-//		FIXME
-//		val color = DrawUtils.invertColor(textView_number.currentTextColor)
-//		textView_number.setShadowLayer(parent.resources.resolveDp(26f), 0f, 0f, color)
 		val width = itemView.context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
 		thumbSize = PixelSize(
 			width = width,

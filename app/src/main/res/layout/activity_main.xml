@@ -45,6 +45,7 @@
             app:backgroundTint="?colorAccent"
             app:layout_anchor="@id/container"
             app:layout_anchorGravity="bottom|end"
+            app:layout_dodgeInsetEdges="bottom"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             tools:visibility="visible" />
 

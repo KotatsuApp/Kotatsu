@@ -1,14 +1,9 @@
 package org.koitharu.kotatsu.ui.main.list.history
 
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
 import moxy.ktx.moxyPresenter

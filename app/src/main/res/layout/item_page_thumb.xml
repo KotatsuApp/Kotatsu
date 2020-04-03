@@ -22,6 +22,7 @@
 		android:gravity="end|bottom"
 		android:padding="12dp"
 		android:singleLine="true"
+		android:textColor="@android:color/black"
 		android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
 		tools:text="2" />
 
