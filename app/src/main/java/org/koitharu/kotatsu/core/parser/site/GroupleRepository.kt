@@ -6,7 +6,7 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
 
-abstract class GroupleRepository :	RemoteMangaRepository() {
+abstract class GroupleRepository : RemoteMangaRepository() {
 
 	protected abstract val defaultDomain: String
 
@@ -20,7 +20,7 @@ abstract class GroupleRepository :	RemoteMangaRepository() {
 		offset: Int,
 		query: String?,
 		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tag: MangaTag?,
 	): List<Manga> {
 		val domain = conf.getDomain(defaultDomain)
 		val doc = when {
@@ -28,7 +28,8 @@ abstract class GroupleRepository :	RemoteMangaRepository() {
 				"https://$domain/search",
 				mapOf("q" to query, "offset" to offset.toString())
 			)
-			tag == null -> loaderContext.httpGet("https://$domain/list?sortType=${getSortKey(sortOrder)}&offset=$offset")
+			tag == null -> loaderContext.httpGet("https://$domain/list?sortType=${getSortKey(
+				sortOrder)}&offset=$offset")
 			else -> loaderContext.httpGet(
 				"https://$domain/list/genre/${tag.key}?sortType=${getSortKey(
 					sortOrder
@@ -85,12 +86,22 @@ abstract class GroupleRepository :	RemoteMangaRepository() {
 	override suspend fun getDetails(manga: Manga): Manga {
 		val domain = conf.getDomain(defaultDomain)
 		val doc = loaderContext.httpGet(manga.url).parseHtml()
-		val root = doc.body().getElementById("mangaBox") ?: throw ParseException("Cannot find root")
+		val root = doc.body().getElementById("mangaBox")?.selectFirst("div.leftContent")
+			?: throw ParseException("Cannot find root")
 		return manga.copy(
 			description = root.selectFirst("div.manga-description")?.html(),
 			largeCoverUrl = root.selectFirst("div.subject-cower")?.selectFirst("img")?.attr(
 				"data-full"
 			),
+			tags = manga.tags + root.select("div.subject-meta").select("span.elem_genre ")
+				.mapNotNull {
+					val a = it.selectFirst("a.element-link") ?: return@mapNotNull null
+					MangaTag(
+						title = a.text(),
+						key = a.attr("href").substringAfterLast('/'),
+						source = source
+					)
+				},
 			chapters = root.selectFirst("div.chapters-link")?.selectFirst("table")
 				?.select("a")?.asReversed()?.mapIndexedNotNull { i, a ->
 					val href =
