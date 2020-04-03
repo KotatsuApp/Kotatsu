@@ -17,10 +17,13 @@ import org.koitharu.kotatsu.ui.main.list.favourites.categories.FavouriteCategori
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.search.MangaSearchSheet
 import org.koitharu.kotatsu.utils.ext.addChips
+import org.koitharu.kotatsu.utils.ext.showPopupMenu
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 import kotlin.math.roundToInt
 
-class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetailsView, View.OnClickListener {
+class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetailsView,
+	View.OnClickListener,
+	View.OnLongClickListener {
 
 	@Suppress("unused")
 	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
@@ -64,9 +67,9 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 				onClickListener = this@MangaDetailsFragment
 			)
 		}
-		imageView_favourite.setOnClickListener {
-			FavouriteCategoriesDialog.show(childFragmentManager, manga)
-		}
+		imageView_favourite.setOnClickListener(this)
+		button_read.setOnClickListener(this)
+		button_read.setOnLongClickListener(this)
 		updateReadButton()
 	}
 
@@ -96,11 +99,52 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 	override fun onNewChaptersChanged(newChapters: Int) = Unit
 
 	override fun onClick(v: View) {
-		if (v is Chip) {
-			when(val tag = v.tag) {
-				is String -> MangaSearchSheet.show(activity?.supportFragmentManager ?: childFragmentManager,
-					manga?.source ?: return, tag)
+		when {
+			v.id == R.id.imageView_favourite -> {
+				FavouriteCategoriesDialog.show(childFragmentManager, manga ?: return)
 			}
+			v.id == R.id.button_read -> {
+				startActivity(
+					ReaderActivity.newIntent(
+						context ?: return,
+						manga ?: return,
+						history
+					)
+				)
+			}
+			v is Chip -> {
+				when (val tag = v.tag) {
+					is String -> MangaSearchSheet.show(activity?.supportFragmentManager
+						?: childFragmentManager,
+						manga?.source ?: return, tag)
+				}
+			}
+		}
+	}
+
+	override fun onLongClick(v: View): Boolean {
+		when {
+			v.id == R.id.button_read -> {
+				if (history == null) {
+					return false
+				}
+				v.showPopupMenu(R.menu.popup_read) {
+					when (it.itemId) {
+						R.id.action_read -> {
+							startActivity(
+								ReaderActivity.newIntent(
+									context ?: return@showPopupMenu false,
+									manga ?: return@showPopupMenu false
+								)
+							)
+							true
+						}
+						else -> false
+					}
+				}
+				return true
+			}
+			else -> return false
 		}
 	}
 
@@ -115,15 +159,6 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 			} else {
 				button_read.setText(R.string._continue)
 				button_read.setIconResource(R.drawable.ic_play)
-			}
-			button_read.setOnClickListener {
-				startActivity(
-					ReaderActivity.newIntent(
-						context ?: return@setOnClickListener,
-						manga ?: return@setOnClickListener,
-						history
-					)
-				)
 			}
 		}
 	}

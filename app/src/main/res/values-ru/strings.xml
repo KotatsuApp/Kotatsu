@@ -116,4 +116,5 @@
 	<string name="new_chapters">Новые главы</string>
 	<string name="show_notification_new_chapters">Уведомлять об обновлении манги, которую Вы читаете</string>
 	<string name="download">Загрузить</string>
+	<string name="read_from_start">Читать с начала</string>
 </resources>
