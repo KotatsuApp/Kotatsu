@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.ui.tracker.TrackerJobService
+import org.koitharu.kotatsu.ui.utils.AppCrashHandler
 import org.koitharu.kotatsu.utils.CacheUtils
 import java.util.concurrent.TimeUnit
 
@@ -43,9 +44,7 @@ class KotatsuApp : Application() {
 		super.onCreate()
 		initKoin()
 		initCoil()
-		if (BuildConfig.DEBUG) {
-			initErrorHandler()
-		}
+		Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(applicationContext))
 		TrackerJobService.setup(this)
 		AppCompatDelegate.setDefaultNightMode(AppSettings(this).theme)
 	}

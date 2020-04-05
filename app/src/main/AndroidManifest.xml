@@ -46,16 +46,21 @@
 		<activity
 			android:name=".ui.reader.SimpleSettingsActivity"
 			android:label="@string/settings" />
+		<activity android:name=".ui.browser.BrowserActivity" />
+
 		<activity
-			android:name=".ui.browser.BrowserActivity"
-			android:launchMode="singleInstance" />
+			android:name=".ui.utils.CrashActivity"
+			android:theme="@android:style/Theme.DeviceDefault.Dialog"
+			android:label="@string/error_occurred"
+			android:windowSoftInputMode="stateAlwaysHidden" />
 
 		<service
 			android:name=".ui.download.DownloadService"
 			android:foregroundServiceType="dataSync" />
 		<service android:name=".ui.settings.AppUpdateService" />
 
-		<service android:name=".ui.tracker.TrackerJobService"
+		<service
+			android:name=".ui.tracker.TrackerJobService"
 			android:exported="true"
 			android:permission="android.permission.BIND_JOB_SERVICE" />
 

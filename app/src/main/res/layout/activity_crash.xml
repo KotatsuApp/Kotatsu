@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<ScrollView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_above="@id/button_close"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentEnd="true"
+		android:layout_marginTop="2dp"
+		android:layout_marginBottom="2dp">
+
+		<TextView
+			android:id="@+id/textView"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingStart="2dp"
+			android:paddingEnd="2dp"
+			android:textIsSelectable="true" />
+	</ScrollView>
+
+	<Button
+		android:id="@+id/button_close"
+		style="@android:style/Widget.DeviceDefault.Button.Borderless"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_toStartOf="@id/button_restart"
+		android:text="@string/close" />
+
+	<Button
+		android:id="@+id/button_restart"
+		style="@android:style/Widget.DeviceDefault.Button.Borderless"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentBottom="true"
+		android:text="@string/restart" />
+
+</RelativeLayout>

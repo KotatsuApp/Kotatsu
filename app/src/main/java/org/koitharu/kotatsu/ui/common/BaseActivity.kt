@@ -11,7 +11,6 @@ import moxy.MvpAppCompatActivity
 import org.koin.core.KoinComponent
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.ui.common.dialog.StorageSelectDialog
 
 abstract class BaseActivity : MvpAppCompatActivity(), KoinComponent {
 
@@ -70,7 +69,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), KoinComponent {
 			return true
 		}
 		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-			StorageSelectDialog.Builder(this).create().show()
+			throw StackOverflowError("test")
 			return true
 		}
 		return super.onKeyDown(keyCode, event)
