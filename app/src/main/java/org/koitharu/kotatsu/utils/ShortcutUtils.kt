@@ -81,7 +81,7 @@ object ShortcutUtils {
 					bmp,
 					size.width,
 					size.height,
-					ThumbnailUtils.OPTIONS_RECYCLE_INPUT
+					0
 				)
 			}
 		}
