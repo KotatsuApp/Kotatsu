@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
 import moxy.ktx.moxyPresenter
@@ -14,7 +15,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.ui.main.list.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.ellipsize
-import org.koitharu.kotatsu.utils.ext.showDialog
 import java.io.File
 
 class LocalListFragment : MangaListFragment<File>() {
@@ -81,14 +81,14 @@ class LocalListFragment : MangaListFragment<File>() {
 	override fun onPopupMenuItemSelected(item: MenuItem, data: Manga): Boolean {
 		return when (item.itemId) {
 			R.id.action_delete -> {
-				context?.showDialog {
-					setTitle(R.string.delete_manga)
-					setMessage(getString(R.string.text_delete_local_manga, data.title))
-					setPositiveButton(R.string.delete) { _, _ ->
+				AlertDialog.Builder(context ?: return false)
+					.setTitle(R.string.delete_manga)
+					.setMessage(getString(R.string.text_delete_local_manga, data.title))
+					.setPositiveButton(R.string.delete) { _, _ ->
 						presenter.delete(data)
 					}
-					setNegativeButton(android.R.string.cancel, null)
-				}
+					.setNegativeButton(android.R.string.cancel, null)
+					.show()
 				true
 			}
 			else -> super.onPopupMenuItemSelected(item, data)

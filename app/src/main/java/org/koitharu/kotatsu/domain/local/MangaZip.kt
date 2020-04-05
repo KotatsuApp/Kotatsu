@@ -5,7 +5,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.utils.ext.sub
 import org.koitharu.kotatsu.utils.ext.takeIfReadable
-import org.koitharu.kotatsu.utils.ext.toFileName
+import org.koitharu.kotatsu.utils.ext.toFileNameSafe
 import java.io.File
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -91,7 +91,7 @@ class MangaZip(val file: File) {
 		const val INDEX_ENTRY = "index.json"
 
 		fun findInDir(root: File, manga: Manga): MangaZip {
-			val name = manga.title.toFileName() + ".cbz"
+			val name = manga.title.toFileNameSafe() + ".cbz"
 			val file = File(root, name)
 			return MangaZip(file)
 		}

@@ -17,6 +17,7 @@ fun Context.getThemeDrawable(@AttrRes resId: Int) = obtainStyledAttributes(intAr
 }
 
 @ColorInt
-fun Context.getThemeColor(@AttrRes resId: Int, @ColorInt default: Int = Color.TRANSPARENT) = obtainStyledAttributes(intArrayOf(resId)).use {
-	it.getColor(0, default)
-}
+fun Context.getThemeColor(@AttrRes resId: Int, @ColorInt default: Int = Color.TRANSPARENT) =
+	obtainStyledAttributes(intArrayOf(resId)).use {
+		it.getColor(0, default)
+	}

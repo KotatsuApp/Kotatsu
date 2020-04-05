@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.core.view.updatePadding
@@ -207,16 +208,16 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onError(e: Throwable) {
-		showDialog {
-			setTitle(R.string.error_occurred)
-			setMessage(e.message)
-			setPositiveButton(R.string.close, null)
-			if (reader?.hasItems != true) {
-				setOnDismissListener {
-					finish()
-				}
+		val dialog = AlertDialog.Builder(this)
+			.setTitle(R.string.error_occurred)
+			.setMessage(e.message)
+			.setPositiveButton(R.string.close, null)
+		if (reader?.hasItems != true) {
+			dialog.setOnDismissListener {
+				finish()
 			}
 		}
+		dialog.show()
 	}
 
 	override fun onGridTouch(area: Int) {
@@ -225,11 +226,13 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				setUiIsVisible(!appbar_top.isVisible)
 			}
 			GridTouchHelper.AREA_TOP,
-			GridTouchHelper.AREA_LEFT -> if (isTapSwitchEnabled) {
+			GridTouchHelper.AREA_LEFT,
+			-> if (isTapSwitchEnabled) {
 				reader?.switchPageBy(-1)
 			}
 			GridTouchHelper.AREA_BOTTOM,
-			GridTouchHelper.AREA_RIGHT -> if (isTapSwitchEnabled) {
+			GridTouchHelper.AREA_RIGHT,
+			-> if (isTapSwitchEnabled) {
 				reader?.switchPageBy(1)
 			}
 		}
@@ -267,13 +270,15 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		KeyEvent.KEYCODE_SPACE,
 		KeyEvent.KEYCODE_PAGE_DOWN,
 		KeyEvent.KEYCODE_DPAD_DOWN,
-		KeyEvent.KEYCODE_DPAD_RIGHT -> {
+		KeyEvent.KEYCODE_DPAD_RIGHT,
+		-> {
 			reader?.switchPageBy(1)
 			true
 		}
 		KeyEvent.KEYCODE_PAGE_UP,
 		KeyEvent.KEYCODE_DPAD_UP,
-		KeyEvent.KEYCODE_DPAD_LEFT -> {
+		KeyEvent.KEYCODE_DPAD_LEFT,
+		-> {
 			reader?.switchPageBy(-1)
 			true
 		}

@@ -1,9 +1,7 @@
 package org.koitharu.kotatsu.utils
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
-import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
@@ -13,16 +11,6 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 object UiUtils {
-
-	@JvmStatic
-	@ColorInt
-	fun invertColor(@ColorInt color: Int): Int {
-		val red = Color.red(color)
-		val green = Color.green(color)
-		val blue = Color.blue(color)
-		val alpha = Color.alpha(color)
-		return Color.argb(alpha, 255 - red, 255 - green, 255 - blue)
-	}
 
 	@JvmStatic
 	fun resolveGridSpanCount(context: Context, width: Int = 0): Int {
