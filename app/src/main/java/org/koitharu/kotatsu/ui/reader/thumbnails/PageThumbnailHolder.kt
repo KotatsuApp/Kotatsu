@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.ui.reader.thumbnails
 
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import coil.Coil
 import coil.api.get
 import coil.size.PixelSize
@@ -8,12 +9,13 @@ import coil.size.Size
 import kotlinx.android.synthetic.main.item_page_thumb.*
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
 
 class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) :
-	BaseViewHolder<MangaPage, Unit>(parent, R.layout.item_page_thumb) {
+	BaseViewHolder<MangaPage, PagesCache>(parent, R.layout.item_page_thumb) {
 
 	private var job: Job? = null
 	private	val thumbSize: Size
@@ -26,14 +28,15 @@ class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) 
 		)
 	}
 
-	override fun onBind(data: MangaPage, extra: Unit) {
+	override fun onBind(data: MangaPage, extra: PagesCache) {
 		imageView_thumb.setImageDrawable(null)
-		textView_number.text = (adapterPosition + 1).toString()
+		textView_number.text = (bindingAdapterPosition + 1).toString()
 		job?.cancel()
 		job = scope.launch(Dispatchers.IO) {
 			try {
 				val url = data.preview ?: data.url.let {
-					MangaProviderFactory.create(data.source).getPageFullUrl(data)
+					val pageUrl = MangaProviderFactory.create(data.source).getPageFullUrl(data)
+					extra[pageUrl]?.toUri()?.toString() ?: pageUrl
 				}
 				val drawable = Coil.get(url) {
 					size(thumbSize)
