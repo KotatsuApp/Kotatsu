@@ -35,8 +35,8 @@ import org.koitharu.kotatsu.ui.reader.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.ui.reader.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.ui.reader.wetoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.utils.GridTouchHelper
+import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ShortcutUtils
 import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
 
@@ -92,7 +92,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
 				GlobalScope.launch {
 					safe {
-						ShortcutUtils.addAppShortcut(applicationContext, state.manga)
+						MangaShortcut(state.manga).addAppShortcut(applicationContext)
 					}
 				}
 			}
