@@ -81,7 +81,7 @@ dependencies {
 	implementation 'com.github.moxy-community:moxy-ktx:2.1.2'
 	kapt 'com.github.moxy-community:moxy-compiler:2.1.2'
 
-	implementation 'com.squareup.okhttp3:okhttp:4.4.1'
+	implementation 'com.squareup.okhttp3:okhttp:4.5.0'
 	implementation 'com.squareup.okio:okio:2.5.0'
 	implementation 'org.jsoup:jsoup:1.13.1'
 
