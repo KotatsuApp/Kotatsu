@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
+import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.tracker.TrackerJobService
 import org.koitharu.kotatsu.ui.utils.AppCrashHandler
 import org.koitharu.kotatsu.ui.widget.WidgetUpdater
@@ -51,6 +52,7 @@ class KotatsuApp : Application() {
 		AppCompatDelegate.setDefaultNightMode(AppSettings(this).theme)
 		val widgetUpdater = WidgetUpdater(applicationContext)
 		FavouritesRepository.subscribe(widgetUpdater)
+		HistoryRepository.subscribe(widgetUpdater)
 	}
 
 	private fun initKoin() {

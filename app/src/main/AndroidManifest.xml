@@ -67,8 +67,11 @@
 
 		<service
 			android:name=".ui.widget.shelf.ShelfWidgetService"
-			android:permission="android.permission.BIND_REMOTEVIEWS">
-		</service>
+			android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+		<service
+			android:name=".ui.widget.recent.RecentWidgetService"
+			android:permission="android.permission.BIND_REMOTEVIEWS" />
 
 		<service
 			android:name=".ui.tracker.TrackerJobService"
@@ -97,6 +100,15 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 				android:resource="@xml/widget_shelf" />
+		</receiver>
+
+		<receiver android:name=".ui.widget.recent.RecentWidgetProvider"
+			android:label="@string/recent_manga">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/widget_recent" />
 		</receiver>
 
 	</application>
