@@ -62,7 +62,13 @@
 		<service
 			android:name=".ui.download.DownloadService"
 			android:foregroundServiceType="dataSync" />
+
 		<service android:name=".ui.settings.AppUpdateService" />
+
+		<service
+			android:name=".ui.widget.shelf.ShelfWidgetService"
+			android:permission="android.permission.BIND_REMOTEVIEWS">
+		</service>
 
 		<service
 			android:name=".ui.tracker.TrackerJobService"
@@ -83,6 +89,15 @@
 				android:name="android.support.FILE_PROVIDER_PATHS"
 				android:resource="@xml/filepaths" />
 		</provider>
+		
+		<receiver android:name=".ui.widget.shelf.ShelfWidgetProvider"
+			android:label="@string/manga_shelf">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/widget_shelf" />
+		</receiver>
 
 	</application>
 

@@ -172,7 +172,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 	companion object {
 
 		private const val EXTRA_MANGA = "manga"
-		private const val EXTRA_MANGA_ID = "manga_id"
+		const val EXTRA_MANGA_ID = "manga_id"
 
 		const val ACTION_MANGA_VIEW = "${BuildConfig.APPLICATION_ID}.action.VIEW_MANGA"
 

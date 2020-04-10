@@ -118,4 +118,5 @@
 	<string name="download">Загрузить</string>
 	<string name="read_from_start">Читать с начала</string>
 	<string name="restart">Перезапустить</string>
+	<string name="manga_shelf">Полка с мангой</string>
 </resources>
