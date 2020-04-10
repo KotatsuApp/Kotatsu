@@ -45,13 +45,18 @@
 			android:label="@string/settings" />
 		<activity
 			android:name=".ui.reader.SimpleSettingsActivity"
-			android:label="@string/settings" />
+			android:label="@string/settings">
+			<intent-filter>
+				<action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".ui.browser.BrowserActivity" />
 
 		<activity
 			android:name=".ui.utils.CrashActivity"
-			android:theme="@android:style/Theme.DeviceDefault.Dialog"
 			android:label="@string/error_occurred"
+			android:theme="@android:style/Theme.DeviceDefault.Dialog"
 			android:windowSoftInputMode="stateAlwaysHidden" />
 
 		<service
