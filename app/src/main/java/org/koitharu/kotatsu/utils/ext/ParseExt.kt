@@ -5,7 +5,6 @@ import okhttp3.internal.closeQuietly
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
 
 fun Response.parseHtml(): Document {
 	try {
@@ -29,5 +28,3 @@ fun Response.parseJson(): JSONObject {
 		closeQuietly()
 	}
 }
-
-fun Element.firstChild(): Element? = children().first()

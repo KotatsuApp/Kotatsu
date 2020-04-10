@@ -2,11 +2,9 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.app.Activity
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
@@ -23,7 +21,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.ui.common.ChipsFactory
-import kotlin.math.roundToInt
 
 fun View.hideKeyboard() {
 	val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -35,13 +32,8 @@ fun View.showKeyboard() {
 	imm.showSoftInput(this, 0)
 }
 
-val EditText.plainText
-	get() = text?.toString().orEmpty()
-
 inline fun <reified T : View> ViewGroup.inflate(@LayoutRes resId: Int) =
 	LayoutInflater.from(context).inflate(resId, this, false) as T
-
-val TextView.hasText get() = !text.isNullOrEmpty()
 
 fun RecyclerView.lookupSpanSize(callback: (Int) -> Int) {
 	(layoutManager as? GridLayoutManager)?.spanSizeLookup =
@@ -52,20 +44,6 @@ fun RecyclerView.lookupSpanSize(callback: (Int) -> Int) {
 
 val RecyclerView.hasItems: Boolean
 	get() = (adapter?.itemCount ?: 0) > 0
-
-var TextView.drawableStart: Drawable?
-	get() = compoundDrawablesRelative[0]
-	set(value) {
-		val old = compoundDrawablesRelative
-		setCompoundDrawablesRelativeWithIntrinsicBounds(value, old[1], old[2], old[3])
-	}
-
-var TextView.drawableEnd: Drawable?
-	get() = compoundDrawablesRelative[2]
-	set(value) {
-		val old = compoundDrawablesRelative
-		setCompoundDrawablesRelativeWithIntrinsicBounds(old[0], old[1], value, old[3])
-	}
 
 var TextView.textAndVisible: CharSequence?
 	get() = text?.takeIf { visibility == View.VISIBLE }
@@ -106,7 +84,7 @@ fun View.disableFor(timeInMillis: Long) {
 
 fun View.showPopupMenu(
 	@MenuRes menuRes: Int, onPrepare: ((Menu) -> Unit)? = null,
-	onItemClick: (MenuItem) -> Boolean
+	onItemClick: (MenuItem) -> Boolean,
 ) {
 	val menu = PopupMenu(context, this)
 	menu.inflate(menuRes)
@@ -219,11 +197,6 @@ fun ViewPager2.callOnPageChaneListeners() {
 	} catch (e: Throwable) {
 		Log.e(null, "ViewPager2.callOnPageChaneListeners() failed", e)
 	}
-}
-
-@Deprecated("")
-fun LinearLayoutManager.findMiddleVisibleItemPosition(): Int {
-	return ((findFirstVisibleItemPosition() + findLastVisibleItemPosition()) / 2.0).roundToInt()
 }
 
 fun RecyclerView.findCenterViewPosition(): Int {

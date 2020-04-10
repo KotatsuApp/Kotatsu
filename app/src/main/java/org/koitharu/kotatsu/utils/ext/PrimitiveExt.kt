@@ -4,8 +4,6 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-fun Number?.asBoolean() = (this?.toInt() ?: 0) > 0
-
 fun Number.format(decimals: Int = 0, decPoint: Char = '.', thousandsSep: Char? = ' '): String {
 	val formatter = NumberFormat.getInstance(Locale.US) as DecimalFormat
 	val symbols = formatter.decimalFormatSymbols

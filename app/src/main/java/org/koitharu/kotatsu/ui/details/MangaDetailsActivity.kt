@@ -25,10 +25,9 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.browser.BrowserActivity
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.ui.download.DownloadService
+import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ShortcutUtils
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.showDialog
 
 class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 
@@ -119,14 +118,14 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		}
 		R.id.action_delete -> {
 			manga?.let { m ->
-				showDialog {
-					setTitle(R.string.delete_manga)
-					setMessage(getString(R.string.text_delete_local_manga, m.title))
-					setPositiveButton(R.string.delete) { _, _ ->
+				AlertDialog.Builder(this)
+					.setTitle(R.string.delete_manga)
+					.setMessage(getString(R.string.text_delete_local_manga, m.title))
+					.setPositiveButton(R.string.delete) { _, _ ->
 						presenter.deleteLocal(m)
 					}
-					setNegativeButton(android.R.string.cancel, null)
-				}
+					.setNegativeButton(android.R.string.cancel, null)
+					.show()
 			}
 			true
 		}
@@ -156,7 +155,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		R.id.action_shortcut -> {
 			manga?.let {
 				lifecycleScope.launch {
-					if (!ShortcutUtils.requestPinShortcut(this@MangaDetailsActivity, manga)) {
+					if (!MangaShortcut(it).requestPinShortcut(this@MangaDetailsActivity)) {
 						Snackbar.make(
 							pager,
 							R.string.operation_not_supported,

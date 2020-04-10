@@ -22,25 +22,18 @@ import org.koitharu.kotatsu.domain.MangaDataRepository
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.safe
 
-object ShortcutUtils {
+class MangaShortcut(private val manga: Manga) {
 
-	suspend fun requestPinShortcut(context: Context, manga: Manga?): Boolean {
-		return manga != null && ShortcutManagerCompat.requestPinShortcut(
-			context,
-			buildShortcutInfo(context, manga).build(),
-			null
-		)
-	}
+	private val shortcutId = manga.id.toString()
 
 	@RequiresApi(Build.VERSION_CODES.N_MR1)
-	suspend fun addAppShortcut(context: Context, manga: Manga) {
-		val id = manga.id.toString()
-		val builder = buildShortcutInfo(context, manga)
+	suspend fun addAppShortcut(context: Context) {
 		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
 		val limit = manager.maxShortcutCountPerActivity
+		val builder = buildShortcutInfo(context, manga)
 		val shortcuts = manager.dynamicShortcuts
 		for (shortcut in shortcuts) {
-			if (shortcut.id == id) {
+			if (shortcut.id == shortcutId) {
 				builder.setRank(shortcut.rank + 1)
 				manager.updateShortcuts(listOf(builder.build().toShortcutInfo()))
 				return
@@ -53,22 +46,23 @@ object ShortcutUtils {
 		manager.addDynamicShortcuts(listOf(builder.build().toShortcutInfo()))
 	}
 
-	@RequiresApi(Build.VERSION_CODES.N_MR1)
-	fun removeAppShortcut(context: Context, manga: Manga) {
-		val id = manga.id.toString()
-		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
-		manager.removeDynamicShortcuts(listOf(id))
+	suspend fun requestPinShortcut(context: Context): Boolean {
+		return ShortcutManagerCompat.requestPinShortcut(
+			context,
+			buildShortcutInfo(context, manga).build(),
+			null
+		)
 	}
 
 	@RequiresApi(Build.VERSION_CODES.N_MR1)
-	fun clearAppShortcuts(context: Context) {
+	fun removeAppShortcut(context: Context) {
 		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
-		manager.removeAllDynamicShortcuts()
+		manager.removeDynamicShortcuts(listOf(shortcutId))
 	}
 
 	private suspend fun buildShortcutInfo(
 		context: Context,
-		manga: Manga
+		manga: Manga,
 	): ShortcutInfoCompat.Builder {
 		val icon = safe {
 			val size = getIconSize(context)
@@ -77,12 +71,7 @@ object ShortcutUtils {
 					size(size)
 					scale(Scale.FILL)
 				}.toBitmap()
-				ThumbnailUtils.extractThumbnail(
-					bmp,
-					size.width,
-					size.height,
-					0
-				)
+				ThumbnailUtils.extractThumbnail(bmp, size.width, size.height, 0)
 			}
 		}
 		MangaDataRepository().storeManga(manga)
@@ -107,6 +96,15 @@ object ShortcutUtils {
 			(context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).launcherLargeIconSize.let {
 				PixelSize(it, it)
 			}
+		}
+	}
+
+	companion object {
+
+		@RequiresApi(Build.VERSION_CODES.N_MR1)
+		fun clearAppShortcuts(context: Context) {
+			val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
+			manager.removeAllDynamicShortcuts()
 		}
 	}
 }

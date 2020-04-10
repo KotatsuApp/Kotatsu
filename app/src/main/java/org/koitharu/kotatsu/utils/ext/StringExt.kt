@@ -57,7 +57,7 @@ fun String.transliterate(skipMissing: Boolean): String {
 	}
 }
 
-fun String.toFileName() = this.transliterate(false)
+fun String.toFileNameSafe() = this.transliterate(false)
 	.replace(Regex("[^a-z0-9_\\-]", setOf(RegexOption.IGNORE_CASE)), " ")
 	.replace(Regex("\\s+"), "_")
 

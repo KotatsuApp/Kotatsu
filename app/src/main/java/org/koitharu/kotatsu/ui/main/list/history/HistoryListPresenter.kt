@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
 import org.koitharu.kotatsu.ui.main.list.MangaListView
-import org.koitharu.kotatsu.utils.ShortcutUtils
+import org.koitharu.kotatsu.utils.MangaShortcut
 
 @InjectViewState
 class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
@@ -62,7 +62,7 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 					repository.clear()
 				}
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-					ShortcutUtils.clearAppShortcuts(get())
+					MangaShortcut.clearAppShortcuts(get())
 				}
 				viewState.onListChanged(emptyList())
 			} catch (_: CancellationException) {
@@ -84,7 +84,7 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 					repository.delete(manga)
 				}
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-					ShortcutUtils.removeAppShortcut(get(), manga)
+					MangaShortcut(manga).removeAppShortcut(get())
 				}
 				viewState.onItemRemoved(manga)
 			} catch (_: CancellationException) {

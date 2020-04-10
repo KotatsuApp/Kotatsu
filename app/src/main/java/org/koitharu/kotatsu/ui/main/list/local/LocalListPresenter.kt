@@ -19,8 +19,8 @@ import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
 import org.koitharu.kotatsu.ui.main.list.MangaListView
+import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.MediaStoreCompat
-import org.koitharu.kotatsu.utils.ShortcutUtils
 import org.koitharu.kotatsu.utils.ext.safe
 import org.koitharu.kotatsu.utils.ext.sub
 import java.io.File
@@ -98,7 +98,7 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 					}
 				}
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-					ShortcutUtils.removeAppShortcut(get(), manga)
+					MangaShortcut(manga).removeAppShortcut(get())
 				}
 				viewState.onItemRemoved(manga)
 			} catch (e: CancellationException) {
