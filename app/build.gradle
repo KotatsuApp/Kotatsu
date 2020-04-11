@@ -69,6 +69,7 @@ dependencies {
 	implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha02'
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
 	implementation 'androidx.preference:preference:1.1.0'
+	implementation 'androidx.work:work-runtime-ktx:2.3.4'
 	implementation 'com.google.android.material:material:1.2.0-alpha05'
 
 	implementation 'androidx.room:room-runtime:2.2.5'
