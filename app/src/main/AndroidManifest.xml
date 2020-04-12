@@ -8,6 +8,7 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -47,11 +48,10 @@
 			android:name=".ui.reader.SimpleSettingsActivity"
 			android:label="@string/settings" />
 		<activity android:name=".ui.browser.BrowserActivity" />
-
 		<activity
 			android:name=".ui.utils.CrashActivity"
-			android:theme="@android:style/Theme.DeviceDefault.Dialog"
 			android:label="@string/error_occurred"
+			android:theme="@android:style/Theme.DeviceDefault.Dialog"
 			android:windowSoftInputMode="stateAlwaysHidden" />
 
 		<service
@@ -59,16 +59,10 @@
 			android:foregroundServiceType="dataSync" />
 		<service android:name=".ui.settings.AppUpdateService" />
 
-		<service
-			android:name=".ui.tracker.TrackerJobService"
-			android:exported="true"
-			android:permission="android.permission.BIND_JOB_SERVICE" />
-
 		<provider
 			android:name=".ui.search.MangaSuggestionsProvider"
 			android:authorities="${applicationId}.MangaSuggestionsProvider"
 			android:exported="false" />
-
 		<provider
 			android:name="androidx.core.content.FileProvider"
 			android:authorities="${applicationId}.files"

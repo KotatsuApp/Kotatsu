@@ -3,12 +3,11 @@ package org.koitharu.kotatsu.ui.common
 import androidx.annotation.StringRes
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
 abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
-	PreferenceFragmentCompat(), KoinComponent {
+	PreferenceFragmentCompat() {
 
 	protected val settings by inject<AppSettings>()
 

@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.prefs
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import org.koitharu.kotatsu.R
@@ -54,6 +55,21 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 
 	val trackerNotifications by BoolPreferenceDelegate(
 		resources.getString(R.string.key_tracker_notifications),
+		true
+	)
+
+	var notificationSound by StringPreferenceDelegate(
+		resources.getString(R.string.key_notifications_sound),
+		Settings.System.DEFAULT_NOTIFICATION_URI.toString()
+	)
+
+	val notificationVibrate by BoolPreferenceDelegate(
+		resources.getString(R.string.key_notifications_vibrate),
+		false
+	)
+
+	val notificationLight by BoolPreferenceDelegate(
+		resources.getString(R.string.key_notifications_light),
 		true
 	)
 

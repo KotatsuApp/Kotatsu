@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.net.Uri
 import java.net.URLEncoder
 
 fun String.longHashCode(): Long {
@@ -66,3 +67,9 @@ fun String.ellipsize(maxLength: Int) = if (this.length > maxLength) {
 } else this
 
 fun String.urlEncoded(): String = URLEncoder.encode(this, Charsets.UTF_8.name())
+
+fun String.toUriOrNull(): Uri? = if (isEmpty()) {
+	null
+} else {
+	Uri.parse(this)
+}

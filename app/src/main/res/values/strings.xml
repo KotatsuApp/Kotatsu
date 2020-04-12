@@ -119,4 +119,8 @@
 	<string name="download">Download</string>
 	<string name="read_from_start">Read from start</string>
 	<string name="restart">Restart</string>
+	<string name="notifications_settings">Notifications settings</string>
+	<string name="notification_sound">Notification sound</string>
+	<string name="light_indicator">Light indicator</string>
+	<string name="vibration">Vibration</string>
 </resources>

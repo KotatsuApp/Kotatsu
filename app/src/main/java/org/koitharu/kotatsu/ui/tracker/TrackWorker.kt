@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.safe
+import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.util.concurrent.TimeUnit
 
 class TrackWorker(context: Context, workerParams: WorkerParameters) :
@@ -151,8 +152,19 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				intent, PendingIntent.FLAG_UPDATE_CURRENT))
 			setAutoCancel(true)
 			color = colorPrimary
-			setLights(colorPrimary, 1000, 5000)
-			setPriority(NotificationCompat.PRIORITY_DEFAULT)
+			priority = NotificationCompat.PRIORITY_DEFAULT
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+				builder.setSound(settings.notificationSound.toUriOrNull())
+				var defaults = if (settings.notificationLight) {
+					setLights(colorPrimary, 1000, 5000)
+					NotificationCompat.DEFAULT_LIGHTS
+				} else 0
+				if (settings.notificationVibrate) {
+					builder.setVibrate(longArrayOf(500, 500, 500, 500))
+					defaults = defaults or NotificationCompat.DEFAULT_VIBRATE
+				}
+				builder.setDefaults(defaults)
+			}
 		}
 		withContext(Dispatchers.Main) {
 			notificationManager.notify(TAG, id, builder.build())
@@ -161,7 +173,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 
 	companion object {
 
-		private const val CHANNEL_ID = "tracking"
+		const val CHANNEL_ID = "tracking"
 		private const val TAG = "tracking"
 
 		@RequiresApi(Build.VERSION_CODES.O)

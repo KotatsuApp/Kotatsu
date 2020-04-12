@@ -70,6 +70,12 @@
 			android:title="@string/new_chapters"
 			app:iconSpaceReserved="false" />
 
+		<Preference
+			android:title="@string/notifications_settings"
+			app:iconSpaceReserved="false"
+			android:dependency="@string/key_tracker_notifications"
+			android:key="@string/key_notifications_settings" />
+
 	</PreferenceCategory>
 
 </PreferenceScreen>

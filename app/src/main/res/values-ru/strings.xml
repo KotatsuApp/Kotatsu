@@ -118,4 +118,8 @@
 	<string name="download">Загрузить</string>
 	<string name="read_from_start">Читать с начала</string>
 	<string name="restart">Перезапустить</string>
+	<string name="notifications_settings">Настройки уведомлений</string>
+	<string name="notification_sound">Звук уведомления</string>
+	<string name="light_indicator">Световая индикация</string>
+	<string name="vibration">Вибросигнал</string>
 </resources>
