@@ -131,4 +131,6 @@
 	<string name="text_categories_holder">You can use categories to organize your favourite manga. Press «+» to create a category</string>
 	<string name="text_history_holder">Manga you are reading will be displayed here. You can find what to read in side menu</string>
 	<string name="text_local_holder">You have not any saved manga yet. You can save it from online sources or import from file</string>
+	<string name="manga_shelf">Manga shelf</string>
+	<string name="recent_manga">Recent manga</string>
 </resources>

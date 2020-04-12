@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<GridView
+		xmlns:tools="http://schemas.android.com/tools"
+		android:id="@+id/gridView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:columnWidth="92dp"
+		android:gravity="center_horizontal"
+		android:numColumns="auto_fit"
+		android:orientation="horizontal"
+		tools:listitem="@layout/item_shelf" />
+
+	<TextView
+		android:id="@+id/textView_holder"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:text="@string/you_have_not_favourites_yet"
+		android:textColor="?android:textColorPrimary" />
+
+</FrameLayout>

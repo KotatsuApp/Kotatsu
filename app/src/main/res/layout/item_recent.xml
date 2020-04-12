@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/imageView_cover"
+	android:layout_width="92dp"
+	android:layout_height="128dp"
+	android:scaleType="centerCrop"
+	tools:ignore="ContentDescription" />

@@ -46,7 +46,12 @@
 			android:label="@string/settings" />
 		<activity
 			android:name=".ui.reader.SimpleSettingsActivity"
-			android:label="@string/settings" />
+			android:label="@string/settings">
+			<intent-filter>
+				<action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".ui.browser.BrowserActivity" />
 		<activity
 			android:name=".ui.utils.CrashActivity"
@@ -62,6 +67,12 @@
 			android:name=".ui.download.DownloadService"
 			android:foregroundServiceType="dataSync" />
 		<service android:name=".ui.settings.AppUpdateService" />
+		<service
+			android:name=".ui.widget.shelf.ShelfWidgetService"
+			android:permission="android.permission.BIND_REMOTEVIEWS" />
+		<service
+			android:name=".ui.widget.recent.RecentWidgetService"
+			android:permission="android.permission.BIND_REMOTEVIEWS" />
 
 		<provider
 			android:name=".ui.search.MangaSuggestionsProvider"
@@ -76,6 +87,23 @@
 				android:name="android.support.FILE_PROVIDER_PATHS"
 				android:resource="@xml/filepaths" />
 		</provider>
+		
+		<receiver android:name=".ui.widget.shelf.ShelfWidgetProvider"
+			android:label="@string/manga_shelf">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/widget_shelf" />
+		</receiver>
+		<receiver android:name=".ui.widget.recent.RecentWidgetProvider"
+			android:label="@string/recent_manga">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/widget_recent" />
+		</receiver>
 
 	</application>
 

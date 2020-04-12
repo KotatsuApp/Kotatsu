@@ -25,7 +25,10 @@ import org.koitharu.kotatsu.core.local.cookies.persistence.SharedPrefsCookiePers
 import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
+import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
+import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.utils.AppCrashHandler
+import org.koitharu.kotatsu.ui.widget.WidgetUpdater
 import org.koitharu.kotatsu.utils.CacheUtils
 import java.util.concurrent.TimeUnit
 
@@ -48,6 +51,9 @@ class KotatsuApp : Application() {
 			initErrorHandler()
 		}
 		AppCompatDelegate.setDefaultNightMode(AppSettings(this).theme)
+		val widgetUpdater = WidgetUpdater(applicationContext)
+		FavouritesRepository.subscribe(widgetUpdater)
+		HistoryRepository.subscribe(widgetUpdater)
 	}
 
 	private fun initKoin() {
