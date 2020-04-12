@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/textView"
+	android:layout_width="match_parent"
+	android:layout_height="?android:listPreferredItemHeight"
+	android:background="?android:selectableItemBackground"
+	android:gravity="start|center_vertical"
+	android:paddingStart="?android:listPreferredItemPaddingStart"
+	android:paddingEnd="?android:listPreferredItemPaddingEnd"
+	android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+	android:textColor="?android:textColorPrimary"
+	tools:text="@tools:sample/lorem[4]" />

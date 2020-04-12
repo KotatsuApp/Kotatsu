@@ -59,7 +59,7 @@ class LocalListFragment : MangaListFragment<File>() {
 	}
 
 	override fun setUpEmptyListHolder() {
-		textView_holder.setText(R.string.no_saved_manga)
+		textView_holder.setText(R.string.text_local_holder)
 		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
 	}
 

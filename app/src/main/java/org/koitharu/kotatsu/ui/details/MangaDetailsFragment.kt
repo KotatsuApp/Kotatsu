@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.ui.common.BaseFragment
-import org.koitharu.kotatsu.ui.main.list.favourites.categories.FavouriteCategoriesDialog
+import org.koitharu.kotatsu.ui.main.list.favourites.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.search.MangaSearchSheet
 import org.koitharu.kotatsu.utils.ext.addChips

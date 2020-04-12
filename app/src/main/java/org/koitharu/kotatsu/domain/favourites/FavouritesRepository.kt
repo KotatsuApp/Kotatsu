@@ -42,6 +42,9 @@ class FavouritesRepository : KoinComponent {
 		val id = db.favouriteCategoriesDao.insert(entity)
 		return entity.toFavouriteCategory(id)
 	}
+	suspend fun renameCategory(id: Long, title: String) {
+		db.favouriteCategoriesDao.update(id, title)
+	}
 
 	suspend fun removeCategory(id: Long) {
 		db.favouriteCategoriesDao.delete(id)

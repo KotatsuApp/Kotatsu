@@ -123,4 +123,12 @@
 	<string name="notification_sound">Notification sound</string>
 	<string name="light_indicator">Light indicator</string>
 	<string name="vibration">Vibration</string>
+	<string name="favourites_categories">Favourites categories</string>
+	<string name="categories_">Categories…</string>
+	<string name="rename">Rename</string>
+	<string name="category_delete_confirm">Do you really want to remove category \"%s\" from your favourites? \nAll containing manga will be lost.</string>
+	<string name="remove_category">Remove category</string>
+	<string name="text_categories_holder">You can use categories to organize your favourite manga. Press «+» to create a category</string>
+	<string name="text_history_holder">Manga you are reading will be displayed here. You can find what to read in side menu</string>
+	<string name="text_local_holder">You have not any saved manga yet. You can save it from online sources or import from file</string>
 </resources>

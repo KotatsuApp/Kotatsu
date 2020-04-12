@@ -6,11 +6,11 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.fragment_list.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.ui.main.list.MangaListFragment
 import org.koitharu.kotatsu.ui.main.list.MangaListView
+import org.koitharu.kotatsu.ui.main.list.favourites.categories.CategoriesActivity
 
-class FavouritesListFragment : MangaListFragment<Unit>(), MangaListView<Unit>{
+class FavouritesListFragment : MangaListFragment<Unit>(), MangaListView<Unit> {
 
 	private val presenter by moxyPresenter(factory = ::FavouritesListPresenter)
 
@@ -19,12 +19,17 @@ class FavouritesListFragment : MangaListFragment<Unit>(), MangaListView<Unit>{
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//		inflater.inflate(R.menu.opt_history, menu)
+		inflater.inflate(R.menu.opt_favourites, menu)
 		super.onCreateOptionsMenu(menu, inflater)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
-
+	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+		R.id.action_categories -> {
+			context?.let {
+				startActivity(CategoriesActivity.newIntent(it))
+			}
+			true
+		}
 		else -> super.onOptionsItemSelected(item)
 	}
 

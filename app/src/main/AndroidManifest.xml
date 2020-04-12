@@ -53,6 +53,10 @@
 			android:label="@string/error_occurred"
 			android:theme="@android:style/Theme.DeviceDefault.Dialog"
 			android:windowSoftInputMode="stateAlwaysHidden" />
+		<activity
+			android:name=".ui.main.list.favourites.categories.CategoriesActivity"
+			android:windowSoftInputMode="stateAlwaysHidden"
+			android:label="@string/favourites_categories" />
 
 		<service
 			android:name=".ui.download.DownloadService"

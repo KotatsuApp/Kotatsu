@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.main.list.favourites.categories
+package org.koitharu.kotatsu.ui.main.list.favourites.categories.select
 
 import android.os.Bundle
 import android.text.InputType
@@ -12,6 +12,8 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.ui.common.BaseBottomSheet
 import org.koitharu.kotatsu.ui.common.dialog.TextInputDialog
+import org.koitharu.kotatsu.ui.main.list.favourites.categories.FavouriteCategoriesPresenter
+import org.koitharu.kotatsu.ui.main.list.favourites.categories.FavouriteCategoriesView
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -23,11 +25,13 @@ class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categ
 
 	private val manga get() = arguments?.getParcelable<Manga>(ARG_MANGA)
 
-	private var adapter: CategoriesAdapter? = null
+	private var adapter: CategoriesSelectAdapter? = null
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = CategoriesAdapter(this)
+		adapter =
+			CategoriesSelectAdapter(
+				this)
 		recyclerView_categories.adapter = adapter
 		textView_add.setOnClickListener {
 			createCategory()
@@ -79,8 +83,10 @@ class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categ
 		private const val ARG_MANGA = "manga"
 		private const val TAG = "FavouriteCategoriesDialog"
 
-		fun show(fm: FragmentManager, manga: Manga) = FavouriteCategoriesDialog().withArgs(1) {
+		fun show(fm: FragmentManager, manga: Manga) = FavouriteCategoriesDialog()
+			.withArgs(1) {
 			putParcelable(ARG_MANGA, manga)
-		}.show(fm, TAG)
+		}.show(fm,
+			TAG)
 	}
 }

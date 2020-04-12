@@ -70,6 +70,40 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 		}
 	}
 
+	fun renameCategory(id: Long, name: String) {
+		presenterScope.launch {
+			try {
+				val categories = withContext(Dispatchers.IO) {
+					repository.renameCategory(id, name)
+					repository.getAllCategories()
+				}
+				viewState.onCategoriesChanged(categories)
+			} catch (e: Exception) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
+				viewState.onError(e)
+			}
+		}
+	}
+
+	fun deleteCategory(id: Long) {
+		presenterScope.launch {
+			try {
+				val categories = withContext(Dispatchers.IO) {
+					repository.removeCategory(id)
+					repository.getAllCategories()
+				}
+				viewState.onCategoriesChanged(categories)
+			} catch (e: Exception) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
+				viewState.onError(e)
+			}
+		}
+	}
+
 	fun addToCategory(manga: Manga, categoryId: Long) {
 		presenterScope.launch {
 			try {

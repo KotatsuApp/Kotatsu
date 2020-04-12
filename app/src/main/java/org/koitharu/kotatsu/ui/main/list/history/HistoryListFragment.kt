@@ -48,7 +48,7 @@ class HistoryListFragment : MangaListFragment<MangaHistory>(), MangaListView<Man
 	}
 
 	override fun setUpEmptyListHolder() {
-		textView_holder.setText(R.string.history_is_empty)
+		textView_holder.setText(R.string.text_history_holder)
 		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
 	}
 

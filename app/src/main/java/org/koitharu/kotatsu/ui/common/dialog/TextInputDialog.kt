@@ -59,6 +59,12 @@ class TextInputDialog private constructor(private val delegate: AlertDialog) :
 			return this
 		}
 
+		fun setText(text: String): Builder {
+			view.inputEdit.setText(text)
+			view.inputEdit.setSelection(text.length)
+			return this
+		}
+
 		fun setPositiveButton(@StringRes textId: Int, listener: (DialogInterface, String) -> Unit): Builder {
 			delegate.setPositiveButton(textId) { dialog, _ ->
 				listener(dialog, view.inputEdit.text?.toString().orEmpty())

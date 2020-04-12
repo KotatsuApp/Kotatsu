@@ -23,7 +23,7 @@
 	<string name="history_is_empty">История пуста</string>
 	<string name="read">Читать</string>
 	<string name="add_bookmark">Добавить закладку</string>
-	<string name="you_have_not_favourites_yet">У Вас пока нет избранной манги</string>
+	<string name="you_have_not_favourites_yet">Добавьте интересующую Вас мангу в избренное, чтобы не потерять её</string>
 	<string name="add_to_favourites">Добавить в избранное</string>
 	<string name="add_new_category">Создать категорию</string>
 	<string name="add">Добавить</string>
@@ -122,4 +122,12 @@
 	<string name="notification_sound">Звук уведомления</string>
 	<string name="light_indicator">Световая индикация</string>
 	<string name="vibration">Вибросигнал</string>
+	<string name="favourites_categories">Категории избранного</string>
+	<string name="categories_">Категории…</string>
+	<string name="rename">Переименовать</string>
+	<string name="category_delete_confirm">Вы уверены, что хотите удалить категорию \"%s\"? \nВся манга из данной категории будет утеряна.</string>
+	<string name="remove_category">Удалить категорию</string>
+	<string name="text_categories_holder">Категории помогают упорядочивать избранную мангу. Нажмите «+», чтобы создать категорию</string>
+	<string name="text_history_holder">Здесь будет оборажаться манга, которую Вы читаете. Вы можете найти, что почитать, в боковом меню</string>
+	<string name="text_local_holder">У Вас пока нет сохранённой манги. Вы можете сохранить мангу из онлайн каталога или импортировать из файла</string>
 </resources>

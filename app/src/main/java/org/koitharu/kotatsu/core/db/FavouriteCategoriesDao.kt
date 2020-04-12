@@ -17,4 +17,7 @@ abstract class FavouriteCategoriesDao {
 
 	@Query("DELETE FROM favourite_categories WHERE category_id = :id")
 	abstract suspend fun delete(id: Long)
+
+	@Query("UPDATE favourite_categories SET title = :title WHERE category_id = :id")
+	abstract suspend fun update(id: Long, title: String)
 }
