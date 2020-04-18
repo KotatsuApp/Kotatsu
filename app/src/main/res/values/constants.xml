@@ -8,7 +8,6 @@
 	<string name="key_pages_cache_clear">pages_cache_clear</string>
 	<string name="key_thumbs_cache_clear">thumbs_cache_clear</string>
 	<string name="key_search_history_clear">search_history_clear</string>
-	<string name="key_reading_history_clear">reading_history_clear</string>
 	<string name="key_grid_size">grid_size</string>
 	<string name="key_remote_sources">remote_sources</string>
 	<string name="key_reader_switchers">reader_switchers</string>

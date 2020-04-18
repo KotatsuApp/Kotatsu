@@ -34,16 +34,13 @@
 	<string name="share_s">Поделиться %s</string>
 	<string name="search">Поиск</string>
 	<string name="search_manga">Поиск манги</string>
-	<string name="search_results">Результаты поиска</string>
 	<string name="manga_downloading_">Загрузка манги…</string>
-	<string name="preparing_">Подготовка…</string>
 	<string name="processing_">Обработка…</string>
 	<string name="download_complete">Загрузка завершена</string>
 	<string name="downloads">Загрузки</string>
 	<string name="save_this_chapter_and_prev">Сохранить предыдущие главы</string>
 	<string name="save_this_chapter_and_next">Сохранить следующие главы</string>
 	<string name="save_this_chapter">Сохранить эту главу</string>
-	<string name="no_saved_manga">Нет сохранённой манги</string>
 	<string name="by_name">По имени</string>
 	<string name="popular">Популярная</string>
 	<string name="updated">Обновлённая</string>
@@ -53,7 +50,6 @@
 	<string name="sort_order">Сортировка</string>
 	<string name="genre">Жанр</string>
 	<string name="filter">Фильтр</string>
-	<string name="appearance">Оформление</string>
 	<string name="theme">Тема</string>
 	<string name="light">Светлая</string>
 	<string name="dark">Тёмная</string>
@@ -80,7 +76,6 @@
 	<string name="standard">Стандартный</string>
 	<string name="webtoon">Манхва</string>
 	<string name="read_mode">Режим чтения</string>
-	<string name="put_items_below_to_disable_it">Put items below to disable it</string>
 	<string name="grid_size">Размер таблицы</string>
 	<string name="search_results_on_s">Результаты поиска по %s</string>
 	<string name="delete_manga">Удалить мангу</string>
@@ -95,7 +90,6 @@
 	<string name="dont_ask_again">Больше не спрашивать</string>
 	<string name="cancelling_">Отмена…</string>
 	<string name="error">Ошибка</string>
-    <string name="nothing">Ничего</string>
 	<string name="clear_thumbs_cache">Очистить кэш миниатюр</string>
     <string name="clear_search_history">Очистить историю поиска</string>
     <string name="search_history_cleared">История поиска очищена</string>
@@ -106,7 +100,6 @@
     <string name="_default">По умолчанию</string>
     <string name="application_update">Обновление приложения</string>
 	<string name="app_update_available">Доступно обновление приложения</string>
-    <string name="about_app">О программе</string>
 	<string name="show_notification_app_update">Показывать уведомление при наличии новой версии</string>
 	<string name="open_in_browser">Открыть в браузере</string>
 	<string name="large_manga_save_confirm">В этой манге %d глав. Вы уверены, что хотите сохранить их все?</string>
