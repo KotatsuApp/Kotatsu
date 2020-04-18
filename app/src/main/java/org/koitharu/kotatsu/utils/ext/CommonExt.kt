@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.content.res.Resources
+import android.util.Log
 import kotlinx.coroutines.delay
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
@@ -43,4 +44,12 @@ fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	} else {
 		resources.getString(R.string.error_occurred)
 	}
+}
+
+inline fun <T> measured(tag: String, block: () -> T): T {
+	val time = System.currentTimeMillis()
+	val res = block()
+	val spent = System.currentTimeMillis() - time
+	Log.d("measured", "$tag ${spent.format(1)} ms")
+	return res
 }

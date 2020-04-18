@@ -16,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
 class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 
 	private val job = SupervisorJob()
-	private val tasks = HashMap<String, Job>()
+	private val tasks = HashMap<String, Deferred<File>>()
 	private val okHttp by inject<OkHttpClient>()
 	private val cache by inject<PagesCache>()
 
@@ -30,8 +30,13 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 				return it
 			}
 		}
+		val task = tasks[url]?.takeUnless { it.isCancelled }
+		return (task ?: loadAsync(url).also { tasks[url] = it }).await()
+	}
+
+	private fun loadAsync(url: String) = async(Dispatchers.IO) {
 		val uri = Uri.parse(url)
-		return if (uri.scheme == "cbz") {
+		if (uri.scheme == "cbz") {
 			val zip = ZipFile(uri.schemeSpecificPart)
 			val entry = zip.getEntry(uri.fragment)
 			zip.getInputStream(entry).use {
@@ -60,5 +65,6 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 
 	override fun dispose() {
 		coroutineContext.cancel()
+		tasks.clear()
 	}
 }
