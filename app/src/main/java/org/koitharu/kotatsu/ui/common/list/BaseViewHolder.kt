@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.common.list
 
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -31,10 +32,15 @@ abstract class BaseViewHolder<T, E> protected constructor(view: View) :
 	fun setOnItemClickListener(listener: OnRecyclerItemClickListener<T>?): BaseViewHolder<T, E> {
 		if (listener != null) {
 			itemView.setOnClickListener {
-				listener.onItemClick(boundData ?: return@setOnClickListener, adapterPosition, it)
+				listener.onItemClick(boundData ?: return@setOnClickListener, bindingAdapterPosition, it)
 			}
 			itemView.setOnLongClickListener {
-				listener.onItemLongClick(boundData ?: return@setOnLongClickListener false, adapterPosition, it)
+				listener.onItemLongClick(boundData ?: return@setOnLongClickListener false, bindingAdapterPosition, it)
+			}
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				itemView.setOnContextClickListener {
+					listener.onItemLongClick(boundData ?: return@setOnContextClickListener false, bindingAdapterPosition, it)
+				}
 			}
 		}
 		return this

@@ -19,9 +19,10 @@ class AppCrashHandler(private val applicationContext: Context) : Thread.Uncaught
 		intent.flags = (Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
 		try {
 			applicationContext.startActivity(intent)
-		} catch (e: Throwable) {
-			e.printStackTrace()
+		} catch (t: Throwable) {
+			t.printStackTrace()
 		}
+		e.printStackTrace()
 		exitProcess(1)
 	}
 }
