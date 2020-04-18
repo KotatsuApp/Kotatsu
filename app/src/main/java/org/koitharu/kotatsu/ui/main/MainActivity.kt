@@ -1,9 +1,11 @@
 package org.koitharu.kotatsu.ui.main
 
+import android.app.ActivityOptions
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -45,7 +47,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
-
 		drawerToggle =
 			ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_menu, R.string.close_menu)
 		drawer.addDrawerListener(drawerToggle)
@@ -119,7 +120,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	}
 
 	override fun onOpenReader(state: ReaderState) {
-		startActivity(ReaderActivity.newIntent(this, state))
+		val options = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			ActivityOptions.makeClipRevealAnimation(
+				fab, 0, 0, fab.measuredWidth, fab.measuredHeight
+			)
+		} else {
+			ActivityOptions.makeScaleUpAnimation(
+				fab, 0, 0, fab.measuredWidth, fab.measuredHeight
+			)
+		}
+		startActivity(ReaderActivity.newIntent(this, state), options?.toBundle())
 	}
 
 	override fun onError(e: Throwable) {

@@ -133,4 +133,5 @@
 	<string name="text_local_holder">You have not any saved manga yet. You can save it from online sources or import from file</string>
 	<string name="manga_shelf">Manga shelf</string>
 	<string name="recent_manga">Recent manga</string>
+	<string name="pages_animation">Pages animation</string>
 </resources>

@@ -73,6 +73,11 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		true
 	)
 
+	val readerAnimation by BoolPreferenceDelegate(
+		resources.getString(R.string.key_reader_animation),
+		false
+	)
+
 	private var sourcesOrderStr by NullableStringPreferenceDelegate(resources.getString(R.string.key_sources_order))
 
 	var sourcesOrder: List<Int>

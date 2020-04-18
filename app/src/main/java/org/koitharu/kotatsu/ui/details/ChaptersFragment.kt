@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.ui.details
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -68,12 +69,19 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	override fun onFavouriteChanged(categories: List<FavouriteCategory>) = Unit
 
 	override fun onItemClick(item: MangaChapter, position: Int, view: View) {
+		val options = ActivityOptions.makeScaleUpAnimation(
+			view,
+			0,
+			0,
+			view.measuredWidth,
+			view.measuredHeight
+		)
 		startActivity(
 			ReaderActivity.newIntent(
 				context ?: return,
 				manga ?: return,
 				item.id
-			)
+			), options.toBundle()
 		)
 	}
 

@@ -51,6 +51,12 @@
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:title="@string/pages_animation"
+		android:key="@string/key_reader_animation"
+		app:iconSpaceReserved="false" />
+
 	<PreferenceCategory
 		android:title="@string/notifications"
 		app:allowDividerAbove="true"

@@ -237,6 +237,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 			ListMode.GRID -> GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx))
 			else -> LinearLayoutManager(ctx)
 		}
+		recyclerView.recycledViewPool.clear()
 		recyclerView.adapter = adapter
 		recyclerView.addItemDecoration(
 			when (mode) {

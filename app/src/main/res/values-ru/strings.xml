@@ -131,5 +131,6 @@
 	<string name="text_history_holder">Здесь будет оборажаться манга, которую Вы читаете. Вы можете найти, что почитать, в боковом меню</string>
 	<string name="text_local_holder">У Вас пока нет сохранённой манги. Вы можете сохранить мангу из онлайн каталога или импортировать из файла</string>
 	<string name="manga_shelf">Полка с мангой</string>
-	<string name="recent_manga">Recent manga</string>
+	<string name="recent_manga">Недавняя манга</string>
+	<string name="pages_animation">Анимация листания</string>
 </resources>
