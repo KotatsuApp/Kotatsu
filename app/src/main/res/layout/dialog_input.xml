@@ -13,6 +13,7 @@
 		android:id="@+id/inputLayout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		app:boxBackgroundColor="@android:color/transparent"
 		app:boxBackgroundMode="filled">
 
 		<com.google.android.material.textfield.TextInputEditText
@@ -21,6 +22,7 @@
 			android:layout_height="wrap_content"
 			android:imeOptions="actionDone"
 			android:maxLines="1"
+			android:singleLine="true"
 			tools:text="@tools:sample/lorem[2]" />
 
 	</com.google.android.material.textfield.TextInputLayout>

@@ -3,27 +3,15 @@ package org.koitharu.kotatsu.ui.common.dialog
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
+import android.text.InputFilter
 import android.view.LayoutInflater
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.dialog_input.view.*
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.showKeyboard
 
 class TextInputDialog private constructor(private val delegate: AlertDialog) :
 	DialogInterface by delegate {
-
-	init {
-		delegate.setOnShowListener {
-			val view = delegate.findViewById<TextView>(R.id.inputEdit)?:return@setOnShowListener
-			view.post {
-				view.requestFocus()
-				view.showKeyboard()
-			}
-		}
-	}
 
 	fun show() = delegate.show()
 
@@ -34,10 +22,6 @@ class TextInputDialog private constructor(private val delegate: AlertDialog) :
 
 		private val delegate = AlertDialog.Builder(context)
 			.setView(view)
-			.setOnDismissListener {
-				val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-				imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
-			}
 
 		fun setTitle(@StringRes titleResId: Int): Builder {
 			delegate.setTitle(titleResId)
@@ -51,6 +35,17 @@ class TextInputDialog private constructor(private val delegate: AlertDialog) :
 
 		fun setHint(@StringRes hintResId: Int): Builder {
 			view.inputLayout.hint = view.context.getString(hintResId)
+			return this
+		}
+
+		fun setMaxLength(maxLength: Int, strict: Boolean): Builder {
+			with(view.inputLayout) {
+				counterMaxLength = maxLength
+				isCounterEnabled = maxLength > 0
+			}
+			if (strict && maxLength > 0) {
+				view.inputEdit.filters += InputFilter.LengthFilter(maxLength)
+			}
 			return this
 		}
 

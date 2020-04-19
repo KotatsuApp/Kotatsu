@@ -86,6 +86,7 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 			.setHint(R.string.enter_category_name)
 			.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
 			.setNegativeButton(android.R.string.cancel)
+			.setMaxLength(12, false)
 			.setPositiveButton(R.string.rename) { _, name ->
 				presenter.renameCategory(category.id, name)
 			}.create()
@@ -98,6 +99,7 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 			.setHint(R.string.enter_category_name)
 			.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
 			.setNegativeButton(android.R.string.cancel)
+			.setMaxLength(12, false)
 			.setPositiveButton(R.string.add) { _, name ->
 				presenter.createCategory(name)
 			}.create()

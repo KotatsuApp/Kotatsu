@@ -70,6 +70,7 @@ class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categ
 		TextInputDialog.Builder(context ?: return)
 			.setTitle(R.string.add_new_category)
 			.setHint(R.string.enter_category_name)
+			.setMaxLength(12, false)
 			.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
 			.setNegativeButton(android.R.string.cancel)
 			.setPositiveButton(R.string.add) { _, name ->
