@@ -15,7 +15,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 29
 		versionCode gitCommits
-		versionName '0.2-b1'
+		versionName '0.3'
 
 		buildConfigField 'String', 'GIT_BRANCH', "\"${gitBranch}\""
 

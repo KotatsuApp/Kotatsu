@@ -1,10 +1,12 @@
 package org.koitharu.kotatsu.ui.settings
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
@@ -22,7 +24,17 @@ import org.koitharu.kotatsu.core.github.VersionId
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.ui.common.BaseService
 import org.koitharu.kotatsu.utils.FileSizeUtils
+import org.koitharu.kotatsu.utils.ext.byte2HexFormatted
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.security.cert.CertificateEncodingException
+import java.security.cert.CertificateException
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+
 
 class AppUpdateService : BaseService() {
 
@@ -92,31 +104,74 @@ class AppUpdateService : BaseService() {
 		)
 		builder.setSmallIcon(R.drawable.ic_stat_update)
 		builder.setAutoCancel(true)
-		builder.setColor(ContextCompat.getColor(this, R.color.blue_primary_dark))
+		builder.color = ContextCompat.getColor(this, R.color.blue_primary_dark)
 		builder.setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
 		manager.notify(NOTIFICATION_ID, builder.build())
 	}
 
 	companion object {
 
+		private const val CERT_SHA1 = "2C:19:C7:E8:07:61:2B:8E:94:51:1B:FD:72:67:07:64:5D:C2:58:AE"
 		private const val NOTIFICATION_ID = 202
 		private const val CHANNEL_ID = "update"
 		private val PERIOD = TimeUnit.HOURS.toMillis(6)
 
-		fun start(context: Context) {
-			try {
-				context.startService(Intent(context, AppUpdateService::class.java))
-			} catch (_: IllegalStateException) {
-			}
+		fun isUpdateSupported(context: Context): Boolean {
+			return getCertificateSHA1Fingerprint(context) == CERT_SHA1
 		}
 
 		fun startIfRequired(context: Context) {
+			if (!isUpdateSupported(context)) {
+				return
+			}
 			val settings = AppSettings(context)
 			if (settings.appUpdateAuto) {
 				val lastUpdate = settings.appUpdate
 				if (lastUpdate + PERIOD < System.currentTimeMillis()) {
 					start(context)
 				}
+			}
+		}
+
+		private fun start(context: Context) {
+			try {
+				context.startService(Intent(context, AppUpdateService::class.java))
+			} catch (_: IllegalStateException) {
+			}
+		}
+
+		@Suppress("DEPRECATION")
+		@SuppressLint("PackageManagerGetSignatures")
+		private fun getCertificateSHA1Fingerprint(context: Context): String? {
+			val packageInfo = try {
+				context.packageManager.getPackageInfo(
+					context.packageName,
+					PackageManager.GET_SIGNATURES
+				)
+			} catch (e: PackageManager.NameNotFoundException) {
+				e.printStackTrace()
+				return null
+			}
+			val signatures = packageInfo?.signatures
+			val cert: ByteArray = signatures?.firstOrNull()?.toByteArray() ?: return null
+			val input: InputStream = ByteArrayInputStream(cert)
+			val c = try {
+				val cf = CertificateFactory.getInstance("X509")
+				cf.generateCertificate(input) as X509Certificate
+			} catch (e: CertificateException) {
+				e.printStackTrace()
+				return null
+			}
+			return try {
+				val md: MessageDigest = MessageDigest.getInstance("SHA1")
+				val publicKey: ByteArray = md.digest(c.getEncoded())
+				publicKey.byte2HexFormatted()
+			} catch (e: NoSuchAlgorithmException) {
+				e.printStackTrace()
+				null
+			} catch (e: CertificateEncodingException) {
+				e.printStackTrace()
+				null
 			}
 		}
 	}

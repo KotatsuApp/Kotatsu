@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.net.Uri
 import java.net.URLEncoder
+import java.util.*
 
 fun String.longHashCode(): Long {
 	var h = 1125899906842597L
@@ -72,4 +73,23 @@ fun String.toUriOrNull(): Uri? = if (isEmpty()) {
 	null
 } else {
 	Uri.parse(this)
+}
+
+fun ByteArray.byte2HexFormatted(): String? {
+	val str = StringBuilder(size * 2)
+	for (i in indices) {
+		var h = Integer.toHexString(this[i].toInt())
+		val l = h.length
+		if (l == 1) {
+			h = "0$h"
+		}
+		if (l > 2) {
+			h = h.substring(l - 2, l)
+		}
+		str.append(h.toUpperCase(Locale.ROOT))
+		if (i < size - 1) {
+			str.append(':')
+		}
+	}
+	return str.toString()
 }

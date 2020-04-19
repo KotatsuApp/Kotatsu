@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
 
 	<ListPreference
 		android:defaultValue="-1"
@@ -32,9 +33,9 @@
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.ui.settings.sources.SourcesSettingsFragment"
+		android:key="@string/key_remote_sources"
 		android:title="@string/remote_sources"
 		app:allowDividerAbove="true"
-		android:key="@string/key_remote_sources"
 		app:iconSpaceReserved="false" />
 
 	<PreferenceScreen
@@ -53,8 +54,8 @@
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
-		android:title="@string/pages_animation"
 		android:key="@string/key_reader_animation"
+		android:title="@string/pages_animation"
 		app:iconSpaceReserved="false" />
 
 	<PreferenceCategory
@@ -67,7 +68,9 @@
 			android:key="@string/key_app_update_auto"
 			android:summary="@string/show_notification_app_update"
 			android:title="@string/application_update"
-			app:iconSpaceReserved="false" />
+			app:iconSpaceReserved="false"
+			app:isPreferenceVisible="false"
+			tools:isPreferenceVisible="true" />
 
 		<SwitchPreference
 			android:defaultValue="true"
@@ -77,10 +80,10 @@
 			app:iconSpaceReserved="false" />
 
 		<Preference
-			android:title="@string/notifications_settings"
-			app:iconSpaceReserved="false"
 			android:dependency="@string/key_tracker_notifications"
-			android:key="@string/key_notifications_settings" />
+			android:key="@string/key_notifications_settings"
+			android:title="@string/notifications_settings"
+			app:iconSpaceReserved="false" />
 
 	</PreferenceCategory>
 
