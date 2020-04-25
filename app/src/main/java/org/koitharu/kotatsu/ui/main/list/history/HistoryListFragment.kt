@@ -49,7 +49,7 @@ class HistoryListFragment : MangaListFragment<MangaHistory>(), MangaListView<Man
 
 	override fun setUpEmptyListHolder() {
 		textView_holder.setText(R.string.text_history_holder)
-		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+		textView_holder.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
 	}
 
 	override fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) {

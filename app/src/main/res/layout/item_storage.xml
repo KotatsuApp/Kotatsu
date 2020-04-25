@@ -9,7 +9,9 @@
 	android:paddingEnd="?listPreferredItemPaddingEnd"
 	android:gravity="center_vertical"
 	android:background="?selectableItemBackground"
-	android:layout_height="wrap_content">
+	android:layout_height="wrap_content"
+	android:paddingLeft="?listPreferredItemPaddingLeft"
+	android:paddingRight="?listPreferredItemPaddingRight">
 
 	<TextView
 		android:id="@+id/textView_title"

@@ -62,6 +62,21 @@ abstract class BaseActivity : MvpAppCompatActivity(), KoinComponent {
 		}
 	}
 
+	override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+		val keyCode = event.keyCode
+		val action = event.action
+		val isDown = action == KeyEvent.ACTION_DOWN
+		return if (keyCode == KeyEvent.KEYCODE_MENU) {
+			if (isDown) {
+				onKeyDown(keyCode, event)
+			} else {
+				onKeyUp(keyCode, event)
+			}
+		} else {
+			super.dispatchKeyEvent(event)
+		}
+	}
+
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
 		//TODO remove. Just for testing
 		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_UP) {

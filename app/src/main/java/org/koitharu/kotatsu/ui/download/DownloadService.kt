@@ -80,7 +80,10 @@ class DownloadService : BaseService() {
 				notification.setCancelId(startId)
 				startForeground(DownloadNotification.NOTIFICATION_ID, notification())
 			}
-			val destination = getExternalFilesDir("manga")!!
+			val destination = getExternalFilesDir("manga") ?: filesDir.sub("manga").takeIf {
+				it.exists() || it.mkdir()
+			}
+			checkNotNull(destination) { "Cannot find place to store file" }
 			var output: MangaZip? = null
 			try {
 				val repo = MangaProviderFactory.create(manga.source)
@@ -146,6 +149,7 @@ class DownloadService : BaseService() {
 					notification.update()
 				}
 			} catch (e: Throwable) {
+				e.printStackTrace()
 				withContext(Dispatchers.Main) {
 					notification.setError(e)
 					notification.setCancelId(0)
@@ -179,7 +183,7 @@ class DownloadService : BaseService() {
 			okHttp.newCall(request).await().use { response ->
 				val file = destination.sub("page.tmp")
 				file.outputStream().use { out ->
-					response.body!!.byteStream().copyTo(out)
+					response.body()!!.byteStream().copyTo(out)
 				}
 				file
 			}

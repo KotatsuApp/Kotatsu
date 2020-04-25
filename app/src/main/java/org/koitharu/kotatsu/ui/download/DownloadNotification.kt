@@ -44,6 +44,7 @@ class DownloadNotification(private val context: Context) {
 	fun fillFrom(manga: Manga) {
 		builder.setContentTitle(manga.title)
 		builder.setContentText(context.getString(R.string.manga_downloading_))
+		builder.setTicker(context.getString(R.string.manga_downloading_))
 		builder.setProgress(1, 0, true)
 		builder.setSmallIcon(android.R.drawable.stat_sys_download)
 		builder.setLargeIcon(null)
@@ -56,7 +57,7 @@ class DownloadNotification(private val context: Context) {
 		} else {
 			val intent = DownloadService.getCancelIntent(context, startId)
 			builder.addAction(
-				R.drawable.ic_cross,
+				R.drawable.ic_cross_compat,
 				context.getString(android.R.string.cancel),
 				PendingIntent.getService(
 					context,

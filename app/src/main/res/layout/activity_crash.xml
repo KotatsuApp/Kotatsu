@@ -13,7 +13,9 @@
 		android:layout_alignParentTop="true"
 		android:layout_alignParentEnd="true"
 		android:layout_marginTop="2dp"
-		android:layout_marginBottom="2dp">
+		android:layout_marginBottom="2dp"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentRight="true">
 
 		<TextView
 			android:id="@+id/textView"
@@ -31,7 +33,8 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
 		android:layout_toStartOf="@id/button_restart"
-		android:text="@string/close" />
+		android:text="@string/close"
+		android:layout_toLeftOf="@id/button_restart" />
 
 	<Button
 		android:id="@+id/button_restart"
@@ -40,6 +43,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentEnd="true"
 		android:layout_alignParentBottom="true"
-		android:text="@string/restart" />
+		android:text="@string/restart"
+		android:layout_alignParentRight="true" />
 
 </RelativeLayout>

@@ -2,10 +2,12 @@ package org.koitharu.kotatsu.ui.common.dialog
 
 import android.content.Context
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.item_storage.view.*
@@ -15,6 +17,7 @@ import org.koitharu.kotatsu.utils.ext.inflate
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import java.io.File
 
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class StorageSelectDialog private constructor(private val delegate: AlertDialog) :
 	DialogInterface by delegate {
 

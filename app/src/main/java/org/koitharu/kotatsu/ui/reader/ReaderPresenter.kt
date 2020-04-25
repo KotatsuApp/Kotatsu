@@ -83,7 +83,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 					val fileName =
 						URLUtil.guessFileName(url, response.contentDisposition, response.mimeType)
 					MediaStoreCompat.insertImage(resolver, fileName) {
-						response.body!!.byteStream().copyTo(it)
+						response.body()!!.byteStream().copyTo(it)
 					}
 				}
 				withContext(Dispatchers.Main) {

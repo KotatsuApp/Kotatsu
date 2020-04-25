@@ -2,9 +2,10 @@ package org.koitharu.kotatsu.ui.common.list
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import okhttp3.internal.toImmutableList
 import org.koin.core.KoinComponent
 import org.koitharu.kotatsu.utils.ext.replaceWith
+import java.util.*
+import kotlin.collections.ArrayList
 
 abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecyclerItemClickListener<T>? = null) :
 	RecyclerView.Adapter<BaseViewHolder<T, E>>(),
@@ -12,7 +13,8 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 
 	protected val dataSet = ArrayList<T>() //TODO make private
 
-	val items get() = dataSet.toImmutableList()
+	val items: List<T>
+		get() = Collections.unmodifiableList(dataSet)
 
 	val hasItems get() = dataSet.isNotEmpty()
 

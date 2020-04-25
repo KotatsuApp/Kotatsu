@@ -28,6 +28,7 @@
 		android:maxLines="2"
 		android:text="?android:textColorPrimary"
 		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-		tools:text="@tools:sample/lorem[15]" />
+		tools:text="@tools:sample/lorem[15]"
+		android:layout_marginLeft="10dp" />
 
 </LinearLayout>

@@ -5,7 +5,9 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:paddingStart="?android:listPreferredItemPaddingStart"
-	android:paddingEnd="?android:listPreferredItemPaddingEnd">
+	android:paddingEnd="?android:listPreferredItemPaddingEnd"
+	android:paddingRight="?android:listPreferredItemPaddingRight"
+	android:paddingLeft="?android:listPreferredItemPaddingLeft">
 
 	<com.google.android.material.checkbox.MaterialCheckBox
 		android:id="@android:id/checkbox"

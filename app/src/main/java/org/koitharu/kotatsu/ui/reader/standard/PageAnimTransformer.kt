@@ -13,14 +13,14 @@ class PageAnimTransformer : ViewPager2.PageTransformer {
 				position <= 0 -> { // [-1,0]
 					alpha = 1f
 					translationX = 0f
-					translationZ = 0f
+					// translationZ = 0f
 					scaleX = 1 + FACTOR * position
 					scaleY = 1f
 				}
 				position <= 1 -> { // (0,1]
 					alpha = 1f
 					translationX = pageWidth * -position
-					translationZ = -1f
+					// translationZ = -1f
 					scaleX = 1f
 					scaleY = 1f
 				}

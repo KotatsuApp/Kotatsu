@@ -50,7 +50,7 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="16dp"
 		android:contentDescription="@string/add_new_category"
-		android:src="@drawable/ic_add"
+		app:srcCompat="@drawable/ic_add"
 		app:backgroundTint="?colorAccent"
 		app:fabSize="normal"
 		app:layout_anchor="@id/recyclerView"

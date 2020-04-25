@@ -40,7 +40,7 @@ class PagesThumbnailsSheet : BaseBottomSheet(R.layout.sheet_pages),
 		if (dialog !is BottomSheetDialog) {
 			toolbar.isVisible = true
 			textView_title.isVisible = false
-			appbar.elevation = resources.getDimension(R.dimen.elevation_large)
+			// appbar.elevation = resources.getDimension(R.dimen.elevation_large)
 		}
 		recyclerView.addOnLayoutChangeListener(UiUtils.SpanCountResolver)
 	}
@@ -57,11 +57,11 @@ class PagesThumbnailsSheet : BaseBottomSheet(R.layout.sheet_pages),
 					if (newState == BottomSheetBehavior.STATE_EXPANDED) {
 						toolbar.isVisible = true
 						textView_title.isVisible = false
-						appbar.elevation = elevation
+						// appbar.elevation = elevation
 					} else {
 						toolbar.isVisible = false
 						textView_title.isVisible = true
-						appbar.elevation = 0f
+						// appbar.elevation = 0f
 					}
 				}
 			})

@@ -39,7 +39,7 @@ class FavouritesListFragment : MangaListFragment<Unit>(), MangaListView<Unit> {
 
 	override fun setUpEmptyListHolder() {
 		textView_holder.setText(R.string.you_have_not_favourites_yet)
-		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+		textView_holder.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
 	}
 
 	companion object {

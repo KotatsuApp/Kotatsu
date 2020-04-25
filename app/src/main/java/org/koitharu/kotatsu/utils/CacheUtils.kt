@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.utils
 
 import android.content.Context
+import android.os.Build
 import androidx.annotation.WorkerThread
 import okhttp3.Cache
 import okhttp3.CacheControl
@@ -17,8 +18,11 @@ object CacheUtils {
 		.build()
 
 	@JvmStatic
-	fun getCacheDirs(context: Context) = (context.externalCacheDirs + context.cacheDir)
-		.filterNotNull()
+	fun getCacheDirs(context: Context) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+		(context.externalCacheDirs + context.cacheDir)
+	} else {
+		arrayOf(context.externalCacheDir, context.cacheDir)
+	}.filterNotNull()
 		.distinctBy { it.absolutePath }
 
 	@JvmStatic
@@ -35,7 +39,7 @@ object CacheUtils {
 
 	@JvmStatic
 	fun createHttpCache(context: Context) = Cache(
-		directory = (context.externalCacheDir ?: context.cacheDir).sub("http"),
-		maxSize = FileSizeUtils.mbToBytes(60)
+		(context.externalCacheDir ?: context.cacheDir).sub("http"),
+		FileSizeUtils.mbToBytes(60)
 	)
 }

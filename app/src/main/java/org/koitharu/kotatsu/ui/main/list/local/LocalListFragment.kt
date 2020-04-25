@@ -60,7 +60,7 @@ class LocalListFragment : MangaListFragment<File>() {
 
 	override fun setUpEmptyListHolder() {
 		textView_holder.setText(R.string.text_local_holder)
-		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+		textView_holder.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

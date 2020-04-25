@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
-import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
@@ -79,10 +78,10 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				getString(R.string.chapter_d_of_d, state.chapter?.number ?: 0, size)
 		}
 
-		appbar_bottom.setOnApplyWindowInsetsListener { view, insets ->
+		/*appbar_bottom.setOnApplyWindowInsetsListener { view, insets ->
 			view.updatePadding(bottom = insets.systemWindowInsetBottom)
 			insets
-		}
+		}*/
 
 		settings.subscribe(this)
 		loadSettings()
@@ -283,6 +282,10 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			true
 		}
 		KeyEvent.KEYCODE_DPAD_CENTER -> {
+			setUiIsVisible(!appbar_top.isVisible)
+			true
+		}
+		KeyEvent.KEYCODE_MENU -> {
 			setUiIsVisible(!appbar_top.isVisible)
 			true
 		}

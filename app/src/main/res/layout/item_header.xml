@@ -12,4 +12,6 @@
 	android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
 	android:textColor="?android:textColorSecondary"
 	android:textStyle="bold"
-	tools:text="@tools:sample/lorem[2]" />
+	tools:text="@tools:sample/lorem[2]"
+	android:paddingLeft="?android:listPreferredItemPaddingLeft"
+	android:paddingRight="?android:listPreferredItemPaddingRight" />

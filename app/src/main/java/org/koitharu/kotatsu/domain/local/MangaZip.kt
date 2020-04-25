@@ -47,6 +47,9 @@ class MangaZip(val file: File) {
 		if (!file.exists()) {
 			return
 		}
+		dir.listFiles()?.forEach {
+			it?.deleteRecursively()
+		}
 		ZipInputStream(file.inputStream()).use { input ->
 			while (true) {
 				val entry = input.nextEntry ?: return

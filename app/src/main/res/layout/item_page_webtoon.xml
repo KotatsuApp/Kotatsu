@@ -34,11 +34,11 @@
 			android:id="@+id/textView_error"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:drawableTop="@drawable/ic_error_large"
 			android:drawablePadding="12dp"
 			android:gravity="center_horizontal"
 			android:textAppearance="@style/TextAppearance.AppCompat.Small"
-			tools:text="@tools:sample/lorem[6]" />
+			tools:text="@tools:sample/lorem[6]"
+			app:drawableTopCompat="@drawable/ic_error_large" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_retry"

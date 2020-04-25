@@ -11,4 +11,6 @@
 	android:paddingEnd="?android:listPreferredItemPaddingEnd"
 	android:textAppearance="@style/TextAppearance.AppCompat.Medium"
 	android:textColor="?android:textColorPrimary"
-	tools:text="@tools:sample/lorem[4]" />
+	tools:text="@tools:sample/lorem[4]"
+	android:paddingLeft="?android:listPreferredItemPaddingLeft"
+	android:paddingRight="?android:listPreferredItemPaddingRight" />

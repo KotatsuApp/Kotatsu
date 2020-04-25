@@ -160,7 +160,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 				.show()
 		} else {
 			textView_holder.text = e.getDisplayMessage(resources)
-			textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(
+			textView_holder.setCompoundDrawablesWithIntrinsicBounds(
 				0,
 				R.drawable.ic_error_large,
 				0,
@@ -221,7 +221,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 	}
 
 	protected open fun setUpEmptyListHolder() {
-		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null)
+		textView_holder.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
 		textView_holder.setText(R.string.nothing_found)
 	}
 

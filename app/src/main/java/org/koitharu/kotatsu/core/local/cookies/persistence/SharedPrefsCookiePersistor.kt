@@ -64,7 +64,7 @@ class SharedPrefsCookiePersistor(private val sharedPreferences: SharedPreference
 	private companion object {
 
 		fun createCookieKey(cookie: Cookie): String {
-			return (if (cookie.secure) "https" else "http") + "://" + cookie.domain + cookie.path + "|" + cookie.name
+			return (if (cookie.secure()) "https" else "http") + "://" + cookie.domain() + cookie.path() + "|" + cookie.name()
 		}
 	}
 

@@ -13,4 +13,6 @@
 	android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
 	android:textColor="?android:textColorPrimary"
 	tools:checked="true"
-	tools:text="@tools:sample/lorem[4]" />
+	tools:text="@tools:sample/lorem[4]"
+	android:paddingLeft="?android:listPreferredItemPaddingLeft"
+	android:paddingRight="?android:listPreferredItemPaddingRight" />

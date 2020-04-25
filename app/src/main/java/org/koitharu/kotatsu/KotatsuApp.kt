@@ -44,6 +44,7 @@ class KotatsuApp : Application() {
 
 	override fun onCreate() {
 		super.onCreate()
+		AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 		initKoin()
 		initCoil()
 		Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(applicationContext))

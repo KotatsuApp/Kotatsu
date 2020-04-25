@@ -56,7 +56,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		navigationView.setNavigationItemSelectedListener(this)
 		settings.subscribe(this)
 
-		fab.imageTintList = ColorStateList.valueOf(Color.WHITE)
+		fab.supportImageTintList = ColorStateList.valueOf(Color.WHITE)
 		fab.isVisible = true
 		fab.setOnClickListener {
 			presenter.openLastReader()

@@ -116,9 +116,8 @@ class AppUpdateService : BaseService() {
 		private const val CHANNEL_ID = "update"
 		private val PERIOD = TimeUnit.HOURS.toMillis(6)
 
-		fun isUpdateSupported(context: Context): Boolean {
-			return getCertificateSHA1Fingerprint(context) == CERT_SHA1
-		}
+		@Suppress("UNUSED_PARAMETER")
+		fun isUpdateSupported(context: Context) = false
 
 		fun startIfRequired(context: Context) {
 			if (!isUpdateSupported(context)) {

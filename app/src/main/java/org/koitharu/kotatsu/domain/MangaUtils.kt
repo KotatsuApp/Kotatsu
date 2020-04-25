@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.domain
 
 import android.graphics.BitmapFactory
-import android.util.Size
+import android.graphics.Point
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.KoinComponent
@@ -29,10 +29,10 @@ object MangaUtils : KoinComponent {
 				.get()
 				.build()
 			val size = client.newCall(request).await().use {
-				getBitmapSize(it.body?.byteStream())
+				getBitmapSize(it.body()?.byteStream())
 			}
 			return when {
-				size.width * 2 < size.height -> ReaderMode.WEBTOON
+				size.x * 2 < size.y -> ReaderMode.WEBTOON
 				else -> ReaderMode.STANDARD
 			}
 		} catch (e: Exception) {
@@ -44,7 +44,7 @@ object MangaUtils : KoinComponent {
 	}
 
 	@JvmStatic
-	private fun getBitmapSize(input: InputStream?): Size {
+	private fun getBitmapSize(input: InputStream?): Point {
 		val options = BitmapFactory.Options().apply {
 			inJustDecodeBounds = true
 		}
@@ -52,6 +52,6 @@ object MangaUtils : KoinComponent {
 		val imageHeight: Int = options.outHeight
 		val imageWidth: Int = options.outWidth
 		check(imageHeight > 0 && imageWidth > 0)
-		return Size(imageWidth, imageHeight)
+		return Point(imageWidth, imageHeight)
 	}
 }

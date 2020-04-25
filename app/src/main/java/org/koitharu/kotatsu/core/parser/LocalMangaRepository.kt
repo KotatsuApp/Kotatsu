@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.parser
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import org.koin.core.KoinComponent
@@ -14,6 +15,7 @@ import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.safe
+import org.koitharu.kotatsu.utils.ext.sub
 import java.io.File
 import java.util.*
 import java.util.zip.ZipEntry
@@ -29,8 +31,11 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
-		val files = context.getExternalFilesDirs("manga")
-			.flatMap { x -> x?.listFiles(CbzFilter())?.toList().orEmpty() }
+		val files = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			context.getExternalFilesDirs("manga") + context.filesDir.sub("manga")
+		} else {
+			arrayOf(context.getExternalFilesDir("manga"), context.filesDir.sub("manga"))
+		}.flatMap { x -> x?.listFiles(CbzFilter())?.toList().orEmpty() }
 		return files.mapNotNull { x -> safe { getFromFile(x) } }
 	}
 

@@ -15,10 +15,10 @@
  */
 package org.koitharu.kotatsu.core.local.cookies
 
-import org.koitharu.kotatsu.core.local.cookies.persistence.CookiePersistor
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 import org.koitharu.kotatsu.core.local.cookies.cache.CookieCache
+import org.koitharu.kotatsu.core.local.cookies.persistence.CookiePersistor
 import java.util.*
 
 class PersistentCookieJar(
@@ -72,7 +72,7 @@ class PersistentCookieJar(
 		fun filterPersistentCookies(cookies: List<Cookie>): List<Cookie> {
 			val persistentCookies: MutableList<Cookie> = ArrayList()
 			for (cookie in cookies) {
-				if (cookie.persistent) {
+				if (cookie.persistent()) {
 					persistentCookies.add(cookie)
 				}
 			}
@@ -81,7 +81,7 @@ class PersistentCookieJar(
 
 		@JvmStatic
 		fun isCookieExpired(cookie: Cookie): Boolean {
-			return cookie.expiresAt < System.currentTimeMillis()
+			return cookie.expiresAt() < System.currentTimeMillis()
 		}
 	}
 }

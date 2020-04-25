@@ -55,7 +55,7 @@ abstract class MangaListSheet<E> : BaseBottomSheet(R.layout.sheet_list), MangaLi
 		if (dialog !is BottomSheetDialog) {
 			toolbar.isVisible = true
 			textView_title.isVisible = false
-			appbar.elevation = resources.getDimension(R.dimen.elevation_large)
+			// appbar.elevation = resources.getDimension(R.dimen.elevation_large)
 		}
 	}
 
@@ -93,11 +93,11 @@ abstract class MangaListSheet<E> : BaseBottomSheet(R.layout.sheet_list), MangaLi
 					if (newState == BottomSheetBehavior.STATE_EXPANDED) {
 						toolbar.isVisible = true
 						textView_title.isVisible = false
-						appbar.elevation = elevation
+						// appbar.elevation = elevation
 					} else {
 						toolbar.isVisible = false
 						textView_title.isVisible = true
-						appbar.elevation = 0f
+						// appbar.elevation = 0f
 					}
 				}
 			})

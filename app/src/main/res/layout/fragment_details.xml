@@ -20,7 +20,8 @@
 			app:layout_constraintDimensionRatio="13:18"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintWidth_percent="0.3" />
+			app:layout_constraintWidth_percent="0.3"
+			android:layout_marginLeft="8dp" />
 
 		<TextView
 			android:id="@+id/textView_title"
@@ -76,7 +77,8 @@
 			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="@id/textView_title"
 			app:layout_constraintTop_toBottomOf="@id/ratingBar"
-			app:layout_constraintVertical_bias="1" />
+			app:layout_constraintVertical_bias="1"
+			android:layout_marginRight="4dp" />
 
 		<ImageView
 			android:id="@+id/imageView_favourite"
@@ -86,14 +88,15 @@
 			android:background="?selectableItemBackgroundBorderless"
 			android:contentDescription="@string/add_to_favourites"
 			android:scaleType="center"
-			android:src="@drawable/ic_tag_heart_outline"
+			app:srcCompat="@drawable/ic_tag_heart_outline"
 			app:layout_constraintBottom_toBottomOf="@id/button_read"
 			app:layout_constraintDimensionRatio="1:1"
 			app:layout_constraintHorizontal_bias="1"
 			app:layout_constraintEnd_toStartOf="@id/button_read"
 			app:layout_constraintTop_toTopOf="@id/button_read"
 			app:layout_constraintStart_toStartOf="@id/textView_title"
-			app:tint="?colorAccent" />
+			app:tint="?colorAccent"
+			android:layout_marginRight="4dp" />
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/barrier_title"

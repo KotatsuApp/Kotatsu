@@ -73,14 +73,14 @@ class SerializableCookie : Serializable {
 
 	@Throws(IOException::class)
 	private fun writeObject(out: ObjectOutputStream) {
-		out.writeObject(cookie!!.name)
-		out.writeObject(cookie!!.value)
-		out.writeLong(if (cookie!!.persistent) cookie!!.expiresAt else NON_VALID_EXPIRES_AT)
-		out.writeObject(cookie!!.domain)
-		out.writeObject(cookie!!.path)
-		out.writeBoolean(cookie!!.secure)
-		out.writeBoolean(cookie!!.httpOnly)
-		out.writeBoolean(cookie!!.hostOnly)
+		out.writeObject(cookie!!.name())
+		out.writeObject(cookie!!.value())
+		out.writeLong(if (cookie!!.persistent()) cookie!!.expiresAt() else NON_VALID_EXPIRES_AT)
+		out.writeObject(cookie!!.domain())
+		out.writeObject(cookie!!.path())
+		out.writeBoolean(cookie!!.secure())
+		out.writeBoolean(cookie!!.httpOnly())
+		out.writeBoolean(cookie!!.hostOnly())
 	}
 
 	@Throws(IOException::class, ClassNotFoundException::class)

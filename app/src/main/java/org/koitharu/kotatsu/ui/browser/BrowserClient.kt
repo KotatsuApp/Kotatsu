@@ -1,10 +1,12 @@
 package org.koitharu.kotatsu.ui.browser
 
 import android.graphics.Bitmap
+import android.os.Build
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.annotation.RequiresApi
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.KoinComponent
@@ -38,6 +40,7 @@ class BrowserClient(private val callback: BrowserCallback) : WebViewClient(), Ko
 		return url?.let(::doRequest)
 	}
 
+	@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 	override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
 		return request?.url?.toString()?.let(::doRequest)
 	}
@@ -47,11 +50,11 @@ class BrowserClient(private val callback: BrowserCallback) : WebViewClient(), Ko
 			.url(url)
 			.build()
 		val response = okHttp.newCall(request).execute()
-		val ct = response.body?.contentType()
+		val ct = response.body()?.contentType()
 		WebResourceResponse(
-			"${ct?.type}/${ct?.subtype}",
+			"${ct?.type()}/${ct?.subtype()}",
 			ct?.charset()?.name() ?: "utf-8",
-			response.body?.byteStream()
+			response.body()?.byteStream()
 		)
 	}
 }

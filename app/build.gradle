@@ -12,13 +12,14 @@ android {
 
 	defaultConfig {
 		applicationId 'org.koitharu.kotatsu'
-		minSdkVersion 21
+		minSdkVersion 16
+		maxSdkVersion 20
 		targetSdkVersion 29
 		versionCode gitCommits
 		versionName '0.3'
 
 		buildConfigField 'String', 'GIT_BRANCH', "\"${gitBranch}\""
-
+		vectorDrawables.useSupportLibrary = true
 		kapt {
 			arguments {
 				arg('room.schemaLocation', "$projectDir/schemas".toString())
@@ -82,7 +83,7 @@ dependencies {
 	implementation 'com.github.moxy-community:moxy-ktx:2.1.2'
 	kapt 'com.github.moxy-community:moxy-compiler:2.1.2'
 
-	implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+	implementation 'com.squareup.okhttp3:okhttp:3.12.10'
 	implementation 'com.squareup.okio:okio:2.5.0'
 	implementation 'org.jsoup:jsoup:1.13.1'
 

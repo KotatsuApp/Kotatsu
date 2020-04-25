@@ -33,7 +33,7 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_categories)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		fab_add.imageTintList = ColorStateList.valueOf(Color.WHITE)
+		fab_add.supportImageTintList = ColorStateList.valueOf(Color.WHITE)
 		adapter = CategoriesAdapter(this)
 		recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
 		recyclerView.adapter = adapter

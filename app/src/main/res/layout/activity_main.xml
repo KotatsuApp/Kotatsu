@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_read_fill"
+            app:srcCompat="@drawable/ic_read_fill"
             android:visibility="gone"
             app:fabSize="normal"
             app:backgroundTint="?colorAccent"
