@@ -18,7 +18,7 @@ Latest release: [get here](https://github.com/nv95/Kotatsu/releases/latest)
 * Tablet-optimized modern UI
 * Reading third-party comics from CBZ
 * Standard and Webtoon-optimized reader
-* Checking for new chapters
+* Notifications about new chapters
 
 ### Screenshots
 
