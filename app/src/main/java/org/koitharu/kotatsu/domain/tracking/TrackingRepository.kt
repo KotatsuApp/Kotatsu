@@ -52,7 +52,7 @@ class TrackingRepository : KoinComponent {
 		db.tracksDao.upsert(entity)
 	}
 
-	suspend fun insertOrNothing(manga: Manga) {
+	suspend fun upsert(manga: Manga) {
 		val chapters = manga.chapters ?: return
 		val entity = TrackEntity(
 			mangaId = manga.id,
@@ -62,6 +62,6 @@ class TrackingRepository : KoinComponent {
 			lastCheck = System.currentTimeMillis(),
 			lastNotifiedChapterId = 0L
 		)
-		db.tracksDao.insert(entity)
+		db.tracksDao.upsert(entity)
 	}
 }

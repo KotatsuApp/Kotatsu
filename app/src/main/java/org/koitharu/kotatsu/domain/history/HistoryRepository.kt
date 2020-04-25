@@ -17,6 +17,7 @@ import java.util.*
 class HistoryRepository : KoinComponent {
 
 	private val db: MangaDatabase by inject()
+	private val trackingRepository by lazy(::TrackingRepository)
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
 		val entities = db.historyDao.findAll(offset, limit)
@@ -28,19 +29,17 @@ class HistoryRepository : KoinComponent {
 		db.withTransaction {
 			db.tagsDao.upsert(tags)
 			db.mangaDao.upsert(MangaEntity.from(manga), tags)
-			if (db.historyDao.upsert(
-					HistoryEntity(
-						mangaId = manga.id,
-						createdAt = System.currentTimeMillis(),
-						updatedAt = System.currentTimeMillis(),
-						chapterId = chapterId,
-						page = page,
-						scroll = scroll
-					)
+			db.historyDao.upsert(
+				HistoryEntity(
+					mangaId = manga.id,
+					createdAt = System.currentTimeMillis(),
+					updatedAt = System.currentTimeMillis(),
+					chapterId = chapterId,
+					page = page,
+					scroll = scroll
 				)
-			) {
-				TrackingRepository().insertOrNothing(manga)
-			}
+			)
+			trackingRepository.upsert(manga)
 		}
 		notifyHistoryChanged()
 	}
