@@ -39,6 +39,7 @@ class DownloadService : BaseService() {
 
 	private val okHttp by inject<OkHttpClient>()
 	private val cache by inject<PagesCache>()
+	private val settings by inject<AppSettings>()
 	private val jobs = HashMap<Int, Job>()
 	private val mutex = Mutex()
 
@@ -80,7 +81,8 @@ class DownloadService : BaseService() {
 				notification.setCancelId(startId)
 				startForeground(DownloadNotification.NOTIFICATION_ID, notification())
 			}
-			val destination = getExternalFilesDir("manga")!!
+			val destination = settings.getStorageDir(this@DownloadService)
+			checkNotNull(destination) { getString(R.string.cannot_find_available_storage) }
 			var output: MangaZip? = null
 			try {
 				val repo = MangaProviderFactory.create(manga.source)

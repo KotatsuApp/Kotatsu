@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
@@ -64,7 +65,7 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 				if (!LocalMangaRepository.isFileSupported(name)) {
 					throw UnsupportedFileException("Unsupported file on $uri")
 				}
-				val dest = context.getExternalFilesDir("manga")?.sub(name)
+				val dest = get<AppSettings>().getStorageDir(context)?.sub(name)
 					?: throw IOException("External files dir unavailable")
 				context.contentResolver.openInputStream(uri)?.use { source ->
 					dest.outputStream().use { output ->

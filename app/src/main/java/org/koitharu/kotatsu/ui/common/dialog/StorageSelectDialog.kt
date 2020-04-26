@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.ui.common.dialog
 
 import android.content.Context
 import android.content.DialogInterface
-import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -10,7 +9,8 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.item_storage.view.*
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.findParent
+import org.koitharu.kotatsu.core.parser.LocalMangaRepository
+import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.inflate
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import java.io.File
@@ -20,12 +20,24 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 
 	fun show() = delegate.show()
 
-	class Builder(context: Context) {
+	class Builder(context: Context, defaultValue: File?, listener: OnStorageSelectListener) {
 
+		private val adapter = VolumesAdapter(context)
 		private val delegate = AlertDialog.Builder(context)
-			.setAdapter(VolumesAdapter(context)) { _, _ ->
 
+		init {
+			if (adapter.isEmpty) {
+				delegate.setMessage(R.string.cannot_find_available_storage)
+			} else {
+				val checked = adapter.volumes.indexOfFirst {
+					it.first.canonicalPath == defaultValue?.canonicalPath
+				}
+				delegate.setSingleChoiceItems(adapter, checked) { d, i ->
+					listener.onStorageSelected(adapter.getItem(i).first)
+					d.dismiss()
+				}
 			}
+		}
 
 		fun setTitle(@StringRes titleResId: Int): Builder {
 			delegate.setTitle(titleResId)
@@ -37,12 +49,17 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 			return this
 		}
 
+		fun setNegativeButton(@StringRes textId: Int): Builder {
+			delegate.setNegativeButton(textId, null)
+			return this
+		}
+
 		fun create() = StorageSelectDialog(delegate.create())
 	}
 
-	private class VolumesAdapter(context: Context): BaseAdapter() {
+	private class VolumesAdapter(context: Context) : BaseAdapter() {
 
-		private val volumes = getAvailableVolumes(context)
+		val volumes = getAvailableVolumes(context)
 
 		override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 			val view = convertView ?: parent.inflate(R.layout.item_storage)
@@ -52,7 +69,7 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 			return view
 		}
 
-		override fun getItem(position: Int): Any = volumes[position]
+		override fun getItem(position: Int): Pair<File, String> = volumes[position]
 
 		override fun getItemId(position: Int) = volumes[position].first.absolutePath.longHashCode()
 
@@ -60,15 +77,17 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 
 	}
 
+	interface OnStorageSelectListener {
+
+		fun onStorageSelected(file: File)
+	}
+
 	private companion object {
 
 		@JvmStatic
-		fun getAvailableVolumes(context: Context): List<Pair<File,String>> = context.getExternalFilesDirs(null).mapNotNull {
-			val root = it.findParent { x -> x.name == "Android" }?.parentFile ?: return@mapNotNull null
-			root to when {
-				Environment.isExternalStorageEmulated(root) -> context.getString(R.string.internal_storage)
-				Environment.isExternalStorageRemovable(root) -> context.getString(R.string.external_storage)
-				else -> root.name
+		fun getAvailableVolumes(context: Context): List<Pair<File, String>> {
+			return LocalMangaRepository.getAvailableStorageDirs(context).map {
+				it to it.getStorageName(context)
 			}
 		}
 	}

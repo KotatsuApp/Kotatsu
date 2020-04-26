@@ -126,4 +126,8 @@
 	<string name="manga_shelf">Полка с мангой</string>
 	<string name="recent_manga">Недавняя манга</string>
 	<string name="pages_animation">Анимация листания</string>
+	<string name="manga_save_location">Место сохранения манги</string>
+	<string name="not_available">Недоступно</string>
+	<string name="cannot_find_available_storage">Не удалось найти ни одного доступного хранилища</string>
+	<string name="other_storage">Другое хранилище</string>
 </resources>

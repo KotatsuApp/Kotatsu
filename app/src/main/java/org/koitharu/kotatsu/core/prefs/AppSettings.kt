@@ -3,11 +3,15 @@ package org.koitharu.kotatsu.core.prefs
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.os.StatFs
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.utils.delegates.prefs.*
+import java.io.File
 
 class AppSettings private constructor(resources: Resources, private val prefs: SharedPreferences) :
 	SharedPreferences by prefs {
@@ -87,6 +91,26 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		}
 
 	var hiddenSources by StringSetPreferenceDelegate(resources.getString(R.string.key_sources_hidden))
+
+	fun getStorageDir(context: Context): File? {
+		val value = prefs.getString(context.getString(R.string.key_local_storage), null)?.let {
+			File(it)
+		}?.takeIf { it.exists() && it.canWrite() }
+		return value ?: LocalMangaRepository.getAvailableStorageDirs(context).maxBy {
+			StatFs(it.path).availableBytes
+		}
+	}
+
+	fun setStorageDir(context: Context, file: File?) {
+		val key = context.getString(R.string.key_local_storage)
+		prefs.edit {
+			if (file == null) {
+				remove(key)
+			} else {
+				putString(key, file.path)
+			}
+		}
+	}
 
 	fun subscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
 		prefs.registerOnSharedPreferenceChangeListener(listener)

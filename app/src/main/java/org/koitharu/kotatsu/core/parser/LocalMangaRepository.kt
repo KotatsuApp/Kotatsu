@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.safe
+import org.koitharu.kotatsu.utils.ext.sub
 import java.io.File
 import java.util.*
 import java.util.zip.ZipEntry
@@ -29,8 +30,8 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
-		val files = context.getExternalFilesDirs("manga")
-			.flatMap { x -> x?.listFiles(CbzFilter())?.toList().orEmpty() }
+		val files = getAvailableStorageDirs(context)
+			.flatMap { x -> x.listFiles(CbzFilter())?.toList().orEmpty() }
 		return files.mapNotNull { x -> safe { getFromFile(x) } }
 	}
 
@@ -133,9 +134,18 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 
 	companion object {
 
+		private const val DIR_NAME = "manga"
+
 		fun isFileSupported(name: String): Boolean {
 			val ext = name.substringAfterLast('.').toLowerCase(Locale.ROOT)
 			return ext == "cbz" || ext == "zip"
+		}
+
+		fun getAvailableStorageDirs(context: Context): List<File> {
+			val result = ArrayList<File>(5)
+			result += context.filesDir.sub(DIR_NAME)
+			result += context.getExternalFilesDirs(DIR_NAME)
+			return result.distinctBy { it.canonicalPath }.filter { it.exists() || it.mkdir() }
 		}
 	}
 }
