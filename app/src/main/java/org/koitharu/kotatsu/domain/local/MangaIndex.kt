@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaTag
+import org.koitharu.kotatsu.utils.ext.getStringOrNull
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.safe
 
@@ -44,12 +45,12 @@ class MangaIndex(source: String?) {
 		Manga(
 			id = json.getLong("id"),
 			title = json.getString("title"),
-			altTitle = json.getString("title_alt"),
+			altTitle = json.getStringOrNull("title_alt"),
 			url = json.getString("url"),
 			source = source,
 			rating = json.getDouble("rating").toFloat(),
 			coverUrl = json.getString("cover"),
-			description = json.getString("description"),
+			description = json.getStringOrNull("description"),
 			tags = json.getJSONArray("tags").map { x ->
 				MangaTag(
 					title = x.getString("title"),

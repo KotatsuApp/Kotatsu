@@ -22,3 +22,5 @@ fun <T> JSONArray.mapIndexed(block: (Int, JSONObject) -> T): List<T> {
 	}
 	return result
 }
+
+fun JSONObject.getStringOrNull(name: String): String? = opt(name)?.toString()
