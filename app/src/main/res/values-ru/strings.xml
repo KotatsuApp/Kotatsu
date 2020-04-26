@@ -58,7 +58,7 @@
 	<string name="clear">Очистить</string>
 	<string name="text_clear_history_prompt">Вы уверены, что хотите очистить историю? Это действие нельзя будет отменить.</string>
 	<string name="remove">Удалить</string>
-	<string name="_s_removed_from_history">\"%s\" уделано из истории</string>
+	<string name="_s_removed_from_history">\"%s\" удалено из истории</string>
 	<string name="_s_deleted_from_local_storage">\"%s\" удалено с устройства</string>
 	<string name="wait_for_loading_finish">Дождитесь окончания загрузки</string>
 	<string name="save_page">Сохранить страницу</string>
