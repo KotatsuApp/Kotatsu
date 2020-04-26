@@ -38,6 +38,11 @@
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false" />
 
+	<Preference
+		android:key="@string/key_local_storage"
+		android:title="@string/manga_save_location"
+		app:iconSpaceReserved="false" />
+
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.ui.settings.HistorySettingsFragment"
 		android:title="@string/history_and_cache"

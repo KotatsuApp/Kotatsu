@@ -16,13 +16,17 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
+import org.koitharu.kotatsu.ui.common.dialog.StorageSelectDialog
 import org.koitharu.kotatsu.ui.main.list.ListModeSelectDialog
 import org.koitharu.kotatsu.ui.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
+import org.koitharu.kotatsu.utils.ext.getStorageName
+import java.io.File
 
 
 class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
-	SharedPreferences.OnSharedPreferenceChangeListener {
+	SharedPreferences.OnSharedPreferenceChangeListener,
+	StorageSelectDialog.OnStorageSelectListener {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_main)
@@ -40,14 +44,24 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		findPreference<Preference>(R.string.key_app_update_auto)?.run {
 			isVisible = AppUpdateService.isUpdateSupported(context)
 		}
+		findPreference<Preference>(R.string.key_local_storage)?.run {
+			summary = settings.getStorageDir(context)?.getStorageName(context)
+				?: getString(R.string.not_available)
+		}
 	}
 
-	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
 		when (key) {
 			getString(R.string.key_list_mode) -> findPreference<Preference>(R.string.key_list_mode)?.summary =
 				LIST_MODES[settings.listMode]?.let(::getString)
 			getString(R.string.key_theme) -> {
 				AppCompatDelegate.setDefaultNightMode(settings.theme)
+			}
+			getString(R.string.key_local_storage) -> {
+				findPreference<Preference>(R.string.key_local_storage)?.run {
+					summary = settings.getStorageDir(context)?.getStorageName(context)
+						?: getString(R.string.not_available)
+				}
 			}
 		}
 	}
@@ -89,8 +103,21 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				}
 				true
 			}
+			getString(R.string.key_local_storage) -> {
+				val ctx = context ?: return false
+				StorageSelectDialog.Builder(ctx, settings.getStorageDir(ctx),this)
+					.setTitle(preference.title)
+					.setNegativeButton(android.R.string.cancel)
+					.create()
+					.show()
+				true
+			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
+	}
+
+	override fun onStorageSelected(file: File) {
+		settings.setStorageDir(context ?: return, file)
 	}
 
 	private companion object {
