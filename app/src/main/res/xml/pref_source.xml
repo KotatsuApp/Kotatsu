@@ -7,4 +7,9 @@
         android:title="@string/domain"
         app:iconSpaceReserved="false" />
 
+    <SwitchPreferenceCompat
+        android:key="@string/key_parser_ssl"
+        android:title="@string/use_ssl"
+        app:iconSpaceReserved="false" />
+
 </PreferenceScreen>

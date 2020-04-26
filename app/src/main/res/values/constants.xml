@@ -22,6 +22,7 @@
 	<string name="key_reader_animation">reader_animation</string>
 
 	<string name="key_parser_domain">domain</string>
+	<string name="key_parser_ssl">ssl</string>
 	<string-array name="values_theme">
 		<item>-1</item>
 		<item>1</item>

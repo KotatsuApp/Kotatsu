@@ -14,6 +14,14 @@ fun String.longHashCode(): Long {
 }
 
 fun String.withDomain(domain: String, ssl: Boolean = true) = when {
+	this.startsWith("//") -> buildString {
+		append("http")
+		if (ssl) {
+			append('s')
+		}
+		append(":")
+		append(this@withDomain)
+	}
 	this.startsWith("/") -> buildString {
 		append("http")
 		if (ssl) {

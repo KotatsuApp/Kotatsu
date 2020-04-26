@@ -20,5 +20,6 @@ enum class MangaSource(
 	MANGACHAN("Манга-тян", "ru", MangaChanRepository::class.java),
 	DESUME("Desu.me", "ru", DesuMeRepository::class.java),
 	HENCHAN("Хентай-тян", "ru", HenChanRepository::class.java),
-	YAOICHAN("Яой-тян", "ru", YaoiChanRepository::class.java)
+	YAOICHAN("Яой-тян", "ru", YaoiChanRepository::class.java),
+	MANGATOWN("MangaTown", "en", MangaTownRepository::class.java)
 }

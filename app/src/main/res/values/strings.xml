@@ -131,4 +131,5 @@
 	<string name="not_available">Not available</string>
 	<string name="cannot_find_available_storage">Cannot find any available storage</string>
 	<string name="other_storage">Other storage</string>
+	<string name="use_ssl">Use secure connection (HTTPS)</string>
 </resources>

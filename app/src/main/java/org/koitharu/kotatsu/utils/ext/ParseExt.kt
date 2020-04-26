@@ -5,6 +5,7 @@ import okhttp3.internal.closeQuietly
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 
 fun Response.parseHtml(): Document {
 	try {
@@ -27,4 +28,24 @@ fun Response.parseJson(): JSONObject {
 	} finally {
 		closeQuietly()
 	}
+}
+
+inline fun Elements.findOwnText(predicate: (String) -> Boolean): String? {
+	for (x in this) {
+		val ownText = x.ownText()
+		if (predicate(ownText)) {
+			return ownText
+		}
+	}
+	return null
+}
+
+inline fun Elements.findText(predicate: (String) -> Boolean): String? {
+	for (x in this) {
+		val text = x.text()
+		if (predicate(text)) {
+			return text
+		}
+	}
+	return null
 }

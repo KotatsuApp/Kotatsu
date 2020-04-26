@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.item_page.*
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -43,7 +44,8 @@ class PageHolder(parent: ViewGroup, private val loader: PageLoader) :
 			ssiv.recycle()
 			try {
 				val uri = withContext(Dispatchers.IO) {
-					loader.loadFile(data.url, force)
+					val pageUrl = MangaProviderFactory.create(data.source).getPageFullUrl(data)
+					loader.loadFile(pageUrl, force)
 				}.toUri()
 				ssiv.setImage(ImageSource.uri(uri))
 			} catch (e: CancellationException) {
