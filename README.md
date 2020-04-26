@@ -8,6 +8,8 @@ Kotatsu is a free and open source manga reader for Android.
 
 Latest release: [get here](https://github.com/nv95/Kotatsu/releases/latest)
 
+Legacy build (Android 4.1+): [available here](https://github.com/nv95/Kotatsu/releases/tag/v0.3-legacy)
+
 ### Main Features
 
 * Online manga catalogues
@@ -22,9 +24,9 @@ Latest release: [get here](https://github.com/nv95/Kotatsu/releases/latest)
 
 ### Screenshots
 
-| ![Screenshot_20200226-210337](https://user-images.githubusercontent.com/8948226/75573590-d467f180-5a65-11ea-8338-a34af4679ed6.png) | ![Screenshot_20200226-210310](https://user-images.githubusercontent.com/8948226/75573612-dcc02c80-5a65-11ea-9afb-293dadfb3cfd.png) | ![Screenshot_20200226-210232](https://user-images.githubusercontent.com/8948226/75573621-e0ec4a00-5a65-11ea-92b9-72ab90281a2b.png) |
+| ![Screenshot_20200226-210337](https://user-images.githubusercontent.com/8948226/80315102-3478db00-87fe-11ea-9ce8-4bbd1c254b2b.png) | ![Screenshot_20200226-210310](https://user-images.githubusercontent.com/8948226/80315110-3f337000-87fe-11ea-95df-944c196b6667.png) | ![Screenshot_20200226-210232](https://user-images.githubusercontent.com/8948226/80315121-49ee0500-87fe-11ea-8d9b-537a041bbf2f.png) |
 |---|---|---|
-| ![Screenshot_20200226-210405](https://user-images.githubusercontent.com/8948226/75573629-e34ea400-5a65-11ea-86a1-4496032ac0f0.png)  | ![Screenshot_20200226-210151](https://user-images.githubusercontent.com/8948226/75573632-e5186780-5a65-11ea-81b0-7c296157709c.png) | ![Screenshot_20200226-210223](https://user-images.githubusercontent.com/8948226/75573639-e6e22b00-5a65-11ea-84a6-6257f532fd2c.png) |
+| ![Screenshot_20200226-210405](https://user-images.githubusercontent.com/8948226/80315130-55d9c700-87fe-11ea-8350-2c8452906eb7.png)  | ![Screenshot_20200226-210151](https://user-images.githubusercontent.com/8948226/80315135-612cf280-87fe-11ea-984c-aa18567d5bbc.png) | ![Screenshot_20200226-210223](https://user-images.githubusercontent.com/8948226/80315146-6be78780-87fe-11ea-8439-ca1ca578172b.png) |
 
 ### License
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)  
