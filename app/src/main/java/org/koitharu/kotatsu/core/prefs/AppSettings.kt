@@ -96,9 +96,7 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		val value = prefs.getString(context.getString(R.string.key_local_storage), null)?.let {
 			File(it)
 		}?.takeIf { it.exists() && it.canWrite() }
-		return value ?: LocalMangaRepository.getAvailableStorageDirs(context).maxBy {
-			StatFs(it.path).availableBytes
-		}
+		return value ?: LocalMangaRepository.getFallbackStorageDir(context)
 	}
 
 	fun setStorageDir(context: Context, file: File?) {

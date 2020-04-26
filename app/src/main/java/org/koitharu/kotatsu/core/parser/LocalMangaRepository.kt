@@ -147,5 +147,11 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 			result += context.getExternalFilesDirs(DIR_NAME)
 			return result.distinctBy { it.canonicalPath }.filter { it.exists() || it.mkdir() }
 		}
+
+		fun getFallbackStorageDir(context: Context): File? {
+			return context.getExternalFilesDir(DIR_NAME) ?: context.filesDir.sub(DIR_NAME).takeIf {
+				(it.exists() || it.mkdir()) && it.canWrite()
+			}
+		}
 	}
 }
