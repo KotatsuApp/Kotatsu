@@ -1,8 +1,11 @@
 package org.koitharu.kotatsu.ui.details
 
 import android.app.ActivityOptions
+import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,15 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_chapters.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.download.DownloadService
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
-import org.koitharu.kotatsu.utils.ext.showPopupMenu
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsView,
 	OnRecyclerItemClickListener<MangaChapter> {
@@ -86,20 +86,16 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	}
 
 	override fun onItemLongClick(item: MangaChapter, position: Int, view: View): Boolean {
-		view.showPopupMenu(R.menu.popup_chapter) {
-			val ctx = context ?: return@showPopupMenu false
-			val m = manga ?: return@showPopupMenu false
-			when (it.itemId) {
-				R.id.action_save_this -> DownloadService.start(ctx, m, setOf(item.id))
-				R.id.action_save_this_next -> DownloadService.start(ctx, m, m.chapters.orEmpty()
-					.filter { x -> x.number >= item.number }.map { x -> x.id })
-				R.id.action_save_this_prev -> DownloadService.start(ctx, m, m.chapters.orEmpty()
-					.filter { x -> x.number <= item.number }.map { x -> x.id })
-				else -> return@showPopupMenu false
-			}
-			true
+		if (item.source == MangaSource.LOCAL) {
+			return false
 		}
-		return true
+		return context?.run {
+			val menu = PopupMenu(this, view)
+			menu.inflate(R.menu.popup_chapter)
+			menu.setOnMenuItemClickListener(PopupMenuListener(this, manga ?: return false, item))
+			menu.show()
+			true
+		} ?: false
 	}
 
 	private fun scrollToCurrent() {
@@ -107,7 +103,33 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 			?: RecyclerView.NO_POSITION
 		if (pos != RecyclerView.NO_POSITION) {
 			(recyclerView_chapters.layoutManager as? LinearLayoutManager)
-				?.scrollToPositionWithOffset(pos, 100)
+				?.scrollToPositionWithOffset(pos, resources.resolveDp(40))
 		}
+	}
+
+	private class PopupMenuListener(
+		private val context: Context,
+		private val manga: Manga,
+		private val chapter: MangaChapter
+	) : PopupMenu.OnMenuItemClickListener {
+
+		override fun onMenuItemClick(item: MenuItem?): Boolean = when (item?.itemId) {
+			R.id.action_save_this -> {
+				DownloadService.start(context, manga, setOf(chapter.id))
+				true
+			}
+			R.id.action_save_this_next -> {
+				DownloadService.start(context, manga, manga.chapters.orEmpty()
+					.filter { x -> x.number >= chapter.number }.map { x -> x.id })
+				true
+			}
+			R.id.action_save_this_prev -> {
+				DownloadService.start(context, manga, manga.chapters.orEmpty()
+					.filter { x -> x.number <= chapter.number }.map { x -> x.id })
+				true
+			}
+			else -> false
+		}
+
 	}
 }

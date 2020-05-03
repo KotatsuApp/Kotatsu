@@ -66,7 +66,7 @@ dependencies {
 	implementation 'androidx.appcompat:appcompat:1.2.0-beta01'
 	implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-rc01'
-	implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha02'
+	implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha03'
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
 	implementation 'androidx.preference:preference-ktx:1.1.1'
 	implementation 'androidx.work:work-runtime-ktx:2.3.4'
@@ -82,12 +82,12 @@ dependencies {
 	implementation 'com.github.moxy-community:moxy-ktx:2.1.2'
 	kapt 'com.github.moxy-community:moxy-compiler:2.1.2'
 
-	implementation 'com.squareup.okhttp3:okhttp:4.5.0'
-	implementation 'com.squareup.okio:okio:2.5.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.6.0'
+	implementation 'com.squareup.okio:okio:2.6.0'
 	implementation 'org.jsoup:jsoup:1.13.1'
 
 	implementation 'org.koin:koin-android:2.1.5'
-	implementation 'io.coil-kt:coil:0.9.5'
+	implementation 'io.coil-kt:coil:0.10.1'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
 	implementation 'com.tomclaw.cache:cache:1.0'
 
