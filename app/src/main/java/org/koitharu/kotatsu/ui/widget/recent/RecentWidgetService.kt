@@ -6,6 +6,6 @@ import android.widget.RemoteViewsService
 class RecentWidgetService : RemoteViewsService() {
 
 	override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-		return RecentListFactory(this, intent)
+		return RecentListFactory(this)
 	}
 }

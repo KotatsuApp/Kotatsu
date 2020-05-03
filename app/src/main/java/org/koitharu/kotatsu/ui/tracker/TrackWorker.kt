@@ -8,10 +8,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.work.*
 import coil.Coil
-import coil.api.get
+import coil.request.GetRequestBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
@@ -24,6 +23,7 @@ import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.safe
+import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.util.concurrent.TimeUnit
 
@@ -136,9 +136,9 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			setContentText(summary)
 			setContentText(manga.title)
 			setNumber(newChapters.size)
-			setLargeIcon(safe {
-				Coil.loader().get(manga.coverUrl).toBitmap()
-			})
+			setLargeIcon(Coil.execute(GetRequestBuilder(applicationContext)
+				.data(manga.coverUrl)
+				.build()).toBitmapOrNull())
 			setSmallIcon(R.drawable.ic_stat_book_plus)
 			val style = NotificationCompat.InboxStyle(this)
 			for (chapter in newChapters) {

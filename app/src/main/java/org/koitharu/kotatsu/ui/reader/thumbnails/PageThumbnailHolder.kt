@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.ui.reader.thumbnails
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import coil.Coil
-import coil.api.get
+import coil.request.GetRequestBuilder
 import coil.size.PixelSize
 import coil.size.Size
 import kotlinx.android.synthetic.main.item_page_thumb.*
@@ -38,9 +38,10 @@ class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) 
 					val pageUrl = MangaProviderFactory.create(data.source).getPageFullUrl(data)
 					extra[pageUrl]?.toUri()?.toString() ?: pageUrl
 				}
-				val drawable = Coil.get(url) {
-					size(thumbSize)
-				}
+				val drawable = Coil.execute(GetRequestBuilder(context)
+					.data(url)
+					.size(thumbSize)
+					.build()).drawable
 				withContext(Dispatchers.Main) {
 					imageView_thumb.setImageDrawable(drawable)
 				}

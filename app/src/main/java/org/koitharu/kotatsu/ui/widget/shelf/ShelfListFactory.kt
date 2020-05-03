@@ -4,19 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import androidx.core.graphics.drawable.toBitmap
 import coil.Coil
-import coil.api.get
+import coil.request.GetRequestBuilder
 import kotlinx.coroutines.runBlocking
-import okio.IOException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
+import org.koitharu.kotatsu.utils.ext.requireBitmap
+import java.io.IOException
 
-class ShelfListFactory(context: Context, private val intent: Intent) : RemoteViewsService.RemoteViewsFactory {
-
-	private val packageName = context.packageName
+class ShelfListFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
 
@@ -36,12 +34,14 @@ class ShelfListFactory(context: Context, private val intent: Intent) : RemoteVie
 	override fun hasStableIds() = true
 
 	override fun getViewAt(position: Int): RemoteViews {
-		val views = RemoteViews(packageName, R.layout.item_shelf)
+		val views = RemoteViews(context.packageName, R.layout.item_shelf)
 		val item = dataSet[position]
 		views.setTextViewText(R.id.textView_title, item.title)
 		try {
 			val cover = runBlocking {
-				Coil.loader().get(item.coverUrl).toBitmap()
+				Coil.execute(GetRequestBuilder(context)
+					.data(item.coverUrl)
+					.build()).requireBitmap()
 			}
 			views.setImageViewBitmap(R.id.imageView_cover, cover)
 		} catch (e: IOException) {
@@ -57,6 +57,5 @@ class ShelfListFactory(context: Context, private val intent: Intent) : RemoteVie
 
 	override fun getViewTypeCount() = 1
 
-	override fun onDestroy() {
-	}
+	override fun onDestroy() = Unit
 }

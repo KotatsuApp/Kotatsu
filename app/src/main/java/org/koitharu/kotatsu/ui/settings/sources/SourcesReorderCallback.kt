@@ -11,8 +11,8 @@ class SourcesReorderCallback : ItemTouchHelper.SimpleCallback(ItemTouchHelper.DO
 		target: RecyclerView.ViewHolder
 	): Boolean {
 		val adapter = recyclerView.adapter as? SourcesAdapter ?: return false
-		val oldPos = viewHolder.adapterPosition
-		val newPos = target.adapterPosition
+		val oldPos = viewHolder.bindingAdapterPosition
+		val newPos = target.bindingAdapterPosition
 		adapter.moveItem(oldPos, newPos)
 		return true
 	}

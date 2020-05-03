@@ -6,6 +6,6 @@ import android.widget.RemoteViewsService
 class ShelfWidgetService : RemoteViewsService() {
 
 	override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-		return ShelfListFactory(this, intent)
+		return ShelfListFactory(this)
 	}
 }

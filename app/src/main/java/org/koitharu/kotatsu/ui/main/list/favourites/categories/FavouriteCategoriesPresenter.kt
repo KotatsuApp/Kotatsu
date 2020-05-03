@@ -107,7 +107,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 	fun addToCategory(manga: Manga, categoryId: Long) {
 		presenterScope.launch {
 			try {
-				val categories = withContext(Dispatchers.IO) {
+				withContext(Dispatchers.IO) {
 					repository.addToCategory(manga,categoryId)
 				}
 			} catch (e: Exception) {
@@ -122,7 +122,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 	fun removeFromCategory(manga: Manga, categoryId: Long) {
 		presenterScope.launch {
 			try {
-				val categories = withContext(Dispatchers.IO) {
+				withContext(Dispatchers.IO) {
 					repository.removeFromCategory(manga, categoryId)
 				}
 			} catch (e: Exception) {

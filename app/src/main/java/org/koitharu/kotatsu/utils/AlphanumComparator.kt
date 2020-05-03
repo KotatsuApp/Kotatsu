@@ -16,7 +16,7 @@ class AlphanumComparator : Comparator<String> {
 			val thatChunk = getChunk(s2, s2Length, thatMarker)
 			thatMarker += thatChunk.length
 			// If both chunks contain numeric characters, sort them numerically
-			var result = 0
+			var result: Int
 			if (thisChunk[0].isDigit() && thatChunk[0].isDigit()) { // Simple chunk comparison by length.
 				val thisChunkLength = thisChunk.length
 				result = thisChunkLength - thatChunk.length
@@ -37,8 +37,8 @@ class AlphanumComparator : Comparator<String> {
 		return s1Length - s2Length
 	}
 
-	private fun getChunk(s: String, slength: Int, marker: Int): String {
-		var marker = marker
+	private fun getChunk(s: String, slength: Int, cmarker: Int): String {
+		var marker = cmarker
 		val chunk = StringBuilder()
 		var c = s[marker]
 		chunk.append(c)

@@ -70,7 +70,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), KoinComponent {
 		}
 		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
 			throw StackOverflowError("test")
-			return true
 		}
 		return super.onKeyDown(keyCode, event)
 	}

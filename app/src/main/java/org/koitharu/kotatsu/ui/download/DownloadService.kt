@@ -8,7 +8,7 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import coil.Coil
-import coil.api.get
+import coil.request.GetRequestBuilder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.utils.ext.safe
 import org.koitharu.kotatsu.utils.ext.sub
 import java.io.File
 import java.util.concurrent.TimeUnit
+import kotlin.collections.set
 import kotlin.math.absoluteValue
 
 class DownloadService : BaseService() {
@@ -87,7 +88,9 @@ class DownloadService : BaseService() {
 			try {
 				val repo = MangaProviderFactory.create(manga.source)
 				val cover = safe {
-					Coil.loader().get(manga.coverUrl)
+					Coil.execute(GetRequestBuilder(this@DownloadService)
+						.data(manga.coverUrl)
+						.build()).drawable
 				}
 				withContext(Dispatchers.Main) {
 					notification.setLargeIcon(cover)

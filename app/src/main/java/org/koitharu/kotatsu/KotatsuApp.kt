@@ -4,7 +4,8 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
 import coil.Coil
-import coil.ImageLoader
+import coil.ComponentRegistry
+import coil.ImageLoaderBuilder
 import coil.util.CoilUtils
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
@@ -85,16 +86,19 @@ class KotatsuApp : Application() {
 	}
 
 	private fun initCoil() {
-		Coil.setDefaultImageLoader(ImageLoader(applicationContext) {
-			okHttpClient {
-				okHttp()
-					.cache(CoilUtils.createDefaultCache(applicationContext))
-					.build()
-			}
-			componentRegistry {
-				add(CbzFetcher())
-			}
-		})
+		Coil.setImageLoader(
+			ImageLoaderBuilder(applicationContext)
+				.okHttpClient(
+					okHttp()
+						.cache(CoilUtils.createDefaultCache(applicationContext))
+						.build()
+				).componentRegistry(
+					ComponentRegistry.Builder()
+						.add(CbzFetcher())
+						.build()
+				)
+				.build()
+		)
 	}
 
 	private fun initErrorHandler() {

@@ -47,11 +47,11 @@ class SourcesAdapter(private val onItemClickListener: OnRecyclerItemClickListene
 			settings.hiddenSources = hiddenItems.map { x -> x.name }.toSet()
 		}
 		holder.imageView_config.setOnClickListener { v ->
-			onItemClickListener.onItemClick(holder.requireData(), holder.adapterPosition, v)
+			onItemClickListener.onItemClick(holder.requireData(), holder.bindingAdapterPosition, v)
 		}
 		holder.imageView_handle.setOnTouchListener { v, event ->
 			if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-				onItemClickListener.onItemLongClick(holder.requireData(), holder.adapterPosition, v)
+				onItemClickListener.onItemLongClick(holder.requireData(), holder.bindingAdapterPosition, v)
 			} else {
 				false
 			}

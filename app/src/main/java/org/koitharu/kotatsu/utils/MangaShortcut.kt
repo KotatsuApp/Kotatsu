@@ -9,17 +9,16 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import androidx.core.graphics.drawable.toBitmap
 import coil.Coil
-import coil.api.get
+import coil.request.GetRequestBuilder
 import coil.size.PixelSize
-import coil.size.Scale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.MangaDataRepository
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
+import org.koitharu.kotatsu.utils.ext.requireBitmap
 import org.koitharu.kotatsu.utils.ext.safe
 
 class MangaShortcut(private val manga: Manga) {
@@ -67,10 +66,9 @@ class MangaShortcut(private val manga: Manga) {
 		val icon = safe {
 			val size = getIconSize(context)
 			withContext(Dispatchers.IO) {
-				val bmp = Coil.loader().get(manga.coverUrl) {
-					size(size)
-					scale(Scale.FILL)
-				}.toBitmap()
+				val bmp = Coil.execute(GetRequestBuilder(context)
+					.data(manga.coverUrl)
+					.build()).requireBitmap()
 				ThumbnailUtils.extractThumbnail(bmp, size.width, size.height, 0)
 			}
 		}

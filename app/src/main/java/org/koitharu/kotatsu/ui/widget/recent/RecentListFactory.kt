@@ -4,19 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import androidx.core.graphics.drawable.toBitmap
 import coil.Coil
-import coil.api.get
+import coil.request.GetRequestBuilder
 import kotlinx.coroutines.runBlocking
-import okio.IOException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
+import org.koitharu.kotatsu.utils.ext.requireBitmap
+import java.io.IOException
 
-class RecentListFactory(context: Context, private val intent: Intent) : RemoteViewsService.RemoteViewsFactory {
-
-	private val packageName = context.packageName
+class RecentListFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
 
@@ -36,11 +34,13 @@ class RecentListFactory(context: Context, private val intent: Intent) : RemoteVi
 	override fun hasStableIds() = true
 
 	override fun getViewAt(position: Int): RemoteViews {
-		val views = RemoteViews(packageName, R.layout.item_recent)
+		val views = RemoteViews(context.packageName, R.layout.item_recent)
 		val item = dataSet[position]
 		try {
 			val cover = runBlocking {
-				Coil.loader().get(item.coverUrl).toBitmap()
+				Coil.execute(GetRequestBuilder(context)
+					.data(item.coverUrl)
+					.build()).requireBitmap()
 			}
 			views.setImageViewBitmap(R.id.imageView_cover, cover)
 		} catch (e: IOException) {
