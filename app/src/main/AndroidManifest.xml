@@ -60,8 +60,15 @@
 			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity
 			android:name=".ui.main.list.favourites.categories.CategoriesActivity"
-			android:windowSoftInputMode="stateAlwaysHidden"
-			android:label="@string/favourites_categories" />
+			android:label="@string/favourites_categories"
+			android:windowSoftInputMode="stateAlwaysHidden" />
+		<activity
+			android:name=".ui.widget.shelf.ShelfConfigActivity"
+			android:label="@string/manga_shelf">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+			</intent-filter>
+		</activity>
 
 		<service
 			android:name=".ui.download.DownloadService"
@@ -87,21 +94,25 @@
 				android:name="android.support.FILE_PROVIDER_PATHS"
 				android:resource="@xml/filepaths" />
 		</provider>
-		
-		<receiver android:name=".ui.widget.shelf.ShelfWidgetProvider"
+
+		<receiver
+			android:name=".ui.widget.shelf.ShelfWidgetProvider"
 			android:label="@string/manga_shelf">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
-			<meta-data android:name="android.appwidget.provider"
+			<meta-data
+				android:name="android.appwidget.provider"
 				android:resource="@xml/widget_shelf" />
 		</receiver>
-		<receiver android:name=".ui.widget.recent.RecentWidgetProvider"
+		<receiver
+			android:name=".ui.widget.recent.RecentWidgetProvider"
 			android:label="@string/recent_manga">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
-			<meta-data android:name="android.appwidget.provider"
+			<meta-data
+				android:name="android.appwidget.provider"
 				android:resource="@xml/widget_recent" />
 		</receiver>
 

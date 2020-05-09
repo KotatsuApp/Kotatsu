@@ -9,8 +9,12 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 abstract class FavouritesDao {
 
 	@Transaction
-	@Query("SELECT * FROM favourites GROUP BY manga_id ORDER BY :orderBy LIMIT :limit OFFSET :offset")
-	abstract suspend fun findAll(offset: Int, limit: Int, orderBy: String): List<FavouriteManga>
+	@Query("SELECT * FROM favourites GROUP BY manga_id ORDER BY created_at LIMIT :limit OFFSET :offset")
+	abstract suspend fun findAll(offset: Int, limit: Int): List<FavouriteManga>
+
+	@Transaction
+	@Query("SELECT * FROM favourites WHERE category_id = :categoryId GROUP BY manga_id ORDER BY created_at LIMIT :limit OFFSET :offset")
+	abstract suspend fun findAll(categoryId: Long, offset: Int, limit: Int): List<FavouriteManga>
 
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM favourites)")
 	abstract suspend fun findAllManga(): List<MangaEntity>

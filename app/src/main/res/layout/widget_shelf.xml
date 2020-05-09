@@ -21,7 +21,9 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:gravity="center"
+		android:shadowColor="@android:color/black"
+		android:shadowRadius="1"
 		android:text="@string/you_have_not_favourites_yet"
-		android:textColor="?android:textColorPrimary" />
+		android:textColor="@android:color/white" />
 
 </FrameLayout>

@@ -28,7 +28,9 @@
 			android:ellipsize="end"
 			android:gravity="center"
 			android:lines="2"
-			android:textColor="?android:textColorPrimary" />
+			android:shadowColor="@android:color/black"
+			android:shadowRadius="1"
+			android:textColor="@android:color/white" />
 
 	</LinearLayout>
 

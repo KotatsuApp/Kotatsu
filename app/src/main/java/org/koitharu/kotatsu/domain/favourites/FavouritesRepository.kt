@@ -19,7 +19,12 @@ class FavouritesRepository : KoinComponent {
 	private val db: MangaDatabase by inject()
 
 	suspend fun getAllManga(offset: Int): List<Manga> {
-		val entities = db.favouritesDao.findAll(offset, 20, "created_at")
+		val entities = db.favouritesDao.findAll(offset, 20)
+		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
+	}
+
+	suspend fun getManga(categoryId: Long, offset: Int): List<Manga> {
+		val entities = db.favouritesDao.findAll(categoryId, offset, 20)
 		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
 	}
 

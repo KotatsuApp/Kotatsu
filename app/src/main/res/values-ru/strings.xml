@@ -131,4 +131,5 @@
 	<string name="cannot_find_available_storage">Не удалось найти ни одного доступного хранилища</string>
 	<string name="other_storage">Другое хранилище</string>
 	<string name="use_ssl">Защищённое соединение (HTTPS)</string>
+	<string name="done">Готово</string>
 </resources>

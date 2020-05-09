@@ -9,14 +9,16 @@ import coil.request.GetRequestBuilder
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 import java.io.IOException
 
-class ShelfListFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
+class ShelfListFactory(private val context: Context, widgetId: Int) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
+	private val config = AppWidgetConfig.getInstance(context, widgetId)
 
 	override fun onCreate() {
 	}
@@ -27,7 +29,9 @@ class ShelfListFactory(private val context: Context) : RemoteViewsService.Remote
 
 	override fun onDataSetChanged() {
 		dataSet.clear()
-		val data = runBlocking { FavouritesRepository().getAllManga(0) }
+		val data = runBlocking {
+			FavouritesRepository().getManga(config.categoryId, 0)
+		}
 		dataSet.addAll(data)
 	}
 
