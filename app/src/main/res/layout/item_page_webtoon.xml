@@ -6,7 +6,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+	<org.koitharu.kotatsu.ui.reader.wetoon.WebtoonImageView
 		android:id="@+id/ssiv"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

@@ -23,3 +23,12 @@ fun Number.format(decimals: Int = 0, decPoint: Char = '.', thousandsSep: Char? =
 		else -> formatter.format(this.toLong())
 	}
 }
+
+fun Float.toIntUp(): Int {
+	val intValue = toInt()
+	return if (this == intValue.toFloat()) {
+		intValue
+	} else {
+		intValue + 1
+	}
+}

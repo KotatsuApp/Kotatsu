@@ -25,7 +25,6 @@ android {
 			}
 		}
 	}
-	archivesBaseName = "kotatsu_${gitCommits}"
 	compileOptions {
 		sourceCompatibility JavaVersion.VERSION_1_8
 		targetCompatibility JavaVersion.VERSION_1_8
@@ -38,6 +37,7 @@ android {
 			applicationIdSuffix = '.debug'
 		}
 		release {
+			multiDexEnabled false
 			minifyEnabled true
 			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

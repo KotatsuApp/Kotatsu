@@ -10,3 +10,4 @@
 -keepclassmembers public class * extends org.koitharu.kotatsu.core.parser.MangaRepository {
 	public <init>(...);
 }
+-dontwarn okhttp3.internal.platform.ConscryptPlatform
