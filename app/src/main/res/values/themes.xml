@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-	<style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-		<!-- Customize your theme here. -->
+	<style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+		<item name="windowActionModeOverlay">true</item>
+	</style>
+	<style name="AppTheme" parent="BaseAppTheme">
 		<item name="colorPrimary">@color/blue_primary</item>
 		<item name="colorPrimaryDark">@color/blue_primary_dark</item>
 		<item name="colorAccent">@color/red_accent</item>
-		<item name="windowActionModeOverlay">true</item>
 	</style>
-
 </resources>

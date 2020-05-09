@@ -42,7 +42,8 @@ import org.koitharu.kotatsu.utils.ext.*
 
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
-	ReaderListener, SharedPreferences.OnSharedPreferenceChangeListener {
+	ReaderListener, SharedPreferences.OnSharedPreferenceChangeListener,
+	View.OnApplyWindowInsetsListener {
 
 	private val presenter by moxyPresenter(factory = ::ReaderPresenter)
 	private val settings by inject<AppSettings>()
@@ -66,7 +67,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		toolbar_bottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 
 		state = savedInstanceState?.getParcelable(EXTRA_STATE)
-			?: intent.getParcelableExtra<ReaderState>(EXTRA_STATE)
+			?: intent.getParcelableExtra(EXTRA_STATE)
 					?: let {
 				Toast.makeText(this, R.string.error_occurred, Toast.LENGTH_SHORT).show()
 				finish()
@@ -79,10 +80,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				getString(R.string.chapter_d_of_d, state.chapter?.number ?: 0, size)
 		}
 
-		appbar_bottom.setOnApplyWindowInsetsListener { view, insets ->
-			view.updatePadding(bottom = insets.systemWindowInsetBottom)
-			insets
-		}
+		rootLayout.setOnApplyWindowInsetsListener(this)
 
 		settings.subscribe(this)
 		loadSettings()
@@ -356,6 +354,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsets): WindowInsets {
+		appbar_top.updatePadding(top = insets.systemWindowInsetTop)
+		appbar_bottom.updatePadding(bottom = insets.systemWindowInsetBottom)
+		return insets.consumeSystemWindowInsets()
+	}
 
 	private fun loadSettings() {
 		settings.readerPageSwitch.let {

@@ -27,7 +27,6 @@
 		android:layout_height="wrap_content"
 		android:background="@color/dim"
 		android:elevation="0dp"
-		android:fitsSystemWindows="true"
 		android:theme="@style/AppToolbarTheme"
 		app:elevation="0dp">
 
@@ -46,7 +45,6 @@
 		android:layout_gravity="bottom"
 		android:background="@color/dim"
 		android:elevation="0dp"
-		android:fitsSystemWindows="true"
 		android:theme="@style/AppToolbarTheme"
 		app:elevation="0dp">
 
