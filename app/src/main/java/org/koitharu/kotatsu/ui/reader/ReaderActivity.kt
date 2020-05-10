@@ -66,8 +66,9 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		toolbar_bottom.inflateMenu(R.menu.opt_reader_bottom)
 		toolbar_bottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 
-		state = savedInstanceState?.getParcelable(EXTRA_STATE)
-			?: intent.getParcelableExtra(EXTRA_STATE)
+		@Suppress("RemoveExplicitTypeArguments")
+		state = savedInstanceState?.getParcelable<ReaderState>(EXTRA_STATE)
+			?: intent.getParcelableExtra<ReaderState>(EXTRA_STATE)
 					?: let {
 				Toast.makeText(this, R.string.error_occurred, Toast.LENGTH_SHORT).show()
 				finish()
@@ -224,13 +225,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				setUiIsVisible(!appbar_top.isVisible)
 			}
 			GridTouchHelper.AREA_TOP,
-			GridTouchHelper.AREA_LEFT,
-			-> if (isTapSwitchEnabled) {
+			GridTouchHelper.AREA_LEFT -> if (isTapSwitchEnabled) {
 				reader?.switchPageBy(-1)
 			}
 			GridTouchHelper.AREA_BOTTOM,
-			GridTouchHelper.AREA_RIGHT,
-			-> if (isTapSwitchEnabled) {
+			GridTouchHelper.AREA_RIGHT -> if (isTapSwitchEnabled) {
 				reader?.switchPageBy(1)
 			}
 		}
@@ -268,15 +267,13 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		KeyEvent.KEYCODE_SPACE,
 		KeyEvent.KEYCODE_PAGE_DOWN,
 		KeyEvent.KEYCODE_DPAD_DOWN,
-		KeyEvent.KEYCODE_DPAD_RIGHT,
-		-> {
+		KeyEvent.KEYCODE_DPAD_RIGHT -> {
 			reader?.switchPageBy(1)
 			true
 		}
 		KeyEvent.KEYCODE_PAGE_UP,
 		KeyEvent.KEYCODE_DPAD_UP,
-		KeyEvent.KEYCODE_DPAD_LEFT,
-		-> {
+		KeyEvent.KEYCODE_DPAD_LEFT -> {
 			reader?.switchPageBy(-1)
 			true
 		}

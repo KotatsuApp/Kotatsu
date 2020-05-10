@@ -61,7 +61,7 @@ class MangaShortcut(private val manga: Manga) {
 
 	private suspend fun buildShortcutInfo(
 		context: Context,
-		manga: Manga,
+		manga: Manga
 	): ShortcutInfoCompat.Builder {
 		val icon = safe {
 			val size = getIconSize(context)

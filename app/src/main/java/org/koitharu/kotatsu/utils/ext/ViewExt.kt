@@ -84,7 +84,7 @@ fun View.disableFor(timeInMillis: Long) {
 
 fun View.showPopupMenu(
 	@MenuRes menuRes: Int, onPrepare: ((Menu) -> Unit)? = null,
-	onItemClick: (MenuItem) -> Boolean,
+	onItemClick: (MenuItem) -> Boolean
 ) {
 	val menu = PopupMenu(context, this)
 	menu.inflate(menuRes)

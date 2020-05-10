@@ -20,7 +20,7 @@ abstract class GroupleRepository : RemoteMangaRepository() {
 		offset: Int,
 		query: String?,
 		sortOrder: SortOrder?,
-		tag: MangaTag?,
+		tag: MangaTag?
 	): List<Manga> {
 		val domain = conf.getDomain(defaultDomain)
 		val doc = when {
