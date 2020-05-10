@@ -1,11 +1,12 @@
 package org.koitharu.kotatsu.ui.main.list.local
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Intent
+import android.net.Uri
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -17,7 +18,7 @@ import org.koitharu.kotatsu.ui.main.list.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.ellipsize
 import java.io.File
 
-class LocalListFragment : MangaListFragment<File>() {
+class LocalListFragment : MangaListFragment<File>(), ActivityResultCallback<Uri> {
 
 	private val presenter by moxyPresenter(factory = ::LocalListPresenter)
 
@@ -35,11 +36,9 @@ class LocalListFragment : MangaListFragment<File>() {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_import -> {
-				val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-				intent.addCategory(Intent.CATEGORY_OPENABLE)
-				intent.type = "*/*"
 				try {
-					startActivityForResult(intent, REQUEST_IMPORT)
+					registerForActivityResult(ActivityResultContracts.OpenDocument(), this)
+						.launch(arrayOf("*/*"))
 				} catch (e: ActivityNotFoundException) {
 					if (BuildConfig.DEBUG) {
 						e.printStackTrace()
@@ -63,13 +62,9 @@ class LocalListFragment : MangaListFragment<File>() {
 		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
 	}
 
-	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		super.onActivityResult(requestCode, resultCode, data)
-		when (requestCode) {
-			REQUEST_IMPORT -> if (resultCode == Activity.RESULT_OK) {
-				val uri = data?.data ?: return
-				presenter.importFile(context?.applicationContext ?: return, uri)
-			}
+	override fun onActivityResult(result: Uri?) {
+		if (result != null) {
+			presenter.importFile(context?.applicationContext ?: return, result)
 		}
 	}
 

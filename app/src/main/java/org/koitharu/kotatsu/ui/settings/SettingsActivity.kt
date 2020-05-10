@@ -30,6 +30,7 @@ class SettingsActivity : BaseActivity(),
 		}
 	}
 
+	@Suppress("DEPRECATION")
 	override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
 		val fm = supportFragmentManager
 		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment)

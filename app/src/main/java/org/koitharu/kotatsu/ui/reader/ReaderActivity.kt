@@ -4,12 +4,16 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.core.view.updatePadding
@@ -43,7 +47,7 @@ import org.koitharu.kotatsu.utils.ext.*
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
 	ReaderListener, SharedPreferences.OnSharedPreferenceChangeListener,
-	View.OnApplyWindowInsetsListener {
+	View.OnApplyWindowInsetsListener, ActivityResultCallback<Boolean> {
 
 	private val presenter by moxyPresenter(factory = ::ReaderPresenter)
 	private val settings by inject<AppSettings>()
@@ -179,13 +183,17 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 		R.id.action_save_page -> {
 			if (reader?.hasItems == true) {
-				requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-					if (it) {
-						presenter.savePage(
-							resolver = contentResolver,
-							page = reader?.currentPage ?: return@requestPermission
-						)
-					}
+				if (ContextCompat.checkSelfPermission(
+						this,
+						Manifest.permission.WRITE_EXTERNAL_STORAGE
+					) == PackageManager.PERMISSION_GRANTED
+				) {
+					onActivityResult(true)
+				} else {
+					registerForActivityResult(
+						ActivityResultContracts.RequestPermission(),
+						this
+					).launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 				}
 			} else {
 				showWaitWhileLoading()
@@ -193,6 +201,15 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
+	}
+
+	override fun onActivityResult(result: Boolean) {
+		if (result) {
+			presenter.savePage(
+				resolver = contentResolver,
+				page = reader?.currentPage ?: return
+			)
+		}
 	}
 
 	override fun saveState(chapterId: Long, page: Int, scroll: Float) {

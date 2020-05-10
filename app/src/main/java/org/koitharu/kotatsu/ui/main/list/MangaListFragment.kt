@@ -64,19 +64,15 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		recyclerView_filter.addItemDecoration(ItemTypeDividerDecoration(view.context))
 		recyclerView_filter.addItemDecoration(SectionItemDecoration(false, this))
 		settings.subscribe(this)
+		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
+			onRequestMoreItems(0)
+		}
 	}
 
 	override fun onDestroyView() {
 		adapter = null
 		settings.unsubscribe(this)
 		super.onDestroyView()
-	}
-
-	override fun onActivityCreated(savedInstanceState: Bundle?) {
-		super.onActivityCreated(savedInstanceState)
-		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
-			onRequestMoreItems(0)
-		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

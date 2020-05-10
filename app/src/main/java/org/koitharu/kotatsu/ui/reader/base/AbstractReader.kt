@@ -46,10 +46,6 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		adapter = onCreateAdapter(pages)
-	}
-
-	override fun onActivityCreated(savedInstanceState: Bundle?) {
-		super.onActivityCreated(savedInstanceState)
 		@Suppress("RemoveExplicitTypeArguments")
 		val state = savedInstanceState?.getParcelable<ReaderState>(ARG_STATE)
 			?: requireArguments().getParcelable<ReaderState>(ARG_STATE)!!

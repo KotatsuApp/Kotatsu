@@ -57,19 +57,15 @@ abstract class MangaListSheet<E> : BaseBottomSheet(R.layout.sheet_list), MangaLi
 			textView_title.isVisible = false
 			appbar.elevation = resources.getDimension(R.dimen.elevation_large)
 		}
+		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
+			onRequestMoreItems(0)
+		}
 	}
 
 	override fun onDestroyView() {
 		settings.unsubscribe(this)
 		adapter = null
 		super.onDestroyView()
-	}
-
-	override fun onActivityCreated(savedInstanceState: Bundle?) {
-		super.onActivityCreated(savedInstanceState)
-		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
-			onRequestMoreItems(0)
-		}
 	}
 
 	protected fun setTitle(title: CharSequence) {
