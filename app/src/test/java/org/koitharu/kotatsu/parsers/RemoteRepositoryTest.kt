@@ -22,7 +22,7 @@ class RemoteRepositoryTest(source: MangaSource) {
 	private val repo = MangaProviderFactory.create(source)
 
 	@Test
-	fun getList() {
+	fun list() {
 		val list = runBlocking { repo.getList(60) }
 		Assert.assertFalse(list.isEmpty())
 		val item = list.random()
@@ -42,7 +42,7 @@ class RemoteRepositoryTest(source: MangaSource) {
 	}
 
 	@Test
-	fun getTags() {
+	fun tags() {
 		val tags = runBlocking { repo.getTags() }
 		Assert.assertFalse(tags.isEmpty())
 		val tag = tags.random()
@@ -57,7 +57,7 @@ class RemoteRepositoryTest(source: MangaSource) {
 	}
 
 	@Test
-	fun getDetails() {
+	fun details() {
 		val manga = runBlocking { repo.getList(0) }.random()
 		val details = runBlocking { repo.getDetails(manga) }
 		Assert.assertFalse(details.chapters.isNullOrEmpty())
@@ -68,7 +68,7 @@ class RemoteRepositoryTest(source: MangaSource) {
 	}
 
 	@Test
-	fun getPages() {
+	fun pages() {
 		val manga = runBlocking { repo.getList(0) }.random()
 		val details = runBlocking { repo.getDetails(manga) }
 		val pages = runBlocking { repo.getPages(details.chapters!!.random()) }
