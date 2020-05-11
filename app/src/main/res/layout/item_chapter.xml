@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="@dimen/chapter_list_item_height"
 	android:background="?selectableItemBackground"
-	android:gravity="center_vertical"
-	android:orientation="horizontal"
 	android:paddingStart="12dp"
 	android:paddingEnd="12dp">
 
@@ -13,21 +13,41 @@
 		android:id="@+id/textView_number"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_centerVertical="true"
 		android:background="@drawable/bg_badge_default"
 		android:gravity="center"
 		android:minWidth="26dp"
+		android:textAlignment="center"
 		android:textColor="?android:textColorSecondaryInverse"
 		tools:text="13" />
+
+	<ImageView
+		android:contentDescription="@null"
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:id="@+id/imageView_check"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_alignStart="@id/textView_number"
+		android:layout_alignTop="@id/textView_number"
+		android:layout_alignEnd="@id/textView_number"
+		android:layout_alignBottom="@id/textView_number"
+		android:scaleType="fitCenter"
+		android:src="@drawable/ic_check"
+		android:padding="2dp"
+		app:tint="@android:color/white" />
 
 	<TextView
 		android:id="@+id/textView_title"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_centerVertical="true"
 		android:layout_marginStart="10dp"
+		android:layout_toEndOf="@id/textView_number"
 		android:ellipsize="end"
 		android:maxLines="2"
 		android:text="?android:textColorPrimary"
 		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 		tools:text="@tools:sample/lorem[15]" />
 
-</LinearLayout>
+</RelativeLayout>

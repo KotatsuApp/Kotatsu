@@ -8,10 +8,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ActionMode
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.coroutines.launch
 import moxy.MvpDelegate
@@ -29,7 +32,8 @@ import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
+class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
+	TabLayoutMediator.TabConfigurationStrategy {
 
 	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
 
@@ -39,8 +43,8 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_details)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		pager.adapter = MangaDetailsAdapter(resources, supportFragmentManager)
-		tabs.setupWithViewPager(pager)
+		pager.adapter = MangaDetailsAdapter(this)
+		TabLayoutMediator(tabs, pager, this).attach()
 		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
 			intent?.getParcelableExtra<Manga>(EXTRA_MANGA)?.let {
 				presenter.loadDetails(it, true)
@@ -167,6 +171,24 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView {
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
+	}
+
+	override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
+		tab.text = when(position) {
+			0 -> getString(R.string.details)
+			1 -> getString(R.string.chapters)
+			else -> null
+		}
+	}
+
+	override fun onSupportActionModeStarted(mode: ActionMode) {
+		super.onSupportActionModeStarted(mode)
+		pager.isUserInputEnabled = false
+	}
+
+	override fun onSupportActionModeFinished(mode: ActionMode) {
+		super.onSupportActionModeFinished(mode)
+		pager.isUserInputEnabled = true
 	}
 
 	companion object {

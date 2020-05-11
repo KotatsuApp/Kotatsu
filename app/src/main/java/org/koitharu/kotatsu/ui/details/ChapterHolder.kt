@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.ui.details
 
+import android.graphics.Color
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.item_chapter.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaChapter
@@ -14,6 +16,7 @@ class ChapterHolder(parent: ViewGroup) :
 	override fun onBind(data: MangaChapter, extra: ChapterExtra) {
 		textView_title.text = data.name
 		textView_number.text = data.number.toString()
+		imageView_check.isVisible = extra == ChapterExtra.CHECKED
 		when (extra) {
 			ChapterExtra.UNREAD -> {
 				textView_number.setBackgroundResource(R.drawable.bg_badge_default)
@@ -30,6 +33,10 @@ class ChapterHolder(parent: ViewGroup) :
 			ChapterExtra.NEW -> {
 				textView_number.setBackgroundResource(R.drawable.bg_badge_accent)
 				textView_number.setTextColor(context.getThemeColor(android.R.attr.textColorPrimaryInverse))
+			}
+			ChapterExtra.CHECKED -> {
+				textView_number.setBackgroundResource(R.drawable.bg_badge_accent)
+				textView_number.setTextColor(Color.TRANSPARENT)
 			}
 		}
 	}

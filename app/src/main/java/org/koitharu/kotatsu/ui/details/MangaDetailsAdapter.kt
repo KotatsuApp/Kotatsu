@@ -1,24 +1,16 @@
 package org.koitharu.kotatsu.ui.details
 
-import android.content.res.Resources
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
-import org.koitharu.kotatsu.R
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class MangaDetailsAdapter(private val resources: Resources, fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class MangaDetailsAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
-	override fun getCount() = 2
+	override fun getItemCount() = 2
 
-	override fun getItem(position: Int): Fragment = when(position) {
+	override fun createFragment(position: Int): Fragment = when(position) {
 		0 -> MangaDetailsFragment()
 		1 -> ChaptersFragment()
 		else -> throw IndexOutOfBoundsException("No fragment for position $position")
-	}
-
-	override fun getPageTitle(position: Int): CharSequence? = when(position) {
-		0 -> resources.getString(R.string.details)
-		1 -> resources.getString(R.string.chapters)
-		else -> null
 	}
 }

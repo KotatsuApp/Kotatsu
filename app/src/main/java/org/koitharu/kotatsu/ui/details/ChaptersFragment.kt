@@ -1,11 +1,12 @@
 package org.koitharu.kotatsu.ui.details
 
 import android.app.ActivityOptions
-import android.content.Context
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +22,7 @@ import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsView,
-	OnRecyclerItemClickListener<MangaChapter> {
+	OnRecyclerItemClickListener<MangaChapter>, ActionMode.Callback {
 
 	@Suppress("unused")
 	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
@@ -29,6 +30,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	private var manga: Manga? = null
 
 	private lateinit var adapter: ChaptersAdapter
+	private var actionMode: ActionMode? = null
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
@@ -69,6 +71,15 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	override fun onFavouriteChanged(categories: List<FavouriteCategory>) = Unit
 
 	override fun onItemClick(item: MangaChapter, position: Int, view: View) {
+		if (adapter.checkedItemsCount != 0) {
+			adapter.toggleItemChecked(item.id)
+			if (adapter.checkedItemsCount == 0) {
+				actionMode?.finish()
+			} else {
+				actionMode?.invalidate()
+			}
+			return
+		}
 		val options = ActivityOptions.makeScaleUpAnimation(
 			view,
 			0,
@@ -86,16 +97,13 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	}
 
 	override fun onItemLongClick(item: MangaChapter, position: Int, view: View): Boolean {
-		if (item.source == MangaSource.LOCAL) {
-			return false
+		if (actionMode == null) {
+			actionMode = (activity as? AppCompatActivity)?.startSupportActionMode(this)
 		}
-		return context?.run {
-			val menu = PopupMenu(this, view)
-			menu.inflate(R.menu.popup_chapter)
-			menu.setOnMenuItemClickListener(PopupMenuListener(this, manga ?: return false, item))
-			menu.show()
-			true
-		} ?: false
+		return actionMode?.also {
+			adapter.setItemIsChecked(item.id, true)
+			it.invalidate()
+		} != null
 	}
 
 	private fun scrollToCurrent() {
@@ -107,29 +115,45 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 		}
 	}
 
-	private class PopupMenuListener(
-		private val context: Context,
-		private val manga: Manga,
-		private val chapter: MangaChapter
-	) : PopupMenu.OnMenuItemClickListener {
-
-		override fun onMenuItemClick(item: MenuItem?): Boolean = when (item?.itemId) {
-			R.id.action_save_this -> {
-				DownloadService.start(context, manga, setOf(chapter.id))
+	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.action_save -> {
+				DownloadService.start(
+					context ?: return false,
+					manga ?: return false,
+					adapter.checkedItemsIds
+				)
 				true
 			}
-			R.id.action_save_this_next -> {
-				DownloadService.start(context, manga, manga.chapters.orEmpty()
-					.filter { x -> x.number >= chapter.number }.map { x -> x.id })
-				true
-			}
-			R.id.action_save_this_prev -> {
-				DownloadService.start(context, manga, manga.chapters.orEmpty()
-					.filter { x -> x.number <= chapter.number }.map { x -> x.id })
+			R.id.action_select_all -> {
+				adapter.checkAll()
+				mode.invalidate()
 				true
 			}
 			else -> false
 		}
+	}
 
+	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+		mode.menuInflater.inflate(R.menu.mode_chapters, menu)
+		menu.findItem(R.id.action_save).isVisible = manga?.source != MangaSource.LOCAL
+		mode.title = manga?.title
+		return true
+	}
+
+	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+		val count = adapter.checkedItemsCount
+		mode.subtitle = resources.getQuantityString(
+			R.plurals.chapters_from_x,
+			count,
+			count,
+			adapter.itemCount
+		)
+		return true
+	}
+
+	override fun onDestroyActionMode(mode: ActionMode?) {
+		adapter.clearChecked()
+		actionMode = null
 	}
 }

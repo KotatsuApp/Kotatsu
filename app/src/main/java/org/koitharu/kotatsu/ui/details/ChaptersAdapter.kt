@@ -10,6 +10,14 @@ import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 class ChaptersAdapter(onItemClickListener: OnRecyclerItemClickListener<MangaChapter>) :
 	BaseRecyclerAdapter<MangaChapter, ChapterExtra>(onItemClickListener) {
 
+	private val checkedIds = HashSet<Long>()
+
+	val checkedItemsCount: Int
+		get() = checkedIds.size
+
+	val checkedItemsIds: Set<Long>
+		get() = checkedIds
+
 	var currentChapterId: Long? = null
 		set(value) {
 			field = value
@@ -26,11 +34,37 @@ class ChaptersAdapter(onItemClickListener: OnRecyclerItemClickListener<MangaChap
 	var currentChapterPosition = RecyclerView.NO_POSITION
 		private set
 
+	fun clearChecked() {
+		checkedIds.clear()
+		notifyDataSetChanged()
+	}
+
+	fun checkAll() {
+		for (item in dataSet) {
+			checkedIds.add(item.id)
+		}
+		notifyDataSetChanged()
+	}
+
+	fun setItemIsChecked(itemId: Long, isChecked: Boolean) {
+		if ((isChecked && checkedIds.add(itemId)) || (!isChecked && checkedIds.remove(itemId))) {
+			val pos = findItemPositionById(itemId)
+			if (pos != RecyclerView.NO_POSITION) {
+				notifyItemChanged(pos)
+			}
+		}
+	}
+
+	fun toggleItemChecked(itemId: Long) {
+		setItemIsChecked(itemId, itemId !in checkedIds)
+	}
+
 	override fun onCreateViewHolder(parent: ViewGroup) = ChapterHolder(parent)
 
 	override fun onGetItemId(item: MangaChapter) = item.id
 
 	override fun getExtra(item: MangaChapter, position: Int): ChapterExtra = when {
+		item.id in checkedIds -> ChapterExtra.CHECKED
 		currentChapterPosition == RecyclerView.NO_POSITION
 				|| currentChapterPosition < position -> if (position >= itemCount - newChaptersCount) {
 			ChapterExtra.NEW
