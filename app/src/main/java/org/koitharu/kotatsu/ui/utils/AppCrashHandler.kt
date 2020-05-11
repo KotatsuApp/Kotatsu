@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.ui.utils
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.system.exitProcess
@@ -22,7 +23,7 @@ class AppCrashHandler(private val applicationContext: Context) : Thread.Uncaught
 		} catch (t: Throwable) {
 			t.printStackTrace()
 		}
-		e.printStackTrace()
+		Log.e("CRASH", e.message, e)
 		exitProcess(1)
 	}
 }

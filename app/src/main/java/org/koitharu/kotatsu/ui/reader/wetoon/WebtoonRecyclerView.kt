@@ -2,15 +2,26 @@ package org.koitharu.kotatsu.ui.reader.wetoon
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.View
+import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.sign
 
 class WebtoonRecyclerView @JvmOverloads constructor(
 	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
+
+	override fun startNestedScroll(axes: Int) = startNestedScroll(axes, ViewCompat.TYPE_TOUCH)
+
+	override fun startNestedScroll(axes: Int, type: Int): Boolean {
+		return true
+	}
+
+	override fun dispatchNestedPreScroll(
+		dx: Int,
+		dy: Int,
+		consumed: IntArray?,
+		offsetInWindow: IntArray?
+	) = dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, ViewCompat.TYPE_TOUCH)
 
 	override fun dispatchNestedPreScroll(
 		dx: Int,
@@ -20,21 +31,11 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		type: Int
 	): Boolean {
 		val consumedY = consumeVerticalScroll(dy)
-		val superRes = super.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
-		consumed?.set(1, consumed[1] + consumedY)
-		return superRes || consumedY != 0
-	}
-
-	override fun dispatchNestedPreScroll(
-		dx: Int,
-		dy: Int,
-		consumed: IntArray?,
-		offsetInWindow: IntArray?
-	): Boolean {
-		val consumedY = consumeVerticalScroll(dy)
-		val superRes = super.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow)
-		consumed?.set(1, consumed[1] + consumedY)
-		return superRes || consumedY != 0
+		if (consumed != null) {
+			consumed[0] = 0
+			consumed[1] = consumedY
+		}
+		return consumedY != 0
 	}
 
 	private fun consumeVerticalScroll(dy: Int): Int {
