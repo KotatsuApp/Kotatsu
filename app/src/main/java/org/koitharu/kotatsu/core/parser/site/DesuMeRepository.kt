@@ -4,9 +4,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.domain.MangaLoaderContext
+import org.koitharu.kotatsu.utils.ext.map
+import org.koitharu.kotatsu.utils.ext.mapIndexed
+import org.koitharu.kotatsu.utils.ext.parseHtml
+import org.koitharu.kotatsu.utils.ext.parseJson
 
-class DesuMeRepository : RemoteMangaRepository() {
+class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
 
 	override val source = MangaSource.DESUME
 

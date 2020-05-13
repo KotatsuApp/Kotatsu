@@ -51,13 +51,12 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 				.cacheControl(CacheUtils.CONTROL_DISABLED)
 				.build()
 			okHttp.newCall(request).await().use { response ->
-				val body = response.body!!
-				val type = body.contentType()
-				check(type?.type == "image") {
-					"Unexpected content type ${type?.type}/${type?.subtype}"
+				val body = response.body
+				checkNotNull(body) {
+					"Null response"
 				}
 				cache.put(url) { out ->
-					response.body!!.byteStream().copyTo(out)
+					body.byteStream().copyTo(out)
 				}
 			}
 		}

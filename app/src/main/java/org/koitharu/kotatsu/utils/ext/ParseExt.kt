@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.utils.ext
 
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
+import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -25,6 +26,15 @@ fun Response.parseJson(): JSONObject {
 	try {
 		val string = body?.string() ?: throw NullPointerException("Response body is null")
 		return JSONObject(string)
+	} finally {
+		closeQuietly()
+	}
+}
+
+fun Response.parseJsonArray(): JSONArray {
+	try {
+		val string = body?.string() ?: throw NullPointerException("Response body is null")
+		return JSONArray(string)
 	} finally {
 		closeQuietly()
 	}

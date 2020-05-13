@@ -5,11 +5,12 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaTag
+import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.parseHtml
 import org.koitharu.kotatsu.utils.ext.withDomain
 
-class HenChanRepository : ChanRepository() {
+class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 
 	override val defaultDomain = "h-chan.me"
 	override val source = MangaSource.HENCHAN

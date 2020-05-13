@@ -10,6 +10,7 @@ import org.junit.runners.Parameterized
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.SourceConfig
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.domain.MangaProviderFactory
@@ -88,6 +89,8 @@ class RemoteRepositoryTest(source: MangaSource) {
 					module {
 						factory {
 							OkHttpClient.Builder()
+								.cookieJar(TemporaryCookieJar())
+								.addInterceptor(UserAgentInterceptor)
 								.connectTimeout(20, TimeUnit.SECONDS)
 								.readTimeout(60, TimeUnit.SECONDS)
 								.writeTimeout(20, TimeUnit.SECONDS)

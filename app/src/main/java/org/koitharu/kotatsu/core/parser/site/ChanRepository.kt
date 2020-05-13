@@ -4,9 +4,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
 
-abstract class ChanRepository : RemoteMangaRepository() {
+abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(
+	loaderContext
+) {
 
 	protected abstract val defaultDomain: String
 

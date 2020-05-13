@@ -4,11 +4,12 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.parseHtml
 import org.koitharu.kotatsu.utils.ext.withDomain
 
-class YaoiChanRepository : ChanRepository() {
+class YaoiChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 
 	override val source = MangaSource.YAOICHAN
 	override val defaultDomain = "yaoi-chan.me"

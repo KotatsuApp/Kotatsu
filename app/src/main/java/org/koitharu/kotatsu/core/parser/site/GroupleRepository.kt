@@ -4,9 +4,11 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
 
-abstract class GroupleRepository : RemoteMangaRepository() {
+abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
+	RemoteMangaRepository(loaderContext) {
 
 	protected abstract val defaultDomain: String
 
@@ -28,8 +30,11 @@ abstract class GroupleRepository : RemoteMangaRepository() {
 				"https://$domain/search",
 				mapOf("q" to query, "offset" to offset.toString())
 			)
-			tag == null -> loaderContext.httpGet("https://$domain/list?sortType=${getSortKey(
-				sortOrder)}&offset=$offset")
+			tag == null -> loaderContext.httpGet(
+				"https://$domain/list?sortType=${getSortKey(
+					sortOrder
+				)}&offset=$offset"
+			)
 			else -> loaderContext.httpGet(
 				"https://$domain/list/genre/${tag.key}?sortType=${getSortKey(
 					sortOrder

@@ -12,7 +12,6 @@ object CacheUtils {
 
 	@JvmStatic
 	val CONTROL_DISABLED = CacheControl.Builder()
-		.noCache()
 		.noStore()
 		.build()
 

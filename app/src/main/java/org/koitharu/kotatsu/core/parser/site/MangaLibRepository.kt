@@ -6,9 +6,11 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
 
-open class MangaLibRepository : RemoteMangaRepository() {
+open class MangaLibRepository(loaderContext: MangaLoaderContext) :
+	RemoteMangaRepository(loaderContext) {
 
 	protected open val defaultDomain = "mangalib.me"
 
@@ -28,6 +30,9 @@ open class MangaLibRepository : RemoteMangaRepository() {
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
+		if (!query.isNullOrEmpty()) {
+			return search(query)
+		}
 		val domain = conf.getDomain(defaultDomain)
 		val page = (offset / 60f).toIntUp()
 		val url = buildString {
@@ -107,6 +112,7 @@ open class MangaLibRepository : RemoteMangaRepository() {
 							)
 						)
 					}
+					chapters.reverse()
 					break@scripts
 				}
 			}
@@ -192,5 +198,26 @@ open class MangaLibRepository : RemoteMangaRepository() {
 		SortOrder.UPDATED -> "desc&sort=last_chapter_at"
 		SortOrder.NEWEST -> "desc&sort=created_at"
 		else -> "desc&sort=last_chapter_at"
+	}
+
+	private suspend fun search(query: String): List<Manga> {
+		val domain = conf.getDomain(defaultDomain)
+		val json = loaderContext.httpGet("https://$domain/search?query=${query.urlEncoded()}")
+			.parseJsonArray()
+		return json.map { jo ->
+			val url = "https://$domain/${jo.getString("slug")}"
+			Manga(
+				id = url.longHashCode(),
+				url = url,
+				title = jo.getString("rus_name"),
+				altTitle = jo.getString("name"),
+				author = null,
+				tags = emptySet(),
+				rating = Manga.NO_RATING,
+				state = null,
+				source = source,
+				coverUrl = "https://$domain/uploads/cover/${jo.getString("slug")}/${jo.getString("cover")}/cover_thumb.jpg"
+			)
+		}
 	}
 }
