@@ -21,6 +21,7 @@ import moxy.ktx.moxyPresenter
 import org.koin.core.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.prefs.AppSection
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BaseActivity
@@ -65,8 +66,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		supportFragmentManager.findFragmentById(R.id.container)?.let {
 			fab.isVisible = it is HistoryListFragment
 		} ?: run {
-			navigationView.setCheckedItem(R.id.nav_history)
-			setPrimaryFragment(HistoryListFragment.newInstance())
+			openDefaultSection()
 		}
 		drawer.postDelayed(2000) {
 			AppUpdateService.startIfRequired(applicationContext)
@@ -106,9 +106,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			val source = MangaSource.values().getOrNull(item.itemId) ?: return false
 			setPrimaryFragment(RemoteListFragment.newInstance(source))
 		} else when (item.itemId) {
-			R.id.nav_history -> setPrimaryFragment(HistoryListFragment.newInstance())
-			R.id.nav_favourites -> setPrimaryFragment(FavouritesContainerFragment.newInstance())
-			R.id.nav_local_storage -> setPrimaryFragment(LocalListFragment.newInstance())
+			R.id.nav_history -> {
+				settings.defaultSection = AppSection.HISTORY
+				setPrimaryFragment(HistoryListFragment.newInstance())
+			}
+			R.id.nav_favourites -> {
+				settings.defaultSection = AppSection.FAVOURITES
+				setPrimaryFragment(FavouritesContainerFragment.newInstance())
+			}
+			R.id.nav_local_storage -> {
+				settings.defaultSection = AppSection.LOCAL
+				setPrimaryFragment(LocalListFragment.newInstance())
+			}
 			R.id.nav_action_settings -> {
 				startActivity(SettingsActivity.newIntent(this))
 				return true
@@ -163,6 +172,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			getString(R.string.key_sources_hidden),
 			getString(R.string.key_sources_order) -> {
 				initSideMenu(MangaProviderFactory.getSources(includeHidden = false))
+			}
+		}
+	}
+
+	private fun openDefaultSection() {
+		when(settings.defaultSection) {
+			AppSection.LOCAL -> {
+				navigationView.setCheckedItem(R.id.nav_local_storage)
+				setPrimaryFragment(LocalListFragment.newInstance())
+			}
+			AppSection.FAVOURITES -> {
+				navigationView.setCheckedItem(R.id.nav_favourites)
+				setPrimaryFragment(FavouritesContainerFragment.newInstance())
+			}
+			AppSection.HISTORY -> {
+				navigationView.setCheckedItem(R.id.nav_history)
+				setPrimaryFragment(HistoryListFragment.newInstance())
 			}
 		}
 	}

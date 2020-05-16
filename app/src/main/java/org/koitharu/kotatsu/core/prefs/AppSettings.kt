@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.core.prefs
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
-import android.os.StatFs
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
@@ -25,6 +24,12 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		ListMode::class.java,
 		resources.getString(R.string.key_list_mode),
 		ListMode.DETAILED_LIST
+	)
+
+	var defaultSection by EnumPreferenceDelegate(
+		AppSection::class.java,
+		resources.getString(R.string.key_app_section),
+		AppSection.HISTORY
 	)
 
 	val theme by StringIntPreferenceDelegate(
