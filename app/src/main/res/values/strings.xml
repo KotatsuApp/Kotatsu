@@ -133,4 +133,6 @@
 	<string name="other_storage">Other storage</string>
 	<string name="use_ssl">Use secure connection (HTTPS)</string>
 	<string name="done">Done</string>
+	<string name="all_favourites">All favourites</string>
+	<string name="favourites_category_empty">This category is empty</string>
 </resources>

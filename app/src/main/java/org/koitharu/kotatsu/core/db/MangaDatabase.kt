@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.core.db.entity.*
 	entities = [
 		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
 		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class, TrackEntity::class
-	], version = 4
+	], version = 5
 )
 abstract class MangaDatabase : RoomDatabase() {
 

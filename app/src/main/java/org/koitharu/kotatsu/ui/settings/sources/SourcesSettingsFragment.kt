@@ -42,6 +42,6 @@ class SourcesSettingsFragment : BaseFragment(R.layout.fragment_settings_sources)
 
 	override fun onItemLongClick(item: MangaSource, position: Int, view: View): Boolean {
 		reorderHelper.startDrag(recyclerView.findViewHolderForAdapterPosition(position) ?: return false)
-		return super.onItemLongClick(item, position, view)
+		return true
 	}
 }

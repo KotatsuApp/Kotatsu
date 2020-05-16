@@ -10,6 +10,6 @@ class CategoryHolder(parent: ViewGroup) :
 	BaseViewHolder<FavouriteCategory, Unit>(parent, R.layout.item_category) {
 
 	override fun onBind(data: FavouriteCategory, extra: Unit) {
-		textView.text = data.title
+		textView_title.text = data.title
 	}
 }

@@ -24,7 +24,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BaseActivity
-import org.koitharu.kotatsu.ui.main.list.favourites.FavouritesListFragment
+import org.koitharu.kotatsu.ui.main.list.favourites.FavouritesContainerFragment
 import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
 import org.koitharu.kotatsu.ui.main.list.local.LocalListFragment
 import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
@@ -107,7 +107,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			setPrimaryFragment(RemoteListFragment.newInstance(source))
 		} else when (item.itemId) {
 			R.id.nav_history -> setPrimaryFragment(HistoryListFragment.newInstance())
-			R.id.nav_favourites -> setPrimaryFragment(FavouritesListFragment.newInstance())
+			R.id.nav_favourites -> setPrimaryFragment(FavouritesContainerFragment.newInstance())
 			R.id.nav_local_storage -> setPrimaryFragment(LocalListFragment.newInstance())
 			R.id.nav_action_settings -> {
 				startActivity(SettingsActivity.newIntent(this))

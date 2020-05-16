@@ -8,5 +8,6 @@ import java.util.*
 data class FavouriteCategory(
 	val id: Long,
 	val title: String,
+	val sortKey: Int,
 	val createdAt: Date
 ) : Parcelable

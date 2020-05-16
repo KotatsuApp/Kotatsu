@@ -1,49 +1,38 @@
 package org.koitharu.kotatsu.ui.main.list.favourites
 
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import kotlinx.android.synthetic.main.fragment_list.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.ui.main.list.MangaListFragment
 import org.koitharu.kotatsu.ui.main.list.MangaListView
-import org.koitharu.kotatsu.ui.main.list.favourites.categories.CategoriesActivity
+import org.koitharu.kotatsu.utils.ext.withArgs
 
 class FavouritesListFragment : MangaListFragment<Unit>(), MangaListView<Unit> {
 
 	private val presenter by moxyPresenter(factory = ::FavouritesListPresenter)
 
+	private val categoryId: Long
+		get() = arguments?.getLong(ARG_CATEGORY_ID) ?: 0L
+
 	override fun onRequestMoreItems(offset: Int) {
-		presenter.loadList(offset)
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		inflater.inflate(R.menu.opt_favourites, menu)
-		super.onCreateOptionsMenu(menu, inflater)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_categories -> {
-			context?.let {
-				startActivity(CategoriesActivity.newIntent(it))
-			}
-			true
-		}
-		else -> super.onOptionsItemSelected(item)
-	}
-
-	override fun getTitle(): CharSequence? {
-		return getString(R.string.favourites)
+		presenter.loadList(categoryId, offset)
 	}
 
 	override fun setUpEmptyListHolder() {
-		textView_holder.setText(R.string.you_have_not_favourites_yet)
+		textView_holder.setText(if (categoryId == 0L) {
+			R.string.you_have_not_favourites_yet
+		} else {
+			R.string.favourites_category_empty
+		})
 		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
 	}
 
 	companion object {
 
-		fun newInstance() = FavouritesListFragment()
+		private const val ARG_CATEGORY_ID = "category_id"
+
+		fun newInstance(categoryId: Long) = FavouritesListFragment().withArgs(1) {
+			putLong(ARG_CATEGORY_ID, categoryId)
+		}
 	}
 }

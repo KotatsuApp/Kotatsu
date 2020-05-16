@@ -80,7 +80,7 @@ class ShelfConfigActivity : BaseActivity(), FavouriteCategoriesView,
 
 	override fun onCategoriesChanged(categories: List<FavouriteCategory>) {
 		val data = ArrayList<FavouriteCategory>(categories.size + 1)
-		data += FavouriteCategory(0L, getString(R.string.favourites), Date())
+		data += FavouriteCategory(0L, getString(R.string.all_favourites), -1, Date())
 		data += categories
 		adapter.replaceData(data)
 	}

@@ -10,6 +10,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_categories.*
@@ -28,6 +29,7 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 	private val presenter by moxyPresenter(factory = ::FavouriteCategoriesPresenter)
 
 	private lateinit var adapter: CategoriesAdapter
+	private lateinit var reorderHelper: ItemTouchHelper
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -38,6 +40,8 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 		recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
 		recyclerView.adapter = adapter
 		fab_add.setOnClickListener(this)
+		reorderHelper = ItemTouchHelper(ReorderHelperCallback())
+		reorderHelper.attachToRecyclerView(recyclerView)
 	}
 
 	override fun onClick(v: View) {
@@ -54,6 +58,11 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 			}
 			true
 		}
+	}
+
+	override fun onItemLongClick(item: FavouriteCategory, position: Int, view: View): Boolean {
+		reorderHelper.startDrag(recyclerView.findViewHolderForAdapterPosition(position) ?: return false)
+		return true
 	}
 
 	override fun onCategoriesChanged(categories: List<FavouriteCategory>) {
@@ -104,6 +113,25 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 				presenter.createCategory(name)
 			}.create()
 			.show()
+	}
+
+	private inner class ReorderHelperCallback : ItemTouchHelper.SimpleCallback(
+		ItemTouchHelper.DOWN or ItemTouchHelper.UP, 0
+	) {
+
+		override fun onMove(
+			recyclerView: RecyclerView,
+			viewHolder: RecyclerView.ViewHolder,
+			target: RecyclerView.ViewHolder
+		): Boolean {
+			val oldPos = viewHolder.bindingAdapterPosition
+			val newPos = target.bindingAdapterPosition
+			adapter.moveItem(oldPos, newPos)
+			presenter.storeCategoriesOrder(adapter.items.map { it.id })
+			return true
+		}
+
+		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
 	}
 
 	companion object {

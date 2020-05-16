@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.ui.main.list.favourites.categories
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.presenterScope
@@ -14,6 +16,9 @@ import org.koitharu.kotatsu.ui.common.BasePresenter
 class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 
 	private lateinit var repository: FavouritesRepository
+	private val reorderMutex by lazy {
+		Mutex()
+	}
 
 	override fun onFirstViewAttach() {
 		repository = FavouritesRepository()
@@ -28,7 +33,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 					repository.getAllCategories()
 				}
 				viewState.onCategoriesChanged(categories)
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
@@ -44,7 +49,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 					repository.getCategories(manga.id)
 				}
 				viewState.onCheckedCategoriesChanged(categories.map { it.id.toInt() }.toSet())
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
@@ -61,7 +66,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 					repository.getAllCategories()
 				}
 				viewState.onCategoriesChanged(categories)
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
@@ -78,7 +83,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 					repository.getAllCategories()
 				}
 				viewState.onCategoriesChanged(categories)
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
@@ -95,7 +100,22 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 					repository.getAllCategories()
 				}
 				viewState.onCategoriesChanged(categories)
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
+				viewState.onError(e)
+			}
+		}
+	}
+
+	fun storeCategoriesOrder(orderedIds: List<Long>) {
+		presenterScope.launch {
+			try {
+				reorderMutex.withLock {
+					repository.reorderCategories(orderedIds)
+				}
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
@@ -110,7 +130,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 				withContext(Dispatchers.IO) {
 					repository.addToCategory(manga,categoryId)
 				}
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
@@ -125,7 +145,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 				withContext(Dispatchers.IO) {
 					repository.removeFromCategory(manga, categoryId)
 				}
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}

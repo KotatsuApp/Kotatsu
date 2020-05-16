@@ -157,6 +157,8 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 		}
 	}
 
+	override fun onCategoriesChanged() = Unit
+
 	override fun onDestroy() {
 		HistoryRepository.unsubscribe(this)
 		FavouritesRepository.unsubscribe(this)

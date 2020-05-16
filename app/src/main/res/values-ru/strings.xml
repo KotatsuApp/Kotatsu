@@ -132,4 +132,6 @@
 	<string name="other_storage">Другое хранилище</string>
 	<string name="use_ssl">Защищённое соединение (HTTPS)</string>
 	<string name="done">Готово</string>
+	<string name="all_favourites">Всё избранное</string>
+	<string name="favourites_category_empty">В этой категории ничего нет</string>
 </resources>

@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/textView"
 	android:layout_width="match_parent"
-	android:layout_height="?android:listPreferredItemHeight"
-	android:background="?android:selectableItemBackground"
-	android:gravity="start|center_vertical"
-	android:paddingStart="?android:listPreferredItemPaddingStart"
-	android:paddingEnd="?android:listPreferredItemPaddingEnd"
-	android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-	android:textColor="?android:textColorPrimary"
-	tools:text="@tools:sample/lorem[4]" />
+	android:layout_height="?android:listPreferredItemHeightSmall"
+	android:background="?android:windowBackground"
+	android:gravity="center_vertical"
+	android:orientation="horizontal">
+
+	<ImageView
+		android:id="@+id/imageView_handle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:padding="?listPreferredItemPaddingStart"
+		android:scaleType="center"
+		android:src="@drawable/ic_reorder_handle" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:ellipsize="marquee"
+		android:fadingEdge="horizontal"
+		android:singleLine="true"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:textColor="?android:attr/textColorPrimary"
+		tools:text="@tools:sample/lorem[1]" />
+
+	<ImageView
+		android:id="@+id/imageView_more"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:padding="?listPreferredItemPaddingEnd"
+		android:scaleType="center"
+		android:src="@drawable/ic_more" />
+
+</LinearLayout>

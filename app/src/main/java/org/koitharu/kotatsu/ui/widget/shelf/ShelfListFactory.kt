@@ -30,7 +30,13 @@ class ShelfListFactory(private val context: Context, widgetId: Int) : RemoteView
 	override fun onDataSetChanged() {
 		dataSet.clear()
 		val data = runBlocking {
-			FavouritesRepository().getManga(config.categoryId, 0)
+			val category = config.categoryId
+			val repo = FavouritesRepository()
+			if (category == 0L) {
+				repo.getAllManga()
+			} else {
+				repo.getManga(category)
+			}
 		}
 		dataSet.addAll(data)
 	}

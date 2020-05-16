@@ -18,8 +18,18 @@ class FavouritesRepository : KoinComponent {
 
 	private val db: MangaDatabase by inject()
 
+	suspend fun getAllManga(): List<Manga> {
+		val entities = db.favouritesDao.findAll()
+		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
+	}
+
 	suspend fun getAllManga(offset: Int): List<Manga> {
 		val entities = db.favouritesDao.findAll(offset, 20)
+		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
+	}
+
+	suspend fun getManga(categoryId: Long): List<Manga> {
+		val entities = db.favouritesDao.findAll(categoryId)
 		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
 	}
 
@@ -29,7 +39,7 @@ class FavouritesRepository : KoinComponent {
 	}
 
 	suspend fun getAllCategories(): List<FavouriteCategory> {
-		val entities = db.favouriteCategoriesDao.findAll("created_at")
+		val entities = db.favouriteCategoriesDao.findAll()
 		return entities.map { it.toFavouriteCategory() }
 	}
 
@@ -42,17 +52,32 @@ class FavouritesRepository : KoinComponent {
 		val entity = FavouriteCategoryEntity(
 			title = title,
 			createdAt = System.currentTimeMillis(),
+			sortKey = db.favouriteCategoriesDao.getNextSortKey(),
 			categoryId = 0
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
+		notifyCategoriesChanged()
 		return entity.toFavouriteCategory(id)
 	}
+
 	suspend fun renameCategory(id: Long, title: String) {
 		db.favouriteCategoriesDao.update(id, title)
+		notifyCategoriesChanged()
 	}
 
 	suspend fun removeCategory(id: Long) {
 		db.favouriteCategoriesDao.delete(id)
+		notifyCategoriesChanged()
+	}
+
+	suspend fun reorderCategories(orderedIds: List<Long>) {
+		val dao = db.favouriteCategoriesDao
+		db.withTransaction {
+			for ((i, id) in orderedIds.withIndex()) {
+				dao.update(id, i)
+			}
+		}
+		notifyCategoriesChanged()
 	}
 
 	suspend fun addToCategory(manga: Manga, categoryId: Long) {
@@ -86,6 +111,12 @@ class FavouritesRepository : KoinComponent {
 		private suspend fun notifyFavouritesChanged(mangaId: Long) {
 			withContext(Dispatchers.Main) {
 				listeners.forEach { x -> x.onFavouritesChanged(mangaId) }
+			}
+		}
+
+		private suspend fun notifyCategoriesChanged() {
+			withContext(Dispatchers.Main) {
+				listeners.forEach { x -> x.onCategoriesChanged() }
 			}
 		}
 	}

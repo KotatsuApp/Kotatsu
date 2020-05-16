@@ -21,12 +21,12 @@ class FavouritesListPresenter : BasePresenter<MangaListView<Unit>>() {
 		super.onFirstViewAttach()
 	}
 
-	fun loadList(offset: Int) {
+	fun loadList(categoryId: Long, offset: Int) {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
-					repository.getAllManga(offset = offset)
+					repository.getManga(categoryId = categoryId, offset = offset)
 				}
 				if (offset == 0) {
 					viewState.onListChanged(list)
