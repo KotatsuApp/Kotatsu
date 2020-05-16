@@ -134,7 +134,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			newChapters.size, newChapters.size)
 		with(builder) {
 			setContentText(summary)
-			setContentText(manga.title)
+			setContentTitle(manga.title)
 			setNumber(newChapters.size)
 			setLargeIcon(Coil.execute(GetRequestBuilder(applicationContext)
 				.data(manga.coverUrl)

@@ -26,7 +26,11 @@ class FavouritesListPresenter : BasePresenter<MangaListView<Unit>>() {
 			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
-					repository.getManga(categoryId = categoryId, offset = offset)
+					if (categoryId == 0L) {
+						repository.getAllManga(offset = offset)
+					} else {
+						repository.getManga(categoryId = categoryId, offset = offset)
+					}
 				}
 				if (offset == 0) {
 					viewState.onListChanged(list)

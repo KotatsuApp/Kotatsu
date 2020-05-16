@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.ui.settings.sources
 
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_settings_sources.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -27,6 +29,7 @@ class SourcesSettingsFragment : BaseFragment(R.layout.fragment_settings_sources)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		recyclerView.addItemDecoration(DividerItemDecoration(view.context, RecyclerView.VERTICAL))
 		recyclerView.adapter = SourcesAdapter(this)
 		reorderHelper.attachToRecyclerView(recyclerView)
 	}

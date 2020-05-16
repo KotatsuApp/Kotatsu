@@ -105,7 +105,7 @@ class FavouritesRepository : KoinComponent {
 		}
 
 		fun unsubscribe(listener: OnFavouritesChangeListener) {
-			listeners += listener
+			listeners -= listener
 		}
 
 		private suspend fun notifyFavouritesChanged(mangaId: Long) {

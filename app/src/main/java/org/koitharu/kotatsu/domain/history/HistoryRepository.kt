@@ -86,7 +86,7 @@ class HistoryRepository : KoinComponent {
 		}
 
 		fun unsubscribe(listener: OnHistoryChangeListener) {
-			listeners += listener
+			listeners -= listener
 		}
 
 		private suspend fun notifyHistoryChanged() {
