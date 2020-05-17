@@ -123,8 +123,8 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 	}
 
 	override fun onLongClick(v: View): Boolean {
-		when {
-			v.id == R.id.button_read -> {
+		when (v.id) {
+			R.id.button_read -> {
 				if (history == null) {
 					return false
 				}

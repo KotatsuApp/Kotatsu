@@ -13,5 +13,12 @@ class WebtoonFrameLayout @JvmOverloads constructor(
 		findViewById<WebtoonImageView>(R.id.ssiv)
 	}
 
-	fun dispatchVerticalScroll(dy: Int) = target.dispatchVerticalScroll(dy)
+	fun dispatchVerticalScroll(dy: Int): Int {
+		if (dy == 0) {
+			return 0
+		}
+		val oldScroll = target.getScroll()
+		target.scrollBy(dy)
+		return target.getScroll() - oldScroll
+	}
 }

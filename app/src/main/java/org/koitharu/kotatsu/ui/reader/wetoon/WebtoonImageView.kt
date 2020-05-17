@@ -2,42 +2,66 @@ package org.koitharu.kotatsu.ui.reader.wetoon
 
 import android.content.Context
 import android.graphics.PointF
-import android.graphics.RectF
 import android.util.AttributeSet
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.utils.ext.toIntUp
 
-class WebtoonImageView : SubsamplingScaleImageView {
+class WebtoonImageView @JvmOverloads constructor(context: Context, attr: AttributeSet? = null) :
+	SubsamplingScaleImageView(context, attr) {
 
-	constructor(context: Context?) : super(context)
-	constructor(context: Context?, attr: AttributeSet?) : super(context, attr)
-
-	private val pan = RectF()
 	private val ct = PointF()
 
-	fun dispatchVerticalScroll(dy: Int): Int {
+	private var scrollPos = 0
+	private var scrollRange = SCROLL_UNKNOWN
+
+	fun scrollBy(delta: Int) {
+		val maxScroll = getScrollRange()
+		if (maxScroll == 0) {
+			return
+		}
+		val newScroll = scrollPos + delta
+		scrollToInternal(newScroll.coerceIn(0, maxScroll))
+	}
+
+	fun scrollTo(y: Int) {
+		val maxScroll = getScrollRange()
+		if (maxScroll == 0) {
+			return
+		}
+		scrollToInternal(y.coerceIn(0, maxScroll))
+	}
+
+	fun getScroll() = scrollPos
+
+	fun getScrollRange(): Int {
+		if (scrollRange == SCROLL_UNKNOWN) {
+			computeScrollRange()
+		}
+		return scrollRange.coerceAtLeast(0)
+	}
+
+	override fun recycle() {
+		scrollRange = SCROLL_UNKNOWN
+		scrollPos = 0
+		super.recycle()
+	}
+
+	private fun scrollToInternal(pos: Int) {
+		scrollPos = pos
+		ct.set(sWidth / 2f, (height / 2f + pos.toFloat()) / minScale)
+		setScaleAndCenter(minScale, ct)
+	}
+
+	private fun computeScrollRange() {
 		if (!isReady) {
-			return 0
+			return
 		}
-		getPanRemaining(pan)
-		// pan.offset(0f, -nonConsumedScroll.toFloat())
-		ct.set(width / 2f, height / 2f)
-		viewToSourceCoord(ct.x, ct.y, ct) ?: return 0
-		val s = scale
-		return when {
-			dy > 0 -> {
-				val delta = minOf(pan.bottom.toIntUp(), dy)
-				ct.offset(0f, delta.toFloat() / s)
-				setScaleAndCenter(s, ct)
-				delta
-			}
-			dy < 0 -> {
-				val delta = minOf(pan.top.toInt(), -dy)
-				ct.offset(0f, -delta.toFloat() / s)
-				setScaleAndCenter(s, ct)
-				-delta
-			}
-			else -> 0
-		}
+		val totalHeight = (sHeight * minScale).toIntUp()
+		scrollRange = (totalHeight - height).coerceAtLeast(0)
+	}
+
+	private companion object {
+
+		const val SCROLL_UNKNOWN = -1
 	}
 }

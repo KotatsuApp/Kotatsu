@@ -139,7 +139,16 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 				if (chaptersCount > 5) {
 					AlertDialog.Builder(this)
 						.setTitle(R.string.save_manga)
-						.setMessage(getString(R.string.large_manga_save_confirm, chaptersCount))
+						.setMessage(
+							getString(
+								R.string.large_manga_save_confirm,
+								resources.getQuantityString(
+									R.plurals.chapters,
+									chaptersCount,
+									chaptersCount
+								)
+							)
+						)
 						.setNegativeButton(android.R.string.cancel, null)
 						.setPositiveButton(R.string.save) { _, _ ->
 							DownloadService.start(this, it)
@@ -174,7 +183,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 	}
 
 	override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
-		tab.text = when(position) {
+		tab.text = when (position) {
 			0 -> getString(R.string.details)
 			1 -> getString(R.string.chapters)
 			else -> null

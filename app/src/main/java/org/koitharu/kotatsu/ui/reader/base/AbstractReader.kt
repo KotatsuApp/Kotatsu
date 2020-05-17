@@ -54,7 +54,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 			pages.addLast(state.chapterId, it)
 			adapter?.notifyDataSetChanged()
 			setCurrentItem(state.page, false)
-			if (state.scroll != 0f) {
+			if (state.scroll != 0) {
 				restorePageScroll(state.page, state.scroll)
 			}
 		}
@@ -196,7 +196,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 					if (pageId == 0L) {
 						0
 					} else {
-						it.indexOfFirst { it.id == pageId }.coerceAtLeast(0)
+						it.indexOfFirst { x -> x.id == pageId }.coerceAtLeast(0)
 					}, false
 				)
 			}
@@ -217,9 +217,9 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 
 	protected abstract fun getCurrentItem(): Int
 
-	protected abstract fun getCurrentPageScroll(): Float
+	protected abstract fun getCurrentPageScroll(): Int
 
-	protected abstract fun restorePageScroll(position: Int, scroll: Float)
+	protected abstract fun restorePageScroll(position: Int, scroll: Int)
 
 	protected abstract fun setCurrentItem(position: Int, isSmooth: Boolean)
 

@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.ui.reader.wetoon
 import android.content.Context
 import android.util.AttributeSet
 import androidx.core.view.ViewCompat
-import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 
 class WebtoonRecyclerView @JvmOverloads constructor(
@@ -39,13 +38,39 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 	}
 
 	private fun consumeVerticalScroll(dy: Int): Int {
-		val child = when {
-			dy > 0 -> children.firstOrNull { it is WebtoonFrameLayout }
-			dy < 0 -> children.lastOrNull { it is WebtoonFrameLayout }
-			else -> null
-		} ?: return 0
-		var scrollY = dy
-		scrollY -= (child as WebtoonFrameLayout).dispatchVerticalScroll(scrollY)
-		return dy - scrollY
+		if (childCount == 0) {
+			return 0
+		}
+		when {
+			dy > 0 -> {
+				val child = getChildAt(0) as WebtoonFrameLayout
+				var consumedByChild = child.dispatchVerticalScroll(dy)
+				if (consumedByChild < dy) {
+					if (childCount > 1) {
+						val nextChild = getChildAt(1) as WebtoonFrameLayout
+						val unconsumed = dy - consumedByChild - nextChild.top //will be consumed by scroll
+						if (unconsumed > 0) {
+							consumedByChild += nextChild.dispatchVerticalScroll(unconsumed)
+						}
+					}
+				}
+				return consumedByChild
+			}
+			dy < 0 -> {
+				val child = getChildAt(childCount - 1) as WebtoonFrameLayout
+				var consumedByChild = child.dispatchVerticalScroll(dy)
+				if (consumedByChild > dy) {
+					if (childCount > 1) {
+						val nextChild = getChildAt(childCount - 2) as WebtoonFrameLayout
+						val unconsumed = dy - consumedByChild + (height - nextChild.bottom) //will be consumed by scroll
+						if (unconsumed < 0) {
+							consumedByChild += nextChild.dispatchVerticalScroll(unconsumed)
+						}
+					}
+				}
+				return consumedByChild
+			}
+		}
+		return 0
 	}
 }

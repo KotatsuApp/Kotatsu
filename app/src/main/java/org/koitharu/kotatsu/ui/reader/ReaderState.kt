@@ -11,7 +11,7 @@ data class ReaderState(
 	val manga: Manga,
 	val chapterId: Long,
 	val page: Int,
-	val scroll: Float
+	val scroll: Int
 ) : Parcelable {
 
 	@IgnoredOnParcel

@@ -32,6 +32,6 @@ data class HistoryEntity(
 		updatedAt = Date(updatedAt),
 		chapterId = chapterId,
 		page = page,
-		scroll = scroll
+		scroll = scroll.toInt()
 	)
 }

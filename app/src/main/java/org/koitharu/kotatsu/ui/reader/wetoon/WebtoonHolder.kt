@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.ui.reader.wetoon
 
-import android.graphics.PointF
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -21,7 +20,7 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 	SubsamplingScaleImageView.OnImageEventListener, CoroutineScope by loader {
 
 	private var job: Job? = null
-	private var scrollToRestore = 0f
+	private var scrollToRestore = 0
 
 	init {
 		ssiv.setOnImageEventListener(this)
@@ -36,7 +35,7 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 
 	private fun doLoad(data: MangaPage, force: Boolean) {
 		job?.cancel()
-		scrollToRestore = 0f
+		scrollToRestore = 0
 		job = launch {
 			layout_error.isVisible = false
 			progressBar.isVisible = true
@@ -60,17 +59,11 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 		ssiv.recycle()
 	}
 
-	fun getScrollY() = ssiv.center?.y ?: 0f
+	fun getScrollY() = ssiv.getScroll()
 
-	fun restoreScroll(scroll: Float) {
+	fun restoreScroll(scroll: Int) {
 		if (ssiv.isReady) {
-			ssiv.setScaleAndCenter(
-				ssiv.scale,
-				PointF(
-					ssiv.sWidth / 2f,
-					scroll
-				)
-			)
+			ssiv.scrollTo(scroll)
 		} else {
 			scrollToRestore = scroll
 		}
@@ -80,17 +73,11 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 		ssiv.maxScale = 2f * ssiv.width / ssiv.sWidth.toFloat()
 		ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM)
 		ssiv.minScale = ssiv.width / ssiv.sWidth.toFloat()
-		ssiv.setScaleAndCenter(
-			ssiv.minScale,
-			PointF(
-				ssiv.sWidth / 2f,
-				when {
-					scrollToRestore != 0f -> scrollToRestore
-					itemView.top < 0 -> ssiv.sHeight.toFloat()
-					else -> 0f
-				}
-			)
-		)
+		ssiv.scrollTo(when {
+			scrollToRestore != 0 -> scrollToRestore
+			itemView.top < 0 -> ssiv.getScrollRange()
+			else -> 0
+		})
 	}
 
 	override fun onImageLoadError(e: Exception) = onError(e)

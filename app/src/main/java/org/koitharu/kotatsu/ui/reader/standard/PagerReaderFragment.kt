@@ -62,9 +62,9 @@ class PagerReaderFragment : AbstractReader(R.layout.fragment_reader_standard),
 		pager.setCurrentItem(position, isSmooth)
 	}
 
-	override fun getCurrentPageScroll() = 0f
+	override fun getCurrentPageScroll() = 0
 
-	override fun restorePageScroll(position: Int, scroll: Float) = Unit
+	override fun restorePageScroll(position: Int, scroll: Int) = Unit
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 		when (key) {

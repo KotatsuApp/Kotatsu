@@ -15,6 +15,11 @@
 		<item quantity="few">%1$d новых главы</item>
 		<item quantity="many">%1$d новых глав</item>
 	</plurals>
+	<plurals name="chapters">
+		<item quantity="one">%1$d глава</item>
+		<item quantity="few">%1$d главы</item>
+		<item quantity="many">%1$d глав</item>
+	</plurals>
 	<plurals name="chapters_from_x">
 		<item quantity="one">%1$d глава из %2$d</item>
 		<item quantity="few">%1$d главы из %2$d</item>

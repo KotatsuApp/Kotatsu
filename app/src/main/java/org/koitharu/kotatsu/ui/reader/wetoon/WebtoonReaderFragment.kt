@@ -61,12 +61,12 @@ class WebtoonReaderFragment : AbstractReader(R.layout.fragment_reader_webtoon) {
 		)
 	}
 
-	override fun getCurrentPageScroll(): Float {
+	override fun getCurrentPageScroll(): Int {
 		return (recyclerView.findViewHolderForAdapterPosition(getCurrentItem()) as? WebtoonHolder)
-			?.getScrollY() ?: 0f
+			?.getScrollY() ?: 0
 	}
 
-	override fun restorePageScroll(position: Int, scroll: Float) {
+	override fun restorePageScroll(position: Int, scroll: Int) {
 		recyclerView.post {
 			val holder = recyclerView.findViewHolderForAdapterPosition(position) ?: return@post
 			(holder as WebtoonHolder).restoreScroll(scroll)

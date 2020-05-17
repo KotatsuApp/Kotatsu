@@ -37,7 +37,7 @@ class SetCookieCache : CookieCache {
 
 	override fun iterator(): MutableIterator<Cookie> = SetCookieCacheIterator()
 
-	private inner class SetCookieCacheIterator() : MutableIterator<Cookie> {
+	private inner class SetCookieCacheIterator : MutableIterator<Cookie> {
 
 		private val iterator = cookies.iterator()
 

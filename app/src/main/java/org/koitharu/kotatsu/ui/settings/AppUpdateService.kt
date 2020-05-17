@@ -164,7 +164,7 @@ class AppUpdateService : BaseService() {
 			}
 			return try {
 				val md: MessageDigest = MessageDigest.getInstance("SHA1")
-				val publicKey: ByteArray = md.digest(c.getEncoded())
+				val publicKey: ByteArray = md.digest(c.encoded)
 				publicKey.byte2HexFormatted()
 			} catch (e: NoSuchAlgorithmException) {
 				e.printStackTrace()

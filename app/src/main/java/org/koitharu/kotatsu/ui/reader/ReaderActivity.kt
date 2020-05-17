@@ -212,7 +212,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 	}
 
-	override fun saveState(chapterId: Long, page: Int, scroll: Float) {
+	override fun saveState(chapterId: Long, page: Int, scroll: Int) {
 		state = state.copy(chapterId = chapterId, page = page, scroll = scroll)
 		ReaderPresenter.saveState(state)
 	}
@@ -311,7 +311,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		state = state.copy(
 			chapterId = chapter.id,
 			page = 0,
-			scroll = 0f
+			scroll = 0
 		)
 		reader?.updateState(chapterId = chapter.id)
 	}
@@ -395,7 +395,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				chapterId = if (chapterId == -1L) manga.chapters?.firstOrNull()?.id
 					?: -1 else chapterId,
 				page = 0,
-				scroll = 0f
+				scroll = 0
 			)
 		)
 

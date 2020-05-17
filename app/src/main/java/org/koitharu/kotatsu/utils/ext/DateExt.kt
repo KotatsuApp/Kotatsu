@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.utils.ext
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @SuppressLint("SimpleDateFormat")
 fun Date.format(pattern: String): String = SimpleDateFormat(pattern).format(this)

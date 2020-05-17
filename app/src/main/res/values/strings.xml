@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 	<string name="app_name" translatable="false">Kotatsu</string>
 	<string name="close_menu">Close menu</string>
 	<string name="open_menu">Open menu</string>
@@ -103,10 +103,10 @@
 	<string name="app_update_available">Application update is available</string>
 	<string name="show_notification_app_update">Show notification if update is available</string>
 	<string name="open_in_browser">Open in browser</string>
-	<string name="large_manga_save_confirm">This manga has %d chapters. Do you want to save all of it?</string>
+	<string name="large_manga_save_confirm">This manga has %s. Do you want to save all of it?</string>
 	<string name="save_manga">Save manga</string>
 	<string name="notifications">Notifications</string>
-	<string name="enabled_d_from_d">Enabled %1$d from %2$d</string>
+	<string name="enabled_d_from_d" tools:ignore="PluralsCandidate">Enabled %1$d from %2$d</string>
 	<string name="new_chapters">New chapters</string>
 	<string name="show_notification_new_chapters">Notify about updates of manga you are reading</string>
 	<string name="download">Download</string>

@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.core.parser
 import android.annotation.SuppressLint
 import android.os.Build
 import okhttp3.Interceptor
-import okhttp3.Response
 import org.koitharu.kotatsu.BuildConfig
 import java.util.*
 
