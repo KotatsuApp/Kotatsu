@@ -22,6 +22,10 @@ Legacy build (Android 4.1+): [available here](https://github.com/nv95/Kotatsu/re
 * Standard and Webtoon-optimized reader
 * Notifications about new chapters
 
+### Coming Features
+
+* Global search
+
 ### Screenshots
 
 | ![Screenshot_20200226-210337](https://user-images.githubusercontent.com/8948226/80315102-3478db00-87fe-11ea-9ce8-4bbd1c254b2b.png) | ![Screenshot_20200226-210310](https://user-images.githubusercontent.com/8948226/80315110-3f337000-87fe-11ea-95df-944c196b6667.png) | ![Screenshot_20200226-210232](https://user-images.githubusercontent.com/8948226/80315121-49ee0500-87fe-11ea-8d9b-537a041bbf2f.png) |
