@@ -6,7 +6,7 @@ import androidx.annotation.DrawableRes
 import com.google.android.material.chip.Chip
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 
-class ChipsFactory(private val context: Context) {
+class ChipsFactory(val context: Context) {
 
 	fun create(convertView: Chip? = null, text: CharSequence, @DrawableRes iconRes: Int = 0,
 			   tag: Any? = null, onClickListener: View.OnClickListener? = null): Chip {

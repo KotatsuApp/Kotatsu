@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.ui.details
 
 import android.text.Spanned
 import android.view.View
+import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import coil.api.load
@@ -16,9 +17,11 @@ import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.main.list.favourites.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.search.MangaSearchSheet
+import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.addChips
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 import org.koitharu.kotatsu.utils.ext.textAndVisible
+import org.koitharu.kotatsu.utils.ext.toFileOrNull
 import kotlin.math.roundToInt
 
 class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetailsView,
@@ -66,6 +69,16 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 				tag = it,
 				onClickListener = this@MangaDetailsFragment
 			)
+		}
+		manga.url.toUri().toFileOrNull()?.let { f ->
+			chips_tags.addChips(listOf(f)) {
+				create(
+					text = FileSizeUtils.formatBytes(context, it.length()),
+					iconRes = R.drawable.ic_chip_storage,
+					tag = it,
+					onClickListener = this@MangaDetailsFragment
+				)
+			}
 		}
 		imageView_favourite.setOnClickListener(this)
 		button_read.setOnClickListener(this)

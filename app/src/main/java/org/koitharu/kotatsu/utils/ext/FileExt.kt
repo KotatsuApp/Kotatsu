@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
@@ -46,3 +47,5 @@ fun File.getStorageName(context: Context): String = safe {
 		else -> null
 	}
 } ?: context.getString(R.string.other_storage)
+
+fun Uri.toFileOrNull() = if (scheme == "file") path?.let(::File) else null
