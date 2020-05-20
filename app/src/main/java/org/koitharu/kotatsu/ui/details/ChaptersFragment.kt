@@ -123,6 +123,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 					manga ?: return false,
 					adapter.checkedItemsIds
 				)
+				mode.finish()
 				true
 			}
 			R.id.action_select_all -> {

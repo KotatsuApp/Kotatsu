@@ -104,6 +104,8 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 			manga?.source != null && manga?.source != MangaSource.LOCAL
 		menu.findItem(R.id.action_delete).isVisible =
 			manga?.source == MangaSource.LOCAL
+		menu.findItem(R.id.action_browser).isVisible =
+			manga?.source != MangaSource.LOCAL
 		menu.findItem(R.id.action_shortcut).isVisible =
 			ShortcutManagerCompat.isRequestPinShortcutSupported(this)
 		return super.onPrepareOptionsMenu(menu)

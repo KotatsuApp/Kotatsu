@@ -152,6 +152,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				intent, PendingIntent.FLAG_UPDATE_CURRENT))
 			setAutoCancel(true)
 			color = colorPrimary
+			setShortcutId(manga.id.toString())
 			priority = NotificationCompat.PRIORITY_DEFAULT
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 				builder.setSound(settings.notificationSound.toUriOrNull())
