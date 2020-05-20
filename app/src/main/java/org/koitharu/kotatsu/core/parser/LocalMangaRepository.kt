@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toFile
@@ -41,24 +42,34 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 
 	@Suppress("BlockingMethodInNonBlockingContext")
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val file = Uri.parse(chapter.url).toFile()
+		val uri = Uri.parse(chapter.url)
+		val file = uri.toFile()
 		val zip = ZipFile(file)
-		val pattern = zip.getEntry(MangaZip.INDEX_ENTRY)?.let(zip::readText)?.let(::MangaIndex)
-			?.getChapterNamesPattern(chapter)
-		val entries = if (pattern != null) {
-			zip.entries().asSequence()
-				.filter { x -> !x.isDirectory && x.name.substringBefore('.').matches(pattern) }
+		val index = zip.getEntry(MangaZip.INDEX_ENTRY)?.let(zip::readText)?.let(::MangaIndex)
+		var entries = zip.entries().asSequence()
+		entries = if (index != null) {
+			val pattern = index.getChapterNamesPattern(chapter)
+			entries.filter { x -> !x.isDirectory && x.name.substringBefore('.').matches(pattern) }
 		} else {
-			zip.entries().asSequence().filter { x -> !x.isDirectory }
-		}.toList().sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
-		return entries.map { x ->
-			val uri = zipUri(file, x.name)
-			MangaPage(
-				id = uri.longHashCode(),
-				url = uri,
-				source = MangaSource.LOCAL
-			)
+			val parent = uri.fragment.orEmpty()
+			entries.filter { x ->
+				!x.isDirectory && x.name.substringBeforeLast(
+					File.separatorChar,
+					""
+				) == parent
+			}
 		}
+		return entries
+			.toList()
+			.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
+			.map { x ->
+				val entryUri = zipUri(file, x.name)
+				MangaPage(
+					id = entryUri.longHashCode(),
+					url = entryUri,
+					source = MangaSource.LOCAL
+				)
+			}
 	}
 
 
@@ -67,43 +78,50 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 		return file.delete()
 	}
 
+	@SuppressLint("DefaultLocale")
 	fun getFromFile(file: File): Manga {
 		val zip = ZipFile(file)
 		val fileUri = file.toUri().toString()
 		val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
 		val index = entry?.let(zip::readText)?.let(::MangaIndex)
-		return index?.let {
-			it.getMangaInfo()?.let { x ->
-				x.copy(
-					source = MangaSource.LOCAL,
-					url = fileUri,
-					coverUrl = zipUri(
-						file,
-						entryName = it.getCoverEntry()
-							?: findFirstEntry(zip.entries())?.name.orEmpty()
-					),
-					chapters = x.chapters?.map { c -> c.copy(url = fileUri) }
-				)
-			}
-		} ?: run {
-			val title = file.nameWithoutExtension.replace("_", " ").capitalize()
-			Manga(
-				id = file.absolutePath.longHashCode(),
-				title = title,
-				url = fileUri,
+		val info = index?.getMangaInfo()
+		if (index != null && info != null) {
+			return info.copy(
 				source = MangaSource.LOCAL,
-				coverUrl = zipUri(file, findFirstEntry(zip.entries())?.name.orEmpty()),
-				chapters = listOf(
-					MangaChapter(
-						id = file.absolutePath.longHashCode(),
-						url = fileUri,
-						number = 1,
-						source = MangaSource.LOCAL,
-						name = title
-					)
-				)
+				url = fileUri,
+				coverUrl = zipUri(
+					file,
+					entryName = index.getCoverEntry()
+						?: findFirstEntry(zip.entries())?.name.orEmpty()
+				),
+				chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
 			)
 		}
+		// fallback
+		val title = file.nameWithoutExtension.replace("_", " ").capitalize()
+		val chapters = HashSet<String>()
+		for (x in zip.entries()) {
+			if (!x.isDirectory) {
+				chapters += x.name.substringBeforeLast(File.separatorChar, "")
+			}
+		}
+		val uriBuilder = file.toUri().buildUpon()
+		return Manga(
+			id = file.absolutePath.longHashCode(),
+			title = title,
+			url = fileUri,
+			source = MangaSource.LOCAL,
+			coverUrl = zipUri(file, findFirstEntry(zip.entries())?.name.orEmpty()),
+			chapters = chapters.sortedWith(AlphanumComparator()).mapIndexed { i, s ->
+				MangaChapter(
+					id = "$i$s".longHashCode(),
+					name = if (s.isEmpty()) title else s,
+					number = i + 1,
+					source = MangaSource.LOCAL,
+					url = uriBuilder.fragment(s).build().toString()
+				)
+			}
+		)
 	}
 
 	fun getRemoteManga(localManga: Manga): Manga? {
