@@ -76,7 +76,7 @@ class DownloadService : BaseService() {
 	private fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int): Job {
 		return launch(Dispatchers.IO) {
 			mutex.lock()
-			wakeLock.acquire(TimeUnit.MINUTES.toMillis(20))
+			wakeLock.acquire(TimeUnit.HOURS.toMillis(1))
 			withContext(Dispatchers.Main) {
 				notification.fillFrom(manga)
 				notification.setCancelId(startId)
@@ -167,7 +167,9 @@ class DownloadService : BaseService() {
 						notification.dismiss()
 						stopSelf(startId)
 					}
-					wakeLock.release()
+					if (wakeLock.isHeld) {
+						wakeLock.release()
+					}
 					mutex.unlock()
 				}
 			}
