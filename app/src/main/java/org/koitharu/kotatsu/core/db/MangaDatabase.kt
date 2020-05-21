@@ -7,8 +7,9 @@ import org.koitharu.kotatsu.core.db.entity.*
 @Database(
 	entities = [
 		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
-		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class, TrackEntity::class
-	], version = 5
+		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class,
+		TrackEntity::class, TrackLogEntity::class
+	], version = 6
 )
 abstract class MangaDatabase : RoomDatabase() {
 
@@ -25,4 +26,6 @@ abstract class MangaDatabase : RoomDatabase() {
 	abstract val favouriteCategoriesDao: FavouriteCategoriesDao
 
 	abstract val tracksDao: TracksDao
+
+	abstract val trackLogsDao: TrackLogsDao
 }

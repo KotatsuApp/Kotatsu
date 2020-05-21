@@ -1,0 +1,11 @@
+package org.koitharu.kotatsu.core.db.migrations
+
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+
+object Migration5To6 : Migration(4, 5) {
+
+	override fun migrate(database: SupportSQLiteDatabase) {
+		database.execSQL("CREATE TABLE IF NOT EXISTS track_logs (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, manga_id INTEGER NOT NULL, chapters TEXT NOT NULL, created_at INTEGER NOT NULL, FOREIGN KEY(manga_id) REFERENCES manga(manga_id) ON UPDATE NO ACTION ON DELETE CASCADE)")
+	}
+}

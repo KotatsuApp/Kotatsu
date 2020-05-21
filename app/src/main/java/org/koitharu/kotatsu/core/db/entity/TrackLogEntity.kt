@@ -1,0 +1,24 @@
+package org.koitharu.kotatsu.core.db.entity
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+
+@Entity(
+	tableName = "track_logs", foreignKeys = [
+		ForeignKey(
+			entity = MangaEntity::class,
+			parentColumns = ["manga_id"],
+			childColumns = ["manga_id"],
+			onDelete = ForeignKey.CASCADE
+		)
+	]
+)
+data class TrackLogEntity(
+	@PrimaryKey(autoGenerate = true)
+	@ColumnInfo(name = "id") val id: Long,
+	@ColumnInfo(name = "manga_id") val mangaId: Long,
+	@ColumnInfo(name = "chapters") val chapters: String,
+	@ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis()
+)
