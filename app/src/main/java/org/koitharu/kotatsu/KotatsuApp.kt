@@ -16,6 +16,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import org.koitharu.kotatsu.core.db.DatabasePrePopulateCallback
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.migrations.*
 import org.koitharu.kotatsu.core.local.CbzFetcher
@@ -125,4 +126,5 @@ class KotatsuApp : Application() {
 		MangaDatabase::class.java,
 		"kotatsu-db"
 	).addMigrations(Migration1To2, Migration2To3, Migration3To4, Migration4To5, Migration5To6)
+		.addCallback(DatabasePrePopulateCallback(resources))
 }
