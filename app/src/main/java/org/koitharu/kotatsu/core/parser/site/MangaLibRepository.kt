@@ -128,7 +128,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			tags = info.getElementsMatchingOwnText("Жанры")?.firstOrNull()
 				?.nextElementSibling()?.select("a")?.mapNotNull { a ->
 					MangaTag(
-						title = a.text(),
+						title = a.text().capitalize(),
 						key = a.attr("href").substringAfterLast('='),
 						source = source
 					)
@@ -182,7 +182,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					result += MangaTag(
 						source = source,
 						key = x.getInt("id").toString(),
-						title = x.getString("name")
+						title = x.getString("name").capitalize()
 					)
 				}
 				return result
