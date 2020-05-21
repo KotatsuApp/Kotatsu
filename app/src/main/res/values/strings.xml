@@ -135,4 +135,5 @@
 	<string name="done">Done</string>
 	<string name="all_favourites">All favourites</string>
 	<string name="favourites_category_empty">This category is empty</string>
+	<string name="read_later">Read later</string>
 </resources>
