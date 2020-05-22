@@ -17,8 +17,8 @@ import androidx.room.PrimaryKey
 )
 data class TrackLogEntity(
 	@PrimaryKey(autoGenerate = true)
-	@ColumnInfo(name = "id") val id: Long,
-	@ColumnInfo(name = "manga_id") val mangaId: Long,
+	@ColumnInfo(name = "id") val id: Long = 0L,
+	@ColumnInfo(name = "manga_id", index = true) val mangaId: Long,
 	@ColumnInfo(name = "chapters") val chapters: String,
 	@ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis()
 )

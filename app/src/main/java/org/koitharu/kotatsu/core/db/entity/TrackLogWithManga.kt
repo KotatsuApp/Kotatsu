@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.core.db.entity
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
+import org.koitharu.kotatsu.core.model.TrackingLogItem
+import java.util.*
 
 data class TrackLogWithManga(
 	@Embedded val trackLog: TrackLogEntity,
@@ -17,4 +19,12 @@ data class TrackLogWithManga(
 		associateBy = Junction(MangaTagsEntity::class)
 	)
 	val tags: List<TagEntity>
-)
+) {
+
+	fun toTrackingLogItem() = TrackingLogItem(
+		id = trackLog.id,
+		chapters = trackLog.chapters.split('\n'),
+		manga = manga.toManga(tags.map { x -> x.toMangaTag() }.toSet()),
+		createdAt = Date(trackLog.createdAt)
+	)
+}

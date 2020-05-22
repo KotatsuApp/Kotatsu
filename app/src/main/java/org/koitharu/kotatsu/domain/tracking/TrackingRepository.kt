@@ -1,11 +1,15 @@
 package org.koitharu.kotatsu.domain.tracking
 
+import androidx.room.withTransaction
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.TrackEntity
+import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaTracking
+import org.koitharu.kotatsu.core.model.TrackingLogItem
 import java.util.*
 
 class TrackingRepository : KoinComponent {
@@ -34,22 +38,36 @@ class TrackingRepository : KoinComponent {
 		}
 	}
 
+	suspend fun getTrackingLog(offset: Int, limit: Int): List<TrackingLogItem> {
+		return db.trackLogsDao.findAll(offset, limit).map { x ->
+			x.toTrackingLogItem()
+		}
+	}
+
 	suspend fun storeTrackResult(
 		mangaId: Long,
 		knownChaptersCount: Int,
 		lastChapterId: Long,
-		newChapters: Int,
+		newChapters: List<MangaChapter>,
 		lastNotifiedChapterId: Long
 	) {
 		val entity = TrackEntity(
 			mangaId = mangaId,
-			newChapters = newChapters,
+			newChapters = newChapters.size,
 			lastCheck = System.currentTimeMillis(),
 			lastChapterId = lastChapterId,
 			totalChapters = knownChaptersCount,
 			lastNotifiedChapterId = lastNotifiedChapterId
 		)
-		db.tracksDao.upsert(entity)
+		val logEntity = TrackLogEntity(
+			mangaId = mangaId,
+			chapters = newChapters.joinToString("\n") { x -> x.name },
+			createdAt = System.currentTimeMillis()
+		)
+		db.withTransaction {
+			db.tracksDao.upsert(entity)
+			db.trackLogsDao.insert(logEntity)
+		}
 	}
 
 	suspend fun upsert(manga: Manga) {

@@ -56,7 +56,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						knownChaptersCount = chapters.size,
 						lastChapterId = chapters.lastOrNull()?.id ?: 0L,
 						lastNotifiedChapterId = 0L,
-						newChapters = 0
+						newChapters = emptyList()
 					)
 				}
 				track.knownChaptersCount == 0 && track.lastChapterId == 0L -> { //manga was empty on last check
@@ -65,7 +65,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						knownChaptersCount = track.knownChaptersCount,
 						lastChapterId = 0L,
 						lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
-						newChapters = chapters.size
+						newChapters = chapters
 					)
 					showNotification(track.manga, chapters)
 				}
@@ -83,10 +83,10 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 								knownChaptersCount = chapters.size,
 								lastChapterId = chapters.lastOrNull()?.id ?: 0L,
 								lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
-								newChapters = 0
+								newChapters = emptyList()
 							)
 						} else {
-							val newChapters = chapters.size - knownChapter + 1
+							val newChapters = chapters.takeLast(chapters.size - knownChapter + 1)
 							repo.storeTrackResult(
 								mangaId = track.manga.id,
 								knownChaptersCount = knownChapter + 1,
@@ -95,13 +95,13 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 								newChapters = newChapters
 							)
 							if (chapters.lastOrNull()?.id != track.lastNotifiedChapterId) {
-								showNotification(track.manga, chapters.takeLast(newChapters))
+								showNotification(track.manga, newChapters)
 							}
 						}
 					}
 				}
 				else -> {
-					val newChapters = chapters.size - track.knownChaptersCount
+					val newChapters = chapters.takeLast(chapters.size - track.knownChaptersCount)
 					repo.storeTrackResult(
 						mangaId = track.manga.id,
 						knownChaptersCount = track.knownChaptersCount,
@@ -110,7 +110,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						newChapters = newChapters
 					)
 					if (chapters.lastOrNull()?.id != track.lastNotifiedChapterId) {
-						showNotification(track.manga, chapters.takeLast(newChapters))
+						showNotification(track.manga, newChapters)
 					}
 				}
 			}
