@@ -102,8 +102,6 @@ class LocalListFragment : MangaListFragment<File>(), ActivityResultCallback<Uri>
 
 	companion object {
 
-		private const val REQUEST_IMPORT = 50
-
 		fun newInstance() = LocalListFragment()
 	}
 }

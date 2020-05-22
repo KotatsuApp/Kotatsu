@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:paddingBottom="12dp"
+		android:layout_height="wrap_content">
+
+		<org.koitharu.kotatsu.ui.common.widgets.CoverImageView
+			android:layout_width="87dp"
+			android:id="@+id/imageView_cover"
+			android:layout_height="wrap_content"
+			android:layout_alignParentStart="true"
+			android:layout_alignParentTop="true" />
+
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="6dp"
+			android:layout_marginTop="6dp"
+			android:layout_marginEnd="6dp"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:layout_toEndOf="@id/imageView_cover"
+			android:layout_alignParentTop="true"
+			android:layout_alignParentEnd="true"
+			android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+			tools:text="@tools:sample/lorem[6]" />
+
+		<TextView
+			android:id="@+id/textView_subtitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="6dp"
+			android:layout_marginTop="4dp"
+			android:layout_marginEnd="6dp"
+			android:layout_marginBottom="6dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:layout_toEndOf="@id/imageView_cover"
+			android:layout_alignParentEnd="true"
+			android:layout_below="@id/textView_title"
+			android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+			android:textColor="?android:textColorSecondary"
+			tools:text="@tools:sample/lorem[6]" />
+
+		<View
+			android:id="@+id/divider"
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:layout_toEndOf="@id/imageView_cover"
+			android:layout_alignParentEnd="true"
+			android:layout_below="@id/textView_subtitle"
+			android:background="?android:listDivider" />
+
+		<TextView
+			android:id="@+id/textView_chapters"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="12dp"
+			android:layout_below="@id/divider"
+			android:layout_alignParentEnd="true"
+			android:layout_toEndOf="@id/imageView_cover"
+			android:ellipsize="none"
+			android:gravity="center_vertical"
+			android:requiresFadingEdge="horizontal"
+			android:singleLine="true" />
+
+	</RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -57,7 +57,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list), Mang
 		adapter = MangaListAdapter(this)
 		recyclerView.setHasFixedSize(true)
 		initListMode(settings.listMode)
-		recyclerView.adapter = adapter
+		// recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
 		swipeRefreshLayout.setOnRefreshListener(this)
 		recyclerView_filter.setHasFixedSize(true)

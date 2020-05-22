@@ -135,4 +135,6 @@
 	<string name="all_favourites">Всё избранное</string>
 	<string name="favourites_category_empty">В этой категории ничего нет</string>
 	<string name="read_later">Прочитать позже</string>
+	<string name="updates">Обновления</string>
+	<string name="text_feed_holder">Here you will see manga updates</string>
 </resources>

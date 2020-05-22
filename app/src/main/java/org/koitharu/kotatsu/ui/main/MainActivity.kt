@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.ui.main.list.favourites.FavouritesContainerFragment
 import org.koitharu.kotatsu.ui.main.list.history.HistoryListFragment
 import org.koitharu.kotatsu.ui.main.list.local.LocalListFragment
 import org.koitharu.kotatsu.ui.main.list.remote.RemoteListFragment
+import org.koitharu.kotatsu.ui.main.tracklogs.FeedFragment
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.ui.settings.AppUpdateService
@@ -118,6 +119,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 				settings.defaultSection = AppSection.LOCAL
 				setPrimaryFragment(LocalListFragment.newInstance())
 			}
+			R.id.nav_feed -> {
+				settings.defaultSection = AppSection.FEED
+				setPrimaryFragment(FeedFragment.newInstance())
+			}
 			R.id.nav_action_settings -> {
 				startActivity(SettingsActivity.newIntent(this))
 				return true
@@ -189,6 +194,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			AppSection.HISTORY -> {
 				navigationView.setCheckedItem(R.id.nav_history)
 				setPrimaryFragment(HistoryListFragment.newInstance())
+			}
+			AppSection.FEED -> {
+				navigationView.setCheckedItem(R.id.nav_feed)
+				setPrimaryFragment(FeedFragment.newInstance())
 			}
 		}
 	}
