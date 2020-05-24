@@ -8,7 +8,7 @@ Kotatsu is a free and open source manga reader for Android.
 
 Latest release: [get here](https://github.com/nv95/Kotatsu/releases/latest)
 
-Legacy build (Android 4.1+): [available here](https://github.com/nv95/Kotatsu/releases/tag/v0.3-legacy)
+Legacy build (Android 4.1+): [available here](https://github.com/nv95/Kotatsu/releases/tag/v0.4-legacy)
 
 ### Main Features
 
@@ -24,6 +24,7 @@ Legacy build (Android 4.1+): [available here](https://github.com/nv95/Kotatsu/re
 
 ### Coming Features
 
+* Updates feed
 * Global search
 
 ### Screenshots
