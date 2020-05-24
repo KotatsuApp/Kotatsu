@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.search
+package org.koitharu.kotatsu.ui.list.favourites
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -7,40 +7,46 @@ import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.domain.MangaProviderFactory
+import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
 import org.koitharu.kotatsu.ui.list.MangaListView
 
 @InjectViewState
-class SearchPresenter : BasePresenter<MangaListView<Unit>>() {
+class FavouritesListPresenter : BasePresenter<MangaListView<Unit>>() {
 
-	private lateinit var sources: Array<MangaSource>
+	private lateinit var repository: FavouritesRepository
 
 	override fun onFirstViewAttach() {
-		sources = MangaSource.values()
+		repository = FavouritesRepository()
 		super.onFirstViewAttach()
 	}
 
-	fun loadList(source: MangaSource, query: String, offset: Int) {
+	fun loadList(categoryId: Long, offset: Int) {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
-					MangaProviderFactory.create(source)
-						.getList(offset, query = query)
+					if (categoryId == 0L) {
+						repository.getAllManga(offset = offset)
+					} else {
+						repository.getManga(categoryId = categoryId, offset = offset)
+					}
 				}
 				if (offset == 0) {
 					viewState.onListChanged(list)
 				} else {
 					viewState.onListAppended(list)
 				}
-			} catch (_: CancellationException) {
+			} catch (e: CancellationException) {
 			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
-				viewState.onError(e)
+				if (offset == 0) {
+					viewState.onListError(e)
+				} else {
+					viewState.onError(e)
+				}
 			} finally {
 				viewState.onLoadingStateChanged(false)
 			}

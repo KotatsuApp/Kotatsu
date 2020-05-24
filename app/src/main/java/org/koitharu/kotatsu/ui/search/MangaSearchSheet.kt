@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.ui.main.list.MangaListSheet
+import org.koitharu.kotatsu.ui.list.MangaListSheet
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class MangaSearchSheet : MangaListSheet<Unit>() {

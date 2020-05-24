@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.ui.search
 
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.ui.main.list.MangaListFragment
+import org.koitharu.kotatsu.ui.list.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class SearchFragment : MangaListFragment<Unit>() {

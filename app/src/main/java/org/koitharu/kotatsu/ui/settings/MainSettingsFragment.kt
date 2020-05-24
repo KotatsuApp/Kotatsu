@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.common.dialog.StorageSelectDialog
-import org.koitharu.kotatsu.ui.main.list.ListModeSelectDialog
+import org.koitharu.kotatsu.ui.list.ListModeSelectDialog
 import org.koitharu.kotatsu.ui.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getStorageName

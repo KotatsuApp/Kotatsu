@@ -23,7 +23,7 @@
 		android:theme="@style/AppTheme"
 		android:usesCleartextTraffic="true"
 		tools:ignore="UnusedAttribute">
-		<activity android:name=".ui.main.MainActivity">
+		<activity android:name=".ui.list.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -59,7 +59,7 @@
 			android:theme="@android:style/Theme.DeviceDefault.Dialog"
 			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity
-			android:name=".ui.main.list.favourites.categories.CategoriesActivity"
+			android:name="org.koitharu.kotatsu.ui.list.favourites.categories.CategoriesActivity"
 			android:label="@string/favourites_categories"
 			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity

@@ -6,7 +6,6 @@ plugins {
 }
 
 def gitCommits = 'git rev-list --count HEAD'.execute([], rootDir).text.trim().toInteger()
-def gitBranch = 'git branch --show-current'.execute([], rootDir).text.trim()
 
 android {
 	compileSdkVersion 29
@@ -98,5 +97,5 @@ dependencies {
 	releaseImplementation 'com.github.ChuckerTeam.Chucker:library-no-op:3.2.0'
 
 	testImplementation 'junit:junit:4.13'
-	testImplementation 'org.json:json:20190722'
+	testImplementation 'org.json:json:20200518'
 }

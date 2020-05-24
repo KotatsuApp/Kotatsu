@@ -20,8 +20,8 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
-import org.koitharu.kotatsu.ui.main.list.favourites.categories.FavouriteCategoriesPresenter
-import org.koitharu.kotatsu.ui.main.list.favourites.categories.FavouriteCategoriesView
+import org.koitharu.kotatsu.ui.list.favourites.categories.FavouriteCategoriesPresenter
+import org.koitharu.kotatsu.ui.list.favourites.categories.FavouriteCategoriesView
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import java.util.*
 import kotlin.collections.ArrayList

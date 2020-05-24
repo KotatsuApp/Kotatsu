@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_crash.*
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.ui.main.MainActivity
+import org.koitharu.kotatsu.ui.list.MainActivity
 
 class CrashActivity : Activity(), View.OnClickListener {
 
