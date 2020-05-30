@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.ui.list.remote.RemoteListFragment
 import org.koitharu.kotatsu.ui.list.tracklogs.FeedFragment
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.reader.ReaderState
+import org.koitharu.kotatsu.ui.search.SearchHelper
 import org.koitharu.kotatsu.ui.settings.AppUpdateService
 import org.koitharu.kotatsu.ui.settings.SettingsActivity
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
@@ -91,8 +92,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		drawerToggle.onConfigurationChanged(newConfig)
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_main, menu)
+		menu.findItem(R.id.action_search)?.let { menuItem ->
+			SearchHelper.setupSearchView(menuItem)
+		}
 		return super.onCreateOptionsMenu(menu)
 	}
 

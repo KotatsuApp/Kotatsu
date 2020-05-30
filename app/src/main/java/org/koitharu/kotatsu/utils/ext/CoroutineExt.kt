@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.utils.ext
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
@@ -23,6 +25,16 @@ suspend fun Call.await() = suspendCancellableCoroutine<Response> { cont ->
 	cont.invokeOnCancellation {
 		safe {
 			this.cancel()
+		}
+	}
+}
+
+fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
+	var isFirstCall = true
+	return onEach {
+		if (isFirstCall) {
+			action(it)
+			isFirstCall = false
 		}
 	}
 }

@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.ui.search.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.ext.safe
 
 object SearchHelper {
@@ -21,12 +22,26 @@ object SearchHelper {
 		view.setOnSuggestionListener(SuggestionListener(view))
 	}
 
-	private class QueryListener(private val context: Context, private val source: MangaSource) :
+	@JvmStatic
+	fun setupSearchView(menuItem: MenuItem) {
+		val view = menuItem.actionView as? SearchView ?: return
+		val context = view.context
+		view.queryHint = context.getString(R.string.search_manga)
+		view.suggestionsAdapter = MangaSuggestionsProvider.getSuggestionAdapter(context)
+		view.setOnQueryTextListener(QueryListener(context))
+		view.setOnSuggestionListener(SuggestionListener(view))
+	}
+
+	private class QueryListener(private val context: Context, private val source: MangaSource? = null) :
 		SearchView.OnQueryTextListener {
 
 		override fun onQueryTextSubmit(query: String?): Boolean {
 			return if (!query.isNullOrBlank()) {
-				context.startActivity(SearchActivity.newIntent(context, source, query.trim()))
+				if (source == null) {
+					context.startActivity(GlobalSearchActivity.newIntent(context, query.trim()))
+				} else {
+					context.startActivity(SearchActivity.newIntent(context, source, query.trim()))
+				}
 				MangaSuggestionsProvider.saveQuery(context, query)
 				true
 			} else false

@@ -15,13 +15,6 @@ import org.koitharu.kotatsu.ui.list.MangaListView
 @InjectViewState
 class SearchPresenter : BasePresenter<MangaListView<Unit>>() {
 
-	private lateinit var sources: Array<MangaSource>
-
-	override fun onFirstViewAttach() {
-		sources = MangaSource.values()
-		super.onFirstViewAttach()
-	}
-
 	fun loadList(source: MangaSource, query: String, offset: Int) {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(true)
