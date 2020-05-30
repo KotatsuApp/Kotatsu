@@ -1,6 +1,8 @@
-package org.koitharu.kotatsu.ui.list.tracklogs
+package org.koitharu.kotatsu.ui.list.feed
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
@@ -25,6 +27,8 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), FeedView,
 
 	private var adapter: FeedAdapter? = null
 
+	override fun getTitle() = context?.getString(R.string.updates)
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setHasOptionsMenu(true)
@@ -42,6 +46,11 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), FeedView,
 		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
 			onRequestMoreItems(0)
 		}
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater.inflate(R.menu.opt_feed, menu)
 	}
 
 	override fun onDestroyView() {

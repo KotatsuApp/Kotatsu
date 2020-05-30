@@ -23,7 +23,7 @@ data class TrackLogWithManga(
 
 	fun toTrackingLogItem() = TrackingLogItem(
 		id = trackLog.id,
-		chapters = trackLog.chapters.split('\n'),
+		chapters = trackLog.chapters.split('\n').filterNot { x -> x.isEmpty() },
 		manga = manga.toManga(tags.map { x -> x.toMangaTag() }.toSet()),
 		createdAt = Date(trackLog.createdAt)
 	)

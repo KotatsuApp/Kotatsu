@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.ui.list.tracklogs
+package org.koitharu.kotatsu.ui.list.feed
 
 import moxy.viewstate.strategy.AddToEndSingleTagStrategy
 import moxy.viewstate.strategy.AddToEndStrategy

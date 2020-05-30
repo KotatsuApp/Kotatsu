@@ -113,7 +113,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 						a.attr("href")?.withDomain(domain) ?: return@mapIndexedNotNull null
 					MangaChapter(
 						id = href.longHashCode(),
-						name = a.ownText(),
+						name = a.ownText().removePrefix(manga.title).trim(),
 						number = i + 1,
 						url = href,
 						source = source

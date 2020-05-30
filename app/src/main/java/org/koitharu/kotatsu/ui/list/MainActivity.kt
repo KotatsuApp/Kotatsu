@@ -29,7 +29,7 @@ import org.koitharu.kotatsu.ui.list.favourites.FavouritesContainerFragment
 import org.koitharu.kotatsu.ui.list.history.HistoryListFragment
 import org.koitharu.kotatsu.ui.list.local.LocalListFragment
 import org.koitharu.kotatsu.ui.list.remote.RemoteListFragment
-import org.koitharu.kotatsu.ui.list.tracklogs.FeedFragment
+import org.koitharu.kotatsu.ui.list.feed.FeedFragment
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.ui.search.SearchHelper

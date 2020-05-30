@@ -51,22 +51,24 @@ class TrackingRepository : KoinComponent {
 		newChapters: List<MangaChapter>,
 		lastNotifiedChapterId: Long
 	) {
-		val entity = TrackEntity(
-			mangaId = mangaId,
-			newChapters = newChapters.size,
-			lastCheck = System.currentTimeMillis(),
-			lastChapterId = lastChapterId,
-			totalChapters = knownChaptersCount,
-			lastNotifiedChapterId = lastNotifiedChapterId
-		)
-		val logEntity = TrackLogEntity(
-			mangaId = mangaId,
-			chapters = newChapters.joinToString("\n") { x -> x.name },
-			createdAt = System.currentTimeMillis()
-		)
 		db.withTransaction {
+			val entity = TrackEntity(
+				mangaId = mangaId,
+				newChapters = newChapters.size,
+				lastCheck = System.currentTimeMillis(),
+				lastChapterId = lastChapterId,
+				totalChapters = knownChaptersCount,
+				lastNotifiedChapterId = lastNotifiedChapterId
+			)
 			db.tracksDao.upsert(entity)
-			db.trackLogsDao.insert(logEntity)
+			if (newChapters.isNotEmpty()) {
+				val logEntity = TrackLogEntity(
+					mangaId = mangaId,
+					chapters = newChapters.joinToString("\n") { x -> x.name },
+					createdAt = System.currentTimeMillis()
+				)
+				db.trackLogsDao.insert(logEntity)
+			}
 		}
 	}
 
