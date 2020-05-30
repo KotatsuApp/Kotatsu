@@ -79,6 +79,7 @@
 	<string name="read_mode">Read mode</string>
 	<string name="grid_size">Grid size</string>
 	<string name="search_results_on_s">Search results on %s</string>
+	<string name="search_on_s">Search on %s</string>
     <string name="delete_manga">Delete manga</string>
 	<string name="text_delete_local_manga">Do you really want to delete \"%s\" from your phone\'s local storage? \nThis operation cannot be undone.</string>
 	<string name="reader_settings">Reader settings</string>

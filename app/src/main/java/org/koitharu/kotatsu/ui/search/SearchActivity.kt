@@ -4,38 +4,60 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.appcompat.widget.SearchView
+import kotlinx.android.synthetic.main.activity_search.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.utils.ext.showKeyboard
 
-class SearchActivity : BaseActivity() {
+class SearchActivity : BaseActivity(), SearchView.OnQueryTextListener {
+
+	private lateinit var source: MangaSource
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_search)
-		val source = intent.getParcelableExtra<MangaSource>(EXTRA_SOURCE)
-		val query = intent.getStringExtra(EXTRA_QUERY)
-
-		if (source == null || query == null) {
+		source = intent.getParcelableExtra(EXTRA_SOURCE) ?: run {
 			finish()
 			return
 		}
-
+		val query = intent.getStringExtra(EXTRA_QUERY)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		title = query
-		supportActionBar?.subtitle = getString(R.string.search_results_on_s, source.title)
-		supportFragmentManager
-			.beginTransaction()
-			.replace(R.id.container, SearchFragment.newInstance(source, query))
-			.commit()
+		searchView.queryHint = getString(R.string.search_on_s, source.title)
+		searchView.suggestionsAdapter = MangaSuggestionsProvider.getSuggestionAdapter(this)
+		searchView.setOnSuggestionListener(SearchHelper.SuggestionListener(searchView))
+		searchView.setOnQueryTextListener(this)
+
+		if (query.isNullOrBlank()) {
+			searchView.requestFocus()
+			searchView.showKeyboard()
+		} else {
+			searchView.setQuery(query, true)
+		}
 	}
+
+	override fun onQueryTextSubmit(query: String?): Boolean {
+		return if (!query.isNullOrBlank()) {
+			title = query
+			supportFragmentManager
+				.beginTransaction()
+				.replace(R.id.container, SearchFragment.newInstance(source, query))
+				.commit()
+			searchView.clearFocus()
+			MangaSuggestionsProvider.saveQuery(this, query)
+			true
+		} else false
+	}
+
+	override fun onQueryTextChange(newText: String?) = false
 
 	companion object {
 
 		private const val EXTRA_SOURCE = "source"
 		private const val EXTRA_QUERY = "query"
 
-		fun newIntent(context: Context, source: MangaSource, query: String) =
+		fun newIntent(context: Context, source: MangaSource, query: String?) =
 			Intent(context, SearchActivity::class.java)
 				.putExtra(EXTRA_SOURCE, source as Parcelable)
 				.putExtra(EXTRA_QUERY, query)

@@ -5,10 +5,8 @@
 
 	<item
 		android:id="@+id/action_search_internal"
-		android:icon="@drawable/ic_search"
-		android:orderInCategory="1"
+		android:orderInCategory="26"
 		android:title="@string/search"
-		app:actionViewClass="androidx.appcompat.widget.SearchView"
-		app:showAsAction="always|collapseActionView" />
+		app:showAsAction="never" />
 
 </menu>

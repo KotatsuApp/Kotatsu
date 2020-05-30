@@ -34,6 +34,7 @@ class GlobalSearchPresenter : BasePresenter<MangaListView<Unit>>() {
 					}
 				}
 				.onFirst {
+					viewState.onListChanged(emptyList())
 					viewState.onLoadingStateChanged(isLoading = false)
 				}
 				.onEmpty {

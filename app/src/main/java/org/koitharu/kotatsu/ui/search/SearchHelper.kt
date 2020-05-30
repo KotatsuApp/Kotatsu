@@ -6,21 +6,10 @@ import android.database.Cursor
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.search.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.ext.safe
 
 object SearchHelper {
-
-	@JvmStatic
-	fun setupSearchView(menuItem: MenuItem, source: MangaSource) {
-		val view = menuItem.actionView as? SearchView ?: return
-		val context = view.context
-		view.queryHint = context.getString(R.string.search_manga)
-		view.suggestionsAdapter = MangaSuggestionsProvider.getSuggestionAdapter(context)
-		view.setOnQueryTextListener(QueryListener(context, source))
-		view.setOnSuggestionListener(SuggestionListener(view))
-	}
 
 	@JvmStatic
 	fun setupSearchView(menuItem: MenuItem) {
@@ -32,16 +21,12 @@ object SearchHelper {
 		view.setOnSuggestionListener(SuggestionListener(view))
 	}
 
-	private class QueryListener(private val context: Context, private val source: MangaSource? = null) :
+	private class QueryListener(private val context: Context) :
 		SearchView.OnQueryTextListener {
 
 		override fun onQueryTextSubmit(query: String?): Boolean {
 			return if (!query.isNullOrBlank()) {
-				if (source == null) {
-					context.startActivity(GlobalSearchActivity.newIntent(context, query.trim()))
-				} else {
-					context.startActivity(SearchActivity.newIntent(context, source, query.trim()))
-				}
+				context.startActivity(GlobalSearchActivity.newIntent(context, query.trim()))
 				MangaSuggestionsProvider.saveQuery(context, query)
 				true
 			} else false
@@ -50,7 +35,7 @@ object SearchHelper {
 		override fun onQueryTextChange(newText: String?) = false
 	}
 
-	private class SuggestionListener(private val view: SearchView) :
+	class SuggestionListener(private val view: SearchView) :
 		SearchView.OnSuggestionListener {
 
 		override fun onSuggestionSelect(position: Int) = false

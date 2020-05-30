@@ -9,8 +9,8 @@
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="?colorPrimary"
 		android:fitsSystemWindows="true"
+		android:background="?colorPrimary"
 		android:theme="@style/AppToolbarTheme">
 
 		<androidx.appcompat.widget.Toolbar
@@ -18,18 +18,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="?android:actionBarSize"
 			app:layout_scrollFlags="scroll|enterAlways"
-			app:popupTheme="@style/AppPopupTheme">
-
-			<androidx.appcompat.widget.SearchView
-				android:id="@+id/searchView"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center_vertical"
-				app:iconifiedByDefault="false"
-				app:searchHintIcon="@null"
-				app:searchIcon="@null" />
-
-		</androidx.appcompat.widget.Toolbar>
+			app:popupTheme="@style/AppPopupTheme" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 
