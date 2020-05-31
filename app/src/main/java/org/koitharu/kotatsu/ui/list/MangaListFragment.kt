@@ -9,10 +9,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -28,6 +25,7 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BaseFragment
 import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
+import org.koitharu.kotatsu.ui.common.list.ProgressBarAdapter
 import org.koitharu.kotatsu.ui.common.list.decor.ItemTypeDividerDecoration
 import org.koitharu.kotatsu.ui.common.list.decor.SectionItemDecoration
 import org.koitharu.kotatsu.ui.common.list.decor.SpacingItemDecoration
@@ -38,14 +36,19 @@ import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.*
 
 abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
-	MangaListView<E>,
-	PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga>,
+	MangaListView<E>, PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga>,
 	SharedPreferences.OnSharedPreferenceChangeListener, OnFilterChangedListener,
 	SectionItemDecoration.Callback, SwipeRefreshLayout.OnRefreshListener {
 
 	private val settings by inject<AppSettings>()
+	private val adapterConfig = MergeAdapter.Config.Builder()
+		.setIsolateViewTypes(true)
+		.setStableIdMode(MergeAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
+		.build()
 
 	private var adapter: MangaListAdapter? = null
+	private var progressAdapter: ProgressBarAdapter? = null
+	private var paginationListener : PaginationScrollListener? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -56,10 +59,11 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 		super.onViewCreated(view, savedInstanceState)
 		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		adapter = MangaListAdapter(this)
+		progressAdapter = ProgressBarAdapter()
+		paginationListener = PaginationScrollListener(4, this)
 		recyclerView.setHasFixedSize(true)
 		initListMode(settings.listMode)
-		// recyclerView.adapter = adapter
-		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
+		recyclerView.addOnScrollListener(paginationListener!!)
 		swipeRefreshLayout.setOnRefreshListener(this)
 		recyclerView_filter.setHasFixedSize(true)
 		recyclerView_filter.addItemDecoration(ItemTypeDividerDecoration(view.context))
@@ -72,6 +76,8 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 
 	override fun onDestroyView() {
 		adapter = null
+		progressAdapter = null
+		paginationListener = null
 		settings.unsubscribe(this)
 		super.onDestroyView()
 	}
@@ -123,6 +129,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 	}
 
 	override fun onListChanged(list: List<Manga>) {
+		paginationListener?.reset()
 		adapter?.replaceData(list)
 		if (list.isEmpty()) {
 			setUpEmptyListHolder()
@@ -130,11 +137,16 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 		} else {
 			layout_holder.isVisible = false
 		}
+		progressAdapter?.isProgressVisible = list.isNotEmpty()
 		recyclerView.callOnScrollListeners()
 	}
 
 	override fun onListAppended(list: List<Manga>) {
 		adapter?.appendData(list)
+		progressAdapter?.isProgressVisible = list.isNotEmpty()
+		if (list.isNotEmpty()) {
+			layout_holder.isVisible = false
+		}
 		recyclerView.callOnScrollListeners()
 	}
 
@@ -231,11 +243,19 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 		recyclerView.removeOnLayoutChangeListener(UiUtils.SpanCountResolver)
 		adapter?.listMode = mode
 		recyclerView.layoutManager = when (mode) {
-			ListMode.GRID -> GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx))
+			ListMode.GRID -> {
+				val spanCount = UiUtils.resolveGridSpanCount(ctx)
+				GridLayoutManager(ctx, spanCount).apply {
+					spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+						override fun getSpanSize(position: Int) = if (position < getItemsCount())
+							1 else spanCount
+					}
+				}
+			}
 			else -> LinearLayoutManager(ctx)
 		}
 		recyclerView.recycledViewPool.clear()
-		recyclerView.adapter = adapter
+		recyclerView.adapter = MergeAdapter(adapterConfig, adapter, progressAdapter)
 		recyclerView.addItemDecoration(
 			when (mode) {
 				ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)
@@ -251,6 +271,8 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 		adapter?.notifyDataSetChanged()
 		recyclerView.firstItem = position
 	}
+
+	override fun getItemsCount() = adapter?.itemCount ?: 0
 
 	final override fun isSection(position: Int): Boolean {
 		return position == 0 || recyclerView_filter.adapter?.run {

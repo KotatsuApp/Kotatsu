@@ -37,7 +37,11 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 		super.onFirstViewAttach()
 	}
 
-	fun loadList() {
+	fun loadList(offset: Int) {
+		if (offset != 0) {
+			viewState.onListAppended(emptyList())
+			return
+		}
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(true)
 			try {

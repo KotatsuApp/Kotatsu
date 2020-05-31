@@ -12,13 +12,15 @@ abstract class BoundsScrollListener(private val offsetTop: Int, private val offs
 		super.onScrolled(recyclerView, dx, dy)
 		val layoutManager = (recyclerView.layoutManager as? LinearLayoutManager) ?: return
 		val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+		if (firstVisibleItemPosition == RecyclerView.NO_POSITION) {
+			return
+		}
 		if (firstVisibleItemPosition <= offsetTop) {
 			onScrolledToStart(recyclerView)
-			return
 		}
 		val visibleItemCount = layoutManager.childCount
 		val totalItemCount = layoutManager.itemCount
-		if (visibleItemCount + firstVisibleItemPosition >= totalItemCount - offsetBottom && firstVisibleItemPosition >= 0) {
+		if (visibleItemCount + firstVisibleItemPosition >= totalItemCount - offsetBottom) {
 			onScrolledToEnd(recyclerView)
 		}
 	}

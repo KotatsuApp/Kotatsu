@@ -4,7 +4,7 @@ import android.view.ViewGroup
 
 class ProgressBarAdapter : BaseRecyclerAdapter<Boolean, Unit>() {
 
-	var isVisible: Boolean
+	var isProgressVisible: Boolean
 		get() = dataSet.isNotEmpty()
 		set(value) {
 			if (value == dataSet.isEmpty()) {
@@ -20,5 +20,5 @@ class ProgressBarAdapter : BaseRecyclerAdapter<Boolean, Unit>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup) = ProgressBarHolder(parent)
 
-	override fun onGetItemId(item: Boolean) = 1L
+	override fun onGetItemId(item: Boolean) = -1L
 }

@@ -1,16 +1,12 @@
 package org.koitharu.kotatsu.ui.search.global
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEmpty
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import moxy.presenterScope
 import org.koitharu.kotatsu.domain.MangaSearchRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
 import org.koitharu.kotatsu.ui.list.MangaListView
-import org.koitharu.kotatsu.utils.ext.onFirst
 import java.io.IOException
 
 class GlobalSearchPresenter : BasePresenter<MangaListView<Unit>>() {
@@ -26,23 +22,27 @@ class GlobalSearchPresenter : BasePresenter<MangaListView<Unit>>() {
 	fun startSearch(query: String) {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(isLoading = true)
+			var isFirstCall = true
 			repository.globalSearch(query)
 				.flowOn(Dispatchers.IO)
 				.catch { e ->
 					if (e is IOException) {
 						viewState.onError(e)
 					}
-				}
-				.onFirst {
-					viewState.onListChanged(emptyList())
-					viewState.onLoadingStateChanged(isLoading = false)
-				}
+				}.filterNot { x -> x.isEmpty() }
 				.onEmpty {
 					viewState.onListChanged(emptyList())
 					viewState.onLoadingStateChanged(isLoading = false)
-				}
-				.collect {
-					viewState.onListAppended(it)
+				}.onCompletion {
+					viewState.onListAppended(emptyList())
+				}.collect {
+					if (isFirstCall) {
+						isFirstCall = false
+						viewState.onListChanged(it)
+						viewState.onLoadingStateChanged(isLoading = false)
+					} else {
+						viewState.onListAppended(it)
+					}
 				}
 		}
 	}

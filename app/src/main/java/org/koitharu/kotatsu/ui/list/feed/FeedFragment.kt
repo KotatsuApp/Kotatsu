@@ -102,6 +102,10 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), FeedView,
 		}
 	}
 
+	override fun getItemsCount(): Int {
+		return adapter?.itemCount ?: 0
+	}
+
 	override fun onRequestMoreItems(offset: Int) {
 		presenter.loadList(offset)
 	}

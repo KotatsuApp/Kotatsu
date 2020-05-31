@@ -25,13 +25,21 @@ class FeedPresenter : BasePresenter<FeedView>() {
 				val list = withContext(Dispatchers.IO) {
 					repository.getTrackingLog(offset, 20)
 				}
-				viewState.onListChanged(list)
+				if (offset == 0) {
+					viewState.onListChanged(list)
+				} else {
+					viewState.onListAppended(list)
+				}
 			} catch (e: CancellationException) {
 			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
 				}
-				viewState.onListError(e)
+				if (offset == 0) {
+					viewState.onListError(e)
+				} else {
+					viewState.onError(e)
+				}
 			} finally {
 				viewState.onLoadingStateChanged(false)
 			}

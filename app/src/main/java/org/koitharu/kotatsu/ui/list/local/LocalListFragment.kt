@@ -23,9 +23,7 @@ class LocalListFragment : MangaListFragment<File>(), ActivityResultCallback<Uri>
 	private val presenter by moxyPresenter(factory = ::LocalListPresenter)
 
 	override fun onRequestMoreItems(offset: Int) {
-		if (offset == 0) {
-			presenter.loadList()
-		}
+		presenter.loadList(offset)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
