@@ -6,7 +6,8 @@
 	android:layout_height="?android:listPreferredItemHeightSmall"
 	android:background="?android:windowBackground"
 	android:gravity="center_vertical"
-	android:orientation="horizontal">
+	android:orientation="horizontal"
+	tools:ignore="Overdraw">
 
 	<ImageView
 		android:id="@+id/imageView_handle"

@@ -55,7 +55,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						mangaId = track.manga.id,
 						knownChaptersCount = chapters.size,
 						lastChapterId = chapters.lastOrNull()?.id ?: 0L,
-						lastNotifiedChapterId = 0L,
+						previousTrackChapterId = 0L,
 						newChapters = emptyList()
 					)
 				}
@@ -64,7 +64,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						mangaId = track.manga.id,
 						knownChaptersCount = track.knownChaptersCount,
 						lastChapterId = 0L,
-						lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
+						previousTrackChapterId = track.lastNotifiedChapterId,
 						newChapters = chapters
 					)
 					showNotification(track.manga, chapters)
@@ -82,7 +82,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 								mangaId = track.manga.id,
 								knownChaptersCount = chapters.size,
 								lastChapterId = chapters.lastOrNull()?.id ?: 0L,
-								lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
+								previousTrackChapterId = track.lastNotifiedChapterId,
 								newChapters = emptyList()
 							)
 						} else {
@@ -91,12 +91,13 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 								mangaId = track.manga.id,
 								knownChaptersCount = knownChapter + 1,
 								lastChapterId = track.lastChapterId,
-								lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
+								previousTrackChapterId = track.lastNotifiedChapterId,
 								newChapters = newChapters
 							)
-							if (chapters.lastOrNull()?.id != track.lastNotifiedChapterId) {
-								showNotification(track.manga, newChapters)
-							}
+							showNotification(
+								track.manga,
+								newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId }
+							)
 						}
 					}
 				}
@@ -106,12 +107,13 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						mangaId = track.manga.id,
 						knownChaptersCount = track.knownChaptersCount,
 						lastChapterId = track.lastChapterId,
-						lastNotifiedChapterId = chapters.lastOrNull()?.id ?: 0L,
+						previousTrackChapterId = track.lastNotifiedChapterId,
 						newChapters = newChapters
 					)
-					if (chapters.lastOrNull()?.id != track.lastNotifiedChapterId) {
-						showNotification(track.manga, newChapters)
-					}
+					showNotification(
+						track.manga,
+						newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId }
+					)
 				}
 			}
 			success++
@@ -130,15 +132,21 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		val id = manga.url.hashCode()
 		val colorPrimary = ContextCompat.getColor(applicationContext, R.color.blue_primary)
 		val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-		val summary = applicationContext.resources.getQuantityString(R.plurals.new_chapters,
-			newChapters.size, newChapters.size)
+		val summary = applicationContext.resources.getQuantityString(
+			R.plurals.new_chapters,
+			newChapters.size, newChapters.size
+		)
 		with(builder) {
 			setContentText(summary)
 			setContentTitle(manga.title)
 			setNumber(newChapters.size)
-			setLargeIcon(Coil.execute(GetRequestBuilder(applicationContext)
-				.data(manga.coverUrl)
-				.build()).toBitmapOrNull())
+			setLargeIcon(
+				Coil.execute(
+					GetRequestBuilder(applicationContext)
+						.data(manga.coverUrl)
+						.build()
+				).toBitmapOrNull()
+			)
 			setSmallIcon(R.drawable.ic_stat_book_plus)
 			val style = NotificationCompat.InboxStyle(this)
 			for (chapter in newChapters) {
@@ -148,8 +156,12 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			style.setBigContentTitle(summary)
 			setStyle(style)
 			val intent = MangaDetailsActivity.newIntent(applicationContext, manga)
-			setContentIntent(PendingIntent.getActivity(applicationContext, id,
-				intent, PendingIntent.FLAG_UPDATE_CURRENT))
+			setContentIntent(
+				PendingIntent.getActivity(
+					applicationContext, id,
+					intent, PendingIntent.FLAG_UPDATE_CURRENT
+				)
+			)
 			setAutoCancel(true)
 			color = colorPrimary
 			setShortcutId(manga.id.toString())
@@ -182,9 +194,11 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			val manager =
 				context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 			if (manager.getNotificationChannel(CHANNEL_ID) == null) {
-				val channel = NotificationChannel(CHANNEL_ID,
+				val channel = NotificationChannel(
+					CHANNEL_ID,
 					context.getString(R.string.new_chapters),
-					NotificationManager.IMPORTANCE_DEFAULT)
+					NotificationManager.IMPORTANCE_DEFAULT
+				)
 				channel.setShowBadge(true)
 				channel.lightColor = ContextCompat.getColor(context, R.color.blue_primary)
 				channel.enableLights(true)

@@ -31,8 +31,11 @@ class CategoriesSelectAdapter(private val listener: OnCategoryCheckListener) :
 
 	override fun onGetItemId(item: FavouriteCategory) = item.id
 
-	override fun onViewHolderCreated(holder: BaseViewHolder<FavouriteCategory, Boolean>) {
-		super.onViewHolderCreated(holder)
+	override fun onViewDetachedFromWindow(holder: BaseViewHolder<FavouriteCategory, Boolean>) {
+		holder.itemView.setOnClickListener(null)
+	}
+
+	override fun onViewAttachedToWindow(holder: BaseViewHolder<FavouriteCategory, Boolean>) {
 		holder.itemView.setOnClickListener {
 			if (it !is Checkable) return@setOnClickListener
 			it.toggle()

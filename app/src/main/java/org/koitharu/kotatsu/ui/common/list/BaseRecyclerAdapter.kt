@@ -87,15 +87,22 @@ abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecy
 	final override fun getItemCount() = dataSet.size
 
 	final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T, E> {
-		return onCreateViewHolder(parent).setOnItemClickListener(onItemClickListener)
-			.also(this::onViewHolderCreated)
+		return onCreateViewHolder(parent)
+	}
+
+	override fun onViewDetachedFromWindow(holder: BaseViewHolder<T, E>) {
+		holder.setOnItemClickListener(null)
+		super.onViewDetachedFromWindow(holder)
+	}
+
+	override fun onViewAttachedToWindow(holder: BaseViewHolder<T, E>) {
+		super.onViewAttachedToWindow(holder)
+		holder.setOnItemClickListener(onItemClickListener)
 	}
 
 	protected open fun onDataSetChanged() = Unit
 
 	protected abstract fun getExtra(item: T, position: Int): E
-
-	protected open fun onViewHolderCreated(holder: BaseViewHolder<T, E>) = Unit
 
 	protected abstract fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<T, E>
 

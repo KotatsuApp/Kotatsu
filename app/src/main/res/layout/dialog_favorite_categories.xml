@@ -40,12 +40,12 @@
 		android:layout_width="match_parent"
 		android:layout_height="?android:listPreferredItemHeightSmall"
 		android:background="?android:selectableItemBackground"
-		android:drawableEnd="@drawable/ic_add"
 		android:gravity="start|center_vertical"
 		android:paddingStart="?android:listPreferredItemPaddingStart"
 		android:paddingEnd="?android:listPreferredItemPaddingEnd"
 		android:text="@string/add_new_category"
 		android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-		android:textColor="?android:textColorPrimary" />
+		android:textColor="?android:textColorPrimary"
+		app:drawableEndCompat="@drawable/ic_add" />
 
 </LinearLayout>

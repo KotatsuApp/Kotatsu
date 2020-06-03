@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.ui.common.list
 
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -27,26 +26,29 @@ abstract class BaseViewHolder<T, E> protected constructor(view: View) :
 		onBind(data, extra)
 	}
 
-	fun requireData() = boundData ?: throw IllegalStateException("Calling requireData() before bind()")
+	fun requireData(): T {
+		return boundData ?: throw IllegalStateException("Calling requireData() before bind()")
+	}
 
-	fun setOnItemClickListener(listener: OnRecyclerItemClickListener<T>?): BaseViewHolder<T, E> {
-		if (listener != null) {
-			itemView.setOnClickListener {
-				listener.onItemClick(boundData ?: return@setOnClickListener, bindingAdapterPosition, it)
-			}
-			itemView.setOnLongClickListener {
-				listener.onItemLongClick(boundData ?: return@setOnLongClickListener false, bindingAdapterPosition, it)
-			}
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				itemView.setOnContextClickListener {
-					listener.onItemLongClick(boundData ?: return@setOnContextClickListener false, bindingAdapterPosition, it)
-				}
-			}
-		}
-		return this
+	fun setOnItemClickListener(listener: OnRecyclerItemClickListener<T>?) {
+		val listenersAdapter = listener?.let { HolderListenersAdapter(it) }
+		itemView.setOnClickListener(listenersAdapter)
+		itemView.setOnLongClickListener(listenersAdapter)
 	}
 
 	open fun onRecycled() = Unit
 
 	abstract fun onBind(data: T, extra: E)
+
+	private inner class HolderListenersAdapter(private val listener: OnRecyclerItemClickListener<T>) :
+		View.OnClickListener, View.OnLongClickListener {
+
+		override fun onClick(v: View) {
+			listener.onItemClick(boundData ?: return, bindingAdapterPosition, v)
+		}
+
+		override fun onLongClick(v: View): Boolean {
+			return listener.onItemLongClick(boundData ?: return false, bindingAdapterPosition, v)
+		}
+	}
 }

@@ -39,9 +39,6 @@
 	<string name="processing_">Processing…</string>
 	<string name="download_complete">Download complete</string>
 	<string name="downloads">Downloads</string>
-	<string name="save_this_chapter_and_prev">Save this chapter and prev.</string>
-	<string name="save_this_chapter_and_next">Save this chapter and next</string>
-	<string name="save_this_chapter">Save this chapter</string>
 	<string name="by_name">By name</string>
 	<string name="popular">Popular</string>
 	<string name="updated">Updated</string>

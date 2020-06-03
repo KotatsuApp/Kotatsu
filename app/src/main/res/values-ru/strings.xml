@@ -38,9 +38,6 @@
 	<string name="processing_">Обработка…</string>
 	<string name="download_complete">Загрузка завершена</string>
 	<string name="downloads">Загрузки</string>
-	<string name="save_this_chapter_and_prev">Сохранить предыдущие главы</string>
-	<string name="save_this_chapter_and_next">Сохранить следующие главы</string>
-	<string name="save_this_chapter">Сохранить эту главу</string>
 	<string name="by_name">По имени</string>
 	<string name="popular">Популярная</string>
 	<string name="updated">Обновлённая</string>

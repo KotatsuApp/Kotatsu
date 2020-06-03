@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.domain
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Size
+import androidx.annotation.WorkerThread
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.KoinComponent
@@ -21,6 +22,8 @@ object MangaUtils : KoinComponent {
 	 * Automatic determine type of manga by page size
 	 * @return ReaderMode.WEBTOON if page is wide
 	 */
+	@WorkerThread
+	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun determineReaderMode(pages: List<MangaPage>): ReaderMode? {
 		try {
 			val page = pages.medianOrNull() ?: return null

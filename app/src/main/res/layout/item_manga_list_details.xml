@@ -89,10 +89,10 @@
 					android:id="@+id/textView_rating"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:drawableStart="@drawable/ic_star_rating"
 					android:drawablePadding="4dp"
 					android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-					tools:text="10/10" />
+					tools:text="10/10"
+					app:drawableStartCompat="@drawable/ic_star_rating" />
 
 			</LinearLayout>
 

@@ -19,7 +19,7 @@ class CategoriesAdapter(private val onItemClickListener: OnRecyclerItemClickList
 	override fun getExtra(item: FavouriteCategory, position: Int) = Unit
 
 	@SuppressLint("ClickableViewAccessibility")
-	override fun onViewHolderCreated(holder: BaseViewHolder<FavouriteCategory, Unit>) {
+	override fun onViewAttachedToWindow(holder: BaseViewHolder<FavouriteCategory, Unit>) {
 		holder.imageView_more.setOnClickListener { v ->
 			onItemClickListener.onItemClick(holder.requireData(), holder.bindingAdapterPosition, v)
 		}
@@ -30,6 +30,11 @@ class CategoriesAdapter(private val onItemClickListener: OnRecyclerItemClickList
 				false
 			}
 		}
+	}
+
+	override fun onViewDetachedFromWindow(holder: BaseViewHolder<FavouriteCategory, Unit>) {
+		holder.imageView_more.setOnClickListener(null)
+		holder.imageView_handle.setOnTouchListener(null)
 	}
 
 	fun moveItem(oldPos: Int, newPos: Int) {
