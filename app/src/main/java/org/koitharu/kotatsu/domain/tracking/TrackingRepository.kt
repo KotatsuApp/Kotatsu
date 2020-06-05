@@ -61,12 +61,11 @@ class TrackingRepository : KoinComponent {
 				lastNotifiedChapterId = newChapters.lastOrNull()?.id ?: previousTrackChapterId
 			)
 			db.tracksDao.upsert(entity)
-			if (newChapters.isNotEmpty()) {
+			val foundChapters = newChapters.takeLastWhile { x -> x.id != previousTrackChapterId }
+			if (foundChapters.isNotEmpty()) {
 				val logEntity = TrackLogEntity(
 					mangaId = mangaId,
-					chapters = newChapters
-						.takeLastWhile { x -> x.id != previousTrackChapterId }
-						.joinToString("\n") { x -> x.name },
+					chapters = foundChapters.joinToString("\n") { x -> x.name },
 					createdAt = System.currentTimeMillis()
 				)
 				db.trackLogsDao.insert(logEntity)
