@@ -188,6 +188,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 		tab.text = when (position) {
 			0 -> getString(R.string.details)
 			1 -> getString(R.string.chapters)
+			2 -> getString(R.string.related)
 			else -> null
 		}
 	}

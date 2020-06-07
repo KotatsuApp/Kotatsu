@@ -135,6 +135,7 @@
 	<string name="favourites_category_empty">This category is empty</string>
 	<string name="read_later">Read later</string>
 	<string name="updates">Updates</string>
-	<string name="text_feed_holder">Here you will see manga updates</string>
+	<string name="text_feed_holder">Here you will see the new chapters of the manga you are reading</string>
 	<string name="search_results">Search results</string>
+	<string name="related">Related</string>
 </resources>

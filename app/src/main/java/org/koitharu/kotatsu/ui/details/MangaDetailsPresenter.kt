@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.ui.details
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.domain.MangaDataRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
+import org.koitharu.kotatsu.domain.MangaSearchRepository
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.domain.favourites.OnFavouritesChangeListener
 import org.koitharu.kotatsu.domain.history.HistoryRepository
@@ -30,6 +32,7 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 	private lateinit var historyRepository: HistoryRepository
 	private lateinit var favouritesRepository: FavouritesRepository
 	private lateinit var trackingRepository: TrackingRepository
+	private lateinit var searchRepository: MangaSearchRepository
 
 	private var manga: Manga? = null
 
@@ -37,6 +40,7 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 		historyRepository = HistoryRepository()
 		favouritesRepository = FavouritesRepository()
 		trackingRepository = TrackingRepository()
+		searchRepository = MangaSearchRepository()
 		super.onFirstViewAttach()
 		HistoryRepository.subscribe(this)
 		FavouritesRepository.subscribe(this)
@@ -144,6 +148,38 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 					e.printStackTrace()
 				}
 			}
+		}
+	}
+
+	fun loadRelated() {
+		val manga = this.manga ?: return
+		presenterScope.launch {
+			viewState.onLoadingStateChanged(isLoading = true)
+			var isFirstCall = true
+			searchRepository.globalSearch(manga.title)
+				.map { list ->
+					list.filter { x -> x.id != manga.id }
+				}.filterNot { x -> x.isEmpty() }
+				.flowOn(Dispatchers.IO)
+				.catch { e ->
+					if (e is IOException) {
+						viewState.onError(e)
+					}
+				}
+				.onEmpty {
+					viewState.onListChanged(emptyList())
+					viewState.onLoadingStateChanged(isLoading = false)
+				}.onCompletion {
+					viewState.onListAppended(emptyList())
+				}.collect {
+					if (isFirstCall) {
+						isFirstCall = false
+						viewState.onListChanged(it)
+						viewState.onLoadingStateChanged(isLoading = false)
+					} else {
+						viewState.onListAppended(it)
+					}
+				}
 		}
 	}
 

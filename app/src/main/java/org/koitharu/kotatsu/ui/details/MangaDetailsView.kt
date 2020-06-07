@@ -1,5 +1,8 @@
 package org.koitharu.kotatsu.ui.details
 
+import moxy.viewstate.strategy.AddToEndSingleTagStrategy
+import moxy.viewstate.strategy.AddToEndStrategy
+import moxy.viewstate.strategy.StateStrategyType
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.SingleState
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -23,4 +26,13 @@ interface MangaDetailsView : BaseMvpView {
 
 	@AddToEndSingle
 	fun onNewChaptersChanged(newChapters: Int)
+
+	@StateStrategyType(AddToEndSingleTagStrategy::class, tag = "content")
+	fun onListChanged(list: List<Manga>) = Unit
+
+	@StateStrategyType(AddToEndStrategy::class, tag = "content")
+	fun onListAppended(list: List<Manga>) = Unit
+
+	@StateStrategyType(AddToEndSingleTagStrategy::class, tag = "content")
+	fun onListError(e: Throwable) = Unit
 }

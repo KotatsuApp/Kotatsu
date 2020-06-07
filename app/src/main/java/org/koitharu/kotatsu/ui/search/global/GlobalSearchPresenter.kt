@@ -18,7 +18,6 @@ class GlobalSearchPresenter : BasePresenter<MangaListView<Unit>>() {
 		super.onFirstViewAttach()
 	}
 
-	@Suppress("EXPERIMENTAL_API_USAGE")
 	fun startSearch(query: String) {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(isLoading = true)
