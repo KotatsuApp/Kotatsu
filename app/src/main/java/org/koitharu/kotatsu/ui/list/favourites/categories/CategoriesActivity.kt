@@ -7,11 +7,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_categories.*
 import moxy.ktx.moxyPresenter
@@ -78,7 +78,7 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 	}
 
 	private fun deleteCategory(category: FavouriteCategory) {
-		AlertDialog.Builder(this)
+		MaterialAlertDialogBuilder(this)
 			.setMessage(getString(R.string.category_delete_confirm, category.title))
 			.setTitle(R.string.remove_category)
 			.setNegativeButton(android.R.string.cancel, null)

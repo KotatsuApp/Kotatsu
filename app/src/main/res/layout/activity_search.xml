@@ -13,7 +13,7 @@
 		android:fitsSystemWindows="true"
 		android:theme="@style/AppToolbarTheme">
 
-		<androidx.appcompat.widget.Toolbar
+		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="?android:actionBarSize"
@@ -29,7 +29,7 @@
 				app:searchHintIcon="@null"
 				app:searchIcon="@null" />
 
-		</androidx.appcompat.widget.Toolbar>
+		</com.google.android.material.appbar.MaterialToolbar>
 
 	</com.google.android.material.appbar.AppBarLayout>
 

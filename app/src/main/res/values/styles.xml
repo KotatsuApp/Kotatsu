@@ -10,13 +10,19 @@
 
 	<style name="AppPopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
 
-	<style name="AppToolbarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
+	<style name="AppToolbarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
 		<item name="popupTheme">@style/AppPopupTheme</item>
 		<item name="autoCompleteTextViewStyle">@style/AppSuggestion</item>
 	</style>
 
 	<style name="AppSuggestion" parent="Widget.AppCompat.Light.AutoCompleteTextView">
 		<item name="android:popupBackground">@android:color/background_light</item>
+	</style>
+
+	<style name="AppActionMode" parent="Widget.AppCompat.ActionMode">
+		<item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
+		<item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
+		<item name="background">@color/grey</item>
 	</style>
 
 </resources>

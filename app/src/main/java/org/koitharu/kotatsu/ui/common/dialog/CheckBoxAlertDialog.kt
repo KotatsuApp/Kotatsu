@@ -8,6 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 
 class CheckBoxAlertDialog private constructor(private val delegate: AlertDialog) :
@@ -22,7 +23,7 @@ class CheckBoxAlertDialog private constructor(private val delegate: AlertDialog)
 			.inflate(R.layout.dialog_checkbox, null, false)
 		private val checkBox = view.findViewById<MaterialCheckBox>(android.R.id.checkbox)
 
-		private val delegate = AlertDialog.Builder(context)
+		private val delegate = MaterialAlertDialogBuilder(context)
 			.setView(view)
 
 		fun setTitle(@StringRes titleResId: Int): Builder {

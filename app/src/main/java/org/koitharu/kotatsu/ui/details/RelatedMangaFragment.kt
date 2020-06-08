@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.ui.details
 
+import android.os.Bundle
+import android.view.View
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
@@ -9,6 +11,11 @@ import org.koitharu.kotatsu.ui.list.MangaListFragment
 class RelatedMangaFragment : MangaListFragment<Unit>(), MangaDetailsView {
 
 	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		isSwipeRefreshEnabled = false
+	}
 
 	override fun onRequestMoreItems(offset: Int) {
 		if (offset == 0) {

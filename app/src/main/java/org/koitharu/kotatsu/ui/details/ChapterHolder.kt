@@ -35,7 +35,7 @@ class ChapterHolder(parent: ViewGroup) :
 				textView_number.setTextColor(context.getThemeColor(android.R.attr.textColorPrimaryInverse))
 			}
 			ChapterExtra.CHECKED -> {
-				textView_number.setBackgroundResource(R.drawable.bg_badge_accent)
+				textView_number.background = null
 				textView_number.setTextColor(Color.TRANSPARENT)
 			}
 		}

@@ -49,6 +49,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 	private var adapter: MangaListAdapter? = null
 	private var progressAdapter: ProgressBarAdapter? = null
 	private var paginationListener : PaginationScrollListener? = null
+	protected var isSwipeRefreshEnabled = true
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -188,7 +189,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 		val hasItems = recyclerView.hasItems
 		progressBar.isVisible = isLoading && !hasItems
 		swipeRefreshLayout.isRefreshing = isLoading && hasItems
-		swipeRefreshLayout.isEnabled = !progressBar.isVisible
+		swipeRefreshLayout.isEnabled = isSwipeRefreshEnabled && !progressBar.isVisible
 		if (isLoading) {
 			layout_holder.isVisible = false
 		}

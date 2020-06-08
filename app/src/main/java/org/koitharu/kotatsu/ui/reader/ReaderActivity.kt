@@ -12,12 +12,12 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
 import kotlinx.coroutines.GlobalScope
@@ -224,7 +224,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onError(e: Throwable) {
-		val dialog = AlertDialog.Builder(this)
+		val dialog = MaterialAlertDialogBuilder(this)
 			.setTitle(R.string.error_occurred)
 			.setMessage(e.message)
 			.setPositiveButton(R.string.close, null)

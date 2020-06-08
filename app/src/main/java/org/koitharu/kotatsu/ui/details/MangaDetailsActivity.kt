@@ -7,11 +7,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ActionMode
+import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -31,6 +32,7 @@ import org.koitharu.kotatsu.ui.download.DownloadService
 import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 	TabLayoutMediator.TabConfigurationStrategy {
@@ -124,7 +126,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 		}
 		R.id.action_delete -> {
 			manga?.let { m ->
-				AlertDialog.Builder(this)
+				MaterialAlertDialogBuilder(this)
 					.setTitle(R.string.delete_manga)
 					.setMessage(getString(R.string.text_delete_local_manga, m.title))
 					.setPositiveButton(R.string.delete) { _, _ ->
@@ -139,7 +141,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 			manga?.let {
 				val chaptersCount = it.chapters?.size ?: 0
 				if (chaptersCount > 5) {
-					AlertDialog.Builder(this)
+					MaterialAlertDialogBuilder(this)
 						.setTitle(R.string.save_manga)
 						.setMessage(
 							getString(
@@ -196,11 +198,13 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
 		pager.isUserInputEnabled = false
+		window?.statusBarColor = ContextCompat.getColor(this, R.color.grey_dark)
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		pager.isUserInputEnabled = true
+		window?.statusBarColor = getThemeColor(R.attr.colorPrimaryDark)
 	}
 
 	companion object {
