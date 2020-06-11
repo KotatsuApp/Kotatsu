@@ -13,17 +13,25 @@
 		android:scaleType="centerCrop"
 		tools:src="@drawable/ic_placeholder" />
 
-	<TextView
-		android:id="@+id/textView_number"
+	<View
+		android:id="@+id/handle"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:background="?android:selectableItemBackground"
+		android:background="?selectableItemBackground" />
+
+	<TextView
+		android:id="@+id/textView_number"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|end"
+		android:layout_margin="8dp"
+		android:background="@drawable/bg_badge_default"
 		android:ellipsize="none"
-		android:gravity="end|bottom"
-		android:padding="12dp"
+		android:gravity="center"
+		android:minWidth="26dp"
 		android:singleLine="true"
-		android:textColor="@android:color/black"
-		android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+		android:textAlignment="center"
+		android:textColor="?android:textColorSecondaryInverse"
 		tools:text="2" />
 
 </FrameLayout>
