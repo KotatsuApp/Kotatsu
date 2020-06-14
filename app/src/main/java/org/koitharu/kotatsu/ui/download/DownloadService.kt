@@ -120,15 +120,13 @@ class DownloadService : BaseService() {
 								pageIndex,
 								MimeTypeMap.getFileExtensionFromUrl(url)
 							)
-							withContext(Dispatchers.Main) {
-								notification.setProgress(
-									chapters.size,
-									pages.size,
-									chapterIndex,
-									pageIndex
-								)
-								notification.update()
-							}
+							notification.setProgress(
+								chapters.size,
+								pages.size,
+								chapterIndex,
+								pageIndex
+							)
+							notification.update()
 						}
 					}
 				}
