@@ -44,6 +44,13 @@ class TrackingRepository : KoinComponent {
 		}
 	}
 
+	suspend fun cleanup() {
+		db.withTransaction {
+			db.tracksDao.cleanup()
+			db.trackLogsDao.cleanup()
+		}
+	}
+
 	suspend fun storeTrackResult(
 		mangaId: Long,
 		knownChaptersCount: Int,

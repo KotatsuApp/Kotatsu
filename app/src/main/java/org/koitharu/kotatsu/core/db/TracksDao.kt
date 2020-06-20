@@ -25,11 +25,13 @@ abstract class TracksDao {
 	@Query("DELETE FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun delete(mangaId: Long)
 
+	@Query("DELETE FROM tracks WHERE manga_id NOT IN (SELECT manga_id FROM history UNION SELECT manga_id FROM favourites)")
+	abstract suspend fun cleanup()
+
 	@Transaction
 	open suspend fun upsert(entity: TrackEntity) {
 		if (update(entity) == 0) {
 			insert(entity)
 		}
 	}
-
 }
