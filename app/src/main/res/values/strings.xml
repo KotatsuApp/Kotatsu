@@ -138,4 +138,6 @@
 	<string name="text_feed_holder">Here you will see the new chapters of the manga you are reading</string>
 	<string name="search_results">Search results</string>
 	<string name="related">Related</string>
+	<string name="new_version_s">New version: %s</string>
+	<string name="size_s">Size: %s</string>
 </resources>

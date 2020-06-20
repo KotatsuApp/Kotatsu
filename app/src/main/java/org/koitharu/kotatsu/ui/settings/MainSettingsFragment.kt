@@ -42,7 +42,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		findPreference<MultiSelectListPreference>(R.string.key_reader_switchers)?.summaryProvider =
 			MultiSummaryProvider(R.string.gestures_only)
 		findPreference<Preference>(R.string.key_app_update_auto)?.run {
-			isVisible = AppUpdateService.isUpdateSupported(context)
+			isVisible = AppUpdateChecker.isUpdateSupported(context)
 		}
 		findPreference<Preference>(R.string.key_local_storage)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)

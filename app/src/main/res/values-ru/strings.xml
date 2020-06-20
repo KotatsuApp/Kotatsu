@@ -137,4 +137,6 @@
 	<string name="text_feed_holder">Здесь будут отображаться обновления манги, которую Вы читаете</string>
 	<string name="search_results">Результаты поиска</string>
 	<string name="related">Похожие</string>
+	<string name="new_version_s">Новая версия: %s</string>
+	<string name="size_s">Размер: %s</string>
 </resources>
