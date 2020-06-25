@@ -41,9 +41,9 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 	SectionItemDecoration.Callback, SwipeRefreshLayout.OnRefreshListener {
 
 	private val settings by inject<AppSettings>()
-	private val adapterConfig = MergeAdapter.Config.Builder()
+	private val adapterConfig = ConcatAdapter.Config.Builder()
 		.setIsolateViewTypes(true)
-		.setStableIdMode(MergeAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
+		.setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
 		.build()
 
 	private var adapter: MangaListAdapter? = null
@@ -245,18 +245,17 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 		adapter?.listMode = mode
 		recyclerView.layoutManager = when (mode) {
 			ListMode.GRID -> {
-				val spanCount = UiUtils.resolveGridSpanCount(ctx)
-				GridLayoutManager(ctx, spanCount).apply {
+				GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx)).apply {
 					spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
 						override fun getSpanSize(position: Int) = if (position < getItemsCount())
-							1 else spanCount
+							1 else this@apply.spanCount
 					}
 				}
 			}
 			else -> LinearLayoutManager(ctx)
 		}
 		recyclerView.recycledViewPool.clear()
-		recyclerView.adapter = MergeAdapter(adapterConfig, adapter, progressAdapter)
+		recyclerView.adapter = ConcatAdapter(adapterConfig, adapter, progressAdapter)
 		recyclerView.addItemDecoration(
 			when (mode) {
 				ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)
