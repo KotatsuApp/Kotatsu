@@ -48,7 +48,7 @@ class ShelfConfigActivity : BaseActivity(), FavouriteCategoriesView,
 			AppWidgetManager.INVALID_APPWIDGET_ID
 		) ?: AppWidgetManager.INVALID_APPWIDGET_ID
 		if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-			finish()
+			finishAfterTransition()
 			return
 		}
 		config = AppWidgetConfig.getInstance(this, appWidgetId)

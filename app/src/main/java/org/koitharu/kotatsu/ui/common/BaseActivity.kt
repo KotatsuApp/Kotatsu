@@ -1,12 +1,10 @@
 package org.koitharu.kotatsu.ui.common
 
-import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import moxy.MvpAppCompatActivity
 import org.koin.core.KoinComponent
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 
 abstract class BaseActivity : MvpAppCompatActivity(), KoinComponent {
@@ -29,13 +27,4 @@ abstract class BaseActivity : MvpAppCompatActivity(), KoinComponent {
 		onBackPressed()
 		true
 	} else super.onOptionsItemSelected(item)
-
-	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-		//TODO remove. Just for testing
-		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-			recreate()
-			return true
-		}
-		return super.onKeyDown(keyCode, event)
-	}
 }

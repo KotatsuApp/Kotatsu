@@ -25,7 +25,9 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters), MangaDetailsV
 	OnRecyclerItemClickListener<MangaChapter>, ActionMode.Callback {
 
 	@Suppress("unused")
-	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
+	private val presenter by moxyPresenter {
+		MangaDetailsPresenter.getInstance(activity.hashCode())
+	}
 
 	private var manga: Manga? = null
 

@@ -19,7 +19,7 @@ class SearchActivity : BaseActivity(), SearchView.OnQueryTextListener {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_search)
 		source = intent.getParcelableExtra(EXTRA_SOURCE) ?: run {
-			finish()
+			finishAfterTransition()
 			return
 		}
 		val query = intent.getStringExtra(EXTRA_QUERY)

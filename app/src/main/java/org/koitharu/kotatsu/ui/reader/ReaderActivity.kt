@@ -75,7 +75,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			?: intent.getParcelableExtra<ReaderState>(EXTRA_STATE)
 					?: let {
 				Toast.makeText(this, R.string.error_occurred, Toast.LENGTH_SHORT).show()
-				finish()
+				finishAfterTransition()
 				return
 			}
 

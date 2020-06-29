@@ -14,7 +14,7 @@ class GlobalSearchActivity : BaseActivity() {
 		val query = intent.getStringExtra(EXTRA_QUERY)
 
 		if (query == null) {
-			finish()
+			finishAfterTransition()
 			return
 		}
 

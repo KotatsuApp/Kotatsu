@@ -29,7 +29,9 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 	View.OnLongClickListener {
 
 	@Suppress("unused")
-	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
+	private val presenter by moxyPresenter {
+		MangaDetailsPresenter.getInstance(activity.hashCode())
+	}
 
 	private var manga: Manga? = null
 	private var history: MangaHistory? = null

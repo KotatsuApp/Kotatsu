@@ -38,11 +38,11 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 	}
 
 	fun loadList(offset: Int) {
-		if (offset != 0) {
-			viewState.onListAppended(emptyList())
-			return
-		}
 		presenterScope.launch {
+			if (offset != 0) {
+				viewState.onListAppended(emptyList())
+				return@launch
+			}
 			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {
