@@ -139,4 +139,5 @@
 	<string name="related">Похожие</string>
 	<string name="new_version_s">Новая версия: %s</string>
 	<string name="size_s">Размер: %s</string>
+	<string name="waiting_for_network">Ожидание подключения…</string>
 </resources>

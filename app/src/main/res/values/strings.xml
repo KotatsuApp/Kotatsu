@@ -140,4 +140,5 @@
 	<string name="related">Related</string>
 	<string name="new_version_s">New version: %s</string>
 	<string name="size_s">Size: %s</string>
+	<string name="waiting_for_network">Waiting for network…</string>
 </resources>

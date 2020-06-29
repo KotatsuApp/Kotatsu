@@ -92,6 +92,11 @@ class DownloadNotification(private val context: Context) {
 		builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 	}
 
+	fun setWaitingForNetwork() {
+		builder.setProgress(0, 0, false)
+		builder.setContentText(context.getString(R.string.waiting_for_network))
+	}
+
 	fun setPostProcessing() {
 		builder.setProgress(1, 0, true)
 		builder.setContentText(context.getString(R.string.processing_))

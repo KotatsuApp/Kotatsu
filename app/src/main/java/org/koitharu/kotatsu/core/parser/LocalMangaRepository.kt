@@ -72,7 +72,6 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 			}
 	}
 
-
 	fun delete(manga: Manga): Boolean {
 		val file = Uri.parse(manga.url).toFile()
 		return file.delete()

@@ -13,6 +13,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okio.IOException
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
@@ -24,10 +25,7 @@ import org.koitharu.kotatsu.domain.local.MangaZip
 import org.koitharu.kotatsu.ui.common.BaseService
 import org.koitharu.kotatsu.ui.common.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.utils.CacheUtils
-import org.koitharu.kotatsu.utils.ext.await
-import org.koitharu.kotatsu.utils.ext.retryUntilSuccess
-import org.koitharu.kotatsu.utils.ext.safe
-import org.koitharu.kotatsu.utils.ext.sub
+import org.koitharu.kotatsu.utils.ext.*
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.collections.set
@@ -37,6 +35,7 @@ class DownloadService : BaseService() {
 
 	private lateinit var notification: DownloadNotification
 	private lateinit var wakeLock: PowerManager.WakeLock
+	private lateinit var connectivityManager: ConnectivityManager
 
 	private val okHttp by inject<OkHttpClient>()
 	private val cache by inject<PagesCache>()
@@ -47,6 +46,7 @@ class DownloadService : BaseService() {
 	override fun onCreate() {
 		super.onCreate()
 		notification = DownloadNotification(this)
+		connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 		wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
 	}
@@ -88,9 +88,11 @@ class DownloadService : BaseService() {
 			try {
 				val repo = MangaProviderFactory.create(manga.source)
 				val cover = safe {
-					Coil.execute(GetRequestBuilder(this@DownloadService)
-						.data(manga.coverUrl)
-						.build()).drawable
+					Coil.execute(
+						GetRequestBuilder(this@DownloadService)
+							.data(manga.coverUrl)
+							.build()
+					).drawable
 				}
 				withContext(Dispatchers.Main) {
 					notification.setLargeIcon(cover)
@@ -112,23 +114,30 @@ class DownloadService : BaseService() {
 					if (chaptersIds == null || chapter.id in chaptersIds) {
 						val pages = repo.getPages(chapter)
 						for ((pageIndex, page) in pages.withIndex()) {
-							val url = repo.getPageFullUrl(page)
-							val file = cache[url] ?: downloadPage(url, destination)
-							output.addPage(
-								chapter,
-								file,
-								pageIndex,
-								MimeTypeMap.getFileExtensionFromUrl(url)
+							failsafe@ do {
+								try {
+									val url = repo.getPageFullUrl(page)
+									val file = cache[url] ?: downloadPage(url, destination)
+									output.addPage(
+										chapter,
+										file,
+										pageIndex,
+										MimeTypeMap.getFileExtensionFromUrl(url)
+									)
+								} catch (e: IOException) {
+									notification.setWaitingForNetwork()
+									notification.update()
+									connectivityManager.waitForNetwork()
+									continue@failsafe
+								}
+							} while (false)
+							notification.setProgress(
+								chapters.size,
+								pages.size,
+								chapterIndex,
+								pageIndex
 							)
-							withContext(Dispatchers.Main) {
-								notification.setProgress(
-									chapters.size,
-									pages.size,
-									chapterIndex,
-									pageIndex
-								)
-								notification.update()
-							}
+							notification.update()
 						}
 					}
 				}
