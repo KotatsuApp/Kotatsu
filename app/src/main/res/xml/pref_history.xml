@@ -9,6 +9,12 @@
 		android:title="@string/clear_search_history"
 		app:iconSpaceReserved="false" />
 
+	<Preference
+		android:key="@string/key_updates_feed_clear"
+		android:persistent="false"
+		android:title="@string/clear_updates_feed"
+		app:iconSpaceReserved="false" />
+
 	<PreferenceCategory
 		app:iconSpaceReserved="false"
 		android:title="@string/cache">

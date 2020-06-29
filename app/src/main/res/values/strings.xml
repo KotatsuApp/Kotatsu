@@ -141,4 +141,6 @@
 	<string name="new_version_s">New version: %s</string>
 	<string name="size_s">Size: %s</string>
 	<string name="waiting_for_network">Waiting for network…</string>
+	<string name="clear_updates_feed">Clear updates feed</string>
+	<string name="updates_feed_cleared">Updates feed cleared</string>
 </resources>

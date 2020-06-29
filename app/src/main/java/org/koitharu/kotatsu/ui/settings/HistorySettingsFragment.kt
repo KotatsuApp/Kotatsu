@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.local.Cache
+import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.search.MangaSuggestionsProvider
 import org.koitharu.kotatsu.utils.CacheUtils
@@ -16,6 +17,10 @@ import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cache) {
+
+	private val trackerRepo by lazy {
+		TrackingRepository()
+	}
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)
@@ -39,6 +44,12 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			val items = MangaSuggestionsProvider.getItemsCount(p.context)
 			p.summary = p.context.resources.getQuantityString(R.plurals.items, items, items)
 		}
+		findPreference<Preference>(R.string.key_updates_feed_clear)?.let { p ->
+			lifecycleScope.launchWhenResumed {
+				val items = trackerRepo.count()
+				p.summary = p.context.resources.getQuantityString(R.plurals.items, items, items)
+			}
+		}
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -60,6 +71,19 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					R.string.search_history_cleared,
 					Snackbar.LENGTH_SHORT
 				).show()
+				true
+			}
+			getString(R.string.key_updates_feed_clear) -> {
+				lifecycleScope.launch {
+					trackerRepo.clearLogs()
+					preference.summary = preference.context.resources
+						.getQuantityString(R.plurals.items, 0, 0)
+					Snackbar.make(
+						view ?: return@launch,
+						R.string.updates_feed_cleared,
+						Snackbar.LENGTH_SHORT
+					).show()
+				}
 				true
 			}
 			else -> super.onPreferenceTreeClick(preference)

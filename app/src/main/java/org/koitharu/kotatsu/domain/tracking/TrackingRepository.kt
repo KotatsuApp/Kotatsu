@@ -44,6 +44,10 @@ class TrackingRepository : KoinComponent {
 		}
 	}
 
+	suspend fun count() = db.trackLogsDao.count()
+
+	suspend fun clearLogs() = db.trackLogsDao.clear()
+
 	suspend fun cleanup() {
 		db.withTransaction {
 			db.tracksDao.cleanup()

@@ -140,4 +140,6 @@
 	<string name="new_version_s">Новая версия: %s</string>
 	<string name="size_s">Размер: %s</string>
 	<string name="waiting_for_network">Ожидание подключения…</string>
+	<string name="clear_updates_feed">Очистить ленту обновлений</string>
+	<string name="updates_feed_cleared">Лента обновлений очищена</string>
 </resources>

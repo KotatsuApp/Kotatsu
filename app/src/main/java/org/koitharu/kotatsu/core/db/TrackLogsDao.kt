@@ -22,4 +22,7 @@ interface TrackLogsDao {
 
 	@Query("DELETE FROM track_logs WHERE manga_id NOT IN (SELECT manga_id FROM tracks)")
 	suspend fun cleanup()
+
+	@Query("SELECT COUNT(*) FROM track_logs")
+	suspend fun count(): Int
 }
