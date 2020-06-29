@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.ui.details
 
-import android.util.Log
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

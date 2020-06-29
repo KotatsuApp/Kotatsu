@@ -42,7 +42,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
-		return when(preference.key) {
+		return when (preference.key) {
 			getString(R.string.key_pages_cache_clear) -> {
 				clearCache(preference, Cache.PAGES)
 				true
@@ -53,8 +53,13 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			}
 			getString(R.string.key_search_history_clear) -> {
 				MangaSuggestionsProvider.clearHistory(preference.context)
-				preference.context.resources.getQuantityString(R.plurals.items, 0, 0)
-				Snackbar.make(view ?: return true, R.string.search_history_cleared, Snackbar.LENGTH_SHORT).show()
+				preference.summary = preference.context.resources
+					.getQuantityString(R.plurals.items, 0, 0)
+				Snackbar.make(
+					view ?: return true,
+					R.string.search_history_cleared,
+					Snackbar.LENGTH_SHORT
+				).show()
 				true
 			}
 			else -> super.onPreferenceTreeClick(preference)
