@@ -30,7 +30,7 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 				return it
 			}
 		}
-		val task = tasks[url]?.takeUnless { it.isCancelled }
+		val task = tasks[url]?.takeUnless { it.isCancelled || (force && it.isCompleted) }
 		return (task ?: loadAsync(url).also { tasks[url] = it }).await()
 	}
 
@@ -54,6 +54,9 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 				val body = response.body
 				checkNotNull(body) {
 					"Null response"
+				}
+				check(response.isSuccessful) {
+					"Invalid response: ${response.code} ${response.message}"
 				}
 				cache.put(url) { out ->
 					body.byteStream().copyTo(out)

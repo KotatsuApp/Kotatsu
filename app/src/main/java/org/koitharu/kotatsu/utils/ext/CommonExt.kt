@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
-import java.io.IOException
+import java.net.SocketTimeoutException
 
 inline fun <T, R> T.safe(action: T.() -> R?) = try {
 	this.action()
@@ -38,12 +38,8 @@ fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	is UnsupportedOperationException -> resources.getString(R.string.operation_not_supported)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
-	is IOException -> resources.getString(R.string.network_error)
-	else -> if (BuildConfig.DEBUG) {
-		message ?: resources.getString(R.string.error_occurred)
-	} else {
-		resources.getString(R.string.error_occurred)
-	}
+	is SocketTimeoutException -> resources.getString(R.string.network_error)
+	else -> message ?: resources.getString(R.string.error_occurred)
 }
 
 inline fun <T> measured(tag: String, block: () -> T): T {
