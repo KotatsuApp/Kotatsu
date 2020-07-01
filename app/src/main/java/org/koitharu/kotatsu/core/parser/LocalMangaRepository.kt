@@ -78,8 +78,7 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 	}
 
 	@SuppressLint("DefaultLocale")
-	fun getFromFile(file: File): Manga {
-		val zip = ZipFile(file)
+	fun getFromFile(file: File): Manga = ZipFile(file).use { zip ->
 		val fileUri = file.toUri().toString()
 		val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
 		val index = entry?.let(zip::readText)?.let(::MangaIndex)
@@ -105,7 +104,7 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 			}
 		}
 		val uriBuilder = file.toUri().buildUpon()
-		return Manga(
+		Manga(
 			id = file.absolutePath.longHashCode(),
 			title = title,
 			url = fileUri,

@@ -5,9 +5,13 @@ import android.view.View
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import coil.api.load
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_details.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -73,13 +77,18 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 			)
 		}
 		manga.url.toUri().toFileOrNull()?.let { f ->
-			chips_tags.addChips(listOf(f)) {
-				create(
-					text = FileSizeUtils.formatBytes(context, it.length()),
-					iconRes = R.drawable.ic_chip_storage,
-					tag = it,
-					onClickListener = this@MangaDetailsFragment
-				)
+			lifecycleScope.launch {
+				val size = withContext(Dispatchers.IO) {
+					f.length()
+				}
+				chips_tags.addChips(listOf(f)) {
+					create(
+						text = FileSizeUtils.formatBytes(context, size),
+						iconRes = R.drawable.ic_chip_storage,
+						tag = it,
+						onClickListener = this@MangaDetailsFragment
+					)
+				}
 			}
 		}
 		imageView_favourite.setOnClickListener(this)

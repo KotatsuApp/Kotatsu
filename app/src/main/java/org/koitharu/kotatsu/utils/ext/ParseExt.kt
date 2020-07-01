@@ -10,13 +10,14 @@ import org.jsoup.select.Elements
 
 fun Response.parseHtml(): Document {
 	try {
-		val stream = body?.byteStream() ?: throw NullPointerException("Response body is null")
-		val charset = body!!.contentType()?.charset()?.name()
-		return Jsoup.parse(
-			stream,
-			charset,
-			request.url.toString()
-		)
+		(body?.byteStream() ?: throw NullPointerException("Response body is null")).use { stream ->
+			val charset = body!!.contentType()?.charset()?.name()
+			return Jsoup.parse(
+				stream,
+				charset,
+				request.url.toString()
+			)
+		}
 	} finally {
 		closeQuietly()
 	}

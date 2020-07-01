@@ -8,17 +8,20 @@ import androidx.appcompat.widget.SearchView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.ui.search.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.ext.safe
+import java.io.Closeable
 
 object SearchHelper {
 
 	@JvmStatic
-	fun setupSearchView(menuItem: MenuItem) {
-		val view = menuItem.actionView as? SearchView ?: return
+	fun setupSearchView(menuItem: MenuItem): Closeable? {
+		val view = menuItem.actionView as? SearchView ?: return null
 		val context = view.context
+		val adapter = MangaSuggestionsProvider.getSuggestionAdapter(context)
 		view.queryHint = context.getString(R.string.search_manga)
-		view.suggestionsAdapter = MangaSuggestionsProvider.getSuggestionAdapter(context)
+		view.suggestionsAdapter = adapter
 		view.setOnQueryTextListener(QueryListener(context))
 		view.setOnSuggestionListener(SuggestionListener(view))
+		return adapter?.cursor
 	}
 
 	private class QueryListener(private val context: Context) :

@@ -1,10 +1,9 @@
 package org.koitharu.kotatsu
 
 import android.app.Application
+import android.os.StrictMode
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import coil.Coil
 import coil.ComponentRegistry
 import coil.ImageLoaderBuilder
@@ -24,6 +23,7 @@ import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.local.cookies.PersistentCookieJar
 import org.koitharu.kotatsu.core.local.cookies.cache.SetCookieCache
 import org.koitharu.kotatsu.core.local.cookies.persistence.SharedPrefsCookiePersistor
+import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
@@ -46,6 +46,19 @@ class KotatsuApp : Application() {
 
 	override fun onCreate() {
 		super.onCreate()
+		if (BuildConfig.DEBUG) {
+			StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+				.detectAll()
+				.penaltyLog()
+				.build())
+			StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
+				.detectAll()
+				.setClassInstanceLimit(LocalMangaRepository::class.java, 1)
+				.setClassInstanceLimit(PagesCache::class.java, 1)
+				.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
+				.penaltyLog()
+				.build())
+		}
 		initKoin()
 		initCoil()
 		Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(applicationContext))
@@ -75,7 +88,7 @@ class KotatsuApp : Application() {
 					single {
 						MangaLoaderContext()
 					}
-					factory {
+					single {
 						AppSettings(applicationContext)
 					}
 					single {

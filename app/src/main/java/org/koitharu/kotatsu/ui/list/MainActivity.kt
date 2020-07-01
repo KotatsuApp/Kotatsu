@@ -37,6 +37,7 @@ import org.koitharu.kotatsu.ui.settings.SettingsActivity
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.resolveDp
+import java.io.Closeable
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
 	SharedPreferences.OnSharedPreferenceChangeListener, MainView {
@@ -45,6 +46,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 	private val settings by inject<AppSettings>()
 	private lateinit var drawerToggle: ActionBarDrawerToggle
+	private var closeable: Closeable? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -74,6 +76,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	}
 
 	override fun onDestroy() {
+		closeable?.close()
 		settings.unsubscribe(this)
 		super.onDestroy()
 	}
@@ -92,7 +95,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_main, menu)
 		menu.findItem(R.id.action_search)?.let { menuItem ->
-			SearchHelper.setupSearchView(menuItem)
+			closeable = SearchHelper.setupSearchView(menuItem)
 		}
 		return super.onCreateOptionsMenu(menu)
 	}

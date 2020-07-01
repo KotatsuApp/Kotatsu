@@ -79,7 +79,7 @@ class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
 		}
 
 		@JvmStatic
-		fun getItemsCount(context: Context) = getCursor(context)?.count ?: 0
+		fun getItemsCount(context: Context) = getCursor(context)?.use { it.count } ?: 0
 
 		@JvmStatic
 		private fun getCursor(context: Context): Cursor? {

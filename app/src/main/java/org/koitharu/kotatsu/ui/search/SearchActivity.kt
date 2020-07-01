@@ -37,6 +37,11 @@ class SearchActivity : BaseActivity(), SearchView.OnQueryTextListener {
 		}
 	}
 
+	override fun onDestroy() {
+		searchView.suggestionsAdapter?.changeCursor(null) //close cursor
+		super.onDestroy()
+	}
+
 	override fun onQueryTextSubmit(query: String?): Boolean {
 		return if (!query.isNullOrBlank()) {
 			title = query
