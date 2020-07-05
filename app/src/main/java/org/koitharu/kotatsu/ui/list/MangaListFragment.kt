@@ -126,6 +126,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 	}
 
 	final override fun onRefresh() {
+		swipeRefreshLayout.isRefreshing = true
 		onRequestMoreItems(0)
 	}
 
@@ -188,10 +189,11 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 	override fun onLoadingStateChanged(isLoading: Boolean) {
 		val hasItems = recyclerView.hasItems
 		progressBar.isVisible = isLoading && !hasItems
-		swipeRefreshLayout.isRefreshing = isLoading && hasItems
 		swipeRefreshLayout.isEnabled = isSwipeRefreshEnabled && !progressBar.isVisible
 		if (isLoading) {
 			layout_holder.isVisible = false
+		} else {
+			swipeRefreshLayout.isRefreshing = false
 		}
 	}
 

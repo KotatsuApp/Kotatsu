@@ -23,7 +23,12 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 	): List<Manga> {
 		val domain = conf.getDomain(defaultDomain)
 		val url = when {
-			query != null -> "https://$domain/?do=search&subaction=search&story=${query.urlEncoded()}"
+			query != null -> {
+				if (offset != 0) {
+					return emptyList()
+				}
+				"https://$domain/?do=search&subaction=search&story=${query.urlEncoded()}"
+			}
 			tag != null -> "https://$domain/tags/${tag.key}&n=${getSortKey2(sortOrder)}?offset=$offset"
 			else -> "https://$domain/${getSortKey(sortOrder)}?offset=$offset"
 		}
