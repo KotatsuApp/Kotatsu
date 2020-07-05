@@ -10,7 +10,9 @@ import org.koitharu.kotatsu.ui.list.MangaListFragment
 
 class RelatedMangaFragment : MangaListFragment<Unit>(), MangaDetailsView {
 
-	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
+	private val presenter by moxyPresenter {
+		MangaDetailsPresenter.getInstance(activity.hashCode())
+	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)

@@ -19,7 +19,7 @@ class SearchActivity : BaseActivity(), SearchView.OnQueryTextListener {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_search)
 		source = intent.getParcelableExtra(EXTRA_SOURCE) ?: run {
-			finish()
+			finishAfterTransition()
 			return
 		}
 		val query = intent.getStringExtra(EXTRA_QUERY)
@@ -35,6 +35,11 @@ class SearchActivity : BaseActivity(), SearchView.OnQueryTextListener {
 		} else {
 			searchView.setQuery(query, true)
 		}
+	}
+
+	override fun onDestroy() {
+		searchView.suggestionsAdapter?.changeCursor(null) //close cursor
+		super.onDestroy()
 	}
 
 	override fun onQueryTextSubmit(query: String?): Boolean {

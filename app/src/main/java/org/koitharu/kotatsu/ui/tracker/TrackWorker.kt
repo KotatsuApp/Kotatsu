@@ -118,6 +118,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			}
 			success++
 		}
+		repo.cleanup()
 		if (success == 0) {
 			Result.retry()
 		} else {

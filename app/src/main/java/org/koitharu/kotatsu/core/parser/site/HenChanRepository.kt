@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.utils.ext.withDomain
 
 class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 
-	override val defaultDomain = "h-chan.me"
+	override val defaultDomain = "henchan.pro"
 	override val source = MangaSource.HENCHAN
 
 	override suspend fun getDetails(manga: Manga): Manga {

@@ -9,5 +9,6 @@ data class AppVersion(
 	val name: String,
 	val url: String,
 	val apkSize: Long,
-	val apkUrl: String
+	val apkUrl: String,
+	val description: String
 ) : Parcelable

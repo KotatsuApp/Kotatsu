@@ -29,7 +29,7 @@ class BrowserActivity : BaseActivity(), BrowserCallback {
 		webView.webViewClient = BrowserClient(this)
 		val url = intent?.dataString
 		if (url.isNullOrEmpty()) {
-			finish()
+			finishAfterTransition()
 		} else {
 			webView.loadUrl(url)
 		}
@@ -43,7 +43,7 @@ class BrowserActivity : BaseActivity(), BrowserCallback {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		android.R.id.home -> {
 			webView.stopLoading()
-			finish()
+			finishAfterTransition()
 			true
 		}
 		R.id.action_browser -> {

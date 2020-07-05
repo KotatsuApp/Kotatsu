@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.domain.history
 
+import androidx.collection.ArraySet
 import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -71,7 +72,7 @@ class HistoryRepository : KoinComponent {
 
 	companion object {
 
-		private val listeners = HashSet<OnHistoryChangeListener>()
+		private val listeners = ArraySet<OnHistoryChangeListener>()
 
 		fun subscribe(listener: OnHistoryChangeListener) {
 			listeners += listener

@@ -21,13 +21,13 @@ import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.domain.history.OnHistoryChangeListener
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.ui.common.SharedPresenterHolder
 import org.koitharu.kotatsu.utils.ext.safe
 import java.io.IOException
 
 @InjectViewState
-class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsView>(),
-	OnHistoryChangeListener,
-	OnFavouritesChangeListener {
+class MangaDetailsPresenter private constructor(private val key: Int) :
+	BasePresenter<MangaDetailsView>(), OnHistoryChangeListener, OnFavouritesChangeListener {
 
 	private lateinit var historyRepository: HistoryRepository
 	private lateinit var favouritesRepository: FavouritesRepository
@@ -55,7 +55,7 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 				} ?: throw MangaNotFoundException("Cannot find manga by id")
 				viewState.onMangaUpdated(manga)
 				loadDetails(manga, true)
-			} catch (_: CancellationException){
+			} catch (_: CancellationException) {
 			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
@@ -83,7 +83,7 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 				viewState.onMangaUpdated(data)
 				this@MangaDetailsPresenter.manga = data
 				viewState.onNewChaptersChanged(trackingRepository.getNewChaptersCount(manga.id))
-			} catch (_: CancellationException){
+			} catch (_: CancellationException) {
 			} catch (e: Throwable) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
@@ -198,18 +198,12 @@ class MangaDetailsPresenter private constructor() : BasePresenter<MangaDetailsVi
 	override fun onDestroy() {
 		HistoryRepository.unsubscribe(this)
 		FavouritesRepository.unsubscribe(this)
-		instance = null
+		clear(key)
 		super.onDestroy()
 	}
 
-	companion object {
+	companion object Holder : SharedPresenterHolder<MangaDetailsPresenter>() {
 
-		private var instance: MangaDetailsPresenter? = null
-
-		fun getInstance(): MangaDetailsPresenter = instance ?: synchronized(this) {
-			MangaDetailsPresenter().also {
-				instance = it
-			}
-		}
+		override fun onCreatePresenter(key: Int) = MangaDetailsPresenter(key)
 	}
 }

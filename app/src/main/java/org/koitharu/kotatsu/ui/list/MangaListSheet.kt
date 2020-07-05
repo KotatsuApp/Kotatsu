@@ -36,9 +36,9 @@ abstract class MangaListSheet<E> : BaseBottomSheet(R.layout.sheet_list),
 	SharedPreferences.OnSharedPreferenceChangeListener, Toolbar.OnMenuItemClickListener {
 
 	private val settings by inject<AppSettings>()
-	private val adapterConfig = MergeAdapter.Config.Builder()
+	private val adapterConfig = ConcatAdapter.Config.Builder()
 		.setIsolateViewTypes(true)
-		.setStableIdMode(MergeAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
+		.setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
 		.build()
 
 	private var adapter: MangaListAdapter? = null
@@ -181,17 +181,16 @@ abstract class MangaListSheet<E> : BaseBottomSheet(R.layout.sheet_list),
 		adapter?.listMode = mode
 		recyclerView.layoutManager = when (mode) {
 			ListMode.GRID -> {
-				val spanCount = UiUtils.resolveGridSpanCount(ctx)
-				GridLayoutManager(ctx, spanCount).apply {
+				GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx)).apply {
 					spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
 						override fun getSpanSize(position: Int) = if (position < getItemsCount())
-							1 else spanCount
+							1 else this@apply.spanCount
 					}
 				}
 			}
 			else -> LinearLayoutManager(ctx)
 		}
-		recyclerView.adapter = MergeAdapter(adapterConfig, adapter, progressAdapter)
+		recyclerView.adapter = ConcatAdapter(adapterConfig, adapter, progressAdapter)
 		recyclerView.addItemDecoration(
 			when (mode) {
 				ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)

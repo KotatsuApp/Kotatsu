@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.ui.reader
 
 import android.net.Uri
+import android.util.ArrayMap
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -16,7 +17,7 @@ import kotlin.coroutines.CoroutineContext
 class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 
 	private val job = SupervisorJob()
-	private val tasks = HashMap<String, Deferred<File>>()
+	private val tasks = ArrayMap<String, Deferred<File>>()
 	private val okHttp by inject<OkHttpClient>()
 	private val cache by inject<PagesCache>()
 
@@ -30,7 +31,7 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 				return it
 			}
 		}
-		val task = tasks[url]?.takeUnless { it.isCancelled }
+		val task = tasks[url]?.takeUnless { it.isCancelled || (force && it.isCompleted) }
 		return (task ?: loadAsync(url).also { tasks[url] = it }).await()
 	}
 
@@ -48,10 +49,14 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 			val request = Request.Builder()
 				.url(url)
 				.get()
+				.header("Accept", "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
 				.cacheControl(CacheUtils.CONTROL_DISABLED)
 				.build()
 			okHttp.newCall(request).await().use { response ->
 				val body = response.body
+				check(response.isSuccessful) {
+					"Invalid response: ${response.code} ${response.message}"
+				}
 				checkNotNull(body) {
 					"Null response"
 				}

@@ -13,7 +13,6 @@ import org.koin.core.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
@@ -33,16 +32,17 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 	private lateinit var repository: LocalMangaRepository
 
 	override fun onFirstViewAttach() {
-		repository = MangaProviderFactory.create(MangaSource.LOCAL) as LocalMangaRepository
+		repository = MangaProviderFactory.createLocal()
+
 		super.onFirstViewAttach()
 	}
 
 	fun loadList(offset: Int) {
-		if (offset != 0) {
-			viewState.onListAppended(emptyList())
-			return
-		}
 		presenterScope.launch {
+			if (offset != 0) {
+				viewState.onListAppended(emptyList())
+				return@launch
+			}
 			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.IO) {

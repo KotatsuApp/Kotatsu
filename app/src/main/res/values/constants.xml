@@ -9,6 +9,7 @@
 	<string name="key_pages_cache_clear">pages_cache_clear</string>
 	<string name="key_thumbs_cache_clear">thumbs_cache_clear</string>
 	<string name="key_search_history_clear">search_history_clear</string>
+	<string name="key_updates_feed_clear">updates_feed_clear</string>
 	<string name="key_grid_size">grid_size</string>
 	<string name="key_remote_sources">remote_sources</string>
 	<string name="key_local_storage">local_storage</string>

@@ -37,7 +37,9 @@ import org.koitharu.kotatsu.utils.ext.getThemeColor
 class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 	TabLayoutMediator.TabConfigurationStrategy {
 
-	private val presenter by moxyPresenter(factory = MangaDetailsPresenter.Companion::getInstance)
+	private val presenter by moxyPresenter {
+		MangaDetailsPresenter.getInstance(hashCode())
+	}
 
 	private var manga: Manga? = null
 
@@ -52,7 +54,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 				presenter.loadDetails(it, true)
 			} ?: intent?.getLongExtra(EXTRA_MANGA_ID, 0)?.takeUnless { it == 0L }?.let {
 				presenter.findMangaById(it)
-			} ?: finish()
+			} ?: finishAfterTransition()
 		}
 	}
 
@@ -73,13 +75,13 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 			this, getString(R.string._s_deleted_from_local_storage, manga.title),
 			Toast.LENGTH_SHORT
 		).show()
-		finish()
+		finishAfterTransition()
 	}
 
 	override fun onError(e: Throwable) {
 		if (manga == null) {
 			Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
-			finish()
+			finishAfterTransition()
 		} else {
 			Snackbar.make(pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
 		}

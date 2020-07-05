@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.parser
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import org.koin.core.KoinComponent
@@ -72,15 +73,13 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 			}
 	}
 
-
 	fun delete(manga: Manga): Boolean {
 		val file = Uri.parse(manga.url).toFile()
 		return file.delete()
 	}
 
 	@SuppressLint("DefaultLocale")
-	fun getFromFile(file: File): Manga {
-		val zip = ZipFile(file)
+	fun getFromFile(file: File): Manga = ZipFile(file).use { zip ->
 		val fileUri = file.toUri().toString()
 		val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
 		val index = entry?.let(zip::readText)?.let(::MangaIndex)
@@ -99,14 +98,14 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 		}
 		// fallback
 		val title = file.nameWithoutExtension.replace("_", " ").capitalize()
-		val chapters = HashSet<String>()
+		val chapters = ArraySet<String>()
 		for (x in zip.entries()) {
 			if (!x.isDirectory) {
 				chapters += x.name.substringBeforeLast(File.separatorChar, "")
 			}
 		}
 		val uriBuilder = file.toUri().buildUpon()
-		return Manga(
+		Manga(
 			id = file.absolutePath.longHashCode(),
 			title = title,
 			url = fileUri,

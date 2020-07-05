@@ -11,7 +11,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
@@ -26,18 +25,19 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.ui.list.favourites.FavouritesContainerFragment
+import org.koitharu.kotatsu.ui.list.feed.FeedFragment
 import org.koitharu.kotatsu.ui.list.history.HistoryListFragment
 import org.koitharu.kotatsu.ui.list.local.LocalListFragment
 import org.koitharu.kotatsu.ui.list.remote.RemoteListFragment
-import org.koitharu.kotatsu.ui.list.feed.FeedFragment
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.ui.search.SearchHelper
-import org.koitharu.kotatsu.ui.settings.AppUpdateService
+import org.koitharu.kotatsu.ui.settings.AppUpdateChecker
 import org.koitharu.kotatsu.ui.settings.SettingsActivity
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.resolveDp
+import java.io.Closeable
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
 	SharedPreferences.OnSharedPreferenceChangeListener, MainView {
@@ -46,6 +46,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 	private val settings by inject<AppSettings>()
 	private lateinit var drawerToggle: ActionBarDrawerToggle
+	private var closeable: Closeable? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -70,13 +71,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		} ?: run {
 			openDefaultSection()
 		}
-		drawer.postDelayed(2000) {
-			AppUpdateService.startIfRequired(applicationContext)
-		}
 		TrackWorker.setup(applicationContext)
+		AppUpdateChecker(this).invoke()
 	}
 
 	override fun onDestroy() {
+		closeable?.close()
 		settings.unsubscribe(this)
 		super.onDestroy()
 	}
@@ -95,7 +95,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_main, menu)
 		menu.findItem(R.id.action_search)?.let { menuItem ->
-			SearchHelper.setupSearchView(menuItem)
+			closeable = SearchHelper.setupSearchView(menuItem)
 		}
 		return super.onCreateOptionsMenu(menu)
 	}
