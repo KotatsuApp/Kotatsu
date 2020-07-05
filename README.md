@@ -21,9 +21,6 @@ Legacy build (Android 4.1+): [available here](https://github.com/nv95/Kotatsu/re
 * Reading third-party comics from CBZ
 * Standard and Webtoon-optimized reader
 * Notifications about new chapters
-
-### Coming Features
-
 * Updates feed
 * Global search
 
