@@ -37,7 +37,12 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposi
 		}
 		val page = (offset / 30) + 1
 		val url = when {
-			!query.isNullOrEmpty() -> "$scheme://$domain/search?name=${query.urlEncoded()}"
+			!query.isNullOrEmpty() -> {
+				if (offset != 0) {
+					return emptyList()
+				}
+				"$scheme://$domain/search?name=${query.urlEncoded()}"
+			}
 			tag != null -> "$scheme://$domain/directory/${tag.key}/$page.htm$sortKey"
 			else -> "$scheme://$domain/directory/$page.htm$sortKey"
 		}

@@ -23,7 +23,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 	): List<Manga> {
 		val domain = conf.getDomain(defaultDomain)
 		val url = when {
-			query != null -> {
+			!query.isNullOrEmpty() -> {
 				if (offset != 0) {
 					return emptyList()
 				}
