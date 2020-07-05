@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.domain.favourites
 
+import androidx.collection.ArraySet
 import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,7 +13,6 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
-import java.util.*
 
 class FavouritesRepository : KoinComponent {
 
@@ -98,7 +98,7 @@ class FavouritesRepository : KoinComponent {
 
 	companion object {
 
-		private val listeners = HashSet<OnFavouritesChangeListener>()
+		private val listeners = ArraySet<OnFavouritesChangeListener>()
 
 		fun subscribe(listener: OnFavouritesChangeListener) {
 			listeners += listener

@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.parser
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import org.koin.core.KoinComponent
@@ -97,7 +98,7 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 		}
 		// fallback
 		val title = file.nameWithoutExtension.replace("_", " ").capitalize()
-		val chapters = HashSet<String>()
+		val chapters = ArraySet<String>()
 		for (x in zip.entries()) {
 			if (!x.isDirectory) {
 				chapters += x.name.substringBeforeLast(File.separatorChar, "")
