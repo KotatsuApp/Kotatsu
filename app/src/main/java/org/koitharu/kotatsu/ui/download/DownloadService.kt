@@ -77,9 +77,9 @@ class DownloadService : BaseService() {
 		return launch(Dispatchers.IO) {
 			mutex.lock()
 			wakeLock.acquire(TimeUnit.HOURS.toMillis(1))
+			notification.fillFrom(manga)
+			notification.setCancelId(startId)
 			withContext(Dispatchers.Main) {
-				notification.fillFrom(manga)
-				notification.setCancelId(startId)
 				startForeground(DownloadNotification.NOTIFICATION_ID, notification())
 			}
 			val destination = settings.getStorageDir(this@DownloadService)
@@ -94,10 +94,8 @@ class DownloadService : BaseService() {
 							.build()
 					).drawable
 				}
-				withContext(Dispatchers.Main) {
-					notification.setLargeIcon(cover)
-					notification.update()
-				}
+				notification.setLargeIcon(cover)
+				notification.update()
 				val data = if (manga.chapters == null) repo.getDetails(manga) else manga
 				output = MangaZip.findInDir(destination, data)
 				output.prepare(data)
@@ -141,31 +139,25 @@ class DownloadService : BaseService() {
 						}
 					}
 				}
-				withContext(Dispatchers.Main) {
-					notification.setCancelId(0)
-					notification.setPostProcessing()
-					notification.update()
-				}
+				notification.setCancelId(0)
+				notification.setPostProcessing()
+				notification.update()
 				output.compress()
 				val result = MangaProviderFactory.createLocal().getFromFile(output.file)
-				withContext(Dispatchers.Main) {
-					notification.setDone(result)
-					notification.dismiss()
-					notification.update(manga.id.toInt().absoluteValue)
-				}
+				notification.setDone(result)
+				notification.dismiss()
+				notification.update(manga.id.toInt().absoluteValue)
 			} catch (_: CancellationException) {
-				withContext(Dispatchers.Main + NonCancellable) {
+				withContext(NonCancellable) {
 					notification.setCancelling()
 					notification.setCancelId(0)
 					notification.update()
 				}
 			} catch (e: Throwable) {
-				withContext(Dispatchers.Main) {
-					notification.setError(e)
-					notification.setCancelId(0)
-					notification.dismiss()
-					notification.update(manga.id.toInt().absoluteValue)
-				}
+				notification.setError(e)
+				notification.setCancelId(0)
+				notification.dismiss()
+				notification.update(manga.id.toInt().absoluteValue)
 			} finally {
 				withContext(NonCancellable) {
 					jobs.remove(startId)
