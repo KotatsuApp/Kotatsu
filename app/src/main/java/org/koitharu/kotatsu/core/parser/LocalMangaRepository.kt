@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.parser
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.webkit.MimeTypeMap
 import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
@@ -91,7 +92,7 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 				coverUrl = zipUri(
 					file,
 					entryName = index.getCoverEntry()
-						?: findFirstEntry(zip.entries())?.name.orEmpty()
+						?: findFirstEntry(zip.entries(), isImage = true)?.name.orEmpty()
 				),
 				chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
 			)
@@ -110,7 +111,7 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 			title = title,
 			url = fileUri,
 			source = MangaSource.LOCAL,
-			coverUrl = zipUri(file, findFirstEntry(zip.entries())?.name.orEmpty()),
+			coverUrl = zipUri(file, findFirstEntry(zip.entries(), isImage = true)?.name.orEmpty()),
 			chapters = chapters.sortedWith(AlphanumComparator()).mapIndexed { i, s ->
 				MangaChapter(
 					id = "$i$s".longHashCode(),
@@ -136,11 +137,19 @@ class LocalMangaRepository : MangaRepository, KoinComponent {
 	private fun zipUri(file: File, entryName: String) =
 		Uri.fromParts("cbz", file.path, entryName).toString()
 
-	private fun findFirstEntry(entries: Enumeration<out ZipEntry>): ZipEntry? {
+	private fun findFirstEntry(entries: Enumeration<out ZipEntry>, isImage: Boolean): ZipEntry? {
 		val list = entries.toList()
 			.filterNot { it.isDirectory }
 			.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
-		return list.firstOrNull()
+		return if (isImage) {
+			val map = MimeTypeMap.getSingleton()
+			list.firstOrNull {
+				map.getMimeTypeFromExtension(it.name.substringAfterLast('.'))
+					?.startsWith("image/") == true
+			}
+		} else {
+			list.firstOrNull()
+		}
 	}
 
 	override val sortOrders = emptySet<SortOrder>()
