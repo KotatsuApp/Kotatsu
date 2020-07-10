@@ -6,10 +6,8 @@ import org.koin.core.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.TrackEntity
 import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaTracking
-import org.koitharu.kotatsu.core.model.TrackingLogItem
+import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.domain.MangaProviderFactory
 import java.util.*
 
 class TrackingRepository : KoinComponent {
@@ -24,12 +22,16 @@ class TrackingRepository : KoinComponent {
 	suspend fun getAllTracks(): List<MangaTracking> {
 		val favourites = db.favouritesDao.findAllManga()
 		val history = db.historyDao.findAllManga()
-		val manga = (favourites + history).distinctBy { it.id }
+		val mangas = (favourites + history).distinctBy { it.id }
 		val tracks = db.tracksDao.findAll().groupBy { it.mangaId }
-		return manga.map { m ->
-			val track = tracks[m.id]?.singleOrNull()
+		return mangas.mapNotNull { me ->
+			var manga = me.toManga()
+			if (manga.source == MangaSource.LOCAL) {
+				manga = MangaProviderFactory.createLocal().getRemoteManga(manga) ?: return@mapNotNull null
+			}
+			val track = tracks[manga.id]?.singleOrNull()
 			MangaTracking(
-				manga = m.toManga(),
+				manga = manga,
 				knownChaptersCount = track?.totalChapters ?: -1,
 				lastChapterId = track?.lastChapterId ?: 0L,
 				lastNotifiedChapterId = track?.lastNotifiedChapterId ?: 0L,
