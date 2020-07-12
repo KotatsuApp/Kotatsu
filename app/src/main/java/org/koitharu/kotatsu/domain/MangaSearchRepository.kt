@@ -18,7 +18,12 @@ class MangaSearchRepository : KoinComponent {
 			var isEmitted = false
 			for (source in sources) {
 				val list = lists.getOrPut(source) {
-					MangaProviderFactory.create(source).getList(0, query, SortOrder.POPULARITY)
+					try {
+						MangaProviderFactory.create(source).getList(0, query, SortOrder.POPULARITY)
+					} catch (e: Throwable) {
+						e.printStackTrace()
+						emptyList<Manga>()
+					}
 				}
 				if (i < list.size) {
 					emit(list.subList(i, (i + batchSize).coerceAtMost(list.lastIndex)))
