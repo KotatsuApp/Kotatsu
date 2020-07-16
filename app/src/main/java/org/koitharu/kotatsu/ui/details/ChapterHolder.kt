@@ -28,7 +28,7 @@ class ChapterHolder(parent: ViewGroup) :
 			}
 			ChapterExtra.CURRENT -> {
 				textView_number.setBackgroundResource(R.drawable.bg_badge_outline_accent)
-				textView_number.setTextColor(context.getThemeColor(R.attr.colorAccent))
+				textView_number.setTextColor(context.getThemeColor(androidx.appcompat.R.attr.colorAccent))
 			}
 			ChapterExtra.NEW -> {
 				textView_number.setBackgroundResource(R.drawable.bg_badge_accent)

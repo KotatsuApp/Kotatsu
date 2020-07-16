@@ -206,7 +206,7 @@ class MangaDetailsActivity : BaseActivity(), MangaDetailsView,
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		pager.isUserInputEnabled = true
-		window?.statusBarColor = getThemeColor(R.attr.colorPrimaryDark)
+		window?.statusBarColor = getThemeColor(androidx.appcompat.R.attr.colorPrimaryDark)
 	}
 
 	companion object {
