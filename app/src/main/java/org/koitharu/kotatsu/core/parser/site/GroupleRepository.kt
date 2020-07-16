@@ -28,7 +28,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		val doc = when {
 			!query.isNullOrEmpty() -> loaderContext.httpPost(
 				"https://$domain/search",
-				mapOf("q" to query, "offset" to offset.toString())
+				mapOf("q" to query.urlEncoded(), "offset" to offset.toString())
 			)
 			tag == null -> loaderContext.httpGet(
 				"https://$domain/list?sortType=${getSortKey(
