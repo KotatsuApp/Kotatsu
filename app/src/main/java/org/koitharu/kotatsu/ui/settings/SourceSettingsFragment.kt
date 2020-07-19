@@ -17,17 +17,13 @@ class SourceSettingsFragment : PreferenceFragmentCompat(), KoinComponent {
 		requireArguments().getParcelable<MangaSource>(EXTRA_SOURCE)!!
 	}
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		preferenceManager.sharedPreferencesName = source.name
-	}
-
 	override fun onResume() {
 		super.onResume()
 		activity?.title = source.title
 	}
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+		preferenceManager.sharedPreferencesName = source.name
 		val repo = MangaProviderFactory.create(source) as? RemoteMangaRepository ?: return
 		val keys = repo.onCreatePreferences().map(::getString)
 		addPreferencesFromResource(R.xml.pref_source)
