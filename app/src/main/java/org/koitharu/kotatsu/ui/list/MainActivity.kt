@@ -92,6 +92,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		drawerToggle.onConfigurationChanged(newConfig)
 	}
 
+	override fun onBackPressed() {
+		if (drawer.isDrawerOpen(navigationView)) {
+			drawer.closeDrawer(navigationView)
+		} else {
+			super.onBackPressed()
+		}
+	}
+
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_main, menu)
 		menu.findItem(R.id.action_search)?.let { menuItem ->
