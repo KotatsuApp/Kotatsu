@@ -10,7 +10,7 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import coil.Coil
-import coil.request.GetRequestBuilder
+import coil.request.ImageRequest
 import coil.size.PixelSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -40,7 +40,7 @@ class MangaShortcut(private val manga: Manga) {
 		}
 		builder.setRank(1)
 		if (shortcuts.isNotEmpty() && shortcuts.size >= limit) {
-			manager.removeDynamicShortcuts(listOf(shortcuts.minBy { it.rank }!!.id))
+			manager.removeDynamicShortcuts(listOf(shortcuts.minByOrNull { it.rank }!!.id))
 		}
 		manager.addDynamicShortcuts(listOf(builder.build().toShortcutInfo()))
 	}
@@ -66,9 +66,11 @@ class MangaShortcut(private val manga: Manga) {
 		val icon = safe {
 			val size = getIconSize(context)
 			withContext(Dispatchers.IO) {
-				val bmp = Coil.execute(GetRequestBuilder(context)
-					.data(manga.coverUrl)
-					.build()).requireBitmap()
+				val bmp = Coil.execute(
+					ImageRequest.Builder(context)
+						.data(manga.coverUrl)
+						.build()
+				).requireBitmap()
 				ThumbnailUtils.extractThumbnail(bmp, size.width, size.height, 0)
 			}
 		}

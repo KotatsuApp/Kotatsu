@@ -67,10 +67,15 @@ class AppUpdateChecker(private val activity: ComponentActivity) : KoinComponent 
 			.setTitle(R.string.app_update_available)
 			.setMessage(buildString {
 				append(activity.getString(R.string.new_version_s, version.name))
-				appendln()
-				append(activity.getString(R.string.size_s, FileSizeUtils.formatBytes(activity, version.apkSize)))
-				appendln()
-				appendln()
+				appendLine()
+				append(
+					activity.getString(
+						R.string.size_s,
+						FileSizeUtils.formatBytes(activity, version.apkSize)
+					)
+				)
+				appendLine()
+				appendLine()
 				append(version.description)
 			})
 			.setPositiveButton(R.string.download) { _, _ ->

@@ -8,7 +8,7 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import coil.Coil
-import coil.request.GetRequestBuilder
+import coil.request.ImageRequest
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
@@ -89,7 +89,7 @@ class DownloadService : BaseService() {
 				val repo = MangaProviderFactory.create(manga.source)
 				val cover = safe {
 					Coil.execute(
-						GetRequestBuilder(this@DownloadService)
+						ImageRequest.Builder(this@DownloadService)
 							.data(manga.coverUrl)
 							.build()
 					).drawable

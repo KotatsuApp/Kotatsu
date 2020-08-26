@@ -4,19 +4,19 @@ import androidx.room.*
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 
 @Dao
-interface TagsDao {
+abstract class TagsDao {
 
 	@Query("SELECT * FROM tags")
-	suspend fun getAllTags(): List<TagEntity>
+	abstract suspend fun getAllTags(): List<TagEntity>
 
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
-	suspend fun insert(tag: TagEntity): Long
+	abstract suspend fun insert(tag: TagEntity): Long
 
 	@Update(onConflict = OnConflictStrategy.IGNORE)
-	suspend fun update(tag: TagEntity): Int
+	abstract suspend fun update(tag: TagEntity): Int
 
 	@Transaction
-	suspend fun upsert(tags: Iterable<TagEntity>) {
+	open suspend fun upsert(tags: Iterable<TagEntity>) {
 		tags.forEach { tag ->
 			if (update(tag) <= 0) {
 				insert(tag)

@@ -165,7 +165,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	override fun onCreatePreferences() = setOf(R.string.key_parser_domain)
 
 	private fun getSortKey(sortOrder: SortOrder?) =
-		when (sortOrder ?: sortOrders.minBy { it.ordinal }) {
+		when (sortOrder ?: sortOrders.minByOrNull { it.ordinal }) {
 			SortOrder.ALPHABETICAL -> "name"
 			SortOrder.POPULARITY -> "rate"
 			SortOrder.UPDATED -> "updated"

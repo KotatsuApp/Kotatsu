@@ -13,7 +13,6 @@ import androidx.core.graphics.drawable.toBitmap
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
-import org.koitharu.kotatsu.utils.ext.clearActions
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import kotlin.math.roundToInt
 

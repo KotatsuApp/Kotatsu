@@ -10,7 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.*
 import coil.Coil
-import coil.request.GetRequestBuilder
+import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
@@ -143,7 +143,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			setNumber(newChapters.size)
 			setLargeIcon(
 				Coil.execute(
-					GetRequestBuilder(applicationContext)
+					ImageRequest.Builder(applicationContext)
 						.data(manga.coverUrl)
 						.build()
 				).toBitmapOrNull()

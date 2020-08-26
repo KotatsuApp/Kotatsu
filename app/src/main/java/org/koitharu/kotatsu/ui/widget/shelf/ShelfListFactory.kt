@@ -5,7 +5,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import coil.Coil
-import coil.request.GetRequestBuilder
+import coil.request.ImageRequest
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
@@ -49,9 +49,11 @@ class ShelfListFactory(private val context: Context, widgetId: Int) : RemoteView
 		views.setTextViewText(R.id.textView_title, item.title)
 		try {
 			val cover = runBlocking {
-				Coil.execute(GetRequestBuilder(context)
-					.data(item.coverUrl)
-					.build()).requireBitmap()
+				Coil.execute(
+					ImageRequest.Builder(context)
+						.data(item.coverUrl)
+						.build()
+				).requireBitmap()
 			}
 			views.setImageViewBitmap(R.id.imageView_cover, cover)
 		} catch (e: IOException) {

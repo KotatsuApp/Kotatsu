@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.ui.list
 
 import android.view.ViewGroup
-import coil.api.clear
-import coil.api.load
+import coil.clear
+import coil.load
 import kotlinx.android.synthetic.main.item_manga_list.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga

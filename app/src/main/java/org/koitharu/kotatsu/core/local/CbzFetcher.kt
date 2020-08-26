@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.core.local
 
 import android.net.Uri
 import android.webkit.MimeTypeMap
-import coil.bitmappool.BitmapPool
+import coil.bitmap.BitmapPool
 import coil.decode.DataSource
 import coil.decode.Options
 import coil.fetch.FetchResult

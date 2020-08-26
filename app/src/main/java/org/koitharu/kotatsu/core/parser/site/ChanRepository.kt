@@ -131,7 +131,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 	override fun onCreatePreferences() = setOf(R.string.key_parser_domain)
 
 	private fun getSortKey(sortOrder: SortOrder?) =
-		when (sortOrder ?: sortOrders.minBy { it.ordinal }) {
+		when (sortOrder ?: sortOrders.minByOrNull { it.ordinal }) {
 			SortOrder.ALPHABETICAL -> "catalog"
 			SortOrder.POPULARITY -> "mostfavorites"
 			SortOrder.NEWEST -> "manga/new"
@@ -139,7 +139,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		}
 
 	private fun getSortKey2(sortOrder: SortOrder?) =
-		when (sortOrder ?: sortOrders.minBy { it.ordinal }) {
+		when (sortOrder ?: sortOrders.minByOrNull { it.ordinal }) {
 			SortOrder.ALPHABETICAL -> "abcasc"
 			SortOrder.POPULARITY -> "favdesc"
 			SortOrder.NEWEST -> "datedesc"

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
 import coil.Coil
 import coil.ComponentRegistry
-import coil.ImageLoaderBuilder
+import coil.ImageLoader
 import coil.util.CoilUtils
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
@@ -14,6 +14,7 @@ import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 import org.koin.dsl.module
 import org.koitharu.kotatsu.core.db.DatabasePrePopulateCallback
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -73,7 +74,7 @@ class KotatsuApp : Application() {
 
 	private fun initKoin() {
 		startKoin {
-			androidLogger()
+			androidLogger(Level.ERROR)
 			androidContext(applicationContext)
 			modules(
 				module {
@@ -101,7 +102,7 @@ class KotatsuApp : Application() {
 
 	private fun initCoil() {
 		Coil.setImageLoader(
-			ImageLoaderBuilder(applicationContext)
+			ImageLoader.Builder(applicationContext)
 				.okHttpClient(
 					okHttp()
 						.cache(CoilUtils.createDefaultCache(applicationContext))

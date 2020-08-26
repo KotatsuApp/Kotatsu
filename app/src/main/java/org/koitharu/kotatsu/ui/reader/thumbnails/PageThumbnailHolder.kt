@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.ui.reader.thumbnails
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import coil.Coil
-import coil.request.GetRequestBuilder
+import coil.request.ImageRequest
 import coil.size.PixelSize
 import coil.size.Size
 import kotlinx.android.synthetic.main.item_page_thumb.*
@@ -18,7 +18,7 @@ class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) 
 	BaseViewHolder<MangaPage, PagesCache>(parent, R.layout.item_page_thumb) {
 
 	private var job: Job? = null
-	private	val thumbSize: Size
+	private val thumbSize: Size
 
 	init {
 		val width = itemView.context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
@@ -38,10 +38,12 @@ class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) 
 					val pageUrl = MangaProviderFactory.create(data.source).getPageFullUrl(data)
 					extra[pageUrl]?.toUri()?.toString() ?: pageUrl
 				}
-				val drawable = Coil.execute(GetRequestBuilder(context)
-					.data(url)
-					.size(thumbSize)
-					.build()).drawable
+				val drawable = Coil.execute(
+					ImageRequest.Builder(context)
+						.data(url)
+						.size(thumbSize)
+						.build()
+				).drawable
 				withContext(Dispatchers.Main) {
 					imageView_thumb.setImageDrawable(drawable)
 				}

@@ -6,7 +6,7 @@ import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import coil.api.load
+import coil.load
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.coroutines.Dispatchers
