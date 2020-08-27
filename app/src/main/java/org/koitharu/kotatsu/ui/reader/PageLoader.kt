@@ -1,8 +1,12 @@
 package org.koitharu.kotatsu.ui.reader
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.ArrayMap
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.KoinComponent
@@ -20,6 +24,7 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 	private val tasks = ArrayMap<String, Deferred<File>>()
 	private val okHttp by inject<OkHttpClient>()
 	private val cache by inject<PagesCache>()
+	private val convertLock = Mutex()
 
 	override val coroutineContext: CoroutineContext
 		get() = Dispatchers.Main + job
@@ -62,6 +67,21 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 				}
 				cache.put(url) { out ->
 					body.byteStream().copyTo(out)
+				}
+			}
+		}
+	}
+
+	suspend fun convertInPlace(file: File) {
+		convertLock.withLock(file) {
+			withContext(Dispatchers.IO) {
+				val image = BitmapFactory.decodeFile(file.absolutePath)
+				try {
+					file.outputStream().use { out ->
+						image.compress(Bitmap.CompressFormat.WEBP, 100, out)
+					}
+				} finally {
+					image.recycle()
 				}
 			}
 		}
