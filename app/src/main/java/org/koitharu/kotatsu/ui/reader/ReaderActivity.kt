@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.ui.reader
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -17,10 +18,13 @@ import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import moxy.MvpDelegate
 import moxy.ktx.moxyPresenter
@@ -40,6 +44,7 @@ import org.koitharu.kotatsu.ui.reader.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.ui.reader.wetoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.MangaShortcut
+import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
@@ -56,6 +61,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		private set
 
 	private lateinit var touchHelper: GridTouchHelper
+	private lateinit var orientationHelper: ScreenOrientationHelper
 	private var isTapSwitchEnabled = true
 	private var isVolumeKeysSwitchEnabled = false
 
@@ -67,6 +73,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		setContentView(R.layout.activity_reader)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
+		orientationHelper = ScreenOrientationHelper(this)
 		toolbar_bottom.inflateMenu(R.menu.opt_reader_bottom)
 		toolbar_bottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 
@@ -89,6 +96,10 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 
 		settings.subscribe(this)
 		loadSettings()
+		orientationHelper.observeAutoOrientation()
+			.onEach {
+				toolbar_bottom.menu.findItem(R.id.action_screen_rotate).isVisible = !it
+			}.launchIn(lifecycleScope)
 
 		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
 			presenter.init(state.manga)
@@ -163,6 +174,10 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				state.manga.chapters.orEmpty(),
 				state.chapterId
 			)
+			true
+		}
+		R.id.action_screen_rotate -> {
+			orientationHelper.toggleOrientation()
 			true
 		}
 		R.id.action_pages_thumbs -> {
@@ -325,14 +340,18 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		presenter.setMode(state.manga, mode)
 	}
 
+	@SuppressLint("ShowToast")
 	override fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
 			Snackbar.make(container, R.string.page_saved, Snackbar.LENGTH_LONG)
+				.setAnchorView(appbar_bottom)
 				.setAction(R.string.share) {
 					ShareHelper.shareImage(this, uri)
 				}.show()
 		} else {
-			Snackbar.make(container, R.string.error_occurred, Snackbar.LENGTH_SHORT).show()
+			Snackbar.make(container, R.string.error_occurred, Snackbar.LENGTH_SHORT)
+				.setAnchorView(appbar_bottom)
+				.show()
 		}
 	}
 
@@ -369,8 +388,16 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsets): WindowInsets {
-		appbar_top.updatePadding(top = insets.systemWindowInsetTop)
-		appbar_bottom.updatePadding(bottom = insets.systemWindowInsetBottom)
+		appbar_top.updatePadding(
+			top = insets.systemWindowInsetTop,
+			right = insets.systemWindowInsetRight,
+			left = insets.systemWindowInsetLeft
+		)
+		appbar_bottom.updatePadding(
+			bottom = insets.systemWindowInsetBottom,
+			right = insets.systemWindowInsetRight,
+			left = insets.systemWindowInsetLeft
+		)
 		return insets.consumeSystemWindowInsets()
 	}
 

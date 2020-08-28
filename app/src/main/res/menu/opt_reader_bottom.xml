@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
-	xmlns:tools="http://schemas.android.com/tools"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	tools:ignore="AlwaysShowAction">
+
+	<item
+		android:id="@+id/action_screen_rotate"
+		android:icon="@drawable/ic_screen_rotation"
+		android:title="@string/rotate_screen"
+		android:visible="false"
+		app:showAsAction="always" />
 
 	<item
 		android:id="@+id/action_bookmark_add"
 		android:icon="@drawable/ic_bookmark_add"
 		android:title="@string/add_bookmark"
 		android:visible="false"
-		app:showAsAction="always" />
-
-	<item
-		android:id="@+id/action_save_page"
-		android:icon="@drawable/ic_page_image"
-		android:title="@string/save_page"
 		app:showAsAction="always" />
 
 	<item
@@ -31,9 +32,13 @@
 		app:showAsAction="always" />
 
 	<item
+		android:id="@+id/action_save_page"
+		android:title="@string/save_page"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_settings"
-		android:icon="@drawable/ic_tune"
 		android:title="@string/settings"
-		app:showAsAction="always" />
+		app:showAsAction="never" />
 
 </menu>

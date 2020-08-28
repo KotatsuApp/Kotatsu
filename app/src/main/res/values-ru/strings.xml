@@ -59,7 +59,7 @@
 	<string name="_s_deleted_from_local_storage">\"%s\" удалено с устройства</string>
 	<string name="wait_for_loading_finish">Дождитесь окончания загрузки</string>
 	<string name="save_page">Сохранить страницу</string>
-	<string name="page_saved">Страницы сохранена</string>
+	<string name="page_saved">Страница сохранена</string>
 	<string name="share_image">Поделиться изображением</string>
 	<string name="_import">Импорт</string>
 	<string name="delete">Удалить</string>
@@ -142,4 +142,5 @@
 	<string name="waiting_for_network">Ожидание подключения…</string>
 	<string name="clear_updates_feed">Очистить ленту обновлений</string>
 	<string name="updates_feed_cleared">Лента обновлений очищена</string>
+	<string name="rotate_screen">Повернуть экран</string>
 </resources>
