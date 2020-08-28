@@ -80,7 +80,7 @@ class MangaShortcut(private val manga: Manga) {
 			.setLongLabel(manga.title)
 			.setIcon(icon?.let {
 				IconCompat.createWithAdaptiveBitmap(it)
-			} ?: IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground))
+			} ?: IconCompat.createWithResource(context, R.drawable.ic_shortcut_default))
 			.setIntent(
 				MangaDetailsActivity.newIntent(context, manga.id)
 					.setAction(MangaDetailsActivity.ACTION_MANGA_VIEW)
