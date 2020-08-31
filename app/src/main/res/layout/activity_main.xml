@@ -1,62 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout
-    android:id="@+id/drawer"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.list.MainActivity"
-    tools:openDrawer="start">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/drawer"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.list.MainActivity"
+	tools:openDrawer="start">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+	<androidx.coordinatorlayout.widget.CoordinatorLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimary"
-            android:theme="@style/AppToolbarTheme">
+		<com.google.android.material.appbar.AppBarLayout
+			android:id="@+id/appbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="?colorPrimary"
+			android:theme="@style/AppToolbarTheme">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways" />
+			<com.google.android.material.appbar.MaterialToolbar
+				android:id="@id/toolbar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:layout_scrollFlags="scroll|enterAlways" />
 
-        </com.google.android.material.appbar.AppBarLayout>
+		</com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@id/container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@id/container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_read_fill"
-            android:visibility="gone"
-            app:fabSize="normal"
-            app:backgroundTint="?colorAccent"
-            app:layout_anchor="@id/container"
-            app:layout_anchorGravity="bottom|end"
-            app:layout_dodgeInsetEdges="bottom"
-            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-            tools:visibility="visible" />
+		<com.google.android.material.floatingactionbutton.FloatingActionButton
+			android:id="@+id/fab"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="16dp"
+			android:src="@drawable/ic_read_fill"
+			android:visibility="gone"
+			app:backgroundTint="?colorAccent"
+			app:fabSize="normal"
+			app:layout_anchor="@id/container"
+			app:layout_anchorGravity="bottom|end"
+			app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+			app:layout_dodgeInsetEdges="bottom"
+			tools:visibility="visible" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_width="260dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/view_nav_header"
-        app:menu="@menu/nav_drawer" />
+	<com.google.android.material.navigation.NavigationView
+		android:id="@+id/navigationView"
+		android:layout_width="260dp"
+		android:layout_height="match_parent"
+		android:layout_gravity="start"
+		app:menu="@menu/nav_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
