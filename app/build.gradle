@@ -16,7 +16,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 29
 		versionCode gitCommits
-		versionName '0.5'
+		versionName '0.5.1'
 
 		kapt {
 			arguments {
@@ -88,11 +88,11 @@ dependencies {
 	kapt 'com.github.moxy-community:moxy-compiler:2.1.2'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.8.1'
-	implementation 'com.squareup.okio:okio:2.7.0'
+	implementation 'com.squareup.okio:okio:2.8.0'
 	implementation 'org.jsoup:jsoup:1.13.1'
 
-	implementation 'org.koin:koin-android:2.2.0-alpha-1'
-	implementation 'io.coil-kt:coil:1.0.0-rc1'
+	implementation 'org.koin:koin-android:2.2.0-beta-1'
+	implementation 'io.coil-kt:coil:1.0.0-rc2'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
 	implementation 'com.tomclaw.cache:cache:1.0'
 
