@@ -21,6 +21,10 @@ import java.io.File
 class LocalListFragment : MangaListFragment<File>(), ActivityResultCallback<Uri> {
 
 	private val presenter by moxyPresenter(factory = ::LocalListPresenter)
+	private val importCall = registerForActivityResult(
+		ActivityResultContracts.OpenDocument(),
+		this
+	)
 
 	override fun onRequestMoreItems(offset: Int) {
 		presenter.loadList(offset)
@@ -35,8 +39,7 @@ class LocalListFragment : MangaListFragment<File>(), ActivityResultCallback<Uri>
 		return when (item.itemId) {
 			R.id.action_import -> {
 				try {
-					registerForActivityResult(ActivityResultContracts.OpenDocument(), this)
-						.launch(arrayOf("*/*"))
+					importCall.launch(arrayOf("*/*"))
 				} catch (e: ActivityNotFoundException) {
 					if (BuildConfig.DEBUG) {
 						e.printStackTrace()
