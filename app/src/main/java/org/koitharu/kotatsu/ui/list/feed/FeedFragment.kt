@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.ui.list.feed
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
@@ -16,6 +17,7 @@ import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
 import org.koitharu.kotatsu.ui.common.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
+import org.koitharu.kotatsu.ui.tracker.TrackWorker
 import org.koitharu.kotatsu.utils.ext.callOnScrollListeners
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hasItems
@@ -51,6 +53,15 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), FeedView,
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
 		inflater.inflate(R.menu.opt_feed, menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
+		R.id.action_update -> {
+			TrackWorker.startNow(requireContext())
+			Snackbar.make(recyclerView, R.string.feed_will_update_soon, Snackbar.LENGTH_LONG).show()
+			true
+		}
+		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onDestroyView() {

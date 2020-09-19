@@ -143,4 +143,6 @@
 	<string name="clear_updates_feed">Очистить ленту обновлений</string>
 	<string name="updates_feed_cleared">Лента обновлений очищена</string>
 	<string name="rotate_screen">Повернуть экран</string>
+	<string name="update">Обновить</string>
+	<string name="feed_will_update_soon">Обновление скоро начнётся</string>
 </resources>

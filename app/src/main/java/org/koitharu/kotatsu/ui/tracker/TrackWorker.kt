@@ -222,5 +222,17 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			WorkManager.getInstance(context)
 				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
 		}
+
+		fun startNow(context: Context) {
+			val constraints = Constraints.Builder()
+				.setRequiredNetworkType(NetworkType.CONNECTED)
+				.build()
+			val request = OneTimeWorkRequestBuilder<TrackWorker>()
+				.setConstraints(constraints)
+				.addTag(TAG)
+				.build()
+			WorkManager.getInstance(context)
+				.enqueue(request)
+		}
 	}
 }

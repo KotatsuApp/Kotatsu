@@ -49,8 +49,6 @@ class SettingsActivity : BaseActivity(),
 	}
 
 	private fun openFragment(fragment: Fragment) {
-		fragment.enterTransition = Slide(Gravity.END)
-		fragment.exitTransition = Slide(Gravity.START)
 		supportFragmentManager.commit {
 			replace(R.id.container, fragment)
 			addToBackStack(null)
