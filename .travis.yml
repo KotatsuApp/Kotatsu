@@ -5,9 +5,9 @@ jdk:
 android:
   components:
     - tools
-    - platform-tools-29.0.6
-    - build-tools-29.0.3
-    - android-29
+    - platform-tools-30.0.3
+    - build-tools-30.0.2
+    - android-30
   licenses:
     - android-sdk-preview-license-.+
     - android-sdk-license-.+

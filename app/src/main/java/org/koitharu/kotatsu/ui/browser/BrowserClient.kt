@@ -27,7 +27,7 @@ class BrowserClient(private val callback: BrowserCallback) : WebViewClient(), Ko
 
 	override fun onPageCommitVisible(view: WebView, url: String?) {
 		super.onPageCommitVisible(view, url)
-		callback.onTitleChanged(view.title, url)
+		callback.onTitleChanged(view.title.orEmpty(), url)
 	}
 
 	override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?) = false
