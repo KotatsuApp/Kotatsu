@@ -3,8 +3,6 @@ package org.koitharu.kotatsu.ui.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.transition.Slide
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.preference.Preference
@@ -23,9 +21,7 @@ class SettingsActivity : BaseActivity(),
 
 		if (supportFragmentManager.findFragmentById(R.id.container) == null) {
 			supportFragmentManager.commit {
-				replace(R.id.container, MainSettingsFragment().also {
-					it.exitTransition = Slide(Gravity.START)
-				})
+				replace(R.id.container, MainSettingsFragment())
 			}
 		}
 	}
@@ -51,6 +47,7 @@ class SettingsActivity : BaseActivity(),
 	private fun openFragment(fragment: Fragment) {
 		supportFragmentManager.commit {
 			replace(R.id.container, fragment)
+			setReorderingAllowed(true)
 			addToBackStack(null)
 		}
 	}

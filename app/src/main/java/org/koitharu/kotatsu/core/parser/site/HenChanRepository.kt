@@ -1,10 +1,7 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import org.koitharu.kotatsu.core.exceptions.ParseException
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.MangaTag
+import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.parseHtml
@@ -12,8 +9,24 @@ import org.koitharu.kotatsu.utils.ext.withDomain
 
 class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 
-	override val defaultDomain = "henchan.pro"
+	override val defaultDomain = "hentaichan.pro"
 	override val source = MangaSource.HENCHAN
+
+	override suspend fun getList(
+		offset: Int,
+		query: String?,
+		sortOrder: SortOrder?,
+		tag: MangaTag?
+	): List<Manga> {
+		return super.getList(offset, query, sortOrder, tag).map {
+			val cover = it.coverUrl
+			if (cover.contains("_blur")) {
+				it.copy(coverUrl = cover.replace("_blur", ""))
+			} else {
+				it
+			}
+		}
+	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
 		val domain = conf.getDomain(defaultDomain)

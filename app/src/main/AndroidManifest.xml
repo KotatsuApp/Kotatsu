@@ -75,7 +75,6 @@
 		<service
 			android:name=".ui.download.DownloadService"
 			android:foregroundServiceType="dataSync" />
-		<service android:name=".ui.settings.AppUpdateService" />
 		<service
 			android:name=".ui.widget.shelf.ShelfWidgetService"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
