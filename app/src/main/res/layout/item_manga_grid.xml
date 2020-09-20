@@ -5,10 +5,9 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	app:cardBackgroundColor="?android:windowBackground"
 	app:cardElevation="0dp"
 	app:cardMaxElevation="0dp"
-	app:strokeColor="?android:colorControlNormal"
+	app:strokeColor="?colorOnSurface"
 	app:strokeWidth="1px">
 
 	<LinearLayout
@@ -30,7 +29,7 @@
 			android:gravity="center_vertical|start"
 			android:lines="2"
 			android:padding="6dp"
-			android:text="?android:textColorPrimary"
+			android:textColor="?android:textColorPrimary"
 			tools:text="@tools:sample/lorem" />
 
 	</LinearLayout>

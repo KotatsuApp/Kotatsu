@@ -5,10 +5,9 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="@dimen/manga_list_details_item_height"
-	app:cardBackgroundColor="?android:windowBackground"
 	app:cardElevation="0dp"
 	app:cardMaxElevation="0dp"
-	app:strokeColor="?android:colorControlNormal"
+	app:strokeColor="?colorOnSurface"
 	app:strokeWidth="1px">
 
 	<LinearLayout
