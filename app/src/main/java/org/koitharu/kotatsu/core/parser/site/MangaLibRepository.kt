@@ -95,7 +95,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 							append("/c")
 							append(item.getString("chapter_number"))
 							append('/')
-							append(item.getJSONArray("teams").getJSONObject(0).getString("slug"))
+							append(item.getJSONArray("teams").getJSONObject(0).optString("slug"))
 						}
 						var name = item.getString("chapter_name")
 						if (name.isNullOrBlank() || name == "null") {
@@ -142,12 +142,18 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val doc = loaderContext.httpGet(chapter.url).parseHtml()
 		val scripts = doc.head().select("script")
-		val pg = doc.body().getElementById("pg").html().substringAfter('=').substringBeforeLast(';')
+		val pg = doc.body().getElementById("pg").html()
+			.substringAfter('=')
+			.substringBeforeLast(';')
 		val pages = JSONArray(pg)
 		for (script in scripts) {
 			val raw = script.html().trim()
-			if (raw.startsWith("window.__info")) {
-				val json = JSONObject(raw.substringAfter('=').substringBeforeLast(';'))
+			if (raw.contains("window.__info")) {
+				val json = JSONObject(
+					raw.substringAfter("window.__info")
+						.substringAfter('=')
+						.substringBeforeLast(';')
+				)
 				val domain = json.getJSONObject("servers").run {
 					getStringOrNull("main") ?: getString(
 						json.getJSONObject("img").getString("server")
