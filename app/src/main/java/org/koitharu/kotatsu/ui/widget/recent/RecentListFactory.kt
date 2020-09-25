@@ -5,6 +5,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import coil.Coil
+import coil.executeBlocking
 import coil.request.ImageRequest
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
@@ -37,13 +38,11 @@ class RecentListFactory(private val context: Context) : RemoteViewsService.Remot
 		val views = RemoteViews(context.packageName, R.layout.item_recent)
 		val item = dataSet[position]
 		try {
-			val cover = runBlocking {
-				Coil.execute(
-					ImageRequest.Builder(context)
-						.data(item.coverUrl)
-						.build()
-				).requireBitmap()
-			}
+			val cover = Coil.imageLoader(context).executeBlocking(
+				ImageRequest.Builder(context)
+					.data(item.coverUrl)
+					.build()
+			).requireBitmap()
 			views.setImageViewBitmap(R.id.imageView_cover, cover)
 		} catch (e: IOException) {
 			views.setImageViewResource(R.id.imageView_cover, R.drawable.ic_placeholder)
