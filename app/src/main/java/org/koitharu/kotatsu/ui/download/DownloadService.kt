@@ -142,7 +142,9 @@ class DownloadService : BaseService() {
 				notification.setCancelId(0)
 				notification.setPostProcessing()
 				notification.update()
-				output.compress()
+				if (!output.compress()) {
+					throw RuntimeException("Cannot create target file")
+				}
 				val result = MangaProviderFactory.createLocal().getFromFile(output.file)
 				notification.setDone(result)
 				notification.dismiss()

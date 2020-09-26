@@ -1,63 +1,35 @@
 package org.koitharu.kotatsu.domain.local
 
+import androidx.annotation.CheckResult
 import androidx.annotation.WorkerThread
+import org.koitharu.kotatsu.core.local.WritableCbzFile
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.utils.ext.sub
 import org.koitharu.kotatsu.utils.ext.takeIfReadable
 import org.koitharu.kotatsu.utils.ext.toFileNameSafe
 import java.io.File
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
 
 @WorkerThread
 class MangaZip(val file: File) {
 
-	private val dir = file.parentFile?.sub(file.name + ".tmp")?.takeIf { it.mkdir() }
-		?: throw RuntimeException("Cannot create temporary directory")
+	private val writableCbz = WritableCbzFile(file)
 
 	private var index = MangaIndex(null)
 
-	fun prepare(manga: Manga) {
-		extract()
-		index = MangaIndex(dir.sub(INDEX_ENTRY).takeIfReadable()?.readText())
+	suspend fun prepare(manga: Manga) {
+		writableCbz.prepare()
+		index = MangaIndex(writableCbz[INDEX_ENTRY].takeIfReadable()?.readText())
 		index.setMangaInfo(manga, append = true)
 	}
 
-	fun cleanup() {
-		dir.deleteRecursively()
+	suspend fun cleanup() {
+		writableCbz.cleanup()
 	}
 
-	fun compress() {
-		dir.sub(INDEX_ENTRY).writeText(index.toString())
-		ZipOutputStream(file.outputStream()).use { out ->
-			for (file in dir.listFiles().orEmpty()) {
-				val entry = ZipEntry(file.name)
-				out.putNextEntry(entry)
-				file.inputStream().use { stream ->
-					stream.copyTo(out)
-				}
-				out.closeEntry()
-			}
-		}
-	}
-
-	private fun extract() {
-		if (!file.exists()) {
-			return
-		}
-		ZipInputStream(file.inputStream()).use { input ->
-			while (true) {
-				val entry = input.nextEntry ?: return
-				if (!entry.isDirectory) {
-					dir.sub(entry.name).outputStream().use { out ->
-						input.copyTo(out)
-					}
-				}
-				input.closeEntry()
-			}
-		}
+	@CheckResult
+	suspend fun compress(): Boolean {
+		writableCbz[INDEX_ENTRY].writeText(index.toString())
+		return writableCbz.flush()
 	}
 
 	fun addCover(file: File, ext: String) {
@@ -68,7 +40,7 @@ class MangaZip(val file: File) {
 				append(ext)
 			}
 		}
-		file.copyTo(dir.sub(name), overwrite = true)
+		writableCbz[name] = file
 		index.setCoverEntry(name)
 	}
 
@@ -80,7 +52,7 @@ class MangaZip(val file: File) {
 				append(ext)
 			}
 		}
-		file.copyTo(dir.sub(name), overwrite = true)
+		writableCbz[name] = file
 		index.addChapter(chapter)
 	}
 
