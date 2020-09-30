@@ -22,6 +22,9 @@ class WritableCbzFile(private val file: File) {
 		if (!dir.exists()) {
 			dir.mkdir()
 		}
+		if (!file.exists()) {
+			return@withContext
+		}
 		ZipInputStream(FileInputStream(file)).use { zip ->
 			var entry = zip.nextEntry
 			while (entry != null) {

@@ -156,6 +156,9 @@ class DownloadService : BaseService() {
 					notification.update()
 				}
 			} catch (e: Throwable) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
 				notification.setError(e)
 				notification.setCancelId(0)
 				notification.dismiss()

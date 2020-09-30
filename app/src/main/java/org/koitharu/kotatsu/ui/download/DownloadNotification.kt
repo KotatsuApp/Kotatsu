@@ -47,6 +47,7 @@ class DownloadNotification(private val context: Context) {
 		builder.setSmallIcon(android.R.drawable.stat_sys_download)
 		builder.setLargeIcon(null)
 		builder.setContentIntent(null)
+		builder.setStyle(null)
 	}
 
 	fun setCancelId(startId: Int) {
@@ -68,13 +69,15 @@ class DownloadNotification(private val context: Context) {
 	}
 
 	fun setError(e: Throwable) {
+		val message = e.getDisplayMessage(context.resources)
 		builder.setProgress(0, 0, false)
 		builder.setSmallIcon(android.R.drawable.stat_notify_error)
 		builder.setSubText(context.getString(R.string.error))
-		builder.setContentText(e.getDisplayMessage(context.resources))
+		builder.setContentText(message)
 		builder.setAutoCancel(true)
 		builder.setContentIntent(null)
 		builder.setCategory(NotificationCompat.CATEGORY_ERROR)
+		builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
 	}
 
 	fun setLargeIcon(icon: Drawable?) {
@@ -89,16 +92,19 @@ class DownloadNotification(private val context: Context) {
 		builder.setProgress(max, progress, false)
 		builder.setContentText("%d%%".format(percent))
 		builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
+		builder.setStyle(null)
 	}
 
 	fun setWaitingForNetwork() {
 		builder.setProgress(0, 0, false)
 		builder.setContentText(context.getString(R.string.waiting_for_network))
+		builder.setStyle(null)
 	}
 
 	fun setPostProcessing() {
 		builder.setProgress(1, 0, true)
 		builder.setContentText(context.getString(R.string.processing_))
+		builder.setStyle(null)
 	}
 
 	fun setDone(manga: Manga) {
@@ -108,12 +114,14 @@ class DownloadNotification(private val context: Context) {
 		builder.setAutoCancel(true)
 		builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
 		builder.setCategory(null)
+		builder.setStyle(null)
 	}
 
 	fun setCancelling() {
 		builder.setProgress(1, 0, true)
 		builder.setContentText(context.getString(R.string.cancelling_))
 		builder.setContentIntent(null)
+		builder.setStyle(null)
 	}
 
 	fun update(id: Int = NOTIFICATION_ID) {
