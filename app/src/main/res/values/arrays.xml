@@ -9,4 +9,8 @@
 		<item>@string/taps_on_edges</item>
 		<item>@string/volume_buttons</item>
 	</string-array>
+	<string-array name="track_sources">
+		<item>@string/favourites</item>
+		<item>@string/history</item>
+	</string-array>
 </resources>

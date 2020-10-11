@@ -89,14 +89,14 @@
 	<string name="cancelling_">Отмена…</string>
 	<string name="error">Ошибка</string>
 	<string name="clear_thumbs_cache">Очистить кэш миниатюр</string>
-    <string name="clear_search_history">Очистить историю поиска</string>
-    <string name="search_history_cleared">История поиска очищена</string>
+	<string name="clear_search_history">Очистить историю поиска</string>
+	<string name="search_history_cleared">История поиска очищена</string>
 	<string name="gestures_only">Только жесты</string>
 	<string name="internal_storage">Внутренний накопитель</string>
 	<string name="external_storage">Внешнее хранилище</string>
-    <string name="domain">Домен</string>
-    <string name="_default">По умолчанию</string>
-    <string name="application_update">Обновление приложения</string>
+	<string name="domain">Домен</string>
+	<string name="_default">По умолчанию</string>
+	<string name="application_update">Обновление приложения</string>
 	<string name="app_update_available">Доступно обновление приложения</string>
 	<string name="show_notification_app_update">Показывать уведомление при наличии новой версии</string>
 	<string name="open_in_browser">Открыть в браузере</string>
@@ -145,4 +145,6 @@
 	<string name="rotate_screen">Повернуть экран</string>
 	<string name="update">Обновить</string>
 	<string name="feed_will_update_soon">Обновление скоро начнётся</string>
+	<string name="track_sources">Проверять обновления манги</string>
+	<string name="dont_check">Не проверять</string>
 </resources>

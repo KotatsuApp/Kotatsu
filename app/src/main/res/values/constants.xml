@@ -14,6 +14,7 @@
 	<string name="key_remote_sources">remote_sources</string>
 	<string name="key_local_storage">local_storage</string>
 	<string name="key_reader_switchers">reader_switchers</string>
+	<string name="key_track_sources">track_sources</string>
 	<string name="key_app_update">app_update</string>
 	<string name="key_app_update_auto">app_update_auto</string>
 	<string name="key_tracker_notifications">tracker_notifications</string>
@@ -36,5 +37,12 @@
 	</string-array>
 	<string-array name="values_reader_switchers_default">
 		<item>taps</item>
+	</string-array>
+	<string-array name="values_track_sources">
+		<item>favourites</item>
+		<item>history</item>
+	</string-array>
+	<string-array name="values_track_sources_default">
+		<item>favourites</item>
 	</string-array>
 </resources>

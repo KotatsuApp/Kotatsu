@@ -41,6 +41,8 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		}
 		findPreference<MultiSelectListPreference>(R.string.key_reader_switchers)?.summaryProvider =
 			MultiSummaryProvider(R.string.gestures_only)
+		findPreference<MultiSelectListPreference>(R.string.key_track_sources)?.summaryProvider =
+			MultiSummaryProvider(R.string.dont_check)
 		findPreference<Preference>(R.string.key_app_update_auto)?.run {
 			isVisible = AppUpdateChecker.isUpdateSupported(context)
 		}
@@ -105,7 +107,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			}
 			getString(R.string.key_local_storage) -> {
 				val ctx = context ?: return false
-				StorageSelectDialog.Builder(ctx, settings.getStorageDir(ctx),this)
+				StorageSelectDialog.Builder(ctx, settings.getStorageDir(ctx), this)
 					.setTitle(preference.title)
 					.setNegativeButton(android.R.string.cancel)
 					.create()

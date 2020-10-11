@@ -36,9 +36,16 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 
 	private val settings by inject<AppSettings>()
 
-	override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+	override suspend fun doWork(): Result = withContext(Dispatchers.Default) {
+		val trackSources = settings.trackSources
+		if (trackSources.isEmpty()) {
+			return@withContext Result.success()
+		}
 		val repo = TrackingRepository()
-		val tracks = repo.getAllTracks()
+		val tracks = repo.getAllTracks(
+			useFavourites = AppSettings.TRACK_FAVOURITES in trackSources,
+			useHistory = AppSettings.TRACK_HISTORY in trackSources
+		)
 		if (tracks.isEmpty()) {
 			return@withContext Result.success()
 		}

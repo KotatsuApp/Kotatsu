@@ -68,14 +68,13 @@
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false">
 
-		<SwitchPreference
-			android:defaultValue="true"
-			android:key="@string/key_app_update_auto"
-			android:summary="@string/show_notification_app_update"
-			android:title="@string/application_update"
-			app:iconSpaceReserved="false"
-			app:isPreferenceVisible="false"
-			tools:isPreferenceVisible="true" />
+		<MultiSelectListPreference
+			android:defaultValue="@array/values_track_sources_default"
+			android:entries="@array/track_sources"
+			android:entryValues="@array/values_track_sources"
+			android:key="@string/key_track_sources"
+			android:title="@string/track_sources"
+			app:iconSpaceReserved="false" />
 
 		<SwitchPreference
 			android:defaultValue="true"
@@ -89,6 +88,15 @@
 			android:key="@string/key_notifications_settings"
 			android:title="@string/notifications_settings"
 			app:iconSpaceReserved="false" />
+
+		<SwitchPreference
+			android:defaultValue="true"
+			android:key="@string/key_app_update_auto"
+			android:summary="@string/show_notification_app_update"
+			android:title="@string/application_update"
+			app:iconSpaceReserved="false"
+			app:isPreferenceVisible="false"
+			tools:isPreferenceVisible="true" />
 
 	</PreferenceCategory>
 

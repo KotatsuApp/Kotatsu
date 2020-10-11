@@ -19,26 +19,32 @@ class TrackingRepository : KoinComponent {
 		return entity.newChapters
 	}
 
-	suspend fun getAllTracks(): List<MangaTracking> {
-		val favourites = db.favouritesDao.findAllManga()
-		val history = db.historyDao.findAllManga()
-		val mangas = (favourites + history).distinctBy { it.id }
-		val tracks = db.tracksDao.findAll().groupBy { it.mangaId }
-		return mangas.mapNotNull { me ->
-			var manga = me.toManga()
-			if (manga.source == MangaSource.LOCAL) {
-				manga = MangaProviderFactory.createLocal().getRemoteManga(manga)
-					?: return@mapNotNull null
-			}
-			val track = tracks[manga.id]?.singleOrNull()
-			MangaTracking(
-				manga = manga,
-				knownChaptersCount = track?.totalChapters ?: -1,
-				lastChapterId = track?.lastChapterId ?: 0L,
-				lastNotifiedChapterId = track?.lastNotifiedChapterId ?: 0L,
-				lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date)
-			)
+	suspend fun getAllTracks(useFavourites: Boolean, useHistory: Boolean): List<MangaTracking> {
+		val mangaList = ArrayList<Manga>()
+		if (useFavourites) {
+			db.favouritesDao.findAllManga().mapTo(mangaList) { it.toManga() }
 		}
+		if (useHistory) {
+			db.historyDao.findAllManga().mapTo(mangaList) { it.toManga() }
+		}
+		val tracks = db.tracksDao.findAll().groupBy { it.mangaId }
+		return mangaList
+			.distinctBy { it.id }
+			.mapNotNull { me ->
+				val manga = if (me.source == MangaSource.LOCAL) {
+					MangaProviderFactory.createLocal().getRemoteManga(me)
+				} else {
+					me
+				} ?: return@mapNotNull null
+				val track = tracks[manga.id]?.singleOrNull()
+				MangaTracking(
+					manga = manga,
+					knownChaptersCount = track?.totalChapters ?: -1,
+					lastChapterId = track?.lastChapterId ?: 0L,
+					lastNotifiedChapterId = track?.lastNotifiedChapterId ?: 0L,
+					lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date)
+				)
+			}
 	}
 
 	suspend fun getTrackingLog(offset: Int, limit: Int): List<TrackingLogItem> {

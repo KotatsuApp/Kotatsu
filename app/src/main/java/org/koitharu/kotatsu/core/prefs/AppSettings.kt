@@ -87,6 +87,11 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		false
 	)
 
+	val trackSources by StringSetPreferenceDelegate(
+		resources.getString(R.string.key_track_sources),
+		setOf(TRACK_FAVOURITES, TRACK_HISTORY)
+	)
+
 	private var sourcesOrderStr by NullableStringPreferenceDelegate(resources.getString(R.string.key_sources_order))
 
 	var sourcesOrder: List<Int>
@@ -127,5 +132,8 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 
 		const val PAGE_SWITCH_TAPS = "taps"
 		const val PAGE_SWITCH_VOLUME_KEYS = "volume"
+
+		const val TRACK_HISTORY = "history"
+		const val TRACK_FAVOURITES = "favourites"
 	}
 }
