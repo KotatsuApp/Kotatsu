@@ -20,7 +20,7 @@ class PagesThumbnailsAdapter(onItemClickListener: OnRecyclerItemClickListener<Ma
 	private val cache by inject<PagesCache>()
 
 	override val coroutineContext: CoroutineContext
-		get() = Dispatchers.Main + job
+		get() = Dispatchers.Main.immediate + job
 
 	override fun dispose() {
 		job.cancel()

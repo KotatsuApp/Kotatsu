@@ -74,12 +74,12 @@ class DownloadService : BaseService() {
 	}
 
 	private fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int): Job {
-		return launch(Dispatchers.IO) {
+		return launch(Dispatchers.Default) {
 			mutex.lock()
 			wakeLock.acquire(TimeUnit.HOURS.toMillis(1))
 			notification.fillFrom(manga)
 			notification.setCancelId(startId)
-			withContext(Dispatchers.Main) {
+			withContext(Dispatchers.Main.immediate) {
 				startForeground(DownloadNotification.NOTIFICATION_ID, notification())
 			}
 			val destination = settings.getStorageDir(this@DownloadService)
@@ -168,7 +168,7 @@ class DownloadService : BaseService() {
 					jobs.remove(startId)
 					output?.cleanup()
 					destination.sub("page.tmp").delete()
-					withContext(Dispatchers.Main) {
+					withContext(Dispatchers.Main.immediate) {
 						stopForeground(true)
 						notification.dismiss()
 						stopSelf(startId)

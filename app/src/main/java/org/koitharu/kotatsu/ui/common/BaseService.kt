@@ -14,7 +14,7 @@ abstract class BaseService : Service(), CoroutineScope {
 	private val job = SupervisorJob()
 
 	final override val coroutineContext: CoroutineContext
-		get() = Dispatchers.Main + job
+		get() = Dispatchers.Main.immediate + job
 
 	@CallSuper
 	override fun onDestroy() {

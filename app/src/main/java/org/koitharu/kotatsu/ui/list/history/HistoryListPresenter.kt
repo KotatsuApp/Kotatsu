@@ -55,43 +55,21 @@ class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 	}
 
 	fun clearHistory() {
-		presenterScope.launch {
-			viewState.onLoadingStateChanged(true)
-			try {
-				withContext(Dispatchers.IO) {
-					repository.clear()
-				}
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-					MangaShortcut.clearAppShortcuts(get())
-				}
-				viewState.onListChanged(emptyList())
-			} catch (_: CancellationException) {
-			} catch (e: Throwable) {
-				if (BuildConfig.DEBUG) {
-					e.printStackTrace()
-				}
-				viewState.onError(e)
-			} finally {
-				viewState.onLoadingStateChanged(false)
+		launchLoadingJob {
+			repository.clear()
+			viewState.onListChanged(emptyList())
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+				MangaShortcut.clearAppShortcuts(get())
 			}
 		}
 	}
 
 	fun removeFromHistory(manga: Manga) {
-		presenterScope.launch {
-			try {
-				withContext(Dispatchers.IO) {
-					repository.delete(manga)
-				}
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-					MangaShortcut(manga).removeAppShortcut(get())
-				}
-				viewState.onItemRemoved(manga)
-			} catch (_: CancellationException) {
-			} catch (e: Throwable) {
-				if (BuildConfig.DEBUG) {
-					e.printStackTrace()
-				}
+		launchJob {
+			repository.delete(manga)
+			viewState.onItemRemoved(manga)
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+				MangaShortcut(manga).removeAppShortcut(get())
 			}
 		}
 	}

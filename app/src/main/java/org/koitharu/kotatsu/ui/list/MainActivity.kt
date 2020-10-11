@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -41,7 +42,7 @@ import org.koitharu.kotatsu.utils.ext.resolveDp
 import java.io.Closeable
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-	SharedPreferences.OnSharedPreferenceChangeListener, MainView {
+	SharedPreferences.OnSharedPreferenceChangeListener, MainView, View.OnClickListener {
 
 	private val presenter by moxyPresenter(factory = ::MainPresenter)
 
@@ -56,15 +57,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_menu, R.string.close_menu)
 		drawer.addDrawerListener(drawerToggle)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		supportActionBar?.setHomeButtonEnabled(true)
 
 		navigationView.setNavigationItemSelectedListener(this)
 		settings.subscribe(this)
 
-		fab.imageTintList = ColorStateList.valueOf(Color.WHITE)
-		fab.isVisible = true
-		fab.setOnClickListener {
-			presenter.openLastReader()
+		with(fab) {
+			imageTintList = ColorStateList.valueOf(Color.WHITE)
+			isVisible = true
+			setOnClickListener(this@MainActivity)
 		}
 
 		supportFragmentManager.findFragmentById(R.id.container)?.let {
@@ -116,6 +116,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return drawerToggle.onOptionsItemSelected(item) || when (item.itemId) {
 			else -> super.onOptionsItemSelected(item)
+		}
+	}
+
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.fab -> presenter.openLastReader()
 		}
 	}
 

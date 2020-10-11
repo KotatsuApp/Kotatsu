@@ -44,7 +44,7 @@ class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) 
 						.size(thumbSize)
 						.build()
 				).drawable
-				withContext(Dispatchers.Main) {
+				withContext(Dispatchers.Main.immediate) {
 					imageView_thumb.setImageDrawable(drawable)
 				}
 			} catch (e: CancellationException) {
