@@ -69,8 +69,12 @@
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".ui.search.global.GlobalSearchActivity"
+		<activity
+			android:name=".ui.search.global.GlobalSearchActivity"
 			android:label="@string/search" />
+		<activity
+			android:name=".ui.utils.protect.ProtectActivity"
+			android:windowSoftInputMode="adjustResize" />
 
 		<service
 			android:name=".ui.download.DownloadService"

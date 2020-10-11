@@ -147,4 +147,10 @@
 	<string name="feed_will_update_soon">Обновление скоро начнётся</string>
 	<string name="track_sources">Проверять обновления манги</string>
 	<string name="dont_check">Не проверять</string>
+	<string name="enter_password">Введите пароль</string>
+	<string name="wrong_password">Неверный пароль</string>
+	<string name="protect_application">Защитить приложение</string>
+	<string name="protect_application_summary">Запрашивать пароль при запуске приложения</string>
+	<string name="repeat_password">Повторите пароль</string>
+	<string name="passwords_mismatch">Пароли не совпадают</string>
 </resources>

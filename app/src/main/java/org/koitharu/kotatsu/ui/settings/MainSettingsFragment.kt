@@ -1,26 +1,28 @@
 package org.koitharu.kotatsu.ui.settings
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.InputType
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arrayMapOf
-import androidx.preference.MultiSelectListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceScreen
-import androidx.preference.SeekBarPreference
+import androidx.preference.*
+import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.common.dialog.StorageSelectDialog
+import org.koitharu.kotatsu.ui.common.dialog.TextInputDialog
 import org.koitharu.kotatsu.ui.list.ListModeSelectDialog
 import org.koitharu.kotatsu.ui.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getStorageName
+import org.koitharu.kotatsu.utils.ext.md5
 import java.io.File
 
 
@@ -50,6 +52,8 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)
 		}
+		findPreference<SwitchPreference>(R.string.key_protect_app)?.isChecked =
+			!settings.appPassword.isNullOrEmpty()
 	}
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
@@ -114,12 +118,70 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 					.show()
 				true
 			}
+			getString(R.string.key_protect_app) -> {
+				if ((preference as? SwitchPreference ?: return false).isChecked) {
+					enableAppProtection(preference)
+				} else {
+					settings.appPassword = null
+				}
+				true
+			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
 
 	override fun onStorageSelected(file: File) {
 		settings.setStorageDir(context ?: return, file)
+	}
+
+	private fun enableAppProtection(preference: SwitchPreference) {
+		val ctx = preference.context ?: return
+		val cancelListener =
+			object : DialogInterface.OnCancelListener, DialogInterface.OnClickListener {
+
+				override fun onCancel(dialog: DialogInterface?) {
+					settings.appPassword = null
+					preference.isChecked = false
+					preference.isEnabled = true
+				}
+
+				override fun onClick(dialog: DialogInterface?, which: Int) = onCancel(dialog)
+			}
+		preference.isEnabled = false
+		TextInputDialog.Builder(ctx)
+			.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+			.setHint(R.string.enter_password)
+			.setNegativeButton(android.R.string.cancel, cancelListener)
+			.setOnCancelListener(cancelListener)
+			.setPositiveButton(android.R.string.ok) { d, password ->
+				if (password.isBlank()) {
+					cancelListener.onCancel(d)
+					return@setPositiveButton
+				}
+				TextInputDialog.Builder(ctx)
+					.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+					.setHint(R.string.repeat_password)
+					.setNegativeButton(android.R.string.cancel, cancelListener)
+					.setOnCancelListener(cancelListener)
+					.setPositiveButton(android.R.string.ok) { d2, password2 ->
+						if (password == password2) {
+							settings.appPassword = password.md5()
+							preference.isChecked = true
+							preference.isEnabled = true
+						} else {
+							cancelListener.onCancel(d2)
+							Snackbar.make(
+								listView,
+								R.string.passwords_mismatch,
+								Snackbar.LENGTH_SHORT
+							).show()
+						}
+					}.setTitle(preference.title)
+					.create()
+					.show()
+			}.setTitle(preference.title)
+			.create()
+			.show()
 	}
 
 	private companion object {

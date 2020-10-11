@@ -35,6 +35,7 @@ import org.koitharu.kotatsu.ui.search.SearchHelper
 import org.koitharu.kotatsu.ui.settings.AppUpdateChecker
 import org.koitharu.kotatsu.ui.settings.SettingsActivity
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
+import org.koitharu.kotatsu.ui.utils.protect.AppProtectHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.resolveDp
 import java.io.Closeable
@@ -71,6 +72,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		} ?: run {
 			openDefaultSection()
 		}
+		if (AppProtectHelper.check(this)) {
+			return
+		}
 		TrackWorker.setup(applicationContext)
 		AppUpdateChecker(this).invoke()
 	}
@@ -78,6 +82,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	override fun onDestroy() {
 		closeable?.close()
 		settings.unsubscribe(this)
+		AppProtectHelper.lock()
 		super.onDestroy()
 	}
 

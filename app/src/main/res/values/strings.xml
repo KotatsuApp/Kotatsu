@@ -148,4 +148,10 @@
 	<string name="feed_will_update_soon">Feed update will start soon</string>
 	<string name="track_sources">Check updates for manga</string>
 	<string name="dont_check">Don`t check</string>
+	<string name="enter_password">Enter password</string>
+	<string name="wrong_password">Wrong password</string>
+	<string name="protect_application">Protect application</string>
+	<string name="protect_application_summary">Ask for password on application start</string>
+	<string name="repeat_password">Repeat password</string>
+	<string name="passwords_mismatch">Passwords do not match</string>
 </resources>

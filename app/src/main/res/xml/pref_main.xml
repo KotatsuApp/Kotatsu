@@ -48,6 +48,13 @@
 		android:title="@string/history_and_cache"
 		app:iconSpaceReserved="false" />
 
+	<SwitchPreference
+		android:key="@string/key_protect_app"
+		android:persistent="false"
+		android:summary="@string/protect_application_summary"
+		android:title="@string/protect_application"
+		app:iconSpaceReserved="false" />
+
 	<MultiSelectListPreference
 		android:defaultValue="@array/values_reader_switchers_default"
 		android:entries="@array/reader_switchers"
@@ -57,7 +64,7 @@
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false" />
 
-	<SwitchPreferenceCompat
+	<SwitchPreference
 		android:defaultValue="false"
 		android:key="@string/key_reader_animation"
 		android:title="@string/pages_animation"

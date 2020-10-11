@@ -54,7 +54,7 @@ class CheckableImageView @JvmOverloads constructor(
 		return state
 	}
 
-	interface OnCheckedChangeListener {
+	fun interface OnCheckedChangeListener {
 
 		fun onCheckedChanged(view: CheckableImageView, isChecked: Boolean)
 	}

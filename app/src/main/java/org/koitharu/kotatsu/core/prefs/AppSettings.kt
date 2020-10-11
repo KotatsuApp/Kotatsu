@@ -92,7 +92,13 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		setOf(TRACK_FAVOURITES, TRACK_HISTORY)
 	)
 
-	private var sourcesOrderStr by NullableStringPreferenceDelegate(resources.getString(R.string.key_sources_order))
+	var appPassword by NullableStringPreferenceDelegate(
+		resources.getString(R.string.key_app_password)
+	)
+
+	private var sourcesOrderStr by NullableStringPreferenceDelegate(
+		resources.getString(R.string.key_sources_order)
+	)
 
 	var sourcesOrder: List<Int>
 		get() = sourcesOrderStr?.split('|')?.mapNotNull(String::toIntOrNull).orEmpty()

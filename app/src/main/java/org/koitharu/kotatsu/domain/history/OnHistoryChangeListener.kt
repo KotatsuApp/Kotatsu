@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.domain.history
 
-interface OnHistoryChangeListener {
+fun interface OnHistoryChangeListener {
 
 	fun onHistoryChanged()
 }

@@ -23,6 +23,8 @@
 	<string name="key_notifications_vibrate">notifications_vibrate</string>
 	<string name="key_notifications_light">notifications_light</string>
 	<string name="key_reader_animation">reader_animation</string>
+	<string name="key_app_password">app_password</string>
+	<string name="key_protect_app">protect_app</string>
 
 	<string name="key_parser_domain">domain</string>
 	<string name="key_parser_ssl">ssl</string>

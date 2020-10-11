@@ -78,7 +78,7 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 
 	}
 
-	interface OnStorageSelectListener {
+	fun interface OnStorageSelectListener {
 
 		fun onStorageSelected(file: File)
 	}

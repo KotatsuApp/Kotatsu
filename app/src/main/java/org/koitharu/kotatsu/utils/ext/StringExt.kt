@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.net.Uri
+import java.math.BigInteger
 import java.net.URLEncoder
+import java.security.MessageDigest
 import java.util.*
 
 fun String.longHashCode(): Long {
@@ -100,4 +102,11 @@ fun ByteArray.byte2HexFormatted(): String? {
 		}
 	}
 	return str.toString()
+}
+
+fun String.md5(): String {
+	val md = MessageDigest.getInstance("MD5")
+	return BigInteger(1, md.digest(toByteArray()))
+		.toString(16)
+		.padStart(32, '0')
 }

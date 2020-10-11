@@ -55,7 +55,7 @@ class ChaptersDialog : AlertDialogFragment(R.layout.dialog_chapters),
 		}
 	}
 
-	interface OnChapterChangeListener {
+	fun interface OnChapterChangeListener {
 
 		fun onChapterChanged(chapter: MangaChapter)
 	}

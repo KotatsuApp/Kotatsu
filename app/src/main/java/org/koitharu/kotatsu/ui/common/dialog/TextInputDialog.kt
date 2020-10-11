@@ -61,15 +61,26 @@ class TextInputDialog private constructor(private val delegate: AlertDialog) :
 			return this
 		}
 
-		fun setPositiveButton(@StringRes textId: Int, listener: (DialogInterface, String) -> Unit): Builder {
+		fun setPositiveButton(
+			@StringRes textId: Int,
+			listener: (DialogInterface, String) -> Unit
+		): Builder {
 			delegate.setPositiveButton(textId) { dialog, _ ->
 				listener(dialog, view.inputEdit.text?.toString().orEmpty())
 			}
 			return this
 		}
 
-		fun setNegativeButton(@StringRes textId: Int, listener: DialogInterface.OnClickListener? = null): Builder {
+		fun setNegativeButton(
+			@StringRes textId: Int,
+			listener: DialogInterface.OnClickListener? = null
+		): Builder {
 			delegate.setNegativeButton(textId, listener)
+			return this
+		}
+
+		fun setOnCancelListener(listener: DialogInterface.OnCancelListener): Builder {
+			delegate.setOnCancelListener(listener)
 			return this
 		}
 
