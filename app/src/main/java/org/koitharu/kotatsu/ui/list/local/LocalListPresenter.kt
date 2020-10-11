@@ -62,8 +62,8 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 	}
 
 	fun importFile(context: Context, uri: Uri) {
-		presenterScope.launch(Dispatchers.IO) {
-			try {
+		launchJob {
+			val list = withContext(Dispatchers.IO) {
 				val name = MediaStoreCompat.getName(context, uri)
 					?: throw IOException("Cannot fetch name from uri: $uri")
 				if (!LocalMangaRepository.isFileSupported(name)) {
@@ -76,42 +76,25 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 						source.copyTo(output)
 					}
 				} ?: throw IOException("Cannot open input stream: $uri")
-				val list = repository.getList(0)
-				withContext(Dispatchers.Main) {
-					viewState.onListChanged(list)
-				}
-			} catch (e: CancellationException) {
-			} catch (e: Throwable) {
-				if (BuildConfig.DEBUG) {
-					e.printStackTrace()
-				}
-				withContext(Dispatchers.Main) {
-					viewState.onError(e)
-				}
+				repository.getList(0)
 			}
+			viewState.onListChanged(list)
 		}
 	}
 
 	fun delete(manga: Manga) {
-		presenterScope.launch {
-			try {
-				withContext(Dispatchers.IO) {
-					val original = repository.getRemoteManga(manga)
-					repository.delete(manga) || throw IOException("Unable to delete file")
-					safe {
-						HistoryRepository().deleteOrSwap(manga, original)
-					}
-				}
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-					MangaShortcut(manga).removeAppShortcut(get())
-				}
-				viewState.onItemRemoved(manga)
-			} catch (e: CancellationException) {
-			} catch (e: Throwable) {
-				if (BuildConfig.DEBUG) {
-					e.printStackTrace()
+		launchJob {
+			withContext(Dispatchers.IO) {
+				val original = repository.getRemoteManga(manga)
+				repository.delete(manga) || throw IOException("Unable to delete file")
+				safe {
+					HistoryRepository().deleteOrSwap(manga, original)
 				}
 			}
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+				MangaShortcut(manga).removeAppShortcut(get())
+			}
+			viewState.onItemRemoved(manga)
 		}
 	}
 }
