@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.domain
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.SortOrder

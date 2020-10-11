@@ -17,7 +17,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import moxy.ktx.moxyPresenter
-import org.koin.core.inject
+import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
@@ -194,7 +194,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	}
 
 	private fun openDefaultSection() {
-		when(settings.defaultSection) {
+		when (settings.defaultSection) {
 			AppSection.LOCAL -> {
 				navigationView.setCheckedItem(R.id.nav_local_storage)
 				setPrimaryFragment(LocalListFragment.newInstance())

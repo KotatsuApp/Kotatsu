@@ -4,10 +4,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import moxy.MvpAppCompatActivity
-import org.koin.core.KoinComponent
 import org.koitharu.kotatsu.R
 
-abstract class BaseActivity : MvpAppCompatActivity(), KoinComponent {
+abstract class BaseActivity : MvpAppCompatActivity() {
 
 	override fun setContentView(layoutResID: Int) {
 		super.setContentView(layoutResID)

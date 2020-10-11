@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.presenterScope
-import org.koin.core.get
+import org.koin.core.component.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga

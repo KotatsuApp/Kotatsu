@@ -6,8 +6,8 @@ import android.util.Size
 import androidx.annotation.WorkerThread
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.koin.core.KoinComponent
-import org.koin.core.get
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.ReaderMode

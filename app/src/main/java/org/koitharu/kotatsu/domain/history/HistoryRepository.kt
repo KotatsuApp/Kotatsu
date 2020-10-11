@@ -4,8 +4,8 @@ import androidx.collection.ArraySet
 import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.HistoryEntity
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
@@ -13,7 +13,6 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
-import java.util.*
 
 class HistoryRepository : KoinComponent {
 

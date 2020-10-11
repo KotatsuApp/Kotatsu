@@ -5,8 +5,8 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_source_config.*
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
@@ -51,7 +51,11 @@ class SourcesAdapter(private val onItemClickListener: OnRecyclerItemClickListene
 		}
 		holder.imageView_handle.setOnTouchListener { v, event ->
 			if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-				onItemClickListener.onItemLongClick(holder.requireData(), holder.bindingAdapterPosition, v)
+				onItemClickListener.onItemLongClick(
+					holder.requireData(),
+					holder.bindingAdapterPosition,
+					v
+				)
 			} else {
 				false
 			}

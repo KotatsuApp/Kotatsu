@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.ui.settings
 import android.os.Bundle
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
-import org.koin.core.KoinComponent
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -11,7 +10,7 @@ import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.settings.utils.EditTextSummaryProvider
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class SourceSettingsFragment : PreferenceFragmentCompat(), KoinComponent {
+class SourceSettingsFragment : PreferenceFragmentCompat() {
 
 	private val source by lazy(LazyThreadSafetyMode.NONE) {
 		requireArguments().getParcelable<MangaSource>(EXTRA_SOURCE)!!

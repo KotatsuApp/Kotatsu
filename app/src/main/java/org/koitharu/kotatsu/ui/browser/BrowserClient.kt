@@ -7,8 +7,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.utils.ext.safe
 
 class BrowserClient(private val callback: BrowserCallback) : WebViewClient(), KoinComponent {
@@ -38,7 +38,10 @@ class BrowserClient(private val callback: BrowserCallback) : WebViewClient(), Ko
 		return url?.let(::doRequest)
 	}
 
-	override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+	override fun shouldInterceptRequest(
+		view: WebView?,
+		request: WebResourceRequest?
+	): WebResourceResponse? {
 		return request?.url?.toString()?.let(::doRequest)
 	}
 

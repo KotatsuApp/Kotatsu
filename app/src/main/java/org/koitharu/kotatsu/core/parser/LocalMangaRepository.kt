@@ -7,8 +7,8 @@ import android.webkit.MimeTypeMap
 import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.local.CbzFilter
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.domain.local.MangaIndex

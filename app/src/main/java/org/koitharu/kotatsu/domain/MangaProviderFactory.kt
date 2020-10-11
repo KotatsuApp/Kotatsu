@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.domain
 
-import org.koin.core.KoinComponent
-import org.koin.core.get
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository

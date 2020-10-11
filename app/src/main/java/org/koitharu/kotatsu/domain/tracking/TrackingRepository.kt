@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.domain.tracking
 
 import androidx.room.withTransaction
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.TrackEntity
 import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
@@ -27,7 +27,8 @@ class TrackingRepository : KoinComponent {
 		return mangas.mapNotNull { me ->
 			var manga = me.toManga()
 			if (manga.source == MangaSource.LOCAL) {
-				manga = MangaProviderFactory.createLocal().getRemoteManga(manga) ?: return@mapNotNull null
+				manga = MangaProviderFactory.createLocal().getRemoteManga(manga)
+					?: return@mapNotNull null
 			}
 			val track = tracks[manga.id]?.singleOrNull()
 			MangaTracking(

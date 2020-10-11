@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 import org.koitharu.kotatsu.utils.ext.inflate
 
 abstract class BaseViewHolder<T, E> protected constructor(view: View) :

@@ -7,7 +7,7 @@ import moxy.InjectViewState
 import moxy.presenterScope
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.koin.core.get
+import org.koin.core.component.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
