@@ -15,10 +15,10 @@
  */
 package org.koitharu.kotatsu.core.local.cookies
 
-import org.koitharu.kotatsu.core.local.cookies.persistence.CookiePersistor
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 import org.koitharu.kotatsu.core.local.cookies.cache.CookieCache
+import org.koitharu.kotatsu.core.local.cookies.persistence.CookiePersistor
 import java.util.*
 
 class PersistentCookieJar(

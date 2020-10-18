@@ -23,7 +23,7 @@ class RemoteListPresenter : BasePresenter<MangaListView<Unit>>() {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(true)
 			try {
-				val list = withContext(Dispatchers.IO) {
+				val list = withContext(Dispatchers.Default) {
 					MangaProviderFactory.create(source).getList(
 						offset = offset,
 						sortOrder = filter?.sortOrder,
@@ -64,7 +64,7 @@ class RemoteListPresenter : BasePresenter<MangaListView<Unit>>() {
 		isFilterInitialized = true
 		presenterScope.launch {
 			try {
-				val (sorts, tags) = withContext(Dispatchers.IO) {
+				val (sorts, tags) = withContext(Dispatchers.Default) {
 					val repo = MangaProviderFactory.create(source)
 					repo.sortOrders.sortedBy { it.ordinal } to repo.getTags().sortedBy { it.title }
 				}

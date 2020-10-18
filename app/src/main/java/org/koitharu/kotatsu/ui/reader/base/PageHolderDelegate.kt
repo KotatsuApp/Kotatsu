@@ -55,9 +55,9 @@ class PageHolderDelegate(
 					state = State.CONVERTED
 					callback.onImageReady(file.toUri())
 				} catch (e2: Throwable) {
-					e2.addSuppressed(e)
+					e.addSuppressed(e2)
 					state = State.ERROR
-					callback.onError(e2)
+					callback.onError(e)
 				}
 			}
 		} else {
@@ -73,6 +73,7 @@ class PageHolderDelegate(
 			try {
 				val file = withContext(Dispatchers.IO) {
 					val pageUrl = MangaProviderFactory.create(data.source).getPageFullUrl(data)
+					check(pageUrl.isNotEmpty()) { "Cannot obtain full image url" }
 					loader.loadFile(pageUrl, force)
 				}
 				this@PageHolderDelegate.file = file

@@ -103,6 +103,6 @@ dependencies {
 	debugImplementation 'com.github.ChuckerTeam.Chucker:library:3.3.0'
 	releaseImplementation 'com.github.ChuckerTeam.Chucker:library-no-op:3.3.0'
 
-	testImplementation 'junit:junit:4.13'
+	testImplementation 'junit:junit:4.13.1'
 	testImplementation 'org.json:json:20200518'
 }

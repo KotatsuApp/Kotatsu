@@ -15,6 +15,7 @@ fun String.longHashCode(): Long {
 	return h
 }
 
+@Deprecated("Use String.inContextOf")
 fun String.withDomain(domain: String, ssl: Boolean = true) = when {
 	this.startsWith("//") -> buildString {
 		append("http")

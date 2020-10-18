@@ -5,7 +5,9 @@ import okhttp3.internal.closeQuietly
 import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
+import org.jsoup.internal.StringUtil
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Node
 import org.jsoup.select.Elements
 
 fun Response.parseHtml(): Document {
@@ -59,4 +61,12 @@ inline fun Elements.findText(predicate: (String) -> Boolean): String? {
 		}
 	}
 	return null
+}
+
+fun String.inContextOf(node: Node): String {
+	return if (this.isEmpty()) {
+		""
+	} else {
+		StringUtil.resolve(node.baseUri(), this)
+	}
 }

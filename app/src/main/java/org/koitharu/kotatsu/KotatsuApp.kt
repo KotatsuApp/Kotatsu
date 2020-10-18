@@ -10,7 +10,9 @@ import coil.ImageLoader
 import coil.util.CoilUtils
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import okhttp3.CookieJar
 import okhttp3.OkHttpClient
+import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -37,10 +39,6 @@ import java.util.concurrent.TimeUnit
 
 class KotatsuApp : Application() {
 
-	private val cookieJar by lazy {
-		PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(applicationContext))
-	}
-
 	private val chuckerCollector by lazy(LazyThreadSafetyMode.NONE) {
 		ChuckerCollector(applicationContext)
 	}
@@ -48,20 +46,24 @@ class KotatsuApp : Application() {
 	override fun onCreate() {
 		super.onCreate()
 		if (BuildConfig.DEBUG) {
-			StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
-				.detectAll()
-				.penaltyLog()
-				.build())
-			StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
-				.detectAll()
-				.setClassInstanceLimit(LocalMangaRepository::class.java, 1)
-				.setClassInstanceLimit(PagesCache::class.java, 1)
-				.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
-				.penaltyLog()
-				.build())
+			StrictMode.setThreadPolicy(
+				StrictMode.ThreadPolicy.Builder()
+					.detectAll()
+					.penaltyLog()
+					.build()
+			)
+			StrictMode.setVmPolicy(
+				StrictMode.VmPolicy.Builder()
+					.detectAll()
+					.setClassInstanceLimit(LocalMangaRepository::class.java, 1)
+					.setClassInstanceLimit(PagesCache::class.java, 1)
+					.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
+					.penaltyLog()
+					.build()
+			)
 		}
 		initKoin()
-		initCoil()
+		initCoil(get())
 		Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(applicationContext))
 		if (BuildConfig.DEBUG) {
 			initErrorHandler()
@@ -78,8 +80,14 @@ class KotatsuApp : Application() {
 			androidContext(applicationContext)
 			modules(
 				module {
+					single<CookieJar> {
+						PersistentCookieJar(
+							SetCookieCache(),
+							SharedPrefsCookiePersistor(applicationContext)
+						)
+					}
 					factory {
-						okHttp()
+						okHttp(get())
 							.cache(CacheUtils.createHttpCache(applicationContext))
 							.build()
 					}
@@ -100,11 +108,11 @@ class KotatsuApp : Application() {
 		}
 	}
 
-	private fun initCoil() {
+	private fun initCoil(cookieJar: CookieJar) {
 		Coil.setImageLoader(
 			ImageLoader.Builder(applicationContext)
 				.okHttpClient(
-					okHttp()
+					okHttp(cookieJar)
 						.cache(CoilUtils.createDefaultCache(applicationContext))
 						.build()
 				).componentRegistry(
@@ -124,7 +132,7 @@ class KotatsuApp : Application() {
 		}
 	}
 
-	private fun okHttp() = OkHttpClient.Builder().apply {
+	private fun okHttp(cookieJar: CookieJar) = OkHttpClient.Builder().apply {
 		connectTimeout(20, TimeUnit.SECONDS)
 		readTimeout(60, TimeUnit.SECONDS)
 		writeTimeout(20, TimeUnit.SECONDS)

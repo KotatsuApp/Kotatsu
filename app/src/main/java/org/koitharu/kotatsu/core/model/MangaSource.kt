@@ -22,6 +22,7 @@ enum class MangaSource(
 	HENCHAN("Хентай-тян", "ru", HenChanRepository::class.java),
 	YAOICHAN("Яой-тян", "ru", YaoiChanRepository::class.java),
 	MANGATOWN("MangaTown", "en", MangaTownRepository::class.java),
-	MANGALIB("MangaLib", "ru", MangaLibRepository::class.java)
+	MANGALIB("MangaLib", "ru", MangaLibRepository::class.java),
+	NUDEMOON("Nude-Moon", "ru", NudeMoonRepository::class.java)
 	// HENTAILIB("HentaiLib", "ru", HentaiLibRepository::class.java)
 }
