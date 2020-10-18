@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import androidx.collection.arraySetOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
@@ -13,7 +14,11 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 
 	protected abstract val defaultDomain: String
 
-	override val sortOrders = setOf(SortOrder.NEWEST, SortOrder.POPULARITY, SortOrder.ALPHABETICAL)
+	override val sortOrders = arraySetOf(
+		SortOrder.NEWEST,
+		SortOrder.POPULARITY,
+		SortOrder.ALPHABETICAL
+	)
 
 	override suspend fun getList(
 		offset: Int,
@@ -51,13 +56,13 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				coverUrl = row.selectFirst("div.manga_images")?.selectFirst("img")
 					?.attr("src")?.withDomain(domain).orEmpty(),
 				tags = safe {
-					row.selectFirst("div.genre")?.select("a")?.map {
+					row.selectFirst("div.genre")?.select("a")?.mapToSet {
 						MangaTag(
 							title = it.text(),
 							key = it.attr("href").substringAfterLast('/').urlEncoded(),
 							source = source
 						)
-					}?.toSet()
+					}
 				}.orEmpty(),
 				source = source
 			)
@@ -118,17 +123,17 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		val doc = loaderContext.httpGet("https://$domain/catalog").parseHtml()
 		val root = doc.body().selectFirst("div.main_fon").getElementById("side")
 			.select("ul").last()
-		return root.select("li.sidetag").map { li ->
+		return root.select("li.sidetag").mapToSet { li ->
 			val a = li.children().last()
 			MangaTag(
 				title = a.text().capitalize(),
 				key = a.attr("href").substringAfterLast('/'),
 				source = source
 			)
-		}.toSet()
+		}
 	}
 
-	override fun onCreatePreferences() = setOf(R.string.key_parser_domain)
+	override fun onCreatePreferences() = arraySetOf(R.string.key_parser_domain)
 
 	private fun getSortKey(sortOrder: SortOrder?) =
 		when (sortOrder ?: sortOrders.minByOrNull { it.ordinal }) {

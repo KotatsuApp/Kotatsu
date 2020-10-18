@@ -11,27 +11,28 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class FavouritesRepository(private val db: MangaDatabase) {
 
 	suspend fun getAllManga(): List<Manga> {
 		val entities = db.favouritesDao.findAll()
-		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
+		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
 	suspend fun getAllManga(offset: Int): List<Manga> {
 		val entities = db.favouritesDao.findAll(offset, 20)
-		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
+		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
 	suspend fun getManga(categoryId: Long): List<Manga> {
 		val entities = db.favouritesDao.findAll(categoryId)
-		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
+		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
 	suspend fun getManga(categoryId: Long, offset: Int): List<Manga> {
 		val entities = db.favouritesDao.findAll(categoryId, offset, 20)
-		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
+		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
 	suspend fun getAllCategories(): List<FavouriteCategory> {

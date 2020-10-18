@@ -7,6 +7,7 @@ import org.koin.core.component.get
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.ui.base.BasePresenter
+import org.koitharu.kotatsu.utils.ext.mapToSet
 
 @InjectViewState
 class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
@@ -29,7 +30,7 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 	fun loadMangaCategories(manga: Manga) {
 		launchJob {
 			val categories = repository.getCategories(manga.id)
-			viewState.onCheckedCategoriesChanged(categories.map { it.id.toInt() }.toSet())
+			viewState.onCheckedCategoriesChanged(categories.mapToSet { it.id.toInt() })
 		}
 	}
 

@@ -4,6 +4,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.longHashCode
+import org.koitharu.kotatsu.utils.ext.mapToSet
 import org.koitharu.kotatsu.utils.ext.parseHtml
 import org.koitharu.kotatsu.utils.ext.withDomain
 
@@ -37,14 +38,14 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 		return manga.copy(
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
 			largeCoverUrl = root.getElementById("cover")?.attr("src")?.withDomain(domain),
-			tags = root.selectFirst("div.sidetags")?.select("li.sidetag")?.map {
+			tags = root.selectFirst("div.sidetags")?.select("li.sidetag")?.mapToSet {
 				val a = it.children().last()
 				MangaTag(
 					title = a.text(),
 					key = a.attr("href").substringAfterLast('/'),
 					source = source
 				)
-			}?.toSet() ?: manga.tags,
+			} ?: manga.tags,
 			chapters = listOf(
 				MangaChapter(
 					id = readLink.longHashCode(),

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import androidx.collection.arraySetOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
@@ -12,7 +13,7 @@ class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 
 	override val source = MangaSource.NUDEMOON
 
-	override val sortOrders = setOf(SortOrder.NEWEST, SortOrder.POPULARITY, SortOrder.RATING)
+	override val sortOrders = arraySetOf(SortOrder.NEWEST, SortOrder.POPULARITY, SortOrder.RATING)
 
 	init {
 		loaderContext.insertCookies(
@@ -133,7 +134,7 @@ class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		}
 	}
 
-	override fun onCreatePreferences() = setOf(R.string.key_parser_domain)
+	override fun onCreatePreferences() = arraySetOf(R.string.key_parser_domain)
 
 	private fun getSortKey(sortOrder: SortOrder?) =
 		when (sortOrder ?: sortOrders.minByOrNull { it.ordinal }) {

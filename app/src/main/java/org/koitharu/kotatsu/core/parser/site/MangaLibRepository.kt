@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import androidx.collection.ArraySet
+import androidx.collection.arraySetOf
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.R
@@ -16,7 +18,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 
 	override val source = MangaSource.MANGALIB
 
-	override val sortOrders = setOf(
+	override val sortOrders = arraySetOf(
 		SortOrder.RATING,
 		SortOrder.ALPHABETICAL,
 		SortOrder.POPULARITY,
@@ -68,7 +70,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		}
 	}
 
-	override fun onCreatePreferences() = setOf(R.string.key_parser_domain)
+	override fun onCreatePreferences() = arraySetOf(R.string.key_parser_domain)
 
 	override suspend fun getDetails(manga: Manga): Manga {
 		val doc = loaderContext.httpGet(manga.url + "?section=info").parseHtml()
@@ -126,13 +128,13 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			author = info.getElementsMatchingOwnText("Автор").firstOrNull()
 				?.nextElementSibling()?.text() ?: manga.author,
 			tags = info.getElementsMatchingOwnText("Жанры")?.firstOrNull()
-				?.nextElementSibling()?.select("a")?.mapNotNull { a ->
+				?.nextElementSibling()?.select("a")?.mapToSet { a ->
 					MangaTag(
 						title = a.text().capitalize(),
 						key = a.attr("href").substringAfterLast('='),
 						source = source
 					)
-				}?.toSet() ?: manga.tags,
+				} ?: manga.tags,
 			description = info.getElementsMatchingOwnText("Описание")?.firstOrNull()
 				?.nextElementSibling()?.html(),
 			chapters = chapters
@@ -183,7 +185,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			if (raw.startsWith("window.__DATA")) {
 				val json = JSONObject(raw.substringAfter('=').substringBeforeLast(';'))
 				val genres = json.getJSONObject("filters").getJSONArray("genres")
-				val result = HashSet<MangaTag>(genres.length())
+				val result = ArraySet<MangaTag>(genres.length())
 				for (x in genres) {
 					result += MangaTag(
 						source = source,

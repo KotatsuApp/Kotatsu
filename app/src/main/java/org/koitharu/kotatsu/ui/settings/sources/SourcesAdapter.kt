@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.utils.ext.mapToSet
 import org.koitharu.kotatsu.utils.ext.safe
 
 class SourcesAdapter(private val onItemClickListener: OnRecyclerItemClickListener<MangaSource>) :
@@ -44,7 +45,7 @@ class SourcesAdapter(private val onItemClickListener: OnRecyclerItemClickListene
 			} else {
 				hiddenItems.add(holder.requireData())
 			}
-			settings.hiddenSources = hiddenItems.map { x -> x.name }.toSet()
+			settings.hiddenSources = hiddenItems.mapToSet { x -> x.name }
 		}
 		holder.imageView_config.setOnClickListener { v ->
 			onItemClickListener.onItemClick(holder.requireData(), holder.bindingAdapterPosition, v)

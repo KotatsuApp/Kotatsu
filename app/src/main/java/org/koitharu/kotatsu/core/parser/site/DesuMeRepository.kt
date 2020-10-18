@@ -1,20 +1,18 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import androidx.collection.arraySetOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.domain.MangaLoaderContext
-import org.koitharu.kotatsu.utils.ext.map
-import org.koitharu.kotatsu.utils.ext.mapIndexed
-import org.koitharu.kotatsu.utils.ext.parseHtml
-import org.koitharu.kotatsu.utils.ext.parseJson
+import org.koitharu.kotatsu.utils.ext.*
 
 class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
 
 	override val source = MangaSource.DESUME
 
-	override val sortOrders = setOf(
+	override val sortOrders = arraySetOf(
 		SortOrder.UPDATED,
 		SortOrder.POPULARITY,
 		SortOrder.NEWEST,
@@ -76,13 +74,13 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		val json = loaderContext.httpGet(url).parseJson().getJSONObject("response")
 			?: throw ParseException("Invalid response")
 		return manga.copy(
-			tags = json.getJSONArray("genres").map {
+			tags = json.getJSONArray("genres").mapToSet {
 				MangaTag(
 					key = it.getString("text"),
 					title = it.getString("russian"),
 					source = manga.source
 				)
-			}.toSet(),
+			},
 			description = json.getString("description"),
 			chapters = json.getJSONObject("chapters").getJSONArray("list").mapIndexed { i, it ->
 				val chid = it.getLong("id")
@@ -113,16 +111,16 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		val domain = conf.getDomain(DOMAIN)
 		val doc = loaderContext.httpGet("https://$domain/manga/").parseHtml()
 		val root = doc.body().getElementById("animeFilter").selectFirst(".catalog-genres")
-		return root.select("li").map {
+		return root.select("li").mapToSet {
 			MangaTag(
 				source = source,
 				key = it.selectFirst("input").attr("data-genre"),
 				title = it.selectFirst("label").text()
 			)
-		}.toSet()
+		}
 	}
 
-	override fun onCreatePreferences() = setOf(R.string.key_parser_domain)
+	override fun onCreatePreferences() = arraySetOf(R.string.key_parser_domain)
 
 	private fun getSortKey(sortOrder: SortOrder?) =
 		when (sortOrder) {

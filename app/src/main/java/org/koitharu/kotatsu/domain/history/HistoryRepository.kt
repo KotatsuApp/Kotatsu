@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
+import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class HistoryRepository(private val db: MangaDatabase) : KoinComponent {
 
@@ -20,7 +21,7 @@ class HistoryRepository(private val db: MangaDatabase) : KoinComponent {
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
 		val entities = db.historyDao.findAll(offset, limit)
-		return entities.map { it.manga.toManga(it.tags.map(TagEntity::toMangaTag).toSet()) }
+		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int) {

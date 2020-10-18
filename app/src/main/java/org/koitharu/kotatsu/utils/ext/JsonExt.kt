@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
+import androidx.collection.ArraySet
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -36,4 +37,14 @@ private class JSONIterator(private val array: JSONArray) : Iterator<JSONObject> 
 
 	override fun next(): JSONObject = array.getJSONObject(index++)
 
+}
+
+fun <T> JSONArray.mapToSet(block: (JSONObject) -> T): Set<T> {
+	val len = length()
+	val result = ArraySet<T>(len)
+	for (i in 0 until len) {
+		val jo = getJSONObject(i)
+		result.add(block(jo))
+	}
+	return result
 }

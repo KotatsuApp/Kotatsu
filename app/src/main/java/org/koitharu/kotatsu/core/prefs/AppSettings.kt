@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.content.res.Resources
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.koitharu.kotatsu.R
@@ -44,7 +45,7 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 
 	val readerPageSwitch by StringSetPreferenceDelegate(
 		resources.getString(R.string.key_reader_switchers),
-		setOf(PAGE_SWITCH_TAPS)
+		arraySetOf(PAGE_SWITCH_TAPS)
 	)
 
 	var isTrafficWarningEnabled by BoolPreferenceDelegate(
@@ -89,7 +90,7 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 
 	val trackSources by StringSetPreferenceDelegate(
 		resources.getString(R.string.key_track_sources),
-		setOf(TRACK_FAVOURITES, TRACK_HISTORY)
+		arraySetOf(TRACK_FAVOURITES, TRACK_HISTORY)
 	)
 
 	var appPassword by NullableStringPreferenceDelegate(

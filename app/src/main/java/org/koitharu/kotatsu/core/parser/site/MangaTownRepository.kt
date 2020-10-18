@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import androidx.collection.arraySetOf
 import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
@@ -13,7 +14,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposi
 
 	override val source = MangaSource.MANGATOWN
 
-	override val sortOrders = setOf(
+	override val sortOrders = arraySetOf(
 		SortOrder.ALPHABETICAL,
 		SortOrder.RATING,
 		SortOrder.POPULARITY,
@@ -71,13 +72,13 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposi
 					"completed" -> MangaState.FINISHED
 					else -> null
 				},
-				tags = li.selectFirst("p.keyWord")?.select("a")?.mapNotNull tags@{ x ->
+				tags = li.selectFirst("p.keyWord")?.select("a")?.mapNotNullToSet tags@{ x ->
 					MangaTag(
 						title = x.attr("title"),
 						key = x.attr("href").parseTagKey() ?: return@tags null,
 						source = MangaSource.MANGATOWN
 					)
-				}?.toSet().orEmpty(),
+				}.orEmpty(),
 				url = href
 			)
 		}
@@ -150,22 +151,22 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposi
 			.getElementsContainingOwnText("Genres")
 			.first()
 			.nextElementSibling()
-		return root.select("li").mapNotNull { li ->
-			val a = li.selectFirst("a") ?: return@mapNotNull null
+		return root.select("li").mapNotNullToSet { li ->
+			val a = li.selectFirst("a") ?: return@mapNotNullToSet null
 			val key = a.attr("href").parseTagKey()
 			if (key.isNullOrEmpty()) {
-				return@mapNotNull null
+				return@mapNotNullToSet null
 			}
 			MangaTag(
 				source = MangaSource.MANGATOWN,
 				key = key,
 				title = a.text()
 			)
-		}.toSet()
+		}
 	}
 
 
-	override fun onCreatePreferences() = setOf(R.string.key_parser_domain, R.string.key_parser_ssl)
+	override fun onCreatePreferences() = arraySetOf(R.string.key_parser_domain, R.string.key_parser_ssl)
 
 	private fun String.parseTagKey() = split('/').findLast { TAG_REGEX matches it }
 

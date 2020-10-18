@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import org.koitharu.kotatsu.core.model.TrackingLogItem
+import org.koitharu.kotatsu.utils.ext.mapToSet
 import java.util.*
 
 data class TrackLogWithManga(
@@ -24,7 +25,7 @@ data class TrackLogWithManga(
 	fun toTrackingLogItem() = TrackingLogItem(
 		id = trackLog.id,
 		chapters = trackLog.chapters.split('\n').filterNot { x -> x.isEmpty() },
-		manga = manga.toManga(tags.map { x -> x.toMangaTag() }.toSet()),
+		manga = manga.toManga(tags.mapToSet { x -> x.toMangaTag() }),
 		createdAt = Date(trackLog.createdAt)
 	)
 }

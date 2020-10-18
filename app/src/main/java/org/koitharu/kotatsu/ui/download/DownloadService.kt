@@ -56,7 +56,7 @@ class DownloadService : BaseService() {
 		when (intent?.action) {
 			ACTION_DOWNLOAD_START -> {
 				val manga = intent.getParcelableExtra<Manga>(EXTRA_MANGA)
-				val chapters = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toSet()
+				val chapters = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toArraySet()
 				if (manga != null) {
 					jobs[startId] = downloadManga(manga, chapters, startId)
 					Toast.makeText(this, R.string.manga_downloading_, Toast.LENGTH_SHORT).show()

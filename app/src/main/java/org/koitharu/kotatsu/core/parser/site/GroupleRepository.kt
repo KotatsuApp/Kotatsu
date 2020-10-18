@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import androidx.collection.arraySetOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
@@ -12,7 +13,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 
 	protected abstract val defaultDomain: String
 
-	override val sortOrders = setOf(
+	override val sortOrders = arraySetOf(
 		SortOrder.UPDATED, SortOrder.POPULARITY,
 		SortOrder.NEWEST, SortOrder.RATING
 		//FIXME SortOrder.ALPHABETICAL
@@ -70,13 +71,13 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 				author = tileInfo?.selectFirst("a.person-link")?.text(),
 				tags = safe {
 					tileInfo?.select("a.element-link")
-						?.map {
+						?.mapToSet {
 							MangaTag(
 								title = it.text(),
 								key = it.attr("href").substringAfterLast('/'),
 								source = source
 							)
-						}?.toSet()
+						}
 				}.orEmpty(),
 				state = when {
 					node.selectFirst("div.tags")
@@ -153,16 +154,16 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		val doc = loaderContext.httpGet("https://$domain/list/genres/sort_name").parseHtml()
 		val root = doc.body().getElementById("mangaBox").selectFirst("div.leftContent")
 			.selectFirst("table.table")
-		return root.select("a.element-link").map { a ->
+		return root.select("a.element-link").mapToSet { a ->
 			MangaTag(
 				title = a.text().capitalize(),
 				key = a.attr("href").substringAfterLast('/'),
 				source = source
 			)
-		}.toSet()
+		}
 	}
 
-	override fun onCreatePreferences() = setOf(R.string.key_parser_domain)
+	override fun onCreatePreferences() = arraySetOf(R.string.key_parser_domain)
 
 	private fun getSortKey(sortOrder: SortOrder?) =
 		when (sortOrder ?: sortOrders.minByOrNull { it.ordinal }) {

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.net.Uri
+import androidx.collection.arraySetOf
 import java.math.BigInteger
 import java.net.URLEncoder
 import java.security.MessageDigest
@@ -71,7 +72,7 @@ fun String.transliterate(skipMissing: Boolean): String {
 }
 
 fun String.toFileNameSafe() = this.transliterate(false)
-	.replace(Regex("[^a-z0-9_\\-]", setOf(RegexOption.IGNORE_CASE)), " ")
+	.replace(Regex("[^a-z0-9_\\-]", arraySetOf(RegexOption.IGNORE_CASE)), " ")
 	.replace(Regex("\\s+"), "_")
 
 fun String.ellipsize(maxLength: Int) = if (this.length > maxLength) {

@@ -143,7 +143,7 @@ fun View.measureWidth(): Int {
 	} else vw
 }
 
-fun ViewPager2.doOnPageChanged(callback: (Int) -> Unit) {
+inline fun ViewPager2.doOnPageChanged(crossinline callback: (Int) -> Unit) {
 	registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
 		override fun onPageSelected(position: Int) {
@@ -153,7 +153,7 @@ fun ViewPager2.doOnPageChanged(callback: (Int) -> Unit) {
 	})
 }
 
-fun RecyclerView.doOnCurrentItemChanged(callback: (Int) -> Unit) {
+inline fun RecyclerView.doOnCurrentItemChanged(crossinline callback: (Int) -> Unit) {
 	addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
 		private var lastItem = -1

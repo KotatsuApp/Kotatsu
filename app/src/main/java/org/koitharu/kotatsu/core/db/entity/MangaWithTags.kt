@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.db.entity
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
+import org.koitharu.kotatsu.utils.ext.mapToSet
 
 data class MangaWithTags(
 	@Embedded val manga: MangaEntity,
@@ -14,7 +15,7 @@ data class MangaWithTags(
 	val tags: List<TagEntity>
 ) {
 
-	fun toManga() = manga.toManga(tags.map {
+	fun toManga() = manga.toManga(tags.mapToSet {
 		it.toMangaTag()
-	}.toSet())
+	})
 }
