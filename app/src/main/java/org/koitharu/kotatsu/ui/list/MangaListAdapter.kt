@@ -4,15 +4,15 @@ import android.view.ViewGroup
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.BaseRecyclerAdapter
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 
 class MangaListAdapter(onItemClickListener: OnRecyclerItemClickListener<Manga>) :
 	BaseRecyclerAdapter<Manga, MangaHistory?>(onItemClickListener) {
 
 	var listMode: ListMode = ListMode.LIST
 
-	override fun onCreateViewHolder(parent: ViewGroup) = when(listMode) {
+	override fun onCreateViewHolder(parent: ViewGroup) = when (listMode) {
 		ListMode.LIST -> MangaListHolder(parent)
 		ListMode.DETAILED_LIST -> MangaListDetailsHolder(
 			parent

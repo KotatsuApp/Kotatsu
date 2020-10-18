@@ -4,7 +4,7 @@ import kotlinx.coroutines.delay
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.ui.base.BasePresenter
 import org.koitharu.kotatsu.utils.ext.md5
 
 class ProtectPresenter : BasePresenter<ProtectView>() {

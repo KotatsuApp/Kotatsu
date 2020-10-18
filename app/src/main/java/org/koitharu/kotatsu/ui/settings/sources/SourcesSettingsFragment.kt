@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_settings_sources.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.ui.common.BaseFragment
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.BaseFragment
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.settings.SettingsActivity
 
 class SourcesSettingsFragment : BaseFragment(R.layout.fragment_settings_sources),
@@ -44,7 +44,9 @@ class SourcesSettingsFragment : BaseFragment(R.layout.fragment_settings_sources)
 	}
 
 	override fun onItemLongClick(item: MangaSource, position: Int, view: View): Boolean {
-		reorderHelper.startDrag(recyclerView.findViewHolderForAdapterPosition(position) ?: return false)
+		reorderHelper.startDrag(
+			recyclerView.findViewHolderForAdapterPosition(position) ?: return false
+		)
 		return true
 	}
 }

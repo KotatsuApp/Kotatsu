@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.domain.tracking
 
 import androidx.room.withTransaction
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.TrackEntity
 import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
@@ -10,9 +8,7 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import java.util.*
 
-class TrackingRepository : KoinComponent {
-
-	private val db: MangaDatabase by inject()
+class TrackingRepository(private val db: MangaDatabase) {
 
 	suspend fun getNewChaptersCount(mangaId: Long): Int {
 		val entity = db.tracksDao.find(mangaId) ?: return 0

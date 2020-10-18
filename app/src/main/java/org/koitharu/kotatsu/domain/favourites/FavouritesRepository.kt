@@ -4,8 +4,6 @@ import androidx.collection.ArraySet
 import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.FavouriteCategoryEntity
 import org.koitharu.kotatsu.core.db.entity.FavouriteEntity
@@ -14,9 +12,7 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 
-class FavouritesRepository : KoinComponent {
-
-	private val db: MangaDatabase by inject()
+class FavouritesRepository(private val db: MangaDatabase) {
 
 	suspend fun getAllManga(): List<Manga> {
 		val entities = db.favouritesDao.findAll()

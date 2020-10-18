@@ -10,7 +10,8 @@ import java.io.File
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
-fun File.sub(name: String) = File(this, name)
+@Suppress("NOTHING_TO_INLINE")
+inline fun File.sub(name: String) = File(this, name)
 
 fun File.takeIfReadable() = takeIf { it.exists() && it.canRead() }
 

@@ -11,7 +11,7 @@ import android.view.MenuItem
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.activity_browser.*
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.base.BaseActivity
 
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserActivity : BaseActivity(), BrowserCallback {

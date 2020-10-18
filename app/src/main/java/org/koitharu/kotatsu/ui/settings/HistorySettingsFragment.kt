@@ -7,10 +7,11 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.local.Cache
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
-import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
+import org.koitharu.kotatsu.ui.base.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.search.MangaSuggestionsProvider
 import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.FileSizeUtils
@@ -18,9 +19,7 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cache) {
 
-	private val trackerRepo by lazy {
-		TrackingRepository()
-	}
+	private val trackerRepo by inject<TrackingRepository>()
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)

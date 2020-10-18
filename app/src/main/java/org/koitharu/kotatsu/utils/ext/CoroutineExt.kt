@@ -73,3 +73,10 @@ fun CoroutineScope.launchInstead(
 	}
 	block()
 }
+
+val IgnoreErrors
+	get() = CoroutineExceptionHandler { _, e ->
+		if (BuildConfig.DEBUG) {
+			e.printStackTrace()
+		}
+	}

@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.dialog_chapters.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.ui.common.AlertDialogFragment
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.AlertDialogFragment
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.details.ChaptersAdapter
 import org.koitharu.kotatsu.utils.ext.withArgs
 

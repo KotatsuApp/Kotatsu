@@ -2,23 +2,26 @@ package org.koitharu.kotatsu.ui.reader.thumbnails
 
 import android.view.ViewGroup
 import androidx.core.net.toUri
-import coil.Coil
+import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.PixelSize
 import coil.size.Size
 import kotlinx.android.synthetic.main.item_page_thumb.*
 import kotlinx.coroutines.*
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.domain.MangaProviderFactory
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
+import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 
 class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) :
 	BaseViewHolder<MangaPage, PagesCache>(parent, R.layout.item_page_thumb) {
 
 	private var job: Job? = null
 	private val thumbSize: Size
+	private val coil by inject<ImageLoader>()
 
 	init {
 		val width = itemView.context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
@@ -32,24 +35,19 @@ class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) 
 		imageView_thumb.setImageDrawable(null)
 		textView_number.text = (bindingAdapterPosition + 1).toString()
 		job?.cancel()
-		job = scope.launch(Dispatchers.IO) {
-			try {
-				val url = data.preview ?: data.url.let {
-					val pageUrl = MangaProviderFactory.create(data.source).getPageFullUrl(data)
-					extra[pageUrl]?.toUri()?.toString() ?: pageUrl
-				}
-				val drawable = Coil.execute(
-					ImageRequest.Builder(context)
-						.data(url)
-						.size(thumbSize)
-						.build()
-				).drawable
-				withContext(Dispatchers.Main.immediate) {
-					imageView_thumb.setImageDrawable(drawable)
-				}
-			} catch (e: CancellationException) {
-			} catch (e: Exception) {
-				e.printStackTrace()
+		job = scope.launch(Dispatchers.IO + IgnoreErrors) {
+			val url = data.preview ?: data.url.let {
+				val pageUrl = MangaProviderFactory.create(data.source).getPageFullUrl(data)
+				extra[pageUrl]?.toUri()?.toString() ?: pageUrl
+			}
+			val drawable = coil.execute(
+				ImageRequest.Builder(context)
+					.data(url)
+					.size(thumbSize)
+					.build()
+			).drawable
+			withContext(Dispatchers.Main.immediate) {
+				imageView_thumb.setImageDrawable(drawable)
 			}
 		}
 	}

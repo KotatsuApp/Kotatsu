@@ -34,6 +34,7 @@ object MangaProviderFactory : KoinComponent {
 		}
 	}
 
+	@Deprecated("Use DI")
 	fun createLocal(): LocalMangaRepository {
 		var instance = cache[MangaSource.LOCAL]?.get()
 		if (instance == null) {

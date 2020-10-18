@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.*
-import coil.Coil
+import coil.ImageLoader
 import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -34,6 +34,8 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 	}
 
+	private val coil by inject<ImageLoader>()
+	private val repository by inject<TrackingRepository>()
 	private val settings by inject<AppSettings>()
 
 	override suspend fun doWork(): Result = withContext(Dispatchers.Default) {
@@ -41,8 +43,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		if (trackSources.isEmpty()) {
 			return@withContext Result.success()
 		}
-		val repo = TrackingRepository()
-		val tracks = repo.getAllTracks(
+		val tracks = repository.getAllTracks(
 			useFavourites = AppSettings.TRACK_FAVOURITES in trackSources,
 			useHistory = AppSettings.TRACK_HISTORY in trackSources
 		)
@@ -58,7 +59,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			val chapters = details?.chapters ?: continue
 			when {
 				track.knownChaptersCount == -1 -> { //first check
-					repo.storeTrackResult(
+					repository.storeTrackResult(
 						mangaId = track.manga.id,
 						knownChaptersCount = chapters.size,
 						lastChapterId = chapters.lastOrNull()?.id ?: 0L,
@@ -67,7 +68,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 					)
 				}
 				track.knownChaptersCount == 0 && track.lastChapterId == 0L -> { //manga was empty on last check
-					repo.storeTrackResult(
+					repository.storeTrackResult(
 						mangaId = track.manga.id,
 						knownChaptersCount = track.knownChaptersCount,
 						lastChapterId = 0L,
@@ -85,7 +86,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						val knownChapter = chapters.indexOfLast { it.id == track.lastChapterId }
 						if (knownChapter == -1) {
 							// confuse. reset anything
-							repo.storeTrackResult(
+							repository.storeTrackResult(
 								mangaId = track.manga.id,
 								knownChaptersCount = chapters.size,
 								lastChapterId = chapters.lastOrNull()?.id ?: 0L,
@@ -94,7 +95,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 							)
 						} else {
 							val newChapters = chapters.takeLast(chapters.size - knownChapter + 1)
-							repo.storeTrackResult(
+							repository.storeTrackResult(
 								mangaId = track.manga.id,
 								knownChaptersCount = knownChapter + 1,
 								lastChapterId = track.lastChapterId,
@@ -110,7 +111,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				}
 				else -> {
 					val newChapters = chapters.takeLast(chapters.size - track.knownChaptersCount)
-					repo.storeTrackResult(
+					repository.storeTrackResult(
 						mangaId = track.manga.id,
 						knownChaptersCount = track.knownChaptersCount,
 						lastChapterId = track.lastChapterId,
@@ -125,7 +126,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			}
 			success++
 		}
-		repo.cleanup()
+		repository.cleanup()
 		if (success == 0) {
 			Result.retry()
 		} else {
@@ -149,7 +150,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			setContentTitle(manga.title)
 			setNumber(newChapters.size)
 			setLargeIcon(
-				Coil.execute(
+				coil.execute(
 					ImageRequest.Builder(applicationContext)
 						.data(manga.coverUrl)
 						.build()

@@ -12,19 +12,14 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.domain.history.HistoryRepository
-import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.ui.base.BasePresenter
 import org.koitharu.kotatsu.ui.list.MangaListView
 import org.koitharu.kotatsu.utils.MangaShortcut
 
 @InjectViewState
 class HistoryListPresenter : BasePresenter<MangaListView<MangaHistory>>() {
 
-	private lateinit var repository: HistoryRepository
-
-	override fun onFirstViewAttach() {
-		repository = HistoryRepository()
-		super.onFirstViewAttach()
-	}
+	private val repository = get<HistoryRepository>()
 
 	fun loadList(offset: Int) {
 		presenterScope.launch {

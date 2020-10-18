@@ -2,13 +2,12 @@ package org.koitharu.kotatsu.domain
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.koin.core.component.KoinComponent
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.SortOrder
 import java.util.*
 
-class MangaSearchRepository : KoinComponent {
+class MangaSearchRepository {
 
 	fun globalSearch(query: String, batchSize: Int = 4): Flow<List<Manga>> = flow {
 		val sources = MangaProviderFactory.getSources(false)

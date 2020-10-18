@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_category.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 
 class CategoryHolder(parent: ViewGroup) :
 	BaseViewHolder<FavouriteCategory, Unit>(parent, R.layout.item_category) {

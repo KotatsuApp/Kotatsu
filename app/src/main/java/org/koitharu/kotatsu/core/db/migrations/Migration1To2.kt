@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.core.db.migrations
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-object Migration1To2 : Migration(1, 2) {
+class Migration1To2 : Migration(1, 2) {
 	/**
 	 * Adding foreign keys
 	 */

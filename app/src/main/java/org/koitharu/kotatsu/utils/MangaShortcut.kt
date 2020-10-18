@@ -9,11 +9,13 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import coil.Coil
+import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.PixelSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.MangaDataRepository
@@ -21,9 +23,11 @@ import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 import org.koitharu.kotatsu.utils.ext.safe
 
-class MangaShortcut(private val manga: Manga) {
+class MangaShortcut(private val manga: Manga) : KoinComponent {
 
 	private val shortcutId = manga.id.toString()
+	private val coil by inject<ImageLoader>()
+	private val mangaRepository by inject<MangaDataRepository>()
 
 	@RequiresApi(Build.VERSION_CODES.N_MR1)
 	suspend fun addAppShortcut(context: Context) {
@@ -66,7 +70,7 @@ class MangaShortcut(private val manga: Manga) {
 		val icon = safe {
 			val size = getIconSize(context)
 			withContext(Dispatchers.IO) {
-				val bmp = Coil.execute(
+				val bmp = coil.execute(
 					ImageRequest.Builder(context)
 						.data(manga.coverUrl)
 						.build()
@@ -74,7 +78,7 @@ class MangaShortcut(private val manga: Manga) {
 				ThumbnailUtils.extractThumbnail(bmp, size.width, size.height, 0)
 			}
 		}
-		MangaDataRepository().storeManga(manga)
+		mangaRepository.storeManga(manga)
 		return ShortcutInfoCompat.Builder(context, manga.id.toString())
 			.setShortLabel(manga.title)
 			.setLongLabel(manga.title)

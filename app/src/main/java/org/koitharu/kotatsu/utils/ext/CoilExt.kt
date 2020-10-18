@@ -1,9 +1,20 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.widget.ImageView
 import androidx.core.graphics.drawable.toBitmap
+import coil.ImageLoader
 import coil.request.ErrorResult
+import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.request.SuccessResult
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun ImageView.newImageRequest(url: String) = ImageRequest.Builder(context)
+	.data(url)
+	.target(this)
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun ImageRequest.Builder.enqueueWith(loader: ImageLoader) = loader.enqueue(build())
 
 fun ImageResult.requireBitmap() = when (this) {
 	is SuccessResult -> drawable.toBitmap()

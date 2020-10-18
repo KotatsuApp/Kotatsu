@@ -10,9 +10,9 @@ import kotlinx.android.synthetic.main.sheet_pages.*
 import kotlinx.coroutines.DisposableHandle
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.ui.common.BaseBottomSheet
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
-import org.koitharu.kotatsu.ui.common.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.ui.base.BaseBottomSheet
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.resolveDp
 import org.koitharu.kotatsu.utils.ext.withArgs

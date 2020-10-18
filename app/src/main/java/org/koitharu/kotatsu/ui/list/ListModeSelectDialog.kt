@@ -9,7 +9,7 @@ import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.ui.common.AlertDialogFragment
+import org.koitharu.kotatsu.ui.base.AlertDialogFragment
 
 class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), View.OnClickListener {
 
@@ -56,7 +56,8 @@ class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), Vie
 		private const val TAG = "ListModeSelectDialog"
 
 		fun show(fm: FragmentManager) = ListModeSelectDialog()
-			.show(fm,
+			.show(
+				fm,
 				TAG
 			)
 	}

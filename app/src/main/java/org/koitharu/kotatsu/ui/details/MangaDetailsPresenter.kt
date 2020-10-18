@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.presenterScope
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.model.Manga
@@ -20,8 +21,8 @@ import org.koitharu.kotatsu.domain.favourites.OnFavouritesChangeListener
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.domain.history.OnHistoryChangeListener
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
-import org.koitharu.kotatsu.ui.common.BasePresenter
-import org.koitharu.kotatsu.ui.common.SharedPresenterHolder
+import org.koitharu.kotatsu.ui.base.BasePresenter
+import org.koitharu.kotatsu.ui.base.SharedPresenterHolder
 import org.koitharu.kotatsu.utils.ext.safe
 import java.io.IOException
 
@@ -29,18 +30,15 @@ import java.io.IOException
 class MangaDetailsPresenter private constructor(private val key: Int) :
 	BasePresenter<MangaDetailsView>(), OnHistoryChangeListener, OnFavouritesChangeListener {
 
-	private lateinit var historyRepository: HistoryRepository
-	private lateinit var favouritesRepository: FavouritesRepository
-	private lateinit var trackingRepository: TrackingRepository
-	private lateinit var searchRepository: MangaSearchRepository
+	private val historyRepository by inject<HistoryRepository>()
+	private val favouritesRepository by inject<FavouritesRepository>()
+	private val trackingRepository by inject<TrackingRepository>()
+	private val searchRepository by inject<MangaSearchRepository>()
+	private val mangaDataRepository by inject<MangaDataRepository>()
 
 	private var manga: Manga? = null
 
 	override fun onFirstViewAttach() {
-		historyRepository = HistoryRepository()
-		favouritesRepository = FavouritesRepository()
-		trackingRepository = TrackingRepository()
-		searchRepository = MangaSearchRepository()
 		super.onFirstViewAttach()
 		HistoryRepository.subscribe(this)
 		FavouritesRepository.subscribe(this)
@@ -51,7 +49,7 @@ class MangaDetailsPresenter private constructor(private val key: Int) :
 			viewState.onLoadingStateChanged(true)
 			try {
 				val manga = withContext(Dispatchers.IO) {
-					MangaDataRepository().findMangaById(id)
+					mangaDataRepository.findMangaById(id)
 				} ?: throw MangaNotFoundException("Cannot find manga by id")
 				viewState.onMangaUpdated(manga)
 				loadDetails(manga, true)
@@ -105,7 +103,7 @@ class MangaDetailsPresenter private constructor(private val key: Int) :
 					val original = repository.getRemoteManga(manga)
 					repository.delete(manga) || throw IOException("Unable to delete file")
 					safe {
-						HistoryRepository().deleteOrSwap(manga, original)
+						historyRepository.deleteOrSwap(manga, original)
 					}
 				}
 				viewState.onMangaRemoved(manga)
@@ -192,8 +190,6 @@ class MangaDetailsPresenter private constructor(private val key: Int) :
 			loadFavourite(manga!!)
 		}
 	}
-
-	override fun onCategoriesChanged() = Unit
 
 	override fun onDestroy() {
 		HistoryRepository.unsubscribe(this)

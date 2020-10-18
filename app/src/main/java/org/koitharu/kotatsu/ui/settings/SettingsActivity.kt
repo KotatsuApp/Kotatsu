@@ -9,7 +9,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.base.BaseActivity
 
 class SettingsActivity : BaseActivity(),
 	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
@@ -27,7 +27,10 @@ class SettingsActivity : BaseActivity(),
 	}
 
 	@Suppress("DEPRECATION")
-	override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
+	override fun onPreferenceStartFragment(
+		caller: PreferenceFragmentCompat,
+		pref: Preference
+	): Boolean {
 		val fm = supportFragmentManager
 		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment)
 		fragment.arguments = pref.extras

@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.domain
 
 import androidx.room.withTransaction
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
@@ -10,9 +8,7 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 
-class MangaDataRepository : KoinComponent {
-
-	private val db: MangaDatabase by inject()
+class MangaDataRepository(private val db: MangaDatabase) {
 
 	suspend fun savePreferences(manga: Manga, mode: ReaderMode) {
 		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)

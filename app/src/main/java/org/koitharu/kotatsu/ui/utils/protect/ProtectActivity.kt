@@ -13,7 +13,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_protect.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.base.BaseActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class ProtectActivity : BaseActivity(), ProtectView, TextView.OnEditorActionListener, TextWatcher {

@@ -15,12 +15,12 @@
 		android:layout_height="match_parent"
 		android:orientation="horizontal">
 
-		<org.koitharu.kotatsu.ui.common.widgets.CoverImageView
+		<org.koitharu.kotatsu.ui.base.widgets.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
-			android:scaleType="centerCrop"
-			android:orientation="vertical" />
+			android:orientation="vertical"
+			android:scaleType="centerCrop" />
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -90,8 +90,8 @@
 					android:layout_height="wrap_content"
 					android:drawablePadding="4dp"
 					android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-					tools:text="10/10"
-					app:drawableStartCompat="@drawable/ic_star_rating" />
+					app:drawableStartCompat="@drawable/ic_star_rating"
+					tools:text="10/10" />
 
 			</LinearLayout>
 

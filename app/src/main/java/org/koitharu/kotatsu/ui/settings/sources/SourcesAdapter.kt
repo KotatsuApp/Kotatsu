@@ -10,7 +10,7 @@ import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.utils.ext.safe
 
 class SourcesAdapter(private val onItemClickListener: OnRecyclerItemClickListener<MangaSource>) :

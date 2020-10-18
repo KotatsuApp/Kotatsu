@@ -15,9 +15,9 @@ import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
-import org.koitharu.kotatsu.ui.common.dialog.StorageSelectDialog
-import org.koitharu.kotatsu.ui.common.dialog.TextInputDialog
+import org.koitharu.kotatsu.ui.base.BasePreferenceFragment
+import org.koitharu.kotatsu.ui.base.dialog.StorageSelectDialog
+import org.koitharu.kotatsu.ui.base.dialog.TextInputDialog
 import org.koitharu.kotatsu.ui.list.ListModeSelectDialog
 import org.koitharu.kotatsu.ui.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.ui.tracker.TrackWorker

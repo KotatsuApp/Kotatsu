@@ -4,7 +4,7 @@ import moxy.viewstate.strategy.AddToEndSingleTagStrategy
 import moxy.viewstate.strategy.AddToEndStrategy
 import moxy.viewstate.strategy.StateStrategyType
 import org.koitharu.kotatsu.core.model.TrackingLogItem
-import org.koitharu.kotatsu.ui.common.BaseMvpView
+import org.koitharu.kotatsu.ui.base.BaseMvpView
 
 interface FeedView : BaseMvpView {
 

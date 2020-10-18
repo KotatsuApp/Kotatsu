@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import coil.Coil
+import coil.ImageLoader
 import coil.executeBlocking
 import coil.request.ImageRequest
 import kotlinx.coroutines.runBlocking
@@ -16,7 +16,12 @@ import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 import java.io.IOException
 
-class ShelfListFactory(private val context: Context, widgetId: Int) : RemoteViewsService.RemoteViewsFactory {
+class ShelfListFactory(
+	private val context: Context,
+	private val favouritesRepository: FavouritesRepository,
+	private val coil: ImageLoader,
+	widgetId: Int
+) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
 	private val config = AppWidgetConfig.getInstance(context, widgetId)
@@ -32,11 +37,10 @@ class ShelfListFactory(private val context: Context, widgetId: Int) : RemoteView
 		dataSet.clear()
 		val data = runBlocking {
 			val category = config.categoryId
-			val repo = FavouritesRepository()
 			if (category == 0L) {
-				repo.getAllManga()
+				favouritesRepository.getAllManga()
 			} else {
-				repo.getManga(category)
+				favouritesRepository.getManga(category)
 			}
 		}
 		dataSet.addAll(data)
@@ -49,7 +53,7 @@ class ShelfListFactory(private val context: Context, widgetId: Int) : RemoteView
 		val item = dataSet[position]
 		views.setTextViewText(R.id.textView_title, item.title)
 		try {
-			val cover = Coil.imageLoader(context).executeBlocking(
+			val cover = coil.executeBlocking(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
 					.build()

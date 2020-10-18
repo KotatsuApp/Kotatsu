@@ -22,13 +22,13 @@ import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.ui.common.BaseFragment
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
-import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
-import org.koitharu.kotatsu.ui.common.list.ProgressBarAdapter
-import org.koitharu.kotatsu.ui.common.list.decor.ItemTypeDividerDecoration
-import org.koitharu.kotatsu.ui.common.list.decor.SectionItemDecoration
-import org.koitharu.kotatsu.ui.common.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.ui.base.BaseFragment
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.PaginationScrollListener
+import org.koitharu.kotatsu.ui.base.list.ProgressBarAdapter
+import org.koitharu.kotatsu.ui.base.list.decor.ItemTypeDividerDecoration
+import org.koitharu.kotatsu.ui.base.list.decor.SectionItemDecoration
+import org.koitharu.kotatsu.ui.base.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.ui.list.filter.FilterAdapter
 import org.koitharu.kotatsu.ui.list.filter.OnFilterChangedListener
@@ -48,7 +48,7 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 
 	private var adapter: MangaListAdapter? = null
 	private var progressAdapter: ProgressBarAdapter? = null
-	private var paginationListener : PaginationScrollListener? = null
+	private var paginationListener: PaginationScrollListener? = null
 	protected var isSwipeRefreshEnabled = true
 
 	override fun onCreate(savedInstanceState: Bundle?) {

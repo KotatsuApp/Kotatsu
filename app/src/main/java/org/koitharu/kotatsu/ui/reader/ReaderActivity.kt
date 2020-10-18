@@ -36,7 +36,7 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.ui.common.BaseFullscreenActivity
+import org.koitharu.kotatsu.ui.base.BaseFullscreenActivity
 import org.koitharu.kotatsu.ui.reader.base.AbstractReader
 import org.koitharu.kotatsu.ui.reader.standard.PagerReaderFragment
 import org.koitharu.kotatsu.ui.reader.thumbnails.OnPageSelectListener

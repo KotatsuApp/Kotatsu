@@ -5,9 +5,9 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_category.*
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.BaseRecyclerAdapter
+import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 
 class CategoriesAdapter(private val onItemClickListener: OnRecyclerItemClickListener<FavouriteCategory>) :
 	BaseRecyclerAdapter<FavouriteCategory, Unit>() {
@@ -25,7 +25,11 @@ class CategoriesAdapter(private val onItemClickListener: OnRecyclerItemClickList
 		}
 		holder.imageView_handle.setOnTouchListener { v, event ->
 			if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-				onItemClickListener.onItemLongClick(holder.requireData(), holder.bindingAdapterPosition, v)
+				onItemClickListener.onItemLongClick(
+					holder.requireData(),
+					holder.bindingAdapterPosition,
+					v
+				)
 			} else {
 				false
 			}

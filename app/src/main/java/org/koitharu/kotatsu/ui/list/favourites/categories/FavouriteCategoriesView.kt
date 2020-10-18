@@ -4,7 +4,7 @@ import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.ui.common.BaseMvpView
+import org.koitharu.kotatsu.ui.base.BaseMvpView
 
 interface FavouriteCategoriesView : BaseMvpView {
 

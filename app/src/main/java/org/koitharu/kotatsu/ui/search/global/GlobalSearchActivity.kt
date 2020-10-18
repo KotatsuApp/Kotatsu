@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.base.BaseActivity
 
 class GlobalSearchActivity : BaseActivity() {
 

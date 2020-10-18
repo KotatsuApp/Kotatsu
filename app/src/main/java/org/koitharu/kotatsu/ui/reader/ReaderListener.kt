@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.ui.reader
 
 import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.ui.common.BaseMvpView
+import org.koitharu.kotatsu.ui.base.BaseMvpView
 
 interface ReaderListener : BaseMvpView {
 

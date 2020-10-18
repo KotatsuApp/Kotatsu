@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.dialog_list_mode.button_ok
 import kotlinx.android.synthetic.main.dialog_reader_config.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.ui.common.AlertDialogFragment
+import org.koitharu.kotatsu.ui.base.AlertDialogFragment
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ReaderConfigDialog : AlertDialogFragment(R.layout.dialog_reader_config),

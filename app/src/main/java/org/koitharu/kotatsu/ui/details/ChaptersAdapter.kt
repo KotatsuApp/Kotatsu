@@ -4,8 +4,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.domain.history.ChapterExtra
-import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.BaseRecyclerAdapter
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 
 class ChaptersAdapter(onItemClickListener: OnRecyclerItemClickListener<MangaChapter>) :
 	BaseRecyclerAdapter<MangaChapter, ChapterExtra>(onItemClickListener) {

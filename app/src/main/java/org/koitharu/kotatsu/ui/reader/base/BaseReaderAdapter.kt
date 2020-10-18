@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.ui.reader.base
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 
 abstract class BaseReaderAdapter(private val pages: GroupedList<Long, MangaPage>) :
 	RecyclerView.Adapter<BaseViewHolder<MangaPage, Unit>>() {
@@ -40,7 +40,10 @@ abstract class BaseReaderAdapter(private val pages: GroupedList<Long, MangaPage>
 
 	final override fun getItemCount() = pages.size
 
-	final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<MangaPage, Unit> {
+	final override fun onCreateViewHolder(
+		parent: ViewGroup,
+		viewType: Int
+	): BaseViewHolder<MangaPage, Unit> {
 		return onCreateViewHolder(parent).also(this::onViewHolderCreated)
 	}
 

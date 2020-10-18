@@ -3,20 +3,18 @@ package org.koitharu.kotatsu.ui.list.favourites.categories
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import moxy.InjectViewState
+import org.koin.core.component.get
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
-import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.ui.base.BasePresenter
 
 @InjectViewState
 class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 
-	private lateinit var repository: FavouritesRepository
-	private val reorderMutex by lazy {
-		Mutex()
-	}
+	private val repository = get<FavouritesRepository>()
+	private val reorderMutex by lazy(LazyThreadSafetyMode.NONE) { Mutex() }
 
 	override fun onFirstViewAttach() {
-		repository = FavouritesRepository()
 		super.onFirstViewAttach()
 		loadAllCategories()
 	}

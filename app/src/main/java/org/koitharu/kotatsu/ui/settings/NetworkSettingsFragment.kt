@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.ui.settings
 
 import android.os.Bundle
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
+import org.koitharu.kotatsu.ui.base.BasePreferenceFragment
 
 class NetworkSettingsFragment : BasePreferenceFragment(R.string.settings) {
 

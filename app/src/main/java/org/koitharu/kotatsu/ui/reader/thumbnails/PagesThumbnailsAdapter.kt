@@ -8,8 +8,8 @@ import kotlinx.coroutines.SupervisorJob
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.BaseRecyclerAdapter
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 import kotlin.coroutines.CoroutineContext
 
 class PagesThumbnailsAdapter(onItemClickListener: OnRecyclerItemClickListener<MangaPage>?) :

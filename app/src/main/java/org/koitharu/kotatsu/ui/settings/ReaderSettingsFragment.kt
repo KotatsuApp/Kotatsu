@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.ui.settings
 import android.os.Bundle
 import androidx.preference.MultiSelectListPreference
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
+import org.koitharu.kotatsu.ui.base.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.settings.utils.MultiSummaryProvider
 
 class ReaderSettingsFragment : BasePreferenceFragment(R.string.reader_settings) {

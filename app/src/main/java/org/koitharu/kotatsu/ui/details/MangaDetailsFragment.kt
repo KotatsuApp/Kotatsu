@@ -6,7 +6,6 @@ import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import coil.load
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.coroutines.Dispatchers
@@ -17,15 +16,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
-import org.koitharu.kotatsu.ui.common.BaseFragment
+import org.koitharu.kotatsu.ui.base.BaseFragment
 import org.koitharu.kotatsu.ui.list.favourites.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.ui.search.MangaSearchSheet
 import org.koitharu.kotatsu.utils.FileSizeUtils
-import org.koitharu.kotatsu.utils.ext.addChips
-import org.koitharu.kotatsu.utils.ext.showPopupMenu
-import org.koitharu.kotatsu.utils.ext.textAndVisible
-import org.koitharu.kotatsu.utils.ext.toFileOrNull
+import org.koitharu.kotatsu.utils.ext.*
 import kotlin.math.roundToInt
 
 class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetailsView,
@@ -42,11 +38,11 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 
 	override fun onMangaUpdated(manga: Manga) {
 		this.manga = manga
-		imageView_cover.load(manga.largeCoverUrl ?: manga.coverUrl) {
-			fallback(R.drawable.ic_placeholder)
-			crossfade(true)
-			lifecycle(this@MangaDetailsFragment)
-		}
+		imageView_cover.newImageRequest(manga.largeCoverUrl ?: manga.coverUrl)
+			.fallback(R.drawable.ic_placeholder)
+			.crossfade(true)
+			.lifecycle(this)
+			.enqueueWith(coil)
 		textView_title.text = manga.title
 		textView_subtitle.textAndVisible = manga.altTitle
 		textView_description.text = manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
@@ -138,9 +134,11 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 			}
 			v is Chip -> {
 				when (val tag = v.tag) {
-					is String -> MangaSearchSheet.show(activity?.supportFragmentManager
-						?: childFragmentManager,
-						manga?.source ?: return, tag)
+					is String -> MangaSearchSheet.show(
+						activity?.supportFragmentManager
+							?: childFragmentManager,
+						manga?.source ?: return, tag
+					)
 				}
 			}
 		}

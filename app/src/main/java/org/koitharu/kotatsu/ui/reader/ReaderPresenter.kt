@@ -7,7 +7,9 @@ import moxy.InjectViewState
 import moxy.presenterScope
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
@@ -16,14 +18,17 @@ import org.koitharu.kotatsu.domain.MangaDataRepository
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.MangaUtils
 import org.koitharu.kotatsu.domain.history.HistoryRepository
-import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.ui.base.BasePresenter
 import org.koitharu.kotatsu.utils.MediaStoreCompat
+import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.contentDisposition
 import org.koitharu.kotatsu.utils.ext.mimeType
 
 @InjectViewState
 class ReaderPresenter : BasePresenter<ReaderView>() {
+
+	private val dataRepository by inject<MangaDataRepository>()
 
 	fun init(manga: Manga) {
 		presenterScope.launch {
@@ -33,13 +38,12 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 					val repo = MangaProviderFactory.create(manga.source)
 					val chapter =
 						(manga.chapters ?: throw RuntimeException("Chapters is null")).random()
-					val prefs = MangaDataRepository()
-					var mode = prefs.getReaderMode(manga.id)
+					var mode = dataRepository.getReaderMode(manga.id)
 					if (mode == null) {
 						val pages = repo.getPages(chapter)
 						mode = MangaUtils.determineReaderMode(pages)
 						if (mode != null) {
-							prefs.savePreferences(
+							dataRepository.savePreferences(
 								manga = manga,
 								mode = mode
 							)
@@ -61,8 +65,8 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 	}
 
 	fun setMode(manga: Manga, mode: ReaderMode) {
-		presenterScope.launch(Dispatchers.IO) {
-			MangaDataRepository().savePreferences(
+		presenterScope.launch {
+			dataRepository.savePreferences(
 				manga = manga,
 				mode = mode
 			)
@@ -98,11 +102,11 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 		}
 	}
 
-	companion object {
+	companion object : KoinComponent {
 
 		fun saveState(state: ReaderState) {
-			GlobalScope.launch(Dispatchers.IO) {
-				HistoryRepository().addOrUpdate(
+			GlobalScope.launch(Dispatchers.Default + IgnoreErrors) {
+				get<HistoryRepository>().addOrUpdate(
 					manga = state.manga,
 					chapterId = state.chapterId,
 					page = state.page,

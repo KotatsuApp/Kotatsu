@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import org.koitharu.kotatsu.core.db.dao.*
 import org.koitharu.kotatsu.core.db.entity.*
 
 @Database(

@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import android.widget.Checkable
 import androidx.core.util.set
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.base.list.BaseRecyclerAdapter
+import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 
 class CategoriesSelectAdapter(private val listener: OnCategoryCheckListener) :
 	BaseRecyclerAdapter<FavouriteCategory, Boolean>() {

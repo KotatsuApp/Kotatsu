@@ -12,7 +12,6 @@ import kotlin.math.roundToInt
 
 object UiUtils {
 
-	@JvmStatic
 	fun resolveGridSpanCount(context: Context, width: Int = 0): Int {
 		val scaleFactor = AppSettings(context).gridSize / 100f
 		val cellWidth = context.resources.getDimension(R.dimen.preferred_grid_width) * scaleFactor
@@ -23,7 +22,6 @@ object UiUtils {
 		return estimatedCount.coerceAtLeast(2)
 	}
 
-	@JvmStatic
 	fun isTablet(context: Context) = context.resources.getBoolean(R.bool.is_tablet)
 
 	object SpanCountResolver : View.OnLayoutChangeListener {

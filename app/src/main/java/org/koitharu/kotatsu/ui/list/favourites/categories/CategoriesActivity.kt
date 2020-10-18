@@ -17,9 +17,9 @@ import kotlinx.android.synthetic.main.activity_categories.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.ui.common.BaseActivity
-import org.koitharu.kotatsu.ui.common.dialog.TextInputDialog
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.BaseActivity
+import org.koitharu.kotatsu.ui.base.dialog.TextInputDialog
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 
@@ -61,7 +61,9 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory, position: Int, view: View): Boolean {
-		reorderHelper.startDrag(recyclerView.findViewHolderForAdapterPosition(position) ?: return false)
+		reorderHelper.startDrag(
+			recyclerView.findViewHolderForAdapterPosition(position) ?: return false
+		)
 		return true
 	}
 

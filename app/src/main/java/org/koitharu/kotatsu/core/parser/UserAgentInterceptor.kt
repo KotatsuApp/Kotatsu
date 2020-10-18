@@ -1,13 +1,11 @@
 package org.koitharu.kotatsu.core.parser
 
-import android.annotation.SuppressLint
 import android.os.Build
 import okhttp3.Interceptor
 import org.koitharu.kotatsu.BuildConfig
 import java.util.*
 
-@SuppressLint("ConstantLocale")
-object UserAgentInterceptor : Interceptor {
+class UserAgentInterceptor : Interceptor {
 
 	private val userAgent = "Kotatsu/%s (Android %s; %s; %s %s; %s)".format(
 		BuildConfig.VERSION_NAME,

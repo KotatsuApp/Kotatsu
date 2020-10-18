@@ -10,14 +10,14 @@ import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.presenterScope
 import org.koin.core.component.get
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.history.HistoryRepository
-import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.ui.base.BasePresenter
 import org.koitharu.kotatsu.ui.list.MangaListView
 import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.MediaStoreCompat
@@ -29,13 +29,7 @@ import java.io.IOException
 @InjectViewState
 class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 
-	private lateinit var repository: LocalMangaRepository
-
-	override fun onFirstViewAttach() {
-		repository = MangaProviderFactory.createLocal()
-
-		super.onFirstViewAttach()
-	}
+	private val repository by inject<LocalMangaRepository>()
 
 	fun loadList(offset: Int) {
 		presenterScope.launch {
@@ -88,7 +82,7 @@ class LocalListPresenter : BasePresenter<MangaListView<File>>() {
 				val original = repository.getRemoteManga(manga)
 				repository.delete(manga) || throw IOException("Unable to delete file")
 				safe {
-					HistoryRepository().deleteOrSwap(manga, original)
+					get<HistoryRepository>().deleteOrSwap(manga, original)
 				}
 			}
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {

@@ -9,7 +9,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
-import org.koitharu.kotatsu.ui.common.BaseMvpView
+import org.koitharu.kotatsu.ui.base.BaseMvpView
 
 interface MangaListView<E> : BaseMvpView {
 

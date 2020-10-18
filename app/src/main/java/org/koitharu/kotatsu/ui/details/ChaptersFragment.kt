@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.fragment_chapters.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.ui.common.BaseFragment
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.BaseFragment
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.download.DownloadService
 import org.koitharu.kotatsu.ui.reader.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.resolveDp

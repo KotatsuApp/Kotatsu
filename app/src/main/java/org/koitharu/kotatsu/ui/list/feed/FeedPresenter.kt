@@ -5,18 +5,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.presenterScope
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
-import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.ui.base.BasePresenter
 
 class FeedPresenter : BasePresenter<FeedView>() {
 
-	private lateinit var repository: TrackingRepository
-
-	override fun onFirstViewAttach() {
-		repository = TrackingRepository()
-		super.onFirstViewAttach()
-	}
+	private val repository by inject<TrackingRepository>()
 
 	fun loadList(offset: Int) {
 		presenterScope.launch {

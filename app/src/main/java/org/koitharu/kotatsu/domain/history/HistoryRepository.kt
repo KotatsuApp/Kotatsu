@@ -14,10 +14,9 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 
-class HistoryRepository : KoinComponent {
+class HistoryRepository(private val db: MangaDatabase) : KoinComponent {
 
-	private val db: MangaDatabase by inject()
-	private val trackingRepository by lazy(::TrackingRepository)
+	private val trackingRepository by inject<TrackingRepository>()
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
 		val entities = db.historyDao.findAll(offset, limit)

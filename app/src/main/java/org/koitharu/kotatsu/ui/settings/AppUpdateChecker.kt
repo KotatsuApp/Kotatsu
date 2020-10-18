@@ -11,9 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
@@ -32,9 +30,10 @@ import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
 
-class AppUpdateChecker(private val activity: ComponentActivity) : KoinComponent {
+class AppUpdateChecker(private val activity: ComponentActivity) {
 
-	private val settings by inject<AppSettings>()
+	private val settings by activity.inject<AppSettings>()
+	private val repo by activity.inject<GithubRepository>()
 
 	operator fun invoke() {
 		if (isUpdateSupported(activity) && settings.appUpdateAuto && settings.appUpdate + PERIOD < System.currentTimeMillis()) {
@@ -42,12 +41,9 @@ class AppUpdateChecker(private val activity: ComponentActivity) : KoinComponent 
 		}
 	}
 
-	private fun launch() = activity.lifecycleScope.launch {
+	private fun launch() = activity.lifecycleScope.launch(Dispatchers.Main) {
 		try {
-			val repo = GithubRepository()
-			val version = withContext(Dispatchers.IO) {
-				repo.getLatestVersion()
-			}
+			val version = repo.getLatestVersion()
 			val newVersionId = VersionId.parse(version.name)
 			val currentVersionId = VersionId.parse(BuildConfig.VERSION_NAME)
 			if (newVersionId > currentVersionId) {

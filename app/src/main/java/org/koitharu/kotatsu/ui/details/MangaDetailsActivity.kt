@@ -26,8 +26,8 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.ui.base.BaseActivity
 import org.koitharu.kotatsu.ui.browser.BrowserActivity
-import org.koitharu.kotatsu.ui.common.BaseActivity
 import org.koitharu.kotatsu.ui.download.DownloadService
 import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.ShareHelper

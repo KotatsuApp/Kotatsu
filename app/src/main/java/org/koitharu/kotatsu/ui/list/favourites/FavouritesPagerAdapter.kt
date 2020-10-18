@@ -5,10 +5,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.ui.common.list.AdapterUpdater
+import org.koitharu.kotatsu.ui.base.list.AdapterUpdater
 import org.koitharu.kotatsu.utils.ext.replaceWith
 
-class FavouritesPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment), TabLayoutMediator.TabConfigurationStrategy {
+class FavouritesPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment),
+	TabLayoutMediator.TabConfigurationStrategy {
 
 	private val dataSet = ArrayList<FavouriteCategory>()
 

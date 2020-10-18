@@ -20,8 +20,6 @@ class WidgetUpdater(private val context: Context) : OnFavouritesChangeListener,
 		updateWidget(RecentWidgetProvider::class.java)
 	}
 
-	override fun onCategoriesChanged() = Unit
-
 	private fun updateWidget(cls: Class<*>) {
 		val intent = Intent(context, cls)
 		intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE

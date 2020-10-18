@@ -2,14 +2,10 @@ package org.koitharu.kotatsu.core.github
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.parseJson
 
-class GithubRepository : KoinComponent {
-
-	private val okHttp by inject<OkHttpClient>()
+class GithubRepository(private val okHttp: OkHttpClient) {
 
 	suspend fun getLatestVersion(): AppVersion {
 		val request = Request.Builder()

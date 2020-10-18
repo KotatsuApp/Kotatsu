@@ -13,14 +13,15 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.domain.favourites.OnFavouritesChangeListener
-import org.koitharu.kotatsu.ui.common.BaseFragment
+import org.koitharu.kotatsu.ui.base.BaseFragment
 import org.koitharu.kotatsu.ui.list.favourites.categories.CategoriesActivity
 import org.koitharu.kotatsu.ui.list.favourites.categories.FavouriteCategoriesPresenter
 import org.koitharu.kotatsu.ui.list.favourites.categories.FavouriteCategoriesView
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FavouritesContainerFragment : BaseFragment(R.layout.fragment_favourites), FavouriteCategoriesView,
+class FavouritesContainerFragment : BaseFragment(R.layout.fragment_favourites),
+	FavouriteCategoriesView,
 	OnFavouritesChangeListener {
 
 	private val presenter by moxyPresenter(factory = ::FavouriteCategoriesPresenter)

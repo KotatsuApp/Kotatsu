@@ -4,7 +4,7 @@ import android.media.RingtoneManager
 import android.os.Bundle
 import androidx.preference.Preference
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.ui.common.BasePreferenceFragment
+import org.koitharu.kotatsu.ui.base.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.settings.utils.RingtonePickContract
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 

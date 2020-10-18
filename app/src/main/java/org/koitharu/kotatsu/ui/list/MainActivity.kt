@@ -24,7 +24,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
-import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.base.BaseActivity
 import org.koitharu.kotatsu.ui.list.favourites.FavouritesContainerFragment
 import org.koitharu.kotatsu.ui.list.feed.FeedFragment
 import org.koitharu.kotatsu.ui.list.history.HistoryListFragment

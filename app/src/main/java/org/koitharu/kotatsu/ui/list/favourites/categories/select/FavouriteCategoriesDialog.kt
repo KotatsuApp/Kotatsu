@@ -10,8 +10,8 @@ import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.ui.common.BaseBottomSheet
-import org.koitharu.kotatsu.ui.common.dialog.TextInputDialog
+import org.koitharu.kotatsu.ui.base.BaseBottomSheet
+import org.koitharu.kotatsu.ui.base.dialog.TextInputDialog
 import org.koitharu.kotatsu.ui.list.favourites.categories.FavouriteCategoriesPresenter
 import org.koitharu.kotatsu.ui.list.favourites.categories.FavouriteCategoriesView
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -31,7 +31,8 @@ class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categ
 		super.onViewCreated(view, savedInstanceState)
 		adapter =
 			CategoriesSelectAdapter(
-				this)
+				this
+			)
 		recyclerView_categories.adapter = adapter
 		textView_add.setOnClickListener {
 			createCategory()
@@ -86,8 +87,10 @@ class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categ
 
 		fun show(fm: FragmentManager, manga: Manga) = FavouriteCategoriesDialog()
 			.withArgs(1) {
-			putParcelable(ARG_MANGA, manga)
-		}.show(fm,
-			TAG)
+				putParcelable(ARG_MANGA, manga)
+			}.show(
+				fm,
+				TAG
+			)
 	}
 }

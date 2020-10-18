@@ -2,8 +2,8 @@ package org.koitharu.kotatsu.ui.widget.shelf
 
 import android.view.ViewGroup
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.BaseRecyclerAdapter
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 
 class CategorySelectAdapter(onItemClickListener: OnRecyclerItemClickListener<FavouriteCategory>? = null) :
 	BaseRecyclerAdapter<FavouriteCategory, Boolean>(onItemClickListener) {

@@ -8,7 +8,7 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import kotlinx.android.synthetic.main.item_page.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.base.PageHolderDelegate
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage

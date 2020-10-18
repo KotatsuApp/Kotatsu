@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import coil.Coil
+import coil.ImageLoader
 import coil.executeBlocking
 import coil.request.ImageRequest
 import kotlinx.coroutines.runBlocking
@@ -15,7 +15,11 @@ import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 import java.io.IOException
 
-class RecentListFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
+class RecentListFactory(
+	private val context: Context,
+	private val historyRepository: HistoryRepository,
+	private val coil: ImageLoader
+) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
 
@@ -28,7 +32,7 @@ class RecentListFactory(private val context: Context) : RemoteViewsService.Remot
 
 	override fun onDataSetChanged() {
 		dataSet.clear()
-		val data = runBlocking { HistoryRepository().getList(0, 10) }
+		val data = runBlocking { historyRepository.getList(0, 10) }
 		dataSet.addAll(data)
 	}
 
@@ -38,7 +42,7 @@ class RecentListFactory(private val context: Context) : RemoteViewsService.Remot
 		val views = RemoteViews(context.packageName, R.layout.item_recent)
 		val item = dataSet[position]
 		try {
-			val cover = Coil.imageLoader(context).executeBlocking(
+			val cover = coil.executeBlocking(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
 					.build()

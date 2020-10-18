@@ -21,11 +21,11 @@ import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.ui.common.BaseBottomSheet
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
-import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
-import org.koitharu.kotatsu.ui.common.list.ProgressBarAdapter
-import org.koitharu.kotatsu.ui.common.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.ui.base.BaseBottomSheet
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.PaginationScrollListener
+import org.koitharu.kotatsu.ui.base.list.ProgressBarAdapter
+import org.koitharu.kotatsu.ui.base.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.*

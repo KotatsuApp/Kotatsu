@@ -10,7 +10,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.domain.MangaProviderFactory
-import org.koitharu.kotatsu.ui.common.BasePresenter
+import org.koitharu.kotatsu.ui.base.BasePresenter
 import org.koitharu.kotatsu.ui.list.MangaListView
 
 @InjectViewState

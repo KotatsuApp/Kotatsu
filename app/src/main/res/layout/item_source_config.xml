@@ -28,7 +28,7 @@
 		android:textColor="?android:attr/textColorPrimary"
 		tools:text="@tools:sample/lorem[1]" />
 
-	<org.koitharu.kotatsu.ui.common.widgets.CheckableImageView
+	<org.koitharu.kotatsu.ui.base.widgets.CheckableImageView
 		android:id="@+id/imageView_hidden"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

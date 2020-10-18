@@ -12,10 +12,10 @@ import moxy.MvpDelegate
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.TrackingLogItem
-import org.koitharu.kotatsu.ui.common.BaseFragment
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
-import org.koitharu.kotatsu.ui.common.list.PaginationScrollListener
-import org.koitharu.kotatsu.ui.common.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.ui.base.BaseFragment
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.PaginationScrollListener
+import org.koitharu.kotatsu.ui.base.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
 import org.koitharu.kotatsu.utils.ext.callOnScrollListeners
@@ -55,7 +55,7 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), FeedView,
 		inflater.inflate(R.menu.opt_feed, menu)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
+	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.action_update -> {
 			TrackWorker.startNow(requireContext())
 			Snackbar.make(recyclerView, R.string.feed_will_update_soon, Snackbar.LENGTH_LONG).show()

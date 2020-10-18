@@ -2,9 +2,9 @@ package org.koitharu.kotatsu.ui.list.feed
 
 import android.view.ViewGroup
 import org.koitharu.kotatsu.core.model.TrackingLogItem
-import org.koitharu.kotatsu.ui.common.list.BaseRecyclerAdapter
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.list.BaseRecyclerAdapter
+import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 
 class FeedAdapter(onItemClickListener: OnRecyclerItemClickListener<TrackingLogItem>? = null) :
 	BaseRecyclerAdapter<TrackingLogItem, Unit>(onItemClickListener) {

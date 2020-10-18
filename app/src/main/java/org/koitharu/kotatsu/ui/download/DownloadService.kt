@@ -7,7 +7,7 @@ import android.os.PowerManager
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import coil.Coil
+import coil.ImageLoader
 import coil.request.ImageRequest
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
@@ -22,8 +22,8 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.local.MangaZip
-import org.koitharu.kotatsu.ui.common.BaseService
-import org.koitharu.kotatsu.ui.common.dialog.CheckBoxAlertDialog
+import org.koitharu.kotatsu.ui.base.BaseService
+import org.koitharu.kotatsu.ui.base.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.*
 import java.io.File
@@ -40,6 +40,7 @@ class DownloadService : BaseService() {
 	private val okHttp by inject<OkHttpClient>()
 	private val cache by inject<PagesCache>()
 	private val settings by inject<AppSettings>()
+	private val imageLoader by inject<ImageLoader>()
 	private val jobs = HashMap<Int, Job>()
 	private val mutex = Mutex()
 
@@ -74,7 +75,7 @@ class DownloadService : BaseService() {
 	}
 
 	private fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int): Job {
-		return launch(Dispatchers.Default) {
+		return serviceScope.launch(Dispatchers.Default) {
 			mutex.lock()
 			wakeLock.acquire(TimeUnit.HOURS.toMillis(1))
 			notification.fillFrom(manga)
@@ -88,7 +89,7 @@ class DownloadService : BaseService() {
 			try {
 				val repo = MangaProviderFactory.create(manga.source)
 				val cover = safe {
-					Coil.execute(
+					imageLoader.execute(
 						ImageRequest.Builder(this@DownloadService)
 							.data(manga.coverUrl)
 							.build()

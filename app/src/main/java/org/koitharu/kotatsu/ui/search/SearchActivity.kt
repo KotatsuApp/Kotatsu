@@ -8,7 +8,7 @@ import androidx.appcompat.widget.SearchView
 import kotlinx.android.synthetic.main.activity_search.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.ui.common.BaseActivity
+import org.koitharu.kotatsu.ui.base.BaseActivity
 import org.koitharu.kotatsu.utils.ext.showKeyboard
 
 class SearchActivity : BaseActivity(), SearchView.OnQueryTextListener {

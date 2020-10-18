@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.parsers
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
-import org.koitharu.kotatsu.core.local.cookies.cache.SetCookieCache
+import org.koitharu.kotatsu.core.network.cookies.cache.SetCookieCache
 
 class TemporaryCookieJar : CookieJar {
 

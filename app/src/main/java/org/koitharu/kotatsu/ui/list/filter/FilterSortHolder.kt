@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_checkable_single.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.SortOrder
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 
 class FilterSortHolder(parent: ViewGroup) :
 	BaseViewHolder<SortOrder, Boolean>(parent, R.layout.item_checkable_single) {

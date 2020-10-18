@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
-import org.koitharu.kotatsu.ui.common.list.BaseViewHolder
+import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 import java.util.*
 import kotlin.collections.ArrayList
 

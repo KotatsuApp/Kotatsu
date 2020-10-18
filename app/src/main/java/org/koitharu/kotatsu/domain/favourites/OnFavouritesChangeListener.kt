@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.domain.favourites
 
-interface OnFavouritesChangeListener {
+fun interface OnFavouritesChangeListener {
 
 	fun onFavouritesChanged(mangaId: Long)
 
-	fun onCategoriesChanged()
+	fun onCategoriesChanged() = Unit
 }

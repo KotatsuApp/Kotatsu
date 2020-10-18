@@ -18,8 +18,8 @@ import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
-import org.koitharu.kotatsu.ui.common.BaseActivity
-import org.koitharu.kotatsu.ui.common.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.ui.base.BaseActivity
+import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.ui.list.favourites.categories.FavouriteCategoriesPresenter
 import org.koitharu.kotatsu.ui.list.favourites.categories.FavouriteCategoriesView
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage

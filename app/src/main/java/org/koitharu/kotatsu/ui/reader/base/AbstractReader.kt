@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.domain.MangaProviderFactory
-import org.koitharu.kotatsu.ui.common.BaseFragment
+import org.koitharu.kotatsu.ui.base.BaseFragment
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.ReaderListener
 import org.koitharu.kotatsu.ui.reader.ReaderState

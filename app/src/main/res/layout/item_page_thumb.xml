@@ -6,7 +6,7 @@
 	android:layout_height="wrap_content"
 	android:background="?attr/scrimBackground">
 
-	<org.koitharu.kotatsu.ui.common.widgets.CoverImageView
+	<org.koitharu.kotatsu.ui.base.widgets.CoverImageView
 		android:id="@+id/imageView_thumb"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
