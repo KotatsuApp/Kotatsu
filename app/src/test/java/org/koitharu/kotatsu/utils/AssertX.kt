@@ -3,8 +3,8 @@ package org.koitharu.kotatsu.utils
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.Assert
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.net.HttpURLConnection
 
 object AssertX : KoinComponent {

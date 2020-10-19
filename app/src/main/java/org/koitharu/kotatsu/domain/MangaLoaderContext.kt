@@ -41,6 +41,29 @@ open class MangaLoaderContext : KoinComponent {
 		return okHttp.newCall(request.build()).await()
 	}
 
+	suspend fun httpPost(
+		url: String,
+		payload: String,
+		block: (Request.Builder.() -> Unit)? = null
+	): Response {
+		val body = FormBody.Builder()
+		payload.split('&').forEach {
+			val pos = it.indexOf('=')
+			if (pos != -1) {
+				val k = it.substring(0, pos)
+				val v = it.substring(pos + 1)
+				body.addEncoded(k, v)
+			}
+		}
+		val request = Request.Builder()
+			.post(body.build())
+			.url(url)
+		if (block != null) {
+			request.block()
+		}
+		return okHttp.newCall(request.build()).await()
+	}
+
 	open fun getSettings(source: MangaSource) = SourceConfig(get(), source)
 
 	fun insertCookies(domain: String, vararg cookies: String) {

@@ -10,7 +10,8 @@ import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.*
 
-class MangaTownRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
+class MangaTownRepository(loaderContext: MangaLoaderContext) :
+	RemoteMangaRepository(loaderContext) {
 
 	override val source = MangaSource.MANGATOWN
 
@@ -105,16 +106,17 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposi
 			}.orEmpty(),
 			description = info.getElementById("show")?.ownText(),
 			chapters = chaptersList?.mapIndexedNotNull { i, li ->
-					val href = li.selectFirst("a").attr("href").withDomain(domain, ssl)
-				val name = li.select("span").filter { it.className().isEmpty() }.joinToString(" - ") { it.text() }.trim()
-					MangaChapter(
-						id = href.longHashCode(),
-						url = href,
-						source = MangaSource.MANGATOWN,
-						number = i + 1,
-						name = if (name.isEmpty()) "${manga.title} - ${i + 1}" else name
-					)
-				}
+				val href = li.selectFirst("a").attr("href").withDomain(domain, ssl)
+				val name = li.select("span").filter { it.className().isEmpty() }
+					.joinToString(" - ") { it.text() }.trim()
+				MangaChapter(
+					id = href.longHashCode(),
+					url = href,
+					source = MangaSource.MANGATOWN,
+					number = i + 1,
+					name = if (name.isEmpty()) "${manga.title} - ${i + 1}" else name
+				)
+			}
 		)
 	}
 
@@ -166,7 +168,8 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposi
 	}
 
 
-	override fun onCreatePreferences() = arraySetOf(R.string.key_parser_domain, R.string.key_parser_ssl)
+	override fun onCreatePreferences() =
+		arraySetOf(R.string.key_parser_domain, R.string.key_parser_ssl)
 
 	private fun String.parseTagKey() = split('/').findLast { TAG_REGEX matches it }
 

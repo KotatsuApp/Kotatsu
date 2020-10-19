@@ -55,3 +55,5 @@ fun LongArray.toArraySet(): Set<Long> {
 		}
 	}
 }
+
+fun <K, V> List<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = toMap(HashMap<K, V>(size))

@@ -32,14 +32,18 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 				mapOf("q" to query.urlEncoded(), "offset" to offset.toString())
 			)
 			tag == null -> loaderContext.httpGet(
-				"https://$domain/list?sortType=${getSortKey(
-					sortOrder
-				)}&offset=$offset"
+				"https://$domain/list?sortType=${
+					getSortKey(
+						sortOrder
+					)
+				}&offset=$offset"
 			)
 			else -> loaderContext.httpGet(
-				"https://$domain/list/genre/${tag.key}?sortType=${getSortKey(
-					sortOrder
-				)}&offset=$offset"
+				"https://$domain/list/genre/${tag.key}?sortType=${
+					getSortKey(
+						sortOrder
+					)
+				}&offset=$offset"
 			)
 		}.parseHtml()
 		val root = doc.body().getElementById("mangaBox")

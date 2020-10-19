@@ -106,7 +106,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 			val json = data.substring(pos).substringAfter('[').substringBefore(';')
 				.substringBeforeLast(']')
 			return json.split(",").mapNotNull {
-				it.trim().removeSurrounding('"','\'').takeUnless(String::isBlank)
+				it.trim().removeSurrounding('"', '\'').takeUnless(String::isBlank)
 			}.map { url ->
 				MangaPage(
 					id = url.longHashCode(),

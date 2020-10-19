@@ -90,7 +90,7 @@ class RemoteRepositoryTest(source: MangaSource) {
 						factory {
 							OkHttpClient.Builder()
 								.cookieJar(TemporaryCookieJar())
-								.addInterceptor(UserAgentInterceptor)
+								.addInterceptor(UserAgentInterceptor())
 								.connectTimeout(20, TimeUnit.SECONDS)
 								.readTimeout(60, TimeUnit.SECONDS)
 								.writeTimeout(20, TimeUnit.SECONDS)
