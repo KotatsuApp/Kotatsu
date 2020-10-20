@@ -17,6 +17,7 @@ abstract class BaseFragment(
 
 	fun stringArg(name: String) = StringArgumentDelegate(name)
 
+	@Deprecated("Use extension", replaceWith = ReplaceWith("parcelableArgument(name)"))
 	fun <T : Parcelable> arg(name: String) = ParcelableArgumentDelegate<T>(name)
 
 	open fun getTitle(): CharSequence? = null

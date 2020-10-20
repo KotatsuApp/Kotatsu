@@ -15,7 +15,6 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.domain.MangaDataRepository
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.MangaUtils
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.base.BasePresenter
@@ -35,7 +34,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 			viewState.onLoadingStateChanged(isLoading = true)
 			try {
 				val mode = withContext(Dispatchers.IO) {
-					val repo = MangaProviderFactory.create(manga.source)
+					val repo = manga.source.repository
 					val chapter =
 						(manga.chapters ?: throw RuntimeException("Chapters is null")).random()
 					var mode = dataRepository.getReaderMode(manga.id)
@@ -77,7 +76,7 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 	fun savePage(resolver: ContentResolver, page: MangaPage) {
 		presenterScope.launch(Dispatchers.IO) {
 			try {
-				val repo = MangaProviderFactory.create(page.source)
+				val repo = page.source.repository
 				val url = repo.getPageFullUrl(page)
 				val request = Request.Builder()
 					.url(url)

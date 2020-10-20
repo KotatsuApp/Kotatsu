@@ -7,14 +7,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moxy.InjectViewState
 import moxy.presenterScope
+import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.domain.MangaDataRepository
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.MangaSearchRepository
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.domain.favourites.OnFavouritesChangeListener
@@ -75,8 +74,8 @@ class MangaDetailsPresenter private constructor(private val key: Int) :
 		presenterScope.launch {
 			try {
 				viewState.onLoadingStateChanged(true)
-				val data = withContext(Dispatchers.IO) {
-					MangaProviderFactory.create(manga.source).getDetails(manga)
+				val data = withContext(Dispatchers.Default) {
+					manga.source.repository.getDetails(manga)
 				}
 				viewState.onMangaUpdated(data)
 				this@MangaDetailsPresenter.manga = data
@@ -98,8 +97,7 @@ class MangaDetailsPresenter private constructor(private val key: Int) :
 			viewState.onLoadingStateChanged(true)
 			try {
 				withContext(Dispatchers.IO) {
-					val repository =
-						MangaProviderFactory.create(MangaSource.LOCAL) as LocalMangaRepository
+					val repository = get<LocalMangaRepository>()
 					val original = repository.getRemoteManga(manga)
 					repository.delete(manga) || throw IOException("Unable to delete file")
 					safe {

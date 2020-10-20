@@ -5,10 +5,13 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.TrackEntity
 import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.domain.MangaProviderFactory
+import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import java.util.*
 
-class TrackingRepository(private val db: MangaDatabase) {
+class TrackingRepository(
+	private val db: MangaDatabase,
+	private val localMangaRepository: LocalMangaRepository
+) {
 
 	suspend fun getNewChaptersCount(mangaId: Long): Int {
 		val entity = db.tracksDao.find(mangaId) ?: return 0
@@ -28,7 +31,7 @@ class TrackingRepository(private val db: MangaDatabase) {
 			.distinctBy { it.id }
 			.mapNotNull { me ->
 				val manga = if (me.source == MangaSource.LOCAL) {
-					MangaProviderFactory.createLocal().getRemoteManga(me)
+					localMangaRepository.getRemoteManga(me) // FIXME duplicating
 				} else {
 					me
 				} ?: return@mapNotNull null

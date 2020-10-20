@@ -103,4 +103,5 @@ dependencies {
 
 	testImplementation 'junit:junit:4.13.1'
 	testImplementation 'org.json:json:20200518'
+	testImplementation 'org.koin:koin-test:2.2.0-rc-2'
 }

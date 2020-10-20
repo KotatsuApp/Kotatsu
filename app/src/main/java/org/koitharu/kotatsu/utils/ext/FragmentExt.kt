@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.coroutineScope
 
@@ -13,3 +14,10 @@ inline fun <T : Fragment> T.withArgs(size: Int, block: Bundle.() -> Unit): T {
 
 val Fragment.viewLifecycleScope
 	get() = viewLifecycleOwner.lifecycle.coroutineScope
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T : Parcelable> Fragment.parcelableArgument(name: String) =
+	lazy<T>(LazyThreadSafetyMode.NONE) {
+		requireArguments().getParcelable(name)
+			?: error("No argument $name passed in ${javaClass.simpleName}")
+	}

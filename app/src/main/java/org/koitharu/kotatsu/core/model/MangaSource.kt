@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.core.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import org.koin.core.context.GlobalContext
+import org.koin.core.error.NoBeanDefFoundException
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.site.*
@@ -24,6 +26,10 @@ enum class MangaSource(
 	MANGATOWN("MangaTown", "en", MangaTownRepository::class.java),
 	MANGALIB("MangaLib", "ru", MangaLibRepository::class.java),
 	NUDEMOON("Nude-Moon", "ru", NudeMoonRepository::class.java),
-	MANGAREAD("MangaRead", "en", MangareadRepository::class.java),
+	MANGAREAD("MangaRead", "en", MangareadRepository::class.java);
 	// HENTAILIB("HentaiLib", "ru", HentaiLibRepository::class.java)
+
+	@get:Throws(NoBeanDefFoundException::class)
+	val repository: MangaRepository
+		get() = GlobalContext.get().get(cls.kotlin)
 }

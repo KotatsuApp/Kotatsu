@@ -27,7 +27,7 @@ object MangaUtils : KoinComponent {
 	suspend fun determineReaderMode(pages: List<MangaPage>): ReaderMode? {
 		try {
 			val page = pages.medianOrNull() ?: return null
-			val url = MangaProviderFactory.create(page.source).getPageFullUrl(page)
+			val url = page.source.repository.getPageFullUrl(page)
 			val uri = Uri.parse(url)
 			val size = if (uri.scheme == "cbz") {
 				val zip = ZipFile(uri.schemeSpecificPart)

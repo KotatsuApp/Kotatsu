@@ -2,19 +2,10 @@ package org.koitharu.kotatsu.domain
 
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.parser.LocalMangaRepository
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import java.lang.ref.WeakReference
-import java.util.*
 
 object MangaProviderFactory : KoinComponent {
-
-	private val loaderContext by inject<MangaLoaderContext>()
-	private val cache =
-		EnumMap<MangaSource, WeakReference<MangaRepository>>(MangaSource::class.java)
 
 	fun getSources(includeHidden: Boolean): List<MangaSource> {
 		val settings = get<AppSettings>()
@@ -32,40 +23,5 @@ object MangaProviderFactory : KoinComponent {
 				x.name in hidden
 			}
 		}
-	}
-
-	@Deprecated("Use DI")
-	fun createLocal(): LocalMangaRepository {
-		var instance = cache[MangaSource.LOCAL]?.get()
-		if (instance == null) {
-			synchronized(cache) {
-				instance = cache[MangaSource.LOCAL]?.get()
-				if (instance == null) {
-					instance = LocalMangaRepository()
-					cache[MangaSource.LOCAL] = WeakReference<MangaRepository>(instance)
-				}
-			}
-		}
-		return instance as LocalMangaRepository
-	}
-
-	@Throws(Throwable::class)
-	fun create(source: MangaSource): MangaRepository {
-		var instance = cache[source]?.get()
-		if (instance == null) {
-			synchronized(cache) {
-				instance = cache[source]?.get()
-				if (instance == null) {
-					instance = try {
-						source.cls.getDeclaredConstructor(MangaLoaderContext::class.java)
-							.newInstance(loaderContext)
-					} catch (e: NoSuchMethodException) {
-						source.cls.newInstance()
-					}
-					cache[source] = WeakReference(instance!!)
-				}
-			}
-		}
-		return instance!!
 	}
 }

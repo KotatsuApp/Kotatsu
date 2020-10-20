@@ -14,13 +14,14 @@ import kotlinx.coroutines.sync.Mutex
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.local.MangaZip
 import org.koitharu.kotatsu.ui.base.BaseService
 import org.koitharu.kotatsu.ui.base.dialog.CheckBoxAlertDialog
@@ -87,7 +88,7 @@ class DownloadService : BaseService() {
 			checkNotNull(destination) { getString(R.string.cannot_find_available_storage) }
 			var output: MangaZip? = null
 			try {
-				val repo = MangaProviderFactory.create(manga.source)
+				val repo = manga.source.repository
 				val cover = safe {
 					imageLoader.execute(
 						ImageRequest.Builder(this@DownloadService)
@@ -146,7 +147,7 @@ class DownloadService : BaseService() {
 				if (!output.compress()) {
 					throw RuntimeException("Cannot create target file")
 				}
-				val result = MangaProviderFactory.createLocal().getFromFile(output.file)
+				val result = get<LocalMangaRepository>().getFromFile(output.file)
 				notification.setDone(result)
 				notification.dismiss()
 				notification.update(manga.id.toInt().absoluteValue)

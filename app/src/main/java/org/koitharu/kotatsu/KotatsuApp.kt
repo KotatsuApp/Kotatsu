@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.github.githubModule
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.network.networkModule
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
+import org.koitharu.kotatsu.core.parser.parserModule
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.MangaDataRepository
 import org.koitharu.kotatsu.domain.MangaLoaderContext
@@ -59,11 +60,12 @@ class KotatsuApp : Application() {
 				networkModule,
 				databaseModule,
 				githubModule,
+				parserModule,
 				uiModule,
 				module {
 					single { FavouritesRepository(get()) }
 					single { HistoryRepository(get()) }
-					single { TrackingRepository(get()) }
+					single { TrackingRepository(get(), get()) }
 					single { MangaDataRepository(get()) }
 					single { MangaSearchRepository() }
 					single { MangaLoaderContext() }

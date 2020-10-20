@@ -18,7 +18,7 @@ class MangaSearchRepository {
 			for (source in sources) {
 				val list = lists.getOrPut(source) {
 					try {
-						MangaProviderFactory.create(source).getList(0, query, SortOrder.POPULARITY)
+						source.repository.getList(0, query, SortOrder.POPULARITY)
 					} catch (e: Throwable) {
 						e.printStackTrace()
 						emptyList<Manga>()

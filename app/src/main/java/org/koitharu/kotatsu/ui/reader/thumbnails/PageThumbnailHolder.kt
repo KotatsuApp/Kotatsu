@@ -12,7 +12,6 @@ import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 
@@ -37,7 +36,7 @@ class PageThumbnailHolder(parent: ViewGroup, private val scope: CoroutineScope) 
 		job?.cancel()
 		job = scope.launch(Dispatchers.IO + IgnoreErrors) {
 			val url = data.preview ?: data.url.let {
-				val pageUrl = MangaProviderFactory.create(data.source).getPageFullUrl(data)
+				val pageUrl = data.source.repository.getPageFullUrl(data)
 				extra[pageUrl]?.toUri()?.toString() ?: pageUrl
 			}
 			val drawable = coil.execute(

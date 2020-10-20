@@ -5,7 +5,6 @@ import androidx.core.net.toUri
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.utils.ext.launchAfter
 import org.koitharu.kotatsu.utils.ext.launchInstead
@@ -72,7 +71,7 @@ class PageHolderDelegate(
 			callback.onLoadingStarted()
 			try {
 				val file = withContext(Dispatchers.IO) {
-					val pageUrl = MangaProviderFactory.create(data.source).getPageFullUrl(data)
+					val pageUrl = data.source.repository.getPageFullUrl(data)
 					check(pageUrl.isNotEmpty()) { "Cannot obtain full image url" }
 					loader.loadFile(pageUrl, force)
 				}

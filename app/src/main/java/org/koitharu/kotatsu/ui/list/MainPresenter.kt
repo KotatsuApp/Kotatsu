@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.ui.list
 import moxy.InjectViewState
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.history.HistoryRepository
 import org.koitharu.kotatsu.ui.base.BasePresenter
 import org.koitharu.kotatsu.ui.reader.ReaderState
@@ -19,7 +18,7 @@ class MainPresenter : BasePresenter<MainView>() {
 				?: throw EmptyHistoryException()
 			val history = historyRepository.getOne(manga) ?: throw EmptyHistoryException()
 			val state = ReaderState(
-				MangaProviderFactory.create(manga.source).getDetails(manga),
+				manga.source.repository.getDetails(manga),
 				history.chapterId, history.page, history.scroll
 			)
 			viewState.onOpenReader(state)

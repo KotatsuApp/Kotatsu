@@ -9,16 +9,19 @@ import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.ui.list.MangaListFragment
 import org.koitharu.kotatsu.ui.search.SearchActivity
+import org.koitharu.kotatsu.utils.ext.parcelableArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class RemoteListFragment : MangaListFragment<Unit>() {
 
-	private val presenter by moxyPresenter(factory = ::RemoteListPresenter)
+	private val presenter by moxyPresenter {
+		RemoteListPresenter(source)
+	}
 
-	private val source by arg<MangaSource>(ARG_SOURCE)
+	private val source by parcelableArgument<MangaSource>(ARG_SOURCE)
 
 	override fun onRequestMoreItems(offset: Int) {
-		presenter.loadList(source, offset)
+		presenter.loadList(offset)
 	}
 
 	override fun getTitle(): CharSequence? {
@@ -26,7 +29,7 @@ class RemoteListFragment : MangaListFragment<Unit>() {
 	}
 
 	override fun onFilterChanged(filter: MangaFilter) {
-		presenter.applyFilter(source, filter)
+		presenter.applyFilter(filter)
 		super.onFilterChanged(filter)
 	}
 

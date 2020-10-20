@@ -9,18 +9,24 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import org.koin.test.KoinTest
+import org.koin.test.get
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.SourceConfig
 import org.koitharu.kotatsu.domain.MangaLoaderContext
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.utils.AssertX
 import java.util.concurrent.TimeUnit
 
 @RunWith(Parameterized::class)
-class RemoteRepositoryTest(source: MangaSource) {
+class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 
-	private val repo = MangaProviderFactory.create(source)
+	private val repo = try {
+		source.cls.getDeclaredConstructor(MangaLoaderContext::class.java)
+			.newInstance(get())
+	} catch (e: NoSuchMethodException) {
+		source.cls.newInstance()
+	}
 
 	@Test
 	fun list() {

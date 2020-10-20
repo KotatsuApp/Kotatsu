@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.utils.ext.safe
@@ -53,8 +52,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		var success = 0
 		for (track in tracks) {
 			val details = safe {
-				MangaProviderFactory.create(track.manga.source)
-					.getDetails(track.manga)
+				track.manga.source.repository.getDetails(track.manga)
 			}
 			val chapters = details?.chapters ?: continue
 			when {

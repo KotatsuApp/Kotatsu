@@ -9,22 +9,29 @@ import moxy.presenterScope
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.base.BasePresenter
 import org.koitharu.kotatsu.ui.list.MangaListView
 
 @InjectViewState
-class RemoteListPresenter : BasePresenter<MangaListView<Unit>>() {
+class RemoteListPresenter(source: MangaSource) : BasePresenter<MangaListView<Unit>>() {
 
+	private val repository by lazy(LazyThreadSafetyMode.PUBLICATION) {
+		source.repository
+	}
 	private var isFilterInitialized = false
 	private var filter: MangaFilter? = null
 
-	fun loadList(source: MangaSource, offset: Int) {
+	override fun onFirstViewAttach() {
+		super.onFirstViewAttach()
+		loadFilter()
+	}
+
+	fun loadList(offset: Int) {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(true)
 			try {
 				val list = withContext(Dispatchers.Default) {
-					MangaProviderFactory.create(source).getList(
+					repository.getList(
 						offset = offset,
 						sortOrder = filter?.sortOrder,
 						tag = filter?.tag
@@ -50,23 +57,23 @@ class RemoteListPresenter : BasePresenter<MangaListView<Unit>>() {
 			}
 		}
 		if (!isFilterInitialized) {
-			loadFilter(source)
+			loadFilter()
 		}
 	}
 
-	fun applyFilter(source: MangaSource, filter: MangaFilter) {
+	fun applyFilter(filter: MangaFilter) {
 		this.filter = filter
 		viewState.onListChanged(emptyList())
-		loadList(source, 0)
+		loadList(0)
 	}
 
-	private fun loadFilter(source: MangaSource) {
+	private fun loadFilter() {
 		isFilterInitialized = true
-		presenterScope.launch {
+		launchJob {
 			try {
 				val (sorts, tags) = withContext(Dispatchers.Default) {
-					val repo = MangaProviderFactory.create(source)
-					repo.sortOrders.sortedBy { it.ordinal } to repo.getTags().sortedBy { it.title }
+					repository.sortOrders.sortedBy { it.ordinal } to repository.getTags()
+						.sortedBy { it.title }
 				}
 				viewState.onInitFilter(sorts, tags, filter)
 			} catch (e: Exception) {

@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.domain.MangaProviderFactory
 import org.koitharu.kotatsu.ui.base.BaseFragment
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.ReaderListener
@@ -124,7 +123,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 				val pages = withContext(Dispatchers.IO) {
 					val chapter = manga.chapters?.find { it.id == chapterId }
 						?: throw RuntimeException("Chapter $chapterId not found")
-					val repo = MangaProviderFactory.create(manga.source)
+					val repo = manga.source.repository
 					repo.getPages(chapter)
 				}
 				callback(pages)
