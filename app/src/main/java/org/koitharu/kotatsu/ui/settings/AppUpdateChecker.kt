@@ -8,8 +8,8 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.BuildConfig
@@ -35,27 +35,36 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 	private val settings by activity.inject<AppSettings>()
 	private val repo by activity.inject<GithubRepository>()
 
-	operator fun invoke() {
-		if (isUpdateSupported(activity) && settings.appUpdateAuto && settings.appUpdate + PERIOD < System.currentTimeMillis()) {
+	fun launchIfNeeded(): Job? {
+		return if (settings.appUpdateAuto && settings.appUpdate + PERIOD < System.currentTimeMillis()) {
 			launch()
+		} else {
+			null
 		}
 	}
 
-	private fun launch() = activity.lifecycleScope.launch(Dispatchers.Main) {
-		try {
-			val version = repo.getLatestVersion()
-			val newVersionId = VersionId.parse(version.name)
-			val currentVersionId = VersionId.parse(BuildConfig.VERSION_NAME)
-			if (newVersionId > currentVersionId) {
-				showUpdateDialog(version)
-			}
-			settings.appUpdate = System.currentTimeMillis()
-		} catch (_: CancellationException) {
-		} catch (e: Throwable) {
-			if (BuildConfig.DEBUG) {
-				e.printStackTrace()
-			}
+	fun launch(): Job? {
+		return if (isUpdateSupported(activity)) {
+			launchInternal()
+		} else {
+			null
 		}
+	}
+
+	suspend fun checkNow() = runCatching {
+		val version = repo.getLatestVersion()
+		val newVersionId = VersionId.parse(version.name)
+		val currentVersionId = VersionId.parse(BuildConfig.VERSION_NAME)
+		val result = newVersionId > currentVersionId
+		if (result) {
+			showUpdateDialog(version)
+		}
+		settings.appUpdate = System.currentTimeMillis()
+		result
+	}.getOrNull()
+
+	private fun launchInternal() = activity.lifecycleScope.launch(Dispatchers.Main) {
+		checkNow()
 	}
 
 	private fun showUpdateDialog(version: AppVersion) {

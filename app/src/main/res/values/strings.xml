@@ -97,7 +97,7 @@
 	<string name="external_storage">External storage</string>
 	<string name="domain">Domain</string>
 	<string name="_default">Default</string>
-	<string name="application_update">Application update</string>
+	<string name="application_update">Check for updates automatically</string>
 	<string name="app_update_available">Application update is available</string>
 	<string name="show_notification_app_update">Show notification if update is available</string>
 	<string name="open_in_browser">Open in browser</string>
@@ -154,4 +154,10 @@
 	<string name="protect_application_summary">Ask for password on application start</string>
 	<string name="repeat_password">Repeat password</string>
 	<string name="passwords_mismatch">Passwords do not match</string>
+	<string name="about">About</string>
+	<string name="app_version">Version %s</string>
+	<string name="check_for_updates">Check for updates</string>
+	<string name="checking_for_updates">Checking for updates…</string>
+	<string name="update_check_failed">Update check failed</string>
+	<string name="no_update_available">No updates available</string>
 </resources>

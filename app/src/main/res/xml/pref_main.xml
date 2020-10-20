@@ -71,7 +71,7 @@
 		app:iconSpaceReserved="false" />
 
 	<PreferenceCategory
-		android:title="@string/notifications"
+		android:title="@string/new_chapters"
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false">
 
@@ -87,7 +87,7 @@
 			android:defaultValue="true"
 			android:key="@string/key_tracker_notifications"
 			android:summary="@string/show_notification_new_chapters"
-			android:title="@string/new_chapters"
+			android:title="@string/notifications"
 			app:iconSpaceReserved="false" />
 
 		<Preference
@@ -95,6 +95,12 @@
 			android:key="@string/key_notifications_settings"
 			android:title="@string/notifications_settings"
 			app:iconSpaceReserved="false" />
+
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="@string/about"
+		app:iconSpaceReserved="false">
 
 		<SwitchPreference
 			android:defaultValue="true"
@@ -104,6 +110,12 @@
 			app:iconSpaceReserved="false"
 			app:isPreferenceVisible="false"
 			tools:isPreferenceVisible="true" />
+
+		<Preference
+			android:key="@string/key_app_version"
+			android:persistent="false"
+			android:summary="@string/check_for_updates"
+			app:iconSpaceReserved="false" />
 
 	</PreferenceCategory>
 

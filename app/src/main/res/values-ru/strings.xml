@@ -96,7 +96,7 @@
 	<string name="external_storage">Внешнее хранилище</string>
 	<string name="domain">Домен</string>
 	<string name="_default">По умолчанию</string>
-	<string name="application_update">Обновление приложения</string>
+	<string name="application_update">Проверять обновление приложения</string>
 	<string name="app_update_available">Доступно обновление приложения</string>
 	<string name="show_notification_app_update">Показывать уведомление при наличии новой версии</string>
 	<string name="open_in_browser">Открыть в браузере</string>
@@ -153,4 +153,10 @@
 	<string name="protect_application_summary">Запрашивать пароль при запуске приложения</string>
 	<string name="repeat_password">Повторите пароль</string>
 	<string name="passwords_mismatch">Пароли не совпадают</string>
+	<string name="about">О программе</string>
+	<string name="app_version">Версия %s</string>
+	<string name="check_for_updates">Проверить обновления</string>
+	<string name="checking_for_updates">Проверка обновления…</string>
+	<string name="update_check_failed">Ошибка при проверке обновления</string>
+	<string name="no_update_available">Нет доступных обновлений</string>
 </resources>

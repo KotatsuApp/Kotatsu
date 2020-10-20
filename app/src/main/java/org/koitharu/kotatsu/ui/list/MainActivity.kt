@@ -76,7 +76,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			return
 		}
 		TrackWorker.setup(applicationContext)
-		AppUpdateChecker(this).invoke()
+		AppUpdateChecker(this).launchIfNeeded()
 	}
 
 	override fun onDestroy() {

@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arrayMapOf
 import androidx.preference.*
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -23,6 +25,7 @@ import org.koitharu.kotatsu.ui.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.md5
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import java.io.File
 
 
@@ -54,6 +57,10 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		}
 		findPreference<SwitchPreference>(R.string.key_protect_app)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
+		findPreference<Preference>(R.string.key_app_version)?.run {
+			title = getString(R.string.app_version, BuildConfig.VERSION_NAME)
+			isEnabled = AppUpdateChecker.isUpdateSupported(context)
+		}
 	}
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
@@ -126,6 +133,10 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				}
 				true
 			}
+			getString(R.string.key_app_version) -> {
+				checkForUpdates()
+				true
+			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
@@ -182,6 +193,26 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			}.setTitle(preference.title)
 			.create()
 			.show()
+	}
+
+	private fun checkForUpdates() {
+		viewLifecycleScope.launch {
+			findPreference<Preference>(R.string.key_app_version)?.run {
+				setSummary(R.string.checking_for_updates)
+				isSelectable = false
+			}
+			val result = AppUpdateChecker(activity ?: return@launch).checkNow()
+			findPreference<Preference>(R.string.key_app_version)?.run {
+				setSummary(
+					when (result) {
+						true -> R.string.check_for_updates
+						false -> R.string.no_update_available
+						null -> R.string.update_check_failed
+					}
+				)
+				isSelectable = true
+			}
+		}
 	}
 
 	private companion object {

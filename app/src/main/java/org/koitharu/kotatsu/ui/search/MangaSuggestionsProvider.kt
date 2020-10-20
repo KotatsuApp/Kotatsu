@@ -96,7 +96,7 @@ class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
 						uri,
 						projection,
 						" ?",
-						arrayOf(q.toString()),
+						arrayOf(q?.toString().orEmpty()),
 						null
 					)
 				}
