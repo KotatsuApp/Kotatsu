@@ -21,6 +21,8 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:imeOptions="actionDone"
+			android:paddingStart="0dp"
+			android:paddingEnd="0dp"
 			android:singleLine="true"
 			tools:text="@tools:sample/lorem[2]" />
 

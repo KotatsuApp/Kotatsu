@@ -22,6 +22,17 @@
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintWidth_percent="0.3" />
 
+
+		<com.google.android.material.chip.ChipGroup
+			android:id="@+id/chips_tags"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="4dp"
+			android:padding="6dp"
+			app:layout_constraintEnd_toEndOf="@id/imageView_cover"
+			app:layout_constraintStart_toStartOf="@id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@id/imageView_cover" />
+
 		<TextView
 			android:id="@+id/textView_title"
 			android:layout_width="0dp"
@@ -83,7 +94,7 @@
 			android:background="?selectableItemBackgroundBorderless"
 			android:contentDescription="@string/add_to_favourites"
 			android:scaleType="center"
-			android:src="@drawable/ic_tag_heart_outline"
+			android:src="@drawable/ic_heart_outline"
 			app:layout_constraintBottom_toBottomOf="@id/button_read"
 			app:layout_constraintDimensionRatio="1:1"
 			app:layout_constraintEnd_toStartOf="@id/button_read"
@@ -100,16 +111,6 @@
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/button_read" />
 
-		<com.google.android.material.chip.ChipGroup
-			android:id="@+id/chips_tags"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="4dp"
-			android:padding="6dp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/divider_top" />
-
 		<TextView
 			android:id="@+id/textView_description"
 			android:layout_width="0dp"
@@ -119,9 +120,9 @@
 			android:padding="12dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/chips_tags"
-			tools:text="@tools:sample/lorem/random"
-			tools:ignore="UnusedAttribute" />
+			app:layout_constraintTop_toBottomOf="@id/divider_top"
+			tools:ignore="UnusedAttribute"
+			tools:text="@tools:sample/lorem/random" />
 
 		<ProgressBar
 			android:id="@+id/progressBar"

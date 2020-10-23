@@ -42,13 +42,12 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="4dp"
-			android:maxLines="2"
 			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 			android:textColor="?android:textColorSecondary"
 			app:layout_constraintEnd_toEndOf="@id/textView_title"
 			app:layout_constraintStart_toStartOf="@id/textView_title"
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
-			tools:text="@tools:sample/lorem[20]" />
+			tools:text="@tools:sample/lorem[25]" />
 
 		<RatingBar
 			android:id="@+id/ratingBar"
@@ -67,16 +66,17 @@
 			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
 			android:layout_marginEnd="4dp"
 			android:enabled="false"
 			android:text="@string/read"
-			tools:text="@string/_continue"
 			app:icon="@drawable/ic_read"
 			app:iconPadding="12dp"
-			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
+			app:layout_constraintBottom_toBottomOf="@id/barrier_title"
 			app:layout_constraintEnd_toEndOf="@id/textView_title"
 			app:layout_constraintTop_toBottomOf="@id/ratingBar"
-			app:layout_constraintVertical_bias="1" />
+			app:layout_constraintVertical_bias="1"
+			tools:text="@string/_continue" />
 
 		<ImageView
 			android:id="@+id/imageView_favourite"
@@ -86,13 +86,13 @@
 			android:background="?selectableItemBackgroundBorderless"
 			android:contentDescription="@string/add_to_favourites"
 			android:scaleType="center"
-			android:src="@drawable/ic_tag_heart_outline"
+			android:src="@drawable/ic_heart_outline"
 			app:layout_constraintBottom_toBottomOf="@id/button_read"
 			app:layout_constraintDimensionRatio="1:1"
-			app:layout_constraintHorizontal_bias="1"
 			app:layout_constraintEnd_toStartOf="@id/button_read"
-			app:layout_constraintTop_toTopOf="@id/button_read"
+			app:layout_constraintHorizontal_bias="1"
 			app:layout_constraintStart_toStartOf="@id/textView_title"
+			app:layout_constraintTop_toTopOf="@id/button_read"
 			app:tint="?colorAccent" />
 
 		<androidx.constraintlayout.widget.Barrier
@@ -132,8 +132,8 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/chips_tags"
-			tools:text="@tools:sample/lorem/random"
-			tools:ignore="UnusedAttribute" />
+			tools:ignore="UnusedAttribute"
+			tools:text="@tools:sample/lorem/random" />
 
 		<ProgressBar
 			android:id="@+id/progressBar"

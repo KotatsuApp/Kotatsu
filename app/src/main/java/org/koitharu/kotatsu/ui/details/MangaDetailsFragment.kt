@@ -101,9 +101,9 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 	override fun onFavouriteChanged(categories: List<FavouriteCategory>) {
 		imageView_favourite.setImageResource(
 			if (categories.isEmpty()) {
-				R.drawable.ic_tag_heart_outline
+				R.drawable.ic_heart_outline
 			} else {
-				R.drawable.ic_tag_heart
+				R.drawable.ic_heart
 			}
 		)
 	}
