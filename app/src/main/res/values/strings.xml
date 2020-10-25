@@ -160,4 +160,5 @@
 	<string name="checking_for_updates">Checking for updates…</string>
 	<string name="update_check_failed">Update check failed</string>
 	<string name="no_update_available">No updates available</string>
+	<string name="right_to_left">Right to left</string>
 </resources>

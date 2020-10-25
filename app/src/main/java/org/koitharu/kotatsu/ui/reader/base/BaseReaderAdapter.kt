@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 
-abstract class BaseReaderAdapter(private val pages: GroupedList<Long, MangaPage>) :
+abstract class BaseReaderAdapter(protected val pages: GroupedList<Long, MangaPage>) :
 	RecyclerView.Adapter<BaseViewHolder<MangaPage, Unit>>() {
 
 	init {
@@ -18,25 +18,25 @@ abstract class BaseReaderAdapter(private val pages: GroupedList<Long, MangaPage>
 		holder.bind(item, Unit)
 	}
 
-	fun getItem(position: Int) = pages[position]
+	open fun getItem(position: Int) = pages[position]
 
-	fun notifyItemsAppended(count: Int) {
+	open fun notifyItemsAppended(count: Int) {
 		notifyItemRangeInserted(pages.size - count, count)
 	}
 
-	fun notifyItemsPrepended(count: Int) {
+	open fun notifyItemsPrepended(count: Int) {
 		notifyItemRangeInserted(0, count)
 	}
 
-	fun notifyItemsRemovedStart(count: Int) {
+	open fun notifyItemsRemovedStart(count: Int) {
 		notifyItemRangeRemoved(0, count)
 	}
 
-	fun notifyItemsRemovedEnd(count: Int) {
+	open fun notifyItemsRemovedEnd(count: Int) {
 		notifyItemRangeRemoved(pages.size - count, count)
 	}
 
-	override fun getItemId(position: Int) = pages[position].id
+	open override fun getItemId(position: Int) = pages[position].id
 
 	final override fun getItemCount() = pages.size
 

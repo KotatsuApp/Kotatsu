@@ -38,6 +38,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.ui.base.BaseFullscreenActivity
 import org.koitharu.kotatsu.ui.reader.base.AbstractReader
+import org.koitharu.kotatsu.ui.reader.reversed.ReversedReaderFragment
 import org.koitharu.kotatsu.ui.reader.standard.PagerReaderFragment
 import org.koitharu.kotatsu.ui.reader.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.ui.reader.thumbnails.PagesThumbnailsSheet
@@ -121,6 +122,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 					replace(R.id.container, WebtoonReaderFragment.newInstance(state))
 				}
 			}
+			ReaderMode.REVERSED -> if (currentReader !is ReversedReaderFragment) {
+				supportFragmentManager.commit {
+					replace(R.id.container, ReversedReaderFragment.newInstance(state))
+				}
+			}
 			else -> if (currentReader !is PagerReaderFragment) {
 				supportFragmentManager.commit {
 					replace(R.id.container, PagerReaderFragment.newInstance(state))
@@ -130,6 +136,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		toolbar_bottom.menu.findItem(R.id.action_reader_mode).setIcon(
 			when (mode) {
 				ReaderMode.WEBTOON -> R.drawable.ic_script
+				ReaderMode.REVERSED -> R.drawable.ic_read_reversed
 				else -> R.drawable.ic_book_page
 			}
 		)
@@ -159,6 +166,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				supportFragmentManager, when (reader) {
 					is PagerReaderFragment -> ReaderMode.STANDARD
 					is WebtoonReaderFragment -> ReaderMode.WEBTOON
+					is ReversedReaderFragment -> ReaderMode.REVERSED
 					else -> ReaderMode.UNKNOWN
 				}
 			)

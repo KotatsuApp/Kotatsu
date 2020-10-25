@@ -159,4 +159,5 @@
 	<string name="checking_for_updates">Проверка обновления…</string>
 	<string name="update_check_failed">Ошибка при проверке обновления</string>
 	<string name="no_update_available">Нет доступных обновлений</string>
+	<string name="right_to_left">Справа налево</string>
 </resources>

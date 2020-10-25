@@ -32,10 +32,12 @@ class ReaderConfigDialog : AlertDialogFragment(R.layout.dialog_reader_config),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		button_standard.isChecked = mode == ReaderMode.STANDARD
+		button_reversed.isChecked = mode == ReaderMode.REVERSED
 		button_webtoon.isChecked = mode == ReaderMode.WEBTOON
 
 		button_ok.setOnClickListener(this)
 		button_standard.setOnClickListener(this)
+		button_reversed.setOnClickListener(this)
 		button_webtoon.setOnClickListener(this)
 	}
 
@@ -48,6 +50,7 @@ class ReaderConfigDialog : AlertDialogFragment(R.layout.dialog_reader_config),
 			}
 			R.id.button_standard -> mode = ReaderMode.STANDARD
 			R.id.button_webtoon -> mode = ReaderMode.WEBTOON
+			R.id.button_reversed -> mode = ReaderMode.REVERSED
 		}
 	}
 

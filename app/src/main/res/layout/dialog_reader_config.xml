@@ -23,6 +23,14 @@
 			app:icon="@drawable/ic_book_page" />
 
 		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_reversed"
+			style="@style/AppToggleButton"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/right_to_left"
+			app:icon="@drawable/ic_read_reversed" />
+
+		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_webtoon"
 			style="@style/AppToggleButton"
 			android:layout_width="match_parent"
