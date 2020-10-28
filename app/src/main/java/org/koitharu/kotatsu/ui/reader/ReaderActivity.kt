@@ -14,14 +14,14 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
-import androidx.core.view.updatePadding
+import androidx.core.graphics.Insets
+import androidx.core.view.*
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_reader.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -53,7 +53,7 @@ import org.koitharu.kotatsu.utils.ext.*
 class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
 	ReaderListener, SharedPreferences.OnSharedPreferenceChangeListener,
-	View.OnApplyWindowInsetsListener, ActivityResultCallback<Boolean> {
+	ActivityResultCallback<Boolean>, OnApplyWindowInsetsListener {
 
 	private val presenter by moxyPresenter(factory = ::ReaderPresenter)
 	private val settings by inject<AppSettings>()
@@ -93,7 +93,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 				getString(R.string.chapter_d_of_d, state.chapter?.number ?: 0, size)
 		}
 
-		rootLayout.setOnApplyWindowInsetsListener(this)
+		ViewCompat.setOnApplyWindowInsetsListener(rootLayout, this)
 
 		settings.subscribe(this)
 		loadSettings()
@@ -105,10 +105,8 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		if (savedInstanceState?.containsKey(MvpDelegate.MOXY_DELEGATE_TAGS_KEY) != true) {
 			presenter.init(state.manga)
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-				GlobalScope.launch {
-					safe {
-						MangaShortcut(state.manga).addAppShortcut(applicationContext)
-					}
+				GlobalScope.launch(Dispatchers.Main + IgnoreErrors) {
+					MangaShortcut(state.manga).addAppShortcut(applicationContext)
 				}
 			}
 		}
@@ -191,7 +189,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		R.id.action_pages_thumbs -> {
 			if (reader?.hasItems == true) {
 				val pages = reader?.getPages()
-				if (pages != null) {
+				if (!pages.isNullOrEmpty()) {
 					PagesThumbnailsSheet.show(
 						supportFragmentManager, pages,
 						state.chapter?.name ?: title?.toString().orEmpty()
@@ -363,7 +361,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 	}
 
-	override fun onPageChanged(chapter: MangaChapter, page: Int, total: Int) {
+	override fun onPageChanged(chapter: MangaChapter, page: Int) {
 		title = chapter.name
 		state.manga.chapters?.run {
 			supportActionBar?.subtitle =
@@ -395,18 +393,21 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		}
 	}
 
-	override fun onApplyWindowInsets(v: View, insets: WindowInsets): WindowInsets {
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		appbar_top.updatePadding(
-			top = insets.systemWindowInsetTop,
-			right = insets.systemWindowInsetRight,
-			left = insets.systemWindowInsetLeft
+			top = systemBars.top,
+			right = systemBars.right,
+			left = systemBars.left
 		)
 		appbar_bottom.updatePadding(
-			bottom = insets.systemWindowInsetBottom,
-			right = insets.systemWindowInsetRight,
-			left = insets.systemWindowInsetLeft
+			bottom = systemBars.bottom,
+			right = systemBars.right,
+			left = systemBars.left
 		)
-		return insets.consumeSystemWindowInsets()
+		return WindowInsetsCompat.Builder(insets)
+			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
+			.build()
 	}
 
 	private fun loadSettings() {

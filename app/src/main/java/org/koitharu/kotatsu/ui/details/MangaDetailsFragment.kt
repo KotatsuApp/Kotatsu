@@ -5,7 +5,6 @@ import android.view.View
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +72,7 @@ class MangaDetailsFragment : BaseFragment(R.layout.fragment_details), MangaDetai
 			)
 		}
 		manga.url.toUri().toFileOrNull()?.let { f ->
-			lifecycleScope.launch {
+			viewLifecycleScope.launch {
 				val size = withContext(Dispatchers.IO) {
 					f.length()
 				}

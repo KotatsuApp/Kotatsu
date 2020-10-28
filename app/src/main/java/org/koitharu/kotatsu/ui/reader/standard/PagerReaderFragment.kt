@@ -7,12 +7,11 @@ import android.view.View
 import kotlinx.android.synthetic.main.fragment_reader_standard.*
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.ui.reader.base.AbstractReader
 import org.koitharu.kotatsu.ui.reader.base.BaseReaderAdapter
-import org.koitharu.kotatsu.ui.reader.base.GroupedList
+import org.koitharu.kotatsu.ui.reader.base.ReaderPage
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -49,12 +48,9 @@ class PagerReaderFragment : AbstractReader(R.layout.fragment_reader_standard),
 		super.onDestroyView()
 	}
 
-	override fun onCreateAdapter(dataSet: GroupedList<Long, MangaPage>): BaseReaderAdapter {
+	override fun onCreateAdapter(dataSet: List<ReaderPage>): BaseReaderAdapter {
 		return PagesAdapter(dataSet, loader)
 	}
-
-	override val itemsCount: Int
-		get() = adapter?.itemCount ?: 0
 
 	override fun getCurrentItem() = pager.currentItem
 

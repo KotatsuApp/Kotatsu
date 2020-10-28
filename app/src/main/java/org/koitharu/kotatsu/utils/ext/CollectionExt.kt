@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.utils.ext
 
+import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
+import androidx.collection.LongSparseArray
 
 fun <T> MutableCollection<T>.replaceWith(subject: Iterable<T>) {
 	clear()
@@ -56,4 +58,12 @@ fun LongArray.toArraySet(): Set<Long> {
 	}
 }
 
-fun <K, V> List<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = toMap(HashMap<K, V>(size))
+fun <K, V> List<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = toMap(ArrayMap(size))
+
+inline fun <T> Collection<T>.associateByLong(selector: (T) -> Long): LongSparseArray<T> {
+	val result = LongSparseArray<T>(size)
+	for (item in this) {
+		result.put(selector(item), item)
+	}
+	return result
+}

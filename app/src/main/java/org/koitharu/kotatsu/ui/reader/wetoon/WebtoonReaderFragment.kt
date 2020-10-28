@@ -5,11 +5,10 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import kotlinx.android.synthetic.main.fragment_reader_webtoon.*
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.reader.ReaderState
 import org.koitharu.kotatsu.ui.reader.base.AbstractReader
 import org.koitharu.kotatsu.ui.reader.base.BaseReaderAdapter
-import org.koitharu.kotatsu.ui.reader.base.GroupedList
+import org.koitharu.kotatsu.ui.reader.base.ReaderPage
 import org.koitharu.kotatsu.utils.ext.doOnCurrentItemChanged
 import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
 import org.koitharu.kotatsu.utils.ext.firstItem
@@ -29,7 +28,7 @@ class WebtoonReaderFragment : AbstractReader(R.layout.fragment_reader_webtoon) {
 		recyclerView.doOnCurrentItemChanged(::notifyPageChanged)
 	}
 
-	override fun onCreateAdapter(dataSet: GroupedList<Long, MangaPage>): BaseReaderAdapter {
+	override fun onCreateAdapter(dataSet: List<ReaderPage>): BaseReaderAdapter {
 		return WebtoonAdapter(dataSet, loader)
 	}
 
@@ -37,9 +36,6 @@ class WebtoonReaderFragment : AbstractReader(R.layout.fragment_reader_webtoon) {
 		paginationListener = null
 		super.onDestroyView()
 	}
-
-	override val itemsCount: Int
-		get() = adapter?.itemCount ?: 0
 
 	override fun getCurrentItem(): Int {
 		return recyclerView.findCenterViewPosition()

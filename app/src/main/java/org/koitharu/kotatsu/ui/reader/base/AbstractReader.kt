@@ -1,45 +1,52 @@
 package org.koitharu.kotatsu.ui.reader.base
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.collection.LongSparseArray
 import androidx.core.view.postDelayed
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.base.BaseFragment
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.ReaderListener
 import org.koitharu.kotatsu.ui.reader.ReaderState
+import org.koitharu.kotatsu.utils.ext.associateByLong
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayoutId),
 	OnBoundsScrollListener {
 
 	protected lateinit var manga: Manga
-	protected lateinit var loader: PageLoader
 		private set
-	private lateinit var pages: GroupedList<Long, MangaPage>
+	private lateinit var chapters: LongSparseArray<MangaChapter>
+	protected val loader by lazy(LazyThreadSafetyMode.NONE) {
+		PageLoader()
+	}
+	protected val pages = ArrayDeque<ReaderPage>()
 	protected var adapter: BaseReaderAdapter? = null
 		private set
+
+	val itemsCount: Int
+		get() = adapter?.itemCount ?: 0
 
 	val hasItems: Boolean
 		get() = itemsCount != 0
 
 	val currentPage: MangaPage?
-		get() = pages.getOrNull(getCurrentItem())
+		get() = pages.getOrNull(getCurrentItem())?.toMangaPage()
 
-	protected val readerListener: ReaderListener?
-		get() = activity as? ReaderListener
+	private var readerListener: ReaderListener? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		pages = GroupedList()
-		manga = requireArguments().getParcelable<ReaderState>(ARG_STATE)!!.manga
-		loader = PageLoader()
+		manga = requireNotNull(requireArguments().getParcelable<ReaderState>(ARG_STATE)).manga
+		chapters = requireNotNull(manga.chapters).associateByLong { it.id }
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,7 +57,9 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 			?: requireArguments().getParcelable<ReaderState>(ARG_STATE)!!
 		loadChapter(state.chapterId) {
 			pages.clear()
-			pages.addLast(state.chapterId, it)
+			it.mapIndexedTo(pages) { i, p ->
+				ReaderPage.from(p, i, state.chapterId)
+			}
 			adapter?.notifyDataSetChanged()
 			setCurrentItem(state.page, false)
 			if (state.scroll != 0) {
@@ -59,24 +68,37 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 		}
 	}
 
+	override fun onAttach(context: Context) {
+		super.onAttach(context)
+		readerListener = activity as? ReaderListener
+	}
+
+	override fun onDetach() {
+		readerListener = null
+		super.onDetach()
+	}
+
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
+		val page = pages.getOrNull(getCurrentItem()) ?: return
 		outState.putParcelable(
 			ARG_STATE, ReaderState(
 				manga = manga,
-				chapterId = pages.findGroupByIndex(getCurrentItem()) ?: return,
-				page = pages.getRelativeIndex(getCurrentItem()),
+				chapterId = page.chapterId,
+				page = page.index,
 				scroll = getCurrentPageScroll()
 			)
 		)
 	}
 
 	override fun onScrolledToStart() {
-		val chapterId = pages.findGroupByIndex(getCurrentItem()) ?: return
+		val chapterId = getFirstPage()?.chapterId ?: return
 		val index = manga.chapters?.indexOfFirst { it.id == chapterId } ?: return
 		val prevChapterId = manga.chapters!!.getOrNull(index - 1)?.id ?: return
 		loadChapter(prevChapterId) {
-			pages.addFirst(prevChapterId, it)
+			pages.addAll(0, it.mapIndexed { i, p ->
+				ReaderPage.from(p, i, prevChapterId)
+			})
 			adapter?.notifyItemsPrepended(it.size)
 			view?.postDelayed(500) {
 				trimEnd()
@@ -85,11 +107,13 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 	}
 
 	override fun onScrolledToEnd() {
-		val chapterId = pages.findGroupByIndex(getCurrentItem()) ?: return
-		val index = manga.chapters?.indexOfFirst { it.id == chapterId } ?: return
+		val chapterId = getLastPage()?.chapterId ?: return
+		val index = manga.chapters?.indexOfLast { it.id == chapterId } ?: return
 		val nextChapterId = manga.chapters!!.getOrNull(index + 1)?.id ?: return
 		loadChapter(nextChapterId) {
-			pages.addLast(nextChapterId, it)
+			pages.addAll(it.mapIndexed { i, p ->
+				ReaderPage.from(p, i, nextChapterId)
+			})
 			adapter?.notifyItemsAppended(it.size)
 			view?.postDelayed(500) {
 				trimStart()
@@ -107,8 +131,10 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 		super.onDestroy()
 	}
 
-	fun getPages() = pages.findGroupByIndex(getCurrentItem())?.let {
-		pages.getGroup(it)
+	fun getPages(): List<MangaPage>? {
+		val chapterId = (pages.getOrNull(getCurrentItem()) ?: return null).chapterId
+		// TODO optimize
+		return pages.filter { it.chapterId == chapterId }.map { it.toMangaPage() }
 	}
 
 	override fun onPause() {
@@ -117,11 +143,11 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 	}
 
 	private fun loadChapter(chapterId: Long, callback: suspend (List<MangaPage>) -> Unit) {
-		lifecycleScope.launch {
+		viewLifecycleScope.launch {
 			readerListener?.onLoadingStateChanged(isLoading = true)
 			try {
-				val pages = withContext(Dispatchers.IO) {
-					val chapter = manga.chapters?.find { it.id == chapterId }
+				val pages = withContext(Dispatchers.Default) {
+					val chapter = chapters.get(chapterId)
 						?: throw RuntimeException("Chapter $chapterId not found")
 					val repo = manga.source.repository
 					repo.getPages(chapter)
@@ -137,45 +163,39 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 	}
 
 	private fun trimStart() {
-		var removed = 0
+		/*var removed = 0
 		while (pages.groupCount > 3 && pages.size > 8) {
 			removed += pages.removeFirst().size
 		}
 		if (removed != 0) {
 			adapter?.notifyItemsRemovedStart(removed)
 			Log.i(TAG, "Removed $removed pages from start")
-		}
+		}*/
 	}
 
 	private fun trimEnd() {
-		var removed = 0
+		/*var removed = 0
 		while (pages.groupCount > 3 && pages.size > 8) {
 			removed += pages.removeLast().size
 		}
 		if (removed != 0) {
 			adapter?.notifyItemsRemovedEnd(removed)
 			Log.i(TAG, "Removed $removed pages from end")
-		}
+		}*/
 	}
 
-	protected fun notifyPageChanged(page: Int) {
-		val chapters = manga.chapters ?: return
-		val chapterId = pages.findGroupByIndex(page) ?: return
-		val chapter = chapters.find { it.id == chapterId } ?: return
+	protected fun notifyPageChanged(position: Int) {
+		val page = pages.getOrNull(position) ?: return
+		val chapter = chapters.get(page.chapterId) ?: return
 		readerListener?.onPageChanged(
 			chapter = chapter,
-			page = page - pages.getGroupOffset(chapterId),
-			total = pages.getGroup(chapterId)?.size ?: return
+			page = page.index
 		)
 	}
 
-	protected fun saveState() {
-		val chapterId = pages.findGroupByIndex(getCurrentItem()) ?: return
-		val page = pages.getRelativeIndex(getCurrentItem())
-		if (page != -1) {
-			readerListener?.saveState(chapterId, page, getCurrentPageScroll())
-		}
-		Log.i(TAG, "saveState(chapterId=$chapterId, page=$page)")
+	private fun saveState() {
+		val page = pages.getOrNull(getCurrentItem()) ?: return
+		readerListener?.saveState(page.chapterId, page.index, getCurrentPageScroll())
 	}
 
 	open fun switchPageBy(delta: Int) {
@@ -183,13 +203,15 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 	}
 
 	fun updateState(chapterId: Long = 0, pageId: Long = 0) {
-		val currentChapterId = pages.findGroupByIndex(getCurrentItem())
+		val currentChapterId = pages.getOrNull(getCurrentItem())?.chapterId ?: 0L
 		if (chapterId != 0L && chapterId != currentChapterId) {
 			pages.clear()
 			adapter?.notifyDataSetChanged()
 			loadChapter(chapterId) {
 				pages.clear()
-				pages.addLast(chapterId, it)
+				it.mapIndexedTo(pages) { i, p ->
+					ReaderPage.from(p, i, chapterId)
+				}
 				adapter?.notifyDataSetChanged()
 				setCurrentItem(
 					if (pageId == 0L) {
@@ -200,19 +222,27 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 				)
 			}
 		} else {
-			setCurrentItem(
-				if (pageId == 0L) {
-					0
-				} else {
-					val chapterPages = pages.getGroup(currentChapterId ?: return) ?: return
-					chapterPages.indexOfFirst { it.id == pageId }
-						.coerceAtLeast(0) + pages.getGroupOffset(currentChapterId)
-				}, false
-			)
+			var index = 0
+			if (pageId != 0L) {
+				index = pages.indexOfFirst {
+					it.chapterId == currentChapterId && it.id == pageId
+				}
+				if (index == -1) { // try to find chapter at least
+					index = pages.indexOfFirst {
+						it.chapterId == currentChapterId
+					}
+				}
+				if (index == -1) {
+					index = 0
+				}
+			}
+			setCurrentItem(index, false)
 		}
 	}
 
-	abstract val itemsCount: Int
+	protected open fun getLastPage() = pages.lastOrNull()
+
+	protected open fun getFirstPage() = pages.firstOrNull()
 
 	protected abstract fun getCurrentItem(): Int
 
@@ -222,12 +252,10 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 
 	protected abstract fun setCurrentItem(position: Int, isSmooth: Boolean)
 
-	protected abstract fun onCreateAdapter(dataSet: GroupedList<Long, MangaPage>): BaseReaderAdapter
+	protected abstract fun onCreateAdapter(dataSet: List<ReaderPage>): BaseReaderAdapter
 
 	protected companion object {
 
 		const val ARG_STATE = "state"
-		private const val TAG = "AbstractReader"
-
 	}
 }

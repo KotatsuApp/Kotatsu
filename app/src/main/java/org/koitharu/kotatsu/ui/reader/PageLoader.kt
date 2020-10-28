@@ -27,7 +27,7 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 	private val convertLock = Mutex()
 
 	override val coroutineContext: CoroutineContext
-		get() = Dispatchers.Main.immediate + job
+		get() = job + Dispatchers.Main.immediate
 
 	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun loadFile(url: String, force: Boolean): File {
@@ -88,7 +88,7 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 	}
 
 	override fun dispose() {
-		coroutineContext.cancel()
+		job.cancelChildren()
 		tasks.clear()
 	}
 }

@@ -7,14 +7,14 @@ import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import kotlinx.android.synthetic.main.item_page.*
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.base.PageHolderDelegate
+import org.koitharu.kotatsu.ui.reader.base.ReaderPage
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class PageHolder(parent: ViewGroup, loader: PageLoader) :
-	BaseViewHolder<MangaPage, Unit>(parent, R.layout.item_page),
+	BaseViewHolder<ReaderPage, Unit>(parent, R.layout.item_page),
 	PageHolderDelegate.Callback, View.OnClickListener {
 
 	private val delegate = PageHolderDelegate(loader, this)
@@ -24,8 +24,8 @@ class PageHolder(parent: ViewGroup, loader: PageLoader) :
 		button_retry.setOnClickListener(this)
 	}
 
-	override fun onBind(data: MangaPage, extra: Unit) {
-		delegate.onBind(data)
+	override fun onBind(data: ReaderPage, extra: Unit) {
+		delegate.onBind(data.toMangaPage())
 	}
 
 	override fun onRecycled() {
@@ -57,7 +57,7 @@ class PageHolder(parent: ViewGroup, loader: PageLoader) :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_retry -> delegate.retry(boundData ?: return)
+			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return)
 		}
 	}
 
