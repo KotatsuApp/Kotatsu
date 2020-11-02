@@ -2,14 +2,15 @@ package org.koitharu.kotatsu.ui.search.global
 
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.ui.list.MangaListFragment
+import org.koitharu.kotatsu.utils.ext.stringArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 
-class GlobalSearchFragment: MangaListFragment<Unit>() {
+class GlobalSearchFragment : MangaListFragment<Unit>() {
 
 	private val presenter by moxyPresenter(factory = ::GlobalSearchPresenter)
 
-	private val query by stringArg(ARG_QUERY)
+	private val query by stringArgument(ARG_QUERY)
 
 	override fun onRequestMoreItems(offset: Int) {
 		if (offset == 0) {

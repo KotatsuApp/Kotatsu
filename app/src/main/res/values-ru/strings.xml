@@ -160,4 +160,6 @@
 	<string name="update_check_failed">Ошибка при проверке обновления</string>
 	<string name="no_update_available">Нет доступных обновлений</string>
 	<string name="right_to_left">Справа налево</string>
+	<string name="prefer_rtl_reader">Предпочитать режим Справа налево</string>
+	<string name="prefer_rtl_reader_summary">Вы можете настроить режим чтения для каждой манги отдельно</string>
 </resources>

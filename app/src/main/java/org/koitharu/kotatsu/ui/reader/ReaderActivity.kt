@@ -125,7 +125,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 					replace(R.id.container, ReversedReaderFragment.newInstance(state))
 				}
 			}
-			else -> if (currentReader !is PagerReaderFragment) {
+			ReaderMode.STANDARD -> if (currentReader !is PagerReaderFragment) {
 				supportFragmentManager.commit {
 					replace(R.id.container, PagerReaderFragment.newInstance(state))
 				}
@@ -135,7 +135,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			when (mode) {
 				ReaderMode.WEBTOON -> R.drawable.ic_script
 				ReaderMode.REVERSED -> R.drawable.ic_read_reversed
-				else -> R.drawable.ic_book_page
+				ReaderMode.STANDARD -> R.drawable.ic_book_page
 			}
 		)
 		appbar_top.postDelayed(1000) {
@@ -158,70 +158,70 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		outState.putParcelable(EXTRA_STATE, state)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_reader_mode -> {
-			ReaderConfigDialog.show(
-				supportFragmentManager, when (reader) {
-					is PagerReaderFragment -> ReaderMode.STANDARD
-					is WebtoonReaderFragment -> ReaderMode.WEBTOON
-					is ReversedReaderFragment -> ReaderMode.REVERSED
-					else -> ReaderMode.UNKNOWN
-				}
-			)
-			true
-		}
-		R.id.action_settings -> {
-			startActivity(SimpleSettingsActivity.newReaderSettingsIntent(this))
-			true
-		}
-		R.id.action_chapters -> {
-			ChaptersDialog.show(
-				supportFragmentManager,
-				state.manga.chapters.orEmpty(),
-				state.chapterId
-			)
-			true
-		}
-		R.id.action_screen_rotate -> {
-			orientationHelper.toggleOrientation()
-			true
-		}
-		R.id.action_pages_thumbs -> {
-			if (reader?.hasItems == true) {
-				val pages = reader?.getPages()
-				if (!pages.isNullOrEmpty()) {
-					PagesThumbnailsSheet.show(
-						supportFragmentManager, pages,
-						state.chapter?.name ?: title?.toString().orEmpty()
-					)
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		when (item.itemId) {
+			R.id.action_reader_mode -> {
+				ReaderConfigDialog.show(
+					supportFragmentManager, when (reader) {
+						is PagerReaderFragment -> ReaderMode.STANDARD
+						is WebtoonReaderFragment -> ReaderMode.WEBTOON
+						is ReversedReaderFragment -> ReaderMode.REVERSED
+						else -> {
+							showWaitWhileLoading()
+							return false
+						}
+					}
+				)
+			}
+			R.id.action_settings -> {
+				startActivity(SimpleSettingsActivity.newReaderSettingsIntent(this))
+			}
+			R.id.action_chapters -> {
+				ChaptersDialog.show(
+					supportFragmentManager,
+					state.manga.chapters.orEmpty(),
+					state.chapterId
+				)
+			}
+			R.id.action_screen_rotate -> {
+				orientationHelper.toggleOrientation()
+			}
+			R.id.action_pages_thumbs -> {
+				if (reader?.hasItems == true) {
+					val pages = reader?.getPages()
+					if (!pages.isNullOrEmpty()) {
+						PagesThumbnailsSheet.show(
+							supportFragmentManager, pages,
+							state.chapter?.name ?: title?.toString().orEmpty()
+						)
+					} else {
+						showWaitWhileLoading()
+					}
 				} else {
 					showWaitWhileLoading()
 				}
-			} else {
-				showWaitWhileLoading()
 			}
-			true
-		}
-		R.id.action_save_page -> {
-			if (reader?.hasItems == true) {
-				if (ContextCompat.checkSelfPermission(
-						this,
-						Manifest.permission.WRITE_EXTERNAL_STORAGE
-					) == PackageManager.PERMISSION_GRANTED
-				) {
-					onActivityResult(true)
+			R.id.action_save_page -> {
+				if (reader?.hasItems == true) {
+					if (ContextCompat.checkSelfPermission(
+							this,
+							Manifest.permission.WRITE_EXTERNAL_STORAGE
+						) == PackageManager.PERMISSION_GRANTED
+					) {
+						onActivityResult(true)
+					} else {
+						registerForActivityResult(
+							ActivityResultContracts.RequestPermission(),
+							this
+						).launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+					}
 				} else {
-					registerForActivityResult(
-						ActivityResultContracts.RequestPermission(),
-						this
-					).launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+					showWaitWhileLoading()
 				}
-			} else {
-				showWaitWhileLoading()
 			}
-			true
+			else -> return super.onOptionsItemSelected(item)
 		}
-		else -> super.onOptionsItemSelected(item)
+		return true
 	}
 
 	override fun onActivityResult(result: Boolean) {

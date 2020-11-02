@@ -10,7 +10,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.medianOrNull
 import java.io.InputStream
@@ -24,7 +23,7 @@ object MangaUtils : KoinComponent {
 	 */
 	@WorkerThread
 	@Suppress("BlockingMethodInNonBlockingContext")
-	suspend fun determineReaderMode(pages: List<MangaPage>): ReaderMode? {
+	suspend fun determineMangaIsWebtoon(pages: List<MangaPage>): Boolean? {
 		try {
 			val page = pages.medianOrNull() ?: return null
 			val url = page.source.repository.getPageFullUrl(page)
@@ -45,10 +44,7 @@ object MangaUtils : KoinComponent {
 					getBitmapSize(it.body?.byteStream())
 				}
 			}
-			return when {
-				size.width * 2 < size.height -> ReaderMode.WEBTOON
-				else -> ReaderMode.STANDARD
-			}
+			return size.width * 2 < size.height
 		} catch (e: Exception) {
 			if (BuildConfig.DEBUG) {
 				e.printStackTrace()

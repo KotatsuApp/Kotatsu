@@ -88,6 +88,11 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 		false
 	)
 
+	val isPreferRtlReader by BoolPreferenceDelegate(
+		resources.getString(R.string.key_reader_prefer_rtl),
+		false
+	)
+
 	val trackSources by StringSetPreferenceDelegate(
 		resources.getString(R.string.key_track_sources),
 		arraySetOf(TRACK_FAVOURITES, TRACK_HISTORY)

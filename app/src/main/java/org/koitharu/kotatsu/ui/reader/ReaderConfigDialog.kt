@@ -18,9 +18,8 @@ class ReaderConfigDialog : AlertDialogFragment(R.layout.dialog_reader_config),
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		mode = arguments?.getInt(ARG_MODE, ReaderMode.UNKNOWN.id)
+		mode = arguments?.getInt(ARG_MODE)
 			?.let { ReaderMode.valueOf(it) }
-			?.takeUnless { it == ReaderMode.UNKNOWN }
 			?: ReaderMode.STANDARD
 	}
 

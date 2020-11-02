@@ -13,6 +13,7 @@ import org.koin.core.component.inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.domain.MangaDataRepository
 import org.koitharu.kotatsu.domain.MangaUtils
@@ -28,27 +29,29 @@ import org.koitharu.kotatsu.utils.ext.mimeType
 class ReaderPresenter : BasePresenter<ReaderView>() {
 
 	private val dataRepository by inject<MangaDataRepository>()
+	private val appSettings by inject<AppSettings>()
 
 	fun init(manga: Manga) {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(isLoading = true)
 			try {
-				val mode = withContext(Dispatchers.IO) {
+				val mode = withContext(Dispatchers.Default) {
 					val repo = manga.source.repository
 					val chapter =
 						(manga.chapters ?: throw RuntimeException("Chapters is null")).random()
 					var mode = dataRepository.getReaderMode(manga.id)
 					if (mode == null) {
 						val pages = repo.getPages(chapter)
-						mode = MangaUtils.determineReaderMode(pages)
-						if (mode != null) {
+						val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
+						mode = getReaderMode(isWebtoon)
+						if (isWebtoon != null) {
 							dataRepository.savePreferences(
 								manga = manga,
 								mode = mode
 							)
 						}
 					}
-					mode ?: ReaderMode.UNKNOWN
+					mode
 				}
 				viewState.onInitReader(manga, mode)
 			} catch (_: CancellationException) {
@@ -99,6 +102,12 @@ class ReaderPresenter : BasePresenter<ReaderView>() {
 				}
 			}
 		}
+	}
+
+	private fun getReaderMode(isWebtoon: Boolean?) = when {
+		isWebtoon == true -> ReaderMode.WEBTOON
+		appSettings.isPreferRtlReader -> ReaderMode.REVERSED
+		else -> ReaderMode.STANDARD
 	}
 
 	companion object : KoinComponent {

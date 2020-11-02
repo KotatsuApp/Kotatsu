@@ -13,8 +13,15 @@
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
-		android:title="@string/pages_animation"
 		android:key="@string/key_reader_animation"
+		android:title="@string/pages_animation"
+		app:iconSpaceReserved="false" />
+
+	<SwitchPreference
+		android:defaultValue="false"
+		android:key="@string/key_reader_prefer_rtl"
+		android:summary="@string/prefer_rtl_reader_summary"
+		android:title="@string/prefer_rtl_reader"
 		app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

@@ -21,3 +21,8 @@ inline fun <T : Parcelable> Fragment.parcelableArgument(name: String) =
 		requireArguments().getParcelable(name)
 			?: error("No argument $name passed in ${javaClass.simpleName}")
 	}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun Fragment.stringArgument(name: String) = lazy(LazyThreadSafetyMode.NONE) {
+	arguments?.getString(name)
+}

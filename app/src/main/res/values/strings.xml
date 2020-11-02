@@ -161,4 +161,6 @@
 	<string name="update_check_failed">Update check failed</string>
 	<string name="no_update_available">No updates available</string>
 	<string name="right_to_left">Right to left</string>
+	<string name="prefer_rtl_reader">Prefer Right to left reader</string>
+	<string name="prefer_rtl_reader_summary">You can set up the reading mode for each manga separately</string>
 </resources>
