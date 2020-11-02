@@ -5,31 +5,29 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.text.InputType
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_categories.*
 import moxy.ktx.moxyPresenter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.ui.base.BaseActivity
-import org.koitharu.kotatsu.ui.base.dialog.TextInputDialog
 import org.koitharu.kotatsu.ui.base.list.OnRecyclerItemClickListener
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 
 class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<FavouriteCategory>,
-	FavouriteCategoriesView, View.OnClickListener {
+	FavouriteCategoriesView, View.OnClickListener, CategoriesEditDelegate.CategoriesEditCallback {
 
 	private val presenter by moxyPresenter(factory = ::FavouriteCategoriesPresenter)
 
 	private lateinit var adapter: CategoriesAdapter
 	private lateinit var reorderHelper: ItemTouchHelper
+	private lateinit var editDelegate: CategoriesEditDelegate
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -37,6 +35,7 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		fab_add.imageTintList = ColorStateList.valueOf(Color.WHITE)
 		adapter = CategoriesAdapter(this)
+		editDelegate = CategoriesEditDelegate(this, this)
 		recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
 		recyclerView.adapter = adapter
 		fab_add.setOnClickListener(this)
@@ -46,15 +45,15 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.fab_add -> createCategory()
+			R.id.fab_add -> editDelegate.createCategory()
 		}
 	}
 
 	override fun onItemClick(item: FavouriteCategory, position: Int, view: View) {
 		view.showPopupMenu(R.menu.popup_category) {
 			when (it.itemId) {
-				R.id.action_remove -> deleteCategory(item)
-				R.id.action_rename -> renameCategory(item)
+				R.id.action_remove -> editDelegate.deleteCategory(item)
+				R.id.action_rename -> editDelegate.renameCategory(item)
 			}
 			true
 		}
@@ -79,42 +78,16 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 			.show()
 	}
 
-	private fun deleteCategory(category: FavouriteCategory) {
-		MaterialAlertDialogBuilder(this)
-			.setMessage(getString(R.string.category_delete_confirm, category.title))
-			.setTitle(R.string.remove_category)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setPositiveButton(R.string.remove) { _, _ ->
-				presenter.deleteCategory(category.id)
-			}.create()
-			.show()
+	override fun onDeleteCategory(category: FavouriteCategory) {
+		presenter.deleteCategory(category.id)
 	}
 
-	private fun renameCategory(category: FavouriteCategory) {
-		TextInputDialog.Builder(this)
-			.setTitle(R.string.rename)
-			.setText(category.title)
-			.setHint(R.string.enter_category_name)
-			.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-			.setNegativeButton(android.R.string.cancel)
-			.setMaxLength(12, false)
-			.setPositiveButton(R.string.rename) { _, name ->
-				presenter.renameCategory(category.id, name)
-			}.create()
-			.show()
+	override fun onRenameCategory(category: FavouriteCategory, newName: String) {
+		presenter.renameCategory(category.id, newName)
 	}
 
-	private fun createCategory() {
-		TextInputDialog.Builder(this)
-			.setTitle(R.string.add_new_category)
-			.setHint(R.string.enter_category_name)
-			.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-			.setNegativeButton(android.R.string.cancel)
-			.setMaxLength(12, false)
-			.setPositiveButton(R.string.add) { _, name ->
-				presenter.createCategory(name)
-			}.create()
-			.show()
+	override fun onCreateCategory(name: String) {
+		presenter.createCategory(name)
 	}
 
 	private inner class ReorderHelperCallback : ItemTouchHelper.SimpleCallback(

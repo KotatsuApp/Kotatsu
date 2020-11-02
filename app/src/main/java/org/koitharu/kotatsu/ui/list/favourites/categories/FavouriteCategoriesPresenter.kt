@@ -45,7 +45,6 @@ class FavouriteCategoriesPresenter : BasePresenter<FavouriteCategoriesView>() {
 	fun renameCategory(id: Long, name: String) {
 		launchJob {
 			repository.renameCategory(id, name)
-
 		}
 	}
 

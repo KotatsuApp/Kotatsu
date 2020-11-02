@@ -3,7 +3,10 @@ package org.koitharu.kotatsu.utils.ext
 import android.app.Activity
 import android.graphics.Rect
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -14,7 +17,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -34,13 +36,6 @@ fun View.showKeyboard() {
 
 inline fun <reified T : View> ViewGroup.inflate(@LayoutRes resId: Int) =
 	LayoutInflater.from(context).inflate(resId, this, false) as T
-
-fun RecyclerView.lookupSpanSize(callback: (Int) -> Int) {
-	(layoutManager as? GridLayoutManager)?.spanSizeLookup =
-		object : GridLayoutManager.SpanSizeLookup() {
-			override fun getSpanSize(position: Int) = callback(position)
-		}
-}
 
 val RecyclerView.hasItems: Boolean
 	get() = (adapter?.itemCount ?: 0) > 0
@@ -82,14 +77,15 @@ fun View.disableFor(timeInMillis: Long) {
 	}
 }
 
-fun View.showPopupMenu(
-	@MenuRes menuRes: Int, onPrepare: ((Menu) -> Unit)? = null,
-	onItemClick: (MenuItem) -> Boolean
+inline fun View.showPopupMenu(
+	@MenuRes menuRes: Int,
+	onPrepare: (Menu) -> Unit = {},
+	onItemClick: PopupMenu.OnMenuItemClickListener
 ) {
 	val menu = PopupMenu(context, this)
 	menu.inflate(menuRes)
 	menu.setOnMenuItemClickListener(onItemClick)
-	onPrepare?.invoke(menu.menu)
+	onPrepare(menu.menu)
 	menu.show()
 }
 

@@ -162,4 +162,5 @@
 	<string name="right_to_left">Справа налево</string>
 	<string name="prefer_rtl_reader">Предпочитать режим Справа налево</string>
 	<string name="prefer_rtl_reader_summary">Вы можете настроить режим чтения для каждой манги отдельно</string>
+	<string name="create_category">Создать категорию</string>
 </resources>
