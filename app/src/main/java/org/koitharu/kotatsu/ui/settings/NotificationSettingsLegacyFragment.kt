@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.ui.settings
 
 import android.media.RingtoneManager
 import android.os.Bundle
+import android.view.View
 import androidx.preference.Preference
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -13,6 +14,10 @@ class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notif
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_notifications)
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_NOTIFICATIONS_SOUND)?.run {
 			val uri = settings.notificationSound.toUriOrNull()
 			summary = RingtoneManager.getRingtone(context, uri).getTitle(context)

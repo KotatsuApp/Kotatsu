@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.ui.settings
 
 import android.os.Bundle
+import android.view.View
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import org.koitharu.kotatsu.R
@@ -30,6 +31,10 @@ class SourceSettingsFragment : PreferenceFragmentCompat() {
 			val pref = preferenceScreen.getPreference(i)
 			pref.isVisible = pref.key in keys
 		}
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 		findPreference<EditTextPreference>(SourceSettings.KEY_DOMAIN)?.summaryProvider =
 			EditTextSummaryProvider(R.string._default)
 	}

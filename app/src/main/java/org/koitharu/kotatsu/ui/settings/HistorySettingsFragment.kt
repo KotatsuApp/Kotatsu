@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.ui.settings
 
 import android.os.Bundle
+import android.view.View
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,10 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_PAGES_CACHE_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
 				val size = withContext(Dispatchers.IO) {

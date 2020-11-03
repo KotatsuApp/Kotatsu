@@ -36,6 +36,10 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_main)
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_LIST_MODE)?.summary =
 			LIST_MODES[settings.listMode]?.let(::getString)
 		findPreference<SeekBarPreference>(AppSettings.KEY_GRID_SIZE)?.run {
@@ -62,6 +66,12 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			title = getString(R.string.app_version, BuildConfig.VERSION_NAME)
 			isEnabled = AppUpdateChecker.isUpdateSupported(context)
 		}
+		settings.subscribe(this)
+	}
+
+	override fun onDestroyView() {
+		settings.unsubscribe(this)
+		super.onDestroyView()
 	}
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
@@ -78,16 +88,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				}
 			}
 		}
-	}
-
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-		settings.subscribe(this)
-	}
-
-	override fun onDestroyView() {
-		settings.unsubscribe(this)
-		super.onDestroyView()
 	}
 
 	override fun onResume() {
