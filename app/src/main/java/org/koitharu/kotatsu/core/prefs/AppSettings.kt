@@ -2,109 +2,78 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Resources
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.utils.delegates.prefs.*
 import java.io.File
 
-class AppSettings private constructor(resources: Resources, private val prefs: SharedPreferences) :
+class AppSettings private constructor(private val prefs: SharedPreferences) :
 	SharedPreferences by prefs {
 
 	constructor(context: Context) : this(
-		context.resources,
 		PreferenceManager.getDefaultSharedPreferences(context)
 	)
 
 	var listMode by EnumPreferenceDelegate(
 		ListMode::class.java,
-		resources.getString(R.string.key_list_mode),
+		KEY_LIST_MODE,
 		ListMode.DETAILED_LIST
 	)
 
 	var defaultSection by EnumPreferenceDelegate(
 		AppSection::class.java,
-		resources.getString(R.string.key_app_section),
+		KEY_APP_SECTION,
 		AppSection.HISTORY
 	)
 
 	val theme by StringIntPreferenceDelegate(
-		resources.getString(R.string.key_theme),
+		KEY_THEME,
 		AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 	)
 
-	val gridSize by IntPreferenceDelegate(
-		resources.getString(R.string.key_grid_size),
-		100
-	)
+	val gridSize by IntPreferenceDelegate(KEY_GRID_SIZE, defaultValue = 100)
 
 	val readerPageSwitch by StringSetPreferenceDelegate(
-		resources.getString(R.string.key_reader_switchers),
+		KEY_READER_SWITCHERS,
 		arraySetOf(PAGE_SWITCH_TAPS)
 	)
 
-	var isTrafficWarningEnabled by BoolPreferenceDelegate(
-		resources.getString(R.string.key_traffic_warning),
-		true
-	)
+	var isTrafficWarningEnabled by BoolPreferenceDelegate(KEY_TRAFFIC_WARNING, defaultValue = true)
 
-	val appUpdateAuto by BoolPreferenceDelegate(
-		resources.getString(R.string.key_app_update_auto),
-		true
-	)
+	val appUpdateAuto by BoolPreferenceDelegate(KEY_APP_UPDATE_AUTO, defaultValue = true)
 
-	var appUpdate by LongPreferenceDelegate(
-		resources.getString(R.string.key_app_update),
-		0L
-	)
+	var appUpdate by LongPreferenceDelegate(KEY_APP_UPDATE, defaultValue = 0L)
 
 	val trackerNotifications by BoolPreferenceDelegate(
-		resources.getString(R.string.key_tracker_notifications),
-		true
+		KEY_TRACKER_NOTIFICATIONS,
+		defaultValue = true
 	)
 
 	var notificationSound by StringPreferenceDelegate(
-		resources.getString(R.string.key_notifications_sound),
+		KEY_NOTIFICATIONS_SOUND,
 		Settings.System.DEFAULT_NOTIFICATION_URI.toString()
 	)
 
-	val notificationVibrate by BoolPreferenceDelegate(
-		resources.getString(R.string.key_notifications_vibrate),
-		false
-	)
+	val notificationVibrate by BoolPreferenceDelegate(KEY_NOTIFICATIONS_VIBRATE, false)
 
-	val notificationLight by BoolPreferenceDelegate(
-		resources.getString(R.string.key_notifications_light),
-		true
-	)
+	val notificationLight by BoolPreferenceDelegate(KEY_NOTIFICATIONS_LIGHT, true)
 
-	val readerAnimation by BoolPreferenceDelegate(
-		resources.getString(R.string.key_reader_animation),
-		false
-	)
+	val readerAnimation by BoolPreferenceDelegate(KEY_READER_ANIMATION, false)
 
-	val isPreferRtlReader by BoolPreferenceDelegate(
-		resources.getString(R.string.key_reader_prefer_rtl),
-		false
-	)
+	val isPreferRtlReader by BoolPreferenceDelegate(KEY_READER_PREFER_RTL, false)
 
 	val trackSources by StringSetPreferenceDelegate(
-		resources.getString(R.string.key_track_sources),
+		KEY_TRACK_SOURCES,
 		arraySetOf(TRACK_FAVOURITES, TRACK_HISTORY)
 	)
 
-	var appPassword by NullableStringPreferenceDelegate(
-		resources.getString(R.string.key_app_password)
-	)
+	var appPassword by NullableStringPreferenceDelegate(KEY_APP_PASSWORD)
 
-	private var sourcesOrderStr by NullableStringPreferenceDelegate(
-		resources.getString(R.string.key_sources_order)
-	)
+	private var sourcesOrderStr by NullableStringPreferenceDelegate(KEY_SOURCES_ORDER)
 
 	var sourcesOrder: List<Int>
 		get() = sourcesOrderStr?.split('|')?.mapNotNull(String::toIntOrNull).orEmpty()
@@ -112,22 +81,21 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 			sourcesOrderStr = value.joinToString("|")
 		}
 
-	var hiddenSources by StringSetPreferenceDelegate(resources.getString(R.string.key_sources_hidden))
+	var hiddenSources by StringSetPreferenceDelegate(KEY_SOURCES_HIDDEN)
 
 	fun getStorageDir(context: Context): File? {
-		val value = prefs.getString(context.getString(R.string.key_local_storage), null)?.let {
+		val value = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)
 		}?.takeIf { it.exists() && it.canWrite() }
 		return value ?: LocalMangaRepository.getFallbackStorageDir(context)
 	}
 
 	fun setStorageDir(context: Context, file: File?) {
-		val key = context.getString(R.string.key_local_storage)
 		prefs.edit {
 			if (file == null) {
-				remove(key)
+				remove(KEY_LOCAL_STORAGE)
 			} else {
-				putString(key, file.path)
+				putString(KEY_LOCAL_STORAGE, file.path)
 			}
 		}
 	}
@@ -147,5 +115,33 @@ class AppSettings private constructor(resources: Resources, private val prefs: S
 
 		const val TRACK_HISTORY = "history"
 		const val TRACK_FAVOURITES = "favourites"
+
+		const val KEY_LIST_MODE = "list_mode"
+		const val KEY_APP_SECTION = "app_section"
+		const val KEY_THEME = "theme"
+		const val KEY_SOURCES_ORDER = "sources_order"
+		const val KEY_SOURCES_HIDDEN = "sources_hidden"
+		const val KEY_TRAFFIC_WARNING = "traffic_warning"
+		const val KEY_PAGES_CACHE_CLEAR = "pages_cache_clear"
+		const val KEY_THUMBS_CACHE_CLEAR = "thumbs_cache_clear"
+		const val KEY_SEARCH_HISTORY_CLEAR = "search_history_clear"
+		const val KEY_UPDATES_FEED_CLEAR = "updates_feed_clear"
+		const val KEY_GRID_SIZE = "grid_size"
+		const val KEY_REMOTE_SOURCES = "remote_sources"
+		const val KEY_LOCAL_STORAGE = "local_storage"
+		const val KEY_READER_SWITCHERS = "reader_switchers"
+		const val KEY_TRACK_SOURCES = "track_sources"
+		const val KEY_APP_UPDATE = "app_update"
+		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
+		const val KEY_TRACKER_NOTIFICATIONS = "tracker_notifications"
+		const val KEY_NOTIFICATIONS_SETTINGS = "notifications_settings"
+		const val KEY_NOTIFICATIONS_SOUND = "notifications_sound"
+		const val KEY_NOTIFICATIONS_VIBRATE = "notifications_vibrate"
+		const val KEY_NOTIFICATIONS_LIGHT = "notifications_light"
+		const val KEY_READER_ANIMATION = "reader_animation"
+		const val KEY_READER_PREFER_RTL = "reader_prefer_rtl"
+		const val KEY_APP_PASSWORD = "app_password"
+		const val KEY_PROTECT_APP = "protect_app"
+		const val KEY_APP_VERSION = "app_version"
 	}
 }

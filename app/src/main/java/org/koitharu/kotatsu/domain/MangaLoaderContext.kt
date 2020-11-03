@@ -5,7 +5,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.prefs.SourceConfig
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.await
 
 open class MangaLoaderContext : KoinComponent {
@@ -64,7 +64,7 @@ open class MangaLoaderContext : KoinComponent {
 		return okHttp.newCall(request.build()).await()
 	}
 
-	open fun getSettings(source: MangaSource) = SourceConfig(get(), source)
+	open fun getSettings(source: MangaSource) = SourceSettings(get(), source)
 
 	fun insertCookies(domain: String, vararg cookies: String) {
 		val url = HttpUrl.Builder()

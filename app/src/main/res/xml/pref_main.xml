@@ -8,20 +8,20 @@
 		android:defaultValue="-1"
 		android:entries="@array/themes"
 		android:entryValues="@array/values_theme"
-		android:key="@string/key_theme"
+		android:key="theme"
 		android:title="@string/theme"
 		app:iconSpaceReserved="false"
 		app:useSimpleSummaryProvider="true" />
 
 	<Preference
-		android:key="@string/key_list_mode"
+		android:key="list_mode"
 		android:persistent="false"
 		android:title="@string/list_mode"
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false" />
 
 	<SeekBarPreference
-		android:key="@string/key_grid_size"
+		android:key="grid_size"
 		android:max="150"
 		android:title="@string/grid_size"
 		app:defaultValue="100"
@@ -33,13 +33,13 @@
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.ui.settings.sources.SourcesSettingsFragment"
-		android:key="@string/key_remote_sources"
+		android:key="remote_sources"
 		android:title="@string/remote_sources"
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false" />
 
 	<Preference
-		android:key="@string/key_local_storage"
+		android:key="local_storage"
 		android:title="@string/manga_save_location"
 		app:iconSpaceReserved="false" />
 
@@ -49,7 +49,7 @@
 		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
-		android:key="@string/key_protect_app"
+		android:key="protect_app"
 		android:persistent="false"
 		android:summary="@string/protect_application_summary"
 		android:title="@string/protect_application"
@@ -59,20 +59,20 @@
 		android:defaultValue="@array/values_reader_switchers_default"
 		android:entries="@array/reader_switchers"
 		android:entryValues="@array/values_reader_switchers"
-		android:key="@string/key_reader_switchers"
+		android:key="reader_switchers"
 		android:title="@string/switch_pages"
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="false"
-		android:key="@string/key_reader_animation"
+		android:key="reader_animation"
 		android:title="@string/pages_animation"
 		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="false"
-		android:key="@string/key_reader_prefer_rtl"
+		android:key="reader_prefer_rtl"
 		android:summary="@string/prefer_rtl_reader_summary"
 		android:title="@string/prefer_rtl_reader"
 		app:iconSpaceReserved="false" />
@@ -86,20 +86,20 @@
 			android:defaultValue="@array/values_track_sources_default"
 			android:entries="@array/track_sources"
 			android:entryValues="@array/values_track_sources"
-			android:key="@string/key_track_sources"
+			android:key="track_sources"
 			android:title="@string/track_sources"
 			app:iconSpaceReserved="false" />
 
 		<SwitchPreference
 			android:defaultValue="true"
-			android:key="@string/key_tracker_notifications"
+			android:key="tracker_notifications"
 			android:summary="@string/show_notification_new_chapters"
 			android:title="@string/notifications"
 			app:iconSpaceReserved="false" />
 
 		<Preference
-			android:dependency="@string/key_tracker_notifications"
-			android:key="@string/key_notifications_settings"
+			android:dependency="tracker_notifications"
+			android:key="notifications_settings"
 			android:title="@string/notifications_settings"
 			app:iconSpaceReserved="false" />
 
@@ -111,7 +111,7 @@
 
 		<SwitchPreference
 			android:defaultValue="true"
-			android:key="@string/key_app_update_auto"
+			android:key="app_update_auto"
 			android:summary="@string/show_notification_app_update"
 			android:title="@string/application_update"
 			app:iconSpaceReserved="false"
@@ -119,7 +119,7 @@
 			tools:isPreferenceVisible="true" />
 
 		<Preference
-			android:key="@string/key_app_version"
+			android:key="app_version"
 			android:persistent="false"
 			android:summary="@string/check_for_updates"
 			app:iconSpaceReserved="false" />

@@ -68,7 +68,7 @@ class ReversedReaderFragment : AbstractReader(R.layout.fragment_reader_standard)
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 		when (key) {
-			getString(R.string.key_reader_animation) -> {
+			AppSettings.KEY_READER_ANIMATION -> {
 				if (settings.readerAnimation) {
 					pager.setPageTransformer(PageAnimTransformer())
 				} else {

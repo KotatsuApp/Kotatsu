@@ -5,11 +5,11 @@ import androidx.core.content.edit
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class IntPreferenceDelegate(private val key: String, private val defValue: Int) :
+class IntPreferenceDelegate(private val key: String, private val defaultValue: Int) :
 	ReadWriteProperty<SharedPreferences, Int> {
 
 	override fun getValue(thisRef: SharedPreferences, property: KProperty<*>): Int {
-		return thisRef.getInt(key, defValue)
+		return thisRef.getInt(key, defaultValue)
 	}
 
 	override fun setValue(thisRef: SharedPreferences, property: KProperty<*>, value: Int) {

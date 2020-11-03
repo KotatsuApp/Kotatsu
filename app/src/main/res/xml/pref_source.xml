@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <EditTextPreference
-        android:key="@string/key_parser_domain"
+        android:key="domain"
         android:title="@string/domain"
         app:iconSpaceReserved="false" />
 
     <SwitchPreferenceCompat
-        android:key="@string/key_parser_ssl"
+        android:key="ssl"
         android:title="@string/use_ssl"
         app:iconSpaceReserved="false" />
 

@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.parsers
 
-import org.koitharu.kotatsu.core.prefs.SourceConfig
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 
-class SourceConfigMock : SourceConfig {
+class SourceSettingsMock : SourceSettings {
 
 	override fun getDomain(defaultValue: String) = defaultValue
 

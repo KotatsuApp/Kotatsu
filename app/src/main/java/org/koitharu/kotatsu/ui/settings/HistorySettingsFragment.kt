@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.local.Cache
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.domain.tracking.TrackingRepository
 import org.koitharu.kotatsu.ui.base.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.search.MangaSuggestionsProvider
@@ -23,7 +24,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)
-		findPreference<Preference>(R.string.key_pages_cache_clear)?.let { pref ->
+		findPreference<Preference>(AppSettings.KEY_PAGES_CACHE_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
 				val size = withContext(Dispatchers.IO) {
 					CacheUtils.computeCacheSize(pref.context, Cache.PAGES.dir)
@@ -31,7 +32,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				pref.summary = FileSizeUtils.formatBytes(pref.context, size)
 			}
 		}
-		findPreference<Preference>(R.string.key_thumbs_cache_clear)?.let { pref ->
+		findPreference<Preference>(AppSettings.KEY_THUMBS_CACHE_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
 				val size = withContext(Dispatchers.IO) {
 					CacheUtils.computeCacheSize(pref.context, Cache.THUMBS.dir)
@@ -39,11 +40,11 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				pref.summary = FileSizeUtils.formatBytes(pref.context, size)
 			}
 		}
-		findPreference<Preference>(R.string.key_search_history_clear)?.let { p ->
+		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { p ->
 			val items = MangaSuggestionsProvider.getItemsCount(p.context)
 			p.summary = p.context.resources.getQuantityString(R.plurals.items, items, items)
 		}
-		findPreference<Preference>(R.string.key_updates_feed_clear)?.let { p ->
+		findPreference<Preference>(AppSettings.KEY_UPDATES_FEED_CLEAR)?.let { p ->
 			viewLifecycleScope.launchWhenResumed {
 				val items = trackerRepo.count()
 				p.summary = p.context.resources.getQuantityString(R.plurals.items, items, items)
@@ -53,15 +54,15 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
-			getString(R.string.key_pages_cache_clear) -> {
+			AppSettings.KEY_PAGES_CACHE_CLEAR -> {
 				clearCache(preference, Cache.PAGES)
 				true
 			}
-			getString(R.string.key_thumbs_cache_clear) -> {
+			AppSettings.KEY_THUMBS_CACHE_CLEAR -> {
 				clearCache(preference, Cache.THUMBS)
 				true
 			}
-			getString(R.string.key_search_history_clear) -> {
+			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
 				MangaSuggestionsProvider.clearHistory(preference.context)
 				preference.summary = preference.context.resources
 					.getQuantityString(R.plurals.items, 0, 0)
@@ -72,7 +73,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				).show()
 				true
 			}
-			getString(R.string.key_updates_feed_clear) -> {
+			AppSettings.KEY_UPDATES_FEED_CLEAR -> {
 				viewLifecycleScope.launch {
 					trackerRepo.clearLogs()
 					preference.summary = preference.context.resources

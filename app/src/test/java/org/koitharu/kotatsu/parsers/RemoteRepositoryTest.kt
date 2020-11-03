@@ -13,7 +13,7 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
-import org.koitharu.kotatsu.core.prefs.SourceConfig
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.AssertX
 import java.util.concurrent.TimeUnit
@@ -106,8 +106,8 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 					module {
 						single<MangaLoaderContext> {
 							object : MangaLoaderContext() {
-								override fun getSettings(source: MangaSource): SourceConfig {
-									return SourceConfigMock()
+								override fun getSettings(source: MangaSource): SourceSettings {
+									return SourceSettingsMock()
 								}
 							}
 						}

@@ -6,6 +6,7 @@ import androidx.preference.PreferenceFragmentCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.ui.settings.utils.EditTextSummaryProvider
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -23,13 +24,13 @@ class SourceSettingsFragment : PreferenceFragmentCompat() {
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		preferenceManager.sharedPreferencesName = source.name
 		val repo = source.repository as? RemoteMangaRepository ?: return
-		val keys = repo.onCreatePreferences().map(::getString)
+		val keys = repo.onCreatePreferences()
 		addPreferencesFromResource(R.xml.pref_source)
 		for (i in 0 until preferenceScreen.preferenceCount) {
 			val pref = preferenceScreen.getPreference(i)
 			pref.isVisible = pref.key in keys
 		}
-		findPreference<EditTextPreference>(getString(R.string.key_parser_domain))?.summaryProvider =
+		findPreference<EditTextPreference>(SourceSettings.KEY_DOMAIN)?.summaryProvider =
 			EditTextSummaryProvider(R.string._default)
 	}
 

@@ -20,5 +20,5 @@ abstract class RemoteMangaRepository(protected val loaderContext: MangaLoaderCon
 
 	override suspend fun getTags(): Set<MangaTag> = emptySet()
 
-	abstract fun onCreatePreferences(): Set<Int>
+	abstract fun onCreatePreferences(): Set<String>
 }

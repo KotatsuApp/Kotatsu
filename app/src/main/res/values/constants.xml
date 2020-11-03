@@ -1,35 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="key_list_mode">list_mode</string>
-	<string name="key_app_section">app_section</string>
-	<string name="key_theme">theme</string>
-	<string name="key_sources_order">sources_order</string>
-	<string name="key_sources_hidden">sources_hidden</string>
-	<string name="key_traffic_warning">traffic_warning</string>
-	<string name="key_pages_cache_clear">pages_cache_clear</string>
-	<string name="key_thumbs_cache_clear">thumbs_cache_clear</string>
-	<string name="key_search_history_clear">search_history_clear</string>
-	<string name="key_updates_feed_clear">updates_feed_clear</string>
-	<string name="key_grid_size">grid_size</string>
-	<string name="key_remote_sources">remote_sources</string>
-	<string name="key_local_storage">local_storage</string>
-	<string name="key_reader_switchers">reader_switchers</string>
-	<string name="key_track_sources">track_sources</string>
-	<string name="key_app_update">app_update</string>
-	<string name="key_app_update_auto">app_update_auto</string>
-	<string name="key_tracker_notifications">tracker_notifications</string>
-	<string name="key_notifications_settings">notifications_settings</string>
-	<string name="key_notifications_sound">notifications_sound</string>
-	<string name="key_notifications_vibrate">notifications_vibrate</string>
-	<string name="key_notifications_light">notifications_light</string>
-	<string name="key_reader_animation">reader_animation</string>
-	<string name="key_reader_prefer_rtl">reader_prefer_rtl</string>
-	<string name="key_app_password">app_password</string>
-	<string name="key_protect_app">protect_app</string>
-	<string name="key_app_version">app_version</string>
-
-	<string name="key_parser_domain">domain</string>
-	<string name="key_parser_ssl">ssl</string>
 	<string-array name="values_theme">
 		<item>-1</item>
 		<item>1</item>

@@ -197,8 +197,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 		when (key) {
-			getString(R.string.key_sources_hidden),
-			getString(R.string.key_sources_order) -> {
+			AppSettings.KEY_SOURCES_HIDDEN,
+			AppSettings.KEY_SOURCES_ORDER -> {
 				initSideMenu(MangaProviderFactory.getSources(includeHidden = false))
 			}
 		}

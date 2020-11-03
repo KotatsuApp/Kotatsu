@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.base.BasePreferenceFragment
 import org.koitharu.kotatsu.ui.base.dialog.StorageSelectDialog
@@ -35,29 +36,29 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_main)
-		findPreference<Preference>(R.string.key_list_mode)?.summary =
+		findPreference<Preference>(AppSettings.KEY_LIST_MODE)?.summary =
 			LIST_MODES[settings.listMode]?.let(::getString)
-		findPreference<SeekBarPreference>(R.string.key_grid_size)?.run {
+		findPreference<SeekBarPreference>(AppSettings.KEY_GRID_SIZE)?.run {
 			summary = "%d%%".format(value)
 			setOnPreferenceChangeListener { preference, newValue ->
 				preference.summary = "%d%%".format(newValue)
 				true
 			}
 		}
-		findPreference<MultiSelectListPreference>(R.string.key_reader_switchers)?.summaryProvider =
+		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_SWITCHERS)?.summaryProvider =
 			MultiSummaryProvider(R.string.gestures_only)
-		findPreference<MultiSelectListPreference>(R.string.key_track_sources)?.summaryProvider =
+		findPreference<MultiSelectListPreference>(AppSettings.KEY_TRACK_SOURCES)?.summaryProvider =
 			MultiSummaryProvider(R.string.dont_check)
-		findPreference<Preference>(R.string.key_app_update_auto)?.run {
+		findPreference<Preference>(AppSettings.KEY_APP_UPDATE_AUTO)?.run {
 			isVisible = AppUpdateChecker.isUpdateSupported(context)
 		}
-		findPreference<Preference>(R.string.key_local_storage)?.run {
+		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)
 		}
-		findPreference<SwitchPreference>(R.string.key_protect_app)?.isChecked =
+		findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
-		findPreference<Preference>(R.string.key_app_version)?.run {
+		findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
 			title = getString(R.string.app_version, BuildConfig.VERSION_NAME)
 			isEnabled = AppUpdateChecker.isUpdateSupported(context)
 		}
@@ -65,13 +66,13 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
 		when (key) {
-			getString(R.string.key_list_mode) -> findPreference<Preference>(R.string.key_list_mode)?.summary =
+			AppSettings.KEY_LIST_MODE -> findPreference<Preference>(key)?.summary =
 				LIST_MODES[settings.listMode]?.let(::getString)
-			getString(R.string.key_theme) -> {
+			AppSettings.KEY_THEME -> {
 				AppCompatDelegate.setDefaultNightMode(settings.theme)
 			}
-			getString(R.string.key_local_storage) -> {
-				findPreference<Preference>(R.string.key_local_storage)?.run {
+			AppSettings.KEY_LOCAL_STORAGE -> {
+				findPreference<Preference>(key)?.run {
 					summary = settings.getStorageDir(context)?.getStorageName(context)
 						?: getString(R.string.not_available)
 				}
@@ -91,7 +92,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onResume() {
 		super.onResume()
-		findPreference<PreferenceScreen>(R.string.key_remote_sources)?.run {
+		findPreference<PreferenceScreen>(AppSettings.KEY_REMOTE_SOURCES)?.run {
 			val total = MangaSource.values().size - 1
 			summary = getString(
 				R.string.enabled_d_from_d, total - settings.hiddenSources.size, total
@@ -101,11 +102,11 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onPreferenceTreeClick(preference: Preference?): Boolean {
 		return when (preference?.key) {
-			getString(R.string.key_list_mode) -> {
+			AppSettings.KEY_LIST_MODE -> {
 				ListModeSelectDialog.show(childFragmentManager)
 				true
 			}
-			getString(R.string.key_notifications_settings) -> {
+			AppSettings.KEY_NOTIFICATIONS_SETTINGS -> {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 					val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
 						.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
@@ -116,7 +117,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				}
 				true
 			}
-			getString(R.string.key_local_storage) -> {
+			AppSettings.KEY_LOCAL_STORAGE -> {
 				val ctx = context ?: return false
 				StorageSelectDialog.Builder(ctx, settings.getStorageDir(ctx), this)
 					.setTitle(preference.title)
@@ -125,7 +126,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 					.show()
 				true
 			}
-			getString(R.string.key_protect_app) -> {
+			AppSettings.KEY_PROTECT_APP -> {
 				if ((preference as? SwitchPreference ?: return false).isChecked) {
 					enableAppProtection(preference)
 				} else {
@@ -133,7 +134,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				}
 				true
 			}
-			getString(R.string.key_app_version) -> {
+			AppSettings.KEY_APP_VERSION -> {
 				checkForUpdates()
 				true
 			}
@@ -197,12 +198,12 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	private fun checkForUpdates() {
 		viewLifecycleScope.launch {
-			findPreference<Preference>(R.string.key_app_version)?.run {
+			findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
 				setSummary(R.string.checking_for_updates)
 				isSelectable = false
 			}
 			val result = AppUpdateChecker(activity ?: return@launch).checkNow()
-			findPreference<Preference>(R.string.key_app_version)?.run {
+			findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
 				setSummary(
 					when (result) {
 						true -> R.string.check_for_updates

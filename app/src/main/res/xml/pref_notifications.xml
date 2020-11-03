@@ -4,19 +4,19 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<Preference
-		android:key="@string/key_notifications_sound"
+		android:key="notifications_sound"
 		android:title="@string/notification_sound"
 		app:iconSpaceReserved="false" />
 
 	<CheckBoxPreference
 		android:defaultValue="false"
-		android:key="@string/key_notifications_vibrate"
+		android:key="notifications_vibrate"
 		android:title="@string/vibration"
 		app:iconSpaceReserved="false" />
 
 	<CheckBoxPreference
 		android:defaultValue="true"
-		android:key="@string/key_notifications_light"
+		android:key="notifications_light"
 		android:title="@string/light_indicator"
 		app:iconSpaceReserved="false" />
 

@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
 
@@ -70,7 +71,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		}
 	}
 
-	override fun onCreatePreferences() = arraySetOf(R.string.key_parser_domain)
+	override fun onCreatePreferences() = arraySetOf(SourceSettings.KEY_DOMAIN)
 
 	override suspend fun getDetails(manga: Manga): Manga {
 		val doc = loaderContext.httpGet(manga.url + "?section=info").parseHtml()

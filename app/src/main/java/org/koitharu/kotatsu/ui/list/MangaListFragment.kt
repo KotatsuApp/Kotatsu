@@ -203,8 +203,8 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 			return
 		}
 		when (key) {
-			getString(R.string.key_list_mode) -> initListMode(settings.listMode)
-			getString(R.string.key_grid_size) -> UiUtils.SpanCountResolver.update(recyclerView)
+			AppSettings.KEY_LIST_MODE -> initListMode(settings.listMode)
+			AppSettings.KEY_GRID_SIZE -> UiUtils.SpanCountResolver.update(recyclerView)
 		}
 	}
 

@@ -7,19 +7,19 @@
 		android:defaultValue="@array/values_reader_switchers_default"
 		android:entries="@array/reader_switchers"
 		android:entryValues="@array/values_reader_switchers"
-		android:key="@string/key_reader_switchers"
+		android:key="reader_switchers"
 		android:title="@string/switch_pages"
 		app:iconSpaceReserved="false" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
-		android:key="@string/key_reader_animation"
+		android:key="reader_animation"
 		android:title="@string/pages_animation"
 		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="false"
-		android:key="@string/key_reader_prefer_rtl"
+		android:key="reader_prefer_rtl"
 		android:summary="@string/prefer_rtl_reader_summary"
 		android:title="@string/prefer_rtl_reader"
 		app:iconSpaceReserved="false" />
