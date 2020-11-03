@@ -164,4 +164,5 @@
 	<string name="prefer_rtl_reader">Prefer Right to left reader</string>
 	<string name="prefer_rtl_reader_summary">You can set up the reading mode for each manga separately</string>
 	<string name="create_category">New category</string>
+	<string name="report_github">Create issue on GitHub</string>
 </resources>

@@ -1,45 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical">
 
 	<ScrollView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_above="@id/button_close"
-		android:layout_alignParentStart="true"
-		android:layout_alignParentTop="true"
-		android:layout_alignParentEnd="true"
-		android:layout_marginTop="2dp"
-		android:layout_marginBottom="2dp">
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
 
 		<TextView
 			android:id="@+id/textView"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingStart="2dp"
-			android:paddingEnd="2dp"
+			android:padding="4dp"
 			android:textIsSelectable="true" />
 	</ScrollView>
 
 	<Button
-		android:id="@+id/button_close"
-		style="@android:style/Widget.DeviceDefault.Button.Borderless"
-		android:layout_width="wrap_content"
+		android:id="@+id/button_report"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_toStartOf="@id/button_restart"
-		android:text="@string/close" />
+		android:layout_marginStart="4dp"
+		android:layout_marginEnd="4dp"
+		android:layout_marginBottom="2dp"
+		android:drawableEnd="@android:drawable/ic_menu_set_as"
+		android:text="@string/report_github" />
 
-	<Button
-		android:id="@+id/button_restart"
-		style="@android:style/Widget.DeviceDefault.Button.Borderless"
-		android:layout_width="wrap_content"
+	<LinearLayout
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentEnd="true"
-		android:layout_alignParentBottom="true"
-		android:text="@string/restart" />
+		android:orientation="horizontal"
+		android:weightSum="2">
 
-</RelativeLayout>
+		<Button
+			android:id="@+id/button_close"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="4dp"
+			android:layout_marginEnd="2dp"
+			android:layout_marginBottom="4dp"
+			android:layout_weight="1"
+			android:text="@string/close" />
+
+		<Button
+			android:id="@+id/button_restart"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="2dp"
+			android:layout_marginEnd="4dp"
+			android:layout_marginBottom="4dp"
+			android:layout_weight="1"
+			android:text="@string/restart" />
+
+	</LinearLayout>
+
+</LinearLayout>

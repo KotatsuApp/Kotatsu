@@ -56,7 +56,7 @@
 		<activity
 			android:name=".ui.utils.CrashActivity"
 			android:label="@string/error_occurred"
-			android:theme="@android:style/Theme.DeviceDefault.Dialog"
+			android:theme="@android:style/Theme.DeviceDefault"
 			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity
 			android:name="org.koitharu.kotatsu.ui.list.favourites.categories.CategoriesActivity"
