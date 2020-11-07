@@ -6,11 +6,13 @@ import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 
-abstract class RemoteMangaRepository(protected val loaderContext: MangaLoaderContext) : MangaRepository {
+abstract class RemoteMangaRepository(
+	protected val loaderContext: MangaLoaderContext
+) : MangaRepository {
 
 	protected abstract val source: MangaSource
 
-	protected val conf by lazy(LazyThreadSafetyMode.NONE) {
+	protected val conf by lazy {
 		loaderContext.getSettings(source)
 	}
 

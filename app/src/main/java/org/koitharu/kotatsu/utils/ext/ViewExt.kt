@@ -201,3 +201,11 @@ fun RecyclerView.findCenterViewPosition(): Int {
 	val view = findChildViewUnder(centerX, centerY) ?: return RecyclerView.NO_POSITION
 	return getChildAdapterPosition(view)
 }
+
+fun ViewPager2.swapAdapter(newAdapter: RecyclerView.Adapter<*>?) {
+	val position = currentItem
+	adapter = newAdapter
+	if (adapter != null && position != RecyclerView.NO_POSITION) {
+		currentItem = position
+	}
+}

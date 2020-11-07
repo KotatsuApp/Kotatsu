@@ -8,6 +8,7 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.android.synthetic.main.item_page_webtoon.*
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.base.PageHolderDelegate
@@ -46,7 +47,7 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 		ssiv.setImage(ImageSource.uri(uri))
 	}
 
-	override fun onImageShowing() {
+	override fun onImageShowing(zoom: ZoomMode) {
 		ssiv.maxScale = 2f * ssiv.width / ssiv.sWidth.toFloat()
 		ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM)
 		ssiv.minScale = ssiv.width / ssiv.sWidth.toFloat()

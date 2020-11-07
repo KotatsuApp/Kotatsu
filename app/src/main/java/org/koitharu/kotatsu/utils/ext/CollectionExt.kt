@@ -67,3 +67,9 @@ inline fun <T> Collection<T>.associateByLong(selector: (T) -> Long): LongSparseA
 	}
 	return result
 }
+
+inline fun <T, reified R> Array<T>.mapToArray(transform: (T) -> R): Array<R> = Array(size) { i ->
+	transform(get(i))
+}
+
+fun <T : Enum<T>> Array<T>.names() = mapToArray { it.name }

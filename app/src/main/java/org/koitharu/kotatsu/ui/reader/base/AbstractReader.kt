@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.ui.reader.base
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.collection.LongSparseArray
 import androidx.core.view.postDelayed
 import kotlinx.coroutines.CancellationException
@@ -129,6 +130,11 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 	override fun onDestroy() {
 		loader.dispose()
 		super.onDestroy()
+	}
+
+	@CallSuper
+	open fun recreateAdapter() {
+		adapter = onCreateAdapter(pages)
 	}
 
 	fun getPages(): List<MangaPage>? {

@@ -5,14 +5,13 @@ import org.koitharu.kotatsu.ui.base.list.BaseViewHolder
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.ui.reader.base.BaseReaderAdapter
 import org.koitharu.kotatsu.ui.reader.base.ReaderPage
-import org.koitharu.kotatsu.ui.reader.standard.PageHolder
 
 class ReversedPagesAdapter(
 	pages: List<ReaderPage>,
 	private val loader: PageLoader
 ) : BaseReaderAdapter(pages) {
 
-	override fun onCreateViewHolder(parent: ViewGroup) = PageHolder(parent, loader)
+	override fun onCreateViewHolder(parent: ViewGroup) = ReversedPageHolder(parent, loader)
 
 	override fun onBindViewHolder(holder: BaseViewHolder<ReaderPage, Unit>, position: Int) {
 		super.onBindViewHolder(holder, reversed(position))

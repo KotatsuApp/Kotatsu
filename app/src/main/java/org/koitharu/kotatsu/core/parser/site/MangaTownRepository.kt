@@ -15,7 +15,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 
 	override val source = MangaSource.MANGATOWN
 
-	override val sortOrders = arraySetOf(
+	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.ALPHABETICAL,
 		SortOrder.RATING,
 		SortOrder.POPULARITY,

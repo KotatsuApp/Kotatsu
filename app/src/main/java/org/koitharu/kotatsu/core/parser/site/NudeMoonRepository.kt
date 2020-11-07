@@ -7,13 +7,18 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
+import java.util.*
 import java.util.regex.Pattern
 
 class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
 
 	override val source = MangaSource.NUDEMOON
 
-	override val sortOrders = arraySetOf(SortOrder.NEWEST, SortOrder.POPULARITY, SortOrder.RATING)
+	override val sortOrders: Set<SortOrder> = EnumSet.of(
+		SortOrder.NEWEST,
+		SortOrder.POPULARITY,
+		SortOrder.RATING
+	)
 
 	init {
 		loaderContext.insertCookies(
@@ -35,9 +40,7 @@ class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			tag != null -> "https://$domain/tags/${tag.key}&rowstart=$offset"
 			else -> "https://$domain/all_manga?${getSortKey(sortOrder)}&rowstart=$offset"
 		}
-		val doc = loaderContext.httpGet(url) {
-			addHeader("Cookie", "NMfYa=1; nm_mobile=0;")
-		}.parseHtml()
+		val doc = loaderContext.httpGet(url).parseHtml()
 		val root = doc.body().run {
 			selectFirst("td.shoutbox") ?: selectFirst("td.main-bg")
 		} ?: throw ParseException("Cannot find root")

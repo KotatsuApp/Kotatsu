@@ -7,13 +7,14 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
+import java.util.*
 
 abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	RemoteMangaRepository(loaderContext) {
 
 	protected abstract val defaultDomain: String
 
-	override val sortOrders = arraySetOf(
+	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED, SortOrder.POPULARITY,
 		SortOrder.NEWEST, SortOrder.RATING
 		//FIXME SortOrder.ALPHABETICAL

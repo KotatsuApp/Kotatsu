@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
+import java.util.*
 
 class MangareadRepository(
 	loaderContext: MangaLoaderContext
@@ -14,7 +15,10 @@ class MangareadRepository(
 
 	override val source = MangaSource.MANGAREAD
 
-	override val sortOrders = arraySetOf(SortOrder.UPDATED, SortOrder.POPULARITY)
+	override val sortOrders: Set<SortOrder> = EnumSet.of(
+		SortOrder.UPDATED,
+		SortOrder.POPULARITY
+	)
 
 	override suspend fun getList(
 		offset: Int,

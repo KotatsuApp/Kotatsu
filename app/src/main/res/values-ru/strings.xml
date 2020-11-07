@@ -163,4 +163,9 @@
 	<string name="prefer_rtl_reader">Предпочитать режим Справа налево</string>
 	<string name="prefer_rtl_reader_summary">Вы можете настроить режим чтения для каждой манги отдельно</string>
 	<string name="create_category">Создать категорию</string>
+	<string name="scale_mode">Масштабирование</string>
+	<string name="zoom_mode_fit_center">Вписать в экран</string>
+	<string name="zoom_mode_fit_height">Подогнать по высоте</string>
+	<string name="zoom_mode_fit_width">Подогнать по ширине</string>
+	<string name="zoom_mode_keep_start">Исходный размер</string>
 </resources>

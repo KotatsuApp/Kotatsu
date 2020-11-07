@@ -13,20 +13,16 @@ open class MangaLoaderContext : KoinComponent {
 	private val okHttp by inject<OkHttpClient>()
 	private val cookieJar by inject<CookieJar>()
 
-	suspend fun httpGet(url: String, block: (Request.Builder.() -> Unit)? = null): Response {
+	suspend fun httpGet(url: String): Response {
 		val request = Request.Builder()
 			.get()
 			.url(url)
-		if (block != null) {
-			request.block()
-		}
 		return okHttp.newCall(request.build()).await()
 	}
 
 	suspend fun httpPost(
 		url: String,
-		form: Map<String, String>,
-		block: (Request.Builder.() -> Unit)? = null
+		form: Map<String, String>
 	): Response {
 		val body = FormBody.Builder()
 		form.forEach { (k, v) ->
@@ -35,16 +31,12 @@ open class MangaLoaderContext : KoinComponent {
 		val request = Request.Builder()
 			.post(body.build())
 			.url(url)
-		if (block != null) {
-			request.block()
-		}
 		return okHttp.newCall(request.build()).await()
 	}
 
 	suspend fun httpPost(
 		url: String,
-		payload: String,
-		block: (Request.Builder.() -> Unit)? = null
+		payload: String
 	): Response {
 		val body = FormBody.Builder()
 		payload.split('&').forEach {
@@ -58,9 +50,6 @@ open class MangaLoaderContext : KoinComponent {
 		val request = Request.Builder()
 			.post(body.build())
 			.url(url)
-		if (block != null) {
-			request.block()
-		}
 		return okHttp.newCall(request.build()).await()
 	}
 

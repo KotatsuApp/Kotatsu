@@ -4,7 +4,10 @@ import android.net.Uri
 import androidx.core.net.toUri
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.coroutines.*
+import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.ui.reader.PageLoader
 import org.koitharu.kotatsu.utils.ext.launchAfter
 import org.koitharu.kotatsu.utils.ext.launchInstead
@@ -14,8 +17,10 @@ import java.io.IOException
 class PageHolderDelegate(
 	private val loader: PageLoader,
 	private val callback: Callback
-) : SubsamplingScaleImageView.DefaultOnImageEventListener(), CoroutineScope by loader {
+) : SubsamplingScaleImageView.DefaultOnImageEventListener(),
+	CoroutineScope by loader {
 
+	private val settings by loader.inject<AppSettings>()
 	private var state = State.EMPTY
 	private var job: Job? = null
 	private var file: File? = null
@@ -36,7 +41,7 @@ class PageHolderDelegate(
 
 	override fun onReady() {
 		state = State.SHOWING
-		callback.onImageShowing()
+		callback.onImageShowing(settings.zoomMode)
 	}
 
 	override fun onImageLoaded() {
@@ -79,7 +84,7 @@ class PageHolderDelegate(
 				state = State.LOADED
 				callback.onImageReady(file.toUri())
 			} catch (e: CancellationException) {
-				//do nothing
+				// do nothing
 			} catch (e: Exception) {
 				state = State.ERROR
 				callback.onError(e)
@@ -99,7 +104,7 @@ class PageHolderDelegate(
 
 		fun onImageReady(uri: Uri)
 
-		fun onImageShowing()
+		fun onImageShowing(zoom: ZoomMode)
 
 		fun onImageShown()
 	}

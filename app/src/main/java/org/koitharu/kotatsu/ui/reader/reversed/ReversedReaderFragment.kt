@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.ui.reader.base.ReaderPage
 import org.koitharu.kotatsu.ui.reader.standard.PageAnimTransformer
 import org.koitharu.kotatsu.ui.reader.standard.PagerPaginationListener
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
+import org.koitharu.kotatsu.utils.ext.swapAdapter
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ReversedReaderFragment : AbstractReader(R.layout.fragment_reader_standard),
@@ -54,6 +55,11 @@ class ReversedReaderFragment : AbstractReader(R.layout.fragment_reader_standard)
 
 	override fun onCreateAdapter(dataSet: List<ReaderPage>): BaseReaderAdapter {
 		return ReversedPagesAdapter(dataSet, loader)
+	}
+
+	override fun recreateAdapter() {
+		super.recreateAdapter()
+		pager.swapAdapter(adapter)
 	}
 
 	override fun getCurrentItem() = reversed(pager.currentItem)

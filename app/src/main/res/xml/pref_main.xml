@@ -70,6 +70,12 @@
 		android:title="@string/pages_animation"
 		app:iconSpaceReserved="false" />
 
+	<ListPreference
+		android:entries="@array/zoom_modes"
+		android:key="zoom_mode"
+		android:title="@string/scale_mode"
+		app:iconSpaceReserved="false" />
+
 	<SwitchPreference
 		android:defaultValue="false"
 		android:key="reader_prefer_rtl"

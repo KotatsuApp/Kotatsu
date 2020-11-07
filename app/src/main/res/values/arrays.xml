@@ -9,6 +9,12 @@
 		<item>@string/taps_on_edges</item>
 		<item>@string/volume_buttons</item>
 	</string-array>
+	<string-array name="zoom_modes">
+		<item>@string/zoom_mode_fit_center</item>
+		<item>@string/zoom_mode_fit_height</item>
+		<item>@string/zoom_mode_fit_width</item>
+		<item>@string/zoom_mode_keep_start</item>
+	</string-array>
 	<string-array name="track_sources">
 		<item>@string/favourites</item>
 		<item>@string/history</item>

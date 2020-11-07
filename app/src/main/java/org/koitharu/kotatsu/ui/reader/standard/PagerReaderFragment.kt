@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.ui.reader.base.AbstractReader
 import org.koitharu.kotatsu.ui.reader.base.BaseReaderAdapter
 import org.koitharu.kotatsu.ui.reader.base.ReaderPage
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
+import org.koitharu.kotatsu.utils.ext.swapAdapter
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class PagerReaderFragment : AbstractReader(R.layout.fragment_reader_standard),
@@ -50,6 +51,11 @@ class PagerReaderFragment : AbstractReader(R.layout.fragment_reader_standard),
 
 	override fun onCreateAdapter(dataSet: List<ReaderPage>): BaseReaderAdapter {
 		return PagesAdapter(dataSet, loader)
+	}
+
+	override fun recreateAdapter() {
+		super.recreateAdapter()
+		pager.swapAdapter(adapter)
 	}
 
 	override fun getCurrentItem() = pager.currentItem

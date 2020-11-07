@@ -96,7 +96,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 		ViewCompat.setOnApplyWindowInsetsListener(rootLayout, this)
 
 		settings.subscribe(this)
-		loadSettings()
+		loadSwitchSettings()
 		orientationHelper.observeAutoOrientation()
 			.onEach {
 				toolbar_bottom.menu.findItem(R.id.action_screen_rotate).isVisible = !it
@@ -370,7 +370,11 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 	}
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-		loadSettings()
+		when (key) {
+			AppSettings.KEY_READER_SWITCHERS -> loadSwitchSettings()
+			AppSettings.KEY_READER_ANIMATION,
+			AppSettings.KEY_ZOOM_MODE -> reader?.recreateAdapter()
+		}
 	}
 
 	private fun showWaitWhileLoading() {
@@ -410,7 +414,7 @@ class ReaderActivity : BaseFullscreenActivity(), ReaderView, ChaptersDialog.OnCh
 			.build()
 	}
 
-	private fun loadSettings() {
+	private fun loadSwitchSettings() {
 		settings.readerPageSwitch.let {
 			isTapSwitchEnabled = it.contains(AppSettings.PAGE_SWITCH_TAPS)
 			isVolumeKeysSwitchEnabled = it.contains(AppSettings.PAGE_SWITCH_VOLUME_KEYS)

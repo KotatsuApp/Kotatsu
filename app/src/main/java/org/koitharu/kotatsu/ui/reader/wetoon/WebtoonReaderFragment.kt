@@ -32,6 +32,11 @@ class WebtoonReaderFragment : AbstractReader(R.layout.fragment_reader_webtoon) {
 		return WebtoonAdapter(dataSet, loader)
 	}
 
+	override fun recreateAdapter() {
+		super.recreateAdapter()
+		recyclerView.swapAdapter(adapter, true)
+	}
+
 	override fun onDestroyView() {
 		paginationListener = null
 		super.onDestroyView()

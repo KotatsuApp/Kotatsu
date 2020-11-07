@@ -165,4 +165,9 @@
 	<string name="prefer_rtl_reader_summary">You can set up the reading mode for each manga separately</string>
 	<string name="create_category">New category</string>
 	<string name="report_github">Create issue on GitHub</string>
+	<string name="scale_mode">Scale mode</string>
+	<string name="zoom_mode_fit_center">Fit center</string>
+	<string name="zoom_mode_fit_height">Fit to height</string>
+	<string name="zoom_mode_fit_width">Fit to width</string>
+	<string name="zoom_mode_keep_start">Keep at start</string>
 </resources>

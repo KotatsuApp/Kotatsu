@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.utils.delegates.prefs.*
 import java.io.File
@@ -18,13 +19,13 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		PreferenceManager.getDefaultSharedPreferences(context)
 	)
 
-	var listMode by EnumPreferenceDelegate(
+	var listMode by IntEnumPreferenceDelegate(
 		ListMode::class.java,
 		KEY_LIST_MODE,
 		ListMode.DETAILED_LIST
 	)
 
-	var defaultSection by EnumPreferenceDelegate(
+	var defaultSection by IntEnumPreferenceDelegate(
 		AppSection::class.java,
 		KEY_APP_SECTION,
 		AppSection.HISTORY
@@ -65,6 +66,12 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 	val readerAnimation by BoolPreferenceDelegate(KEY_READER_ANIMATION, false)
 
 	val isPreferRtlReader by BoolPreferenceDelegate(KEY_READER_PREFER_RTL, false)
+
+	val zoomMode by EnumPreferenceDelegate(
+		ZoomMode::class.java,
+		KEY_ZOOM_MODE,
+		ZoomMode.FIT_CENTER
+	)
 
 	val trackSources by StringSetPreferenceDelegate(
 		KEY_TRACK_SOURCES,
@@ -143,5 +150,6 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_APP_PASSWORD = "app_password"
 		const val KEY_PROTECT_APP = "protect_app"
 		const val KEY_APP_VERSION = "app_version"
+		const val KEY_ZOOM_MODE = "zoom_mode"
 	}
 }

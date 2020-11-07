@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
+import java.util.*
 
 abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(
 	loaderContext
@@ -14,7 +15,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 
 	protected abstract val defaultDomain: String
 
-	override val sortOrders = arraySetOf(
+	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.NEWEST,
 		SortOrder.POPULARITY,
 		SortOrder.ALPHABETICAL

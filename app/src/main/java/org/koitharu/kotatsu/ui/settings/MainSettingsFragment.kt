@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.ui.base.BasePreferenceFragment
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.ui.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.ui.tracker.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.md5
+import org.koitharu.kotatsu.utils.ext.names
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import java.io.File
 
@@ -59,6 +61,11 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)
+		}
+		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.let {
+			it.entryValues = ZoomMode.values().names()
+			it.setDefaultValue(ZoomMode.FIT_CENTER.name)
+			it.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
 		}
 		findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
