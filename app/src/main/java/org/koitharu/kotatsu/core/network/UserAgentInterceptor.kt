@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.core.parser
+package org.koitharu.kotatsu.core.network
 
 import android.os.Build
 import okhttp3.Interceptor

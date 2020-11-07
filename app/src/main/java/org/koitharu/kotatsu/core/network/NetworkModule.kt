@@ -7,7 +7,6 @@ import org.koin.dsl.module
 import org.koitharu.kotatsu.core.network.cookies.PersistentCookieJar
 import org.koitharu.kotatsu.core.network.cookies.cache.SetCookieCache
 import org.koitharu.kotatsu.core.network.cookies.persistence.SharedPrefsCookiePersistor
-import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
 import org.koitharu.kotatsu.utils.CacheUtils
 import java.util.concurrent.TimeUnit
 
@@ -27,6 +26,7 @@ val networkModule
 				cookieJar(get())
 				cache(CacheUtils.createHttpCache(androidContext()))
 				addInterceptor(UserAgentInterceptor())
+				addInterceptor(CloudFlareInterceptor())
 			}.build()
 		}
 	}

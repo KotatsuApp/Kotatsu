@@ -12,7 +12,7 @@ import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.parser.UserAgentInterceptor
+import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.AssertX
