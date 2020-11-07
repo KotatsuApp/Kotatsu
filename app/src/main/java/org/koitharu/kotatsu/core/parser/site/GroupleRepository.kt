@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import androidx.collection.arraySetOf
+import androidx.core.net.toUri
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -30,33 +31,39 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		val doc = when {
 			!query.isNullOrEmpty() -> loaderContext.httpPost(
 				"https://$domain/search",
-				mapOf("q" to query.urlEncoded(), "offset" to offset.toString())
+				mapOf(
+					"q" to query.urlEncoded(),
+					"offset" to offset.upBy(PAGE_SIZE_SEARCH).toString()
+				)
 			)
 			tag == null -> loaderContext.httpGet(
 				"https://$domain/list?sortType=${
 					getSortKey(
 						sortOrder
 					)
-				}&offset=$offset"
+				}&offset=${offset.upBy(PAGE_SIZE)}"
 			)
 			else -> loaderContext.httpGet(
 				"https://$domain/list/genre/${tag.key}?sortType=${
 					getSortKey(
 						sortOrder
 					)
-				}&offset=$offset"
+				}&offset=${offset.upBy(PAGE_SIZE)}"
 			)
 		}.parseHtml()
 		val root = doc.body().getElementById("mangaBox")
 			?.selectFirst("div.tiles.row") ?: throw ParseException("Cannot find root")
+		val baseHost = root.baseUri().toUri().host
 		return root.select("div.tile").mapNotNull { node ->
 			val imgDiv = node.selectFirst("div.img") ?: return@mapNotNull null
 			val descDiv = node.selectFirst("div.desc") ?: return@mapNotNull null
 			if (descDiv.selectFirst("i.fa-user") != null) {
 				return@mapNotNull null //skip author
 			}
-			val href = imgDiv.selectFirst("a").attr("href")?.withDomain(domain)
-				?: return@mapNotNull null
+			val href = imgDiv.selectFirst("a").attr("href")?.inContextOf(node)
+			if (href == null || href.toUri().host != baseHost) {
+				return@mapNotNull null // skip external links
+			}
 			val title = descDiv.selectFirst("h3")?.selectFirst("a")?.text()
 				?: return@mapNotNull null
 			val tileInfo = descDiv.selectFirst("div.tile-info")
@@ -179,4 +186,10 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 			SortOrder.RATING -> "votes"
 			null -> "updated"
 		}
+
+	private companion object {
+
+		private const val PAGE_SIZE = 70
+		private const val PAGE_SIZE_SEARCH = 50
+	}
 }

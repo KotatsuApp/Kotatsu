@@ -4,14 +4,20 @@ import androidx.collection.ArraySet
 import org.json.JSONArray
 import org.json.JSONObject
 
-fun <T> JSONArray.map(block: (JSONObject) -> T): List<T> {
+inline fun <R, C : MutableCollection<in R>> JSONArray.mapTo(
+	destination: C,
+	block: (JSONObject) -> R
+): C {
 	val len = length()
-	val result = ArrayList<T>(len)
 	for (i in 0 until len) {
 		val jo = getJSONObject(i)
-		result.add(block(jo))
+		destination.add(block(jo))
 	}
-	return result
+	return destination
+}
+
+inline fun <T> JSONArray.map(block: (JSONObject) -> T): List<T> {
+	return mapTo(ArrayList(length()), block)
 }
 
 fun <T> JSONArray.mapIndexed(block: (Int, JSONObject) -> T): List<T> {

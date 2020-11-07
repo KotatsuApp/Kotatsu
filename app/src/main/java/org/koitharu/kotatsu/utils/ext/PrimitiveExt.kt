@@ -32,3 +32,12 @@ fun Float.toIntUp(): Int {
 		intValue + 1
 	}
 }
+
+fun Int.upBy(step: Int): Int {
+	val mod = this % step
+	return if (mod == this) {
+		this
+	} else {
+		this - mod + step
+	}
+}
