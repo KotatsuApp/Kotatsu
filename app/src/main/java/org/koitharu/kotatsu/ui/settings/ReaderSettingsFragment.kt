@@ -25,7 +25,6 @@ class ReaderSettingsFragment : BasePreferenceFragment(R.string.reader_settings) 
 		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.let {
 			it.entryValues = ZoomMode.values().names()
 			it.setDefaultValue(ZoomMode.FIT_CENTER.name)
-			it.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
 		}
 	}
 }

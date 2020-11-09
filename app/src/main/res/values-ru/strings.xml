@@ -168,4 +168,7 @@
 	<string name="zoom_mode_fit_height">Подогнать по высоте</string>
 	<string name="zoom_mode_fit_width">Подогнать по ширине</string>
 	<string name="zoom_mode_keep_start">Исходный размер</string>
+	<string name="black_dark_theme">Чёрная тёмная тема</string>
+	<string name="black_dark_theme_summary">Полезно для AMOLED экранов</string>
+	<string name="restart_required">Требуется перезапуск</string>
 </resources>

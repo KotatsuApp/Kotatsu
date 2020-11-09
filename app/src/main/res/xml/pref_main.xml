@@ -13,6 +13,13 @@
 		app:iconSpaceReserved="false"
 		app:useSimpleSummaryProvider="true" />
 
+	<SwitchPreference
+		android:defaultValue="false"
+		android:key="amoled_theme"
+		app:iconSpaceReserved="false"
+		android:title="@string/black_dark_theme"
+		android:summary="@string/black_dark_theme_summary" />
+
 	<Preference
 		android:key="list_mode"
 		android:persistent="false"
@@ -74,6 +81,7 @@
 		android:entries="@array/zoom_modes"
 		android:key="zoom_mode"
 		android:title="@string/scale_mode"
+		app:useSimpleSummaryProvider="true"
 		app:iconSpaceReserved="false" />
 
 	<SwitchPreference

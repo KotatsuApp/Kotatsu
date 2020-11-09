@@ -170,4 +170,7 @@
 	<string name="zoom_mode_fit_height">Fit to height</string>
 	<string name="zoom_mode_fit_width">Fit to width</string>
 	<string name="zoom_mode_keep_start">Keep at start</string>
+	<string name="black_dark_theme">Black dark theme</string>
+	<string name="black_dark_theme_summary">Useful for AMOLED screens</string>
+	<string name="restart_required">Restart required</string>
 </resources>

@@ -65,7 +65,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.let {
 			it.entryValues = ZoomMode.values().names()
 			it.setDefaultValue(ZoomMode.FIT_CENTER.name)
-			it.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
 		}
 		findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
@@ -87,6 +86,9 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				LIST_MODES[settings.listMode]?.let(::getString)
 			AppSettings.KEY_THEME -> {
 				AppCompatDelegate.setDefaultNightMode(settings.theme)
+			}
+			AppSettings.KEY_THEME_AMOLED -> {
+				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
 			}
 			AppSettings.KEY_LOCAL_STORAGE -> {
 				findPreference<Preference>(key)?.run {

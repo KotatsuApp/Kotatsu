@@ -21,7 +21,8 @@
 		android:entries="@array/zoom_modes"
 		android:key="zoom_mode"
 		android:title="@string/scale_mode"
-		app:iconSpaceReserved="false" />
+		app:iconSpaceReserved="false"
+		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreference
 		android:defaultValue="false"

@@ -36,6 +36,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 	)
 
+	val isAmoledTheme by BoolPreferenceDelegate(KEY_THEME_AMOLED, defaultValue = false)
+
 	val gridSize by IntPreferenceDelegate(KEY_GRID_SIZE, defaultValue = 100)
 
 	val readerPageSwitch by StringSetPreferenceDelegate(
@@ -126,6 +128,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_LIST_MODE = "list_mode"
 		const val KEY_APP_SECTION = "app_section"
 		const val KEY_THEME = "theme"
+		const val KEY_THEME_AMOLED = "amoled_theme"
 		const val KEY_SOURCES_ORDER = "sources_order"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"

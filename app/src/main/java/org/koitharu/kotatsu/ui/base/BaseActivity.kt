@@ -1,12 +1,22 @@
 package org.koitharu.kotatsu.ui.base
 
+import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import moxy.MvpAppCompatActivity
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.prefs.AppSettings
 
 abstract class BaseActivity : MvpAppCompatActivity() {
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		if (get<AppSettings>().isAmoledTheme) {
+			setTheme(R.style.AppTheme_Amoled)
+		}
+		super.onCreate(savedInstanceState)
+	}
 
 	override fun setContentView(layoutResID: Int) {
 		super.setContentView(layoutResID)
