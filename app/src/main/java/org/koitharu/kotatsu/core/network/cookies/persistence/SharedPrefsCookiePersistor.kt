@@ -15,22 +15,15 @@
  */
 package org.koitharu.kotatsu.core.network.cookies.persistence
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import okhttp3.Cookie
 import java.util.*
 
-@SuppressLint("CommitPrefEdits")
-class SharedPrefsCookiePersistor(private val sharedPreferences: SharedPreferences) :
-	CookiePersistor {
+class SharedPrefsCookiePersistor(context: Context) : CookiePersistor {
 
-	constructor(context: Context) : this(
-		context.getSharedPreferences(
-			"cookies",
-			Context.MODE_PRIVATE
-		)
-	)
+	private val sharedPreferences by lazy {
+		context.getSharedPreferences("cookies", Context.MODE_PRIVATE)
+	}
 
 	override fun loadAll(): List<Cookie> {
 		val cookies: MutableList<Cookie> = ArrayList(sharedPreferences.all.size)

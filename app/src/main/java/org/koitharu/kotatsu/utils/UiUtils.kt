@@ -4,16 +4,18 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.ext.measureWidth
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-object UiUtils {
+object UiUtils : KoinComponent {
 
 	fun resolveGridSpanCount(context: Context, width: Int = 0): Int {
-		val scaleFactor = AppSettings(context).gridSize / 100f
+		val scaleFactor = get<AppSettings>().gridSize / 100f
 		val cellWidth = context.resources.getDimension(R.dimen.preferred_grid_width) * scaleFactor
 		val screenWidth = (if (width <= 0) {
 			context.resources.displayMetrics.widthPixels

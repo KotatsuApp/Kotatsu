@@ -50,7 +50,7 @@ class SearchActivity : BaseActivity(), SearchView.OnQueryTextListener {
 				.replace(R.id.container, SearchFragment.newInstance(source, query))
 				.commit()
 			searchView.clearFocus()
-			MangaSuggestionsProvider.saveQuery(this, query)
+			MangaSuggestionsProvider.saveQueryAsync(applicationContext, query)
 			true
 		} else false
 	}

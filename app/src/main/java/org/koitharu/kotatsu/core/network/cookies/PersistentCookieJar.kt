@@ -20,24 +20,29 @@ import okhttp3.HttpUrl
 import org.koitharu.kotatsu.core.network.cookies.cache.CookieCache
 import org.koitharu.kotatsu.core.network.cookies.persistence.CookiePersistor
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 class PersistentCookieJar(
 	private val cache: CookieCache,
 	private val persistor: CookiePersistor
 ) : ClearableCookieJar {
 
-	init {
-		cache.addAll(persistor.loadAll())
-	}
+	private var isLoaded = AtomicBoolean(false)
 
 	@Synchronized
 	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+		if (isLoaded.compareAndSet(false, true)) {
+			cache.addAll(persistor.loadAll())
+		}
 		cache.addAll(cookies)
 		persistor.saveAll(filterPersistentCookies(cookies))
 	}
 
 	@Synchronized
 	override fun loadForRequest(url: HttpUrl): List<Cookie> {
+		if (isLoaded.compareAndSet(false, true)) {
+			cache.addAll(persistor.loadAll())
+		}
 		val cookiesToRemove: MutableList<Cookie> = ArrayList()
 		val validCookies: MutableList<Cookie> = ArrayList()
 		val it = cache.iterator()

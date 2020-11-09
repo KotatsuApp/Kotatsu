@@ -30,7 +30,7 @@ object SearchHelper {
 		override fun onQueryTextSubmit(query: String?): Boolean {
 			return if (!query.isNullOrBlank()) {
 				context.startActivity(GlobalSearchActivity.newIntent(context, query.trim()))
-				MangaSuggestionsProvider.saveQuery(context, query)
+				MangaSuggestionsProvider.saveQueryAsync(context.applicationContext, query)
 				true
 			} else false
 		}

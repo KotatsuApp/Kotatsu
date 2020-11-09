@@ -12,6 +12,8 @@ import java.io.File
 
 object CacheUtils {
 
+	const val QUALIFIER_HTTP = "cache_http"
+
 	val CONTROL_DISABLED = CacheControl.Builder()
 		.noStore()
 		.build()
@@ -30,6 +32,7 @@ object CacheUtils {
 		.map { it.sub(name) }
 		.forEach { it.deleteRecursively() }
 
+	// FIXME need async implementation
 	fun createHttpCache(context: Context): Cache {
 		val directory = (context.externalCacheDir ?: context.cacheDir).sub("http")
 		directory.mkdirs()

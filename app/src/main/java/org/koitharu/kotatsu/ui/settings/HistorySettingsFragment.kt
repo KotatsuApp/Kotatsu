@@ -45,14 +45,18 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				pref.summary = FileSizeUtils.formatBytes(pref.context, size)
 			}
 		}
-		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { p ->
-			val items = MangaSuggestionsProvider.getItemsCount(p.context)
-			p.summary = p.context.resources.getQuantityString(R.plurals.items, items, items)
+		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { pref ->
+			viewLifecycleScope.launchWhenResumed {
+				val items = MangaSuggestionsProvider.getItemsCount(pref.context)
+				pref.summary =
+					pref.context.resources.getQuantityString(R.plurals.items, items, items)
+			}
 		}
-		findPreference<Preference>(AppSettings.KEY_UPDATES_FEED_CLEAR)?.let { p ->
+		findPreference<Preference>(AppSettings.KEY_UPDATES_FEED_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
 				val items = trackerRepo.count()
-				p.summary = p.context.resources.getQuantityString(R.plurals.items, items, items)
+				pref.summary =
+					pref.context.resources.getQuantityString(R.plurals.items, items, items)
 			}
 		}
 	}
@@ -68,14 +72,16 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				true
 			}
 			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
-				MangaSuggestionsProvider.clearHistory(preference.context)
-				preference.summary = preference.context.resources
-					.getQuantityString(R.plurals.items, 0, 0)
-				Snackbar.make(
-					view ?: return true,
-					R.string.search_history_cleared,
-					Snackbar.LENGTH_SHORT
-				).show()
+				viewLifecycleScope.launch {
+					MangaSuggestionsProvider.clearHistory(preference.context)
+					preference.summary = preference.context.resources
+						.getQuantityString(R.plurals.items, 0, 0)
+					Snackbar.make(
+						view ?: return@launch,
+						R.string.search_history_cleared,
+						Snackbar.LENGTH_SHORT
+					).show()
+				}
 				true
 			}
 			AppSettings.KEY_UPDATES_FEED_CLEAR -> {

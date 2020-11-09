@@ -16,6 +16,7 @@ import okhttp3.Request
 import okio.IOException
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.core.context.GlobalContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.local.PagesCache
@@ -231,7 +232,7 @@ class DownloadService : BaseService() {
 
 		private fun confirmDataTransfer(context: Context, callback: () -> Unit) {
 			val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-			val settings = AppSettings(context)
+			val settings = GlobalContext.get().get<AppSettings>()
 			if (cm.isActiveNetworkMetered && settings.isTrafficWarningEnabled) {
 				CheckBoxAlertDialog.Builder(context)
 					.setTitle(R.string.warning)

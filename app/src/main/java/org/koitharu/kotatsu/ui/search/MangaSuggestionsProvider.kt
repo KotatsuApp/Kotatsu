@@ -12,6 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cursoradapter.widget.CursorAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 
@@ -50,27 +54,35 @@ class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
 		private const val AUTHORITY = "${BuildConfig.APPLICATION_ID}.MangaSuggestionsProvider"
 		private const val MODE = DATABASE_MODE_QUERIES
 
-		@JvmStatic
 		private val uri = Uri.Builder()
 			.scheme(ContentResolver.SCHEME_CONTENT)
 			.authority(AUTHORITY)
 			.appendPath(SearchManager.SUGGEST_URI_PATH_QUERY)
 			.build()
 
-		@JvmStatic
 		private val projection = arrayOf("_id", SearchManager.SUGGEST_COLUMN_QUERY)
 
-		@JvmStatic
-		fun saveQuery(context: Context, query: String) {
-			SearchRecentSuggestions(
-				context,
-				AUTHORITY,
-				MODE
-			).saveRecentQuery(query, null)
+		fun saveQueryAsync(context: Context, query: String) {
+			GlobalScope.launch(Dispatchers.IO) {
+				saveQuery(context, query)
+			}
 		}
 
-		@JvmStatic
-		fun clearHistory(context: Context) {
+		fun saveQuery(context: Context, query: String) {
+			runCatching {
+				SearchRecentSuggestions(
+					context,
+					AUTHORITY,
+					MODE
+				).saveRecentQuery(query, null)
+			}.onFailure {
+				if (BuildConfig.DEBUG) {
+					it.printStackTrace()
+				}
+			}
+		}
+
+		suspend fun clearHistory(context: Context) = withContext(Dispatchers.IO) {
 			SearchRecentSuggestions(
 				context,
 				AUTHORITY,
@@ -78,15 +90,15 @@ class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
 			).clearHistory()
 		}
 
-		@JvmStatic
-		fun getItemsCount(context: Context) = getCursor(context)?.use { it.count } ?: 0
+		suspend fun getItemsCount(context: Context) = withContext(Dispatchers.IO) {
+			getCursor(context)?.use { it.count } ?: 0
+		}
 
-		@JvmStatic
 		private fun getCursor(context: Context): Cursor? {
 			return context.contentResolver?.query(uri, projection, null, arrayOf(""), null)
 		}
 
-		@JvmStatic
+		@Deprecated("Need async implementation")
 		fun getSuggestionAdapter(context: Context): CursorAdapter? = getCursor(
 			context
 		)?.let { cursor ->
@@ -102,6 +114,5 @@ class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
 				}
 			}
 		}
-
 	}
 }
