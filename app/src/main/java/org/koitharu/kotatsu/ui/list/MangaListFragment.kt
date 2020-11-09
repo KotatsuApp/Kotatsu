@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_list.*
 import moxy.MvpDelegate
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaTag
@@ -32,6 +33,7 @@ import org.koitharu.kotatsu.ui.base.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.ui.details.MangaDetailsActivity
 import org.koitharu.kotatsu.ui.list.filter.FilterAdapter
 import org.koitharu.kotatsu.ui.list.filter.OnFilterChangedListener
+import org.koitharu.kotatsu.ui.utils.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.*
 
@@ -166,6 +168,9 @@ abstract class MangaListFragment<E> : BaseFragment(R.layout.fragment_list),
 	}
 
 	override fun onListError(e: Throwable) {
+		if (e is CloudFlareProtectedException) {
+			CloudFlareDialog.newInstance(e.url).show(childFragmentManager, CloudFlareDialog.TAG)
+		}
 		if (recyclerView.hasItems) {
 			Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
 				.show()

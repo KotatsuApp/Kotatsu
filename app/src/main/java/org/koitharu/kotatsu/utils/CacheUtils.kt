@@ -33,7 +33,7 @@ object CacheUtils {
 	fun createHttpCache(context: Context): Cache {
 		val directory = (context.externalCacheDir ?: context.cacheDir).sub("http")
 		directory.mkdirs()
-		val maxSize = calculateDiskCacheSize(directory)
+		val maxSize = calculateDiskCacheSize(directory) // TODO blocking call
 		return Cache(directory, maxSize)
 	}
 
