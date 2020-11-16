@@ -16,9 +16,9 @@
 	<SwitchPreference
 		android:defaultValue="false"
 		android:key="amoled_theme"
-		app:iconSpaceReserved="false"
+		android:summary="@string/black_dark_theme_summary"
 		android:title="@string/black_dark_theme"
-		android:summary="@string/black_dark_theme_summary" />
+		app:iconSpaceReserved="false" />
 
 	<Preference
 		android:key="list_mode"
@@ -81,8 +81,8 @@
 		android:entries="@array/zoom_modes"
 		android:key="zoom_mode"
 		android:title="@string/scale_mode"
-		app:useSimpleSummaryProvider="true"
-		app:iconSpaceReserved="false" />
+		app:iconSpaceReserved="false"
+		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreference
 		android:defaultValue="false"
@@ -122,6 +122,11 @@
 	<PreferenceCategory
 		android:title="@string/about"
 		app:iconSpaceReserved="false">
+
+		<PreferenceScreen
+			android:fragment="org.koitharu.kotatsu.ui.settings.backup.BackupSettingsFragment"
+			android:title="@string/backup_restore"
+			app:iconSpaceReserved="false" />
 
 		<SwitchPreference
 			android:defaultValue="true"

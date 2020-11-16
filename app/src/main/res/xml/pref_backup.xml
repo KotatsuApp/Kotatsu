@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<Preference
+		android:key="backup"
+		android:persistent="false"
+		android:title="@string/create_backup"
+		app:iconSpaceReserved="false" />
+
+	<Preference
+		android:key="restore"
+		android:persistent="false"
+		android:title="@string/restore_backup"
+		app:iconSpaceReserved="false" />
+
+	<Preference
+		android:icon="@drawable/ic_info_outilne"
+		android:persistent="false"
+		android:selectable="false"
+		android:summary="@string/backup_information"
+		app:allowDividerAbove="true" />
+
+</PreferenceScreen>

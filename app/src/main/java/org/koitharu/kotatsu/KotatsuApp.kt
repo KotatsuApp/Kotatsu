@@ -7,6 +7,8 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import org.koitharu.kotatsu.core.backup.BackupRepository
+import org.koitharu.kotatsu.core.backup.RestoreRepository
 import org.koitharu.kotatsu.core.db.databaseModule
 import org.koitharu.kotatsu.core.github.githubModule
 import org.koitharu.kotatsu.core.local.PagesCache
@@ -67,6 +69,8 @@ class KotatsuApp : Application() {
 					single { HistoryRepository(get()) }
 					single { TrackingRepository(get(), get()) }
 					single { MangaDataRepository(get()) }
+					single { BackupRepository(get()) }
+					single { RestoreRepository(get()) }
 					single { MangaSearchRepository() }
 					single { MangaLoaderContext() }
 					single { AppSettings(get()) }

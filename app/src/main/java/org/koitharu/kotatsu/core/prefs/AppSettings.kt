@@ -154,5 +154,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_PROTECT_APP = "protect_app"
 		const val KEY_APP_VERSION = "app_version"
 		const val KEY_ZOOM_MODE = "zoom_mode"
+		const val KEY_BACKUP = "backup"
+		const val KEY_RESTORE = "restore"
 	}
 }

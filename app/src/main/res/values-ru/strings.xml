@@ -171,4 +171,13 @@
 	<string name="black_dark_theme">Чёрная тёмная тема</string>
 	<string name="black_dark_theme_summary">Полезно для AMOLED экранов</string>
 	<string name="restart_required">Требуется перезапуск</string>
+	<string name="backup_restore">Резервное копирование</string>
+	<string name="create_backup">Создать резервную копию</string>
+	<string name="restore_backup">Восстановить данные</string>
+	<string name="data_restored">Данные восстановлены</string>
+	<string name="preparing_">Подготовка…</string>
+	<string name="file_not_found">Файл не найден</string>
+	<string name="data_restored_success">Все данные успешно восстановлены</string>
+	<string name="data_restored_with_errors">Данные восстановлены, но возникли некоторые ошибки</string>
+	<string name="backup_information">You can create backup of your history and favourites and restore it</string>
 </resources>

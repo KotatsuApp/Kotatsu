@@ -1,9 +1,6 @@
 package org.koitharu.kotatsu.core.db.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import org.koitharu.kotatsu.core.db.entity.FavouriteCategoryEntity
 
 @Dao
@@ -14,6 +11,9 @@ abstract class FavouriteCategoriesDao {
 
 	@Insert(onConflict = OnConflictStrategy.ABORT)
 	abstract suspend fun insert(category: FavouriteCategoryEntity): Long
+
+	@Update
+	abstract suspend fun update(category: FavouriteCategoryEntity): Int
 
 	@Query("DELETE FROM favourite_categories WHERE category_id = :id")
 	abstract suspend fun delete(id: Long)
@@ -29,5 +29,12 @@ abstract class FavouriteCategoriesDao {
 
 	suspend fun getNextSortKey(): Int {
 		return (getMaxSortKey() ?: 0) + 1
+	}
+
+	@Transaction
+	open suspend fun upsert(entity: FavouriteCategoryEntity) {
+		if (update(entity) == 0) {
+			insert(entity)
+		}
 	}
 }

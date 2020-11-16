@@ -32,8 +32,18 @@ abstract class FavouritesDao {
 	abstract suspend fun find(id: Long): FavouriteManga?
 
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
-	abstract suspend fun add(favourite: FavouriteEntity)
+	abstract suspend fun insert(favourite: FavouriteEntity)
+
+	@Update
+	abstract suspend fun update(favourite: FavouriteEntity): Int
 
 	@Query("DELETE FROM favourites WHERE manga_id = :mangaId AND category_id = :categoryId")
 	abstract suspend fun delete(categoryId: Long, mangaId: Long)
+
+	@Transaction
+	open suspend fun upsert(entity: FavouriteEntity) {
+		if (update(entity) == 0) {
+			insert(entity)
+		}
+	}
 }

@@ -83,7 +83,7 @@ class FavouritesRepository(private val db: MangaDatabase) {
 			db.tagsDao.upsert(tags)
 			db.mangaDao.upsert(MangaEntity.from(manga), tags)
 			val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
-			db.favouritesDao.add(entity)
+			db.favouritesDao.insert(entity)
 		}
 		notifyFavouritesChanged(manga.id)
 	}

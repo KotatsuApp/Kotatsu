@@ -173,4 +173,13 @@
 	<string name="black_dark_theme">Black dark theme</string>
 	<string name="black_dark_theme_summary">Useful for AMOLED screens</string>
 	<string name="restart_required">Restart required</string>
+	<string name="backup_restore"><![CDATA[Backup & Restore]]></string>
+	<string name="create_backup">Create data backup</string>
+	<string name="restore_backup">Restore from backup</string>
+	<string name="data_restored">Data restored</string>
+	<string name="preparing_">Preparing…</string>
+	<string name="file_not_found">File not found</string>
+	<string name="data_restored_success">All data restored successfully</string>
+	<string name="data_restored_with_errors">The data restored, but there are errors</string>
+	<string name="backup_information">You can create backup of your history and favourites and restore it</string>
 </resources>

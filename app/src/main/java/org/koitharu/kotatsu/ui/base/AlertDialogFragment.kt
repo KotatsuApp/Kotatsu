@@ -6,7 +6,6 @@ import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import moxy.MvpAppCompatDialogFragment
 
 abstract class AlertDialogFragment(
@@ -21,7 +20,7 @@ abstract class AlertDialogFragment(
 		if (view != null) {
 			onViewCreated(view, savedInstanceState)
 		}
-		return MaterialAlertDialogBuilder(requireContext(), theme)
+		return AlertDialog.Builder(requireContext(), theme)
 			.setView(view)
 			.also(::onBuildDialog)
 			.create()

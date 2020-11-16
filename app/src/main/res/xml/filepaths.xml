@@ -3,4 +3,7 @@
 	<external-files-path
 		name="manga"
 		path="/manga" />
+	<external-files-path
+		name="backups"
+		path="/backups" />
 </paths>
