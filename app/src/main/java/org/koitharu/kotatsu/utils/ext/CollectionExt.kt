@@ -31,11 +31,7 @@ fun <T> List<T>.medianOrNull(): T? = when {
 }
 
 inline fun <T, R> Collection<T>.mapToSet(transform: (T) -> R): Set<R> {
-	val destination = ArraySet<R>(size)
-	for (item in this) {
-		destination.add(transform(item))
-	}
-	return destination
+	return mapTo(ArraySet(size), transform)
 }
 
 inline fun <T, R> Collection<T>.mapNotNullToSet(transform: (T) -> R?): Set<R> {

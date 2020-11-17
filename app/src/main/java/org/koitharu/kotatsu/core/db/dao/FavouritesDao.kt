@@ -37,6 +37,9 @@ abstract class FavouritesDao {
 	@Update
 	abstract suspend fun update(favourite: FavouriteEntity): Int
 
+	@Query("DELETE FROM favourites WHERE manga_id = :mangaId")
+	abstract suspend fun delete(mangaId: Long)
+
 	@Query("DELETE FROM favourites WHERE manga_id = :mangaId AND category_id = :categoryId")
 	abstract suspend fun delete(categoryId: Long, mangaId: Long)
 

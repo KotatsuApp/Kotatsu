@@ -93,6 +93,11 @@ class FavouritesRepository(private val db: MangaDatabase) {
 		notifyFavouritesChanged(manga.id)
 	}
 
+	suspend fun removeFromFavourites(manga: Manga) {
+		db.favouritesDao.delete(manga.id)
+		notifyFavouritesChanged(manga.id)
+	}
+
 	companion object {
 
 		private val listeners = ArraySet<OnFavouritesChangeListener>()

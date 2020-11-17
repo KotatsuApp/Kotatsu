@@ -4,18 +4,19 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.presenterScope
-import org.koin.core.component.get
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
 import org.koitharu.kotatsu.ui.base.BasePresenter
 import org.koitharu.kotatsu.ui.list.MangaListView
 
 @InjectViewState
-class FavouritesListPresenter : BasePresenter<MangaListView<Unit>>() {
+class FavouritesListPresenter(
+	private val categoryId: Long,
+	private val repository: FavouritesRepository
+) : BasePresenter<MangaListView<Unit>>() {
 
-	private val repository = get<FavouritesRepository>()
-
-	fun loadList(categoryId: Long, offset: Int) {
+	fun loadList(offset: Int) {
 		presenterScope.launch {
 			viewState.onLoadingStateChanged(true)
 			try {
@@ -42,6 +43,17 @@ class FavouritesListPresenter : BasePresenter<MangaListView<Unit>>() {
 			} finally {
 				viewState.onLoadingStateChanged(false)
 			}
+		}
+	}
+
+	fun removeFromFavourites(manga: Manga) {
+		launchJob {
+			if (categoryId == 0L) {
+				repository.removeFromFavourites(manga)
+			} else {
+				repository.removeFromCategory(manga, categoryId)
+			}
+			viewState.onItemRemoved(manga)
 		}
 	}
 }

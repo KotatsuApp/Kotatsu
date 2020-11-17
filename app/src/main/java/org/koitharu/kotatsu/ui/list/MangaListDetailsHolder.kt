@@ -28,7 +28,7 @@ class MangaListDetailsHolder(
 		imageRequest?.dispose()
 		textView_title.text = data.title
 		textView_subtitle.textAndVisible = data.altTitle
-		imageView_cover.newImageRequest(data.coverUrl)
+		imageRequest = imageView_cover.newImageRequest(data.coverUrl)
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
