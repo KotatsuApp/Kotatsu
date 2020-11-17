@@ -1,10 +1,10 @@
 package org.koitharu.kotatsu.core.parser
 
+import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
-import org.koitharu.kotatsu.domain.MangaLoaderContext
 
 abstract class RemoteMangaRepository(
 	protected val loaderContext: MangaLoaderContext

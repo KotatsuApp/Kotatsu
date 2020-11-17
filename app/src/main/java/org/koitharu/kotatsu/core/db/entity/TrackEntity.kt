@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
 		)
 	]
 )
-data class TrackEntity (
+data class TrackEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val mangaId: Long,
 	@ColumnInfo(name = "chapters_total") val totalChapters: Int,

@@ -5,10 +5,10 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
-data class MangaTracking (
+data class MangaTracking(
 	val manga: Manga,
 	val knownChaptersCount: Int,
 	val lastChapterId: Long,
 	val lastNotifiedChapterId: Long,
 	val lastCheck: Date?
-): Parcelable
+) : Parcelable

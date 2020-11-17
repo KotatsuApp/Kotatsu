@@ -2,11 +2,11 @@ package org.koitharu.kotatsu.core.parser.site
 
 import androidx.collection.arraySetOf
 import androidx.core.net.toUri
+import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
-import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.*
 

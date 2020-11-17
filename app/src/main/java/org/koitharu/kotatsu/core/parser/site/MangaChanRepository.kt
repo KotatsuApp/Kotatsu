@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.domain.MangaLoaderContext
 
 class MangaChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 

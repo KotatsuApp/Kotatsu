@@ -8,7 +8,7 @@ import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.koitharu.kotatsu.core.model.ZoomMode
-import org.koitharu.kotatsu.core.parser.LocalMangaRepository
+import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.delegates.prefs.*
 import java.io.File
 

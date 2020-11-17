@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.utils
 
 import android.content.ContentResolver
 import android.content.ContentValues
-import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -55,16 +54,16 @@ object MediaStoreCompat {
 		return uri
 	}
 
-	@JvmStatic
-	fun getName(context: Context, uri: Uri): String? = (if (uri.scheme == "content") {
-		context.contentResolver.query(uri, null, null, null, null)?.use {
-			if (it.moveToFirst()) {
-				it.getStringOrNull(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-			} else {
-				null
+	fun getName(contentResolver: ContentResolver, uri: Uri): String? =
+		(if (uri.scheme == "content") {
+			contentResolver.query(uri, null, null, null, null)?.use {
+				if (it.moveToFirst()) {
+					it.getStringOrNull(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+				} else {
+					null
+				}
 			}
-		}
-	} else {
-		null
-	}) ?: uri.path?.substringAfterLast('/')
+		} else {
+			null
+		}) ?: uri.path?.substringAfterLast('/')
 }

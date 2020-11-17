@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import org.koitharu.kotatsu.ui.base.ChipsFactory
+import org.koitharu.kotatsu.core.ui.ChipsFactory
 
 fun View.hideKeyboard() {
 	val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager

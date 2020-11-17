@@ -5,7 +5,10 @@ import androidx.core.content.edit
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class StringSetPreferenceDelegate(private val key: String, private val defValue: Set<String> = emptySet()) :
+class StringSetPreferenceDelegate(
+	private val key: String,
+	private val defValue: Set<String> = emptySet()
+) :
 	ReadWriteProperty<SharedPreferences, Set<String>> {
 
 	override fun getValue(thisRef: SharedPreferences, property: KProperty<*>): Set<String> {

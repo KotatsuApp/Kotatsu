@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.mapToSet
 import org.koitharu.kotatsu.utils.ext.parseHtml

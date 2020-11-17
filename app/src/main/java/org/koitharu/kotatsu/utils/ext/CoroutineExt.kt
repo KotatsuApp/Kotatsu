@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.utils.ext
 
+import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
@@ -80,3 +82,6 @@ val IgnoreErrors
 			e.printStackTrace()
 		}
 	}
+
+val processLifecycleScope: CoroutineScope
+	inline get() = ProcessLifecycleOwner.get().lifecycleScope

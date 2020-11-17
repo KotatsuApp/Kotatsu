@@ -84,17 +84,12 @@ dependencies {
 	implementation 'androidx.room:room-ktx:2.2.5'
 	kapt 'androidx.room:room-compiler:2.2.5'
 
-	implementation 'com.github.moxy-community:moxy:2.2.0'
-	implementation 'com.github.moxy-community:moxy-androidx:2.2.0'
-	implementation 'com.github.moxy-community:moxy-material:2.2.0'
-	implementation 'com.github.moxy-community:moxy-ktx:2.2.0'
-	kapt 'com.github.moxy-community:moxy-compiler:2.2.0'
-
 	implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 	implementation 'com.squareup.okio:okio:2.9.0'
 	implementation 'org.jsoup:jsoup:1.13.1'
 
 	implementation 'org.koin:koin-android:2.2.0'
+	implementation 'org.koin:koin-android-viewmodel:2.2.0'
 	implementation 'io.coil-kt:coil-base:1.0.0'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
 	implementation 'com.tomclaw.cache:cache:1.0'

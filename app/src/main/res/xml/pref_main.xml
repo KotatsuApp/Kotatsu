@@ -39,7 +39,7 @@
 		app:updatesContinuously="true" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.ui.settings.sources.SourcesSettingsFragment"
+		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment"
 		android:key="remote_sources"
 		android:title="@string/remote_sources"
 		app:allowDividerAbove="true"
@@ -51,7 +51,7 @@
 		app:iconSpaceReserved="false" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.ui.settings.HistorySettingsFragment"
+		android:fragment="org.koitharu.kotatsu.settings.HistorySettingsFragment"
 		android:title="@string/history_and_cache"
 		app:iconSpaceReserved="false" />
 
@@ -124,7 +124,7 @@
 		app:iconSpaceReserved="false">
 
 		<PreferenceScreen
-			android:fragment="org.koitharu.kotatsu.ui.settings.backup.BackupSettingsFragment"
+			android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
 			android:title="@string/backup_restore"
 			app:iconSpaceReserved="false" />
 

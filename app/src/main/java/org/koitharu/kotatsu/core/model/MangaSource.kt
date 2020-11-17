@@ -4,9 +4,10 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import org.koin.core.context.GlobalContext
 import org.koin.core.error.NoBeanDefFoundException
-import org.koitharu.kotatsu.core.parser.LocalMangaRepository
+import org.koin.core.qualifier.named
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.site.*
+import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 
 @Suppress("SpellCheckingInspection")
 @Parcelize
@@ -30,6 +31,7 @@ enum class MangaSource(
 	// HENTAILIB("HentaiLib", "ru", HentaiLibRepository::class.java)
 
 	@get:Throws(NoBeanDefFoundException::class)
+	@Deprecated("")
 	val repository: MangaRepository
-		get() = GlobalContext.get().get(cls.kotlin)
+		get() = GlobalContext.get().get(named(this))
 }
