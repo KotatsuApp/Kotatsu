@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.history.domain
 import androidx.collection.ArraySet
 import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import org.koitharu.kotatsu.utils.ext.mapItems
 import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class HistoryRepository(private val db: MangaDatabase) : KoinComponent {
@@ -22,6 +24,12 @@ class HistoryRepository(private val db: MangaDatabase) : KoinComponent {
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
 		val entities = db.historyDao.findAll(offset, limit)
 		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
+	}
+
+	fun observeAll(): Flow<List<Manga>> {
+		return db.historyDao.observeAll().mapItems {
+			it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag))
+		}
 	}
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int) {

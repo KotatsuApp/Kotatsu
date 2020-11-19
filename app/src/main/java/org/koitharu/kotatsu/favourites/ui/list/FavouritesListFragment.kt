@@ -20,9 +20,7 @@ class FavouritesListFragment : MangaListFragment() {
 	private val categoryId: Long
 		get() = arguments?.getLong(ARG_CATEGORY_ID) ?: 0L
 
-	override fun onRequestMoreItems(offset: Int) {
-		viewModel.loadList(offset)
-	}
+	override fun onRequestMoreItems(offset: Int) = Unit
 
 	override fun setUpEmptyListHolder() {
 		textView_holder.setText(

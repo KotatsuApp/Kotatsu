@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.list.ui
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.CallSuper
@@ -9,16 +8,18 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
-import org.koin.android.ext.android.inject
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.base.ui.list.ProgressBarAdapter
 import org.koitharu.kotatsu.base.ui.list.decor.ItemTypeDividerDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.SectionItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
@@ -26,28 +27,21 @@ import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaFilter
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.filter.FilterAdapter
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.*
 
 abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
-	PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga>,
-	SharedPreferences.OnSharedPreferenceChangeListener, OnFilterChangedListener,
+	PaginationScrollListener.Callback, OnListItemClickListener<Manga>, OnFilterChangedListener,
 	SectionItemDecoration.Callback, SwipeRefreshLayout.OnRefreshListener {
 
-	private val settings by inject<AppSettings>()
-	private val adapterConfig = ConcatAdapter.Config.Builder()
-		.setIsolateViewTypes(true)
-		.setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
-		.build()
-
 	private var adapter: MangaListAdapter? = null
-	private var progressAdapter: ProgressBarAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
+	private val spanResolver: MangaListSpanResolver? = null
 	protected var isSwipeRefreshEnabled = true
 
 	protected abstract val viewModel: MangaListViewModel
@@ -60,31 +54,27 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-		adapter = MangaListAdapter(this)
-		progressAdapter = ProgressBarAdapter()
+		adapter = MangaListAdapter(get(), this)
 		paginationListener = PaginationScrollListener(4, this)
 		recyclerView.setHasFixedSize(true)
-		initListMode(settings.listMode)
+		recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(paginationListener!!)
 		swipeRefreshLayout.setOnRefreshListener(this)
 		recyclerView_filter.setHasFixedSize(true)
 		recyclerView_filter.addItemDecoration(ItemTypeDividerDecoration(view.context))
 		recyclerView_filter.addItemDecoration(SectionItemDecoration(false, this))
-		settings.subscribe(this)
-		if (savedInstanceState == null) {
-			onRequestMoreItems(0)
-		}
+
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.filter.observe(viewLifecycleOwner, ::onInitFilter)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
+		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
+		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
 	}
 
 	override fun onDestroyView() {
 		adapter = null
-		progressAdapter = null
 		paginationListener = null
-		settings.unsubscribe(this)
 		super.onDestroyView()
 	}
 
@@ -111,11 +101,11 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 		super.onPrepareOptionsMenu(menu)
 	}
 
-	override fun onItemClick(item: Manga, position: Int, view: View) {
+	override fun onItemClick(item: Manga, view: View) {
 		startActivity(DetailsActivity.newIntent(context ?: return, item))
 	}
 
-	override fun onItemLongClick(item: Manga, position: Int, view: View): Boolean {
+	override fun onItemLongClick(item: Manga, view: View): Boolean {
 		val menu = PopupMenu(context ?: return false, view)
 		onCreatePopupMenu(menu.menuInflater, menu.menu, item)
 		return if (menu.menu.hasVisibleItems()) {
@@ -135,16 +125,14 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 		onRequestMoreItems(0)
 	}
 
-	private fun onListChanged(list: List<Manga>) {
-		paginationListener?.reset()
-		adapter?.replaceData(list)
+	private fun onListChanged(list: List<Any>) {
+		adapter?.items = list
 		if (list.isEmpty()) {
 			setUpEmptyListHolder()
 			layout_holder.isVisible = true
 		} else {
 			layout_holder.isVisible = false
 		}
-		progressAdapter?.isProgressVisible = list.isNotEmpty()
 		recyclerView.callOnScrollListeners()
 	}
 
@@ -179,17 +167,6 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 		}
 	}
 
-	@CallSuper
-	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-		if (context == null) {
-			return
-		}
-		when (key) {
-			AppSettings.KEY_LIST_MODE -> initListMode(settings.listMode)
-			AppSettings.KEY_GRID_SIZE -> UiUtils.SpanCountResolver.update(recyclerView)
-		}
-	}
-
 	protected fun onInitFilter(config: MangaFilterConfig) {
 		recyclerView_filter.adapter = FilterAdapter(
 			sortOrders = config.sortOrders,
@@ -220,14 +197,43 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 		textView_holder.setText(R.string.nothing_found)
 	}
 
+	private fun onGridScaleChanged(scale: Float) {
+		UiUtils.SpanCountResolver.update(recyclerView)
+	}
+
+	private fun onListModeChanged(mode: ListMode) {
+		with(recyclerView) {
+			clearItemDecorations()
+			when (mode) {
+				ListMode.LIST -> {
+					layoutManager = LinearLayoutManager(context)
+					addItemDecoration(
+						DividerItemDecoration(
+							context,
+							RecyclerView.VERTICAL
+						)
+					)
+				}
+				ListMode.DETAILED_LIST -> {
+					layoutManager = LinearLayoutManager(context)
+				}
+				ListMode.GRID -> {
+					layoutManager = GridLayoutManager(context, 3)
+					addItemDecoration(
+						SpacingItemDecoration(
+							resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+						)
+					)
+				}
+			}
+		}
+	}
+
 	private fun initListMode(mode: ListMode) {
 		val ctx = context ?: return
-		val position = recyclerView.firstItem
-		recyclerView.adapter = null
 		recyclerView.layoutManager = null
 		recyclerView.clearItemDecorations()
 		recyclerView.removeOnLayoutChangeListener(UiUtils.SpanCountResolver)
-		adapter?.listMode = mode
 		recyclerView.layoutManager = when (mode) {
 			ListMode.GRID -> {
 				GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx)).apply {
@@ -239,8 +245,6 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 			}
 			else -> LinearLayoutManager(ctx)
 		}
-		recyclerView.recycledViewPool.clear()
-		recyclerView.adapter = ConcatAdapter(adapterConfig, adapter, progressAdapter)
 		recyclerView.addItemDecoration(
 			when (mode) {
 				ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)
@@ -254,7 +258,6 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 			recyclerView.addOnLayoutChangeListener(UiUtils.SpanCountResolver)
 		}
 		adapter?.notifyDataSetChanged()
-		recyclerView.firstItem = position
 	}
 
 	override fun getItemsCount() = adapter?.itemCount ?: 0

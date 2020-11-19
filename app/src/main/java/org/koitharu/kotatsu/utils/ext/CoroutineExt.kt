@@ -3,8 +3,6 @@ package org.koitharu.kotatsu.utils.ext
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onEach
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -30,16 +28,6 @@ suspend fun Call.await() = suspendCancellableCoroutine<Response> { cont ->
 	cont.invokeOnCancellation {
 		safe {
 			this.cancel()
-		}
-	}
-}
-
-fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
-	var isFirstCall = true
-	return onEach {
-		if (isFirstCall) {
-			action(it)
-			isFirstCall = false
 		}
 	}
 }

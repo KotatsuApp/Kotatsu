@@ -12,7 +12,7 @@ val favouritesModule
 		single { FavouritesRepository(get()) }
 
 		viewModel { (categoryId: Long) ->
-			FavouritesListViewModel(categoryId, get())
+			FavouritesListViewModel(categoryId, get(), get())
 		}
 		viewModel { FavouritesCategoriesViewModel(get()) }
 	}

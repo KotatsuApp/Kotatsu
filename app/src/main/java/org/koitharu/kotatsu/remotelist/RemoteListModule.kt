@@ -10,6 +10,6 @@ val remoteListModule
 	get() = module {
 
 		viewModel { (source: MangaSource) ->
-			RemoteListViewModel(get(named(source)))
+			RemoteListViewModel(get(named(source)), get())
 		}
 	}

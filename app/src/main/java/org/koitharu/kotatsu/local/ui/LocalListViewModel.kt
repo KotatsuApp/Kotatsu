@@ -3,13 +3,21 @@ package org.koitharu.kotatsu.local.ui
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
+import org.koitharu.kotatsu.list.ui.model.toGridModel
+import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
+import org.koitharu.kotatsu.list.ui.model.toListModel
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.MediaStoreCompat
@@ -23,9 +31,18 @@ class LocalListViewModel(
 	private val historyRepository: HistoryRepository,
 	private val settings: AppSettings,
 	private val context: Context
-) : MangaListViewModel() {
+) : MangaListViewModel(settings) {
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
+	private val mangaList = MutableStateFlow<List<Manga>>(emptyList())
+
+	override val content = combine(mangaList, createListModeFlow()) { list, mode ->
+		when(mode) {
+			ListMode.LIST -> list.map { it.toListModel() }
+			ListMode.DETAILED_LIST -> list.map { it.toListDetailedModel() }
+			ListMode.GRID -> list.map { it.toGridModel() }
+		}
+	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
 		loadList()
@@ -51,9 +68,8 @@ class LocalListViewModel(
 						source.copyTo(output)
 					}
 				} ?: throw IOException("Cannot open input stream: $uri")
-				repository.getList(0)
 			}
-			content.value = list
+			loadList()
 		}
 	}
 
@@ -75,10 +91,9 @@ class LocalListViewModel(
 
 	private fun loadList() {
 		launchLoadingJob {
-			val list = withContext(Dispatchers.Default) {
-				repository.getList(0)
+			withContext(Dispatchers.Default) {
+				mangaList.value = repository.getList(0)
 			}
-			content.value = list
 		}
 	}
 }

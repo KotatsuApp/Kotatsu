@@ -13,6 +13,6 @@ val searchModule
 
 		single { MangaSearchRepository() }
 
-		viewModel { (source: MangaSource) -> SearchViewModel(get(named(source))) }
-		viewModel { GlobalSearchViewModel(get()) }
+		viewModel { (source: MangaSource) -> SearchViewModel(get(named(source)), get()) }
+		viewModel { GlobalSearchViewModel(get(), get()) }
 	}

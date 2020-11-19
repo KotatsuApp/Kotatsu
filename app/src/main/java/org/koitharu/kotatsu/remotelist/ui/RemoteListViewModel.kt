@@ -1,43 +1,70 @@
 package org.koitharu.kotatsu.remotelist.ui
 
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.list.ui.MangaFilterConfig
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
+import org.koitharu.kotatsu.list.ui.model.IndeterminateProgress
+import org.koitharu.kotatsu.list.ui.model.toGridModel
+import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
+import org.koitharu.kotatsu.list.ui.model.toListModel
 
 class RemoteListViewModel(
-	private val repository: MangaRepository
-) : MangaListViewModel() {
+	private val repository: MangaRepository,
+	settings: AppSettings
+) : MangaListViewModel(settings) {
 
+	private val mangaList = MutableStateFlow<List<Manga>>(emptyList())
+	private val hasNextPage = MutableStateFlow(false)
 	private var appliedFilter: MangaFilter? = null
 
+	override val content = combine(mangaList, createListModeFlow()) { list, mode ->
+		when(mode) {
+			ListMode.LIST -> list.map { it.toListModel() }
+			ListMode.DETAILED_LIST -> list.map { it.toListDetailedModel() }
+			ListMode.GRID -> list.map { it.toGridModel() }
+		}
+	}.combine(hasNextPage) { list, isHasNextPage ->
+		if (isHasNextPage && list.isNotEmpty()) list + IndeterminateProgress else list
+	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+
 	init {
+		loadList(0)
 		loadFilter()
 	}
 
 	fun loadList(offset: Int) {
 		launchLoadingJob {
-			val list = withContext(Dispatchers.Default) {
-				repository.getList(
+			withContext(Dispatchers.Default) {
+				val list = repository.getList(
 					offset = offset,
 					sortOrder = appliedFilter?.sortOrder,
 					tag = appliedFilter?.tag
 				)
-			}
-			if (offset == 0) {
-				content.value = list
-			} else {
-				content.value = content.value.orEmpty() + list
+				if (offset == 0) {
+					mangaList.value = list
+				} else if (list.isNotEmpty()) {
+					mangaList.value += list
+				}
+				hasNextPage.value = list.isNotEmpty()
 			}
 		}
 	}
 
 	fun applyFilter(newFilter: MangaFilter) {
 		appliedFilter = newFilter
-		content.value = emptyList()
+		mangaList.value = emptyList()
+		hasNextPage.value = false
 		loadList(0)
 	}
 

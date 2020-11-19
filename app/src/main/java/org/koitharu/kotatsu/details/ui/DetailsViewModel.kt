@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.domain.OnFavouritesChangeListener
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -28,8 +29,11 @@ class DetailsViewModel(
 	private val localMangaRepository: LocalMangaRepository,
 	private val trackingRepository: TrackingRepository,
 	private val searchRepository: MangaSearchRepository,
-	private val mangaDataRepository: MangaDataRepository
-) : MangaListViewModel(), OnHistoryChangeListener, OnFavouritesChangeListener {
+	private val mangaDataRepository: MangaDataRepository,
+	settings: AppSettings
+) : MangaListViewModel(settings), OnHistoryChangeListener, OnFavouritesChangeListener {
+
+	override val content = MutableLiveData<List<Any>>()
 
 	val mangaData = MutableLiveData<Manga>()
 	val newChapters = MutableLiveData<Int>(0)

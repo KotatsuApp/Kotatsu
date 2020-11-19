@@ -6,44 +6,42 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.sheet_list.*
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.base.ui.list.ProgressBarAdapter
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.*
 
 abstract class MangaListSheet : BaseBottomSheet(R.layout.sheet_list),
-	PaginationScrollListener.Callback, OnRecyclerItemClickListener<Manga>,
+	PaginationScrollListener.Callback, OnListItemClickListener<Manga>,
 	SharedPreferences.OnSharedPreferenceChangeListener, Toolbar.OnMenuItemClickListener {
 
 	private val settings by inject<AppSettings>()
-	private val adapterConfig = ConcatAdapter.Config.Builder()
-		.setIsolateViewTypes(true)
-		.setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
-		.build()
 
 	private var adapter: MangaListAdapter? = null
-	private var progressAdapter: ProgressBarAdapter? = null
 
 	protected abstract val viewModel: MangaListViewModel
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = MangaListAdapter(this)
-		progressAdapter = ProgressBarAdapter()
+		adapter = MangaListAdapter(get(), this)
 		initListMode(settings.listMode)
 		recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
@@ -64,12 +62,12 @@ abstract class MangaListSheet : BaseBottomSheet(R.layout.sheet_list),
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
+		viewModel.listMode.observe(viewLifecycleOwner, ::initListMode)
 	}
 
 	override fun onDestroyView() {
 		settings.unsubscribe(this)
 		adapter = null
-		progressAdapter = null
 		super.onDestroyView()
 	}
 
@@ -120,14 +118,13 @@ abstract class MangaListSheet : BaseBottomSheet(R.layout.sheet_list),
 		}
 	}
 
-	override fun onItemClick(item: Manga, position: Int, view: View) {
+	override fun onItemClick(item: Manga, view: View) {
 		startActivity(DetailsActivity.newIntent(context ?: return, item))
 	}
 
-	private fun onListChanged(list: List<Manga>) {
-		adapter?.replaceData(list)
+	private fun onListChanged(list: List<Any>) {
+		adapter?.items = list
 		textView_holder.isVisible = list.isEmpty()
-		progressAdapter?.isProgressVisible = list.isNotEmpty()
 		recyclerView.callOnScrollListeners()
 	}
 
@@ -147,11 +144,9 @@ abstract class MangaListSheet : BaseBottomSheet(R.layout.sheet_list),
 	private fun initListMode(mode: ListMode) {
 		val ctx = context ?: return
 		val position = recyclerView.firstItem
-		recyclerView.adapter = null
 		recyclerView.layoutManager = null
 		recyclerView.clearItemDecorations()
 		recyclerView.removeOnLayoutChangeListener(UiUtils.SpanCountResolver)
-		adapter?.listMode = mode
 		recyclerView.layoutManager = when (mode) {
 			ListMode.GRID -> {
 				GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx)).apply {
@@ -163,7 +158,6 @@ abstract class MangaListSheet : BaseBottomSheet(R.layout.sheet_list),
 			}
 			else -> LinearLayoutManager(ctx)
 		}
-		recyclerView.adapter = ConcatAdapter(adapterConfig, adapter, progressAdapter)
 		recyclerView.addItemDecoration(
 			when (mode) {
 				ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)

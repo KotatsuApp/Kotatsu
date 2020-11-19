@@ -10,5 +10,5 @@ val historyModule
 	get() = module {
 
 		single { HistoryRepository(get()) }
-		viewModel { HistoryListViewModel(get(), androidContext()) }
+		viewModel { HistoryListViewModel(get(), androidContext(), get()) }
 	}

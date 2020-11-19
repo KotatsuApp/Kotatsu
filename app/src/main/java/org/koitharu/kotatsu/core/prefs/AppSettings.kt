@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.delegates.prefs.*
@@ -115,6 +118,16 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	fun unsubscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
 		prefs.unregisterOnSharedPreferenceChangeListener(listener)
+	}
+
+	fun observe() = callbackFlow<String> {
+		val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+			sendBlocking(key)
+		}
+		prefs.registerOnSharedPreferenceChangeListener(listener)
+		awaitClose {
+			prefs.unregisterOnSharedPreferenceChangeListener(listener)
+		}
 	}
 
 	companion object {

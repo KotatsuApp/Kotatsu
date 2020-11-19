@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.favourites.domain
 import androidx.collection.ArraySet
 import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
@@ -11,6 +12,7 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
+import org.koitharu.kotatsu.utils.ext.mapItems
 import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class FavouritesRepository(private val db: MangaDatabase) {
@@ -18,6 +20,11 @@ class FavouritesRepository(private val db: MangaDatabase) {
 	suspend fun getAllManga(): List<Manga> {
 		val entities = db.favouritesDao.findAll()
 		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
+	}
+
+	fun observeAll(): Flow<List<Manga>> {
+		return db.favouritesDao.observeAll()
+			.mapItems { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
 	suspend fun getAllManga(offset: Int): List<Manga> {
@@ -28,6 +35,11 @@ class FavouritesRepository(private val db: MangaDatabase) {
 	suspend fun getManga(categoryId: Long): List<Manga> {
 		val entities = db.favouritesDao.findAll(categoryId)
 		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
+	}
+
+	fun observeAll(categoryId: Long): Flow<List<Manga>> {
+		return db.favouritesDao.observeAll(categoryId)
+			.mapItems { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
 	suspend fun getManga(categoryId: Long, offset: Int): List<Manga> {

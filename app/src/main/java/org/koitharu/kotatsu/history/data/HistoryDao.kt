@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.history.data
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 
 
@@ -13,6 +14,10 @@ abstract class HistoryDao {
 	@Transaction
 	@Query("SELECT * FROM history ORDER BY updated_at DESC LIMIT :limit OFFSET :offset")
 	abstract suspend fun findAll(offset: Int, limit: Int): List<HistoryWithManga>
+
+	@Transaction
+	@Query("SELECT * FROM history ORDER BY updated_at DESC")
+	abstract fun observeAll(): Flow<List<HistoryWithManga>>
 
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM history)")
 	abstract suspend fun findAllManga(): List<MangaEntity>

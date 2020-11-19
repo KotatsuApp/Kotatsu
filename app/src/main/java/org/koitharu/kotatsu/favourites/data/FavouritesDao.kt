@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.favourites.data
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 
 @Dao
@@ -11,12 +12,20 @@ abstract class FavouritesDao {
 	abstract suspend fun findAll(): List<FavouriteManga>
 
 	@Transaction
+	@Query("SELECT * FROM favourites GROUP BY manga_id ORDER BY created_at")
+	abstract fun observeAll(): Flow<List<FavouriteManga>>
+
+	@Transaction
 	@Query("SELECT * FROM favourites GROUP BY manga_id ORDER BY created_at LIMIT :limit OFFSET :offset")
 	abstract suspend fun findAll(offset: Int, limit: Int): List<FavouriteManga>
 
 	@Transaction
 	@Query("SELECT * FROM favourites WHERE category_id = :categoryId GROUP BY manga_id ORDER BY created_at")
 	abstract suspend fun findAll(categoryId: Long): List<FavouriteManga>
+
+	@Transaction
+	@Query("SELECT * FROM favourites WHERE category_id = :categoryId GROUP BY manga_id ORDER BY created_at")
+	abstract fun observeAll(categoryId: Long): Flow<List<FavouriteManga>>
 
 	@Transaction
 	@Query("SELECT * FROM favourites WHERE category_id = :categoryId GROUP BY manga_id ORDER BY created_at LIMIT :limit OFFSET :offset")
