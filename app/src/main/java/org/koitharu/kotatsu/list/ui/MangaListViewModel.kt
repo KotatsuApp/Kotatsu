@@ -15,11 +15,13 @@ abstract class MangaListViewModel(
 ) : BaseViewModel() {
 
 	abstract val content: LiveData<List<Any>>
+	val isEmptyState = MutableLiveData(false)
 	val filter = MutableLiveData<MangaFilterConfig>()
 	val listMode = MutableLiveData<ListMode>()
 	val gridScale = settings.observe()
 		.filter { it == AppSettings.KEY_GRID_SIZE }
 		.map { settings.gridSize / 100f }
+		.onStart { emit(settings.gridSize / 100f) }
 		.asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
 	protected fun createListModeFlow() = settings.observe()

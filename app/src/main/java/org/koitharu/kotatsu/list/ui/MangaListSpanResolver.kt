@@ -1,25 +1,19 @@
 package org.koitharu.kotatsu.list.ui
 
-import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-class MangaListSpanResolver(
-	context: Context,
-	private val adapter: MangaListAdapter
-) : GridLayoutManager.SpanSizeLookup(), View.OnLayoutChangeListener {
+class MangaListSpanResolver : View.OnLayoutChangeListener {
 
-	private val gridWidth = context.resources.getDimension(R.dimen.preferred_grid_width)
+	var spanCount = 3
+		private set
+
+	private var gridWidth = -1f
 	private var cellWidth = -1f
-
-	override fun getSpanSize(position: Int) = when(adapter.getItemViewType(position)) {
-		else -> 1
-	}
 
 	override fun onLayoutChange(
 		v: View?,
@@ -36,20 +30,33 @@ class MangaListSpanResolver(
 			return
 		}
 		val rv = v as? RecyclerView ?: return
+		if (gridWidth < 0f) {
+			gridWidth = rv.resources.getDimension(R.dimen.preferred_grid_width)
+		}
 		val width = abs(right - left)
 		if (width == 0) {
 			return
 		}
-		(rv.layoutManager as? GridLayoutManager)?.spanCount = resolveGridSpanCount(width)
+		resolveGridSpanCount(width)
+		(rv.layoutManager as? GridLayoutManager)?.spanCount = spanCount
 	}
 
-	fun setGridSize(gridSize: Int) {
-		val scaleFactor = gridSize / 100f
+	fun setGridSize(scaleFactor: Float, rv: RecyclerView?) {
+		if (gridWidth < 0f) {
+			gridWidth = (rv ?: return).resources.getDimension(R.dimen.preferred_grid_width)
+		}
 		cellWidth = gridWidth * scaleFactor
+		if (rv != null) {
+			val width = rv.width
+			if (width != 0) {
+				resolveGridSpanCount(width)
+				(rv.layoutManager as? GridLayoutManager)?.spanCount = spanCount
+			}
+		}
 	}
 
-	private fun resolveGridSpanCount(width: Int): Int {
+	private fun resolveGridSpanCount(width: Int) {
 		val estimatedCount = (width / cellWidth).roundToInt()
-		return estimatedCount.coerceAtLeast(2)
+		spanCount = estimatedCount.coerceAtLeast(2)
 	}
 }

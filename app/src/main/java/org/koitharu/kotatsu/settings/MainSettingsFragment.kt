@@ -9,7 +9,6 @@ import android.provider.Settings
 import android.text.InputType
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.collection.arrayMapOf
 import androidx.preference.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -22,7 +21,6 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.list.ui.ListModeSelectDialog
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getStorageName
@@ -38,12 +36,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_main)
-	}
-
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-		findPreference<Preference>(AppSettings.KEY_LIST_MODE)?.summary =
-			LIST_MODES[settings.listMode]?.let(::getString)
 		findPreference<SeekBarPreference>(AppSettings.KEY_GRID_SIZE)?.run {
 			summary = "%d%%".format(value)
 			setOnPreferenceChangeListener { preference, newValue ->
@@ -55,16 +47,24 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			MultiSummaryProvider(R.string.gestures_only)
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_TRACK_SOURCES)?.summaryProvider =
 			MultiSummaryProvider(R.string.dont_check)
+		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.run {
+			entryValues = ZoomMode.values().names()
+			setDefaultValue(ZoomMode.FIT_CENTER.name)
+		}
+		findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
+			entryValues = ListMode.values().names()
+			setDefaultValue(ListMode.GRID.name)
+		}
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_APP_UPDATE_AUTO)?.run {
 			isVisible = AppUpdateChecker.isUpdateSupported(context)
 		}
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)
-		}
-		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.let {
-			it.entryValues = ZoomMode.values().names()
-			it.setDefaultValue(ZoomMode.FIT_CENTER.name)
 		}
 		findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
@@ -82,8 +82,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
 		when (key) {
-			AppSettings.KEY_LIST_MODE -> findPreference<Preference>(key)?.summary =
-				LIST_MODES[settings.listMode]?.let(::getString)
 			AppSettings.KEY_THEME -> {
 				AppCompatDelegate.setDefaultNightMode(settings.theme)
 			}
@@ -111,10 +109,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onPreferenceTreeClick(preference: Preference?): Boolean {
 		return when (preference?.key) {
-			AppSettings.KEY_LIST_MODE -> {
-				ListModeSelectDialog.show(childFragmentManager)
-				true
-			}
 			AppSettings.KEY_NOTIFICATIONS_SETTINGS -> {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 					val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
@@ -223,14 +217,5 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				isSelectable = true
 			}
 		}
-	}
-
-	private companion object {
-
-		val LIST_MODES = arrayMapOf(
-			ListMode.DETAILED_LIST to R.string.detailed_list,
-			ListMode.GRID to R.string.grid,
-			ListMode.LIST to R.string.list
-		)
 	}
 }

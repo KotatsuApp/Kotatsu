@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.settings
 
 import android.os.Bundle
-import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import org.koitharu.kotatsu.R
@@ -15,10 +14,6 @@ class ReaderSettingsFragment : BasePreferenceFragment(R.string.reader_settings) 
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_reader)
-	}
-
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_SWITCHERS)?.let {
 			it.summaryProvider = MultiSummaryProvider(R.string.gestures_only)
 		}

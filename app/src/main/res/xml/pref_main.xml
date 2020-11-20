@@ -20,10 +20,11 @@
 		android:title="@string/black_dark_theme"
 		app:iconSpaceReserved="false" />
 
-	<Preference
-		android:key="list_mode"
-		android:persistent="false"
+	<ListPreference
+		android:key="list_mode_2"
+		android:entries="@array/list_modes"
 		android:title="@string/list_mode"
+		app:useSimpleSummaryProvider="true"
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false" />
 

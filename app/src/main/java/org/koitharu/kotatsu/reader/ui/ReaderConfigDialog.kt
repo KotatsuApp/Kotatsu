@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.dialog_list_mode.button_ok
 import kotlinx.android.synthetic.main.dialog_reader_config.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment

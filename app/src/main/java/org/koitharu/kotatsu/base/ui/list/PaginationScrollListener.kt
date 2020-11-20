@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.base.ui.list
 
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class PaginationScrollListener(offset: Int, private val callback: Callback) :
@@ -10,7 +11,7 @@ class PaginationScrollListener(offset: Int, private val callback: Callback) :
 	override fun onScrolledToStart(recyclerView: RecyclerView) = Unit
 
 	override fun onScrolledToEnd(recyclerView: RecyclerView) {
-		val total = callback.getItemsCount()
+		val total = (recyclerView.layoutManager as? LinearLayoutManager)?.itemCount ?: return
 		if (total > lastTotalCount) {
 			lastTotalCount = total
 			callback.onRequestMoreItems(total)
@@ -27,6 +28,7 @@ class PaginationScrollListener(offset: Int, private val callback: Callback) :
 
 		fun onRequestMoreItems(offset: Int)
 
-		fun getItemsCount(): Int
+		@Deprecated("Not in use")
+		fun getItemsCount(): Int = 0
 	}
 }

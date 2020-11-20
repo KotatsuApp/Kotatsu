@@ -19,4 +19,9 @@
 		<item>@string/favourites</item>
 		<item>@string/history</item>
 	</string-array>
+	<string-array name="list_modes">
+		<item>@string/list</item>
+		<item>@string/detailed_list</item>
+		<item>@string/grid</item>
+	</string-array>
 </resources>

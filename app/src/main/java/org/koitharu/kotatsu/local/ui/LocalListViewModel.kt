@@ -55,7 +55,7 @@ class LocalListViewModel(
 	fun importFile(uri: Uri) {
 		launchLoadingJob {
 			val contentResolver = context.contentResolver
-			val list = withContext(Dispatchers.Default) {
+			withContext(Dispatchers.Default) {
 				val name = MediaStoreCompat.getName(contentResolver, uri)
 					?: throw IOException("Cannot fetch name from uri: $uri")
 				if (!LocalMangaRepository.isFileSupported(name)) {
@@ -92,7 +92,9 @@ class LocalListViewModel(
 	private fun loadList() {
 		launchLoadingJob {
 			withContext(Dispatchers.Default) {
-				mangaList.value = repository.getList(0)
+				val list = repository.getList(0)
+				mangaList.value = list
+				isEmptyState.postValue(list.isEmpty())
 			}
 		}
 	}

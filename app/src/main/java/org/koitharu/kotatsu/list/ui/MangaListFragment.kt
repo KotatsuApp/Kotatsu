@@ -32,8 +32,10 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.filter.FilterAdapter
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
-import org.koitharu.kotatsu.utils.UiUtils
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.clearItemDecorations
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.hasItems
+import org.koitharu.kotatsu.utils.ext.toggleDrawer
 
 abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 	PaginationScrollListener.Callback, OnListItemClickListener<Manga>, OnFilterChangedListener,
@@ -41,7 +43,8 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 
 	private var adapter: MangaListAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
-	private val spanResolver: MangaListSpanResolver? = null
+	private val spanResolver = MangaListSpanResolver()
+	private val spanSizeLookup = SpanSizeLookup()
 	protected var isSwipeRefreshEnabled = true
 
 	protected abstract val viewModel: MangaListViewModel
@@ -70,11 +73,13 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
+		viewModel.isEmptyState.observe(viewLifecycleOwner, ::onEmptyStateChanged)
 	}
 
 	override fun onDestroyView() {
 		adapter = null
 		paginationListener = null
+		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
 	}
 
@@ -126,24 +131,15 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 	}
 
 	private fun onListChanged(list: List<Any>) {
+		spanSizeLookup.invalidateCache()
 		adapter?.items = list
-		if (list.isEmpty()) {
-			setUpEmptyListHolder()
-			layout_holder.isVisible = true
-		} else {
-			layout_holder.isVisible = false
-		}
-		recyclerView.callOnScrollListeners()
 	}
 
 	private fun onError(e: Throwable) {
 		if (e is CloudFlareProtectedException) {
 			CloudFlareDialog.newInstance(e.url).show(childFragmentManager, CloudFlareDialog.TAG)
 		}
-		if (recyclerView.hasItems) {
-			Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
-				.show()
-		} else {
+		if (viewModel.isEmptyState.value == true) {
 			textView_holder.text = e.getDisplayMessage(resources)
 			textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(
 				0,
@@ -152,19 +148,27 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 				0
 			)
 			layout_holder.isVisible = true
+		} else {
+			Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
+				.show()
 		}
 	}
 
 	@CallSuper
 	protected open fun onLoadingStateChanged(isLoading: Boolean) {
 		val hasItems = recyclerView.hasItems
-		progressBar.isVisible = isLoading && !hasItems
+		progressBar.isVisible = isLoading && !hasItems && viewModel.isEmptyState.value != true
 		swipeRefreshLayout.isEnabled = isSwipeRefreshEnabled && !progressBar.isVisible
-		if (isLoading) {
-			layout_holder.isVisible = false
-		} else {
+		if (!isLoading) {
 			swipeRefreshLayout.isRefreshing = false
 		}
+	}
+
+	private fun onEmptyStateChanged(isEmpty: Boolean) {
+		if (isEmpty) {
+			setUpEmptyListHolder()
+		}
+		layout_holder.isVisible = isEmpty
 	}
 
 	protected fun onInitFilter(config: MangaFilterConfig) {
@@ -198,12 +202,15 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 	}
 
 	private fun onGridScaleChanged(scale: Float) {
-		UiUtils.SpanCountResolver.update(recyclerView)
+		spanSizeLookup.invalidateCache()
+		spanResolver.setGridSize(scale, recyclerView)
 	}
 
 	private fun onListModeChanged(mode: ListMode) {
+		spanSizeLookup.invalidateCache()
 		with(recyclerView) {
 			clearItemDecorations()
+			removeOnLayoutChangeListener(spanResolver)
 			when (mode) {
 				ListMode.LIST -> {
 					layoutManager = LinearLayoutManager(context)
@@ -216,51 +223,26 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 				}
 				ListMode.DETAILED_LIST -> {
 					layoutManager = LinearLayoutManager(context)
-				}
-				ListMode.GRID -> {
-					layoutManager = GridLayoutManager(context, 3)
 					addItemDecoration(
 						SpacingItemDecoration(
 							resources.getDimensionPixelOffset(R.dimen.grid_spacing)
 						)
 					)
 				}
-			}
-		}
-	}
-
-	private fun initListMode(mode: ListMode) {
-		val ctx = context ?: return
-		recyclerView.layoutManager = null
-		recyclerView.clearItemDecorations()
-		recyclerView.removeOnLayoutChangeListener(UiUtils.SpanCountResolver)
-		recyclerView.layoutManager = when (mode) {
-			ListMode.GRID -> {
-				GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx)).apply {
-					spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-						override fun getSpanSize(position: Int) = if (position < getItemsCount())
-							1 else this@apply.spanCount
+				ListMode.GRID -> {
+					layoutManager = GridLayoutManager(context, spanResolver.spanCount).also {
+						it.spanSizeLookup = spanSizeLookup
 					}
+					addItemDecoration(
+						SpacingItemDecoration(
+							resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+						)
+					)
+					addOnLayoutChangeListener(spanResolver)
 				}
 			}
-			else -> LinearLayoutManager(ctx)
 		}
-		recyclerView.addItemDecoration(
-			when (mode) {
-				ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)
-				ListMode.DETAILED_LIST,
-				ListMode.GRID -> SpacingItemDecoration(
-					resources.getDimensionPixelOffset(R.dimen.grid_spacing)
-				)
-			}
-		)
-		if (mode == ListMode.GRID) {
-			recyclerView.addOnLayoutChangeListener(UiUtils.SpanCountResolver)
-		}
-		adapter?.notifyDataSetChanged()
 	}
-
-	override fun getItemsCount() = adapter?.itemCount ?: 0
 
 	final override fun isSection(position: Int): Boolean {
 		return position == 0 || recyclerView_filter.adapter?.run {
@@ -279,4 +261,25 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 	protected open fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) = Unit
 
 	protected open fun onPopupMenuItemSelected(item: MenuItem, data: Manga) = false
+
+	private inner class SpanSizeLookup : GridLayoutManager.SpanSizeLookup() {
+
+		init {
+			isSpanIndexCacheEnabled = true
+			isSpanGroupIndexCacheEnabled = true
+		}
+
+		override fun getSpanSize(position: Int): Int {
+			val total = (recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
+			return when(adapter?.getItemViewType(position)) {
+				MangaListAdapter.ITEM_TYPE_PROGRESS -> total
+				else -> 1
+			}
+		}
+
+		fun invalidateCache() {
+			invalidateSpanGroupIndexCache()
+			invalidateSpanIndexCache()
+		}
+	}
 }
