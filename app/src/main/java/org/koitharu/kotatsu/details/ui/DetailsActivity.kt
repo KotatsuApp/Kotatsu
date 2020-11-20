@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.download.DownloadService
+import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -161,6 +162,12 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 		R.id.action_browser -> {
 			manga?.let {
 				startActivity(BrowserActivity.newIntent(this, it.url))
+			}
+			true
+		}
+		R.id.action_related -> {
+			manga?.let {
+				startActivity(GlobalSearchActivity.newIntent(this, it.title))
 			}
 			true
 		}

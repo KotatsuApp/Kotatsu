@@ -118,6 +118,7 @@
 			android:justificationMode="inter_word"
 			android:lineSpacingMultiplier="1.2"
 			android:padding="12dp"
+			android:textIsSelectable="true"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/divider_top"

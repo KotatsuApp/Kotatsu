@@ -7,5 +7,5 @@ import org.koitharu.kotatsu.details.ui.DetailsViewModel
 val detailsModule
 	get() = module {
 
-		viewModel { DetailsViewModel(get(), get(), get(), get(), get(), get(), get()) }
+		viewModel { DetailsViewModel(get(), get(), get(), get(), get()) }
 	}

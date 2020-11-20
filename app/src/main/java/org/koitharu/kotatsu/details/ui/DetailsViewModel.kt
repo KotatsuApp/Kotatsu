@@ -2,24 +2,20 @@ package org.koitharu.kotatsu.details.ui
 
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
+import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.domain.OnFavouritesChangeListener
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.OnHistoryChangeListener
-import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
-import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.onFirst
 import org.koitharu.kotatsu.utils.ext.safe
 import java.io.IOException
 
@@ -28,12 +24,8 @@ class DetailsViewModel(
 	private val favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
 	private val trackingRepository: TrackingRepository,
-	private val searchRepository: MangaSearchRepository,
-	private val mangaDataRepository: MangaDataRepository,
-	settings: AppSettings
-) : MangaListViewModel(settings), OnHistoryChangeListener, OnFavouritesChangeListener {
-
-	override val content = MutableLiveData<List<Any>>()
+	private val mangaDataRepository: MangaDataRepository
+) : BaseViewModel(), OnHistoryChangeListener, OnFavouritesChangeListener {
 
 	val mangaData = MutableLiveData<Manga>()
 	val newChapters = MutableLiveData<Int>(0)
@@ -94,30 +86,6 @@ class DetailsViewModel(
 		launchJob {
 			favouriteCategories.value = favouritesRepository.getCategories(manga.id)
 		}
-	}
-
-	fun loadRelated() {
-		val manga = mangaData.value ?: return
-		searchRepository.globalSearch(manga.title)
-			.map { list ->
-				list.filter { x -> x.id != manga.id }
-			}.filterNot { x -> x.isEmpty() }
-			.flowOn(Dispatchers.IO)
-			.catch { e ->
-				if (e is IOException) {
-					onError.call(e)
-				}
-			}
-			.onEmpty {
-				content.value = emptyList()
-				isLoading.value = false
-			}.onCompletion {
-				// TODO
-			}.onFirst {
-				isLoading.value = false
-			}.onEach {
-				content.value = content.value.orEmpty() + it
-			}
 	}
 
 	override fun onHistoryChanged() {

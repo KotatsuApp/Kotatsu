@@ -32,7 +32,7 @@ class HistoryListViewModel(
 		repository.observeAll(),
 		createListModeFlow()
 	) { list, mode ->
-		when(mode) {
+		when (mode) {
 			ListMode.LIST -> list.map { it.toListModel() }
 			ListMode.DETAILED_LIST -> list.map { it.toListDetailedModel() }
 			ListMode.GRID -> list.map { it.toGridModel() }

@@ -37,7 +37,7 @@ class LocalListViewModel(
 	private val mangaList = MutableStateFlow<List<Manga>>(emptyList())
 
 	override val content = combine(mangaList, createListModeFlow()) { list, mode ->
-		when(mode) {
+		when (mode) {
 			ListMode.LIST -> list.map { it.toListModel() }
 			ListMode.DETAILED_LIST -> list.map { it.toListDetailedModel() }
 			ListMode.GRID -> list.map { it.toGridModel() }

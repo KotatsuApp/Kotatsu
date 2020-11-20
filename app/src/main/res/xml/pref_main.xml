@@ -21,12 +21,12 @@
 		app:iconSpaceReserved="false" />
 
 	<ListPreference
-		android:key="list_mode_2"
 		android:entries="@array/list_modes"
+		android:key="list_mode_2"
 		android:title="@string/list_mode"
-		app:useSimpleSummaryProvider="true"
 		app:allowDividerAbove="true"
-		app:iconSpaceReserved="false" />
+		app:iconSpaceReserved="false"
+		app:useSimpleSummaryProvider="true" />
 
 	<SeekBarPreference
 		android:key="grid_size"

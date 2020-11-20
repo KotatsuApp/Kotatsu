@@ -18,7 +18,10 @@ class MangaListAdapter(
 
 	init {
 		delegatesManager.addDelegate(ITEM_TYPE_MANGA_LIST, mangaListItemAD(coil, clickListener))
-			.addDelegate(ITEM_TYPE_MANGA_LIST_DETAILED, mangaListDetailedItemAD(coil, clickListener))
+			.addDelegate(
+				ITEM_TYPE_MANGA_LIST_DETAILED,
+				mangaListDetailedItemAD(coil, clickListener)
+			)
 			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, clickListener))
 			.addDelegate(ITEM_TYPE_PROGRESS, indeterminateProgressAD())
 	}
