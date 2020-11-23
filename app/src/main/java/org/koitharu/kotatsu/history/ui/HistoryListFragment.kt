@@ -17,17 +17,14 @@ import org.koitharu.kotatsu.utils.ext.ellipsize
 class HistoryListFragment : MangaListFragment() {
 
 	override val viewModel by viewModel<HistoryListViewModel>()
-
-	init {
-		isSwipeRefreshEnabled = false
-	}
+	override val isSwipeRefreshEnabled = false
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		viewModel.onItemRemoved.observe(viewLifecycleOwner, ::onItemRemoved)
 	}
 
-	override fun onRequestMoreItems(offset: Int) = Unit
+	override fun onScrolledToEnd() = Unit
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.opt_history, menu)

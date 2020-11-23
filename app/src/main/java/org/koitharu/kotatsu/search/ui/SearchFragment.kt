@@ -17,8 +17,13 @@ class SearchFragment : MangaListFragment() {
 	private val query by stringArgument(ARG_QUERY)
 	private val source by parcelableArgument<MangaSource>(ARG_SOURCE)
 
-	override fun onRequestMoreItems(offset: Int) {
-		viewModel.loadList(query.orEmpty(), offset)
+	override fun onRefresh() {
+		super.onRefresh()
+		viewModel.loadList(query.orEmpty(), append = false)
+	}
+
+	override fun onScrolledToEnd() {
+		viewModel.loadList(query.orEmpty(), append = true)
 	}
 
 	override fun getTitle(): CharSequence? {

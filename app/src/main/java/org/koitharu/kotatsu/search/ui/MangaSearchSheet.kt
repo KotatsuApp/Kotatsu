@@ -28,8 +28,8 @@ class MangaSearchSheet : MangaListSheet() {
 		setSubtitle(getString(R.string.search_results_on_s, source.title))
 	}
 
-	override fun onRequestMoreItems(offset: Int) {
-		viewModel.loadList(query.orEmpty(), offset)
+	override fun onScrolledToEnd() {
+		viewModel.loadList(query.orEmpty(), append = true)
 	}
 
 	companion object {

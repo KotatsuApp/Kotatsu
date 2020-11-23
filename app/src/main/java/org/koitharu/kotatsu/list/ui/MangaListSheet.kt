@@ -57,7 +57,7 @@ abstract class MangaListSheet : BaseBottomSheet(R.layout.sheet_list),
 			appbar.elevation = resources.getDimension(R.dimen.elevation_large)
 		}
 		if (savedInstanceState == null) {
-			onRequestMoreItems(0)
+			onScrolledToEnd()
 		}
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
@@ -128,8 +128,6 @@ abstract class MangaListSheet : BaseBottomSheet(R.layout.sheet_list),
 		recyclerView.callOnScrollListeners()
 	}
 
-	override fun getItemsCount() = adapter?.itemCount ?: 0
-
 	private fun onError(e: Throwable) {
 		Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
 	}
@@ -151,7 +149,7 @@ abstract class MangaListSheet : BaseBottomSheet(R.layout.sheet_list),
 			ListMode.GRID -> {
 				GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx)).apply {
 					spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-						override fun getSpanSize(position: Int) = if (position < getItemsCount())
+						override fun getSpanSize(position: Int) = if (position < TODO() as Int)
 							1 else this@apply.spanCount
 					}
 				}

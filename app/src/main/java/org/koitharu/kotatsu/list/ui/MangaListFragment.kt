@@ -45,7 +45,7 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 	private var paginationListener: PaginationScrollListener? = null
 	private val spanResolver = MangaListSpanResolver()
 	private val spanSizeLookup = SpanSizeLookup()
-	protected var isSwipeRefreshEnabled = true
+	open val isSwipeRefreshEnabled = true
 
 	protected abstract val viewModel: MangaListViewModel
 
@@ -63,6 +63,7 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 		recyclerView.adapter = adapter
 		recyclerView.addOnScrollListener(paginationListener!!)
 		swipeRefreshLayout.setOnRefreshListener(this)
+		swipeRefreshLayout.isEnabled = isSwipeRefreshEnabled
 		recyclerView_filter.setHasFixedSize(true)
 		recyclerView_filter.addItemDecoration(ItemTypeDividerDecoration(view.context))
 		recyclerView_filter.addItemDecoration(SectionItemDecoration(false, this))
@@ -125,9 +126,9 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 		}
 	}
 
-	final override fun onRefresh() {
+	@CallSuper
+	override fun onRefresh() {
 		swipeRefreshLayout.isRefreshing = true
-		onRequestMoreItems(0)
 	}
 
 	private fun onListChanged(list: List<Any>) {

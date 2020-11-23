@@ -8,21 +8,21 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_tracklogs.*
+import org.koin.android.ext.android.get
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.core.model.TrackingLogItem
+import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.callOnScrollListeners
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hasItems
 
 class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), PaginationScrollListener.Callback,
-	OnRecyclerItemClickListener<TrackingLogItem> {
+	OnListItemClickListener<Manga> {
 
 	private val viewModel by viewModel<FeedViewModel>()
 
@@ -37,7 +37,7 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), PaginationScroll
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = FeedAdapter(this)
+		adapter = FeedAdapter(get(), this)
 		recyclerView.adapter = adapter
 		recyclerView.addItemDecoration(
 			SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
@@ -45,12 +45,13 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), PaginationScroll
 		recyclerView.setHasFixedSize(true)
 		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
 		if (savedInstanceState == null) {
-			onRequestMoreItems(0)
+			onScrolledToEnd()
 		}
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
+		viewModel.isEmptyState.observe(viewLifecycleOwner, this::onEmptyStateChanged)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -72,15 +73,8 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), PaginationScroll
 		super.onDestroyView()
 	}
 
-	private fun onListChanged(list: List<TrackingLogItem>) {
-		adapter?.replaceData(list)
-		if (list.isEmpty()) {
-			setUpEmptyListHolder()
-			layout_holder.isVisible = true
-		} else {
-			layout_holder.isVisible = false
-		}
-		recyclerView.callOnScrollListeners()
+	private fun onListChanged(list: List<Any>) {
+		adapter?.items = list
 	}
 
 	private fun onError(e: Throwable) {
@@ -102,21 +96,21 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), PaginationScroll
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		val hasItems = recyclerView.hasItems
 		progressBar.isVisible = isLoading && !hasItems
-		if (isLoading) {
-			layout_holder.isVisible = false
+	}
+
+	private fun onEmptyStateChanged(isEmpty: Boolean) {
+		if (isEmpty) {
+			setUpEmptyListHolder()
 		}
+		layout_holder.isVisible = isEmpty
 	}
 
-	override fun getItemsCount(): Int {
-		return adapter?.itemCount ?: 0
+	override fun onScrolledToEnd() {
+		viewModel.loadList(append = true)
 	}
 
-	override fun onRequestMoreItems(offset: Int) {
-		viewModel.loadList(offset)
-	}
-
-	override fun onItemClick(item: TrackingLogItem, position: Int, view: View) {
-		startActivity(DetailsActivity.newIntent(context ?: return, item.manga))
+	override fun onItemClick(item: Manga, view: View) {
+		startActivity(DetailsActivity.newIntent(context ?: return, item))
 	}
 
 	private fun setUpEmptyListHolder() {

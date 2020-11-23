@@ -14,12 +14,12 @@ class SearchViewModel(
 
 	override val content = MutableLiveData<List<Any>>()
 
-	fun loadList(query: String, offset: Int) {
+	fun loadList(query: String, append: Boolean) {
 		launchLoadingJob {
 			val list = withContext(Dispatchers.Default) {
-				repository.getList(offset, query = query)
+				repository.getList(TODO(), query = query)
 			}
-			if (offset == 0) {
+			if (!append) {
 				content.value = list
 			} else {
 				content.value = content.value.orEmpty() + list

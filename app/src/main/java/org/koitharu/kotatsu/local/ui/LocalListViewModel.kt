@@ -45,11 +45,17 @@ class LocalListViewModel(
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
-		loadList()
+		onRefresh()
 	}
 
 	fun onRefresh() {
-		loadList()
+		launchLoadingJob {
+			withContext(Dispatchers.Default) {
+				val list = repository.getList(0)
+				mangaList.value = list
+				isEmptyState.postValue(list.isEmpty())
+			}
+		}
 	}
 
 	fun importFile(uri: Uri) {
@@ -69,7 +75,7 @@ class LocalListViewModel(
 					}
 				} ?: throw IOException("Cannot open input stream: $uri")
 			}
-			loadList()
+			onRefresh()
 		}
 	}
 
@@ -86,16 +92,6 @@ class LocalListViewModel(
 				MangaShortcut(manga).removeAppShortcut(context)
 			}
 			onMangaRemoved.call(manga)
-		}
-	}
-
-	private fun loadList() {
-		launchLoadingJob {
-			withContext(Dispatchers.Default) {
-				val list = repository.getList(0)
-				mangaList.value = list
-				isEmptyState.postValue(list.isEmpty())
-			}
 		}
 	}
 }

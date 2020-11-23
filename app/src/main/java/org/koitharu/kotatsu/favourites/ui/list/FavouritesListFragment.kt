@@ -20,7 +20,9 @@ class FavouritesListFragment : MangaListFragment() {
 	private val categoryId: Long
 		get() = arguments?.getLong(ARG_CATEGORY_ID) ?: 0L
 
-	override fun onRequestMoreItems(offset: Int) = Unit
+	override val isSwipeRefreshEnabled = false
+
+	override fun onScrolledToEnd() = Unit
 
 	override fun setUpEmptyListHolder() {
 		textView_holder.setText(

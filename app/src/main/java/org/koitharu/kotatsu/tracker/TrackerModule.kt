@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.tracker
 
+import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
@@ -10,5 +11,5 @@ val trackerModule
 
 		single { TrackingRepository(get(), get()) }
 
-		viewModel { FeedViewModel(get()) }
+		viewModel { FeedViewModel(androidContext(), get()) }
 	}

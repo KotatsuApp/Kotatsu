@@ -45,22 +45,22 @@ class RemoteListViewModel(
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
-		loadList(0)
+		loadList(false)
 		loadFilter()
 	}
 
-	fun loadList(offset: Int) {
+	fun loadList(append: Boolean) {
 		if (loadingJob?.isActive == true) {
 			return
 		}
 		loadingJob = launchLoadingJob {
 			withContext(Dispatchers.Default) {
 				val list = repository.getList(
-					offset = offset,
+					offset = if (append) mangaList.value.size else 0,
 					sortOrder = appliedFilter?.sortOrder,
 					tag = appliedFilter?.tag
 				)
-				if (offset == 0) {
+				if (!append) {
 					mangaList.value = list
 				} else if (list.isNotEmpty()) {
 					mangaList.value += list
@@ -74,7 +74,7 @@ class RemoteListViewModel(
 		appliedFilter = newFilter
 		mangaList.value = emptyList()
 		hasNextPage.value = false
-		loadList(0)
+		loadList(false)
 	}
 
 	private fun loadFilter() {

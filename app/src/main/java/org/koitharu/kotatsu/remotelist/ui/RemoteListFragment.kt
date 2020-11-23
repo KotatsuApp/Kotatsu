@@ -21,8 +21,13 @@ class RemoteListFragment : MangaListFragment() {
 
 	private val source by parcelableArgument<MangaSource>(ARG_SOURCE)
 
-	override fun onRequestMoreItems(offset: Int) {
-		viewModel.loadList(offset)
+	override fun onRefresh() {
+		super.onRefresh()
+		viewModel.loadList(append = false)
+	}
+
+	override fun onScrolledToEnd() {
+		viewModel.loadList(append = true)
 	}
 
 	override fun getTitle(): CharSequence? {

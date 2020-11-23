@@ -12,11 +12,12 @@ class GlobalSearchFragment : MangaListFragment() {
 
 	private val query by stringArgument(ARG_QUERY)
 
-	override fun onRequestMoreItems(offset: Int) {
-		if (offset == 0) {
-			viewModel.startSearch(query.orEmpty())
-		}
+	override fun onRefresh() {
+		super.onRefresh()
+		viewModel.startSearch(query.orEmpty())
 	}
+
+	override fun onScrolledToEnd() = Unit
 
 	override fun getTitle(): CharSequence? {
 		return query

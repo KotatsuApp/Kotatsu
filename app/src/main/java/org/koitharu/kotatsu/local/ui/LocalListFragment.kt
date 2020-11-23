@@ -32,11 +32,12 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 		viewModel.onMangaRemoved.observe(viewLifecycleOwner, ::onItemRemoved)
 	}
 
-	override fun onRequestMoreItems(offset: Int) {
-		if (offset == 0) {
-			viewModel.onRefresh()
-		}
+	override fun onRefresh() {
+		super.onRefresh()
+		viewModel.onRefresh()
 	}
+
+	override fun onScrolledToEnd() = Unit
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.opt_local, menu)
