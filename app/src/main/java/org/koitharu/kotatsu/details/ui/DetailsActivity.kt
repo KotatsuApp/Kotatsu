@@ -7,20 +7,22 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.model.Manga
@@ -34,9 +36,9 @@ import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrategy {
 
-	private val viewModel by viewModel<DetailsViewModel>()
-
-	private var manga: Manga? = null
+	private val viewModel by viewModel<DetailsViewModel> {
+		parametersOf(MangaIntent.from(intent))
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -44,22 +46,14 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		pager.adapter = MangaDetailsAdapter(this)
 		TabLayoutMediator(tabs, pager, this).attach()
-		if (savedInstanceState == null) {
-			intent?.getParcelableExtra<Manga>(EXTRA_MANGA)?.let {
-				viewModel.loadDetails(it, true)
-			} ?: intent?.getLongExtra(EXTRA_MANGA_ID, 0)?.takeUnless { it == 0L }?.let {
-				viewModel.findMangaById(it)
-			} ?: finishAfterTransition()
-		}
 
-		viewModel.mangaData.observe(this, ::onMangaUpdated)
+		viewModel.manga.observe(this, ::onMangaUpdated)
+		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
-		viewModel.newChapters.observe(this, ::onNewChaptersChanged)
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
-		this.manga = manga
 		title = manga.title
 		invalidateOptionsMenu()
 	}
@@ -73,7 +67,7 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 	}
 
 	private fun onError(e: Throwable) {
-		if (manga == null) {
+		if (viewModel.manga.value == null) {
 			Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 			finishAfterTransition()
 		} else {
@@ -98,8 +92,9 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+		val manga = viewModel.manga.value
 		menu.findItem(R.id.action_save).isVisible =
-			manga?.source != null && manga?.source != MangaSource.LOCAL
+			manga?.source != null && manga.source != MangaSource.LOCAL
 		menu.findItem(R.id.action_delete).isVisible =
 			manga?.source == MangaSource.LOCAL
 		menu.findItem(R.id.action_browser).isVisible =
@@ -111,7 +106,7 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.action_share -> {
-			manga?.let {
+			viewModel.manga.value?.let {
 				if (it.source == MangaSource.LOCAL) {
 					ShareHelper.shareCbz(this, Uri.parse(it.url).toFile())
 				} else {
@@ -121,8 +116,8 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 			true
 		}
 		R.id.action_delete -> {
-			manga?.let { m ->
-				MaterialAlertDialogBuilder(this)
+			viewModel.manga.value?.let { m ->
+				AlertDialog.Builder(this)
 					.setTitle(R.string.delete_manga)
 					.setMessage(getString(R.string.text_delete_local_manga, m.title))
 					.setPositiveButton(R.string.delete) { _, _ ->
@@ -134,10 +129,10 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 			true
 		}
 		R.id.action_save -> {
-			manga?.let {
+			viewModel.manga.value?.let {
 				val chaptersCount = it.chapters?.size ?: 0
 				if (chaptersCount > 5) {
-					MaterialAlertDialogBuilder(this)
+					AlertDialog.Builder(this)
 						.setTitle(R.string.save_manga)
 						.setMessage(
 							getString(
@@ -160,19 +155,19 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 			true
 		}
 		R.id.action_browser -> {
-			manga?.let {
+			viewModel.manga.value?.let {
 				startActivity(BrowserActivity.newIntent(this, it.url))
 			}
 			true
 		}
 		R.id.action_related -> {
-			manga?.let {
+			viewModel.manga.value?.let {
 				startActivity(GlobalSearchActivity.newIntent(this, it.title))
 			}
 			true
 		}
 		R.id.action_shortcut -> {
-			manga?.let {
+			viewModel.manga.value?.let {
 				lifecycleScope.launch {
 					if (!MangaShortcut(it).requestPinShortcut(this@DetailsActivity)) {
 						Snackbar.make(
@@ -192,7 +187,6 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 		tab.text = when (position) {
 			0 -> getString(R.string.details)
 			1 -> getString(R.string.chapters)
-			2 -> getString(R.string.related)
 			else -> null
 		}
 	}
@@ -211,17 +205,14 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 
 	companion object {
 
-		private const val EXTRA_MANGA = "manga"
-		const val EXTRA_MANGA_ID = "manga_id"
-
 		const val ACTION_MANGA_VIEW = "${BuildConfig.APPLICATION_ID}.action.VIEW_MANGA"
 
 		fun newIntent(context: Context, manga: Manga) =
 			Intent(context, DetailsActivity::class.java)
-				.putExtra(EXTRA_MANGA, manga)
+				.putExtra(MangaIntent.KEY_MANGA, manga)
 
 		fun newIntent(context: Context, mangaId: Long) =
 			Intent(context, DetailsActivity::class.java)
-				.putExtra(EXTRA_MANGA_ID, mangaId)
+				.putExtra(MangaIntent.KEY_ID, mangaId)
 	}
 }

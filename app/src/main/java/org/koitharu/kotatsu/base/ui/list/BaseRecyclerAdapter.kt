@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koin.core.component.KoinComponent
 import org.koitharu.kotatsu.utils.ext.replaceWith
 
+@Deprecated("", replaceWith = ReplaceWith("AsyncListDifferDelegationAdapter"))
 abstract class BaseRecyclerAdapter<T, E>(private val onItemClickListener: OnRecyclerItemClickListener<T>? = null) :
 	RecyclerView.Adapter<BaseViewHolder<T, E>>(),
 	KoinComponent {

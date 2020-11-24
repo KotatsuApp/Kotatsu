@@ -38,6 +38,10 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE manga_id = :id GROUP BY manga_id")
 	abstract suspend fun find(id: Long): FavouriteManga?
 
+	@Transaction
+	@Query("SELECT * FROM favourites WHERE manga_id = :id GROUP BY manga_id")
+	abstract fun observe(id: Long): Flow<FavouriteManga?>
+
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(favourite: FavouriteEntity)
 

@@ -9,75 +9,66 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_chapters.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnRecyclerItemClickListener
-import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
+import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.download.DownloadService
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class ChaptersFragment : BaseFragment(R.layout.fragment_chapters),
-	OnRecyclerItemClickListener<MangaChapter>, ActionMode.Callback {
+	OnListItemClickListener<MangaChapter>, ActionMode.Callback {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 
-	private var manga: Manga? = null
-
-	private lateinit var adapter: ChaptersAdapter
+	private var chaptersAdapter: ChaptersAdapter? = null
 	private var actionMode: ActionMode? = null
+	private var selectionDecoration: ChaptersSelectionDecoration? = null
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = ChaptersAdapter(this)
-		recyclerView_chapters.addItemDecoration(
-			DividerItemDecoration(
-				view.context,
-				RecyclerView.VERTICAL
-			)
-		)
-		recyclerView_chapters.setHasFixedSize(true)
-		recyclerView_chapters.adapter = adapter
+		chaptersAdapter = ChaptersAdapter(this)
+		selectionDecoration = ChaptersSelectionDecoration(view.context)
+		with(recyclerView_chapters) {
+			addItemDecoration(DividerItemDecoration(view.context, RecyclerView.VERTICAL))
+			addItemDecoration(selectionDecoration!!)
+			setHasFixedSize(true)
+			adapter = chaptersAdapter
+		}
 
-		viewModel.mangaData.observe(viewLifecycleOwner, this::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
-		viewModel.history.observe(viewLifecycleOwner, this::onHistoryChanged)
-		viewModel.newChapters.observe(viewLifecycleOwner, this::onNewChaptersChanged)
+		viewModel.chapters.observe(viewLifecycleOwner, this::onChaptersChanged)
 	}
 
-	private fun onMangaUpdated(manga: Manga) {
-		this.manga = manga
-		adapter.replaceData(manga.chapters.orEmpty())
-		scrollToCurrent()
+	override fun onDestroyView() {
+		chaptersAdapter = null
+		selectionDecoration = null
+		super.onDestroyView()
+	}
+
+	private fun onChaptersChanged(list: List<ChapterListItem>) {
+		chaptersAdapter?.items = list
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		progressBar.isVisible = isLoading
 	}
 
-	private fun onHistoryChanged(history: MangaHistory?) {
-		adapter.currentChapterId = history?.chapterId
-		scrollToCurrent()
-	}
-
-	private fun onNewChaptersChanged(newChapters: Int) {
-		adapter.newChaptersCount = newChapters
-	}
-
-	override fun onItemClick(item: MangaChapter, position: Int, view: View) {
-		if (adapter.checkedItemsCount != 0) {
-			adapter.toggleItemChecked(item.id)
-			if (adapter.checkedItemsCount == 0) {
+	override fun onItemClick(item: MangaChapter, view: View) {
+		if (selectionDecoration?.checkedItemsCount != 0) {
+			selectionDecoration?.toggleItemChecked(item.id)
+			if (selectionDecoration?.checkedItemsCount == 0) {
 				actionMode?.finish()
 			} else {
 				actionMode?.invalidate()
+				recyclerView_chapters.invalidateItemDecorations()
 			}
 			return
 		}
@@ -91,29 +82,21 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters),
 		startActivity(
 			ReaderActivity.newIntent(
 				context ?: return,
-				manga ?: return,
+				viewModel.manga.value ?: return,
 				item.id
 			), options.toBundle()
 		)
 	}
 
-	override fun onItemLongClick(item: MangaChapter, position: Int, view: View): Boolean {
+	override fun onItemLongClick(item: MangaChapter, view: View): Boolean {
 		if (actionMode == null) {
 			actionMode = (activity as? AppCompatActivity)?.startSupportActionMode(this)
 		}
 		return actionMode?.also {
-			adapter.setItemIsChecked(item.id, true)
+			selectionDecoration?.setItemIsChecked(item.id, true)
+			recyclerView_chapters.invalidateItemDecorations()
 			it.invalidate()
 		} != null
-	}
-
-	private fun scrollToCurrent() {
-		val pos = (recyclerView_chapters.adapter as? ChaptersAdapter)?.currentChapterPosition
-			?: RecyclerView.NO_POSITION
-		if (pos != RecyclerView.NO_POSITION) {
-			(recyclerView_chapters.layoutManager as? LinearLayoutManager)
-				?.scrollToPositionWithOffset(pos, resources.resolveDp(40))
-		}
 	}
 
 	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
@@ -121,14 +104,16 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters),
 			R.id.action_save -> {
 				DownloadService.start(
 					context ?: return false,
-					manga ?: return false,
-					adapter.checkedItemsIds
+					viewModel.manga.value ?: return false,
+					selectionDecoration?.checkedItemsIds
 				)
 				mode.finish()
 				true
 			}
 			R.id.action_select_all -> {
-				adapter.checkAll()
+				val ids = chaptersAdapter?.items?.map { it.chapter.id } ?: return false
+				selectionDecoration?.checkAll(ids)
+				recyclerView_chapters.invalidateItemDecorations()
 				mode.invalidate()
 				true
 			}
@@ -137,6 +122,7 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters),
 	}
 
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+		val manga = viewModel.manga.value
 		mode.menuInflater.inflate(R.menu.mode_chapters, menu)
 		menu.findItem(R.id.action_save).isVisible = manga?.source != MangaSource.LOCAL
 		mode.title = manga?.title
@@ -144,18 +130,19 @@ class ChaptersFragment : BaseFragment(R.layout.fragment_chapters),
 	}
 
 	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		val count = adapter.checkedItemsCount
+		val count = selectionDecoration?.checkedItemsCount ?: return false
 		mode.subtitle = resources.getQuantityString(
 			R.plurals.chapters_from_x,
 			count,
 			count,
-			adapter.itemCount
+			chaptersAdapter?.itemCount ?: 0
 		)
 		return true
 	}
 
 	override fun onDestroyActionMode(mode: ActionMode?) {
-		adapter.clearChecked()
+		selectionDecoration?.clearSelection()
+		recyclerView_chapters.invalidateItemDecorations()
 		actionMode = null
 	}
 }

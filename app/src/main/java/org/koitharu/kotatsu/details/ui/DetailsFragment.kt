@@ -29,23 +29,19 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 
-	private var manga: Manga? = null
-	private var history: MangaHistory? = null
-
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		viewModel.mangaData.observe(viewLifecycleOwner, ::onMangaUpdated)
+		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
-		viewModel.history.observe(viewLifecycleOwner, ::onHistoryChanged)
+		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
-		this.manga = manga
 		imageView_cover.newImageRequest(manga.largeCoverUrl ?: manga.coverUrl)
 			.fallback(R.drawable.ic_placeholder)
 			.crossfade(true)
-			.lifecycle(this)
+			.lifecycle(viewLifecycleOwner)
 			.enqueueWith(coil)
 		textView_title.text = manga.title
 		textView_subtitle.textAndVisible = manga.altTitle
@@ -94,12 +90,19 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 		imageView_favourite.setOnClickListener(this)
 		button_read.setOnClickListener(this)
 		button_read.setOnLongClickListener(this)
-		updateReadButton()
+		button_read.isEnabled = !manga.chapters.isNullOrEmpty()
 	}
 
 	private fun onHistoryChanged(history: MangaHistory?) {
-		this.history = history
-		updateReadButton()
+		with(button_read) {
+			if (history == null) {
+				setText(R.string.read)
+				setIconResource(R.drawable.ic_read)
+			} else {
+				setText(R.string._continue)
+				setIconResource(R.drawable.ic_play)
+			}
+		}
 	}
 
 	private fun onFavouriteChanged(categories: List<FavouriteCategory>) {
@@ -117,6 +120,7 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 	}
 
 	override fun onClick(v: View) {
+		val manga = viewModel.manga.value
 		when {
 			v.id == R.id.imageView_favourite -> {
 				FavouriteCategoriesDialog.show(childFragmentManager, manga ?: return)
@@ -126,7 +130,7 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 					ReaderActivity.newIntent(
 						context ?: return,
 						manga ?: return,
-						history
+						viewModel.readingHistory.value
 					)
 				)
 			}
@@ -145,7 +149,7 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 	override fun onLongClick(v: View): Boolean {
 		when (v.id) {
 			R.id.button_read -> {
-				if (history == null) {
+				if (viewModel.readingHistory.value == null) {
 					return false
 				}
 				v.showPopupMenu(R.menu.popup_read) {
@@ -154,7 +158,7 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 							startActivity(
 								ReaderActivity.newIntent(
 									context ?: return@showPopupMenu false,
-									manga ?: return@showPopupMenu false
+									viewModel.manga.value ?: return@showPopupMenu false
 								)
 							)
 							true
@@ -165,21 +169,6 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 				return true
 			}
 			else -> return false
-		}
-	}
-
-	private fun updateReadButton() {
-		if (manga?.chapters.isNullOrEmpty()) {
-			button_read.isEnabled = false
-		} else {
-			button_read.isEnabled = true
-			if (history == null) {
-				button_read.setText(R.string.read)
-				button_read.setIconResource(R.drawable.ic_read)
-			} else {
-				button_read.setText(R.string._continue)
-				button_read.setIconResource(R.drawable.ic_play)
-			}
 		}
 	}
 }

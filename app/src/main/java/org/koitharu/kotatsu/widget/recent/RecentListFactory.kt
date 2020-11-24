@@ -9,8 +9,8 @@ import coil.executeBlocking
 import coil.request.ImageRequest
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 import java.io.IOException
@@ -52,7 +52,7 @@ class RecentListFactory(
 			views.setImageViewResource(R.id.imageView_cover, R.drawable.ic_placeholder)
 		}
 		val intent = Intent()
-		intent.putExtra(DetailsActivity.EXTRA_MANGA_ID, item.id)
+		intent.putExtra(MangaIntent.KEY_ID, item.id)
 		views.setOnClickFillInIntent(R.id.imageView_cover, intent)
 		return views
 	}

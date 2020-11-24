@@ -25,6 +25,9 @@ abstract class HistoryDao {
 	@Query("SELECT * FROM history WHERE manga_id = :id")
 	abstract suspend fun find(id: Long): HistoryEntity?
 
+	@Query("SELECT * FROM history WHERE manga_id = :id")
+	abstract fun observe(id: Long): Flow<HistoryEntity?>
+
 	@Query("DELETE FROM history")
 	abstract suspend fun clear()
 

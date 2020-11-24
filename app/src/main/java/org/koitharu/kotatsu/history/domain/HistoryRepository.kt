@@ -4,6 +4,7 @@ import androidx.collection.ArraySet
 import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -29,6 +30,12 @@ class HistoryRepository(private val db: MangaDatabase) : KoinComponent {
 	fun observeAll(): Flow<List<Manga>> {
 		return db.historyDao.observeAll().mapItems {
 			it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag))
+		}
+	}
+
+	fun observeOne(id: Long): Flow<MangaHistory?> {
+		return db.historyDao.observe(id).map {
+			it?.toMangaHistory()
 		}
 	}
 

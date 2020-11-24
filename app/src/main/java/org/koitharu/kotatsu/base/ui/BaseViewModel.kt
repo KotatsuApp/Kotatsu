@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 abstract class BaseViewModel : ViewModel() {
 
@@ -13,19 +15,21 @@ abstract class BaseViewModel : ViewModel() {
 	val isLoading = MutableLiveData(false)
 
 	protected fun launchJob(
+		context: CoroutineContext = EmptyCoroutineContext,
 		start: CoroutineStart = CoroutineStart.DEFAULT,
 		block: suspend CoroutineScope.() -> Unit
-	): Job = viewModelScope.launch(createErrorHandler(), start, block)
+	): Job = viewModelScope.launch(context + createErrorHandler(), start, block)
 
 	protected fun launchLoadingJob(
+		context: CoroutineContext = EmptyCoroutineContext,
 		start: CoroutineStart = CoroutineStart.DEFAULT,
 		block: suspend CoroutineScope.() -> Unit
-	): Job = viewModelScope.launch(createErrorHandler(), start) {
-		isLoading.value = true
+	): Job = viewModelScope.launch(context + createErrorHandler(), start) {
+		isLoading.postValue(true)
 		try {
 			block()
 		} finally {
-			isLoading.value = false
+			isLoading.postValue(false)
 		}
 	}
 
@@ -34,7 +38,7 @@ abstract class BaseViewModel : ViewModel() {
 			throwable.printStackTrace()
 		}
 		if (throwable !is CancellationException) {
-			onError.call(throwable)
+			onError.postCall(throwable)
 		}
 	}
 }

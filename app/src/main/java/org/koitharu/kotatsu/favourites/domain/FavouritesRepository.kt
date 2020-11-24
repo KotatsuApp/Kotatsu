@@ -4,6 +4,7 @@ import androidx.collection.ArraySet
 import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
@@ -55,6 +56,12 @@ class FavouritesRepository(private val db: MangaDatabase) {
 	suspend fun getCategories(mangaId: Long): List<FavouriteCategory> {
 		val entities = db.favouritesDao.find(mangaId)?.categories
 		return entities?.map { it.toFavouriteCategory() }.orEmpty()
+	}
+
+	fun observeCategories(mangaId: Long): Flow<List<FavouriteCategory>> {
+		return db.favouritesDao.observe(mangaId).map { entity ->
+			entity?.categories?.map { it.toFavouriteCategory() }.orEmpty()
+		}
 	}
 
 	suspend fun addCategory(title: String): FavouriteCategory {
