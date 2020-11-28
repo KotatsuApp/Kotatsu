@@ -12,8 +12,6 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.favourites.domain.OnFavouritesChangeListener
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
@@ -22,8 +20,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class FavouritesContainerFragment : BaseFragment(R.layout.fragment_favourites),
-	OnFavouritesChangeListener, FavouritesTabLongClickListener,
-	CategoriesEditDelegate.CategoriesEditCallback {
+	FavouritesTabLongClickListener,	CategoriesEditDelegate.CategoriesEditCallback {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
@@ -41,18 +38,12 @@ class FavouritesContainerFragment : BaseFragment(R.layout.fragment_favourites),
 		val adapter = FavouritesPagerAdapter(this, this)
 		pager.adapter = adapter
 		TabLayoutMediator(tabs, pager, adapter).attach()
-		FavouritesRepository.subscribe(this)
 
 		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 	}
 
-	override fun onDestroyView() {
-		FavouritesRepository.unsubscribe(this)
-		super.onDestroyView()
-	}
-
-	fun onCategoriesChanged(categories: List<FavouriteCategory>) {
+	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
 		val data = ArrayList<FavouriteCategory>(categories.size + 1)
 		data += FavouriteCategory(0L, getString(R.string.all_favourites), -1, Date())
 		data += categories
@@ -75,17 +66,11 @@ class FavouritesContainerFragment : BaseFragment(R.layout.fragment_favourites),
 	}
 
 	override fun getTitle(): CharSequence? {
-		return getString(R.string.favourites)
+		return context?.getString(R.string.favourites)
 	}
 
 	private fun onError(e: Throwable) {
 		Snackbar.make(pager, e.message ?: return, Snackbar.LENGTH_LONG).show()
-	}
-
-	override fun onFavouritesChanged(mangaId: Long) = Unit
-
-	override fun onCategoriesChanged() {
-		viewModel.loadAllCategories()
 	}
 
 	override fun onTabLongClick(tabView: View, category: FavouriteCategory): Boolean {

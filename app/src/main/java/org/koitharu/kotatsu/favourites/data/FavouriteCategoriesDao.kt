@@ -1,12 +1,17 @@
 package org.koitharu.kotatsu.favourites.data
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
+import org.koitharu.kotatsu.core.model.FavouriteCategory
 
 @Dao
 abstract class FavouriteCategoriesDao {
 
 	@Query("SELECT * FROM favourite_categories ORDER BY sort_key")
 	abstract suspend fun findAll(): List<FavouriteCategoryEntity>
+
+	@Query("SELECT * FROM favourite_categories ORDER BY sort_key")
+	abstract fun observeAll(): Flow<List<FavouriteCategoryEntity>>
 
 	@Insert(onConflict = OnConflictStrategy.ABORT)
 	abstract suspend fun insert(category: FavouriteCategoryEntity): Long

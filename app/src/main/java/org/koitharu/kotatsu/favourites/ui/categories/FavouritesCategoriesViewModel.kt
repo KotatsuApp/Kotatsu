@@ -1,9 +1,15 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.utils.ext.mapToSet
@@ -13,53 +19,47 @@ class FavouritesCategoriesViewModel(
 ) : BaseViewModel() {
 
 	private var reorderJob: Job? = null
+	private var mangaSubscription: Job? = null
 
-	val categories = MutableLiveData<List<FavouriteCategory>>()
-	val mangaCategories = MutableLiveData<Set<Int>>()
+	val categories = repository.observeCategories()
+		.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	val mangaCategories = MutableLiveData<Set<Long>>(emptySet())
 
-	init {
-		loadAllCategories()
-	}
-
-	fun loadAllCategories() {
-		launchJob {
-			categories.value = repository.getAllCategories()
-		}
-	}
-
-	fun loadMangaCategories(manga: Manga) {
-		launchJob {
-			val categories = repository.getCategories(manga.id)
-			mangaCategories.value = categories.mapToSet { it.id.toInt() }
-		}
+	fun observeMangaCategories(mangaId: Long) {
+		mangaSubscription?.cancel()
+		mangaSubscription = repository.observeCategories(mangaId)
+			.map { list -> list.mapToSet { it.id } }
+			.onEach { mangaCategories.postValue(it) }
+			.launchIn(viewModelScope + Dispatchers.Default)
 	}
 
 	fun createCategory(name: String) {
 		launchJob {
 			repository.addCategory(name)
-			categories.value = repository.getAllCategories()
 		}
 	}
 
 	fun renameCategory(id: Long, name: String) {
 		launchJob {
 			repository.renameCategory(id, name)
-			categories.value = repository.getAllCategories()
 		}
 	}
 
 	fun deleteCategory(id: Long) {
 		launchJob {
 			repository.removeCategory(id)
-			categories.value = repository.getAllCategories()
 		}
 	}
 
-	fun storeCategoriesOrder(orderedIds: List<Long>) {
+	fun reorderCategories(oldPos: Int, newPos: Int) {
 		val prevJob = reorderJob
 		reorderJob = launchJob {
 			prevJob?.join()
-			repository.reorderCategories(orderedIds)
+			val items = categories.value ?: error("This should not happen")
+			val ids = items.mapTo(ArrayList(items.size)) { it.id }
+			val item = ids.removeAt(oldPos)
+			ids.add(newPos, item)
+			repository.reorderCategories(ids)
 		}
 	}
 

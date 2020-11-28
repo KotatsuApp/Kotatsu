@@ -36,7 +36,7 @@ class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categ
 			createCategory()
 		}
 		manga?.let {
-			viewModel.loadMangaCategories(it)
+			viewModel.observeMangaCategories(it.id)
 		}
 
 		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
@@ -53,7 +53,7 @@ class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categ
 		adapter?.replaceData(categories)
 	}
 
-	private fun onCheckedCategoriesChanged(checkedIds: Set<Int>) {
+	private fun onCheckedCategoriesChanged(checkedIds: Set<Long>) {
 		adapter?.setCheckedIds(checkedIds)
 	}
 

@@ -1,9 +1,8 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select
 
-import android.util.SparseBooleanArray
 import android.view.ViewGroup
 import android.widget.Checkable
-import androidx.core.util.set
+import androidx.collection.ArraySet
 import org.koitharu.kotatsu.base.ui.list.BaseRecyclerAdapter
 import org.koitharu.kotatsu.base.ui.list.BaseViewHolder
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -11,18 +10,15 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 class CategoriesSelectAdapter(private val listener: OnCategoryCheckListener) :
 	BaseRecyclerAdapter<FavouriteCategory, Boolean>() {
 
-	private val checkedIds = SparseBooleanArray()
+	private val checkedIds = ArraySet<Long>()
 
-	fun setCheckedIds(ids: Iterable<Int>) {
+	fun setCheckedIds(ids: Iterable<Long>) {
 		checkedIds.clear()
-		ids.forEach {
-			checkedIds[it] = true
-		}
+		checkedIds.addAll(ids)
 		notifyDataSetChanged()
 	}
 
-	override fun getExtra(item: FavouriteCategory, position: Int) =
-		checkedIds.get(item.id.toInt(), false)
+	override fun getExtra(item: FavouriteCategory, position: Int) = item.id in checkedIds
 
 	override fun onCreateViewHolder(parent: ViewGroup) =
 		CategoryCheckableHolder(

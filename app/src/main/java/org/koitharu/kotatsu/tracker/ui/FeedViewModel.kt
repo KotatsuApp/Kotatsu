@@ -9,7 +9,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.TrackingLogItem
 import org.koitharu.kotatsu.list.ui.model.IndeterminateProgress
@@ -28,9 +27,7 @@ class FeedViewModel(
 
 	val isEmptyState = MutableLiveData(false)
 	val content = combine(
-		logList.drop(1).onEach {
-			isEmptyState.postValue(it.isEmpty())
-		}.mapItems {
+		logList.drop(1).mapItems {
 			it.toFeedItem(context.resources)
 		},
 		hasNextPage
@@ -53,6 +50,8 @@ class FeedViewModel(
 				logList.value = list
 			} else if (list.isNotEmpty()) {
 				logList.value += list
+			} else {
+				isEmptyState.value = true
 			}
 			hasNextPage.value = list.isNotEmpty()
 		}

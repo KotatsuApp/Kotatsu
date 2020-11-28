@@ -44,9 +44,6 @@ class FeedFragment : BaseFragment(R.layout.fragment_tracklogs), PaginationScroll
 		)
 		recyclerView.setHasFixedSize(true)
 		recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
-		if (savedInstanceState == null) {
-			onScrolledToEnd()
-		}
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)

@@ -58,6 +58,12 @@ class FavouritesRepository(private val db: MangaDatabase) {
 		return entities?.map { it.toFavouriteCategory() }.orEmpty()
 	}
 
+	fun observeCategories(): Flow<List<FavouriteCategory>> {
+		return db.favouriteCategoriesDao.observeAll().mapItems {
+			it.toFavouriteCategory()
+		}
+	}
+
 	fun observeCategories(mangaId: Long): Flow<List<FavouriteCategory>> {
 		return db.favouritesDao.observe(mangaId).map { entity ->
 			entity?.categories?.map { it.toFavouriteCategory() }.orEmpty()

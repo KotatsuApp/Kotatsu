@@ -15,12 +15,12 @@ import kotlinx.android.synthetic.main.activity_categories.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 
-class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<FavouriteCategory>,
+class CategoriesActivity : BaseActivity(), OnListItemClickListener<FavouriteCategory>,
 	View.OnClickListener, CategoriesEditDelegate.CategoriesEditCallback {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
@@ -52,7 +52,7 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 		}
 	}
 
-	override fun onItemClick(item: FavouriteCategory, position: Int, view: View) {
+	override fun onItemClick(item: FavouriteCategory, view: View) {
 		view.showPopupMenu(R.menu.popup_category) {
 			when (it.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(item)
@@ -62,15 +62,15 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 		}
 	}
 
-	override fun onItemLongClick(item: FavouriteCategory, position: Int, view: View): Boolean {
+	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {
 		reorderHelper.startDrag(
-			recyclerView.findViewHolderForAdapterPosition(position) ?: return false
+			recyclerView.findContainingViewHolder(view) ?: return false
 		)
 		return true
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
-		adapter.replaceData(categories)
+		adapter.items = categories
 		textView_holder.isVisible = categories.isEmpty()
 	}
 
@@ -102,8 +102,7 @@ class CategoriesActivity : BaseActivity(), OnRecyclerItemClickListener<Favourite
 		): Boolean {
 			val oldPos = viewHolder.bindingAdapterPosition
 			val newPos = target.bindingAdapterPosition
-			adapter.moveItem(oldPos, newPos)
-			viewModel.storeCategoriesOrder(adapter.items.map { it.id })
+			viewModel.reorderCategories(oldPos, newPos)
 			return true
 		}
 
