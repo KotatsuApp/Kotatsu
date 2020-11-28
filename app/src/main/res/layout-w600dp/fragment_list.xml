@@ -3,15 +3,15 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:orientation="horizontal"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:animateLayoutChanges="true">
+	android:animateLayoutChanges="true"
+	android:orientation="horizontal">
 
 	<FrameLayout
 		android:layout_width="0dp"
-		android:layout_weight="1"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:layout_weight="1">
 
 		<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 			android:id="@+id/swipeRefreshLayout"
@@ -24,6 +24,11 @@
 				android:layout_height="match_parent"
 				android:orientation="vertical"
 				android:scrollbars="vertical"
+				app:fastScrollEnabled="true"
+				app:fastScrollHorizontalThumbDrawable="@drawable/list_thumb"
+				app:fastScrollHorizontalTrackDrawable="@drawable/list_track"
+				app:fastScrollVerticalThumbDrawable="@drawable/list_thumb"
+				app:fastScrollVerticalTrackDrawable="@drawable/list_track"
 				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 				tools:listitem="@layout/item_manga_list" />
 
@@ -45,8 +50,8 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
 				android:gravity="center"
-				android:textColor="?android:textColorSecondary"
 				android:textAppearance="?android:textAppearanceMedium"
+				android:textColor="?android:textColorSecondary"
 				tools:text="@tools:sample/lorem[3]" />
 
 		</LinearLayout>
@@ -61,21 +66,21 @@
 	</FrameLayout>
 
 	<View
-		android:layout_width="1dp"
 		android:id="@+id/divider_filter"
-		android:visibility="gone"
+		android:layout_width="1dp"
 		android:layout_height="match_parent"
-		android:background="?dividerVertical" />
+		android:background="?dividerVertical"
+		android:visibility="gone" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_filter"
 		android:layout_width="240dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="end"
-		android:visibility="gone"
 		android:background="?android:windowBackground"
 		android:orientation="vertical"
 		android:scrollbars="vertical"
+		android:visibility="gone"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_category_checkable" />
 

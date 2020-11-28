@@ -1,72 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/drawer"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 
-	<FrameLayout
+	<androidx.drawerlayout.widget.DrawerLayout
+		android:id="@+id/drawer"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-			android:id="@+id/swipeRefreshLayout"
+		<FrameLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">
 
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/recyclerView"
+			<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+				android:id="@+id/swipeRefreshLayout"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:orientation="vertical"
-				android:scrollbars="vertical"
-				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-				tools:listitem="@layout/item_manga_list" />
+				android:layout_height="match_parent">
 
-		</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerView"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:orientation="vertical"
+					android:scrollbars="vertical"
+					app:fastScrollEnabled="true"
+					app:fastScrollHorizontalThumbDrawable="@drawable/list_thumb"
+					app:fastScrollHorizontalTrackDrawable="@drawable/list_track"
+					app:fastScrollVerticalThumbDrawable="@drawable/list_thumb"
+					app:fastScrollVerticalTrackDrawable="@drawable/list_track"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+					tools:listitem="@layout/item_manga_list" />
 
-		<LinearLayout
-			android:id="@+id/layout_holder"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:layout_marginStart="20dp"
-			android:layout_marginEnd="20dp"
-			android:gravity="center_horizontal"
-			android:orientation="vertical">
+			</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-			<TextView
-				android:id="@+id/textView_holder"
+			<LinearLayout
+				android:id="@+id/layout_holder"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
-				android:gravity="center"
-				android:textAppearance="?android:textAppearanceMedium"
-				android:textColor="?android:textColorSecondary"
-				tools:text="@tools:sample/lorem[3]" />
+				android:layout_marginStart="20dp"
+				android:layout_marginEnd="20dp"
+				android:gravity="center_horizontal"
+				android:orientation="vertical">
 
-		</LinearLayout>
+				<TextView
+					android:id="@+id/textView_holder"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:gravity="center"
+					android:textAppearance="?android:textAppearanceMedium"
+					android:textColor="?android:textColorSecondary"
+					tools:text="@tools:sample/lorem[3]" />
 
-		<ProgressBar
-			android:id="@+id/progressBar"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:indeterminate="true" />
+			</LinearLayout>
 
-	</FrameLayout>
+			<ProgressBar
+				android:id="@+id/progressBar"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:indeterminate="true" />
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/recyclerView_filter"
-		android:layout_width="240dp"
-		android:layout_height="match_parent"
-		android:layout_gravity="end"
-		android:background="?android:windowBackground"
-		android:orientation="vertical"
-		android:scrollbars="vertical"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		tools:listitem="@layout/item_category_checkable" />
+		</FrameLayout>
 
-</androidx.drawerlayout.widget.DrawerLayout>
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/recyclerView_filter"
+			android:layout_width="240dp"
+			android:layout_height="match_parent"
+			android:layout_gravity="end"
+			android:background="?android:windowBackground"
+			android:orientation="vertical"
+			android:scrollbars="vertical"
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+			tools:listitem="@layout/item_category_checkable" />
+
+	</androidx.drawerlayout.widget.DrawerLayout>
+</LinearLayout>
