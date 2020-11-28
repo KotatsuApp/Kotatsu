@@ -4,6 +4,14 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
+		android:id="@+id/action_history_grouping"
+		android:checkable="true"
+		android:checked="true"
+		android:orderInCategory="15"
+		android:title="@string/group"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_clear_history"
 		android:orderInCategory="50"
 		android:title="@string/clear_history"

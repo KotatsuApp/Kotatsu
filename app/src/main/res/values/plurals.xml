@@ -20,4 +20,16 @@
 		<item quantity="one">%1$d chapter from %2$d</item>
 		<item quantity="other">%1$d chapters from %2$d</item>
 	</plurals>
+	<plurals name="minutes_ago">
+		<item quantity="one">%1$d minute ago</item>
+		<item quantity="other">%1$d minutes ago</item>
+	</plurals>
+	<plurals name="hours_ago">
+		<item quantity="one">%1$d hour ago</item>
+		<item quantity="other">%1$d hours ago</item>
+	</plurals>
+	<plurals name="days_ago">
+		<item quantity="one">%1$d day ago</item>
+		<item quantity="other">%1$d days ago</item>
+	</plurals>
 </resources>

@@ -72,6 +72,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	val isPreferRtlReader by BoolPreferenceDelegate(KEY_READER_PREFER_RTL, false)
 
+	var historyGrouping by BoolPreferenceDelegate(KEY_HISTORY_GROUPING, true)
+
 	val zoomMode by EnumPreferenceDelegate(
 		ZoomMode::class.java,
 		KEY_ZOOM_MODE,
@@ -169,5 +171,6 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_ZOOM_MODE = "zoom_mode"
 		const val KEY_BACKUP = "backup"
 		const val KEY_RESTORE = "restore"
+		const val KEY_HISTORY_GROUPING = "history_grouping"
 	}
 }

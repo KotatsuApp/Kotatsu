@@ -182,4 +182,8 @@
 	<string name="data_restored_success">All data restored successfully</string>
 	<string name="data_restored_with_errors">The data restored, but there are errors</string>
 	<string name="backup_information">You can create backup of your history and favourites and restore it</string>
+	<string name="just_now">Just now</string>
+	<string name="yesterday">Yesterday</string>
+	<string name="long_ago">Long ago</string>
+	<string name="group">Group</string>
 </resources>

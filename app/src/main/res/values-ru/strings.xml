@@ -180,4 +180,8 @@
 	<string name="data_restored_success">Все данные успешно восстановлены</string>
 	<string name="data_restored_with_errors">Данные восстановлены, но возникли некоторые ошибки</string>
 	<string name="backup_information">You can create backup of your history and favourites and restore it</string>
+	<string name="just_now">Только что</string>
+	<string name="yesterday">Вчера</string>
+	<string name="long_ago">Давно</string>
+	<string name="group">Группировать</string>
 </resources>

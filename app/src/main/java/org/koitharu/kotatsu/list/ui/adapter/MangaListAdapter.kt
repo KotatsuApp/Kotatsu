@@ -5,6 +5,7 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.IndeterminateProgress
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
@@ -24,6 +25,7 @@ class MangaListAdapter(
 			)
 			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, clickListener))
 			.addDelegate(ITEM_TYPE_PROGRESS, indeterminateProgressAD())
+			.addDelegate(ITEM_TYPE_DATE, relatedDateItemAD())
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<Any>() {
@@ -41,6 +43,9 @@ class MangaListAdapter(
 			oldItem == IndeterminateProgress && newItem == IndeterminateProgress -> {
 				true
 			}
+			oldItem is DateTimeAgo && newItem is DateTimeAgo -> {
+				oldItem == newItem
+			}
 			else -> false
 		}
 
@@ -55,5 +60,6 @@ class MangaListAdapter(
 		const val ITEM_TYPE_MANGA_LIST_DETAILED = 1
 		const val ITEM_TYPE_MANGA_GRID = 2
 		const val ITEM_TYPE_PROGRESS = 3
+		const val ITEM_TYPE_DATE = 4
 	}
 }

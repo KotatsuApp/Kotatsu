@@ -33,6 +33,15 @@ class HistoryRepository(private val db: MangaDatabase) : KoinComponent {
 		}
 	}
 
+	fun observeAllWithHistory(): Flow<List<MangaWithHistory>> {
+		return db.historyDao.observeAll().mapItems {
+			MangaWithHistory(
+				it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)),
+				it.history.toMangaHistory()
+			)
+		}
+	}
+
 	fun observeOne(id: Long): Flow<MangaHistory?> {
 		return db.historyDao.observe(id).map {
 			it?.toMangaHistory()

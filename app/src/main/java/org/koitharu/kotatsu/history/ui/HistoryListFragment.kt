@@ -22,6 +22,9 @@ class HistoryListFragment : MangaListFragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		viewModel.onItemRemoved.observe(viewLifecycleOwner, ::onItemRemoved)
+		viewModel.isGroupingEnabled.observe(viewLifecycleOwner) {
+			activity?.invalidateOptionsMenu()
+		}
 	}
 
 	override fun onScrolledToEnd() = Unit
@@ -29,6 +32,11 @@ class HistoryListFragment : MangaListFragment() {
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.opt_history, menu)
 		super.onCreateOptionsMenu(menu, inflater)
+	}
+
+	override fun onPrepareOptionsMenu(menu: Menu) {
+		super.onPrepareOptionsMenu(menu)
+		menu.findItem(R.id.action_history_grouping)?.isChecked = viewModel.isGroupingEnabled.value == true
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -43,12 +51,16 @@ class HistoryListFragment : MangaListFragment() {
 					}.show()
 				true
 			}
+			R.id.action_history_grouping -> {
+				viewModel.setGrouping(!item.isChecked)
+				true
+			}
 			else -> super.onOptionsItemSelected(item)
 		}
 	}
 
 	override fun getTitle(): CharSequence? {
-		return getString(R.string.history)
+		return context?.getString(R.string.history)
 	}
 
 	override fun setUpEmptyListHolder() {
@@ -71,7 +83,7 @@ class HistoryListFragment : MangaListFragment() {
 		}
 	}
 
-	fun onItemRemoved(item: Manga) {
+	private fun onItemRemoved(item: Manga) {
 		Snackbar.make(
 			recyclerView, getString(
 				R.string._s_removed_from_history,

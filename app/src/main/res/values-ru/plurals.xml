@@ -25,4 +25,20 @@
 		<item quantity="few">%1$d главы из %2$d</item>
 		<item quantity="many">%1$d глав из %2$d</item>
 	</plurals>
+
+	<plurals name="minutes_ago">
+		<item quantity="one">%1$d минуту назад</item>
+		<item quantity="few">%1$d минуты назад</item>
+		<item quantity="many">%1$d минут назад</item>
+	</plurals>
+	<plurals name="hours_ago">
+		<item quantity="one">%1$d час назад</item>
+		<item quantity="few">%1$d часа назад</item>
+		<item quantity="many">%1$d часов назад</item>
+	</plurals>
+	<plurals name="days_ago">
+		<item quantity="one">%1$d день назад</item>
+		<item quantity="few">%1$d дня назад</item>
+		<item quantity="many">%1$d дней назад</item>
+	</plurals>
 </resources>

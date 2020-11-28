@@ -2,16 +2,17 @@ package org.koitharu.kotatsu.history.ui
 
 import android.content.Context
 import android.os.Build
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
@@ -22,22 +23,26 @@ import org.koitharu.kotatsu.utils.ext.onFirst
 
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
-	private val context: Context //todo create ShortcutRepository
-	, settings: AppSettings
+	private val context: Context, //todo create ShortcutRepository
+	private val settings: AppSettings
 ) : MangaListViewModel(settings) {
 
 	val onItemRemoved = SingleLiveEvent<Manga>()
+	val isGroupingEnabled = MutableLiveData<Boolean>()
+
+	private val historyGrouping = settings.observe()
+		.filter { it == AppSettings.KEY_HISTORY_GROUPING }
+		.map { settings.historyGrouping }
+		.onStart { emit(settings.historyGrouping) }
+		.distinctUntilChanged()
+		.onEach { isGroupingEnabled.postValue(it) }
 
 	override val content = combine(
-		repository.observeAll(),
-		createListModeFlow()
-	) { list, mode ->
-		when (mode) {
-			ListMode.LIST -> list.map { it.toListModel() }
-			ListMode.DETAILED_LIST -> list.map { it.toListDetailedModel() }
-			ListMode.GRID -> list.map { it.toGridModel() }
-		}
-	}.onEach {
+		repository.observeAllWithHistory(),
+		historyGrouping,
+		createListModeFlow(),
+		::mapList
+	).onEach {
 		isEmptyState.postValue(it.isEmpty())
 	}.onStart {
 		isLoading.postValue(true)
@@ -64,4 +69,27 @@ class HistoryListViewModel(
 		}
 	}
 
+	fun setGrouping(isGroupingEnabled: Boolean) {
+		settings.historyGrouping = isGroupingEnabled
+	}
+
+	private fun mapList(list: List<MangaWithHistory>, grouped: Boolean, mode: ListMode): List<Any> {
+		val result = ArrayList<Any>((list.size * 1.4).toInt())
+		var prevDate: DateTimeAgo? = null
+		for ((manga, history) in list) {
+			if (grouped) {
+				val date = DateTimeAgo.from(history.updatedAt)
+				if (prevDate != date) {
+					result += date
+				}
+				prevDate = date
+			}
+			result += when (mode) {
+				ListMode.LIST -> manga.toListModel()
+				ListMode.DETAILED_LIST -> manga.toListDetailedModel()
+				ListMode.GRID -> manga.toGridModel()
+			}
+		}
+		return result
+	}
 }

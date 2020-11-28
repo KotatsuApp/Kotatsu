@@ -273,6 +273,7 @@ abstract class MangaListFragment : BaseFragment(R.layout.fragment_list),
 		override fun getSpanSize(position: Int): Int {
 			val total = (recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
 			return when (adapter?.getItemViewType(position)) {
+				MangaListAdapter.ITEM_TYPE_DATE,
 				MangaListAdapter.ITEM_TYPE_PROGRESS -> total
 				else -> 1
 			}
