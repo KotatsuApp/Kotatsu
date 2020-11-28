@@ -4,7 +4,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.*
+import org.koitharu.kotatsu.core.db.entity.MangaEntity
+import org.koitharu.kotatsu.core.db.entity.TagEntity
+import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
+import org.koitharu.kotatsu.favourites.data.FavouriteEntity
+import org.koitharu.kotatsu.history.data.HistoryEntity
 
 class BackupRepository(private val db: MangaDatabase) {
 

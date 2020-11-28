@@ -7,8 +7,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.core.model.ZoomMode
-import org.koitharu.kotatsu.core.parser.LocalMangaRepository
+import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.delegates.prefs.*
 import java.io.File
 
@@ -19,7 +22,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		PreferenceManager.getDefaultSharedPreferences(context)
 	)
 
-	var listMode by IntEnumPreferenceDelegate(
+	var listMode by EnumPreferenceDelegate(
 		ListMode::class.java,
 		KEY_LIST_MODE,
 		ListMode.DETAILED_LIST
@@ -38,7 +41,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	val isAmoledTheme by BoolPreferenceDelegate(KEY_THEME_AMOLED, defaultValue = false)
 
-	val gridSize by IntPreferenceDelegate(KEY_GRID_SIZE, defaultValue = 100)
+	var gridSize by IntPreferenceDelegate(KEY_GRID_SIZE, defaultValue = 100)
 
 	val readerPageSwitch by StringSetPreferenceDelegate(
 		KEY_READER_SWITCHERS,
@@ -117,6 +120,16 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		prefs.unregisterOnSharedPreferenceChangeListener(listener)
 	}
 
+	fun observe() = callbackFlow<String> {
+		val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+			sendBlocking(key)
+		}
+		prefs.registerOnSharedPreferenceChangeListener(listener)
+		awaitClose {
+			prefs.unregisterOnSharedPreferenceChangeListener(listener)
+		}
+	}
+
 	companion object {
 
 		const val PAGE_SWITCH_TAPS = "taps"
@@ -125,7 +138,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val TRACK_HISTORY = "history"
 		const val TRACK_FAVOURITES = "favourites"
 
-		const val KEY_LIST_MODE = "list_mode"
+		const val KEY_LIST_MODE = "list_mode_2"
 		const val KEY_APP_SECTION = "app_section"
 		const val KEY_THEME = "theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"

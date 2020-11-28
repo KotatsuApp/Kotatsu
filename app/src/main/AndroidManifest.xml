@@ -23,7 +23,7 @@
 		android:theme="@style/AppTheme"
 		android:usesCleartextTraffic="true"
 		tools:ignore="UnusedAttribute">
-		<activity android:name=".ui.list.MainActivity">
+		<activity android:name="org.koitharu.kotatsu.main.ui.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -32,62 +32,62 @@
 				android:name="android.app.default_searchable"
 				android:value=".ui.search.SearchActivity" />
 		</activity>
-		<activity android:name=".ui.details.MangaDetailsActivity">
+		<activity android:name="org.koitharu.kotatsu.details.ui.DetailsActivity">
 			<intent-filter>
 				<action android:name="${applicationId}.action.VIEW_MANGA" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".ui.reader.ReaderActivity" />
+		<activity android:name="org.koitharu.kotatsu.reader.ui.ReaderActivity" />
 		<activity
-			android:name=".ui.search.SearchActivity"
+			android:name="org.koitharu.kotatsu.search.ui.SearchActivity"
 			android:label="@string/search" />
 		<activity
-			android:name=".ui.settings.SettingsActivity"
+			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
 			android:label="@string/settings" />
 		<activity
-			android:name=".ui.reader.SimpleSettingsActivity"
+			android:name="org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity"
 			android:label="@string/settings">
 			<intent-filter>
 				<action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".ui.browser.BrowserActivity" />
+		<activity android:name="org.koitharu.kotatsu.browser.BrowserActivity" />
 		<activity
-			android:name=".ui.utils.CrashActivity"
+			android:name="org.koitharu.kotatsu.core.ui.CrashActivity"
 			android:label="@string/error_occurred"
 			android:theme="@android:style/Theme.DeviceDefault"
 			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity
-			android:name="org.koitharu.kotatsu.ui.list.favourites.categories.CategoriesActivity"
+			android:name="org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity"
 			android:label="@string/favourites_categories"
 			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity
-			android:name=".ui.widget.shelf.ShelfConfigActivity"
+			android:name="org.koitharu.kotatsu.widget.shelf.ShelfConfigActivity"
 			android:label="@string/manga_shelf">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".ui.search.global.GlobalSearchActivity"
+			android:name="org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity"
 			android:label="@string/search" />
 		<activity
-			android:name=".ui.utils.protect.ProtectActivity"
+			android:name="org.koitharu.kotatsu.main.ui.protect.ProtectActivity"
 			android:windowSoftInputMode="adjustResize" />
 
 		<service
-			android:name=".ui.download.DownloadService"
+			android:name="org.koitharu.kotatsu.download.DownloadService"
 			android:foregroundServiceType="dataSync" />
 		<service
-			android:name=".ui.widget.shelf.ShelfWidgetService"
+			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
 		<service
-			android:name=".ui.widget.recent.RecentWidgetService"
+			android:name="org.koitharu.kotatsu.widget.recent.RecentWidgetService"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
 
 		<provider
-			android:name=".ui.search.MangaSuggestionsProvider"
+			android:name="org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider"
 			android:authorities="${applicationId}.MangaSuggestionsProvider"
 			android:exported="false" />
 		<provider
@@ -101,7 +101,7 @@
 		</provider>
 
 		<receiver
-			android:name=".ui.widget.shelf.ShelfWidgetProvider"
+			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider"
 			android:label="@string/manga_shelf">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -111,7 +111,7 @@
 				android:resource="@xml/widget_shelf" />
 		</receiver>
 		<receiver
-			android:name=".ui.widget.recent.RecentWidgetProvider"
+			android:name="org.koitharu.kotatsu.widget.recent.RecentWidgetProvider"
 			android:label="@string/recent_manga">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

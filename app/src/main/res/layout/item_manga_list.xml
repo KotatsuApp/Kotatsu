@@ -6,7 +6,7 @@
 	android:background="?selectableItemBackground"
 	android:orientation="horizontal">
 
-	<org.koitharu.kotatsu.ui.base.widgets.CoverImageView
+	<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
 		android:id="@+id/imageView_cover"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"

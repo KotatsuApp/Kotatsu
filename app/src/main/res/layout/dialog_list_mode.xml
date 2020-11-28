@@ -2,14 +2,15 @@
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:padding="16dp"
 	android:orientation="vertical">
 
 	<com.google.android.material.button.MaterialButtonToggleGroup
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_margin="16dp"
 		android:orientation="vertical"
 		app:selectionRequired="true"
 		app:singleSelection="true">
@@ -40,12 +41,21 @@
 
 	</com.google.android.material.button.MaterialButtonToggleGroup>
 
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/button_ok"
-		style="@style/Widget.MaterialComponents.Button"
-		android:layout_width="wrap_content"
+	<TextView
+		style="?android:attr/windowTitleStyle"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="16dp"
-		android:layout_gravity="center_horizontal"
-		android:text="@android:string/ok" />
+		android:paddingLeft="?attr/dialogPreferredPadding"
+		android:paddingRight="?attr/dialogPreferredPadding"
+		android:singleLine="true"
+		android:text="@string/grid_size" />
+
+	<SeekBar
+		android:id="@+id/seekbar_grid"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="16dp"
+		android:max="100"
+		tools:progress="50" />
+
 </LinearLayout>

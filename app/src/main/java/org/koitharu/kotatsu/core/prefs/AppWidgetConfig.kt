@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.utils.delegates.prefs.LongPreferenceDelegate
 class AppWidgetConfig private constructor(
 	private val prefs: SharedPreferences,
 	val widgetId: Int
-) :	SharedPreferences by prefs {
+) : SharedPreferences by prefs {
 
 	var categoryId by LongPreferenceDelegate(CATEGORY_ID, 0L)
 

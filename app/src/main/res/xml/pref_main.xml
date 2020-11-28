@@ -20,12 +20,13 @@
 		android:title="@string/black_dark_theme"
 		app:iconSpaceReserved="false" />
 
-	<Preference
-		android:key="list_mode"
-		android:persistent="false"
+	<ListPreference
+		android:entries="@array/list_modes"
+		android:key="list_mode_2"
 		android:title="@string/list_mode"
 		app:allowDividerAbove="true"
-		app:iconSpaceReserved="false" />
+		app:iconSpaceReserved="false"
+		app:useSimpleSummaryProvider="true" />
 
 	<SeekBarPreference
 		android:key="grid_size"
@@ -39,7 +40,7 @@
 		app:updatesContinuously="true" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.ui.settings.sources.SourcesSettingsFragment"
+		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment"
 		android:key="remote_sources"
 		android:title="@string/remote_sources"
 		app:allowDividerAbove="true"
@@ -51,7 +52,7 @@
 		app:iconSpaceReserved="false" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.ui.settings.HistorySettingsFragment"
+		android:fragment="org.koitharu.kotatsu.settings.HistorySettingsFragment"
 		android:title="@string/history_and_cache"
 		app:iconSpaceReserved="false" />
 
@@ -124,7 +125,7 @@
 		app:iconSpaceReserved="false">
 
 		<PreferenceScreen
-			android:fragment="org.koitharu.kotatsu.ui.settings.backup.BackupSettingsFragment"
+			android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
 			android:title="@string/backup_restore"
 			app:iconSpaceReserved="false" />
 

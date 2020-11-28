@@ -1,22 +1,25 @@
 package org.koitharu.kotatsu.core.parser
 
-import org.koin.dsl.bind
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.koitharu.kotatsu.base.domain.MangaLoaderContext
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.site.*
 
 val parserModule
 	get() = module {
-		single { LocalMangaRepository(get()) } bind MangaRepository::class
 
-		factory { ReadmangaRepository(get()) } bind MangaRepository::class
-		factory { MintMangaRepository(get()) } bind MangaRepository::class
-		factory { SelfMangaRepository(get()) } bind MangaRepository::class
-		factory { MangaChanRepository(get()) } bind MangaRepository::class
-		factory { DesuMeRepository(get()) } bind MangaRepository::class
-		factory { HenChanRepository(get()) } bind MangaRepository::class
-		factory { YaoiChanRepository(get()) } bind MangaRepository::class
-		factory { MangaTownRepository(get()) } bind MangaRepository::class
-		factory { MangaLibRepository(get()) } bind MangaRepository::class
-		factory { NudeMoonRepository(get()) } bind MangaRepository::class
-		factory { MangareadRepository(get()) } bind MangaRepository::class
+		single { MangaLoaderContext() }
+
+		factory<MangaRepository>(named(MangaSource.READMANGA_RU)) { ReadmangaRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.MINTMANGA)) { MintMangaRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.SELFMANGA)) { SelfMangaRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.MANGACHAN)) { MangaChanRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.DESUME)) { DesuMeRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.HENCHAN)) { HenChanRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.YAOICHAN)) { YaoiChanRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.MANGATOWN)) { MangaTownRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.MANGALIB)) { MangaLibRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.NUDEMOON)) { NudeMoonRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.MANGAREAD)) { MangareadRepository(get()) }
 	}

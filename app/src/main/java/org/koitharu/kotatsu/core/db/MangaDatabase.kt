@@ -4,6 +4,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import org.koitharu.kotatsu.core.db.dao.*
 import org.koitharu.kotatsu.core.db.entity.*
+import org.koitharu.kotatsu.favourites.data.FavouriteCategoriesDao
+import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
+import org.koitharu.kotatsu.favourites.data.FavouriteEntity
+import org.koitharu.kotatsu.favourites.data.FavouritesDao
+import org.koitharu.kotatsu.history.data.HistoryDao
+import org.koitharu.kotatsu.history.data.HistoryEntity
 
 @Database(
 	entities = [

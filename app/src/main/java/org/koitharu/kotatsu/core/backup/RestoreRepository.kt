@@ -3,7 +3,11 @@ package org.koitharu.kotatsu.core.backup
 import androidx.room.withTransaction
 import org.json.JSONObject
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.*
+import org.koitharu.kotatsu.core.db.entity.MangaEntity
+import org.koitharu.kotatsu.core.db.entity.TagEntity
+import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
+import org.koitharu.kotatsu.favourites.data.FavouriteEntity
+import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.utils.ext.getStringOrNull
 import org.koitharu.kotatsu.utils.ext.iterator
 import org.koitharu.kotatsu.utils.ext.map

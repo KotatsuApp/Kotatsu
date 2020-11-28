@@ -5,7 +5,8 @@ import androidx.core.content.edit
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class NullableStringPreferenceDelegate(private val key: String) : ReadWriteProperty<SharedPreferences, String?> {
+class NullableStringPreferenceDelegate(private val key: String) :
+	ReadWriteProperty<SharedPreferences, String?> {
 
 	override fun getValue(thisRef: SharedPreferences, property: KProperty<*>): String? {
 		return thisRef.getString(key, null)

@@ -6,25 +6,30 @@ import androidx.appcompat.app.AppCompatDelegate
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.koin.dsl.module
-import org.koitharu.kotatsu.core.backup.BackupRepository
-import org.koitharu.kotatsu.core.backup.RestoreRepository
+import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.db.databaseModule
 import org.koitharu.kotatsu.core.github.githubModule
-import org.koitharu.kotatsu.core.local.PagesCache
 import org.koitharu.kotatsu.core.network.networkModule
-import org.koitharu.kotatsu.core.parser.LocalMangaRepository
 import org.koitharu.kotatsu.core.parser.parserModule
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.domain.MangaDataRepository
-import org.koitharu.kotatsu.domain.MangaLoaderContext
-import org.koitharu.kotatsu.domain.MangaSearchRepository
-import org.koitharu.kotatsu.domain.favourites.FavouritesRepository
-import org.koitharu.kotatsu.domain.history.HistoryRepository
-import org.koitharu.kotatsu.domain.tracking.TrackingRepository
-import org.koitharu.kotatsu.ui.base.uiModule
-import org.koitharu.kotatsu.ui.utils.AppCrashHandler
-import org.koitharu.kotatsu.ui.widget.WidgetUpdater
+import org.koitharu.kotatsu.core.ui.AppCrashHandler
+import org.koitharu.kotatsu.core.ui.uiModule
+import org.koitharu.kotatsu.details.detailsModule
+import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.favourites.favouritesModule
+import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.historyModule
+import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.local.localModule
+import org.koitharu.kotatsu.main.mainModule
+import org.koitharu.kotatsu.reader.readerModule
+import org.koitharu.kotatsu.remotelist.remoteListModule
+import org.koitharu.kotatsu.search.searchModule
+import org.koitharu.kotatsu.settings.settingsModule
+import org.koitharu.kotatsu.tracker.trackerModule
+import org.koitharu.kotatsu.widget.WidgetUpdater
+import org.koitharu.kotatsu.widget.appWidgetModule
 
 class KotatsuApp : Application() {
 
@@ -62,20 +67,19 @@ class KotatsuApp : Application() {
 				networkModule,
 				databaseModule,
 				githubModule,
-				parserModule,
 				uiModule,
-				module {
-					single { FavouritesRepository(get()) }
-					single { HistoryRepository(get()) }
-					single { TrackingRepository(get(), get()) }
-					single { MangaDataRepository(get()) }
-					single { BackupRepository(get()) }
-					single { RestoreRepository(get()) }
-					single { MangaSearchRepository() }
-					single { MangaLoaderContext() }
-					single { AppSettings(get()) }
-					single { PagesCache(get()) }
-				}
+				parserModule,
+				mainModule,
+				searchModule,
+				localModule,
+				favouritesModule,
+				historyModule,
+				remoteListModule,
+				detailsModule,
+				trackerModule,
+				settingsModule,
+				readerModule,
+				appWidgetModule
 			)
 		}
 	}
