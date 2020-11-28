@@ -11,8 +11,12 @@ import org.koitharu.kotatsu.search.ui.global.GlobalSearchViewModel
 val searchModule
 	get() = module {
 
-		single { MangaSearchRepository() }
+		single { MangaSearchRepository(get()) }
 
-		viewModel { (source: MangaSource) -> SearchViewModel(get(named(source)), get()) }
-		viewModel { GlobalSearchViewModel(get(), get()) }
+		viewModel { (source: MangaSource, query: String) ->
+			SearchViewModel(get(named(source)), query, get())
+		}
+		viewModel { (query: String) ->
+			GlobalSearchViewModel(query, get(), get())
+		}
 	}

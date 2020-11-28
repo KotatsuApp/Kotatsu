@@ -17,7 +17,7 @@ class SourcesAdapter(
 	private val onItemClickListener: OnListItemClickListener<MangaSource>,
 ) : RecyclerView.Adapter<SourceViewHolder>() {
 
-	private val dataSet = MangaProviderFactory.getSources(includeHidden = true).toMutableList()
+	private val dataSet = MangaProviderFactory.getSources(settings, includeHidden = true).toMutableList()
 	private val hiddenItems = settings.hiddenSources.mapNotNull {
 		safe {
 			MangaSource.valueOf(it)

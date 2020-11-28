@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 class MangaSearchSheet : MangaListSheet() {
 
 	override val viewModel by viewModel<SearchViewModel> {
-		parametersOf(source)
+		parametersOf(source, query)
 	}
 
 	private val query by stringArgument(ARG_QUERY)
@@ -29,7 +29,7 @@ class MangaSearchSheet : MangaListSheet() {
 	}
 
 	override fun onScrolledToEnd() {
-		viewModel.loadList(query.orEmpty(), append = true)
+		viewModel.loadList(append = true)
 	}
 
 	companion object {

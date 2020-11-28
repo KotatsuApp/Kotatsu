@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaFilter
@@ -53,20 +52,18 @@ class RemoteListViewModel(
 		if (loadingJob?.isActive == true) {
 			return
 		}
-		loadingJob = launchLoadingJob {
-			withContext(Dispatchers.Default) {
-				val list = repository.getList(
-					offset = if (append) mangaList.value.size else 0,
-					sortOrder = appliedFilter?.sortOrder,
-					tag = appliedFilter?.tag
-				)
-				if (!append) {
-					mangaList.value = list
-				} else if (list.isNotEmpty()) {
-					mangaList.value += list
-				}
-				hasNextPage.value = list.isNotEmpty()
+		loadingJob = launchLoadingJob(Dispatchers.Default) {
+			val list = repository.getList(
+				offset = if (append) mangaList.value.size else 0,
+				sortOrder = appliedFilter?.sortOrder,
+				tag = appliedFilter?.tag
+			)
+			if (!append) {
+				mangaList.value = list
+			} else if (list.isNotEmpty()) {
+				mangaList.value += list
 			}
+			hasNextPage.value = list.isNotEmpty()
 		}
 	}
 
@@ -78,13 +75,11 @@ class RemoteListViewModel(
 	}
 
 	private fun loadFilter() {
-		launchJob {
+		launchJob(Dispatchers.Default) {
 			try {
-				val (sorts, tags) = withContext(Dispatchers.Default) {
-					repository.sortOrders.sortedBy { it.ordinal } to repository.getTags()
-						.sortedBy { it.title }
-				}
-				filter.value = MangaFilterConfig(sorts, tags, appliedFilter)
+				val sorts = repository.sortOrders.sortedBy { it.ordinal }
+				val tags = repository.getTags().sortedBy { it.title }
+				filter.postValue(MangaFilterConfig(sorts, tags, appliedFilter))
 			} catch (e: Exception) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()

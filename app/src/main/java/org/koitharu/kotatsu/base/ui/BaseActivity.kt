@@ -1,11 +1,14 @@
 package org.koitharu.kotatsu.base.ui
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import org.koin.android.ext.android.get
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
@@ -36,4 +39,12 @@ abstract class BaseActivity : AppCompatActivity() {
 		onBackPressed()
 		true
 	} else super.onOptionsItemSelected(item)
+
+	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_UP) { // TODO remove
+			ActivityCompat.recreate(this)
+			return true
+		}
+		return super.onKeyDown(keyCode, event)
+	}
 }

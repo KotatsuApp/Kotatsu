@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.search.ui.global
 
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.stringArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
@@ -8,13 +9,15 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 
 class GlobalSearchFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<GlobalSearchViewModel>()
+	override val viewModel by viewModel<GlobalSearchViewModel> {
+		parametersOf(query)
+	}
 
 	private val query by stringArgument(ARG_QUERY)
 
 	override fun onRefresh() {
 		super.onRefresh()
-		viewModel.startSearch(query.orEmpty())
+		viewModel.onRefresh()
 	}
 
 	override fun onScrolledToEnd() = Unit

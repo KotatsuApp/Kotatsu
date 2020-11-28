@@ -7,6 +7,6 @@ import org.koitharu.kotatsu.main.ui.protect.ProtectViewModel
 
 val mainModule
 	get() = module {
-		viewModel { MainViewModel(get()) }
+		viewModel { MainViewModel(get(), get()) }
 		viewModel { ProtectViewModel(get()) }
 	}

@@ -1,14 +1,11 @@
 package org.koitharu.kotatsu.base.domain
 
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
-object MangaProviderFactory : KoinComponent {
+object MangaProviderFactory {
 
-	fun getSources(includeHidden: Boolean): List<MangaSource> {
-		val settings = get<AppSettings>()
+	fun getSources(settings: AppSettings, includeHidden: Boolean): List<MangaSource> {
 		val list = MangaSource.values().toList() - MangaSource.LOCAL
 		val order = settings.sourcesOrder
 		val hidden = settings.hiddenSources

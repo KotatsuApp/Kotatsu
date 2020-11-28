@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.main.ui
 
 import android.app.ActivityOptions
-import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
@@ -11,20 +10,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.view.isVisible
+import androidx.core.view.*
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.MangaProviderFactory
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.ui.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
@@ -42,11 +38,10 @@ import org.koitharu.kotatsu.utils.ext.resolveDp
 import java.io.Closeable
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-	SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener {
+	View.OnClickListener {
 
 	private val viewModel by viewModel<MainViewModel>()
 
-	private val settings by inject<AppSettings>()
 	private lateinit var drawerToggle: ActionBarDrawerToggle
 	private var closeable: Closeable? = null
 
@@ -59,11 +54,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		navigationView.setNavigationItemSelectedListener(this)
-		settings.subscribe(this)
 
 		with(fab) {
 			imageTintList = ColorStateList.valueOf(Color.WHITE)
-			isVisible = true
 			setOnClickListener(this@MainActivity)
 		}
 
@@ -78,14 +71,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		TrackWorker.setup(applicationContext)
 		AppUpdateChecker(this).launchIfNeeded()
 
-		viewModel.onOpenReader.observe(this, ::onOpenReader)
-		viewModel.onError.observe(this, ::onError)
-		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
+		viewModel.onOpenReader.observe(this, this::onOpenReader)
+		viewModel.onError.observe(this, this::onError)
+		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
+		viewModel.remoteSources.observe(this, this::updateSideMenu)
 	}
 
 	override fun onDestroy() {
 		closeable?.close()
-		settings.unsubscribe(this)
 		AppProtectHelper.lock()
 		super.onDestroy()
 	}
@@ -93,7 +86,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
 		drawerToggle.syncState()
-		initSideMenu(MangaProviderFactory.getSources(includeHidden = false))
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) {
@@ -135,19 +127,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			setPrimaryFragment(RemoteListFragment.newInstance(source))
 		} else when (item.itemId) {
 			R.id.nav_history -> {
-				settings.defaultSection = AppSection.HISTORY
+				viewModel.defaultSection = AppSection.HISTORY
 				setPrimaryFragment(HistoryListFragment.newInstance())
 			}
 			R.id.nav_favourites -> {
-				settings.defaultSection = AppSection.FAVOURITES
+				viewModel.defaultSection = AppSection.FAVOURITES
 				setPrimaryFragment(FavouritesContainerFragment.newInstance())
 			}
 			R.id.nav_local_storage -> {
-				settings.defaultSection = AppSection.LOCAL
+				viewModel.defaultSection = AppSection.LOCAL
 				setPrimaryFragment(LocalListFragment.newInstance())
 			}
 			R.id.nav_feed -> {
-				settings.defaultSection = AppSection.FEED
+				viewModel.defaultSection = AppSection.FEED
 				setPrimaryFragment(FeedFragment.newInstance())
 			}
 			R.id.nav_action_settings -> {
@@ -190,7 +182,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		}
 	}
 
-	private fun initSideMenu(remoteSources: List<MangaSource>) {
+	private fun updateSideMenu(remoteSources: List<MangaSource>) {
 		val submenu = navigationView.menu.findItem(R.id.nav_remote_sources).subMenu
 		submenu.removeGroup(R.id.group_remote_sources)
 		remoteSources.forEachIndexed { index, source ->
@@ -199,17 +191,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		submenu.setGroupCheckable(R.id.group_remote_sources, true, true)
 	}
 
-	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-		when (key) {
-			AppSettings.KEY_SOURCES_HIDDEN,
-			AppSettings.KEY_SOURCES_ORDER -> {
-				initSideMenu(MangaProviderFactory.getSources(includeHidden = false))
-			}
-		}
-	}
-
 	private fun openDefaultSection() {
-		when (settings.defaultSection) {
+		when (viewModel.defaultSection) {
 			AppSection.LOCAL -> {
 				navigationView.setCheckedItem(R.id.nav_local_storage)
 				setPrimaryFragment(LocalListFragment.newInstance())

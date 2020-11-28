@@ -19,7 +19,11 @@ import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
 import org.koitharu.kotatsu.list.ui.model.toListModel
 import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
+import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
@@ -78,7 +82,7 @@ class HistoryListViewModel(
 		var prevDate: DateTimeAgo? = null
 		for ((manga, history) in list) {
 			if (grouped) {
-				val date = DateTimeAgo.from(history.updatedAt)
+				val date = timeAgo(history.updatedAt)
 				if (prevDate != date) {
 					result += date
 				}
@@ -91,5 +95,18 @@ class HistoryListViewModel(
 			}
 		}
 		return result
+	}
+
+	private fun timeAgo(date: Date): DateTimeAgo {
+		val diff = (System.currentTimeMillis() - date.time).coerceAtLeast(0L)
+		val diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
+		val diffDays = -date.daysDiff(System.currentTimeMillis())
+		return when {
+			diffMinutes < 3 -> DateTimeAgo.JustNow
+			diffDays < 1 -> DateTimeAgo.Today
+			diffDays == 1 -> DateTimeAgo.Yesterday
+			diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
+			else -> DateTimeAgo.LongAgo
+		}
 	}
 }

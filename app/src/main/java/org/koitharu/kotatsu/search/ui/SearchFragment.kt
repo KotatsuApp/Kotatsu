@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 class SearchFragment : MangaListFragment() {
 
 	override val viewModel by viewModel<SearchViewModel> {
-		parametersOf(source)
+		parametersOf(source, query)
 	}
 
 	private val query by stringArgument(ARG_QUERY)
@@ -19,16 +19,14 @@ class SearchFragment : MangaListFragment() {
 
 	override fun onRefresh() {
 		super.onRefresh()
-		viewModel.loadList(query.orEmpty(), append = false)
+		viewModel.loadList(append = false)
 	}
 
 	override fun onScrolledToEnd() {
-		viewModel.loadList(query.orEmpty(), append = true)
+		viewModel.loadList(append = true)
 	}
 
-	override fun getTitle(): CharSequence? {
-		return query
-	}
+	override fun getTitle() = query
 
 	companion object {
 

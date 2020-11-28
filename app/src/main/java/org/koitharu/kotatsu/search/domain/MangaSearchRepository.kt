@@ -6,12 +6,13 @@ import org.koitharu.kotatsu.base.domain.MangaProviderFactory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import java.util.*
 
-class MangaSearchRepository {
+class MangaSearchRepository(private val settings: AppSettings) {
 
 	fun globalSearch(query: String, batchSize: Int = 4): Flow<List<Manga>> = flow {
-		val sources = MangaProviderFactory.getSources(false)
+		val sources = MangaProviderFactory.getSources(settings, includeHidden = false)
 		val lists = EnumMap<MangaSource, List<Manga>>(MangaSource::class.java)
 		var i = 0
 		while (true) {

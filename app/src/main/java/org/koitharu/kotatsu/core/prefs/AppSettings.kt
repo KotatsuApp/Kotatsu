@@ -114,6 +114,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		}
 	}
 
+	@Deprecated("Use observe()")
 	fun subscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
 		prefs.registerOnSharedPreferenceChangeListener(listener)
 	}

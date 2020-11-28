@@ -47,14 +47,18 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			MultiSummaryProvider(R.string.gestures_only)
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_TRACK_SOURCES)?.summaryProvider =
 			MultiSummaryProvider(R.string.dont_check)
-		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.run {
+	}
+
+	override fun setPreferenceScreen(preferenceScreen: PreferenceScreen?) {
+		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.run {
 			entryValues = ZoomMode.values().names()
 			setDefaultValue(ZoomMode.FIT_CENTER.name)
 		}
-		findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
+		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
 			entryValues = ListMode.values().names()
 			setDefaultValue(ListMode.GRID.name)
 		}
+		super.setPreferenceScreen(preferenceScreen)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

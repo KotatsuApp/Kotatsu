@@ -186,4 +186,5 @@
 	<string name="yesterday">Yesterday</string>
 	<string name="long_ago">Long ago</string>
 	<string name="group">Group</string>
+	<string name="today">Today</string>
 </resources>
