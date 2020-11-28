@@ -1,46 +1,44 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select
 
 import android.os.Bundle
-import android.text.InputType
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.dialog_favorite_categories.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.dialog.TextInputDialog
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
+import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
+import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
+import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categories),
-	OnCategoryCheckListener {
+	OnListItemClickListener<MangaCategoryItem>, CategoriesEditDelegate.CategoriesEditCallback,
+	View.OnClickListener {
 
-	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
+	private val viewModel by viewModel<MangaCategoriesViewModel> {
+		parametersOf(requireNotNull(arguments?.getParcelable<Manga>(MangaIntent.KEY_MANGA)))
+	}
 
-	private val manga get() = arguments?.getParcelable<Manga>(ARG_MANGA)
-
-	private var adapter: CategoriesSelectAdapter? = null
+	private var adapter: MangaCategoriesAdapter? = null
+	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {
+		CategoriesEditDelegate(requireContext(), this@FavouriteCategoriesDialog)
+	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter =
-			CategoriesSelectAdapter(
-				this
-			)
+		adapter = MangaCategoriesAdapter(this)
 		recyclerView_categories.adapter = adapter
-		textView_add.setOnClickListener {
-			createCategory()
-		}
-		manga?.let {
-			viewModel.observeMangaCategories(it.id)
-		}
+		textView_add.setOnClickListener(this)
 
-		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
-		viewModel.mangaCategories.observe(viewLifecycleOwner, ::onCheckedCategoriesChanged)
+		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 	}
 
@@ -49,50 +47,39 @@ class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categ
 		super.onDestroyView()
 	}
 
-	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
-		adapter?.replaceData(categories)
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.textView_add -> editDelegate.createCategory()
+		}
 	}
 
-	private fun onCheckedCategoriesChanged(checkedIds: Set<Long>) {
-		adapter?.setCheckedIds(checkedIds)
+	override fun onItemClick(item: MangaCategoryItem, view: View) {
+		viewModel.setChecked(item.id, !item.isChecked)
 	}
 
-	override fun onCategoryChecked(category: FavouriteCategory) {
-		viewModel.addToCategory(manga ?: return, category.id)
+	override fun onDeleteCategory(category: FavouriteCategory) = Unit
+
+	override fun onRenameCategory(category: FavouriteCategory, newName: String) = Unit
+
+	override fun onCreateCategory(name: String) {
+		viewModel.createCategory(name)
 	}
 
-	override fun onCategoryUnchecked(category: FavouriteCategory) {
-		viewModel.removeFromCategory(manga ?: return, category.id)
+	private fun onContentChanged(categories: List<MangaCategoryItem>) {
+		adapter?.items = categories
 	}
 
 	private fun onError(e: Throwable) {
 		Toast.makeText(context ?: return, e.getDisplayMessage(resources), Toast.LENGTH_SHORT).show()
 	}
 
-	private fun createCategory() {
-		TextInputDialog.Builder(context ?: return)
-			.setTitle(R.string.add_new_category)
-			.setHint(R.string.enter_category_name)
-			.setMaxLength(12, false)
-			.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-			.setNegativeButton(android.R.string.cancel)
-			.setPositiveButton(R.string.add) { _, name ->
-				viewModel.createCategory(name)
-			}.create()
-			.show()
-	}
-
 	companion object {
 
-		private const val ARG_MANGA = "manga"
 		private const val TAG = "FavouriteCategoriesDialog"
 
 		fun show(fm: FragmentManager, manga: Manga) = FavouriteCategoriesDialog()
 			.withArgs(1) {
-				putParcelable(ARG_MANGA, manga)
-			}.show(
-				fm,
-				TAG
-			)
+				putParcelable(MangaIntent.KEY_MANGA, manga)
+			}.show(fm, TAG)
 	}
 }

@@ -21,7 +21,7 @@ class ChaptersSelectionDecoration(context: Context) : RecyclerView.ItemDecoratio
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
 	init {
-		paint.color = context.getThemeColor(com.google.android.material.R.attr.colorSurface)
+		paint.color = context.getThemeColor(com.google.android.material.R.attr.scrimBackground)
 		paint.style = Paint.Style.FILL
 	}
 

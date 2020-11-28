@@ -9,7 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -86,7 +86,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 	override fun onPopupMenuItemSelected(item: MenuItem, data: Manga): Boolean {
 		return when (item.itemId) {
 			R.id.action_delete -> {
-				MaterialAlertDialogBuilder(context ?: return false)
+				AlertDialog.Builder(context ?: return false)
 					.setTitle(R.string.delete_manga)
 					.setMessage(getString(R.string.text_delete_local_manga, data.title))
 					.setPositiveButton(R.string.delete) { _, _ ->

@@ -43,15 +43,14 @@ class FeedViewModel(
 		if (loadingJob?.isActive == true) {
 			return
 		}
-		loadingJob = launchLoadingJob {
+		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			val offset = if (append) logList.value.size else 0
 			val list = repository.getTrackingLog(offset, 20)
 			if (!append) {
 				logList.value = list
+				isEmptyState.postValue(list.isEmpty())
 			} else if (list.isNotEmpty()) {
 				logList.value += list
-			} else {
-				isEmptyState.value = true
 			}
 			hasNextPage.value = list.isNotEmpty()
 		}

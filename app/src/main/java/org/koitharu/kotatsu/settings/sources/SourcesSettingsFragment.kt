@@ -6,14 +6,15 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_settings_sources.*
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.settings.SettingsActivity
 
 class SourcesSettingsFragment : BaseFragment(R.layout.fragment_settings_sources),
-	OnRecyclerItemClickListener<MangaSource> {
+	OnListItemClickListener<MangaSource> {
 
 	private lateinit var reorderHelper: ItemTouchHelper
 
@@ -30,7 +31,7 @@ class SourcesSettingsFragment : BaseFragment(R.layout.fragment_settings_sources)
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		recyclerView.addItemDecoration(DividerItemDecoration(view.context, RecyclerView.VERTICAL))
-		recyclerView.adapter = SourcesAdapter(this)
+		recyclerView.adapter = SourcesAdapter(get(), this)
 		reorderHelper.attachToRecyclerView(recyclerView)
 	}
 
@@ -39,13 +40,13 @@ class SourcesSettingsFragment : BaseFragment(R.layout.fragment_settings_sources)
 		super.onDestroyView()
 	}
 
-	override fun onItemClick(item: MangaSource, position: Int, view: View) {
+	override fun onItemClick(item: MangaSource, view: View) {
 		(activity as? SettingsActivity)?.openMangaSourceSettings(item)
 	}
 
-	override fun onItemLongClick(item: MangaSource, position: Int, view: View): Boolean {
+	override fun onItemLongClick(item: MangaSource, view: View): Boolean {
 		reorderHelper.startDrag(
-			recyclerView.findViewHolderForAdapterPosition(position) ?: return false
+			recyclerView.findContainingViewHolder(view) ?: return false
 		)
 		return true
 	}

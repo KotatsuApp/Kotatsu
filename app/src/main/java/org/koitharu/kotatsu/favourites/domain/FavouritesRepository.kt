@@ -70,6 +70,10 @@ class FavouritesRepository(private val db: MangaDatabase) {
 		}
 	}
 
+	fun observeCategoriesIds(mangaId: Long): Flow<List<Long>> {
+		return db.favouritesDao.observeIds(mangaId)
+	}
+
 	suspend fun addCategory(title: String): FavouriteCategory {
 		val entity = FavouriteCategoryEntity(
 			title = title,

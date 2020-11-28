@@ -7,7 +7,6 @@ import android.text.InputFilter
 import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.dialog_input.view.*
 import org.koitharu.kotatsu.R
 
@@ -23,7 +22,7 @@ class TextInputDialog private constructor(
 		private val view = LayoutInflater.from(context)
 			.inflate(R.layout.dialog_input, null, false)
 
-		private val delegate = MaterialAlertDialogBuilder(context)
+		private val delegate = AlertDialog.Builder(context)
 			.setView(view)
 
 		fun setTitle(@StringRes titleResId: Int): Builder {

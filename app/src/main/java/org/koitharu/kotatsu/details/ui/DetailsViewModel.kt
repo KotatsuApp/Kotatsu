@@ -39,8 +39,8 @@ class DetailsViewModel(
 	private val favourite = mangaData.mapNotNull { it?.id }
 		.distinctUntilChanged()
 		.flatMapLatest { mangaId ->
-			favouritesRepository.observeCategories(mangaId)
-		}.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+			favouritesRepository.observeCategoriesIds(mangaId).map { it.isNotEmpty() }
+		}.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
 	private val newChapters = mangaData.mapNotNull { it?.id }
 		.distinctUntilChanged()

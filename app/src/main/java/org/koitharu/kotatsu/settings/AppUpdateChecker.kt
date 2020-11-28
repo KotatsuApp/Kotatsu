@@ -6,8 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -68,7 +68,7 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 	}
 
 	private fun showUpdateDialog(version: AppVersion) {
-		MaterialAlertDialogBuilder(activity)
+		AlertDialog.Builder(activity)
 			.setTitle(R.string.app_update_available)
 			.setMessage(buildString {
 				append(activity.getString(R.string.new_version_s, version.name))

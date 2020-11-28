@@ -42,6 +42,9 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE manga_id = :id GROUP BY manga_id")
 	abstract fun observe(id: Long): Flow<FavouriteManga?>
 
+	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id = :id")
+	abstract fun observeIds(id: Long): Flow<List<Long>>
+
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(favourite: FavouriteEntity)
 

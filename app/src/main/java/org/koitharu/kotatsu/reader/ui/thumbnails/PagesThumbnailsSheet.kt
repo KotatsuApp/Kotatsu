@@ -8,29 +8,31 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.sheet_pages.*
 import kotlinx.coroutines.DisposableHandle
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class PagesThumbnailsSheet : BaseBottomSheet(R.layout.sheet_pages),
-	OnRecyclerItemClickListener<MangaPage> {
+	OnListItemClickListener<MangaPage> {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		recyclerView.addItemDecoration(SpacingItemDecoration(view.resources.resolveDp(8)))
 		val pages = arguments?.getParcelableArrayList<MangaPage>(ARG_PAGES)
-		if (pages != null) {
-			recyclerView.adapter = PagesThumbnailsAdapter(this).apply {
-				replaceData(pages)
-			}
-		} else {
+		if (pages == null) {
 			dismissAllowingStateLoss()
 			return
+		}
+		recyclerView.adapter = PageThumbnailAdapter(get(), viewLifecycleScope, get(), this).apply {
+			items = pages
 		}
 		val title = arguments?.getString(ARG_TITLE)
 		toolbar.title = title
@@ -74,7 +76,7 @@ class PagesThumbnailsSheet : BaseBottomSheet(R.layout.sheet_pages),
 		super.onDestroyView()
 	}
 
-	override fun onItemClick(item: MangaPage, position: Int, view: View) {
+	override fun onItemClick(item: MangaPage, view: View) {
 		((parentFragment as? OnPageSelectListener)
 			?: (activity as? OnPageSelectListener))?.run {
 			onPageSelected(item)

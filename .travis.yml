@@ -1,15 +1,9 @@
 language: android
 dist: trusty
-jdk:
-  - oraclejdk8
 android:
   components:
-    - tools
-    - platform-tools-30.0.3
-    - build-tools-30.0.2
     - android-30
-  licenses:
-    - android-sdk-preview-license-.+
-    - android-sdk-license-.+
-    - google-gdk-license-.+
+    - build-tools-30.0.2
+    - platform-tools-30.0.3
+    - tools
 script: ./gradlew -Dorg.gradle.jvmargs=-Xmx1536m assembleDebug lintDebug

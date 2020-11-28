@@ -14,7 +14,6 @@ import kotlinx.coroutines.withContext
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
@@ -105,12 +104,12 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 		}
 	}
 
-	private fun onFavouriteChanged(categories: List<FavouriteCategory>) {
+	private fun onFavouriteChanged(isFavourite: Boolean) {
 		imageView_favourite.setImageResource(
-			if (categories.isEmpty()) {
-				R.drawable.ic_heart_outline
-			} else {
+			if (isFavourite) {
 				R.drawable.ic_heart
+			} else {
+				R.drawable.ic_heart_outline
 			}
 		)
 	}

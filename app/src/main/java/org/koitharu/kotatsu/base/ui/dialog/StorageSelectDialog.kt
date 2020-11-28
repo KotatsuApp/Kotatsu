@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.item_storage.view.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
@@ -24,7 +23,7 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 	class Builder(context: Context, defaultValue: File?, listener: OnStorageSelectListener) {
 
 		private val adapter = VolumesAdapter(context)
-		private val delegate = MaterialAlertDialogBuilder(context)
+		private val delegate = AlertDialog.Builder(context)
 
 		init {
 			if (adapter.isEmpty) {

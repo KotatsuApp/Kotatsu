@@ -5,20 +5,19 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_source_config.*
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.base.domain.MangaProviderFactory
-import org.koitharu.kotatsu.base.ui.list.OnRecyclerItemClickListener
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.ext.mapToSet
 import org.koitharu.kotatsu.utils.ext.safe
 
-class SourcesAdapter(private val onItemClickListener: OnRecyclerItemClickListener<MangaSource>) :
-	RecyclerView.Adapter<SourceViewHolder>(), KoinComponent {
+class SourcesAdapter(
+	private val settings: AppSettings,
+	private val onItemClickListener: OnListItemClickListener<MangaSource>,
+) : RecyclerView.Adapter<SourceViewHolder>() {
 
 	private val dataSet = MangaProviderFactory.getSources(includeHidden = true).toMutableList()
-	private val settings by inject<AppSettings>()
 	private val hiddenItems = settings.hiddenSources.mapNotNull {
 		safe {
 			MangaSource.valueOf(it)
@@ -48,14 +47,13 @@ class SourcesAdapter(private val onItemClickListener: OnRecyclerItemClickListene
 			settings.hiddenSources = hiddenItems.mapToSet { x -> x.name }
 		}
 		holder.imageView_config.setOnClickListener { v ->
-			onItemClickListener.onItemClick(holder.requireData(), holder.bindingAdapterPosition, v)
+			onItemClickListener.onItemClick(holder.requireData(), v)
 		}
 		holder.imageView_handle.setOnTouchListener { v, event ->
 			if (event.actionMasked == MotionEvent.ACTION_DOWN) {
 				onItemClickListener.onItemLongClick(
 					holder.requireData(),
-					holder.bindingAdapterPosition,
-					v
+					holder.itemView
 				)
 			} else {
 				false

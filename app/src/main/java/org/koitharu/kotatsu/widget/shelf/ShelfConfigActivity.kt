@@ -17,17 +17,15 @@ import kotlinx.android.synthetic.main.activity_categories.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.list.OnRecyclerItemClickListener
-import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
-import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import java.util.*
-import kotlin.collections.ArrayList
+import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
+import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 
-class ShelfConfigActivity : BaseActivity(), OnRecyclerItemClickListener<FavouriteCategory> {
+class ShelfConfigActivity : BaseActivity(), OnListItemClickListener<CategoryItem> {
 
-	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
+	private val viewModel by viewModel<ShelfConfigViewModel>()
 
 	private lateinit var adapter: CategorySelectAdapter
 	private lateinit var config: AppWidgetConfig
@@ -50,10 +48,10 @@ class ShelfConfigActivity : BaseActivity(), OnRecyclerItemClickListener<Favourit
 			return
 		}
 		config = AppWidgetConfig.getInstance(this, appWidgetId)
-		adapter.setCheckedId(config.categoryId)
+		viewModel.checkedId = config.categoryId
 
-		viewModel.categories.observe(this, ::onCategoriesChanged)
-		viewModel.onError.observe(this, ::onError)
+		viewModel.content.observe(this, this::onContentChanged)
+		viewModel.onError.observe(this, this::onError)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -63,7 +61,7 @@ class ShelfConfigActivity : BaseActivity(), OnRecyclerItemClickListener<Favourit
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.action_done -> {
-			config.categoryId = adapter.checkedItemId
+			config.categoryId = viewModel.checkedId
 			updateWidget()
 			setResult(
 				Activity.RESULT_OK,
@@ -75,15 +73,12 @@ class ShelfConfigActivity : BaseActivity(), OnRecyclerItemClickListener<Favourit
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onItemClick(item: FavouriteCategory, position: Int, view: View) {
-		adapter.setCheckedId(item.id)
+	override fun onItemClick(item: CategoryItem, view: View) {
+		viewModel.checkedId = item.id
 	}
 
-	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
-		val data = ArrayList<FavouriteCategory>(categories.size + 1)
-		data += FavouriteCategory(0L, getString(R.string.all_favourites), -1, Date())
-		data += categories
-		adapter.replaceData(data)
+	private fun onContentChanged(categories: List<CategoryItem>) {
+		adapter.items = categories
 	}
 
 	private fun onError(e: Throwable) {

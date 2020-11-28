@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
+@Deprecated("")
 class AdapterUpdater<T>(oldList: List<T>, newList: List<T>, getId: (T) -> Long) {
 
 	private val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
