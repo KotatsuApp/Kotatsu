@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
+import coil.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -14,6 +16,7 @@ import org.koitharu.kotatsu.utils.ext.textAndVisible
 
 fun mangaListDetailedItemAD(
 	coil: ImageLoader,
+	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>
 ) = adapterDelegateViewBinding<MangaListDetailedModel, Any, ItemMangaListDetailsBinding>(
 	{ inflater, parent -> ItemMangaListDetailsBinding.inflate(inflater, parent, false) }
@@ -36,6 +39,8 @@ fun mangaListDetailedItemAD(
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
+			.allowRgb565(true)
+			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 		binding.textViewRating.textAndVisible = item.rating
 		binding.textViewTags.text = item.tags
@@ -43,6 +48,7 @@ fun mangaListDetailedItemAD(
 
 	onViewRecycled {
 		imageRequest?.dispose()
+		CoilUtils.clear(binding.imageViewCover)
 		binding.imageViewCover.setImageDrawable(null)
 	}
 }

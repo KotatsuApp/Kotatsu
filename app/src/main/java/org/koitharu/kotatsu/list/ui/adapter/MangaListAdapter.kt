@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
@@ -14,16 +15,21 @@ import kotlin.jvm.internal.Intrinsics
 
 class MangaListAdapter(
 	coil: ImageLoader,
+	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>
 ) : AsyncListDifferDelegationAdapter<Any>(DiffCallback()) {
 
 	init {
-		delegatesManager.addDelegate(ITEM_TYPE_MANGA_LIST, mangaListItemAD(coil, clickListener))
+		delegatesManager
+			.addDelegate(
+				ITEM_TYPE_MANGA_LIST,
+				mangaListItemAD(coil, lifecycleOwner, clickListener)
+			)
 			.addDelegate(
 				ITEM_TYPE_MANGA_LIST_DETAILED,
-				mangaListDetailedItemAD(coil, clickListener)
+				mangaListDetailedItemAD(coil, lifecycleOwner, clickListener)
 			)
-			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, clickListener))
+			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, clickListener))
 			.addDelegate(ITEM_TYPE_PROGRESS, indeterminateProgressAD())
 			.addDelegate(ITEM_TYPE_DATE, relatedDateItemAD())
 	}

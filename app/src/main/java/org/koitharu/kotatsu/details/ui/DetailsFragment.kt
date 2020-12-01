@@ -9,6 +9,7 @@ import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import coil.ImageLoader
+import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		with(binding) {
 			imageViewCover.newImageRequest(manga.largeCoverUrl ?: manga.coverUrl)
 				.fallback(R.drawable.ic_placeholder)
-				.crossfade(true)
+				.placeholderMemoryCacheKey(CoilUtils.metadata(imageViewCover)?.memoryCacheKey)
 				.lifecycle(viewLifecycleOwner)
 				.enqueueWith(coil)
 			textViewTitle.text = manga.title

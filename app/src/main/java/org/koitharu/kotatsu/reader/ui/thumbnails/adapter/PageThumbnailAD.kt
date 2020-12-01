@@ -46,6 +46,7 @@ fun pageThumbnailAD(
 				ImageRequest.Builder(context)
 					.data(url)
 					.size(thumbSize)
+					.allowRgb565(true)
 					.build()
 			).drawable
 			withContext(Dispatchers.Main) {

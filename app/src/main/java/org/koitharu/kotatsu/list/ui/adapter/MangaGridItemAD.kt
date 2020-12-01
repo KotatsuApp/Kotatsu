@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
+import coil.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -13,6 +15,7 @@ import org.koitharu.kotatsu.utils.ext.newImageRequest
 
 fun mangaGridItemAD(
 	coil: ImageLoader,
+	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>
 ) = adapterDelegateViewBinding<MangaGridModel, Any, ItemMangaGridBinding>(
 	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) }
@@ -34,11 +37,14 @@ fun mangaGridItemAD(
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
+			.allowRgb565(true)
+			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 	}
 
 	onViewRecycled {
 		imageRequest?.dispose()
+		CoilUtils.clear(binding.imageViewCover)
 		binding.imageViewCover.setImageDrawable(null)
 	}
 }

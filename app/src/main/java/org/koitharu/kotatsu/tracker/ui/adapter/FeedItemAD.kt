@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.tracker.ui.adapter
 
+import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.utils.ext.newImageRequest
 
 fun feedItemAD(
 	coil: ImageLoader,
+	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>
 ) = adapterDelegateViewBinding<FeedItem, Any, ItemTracklogBinding>(
 	{ inflater, parent -> ItemTracklogBinding.inflate(inflater, parent, false) }
@@ -30,6 +32,8 @@ fun feedItemAD(
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
+			.allowRgb565(true)
+			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 		binding.textViewTitle.text = item.title
 		binding.textViewSubtitle.text = item.subtitle

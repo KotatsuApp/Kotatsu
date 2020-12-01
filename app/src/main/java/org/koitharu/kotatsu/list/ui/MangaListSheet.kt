@@ -47,7 +47,7 @@ abstract class MangaListSheet : BaseBottomSheet<SheetListBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = MangaListAdapter(get(), this)
+		adapter = MangaListAdapter(get(), viewLifecycleOwner, this)
 		initListMode(settings.listMode)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.addOnScrollListener(PaginationScrollListener(4, this))

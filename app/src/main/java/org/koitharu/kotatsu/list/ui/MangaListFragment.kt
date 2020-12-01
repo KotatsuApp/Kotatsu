@@ -62,7 +62,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		binding.drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-		listAdapter = MangaListAdapter(get(), this)
+		listAdapter = MangaListAdapter(get(), viewLifecycleOwner, this)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)

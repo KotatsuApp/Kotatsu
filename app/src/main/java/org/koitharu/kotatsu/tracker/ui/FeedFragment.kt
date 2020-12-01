@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hasItems
@@ -39,7 +40,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		feedAdapter = FeedAdapter(get(), this)
+		feedAdapter = FeedAdapter(get(), viewLifecycleOwner, this)
 		with(binding.recyclerView) {
 			adapter = feedAdapter
 			addItemDecoration(
