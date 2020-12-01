@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_source_config.*
 import org.koitharu.kotatsu.base.domain.MangaProviderFactory
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -38,7 +37,7 @@ class SourcesAdapter(
 
 	@SuppressLint("ClickableViewAccessibility")
 	private fun onViewHolderCreated(holder: SourceViewHolder) {
-		holder.imageView_hidden.setOnCheckedChangeListener {
+		holder.binding.imageViewHidden.setOnCheckedChangeListener {
 			if (it) {
 				hiddenItems.remove(holder.requireData())
 			} else {
@@ -46,10 +45,10 @@ class SourcesAdapter(
 			}
 			settings.hiddenSources = hiddenItems.mapToSet { x -> x.name }
 		}
-		holder.imageView_config.setOnClickListener { v ->
+		holder.binding.imageViewConfig.setOnClickListener { v ->
 			onItemClickListener.onItemClick(holder.requireData(), v)
 		}
-		holder.imageView_handle.setOnTouchListener { v, event ->
+		holder.binding.imageViewHandle.setOnTouchListener { v, event ->
 			if (event.actionMasked == MotionEvent.ACTION_DOWN) {
 				onItemClickListener.onItemLongClick(
 					holder.requireData(),

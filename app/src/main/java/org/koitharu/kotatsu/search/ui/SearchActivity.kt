@@ -5,40 +5,42 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.appcompat.widget.SearchView
-import kotlinx.android.synthetic.main.activity_search.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.utils.ext.showKeyboard
 
-class SearchActivity : BaseActivity(), SearchView.OnQueryTextListener {
+class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQueryTextListener {
 
 	private lateinit var source: MangaSource
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_search)
+		setContentView(ActivitySearchBinding.inflate(layoutInflater))
 		source = intent.getParcelableExtra(EXTRA_SOURCE) ?: run {
 			finishAfterTransition()
 			return
 		}
 		val query = intent.getStringExtra(EXTRA_QUERY)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		searchView.queryHint = getString(R.string.search_on_s, source.title)
-		searchView.suggestionsAdapter = MangaSuggestionsProvider.getSuggestionAdapter(this)
-		searchView.setOnSuggestionListener(SearchHelper.SuggestionListener(searchView))
-		searchView.setOnQueryTextListener(this)
+		with(binding.searchView) {
+			queryHint = getString(R.string.search_on_s, source.title)
+			suggestionsAdapter = MangaSuggestionsProvider.getSuggestionAdapter(this@SearchActivity)
+			setOnSuggestionListener(SearchHelper.SuggestionListener(this))
+			setOnQueryTextListener(this@SearchActivity)
 
-		if (query.isNullOrBlank()) {
-			searchView.requestFocus()
-			searchView.showKeyboard()
-		} else {
-			searchView.setQuery(query, true)
+			if (query.isNullOrBlank()) {
+				requestFocus()
+				showKeyboard()
+			} else {
+				setQuery(query, true)
+			}
 		}
 	}
 
 	override fun onDestroy() {
-		searchView.suggestionsAdapter?.changeCursor(null) //close cursor
+		binding.searchView.suggestionsAdapter.changeCursor(null) //close cursor
 		super.onDestroy()
 	}
 
@@ -49,7 +51,7 @@ class SearchActivity : BaseActivity(), SearchView.OnQueryTextListener {
 				.beginTransaction()
 				.replace(R.id.container, SearchFragment.newInstance(source, query))
 				.commit()
-			searchView.clearFocus()
+			binding.searchView.clearFocus()
 			MangaSuggestionsProvider.saveQueryAsync(applicationContext, query)
 			true
 		} else false

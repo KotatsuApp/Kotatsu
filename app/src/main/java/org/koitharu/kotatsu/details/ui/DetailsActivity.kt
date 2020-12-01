@@ -16,9 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.coroutines.launch
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
@@ -27,6 +26,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.download.DownloadService
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.MangaShortcut
@@ -34,7 +34,8 @@ import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 
-class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrategy {
+class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
+	TabLayoutMediator.TabConfigurationStrategy {
 
 	private val viewModel by viewModel<DetailsViewModel> {
 		parametersOf(MangaIntent.from(intent))
@@ -42,10 +43,10 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_details)
+		setContentView(ActivityDetailsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		pager.adapter = MangaDetailsAdapter(this)
-		TabLayoutMediator(tabs, pager, this).attach()
+		binding.pager.adapter = MangaDetailsAdapter(this)
+		TabLayoutMediator(binding.tabs, binding.pager, this).attach()
 
 		viewModel.manga.observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
@@ -71,12 +72,13 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 			Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 			finishAfterTransition()
 		} else {
-			Snackbar.make(pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+			Snackbar.make(binding.pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
+				.show()
 		}
 	}
 
 	private fun onNewChaptersChanged(newChapters: Int) {
-		val tab = tabs.getTabAt(1) ?: return
+		val tab = binding.tabs.getTabAt(1) ?: return
 		if (newChapters == 0) {
 			tab.removeBadge()
 		} else {
@@ -171,7 +173,7 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 				lifecycleScope.launch {
 					if (!MangaShortcut(it).requestPinShortcut(this@DetailsActivity)) {
 						Snackbar.make(
-							pager,
+							binding.pager,
 							R.string.operation_not_supported,
 							Snackbar.LENGTH_SHORT
 						).show()
@@ -193,13 +195,13 @@ class DetailsActivity : BaseActivity(), TabLayoutMediator.TabConfigurationStrate
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
-		pager.isUserInputEnabled = false
+		binding.pager.isUserInputEnabled = false
 		window?.statusBarColor = ContextCompat.getColor(this, R.color.grey_dark)
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
-		pager.isUserInputEnabled = true
+		binding.pager.isUserInputEnabled = true
 		window?.statusBarColor = getThemeColor(androidx.appcompat.R.attr.colorPrimaryDark)
 	}
 

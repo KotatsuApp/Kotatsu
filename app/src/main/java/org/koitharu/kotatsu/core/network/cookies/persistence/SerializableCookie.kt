@@ -117,7 +117,6 @@ class SerializableCookie : Serializable {
 		 * @param bytes byte array to be converted
 		 * @return string containing hex values
 		 */
-		@JvmStatic
 		private fun byteArrayToHexString(bytes: ByteArray): String {
 			val sb = StringBuilder(bytes.size * 2)
 			for (element in bytes) {
@@ -136,7 +135,6 @@ class SerializableCookie : Serializable {
 		 * @param hexString string of hex-encoded values
 		 * @return decoded byte array
 		 */
-		@JvmStatic
 		private fun hexStringToByteArray(hexString: String): ByteArray {
 			val len = hexString.length
 			val data = ByteArray(len / 2)

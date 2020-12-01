@@ -11,8 +11,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_list.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
@@ -54,7 +53,9 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 						e.printStackTrace()
 					}
 					Snackbar.make(
-						recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT
+						binding.recyclerView,
+						R.string.operation_not_supported,
+						Snackbar.LENGTH_SHORT
 					).show()
 				}
 				true
@@ -64,12 +65,12 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 	}
 
 	override fun getTitle(): CharSequence? {
-		return getString(R.string.local_storage)
+		return context?.getString(R.string.local_storage)
 	}
 
 	override fun setUpEmptyListHolder() {
-		textView_holder.setText(R.string.text_local_holder)
-		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+		binding.textViewHolder.setText(R.string.text_local_holder)
+		binding.textViewHolder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
 	}
 
 	override fun onActivityResult(result: Uri?) {
@@ -102,7 +103,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 
 	private fun onItemRemoved(item: Manga) {
 		Snackbar.make(
-			recyclerView, getString(
+			binding.recyclerView, getString(
 				R.string._s_deleted_from_local_storage,
 				item.title.ellipsize(16)
 			), Snackbar.LENGTH_SHORT

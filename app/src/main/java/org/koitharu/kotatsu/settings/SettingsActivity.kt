@@ -10,13 +10,14 @@ import androidx.preference.PreferenceFragmentCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 
-class SettingsActivity : BaseActivity(),
+class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_settings)
+		setContentView(ActivitySettingsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		if (supportFragmentManager.findFragmentById(R.id.container) == null) {

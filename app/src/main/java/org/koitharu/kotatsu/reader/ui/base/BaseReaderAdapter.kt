@@ -5,14 +5,14 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.base.ui.list.BaseViewHolder
 
 abstract class BaseReaderAdapter(protected val pages: List<ReaderPage>) :
-	RecyclerView.Adapter<BaseViewHolder<ReaderPage, Unit>>() {
+	RecyclerView.Adapter<BaseViewHolder<ReaderPage, Unit, *>>() {
 
 	init {
 		@Suppress("LeakingThis")
 		setHasStableIds(true)
 	}
 
-	override fun onBindViewHolder(holder: BaseViewHolder<ReaderPage, Unit>, position: Int) {
+	override fun onBindViewHolder(holder: BaseViewHolder<ReaderPage, Unit, *>, position: Int) {
 		val item = pages[position]
 		holder.bind(item, Unit)
 	}
@@ -42,11 +42,11 @@ abstract class BaseReaderAdapter(protected val pages: List<ReaderPage>) :
 	final override fun onCreateViewHolder(
 		parent: ViewGroup,
 		viewType: Int
-	): BaseViewHolder<ReaderPage, Unit> {
+	): BaseViewHolder<ReaderPage, Unit, *> {
 		return onCreateViewHolder(parent).also(this::onViewHolderCreated)
 	}
 
-	protected open fun onViewHolderCreated(holder: BaseViewHolder<ReaderPage, Unit>) = Unit
+	protected open fun onViewHolderCreated(holder: BaseViewHolder<ReaderPage, Unit, *>) = Unit
 
-	protected abstract fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<ReaderPage, Unit>
+	protected abstract fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<ReaderPage, Unit, *>
 }

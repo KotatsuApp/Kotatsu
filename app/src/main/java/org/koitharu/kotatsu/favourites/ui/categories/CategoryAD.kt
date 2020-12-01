@@ -1,21 +1,22 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
 import android.view.MotionEvent
-import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateLayoutContainer
-import kotlinx.android.synthetic.main.item_category.*
-import org.koitharu.kotatsu.R
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.databinding.ItemCategoryBinding
 
 fun categoryAD(
 	clickListener: OnListItemClickListener<FavouriteCategory>
-) = adapterDelegateLayoutContainer<FavouriteCategory, FavouriteCategory>(R.layout.item_category) {
+) = adapterDelegateViewBinding<FavouriteCategory, FavouriteCategory, ItemCategoryBinding>(
+	{ inflater, parent -> ItemCategoryBinding.inflate(inflater, parent, false) }
+) {
 
-	imageView_more.setOnClickListener {
+	binding.imageViewMore.setOnClickListener {
 		clickListener.onItemClick(item, it)
 	}
 	@Suppress("ClickableViewAccessibility")
-	imageView_handle.setOnTouchListener { v, event ->
+	binding.imageViewHandle.setOnTouchListener { v, event ->
 		if (event.actionMasked == MotionEvent.ACTION_DOWN) {
 			clickListener.onItemLongClick(item, itemView)
 		} else {
@@ -24,6 +25,6 @@ fun categoryAD(
 	}
 
 	bind {
-		textView_title.text = item.title
+		binding.textViewTitle.text = item.title
 	}
 }

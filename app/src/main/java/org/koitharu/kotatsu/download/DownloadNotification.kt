@@ -142,7 +142,6 @@ class DownloadNotification(private val context: Context) {
 
 		private const val PROGRESS_STEP = 20
 
-		@JvmStatic
 		private fun createIntent(context: Context, manga: Manga) = PendingIntent.getActivity(
 			context,
 			manga.hashCode(),

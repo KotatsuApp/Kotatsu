@@ -3,8 +3,7 @@ package org.koitharu.kotatsu.favourites.ui.list
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.fragment_list.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
@@ -25,14 +24,14 @@ class FavouritesListFragment : MangaListFragment() {
 	override fun onScrolledToEnd() = Unit
 
 	override fun setUpEmptyListHolder() {
-		textView_holder.setText(
+		binding.textViewHolder.setText(
 			if (categoryId == 0L) {
 				R.string.you_have_not_favourites_yet
 			} else {
 				R.string.favourites_category_empty
 			}
 		)
-		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+		binding.textViewHolder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
 	}
 
 	override fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) {

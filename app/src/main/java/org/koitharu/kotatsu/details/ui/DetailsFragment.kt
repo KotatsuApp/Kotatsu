@@ -2,20 +2,24 @@ package org.koitharu.kotatsu.details.ui
 
 import android.os.Bundle
 import android.text.Spanned
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
+import coil.ImageLoader
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.search.ui.MangaSearchSheet
@@ -23,10 +27,16 @@ import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.*
 import kotlin.math.roundToInt
 
-class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickListener,
+class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
 	View.OnLongClickListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
+	private val coil by inject<ImageLoader>()
+
+	override fun onInflateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?
+	) = FragmentDetailsBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
@@ -37,63 +47,66 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
-		imageView_cover.newImageRequest(manga.largeCoverUrl ?: manga.coverUrl)
-			.fallback(R.drawable.ic_placeholder)
-			.crossfade(true)
-			.lifecycle(viewLifecycleOwner)
-			.enqueueWith(coil)
-		textView_title.text = manga.title
-		textView_subtitle.textAndVisible = manga.altTitle
-		textView_description.text = manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
-			?: getString(R.string.no_description)
-		if (manga.rating == Manga.NO_RATING) {
-			ratingBar.isVisible = false
-		} else {
-			ratingBar.progress = (ratingBar.max * manga.rating).roundToInt()
-			ratingBar.isVisible = true
-		}
-		chips_tags.removeAllViews()
-		manga.author?.let { a ->
-			chips_tags.addChips(listOf(a)) {
-				create(
-					text = it,
-					iconRes = R.drawable.ic_chip_user,
-					tag = it,
-					onClickListener = this@DetailsFragment
-				)
+		with(binding) {
+			imageViewCover.newImageRequest(manga.largeCoverUrl ?: manga.coverUrl)
+				.fallback(R.drawable.ic_placeholder)
+				.crossfade(true)
+				.lifecycle(viewLifecycleOwner)
+				.enqueueWith(coil)
+			textViewTitle.text = manga.title
+			textViewSubtitle.textAndVisible = manga.altTitle
+			textViewDescription.text =
+				manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
+					?: getString(R.string.no_description)
+			if (manga.rating == Manga.NO_RATING) {
+				ratingBar.isVisible = false
+			} else {
+				ratingBar.progress = (ratingBar.max * manga.rating).roundToInt()
+				ratingBar.isVisible = true
 			}
-		}
-		chips_tags.addChips(manga.tags) {
-			create(
-				text = it.title,
-				iconRes = R.drawable.ic_chip_tag,
-				tag = it,
-				onClickListener = this@DetailsFragment
-			)
-		}
-		manga.url.toUri().toFileOrNull()?.let { f ->
-			viewLifecycleScope.launch {
-				val size = withContext(Dispatchers.IO) {
-					f.length()
-				}
-				chips_tags.addChips(listOf(f)) {
+			chipsTags.removeAllViews()
+			manga.author?.let { a ->
+				chipsTags.addChips(listOf(a)) {
 					create(
-						text = FileSizeUtils.formatBytes(context, size),
-						iconRes = R.drawable.ic_chip_storage,
+						text = it,
+						iconRes = R.drawable.ic_chip_user,
 						tag = it,
 						onClickListener = this@DetailsFragment
 					)
 				}
 			}
+			chipsTags.addChips(manga.tags) {
+				create(
+					text = it.title,
+					iconRes = R.drawable.ic_chip_tag,
+					tag = it,
+					onClickListener = this@DetailsFragment
+				)
+			}
+			manga.url.toUri().toFileOrNull()?.let { f ->
+				viewLifecycleScope.launch {
+					val size = withContext(Dispatchers.IO) {
+						f.length()
+					}
+					chipsTags.addChips(listOf(f)) {
+						create(
+							text = FileSizeUtils.formatBytes(context, size),
+							iconRes = R.drawable.ic_chip_storage,
+							tag = it,
+							onClickListener = this@DetailsFragment
+						)
+					}
+				}
+			}
+			imageViewFavourite.setOnClickListener(this@DetailsFragment)
+			buttonRead.setOnClickListener(this@DetailsFragment)
+			buttonRead.setOnLongClickListener(this@DetailsFragment)
+			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
 		}
-		imageView_favourite.setOnClickListener(this)
-		button_read.setOnClickListener(this)
-		button_read.setOnLongClickListener(this)
-		button_read.isEnabled = !manga.chapters.isNullOrEmpty()
 	}
 
 	private fun onHistoryChanged(history: MangaHistory?) {
-		with(button_read) {
+		with(binding.buttonRead) {
 			if (history == null) {
 				setText(R.string.read)
 				setIconResource(R.drawable.ic_read)
@@ -105,7 +118,7 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 	}
 
 	private fun onFavouriteChanged(isFavourite: Boolean) {
-		imageView_favourite.setImageResource(
+		binding.imageViewFavourite.setImageResource(
 			if (isFavourite) {
 				R.drawable.ic_heart
 			} else {
@@ -115,7 +128,7 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details), View.OnClickLis
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		progressBar.isVisible = isLoading
+		binding.progressBar.isVisible = isLoading
 	}
 
 	override fun onClick(v: View) {

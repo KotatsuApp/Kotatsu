@@ -9,13 +9,10 @@ import kotlin.math.pow
 
 object FileSizeUtils {
 
-	@JvmStatic
 	fun mbToBytes(mb: Int) = 1024L * 1024L * mb
 
-	@JvmStatic
 	fun kbToBytes(kb: Int) = 1024L * kb
 
-	@JvmStatic
 	fun formatBytes(context: Context, bytes: Long): String {
 		val units = context.getString(R.string.text_file_sizes).split('|')
 		if (bytes <= 0) {

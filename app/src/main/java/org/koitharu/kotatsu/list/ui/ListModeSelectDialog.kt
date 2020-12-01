@@ -1,18 +1,20 @@
 package org.koitharu.kotatsu.list.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.dialog_list_mode.*
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.databinding.DialogListModeBinding
 
-class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), View.OnClickListener,
+class ListModeSelectDialog : AlertDialogFragment<DialogListModeBinding>(), View.OnClickListener,
 	SeekBar.OnSeekBarChangeListener {
 
 	private val settings by inject<AppSettings>()
@@ -26,6 +28,11 @@ class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), Vie
 		pendingGridSize = settings.gridSize
 	}
 
+	override fun onInflateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?
+	) = DialogListModeBinding.inflate(inflater, container, false)
+
 	override fun onBuildDialog(builder: AlertDialog.Builder) {
 		builder.setTitle(R.string.list_mode)
 			.setPositiveButton(R.string.done, null)
@@ -34,18 +41,18 @@ class ListModeSelectDialog : AlertDialogFragment(R.layout.dialog_list_mode), Vie
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		button_list.isChecked = mode == ListMode.LIST
-		button_list_detailed.isChecked = mode == ListMode.DETAILED_LIST
-		button_grid.isChecked = mode == ListMode.GRID
+		binding.buttonList.isChecked = mode == ListMode.LIST
+		binding.buttonListDetailed.isChecked = mode == ListMode.DETAILED_LIST
+		binding.buttonGrid.isChecked = mode == ListMode.GRID
 
-		with(seekbar_grid) {
+		with(binding.seekbarGrid) {
 			progress = pendingGridSize - 50
 			setOnSeekBarChangeListener(this@ListModeSelectDialog)
 		}
 
-		button_list.setOnClickListener(this)
-		button_grid.setOnClickListener(this)
-		button_list_detailed.setOnClickListener(this)
+		binding.buttonList.setOnClickListener(this)
+		binding.buttonGrid.setOnClickListener(this)
+		binding.buttonListDetailed.setOnClickListener(this)
 	}
 
 	override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

@@ -14,7 +14,7 @@ class FilterAdapter(
 	tags: List<MangaTag> = emptyList(),
 	state: MangaFilter?,
 	private val listener: OnFilterChangedListener
-) : RecyclerView.Adapter<BaseViewHolder<*, Boolean>>() {
+) : RecyclerView.Adapter<BaseViewHolder<*, Boolean, *>>() {
 
 	private val sortOrders = ArrayList<SortOrder>(sortOrders)
 	private val tags = ArrayList(Collections.singletonList(null) + tags)
@@ -37,7 +37,7 @@ class FilterAdapter(
 
 	override fun getItemCount() = sortOrders.size + tags.size
 
-	override fun onBindViewHolder(holder: BaseViewHolder<*, Boolean>, position: Int) {
+	override fun onBindViewHolder(holder: BaseViewHolder<*, Boolean, *>, position: Int) {
 		when (holder) {
 			is FilterSortHolder -> {
 				val item = sortOrders[position]

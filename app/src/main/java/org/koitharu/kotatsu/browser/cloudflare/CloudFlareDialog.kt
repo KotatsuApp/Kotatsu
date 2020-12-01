@@ -2,44 +2,50 @@ package org.koitharu.kotatsu.browser.cloudflare
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isInvisible
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import kotlinx.android.synthetic.main.fragment_cloudflare.*
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
+import org.koitharu.kotatsu.databinding.FragmentCloudflareBinding
 import org.koitharu.kotatsu.utils.ext.stringArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class CloudFlareDialog : AlertDialogFragment(R.layout.fragment_cloudflare), CloudFlareCallback {
+class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), CloudFlareCallback {
 
 	private val url by stringArgument(ARG_URL)
+
+	override fun onInflateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?
+	) = FragmentCloudflareBinding.inflate(inflater, container, false)
 
 	@SuppressLint("SetJavaScriptEnabled")
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		with(webView.settings) {
+		with(binding.webView.settings) {
 			javaScriptEnabled = true
 			cacheMode = WebSettings.LOAD_DEFAULT
 			domStorageEnabled = true
 			databaseEnabled = true
 			userAgentString = UserAgentInterceptor.userAgent
 		}
-		webView.webViewClient = CloudFlareClient(this, url.orEmpty())
-		CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
+		binding.webView.webViewClient = CloudFlareClient(this, url.orEmpty())
+		CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webView, true)
 		if (url.isNullOrEmpty()) {
 			dismissAllowingStateLoss()
 		} else {
-			webView.loadUrl(url.orEmpty())
+			binding.webView.loadUrl(url.orEmpty())
 		}
 	}
 
 	override fun onDestroyView() {
-		webView.stopLoading()
+		binding.webView.stopLoading()
 		super.onDestroyView()
 	}
 
@@ -49,16 +55,16 @@ class CloudFlareDialog : AlertDialogFragment(R.layout.fragment_cloudflare), Clou
 
 	override fun onResume() {
 		super.onResume()
-		webView.onResume()
+		binding.webView.onResume()
 	}
 
 	override fun onPause() {
-		webView.onPause()
+		binding.webView.onPause()
 		super.onPause()
 	}
 
 	override fun onPageLoaded() {
-		progressBar?.isInvisible = true
+		binding.progressBar.isInvisible = true
 	}
 
 	override fun onCheckPassed() {

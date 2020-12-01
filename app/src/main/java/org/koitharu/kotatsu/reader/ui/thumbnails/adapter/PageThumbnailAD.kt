@@ -4,12 +4,12 @@ import androidx.core.net.toUri
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.PixelSize
-import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateLayoutContainer
-import kotlinx.android.synthetic.main.item_page_thumb.*
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 
@@ -18,7 +18,9 @@ fun pageThumbnailAD(
 	scope: CoroutineScope,
 	cache: PagesCache,
 	clickListener: OnListItemClickListener<MangaPage>
-) = adapterDelegateLayoutContainer<MangaPage, MangaPage>(R.layout.item_page_thumb) {
+) = adapterDelegateViewBinding<MangaPage, MangaPage, ItemPageThumbBinding>(
+	{ inflater, parent -> ItemPageThumbBinding.inflate(inflater, parent, false) }
+) {
 
 	var job: Job? = null
 	val gridWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
@@ -27,14 +29,14 @@ fun pageThumbnailAD(
 		height = (gridWidth * 13f / 18f).toInt()
 	)
 
-	handle.setOnClickListener {
+	binding.handle.setOnClickListener {
 		clickListener.onItemClick(item, itemView)
 	}
 
 	bind {
 		job?.cancel()
-		imageView_thumb.setImageDrawable(null)
-		textView_number.text = (bindingAdapterPosition + 1).toString()
+		binding.imageViewThumb.setImageDrawable(null)
+		binding.textViewNumber.text = (bindingAdapterPosition + 1).toString()
 		job = scope.launch(Dispatchers.Default + IgnoreErrors) {
 			val url = item.preview ?: item.url.let {
 				val pageUrl = item.source.repository.getPageFullUrl(item)
@@ -47,13 +49,13 @@ fun pageThumbnailAD(
 					.build()
 			).drawable
 			withContext(Dispatchers.Main) {
-				imageView_thumb.setImageDrawable(drawable)
+				binding.imageViewThumb.setImageDrawable(drawable)
 			}
 		}
 	}
 
 	onViewRecycled {
 		job?.cancel()
-		imageView_thumb.setImageDrawable(null)
+		binding.imageViewThumb.setImageDrawable(null)
 	}
 }

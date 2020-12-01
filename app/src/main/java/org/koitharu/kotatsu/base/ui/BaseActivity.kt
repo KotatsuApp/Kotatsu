@@ -7,12 +7,16 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.viewbinding.ViewBinding
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity<B : ViewBinding> : AppCompatActivity() {
+
+	protected lateinit var binding: B
+		private set
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		if (get<AppSettings>().isAmoledTheme) {
@@ -21,14 +25,22 @@ abstract class BaseActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 	}
 
+	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
 	override fun setContentView(layoutResID: Int) {
 		super.setContentView(layoutResID)
 		setupToolbar()
 	}
 
+	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
 	override fun setContentView(view: View?) {
 		super.setContentView(view)
 		setupToolbar()
+	}
+
+	protected fun setContentView(binding: B) {
+		this.binding = binding
+		super.setContentView(binding.root)
+		(binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
 	}
 
 	private fun setupToolbar() {

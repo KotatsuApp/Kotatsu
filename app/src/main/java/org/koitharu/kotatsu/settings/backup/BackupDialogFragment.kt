@@ -1,26 +1,33 @@
 package org.koitharu.kotatsu.settings.backup
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.dialog_progress.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
+import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.io.File
 
-class BackupDialogFragment : AlertDialogFragment(R.layout.dialog_progress) {
+class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	private val viewModel by viewModel<BackupViewModel>()
 
+	override fun onInflateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?
+	) = DialogProgressBinding.inflate(inflater, container, false)
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		textView_title.setText(R.string.create_backup)
-		textView_subtitle.setText(R.string.processing_)
+		binding.textViewTitle.setText(R.string.create_backup)
+		binding.textViewSubtitle.setText(R.string.processing_)
 
 		viewModel.progress.observe(viewLifecycleOwner, this::onProgressChanged)
 		viewModel.onBackupDone.observe(viewLifecycleOwner, this::onBackupDone)
@@ -42,7 +49,7 @@ class BackupDialogFragment : AlertDialogFragment(R.layout.dialog_progress) {
 	}
 
 	private fun onProgressChanged(progress: Progress?) {
-		with(progressBar) {
+		with(binding.progressBar) {
 			isVisible = true
 			isIndeterminate = progress == null
 			if (progress != null) {

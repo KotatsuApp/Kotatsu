@@ -1,26 +1,24 @@
 package org.koitharu.kotatsu.favourites.ui
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.fragment_favourites.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.databinding.FragmentFavouritesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FavouritesContainerFragment : BaseFragment(R.layout.fragment_favourites),
-	FavouritesTabLongClickListener,	CategoriesEditDelegate.CategoriesEditCallback {
+class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
+	FavouritesTabLongClickListener, CategoriesEditDelegate.CategoriesEditCallback {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
@@ -33,11 +31,16 @@ class FavouritesContainerFragment : BaseFragment(R.layout.fragment_favourites),
 		setHasOptionsMenu(true)
 	}
 
+	override fun onInflateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?
+	) = FragmentFavouritesBinding.inflate(inflater, container, false)
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = FavouritesPagerAdapter(this, this)
-		pager.adapter = adapter
-		TabLayoutMediator(tabs, pager, adapter).attach()
+		binding.pager.adapter = adapter
+		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
 
 		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
@@ -47,7 +50,7 @@ class FavouritesContainerFragment : BaseFragment(R.layout.fragment_favourites),
 		val data = ArrayList<FavouriteCategory>(categories.size + 1)
 		data += FavouriteCategory(0L, getString(R.string.all_favourites), -1, Date())
 		data += categories
-		(pager.adapter as? FavouritesPagerAdapter)?.replaceData(data)
+		(binding.pager.adapter as? FavouritesPagerAdapter)?.replaceData(data)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -70,7 +73,7 @@ class FavouritesContainerFragment : BaseFragment(R.layout.fragment_favourites),
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(pager, e.message ?: return, Snackbar.LENGTH_LONG).show()
+		Snackbar.make(binding.pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
 	}
 
 	override fun onTabLongClick(tabView: View, category: FavouriteCategory): Boolean {

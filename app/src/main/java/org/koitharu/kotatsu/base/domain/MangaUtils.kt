@@ -53,7 +53,6 @@ object MangaUtils : KoinComponent {
 		}
 	}
 
-	@JvmStatic
 	private fun getBitmapSize(input: InputStream?): Size {
 		val options = BitmapFactory.Options().apply {
 			inJustDecodeBounds = true

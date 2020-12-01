@@ -1,11 +1,12 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.dialog_favorite_categories.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -13,13 +14,14 @@ import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.databinding.DialogFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categories),
+class FavouriteCategoriesDialog : BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>, CategoriesEditDelegate.CategoriesEditCallback,
 	View.OnClickListener {
 
@@ -32,11 +34,16 @@ class FavouriteCategoriesDialog : BaseBottomSheet(R.layout.dialog_favorite_categ
 		CategoriesEditDelegate(requireContext(), this@FavouriteCategoriesDialog)
 	}
 
+	override fun onInflateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?
+	) = DialogFavoriteCategoriesBinding.inflate(inflater, container, false)
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		adapter = MangaCategoriesAdapter(this)
-		recyclerView_categories.adapter = adapter
-		textView_add.setOnClickListener(this)
+		binding.recyclerViewCategories.adapter = adapter
+		binding.textViewAdd.setOnClickListener(this)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)

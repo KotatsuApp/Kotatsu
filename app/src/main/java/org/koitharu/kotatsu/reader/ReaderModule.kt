@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.reader
 
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.local.data.PagesCache

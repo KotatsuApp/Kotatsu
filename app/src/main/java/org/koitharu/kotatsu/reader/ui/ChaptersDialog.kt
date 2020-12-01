@@ -1,21 +1,28 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.dialog_chapters.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.databinding.DialogChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class ChaptersDialog : AlertDialogFragment(R.layout.dialog_chapters),
+class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 	OnListItemClickListener<MangaChapter> {
+
+	override fun onInflateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?
+	) = DialogChaptersBinding.inflate(inflater, container, false)
 
 	override fun onBuildDialog(builder: AlertDialog.Builder) {
 		builder.setTitle(R.string.chapters)
@@ -24,13 +31,13 @@ class ChaptersDialog : AlertDialogFragment(R.layout.dialog_chapters),
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		recyclerView_chapters.addItemDecoration(
+		binding.recyclerViewChapters.addItemDecoration(
 			DividerItemDecoration(
 				requireContext(),
 				RecyclerView.VERTICAL
 			)
 		)
-		recyclerView_chapters.adapter = ChaptersAdapter(this).apply {
+		binding.recyclerViewChapters.adapter = ChaptersAdapter(this).apply {
 			// arguments?.getParcelableArrayList<MangaChapter>(ARG_CHAPTERS)?.let(this::setItems)
 			// currentChapterId = arguments?.getLong(ARG_CURRENT_ID, 0L)?.takeUnless { it == 0L }
 		}

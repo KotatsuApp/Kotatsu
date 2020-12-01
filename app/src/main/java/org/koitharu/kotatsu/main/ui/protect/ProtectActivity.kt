@@ -10,21 +10,22 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_protect.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.databinding.ActivityProtectBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class ProtectActivity : BaseActivity(), TextView.OnEditorActionListener, TextWatcher {
+class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEditorActionListener,
+	TextWatcher {
 
 	private val viewModel by viewModel<ProtectViewModel>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_protect)
-		edit_password.setOnEditorActionListener(this)
-		edit_password.addTextChangedListener(this)
+		setContentView(ActivityProtectBinding.inflate(layoutInflater))
+		binding.editPassword.setOnEditorActionListener(this)
+		binding.editPassword.addTextChangedListener(this)
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(R.drawable.ic_cross)
@@ -42,7 +43,7 @@ class ProtectActivity : BaseActivity(), TextView.OnEditorActionListener, TextWat
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.action_done -> {
-			viewModel.tryUnlock(edit_password.text?.toString().orEmpty())
+			viewModel.tryUnlock(binding.editPassword.text.toString().orEmpty())
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
@@ -50,7 +51,7 @@ class ProtectActivity : BaseActivity(), TextView.OnEditorActionListener, TextWat
 
 	override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
 		return if (actionId == EditorInfo.IME_ACTION_DONE) {
-			viewModel.tryUnlock(edit_password.text?.toString().orEmpty())
+			viewModel.tryUnlock(binding.editPassword.text.toString().orEmpty())
 			true
 		} else {
 			false
@@ -62,7 +63,7 @@ class ProtectActivity : BaseActivity(), TextView.OnEditorActionListener, TextWat
 	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	override fun afterTextChanged(s: Editable?) {
-		layout_password.error = null
+		binding.layoutPassword.error = null
 	}
 
 	private fun onUnlockSuccess(unit: Unit) {
@@ -70,11 +71,11 @@ class ProtectActivity : BaseActivity(), TextView.OnEditorActionListener, TextWat
 	}
 
 	private fun onError(e: Throwable) {
-		layout_password.error = e.getDisplayMessage(resources)
+		binding.layoutPassword.error = e.getDisplayMessage(resources)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		layout_password.isEnabled = !isLoading
+		binding.layoutPassword.isEnabled = !isLoading
 	}
 
 	companion object {

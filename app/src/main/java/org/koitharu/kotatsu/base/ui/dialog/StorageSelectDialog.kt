@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.item_storage.view.*
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.databinding.ItemStorageBinding
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.inflate
@@ -64,8 +64,9 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 		override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 			val view = convertView ?: parent.inflate(R.layout.item_storage)
 			val item = volumes[position]
-			view.textView_title.text = item.second
-			view.textView_subtitle.text = item.first.path
+			val binding = ItemStorageBinding.bind(view)
+			binding.textViewTitle.text = item.second
+			binding.textViewSubtitle.text = item.first.path
 			return view
 		}
 
@@ -84,7 +85,6 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 
 	private companion object {
 
-		@JvmStatic
 		fun getAvailableVolumes(context: Context): List<Pair<File, String>> {
 			return LocalMangaRepository.getAvailableStorageDirs(context).map {
 				it to it.getStorageName(context)

@@ -13,7 +13,7 @@ class ReversedPagesAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup) = ReversedPageHolder(parent, loader)
 
-	override fun onBindViewHolder(holder: BaseViewHolder<ReaderPage, Unit>, position: Int) {
+	override fun onBindViewHolder(holder: BaseViewHolder<ReaderPage, Unit, *>, position: Int) {
 		super.onBindViewHolder(holder, reversed(position))
 	}
 

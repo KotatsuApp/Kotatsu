@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.reader.ui.base
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.MangaSource
 

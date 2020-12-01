@@ -11,16 +11,17 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_categories.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 
-class CategoriesActivity : BaseActivity(), OnListItemClickListener<FavouriteCategory>,
+class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
+	OnListItemClickListener<FavouriteCategory>,
 	View.OnClickListener, CategoriesEditDelegate.CategoriesEditCallback {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
@@ -31,16 +32,16 @@ class CategoriesActivity : BaseActivity(), OnListItemClickListener<FavouriteCate
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_categories)
+		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		fab_add.imageTintList = ColorStateList.valueOf(Color.WHITE)
+		binding.fabAdd.imageTintList = ColorStateList.valueOf(Color.WHITE)
 		adapter = CategoriesAdapter(this)
 		editDelegate = CategoriesEditDelegate(this, this)
-		recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
-		recyclerView.adapter = adapter
-		fab_add.setOnClickListener(this)
+		binding.recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
+		binding.recyclerView.adapter = adapter
+		binding.fabAdd.setOnClickListener(this)
 		reorderHelper = ItemTouchHelper(ReorderHelperCallback())
-		reorderHelper.attachToRecyclerView(recyclerView)
+		reorderHelper.attachToRecyclerView(binding.recyclerView)
 
 		viewModel.categories.observe(this, ::onCategoriesChanged)
 		viewModel.onError.observe(this, ::onError)
@@ -64,18 +65,18 @@ class CategoriesActivity : BaseActivity(), OnListItemClickListener<FavouriteCate
 
 	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {
 		reorderHelper.startDrag(
-			recyclerView.findContainingViewHolder(view) ?: return false
+			binding.recyclerView.findContainingViewHolder(view) ?: return false
 		)
 		return true
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
 		adapter.items = categories
-		textView_holder.isVisible = categories.isEmpty()
+		binding.textViewHolder.isVisible = categories.isEmpty()
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
+		Snackbar.make(binding.recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
 			.show()
 	}
 

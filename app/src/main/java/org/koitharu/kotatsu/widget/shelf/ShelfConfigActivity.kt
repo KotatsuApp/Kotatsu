@@ -13,17 +13,17 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_categories.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
+import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 
-class ShelfConfigActivity : BaseActivity(), OnListItemClickListener<CategoryItem> {
+class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(), OnListItemClickListener<CategoryItem> {
 
 	private val viewModel by viewModel<ShelfConfigViewModel>()
 
@@ -32,13 +32,13 @@ class ShelfConfigActivity : BaseActivity(), OnListItemClickListener<CategoryItem
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_categories)
+		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		fab_add.imageTintList = ColorStateList.valueOf(Color.WHITE)
+		binding.fabAdd.imageTintList = ColorStateList.valueOf(Color.WHITE)
 		adapter = CategorySelectAdapter(this)
-		recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
-		recyclerView.adapter = adapter
-		fab_add.isVisible = false
+		binding.recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
+		binding.recyclerView.adapter = adapter
+		binding.fabAdd.isVisible = false
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
 			AppWidgetManager.INVALID_APPWIDGET_ID
@@ -82,7 +82,7 @@ class ShelfConfigActivity : BaseActivity(), OnListItemClickListener<CategoryItem
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
+		Snackbar.make(binding.recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
 			.show()
 	}
 

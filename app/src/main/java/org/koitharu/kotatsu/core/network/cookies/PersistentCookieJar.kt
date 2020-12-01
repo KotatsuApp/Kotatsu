@@ -73,7 +73,6 @@ class PersistentCookieJar(
 
 	private companion object {
 
-		@JvmStatic
 		fun filterPersistentCookies(cookies: List<Cookie>): List<Cookie> {
 			val persistentCookies: MutableList<Cookie> = ArrayList()
 			for (cookie in cookies) {
@@ -84,7 +83,6 @@ class PersistentCookieJar(
 			return persistentCookies
 		}
 
-		@JvmStatic
 		fun isCookieExpired(cookie: Cookie): Boolean {
 			return cookie.expiresAt < System.currentTimeMillis()
 		}

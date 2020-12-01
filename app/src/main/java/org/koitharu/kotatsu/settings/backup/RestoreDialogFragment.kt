@@ -2,21 +2,28 @@ package org.koitharu.kotatsu.settings.backup
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.dialog_progress.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.backup.CompositeResult
+import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import org.koitharu.kotatsu.utils.ext.withArgs
 import org.koitharu.kotatsu.utils.progress.Progress
 
-class RestoreDialogFragment : AlertDialogFragment(R.layout.dialog_progress) {
+class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
+
+	override fun onInflateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?
+	) = DialogProgressBinding.inflate(inflater, container, false)
 
 	private val viewModel by viewModel<RestoreViewModel> {
 		parametersOf(arguments?.getString(ARG_FILE)?.toUriOrNull())
@@ -24,8 +31,8 @@ class RestoreDialogFragment : AlertDialogFragment(R.layout.dialog_progress) {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		textView_title.setText(R.string.restore_backup)
-		textView_subtitle.setText(R.string.preparing_)
+		binding.textViewTitle.setText(R.string.restore_backup)
+		binding.textViewSubtitle.setText(R.string.preparing_)
 
 		viewModel.progress.observe(viewLifecycleOwner, this::onProgressChanged)
 		viewModel.onRestoreDone.observe(viewLifecycleOwner, this::onRestoreDone)
@@ -46,7 +53,7 @@ class RestoreDialogFragment : AlertDialogFragment(R.layout.dialog_progress) {
 	}
 
 	private fun onProgressChanged(progress: Progress?) {
-		with(progressBar) {
+		with(binding.progressBar) {
 			isVisible = true
 			isIndeterminate = progress == null
 			if (progress != null) {

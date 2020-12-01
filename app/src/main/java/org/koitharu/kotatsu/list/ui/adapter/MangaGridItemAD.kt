@@ -2,11 +2,11 @@ package org.koitharu.kotatsu.list.ui.adapter
 
 import coil.ImageLoader
 import coil.request.Disposable
-import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateLayoutContainer
-import kotlinx.android.synthetic.main.item_manga_list.*
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.databinding.ItemMangaGridBinding
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
@@ -14,7 +14,9 @@ import org.koitharu.kotatsu.utils.ext.newImageRequest
 fun mangaGridItemAD(
 	coil: ImageLoader,
 	clickListener: OnListItemClickListener<Manga>
-) = adapterDelegateLayoutContainer<MangaGridModel, Any>(R.layout.item_manga_grid) {
+) = adapterDelegateViewBinding<MangaGridModel, Any, ItemMangaGridBinding>(
+	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) }
+) {
 
 	var imageRequest: Disposable? = null
 
@@ -26,9 +28,9 @@ fun mangaGridItemAD(
 	}
 
 	bind {
-		textView_title.text = item.title
+		binding.textViewTitle.text = item.title
 		imageRequest?.dispose()
-		imageRequest = imageView_cover.newImageRequest(item.coverUrl)
+		imageRequest = binding.imageViewCover.newImageRequest(item.coverUrl)
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
@@ -37,6 +39,6 @@ fun mangaGridItemAD(
 
 	onViewRecycled {
 		imageRequest?.dispose()
-		imageView_cover.setImageDrawable(null)
+		binding.imageViewCover.setImageDrawable(null)
 	}
 }

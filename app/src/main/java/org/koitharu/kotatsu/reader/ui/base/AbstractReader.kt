@@ -6,6 +6,7 @@ import android.view.View
 import androidx.annotation.CallSuper
 import androidx.collection.LongSparseArray
 import androidx.core.view.postDelayed
+import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,8 +21,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.ext.associateByLong
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
-abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayoutId),
-	OnBoundsScrollListener {
+abstract class AbstractReader<B : ViewBinding> : BaseFragment<B>(), OnBoundsScrollListener {
 
 	protected lateinit var manga: Manga
 		private set
@@ -30,11 +30,11 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 		PageLoader()
 	}
 	protected val pages = ArrayDeque<ReaderPage>()
-	protected var adapter: BaseReaderAdapter? = null
+	protected var readerAdapter: BaseReaderAdapter? = null
 		private set
 
 	val itemsCount: Int
-		get() = adapter?.itemCount ?: 0
+		get() = readerAdapter?.itemCount ?: 0
 
 	val hasItems: Boolean
 		get() = itemsCount != 0
@@ -52,7 +52,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = onCreateAdapter(pages)
+		readerAdapter = onCreateAdapter(pages)
 		@Suppress("RemoveExplicitTypeArguments")
 		val state = savedInstanceState?.getParcelable<ReaderState>(ARG_STATE)
 			?: requireArguments().getParcelable<ReaderState>(ARG_STATE)!!
@@ -61,7 +61,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 			it.mapIndexedTo(pages) { i, p ->
 				ReaderPage.from(p, i, state.chapterId)
 			}
-			adapter?.notifyDataSetChanged()
+			readerAdapter?.notifyDataSetChanged()
 			setCurrentItem(state.page, false)
 			if (state.scroll != 0) {
 				restorePageScroll(state.page, state.scroll)
@@ -100,7 +100,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 			pages.addAll(0, it.mapIndexed { i, p ->
 				ReaderPage.from(p, i, prevChapterId)
 			})
-			adapter?.notifyItemsPrepended(it.size)
+			readerAdapter?.notifyItemsPrepended(it.size)
 			view?.postDelayed(500) {
 				trimEnd()
 			}
@@ -115,7 +115,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 			pages.addAll(it.mapIndexed { i, p ->
 				ReaderPage.from(p, i, nextChapterId)
 			})
-			adapter?.notifyItemsAppended(it.size)
+			readerAdapter?.notifyItemsAppended(it.size)
 			view?.postDelayed(500) {
 				trimStart()
 			}
@@ -123,7 +123,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 	}
 
 	override fun onDestroyView() {
-		adapter = null
+		readerAdapter = null
 		super.onDestroyView()
 	}
 
@@ -134,7 +134,7 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 
 	@CallSuper
 	open fun recreateAdapter() {
-		adapter = onCreateAdapter(pages)
+		readerAdapter = onCreateAdapter(pages)
 	}
 
 	fun getPages(): List<MangaPage>? {
@@ -212,13 +212,13 @@ abstract class AbstractReader(contentLayoutId: Int) : BaseFragment(contentLayout
 		val currentChapterId = pages.getOrNull(getCurrentItem())?.chapterId ?: 0L
 		if (chapterId != 0L && chapterId != currentChapterId) {
 			pages.clear()
-			adapter?.notifyDataSetChanged()
+			readerAdapter?.notifyDataSetChanged()
 			loadChapter(chapterId) {
 				pages.clear()
 				it.mapIndexedTo(pages) { i, p ->
 					ReaderPage.from(p, i, chapterId)
 				}
-				adapter?.notifyDataSetChanged()
+				readerAdapter?.notifyDataSetChanged()
 				setCurrentItem(
 					if (pageId == 0L) {
 						0

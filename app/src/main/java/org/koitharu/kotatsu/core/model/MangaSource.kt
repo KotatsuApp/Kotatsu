@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.core.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import org.koin.core.context.GlobalContext
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.named

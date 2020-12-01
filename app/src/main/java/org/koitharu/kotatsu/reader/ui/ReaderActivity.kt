@@ -19,14 +19,13 @@ import androidx.core.view.*
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_reader.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.core.model.Manga
@@ -35,6 +34,7 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.reader.ui.base.AbstractReader
 import org.koitharu.kotatsu.reader.ui.reversed.ReversedReaderFragment
 import org.koitharu.kotatsu.reader.ui.standard.PagerReaderFragment
@@ -48,7 +48,8 @@ import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
 
-class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeListener,
+class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
+	ChaptersDialog.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
 	ReaderListener, SharedPreferences.OnSharedPreferenceChangeListener,
 	ActivityResultCallback<Boolean>, OnApplyWindowInsetsListener {
@@ -65,16 +66,16 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 	private var isVolumeKeysSwitchEnabled = false
 
 	private val reader
-		get() = supportFragmentManager.findFragmentById(R.id.container) as? AbstractReader
+		get() = supportFragmentManager.findFragmentById(R.id.container) as? AbstractReader<*>
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_reader)
+		setContentView(ActivityReaderBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
 		orientationHelper = ScreenOrientationHelper(this)
-		toolbar_bottom.inflateMenu(R.menu.opt_reader_bottom)
-		toolbar_bottom.setOnMenuItemClickListener(::onOptionsItemSelected)
+		binding.toolbarBottom.inflateMenu(R.menu.opt_reader_bottom)
+		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 
 		@Suppress("RemoveExplicitTypeArguments")
 		state = savedInstanceState?.getParcelable<ReaderState>(EXTRA_STATE)
@@ -91,13 +92,13 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 				getString(R.string.chapter_d_of_d, state.chapter?.number ?: 0, size)
 		}
 
-		ViewCompat.setOnApplyWindowInsetsListener(rootLayout, this)
+		ViewCompat.setOnApplyWindowInsetsListener(binding.rootLayout, this)
 
 		settings.subscribe(this)
 		loadSwitchSettings()
 		orientationHelper.observeAutoOrientation()
 			.onEach {
-				toolbar_bottom.menu.findItem(R.id.action_screen_rotate).isVisible = !it
+				binding.toolbarBottom.menu.findItem(R.id.action_screen_rotate).isVisible = !it
 			}.launchIn(lifecycleScope)
 
 		if (savedInstanceState == null) {
@@ -133,14 +134,14 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 				}
 			}
 		}
-		toolbar_bottom.menu.findItem(R.id.action_reader_mode).setIcon(
+		binding.toolbarBottom.menu.findItem(R.id.action_reader_mode).setIcon(
 			when (mode) {
 				ReaderMode.WEBTOON -> R.drawable.ic_script
 				ReaderMode.REVERSED -> R.drawable.ic_read_reversed
 				ReaderMode.STANDARD -> R.drawable.ic_book_page
 			}
 		)
-		appbar_top.postDelayed(1000) {
+		binding.appbarTop.postDelayed(1000) {
 			setUiIsVisible(false)
 		}
 	}
@@ -242,8 +243,8 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
 		val hasPages = reader?.hasItems == true
-		layout_loading.isVisible = isLoading && !hasPages
-		progressBar_bottom.isVisible = isLoading && hasPages
+		binding.layoutLoading.isVisible = isLoading && !hasPages
+		binding.progressBarBottom.isVisible = isLoading && hasPages
 	}
 
 	override fun onError(e: Throwable) {
@@ -262,7 +263,7 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 	override fun onGridTouch(area: Int) {
 		when (area) {
 			GridTouchHelper.AREA_CENTER -> {
-				setUiIsVisible(!appbar_top.isVisible)
+				setUiIsVisible(!binding.appbarTop.isVisible)
 			}
 			GridTouchHelper.AREA_TOP,
 			GridTouchHelper.AREA_LEFT -> if (isTapSwitchEnabled) {
@@ -276,12 +277,12 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 	}
 
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
-		return if (appbar_top.hasGlobalPoint(rawX, rawY)
-			|| appbar_bottom.hasGlobalPoint(rawX, rawY)
+		return if (binding.appbarTop.hasGlobalPoint(rawX, rawY)
+			|| binding.appbarBottom.hasGlobalPoint(rawX, rawY)
 		) {
 			false
 		} else {
-			val targets = rootLayout.hitTest(rawX, rawY)
+			val targets = binding.rootLayout.hitTest(rawX, rawY)
 			targets.none { it.hasOnClickListeners() }
 		}
 	}
@@ -318,7 +319,7 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 			true
 		}
 		KeyEvent.KEYCODE_DPAD_CENTER -> {
-			setUiIsVisible(!appbar_top.isVisible)
+			setUiIsVisible(!binding.appbarTop.isVisible)
 			true
 		}
 		else -> super.onKeyDown(keyCode, event)
@@ -350,14 +351,14 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
-			Snackbar.make(container, R.string.page_saved, Snackbar.LENGTH_LONG)
-				.setAnchorView(appbar_bottom)
+			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
+				.setAnchorView(binding.appbarBottom)
 				.setAction(R.string.share) {
 					ShareHelper.shareImage(this, uri)
 				}.show()
 		} else {
-			Snackbar.make(container, R.string.error_occurred, Snackbar.LENGTH_SHORT)
-				.setAnchorView(appbar_bottom)
+			Snackbar.make(binding.container, R.string.error_occurred, Snackbar.LENGTH_SHORT)
+				.setAnchorView(binding.appbarBottom)
 				.show()
 		}
 	}
@@ -385,14 +386,14 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 	}
 
 	private fun setUiIsVisible(isUiVisible: Boolean) {
-		if (appbar_top.isVisible != isUiVisible) {
+		if (binding.appbarTop.isVisible != isUiVisible) {
 			if (isUiVisible) {
-				appbar_top.showAnimated(Motion.SlideTop)
-				appbar_bottom.showAnimated(Motion.SlideBottom)
+				binding.appbarTop.showAnimated(Motion.SlideTop)
+				binding.appbarBottom.showAnimated(Motion.SlideBottom)
 				showSystemUI()
 			} else {
-				appbar_top.hideAnimated(Motion.SlideTop)
-				appbar_bottom.hideAnimated(Motion.SlideBottom)
+				binding.appbarTop.hideAnimated(Motion.SlideTop)
+				binding.appbarBottom.hideAnimated(Motion.SlideBottom)
 				hideSystemUI()
 			}
 		}
@@ -400,12 +401,12 @@ class ReaderActivity : BaseFullscreenActivity(), ChaptersDialog.OnChapterChangeL
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-		appbar_top.updatePadding(
+		binding.appbarTop.updatePadding(
 			top = systemBars.top,
 			right = systemBars.right,
 			left = systemBars.left
 		)
-		appbar_bottom.updatePadding(
+		binding.appbarBottom.updatePadding(
 			bottom = systemBars.bottom,
 			right = systemBars.right,
 			left = systemBars.left

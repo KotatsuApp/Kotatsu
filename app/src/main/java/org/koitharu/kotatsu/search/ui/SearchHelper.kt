@@ -12,7 +12,6 @@ import java.io.Closeable
 
 object SearchHelper {
 
-	@JvmStatic
 	fun setupSearchView(menuItem: MenuItem): Closeable? {
 		val view = menuItem.actionView as? SearchView ?: return null
 		val context = view.context

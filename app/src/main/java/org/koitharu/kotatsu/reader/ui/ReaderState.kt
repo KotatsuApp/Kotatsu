@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.reader.ui
 
 import android.os.Parcelable
 import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 

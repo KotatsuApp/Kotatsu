@@ -47,7 +47,6 @@ internal class IdentifiableCookie(val cookie: Cookie) {
 
 	companion object {
 
-		@JvmStatic
 		fun decorateAll(cookies: Collection<Cookie>): List<IdentifiableCookie> {
 			val identifiableCookies: MutableList<IdentifiableCookie> = ArrayList(cookies.size)
 			for (cookie in cookies) {

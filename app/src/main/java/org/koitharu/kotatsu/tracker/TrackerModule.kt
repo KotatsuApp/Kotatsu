@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.tracker
 
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.ui.FeedViewModel

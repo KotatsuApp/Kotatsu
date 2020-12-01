@@ -7,7 +7,6 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_list.*
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
@@ -39,7 +38,7 @@ class BackupSettingsFragment : BasePreferenceFragment(R.string.backup_restore),
 						e.printStackTrace()
 					}
 					Snackbar.make(
-						recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT
+						listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT
 					).show()
 				}
 				true

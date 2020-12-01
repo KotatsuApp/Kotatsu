@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.search.ui.global
 
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.stringArgument

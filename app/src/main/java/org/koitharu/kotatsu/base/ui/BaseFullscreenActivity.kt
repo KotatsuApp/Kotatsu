@@ -5,9 +5,10 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.viewbinding.ViewBinding
 
 
-abstract class BaseFullscreenActivity : BaseActivity() {
+abstract class BaseFullscreenActivity<B : ViewBinding> : BaseActivity<B>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

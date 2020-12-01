@@ -8,20 +8,23 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import kotlinx.android.synthetic.main.activity_crash.*
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.databinding.ActivityCrashBinding
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.utils.ShareHelper
 
 class CrashActivity : Activity(), View.OnClickListener {
 
+	private lateinit var binding: ActivityCrashBinding
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_crash)
-		textView.text = intent.getStringExtra(Intent.EXTRA_TEXT)
-		button_close.setOnClickListener(this)
-		button_restart.setOnClickListener(this)
-		button_report.setOnClickListener(this)
+		binding = ActivityCrashBinding.inflate(layoutInflater)
+		setContentView(binding.root)
+		binding.textView.text = intent.getStringExtra(Intent.EXTRA_TEXT)
+		binding.buttonClose.setOnClickListener(this)
+		binding.buttonRestart.setOnClickListener(this)
+		binding.buttonReport.setOnClickListener(this)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -32,7 +35,7 @@ class CrashActivity : Activity(), View.OnClickListener {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.action_share -> {
-				ShareHelper.shareText(this, textView.text?.toString() ?: return false)
+				ShareHelper.shareText(this, binding.textView.text.toString() ?: return false)
 			}
 			else -> return super.onOptionsItemSelected(item)
 		}

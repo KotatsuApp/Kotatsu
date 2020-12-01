@@ -5,12 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.databinding.ActivitySearchGlobalBinding
 
-class GlobalSearchActivity : BaseActivity() {
+class GlobalSearchActivity : BaseActivity<ActivitySearchGlobalBinding>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_search_global)
+		setContentView(ActivitySearchGlobalBinding.inflate(layoutInflater))
 		val query = intent.getStringExtra(EXTRA_QUERY)
 
 		if (query == null) {

@@ -55,9 +55,9 @@ class DownloadService : BaseService() {
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
 	}
 
-	override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		super.onStartCommand(intent, flags, startId)
-		when (intent.action) {
+		when (intent?.action) {
 			ACTION_DOWNLOAD_START -> {
 				val manga = intent.getParcelableExtra<Manga>(EXTRA_MANGA)
 				val chapters = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toArraySet()

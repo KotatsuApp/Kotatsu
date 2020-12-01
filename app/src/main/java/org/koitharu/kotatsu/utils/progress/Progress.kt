@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.utils.progress
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Progress(

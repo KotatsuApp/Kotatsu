@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.main
 
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koitharu.kotatsu.main.ui.MainViewModel
 import org.koitharu.kotatsu.main.ui.protect.ProtectViewModel

@@ -1,20 +1,11 @@
 package org.koitharu.kotatsu.base.ui.list
 
-import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.extensions.LayoutContainer
+import androidx.viewbinding.ViewBinding
 import org.koin.core.component.KoinComponent
-import org.koitharu.kotatsu.utils.ext.inflate
 
-abstract class BaseViewHolder<T, E> protected constructor(view: View) :
-	RecyclerView.ViewHolder(view), LayoutContainer, KoinComponent {
-
-	constructor(parent: ViewGroup, @LayoutRes resId: Int) : this(parent.inflate(resId))
-
-	override val containerView: View?
-		get() = itemView
+abstract class BaseViewHolder<T, E, B : ViewBinding> protected constructor(val binding: B) :
+	RecyclerView.ViewHolder(binding.root), KoinComponent {
 
 	var boundData: T? = null
 		private set

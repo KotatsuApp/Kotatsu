@@ -1,14 +1,12 @@
 package org.koitharu.kotatsu.base.ui.dialog
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.text.InputFilter
 import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.dialog_input.view.*
-import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.databinding.DialogInputBinding
 
 class TextInputDialog private constructor(
 	private val delegate: AlertDialog
@@ -18,12 +16,10 @@ class TextInputDialog private constructor(
 
 	class Builder(context: Context) {
 
-		@SuppressLint("InflateParams")
-		private val view = LayoutInflater.from(context)
-			.inflate(R.layout.dialog_input, null, false)
+		private val binding = DialogInputBinding.inflate(LayoutInflater.from(context))
 
 		private val delegate = AlertDialog.Builder(context)
-			.setView(view)
+			.setView(binding.root)
 
 		fun setTitle(@StringRes titleResId: Int): Builder {
 			delegate.setTitle(titleResId)
@@ -36,29 +32,29 @@ class TextInputDialog private constructor(
 		}
 
 		fun setHint(@StringRes hintResId: Int): Builder {
-			view.inputLayout.hint = view.context.getString(hintResId)
+			binding.inputLayout.hint = binding.root.context.getString(hintResId)
 			return this
 		}
 
 		fun setMaxLength(maxLength: Int, strict: Boolean): Builder {
-			with(view.inputLayout) {
+			with(binding.inputLayout) {
 				counterMaxLength = maxLength
 				isCounterEnabled = maxLength > 0
 			}
 			if (strict && maxLength > 0) {
-				view.inputEdit.filters += InputFilter.LengthFilter(maxLength)
+				binding.inputEdit.filters += InputFilter.LengthFilter(maxLength)
 			}
 			return this
 		}
 
 		fun setInputType(inputType: Int): Builder {
-			view.inputEdit.inputType = inputType
+			binding.inputEdit.inputType = inputType
 			return this
 		}
 
 		fun setText(text: String): Builder {
-			view.inputEdit.setText(text)
-			view.inputEdit.setSelection(text.length)
+			binding.inputEdit.setText(text)
+			binding.inputEdit.setSelection(text.length)
 			return this
 		}
 
@@ -67,7 +63,7 @@ class TextInputDialog private constructor(
 			listener: (DialogInterface, String) -> Unit
 		): Builder {
 			delegate.setPositiveButton(textId) { dialog, _ ->
-				listener(dialog, view.inputEdit.text?.toString().orEmpty())
+				listener(dialog, binding.inputEdit.text.toString().orEmpty())
 			}
 			return this
 		}

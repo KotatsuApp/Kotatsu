@@ -1,18 +1,38 @@
 package org.koitharu.kotatsu.base.ui
 
 import android.content.Context
-import androidx.annotation.LayoutRes
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import coil.ImageLoader
-import org.koin.android.ext.android.inject
+import androidx.viewbinding.ViewBinding
 
-abstract class BaseFragment(
-	@LayoutRes contentLayoutId: Int
-) : Fragment(contentLayoutId) {
+abstract class BaseFragment<B : ViewBinding> : Fragment() {
 
-	protected val coil by inject<ImageLoader>()
+	private var viewBinding: B? = null
+
+	protected val binding: B
+		get() = checkNotNull(viewBinding)
+
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?,
+		savedInstanceState: Bundle?
+	): View? {
+		val binding = onInflateView(inflater, container)
+		viewBinding = binding
+		return binding.root
+	}
+
+	override fun onDestroyView() {
+		viewBinding = null
+		super.onDestroyView()
+	}
 
 	open fun getTitle(): CharSequence? = null
+
+	protected abstract fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): B
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)

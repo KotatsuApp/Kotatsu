@@ -15,12 +15,12 @@ import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
+import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.favourites.ui.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
@@ -37,7 +37,8 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.resolveDp
 import java.io.Closeable
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
+class MainActivity : BaseActivity<ActivityMainBinding>(),
+	NavigationView.OnNavigationItemSelectedListener,
 	View.OnClickListener {
 
 	private val viewModel by viewModel<MainViewModel>()
@@ -47,21 +48,27 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_main)
+		setContentView(ActivityMainBinding.inflate(layoutInflater))
 		drawerToggle =
-			ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_menu, R.string.close_menu)
-		drawer.addDrawerListener(drawerToggle)
+			ActionBarDrawerToggle(
+				this,
+				binding.drawer,
+				binding.toolbar,
+				R.string.open_menu,
+				R.string.close_menu
+			)
+		binding.drawer.addDrawerListener(drawerToggle)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-		navigationView.setNavigationItemSelectedListener(this)
+		binding.navigationView.setNavigationItemSelectedListener(this)
 
-		with(fab) {
+		with(binding.fab) {
 			imageTintList = ColorStateList.valueOf(Color.WHITE)
 			setOnClickListener(this@MainActivity)
 		}
 
 		supportFragmentManager.findFragmentById(R.id.container)?.let {
-			fab.isVisible = it is HistoryListFragment
+			binding.fab.isVisible = it is HistoryListFragment
 		} ?: run {
 			openDefaultSection()
 		}
@@ -94,8 +101,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	}
 
 	override fun onBackPressed() {
-		if (drawer.isDrawerOpen(navigationView)) {
-			drawer.closeDrawer(navigationView)
+		if (binding.drawer.isDrawerOpen(binding.navigationView)) {
+			binding.drawer.closeDrawer(binding.navigationView)
 		} else {
 			super.onBackPressed()
 		}
@@ -148,42 +155,43 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 			}
 			else -> return false
 		}
-		drawer.closeDrawers()
+		binding.drawer.closeDrawers()
 		return true
 	}
 
 	private fun onOpenReader(state: ReaderState) {
 		val options = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			ActivityOptions.makeClipRevealAnimation(
-				fab, 0, 0, fab.measuredWidth, fab.measuredHeight
+				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
 			)
 		} else {
 			ActivityOptions.makeScaleUpAnimation(
-				fab, 0, 0, fab.measuredWidth, fab.measuredHeight
+				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
 			)
 		}
 		startActivity(ReaderActivity.newIntent(this, state), options?.toBundle())
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
+		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
+			.show()
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		fab.isEnabled = !isLoading
+		binding.fab.isEnabled = !isLoading
 		if (isLoading) {
-			fab.setImageDrawable(CircularProgressDrawable(this).also {
+			binding.fab.setImageDrawable(CircularProgressDrawable(this).also {
 				it.setColorSchemeColors(Color.WHITE)
 				it.strokeWidth = resources.resolveDp(2f)
 				it.start()
 			})
 		} else {
-			fab.setImageResource(R.drawable.ic_read_fill)
+			binding.fab.setImageResource(R.drawable.ic_read_fill)
 		}
 	}
 
 	private fun updateSideMenu(remoteSources: List<MangaSource>) {
-		val submenu = navigationView.menu.findItem(R.id.nav_remote_sources).subMenu
+		val submenu = binding.navigationView.menu.findItem(R.id.nav_remote_sources).subMenu
 		submenu.removeGroup(R.id.group_remote_sources)
 		remoteSources.forEachIndexed { index, source ->
 			submenu.add(R.id.group_remote_sources, source.ordinal, index, source.title)
@@ -194,19 +202,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 	private fun openDefaultSection() {
 		when (viewModel.defaultSection) {
 			AppSection.LOCAL -> {
-				navigationView.setCheckedItem(R.id.nav_local_storage)
+				binding.navigationView.setCheckedItem(R.id.nav_local_storage)
 				setPrimaryFragment(LocalListFragment.newInstance())
 			}
 			AppSection.FAVOURITES -> {
-				navigationView.setCheckedItem(R.id.nav_favourites)
+				binding.navigationView.setCheckedItem(R.id.nav_favourites)
 				setPrimaryFragment(FavouritesContainerFragment.newInstance())
 			}
 			AppSection.HISTORY -> {
-				navigationView.setCheckedItem(R.id.nav_history)
+				binding.navigationView.setCheckedItem(R.id.nav_history)
 				setPrimaryFragment(HistoryListFragment.newInstance())
 			}
 			AppSection.FEED -> {
-				navigationView.setCheckedItem(R.id.nav_feed)
+				binding.navigationView.setCheckedItem(R.id.nav_feed)
 				setPrimaryFragment(FeedFragment.newInstance())
 			}
 		}
@@ -216,6 +224,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.container, fragment)
 			.commit()
-		fab.isVisible = fragment is HistoryListFragment
+		binding.fab.isVisible = fragment is HistoryListFragment
 	}
 }

@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.favourites
 
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository

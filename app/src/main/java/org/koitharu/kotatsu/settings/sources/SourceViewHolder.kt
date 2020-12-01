@@ -1,16 +1,18 @@
 package org.koitharu.kotatsu.settings.sources
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.item_source_config.*
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.BaseViewHolder
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.databinding.ItemSourceConfigBinding
 
 class SourceViewHolder(parent: ViewGroup) :
-	BaseViewHolder<MangaSource, Boolean>(parent, R.layout.item_source_config) {
+	BaseViewHolder<MangaSource, Boolean, ItemSourceConfigBinding>(
+		ItemSourceConfigBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+	) {
 
 	override fun onBind(data: MangaSource, extra: Boolean) {
-		textView_title.text = data.title
-		imageView_hidden.isChecked = extra
+		binding.textViewTitle.text = data.title
+		binding.imageViewHidden.isChecked = extra
 	}
 }

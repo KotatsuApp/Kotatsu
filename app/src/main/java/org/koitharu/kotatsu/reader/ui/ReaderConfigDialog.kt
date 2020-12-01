@@ -1,19 +1,26 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.dialog_reader_config.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.databinding.DialogReaderConfigBinding
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class ReaderConfigDialog : AlertDialogFragment(R.layout.dialog_reader_config),
+class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 	View.OnClickListener {
 
 	private lateinit var mode: ReaderMode
+
+	override fun onInflateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?
+	) = DialogReaderConfigBinding.inflate(inflater, container, false)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -29,14 +36,14 @@ class ReaderConfigDialog : AlertDialogFragment(R.layout.dialog_reader_config),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		button_standard.isChecked = mode == ReaderMode.STANDARD
-		button_reversed.isChecked = mode == ReaderMode.REVERSED
-		button_webtoon.isChecked = mode == ReaderMode.WEBTOON
+		binding.buttonStandard.isChecked = mode == ReaderMode.STANDARD
+		binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
+		binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
 
-		button_ok.setOnClickListener(this)
-		button_standard.setOnClickListener(this)
-		button_reversed.setOnClickListener(this)
-		button_webtoon.setOnClickListener(this)
+		binding.buttonOk.setOnClickListener(this)
+		binding.buttonStandard.setOnClickListener(this)
+		binding.buttonReversed.setOnClickListener(this)
+		binding.buttonWebtoon.setOnClickListener(this)
 	}
 
 	override fun onClick(v: View) {

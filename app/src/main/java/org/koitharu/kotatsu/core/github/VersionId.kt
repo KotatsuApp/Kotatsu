@@ -32,7 +32,6 @@ data class VersionId(
 
 	companion object {
 
-		@JvmStatic
 		private fun variantWeight(variantType: String) =
 			when (variantType.toLowerCase(Locale.ROOT)) {
 				"a", "alpha" -> 1
@@ -42,7 +41,6 @@ data class VersionId(
 				else -> 0
 			}
 
-		@JvmStatic
 		fun parse(versionName: String): VersionId {
 			val parts = versionName.substringBeforeLast('-').split('.')
 			val variant = versionName.substringAfterLast('-', "")

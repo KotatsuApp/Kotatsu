@@ -7,8 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_list.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.list.ui.MangaListFragment
@@ -36,7 +35,8 @@ class HistoryListFragment : MangaListFragment() {
 
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		super.onPrepareOptionsMenu(menu)
-		menu.findItem(R.id.action_history_grouping)?.isChecked = viewModel.isGroupingEnabled.value == true
+		menu.findItem(R.id.action_history_grouping)?.isChecked =
+			viewModel.isGroupingEnabled.value == true
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -64,8 +64,8 @@ class HistoryListFragment : MangaListFragment() {
 	}
 
 	override fun setUpEmptyListHolder() {
-		textView_holder.setText(R.string.text_history_holder)
-		textView_holder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+		binding.textViewHolder.setText(R.string.text_history_holder)
+		binding.textViewHolder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
 	}
 
 	override fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) {
@@ -85,7 +85,7 @@ class HistoryListFragment : MangaListFragment() {
 
 	private fun onItemRemoved(item: Manga) {
 		Snackbar.make(
-			recyclerView, getString(
+			binding.recyclerView, getString(
 				R.string._s_removed_from_history,
 				item.title.ellipsize(16)
 			), Snackbar.LENGTH_SHORT

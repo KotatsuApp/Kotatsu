@@ -13,7 +13,6 @@ import java.io.OutputStream
 
 object MediaStoreCompat {
 
-	@JvmStatic
 	fun insertImage(
 		resolver: ContentResolver,
 		fileName: String,

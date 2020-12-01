@@ -9,29 +9,29 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.activity_browser.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 
 @SuppressLint("SetJavaScriptEnabled")
-class BrowserActivity : BaseActivity(), BrowserCallback {
+class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_browser)
+		setContentView(ActivityBrowserBinding.inflate(layoutInflater))
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(R.drawable.ic_cross)
 		}
-		with(webView.settings) {
+		with(binding.webView.settings) {
 			javaScriptEnabled = true
 		}
-		webView.webViewClient = BrowserClient(this)
+		binding.webView.webViewClient = BrowserClient(this)
 		val url = intent?.dataString
 		if (url.isNullOrEmpty()) {
 			finishAfterTransition()
 		} else {
-			webView.loadUrl(url)
+			binding.webView.loadUrl(url)
 		}
 	}
 
@@ -42,13 +42,13 @@ class BrowserActivity : BaseActivity(), BrowserCallback {
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		android.R.id.home -> {
-			webView.stopLoading()
+			binding.webView.stopLoading()
 			finishAfterTransition()
 			true
 		}
 		R.id.action_browser -> {
 			val intent = Intent(Intent.ACTION_VIEW)
-			intent.data = Uri.parse(webView.url)
+			intent.data = Uri.parse(binding.webView.url)
 			try {
 				startActivity(Intent.createChooser(intent, item.title))
 			} catch (_: ActivityNotFoundException) {
@@ -59,25 +59,25 @@ class BrowserActivity : BaseActivity(), BrowserCallback {
 	}
 
 	override fun onBackPressed() {
-		if (webView.canGoBack()) {
-			webView.goBack()
+		if (binding.webView.canGoBack()) {
+			binding.webView.goBack()
 		} else {
 			super.onBackPressed()
 		}
 	}
 
 	override fun onPause() {
-		webView.onPause()
+		binding.webView.onPause()
 		super.onPause()
 	}
 
 	override fun onResume() {
 		super.onResume()
-		webView.onResume()
+		binding.webView.onResume()
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
-		progressBar.isVisible = isLoading
+		binding.progressBar.isVisible = isLoading
 	}
 
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {
@@ -87,7 +87,6 @@ class BrowserActivity : BaseActivity(), BrowserCallback {
 
 	companion object {
 
-		@JvmStatic
 		fun newIntent(context: Context, url: String) = Intent(context, BrowserActivity::class.java)
 			.setData(Uri.parse(url))
 	}

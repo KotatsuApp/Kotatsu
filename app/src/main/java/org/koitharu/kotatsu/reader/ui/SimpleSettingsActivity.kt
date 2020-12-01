@@ -7,15 +7,16 @@ import androidx.fragment.app.commit
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.databinding.ActivitySettingsSimpleBinding
 import org.koitharu.kotatsu.settings.MainSettingsFragment
 import org.koitharu.kotatsu.settings.NetworkSettingsFragment
 import org.koitharu.kotatsu.settings.ReaderSettingsFragment
 
-class SimpleSettingsActivity : BaseActivity() {
+class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_settings_simple)
+		setContentView(ActivitySettingsSimpleBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		supportFragmentManager.commit {
 			replace(

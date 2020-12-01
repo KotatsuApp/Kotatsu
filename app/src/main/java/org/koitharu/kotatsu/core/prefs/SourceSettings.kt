@@ -22,7 +22,6 @@ interface SourceSettings {
 
 	companion object {
 
-		@JvmStatic
 		operator fun invoke(context: Context, source: MangaSource): SourceSettings =
 			PrefSourceSettings(context, source)
 
