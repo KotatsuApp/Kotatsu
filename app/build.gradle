@@ -96,9 +96,9 @@ dependencies {
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.0'
 
 	implementation 'org.koin:koin-android:2.2.0'
-	implementation 'org.koin:koin-android-viewmodel:2.2.0'
+	implementation 'org.koin:koin-androidx-viewmodel:2.2.0'
 	implementation 'io.coil-kt:coil-base:1.1.0'
-	implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
+	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.tomclaw.cache:cache:1.0'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
