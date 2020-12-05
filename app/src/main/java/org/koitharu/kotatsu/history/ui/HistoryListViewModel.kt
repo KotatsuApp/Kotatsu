@@ -84,7 +84,11 @@ class HistoryListViewModel(
 		settings.historyGrouping = isGroupingEnabled
 	}
 
-	private fun mapList(list: List<MangaWithHistory>, grouped: Boolean, mode: ListMode): List<ListModel> {
+	private fun mapList(
+		list: List<MangaWithHistory>,
+		grouped: Boolean,
+		mode: ListMode
+	): List<ListModel> {
 		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size)
 		var prevDate: DateTimeAgo? = null
 		for ((manga, history) in list) {

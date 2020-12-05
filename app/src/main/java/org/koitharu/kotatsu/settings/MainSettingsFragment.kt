@@ -23,10 +23,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.getStorageName
-import org.koitharu.kotatsu.utils.ext.md5
-import org.koitharu.kotatsu.utils.ext.names
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import org.koitharu.kotatsu.utils.ext.*
 import java.io.File
 
 
@@ -43,22 +40,18 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				true
 			}
 		}
+		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.run {
+			entryValues = ZoomMode.values().names()
+			setDefaultValueCompat(ZoomMode.FIT_CENTER.name)
+		}
+		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
+			entryValues = ListMode.values().names()
+			setDefaultValueCompat(ListMode.GRID.name)
+		}
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_SWITCHERS)?.summaryProvider =
 			MultiSummaryProvider(R.string.gestures_only)
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_TRACK_SOURCES)?.summaryProvider =
 			MultiSummaryProvider(R.string.dont_check)
-	}
-
-	override fun setPreferenceScreen(preferenceScreen: PreferenceScreen?) {
-		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.run {
-			entryValues = ZoomMode.values().names()
-			setDefaultValue(ZoomMode.FIT_CENTER.name)
-		}
-		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
-			entryValues = ListMode.values().names()
-			setDefaultValue(ListMode.GRID.name)
-		}
-		super.setPreferenceScreen(preferenceScreen)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

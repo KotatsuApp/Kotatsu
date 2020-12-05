@@ -30,7 +30,10 @@ class ChaptersAdapter(
 			return oldItem.chapter.id == newItem.chapter.id
 		}
 
-		override fun areContentsTheSame(oldItem: ChapterListItem, newItem: ChapterListItem): Boolean {
+		override fun areContentsTheSame(
+			oldItem: ChapterListItem,
+			newItem: ChapterListItem
+		): Boolean {
 			return Intrinsics.areEqual(oldItem, newItem)
 		}
 

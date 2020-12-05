@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.utils.ext.names
+import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 
 class ReaderSettingsFragment : BasePreferenceFragment(R.string.reader_settings) {
 
@@ -19,7 +20,7 @@ class ReaderSettingsFragment : BasePreferenceFragment(R.string.reader_settings) 
 		}
 		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.let {
 			it.entryValues = ZoomMode.values().names()
-			it.setDefaultValue(ZoomMode.FIT_CENTER.name)
+			it.setDefaultValueCompat(ZoomMode.FIT_CENTER.name)
 		}
 	}
 }
