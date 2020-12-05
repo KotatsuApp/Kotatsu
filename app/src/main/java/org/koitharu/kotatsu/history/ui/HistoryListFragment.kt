@@ -63,11 +63,6 @@ class HistoryListFragment : MangaListFragment() {
 		return context?.getString(R.string.history)
 	}
 
-	override fun setUpEmptyListHolder() {
-		binding.textViewHolder.setText(R.string.text_history_holder)
-		binding.textViewHolder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-	}
-
 	override fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) {
 		super.onCreatePopupMenu(inflater, menu, data)
 		inflater.inflate(R.menu.popup_history, menu)

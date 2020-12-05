@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.list.ui.model
 
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.prefs.ListMode
 import kotlin.math.roundToInt
 
 fun Manga.toListModel() = MangaListModel(
@@ -26,4 +28,27 @@ fun Manga.toGridModel() = MangaGridModel(
 	title = title,
 	coverUrl = coverUrl,
 	manga = this
+)
+
+fun List<Manga>.toUi(mode: ListMode): List<ListModel> = when(mode) {
+	ListMode.LIST -> map(Manga::toListModel)
+	ListMode.DETAILED_LIST -> map(Manga::toListDetailedModel)
+	ListMode.GRID -> map(Manga::toGridModel)
+}
+
+fun <C : MutableCollection<ListModel>> List<Manga>.toUi(destination: C, mode: ListMode): C = when(mode) {
+	ListMode.LIST -> mapTo(destination, Manga::toListModel)
+	ListMode.DETAILED_LIST -> mapTo(destination, Manga::toListDetailedModel)
+	ListMode.GRID -> mapTo(destination, Manga::toGridModel)
+}
+
+fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(
+	exception = this,
+	icon = R.drawable.ic_error_large,
+	canRetry = canRetry
+)
+
+fun Throwable.toErrorFooter() = ErrorFooter(
+	exception = this,
+	icon = R.drawable.ic_alert_outline
 )

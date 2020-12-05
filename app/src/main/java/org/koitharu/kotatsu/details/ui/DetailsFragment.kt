@@ -10,7 +10,6 @@ import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import coil.ImageLoader
 import coil.util.CoilUtils
-import com.google.android.material.chip.Chip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,7 +22,6 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.search.ui.MangaSearchSheet
 import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.*
 import kotlin.math.roundToInt
@@ -71,8 +69,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 					create(
 						text = it,
 						iconRes = R.drawable.ic_chip_user,
-						tag = it,
-						onClickListener = this@DetailsFragment
+						tag = it
 					)
 				}
 			}
@@ -80,8 +77,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				create(
 					text = it.title,
 					iconRes = R.drawable.ic_chip_tag,
-					tag = it,
-					onClickListener = this@DetailsFragment
+					tag = it
 				)
 			}
 			manga.url.toUri().toFileOrNull()?.let { f ->
@@ -93,8 +89,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 						create(
 							text = FileSizeUtils.formatBytes(context, size),
 							iconRes = R.drawable.ic_chip_storage,
-							tag = it,
-							onClickListener = this@DetailsFragment
+							tag = it
 						)
 					}
 				}
@@ -134,11 +129,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 
 	override fun onClick(v: View) {
 		val manga = viewModel.manga.value
-		when {
-			v.id == R.id.imageView_favourite -> {
+		when (v.id) {
+			R.id.imageView_favourite -> {
 				FavouriteCategoriesDialog.show(childFragmentManager, manga ?: return)
 			}
-			v.id == R.id.button_read -> {
+			R.id.button_read -> {
 				startActivity(
 					ReaderActivity.newIntent(
 						context ?: return,
@@ -146,15 +141,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 						viewModel.readingHistory.value
 					)
 				)
-			}
-			v is Chip -> {
-				when (val tag = v.tag) {
-					is String -> MangaSearchSheet.show(
-						activity?.supportFragmentManager
-							?: childFragmentManager,
-						manga?.source ?: return, tag
-					)
-				}
 			}
 		}
 	}

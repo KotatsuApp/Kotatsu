@@ -7,4 +7,5 @@
     <dimen name="preferred_grid_width">120dp</dimen>
 	<dimen name="header_height">34dp</dimen>
 	<dimen name="elevation_large">16dp</dimen>
+	<dimen name="list_footer_height">48dp</dimen>
 </resources>

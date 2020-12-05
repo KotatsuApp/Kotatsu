@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.list.ui
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -16,28 +15,30 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.SheetListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
-import org.koitharu.kotatsu.utils.UiUtils
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.*
 
 abstract class MangaListSheet : BaseBottomSheet<SheetListBinding>(),
 	PaginationScrollListener.Callback, OnListItemClickListener<Manga>,
-	SharedPreferences.OnSharedPreferenceChangeListener, Toolbar.OnMenuItemClickListener {
+	Toolbar.OnMenuItemClickListener {
 
-	private val settings by inject<AppSettings>()
-
-	private var adapter: MangaListAdapter? = null
+	private var listAdapter: MangaListAdapter? = null
+	private var paginationListener: PaginationScrollListener? = null
+	private val spanResolver = MangaListSpanResolver()
+	private val spanSizeLookup = SpanSizeLookup()
+	open val isSwipeRefreshEnabled = true
 
 	protected abstract val viewModel: MangaListViewModel
 
@@ -47,33 +48,39 @@ abstract class MangaListSheet : BaseBottomSheet<SheetListBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		adapter = MangaListAdapter(get(), viewLifecycleOwner, this)
-		initListMode(settings.listMode)
-		binding.recyclerView.adapter = adapter
-		binding.recyclerView.addOnScrollListener(PaginationScrollListener(4, this))
-		settings.subscribe(this)
-		binding.toolbar.inflateMenu(R.menu.opt_list_sheet)
-		binding.toolbar.setOnMenuItemClickListener(this)
-		binding.toolbar.setNavigationOnClickListener {
-			dismiss()
+		listAdapter = MangaListAdapter(get(), viewLifecycleOwner, this) {
+			viewModel.onRetry()
+		}
+		paginationListener = PaginationScrollListener(4, this)
+		with(binding.recyclerView) {
+			setHasFixedSize(true)
+			adapter = listAdapter
+			addOnScrollListener(paginationListener!!)
+		}
+		with(binding.toolbar) {
+			inflateMenu(R.menu.opt_list_sheet)
+			setOnMenuItemClickListener(this@MangaListSheet)
+			setNavigationOnClickListener {
+				dismiss()
+			}
 		}
 		if (dialog !is BottomSheetDialog) {
 			binding.toolbar.isVisible = true
 			binding.textViewTitle.isVisible = false
 			binding.appbar.elevation = resources.getDimension(R.dimen.elevation_large)
 		}
-		if (savedInstanceState == null) {
-			onScrolledToEnd()
-		}
+
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
-		viewModel.listMode.observe(viewLifecycleOwner, ::initListMode)
+		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
+		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
 	}
 
 	override fun onDestroyView() {
-		settings.unsubscribe(this)
-		adapter = null
+		listAdapter = null
+		paginationListener = null
+		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
 	}
 
@@ -117,65 +124,94 @@ abstract class MangaListSheet : BaseBottomSheet<SheetListBinding>(),
 		else -> false
 	}
 
-	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-		when (key) {
-			AppSettings.KEY_LIST_MODE -> initListMode(settings.listMode)
-			AppSettings.KEY_GRID_SIZE -> UiUtils.SpanCountResolver.update(binding.recyclerView)
-		}
-	}
-
 	override fun onItemClick(item: Manga, view: View) {
 		startActivity(DetailsActivity.newIntent(context ?: return, item))
 	}
 
-	private fun onListChanged(list: List<Any>) {
-		adapter?.items = list
-		binding.textViewHolder.isVisible = list.isEmpty()
-		binding.recyclerView.callOnScrollListeners()
+	private fun onListChanged(list: List<ListModel>) {
+		spanSizeLookup.invalidateCache()
+		listAdapter?.items = list
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(binding.recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
-			.show()
+		if (e is CloudFlareProtectedException) {
+			CloudFlareDialog.newInstance(e.url).show(childFragmentManager, CloudFlareDialog.TAG)
+		} else {
+			Snackbar.make(
+				binding.recyclerView,
+				e.getDisplayMessage(resources),
+				Snackbar.LENGTH_SHORT
+			).show()
+		}
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.progressBar.isVisible = isLoading && !binding.recyclerView.hasItems
-		if (isLoading) {
-			binding.textViewHolder.isVisible = false
+		binding.progressBar.isVisible =
+			isLoading && !binding.recyclerView.hasItems
+	}
+
+	private fun onGridScaleChanged(scale: Float) {
+		spanSizeLookup.invalidateCache()
+		spanResolver.setGridSize(scale, binding.recyclerView)
+	}
+
+	private fun onListModeChanged(mode: ListMode) {
+		spanSizeLookup.invalidateCache()
+		with(binding.recyclerView) {
+			clearItemDecorations()
+			removeOnLayoutChangeListener(spanResolver)
+			when (mode) {
+				ListMode.LIST -> {
+					layoutManager = LinearLayoutManager(context)
+					addItemDecoration(
+						DividerItemDecoration(
+							context,
+							RecyclerView.VERTICAL
+						)
+					)
+				}
+				ListMode.DETAILED_LIST -> {
+					layoutManager = LinearLayoutManager(context)
+					addItemDecoration(
+						SpacingItemDecoration(
+							resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+						)
+					)
+				}
+				ListMode.GRID -> {
+					layoutManager = GridLayoutManager(context, spanResolver.spanCount).also {
+						it.spanSizeLookup = spanSizeLookup
+					}
+					addItemDecoration(
+						SpacingItemDecoration(
+							resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+						)
+					)
+					addOnLayoutChangeListener(spanResolver)
+				}
+			}
 		}
 	}
 
-	private fun initListMode(mode: ListMode) {
-		val ctx = context ?: return
-		val position = binding.recyclerView.firstItem
-		binding.recyclerView.layoutManager = null
-		binding.recyclerView.clearItemDecorations()
-		binding.recyclerView.removeOnLayoutChangeListener(UiUtils.SpanCountResolver)
-		binding.recyclerView.layoutManager = when (mode) {
-			ListMode.GRID -> {
-				GridLayoutManager(ctx, UiUtils.resolveGridSpanCount(ctx)).apply {
-					spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-						override fun getSpanSize(position: Int) = if (position < TODO() as Int)
-							1 else this@apply.spanCount
-					}
-				}
-			}
-			else -> LinearLayoutManager(ctx)
+	private inner class SpanSizeLookup : GridLayoutManager.SpanSizeLookup() {
+
+		init {
+			isSpanIndexCacheEnabled = true
+			isSpanGroupIndexCacheEnabled = true
 		}
-		binding.recyclerView.addItemDecoration(
-			when (mode) {
-				ListMode.LIST -> DividerItemDecoration(ctx, RecyclerView.VERTICAL)
-				ListMode.DETAILED_LIST,
-				ListMode.GRID -> SpacingItemDecoration(
-					resources.getDimensionPixelOffset(R.dimen.grid_spacing)
-				)
+
+		override fun getSpanSize(position: Int): Int {
+			val total =
+				(binding.recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
+			return when (listAdapter?.getItemViewType(position)) {
+				MangaListAdapter.ITEM_TYPE_MANGA_GRID -> 1
+				else -> total
 			}
-		)
-		if (mode == ListMode.GRID) {
-			binding.recyclerView.addOnLayoutChangeListener(UiUtils.SpanCountResolver)
 		}
-		adapter?.notifyDataSetChanged()
-		binding.recyclerView.firstItem = position
+
+		fun invalidateCache() {
+			invalidateSpanGroupIndexCache()
+			invalidateSpanIndexCache()
+		}
 	}
 }

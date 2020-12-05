@@ -8,4 +8,4 @@ data class MangaListModel(
 	val subtitle: String,
 	val coverUrl: String,
 	val manga: Manga
-)
+) : ListModel

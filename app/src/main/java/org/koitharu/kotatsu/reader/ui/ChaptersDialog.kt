@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
@@ -14,6 +15,8 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.databinding.DialogChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
+import org.koitharu.kotatsu.details.ui.model.toListItem
+import org.koitharu.kotatsu.history.domain.ChapterExtra
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
@@ -32,14 +35,34 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		binding.recyclerViewChapters.addItemDecoration(
-			DividerItemDecoration(
-				requireContext(),
-				RecyclerView.VERTICAL
-			)
+			DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
 		)
+		val chapters = arguments?.getParcelableArrayList<MangaChapter>(ARG_CHAPTERS)
+		if (chapters == null) {
+			dismissAllowingStateLoss()
+			return
+		}
+		val currentId = arguments?.getLong(ARG_CURRENT_ID, 0L) ?: 0L
+		val currentPosition = chapters.indexOfFirst { it.id == currentId }
 		binding.recyclerViewChapters.adapter = ChaptersAdapter(this).apply {
-			// arguments?.getParcelableArrayList<MangaChapter>(ARG_CHAPTERS)?.let(this::setItems)
-			// currentChapterId = arguments?.getLong(ARG_CURRENT_ID, 0L)?.takeUnless { it == 0L }
+			setItems(chapters.mapIndexed { index, chapter ->
+				chapter.toListItem(
+					when {
+						index < currentPosition -> ChapterExtra.READ
+						index == currentPosition -> ChapterExtra.CURRENT
+						else -> ChapterExtra.UNREAD
+					}
+				)
+			}) {
+				if (currentPosition >= 0) {
+					with(binding.recyclerViewChapters) {
+						(layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+							currentPosition,
+							height / 3
+						)
+					}
+				}
+			}
 		}
 	}
 
@@ -64,10 +87,9 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 		private const val ARG_CURRENT_ID = "current_id"
 
 		fun show(fm: FragmentManager, chapters: List<MangaChapter>, currentId: Long = 0L) =
-			ChaptersDialog()
-				.withArgs(2) {
-					putParcelableArrayList(ARG_CHAPTERS, ArrayList(chapters))
-					putLong(ARG_CURRENT_ID, currentId)
-				}.show(fm, TAG)
+			ChaptersDialog().withArgs(2) {
+				putParcelableArrayList(ARG_CHAPTERS, ArrayList(chapters))
+				putLong(ARG_CURRENT_ID, currentId)
+			}.show(fm, TAG)
 	}
 }

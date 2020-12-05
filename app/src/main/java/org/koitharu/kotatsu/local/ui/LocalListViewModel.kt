@@ -8,16 +8,18 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.toGridModel
-import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
-import org.koitharu.kotatsu.list.ui.model.toListModel
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.MediaStoreCompat
@@ -34,29 +36,40 @@ class LocalListViewModel(
 ) : MangaListViewModel(settings) {
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
-	private val mangaList = MutableStateFlow<List<Manga>>(emptyList())
+	private val listError = MutableStateFlow<Throwable?>(null)
+	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 
-	override val content = combine(mangaList, createListModeFlow()) { list, mode ->
-		when (mode) {
-			ListMode.LIST -> list.map { it.toListModel() }
-			ListMode.DETAILED_LIST -> list.map { it.toListDetailedModel() }
-			ListMode.GRID -> list.map { it.toGridModel() }
+	override val content = combine(
+		mangaList,
+		createListModeFlow(),
+		listError
+	) { list, mode, error ->
+		when {
+			error != null -> listOf(error.toErrorState(canRetry = true))
+			list == null -> listOf(LoadingState)
+			list.isEmpty() -> listOf(EmptyState(R.string.text_local_holder))
+			else -> list.toUi(mode)
 		}
+	}.onStart {
+		emit(listOf(LoadingState))
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
 		onRefresh()
 	}
 
-	fun onRefresh() {
-		launchLoadingJob {
-			withContext(Dispatchers.Default) {
-				val list = repository.getList(0)
-				mangaList.value = list
-				isEmptyState.postValue(list.isEmpty())
+	override fun onRefresh() {
+		launchLoadingJob(Dispatchers.Default) {
+			try {
+				listError.value = null
+				mangaList.value = repository.getList(0)
+			} catch (e: Throwable) {
+				listError.value = e
 			}
 		}
 	}
+
+	override fun onRetry() = onRefresh()
 
 	fun importFile(uri: Uri) {
 		launchLoadingJob {

@@ -17,13 +17,8 @@ class SearchFragment : MangaListFragment() {
 	private val query by stringArgument(ARG_QUERY)
 	private val source by parcelableArgument<MangaSource>(ARG_SOURCE)
 
-	override fun onRefresh() {
-		super.onRefresh()
-		viewModel.loadList(append = false)
-	}
-
 	override fun onScrolledToEnd() {
-		viewModel.loadList(append = true)
+		viewModel.loadNextPage()
 	}
 
 	override fun getTitle() = query

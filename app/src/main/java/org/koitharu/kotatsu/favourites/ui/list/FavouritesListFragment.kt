@@ -23,17 +23,6 @@ class FavouritesListFragment : MangaListFragment() {
 
 	override fun onScrolledToEnd() = Unit
 
-	override fun setUpEmptyListHolder() {
-		binding.textViewHolder.setText(
-			if (categoryId == 0L) {
-				R.string.you_have_not_favourites_yet
-			} else {
-				R.string.favourites_category_empty
-			}
-		)
-		binding.textViewHolder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-	}
-
 	override fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) {
 		super.onCreatePopupMenu(inflater, menu, data)
 		inflater.inflate(R.menu.popup_favourites, menu)

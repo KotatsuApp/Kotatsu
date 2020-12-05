@@ -32,9 +32,9 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.filter.FilterAdapter
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.clearItemDecorations
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hasItems
 import org.koitharu.kotatsu.utils.ext.toggleDrawer
 
 abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
@@ -62,7 +62,9 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		binding.drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-		listAdapter = MangaListAdapter(get(), viewLifecycleOwner, this)
+		listAdapter = MangaListAdapter(get(), viewLifecycleOwner, this) {
+			viewModel.onRetry()
+		}
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
@@ -85,7 +87,6 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
-		viewModel.isEmptyState.observe(viewLifecycleOwner, ::onEmptyStateChanged)
 	}
 
 	override fun onDestroyView() {
@@ -140,9 +141,10 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	@CallSuper
 	override fun onRefresh() {
 		binding.swipeRefreshLayout.isRefreshing = true
+		viewModel.onRefresh()
 	}
 
-	private fun onListChanged(list: List<Any>) {
+	private fun onListChanged(list: List<ListModel>) {
 		spanSizeLookup.invalidateCache()
 		listAdapter?.items = list
 	}
@@ -150,43 +152,22 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	private fun onError(e: Throwable) {
 		if (e is CloudFlareProtectedException) {
 			CloudFlareDialog.newInstance(e.url).show(childFragmentManager, CloudFlareDialog.TAG)
-		}
-		if (viewModel.isEmptyState.value == true) {
-			binding.textViewHolder.text = e.getDisplayMessage(resources)
-			binding.textViewHolder.setCompoundDrawablesRelativeWithIntrinsicBounds(
-				0,
-				R.drawable.ic_error_large,
-				0,
-				0
-			)
-			binding.textViewHolder.isVisible = true
 		} else {
 			Snackbar.make(
 				binding.recyclerView,
 				e.getDisplayMessage(resources),
 				Snackbar.LENGTH_SHORT
-			)
-				.show()
+			).show()
 		}
 	}
 
 	@CallSuper
 	protected open fun onLoadingStateChanged(isLoading: Boolean) {
-		val hasItems = binding.recyclerView.hasItems
-		binding.progressBar.isVisible =
-			isLoading && !hasItems && viewModel.isEmptyState.value != true
 		binding.swipeRefreshLayout.isEnabled =
-			isSwipeRefreshEnabled && !binding.progressBar.isVisible
+			isSwipeRefreshEnabled && !isLoading
 		if (!isLoading) {
 			binding.swipeRefreshLayout.isRefreshing = false
 		}
-	}
-
-	private fun onEmptyStateChanged(isEmpty: Boolean) {
-		if (isEmpty) {
-			setUpEmptyListHolder()
-		}
-		binding.layoutHolder.isVisible = isEmpty
 	}
 
 	protected fun onInitFilter(config: MangaFilterConfig) {
@@ -212,13 +193,6 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	@CallSuper
 	override fun onFilterChanged(filter: MangaFilter) {
 		binding.drawer?.closeDrawers()
-	}
-
-	protected open fun setUpEmptyListHolder() {
-		with(binding.textViewHolder) {
-			setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null)
-			setText(R.string.nothing_found)
-		}
 	}
 
 	private fun onGridScaleChanged(scale: Float) {
@@ -293,9 +267,8 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			val total =
 				(binding.recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
 			return when (listAdapter?.getItemViewType(position)) {
-				MangaListAdapter.ITEM_TYPE_DATE,
-				MangaListAdapter.ITEM_TYPE_PROGRESS -> total
-				else -> 1
+				MangaListAdapter.ITEM_TYPE_MANGA_GRID -> 1
+				else -> total
 			}
 		}
 

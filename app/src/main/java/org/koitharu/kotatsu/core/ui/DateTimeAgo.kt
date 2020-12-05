@@ -2,8 +2,9 @@ package org.koitharu.kotatsu.core.ui
 
 import android.content.res.Resources
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.list.ui.model.ListModel
 
-sealed class DateTimeAgo {
+sealed class DateTimeAgo : ListModel {
 
 	abstract fun format(resources: Resources): String
 

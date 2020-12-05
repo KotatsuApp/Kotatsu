@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -14,9 +15,7 @@ import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.toGridModel
-import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
-import org.koitharu.kotatsu.list.ui.model.toListModel
+import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.daysDiff
@@ -44,15 +43,23 @@ class HistoryListViewModel(
 	override val content = combine(
 		repository.observeAllWithHistory(),
 		historyGrouping,
-		createListModeFlow(),
-		::mapList
-	).onEach {
-		isEmptyState.postValue(it.isEmpty())
-	}.onStart {
-		isLoading.postValue(true)
+		createListModeFlow()
+	) { list, grouped, mode ->
+		when {
+			list.isEmpty() -> listOf(EmptyState(R.string.text_history_holder))
+			else -> mapList(list, grouped, mode)
+		}
 	}.onFirst {
 		isLoading.postValue(false)
+	}.onStart {
+		emit(listOf(LoadingState))
+	}.catch {
+		it.toErrorState(canRetry = false)
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+
+	override fun onRefresh() = Unit
+
+	override fun onRetry() = Unit
 
 	fun clearHistory() {
 		launchLoadingJob {
@@ -77,8 +84,8 @@ class HistoryListViewModel(
 		settings.historyGrouping = isGroupingEnabled
 	}
 
-	private fun mapList(list: List<MangaWithHistory>, grouped: Boolean, mode: ListMode): List<Any> {
-		val result = ArrayList<Any>((list.size * 1.4).toInt())
+	private fun mapList(list: List<MangaWithHistory>, grouped: Boolean, mode: ListMode): List<ListModel> {
+		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size)
 		var prevDate: DateTimeAgo? = null
 		for ((manga, history) in list) {
 			if (grouped) {

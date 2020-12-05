@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.databinding.ItemMangaListBinding
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
@@ -18,7 +19,7 @@ fun mangaListItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>
-) = adapterDelegateViewBinding<MangaListModel, Any, ItemMangaListBinding>(
+) = adapterDelegateViewBinding<MangaListModel, ListModel, ItemMangaListBinding>(
 	{ inflater, parent -> ItemMangaListBinding.inflate(inflater, parent, false) }
 ) {
 

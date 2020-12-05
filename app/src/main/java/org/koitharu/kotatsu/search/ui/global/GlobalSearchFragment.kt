@@ -15,11 +15,6 @@ class GlobalSearchFragment : MangaListFragment() {
 
 	private val query by stringArgument(ARG_QUERY)
 
-	override fun onRefresh() {
-		super.onRefresh()
-		viewModel.onRefresh()
-	}
-
 	override fun onScrolledToEnd() = Unit
 
 	override fun getTitle(): CharSequence? {

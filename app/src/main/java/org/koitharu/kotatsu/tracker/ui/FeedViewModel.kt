@@ -8,10 +8,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.TrackingLogItem
-import org.koitharu.kotatsu.list.ui.model.IndeterminateProgress
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.ui.model.toFeedItem
 import org.koitharu.kotatsu.utils.ext.mapItems
@@ -21,18 +23,20 @@ class FeedViewModel(
 	private val repository: TrackingRepository
 ) : BaseViewModel() {
 
-	private val logList = MutableStateFlow<List<TrackingLogItem>>(emptyList())
+	private val logList = MutableStateFlow<List<TrackingLogItem>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private var loadingJob: Job? = null
 
 	val isEmptyState = MutableLiveData(false)
 	val content = combine(
-		logList.drop(1).mapItems {
+		logList.filterNotNull().mapItems {
 			it.toFeedItem(context.resources)
 		},
 		hasNextPage
 	) { list, isHasNextPage ->
-		if (isHasNextPage && list.isNotEmpty()) list + IndeterminateProgress else list
+		if (isHasNextPage && list.isNotEmpty()) list + LoadingFooter else list
+	}.onStart {
+		emit(listOf(LoadingState))
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
@@ -44,13 +48,13 @@ class FeedViewModel(
 			return
 		}
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			val offset = if (append) logList.value.size else 0
+			val offset = if (append) logList.value?.size ?: 0 else 0
 			val list = repository.getTrackingLog(offset, 20)
 			if (!append) {
 				logList.value = list
 				isEmptyState.postValue(list.isEmpty())
 			} else if (list.isNotEmpty()) {
-				logList.value += list
+				logList.value = logList.value?.plus(list) ?: list
 			}
 			hasNextPage.value = list.isNotEmpty()
 		}

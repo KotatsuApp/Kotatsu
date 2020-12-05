@@ -7,4 +7,4 @@ data class MangaGridModel(
 	val title: String,
 	val coverUrl: String,
 	val manga: Manga
-)
+) : ListModel

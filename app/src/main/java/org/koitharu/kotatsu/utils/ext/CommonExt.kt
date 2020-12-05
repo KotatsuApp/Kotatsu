@@ -43,7 +43,7 @@ fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
 	is SocketTimeoutException -> resources.getString(R.string.network_error)
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
-	else -> message ?: resources.getString(R.string.error_occurred)
+	else -> localizedMessage ?: resources.getString(R.string.error_occurred)
 }
 
 inline fun <T> measured(tag: String, block: () -> T): T {

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.tracker.ui.model
 
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.list.ui.model.ListModel
 
 data class FeedItem(
 	val id: Long,
@@ -9,4 +10,4 @@ data class FeedItem(
 	val subtitle: String,
 	val chapters: CharSequence,
 	val manga: Manga
-)
+) : ListModel

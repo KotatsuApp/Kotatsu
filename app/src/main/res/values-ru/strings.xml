@@ -185,4 +185,5 @@
 	<string name="long_ago">Давно</string>
 	<string name="group">Группировать</string>
 	<string name="today">Сегодня</string>
+	<string name="tap_to_try_again">Tap to try again</string>
 </resources>

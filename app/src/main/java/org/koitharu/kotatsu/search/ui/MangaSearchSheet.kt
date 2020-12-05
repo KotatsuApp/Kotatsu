@@ -29,7 +29,7 @@ class MangaSearchSheet : MangaListSheet() {
 	}
 
 	override fun onScrolledToEnd() {
-		viewModel.loadList(append = true)
+		viewModel.loadNextPage()
 	}
 
 	companion object {
@@ -39,6 +39,7 @@ class MangaSearchSheet : MangaListSheet() {
 
 		private const val TAG = "MangaSearchSheet"
 
+		@Deprecated("Not ready for use")
 		fun show(fm: FragmentManager, source: MangaSource, query: String) {
 			MangaSearchSheet().withArgs(2) {
 				putParcelable(ARG_SOURCE, source)

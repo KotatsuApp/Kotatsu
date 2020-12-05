@@ -31,11 +31,6 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 		viewModel.onMangaRemoved.observe(viewLifecycleOwner, ::onItemRemoved)
 	}
 
-	override fun onRefresh() {
-		super.onRefresh()
-		viewModel.onRefresh()
-	}
-
 	override fun onScrolledToEnd() = Unit
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -66,11 +61,6 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 
 	override fun getTitle(): CharSequence? {
 		return context?.getString(R.string.local_storage)
-	}
-
-	override fun setUpEmptyListHolder() {
-		binding.textViewHolder.setText(R.string.text_local_holder)
-		binding.textViewHolder.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
 	}
 
 	override fun onActivityResult(result: Uri?) {

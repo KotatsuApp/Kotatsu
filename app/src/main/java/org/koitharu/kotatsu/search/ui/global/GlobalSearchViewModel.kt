@@ -6,16 +6,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.IndeterminateProgress
-import org.koitharu.kotatsu.list.ui.model.toGridModel
-import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
-import org.koitharu.kotatsu.list.ui.model.toListModel
+import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.utils.ext.onFirst
+import java.util.*
 
 class GlobalSearchViewModel(
 	private val query: String,
@@ -23,48 +21,63 @@ class GlobalSearchViewModel(
 	settings: AppSettings
 ) : MangaListViewModel(settings) {
 
-	private val mangaList = MutableStateFlow<List<Manga>>(emptyList())
+	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
+	private val listError = MutableStateFlow<Throwable?>(null)
 	private var searchJob: Job? = null
 
-	override val content = combine(mangaList.drop(1), createListModeFlow()) { list, mode ->
-		when (mode) {
-			ListMode.LIST -> list.map { it.toListModel() }
-			ListMode.DETAILED_LIST -> list.map { it.toListDetailedModel() }
-			ListMode.GRID -> list.map { it.toGridModel() }
+	override val content = combine(
+		mangaList,
+		createListModeFlow(),
+		listError,
+		hasNextPage
+	) { list, mode, error, hasNext ->
+		when {
+			list.isNullOrEmpty() && error != null -> listOf(error.toErrorState(canRetry = true))
+			list == null -> listOf(LoadingState)
+			list.isEmpty() -> listOf(EmptyState(R.string.nothing_found))
+			else -> {
+				val result = ArrayList<ListModel>(list.size + 1)
+				list.toUi(result, mode)
+				when {
+					error != null -> result += error.toErrorFooter()
+					hasNext -> result += LoadingFooter
+				}
+				result
+			}
 		}
-	}.combine(hasNextPage) { list, isHasNextPage ->
-		if (isHasNextPage && list.isNotEmpty()) list + IndeterminateProgress else list
+	}.onStart {
+		emit(listOf(LoadingState))
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
 		onRefresh()
 	}
 
-	fun onRefresh() {
+	override fun onRetry() {
+		onRefresh()
+	}
+
+	override fun onRefresh() {
 		searchJob?.cancel()
 		searchJob = repository.globalSearch(query)
-			.flowOn(Dispatchers.Default)
 			.catch { e ->
-				onError.postCall(e)
+				listError.value = e
 				isLoading.postValue(false)
-				hasNextPage.value = false
 			}.filterNot { x -> x.isEmpty() }
 			.onStart {
+				listError.value = null
 				isLoading.postValue(true)
+				hasNextPage.value = true
 			}.onEmpty {
 				mangaList.value = emptyList()
-				isEmptyState.postValue(true)
-				isLoading.postValue(false)
 			}.onCompletion {
 				isLoading.postValue(false)
 				hasNextPage.value = false
 			}.onFirst {
-				isEmptyState.postValue(false)
-				hasNextPage.value = true
-				isLoading.value = false
+				isLoading.postValue(false)
 			}.onEach {
-				mangaList.value += it
+				mangaList.value = mangaList.value?.plus(it) ?: it
 			}.launchIn(viewModelScope + Dispatchers.Default)
 	}
 }

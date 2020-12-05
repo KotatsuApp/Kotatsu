@@ -10,4 +10,4 @@ data class MangaListDetailedModel(
 	val coverUrl: String,
 	val rating: String?,
 	val manga: Manga
-)
+) : ListModel
