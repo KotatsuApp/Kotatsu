@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.favourites.ui
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -21,14 +22,15 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	FavouritesTabLongClickListener, CategoriesEditDelegate.CategoriesEditCallback {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
-
 	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {
 		CategoriesEditDelegate(requireContext(), this)
 	}
+	private var adapterState: Parcelable? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setHasOptionsMenu(true)
+		adapterState = savedInstanceState?.getParcelable(KEY_ADAPTER_STATE) ?: adapterState
 	}
 
 	override fun onInflateView(
@@ -39,11 +41,22 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = FavouritesPagerAdapter(this, this)
+		adapterState?.let(adapter::restoreState)
 		binding.pager.adapter = adapter
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
 
 		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+	}
+
+	override fun onDestroyView() {
+		adapterState = (binding.pager.adapter as? FavouritesPagerAdapter)?.saveState()
+		super.onDestroyView()
+	}
+
+	override fun onSaveInstanceState(outState: Bundle) {
+		super.onSaveInstanceState(outState)
+		outState.putParcelable(KEY_ADAPTER_STATE, adapterState)
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
@@ -102,6 +115,8 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	}
 
 	companion object {
+
+		private const val KEY_ADAPTER_STATE = "adapter_state"
 
 		fun newInstance() = FavouritesContainerFragment()
 	}

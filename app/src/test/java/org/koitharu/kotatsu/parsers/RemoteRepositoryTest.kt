@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.parsers
 
 import kotlinx.coroutines.runBlocking
+import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.junit.Assert
 import org.junit.BeforeClass
@@ -11,10 +12,10 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
+import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.SourceSettings
-import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.utils.AssertX
 import java.util.concurrent.TimeUnit
 
@@ -91,28 +92,27 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		@BeforeClass
 		fun initialize() {
 			startKoin {
-				modules(listOf(
+				modules(
 					module {
+						single<CookieJar> { TemporaryCookieJar() }
 						factory {
 							OkHttpClient.Builder()
-								.cookieJar(TemporaryCookieJar())
+								.cookieJar(get())
 								.addInterceptor(UserAgentInterceptor())
 								.connectTimeout(20, TimeUnit.SECONDS)
 								.readTimeout(60, TimeUnit.SECONDS)
 								.writeTimeout(20, TimeUnit.SECONDS)
 								.build()
 						}
-					},
-					module {
 						single<MangaLoaderContext> {
-							object : MangaLoaderContext() {
+							object : MangaLoaderContext(get(), get()) {
 								override fun getSettings(source: MangaSource): SourceSettings {
 									return SourceSettingsMock()
 								}
 							}
 						}
 					}
-				))
+				)
 			}
 		}
 

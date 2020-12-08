@@ -9,7 +9,7 @@ import org.koitharu.kotatsu.core.parser.site.*
 val parserModule
 	get() = module {
 
-		single { MangaLoaderContext() }
+		single { MangaLoaderContext(get(), get()) }
 
 		factory<MangaRepository>(named(MangaSource.READMANGA_RU)) { ReadmangaRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.MINTMANGA)) { MintMangaRepository(get()) }

@@ -3,15 +3,14 @@ package org.koitharu.kotatsu.base.domain
 import okhttp3.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.await
 
-open class MangaLoaderContext : KoinComponent {
-
-	private val okHttp by inject<OkHttpClient>()
-	private val cookieJar by inject<CookieJar>()
+open class MangaLoaderContext(
+	private val okHttp: OkHttpClient,
+	private val cookieJar: CookieJar
+) : KoinComponent {
 
 	suspend fun httpGet(url: String): Response {
 		val request = Request.Builder()

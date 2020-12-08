@@ -12,6 +12,11 @@ class CategoriesAdapter(
 
 	init {
 		delegatesManager.addDelegate(categoryAD(onItemClickListener))
+		setHasStableIds(true)
+	}
+
+	override fun getItemId(position: Int): Long {
+		return items[position].id
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<FavouriteCategory>() {

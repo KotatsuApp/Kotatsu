@@ -71,6 +71,8 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
+		// TODO check if not moved
+
 		adapter.items = categories
 		binding.textViewHolder.isVisible = categories.isEmpty()
 	}
