@@ -1,8 +1,8 @@
-package org.koitharu.kotatsu.reader.ui.standard
+package org.koitharu.kotatsu.reader.ui.pager.standard
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import org.koitharu.kotatsu.reader.ui.base.OnBoundsScrollListener
+import org.koitharu.kotatsu.reader.ui.pager.OnBoundsScrollListener
 
 class PagerPaginationListener(
 	private val adapter: RecyclerView.Adapter<*>,

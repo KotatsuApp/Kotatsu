@@ -7,6 +7,7 @@ import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.main.ui.MainActivity
 
+@Deprecated("TODO not object")
 object AppProtectHelper : KoinComponent {
 
 	val settings by inject<AppSettings>()

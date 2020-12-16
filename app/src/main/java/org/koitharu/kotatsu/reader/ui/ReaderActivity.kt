@@ -3,10 +3,8 @@ package org.koitharu.kotatsu.reader.ui
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -20,53 +18,54 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
-import org.koitharu.kotatsu.reader.ui.base.AbstractReader
-import org.koitharu.kotatsu.reader.ui.reversed.ReversedReaderFragment
-import org.koitharu.kotatsu.reader.ui.standard.PagerReaderFragment
+import org.koitharu.kotatsu.reader.ReaderControlDelegate
+import org.koitharu.kotatsu.reader.ui.pager.BaseReader
+import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
+import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
+import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
+import org.koitharu.kotatsu.reader.ui.pager.wetoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
-import org.koitharu.kotatsu.reader.ui.wetoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.utils.GridTouchHelper
-import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.anim.Motion
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
+import org.koitharu.kotatsu.utils.ext.hideAnimated
+import org.koitharu.kotatsu.utils.ext.hitTest
+import org.koitharu.kotatsu.utils.ext.showAnimated
 
 class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	ChaptersDialog.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
-	ReaderListener, SharedPreferences.OnSharedPreferenceChangeListener,
-	ActivityResultCallback<Boolean>, OnApplyWindowInsetsListener {
+	ActivityResultCallback<Boolean>, OnApplyWindowInsetsListener,
+	ReaderControlDelegate.OnInteractionListener {
 
-	private val viewModel by viewModel<ReaderViewModel>()
-	private val settings by inject<AppSettings>()
-
-	lateinit var state: ReaderState
-		private set
+	private val viewModel by viewModel<ReaderViewModel> {
+		parametersOf(MangaIntent.from(intent), intent?.getParcelableExtra<ReaderState>(EXTRA_STATE))
+	}
 
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var orientationHelper: ScreenOrientationHelper
-	private var isTapSwitchEnabled = true
-	private var isVolumeKeysSwitchEnabled = false
+	private lateinit var controlDelegate: ReaderControlDelegate
 
 	private val reader
-		get() = supportFragmentManager.findFragmentById(R.id.container) as? AbstractReader<*>
+		get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseReader<*>
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -74,63 +73,43 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
 		orientationHelper = ScreenOrientationHelper(this)
+		controlDelegate = ReaderControlDelegate(lifecycleScope, get(), this)
 		binding.toolbarBottom.inflateMenu(R.menu.opt_reader_bottom)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 
-		@Suppress("RemoveExplicitTypeArguments")
-		state = savedInstanceState?.getParcelable<ReaderState>(EXTRA_STATE)
-			?: intent.getParcelableExtra<ReaderState>(EXTRA_STATE)
-					?: let {
-				Toast.makeText(this, R.string.error_occurred, Toast.LENGTH_SHORT).show()
-				finishAfterTransition()
-				return
-			}
-
-		title = state.chapter?.name ?: state.manga.title
-		state.manga.chapters?.run {
-			supportActionBar?.subtitle =
-				getString(R.string.chapter_d_of_d, state.chapter?.number ?: 0, size)
-		}
-
 		ViewCompat.setOnApplyWindowInsetsListener(binding.rootLayout, this)
 
-		settings.subscribe(this)
-		loadSwitchSettings()
 		orientationHelper.observeAutoOrientation()
 			.onEach {
 				binding.toolbarBottom.menu.findItem(R.id.action_screen_rotate).isVisible = !it
 			}.launchIn(lifecycleScope)
 
-		if (savedInstanceState == null) {
-			viewModel.init(state.manga)
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-				GlobalScope.launch(Dispatchers.Main + IgnoreErrors) {
-					MangaShortcut(state.manga).addAppShortcut(applicationContext)
-				}
-			}
-		}
-
 		viewModel.onError.observe(this, this::onError)
-		viewModel.reader.observe(this) { (manga, mode) -> onInitReader(manga, mode) }
+		viewModel.readerMode.observe(this, this::onInitReader)
 		viewModel.onPageSaved.observe(this, this::onPageSaved)
+		viewModel.uiState.observe(this, this::onUiStateChanged)
+		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
+		viewModel.content.observe(this) {
+			onLoadingStateChanged(viewModel.isLoading.value == true)
+		}
 	}
 
-	private fun onInitReader(manga: Manga, mode: ReaderMode) {
+	private fun onInitReader(mode: ReaderMode) {
 		val currentReader = reader
 		when (mode) {
 			ReaderMode.WEBTOON -> if (currentReader !is WebtoonReaderFragment) {
 				supportFragmentManager.commit {
-					replace(R.id.container, WebtoonReaderFragment.newInstance(state))
+					replace(R.id.container, WebtoonReaderFragment())
 				}
 			}
 			ReaderMode.REVERSED -> if (currentReader !is ReversedReaderFragment) {
 				supportFragmentManager.commit {
-					replace(R.id.container, ReversedReaderFragment.newInstance(state))
+					replace(R.id.container, ReversedReaderFragment())
 				}
 			}
 			ReaderMode.STANDARD -> if (currentReader !is PagerReaderFragment) {
 				supportFragmentManager.commit {
-					replace(R.id.container, PagerReaderFragment.newInstance(state))
+					replace(R.id.container, PagerReaderFragment())
 				}
 			}
 		}
@@ -146,19 +125,14 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		}
 	}
 
-	override fun onDestroy() {
-		settings.unsubscribe(this)
-		super.onDestroy()
+	override fun onPause() {
+		viewModel.saveCurrentState(reader?.getCurrentState())
+		super.onPause()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.opt_reader_top, menu)
 		return super.onCreateOptionsMenu(menu)
-	}
-
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		outState.putParcelable(EXTRA_STATE, state)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -182,30 +156,28 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			R.id.action_chapters -> {
 				ChaptersDialog.show(
 					supportFragmentManager,
-					state.manga.chapters.orEmpty(),
-					state.chapterId
+					viewModel.manga?.chapters.orEmpty(),
+					viewModel.getCurrentState()?.chapterId ?: 0L
 				)
 			}
 			R.id.action_screen_rotate -> {
 				orientationHelper.toggleOrientation()
 			}
 			R.id.action_pages_thumbs -> {
-				if (reader?.hasItems == true) {
-					val pages = reader?.getPages()
-					if (!pages.isNullOrEmpty()) {
-						PagesThumbnailsSheet.show(
-							supportFragmentManager, pages,
-							state.chapter?.name ?: title?.toString().orEmpty()
-						)
-					} else {
-						showWaitWhileLoading()
-					}
+				val pages = viewModel.getCurrentChapterPages()
+				if (!pages.isNullOrEmpty()) {
+					PagesThumbnailsSheet.show(
+						supportFragmentManager,
+						pages,
+						title?.toString().orEmpty(),
+						reader?.getCurrentState()?.page ?: -1
+					)
 				} else {
 					showWaitWhileLoading()
 				}
 			}
 			R.id.action_save_page -> {
-				if (reader?.hasItems == true) {
+				if (!viewModel.content.value?.pages.isNullOrEmpty()) {
 					if (ContextCompat.checkSelfPermission(
 							this,
 							Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -229,30 +201,22 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 	override fun onActivityResult(result: Boolean) {
 		if (result) {
-			viewModel.savePage(
-				resolver = contentResolver,
-				page = reader?.currentPage ?: return
-			)
+			viewModel.saveCurrentPage(contentResolver)
 		}
 	}
 
-	override fun saveState(chapterId: Long, page: Int, scroll: Int) {
-		state = state.copy(chapterId = chapterId, page = page, scroll = scroll)
-		ReaderViewModel.saveState(state)
-	}
-
-	override fun onLoadingStateChanged(isLoading: Boolean) {
-		val hasPages = reader?.hasItems == true
+	private fun onLoadingStateChanged(isLoading: Boolean) {
+		val hasPages = !viewModel.content.value?.pages.isNullOrEmpty()
 		binding.layoutLoading.isVisible = isLoading && !hasPages
 		binding.progressBarBottom.isVisible = isLoading && hasPages
 	}
 
-	override fun onError(e: Throwable) {
+	private fun onError(e: Throwable) {
 		val dialog = AlertDialog.Builder(this)
 			.setTitle(R.string.error_occurred)
 			.setMessage(e.message)
 			.setPositiveButton(R.string.close, null)
-		if (reader?.hasItems != true) {
+		if (viewModel.content.value?.pages.isNullOrEmpty()) {
 			dialog.setOnDismissListener {
 				finish()
 			}
@@ -261,19 +225,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	}
 
 	override fun onGridTouch(area: Int) {
-		when (area) {
-			GridTouchHelper.AREA_CENTER -> {
-				setUiIsVisible(!binding.appbarTop.isVisible)
-			}
-			GridTouchHelper.AREA_TOP,
-			GridTouchHelper.AREA_LEFT -> if (isTapSwitchEnabled) {
-				reader?.switchPageBy(-1)
-			}
-			GridTouchHelper.AREA_BOTTOM,
-			GridTouchHelper.AREA_RIGHT -> if (isTapSwitchEnabled) {
-				reader?.switchPageBy(1)
-			}
-		}
+		controlDelegate.onGridTouch(area)
 	}
 
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
@@ -292,61 +244,32 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		return super.dispatchTouchEvent(ev)
 	}
 
-	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean = when (keyCode) {
-		KeyEvent.KEYCODE_VOLUME_UP -> if (isVolumeKeysSwitchEnabled) {
-			reader?.switchPageBy(-1)
-			true
-		} else {
-			super.onKeyDown(keyCode, event)
-		}
-		KeyEvent.KEYCODE_VOLUME_DOWN -> if (isVolumeKeysSwitchEnabled) {
-			reader?.switchPageBy(1)
-			true
-		} else {
-			super.onKeyDown(keyCode, event)
-		}
-		KeyEvent.KEYCODE_SPACE,
-		KeyEvent.KEYCODE_PAGE_DOWN,
-		KeyEvent.KEYCODE_DPAD_DOWN,
-		KeyEvent.KEYCODE_DPAD_RIGHT -> {
-			reader?.switchPageBy(1)
-			true
-		}
-		KeyEvent.KEYCODE_PAGE_UP,
-		KeyEvent.KEYCODE_DPAD_UP,
-		KeyEvent.KEYCODE_DPAD_LEFT -> {
-			reader?.switchPageBy(-1)
-			true
-		}
-		KeyEvent.KEYCODE_DPAD_CENTER -> {
-			setUiIsVisible(!binding.appbarTop.isVisible)
-			true
-		}
-		else -> super.onKeyDown(keyCode, event)
+	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+		return controlDelegate.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
 	}
 
 	override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-		return (isVolumeKeysSwitchEnabled &&
-				(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP))
-				|| super.onKeyUp(keyCode, event)
+		return controlDelegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event)
 	}
 
 	override fun onChapterChanged(chapter: MangaChapter) {
-		state = state.copy(
-			chapterId = chapter.id,
-			page = 0,
-			scroll = 0
-		)
-		reader?.updateState(chapterId = chapter.id)
+		viewModel.switchChapter(chapter.id)
 	}
 
 	override fun onPageSelected(page: MangaPage) {
-		reader?.updateState(pageId = page.id)
+		lifecycleScope.launch(Dispatchers.Default) {
+			val pages = viewModel.content.value?.pages ?: return@launch
+			val index = pages.indexOfFirst { it.id == page.id }
+			if (index != -1) {
+				withContext(Dispatchers.Main) {
+					reader?.switchPageTo(index, true)
+				}
+			}
+		}
 	}
 
 	override fun onReaderModeChanged(mode: ReaderMode) {
-		//TODO save state
-		viewModel.setMode(state.manga, mode)
+		viewModel.switchMode(mode)
 	}
 
 	private fun onPageSaved(uri: Uri?) {
@@ -360,22 +283,6 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			Snackbar.make(binding.container, R.string.error_occurred, Snackbar.LENGTH_SHORT)
 				.setAnchorView(binding.appbarBottom)
 				.show()
-		}
-	}
-
-	override fun onPageChanged(chapter: MangaChapter, page: Int) {
-		title = chapter.name
-		state.manga.chapters?.run {
-			supportActionBar?.subtitle =
-				getString(R.string.chapter_d_of_d, chapter.number, size)
-		}
-	}
-
-	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-		when (key) {
-			AppSettings.KEY_READER_SWITCHERS -> loadSwitchSettings()
-			AppSettings.KEY_READER_ANIMATION,
-			AppSettings.KEY_ZOOM_MODE -> reader?.recreateAdapter()
 		}
 	}
 
@@ -416,10 +323,20 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			.build()
 	}
 
-	private fun loadSwitchSettings() {
-		settings.readerPageSwitch.let {
-			isTapSwitchEnabled = it.contains(AppSettings.PAGE_SWITCH_TAPS)
-			isVolumeKeysSwitchEnabled = it.contains(AppSettings.PAGE_SWITCH_VOLUME_KEYS)
+	override fun switchPageBy(delta: Int) {
+		reader?.switchPageBy(delta)
+	}
+
+	override fun toggleUiVisibility() {
+		setUiIsVisible(!binding.appbarTop.isVisible)
+	}
+
+	private fun onUiStateChanged(uiState: ReaderUiState) {
+		title = uiState.chapterName ?: uiState.mangaName ?: getString(R.string.loading_)
+		supportActionBar?.subtitle = if (uiState.chapterNumber in 1..uiState.chaptersTotal) {
+			getString(R.string.chapter_d_of_d, uiState.chapterNumber, uiState.chaptersTotal)
+		} else {
+			null
 		}
 	}
 
@@ -427,32 +344,16 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 		private const val EXTRA_STATE = "state"
 
-		fun newIntent(context: Context, state: ReaderState) =
-			Intent(context, ReaderActivity::class.java)
+		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {
+			return Intent(context, ReaderActivity::class.java)
+				.putExtra(MangaIntent.KEY_MANGA, manga)
 				.putExtra(EXTRA_STATE, state)
+		}
 
-		fun newIntent(context: Context, manga: Manga, chapterId: Long = -1) = newIntent(
-			context, ReaderState(
-				manga = manga,
-				chapterId = if (chapterId == -1L) manga.chapters?.firstOrNull()?.id
-					?: -1 else chapterId,
-				page = 0,
-				scroll = 0
-			)
-		)
-
-		fun newIntent(context: Context, manga: Manga, history: MangaHistory?) =
-			if (history == null) {
-				newIntent(context, manga)
-			} else {
-				newIntent(
-					context, ReaderState(
-						manga = manga,
-						chapterId = history.chapterId,
-						page = history.page,
-						scroll = history.scroll
-					)
-				)
-			}
+		fun newIntent(context: Context, mangaId: Long, state: ReaderState?): Intent {
+			return Intent(context, ReaderActivity::class.java)
+				.putExtra(MangaIntent.KEY_ID, mangaId)
+				.putExtra(EXTRA_STATE, state)
+		}
 	}
 }

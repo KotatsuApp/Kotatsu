@@ -30,7 +30,6 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setHasOptionsMenu(true)
-		adapterState = savedInstanceState?.getParcelable(KEY_ADAPTER_STATE) ?: adapterState
 	}
 
 	override fun onInflateView(
@@ -41,12 +40,18 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = FavouritesPagerAdapter(this, this)
-		adapterState?.let(adapter::restoreState)
 		binding.pager.adapter = adapter
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
 
 		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+	}
+
+	override fun onViewStateRestored(savedInstanceState: Bundle?) {
+		super.onViewStateRestored(savedInstanceState)
+		(savedInstanceState?.getParcelable(KEY_ADAPTER_STATE) ?: adapterState)?.let {
+			(binding.pager.adapter as FavouritesPagerAdapter).restoreState(it)
+		}
 	}
 
 	override fun onDestroyView() {
@@ -56,6 +61,8 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
+		adapterState = (bindingOrNull()?.pager?.adapter as? FavouritesPagerAdapter)?.saveState()
+			?: adapterState
 		outState.putParcelable(KEY_ADAPTER_STATE, adapterState)
 	}
 

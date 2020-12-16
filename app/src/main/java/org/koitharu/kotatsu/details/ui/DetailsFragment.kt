@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.*
 import kotlin.math.roundToInt
@@ -138,7 +139,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 					ReaderActivity.newIntent(
 						context ?: return,
 						manga ?: return,
-						viewModel.readingHistory.value
+						null
 					)
 				)
 			}
@@ -157,7 +158,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 							startActivity(
 								ReaderActivity.newIntent(
 									context ?: return@showPopupMenu false,
-									viewModel.manga.value ?: return@showPopupMenu false
+									viewModel.manga.value ?: return@showPopupMenu false,
+									viewModel.chapters.value?.firstOrNull()?.let { c ->
+										ReaderState(c.chapter.id, 0, 0)
+									}
 								)
 							)
 							true

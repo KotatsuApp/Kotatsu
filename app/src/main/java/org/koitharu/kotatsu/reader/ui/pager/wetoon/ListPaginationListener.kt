@@ -1,8 +1,8 @@
-package org.koitharu.kotatsu.reader.ui.wetoon
+package org.koitharu.kotatsu.reader.ui.pager.wetoon
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.koitharu.kotatsu.reader.ui.base.OnBoundsScrollListener
+import org.koitharu.kotatsu.reader.ui.pager.OnBoundsScrollListener
 
 class ListPaginationListener(
 	private val offset: Int,

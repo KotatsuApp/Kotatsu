@@ -14,9 +14,10 @@ import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
+import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
-import org.koitharu.kotatsu.utils.UiUtils
 import org.koitharu.kotatsu.utils.ext.resolveDp
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
@@ -24,34 +25,58 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 	OnListItemClickListener<MangaPage> {
 
+	private lateinit var thumbnails: List<PageThumbnail>
+	private val spanResolver = MangaListSpanResolver()
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		val pages = arguments?.getParcelableArrayList<MangaPage>(ARG_PAGES)
+		if (pages.isNullOrEmpty()) {
+			dismissAllowingStateLoss()
+			return
+		}
+		val current = arguments?.getInt(ARG_CURRENT, -1) ?: -1
+		val repository = pages.first().source.repository
+		thumbnails = pages.mapIndexed { i, x ->
+			PageThumbnail(
+				number = i + 1,
+				isCurrent = i == current,
+				repository = repository,
+				page = x
+			)
+		}
+	}
+
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetPagesBinding {
 		return SheetPagesBinding.inflate(inflater, container, false)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		binding.recyclerView.addItemDecoration(SpacingItemDecoration(view.resources.resolveDp(8)))
-		val pages = arguments?.getParcelableArrayList<MangaPage>(ARG_PAGES)
-		if (pages == null) {
-			dismissAllowingStateLoss()
-			return
+		with(binding.recyclerView) {
+			addItemDecoration(SpacingItemDecoration(view.resources.resolveDp(8)))
+			adapter = PageThumbnailAdapter(
+				thumbnails,
+				get(),
+				viewLifecycleScope,
+				get(),
+				this@PagesThumbnailsSheet
+			)
+			addOnLayoutChangeListener(spanResolver)
+			spanResolver.setGridSize(get<AppSettings>().gridSize / 100f, this)
 		}
-		binding.recyclerView.adapter =
-			PageThumbnailAdapter(get(), viewLifecycleScope, get(), this).apply {
-				items = pages
-			}
+
 		val title = arguments?.getString(ARG_TITLE)
 		binding.toolbar.title = title
 		binding.toolbar.setNavigationOnClickListener { dismiss() }
 		binding.toolbar.subtitle =
-			resources.getQuantityString(R.plurals.pages, pages.size, pages.size)
+			resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
 		binding.textViewTitle.text = title
 		if (dialog !is BottomSheetDialog) {
 			binding.toolbar.isVisible = true
 			binding.textViewTitle.isVisible = false
 			binding.appbar.elevation = resources.getDimension(R.dimen.elevation_large)
 		}
-		binding.recyclerView.addOnLayoutChangeListener(UiUtils.SpanCountResolver)
 	}
 
 	override fun onCreateDialog(savedInstanceState: Bundle?) =
@@ -77,11 +102,6 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 
 		}
 
-	override fun onDestroyView() {
-		binding.recyclerView.adapter = null
-		super.onDestroyView()
-	}
-
 	override fun onItemClick(item: MangaPage, view: View) {
 		((parentFragment as? OnPageSelectListener)
 			?: (activity as? OnPageSelectListener))?.run {
@@ -94,13 +114,15 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 
 		private const val ARG_PAGES = "pages"
 		private const val ARG_TITLE = "title"
+		private const val ARG_CURRENT = "current"
 
 		private const val TAG = "PagesThumbnailsSheet"
 
-		fun show(fm: FragmentManager, pages: List<MangaPage>, title: String) =
-			PagesThumbnailsSheet().withArgs(2) {
+		fun show(fm: FragmentManager, pages: List<MangaPage>, title: String, currentPage: Int) =
+			PagesThumbnailsSheet().withArgs(3) {
 				putParcelableArrayList(ARG_PAGES, ArrayList<MangaPage>(pages))
 				putString(ARG_TITLE, title)
+				putInt(ARG_CURRENT, currentPage)
 			}.show(fm, TAG)
 
 	}

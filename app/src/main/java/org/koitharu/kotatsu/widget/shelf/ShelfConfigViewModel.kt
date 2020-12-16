@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
@@ -26,7 +27,7 @@ class ShelfConfigViewModel(
 			CategoryItem(it.id, it.title, selectedId == it.id)
 		}
 		list
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext)
 
 	var checkedId: Long by selectedCategoryId::value
 }

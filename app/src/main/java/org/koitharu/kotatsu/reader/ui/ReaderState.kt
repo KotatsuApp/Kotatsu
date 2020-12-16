@@ -1,21 +1,29 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.os.Parcelable
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.core.model.MangaHistory
 
 @Parcelize
 data class ReaderState(
-	val manga: Manga,
 	val chapterId: Long,
 	val page: Int,
 	val scroll: Int
 ) : Parcelable {
 
-	@IgnoredOnParcel
-	val chapter: MangaChapter? by lazy {
-		manga.chapters?.find { it.id == chapterId }
+	companion object {
+
+		fun from(history: MangaHistory) = ReaderState(
+			chapterId = history.chapterId,
+			page = history.page,
+			scroll = history.scroll
+		)
+
+		fun initial(manga: Manga) = ReaderState(
+			chapterId = manga.chapters?.firstOrNull()?.id ?: error("Cannot find first chapter"),
+			page = 0,
+			scroll = 0
+		)
 	}
 }

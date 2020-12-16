@@ -3,6 +3,13 @@ package org.koitharu.kotatsu.utils.ext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.liveData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import org.koitharu.kotatsu.utils.BufferedObserver
+import org.koitharu.kotatsu.utils.FlowLiveEvent
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 fun <T> LiveData<T?>.observeNotNull(owner: LifecycleOwner, observer: Observer<T>) {
 	this.observe(owner) {
@@ -11,3 +18,27 @@ fun <T> LiveData<T?>.observeNotNull(owner: LifecycleOwner, observer: Observer<T>
 		}
 	}
 }
+
+fun <T> LiveData<T>.observeWithPrevious(owner: LifecycleOwner, observer: BufferedObserver<T>) {
+	var previous: T? = null
+	this.observe(owner) {
+		observer.onChanged(it, previous)
+		previous = it
+	}
+}
+
+fun <T> Flow<T>.asLiveData(
+	context: CoroutineContext = EmptyCoroutineContext,
+	defaultValue: T
+): LiveData<T> = liveData(context) {
+	if (latestValue == null) {
+		emit(defaultValue)
+	}
+	collect {
+		emit(it)
+	}
+}
+
+fun <T> Flow<T>.asLiveEvent(
+	context: CoroutineContext = EmptyCoroutineContext
+): LiveData<T> = FlowLiveEvent(this, context)

@@ -1,18 +1,18 @@
 package org.koitharu.kotatsu.search.ui
 
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.utils.ext.asLiveData
 import java.util.*
 
 class SearchViewModel(
@@ -46,9 +46,7 @@ class SearchViewModel(
 				result
 			}
 		}
-	}.onStart {
-		emit(listOf(LoadingState))
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext, listOf(LoadingState))
 
 	init {
 		loadList(append = false)

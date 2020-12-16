@@ -1,35 +1,32 @@
-package org.koitharu.kotatsu.reader.ui.standard
+package org.koitharu.kotatsu.reader.ui.pager.standard
 
 import android.graphics.PointF
 import android.net.Uri
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.BaseViewHolder
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.reader.ui.PageLoader
-import org.koitharu.kotatsu.reader.ui.base.PageHolderDelegate
-import org.koitharu.kotatsu.reader.ui.base.ReaderPage
+import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
+import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-open class PageHolder(parent: ViewGroup, loader: PageLoader) :
-	BaseViewHolder<ReaderPage, Unit, ItemPageBinding>(
-		ItemPageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-	), PageHolderDelegate.Callback, View.OnClickListener {
-
-	private val delegate = PageHolderDelegate(loader, this)
+open class PageHolder(
+	binding: ItemPageBinding,
+	loader: PageLoader,
+	settings: AppSettings
+) : BasePageHolder<ItemPageBinding>(binding, loader, settings), View.OnClickListener {
 
 	init {
 		binding.ssiv.setOnImageEventListener(delegate)
 		binding.buttonRetry.setOnClickListener(this)
 	}
 
-	override fun onBind(data: ReaderPage, extra: Unit) {
+	override fun onBind(data: ReaderPage) {
 		delegate.onBind(data.toMangaPage())
 	}
 

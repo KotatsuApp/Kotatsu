@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.download.DownloadService
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderState
 
 class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<MangaChapter>, ActionMode.Callback {
@@ -84,9 +85,9 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		)
 		startActivity(
 			ReaderActivity.newIntent(
-				context ?: return,
+				view.context,
 				viewModel.manga.value ?: return,
-				item.id
+				ReaderState(item.id, 0, 0)
 			), options.toBundle()
 		)
 	}

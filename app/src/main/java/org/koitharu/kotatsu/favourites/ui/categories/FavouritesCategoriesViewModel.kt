@@ -4,6 +4,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 
@@ -14,7 +15,7 @@ class FavouritesCategoriesViewModel(
 	private var reorderJob: Job? = null
 
 	val categories = repository.observeCategories()
-		.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+		.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext)
 
 	fun createCategory(name: String) {
 		launchJob(Dispatchers.Default) {

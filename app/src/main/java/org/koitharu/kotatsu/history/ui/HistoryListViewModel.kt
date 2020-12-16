@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.history.ui
 import android.content.Context
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -18,6 +17,7 @@ import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.asLiveData
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
 import java.util.*
@@ -51,11 +51,9 @@ class HistoryListViewModel(
 		}
 	}.onFirst {
 		isLoading.postValue(false)
-	}.onStart {
-		emit(listOf(LoadingState))
 	}.catch {
 		it.toErrorState(canRetry = false)
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext, listOf(LoadingState))
 
 	override fun onRefresh() = Unit
 

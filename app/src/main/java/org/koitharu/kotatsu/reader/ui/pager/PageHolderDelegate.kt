@@ -1,10 +1,9 @@
-package org.koitharu.kotatsu.reader.ui.base
+package org.koitharu.kotatsu.reader.ui.pager
 
 import android.net.Uri
 import androidx.core.net.toUri
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.coroutines.*
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -16,11 +15,11 @@ import java.io.IOException
 
 class PageHolderDelegate(
 	private val loader: PageLoader,
+	private val settings: AppSettings,
 	private val callback: Callback
 ) : SubsamplingScaleImageView.DefaultOnImageEventListener(),
 	CoroutineScope by loader {
 
-	private val settings by loader.inject<AppSettings>()
 	private var state = State.EMPTY
 	private var job: Job? = null
 	private var file: File? = null

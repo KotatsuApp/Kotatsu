@@ -1,0 +1,69 @@
+package org.koitharu.kotatsu.reader.ui.pager
+
+import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.reader.ui.PageLoader
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+
+abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
+	private val loader: PageLoader,
+	private val settings: AppSettings
+) : RecyclerView.Adapter<H>() {
+
+	private val differ = AsyncListDiffer(this, DiffCallback())
+
+	init {
+		setHasStableIds(true)
+	}
+
+	override fun onBindViewHolder(holder: H, position: Int) {
+		holder.bind(differ.currentList[position])
+	}
+
+	open fun getItem(position: Int): ReaderPage = differ.currentList[position]
+
+	open fun getItemOrNull(position: Int) = differ.currentList.getOrNull(position)
+
+	override fun getItemId(position: Int) = differ.currentList[position].id
+
+	final override fun getItemCount() = differ.currentList.size
+
+	final override fun onCreateViewHolder(
+		parent: ViewGroup,
+		viewType: Int
+	): H = onCreateViewHolder(parent, loader, settings).also(this::onViewHolderCreated)
+
+	fun setItems(items: List<ReaderPage>, callback: Runnable) {
+		differ.submitList(items, callback)
+	}
+
+	suspend fun setItems(items: List<ReaderPage>) = suspendCoroutine<Unit> { cont ->
+		differ.submitList(items) {
+			cont.resume(Unit)
+		}
+	}
+
+	protected open fun onViewHolderCreated(holder: H) = Unit
+
+	protected abstract fun onCreateViewHolder(
+		parent: ViewGroup,
+		loader: PageLoader,
+		settings: AppSettings
+	): H
+
+	private class DiffCallback : DiffUtil.ItemCallback<ReaderPage>() {
+
+		override fun areItemsTheSame(oldItem: ReaderPage, newItem: ReaderPage): Boolean {
+			return oldItem.id == newItem.id
+		}
+
+		override fun areContentsTheSame(oldItem: ReaderPage, newItem: ReaderPage): Boolean {
+			return oldItem == newItem
+		}
+
+	}
+}

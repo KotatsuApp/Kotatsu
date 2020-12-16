@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
@@ -26,7 +27,6 @@ import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.ui.SearchHelper
 import org.koitharu.kotatsu.settings.AppUpdateChecker
@@ -159,7 +159,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		return true
 	}
 
-	private fun onOpenReader(state: ReaderState) {
+	private fun onOpenReader(manga: Manga) {
 		val options = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			ActivityOptions.makeClipRevealAnimation(
 				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
@@ -169,7 +169,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
 			)
 		}
-		startActivity(ReaderActivity.newIntent(this, state), options?.toBundle())
+		startActivity(ReaderActivity.newIntent(this, manga, null), options?.toBundle())
 	}
 
 	private fun onError(e: Throwable) {

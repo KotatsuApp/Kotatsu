@@ -2,20 +2,20 @@ package org.koitharu.kotatsu.tracker.ui
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.TrackingLogItem
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.ui.model.toFeedItem
+import org.koitharu.kotatsu.utils.ext.asLiveData
 import org.koitharu.kotatsu.utils.ext.mapItems
 
 class FeedViewModel(
@@ -35,9 +35,7 @@ class FeedViewModel(
 		hasNextPage
 	) { list, isHasNextPage ->
 		if (isHasNextPage && list.isNotEmpty()) list + LoadingFooter else list
-	}.onStart {
-		emit(listOf(LoadingState))
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext, listOf(LoadingState))
 
 	init {
 		loadList(append = false)

@@ -1,11 +1,10 @@
 package org.koitharu.kotatsu.favourites.ui.list
 
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -15,6 +14,7 @@ import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.utils.ext.asLiveData
 import org.koitharu.kotatsu.utils.ext.onFirst
 
 class FavouritesListViewModel(
@@ -41,11 +41,9 @@ class FavouritesListViewModel(
 		}
 	}.onFirst {
 		isLoading.postValue(false)
-	}.onStart {
-		emit(listOf(LoadingState))
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext, listOf(LoadingState))
 
 	override fun onRefresh() = Unit
 

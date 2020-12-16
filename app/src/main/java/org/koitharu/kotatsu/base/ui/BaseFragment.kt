@@ -32,12 +32,14 @@ abstract class BaseFragment<B : ViewBinding> : Fragment() {
 
 	open fun getTitle(): CharSequence? = null
 
-	protected abstract fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): B
-
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
 		getTitle()?.let {
 			activity?.title = it
 		}
 	}
+
+	protected fun bindingOrNull() = viewBinding
+
+	protected abstract fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): B
 }

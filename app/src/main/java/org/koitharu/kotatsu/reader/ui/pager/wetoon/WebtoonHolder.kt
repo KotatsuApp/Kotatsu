@@ -1,28 +1,26 @@
-package org.koitharu.kotatsu.reader.ui.wetoon
+package org.koitharu.kotatsu.reader.ui.pager.wetoon
 
 import android.net.Uri
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.BaseViewHolder
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.reader.ui.PageLoader
-import org.koitharu.kotatsu.reader.ui.base.PageHolderDelegate
-import org.koitharu.kotatsu.reader.ui.base.ReaderPage
+import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
+import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 
-class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
-	BaseViewHolder<ReaderPage, Unit, ItemPageWebtoonBinding>(
-		ItemPageWebtoonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-	), PageHolderDelegate.Callback, View.OnClickListener {
+class WebtoonHolder(
+	binding: ItemPageWebtoonBinding,
+	loader: PageLoader,
+	settings: AppSettings
+) : BasePageHolder<ItemPageWebtoonBinding>(binding, loader, settings), View.OnClickListener {
 
-	private val delegate = PageHolderDelegate(loader, this)
 	private var scrollToRestore = 0
 
 	init {
@@ -30,7 +28,7 @@ class WebtoonHolder(parent: ViewGroup, private val loader: PageLoader) :
 		binding.buttonRetry.setOnClickListener(this)
 	}
 
-	override fun onBind(data: ReaderPage, extra: Unit) {
+	override fun onBind(data: ReaderPage) {
 		delegate.onBind(data.toMangaPage())
 	}
 

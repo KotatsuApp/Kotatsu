@@ -209,12 +209,14 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 
 		const val ACTION_MANGA_VIEW = "${BuildConfig.APPLICATION_ID}.action.VIEW_MANGA"
 
-		fun newIntent(context: Context, manga: Manga) =
-			Intent(context, DetailsActivity::class.java)
+		fun newIntent(context: Context, manga: Manga): Intent {
+			return Intent(context, DetailsActivity::class.java)
 				.putExtra(MangaIntent.KEY_MANGA, manga)
+		}
 
-		fun newIntent(context: Context, mangaId: Long) =
-			Intent(context, DetailsActivity::class.java)
+		fun newIntent(context: Context, mangaId: Long): Intent {
+			return Intent(context, DetailsActivity::class.java)
 				.putExtra(MangaIntent.KEY_ID, mangaId)
+		}
 	}
 }

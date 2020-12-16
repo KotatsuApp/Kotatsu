@@ -4,6 +4,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -34,28 +35,28 @@ class DetailsViewModel(
 		.distinctUntilChanged()
 		.flatMapLatest { mangaId ->
 			historyRepository.observeOne(mangaId)
-		}.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	private val favourite = mangaData.mapNotNull { it?.id }
 		.distinctUntilChanged()
 		.flatMapLatest { mangaId ->
 			favouritesRepository.observeCategoriesIds(mangaId).map { it.isNotEmpty() }
-		}.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
 	private val newChapters = mangaData.mapNotNull { it?.id }
 		.distinctUntilChanged()
 		.mapLatest { mangaId ->
 			trackingRepository.getNewChaptersCount(mangaId)
-		}.stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	val manga = mangaData.filterNotNull()
-		.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+		.asLiveData(viewModelScope.coroutineContext)
 	val favouriteCategories = favourite
-		.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+		.asLiveData(viewModelScope.coroutineContext)
 	val newChaptersCount = newChapters
-		.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+		.asLiveData(viewModelScope.coroutineContext)
 	val readingHistory = history
-		.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+		.asLiveData(viewModelScope.coroutineContext)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 
@@ -76,7 +77,7 @@ class DetailsViewModel(
 				}
 			)
 		}
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext)
 
 	init {
 		launchLoadingJob(Dispatchers.Default) {

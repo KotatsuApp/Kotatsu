@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 
 fun pageThumbnailAD(
@@ -18,7 +19,7 @@ fun pageThumbnailAD(
 	scope: CoroutineScope,
 	cache: PagesCache,
 	clickListener: OnListItemClickListener<MangaPage>
-) = adapterDelegateViewBinding<MangaPage, MangaPage, ItemPageThumbBinding>(
+) = adapterDelegateViewBinding<PageThumbnail, PageThumbnail, ItemPageThumbBinding>(
 	{ inflater, parent -> ItemPageThumbBinding.inflate(inflater, parent, false) }
 ) {
 
@@ -30,16 +31,19 @@ fun pageThumbnailAD(
 	)
 
 	binding.handle.setOnClickListener {
-		clickListener.onItemClick(item, itemView)
+		clickListener.onItemClick(item.page, itemView)
 	}
 
 	bind {
 		job?.cancel()
 		binding.imageViewThumb.setImageDrawable(null)
-		binding.textViewNumber.text = (bindingAdapterPosition + 1).toString()
+		with(binding.textViewNumber) {
+			setBackgroundResource(if (item.isCurrent) R.drawable.bg_badge_accent else R.drawable.bg_badge_default)
+			text = (item.number).toString()
+		}
 		job = scope.launch(Dispatchers.Default + IgnoreErrors) {
-			val url = item.preview ?: item.url.let {
-				val pageUrl = item.source.repository.getPageFullUrl(item)
+			val url = item.page.preview ?: item.page.url.let {
+				val pageUrl = item.repository.getPageFullUrl(item.page)
 				cache[pageUrl]?.toUri()?.toString() ?: pageUrl
 			}
 			val drawable = coil.execute(

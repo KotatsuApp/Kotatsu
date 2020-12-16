@@ -5,6 +5,7 @@
 		<item name="actionModeCloseDrawable">@drawable/ic_cross</item>
 		<item name="actionModeStyle">@style/AppActionMode</item>
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+		<item name="badgeStyle">@style/Widget.MaterialComponents.Badge</item>
 	</style>
 
 	<style name="AppTheme" parent="BaseAppTheme">

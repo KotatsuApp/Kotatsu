@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.reader.ui.wetoon
+package org.koitharu.kotatsu.reader.ui.pager.wetoon
 
 import android.content.Context
 import android.graphics.PointF

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,7 @@ class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 
 	override fun onBuildDialog(builder: AlertDialog.Builder) {
 		builder.setTitle(R.string.read_mode)
+			.setPositiveButton(R.string.done, null)
 			.setCancelable(true)
 	}
 
@@ -40,19 +42,19 @@ class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 		binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
 		binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
 
-		binding.buttonOk.setOnClickListener(this)
 		binding.buttonStandard.setOnClickListener(this)
 		binding.buttonReversed.setOnClickListener(this)
 		binding.buttonWebtoon.setOnClickListener(this)
 	}
 
+	override fun onDismiss(dialog: DialogInterface) {
+		((parentFragment as? Callback)
+			?: (activity as? Callback))?.onReaderModeChanged(mode)
+		super.onDismiss(dialog)
+	}
+
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_ok -> {
-				((parentFragment as? Callback)
-					?: (activity as? Callback))?.onReaderModeChanged(mode)
-				dismiss()
-			}
 			R.id.button_standard -> mode = ReaderMode.STANDARD
 			R.id.button_webtoon -> mode = ReaderMode.WEBTOON
 			R.id.button_reversed -> mode = ReaderMode.REVERSED

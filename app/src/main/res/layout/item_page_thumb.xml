@@ -25,13 +25,13 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom|end"
 		android:layout_margin="8dp"
-		android:background="@drawable/bg_badge_default"
 		android:ellipsize="none"
 		android:gravity="center"
 		android:minWidth="26dp"
 		android:singleLine="true"
 		android:textAlignment="center"
 		android:textColor="?android:textColorSecondaryInverse"
+		tools:background="@drawable/bg_badge_default"
 		tools:text="2" />
 
 </FrameLayout>

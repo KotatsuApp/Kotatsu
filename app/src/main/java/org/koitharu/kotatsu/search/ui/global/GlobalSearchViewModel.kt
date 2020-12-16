@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.search.ui.global
 
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,6 +11,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
+import org.koitharu.kotatsu.utils.ext.asLiveData
 import org.koitharu.kotatsu.utils.ext.onFirst
 import java.util.*
 
@@ -46,9 +46,7 @@ class GlobalSearchViewModel(
 				result
 			}
 		}
-	}.onStart {
-		emit(listOf(LoadingState))
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext, listOf(LoadingState))
 
 	init {
 		onRefresh()

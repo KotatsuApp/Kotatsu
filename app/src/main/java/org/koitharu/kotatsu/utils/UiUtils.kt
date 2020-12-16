@@ -26,6 +26,7 @@ object UiUtils : KoinComponent {
 
 	fun isTablet(context: Context) = context.resources.getBoolean(R.bool.is_tablet)
 
+	@Deprecated("Use MangaListSpanResolver")
 	object SpanCountResolver : View.OnLayoutChangeListener {
 		override fun onLayoutChange(
 			v: View?, left: Int, top: Int, right: Int, bottom: Int,

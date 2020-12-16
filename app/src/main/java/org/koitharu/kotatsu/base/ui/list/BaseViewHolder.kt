@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.koin.core.component.KoinComponent
 
+@Deprecated("")
 abstract class BaseViewHolder<T, E, B : ViewBinding> protected constructor(val binding: B) :
 	RecyclerView.ViewHolder(binding.root), KoinComponent {
 

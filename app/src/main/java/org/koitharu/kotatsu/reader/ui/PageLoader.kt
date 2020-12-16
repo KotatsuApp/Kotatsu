@@ -9,25 +9,20 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
 import java.io.File
 import java.util.zip.ZipFile
-import kotlin.coroutines.CoroutineContext
 
-class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
+class PageLoader(
+	scope: CoroutineScope,
+	private val okHttp: OkHttpClient,
+	private val cache: PagesCache
+) : CoroutineScope by scope {
 
-	private val job = SupervisorJob()
 	private val tasks = ArrayMap<String, Deferred<File>>()
-	private val okHttp by inject<OkHttpClient>()
-	private val cache by inject<PagesCache>()
 	private val convertLock = Mutex()
-
-	override val coroutineContext: CoroutineContext
-		get() = job + Dispatchers.Main.immediate
 
 	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun loadFile(url: String, force: Boolean): File {
@@ -74,7 +69,7 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 
 	suspend fun convertInPlace(file: File) {
 		convertLock.withLock(file) {
-			withContext(Dispatchers.IO) {
+			withContext(Dispatchers.Default) {
 				val image = BitmapFactory.decodeFile(file.absolutePath)
 				try {
 					file.outputStream().use { out ->
@@ -85,10 +80,5 @@ class PageLoader : KoinComponent, CoroutineScope, DisposableHandle {
 				}
 			}
 		}
-	}
-
-	override fun dispose() {
-		job.cancelChildren()
-		tasks.clear()
 	}
 }

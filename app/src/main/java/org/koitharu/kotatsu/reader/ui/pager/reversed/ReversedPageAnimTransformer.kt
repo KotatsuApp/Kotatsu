@@ -1,23 +1,23 @@
-package org.koitharu.kotatsu.reader.ui.standard
+package org.koitharu.kotatsu.reader.ui.pager.reversed
 
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2
 
-class PageAnimTransformer : ViewPager2.PageTransformer {
+class ReversedPageAnimTransformer : ViewPager2.PageTransformer {
 
 	override fun transformPage(page: View, position: Float) {
-		page.apply {
+		with(page) {
 			val pageWidth = width
 			when {
-				position < -1 -> alpha = 0f
-				position <= 0 -> { // [-1,0]
+				position > 1 -> alpha = 0f
+				position >= 0 -> {
 					alpha = 1f
 					translationX = 0f
 					translationZ = 0f
 					scaleX = 1 + FACTOR * position
 					scaleY = 1f
 				}
-				position <= 1 -> { // (0,1]
+				position >= -1 -> {
 					alpha = 1f
 					translationX = pageWidth * -position
 					translationZ = -1f

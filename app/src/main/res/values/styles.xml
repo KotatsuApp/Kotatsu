@@ -32,4 +32,8 @@
 		<item name="background">@color/grey</item>
 	</style>
 
+	<style name="AppBadge" parent="Widget.MaterialComponents.Badge">
+		<item name="backgroundColor">?attr/colorAccent</item>
+	</style>
+
 </resources>

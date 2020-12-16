@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.reader.ui.base
+package org.koitharu.kotatsu.reader.ui.pager
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

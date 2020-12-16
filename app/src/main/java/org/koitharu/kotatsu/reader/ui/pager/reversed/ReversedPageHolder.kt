@@ -1,13 +1,18 @@
-package org.koitharu.kotatsu.reader.ui.reversed
+package org.koitharu.kotatsu.reader.ui.pager.reversed
 
 import android.graphics.PointF
-import android.view.ViewGroup
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.reader.ui.PageLoader
-import org.koitharu.kotatsu.reader.ui.standard.PageHolder
+import org.koitharu.kotatsu.reader.ui.pager.standard.PageHolder
 
-class ReversedPageHolder(parent: ViewGroup, loader: PageLoader) : PageHolder(parent, loader) {
+class ReversedPageHolder(
+	binding: ItemPageBinding,
+	loader: PageLoader,
+	settings: AppSettings
+) : PageHolder(binding, loader, settings) {
 
 	override fun onImageShowing(zoom: ZoomMode) {
 		with(binding.ssiv) {
