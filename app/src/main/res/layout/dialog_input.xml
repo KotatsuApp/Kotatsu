@@ -22,8 +22,10 @@
 			android:layout_height="wrap_content"
 			android:imeOptions="actionDone"
 			android:paddingStart="0dp"
+			android:paddingTop="28dp"
 			android:paddingEnd="0dp"
 			android:singleLine="true"
+			tools:hint="@tools:sample/cities"
 			tools:text="@tools:sample/lorem[2]" />
 
 	</com.google.android.material.textfield.TextInputLayout>

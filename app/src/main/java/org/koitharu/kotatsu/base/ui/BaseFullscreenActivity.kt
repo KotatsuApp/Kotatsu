@@ -3,16 +3,22 @@ package org.koitharu.kotatsu.base.ui
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.viewbinding.ViewBinding
 
 
 abstract class BaseFullscreenActivity<B : ViewBinding> : BaseActivity<B>() {
 
+	private lateinit var insetsControllerCompat: WindowInsetsControllerCompat
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		with(window) {
+			insetsControllerCompat = WindowInsetsControllerCompat(this, decorView)
+			insetsControllerCompat.systemBarsBehavior =
+				WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 			statusBarColor = Color.TRANSPARENT
 			navigationBarColor = Color.TRANSPARENT
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -24,20 +30,11 @@ abstract class BaseFullscreenActivity<B : ViewBinding> : BaseActivity<B>() {
 	}
 
 	protected fun hideSystemUI() {
-		window.decorView.systemUiVisibility = (
-				View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-						or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-						or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-						or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // прячем панель навигации
-						or View.SYSTEM_UI_FLAG_FULLSCREEN // прячем строку состояния
-						or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-				)
+		insetsControllerCompat.hide(WindowInsetsCompat.Type.systemBars())
 
 	}
 
 	protected fun showSystemUI() {
-		window.decorView.systemUiVisibility =
-			(View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-					or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+		insetsControllerCompat.show(WindowInsetsCompat.Type.systemBars())
 	}
 }

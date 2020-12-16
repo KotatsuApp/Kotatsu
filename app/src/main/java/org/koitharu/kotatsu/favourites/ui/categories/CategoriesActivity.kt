@@ -6,7 +6,11 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -68,6 +72,24 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 			binding.recyclerView.findContainingViewHolder(view) ?: return false
 		)
 		return true
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			rightMargin = topMargin + insets.right
+			leftMargin = topMargin + insets.left
+			bottomMargin = topMargin + insets.bottom
+		}
+		binding.recyclerView.updatePadding(
+			left = insets.left,
+			right = insets.right,
+			bottom = insets.bottom
+		)
+		binding.toolbar.updatePadding(
+			left = insets.left,
+			right = insets.right,
+			top = insets.top
+		)
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {

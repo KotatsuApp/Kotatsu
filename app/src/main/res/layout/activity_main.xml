@@ -39,6 +39,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_margin="16dp"
+			android:contentDescription="@string/_continue"
 			android:src="@drawable/ic_read_fill"
 			android:visibility="gone"
 			app:backgroundTint="?colorAccent"
@@ -56,6 +57,7 @@
 		android:layout_width="260dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="start"
+		app:insetForeground="@android:color/transparent"
 		app:menu="@menu/nav_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

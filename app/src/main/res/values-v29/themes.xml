@@ -7,13 +7,6 @@
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
 		<item name="badgeStyle">@style/Widget.MaterialComponents.Badge</item>
 		<item name="android:statusBarColor">@color/status_bar</item>
+		<item name="android:navigationBarColor">@android:color/transparent</item>
 	</style>
-
-	<style name="AppTheme" parent="BaseAppTheme">
-		<item name="colorPrimary">@color/blue_primary</item>
-		<item name="colorPrimaryDark">@color/blue_primary_dark</item>
-		<item name="colorAccent">@color/red_accent</item>
-	</style>
-
-	<style name="AppTheme.Amoled" />
 </resources>

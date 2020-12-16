@@ -52,6 +52,8 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			MultiSummaryProvider(R.string.gestures_only)
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_TRACK_SOURCES)?.summaryProvider =
 			MultiSummaryProvider(R.string.dont_check)
+		findPreference<Preference>(AppSettings.KEY_GRID_SIZE)?.isEnabled =
+			settings.listMode == ListMode.GRID
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,6 +92,10 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 					summary = settings.getStorageDir(context)?.getStorageName(context)
 						?: getString(R.string.not_available)
 				}
+			}
+			AppSettings.KEY_LIST_MODE -> {
+				findPreference<Preference>(AppSettings.KEY_GRID_SIZE)?.isEnabled =
+					settings.listMode == ListMode.GRID
 			}
 		}
 	}

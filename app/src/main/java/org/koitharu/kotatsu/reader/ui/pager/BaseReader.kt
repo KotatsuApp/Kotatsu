@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.reader.ui.pager
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.graphics.Insets
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import org.koin.android.ext.android.get
@@ -41,6 +42,8 @@ abstract class BaseReader<B : ViewBinding> : BaseFragment<B>() {
 		}
 		outState.putParcelable(KEY_STATE, lastReaderState)
 	}
+
+	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	abstract fun switchPageBy(delta: Int)
 

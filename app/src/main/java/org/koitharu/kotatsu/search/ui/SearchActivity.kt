@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.appcompat.widget.SearchView
+import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -42,6 +44,14 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	override fun onDestroy() {
 		binding.searchView.suggestionsAdapter.changeCursor(null) //close cursor
 		super.onDestroy()
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.toolbar.updatePadding(
+			top = insets.top,
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	override fun onQueryTextSubmit(query: String?): Boolean {

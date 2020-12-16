@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -148,5 +150,13 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		selectionDecoration?.clearSelection()
 		binding.recyclerViewChapters.invalidateItemDecorations()
 		actionMode = null
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.recyclerViewChapters.updatePadding(
+			left = insets.left,
+			right = insets.right,
+			bottom = insets.bottom
+		)
 	}
 }

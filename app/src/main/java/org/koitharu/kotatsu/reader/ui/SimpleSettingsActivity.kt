@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.reader.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
@@ -27,6 +29,14 @@ class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 				}
 			)
 		}
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.toolbar.updatePadding(
+			top = insets.top,
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	companion object {

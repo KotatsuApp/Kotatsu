@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.preference.Preference
@@ -54,6 +56,14 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 			setReorderingAllowed(true)
 			addToBackStack(null)
 		}
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.toolbar.updatePadding(
+			top = insets.top,
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	companion object {

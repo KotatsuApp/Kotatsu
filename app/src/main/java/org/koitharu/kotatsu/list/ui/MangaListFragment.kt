@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.*
 import androidx.annotation.CallSuper
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -193,6 +195,19 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	@CallSuper
 	override fun onFilterChanged(filter: MangaFilter) {
 		binding.drawer?.closeDrawers()
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.recyclerView.updatePadding(
+			bottom = insets.bottom
+		)
+		binding.recyclerViewFilter.updatePadding(
+			bottom = insets.bottom
+		)
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	private fun onGridScaleChanged(scale: Float) {

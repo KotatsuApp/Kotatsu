@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.TrackingLogItem
+import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
@@ -34,7 +36,11 @@ class FeedViewModel(
 		},
 		hasNextPage
 	) { list, isHasNextPage ->
-		if (isHasNextPage && list.isNotEmpty()) list + LoadingFooter else list
+		when {
+			list.isEmpty() -> listOf(EmptyState(R.string.text_feed_holder))
+			isHasNextPage -> list + LoadingFooter
+			else -> list
+		}
 	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext, listOf(LoadingState))
 
 	init {

@@ -8,4 +8,5 @@
 	<color name="grey_dark">#212121</color>
 	<color name="dim">#99000000</color>
 	<color name="error">#D32F2F</color>
+	<color name="status_bar">#33000000</color>
 </resources>

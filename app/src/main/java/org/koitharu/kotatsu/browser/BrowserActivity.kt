@@ -8,7 +8,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
@@ -83,6 +85,11 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {
 		this.title = title
 		supportActionBar?.subtitle = subtitle
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.appbar.updatePadding(top = insets.top)
+		binding.webView.updatePadding(bottom = insets.bottom)
 	}
 
 	companion object {

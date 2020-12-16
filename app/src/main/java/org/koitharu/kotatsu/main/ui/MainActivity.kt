@@ -9,12 +9,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.graphics.Insets
 import androidx.core.view.*
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -42,6 +45,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	View.OnClickListener {
 
 	private val viewModel by viewModel<MainViewModel>()
+	private val protectHelper by inject<AppProtectHelper>()
 
 	private lateinit var drawerToggle: ActionBarDrawerToggle
 	private var closeable: Closeable? = null
@@ -72,7 +76,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		} ?: run {
 			openDefaultSection()
 		}
-		if (AppProtectHelper.check(this)) {
+		if (protectHelper.check(this)) {
+			finish()
 			return
 		}
 		TrackWorker.setup(applicationContext)
@@ -86,7 +91,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	override fun onDestroy() {
 		closeable?.close()
-		AppProtectHelper.lock()
+		protectHelper.lock()
 		super.onDestroy()
 	}
 
@@ -157,6 +162,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		}
 		binding.drawer.closeDrawers()
 		return true
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.toolbar.updatePadding(
+			top = insets.top,
+			left = insets.left,
+			right = insets.right
+		)
+		binding.fab.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			bottomMargin = insets.bottom + topMargin
+			leftMargin = insets.left + topMargin
+			rightMargin = insets.right + topMargin
+		}
 	}
 
 	private fun onOpenReader(manga: Manga) {

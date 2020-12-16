@@ -54,8 +54,7 @@ import org.koitharu.kotatsu.utils.ext.showAnimated
 class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	ChaptersDialog.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
-	ActivityResultCallback<Boolean>, OnApplyWindowInsetsListener,
-	ReaderControlDelegate.OnInteractionListener {
+	ActivityResultCallback<Boolean>, ReaderControlDelegate.OnInteractionListener {
 
 	private val viewModel by viewModel<ReaderViewModel> {
 		parametersOf(MangaIntent.from(intent), intent?.getParcelableExtra<ReaderState>(EXTRA_STATE))
@@ -64,6 +63,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var orientationHelper: ScreenOrientationHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
+	private var gestureInsets: Insets = Insets.NONE
 
 	private val reader
 		get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseReader<*>
@@ -77,8 +77,6 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		controlDelegate = ReaderControlDelegate(lifecycleScope, get(), this)
 		binding.toolbarBottom.inflateMenu(R.menu.opt_reader_bottom)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
-
-		ViewCompat.setOnApplyWindowInsetsListener(binding.rootLayout, this)
 
 		orientationHelper.observeAutoOrientation()
 			.onEach {
@@ -230,12 +228,17 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	}
 
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
-		return if (binding.appbarTop.hasGlobalPoint(rawX, rawY)
-			|| binding.appbarBottom.hasGlobalPoint(rawX, rawY)
+		return if (
+			rawX <= gestureInsets.left ||
+			rawY <= gestureInsets.top ||
+			rawX >= binding.root.width - gestureInsets.right ||
+			rawY >= binding.root.height - gestureInsets.bottom ||
+			binding.appbarTop.hasGlobalPoint(rawX, rawY) ||
+			binding.appbarBottom.hasGlobalPoint(rawX, rawY)
 		) {
 			false
 		} else {
-			val targets = binding.rootLayout.hitTest(rawX, rawY)
+			val targets = binding.root.hitTest(rawX, rawY)
 			targets.none { it.hasOnClickListeners() }
 		}
 	}
@@ -273,6 +276,8 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		viewModel.switchMode(mode)
 	}
 
+	override fun onWindowInsetsChanged(insets: Insets) = Unit
+
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
 			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
@@ -308,6 +313,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
 		val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		binding.appbarTop.updatePadding(
 			top = systemBars.top,

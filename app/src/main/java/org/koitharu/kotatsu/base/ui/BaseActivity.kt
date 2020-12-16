@@ -7,13 +7,18 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.Insets
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.viewbinding.ViewBinding
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
-abstract class BaseActivity<B : ViewBinding> : AppCompatActivity() {
+abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindowInsetsListener {
 
 	protected lateinit var binding: B
 		private set
@@ -23,6 +28,7 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity() {
 			setTheme(R.style.AppTheme_Amoled)
 		}
 		super.onCreate(savedInstanceState)
+		WindowCompat.setDecorFitsSystemWindows(window, false)
 	}
 
 	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
@@ -41,10 +47,12 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity() {
 		this.binding = binding
 		super.setContentView(binding.root)
 		(binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
+		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 	}
 
-	private fun setupToolbar() {
-		(findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		onWindowInsetsChanged(insets.getInsets(WindowInsetsCompat.Type.systemBars()))
+		return insets
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = if (item.itemId == android.R.id.home) {
@@ -59,4 +67,11 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity() {
 		}
 		return super.onKeyDown(keyCode, event)
 	}
+
+	protected abstract fun onWindowInsetsChanged(insets: Insets)
+
+	private fun setupToolbar() {
+		(findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
+	}
+
 }

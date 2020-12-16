@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
@@ -44,6 +45,8 @@ class ListModeSelectDialog : AlertDialogFragment<DialogListModeBinding>(), View.
 		binding.buttonList.isChecked = mode == ListMode.LIST
 		binding.buttonListDetailed.isChecked = mode == ListMode.DETAILED_LIST
 		binding.buttonGrid.isChecked = mode == ListMode.GRID
+		binding.textViewGridTitle.isVisible = mode == ListMode.GRID
+		binding.seekbarGrid.isVisible = mode == ListMode.GRID
 
 		with(binding.seekbarGrid) {
 			progress = pendingGridSize - 50
@@ -71,6 +74,8 @@ class ListModeSelectDialog : AlertDialogFragment<DialogListModeBinding>(), View.
 			R.id.button_list_detailed -> mode = ListMode.DETAILED_LIST
 			R.id.button_grid -> mode = ListMode.GRID
 		}
+		binding.textViewGridTitle.isVisible = mode == ListMode.GRID
+		binding.seekbarGrid.isVisible = mode == ListMode.GRID
 		settings.listMode = mode
 	}
 

@@ -5,6 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	android:animateLayoutChanges="true"
 	android:orientation="vertical">
 
 	<com.google.android.material.button.MaterialButtonToggleGroup
@@ -42,13 +43,16 @@
 	</com.google.android.material.button.MaterialButtonToggleGroup>
 
 	<TextView
+		android:id="@+id/textView_grid_title"
 		style="?android:attr/windowTitleStyle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:paddingLeft="?attr/dialogPreferredPadding"
 		android:paddingRight="?attr/dialogPreferredPadding"
 		android:singleLine="true"
-		android:text="@string/grid_size" />
+		android:text="@string/grid_size"
+		android:visibility="gone"
+		tools:visibility="visible" />
 
 	<SeekBar
 		android:id="@+id/seekbar_grid"
@@ -56,6 +60,8 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="16dp"
 		android:max="100"
-		tools:progress="50" />
+		android:visibility="gone"
+		tools:progress="50"
+		tools:visibility="visible" />
 
 </LinearLayout>

@@ -10,6 +10,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -20,6 +23,7 @@ class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEdito
 	TextWatcher {
 
 	private val viewModel by viewModel<ProtectViewModel>()
+	private val appProtectHelper by inject<AppProtectHelper>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -49,6 +53,14 @@ class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEdito
 		else -> super.onOptionsItemSelected(item)
 	}
 
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.toolbar.updatePadding(
+			left = insets.left,
+			right = insets.right,
+			top = insets.top
+		)
+	}
+
 	override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
 		return if (actionId == EditorInfo.IME_ACTION_DONE) {
 			viewModel.tryUnlock(binding.editPassword.text.toString().orEmpty())
@@ -67,7 +79,7 @@ class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEdito
 	}
 
 	private fun onUnlockSuccess(unit: Unit) {
-		AppProtectHelper.unlock(this)
+		appProtectHelper.unlock(this)
 	}
 
 	private fun onError(e: Throwable) {

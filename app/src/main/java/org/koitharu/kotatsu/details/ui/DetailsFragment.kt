@@ -5,9 +5,11 @@ import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.util.CoilUtils
 import kotlinx.coroutines.Dispatchers
@@ -173,5 +175,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			}
 			else -> return false
 		}
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right,
+			bottom = insets.bottom
+		)
 	}
 }

@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.search.ui.global
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySearchGlobalBinding
@@ -26,6 +28,14 @@ class GlobalSearchActivity : BaseActivity<ActivitySearchGlobalBinding>() {
 			.beginTransaction()
 			.replace(R.id.container, GlobalSearchFragment.newInstance(query))
 			.commit()
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.toolbar.updatePadding(
+			top = insets.top,
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	companion object {

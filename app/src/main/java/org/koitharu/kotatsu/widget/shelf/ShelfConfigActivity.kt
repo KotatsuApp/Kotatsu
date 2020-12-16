@@ -9,7 +9,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -75,6 +79,24 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(), OnListIte
 
 	override fun onItemClick(item: CategoryItem, view: View) {
 		viewModel.checkedId = item.id
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			rightMargin = topMargin + insets.right
+			leftMargin = topMargin + insets.left
+			bottomMargin = topMargin + insets.bottom
+		}
+		binding.recyclerView.updatePadding(
+			left = insets.left,
+			right = insets.right,
+			bottom = insets.bottom
+		)
+		binding.toolbar.updatePadding(
+			left = insets.left,
+			right = insets.right,
+			top = insets.top
+		)
 	}
 
 	private fun onContentChanged(categories: List<CategoryItem>) {

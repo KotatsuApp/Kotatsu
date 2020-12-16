@@ -9,9 +9,12 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.Insets
 import androidx.core.net.toFile
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -74,6 +77,20 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		} else {
 			Snackbar.make(binding.pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
 				.show()
+		}
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.toolbar.updatePadding(
+			top = insets.top,
+			left = insets.left,
+			right = insets.right
+		)
+		if (binding.tabs.parent !is Toolbar) {
+			binding.tabs.updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
 		}
 	}
 

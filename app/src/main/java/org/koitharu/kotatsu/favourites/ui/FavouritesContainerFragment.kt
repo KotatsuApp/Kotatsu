@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.favourites.ui
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.*
+import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -64,6 +66,13 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 		adapterState = (bindingOrNull()?.pager?.adapter as? FavouritesPagerAdapter)?.saveState()
 			?: adapterState
 		outState.putParcelable(KEY_ADAPTER_STATE, adapterState)
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.tabs.updatePadding(
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {

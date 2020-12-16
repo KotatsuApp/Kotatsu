@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -47,6 +49,14 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	override fun onDestroyView() {
 		reorderHelper.attachToRecyclerView(null)
 		super.onDestroyView()
+	}
+
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.recyclerView.updatePadding(
+			bottom = insets.bottom,
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	override fun onItemClick(item: MangaSource, view: View) {

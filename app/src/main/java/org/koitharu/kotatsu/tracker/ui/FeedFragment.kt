@@ -2,7 +2,8 @@ package org.koitharu.kotatsu.tracker.ui
 
 import android.os.Bundle
 import android.view.*
-import androidx.core.view.isVisible
+import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -18,7 +19,6 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hasItems
 
 class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListener.Callback,
 	OnListItemClickListener<Manga> {
@@ -52,9 +52,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 		}
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
-		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
-		viewModel.isEmptyState.observe(viewLifecycleOwner, this::onEmptyStateChanged)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -80,41 +78,24 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 		super.onDestroyView()
 	}
 
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.recyclerView.updatePadding(
+			left = insets.left,
+			right = insets.right,
+			bottom = insets.bottom
+		)
+	}
+
 	private fun onListChanged(list: List<ListModel>) {
 		feedAdapter?.items = list
 	}
 
 	private fun onError(e: Throwable) {
-		if (binding.recyclerView.hasItems) {
-			Snackbar.make(
-				binding.recyclerView,
-				e.getDisplayMessage(resources),
-				Snackbar.LENGTH_SHORT
-			).show()
-		} else {
-			with(binding.textViewHolder) {
-				text = e.getDisplayMessage(resources)
-				setCompoundDrawablesRelativeWithIntrinsicBounds(
-					0,
-					R.drawable.ic_error_large,
-					0,
-					0
-				)
-				isVisible = true
-			}
-		}
-	}
-
-	private fun onLoadingStateChanged(isLoading: Boolean) {
-		val hasItems = binding.recyclerView.hasItems
-		binding.progressBar.isVisible = isLoading && !hasItems
-	}
-
-	private fun onEmptyStateChanged(isEmpty: Boolean) {
-		if (isEmpty) {
-			setUpEmptyListHolder()
-		}
-		binding.layoutHolder.isVisible = isEmpty
+		Snackbar.make(
+			binding.recyclerView,
+			e.getDisplayMessage(resources),
+			Snackbar.LENGTH_SHORT
+		).show()
 	}
 
 	override fun onScrolledToEnd() {
@@ -123,13 +104,6 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 
 	override fun onItemClick(item: Manga, view: View) {
 		startActivity(DetailsActivity.newIntent(context ?: return, item))
-	}
-
-	private fun setUpEmptyListHolder() {
-		with(binding.textViewHolder) {
-			setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null)
-			setText(R.string.text_feed_holder)
-		}
 	}
 
 	companion object {

@@ -1,47 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<androidx.recyclerview.widget.RecyclerView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/recyclerView"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
-
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/recyclerView"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical"
-		android:scrollbars="vertical"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		tools:listitem="@layout/item_manga_list" />
-
-	<LinearLayout
-		android:id="@+id/layout_holder"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:layout_marginStart="20dp"
-		android:layout_marginEnd="20dp"
-		android:gravity="center_horizontal"
-		android:orientation="vertical">
-
-		<TextView
-			android:id="@+id/textView_holder"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:gravity="center"
-			android:textAppearance="?android:textAppearanceMedium"
-			android:textColor="?android:textColorSecondary"
-			tools:text="@tools:sample/lorem[3]" />
-
-	</LinearLayout>
-
-	<ProgressBar
-		android:id="@+id/progressBar"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:indeterminate="true" />
-
-</FrameLayout>
+	android:layout_height="match_parent"
+	android:clipToPadding="false"
+	android:orientation="vertical"
+	android:scrollbars="vertical"
+	app:fastScrollEnabled="true"
+	app:fastScrollHorizontalThumbDrawable="@drawable/list_thumb"
+	app:fastScrollHorizontalTrackDrawable="@drawable/list_track"
+	app:fastScrollVerticalThumbDrawable="@drawable/list_thumb"
+	app:fastScrollVerticalTrackDrawable="@drawable/list_track"
+	app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+	tools:listitem="@layout/item_tracklog" />
