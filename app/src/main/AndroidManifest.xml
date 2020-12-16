@@ -37,7 +37,11 @@
 				<action android:name="${applicationId}.action.VIEW_MANGA" />
 			</intent-filter>
 		</activity>
-		<activity android:name="org.koitharu.kotatsu.reader.ui.ReaderActivity" />
+		<activity android:name="org.koitharu.kotatsu.reader.ui.ReaderActivity">
+			<intent-filter>
+				<action android:name="${applicationId}.action.READ_MANGA" />
+			</intent-filter>
+		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.search.ui.SearchActivity"
 			android:label="@string/search" />

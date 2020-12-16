@@ -25,6 +25,7 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
@@ -342,6 +343,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 	companion object {
 
+		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
 		private const val EXTRA_STATE = "state"
 
 		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {

@@ -19,7 +19,7 @@ import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 import org.koitharu.kotatsu.utils.ext.safe
 
@@ -86,8 +86,8 @@ class MangaShortcut(private val manga: Manga) : KoinComponent {
 				IconCompat.createWithAdaptiveBitmap(it)
 			} ?: IconCompat.createWithResource(context, R.drawable.ic_shortcut_default))
 			.setIntent(
-				DetailsActivity.newIntent(context, manga.id)
-					.setAction(DetailsActivity.ACTION_MANGA_VIEW)
+				ReaderActivity.newIntent(context, manga.id, null)
+					.setAction(ReaderActivity.ACTION_MANGA_READ)
 			)
 	}
 
