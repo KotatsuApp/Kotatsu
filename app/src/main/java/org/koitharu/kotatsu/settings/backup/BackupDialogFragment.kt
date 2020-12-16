@@ -60,7 +60,7 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 	}
 
 	private fun onBackupDone(file: File) {
-		ShareHelper.shareBackup(context ?: return, file)
+		ShareHelper(context ?: return).shareBackup(file)
 		dismiss()
 	}
 

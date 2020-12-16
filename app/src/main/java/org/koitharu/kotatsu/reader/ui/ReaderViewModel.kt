@@ -154,7 +154,7 @@ class ReaderViewModel(
 							response.contentDisposition,
 							response.mimeType
 						)
-					MediaStoreCompat.insertImage(resolver, fileName) {
+					MediaStoreCompat(resolver).insertImage(fileName) {
 						checkNotNull(response.body).byteStream().copyTo(it)
 					}
 				}

@@ -35,7 +35,7 @@ class CrashActivity : Activity(), View.OnClickListener {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.action_share -> {
-				ShareHelper.shareText(this, binding.textView.text.toString() ?: return false)
+				ShareHelper(this).shareText(binding.textView.text.toString())
 			}
 			else -> return super.onOptionsItemSelected(item)
 		}

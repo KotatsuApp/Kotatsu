@@ -11,10 +11,9 @@ import androidx.core.database.getStringOrNull
 import org.koitharu.kotatsu.BuildConfig
 import java.io.OutputStream
 
-object MediaStoreCompat {
+class MediaStoreCompat(private val contentResolver: ContentResolver) {
 
 	fun insertImage(
-		resolver: ContentResolver,
 		fileName: String,
 		block: (OutputStream) -> Unit
 	): Uri? {
@@ -34,26 +33,26 @@ object MediaStoreCompat {
 		}
 		var uri: Uri? = null
 		try {
-			uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv)
-			resolver.openOutputStream(uri!!)?.use(block)
+			uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv)
+			contentResolver.openOutputStream(uri!!)?.use(block)
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				cv.clear()
 				cv.put(MediaStore.Images.Media.IS_PENDING, 0)
-				resolver.update(uri, cv, null, null)
+				contentResolver.update(uri, cv, null, null)
 			}
 		} catch (e: Exception) {
 			if (BuildConfig.DEBUG) {
 				e.printStackTrace()
 			}
 			uri?.let {
-				resolver.delete(it, null, null)
+				contentResolver.delete(it, null, null)
 			}
 			uri = null
 		}
 		return uri
 	}
 
-	fun getName(contentResolver: ContentResolver, uri: Uri): String? =
+	fun getName(uri: Uri): String? =
 		(if (uri.scheme == "content") {
 			contentResolver.query(uri, null, null, null, null)?.use {
 				if (it.moveToFirst()) {

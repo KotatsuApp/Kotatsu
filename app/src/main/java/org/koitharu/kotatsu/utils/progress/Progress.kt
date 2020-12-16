@@ -16,4 +16,7 @@ data class Progress(
 			TODO()
 		}
 	}
+
+	val isIndeterminate: Boolean
+		get() = total <= 0
 }

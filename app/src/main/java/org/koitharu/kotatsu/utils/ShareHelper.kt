@@ -9,9 +9,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import java.io.File
 
-object ShareHelper {
+class ShareHelper(private val context: Context) {
 
-	fun shareMangaLink(context: Context, manga: Manga) {
+	fun shareMangaLink(manga: Manga) {
 		val intent = Intent(Intent.ACTION_SEND)
 		intent.type = "text/plain"
 		intent.putExtra(Intent.EXTRA_TEXT, buildString {
@@ -24,7 +24,7 @@ object ShareHelper {
 		context.startActivity(shareIntent)
 	}
 
-	fun shareCbz(context: Context, file: File) {
+	fun shareCbz(file: File) {
 		val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", file)
 		val intent = Intent(Intent.ACTION_SEND)
 		intent.setDataAndType(uri, context.contentResolver.getType(uri))
@@ -34,7 +34,7 @@ object ShareHelper {
 		context.startActivity(shareIntent)
 	}
 
-	fun shareBackup(context: Context, file: File) {
+	fun shareBackup(file: File) {
 		val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", file)
 		val intent = Intent(Intent.ACTION_SEND)
 		intent.setDataAndType(uri, context.contentResolver.getType(uri))
@@ -44,7 +44,7 @@ object ShareHelper {
 		context.startActivity(shareIntent)
 	}
 
-	fun shareImage(context: Context, uri: Uri) {
+	fun shareImage(uri: Uri) {
 		val intent = Intent(Intent.ACTION_SEND)
 		intent.setDataAndType(uri, context.contentResolver.getType(uri))
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -52,7 +52,7 @@ object ShareHelper {
 		context.startActivity(shareIntent)
 	}
 
-	fun shareText(context: Context, text: String) {
+	fun shareText(text: String) {
 		val intent = Intent(Intent.ACTION_SEND)
 		intent.type = "text/plain"
 		intent.putExtra(Intent.EXTRA_TEXT, text)

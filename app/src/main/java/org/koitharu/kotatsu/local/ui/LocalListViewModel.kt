@@ -75,8 +75,8 @@ class LocalListViewModel(
 	fun importFile(uri: Uri) {
 		launchLoadingJob {
 			val contentResolver = context.contentResolver
-			withContext(Dispatchers.Default) {
-				val name = MediaStoreCompat.getName(contentResolver, uri)
+			withContext(Dispatchers.IO) {
+				val name = MediaStoreCompat(contentResolver).getName(uri)
 					?: throw IOException("Cannot fetch name from uri: $uri")
 				if (!LocalMangaRepository.isFileSupported(name)) {
 					throw UnsupportedFileException("Unsupported file on $uri")

@@ -24,7 +24,6 @@ class PageLoader(
 	private val tasks = ArrayMap<String, Deferred<File>>()
 	private val convertLock = Mutex()
 
-	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun loadFile(url: String, force: Boolean): File {
 		if (!force) {
 			cache[url]?.let {

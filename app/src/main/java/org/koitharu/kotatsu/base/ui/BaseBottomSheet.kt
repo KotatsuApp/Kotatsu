@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialog
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import org.koitharu.kotatsu.utils.UiUtils
+import org.koitharu.kotatsu.R
 
 abstract class BaseBottomSheet<B : ViewBinding> :
 	BottomSheetDialogFragment() {
@@ -34,7 +34,7 @@ abstract class BaseBottomSheet<B : ViewBinding> :
 	}
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		return if (UiUtils.isTablet(requireContext())) {
+		return if (resources.getBoolean(R.bool.is_tablet)) {
 			AppCompatDialog(context, theme)
 		} else super.onCreateDialog(savedInstanceState)
 	}

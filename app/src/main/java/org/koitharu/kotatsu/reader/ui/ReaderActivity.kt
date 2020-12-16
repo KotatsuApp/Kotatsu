@@ -283,7 +283,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
 				.setAnchorView(binding.appbarBottom)
 				.setAction(R.string.share) {
-					ShareHelper.shareImage(this, uri)
+					ShareHelper(this).shareImage(uri)
 				}.show()
 		} else {
 			Snackbar.make(binding.container, R.string.error_occurred, Snackbar.LENGTH_SHORT)

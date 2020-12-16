@@ -127,9 +127,9 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		R.id.action_share -> {
 			viewModel.manga.value?.let {
 				if (it.source == MangaSource.LOCAL) {
-					ShareHelper.shareCbz(this, Uri.parse(it.url).toFile())
+					ShareHelper(this).shareCbz(Uri.parse(it.url).toFile())
 				} else {
-					ShareHelper.shareMangaLink(this, it)
+					ShareHelper(this).shareMangaLink(it)
 				}
 			}
 			true
