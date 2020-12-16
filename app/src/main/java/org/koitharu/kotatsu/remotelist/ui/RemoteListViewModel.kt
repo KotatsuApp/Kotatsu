@@ -96,9 +96,12 @@ class RemoteListViewModel(
 
 	fun applyFilter(newFilter: MangaFilter) {
 		appliedFilter = newFilter
-		mangaList.value = emptyList()
+		mangaList.value = null
 		hasNextPage.value = false
 		loadList(false)
+		filter.value?.run {
+			filter.value = copy(currentFilter = newFilter)
+		}
 	}
 
 	private fun loadFilter() {

@@ -60,7 +60,7 @@ class PageLoader(
 					"Null response"
 				}
 				cache.put(url) { out ->
-					body.byteStream().copyTo(out)
+					body.byteStream().use { it.copyTo(out) }
 				}
 			}
 		}

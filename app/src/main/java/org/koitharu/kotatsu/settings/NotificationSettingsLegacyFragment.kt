@@ -17,9 +17,10 @@ class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notif
 	private val ringtonePickContract = registerForActivityResult(
 		RingtonePickContract(get<Context>().getString(R.string.notification_sound))
 	) { uri ->
-		settings.notificationSound = uri?.toString().orEmpty()
+		settings.notificationSound = uri?.toString() ?: return@registerForActivityResult
 		findPreference<Preference>(AppSettings.KEY_NOTIFICATIONS_SOUND)?.run {
-			summary = RingtoneManager.getRingtone(context, uri).getTitle(context)
+			summary = RingtoneManager.getRingtone(context, uri)?.getTitle(context)
+				?: getString(R.string.silent)
 		}
 	}
 
@@ -31,7 +32,8 @@ class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notif
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_NOTIFICATIONS_SOUND)?.run {
 			val uri = settings.notificationSound.toUriOrNull()
-			summary = RingtoneManager.getRingtone(context, uri).getTitle(context)
+			summary = RingtoneManager.getRingtone(context, uri)?.getTitle(context)
+				?: getString(R.string.silent)
 		}
 	}
 

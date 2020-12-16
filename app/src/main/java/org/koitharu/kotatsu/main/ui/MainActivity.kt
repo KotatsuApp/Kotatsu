@@ -52,6 +52,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		if (protectHelper.check(this)) {
+			finish()
+			return
+		}
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 		drawerToggle =
 			ActionBarDrawerToggle(
@@ -75,10 +79,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			binding.fab.isVisible = it is HistoryListFragment
 		} ?: run {
 			openDefaultSection()
-		}
-		if (protectHelper.check(this)) {
-			finish()
-			return
 		}
 		TrackWorker.setup(applicationContext)
 		AppUpdateChecker(this).launchIfNeeded()

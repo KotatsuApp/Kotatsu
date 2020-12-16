@@ -31,7 +31,6 @@ abstract class BaseFullscreenActivity<B : ViewBinding> : BaseActivity<B>() {
 
 	protected fun hideSystemUI() {
 		insetsControllerCompat.hide(WindowInsetsCompat.Type.systemBars())
-
 	}
 
 	protected fun showSystemUI() {

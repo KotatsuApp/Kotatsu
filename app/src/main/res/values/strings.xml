@@ -189,4 +189,5 @@
 	<string name="today">Today</string>
 	<string name="tap_to_try_again">Tap to try again</string>
 	<string name="reader_mode_hint">Chosen configuration will be remembered for this manga</string>
+	<string name="silent">Silent</string>
 </resources>

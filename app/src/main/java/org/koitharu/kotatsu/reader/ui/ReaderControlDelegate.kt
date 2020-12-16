@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.reader
+package org.koitharu.kotatsu.reader.ui
 
 import android.view.KeyEvent
 import androidx.lifecycle.LifecycleCoroutineScope

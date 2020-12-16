@@ -179,12 +179,13 @@
 	<string name="file_not_found">Файл не найден</string>
 	<string name="data_restored_success">Все данные успешно восстановлены</string>
 	<string name="data_restored_with_errors">Данные восстановлены, но возникли некоторые ошибки</string>
-	<string name="backup_information">You can create backup of your history and favourites and restore it</string>
+	<string name="backup_information">Вы можете создать резервную копию избранного и истории и потом восстановить их</string>
 	<string name="just_now">Только что</string>
 	<string name="yesterday">Вчера</string>
 	<string name="long_ago">Давно</string>
 	<string name="group">Группировать</string>
 	<string name="today">Сегодня</string>
-	<string name="tap_to_try_again">Tap to try again</string>
-	<string name="reader_mode_hint">Chosen configuration will be remembered for this manga</string>
+	<string name="tap_to_try_again">Попробовать ещё раз</string>
+	<string name="reader_mode_hint">Выбранный режим будет сохранён для текущей манги</string>
+	<string name="silent">Без звука</string>
 </resources>

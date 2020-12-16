@@ -51,9 +51,9 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 
 	override fun onViewStateRestored(savedInstanceState: Bundle?) {
 		super.onViewStateRestored(savedInstanceState)
-		(savedInstanceState?.getParcelable(KEY_ADAPTER_STATE) ?: adapterState)?.let {
-			(binding.pager.adapter as FavouritesPagerAdapter).restoreState(it)
-		}
+		// (savedInstanceState?.getParcelable(KEY_ADAPTER_STATE) ?: adapterState)?.let {
+		// 	(binding.pager.adapter as FavouritesPagerAdapter).restoreState(it)
+		// }
 	}
 
 	override fun onDestroyView() {

@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.coroutines.async
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import org.koitharu.kotatsu.utils.ext.callOnPageChaneListeners
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
+import org.koitharu.kotatsu.utils.ext.swapAdapter
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
@@ -28,6 +32,15 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 			adapter = pagerAdapter
 			offscreenPageLimit = 2
 			doOnPageChanged(::notifyPageChanged)
+		}
+
+		viewModel.readerAnimation.observe(viewLifecycleOwner) {
+			val transformer = if (it) ReversedPageAnimTransformer() else null
+			binding.pager.setPageTransformer(transformer)
+		}
+		viewModel.onZoomChanged.observe(viewLifecycleOwner) {
+			pagerAdapter = ReversedPagesAdapter(loader, get())
+			binding.pager.swapAdapter(pagerAdapter)
 		}
 	}
 
@@ -47,13 +60,24 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	}
 
 	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {
-		pagerAdapter?.setItems(pages.asReversed()) {
+		val reversedPages = pages.asReversed()
+		viewLifecycleScope.launchWhenCreated {
+			val items = async {
+				pagerAdapter?.setItems(reversedPages)
+			}
 			if (pendingState != null) {
-				val position = pages.indexOfFirst {
+				val position = reversedPages.indexOfLast {
 					it.chapterId == pendingState.chapterId && it.index == pendingState.page
 				}
-				if (position == -1) return@setItems
-				binding.pager.setCurrentItem(position, false)
+				items.await() ?: return@launchWhenCreated
+				if (position != -1) {
+					binding.pager.setCurrentItem(position, false)
+				}
+			} else {
+				items.await()
+			}
+			binding.pager.post {
+				bindingOrNull()?.pager?.callOnPageChaneListeners()
 			}
 		}
 	}

@@ -30,7 +30,7 @@ class CategoriesEditDelegate(
 			.setHint(R.string.enter_category_name)
 			.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
 			.setNegativeButton(android.R.string.cancel)
-			.setMaxLength(12, false)
+			.setMaxLength(MAX_TITLE_LENGTH, false)
 			.setPositiveButton(R.string.rename) { _, name ->
 				callback.onRenameCategory(category, name)
 			}.create()
@@ -43,7 +43,7 @@ class CategoriesEditDelegate(
 			.setHint(R.string.enter_category_name)
 			.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
 			.setNegativeButton(android.R.string.cancel)
-			.setMaxLength(12, false)
+			.setMaxLength(MAX_TITLE_LENGTH, false)
 			.setPositiveButton(R.string.add) { _, name ->
 				callback.onCreateCategory(name)
 			}.create()
@@ -57,5 +57,10 @@ class CategoriesEditDelegate(
 		fun onRenameCategory(category: FavouriteCategory, newName: String)
 
 		fun onCreateCategory(name: String)
+	}
+
+	private companion object {
+
+		const val MAX_TITLE_LENGTH = 24
 	}
 }

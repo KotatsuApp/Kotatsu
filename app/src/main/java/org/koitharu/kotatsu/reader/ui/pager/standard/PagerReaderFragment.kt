@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import org.koitharu.kotatsu.utils.ext.callOnPageChaneListeners
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
 import org.koitharu.kotatsu.utils.ext.swapAdapter
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -63,6 +64,9 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 				}
 			} else {
 				items.await()
+			}
+			binding.pager.post {
+				bindingOrNull()?.pager?.callOnPageChaneListeners()
 			}
 		}
 	}

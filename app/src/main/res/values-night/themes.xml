@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<style name="AppTheme.Amoled">
-		<item name="colorPrimary">@color/blue_primary_dark</item>
+		<item name="colorPrimary">@color/blue_primary</item>
 		<item name="colorPrimaryDark">@color/blue_primary_darker</item>
 		<item name="android:windowBackground">@android:color/black</item>
 	</style>

@@ -39,7 +39,7 @@ class ReaderViewModel(
 ) : BaseViewModel() {
 
 	private var loadingJob: Job? = null
-	private val currentState = MutableStateFlow(state)
+	private val currentState = MutableStateFlow<ReaderState?>(null)
 	private val mangaData = MutableStateFlow<Manga?>(intent.manga)
 	private val chapters = LongSparseArray<MangaChapter>()
 
@@ -98,14 +98,12 @@ class ReaderViewModel(
 					newMode
 				} ?: error("There are no chapters in this manga")
 			// obtain state
-			if (state == null) {
-				currentState.value = historyRepository.getOne(manga)?.let {
-					ReaderState.from(it)
-				} ?: ReaderState.initial(manga)
-			}
+			currentState.value = state ?: historyRepository.getOne(manga)?.let {
+				ReaderState.from(it)
+			} ?: ReaderState.initial(manga)
 			readerMode.postValue(mode)
 
-			val pages = loadChapter(checkNotNull(manga.chapters?.firstOrNull()).id)
+			val pages = loadChapter(requireNotNull(currentState.value).chapterId)
 			content.postValue(ReaderContent(pages, currentState.value))
 		}
 	}
@@ -118,10 +116,18 @@ class ReaderViewModel(
 				mode = newMode
 			)
 			readerMode.value = newMode
+			content.value?.run {
+				content.value = copy(
+					state = getCurrentState()
+				)
+			}
 		}
 	}
 
 	fun saveCurrentState(state: ReaderState? = null) {
+		if (state != null) {
+			currentState.value = state
+		}
 		saveState(
 			mangaData.value ?: return,
 			state ?: currentState.value ?: return
@@ -184,17 +190,14 @@ class ReaderViewModel(
 				currentState.value = currentValue.copy(chapterId = it.chapterId)
 			}
 		}
-		when {
-			loadingJob?.isActive == true -> return
-			pages.isEmpty() -> return
-			position <= BOUNDS_PAGE_OFFSET -> {
-				val chapterId = pages.first().chapterId
-				loadPrevNextChapter(chapterId, -1)
-			}
-			position >= pages.size - BOUNDS_PAGE_OFFSET -> {
-				val chapterId = pages.last().chapterId
-				loadPrevNextChapter(chapterId, 1)
-			}
+		if (pages.isEmpty() || loadingJob?.isActive == true) {
+			return
+		}
+		if (position <= BOUNDS_PAGE_OFFSET) {
+			loadPrevNextChapter(pages.first().chapterId, -1)
+		}
+		if (position >= pages.size - BOUNDS_PAGE_OFFSET) {
+			loadPrevNextChapter(pages.last().chapterId, 1)
 		}
 	}
 

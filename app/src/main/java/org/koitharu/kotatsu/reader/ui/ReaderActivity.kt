@@ -34,7 +34,6 @@ import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
-import org.koitharu.kotatsu.reader.ReaderControlDelegate
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
@@ -63,6 +62,10 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var orientationHelper: ScreenOrientationHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
+	private val permissionsRequest = registerForActivityResult(
+		ActivityResultContracts.RequestPermission(),
+		this
+	)
 	private var gestureInsets: Insets = Insets.NONE
 
 	private val reader
@@ -184,10 +187,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 					) {
 						onActivityResult(true)
 					} else {
-						registerForActivityResult(
-							ActivityResultContracts.RequestPermission(),
-							this
-						).launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+						permissionsRequest.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 					}
 				} else {
 					showWaitWhileLoading()
@@ -273,6 +273,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	}
 
 	override fun onReaderModeChanged(mode: ReaderMode) {
+		viewModel.saveCurrentState(reader?.getCurrentState())
 		viewModel.switchMode(mode)
 	}
 

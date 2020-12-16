@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<dimen name="grid_spacing">5dp</dimen>
+	<dimen name="grid_spacing">6dp</dimen>
 	<dimen name="manga_list_item_height">84dp</dimen>
 	<dimen name="manga_list_details_item_height">120dp</dimen>
 	<dimen name="chapter_list_item_height">46dp</dimen>

@@ -27,6 +27,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
+import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
@@ -71,12 +73,19 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 	}
 
 	private fun onError(e: Throwable) {
-		if (viewModel.manga.value == null) {
-			Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
-			finishAfterTransition()
-		} else {
-			Snackbar.make(binding.pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
-				.show()
+		when {
+			e is CloudFlareProtectedException -> {
+				CloudFlareDialog.newInstance(e.url)
+					.show(supportFragmentManager, CloudFlareDialog.TAG)
+			}
+			viewModel.manga.value == null -> {
+				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
+				finishAfterTransition()
+			}
+			else -> {
+				Snackbar.make(binding.pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
+					.show()
+			}
 		}
 	}
 

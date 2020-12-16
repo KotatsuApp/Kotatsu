@@ -12,10 +12,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.doOnCurrentItemChanged
-import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
-import org.koitharu.kotatsu.utils.ext.firstItem
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import org.koitharu.kotatsu.utils.ext.*
 
 class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
@@ -51,13 +48,19 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 				}
 				setItems.await() ?: return@launchWhenCreated
 				if (position != -1) {
-					binding.recyclerView.firstItem = position
-					// TODO check
-					(binding.recyclerView.findViewHolderForAdapterPosition(position) as? WebtoonHolder)
-						?.restoreScroll(pendingState.scroll)
+					with(binding.recyclerView) {
+						firstItem = position
+						post {
+							(findViewHolderForAdapterPosition(position) as? WebtoonHolder)
+								?.restoreScroll(pendingState.scroll)
+						}
+					}
 				}
 			} else {
 				setItems.await()
+			}
+			binding.recyclerView.post {
+				binding.recyclerView.callOnScrollListeners()
 			}
 		}
 	}
