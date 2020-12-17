@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.history
 
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -10,5 +9,5 @@ val historyModule
 	get() = module {
 
 		single { HistoryRepository(get()) }
-		viewModel { HistoryListViewModel(get(), androidContext(), get()) }
+		viewModel { HistoryListViewModel(get(), get(), get()) }
 	}

@@ -15,6 +15,6 @@ val readerModule
 		single { PagesCache(get()) }
 
 		viewModel { (intent: MangaIntent, state: ReaderState?) ->
-			ReaderViewModel(intent, state, get(), get(), get())
+			ReaderViewModel(intent, state, get(), get(), get(), get())
 		}
 	}

@@ -15,5 +15,5 @@ val localModule
 		single { LocalMangaRepository(androidContext()) }
 		factory<MangaRepository>(named(MangaSource.LOCAL)) { get<LocalMangaRepository>() }
 
-		viewModel { LocalListViewModel(get(), get(), get(), androidContext()) }
+		viewModel { LocalListViewModel(get(), get(), get(), get(), androidContext()) }
 	}

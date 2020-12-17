@@ -1,13 +1,12 @@
 package org.koitharu.kotatsu.history.ui
 
-import android.content.Context
-import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
@@ -15,7 +14,6 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
-import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveData
 import org.koitharu.kotatsu.utils.ext.daysDiff
@@ -26,8 +24,8 @@ import kotlin.collections.ArrayList
 
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
-	private val context: Context, //todo create ShortcutRepository
-	private val settings: AppSettings
+	private val settings: AppSettings,
+	private val shortcutsRepository: ShortcutsRepository
 ) : MangaListViewModel(settings) {
 
 	val onItemRemoved = SingleLiveEvent<Manga>()
@@ -62,9 +60,7 @@ class HistoryListViewModel(
 	fun clearHistory() {
 		launchLoadingJob {
 			repository.clear()
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-				MangaShortcut.clearAppShortcuts(context)
-			}
+			shortcutsRepository.updateShortcuts()
 		}
 	}
 
@@ -72,9 +68,7 @@ class HistoryListViewModel(
 		launchJob {
 			repository.delete(manga)
 			onItemRemoved.call(manga)
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-				MangaShortcut(manga).removeAppShortcut(context)
-			}
+			shortcutsRepository.updateShortcuts()
 		}
 	}
 

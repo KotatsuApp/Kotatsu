@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.local.ui
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +13,7 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -22,7 +22,6 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
-import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.MediaStoreCompat
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.safe
@@ -33,6 +32,7 @@ class LocalListViewModel(
 	private val repository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
 	private val settings: AppSettings,
+	private val shortcutsRepository: ShortcutsRepository,
 	private val context: Context
 ) : MangaListViewModel(settings) {
 
@@ -102,9 +102,7 @@ class LocalListViewModel(
 					historyRepository.deleteOrSwap(manga, original)
 				}
 			}
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-				MangaShortcut(manga).removeAppShortcut(context)
-			}
+			shortcutsRepository.updateShortcuts()
 			onMangaRemoved.call(manga)
 		}
 	}

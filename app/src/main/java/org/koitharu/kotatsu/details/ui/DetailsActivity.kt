@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.BuildConfig
@@ -31,10 +32,10 @@ import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.download.DownloadService
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
-import org.koitharu.kotatsu.utils.MangaShortcut
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getThemeColor
@@ -197,7 +198,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		R.id.action_shortcut -> {
 			viewModel.manga.value?.let {
 				lifecycleScope.launch {
-					if (!MangaShortcut(it).requestPinShortcut(this@DetailsActivity)) {
+					if (!get<ShortcutsRepository>().requestPinShortcut(it)) {
 						Snackbar.make(
 							binding.pager,
 							R.string.operation_not_supported,
