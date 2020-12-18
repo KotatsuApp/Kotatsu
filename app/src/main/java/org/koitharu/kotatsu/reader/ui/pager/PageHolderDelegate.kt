@@ -17,8 +17,7 @@ class PageHolderDelegate(
 	private val loader: PageLoader,
 	private val settings: AppSettings,
 	private val callback: Callback
-) : SubsamplingScaleImageView.DefaultOnImageEventListener(),
-	CoroutineScope by loader {
+) : SubsamplingScaleImageView.DefaultOnImageEventListener(), CoroutineScope by loader {
 
 	private var state = State.EMPTY
 	private var job: Job? = null

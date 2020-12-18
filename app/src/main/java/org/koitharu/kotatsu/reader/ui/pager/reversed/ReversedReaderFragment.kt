@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.children
 import kotlinx.coroutines.async
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
@@ -11,10 +12,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.callOnPageChaneListeners
-import org.koitharu.kotatsu.utils.ext.doOnPageChanged
-import org.koitharu.kotatsu.utils.ext.swapAdapter
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import org.koitharu.kotatsu.utils.ext.*
 
 class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
@@ -30,13 +28,18 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 		pagerAdapter = ReversedPagesAdapter(loader, get())
 		with(binding.pager) {
 			adapter = pagerAdapter
-			offscreenPageLimit = 2
+			offscreenPageLimit = 1
 			doOnPageChanged(::notifyPageChanged)
 		}
 
 		viewModel.readerAnimation.observe(viewLifecycleOwner) {
 			val transformer = if (it) ReversedPageAnimTransformer() else null
 			binding.pager.setPageTransformer(transformer)
+			if (transformer == null) {
+				binding.pager.recyclerView?.children?.forEach {
+					it.resetTransformations()
+				}
+			}
 		}
 		viewModel.onZoomChanged.observe(viewLifecycleOwner) {
 			pagerAdapter = ReversedPagesAdapter(loader, get())

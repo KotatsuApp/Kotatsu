@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<dimen name="grid_spacing">8dp</dimen>
+	<dimen name="grid_spacing">7dp</dimen>
 	<dimen name="preferred_grid_width">140dp</dimen>
 </resources>

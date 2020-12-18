@@ -31,5 +31,5 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 	protected abstract fun onBind(data: ReaderPage)
 
-	protected open fun onRecycled() = Unit
+	open fun onRecycled() = Unit
 }

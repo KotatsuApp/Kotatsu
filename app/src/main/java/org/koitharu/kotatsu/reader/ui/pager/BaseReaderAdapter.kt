@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.reader.ui.PageLoader
+import org.koitharu.kotatsu.utils.ext.resetTransformations
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -22,6 +23,12 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 
 	override fun onBindViewHolder(holder: H, position: Int) {
 		holder.bind(differ.currentList[position])
+	}
+
+	override fun onViewRecycled(holder: H) {
+		holder.onRecycled()
+		holder.itemView.resetTransformations()
+		super.onViewRecycled(holder)
 	}
 
 	open fun getItem(position: Int): ReaderPage = differ.currentList[position]

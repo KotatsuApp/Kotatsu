@@ -149,6 +149,18 @@ inline fun ViewPager2.doOnPageChanged(crossinline callback: (Int) -> Unit) {
 	})
 }
 
+val ViewPager2.recyclerView: RecyclerView?
+	get() = children.find { it is RecyclerView } as? RecyclerView
+
+fun View.resetTransformations() {
+	alpha = 1f
+	translationX = 0f
+	translationY = 0f
+	translationZ = 0f
+	scaleX = 1f
+	scaleY = 1f
+}
+
 inline fun RecyclerView.doOnCurrentItemChanged(crossinline callback: (Int) -> Unit) {
 	addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
