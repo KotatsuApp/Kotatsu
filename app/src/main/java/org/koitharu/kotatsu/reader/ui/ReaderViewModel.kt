@@ -151,8 +151,10 @@ class ReaderViewModel(
 	fun saveCurrentPage(resolver: ContentResolver) {
 		launchJob(Dispatchers.Default) {
 			try {
-				val page =
-					content.value?.pages?.randomOrNull()?.toMangaPage() ?: return@launchJob //TODO
+				val state = currentState.value ?: error("Undefined state")
+				val page = content.value?.pages?.find {
+					it.chapterId == state.chapterId && it.index == state.page
+				}?.toMangaPage() ?: error("Page not found")
 				val repo = page.source.repository
 				val url = repo.getPageFullUrl(page)
 				val request = Request.Builder()
