@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.base.ui
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AlertDialog
@@ -21,21 +20,22 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 		val inflater = activity?.layoutInflater ?: LayoutInflater.from(requireContext())
 		val binding = onInflateView(inflater, null)
 		viewBinding = binding
-		onViewCreated(binding.root, savedInstanceState)
 		return AlertDialog.Builder(requireContext(), theme)
 			.setView(binding.root)
 			.also(::onBuildDialog)
 			.create()
 	}
 
+	final override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?,
+		savedInstanceState: Bundle?
+	) = viewBinding?.root
+
 	@CallSuper
 	override fun onDestroyView() {
 		viewBinding = null
 		super.onDestroyView()
-	}
-
-	final override fun getView(): View? {
-		return viewBinding?.root
 	}
 
 	open fun onBuildDialog(builder: AlertDialog.Builder) = Unit
