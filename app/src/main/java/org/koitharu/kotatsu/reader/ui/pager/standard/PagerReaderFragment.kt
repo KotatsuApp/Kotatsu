@@ -42,8 +42,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 			}
 		}
 		viewModel.onZoomChanged.observe(viewLifecycleOwner) {
-			pagesAdapter = PagesAdapter(loader, get())
-			binding.pager.swapAdapter(pagesAdapter)
+			pagesAdapter?.notifyDataSetChanged()
 		}
 	}
 

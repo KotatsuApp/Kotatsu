@@ -72,10 +72,7 @@ class ReaderViewModel(
 		.flowOn(Dispatchers.IO)
 		.asLiveData(viewModelScope.coroutineContext)
 
-	val onZoomChanged = settings.observe()
-		.filter { it == AppSettings.KEY_ZOOM_MODE }
-		.flowOn(Dispatchers.IO)
-		.asLiveEvent(viewModelScope.coroutineContext)
+	val onZoomChanged = SingleLiveEvent<Unit>()
 
 	init {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
@@ -113,6 +110,8 @@ class ReaderViewModel(
 				shortcutsRepository.updateShortcuts()
 			}
 		}
+
+		subscribeToSettings()
 	}
 
 	fun switchMode(newMode: ReaderMode) {
@@ -253,6 +252,13 @@ class ReaderViewModel(
 			}
 			content.postValue(ReaderContent(pages, null))
 		}
+	}
+
+	private fun subscribeToSettings() {
+		settings.observe()
+			.filter { it == AppSettings.KEY_ZOOM_MODE }
+			.onEach { onZoomChanged.postCall(Unit) }
+			.launchIn(viewModelScope + Dispatchers.IO)
 	}
 
 	private companion object : KoinComponent {

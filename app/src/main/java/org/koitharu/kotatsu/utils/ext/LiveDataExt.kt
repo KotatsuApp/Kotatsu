@@ -7,7 +7,6 @@ import androidx.lifecycle.liveData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import org.koitharu.kotatsu.utils.BufferedObserver
-import org.koitharu.kotatsu.utils.FlowLiveEvent
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -38,7 +37,3 @@ fun <T> Flow<T>.asLiveData(
 		emit(it)
 	}
 }
-
-fun <T> Flow<T>.asLiveEvent(
-	context: CoroutineContext = EmptyCoroutineContext
-): LiveData<T> = FlowLiveEvent(this, context)

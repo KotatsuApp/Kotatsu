@@ -42,8 +42,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 			}
 		}
 		viewModel.onZoomChanged.observe(viewLifecycleOwner) {
-			pagerAdapter = ReversedPagesAdapter(loader, get())
-			binding.pager.swapAdapter(pagerAdapter)
+			pagerAdapter?.notifyDataSetChanged()
 		}
 	}
 
