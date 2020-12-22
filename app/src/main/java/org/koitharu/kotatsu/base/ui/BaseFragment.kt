@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 
 abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsListener {
 
@@ -18,6 +19,10 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 
 	protected val binding: B
 		get() = checkNotNull(viewBinding)
+
+	protected val exceptionResolver by lazy(LazyThreadSafetyMode.NONE) {
+		ExceptionResolver(viewLifecycleOwner, childFragmentManager)
+	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater,

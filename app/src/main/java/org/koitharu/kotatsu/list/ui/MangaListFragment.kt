@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.base.ui.list.decor.SectionItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -38,6 +40,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.clearItemDecorations
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.toggleDrawer
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	PaginationScrollListener.Callback, OnListItemClickListener<Manga>, OnFilterChangedListener,
@@ -64,9 +67,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		binding.drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-		listAdapter = MangaListAdapter(get(), viewLifecycleOwner, this) {
-			viewModel.onRetry()
-		}
+		listAdapter = MangaListAdapter(get(), viewLifecycleOwner, this, ::resolveException)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
@@ -160,6 +161,18 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 				e.getDisplayMessage(resources),
 				Snackbar.LENGTH_SHORT
 			).show()
+		}
+	}
+
+	private fun resolveException(e: Throwable) {
+		if (e is ResolvableException) {
+			viewLifecycleScope.launch {
+				if (exceptionResolver.resolve(e)) {
+					viewModel.onRetry()
+				}
+			}
+		} else {
+			viewModel.onRetry()
 		}
 	}
 

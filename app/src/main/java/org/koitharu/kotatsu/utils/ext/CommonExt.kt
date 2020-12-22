@@ -5,6 +5,7 @@ import android.util.Log
 import kotlinx.coroutines.delay
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
@@ -37,6 +38,7 @@ suspend inline fun <T, R> T.retryUntilSuccess(maxAttempts: Int, action: T.() -> 
 }
 
 fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
+	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required)
 	is UnsupportedOperationException -> resources.getString(R.string.operation_not_supported)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)

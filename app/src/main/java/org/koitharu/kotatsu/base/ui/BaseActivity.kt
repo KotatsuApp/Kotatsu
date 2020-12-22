@@ -16,12 +16,18 @@ import androidx.viewbinding.ViewBinding
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
 abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindowInsetsListener {
 
 	protected lateinit var binding: B
 		private set
+
+
+	protected val exceptionResolver by lazy(LazyThreadSafetyMode.NONE) {
+		ExceptionResolver(this, supportFragmentManager)
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		if (get<AppSettings>().isAmoledTheme) {

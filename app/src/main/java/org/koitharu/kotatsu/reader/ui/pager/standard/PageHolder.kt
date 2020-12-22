@@ -7,6 +7,8 @@ import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageBinding
@@ -18,8 +20,9 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 open class PageHolder(
 	binding: ItemPageBinding,
 	loader: PageLoader,
-	settings: AppSettings
-) : BasePageHolder<ItemPageBinding>(binding, loader, settings), View.OnClickListener {
+	settings: AppSettings, exceptionResolver: ExceptionResolver
+) : BasePageHolder<ItemPageBinding>(binding, loader, settings, exceptionResolver),
+	View.OnClickListener {
 
 	init {
 		binding.ssiv.setOnImageEventListener(delegate)
@@ -93,6 +96,9 @@ open class PageHolder(
 
 	override fun onError(e: Throwable) {
 		binding.textViewError.text = e.getDisplayMessage(context.resources)
+		binding.buttonRetry.setText(
+			(e as? ResolvableException)?.resolveTextId ?: R.string.try_again
+		)
 		binding.layoutError.isVisible = true
 		binding.progressBar.isVisible = false
 	}

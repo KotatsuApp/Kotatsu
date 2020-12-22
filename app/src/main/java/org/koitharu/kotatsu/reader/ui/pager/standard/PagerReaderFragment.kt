@@ -25,10 +25,10 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		pagesAdapter = PagesAdapter(loader, get())
+		pagesAdapter = PagesAdapter(loader, get(), exceptionResolver)
 		with(binding.pager) {
 			adapter = pagesAdapter
-			offscreenPageLimit = 1
+			offscreenPageLimit = 2
 			doOnPageChanged(::notifyPageChanged)
 		}
 

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
@@ -16,27 +17,27 @@ import kotlin.coroutines.resumeWithException
 suspend fun Call.await() = suspendCancellableCoroutine<Response> { cont ->
 	this.enqueue(object : Callback {
 		override fun onFailure(call: Call, e: IOException) {
-			if (!cont.isCancelled) {
+			if (cont.isActive) {
 				cont.resumeWithException(e)
 			}
 		}
 
 		override fun onResponse(call: Call, response: Response) {
-			cont.resume(response)
+			if (cont.isActive) {
+				cont.resume(response)
+			}
 		}
 	})
 	cont.invokeOnCancellation {
-		safe {
-			this.cancel()
-		}
+		this.cancel()
 	}
 }
 
-fun CoroutineScope.launchAfter(
+inline fun CoroutineScope.launchAfter(
 	job: Job?,
 	context: CoroutineContext = EmptyCoroutineContext,
 	start: CoroutineStart = CoroutineStart.DEFAULT,
-	block: suspend CoroutineScope.() -> Unit
+	crossinline block: suspend CoroutineScope.() -> Unit
 ): Job = launch(context, start) {
 	try {
 		job?.join()
@@ -48,11 +49,11 @@ fun CoroutineScope.launchAfter(
 	block()
 }
 
-fun CoroutineScope.launchInstead(
+inline fun CoroutineScope.launchInstead(
 	job: Job?,
 	context: CoroutineContext = EmptyCoroutineContext,
 	start: CoroutineStart = CoroutineStart.DEFAULT,
-	block: suspend CoroutineScope.() -> Unit
+	crossinline block: suspend CoroutineScope.() -> Unit
 ): Job = launch(context, start) {
 	try {
 		job?.cancelAndJoin()
@@ -71,5 +72,5 @@ val IgnoreErrors
 		}
 	}
 
-val processLifecycleScope: CoroutineScope
+val processLifecycleScope: LifecycleCoroutineScope
 	inline get() = ProcessLifecycleOwner.get().lifecycleScope

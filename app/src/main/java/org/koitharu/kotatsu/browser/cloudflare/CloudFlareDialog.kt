@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.browser.cloudflare
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,8 @@ import android.webkit.CookieManager
 import android.webkit.WebSettings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isInvisible
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.fragment.app.setFragmentResult
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.databinding.FragmentCloudflareBinding
@@ -19,6 +21,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), CloudFlareCallback {
 
 	private val url by stringArgument(ARG_URL)
+	private val pendingResult = Bundle(1)
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -35,7 +38,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 			databaseEnabled = true
 			userAgentString = UserAgentInterceptor.userAgent
 		}
-		binding.webView.webViewClient = CloudFlareClient(this, url.orEmpty())
+		binding.webView.webViewClient = CloudFlareClient(get(), this, url.orEmpty())
 		CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webView, true)
 		if (url.isNullOrEmpty()) {
 			dismissAllowingStateLoss()
@@ -63,18 +66,24 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 		super.onPause()
 	}
 
+	override fun onDismiss(dialog: DialogInterface) {
+		setFragmentResult(TAG, pendingResult)
+		super.onDismiss(dialog)
+	}
+
 	override fun onPageLoaded() {
-		binding.progressBar.isInvisible = true
+		bindingOrNull()?.progressBar?.isInvisible = true
 	}
 
 	override fun onCheckPassed() {
-		((parentFragment ?: activity) as? SwipeRefreshLayout.OnRefreshListener)?.onRefresh()
+		pendingResult.putBoolean(EXTRA_RESULT, true)
 		dismiss()
 	}
 
 	companion object {
 
 		const val TAG = "CloudFlareDialog"
+		const val EXTRA_RESULT = "result"
 		private const val ARG_URL = "url"
 
 		fun newInstance(url: String) = CloudFlareDialog().withArgs(1) {

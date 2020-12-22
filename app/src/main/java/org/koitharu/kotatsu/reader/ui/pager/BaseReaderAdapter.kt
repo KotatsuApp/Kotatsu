@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.reader.ui.PageLoader
 import org.koitharu.kotatsu.utils.ext.resetTransformations
@@ -12,7 +13,8 @@ import kotlin.coroutines.suspendCoroutine
 
 abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	private val loader: PageLoader,
-	private val settings: AppSettings
+	private val settings: AppSettings,
+	private val exceptionResolver: ExceptionResolver
 ) : RecyclerView.Adapter<H>() {
 
 	private val differ = AsyncListDiffer(this, DiffCallback())
@@ -42,7 +44,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	final override fun onCreateViewHolder(
 		parent: ViewGroup,
 		viewType: Int
-	): H = onCreateViewHolder(parent, loader, settings).also(this::onViewHolderCreated)
+	): H = onCreateViewHolder(parent, loader, settings, exceptionResolver)
 
 	fun setItems(items: List<ReaderPage>, callback: Runnable) {
 		differ.submitList(items, callback)
@@ -54,12 +56,11 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 		}
 	}
 
-	protected open fun onViewHolderCreated(holder: H) = Unit
-
 	protected abstract fun onCreateViewHolder(
 		parent: ViewGroup,
 		loader: PageLoader,
-		settings: AppSettings
+		settings: AppSettings,
+		exceptionResolver: ExceptionResolver
 	): H
 
 	private class DiffCallback : DiffUtil.ItemCallback<ReaderPage>() {

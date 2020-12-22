@@ -7,13 +7,13 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 fun errorFooterAD(
-	onRetryClick: () -> Unit
+	onRetryClick: (Throwable) -> Unit
 ) = adapterDelegateViewBinding<ErrorFooter, ListModel, ItemErrorFooterBinding>(
 	{ inflater, parent -> ItemErrorFooterBinding.inflate(inflater, parent, false) }
 ) {
 
 	binding.root.setOnClickListener {
-		onRetryClick()
+		onRetryClick(item.exception)
 	}
 
 	bind {

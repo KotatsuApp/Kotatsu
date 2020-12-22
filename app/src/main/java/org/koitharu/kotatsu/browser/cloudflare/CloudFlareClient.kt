@@ -7,15 +7,13 @@ import android.webkit.WebViewClient
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 class CloudFlareClient(
+	private val cookieJar: CookieJar,
 	private val callback: CloudFlareCallback,
 	private val targetUrl: String
-) : WebViewClient(), KoinComponent {
+) : WebViewClient() {
 
-	private val cookieJar = get<CookieJar>()
 	private val cookieManager = CookieManager.getInstance()
 
 	init {
@@ -39,7 +37,8 @@ class CloudFlareClient(
 
 	private fun checkClearance() {
 		val httpUrl = targetUrl.toHttpUrl()
-		val cookies = cookieManager.getCookie(targetUrl).split(';').mapNotNull {
+		val rawCookie = cookieManager.getCookie(targetUrl) ?: return
+		val cookies = rawCookie.split(';').mapNotNull {
 			Cookie.parse(httpUrl, it)
 		}
 		if (cookies.none { it.name == CF_CLEARANCE }) {

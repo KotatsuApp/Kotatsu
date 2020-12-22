@@ -16,7 +16,7 @@ class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>,
-	onRetryClick: () -> Unit
+	onRetryClick: (Throwable) -> Unit
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
 	init {

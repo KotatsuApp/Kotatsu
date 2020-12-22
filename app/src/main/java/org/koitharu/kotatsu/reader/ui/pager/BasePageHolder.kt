@@ -3,16 +3,18 @@ package org.koitharu.kotatsu.reader.ui.pager
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.reader.ui.PageLoader
 
 abstract class BasePageHolder<B : ViewBinding>(
 	protected val binding: B,
 	loader: PageLoader,
-	settings: AppSettings
+	settings: AppSettings,
+	exceptionResolver: ExceptionResolver
 ) : RecyclerView.ViewHolder(binding.root), PageHolderDelegate.Callback {
 
-	protected val delegate = PageHolderDelegate(loader, settings, this)
+	protected val delegate = PageHolderDelegate(loader, settings, this, exceptionResolver)
 
 	val context: Context
 		get() = itemView.context

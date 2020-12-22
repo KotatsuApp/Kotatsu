@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.reader.ui.pager.wetoon
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.reader.ui.PageLoader
@@ -9,13 +10,15 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 
 class WebtoonAdapter(
 	loader: PageLoader,
-	settings: AppSettings
-) : BaseReaderAdapter<WebtoonHolder>(loader, settings) {
+	settings: AppSettings,
+	exceptionResolver: ExceptionResolver
+) : BaseReaderAdapter<WebtoonHolder>(loader, settings, exceptionResolver) {
 
 	override fun onCreateViewHolder(
 		parent: ViewGroup,
 		loader: PageLoader,
-		settings: AppSettings
+		settings: AppSettings,
+		exceptionResolver: ExceptionResolver
 	) = WebtoonHolder(
 		binding = ItemPageWebtoonBinding.inflate(
 			LayoutInflater.from(parent.context),
@@ -23,6 +26,7 @@ class WebtoonAdapter(
 			false
 		),
 		loader = loader,
-		settings = settings
+		settings = settings,
+		exceptionResolver = exceptionResolver
 	)
 }

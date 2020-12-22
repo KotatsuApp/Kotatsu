@@ -40,5 +40,7 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 
 	open fun onBuildDialog(builder: AlertDialog.Builder) = Unit
 
+	protected fun bindingOrNull(): B? = viewBinding
+
 	protected abstract fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): B
 }

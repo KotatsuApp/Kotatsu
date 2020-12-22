@@ -10,13 +10,15 @@ data class Progress(
 ) : Parcelable, Comparable<Progress> {
 
 	override fun compareTo(other: Progress): Int {
-		if (this.total == other.total) {
-			return this.value.compareTo(other.value)
+		return if (this.total == other.total) {
+			this.value.compareTo(other.value)
 		} else {
-			TODO()
+			this.part().compareTo(other.part())
 		}
 	}
 
 	val isIndeterminate: Boolean
 		get() = total <= 0
+
+	private fun part() = if (isIndeterminate) -1.0 else value / total.toDouble()
 }

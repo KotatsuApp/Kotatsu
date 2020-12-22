@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.core.net.toUri
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.coroutines.*
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -16,39 +18,52 @@ import java.io.IOException
 class PageHolderDelegate(
 	private val loader: PageLoader,
 	private val settings: AppSettings,
-	private val callback: Callback
+	private val callback: Callback,
+	private val exceptionResolver: ExceptionResolver
 ) : SubsamplingScaleImageView.DefaultOnImageEventListener(), CoroutineScope by loader {
 
 	private var state = State.EMPTY
 	private var job: Job? = null
 	private var file: File? = null
+	private var error: Throwable? = null
 
 	fun onBind(page: MangaPage) {
-		doLoad(page, force = false)
+		job = launchInstead(job) {
+			doLoad(page, force = false)
+		}
 	}
 
 	fun retry(page: MangaPage) {
-		doLoad(page, force = true)
+		job = launchInstead(job) {
+			(error as? ResolvableException)?.let {
+				exceptionResolver.resolve(it)
+			}
+			doLoad(page, force = true)
+		}
 	}
 
 	fun onRecycle() {
 		state = State.EMPTY
 		file = null
+		error = null
 		job?.cancel()
 	}
 
 	override fun onReady() {
 		state = State.SHOWING
+		error = null
 		callback.onImageShowing(settings.zoomMode)
 	}
 
 	override fun onImageLoaded() {
 		state = State.SHOWN
+		error = null
 		callback.onImageShown()
 	}
 
 	override fun onImageLoadError(e: Exception) {
 		val file = this.file
+		error = e
 		if (state == State.LOADED && e is IOException && file != null && file.exists()) {
 			job = launchAfter(job) {
 				state = State.CONVERTING
@@ -68,25 +83,25 @@ class PageHolderDelegate(
 		}
 	}
 
-	private fun doLoad(data: MangaPage, force: Boolean) {
-		job = launchInstead(job) {
-			state = State.LOADING
-			callback.onLoadingStarted()
-			try {
-				val file = withContext(Dispatchers.IO) {
-					val pageUrl = data.source.repository.getPageFullUrl(data)
-					check(pageUrl.isNotEmpty()) { "Cannot obtain full image url" }
-					loader.loadFile(pageUrl, force)
-				}
-				this@PageHolderDelegate.file = file
-				state = State.LOADED
-				callback.onImageReady(file.toUri())
-			} catch (e: CancellationException) {
-				// do nothing
-			} catch (e: Exception) {
-				state = State.ERROR
-				callback.onError(e)
+	private suspend fun doLoad(data: MangaPage, force: Boolean) {
+		state = State.LOADING
+		error = null
+		callback.onLoadingStarted()
+		try {
+			val file = withContext(Dispatchers.IO) {
+				val pageUrl = data.source.repository.getPageFullUrl(data)
+				check(pageUrl.isNotEmpty()) { "Cannot obtain full image url" }
+				loader.loadFile(pageUrl, force)
 			}
+			this@PageHolderDelegate.file = file
+			state = State.LOADED
+			callback.onImageReady(file.toUri())
+		} catch (e: CancellationException) {
+			// do nothing
+		} catch (e: Exception) {
+			state = State.ERROR
+			error = e
+			callback.onError(e)
 		}
 	}
 

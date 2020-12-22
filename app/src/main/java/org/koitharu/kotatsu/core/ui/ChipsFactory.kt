@@ -27,6 +27,7 @@ class ChipsFactory(val context: Context) {
 			chip.setChipIconResource(iconRes)
 		}
 		chip.tag = tag
+		chip.setEnsureMinTouchTargetSize(false)
 		chip.setOnClickListener(onClickListener)
 		return chip
 	}

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.list.ui.model
 
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.ListMode
 import kotlin.math.roundToInt
@@ -46,7 +47,8 @@ fun <C : MutableCollection<ListModel>> List<Manga>.toUi(destination: C, mode: Li
 fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(
 	exception = this,
 	icon = R.drawable.ic_error_large,
-	canRetry = canRetry
+	canRetry = canRetry,
+	buttonText = (this as? ResolvableException)?.resolveTextId ?: R.string.try_again
 )
 
 fun Throwable.toErrorFooter() = ErrorFooter(

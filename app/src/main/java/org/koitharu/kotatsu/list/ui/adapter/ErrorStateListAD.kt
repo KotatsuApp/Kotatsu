@@ -8,13 +8,13 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 fun errorStateListAD(
-	onRetryClick: () -> Unit
+	onRetryClick: (Throwable) -> Unit
 ) = adapterDelegateViewBinding<ErrorState, ListModel, ItemErrorStateBinding>(
 	{ inflater, parent -> ItemErrorStateBinding.inflate(inflater, parent, false) }
 ) {
 
 	binding.buttonRetry.setOnClickListener {
-		onRetryClick()
+		onRetryClick(item.exception)
 	}
 
 	bind {
@@ -22,6 +22,9 @@ fun errorStateListAD(
 			text = item.exception.getDisplayMessage(context.resources)
 			setCompoundDrawablesWithIntrinsicBounds(0, item.icon, 0, 0)
 		}
-		binding.buttonRetry.isVisible = item.canRetry
+		with(binding.buttonRetry) {
+			isVisible = item.canRetry
+			setText(item.buttonText)
+		}
 	}
 }

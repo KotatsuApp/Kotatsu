@@ -5,7 +5,7 @@
 	<string name="favourites">Избранное</string>
 	<string name="history">История</string>
 	<string name="error_occurred">Произошла ошибка</string>
-	<string name="network_error">Ошибка подключения</string>
+	<string name="network_error">Ошибка сети</string>
 	<string name="details">Подробности</string>
 	<string name="chapters">Главы</string>
 	<string name="list">Список</string>
@@ -188,4 +188,6 @@
 	<string name="tap_to_try_again">Попробовать ещё раз</string>
 	<string name="reader_mode_hint">Выбранный режим будет сохранён для текущей манги</string>
 	<string name="silent">Без звука</string>
+	<string name="captcha_required">Необходимо пройти CAPTCHA</string>
+	<string name="resolve">Resolve</string>
 </resources>
