@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.list.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -10,6 +9,7 @@ import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 abstract class MangaListViewModel(
 	private val settings: AppSettings
@@ -21,16 +21,20 @@ abstract class MangaListViewModel(
 	val gridScale = settings.observe()
 		.filter { it == AppSettings.KEY_GRID_SIZE }
 		.map { settings.gridSize / 100f }
-		.onStart { emit(settings.gridSize / 100f) }
-		.flowOn(Dispatchers.IO)
-		.asLiveData(viewModelScope.coroutineContext)
+		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.IO) {
+			settings.gridSize / 100f
+		}
 
 	protected fun createListModeFlow() = settings.observe()
 		.filter { it == AppSettings.KEY_LIST_MODE }
 		.map { settings.listMode }
 		.onStart { emit(settings.listMode) }
 		.distinctUntilChanged()
-		.onEach { listMode.postValue(it) }
+		.onEach {
+			if (listMode.value != it) {
+				listMode.postValue(it)
+			}
+		}
 
 	abstract fun onRefresh()
 

@@ -26,14 +26,40 @@ fun <T> LiveData<T>.observeWithPrevious(owner: LifecycleOwner, observer: Buffere
 	}
 }
 
-fun <T> Flow<T>.asLiveData(
+fun <T> Flow<T>.asLiveDataDistinct(
+	context: CoroutineContext = EmptyCoroutineContext
+): LiveData<T> = liveData(context) {
+	collect {
+		if (it != latestValue) {
+			emit(it)
+		}
+	}
+}
+
+fun <T> Flow<T>.asLiveDataDistinct(
 	context: CoroutineContext = EmptyCoroutineContext,
 	defaultValue: T
-): LiveData<T> = liveData(context) {
+): LiveData<T> = liveData(context, 0L) {
 	if (latestValue == null) {
 		emit(defaultValue)
 	}
 	collect {
-		emit(it)
+		if (it != latestValue) {
+			emit(it)
+		}
+	}
+}
+
+fun <T> Flow<T>.asLiveDataDistinct(
+	context: CoroutineContext = EmptyCoroutineContext,
+	defaultValue: suspend () -> T
+): LiveData<T> = liveData(context) {
+	if (latestValue == null) {
+		emit(defaultValue())
+	}
+	collect {
+		if (it != latestValue) {
+			emit(it)
+		}
 	}
 }

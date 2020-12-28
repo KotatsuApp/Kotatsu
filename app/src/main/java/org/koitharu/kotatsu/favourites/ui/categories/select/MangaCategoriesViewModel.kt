@@ -1,14 +1,13 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select
 
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
+import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class MangaCategoriesViewModel(
 	private val manga: Manga,
@@ -26,7 +25,7 @@ class MangaCategoriesViewModel(
 				isChecked = it.id in checked
 			)
 		}
-	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	fun setChecked(categoryId: Long, isChecked: Boolean) {
 		launchJob(Dispatchers.Default) {

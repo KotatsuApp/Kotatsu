@@ -101,7 +101,7 @@ dependencies {
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.tomclaw.cache:cache:1.0'
 
-	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 
 	testImplementation 'junit:junit:4.13.1'
 	testImplementation 'org.json:json:20201115'

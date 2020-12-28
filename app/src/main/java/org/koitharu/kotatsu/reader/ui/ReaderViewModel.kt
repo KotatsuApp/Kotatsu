@@ -5,7 +5,6 @@ import android.net.Uri
 import android.util.LongSparseArray
 import android.webkit.URLUtil
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -58,7 +57,7 @@ class ReaderViewModel(
 			chapterNumber = chapter?.number ?: 0,
 			chaptersTotal = chapters.size()
 		)
-	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val content = MutableLiveData<ReaderContent>(ReaderContent(emptyList(), null))
 	val manga: Manga?
@@ -68,9 +67,7 @@ class ReaderViewModel(
 		.filter { it == AppSettings.KEY_READER_ANIMATION }
 		.map { settings.readerAnimation }
 		.onStart { emit(settings.readerAnimation) }
-		.distinctUntilChanged()
-		.flowOn(Dispatchers.IO)
-		.asLiveData(viewModelScope.coroutineContext)
+		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.IO)
 
 	val onZoomChanged = SingleLiveEvent<Unit>()
 

@@ -50,6 +50,9 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	private var paginationListener: PaginationScrollListener? = null
 	private val spanResolver = MangaListSpanResolver()
 	private val spanSizeLookup = SpanSizeLookup()
+	private val listCommitCallback = Runnable {
+		spanSizeLookup.invalidateCache()
+	}
 	open val isSwipeRefreshEnabled = true
 
 	protected abstract val viewModel: MangaListViewModel
@@ -148,8 +151,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	}
 
 	private fun onListChanged(list: List<ListModel>) {
-		spanSizeLookup.invalidateCache()
-		listAdapter?.items = list
+		listAdapter?.setItems(list, listCommitCallback)
 	}
 
 	private fun onError(e: Throwable) {
@@ -178,7 +180,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 
 	@CallSuper
 	protected open fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.swipeRefreshLayout.isEnabled =
+		binding.swipeRefreshLayout.isEnabled = binding.swipeRefreshLayout.isRefreshing ||
 			isSwipeRefreshEnabled && !isLoading
 		if (!isLoading) {
 			binding.swipeRefreshLayout.isRefreshing = false

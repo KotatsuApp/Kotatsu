@@ -6,6 +6,7 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
@@ -38,6 +39,10 @@ class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD())
 	}
 
+	fun setItems(list: List<ListModel>, commitCallback: Runnable) {
+		differ.submitList(list, commitCallback)
+	}
+
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {
 
 		override fun areItemsTheSame(oldItem: ListModel, newItem: ListModel) = when {
@@ -49,6 +54,9 @@ class MangaListAdapter(
 			}
 			oldItem is MangaGridModel && newItem is MangaGridModel -> {
 				oldItem.id == newItem.id
+			}
+			oldItem is DateTimeAgo && newItem is DateTimeAgo -> {
+				oldItem == newItem
 			}
 			else -> oldItem.javaClass == newItem.javaClass
 		}

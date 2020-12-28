@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.*
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
@@ -27,7 +26,6 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {
 		CategoriesEditDelegate(requireContext(), this)
 	}
-	private var adapterState: Parcelable? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -47,25 +45,6 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 
 		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
-	}
-
-	override fun onViewStateRestored(savedInstanceState: Bundle?) {
-		super.onViewStateRestored(savedInstanceState)
-		// (savedInstanceState?.getParcelable(KEY_ADAPTER_STATE) ?: adapterState)?.let {
-		// 	(binding.pager.adapter as FavouritesPagerAdapter).restoreState(it)
-		// }
-	}
-
-	override fun onDestroyView() {
-		adapterState = (binding.pager.adapter as? FavouritesPagerAdapter)?.saveState()
-		super.onDestroyView()
-	}
-
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		adapterState = (bindingOrNull()?.pager?.adapter as? FavouritesPagerAdapter)?.saveState()
-			?: adapterState
-		outState.putParcelable(KEY_ADAPTER_STATE, adapterState)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -131,8 +110,6 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	}
 
 	companion object {
-
-		private const val KEY_ADAPTER_STATE = "adapter_state"
 
 		fun newInstance() = FavouritesContainerFragment()
 	}

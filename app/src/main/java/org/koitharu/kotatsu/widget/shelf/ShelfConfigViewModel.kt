@@ -1,13 +1,12 @@
 package org.koitharu.kotatsu.widget.shelf
 
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 import java.util.*
 
@@ -27,7 +26,7 @@ class ShelfConfigViewModel(
 			CategoryItem(it.id, it.title, selectedId == it.id)
 		}
 		list
-	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	var checkedId: Long by selectedCategoryId::value
 }

@@ -2,13 +2,10 @@ package org.koitharu.kotatsu.local.ui
 
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
@@ -24,6 +21,7 @@ import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.MediaStoreCompat
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.safe
 import org.koitharu.kotatsu.utils.ext.sub
 import java.io.IOException
@@ -51,9 +49,7 @@ class LocalListViewModel(
 			list.isEmpty() -> listOf(EmptyState(R.string.text_local_holder))
 			else -> list.toUi(mode)
 		}
-	}.onStart {
-		emit(listOf(LoadingState))
-	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
 		onRefresh()

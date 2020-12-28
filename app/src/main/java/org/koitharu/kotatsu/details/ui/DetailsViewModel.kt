@@ -77,7 +77,7 @@ class DetailsViewModel(
 				}
 			)
 		}
-	}.flowOn(Dispatchers.Default).asLiveData(viewModelScope.coroutineContext)
+	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
 		launchLoadingJob(Dispatchers.Default) {
