@@ -26,6 +26,7 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {
 		CategoriesEditDelegate(requireContext(), this)
 	}
+	private var pagerAdapter: FavouritesPagerAdapter? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -40,11 +41,20 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = FavouritesPagerAdapter(this, this)
+		viewModel.categories.value?.let {
+			adapter.replaceData(wrapCategories(it))
+		}
 		binding.pager.adapter = adapter
+		pagerAdapter = adapter
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
 
 		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+	}
+
+	override fun onDestroyView() {
+		pagerAdapter = null
+		super.onDestroyView()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -55,10 +65,7 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
-		val data = ArrayList<FavouriteCategory>(categories.size + 1)
-		data += FavouriteCategory(0L, getString(R.string.all_favourites), -1, Date())
-		data += categories
-		(binding.pager.adapter as? FavouritesPagerAdapter)?.replaceData(data)
+		pagerAdapter?.replaceData(wrapCategories(categories))
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -107,6 +114,13 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 
 	override fun onCreateCategory(name: String) {
 		viewModel.createCategory(name)
+	}
+
+	private fun wrapCategories(categories: List<FavouriteCategory>): List<FavouriteCategory> {
+		val data = ArrayList<FavouriteCategory>(categories.size + 1)
+		data += FavouriteCategory(0L, getString(R.string.all_favourites), -1, Date())
+		data += categories
+		return data
 	}
 
 	companion object {

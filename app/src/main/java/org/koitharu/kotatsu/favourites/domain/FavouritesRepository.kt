@@ -4,6 +4,7 @@ import androidx.collection.ArraySet
 import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -61,13 +62,13 @@ class FavouritesRepository(private val db: MangaDatabase) {
 	fun observeCategories(): Flow<List<FavouriteCategory>> {
 		return db.favouriteCategoriesDao.observeAll().mapItems {
 			it.toFavouriteCategory()
-		}
+		}.distinctUntilChanged()
 	}
 
 	fun observeCategories(mangaId: Long): Flow<List<FavouriteCategory>> {
 		return db.favouritesDao.observe(mangaId).map { entity ->
 			entity?.categories?.map { it.toFavouriteCategory() }.orEmpty()
-		}
+		}.distinctUntilChanged()
 	}
 
 	fun observeCategoriesIds(mangaId: Long): Flow<List<Long>> {

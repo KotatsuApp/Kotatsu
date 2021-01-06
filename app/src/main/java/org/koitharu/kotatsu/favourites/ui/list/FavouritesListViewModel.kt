@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import org.koitharu.kotatsu.utils.ext.onFirst
 
 class FavouritesListViewModel(
 	private val categoryId: Long,
@@ -38,8 +37,6 @@ class FavouritesListViewModel(
 			)
 			else -> list.toUi(mode)
 		}
-	}.onFirst {
-		isLoading.postValue(false)
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))

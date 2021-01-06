@@ -6,6 +6,8 @@ import kotlinx.coroutines.Job
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import java.util.*
+import kotlin.collections.ArrayList
 
 class FavouritesCategoriesViewModel(
 	private val repository: FavouritesRepository
@@ -40,8 +42,7 @@ class FavouritesCategoriesViewModel(
 			prevJob?.join()
 			val items = categories.value ?: error("This should not happen")
 			val ids = items.mapTo(ArrayList(items.size)) { it.id }
-			val item = ids.removeAt(oldPos)
-			ids.add(newPos, item)
+			Collections.swap(ids, oldPos, newPos)
 			repository.reorderCategories(ids)
 		}
 	}

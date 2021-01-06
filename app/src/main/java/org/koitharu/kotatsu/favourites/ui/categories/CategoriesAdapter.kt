@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import kotlin.jvm.internal.Intrinsics
 
 class CategoriesAdapter(
 	onItemClickListener: OnListItemClickListener<FavouriteCategory>
@@ -26,7 +25,7 @@ class CategoriesAdapter(
 		}
 
 		override fun areContentsTheSame(oldItem: FavouriteCategory, newItem: FavouriteCategory): Boolean {
-			return Intrinsics.areEqual(oldItem, newItem)
+			return oldItem.id == newItem.id && oldItem.title == newItem.title
 		}
 	}
 }

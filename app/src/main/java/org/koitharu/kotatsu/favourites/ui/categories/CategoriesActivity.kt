@@ -93,8 +93,6 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
-		// TODO check if not moved
-
 		adapter.items = categories
 		binding.textViewHolder.isVisible = categories.isEmpty()
 	}
@@ -124,14 +122,22 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 			recyclerView: RecyclerView,
 			viewHolder: RecyclerView.ViewHolder,
 			target: RecyclerView.ViewHolder
-		): Boolean {
-			val oldPos = viewHolder.bindingAdapterPosition
-			val newPos = target.bindingAdapterPosition
-			viewModel.reorderCategories(oldPos, newPos)
-			return true
-		}
+		): Boolean = true
 
 		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
+
+		override fun onMoved(
+			recyclerView: RecyclerView,
+			viewHolder: RecyclerView.ViewHolder,
+			fromPos: Int,
+			target: RecyclerView.ViewHolder,
+			toPos: Int,
+			x: Int,
+			y: Int
+		) {
+			super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
+			viewModel.reorderCategories(fromPos, toPos)
+		}
 	}
 
 	companion object {
