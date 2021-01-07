@@ -24,43 +24,41 @@ class PageLoader(
 	private val tasks = ArrayMap<String, Deferred<File>>()
 	private val convertLock = Mutex()
 
-	suspend fun loadFile(url: String, force: Boolean): File {
+	suspend fun loadFile(url: String, referer: String, force: Boolean): File {
 		if (!force) {
 			cache[url]?.let {
 				return it
 			}
 		}
 		val task = tasks[url]?.takeUnless { it.isCancelled || (force && it.isCompleted) }
-		return (task ?: loadAsync(url).also { tasks[url] = it }).await()
+		return (task ?: loadAsync(url, referer).also { tasks[url] = it }).await()
 	}
 
-	private fun loadAsync(url: String) = async(Dispatchers.IO) {
+	private fun loadAsync(url: String, referer: String) = async(Dispatchers.IO) {
 		val uri = Uri.parse(url)
 		if (uri.scheme == "cbz") {
 			val zip = ZipFile(uri.schemeSpecificPart)
 			val entry = zip.getEntry(uri.fragment)
 			zip.getInputStream(entry).use {
-				cache.put(url) { out ->
-					it.copyTo(out)
-				}
+				cache.put(url, it)
 			}
 		} else {
 			val request = Request.Builder()
 				.url(url)
 				.get()
 				.header("Accept", "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
+				.header("Referer", referer)
 				.cacheControl(CacheUtils.CONTROL_DISABLED)
 				.build()
 			okHttp.newCall(request).await().use { response ->
-				val body = response.body
 				check(response.isSuccessful) {
 					"Invalid response: ${response.code} ${response.message}"
 				}
-				checkNotNull(body) {
+				val body = checkNotNull(response.body) {
 					"Null response"
 				}
-				cache.put(url) { out ->
-					body.byteStream().use { it.copyTo(out) }
+				body.byteStream().use {
+					cache.put(url, it)
 				}
 			}
 		}

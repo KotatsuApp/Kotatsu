@@ -112,6 +112,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				MangaPage(
 					id = url.longHashCode(),
 					url = url,
+					referer = chapter.url,
 					source = source
 				)
 			}

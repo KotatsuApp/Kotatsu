@@ -71,6 +71,7 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 				MangaPage(
 					id = entryUri.longHashCode(),
 					url = entryUri,
+					referer = chapter.url,
 					source = MangaSource.LOCAL
 				)
 			}

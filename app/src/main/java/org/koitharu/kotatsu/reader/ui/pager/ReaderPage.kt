@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 data class ReaderPage(
 	val id: Long,
 	val url: String,
+	val referer: String,
 	val preview: String?,
 	val chapterId: Long,
 	val index: Int,
@@ -18,6 +19,7 @@ data class ReaderPage(
 	fun toMangaPage() = MangaPage(
 		id = id,
 		url = url,
+		referer = referer,
 		preview = preview,
 		source = source
 	)
@@ -27,6 +29,7 @@ data class ReaderPage(
 		fun from(page: MangaPage, index: Int, chapterId: Long) = ReaderPage(
 			id = page.id,
 			url = page.url,
+			referer = page.referer,
 			preview = page.preview,
 			chapterId = chapterId,
 			index = index,

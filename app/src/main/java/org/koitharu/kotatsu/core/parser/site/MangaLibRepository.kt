@@ -168,8 +168,9 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					val pageUrl = "$domain$url${x.getString("u")}"
 					MangaPage(
 						id = pageUrl.longHashCode(),
-						source = source,
-						url = pageUrl
+						url = pageUrl,
+						referer = chapter.url,
+						source = source
 					)
 				}
 			}

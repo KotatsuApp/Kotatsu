@@ -9,11 +9,13 @@ class UserAgentInterceptor : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain) = chain.proceed(
 		chain.request().newBuilder()
-			.header("User-Agent", userAgent)
+			.header(HEADER_USER_AGENT, userAgent)
 			.build()
 	)
 
 	companion object {
+
+		private const val HEADER_USER_AGENT = "User-Agent"
 
 		val userAgent
 			get() = "Kotatsu/%s (Android %s; %s; %s %s; %s)".format(

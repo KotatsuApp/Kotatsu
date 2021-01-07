@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.referer
 
 fun mangaGridItemAD(
 	coil: ImageLoader,
@@ -35,6 +36,7 @@ fun mangaGridItemAD(
 		binding.textViewTitle.text = item.title
 		imageRequest?.dispose()
 		imageRequest = binding.imageViewCover.newImageRequest(item.coverUrl)
+			.referer(item.manga.url)
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)

@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class MangaPage(
 	val id: Long,
 	val url: String,
+	val referer: String,
 	val preview: String? = null,
 	val source: MangaSource
 ) : Parcelable

@@ -146,6 +146,7 @@ class MangareadRepository(
 			MangaPage(
 				id = url.longHashCode(),
 				url = url,
+				referer = chapter.url,
 				source = MangaSource.MANGAREAD
 			)
 		}

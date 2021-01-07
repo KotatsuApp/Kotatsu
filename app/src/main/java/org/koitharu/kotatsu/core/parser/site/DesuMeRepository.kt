@@ -103,6 +103,7 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		return json.getJSONObject("pages").getJSONArray("list").map {
 			MangaPage(
 				id = it.getLong("id"),
+				referer = chapter.url,
 				source = chapter.source,
 				url = it.getString("img")
 			)

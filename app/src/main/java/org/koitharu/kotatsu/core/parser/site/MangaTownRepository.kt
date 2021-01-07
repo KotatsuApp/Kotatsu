@@ -134,6 +134,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 			MangaPage(
 				id = href.longHashCode(),
 				url = href,
+				referer = chapter.url,
 				source = MangaSource.MANGATOWN
 			)
 		}

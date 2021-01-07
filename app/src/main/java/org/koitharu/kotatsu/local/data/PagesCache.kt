@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.sub
 import org.koitharu.kotatsu.utils.ext.takeIfReadable
 import java.io.File
+import java.io.InputStream
 import java.io.OutputStream
 
 class PagesCache(context: Context) {
@@ -19,9 +20,20 @@ class PagesCache(context: Context) {
 		return lruCache.get(url)?.takeIfReadable()
 	}
 
+	@Deprecated("Useless lambda")
 	fun put(url: String, writer: (OutputStream) -> Unit): File {
 		val file = cacheDir.sub(url.longHashCode().toString())
 		file.outputStream().use(writer)
+		val res = lruCache.put(url, file)
+		file.delete()
+		return res
+	}
+
+	fun put(url: String, inputStream: InputStream): File {
+		val file = cacheDir.sub(url.longHashCode().toString())
+		file.outputStream().use { out ->
+			inputStream.copyTo(out)
+		}
 		val res = lruCache.put(url, file)
 		file.delete()
 		return res

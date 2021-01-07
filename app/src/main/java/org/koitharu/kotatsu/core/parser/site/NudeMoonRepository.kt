@@ -109,6 +109,7 @@ class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			MangaPage(
 				id = url.longHashCode(),
 				url = url,
+				referer = chapter.url,
 				preview = a.selectFirst("img")?.absUrl("src"),
 				source = source
 			)

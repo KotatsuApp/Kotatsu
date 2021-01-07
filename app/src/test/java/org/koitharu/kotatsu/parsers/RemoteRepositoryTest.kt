@@ -24,7 +24,7 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 
 	private val repo = try {
 		source.cls.getDeclaredConstructor(MangaLoaderContext::class.java)
-			.newInstance(get())
+			.newInstance(get<MangaLoaderContext>())
 	} catch (e: NoSuchMethodException) {
 		source.cls.newInstance()
 	}

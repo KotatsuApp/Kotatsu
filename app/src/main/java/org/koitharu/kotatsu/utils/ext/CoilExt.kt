@@ -29,3 +29,6 @@ fun ImageResult.toBitmapOrNull() = when (this) {
 	}
 	is ErrorResult -> null
 }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun ImageRequest.Builder.referer(referer: String) = this.setHeader("Referer", referer)
