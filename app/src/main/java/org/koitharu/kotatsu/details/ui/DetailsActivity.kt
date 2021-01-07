@@ -229,7 +229,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		binding.pager.isUserInputEnabled = true
-		window?.statusBarColor = getThemeColor(androidx.appcompat.R.attr.colorPrimaryDark)
+		window?.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
 	}
 
 	companion object {

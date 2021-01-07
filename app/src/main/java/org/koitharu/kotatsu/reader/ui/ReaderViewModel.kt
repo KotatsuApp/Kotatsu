@@ -100,12 +100,13 @@ class ReaderViewModel(
 			readerMode.postValue(mode)
 
 			val pages = loadChapter(requireNotNull(currentState.value).chapterId)
-			content.postValue(ReaderContent(pages, currentState.value))
 			// save state
 			currentState.value?.let {
 				historyRepository.addOrUpdate(manga, it.chapterId, it.page, it.scroll)
 				shortcutsRepository.updateShortcuts()
 			}
+
+			content.postValue(ReaderContent(pages, currentState.value))
 		}
 
 		subscribeToSettings()

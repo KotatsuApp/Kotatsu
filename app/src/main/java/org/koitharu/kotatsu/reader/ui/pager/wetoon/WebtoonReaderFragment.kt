@@ -55,12 +55,10 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 								?.restoreScroll(pendingState.scroll)
 						}
 					}
+					notifyPageChanged(position)
 				}
 			} else {
 				setItems.await()
-			}
-			binding.recyclerView.post {
-				binding.recyclerView.callOnScrollListeners()
 			}
 		}
 	}

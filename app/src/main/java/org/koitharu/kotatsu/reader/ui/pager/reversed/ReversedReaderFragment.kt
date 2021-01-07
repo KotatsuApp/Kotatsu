@@ -74,12 +74,10 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 				items.await() ?: return@launchWhenCreated
 				if (position != -1) {
 					binding.pager.setCurrentItem(position, false)
+					notifyPageChanged(position)
 				}
 			} else {
 				items.await()
-			}
-			binding.pager.post {
-				bindingOrNull()?.pager?.callOnPageChaneListeners()
 			}
 		}
 	}

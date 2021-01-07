@@ -177,6 +177,7 @@ inline fun RecyclerView.doOnCurrentItemChanged(crossinline callback: (Int) -> Un
 	})
 }
 
+@Deprecated("Reflection")
 fun RecyclerView.callOnScrollListeners() {
 	try {
 		val field = RecyclerView::class.java.getDeclaredField("mScrollListeners")
@@ -190,6 +191,7 @@ fun RecyclerView.callOnScrollListeners() {
 	}
 }
 
+@Deprecated("Reflection")
 fun ViewPager2.callOnPageChaneListeners() {
 	try {
 		val field = ViewPager2::class.java.getDeclaredField("mExternalPageChangeCallbacks")
