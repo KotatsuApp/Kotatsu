@@ -37,6 +37,7 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.filter.FilterAdapter
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
 import org.koitharu.kotatsu.utils.ext.clearItemDecorations
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.toggleDrawer
@@ -85,6 +86,10 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			setHasFixedSize(true)
 			addItemDecoration(ItemTypeDividerDecoration(view.context))
 			addItemDecoration(SectionItemDecoration(false, this@MangaListFragment))
+		}
+
+		(parentFragment as? RecycledViewPoolHolder)?.let {
+			binding.recyclerView.setRecycledViewPool(it.recycledViewPool)
 		}
 
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
