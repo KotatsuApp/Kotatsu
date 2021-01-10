@@ -25,8 +25,8 @@ class RestoreRepository(private val db: MangaDatabase) {
 			val history = parseHistory(item)
 			result += runCatching {
 				db.withTransaction {
-					db.mangaDao.upsert(manga, tags)
 					db.tagsDao.upsert(tags)
+					db.mangaDao.upsert(manga, tags)
 					db.historyDao.upsert(history)
 				}
 			}
@@ -56,8 +56,8 @@ class RestoreRepository(private val db: MangaDatabase) {
 			val favourite = parseFavourite(item)
 			result += runCatching {
 				db.withTransaction {
-					db.mangaDao.upsert(manga, tags)
 					db.tagsDao.upsert(tags)
+					db.mangaDao.upsert(manga, tags)
 					db.favouritesDao.upsert(favourite)
 				}
 			}

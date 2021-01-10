@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
 	<external-files-path
-		name="manga"
+		name="manga-ext"
 		path="/manga" />
 	<external-files-path
+		name="backups-ext"
+		path="/backups" />
+	<files-path
 		name="backups"
 		path="/backups" />
 </paths>
