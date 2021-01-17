@@ -17,7 +17,6 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.safe
 import java.io.IOException
 
 class DetailsViewModel(
@@ -93,7 +92,7 @@ class DetailsViewModel(
 		launchLoadingJob(Dispatchers.Default) {
 			val original = localMangaRepository.getRemoteManga(manga)
 			localMangaRepository.delete(manga) || throw IOException("Unable to delete file")
-			safe {
+			runCatching {
 				historyRepository.deleteOrSwap(manga, original)
 			}
 			onMangaRemoved.postCall(manga)

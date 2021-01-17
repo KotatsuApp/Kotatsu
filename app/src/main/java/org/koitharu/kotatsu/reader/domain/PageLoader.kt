@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.reader.ui
+package org.koitharu.kotatsu.reader.domain
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

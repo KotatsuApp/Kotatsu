@@ -92,13 +92,13 @@ class DownloadService : BaseService() {
 			var output: MangaZip? = null
 			try {
 				val repo = manga.source.repository
-				val cover = safe {
+				val cover = runCatching {
 					imageLoader.execute(
 						ImageRequest.Builder(this@DownloadService)
 							.data(manga.coverUrl)
 							.build()
 					).drawable
-				}
+				}.getOrNull()
 				notification.setLargeIcon(cover)
 				notification.update()
 				val data = if (manga.chapters == null) repo.getDetails(manga) else manga

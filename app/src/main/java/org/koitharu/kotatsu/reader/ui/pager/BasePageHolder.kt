@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.reader.ui.PageLoader
+import org.koitharu.kotatsu.reader.domain.PageLoader
 
 abstract class BasePageHolder<B : ViewBinding>(
 	protected val binding: B,

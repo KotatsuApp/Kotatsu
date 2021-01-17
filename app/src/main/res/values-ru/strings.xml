@@ -190,4 +190,6 @@
 	<string name="silent">Без звука</string>
 	<string name="captcha_required">Необходимо пройти CAPTCHA</string>
 	<string name="resolve">Resolve</string>
+	<string name="clear_cookies">Очистить куки</string>
+	<string name="cookies_cleared">Все куки удалены</string>
 </resources>

@@ -35,7 +35,7 @@ class PersistentCookieJar(
 			cache.addAll(persistor.loadAll())
 		}
 		cache.addAll(cookies)
-		persistor.saveAll(filterPersistentCookies(cookies))
+		persistor.saveAll(cookies.filter { it.persistent })
 	}
 
 	@Synchronized
@@ -48,11 +48,14 @@ class PersistentCookieJar(
 		val it = cache.iterator()
 		while (it.hasNext()) {
 			val currentCookie = it.next()
-			if (isCookieExpired(currentCookie)) {
-				cookiesToRemove.add(currentCookie)
-				it.remove()
-			} else if (currentCookie.matches(url)) {
-				validCookies.add(currentCookie)
+			when {
+				currentCookie.isExpired() -> {
+					cookiesToRemove.add(currentCookie)
+					it.remove()
+				}
+				currentCookie.matches(url) -> {
+					validCookies.add(currentCookie)
+				}
 			}
 		}
 		persistor.removeAll(cookiesToRemove)
@@ -73,18 +76,8 @@ class PersistentCookieJar(
 
 	private companion object {
 
-		fun filterPersistentCookies(cookies: List<Cookie>): List<Cookie> {
-			val persistentCookies: MutableList<Cookie> = ArrayList()
-			for (cookie in cookies) {
-				if (cookie.persistent) {
-					persistentCookies.add(cookie)
-				}
-			}
-			return persistentCookies
-		}
-
-		fun isCookieExpired(cookie: Cookie): Boolean {
-			return cookie.expiresAt < System.currentTimeMillis()
+		fun Cookie.isExpired(): Boolean {
+			return expiresAt < System.currentTimeMillis()
 		}
 	}
 }

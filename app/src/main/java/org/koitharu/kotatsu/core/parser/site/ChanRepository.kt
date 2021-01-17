@@ -56,7 +56,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				).firstOrNull()?.text(),
 				coverUrl = row.selectFirst("div.manga_images")?.selectFirst("img")
 					?.attr("src")?.withDomain(domain).orEmpty(),
-				tags = safe {
+				tags = runCatching {
 					row.selectFirst("div.genre")?.select("a")?.mapToSet {
 						MangaTag(
 							title = it.text(),
@@ -64,7 +64,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 							source = source
 						)
 					}
-				}.orEmpty(),
+				}.getOrNull().orEmpty(),
 				source = source
 			)
 		}

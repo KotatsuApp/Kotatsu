@@ -192,4 +192,6 @@
 	<string name="silent">Silent</string>
 	<string name="captcha_required">CAPTCHA is required</string>
 	<string name="resolve">Resolve</string>
+	<string name="clear_cookies">Clear cookies</string>
+	<string name="cookies_cleared">All cookies was removed</string>
 </resources>

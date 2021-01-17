@@ -8,7 +8,7 @@ import androidx.viewbinding.ViewBinding
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.reader.ui.PageLoader
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 

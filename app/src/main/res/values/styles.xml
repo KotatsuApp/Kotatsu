@@ -8,13 +8,6 @@
 		<item name="android:paddingBottom">10dp</item>
 	</style>
 
-	<style name="AppToggleButton.Vertical" parent="Widget.MaterialComponents.Button.OutlinedButton">
-		<item name="android:checkable">true</item>
-		<item name="android:gravity">center_horizontal</item>
-		<item name="iconPadding">6dp</item>
-		<item name="iconGravity">top</item>
-	</style>
-
 	<style name="AppPopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
 
 	<style name="AppToolbarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
@@ -30,10 +23,6 @@
 		<item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
 		<item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
 		<item name="background">@color/grey</item>
-	</style>
-
-	<style name="AppBadge" parent="Widget.MaterialComponents.Badge">
-		<item name="backgroundColor">?attr/colorAccent</item>
 	</style>
 
 </resources>

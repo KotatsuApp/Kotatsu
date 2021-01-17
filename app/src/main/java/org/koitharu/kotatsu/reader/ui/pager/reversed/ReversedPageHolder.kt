@@ -6,7 +6,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageBinding
-import org.koitharu.kotatsu.reader.ui.PageLoader
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.standard.PageHolder
 
 class ReversedPageHolder(

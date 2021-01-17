@@ -2,16 +2,22 @@ package org.koitharu.kotatsu.core.network
 
 import android.os.Build
 import okhttp3.Interceptor
+import okhttp3.Response
 import org.koitharu.kotatsu.BuildConfig
 import java.util.*
 
 class UserAgentInterceptor : Interceptor {
 
-	override fun intercept(chain: Interceptor.Chain) = chain.proceed(
-		chain.request().newBuilder()
-			.header(HEADER_USER_AGENT, userAgent)
-			.build()
-	)
+	override fun intercept(chain: Interceptor.Chain): Response {
+		val request = chain.request()
+		return chain.proceed(
+			if (request.header(HEADER_USER_AGENT) == null) {
+				request.newBuilder()
+					.header(HEADER_USER_AGENT, userAgent)
+					.build()
+			} else request
+		)
+	}
 
 	companion object {
 

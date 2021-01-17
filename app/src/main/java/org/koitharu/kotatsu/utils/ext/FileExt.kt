@@ -35,11 +35,11 @@ inline fun File.findParent(predicate: (File) -> Boolean): File? {
 	return current
 }
 
-fun File.getStorageName(context: Context): String = safe {
+fun File.getStorageName(context: Context): String = runCatching {
 	val manager = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 		manager.getStorageVolume(this)?.getDescription(context)?.let {
-			return@safe it
+			return@runCatching it
 		}
 	}
 	when {
@@ -47,6 +47,6 @@ fun File.getStorageName(context: Context): String = safe {
 		Environment.isExternalStorageRemovable(this) -> context.getString(R.string.external_storage)
 		else -> null
 	}
-} ?: context.getString(R.string.other_storage)
+}.getOrNull() ?: context.getString(R.string.other_storage)
 
 fun Uri.toFileOrNull() = if (scheme == "file") path?.let(::File) else null

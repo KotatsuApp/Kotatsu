@@ -15,7 +15,6 @@ import org.koitharu.kotatsu.local.data.MangaZip
 import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.readText
-import org.koitharu.kotatsu.utils.ext.safe
 import org.koitharu.kotatsu.utils.ext.sub
 import java.io.File
 import java.util.*
@@ -37,7 +36,7 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 		}
 		val files = getAvailableStorageDirs(context)
 			.flatMap { x -> x.listFiles(filenameFilter)?.toList().orEmpty() }
-		return files.mapNotNull { x -> safe { getFromFile(x) } }
+		return files.mapNotNull { x -> runCatching { getFromFile(x) }.getOrNull() }
 	}
 
 	override suspend fun getDetails(manga: Manga) = if (manga.chapters == null) {
@@ -128,9 +127,9 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 	}
 
 	fun getRemoteManga(localManga: Manga): Manga? {
-		val file = safe {
+		val file = runCatching {
 			Uri.parse(localManga.url).toFile()
-		} ?: return null
+		}.getOrNull() ?: return null
 		val zip = ZipFile(file)
 		val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
 		val index = entry?.let(zip::readText)?.let(::MangaIndex) ?: return null

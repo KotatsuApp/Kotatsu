@@ -9,18 +9,18 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.ext.mapToSet
-import org.koitharu.kotatsu.utils.ext.safe
 
 class SourcesAdapter(
 	private val settings: AppSettings,
 	private val onItemClickListener: OnListItemClickListener<MangaSource>,
 ) : RecyclerView.Adapter<SourceViewHolder>() {
 
-	private val dataSet = MangaProviderFactory.getSources(settings, includeHidden = true).toMutableList()
+	private val dataSet =
+		MangaProviderFactory.getSources(settings, includeHidden = true).toMutableList()
 	private val hiddenItems = settings.hiddenSources.mapNotNull {
-		safe {
+		runCatching {
 			MangaSource.valueOf(it)
-		}
+		}.getOrNull()
 	}.toMutableSet()
 
 	override fun onCreateViewHolder(

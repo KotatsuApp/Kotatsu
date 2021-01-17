@@ -4,7 +4,9 @@ import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
+import org.koin.dsl.bind
 import org.koin.dsl.module
+import org.koitharu.kotatsu.core.network.cookies.ClearableCookieJar
 import org.koitharu.kotatsu.core.network.cookies.PersistentCookieJar
 import org.koitharu.kotatsu.core.network.cookies.cache.SetCookieCache
 import org.koitharu.kotatsu.core.network.cookies.persistence.SharedPrefsCookiePersistor
@@ -18,7 +20,7 @@ val networkModule
 				SetCookieCache(),
 				SharedPrefsCookiePersistor(androidContext())
 			)
-		}
+		} bind ClearableCookieJar::class
 		single(named(CacheUtils.QUALIFIER_HTTP)) { CacheUtils.createHttpCache(androidContext()) }
 		single {
 			OkHttpClient.Builder().apply {

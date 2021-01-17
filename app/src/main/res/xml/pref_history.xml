@@ -16,8 +16,8 @@
 		app:iconSpaceReserved="false" />
 
 	<PreferenceCategory
-		app:iconSpaceReserved="false"
-		android:title="@string/cache">
+		android:title="@string/cache"
+		app:iconSpaceReserved="false">
 
 		<Preference
 			android:key="thumbs_cache_clear"
@@ -32,5 +32,11 @@
 			app:iconSpaceReserved="false" />
 
 	</PreferenceCategory>
+
+	<Preference
+		android:key="cookies_clear"
+		android:persistent="false"
+		android:title="@string/clear_cookies"
+		app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

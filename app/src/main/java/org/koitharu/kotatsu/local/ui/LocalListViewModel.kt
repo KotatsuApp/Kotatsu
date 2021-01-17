@@ -22,7 +22,6 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.MediaStoreCompat
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import org.koitharu.kotatsu.utils.ext.safe
 import org.koitharu.kotatsu.utils.ext.sub
 import java.io.IOException
 
@@ -49,7 +48,10 @@ class LocalListViewModel(
 			list.isEmpty() -> listOf(EmptyState(R.string.text_local_holder))
 			else -> list.toUi(mode)
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.asLiveDataDistinct(
+		viewModelScope.coroutineContext + Dispatchers.Default,
+		listOf(LoadingState)
+	)
 
 	init {
 		onRefresh()
@@ -94,7 +96,7 @@ class LocalListViewModel(
 			withContext(Dispatchers.Default) {
 				val original = repository.getRemoteManga(manga)
 				repository.delete(manga) || throw IOException("Unable to delete file")
-				safe {
+				runCatching {
 					historyRepository.deleteOrSwap(manga, original)
 				}
 			}

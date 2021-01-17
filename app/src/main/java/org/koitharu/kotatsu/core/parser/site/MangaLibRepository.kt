@@ -80,14 +80,14 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		val title = root.selectFirst("div.media-header__wrap")?.children()
 		val info = root.selectFirst("div.media-content")
 		val chaptersDoc = loaderContext.httpGet(manga.url + "?section=chapters").parseHtml()
-		val scripts = chaptersDoc.body().select("script")
+		val scripts = chaptersDoc.select("script")
 		var chapters: ArrayList<MangaChapter>? = null
 		scripts@ for (script in scripts) {
 			val raw = script.html().lines()
 			for (line in raw) {
-				if (line.startsWith("window.__CHAPTERS_DATA__")) {
+				if (line.startsWith("window.__DATA__")) {
 					val json = JSONObject(line.substringAfter('=').substringBeforeLast(';'))
-					val list = json.getJSONArray("list")
+					val list = json.getJSONObject("chapters").getJSONArray("list")
 					val total = list.length()
 					chapters = ArrayList(total)
 					for (i in 0 until total) {
@@ -99,7 +99,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 							append("/c")
 							append(item.getString("chapter_number"))
 							append('/')
-							append(item.getJSONArray("teams").getJSONObject(0).optString("slug"))
+							append(item.optString("chapter_string"))
 						}
 						var name = item.getString("chapter_name")
 						if (name.isNullOrBlank() || name == "null") {

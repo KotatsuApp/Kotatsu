@@ -9,7 +9,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koitharu.kotatsu.utils.ext.safe
 
 class BrowserClient(private val callback: BrowserCallback) : WebViewClient(), KoinComponent {
 
@@ -45,7 +44,7 @@ class BrowserClient(private val callback: BrowserCallback) : WebViewClient(), Ko
 		return request?.url?.toString()?.let(::doRequest)
 	}
 
-	private fun doRequest(url: String): WebResourceResponse? = safe {
+	private fun doRequest(url: String): WebResourceResponse? = runCatching {
 		val request = Request.Builder()
 			.url(url)
 			.build()
@@ -56,5 +55,5 @@ class BrowserClient(private val callback: BrowserCallback) : WebViewClient(), Ko
 			ct?.charset()?.name() ?: "utf-8",
 			response.body?.byteStream()
 		)
-	}
+	}.getOrNull()
 }

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.reader.ui.PageLoader
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.utils.ext.resetTransformations
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

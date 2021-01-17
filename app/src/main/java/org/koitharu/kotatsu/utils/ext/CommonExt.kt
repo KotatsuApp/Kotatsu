@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.utils.ext
 import android.content.res.Resources
 import android.util.Log
 import kotlinx.coroutines.delay
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
@@ -11,15 +10,6 @@ import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import java.io.FileNotFoundException
 import java.net.SocketTimeoutException
-
-inline fun <T, R> T.safe(action: T.() -> R?) = try {
-	this.action()
-} catch (e: Throwable) {
-	if (BuildConfig.DEBUG) {
-		e.printStackTrace()
-	}
-	null
-}
 
 suspend inline fun <T, R> T.retryUntilSuccess(maxAttempts: Int, action: T.() -> R): R {
 	var attempts = maxAttempts

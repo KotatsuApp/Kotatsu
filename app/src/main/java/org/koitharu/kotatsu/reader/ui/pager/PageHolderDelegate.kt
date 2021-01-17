@@ -9,7 +9,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.reader.ui.PageLoader
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.utils.ext.launchAfter
 import org.koitharu.kotatsu.utils.ext.launchInstead
 import java.io.File

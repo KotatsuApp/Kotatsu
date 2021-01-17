@@ -9,7 +9,6 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.getStringOrNull
 import org.koitharu.kotatsu.utils.ext.mapToSet
-import org.koitharu.kotatsu.utils.ext.safe
 
 class MangaIndex(source: String?) {
 
@@ -40,7 +39,7 @@ class MangaIndex(source: String?) {
 		json.put("app_version", BuildConfig.VERSION_CODE)
 	}
 
-	fun getMangaInfo(): Manga? = if (json.length() == 0) null else safe {
+	fun getMangaInfo(): Manga? = if (json.length() == 0) null else runCatching {
 		val source = MangaSource.valueOf(json.getString("source"))
 		Manga(
 			id = json.getLong("id"),
@@ -60,7 +59,7 @@ class MangaIndex(source: String?) {
 			},
 			chapters = getChapters(json.getJSONObject("chapters"), source)
 		)
-	}
+	}.getOrNull()
 
 	fun getCoverEntry(): String? = json.optString("cover_entry")
 

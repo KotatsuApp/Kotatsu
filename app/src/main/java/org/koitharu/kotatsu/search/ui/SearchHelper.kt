@@ -7,7 +7,6 @@ import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
-import org.koitharu.kotatsu.utils.ext.safe
 import java.io.Closeable
 
 object SearchHelper {
@@ -43,10 +42,10 @@ object SearchHelper {
 		override fun onSuggestionSelect(position: Int) = false
 
 		override fun onSuggestionClick(position: Int): Boolean {
-			val query = safe {
+			val query = runCatching {
 				val c = view.suggestionsAdapter.getItem(position) as? Cursor
 				c?.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY))
-			} ?: return false
+			}.getOrNull() ?: return false
 			view.setQuery(query, true)
 			return true
 		}

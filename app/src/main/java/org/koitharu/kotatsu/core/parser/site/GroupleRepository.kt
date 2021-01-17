@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import androidx.collection.arraySetOf
-import androidx.core.net.toUri
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
@@ -53,7 +53,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		}.parseHtml()
 		val root = doc.body().getElementById("mangaBox")
 			?.selectFirst("div.tiles.row") ?: throw ParseException("Cannot find root")
-		val baseHost = root.baseUri().toUri().host
+		val baseHost = root.baseUri().toHttpUrl().host
 		return root.select("div.tile").mapNotNull { node ->
 			val imgDiv = node.selectFirst("div.img") ?: return@mapNotNull null
 			val descDiv = node.selectFirst("div.desc") ?: return@mapNotNull null
@@ -61,7 +61,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 				return@mapNotNull null //skip author
 			}
 			val href = imgDiv.selectFirst("a").attr("href")?.inContextOf(node)
-			if (href == null || href.toUri().host != baseHost) {
+			if (href == null || href.toHttpUrl().host != baseHost) {
 				return@mapNotNull null // skip external links
 			}
 			val title = descDiv.selectFirst("h3")?.selectFirst("a")?.text()
@@ -73,15 +73,15 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 				title = title,
 				altTitle = descDiv.selectFirst("h4")?.text(),
 				coverUrl = imgDiv.selectFirst("img.lazy")?.attr("data-original").orEmpty(),
-				rating = safe {
+				rating = runCatching {
 					node.selectFirst("div.rating")
 						?.attr("title")
 						?.substringBefore(' ')
 						?.toFloatOrNull()
 						?.div(10f)
-				} ?: Manga.NO_RATING,
+				}.getOrNull() ?: Manga.NO_RATING,
 				author = tileInfo?.selectFirst("a.person-link")?.text(),
-				tags = safe {
+				tags = runCatching {
 					tileInfo?.select("a.element-link")
 						?.mapToSet {
 							MangaTag(
@@ -90,7 +90,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 								source = source
 							)
 						}
-				}.orEmpty(),
+				}.getOrNull().orEmpty(),
 				state = when {
 					node.selectFirst("div.tags")
 						?.selectFirst("span.mangaCompleted") != null -> MangaState.FINISHED

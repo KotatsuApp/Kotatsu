@@ -21,7 +21,6 @@ import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
-import org.koitharu.kotatsu.utils.ext.safe
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.util.concurrent.TimeUnit
@@ -37,23 +36,23 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	private val repository by inject<TrackingRepository>()
 	private val settings by inject<AppSettings>()
 
-	override suspend fun doWork(): Result = withContext(Dispatchers.Default) {
+	override suspend fun doWork(): Result {
 		val trackSources = settings.trackSources
 		if (trackSources.isEmpty()) {
-			return@withContext Result.success()
+			return Result.success()
 		}
 		val tracks = repository.getAllTracks(
 			useFavourites = AppSettings.TRACK_FAVOURITES in trackSources,
 			useHistory = AppSettings.TRACK_HISTORY in trackSources
 		)
 		if (tracks.isEmpty()) {
-			return@withContext Result.success()
+			return Result.success()
 		}
 		var success = 0
 		for (track in tracks) {
-			val details = safe {
+			val details = runCatching {
 				track.manga.source.repository.getDetails(track.manga)
-			}
+			}.getOrNull()
 			val chapters = details?.chapters ?: continue
 			when {
 				track.knownChaptersCount == -1 -> { //first check
@@ -125,7 +124,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			success++
 		}
 		repository.cleanup()
-		if (success == 0) {
+		return if (success == 0) {
 			Result.retry()
 		} else {
 			Result.success()

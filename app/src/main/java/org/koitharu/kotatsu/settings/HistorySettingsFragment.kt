@@ -7,9 +7,11 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.network.cookies.ClearableCookieJar
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.Cache
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
@@ -69,6 +71,20 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			}
 			AppSettings.KEY_THUMBS_CACHE_CLEAR -> {
 				clearCache(preference, Cache.THUMBS)
+				true
+			}
+			AppSettings.KEY_COOKIES_CLEAR -> {
+				viewLifecycleScope.launch {
+					val cookieJar = get<ClearableCookieJar>()
+					withContext(Dispatchers.IO) {
+						cookieJar.clear()
+					}
+					Snackbar.make(
+						listView ?: return@launch,
+						R.string.cookies_cleared,
+						Snackbar.LENGTH_SHORT
+					).show()
+				}
 				true
 			}
 			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
