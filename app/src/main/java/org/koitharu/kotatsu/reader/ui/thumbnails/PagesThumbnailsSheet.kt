@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
+import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.resolveDp
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
@@ -36,7 +37,7 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 			return
 		}
 		val current = arguments?.getInt(ARG_CURRENT, -1) ?: -1
-		val repository = pages.first().source.repository
+		val repository = mangaRepositoryOf(pages.first().source)
 		thumbnails = pages.mapIndexed { i, x ->
 			PageThumbnail(
 				number = i + 1,

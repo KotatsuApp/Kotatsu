@@ -93,7 +93,7 @@ class DownloadService : BaseService() {
 			checkNotNull(destination) { getString(R.string.cannot_find_available_storage) }
 			var output: MangaZip? = null
 			try {
-				val repo = manga.source.repository
+				val repo = mangaRepositoryOf(manga.source)
 				val cover = runCatching {
 					imageLoader.execute(
 						ImageRequest.Builder(this@DownloadService)

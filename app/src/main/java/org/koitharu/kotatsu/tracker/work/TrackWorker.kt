@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.util.concurrent.TimeUnit
@@ -51,7 +52,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		var success = 0
 		for (track in tracks) {
 			val details = runCatching {
-				track.manga.source.repository.getDetails(track.manga)
+				mangaRepositoryOf(track.manga.source).getDetails(track.manga)
 			}.getOrNull()
 			val chapters = details?.chapters ?: continue
 			when {

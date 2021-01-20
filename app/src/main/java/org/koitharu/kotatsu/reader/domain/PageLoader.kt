@@ -3,16 +3,20 @@ package org.koitharu.kotatsu.reader.domain
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.ArrayMap
+import androidx.collection.LongSparseArray
+import androidx.collection.set
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
-import org.koitharu.kotatsu.core.model.RequestDraft
+import org.koin.core.component.KoinComponent
+import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
+import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import java.io.File
 import java.util.zip.ZipFile
 
@@ -20,44 +24,60 @@ class PageLoader(
 	scope: CoroutineScope,
 	private val okHttp: OkHttpClient,
 	private val cache: PagesCache
-) : CoroutineScope by scope {
+) : CoroutineScope by scope, KoinComponent {
 
-	private val tasks = ArrayMap<String, Deferred<File>>()
+	private var repository: MangaRepository? = null
+	private val tasks = LongSparseArray<Deferred<File>>()
 	private val convertLock = Mutex()
 
-	suspend fun loadFile(requestDraft: RequestDraft, force: Boolean): File {
+	suspend fun loadPage(page: MangaPage, force: Boolean): File {
 		if (!force) {
-			cache[requestDraft.url]?.let {
+			cache[page.url]?.let {
 				return it
 			}
 		}
-		val task =
-			tasks[requestDraft.url]?.takeUnless { it.isCancelled || (force && it.isCompleted) }
-		return (task ?: loadAsync(requestDraft).also { tasks[requestDraft.url] = it }).await()
+		var task = tasks[page.id]
+		if (force) {
+			task?.cancel()
+		} else if (task?.isCancelled == false) {
+			return task.await()
+		}
+		task = loadAsync(page)
+		tasks[page.id] = task
+		return task.await()
 	}
 
-	private fun loadAsync(requestDraft: RequestDraft) = async(Dispatchers.IO) {
-		val uri = Uri.parse(requestDraft.url)
-		if (uri.scheme == "cbz") {
-			val zip = ZipFile(uri.schemeSpecificPart)
-			val entry = zip.getEntry(uri.fragment)
-			zip.getInputStream(entry).use {
-				cache.put(requestDraft.url, it)
-			}
-		} else {
-			val request = requestDraft.newBuilder()
-				.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
-				.cacheControl(CacheUtils.CONTROL_DISABLED)
-				.build()
-			okHttp.newCall(request).await().use { response ->
-				check(response.isSuccessful) {
-					"Invalid response: ${response.code} ${response.message}"
-				}
-				val body = checkNotNull(response.body) {
-					"Null response"
-				}
-				body.byteStream().use {
+	private fun loadAsync(page: MangaPage): Deferred<File> {
+		var repo = repository
+		if (repo?.javaClass != page.source.cls) {
+			repo = mangaRepositoryOf(page.source)
+			repository = repo
+		}
+		return async(Dispatchers.IO) {
+			val requestDraft = repo.getPageRequest(page)
+			check(requestDraft.isValid) { "Cannot obtain full image url" }
+			val uri = Uri.parse(requestDraft.url)
+			if (uri.scheme == "cbz") {
+				val zip = ZipFile(uri.schemeSpecificPart)
+				val entry = zip.getEntry(uri.fragment)
+				zip.getInputStream(entry).use {
 					cache.put(requestDraft.url, it)
+				}
+			} else {
+				val request = requestDraft.newBuilder()
+					.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
+					.cacheControl(CacheUtils.CONTROL_DISABLED)
+					.build()
+				okHttp.newCall(request).await().use { response ->
+					check(response.isSuccessful) {
+						"Invalid response: ${response.code} ${response.message}"
+					}
+					val body = checkNotNull(response.body) {
+						"Null response"
+					}
+					body.byteStream().use {
+						cache.put(requestDraft.url, it)
+					}
 				}
 			}
 		}
