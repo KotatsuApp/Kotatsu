@@ -11,7 +11,7 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.core.network.cookies.ClearableCookieJar
+import org.koitharu.kotatsu.core.network.AndroidCookieJar
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.Cache
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
@@ -75,10 +75,8 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			}
 			AppSettings.KEY_COOKIES_CLEAR -> {
 				viewLifecycleScope.launch {
-					val cookieJar = get<ClearableCookieJar>()
-					withContext(Dispatchers.IO) {
-						cookieJar.clear()
-					}
+					val cookieJar = get<AndroidCookieJar>()
+					cookieJar.clear()
 					Snackbar.make(
 						listView ?: return@launch,
 						R.string.cookies_cleared,

@@ -1,23 +1,19 @@
 package org.koitharu.kotatsu.browser.cloudflare
 
 import android.graphics.Bitmap
-import android.webkit.CookieManager
 import android.webkit.WebView
-import android.webkit.WebViewClient
-import okhttp3.Cookie
-import okhttp3.CookieJar
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.koitharu.kotatsu.core.network.AndroidCookieJar
+import org.koitharu.kotatsu.core.network.WebViewClientCompat
 
 class CloudFlareClient(
-	private val cookieJar: CookieJar,
+	private val cookieJar: AndroidCookieJar,
 	private val callback: CloudFlareCallback,
 	private val targetUrl: String
-) : WebViewClient() {
-
-	private val cookieManager = CookieManager.getInstance()
+) : WebViewClientCompat() {
 
 	init {
-		cookieManager.removeAllCookies(null)
+		cookieJar.remove(targetUrl, CF_UID, CF_CLEARANCE)
 	}
 
 	override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
@@ -36,16 +32,11 @@ class CloudFlareClient(
 	}
 
 	private fun checkClearance() {
-		val httpUrl = targetUrl.toHttpUrl()
-		val rawCookie = cookieManager.getCookie(targetUrl) ?: return
-		val cookies = rawCookie.split(';').mapNotNull {
-			Cookie.parse(httpUrl, it)
+		val cookies = cookieJar.loadForRequest(targetUrl.toHttpUrl())
+		if (cookies.any { it.name == CF_CLEARANCE }) {
+			callback.onCheckPassed()
 		}
-		if (cookies.none { it.name == CF_CLEARANCE }) {
-			return
-		}
-		cookieJar.saveFromResponse(httpUrl, cookies)
-		callback.onCheckPassed()
+
 	}
 
 	private companion object {
