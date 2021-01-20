@@ -1,10 +1,9 @@
 package org.koitharu.kotatsu.core.parser
 
+import okhttp3.Headers
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
-import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.MangaTag
-import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.core.network.CommonHeaders
 
 abstract class RemoteMangaRepository(
 	protected val loaderContext: MangaLoaderContext
@@ -18,7 +17,12 @@ abstract class RemoteMangaRepository(
 
 	override val sortOrders: Set<SortOrder> get() = emptySet()
 
-	override suspend fun getPageFullUrl(page: MangaPage): String = page.url
+	override suspend fun getPageRequest(page: MangaPage): RequestDraft {
+		return RequestDraft(
+			url = page.url,
+			headers = Headers.headersOf(CommonHeaders.REFERER, page.referer)
+		)
+	}
 
 	override suspend fun getTags(): Set<MangaTag> = emptySet()
 

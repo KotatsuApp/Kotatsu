@@ -6,9 +6,12 @@ import coil.request.ImageRequest
 import coil.size.PixelSize
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import kotlinx.coroutines.*
+import okhttp3.Headers
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.model.RequestDraft
+import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
@@ -42,13 +45,18 @@ fun pageThumbnailAD(
 			text = (item.number).toString()
 		}
 		job = scope.launch(Dispatchers.Default + IgnoreErrors) {
-			val url = item.page.preview ?: item.page.url.let {
-				val pageUrl = item.repository.getPageFullUrl(item.page)
-				cache[pageUrl]?.toUri()?.toString() ?: pageUrl
+			val pageRequest = item.page.preview?.let {
+				RequestDraft(it, Headers.headersOf(CommonHeaders.REFERER, item.page.referer))
+			} ?: item.page.url.let {
+				val pageRequest = item.repository.getPageRequest(item.page)
+				cache[pageRequest.url]?.toUri()?.toString()?.let {
+					pageRequest.copy(url = it)
+				} ?: pageRequest
 			}
 			val drawable = coil.execute(
 				ImageRequest.Builder(context)
-					.data(url)
+					.data(pageRequest.url)
+					.headers(pageRequest.headers)
 					.size(thumbSize)
 					.allowRgb565(true)
 					.build()

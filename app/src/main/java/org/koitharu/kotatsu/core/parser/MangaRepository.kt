@@ -17,7 +17,7 @@ interface MangaRepository {
 
 	suspend fun getPages(chapter: MangaChapter): List<MangaPage>
 
-	suspend fun getPageFullUrl(page: MangaPage): String
+	suspend fun getPageRequest(page: MangaPage): RequestDraft
 
 	suspend fun getTags(): Set<MangaTag>
 }

@@ -7,6 +7,7 @@ import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.request.SuccessResult
+import org.koitharu.kotatsu.core.network.CommonHeaders
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun ImageView.newImageRequest(url: String) = ImageRequest.Builder(context)
@@ -31,4 +32,6 @@ fun ImageResult.toBitmapOrNull() = when (this) {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun ImageRequest.Builder.referer(referer: String) = this.setHeader("Referer", referer)
+inline fun ImageRequest.Builder.referer(referer: String): ImageRequest.Builder {
+	return setHeader(CommonHeaders.REFERER, referer)
+}

@@ -8,7 +8,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
-import okhttp3.Request
+import org.koitharu.kotatsu.core.model.RequestDraft
+import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
@@ -24,30 +25,28 @@ class PageLoader(
 	private val tasks = ArrayMap<String, Deferred<File>>()
 	private val convertLock = Mutex()
 
-	suspend fun loadFile(url: String, referer: String, force: Boolean): File {
+	suspend fun loadFile(requestDraft: RequestDraft, force: Boolean): File {
 		if (!force) {
-			cache[url]?.let {
+			cache[requestDraft.url]?.let {
 				return it
 			}
 		}
-		val task = tasks[url]?.takeUnless { it.isCancelled || (force && it.isCompleted) }
-		return (task ?: loadAsync(url, referer).also { tasks[url] = it }).await()
+		val task =
+			tasks[requestDraft.url]?.takeUnless { it.isCancelled || (force && it.isCompleted) }
+		return (task ?: loadAsync(requestDraft).also { tasks[requestDraft.url] = it }).await()
 	}
 
-	private fun loadAsync(url: String, referer: String) = async(Dispatchers.IO) {
-		val uri = Uri.parse(url)
+	private fun loadAsync(requestDraft: RequestDraft) = async(Dispatchers.IO) {
+		val uri = Uri.parse(requestDraft.url)
 		if (uri.scheme == "cbz") {
 			val zip = ZipFile(uri.schemeSpecificPart)
 			val entry = zip.getEntry(uri.fragment)
 			zip.getInputStream(entry).use {
-				cache.put(url, it)
+				cache.put(requestDraft.url, it)
 			}
 		} else {
-			val request = Request.Builder()
-				.url(url)
-				.get()
-				.header("Accept", "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
-				.header("Referer", referer)
+			val request = requestDraft.newBuilder()
+				.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
 				.cacheControl(CacheUtils.CONTROL_DISABLED)
 				.build()
 			okHttp.newCall(request).await().use { response ->
@@ -58,7 +57,7 @@ class PageLoader(
 					"Null response"
 				}
 				body.byteStream().use {
-					cache.put(url, it)
+					cache.put(requestDraft.url, it)
 				}
 			}
 		}

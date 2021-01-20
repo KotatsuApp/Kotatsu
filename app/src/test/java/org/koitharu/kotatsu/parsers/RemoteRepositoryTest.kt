@@ -82,7 +82,7 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		val pages = runBlocking { repo.getPages(details.chapters!!.random()) }
 		Assert.assertFalse(pages.isEmpty())
 		val page = pages.random()
-		val fullUrl = runBlocking { repo.getPageFullUrl(page) }
+		val fullUrl = runBlocking { repo.getPageRequest(page) }
 		AssertX.assertContentType(fullUrl, "image/*")
 	}
 

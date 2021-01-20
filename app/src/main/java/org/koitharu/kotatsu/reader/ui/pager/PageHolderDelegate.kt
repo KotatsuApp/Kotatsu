@@ -89,9 +89,9 @@ class PageHolderDelegate(
 		callback.onLoadingStarted()
 		try {
 			val file = withContext(Dispatchers.IO) {
-				val pageUrl = data.source.repository.getPageFullUrl(data)
-				check(pageUrl.isNotEmpty()) { "Cannot obtain full image url" }
-				loader.loadFile(pageUrl, data.referer, force)
+				val pageRequest = data.source.repository.getPageRequest(data)
+				check(pageRequest.isValid) { "Cannot obtain full image url" }
+				loader.loadFile(pageRequest, force)
 			}
 			this@PageHolderDelegate.file = file
 			state = State.LOADED
