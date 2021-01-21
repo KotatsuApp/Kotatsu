@@ -34,6 +34,6 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 			right = systemBars.right,
 			bottom = systemBars.bottom
 		)
-		return WindowInsetsCompat.CONSUMED
+		return insets
 	}
 }
