@@ -3,7 +3,7 @@ dist: trusty
 android:
   components:
     - android-30
-    - build-tools-30.0.2
-    - platform-tools-30.0.3
+    - build-tools-30.0.3
+    - platform-tools-30.0.5
     - tools
 script: ./gradlew -Dorg.gradle.jvmargs=-Xmx1536m assembleDebug lintDebug

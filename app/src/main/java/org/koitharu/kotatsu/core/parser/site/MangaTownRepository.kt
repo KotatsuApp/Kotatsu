@@ -1,12 +1,10 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import androidx.collection.arraySetOf
-import okhttp3.Headers
 import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.*
@@ -142,12 +140,11 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		}
 	}
 
-	override suspend fun getPageRequest(page: MangaPage): RequestDraft {
+	override suspend fun getPageUrl(page: MangaPage): String {
 		val domain = conf.getDomain(DOMAIN)
 		val ssl = conf.isUseSsl(false)
 		val doc = loaderContext.httpGet(page.url).parseHtml()
-		val url = doc.getElementById("image").attr("src").withDomain(domain, ssl)
-		return RequestDraft(url, Headers.headersOf(CommonHeaders.REFERER, page.referer))
+		return doc.getElementById("image").attr("src").withDomain(domain, ssl)
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {

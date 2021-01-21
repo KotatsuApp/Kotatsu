@@ -7,7 +7,6 @@ import android.webkit.MimeTypeMap
 import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import okhttp3.internal.EMPTY_HEADERS
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
@@ -157,9 +156,7 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 
 	override val sortOrders = emptySet<SortOrder>()
 
-	override suspend fun getPageRequest(page: MangaPage): RequestDraft {
-		return RequestDraft(page.url, EMPTY_HEADERS)
-	}
+	override suspend fun getPageUrl(page: MangaPage) = page.url
 
 	override suspend fun getTags() = emptySet<MangaTag>()
 

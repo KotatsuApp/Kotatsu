@@ -9,6 +9,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.koin.core.component.KoinComponent
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.network.CommonHeaders
@@ -54,17 +55,20 @@ class PageLoader(
 			repository = repo
 		}
 		return async(Dispatchers.IO) {
-			val requestDraft = repo.getPageRequest(page)
-			check(requestDraft.isValid) { "Cannot obtain full image url" }
-			val uri = Uri.parse(requestDraft.url)
+			val pageUrl = repo.getPageUrl(page)
+			check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
+			val uri = Uri.parse(pageUrl)
 			if (uri.scheme == "cbz") {
 				val zip = ZipFile(uri.schemeSpecificPart)
 				val entry = zip.getEntry(uri.fragment)
 				zip.getInputStream(entry).use {
-					cache.put(requestDraft.url, it)
+					cache.put(pageUrl, it)
 				}
 			} else {
-				val request = requestDraft.newBuilder()
+				val request = Request.Builder()
+					.url(pageUrl)
+					.get()
+					.header(CommonHeaders.REFERER, page.referer)
 					.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
 					.cacheControl(CacheUtils.CONTROL_DISABLED)
 					.build()
@@ -76,7 +80,7 @@ class PageLoader(
 						"Null response"
 					}
 					body.byteStream().use {
-						cache.put(requestDraft.url, it)
+						cache.put(pageUrl, it)
 					}
 				}
 			}

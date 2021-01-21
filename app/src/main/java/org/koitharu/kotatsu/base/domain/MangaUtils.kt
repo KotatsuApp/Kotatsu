@@ -5,10 +5,13 @@ import android.net.Uri
 import android.util.Size
 import androidx.annotation.WorkerThread
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.medianOrNull
 import java.io.InputStream
@@ -25,8 +28,8 @@ object MangaUtils : KoinComponent {
 	suspend fun determineMangaIsWebtoon(pages: List<MangaPage>): Boolean? {
 		try {
 			val page = pages.medianOrNull() ?: return null
-			val pageRequest = page.source.repository.getPageRequest(page)
-			val uri = Uri.parse(pageRequest.url)
+			val url = page.source.repository.getPageUrl(page)
+			val uri = Uri.parse(url)
 			val size = if (uri.scheme == "cbz") {
 				val zip = ZipFile(uri.schemeSpecificPart)
 				val entry = zip.getEntry(uri.fragment)
@@ -35,7 +38,11 @@ object MangaUtils : KoinComponent {
 				}
 			} else {
 				val client = get<OkHttpClient>()
-				val request = pageRequest.newBuilder()
+				val request = Request.Builder()
+					.url(url)
+					.get()
+					.header(CommonHeaders.REFERER, page.referer)
+					.cacheControl(CacheUtils.CONTROL_DISABLED)
 					.build()
 				client.newCall(request).await().use {
 					getBitmapSize(it.body?.byteStream())

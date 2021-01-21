@@ -12,8 +12,8 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
-import okhttp3.Headers
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okio.IOException
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -23,7 +23,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseService
 import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.RequestDraft
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.MangaZip
@@ -107,12 +106,7 @@ class DownloadService : BaseService() {
 				output = MangaZip.findInDir(destination, data)
 				output.prepare(data)
 				val coverUrl = data.largeCoverUrl ?: data.coverUrl
-				downloadPage(
-					RequestDraft(
-						coverUrl,
-						Headers.headersOf(CommonHeaders.REFERER, data.url)
-					), destination
-				).let { file ->
+				downloadFile(coverUrl, data.url, destination).let { file ->
 					output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
 				}
 				val chapters = if (chaptersIds == null) {
@@ -126,14 +120,14 @@ class DownloadService : BaseService() {
 						for ((pageIndex, page) in pages.withIndex()) {
 							failsafe@ do {
 								try {
-									val request = repo.getPageRequest(page)
+									val url = repo.getPageUrl(page)
 									val file =
-										cache[request.url] ?: downloadPage(request, destination)
+										cache[url] ?: downloadFile(url, page.referer, destination)
 									output.addPage(
 										chapter,
 										file,
 										pageIndex,
-										MimeTypeMap.getFileExtensionFromUrl(request.url)
+										MimeTypeMap.getFileExtensionFromUrl(url)
 									)
 								} catch (e: IOException) {
 									notification.setWaitingForNetwork()
@@ -195,8 +189,10 @@ class DownloadService : BaseService() {
 		}
 	}
 
-	private suspend fun downloadPage(requestDraft: RequestDraft, destination: File): File {
-		val request = requestDraft.newBuilder()
+	private suspend fun downloadFile(url: String, referer: String, destination: File): File {
+		val request = Request.Builder()
+			.url(url)
+			.header(CommonHeaders.REFERER, referer)
 			.cacheControl(CacheUtils.CONTROL_DISABLED)
 			.get()
 			.build()

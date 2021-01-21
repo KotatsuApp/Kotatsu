@@ -1,11 +1,9 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import androidx.collection.arraySetOf
-import okhttp3.Headers
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.*
@@ -118,10 +116,9 @@ class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		}
 	}
 
-	override suspend fun getPageRequest(page: MangaPage): RequestDraft {
+	override suspend fun getPageUrl(page: MangaPage): String {
 		val doc = loaderContext.httpGet(page.url).parseHtml()
-		val url = doc.body().getElementById("gallery").attr("src").inContextOf(doc)
-		return RequestDraft(url, Headers.headersOf(CommonHeaders.REFERER, page.referer))
+		return doc.body().getElementById("gallery").attr("src").inContextOf(doc)
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {

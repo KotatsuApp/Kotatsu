@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
@@ -19,6 +20,7 @@ import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
@@ -153,14 +155,16 @@ class ReaderViewModel(
 					it.chapterId == state.chapterId && it.index == state.page
 				}?.toMangaPage() ?: error("Page not found")
 				val repo = page.source.repository
-				val pageRequest = repo.getPageRequest(page)
-				val request = pageRequest.newBuilder()
+				val pageUrl = repo.getPageUrl(page)
+				val request = Request.Builder()
+					.url(pageUrl)
+					.header(CommonHeaders.REFERER, page.referer)
 					.get()
 					.build()
 				val uri = get<OkHttpClient>().newCall(request).await().use { response ->
 					val fileName =
 						URLUtil.guessFileName(
-							pageRequest.url,
+							pageUrl,
 							response.contentDisposition,
 							response.mimeType
 						)
