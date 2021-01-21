@@ -129,16 +129,15 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 				?.text()?.toFloatOrNull()?.div(5f) ?: manga.rating,
 			author = info.getElementsMatchingOwnText("Автор").firstOrNull()
 				?.nextElementSibling()?.text() ?: manga.author,
-			tags = info.getElementsMatchingOwnText("Жанры")?.firstOrNull()
-				?.nextElementSibling()?.select("a")?.mapToSet { a ->
+			tags = info.selectFirst("div.media-tags")
+				?.select("a.media-tag-item")?.mapToSet { a ->
 					MangaTag(
 						title = a.text().capitalize(),
 						key = a.attr("href").substringAfterLast('='),
 						source = source
 					)
 				} ?: manga.tags,
-			description = info.getElementsMatchingOwnText("Описание")?.firstOrNull()
-				?.nextElementSibling()?.html(),
+			description = info.selectFirst("div.media-description__text")?.html(),
 			chapters = chapters
 		)
 	}
@@ -165,7 +164,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 				}
 				val url = json.getJSONObject("img").getString("url")
 				return pages.map { x ->
-					val pageUrl = "$domain$url${x.getString("u")}"
+					val pageUrl = "$domain/$url${x.getString("u")}"
 					MangaPage(
 						id = pageUrl.longHashCode(),
 						url = pageUrl,

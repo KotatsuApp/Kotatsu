@@ -16,7 +16,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 30
 		versionCode gitCommits
-		versionName '1.0-b2'
+		versionName '1.0-b3'
 
 		kapt {
 			arguments {
