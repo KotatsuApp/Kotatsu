@@ -193,4 +193,6 @@
 	<string name="clear_cookies">Очистить куки</string>
 	<string name="cookies_cleared">Все куки удалены</string>
 	<string name="chapers_checking_progress">Проверка новых глав: %1$d из %2$d</string>
+	<string name="clear_feed">Очистить ленту</string>
+	<string name="text_clear_updates_feed_prompt">Вся история обновлений будет очищена и её нельзя будет вернуть. Вы уверены?</string>
 </resources>

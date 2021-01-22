@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -16,6 +17,7 @@ import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.ui.model.toFeedItem
+import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.mapItems
 
@@ -29,6 +31,7 @@ class FeedViewModel(
 	private var loadingJob: Job? = null
 
 	val isEmptyState = MutableLiveData(false)
+	val onFeedCleared = SingleLiveEvent<Unit>()
 	val content = combine(
 		logList.filterNotNull().mapItems {
 			it.toFeedItem(context.resources)
@@ -40,7 +43,10 @@ class FeedViewModel(
 			isHasNextPage -> list + LoadingFooter
 			else -> list
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.asLiveDataDistinct(
+		viewModelScope.coroutineContext + Dispatchers.Default,
+		listOf(LoadingState)
+	)
 
 	init {
 		loadList(append = false)
@@ -60,6 +66,17 @@ class FeedViewModel(
 				logList.value = logList.value?.plus(list) ?: list
 			}
 			hasNextPage.value = list.isNotEmpty()
+		}
+	}
+
+	fun clearFeed() {
+		val lastJob = loadingJob
+		loadingJob = launchLoadingJob(Dispatchers.Default) {
+			lastJob?.cancelAndJoin()
+			repository.clearLogs()
+			logList.value = emptyList()
+			isEmptyState.postValue(true)
+			onFeedCleared.postCall(Unit)
 		}
 	}
 }

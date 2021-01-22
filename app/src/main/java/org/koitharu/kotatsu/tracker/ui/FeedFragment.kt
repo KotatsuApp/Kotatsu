@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.tracker.ui
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
@@ -55,6 +56,9 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
+		viewModel.onFeedCleared.observe(viewLifecycleOwner) {
+			onFeedCleared()
+		}
 		TrackWorker.getProgressLiveData(view.context.applicationContext)
 			.observe(viewLifecycleOwner, this::onUpdateProgressChanged)
 	}
@@ -64,17 +68,29 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 		inflater.inflate(R.menu.opt_feed, menu)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_update -> {
-			TrackWorker.startNow(requireContext())
-			Snackbar.make(
-				binding.recyclerView,
-				R.string.feed_will_update_soon,
-				Snackbar.LENGTH_SHORT
-			).show()
-			true
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.action_update -> {
+				TrackWorker.startNow(requireContext())
+				Snackbar.make(
+					binding.recyclerView,
+					R.string.feed_will_update_soon,
+					Snackbar.LENGTH_SHORT
+				).show()
+				true
+			}
+			R.id.action_clear_feed -> {
+				AlertDialog.Builder(context ?: return false)
+					.setTitle(R.string.clear_updates_feed)
+					.setMessage(R.string.text_clear_updates_feed_prompt)
+					.setNegativeButton(android.R.string.cancel, null)
+					.setPositiveButton(R.string.clear) { _, _ ->
+						viewModel.clearFeed()
+					}.show()
+				true
+			}
+			else -> super.onOptionsItemSelected(item)
 		}
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onDestroyView() {
@@ -93,6 +109,14 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 
 	private fun onListChanged(list: List<ListModel>) {
 		feedAdapter?.items = list
+	}
+
+	private fun onFeedCleared() {
+		Snackbar.make(
+			binding.recyclerView,
+			R.string.updates_feed_cleared,
+			Snackbar.LENGTH_LONG
+		).show()
 	}
 
 	private fun onError(e: Throwable) {

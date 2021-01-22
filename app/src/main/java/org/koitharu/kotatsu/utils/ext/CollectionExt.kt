@@ -69,3 +69,23 @@ inline fun <T, reified R> Array<T>.mapToArray(transform: (T) -> R): Array<R> = A
 }
 
 fun <T : Enum<T>> Array<T>.names() = mapToArray { it.name }
+
+fun <T> Collection<T>.isDistinct(): Boolean {
+	val set = HashSet<T>(size)
+	for (item in this) {
+		if (!set.add(item)) {
+			return false
+		}
+	}
+	return set.size == size
+}
+
+fun <T, K> Collection<T>.isDistinctBy(selector: (T) -> K): Boolean {
+	val set = HashSet<K>(size)
+	for (item in this) {
+		if (!set.add(selector(item))) {
+			return false
+		}
+	}
+	return set.size == size
+}
