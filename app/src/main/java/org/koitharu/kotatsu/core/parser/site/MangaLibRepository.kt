@@ -212,7 +212,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 
 	private suspend fun search(query: String): List<Manga> {
 		val domain = conf.getDomain(defaultDomain)
-		val json = loaderContext.httpGet("https://$domain/search?query=${query.urlEncoded()}")
+		val json = loaderContext.httpGet("https://$domain/search?type=manga&q=$query")
 			.parseJsonArray()
 		return json.map { jo ->
 			val url = "https://$domain/${jo.getString("slug")}"
@@ -223,10 +223,11 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 				altTitle = jo.getString("name"),
 				author = null,
 				tags = emptySet(),
-				rating = Manga.NO_RATING,
+				rating = jo.getString("rate_avg")
+					.toFloatOrNull()?.div(5f) ?: Manga.NO_RATING,
 				state = null,
 				source = source,
-				coverUrl = "https://$domain/uploads/cover/${jo.getString("slug")}/${jo.getString("cover")}/cover_thumb.jpg"
+				coverUrl = "https://$domain${jo.getJSONObject("covers").getString("thumbnail")}"
 			)
 		}
 	}
