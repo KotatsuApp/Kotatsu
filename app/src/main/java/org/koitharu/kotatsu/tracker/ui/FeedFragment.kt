@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.progress.Progress
 
 class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListener.Callback,
 	OnListItemClickListener<Manga> {
@@ -26,6 +27,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 	private val viewModel by viewModel<FeedViewModel>()
 
 	private var feedAdapter: FeedAdapter? = null
+	private var updateStatusSnackbar: Snackbar? = null
 
 	override fun getTitle() = context?.getString(R.string.updates)
 
@@ -53,6 +55,8 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
+		TrackWorker.getProgressLiveData(view.context.applicationContext)
+			.observe(viewLifecycleOwner, this::onUpdateProgressChanged)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -66,7 +70,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 			Snackbar.make(
 				binding.recyclerView,
 				R.string.feed_will_update_soon,
-				Snackbar.LENGTH_LONG
+				Snackbar.LENGTH_SHORT
 			).show()
 			true
 		}
@@ -75,6 +79,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 
 	override fun onDestroyView() {
 		feedAdapter = null
+		updateStatusSnackbar = null
 		super.onDestroyView()
 	}
 
@@ -96,6 +101,25 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 			e.getDisplayMessage(resources),
 			Snackbar.LENGTH_SHORT
 		).show()
+	}
+
+	private fun onUpdateProgressChanged(progress: Progress?) {
+		if (progress == null) {
+			updateStatusSnackbar?.dismiss()
+			updateStatusSnackbar = null
+			return
+		}
+		val summaryText = getString(
+			R.string.chapers_checking_progress,
+			progress.value + 1,
+			progress.total
+		)
+		updateStatusSnackbar?.setText(summaryText) ?: run {
+			val snackbar =
+				Snackbar.make(binding.recyclerView, summaryText, Snackbar.LENGTH_INDEFINITE)
+			updateStatusSnackbar = snackbar
+			snackbar.show()
+		}
 	}
 
 	override fun onScrolledToEnd() {

@@ -192,4 +192,5 @@
 	<string name="resolve">Resolve</string>
 	<string name="clear_cookies">Очистить куки</string>
 	<string name="cookies_cleared">Все куки удалены</string>
+	<string name="chapers_checking_progress">Проверка новых глав: %1$d из %2$d</string>
 </resources>

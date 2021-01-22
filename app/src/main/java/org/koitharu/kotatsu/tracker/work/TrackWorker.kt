@@ -8,6 +8,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import androidx.work.*
 import coil.ImageLoader
 import coil.request.ImageRequest
@@ -24,6 +26,7 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
+import org.koitharu.kotatsu.utils.progress.Progress
 import java.util.concurrent.TimeUnit
 
 class TrackWorker(context: Context, workerParams: WorkerParameters) :
@@ -50,10 +53,14 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			return Result.success()
 		}
 		var success = 0
-		for (track in tracks) {
+		val workData = Data.Builder()
+			.putInt(DATA_TOTAL, tracks.size)
+		for ((index, track) in tracks.withIndex()) {
 			val details = runCatching {
 				mangaRepositoryOf(track.manga.source).getDetails(track.manga)
 			}.getOrNull()
+			workData.putInt(DATA_PROGRESS, index)
+			setProgress(workData.build())
 			val chapters = details?.chapters ?: continue
 			when {
 				track.knownChaptersCount == -1 -> { //first check
@@ -194,6 +201,8 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	companion object {
 
 		const val CHANNEL_ID = "tracking"
+		private const val DATA_PROGRESS = "progress"
+		private const val DATA_TOTAL = "total"
 		private const val TAG = "tracking"
 
 		@RequiresApi(Build.VERSION_CODES.O)
@@ -239,6 +248,21 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				.build()
 			WorkManager.getInstance(context)
 				.enqueue(request)
+		}
+
+		fun getProgressLiveData(context: Context): LiveData<Progress?> {
+			return WorkManager.getInstance(context)
+				.getWorkInfosByTagLiveData(TAG)
+				.map { list ->
+					list.find { work ->
+						work.state == WorkInfo.State.RUNNING
+					}?.let { workInfo ->
+						Progress(
+							value = workInfo.progress.getInt(DATA_PROGRESS, 0),
+							total = workInfo.progress.getInt(DATA_TOTAL, -1)
+						).takeUnless { it.isIndeterminate }
+					}
+				}
 		}
 	}
 }
