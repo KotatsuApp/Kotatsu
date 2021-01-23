@@ -112,3 +112,16 @@ fun String.md5(): String {
 		.toString(16)
 		.padStart(32, '0')
 }
+
+fun String.substringBetween(from: String, to: String, fallbackValue: String): String {
+	val fromIndex = indexOf(from)
+	if (fromIndex == -1) {
+		return fallbackValue
+	}
+	val toIndex = lastIndexOf(to)
+	return if (toIndex == -1) {
+		fallbackValue
+	} else {
+		substring(fromIndex + from.length, toIndex)
+	}
+}

@@ -216,6 +216,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			.parseJsonArray()
 		return json.map { jo ->
 			val url = "https://$domain/${jo.getString("slug")}"
+			val covers = jo.getJSONObject("covers")
 			Manga(
 				id = url.longHashCode(),
 				url = url,
@@ -227,7 +228,8 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					.toFloatOrNull()?.div(5f) ?: Manga.NO_RATING,
 				state = null,
 				source = source,
-				coverUrl = "https://$domain${jo.getJSONObject("covers").getString("thumbnail")}"
+				coverUrl = "https://$domain${covers.getString("thumbnail")}",
+				largeCoverUrl = "https://$domain${covers.getString("default")}"
 			)
 		}
 	}
