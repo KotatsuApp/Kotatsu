@@ -186,7 +186,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	@CallSuper
 	protected open fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.swipeRefreshLayout.isEnabled = binding.swipeRefreshLayout.isRefreshing ||
-			isSwipeRefreshEnabled && !isLoading
+				isSwipeRefreshEnabled && !isLoading
 		if (!isLoading) {
 			binding.swipeRefreshLayout.isRefreshing = false
 		}
@@ -249,24 +249,21 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 							RecyclerView.VERTICAL
 						)
 					)
+					updatePadding(left = 0, right = 0)
 				}
 				ListMode.DETAILED_LIST -> {
 					layoutManager = LinearLayoutManager(context)
-					addItemDecoration(
-						SpacingItemDecoration(
-							resources.getDimensionPixelOffset(R.dimen.grid_spacing)
-						)
-					)
+					val spacing = resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+					updatePadding(left = spacing, right = spacing)
+					addItemDecoration(SpacingItemDecoration(spacing))
 				}
 				ListMode.GRID -> {
 					layoutManager = GridLayoutManager(context, spanResolver.spanCount).also {
 						it.spanSizeLookup = spanSizeLookup
 					}
-					addItemDecoration(
-						SpacingItemDecoration(
-							resources.getDimensionPixelOffset(R.dimen.grid_spacing)
-						)
-					)
+					val spacing = resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+					addItemDecoration(SpacingItemDecoration(spacing))
+					updatePadding(left = spacing, right = spacing)
 					addOnLayoutChangeListener(spanResolver)
 				}
 			}

@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
-import org.koitharu.kotatsu.utils.ext.resolveDp
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -55,7 +54,9 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		with(binding.recyclerView) {
-			addItemDecoration(SpacingItemDecoration(view.resources.resolveDp(8)))
+			addItemDecoration(
+				SpacingItemDecoration(view.resources.getDimensionPixelOffset(R.dimen.grid_spacing))
+			)
 			adapter = PageThumbnailAdapter(
 				thumbnails,
 				get(),
