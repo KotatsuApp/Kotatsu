@@ -97,6 +97,12 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 						)
 					}
 				}
+			} ?: chipsTags.addChips(listOf(manga.source)) {
+				create(
+					text = it.title,
+					iconRes = R.drawable.ic_chip_web,
+					tag = it
+				)
 			}
 			imageViewFavourite.setOnClickListener(this@DetailsFragment)
 			buttonRead.setOnClickListener(this@DetailsFragment)
