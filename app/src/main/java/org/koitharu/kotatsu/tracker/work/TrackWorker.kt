@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit
 class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	CoroutineWorker(context, workerParams), KoinComponent {
 
-	private val notificationManager by lazy(LazyThreadSafetyMode.NONE) {
+	private val notificationManager by lazy {
 		applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 	}
 
@@ -51,6 +51,9 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		)
 		if (tracks.isEmpty()) {
 			return Result.success()
+		}
+		if (tracks.size >= FOREGROUND_TRACKERS_THRESHOLD) {
+			setForeground(createForegroundInfo())
 		}
 		var success = 0
 		val workData = Data.Builder()
@@ -198,12 +201,41 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		}
 	}
 
+	private fun createForegroundInfo(): ForegroundInfo {
+		val title = applicationContext.getString(R.string.new_chapters_checking)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			val channel =
+				NotificationChannel(WORKER_CHANNEL_ID, title, NotificationManager.IMPORTANCE_NONE)
+			channel.setShowBadge(false)
+			channel.enableVibration(false)
+			channel.setSound(null, null)
+			channel.enableLights(false)
+			notificationManager.createNotificationChannel(channel)
+		}
+
+		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
+			.setContentTitle(title)
+			.setPriority(NotificationCompat.PRIORITY_MIN)
+			.setDefaults(0)
+			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
+			.setSilent(true)
+			.setProgress(0, 0, true)
+			.setSmallIcon(android.R.drawable.stat_notify_sync)
+			.setOngoing(true)
+			.build()
+
+		return ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
+	}
+
 	companion object {
 
 		const val CHANNEL_ID = "tracking"
+		private const val WORKER_CHANNEL_ID = "track_worker"
+		private const val WORKER_NOTIFICATION_ID = 35
 		private const val DATA_PROGRESS = "progress"
 		private const val DATA_TOTAL = "total"
 		private const val TAG = "tracking"
+		private const val FOREGROUND_TRACKERS_THRESHOLD = 4
 
 		@RequiresApi(Build.VERSION_CODES.O)
 		private fun createNotificationChannel(context: Context) {
@@ -216,7 +248,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 					NotificationManager.IMPORTANCE_DEFAULT
 				)
 				channel.setShowBadge(true)
-				channel.lightColor = ContextCompat.getColor(context, R.color.blue_primary)
+				channel.lightColor = ContextCompat.getColor(context, R.color.blue_primary_dark)
 				channel.enableLights(true)
 				manager.createNotificationChannel(channel)
 			}
