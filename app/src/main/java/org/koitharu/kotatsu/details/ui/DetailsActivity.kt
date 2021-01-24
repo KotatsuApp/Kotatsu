@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toFile
@@ -38,7 +37,6 @@ import org.koitharu.kotatsu.download.DownloadService
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 	TabLayoutMediator.TabConfigurationStrategy {
@@ -223,13 +221,11 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
 		binding.pager.isUserInputEnabled = false
-		window?.statusBarColor = ContextCompat.getColor(this, R.color.grey_dark)
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		binding.pager.isUserInputEnabled = true
-		window?.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
 	}
 
 	companion object {

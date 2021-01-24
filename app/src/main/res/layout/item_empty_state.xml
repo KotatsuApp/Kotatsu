@@ -5,6 +5,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:gravity="center"
+	android:padding="20dp"
 	android:textAppearance="?android:textAppearanceMedium"
 	android:textColor="?android:textColorSecondary"
 	tools:text="@tools:sample/lorem[3]" />

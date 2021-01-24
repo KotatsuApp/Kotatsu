@@ -6,4 +6,6 @@ android:
     - build-tools-30.0.3
     - platform-tools-30.0.5
     - tools
+before_install:
+  - yes | sdkmanager "platforms;android-30"
 script: ./gradlew -Dorg.gradle.jvmargs=-Xmx1536m assembleDebug lintDebug

@@ -4,20 +4,22 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.*
 import androidx.viewbinding.ViewBinding
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindowInsetsListener {
 
@@ -80,4 +82,19 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		(findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
 	}
 
+	override fun onSupportActionModeStarted(mode: ActionMode) {
+		super.onSupportActionModeStarted(mode)
+		val insets = ViewCompat.getRootWindowInsets(binding.root)
+			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
+		val view = findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)
+		view?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = insets.top
+		}
+		window?.statusBarColor = ContextCompat.getColor(this, R.color.grey_dark)
+	}
+
+	override fun onSupportActionModeFinished(mode: ActionMode) {
+		super.onSupportActionModeFinished(mode)
+		window?.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
+	}
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+		<item name="android:windowActionModeOverlay">true</item>
 		<item name="windowActionModeOverlay">true</item>
 		<item name="actionModeCloseDrawable">@drawable/ic_cross</item>
 		<item name="actionModeStyle">@style/AppActionMode</item>
