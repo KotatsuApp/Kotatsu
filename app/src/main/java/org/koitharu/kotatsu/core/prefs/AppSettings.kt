@@ -174,5 +174,6 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_BACKUP = "backup"
 		const val KEY_RESTORE = "restore"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
+		const val KEY_DOZE_WHITELIST = "doze_whitelist"
 	}
 }

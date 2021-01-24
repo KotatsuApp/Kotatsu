@@ -63,62 +63,15 @@
 		android:title="@string/protect_application"
 		app:iconSpaceReserved="false" />
 
-	<MultiSelectListPreference
-		android:defaultValue="@array/values_reader_switchers_default"
-		android:entries="@array/reader_switchers"
-		android:entryValues="@array/values_reader_switchers"
-		android:key="reader_switchers"
-		android:title="@string/switch_pages"
-		app:allowDividerAbove="true"
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.ReaderSettingsFragment"
+		android:title="@string/reader_settings"
 		app:iconSpaceReserved="false" />
 
-	<SwitchPreference
-		android:defaultValue="false"
-		android:key="reader_animation"
-		android:title="@string/pages_animation"
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.TrackerSettingsFragment"
+		android:title="@string/new_chapters_checking"
 		app:iconSpaceReserved="false" />
-
-	<ListPreference
-		android:entries="@array/zoom_modes"
-		android:key="zoom_mode"
-		android:title="@string/scale_mode"
-		app:iconSpaceReserved="false"
-		app:useSimpleSummaryProvider="true" />
-
-	<SwitchPreference
-		android:defaultValue="false"
-		android:key="reader_prefer_rtl"
-		android:summary="@string/prefer_rtl_reader_summary"
-		android:title="@string/prefer_rtl_reader"
-		app:iconSpaceReserved="false" />
-
-	<PreferenceCategory
-		android:title="@string/new_chapters"
-		app:allowDividerAbove="true"
-		app:iconSpaceReserved="false">
-
-		<MultiSelectListPreference
-			android:defaultValue="@array/values_track_sources_default"
-			android:entries="@array/track_sources"
-			android:entryValues="@array/values_track_sources"
-			android:key="track_sources"
-			android:title="@string/track_sources"
-			app:iconSpaceReserved="false" />
-
-		<SwitchPreference
-			android:defaultValue="true"
-			android:key="tracker_notifications"
-			android:summary="@string/show_notification_new_chapters"
-			android:title="@string/notifications"
-			app:iconSpaceReserved="false" />
-
-		<Preference
-			android:dependency="tracker_notifications"
-			android:key="notifications_settings"
-			android:title="@string/notifications_settings"
-			app:iconSpaceReserved="false" />
-
-	</PreferenceCategory>
 
 	<PreferenceCategory
 		android:title="@string/about"

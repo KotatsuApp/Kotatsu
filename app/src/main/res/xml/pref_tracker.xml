@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<MultiSelectListPreference
+		android:defaultValue="@array/values_track_sources_default"
+		android:entries="@array/track_sources"
+		android:entryValues="@array/values_track_sources"
+		android:key="track_sources"
+		android:title="@string/track_sources"
+		app:iconSpaceReserved="false" />
+
+	<Preference
+		android:key="doze_whitelist"
+		android:persistent="false"
+		android:summary="@string/power_optimization_simmary"
+		android:title="@string/disable_power_optimization"
+		app:iconSpaceReserved="false"
+		app:isPreferenceVisible="false"
+		tools:isPreferenceVisible="true" />
+
+	<SwitchPreference
+		android:defaultValue="true"
+		android:key="tracker_notifications"
+		android:summary="@string/show_notification_new_chapters"
+		android:title="@string/notifications"
+		app:iconSpaceReserved="false" />
+
+	<Preference
+		android:dependency="tracker_notifications"
+		android:key="notifications_settings"
+		android:title="@string/notifications_settings"
+		app:iconSpaceReserved="false" />
+
+</PreferenceScreen>

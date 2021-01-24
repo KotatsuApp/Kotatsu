@@ -1,11 +1,8 @@
 package org.koitharu.kotatsu.settings
 
 import android.content.DialogInterface
-import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.text.InputType
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
@@ -18,11 +15,8 @@ import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
 import org.koitharu.kotatsu.base.ui.dialog.TextInputDialog
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
-import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.*
 import java.io.File
 
@@ -40,18 +34,10 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				true
 			}
 		}
-		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.run {
-			entryValues = ZoomMode.values().names()
-			setDefaultValueCompat(ZoomMode.FIT_CENTER.name)
-		}
 		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
 			entryValues = ListMode.values().names()
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
-		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_SWITCHERS)?.summaryProvider =
-			MultiSummaryProvider(R.string.gestures_only)
-		findPreference<MultiSelectListPreference>(AppSettings.KEY_TRACK_SOURCES)?.summaryProvider =
-			MultiSummaryProvider(R.string.dont_check)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,17 +92,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onPreferenceTreeClick(preference: Preference?): Boolean {
 		return when (preference?.key) {
-			AppSettings.KEY_NOTIFICATIONS_SETTINGS -> {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-					val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-						.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
-						.putExtra(Settings.EXTRA_CHANNEL_ID, TrackWorker.CHANNEL_ID)
-					startActivity(intent)
-				} else {
-					(activity as? SettingsActivity)?.openNotificationSettingsLegacy()
-				}
-				true
-			}
 			AppSettings.KEY_LOCAL_STORAGE -> {
 				val ctx = context ?: return false
 				StorageSelectDialog.Builder(ctx, settings.getStorageDir(ctx), this)
