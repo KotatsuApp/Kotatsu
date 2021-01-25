@@ -9,6 +9,6 @@ val detailsModule
 	get() = module {
 
 		viewModel { (intent: MangaIntent) ->
-			DetailsViewModel(intent, get(), get(), get(), get(), get())
+			DetailsViewModel(intent, get(), get(), get(), get(), get(), get())
 		}
 	}

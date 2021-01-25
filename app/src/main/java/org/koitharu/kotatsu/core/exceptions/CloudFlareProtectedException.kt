@@ -8,5 +8,5 @@ class CloudFlareProtectedException(
 	val url: String
 ) : IOException("Protected by CloudFlare"), ResolvableException {
 
-	override val resolveTextId: Int = R.string.resolve
+	override val resolveTextId: Int = R.string.captcha_solve
 }

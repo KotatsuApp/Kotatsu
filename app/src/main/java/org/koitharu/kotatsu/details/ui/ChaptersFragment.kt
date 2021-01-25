@@ -33,6 +33,11 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	private var actionMode: ActionMode? = null
 	private var selectionDecoration: ChaptersSelectionDecoration? = null
 
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setHasOptionsMenu(true)
+	}
+
 	override fun onInflateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?
@@ -51,6 +56,9 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, this::onChaptersChanged)
+		viewModel.isChaptersReversed.observe(viewLifecycleOwner) {
+			activity?.invalidateOptionsMenu()
+		}
 	}
 
 	override fun onDestroyView() {
@@ -59,12 +67,22 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		super.onDestroyView()
 	}
 
-	private fun onChaptersChanged(list: List<ChapterListItem>) {
-		chaptersAdapter?.items = list
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater.inflate(R.menu.opt_chapters, menu)
 	}
 
-	private fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.progressBar.isVisible = isLoading
+	override fun onPrepareOptionsMenu(menu: Menu) {
+		super.onPrepareOptionsMenu(menu)
+		menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+		R.id.action_reversed -> {
+			viewModel.setChaptersReversed(!item.isChecked)
+			true
+		}
+		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onItemClick(item: MangaChapter, view: View) {
@@ -158,5 +176,13 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 			right = insets.right,
 			bottom = insets.bottom
 		)
+	}
+
+	private fun onChaptersChanged(list: List<ChapterListItem>) {
+		chaptersAdapter?.items = list
+	}
+
+	private fun onLoadingStateChanged(isLoading: Boolean) {
+		binding.progressBar.isVisible = isLoading
 	}
 }

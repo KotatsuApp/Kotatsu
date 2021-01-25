@@ -189,7 +189,7 @@
 	<string name="reader_mode_hint">Выбранный режим будет сохранён для текущей манги</string>
 	<string name="silent">Без звука</string>
 	<string name="captcha_required">Необходимо пройти CAPTCHA</string>
-	<string name="resolve">Resolve</string>
+	<string name="captcha_solve">Пройти</string>
 	<string name="clear_cookies">Очистить куки</string>
 	<string name="cookies_cleared">Все куки удалены</string>
 	<string name="chapers_checking_progress">Проверка новых глав: %1$d из %2$d</string>
@@ -199,4 +199,5 @@
 	<string name="disable_power_optimization">Отключить оптимизацию батареи</string>
 	<string name="power_optimization_already_disabled">Отпимизация батареи уже отключена</string>
 	<string name="new_chapters_checking">Проверка новых глав</string>
+	<string name="reverse">В обратном порядке</string>
 </resources>

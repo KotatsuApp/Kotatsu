@@ -74,6 +74,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	var historyGrouping by BoolPreferenceDelegate(KEY_HISTORY_GROUPING, true)
 
+	var chaptersReverse by BoolPreferenceDelegate(KEY_REVERSE_CHAPTERS, false)
+
 	val zoomMode by EnumPreferenceDelegate(
 		ZoomMode::class.java,
 		KEY_ZOOM_MODE,
@@ -175,5 +177,6 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_RESTORE = "restore"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
 		const val KEY_DOZE_WHITELIST = "doze_whitelist"
+		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 	}
 }

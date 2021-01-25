@@ -191,7 +191,7 @@
 	<string name="reader_mode_hint">Chosen configuration will be remembered for this manga</string>
 	<string name="silent">Silent</string>
 	<string name="captcha_required">CAPTCHA is required</string>
-	<string name="resolve">Resolve</string>
+	<string name="captcha_solve">Solve</string>
 	<string name="clear_cookies">Clear cookies</string>
 	<string name="cookies_cleared">All cookies was removed</string>
 	<string name="chapers_checking_progress">Checking for new chapters: %1$d of %2$d</string>
@@ -201,4 +201,5 @@
 	<string name="power_optimization_simmary">Helps with background operations such as checking for new chapters. Use only if you have a troubles with it</string>
 	<string name="disable_power_optimization">Disable power optimization</string>
 	<string name="new_chapters_checking">New chapters checking</string>
+	<string name="reverse">Reverse</string>
 </resources>

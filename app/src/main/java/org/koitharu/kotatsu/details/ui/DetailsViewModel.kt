@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.ChapterExtra
@@ -25,7 +26,8 @@ class DetailsViewModel(
 	private val favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
 	private val trackingRepository: TrackingRepository,
-	private val mangaDataRepository: MangaDataRepository
+	private val mangaDataRepository: MangaDataRepository,
+	private val settings: AppSettings
 ) : BaseViewModel() {
 
 	private val mangaData = MutableStateFlow<Manga?>(intent.manga)
@@ -48,6 +50,12 @@ class DetailsViewModel(
 			trackingRepository.getNewChaptersCount(mangaId)
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
+	private val chaptersReversed = settings.observe()
+		.filter { it == AppSettings.KEY_REVERSE_CHAPTERS }
+		.map { settings.chaptersReverse }
+		.onStart { emit(settings.chaptersReverse) }
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
+
 	val manga = mangaData.filterNotNull()
 		.asLiveData(viewModelScope.coroutineContext)
 	val favouriteCategories = favourite
@@ -56,17 +64,20 @@ class DetailsViewModel(
 		.asLiveData(viewModelScope.coroutineContext)
 	val readingHistory = history
 		.asLiveData(viewModelScope.coroutineContext)
+	val isChaptersReversed = chaptersReversed
+		.asLiveData(viewModelScope.coroutineContext)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 
 	val chapters = combine(
 		mangaData.map { it?.chapters.orEmpty() },
 		history.map { it?.chapterId },
-		newChapters
-	) { chapters, currentId, newCount ->
+		newChapters,
+		chaptersReversed
+	) { chapters, currentId, newCount, reversed ->
 		val currentIndex = chapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = chapters.size - newCount
-		chapters.mapIndexed { index, chapter ->
+		val res = chapters.mapIndexed { index, chapter ->
 			chapter.toListItem(
 				when {
 					index >= firstNewIndex -> ChapterExtra.NEW
@@ -76,6 +87,7 @@ class DetailsViewModel(
 				}
 			)
 		}
+		if (reversed) res.asReversed() else res
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
@@ -97,5 +109,9 @@ class DetailsViewModel(
 			}
 			onMangaRemoved.postCall(manga)
 		}
+	}
+
+	fun setChaptersReversed(newValue: Boolean) {
+		settings.chaptersReverse = newValue
 	}
 }
