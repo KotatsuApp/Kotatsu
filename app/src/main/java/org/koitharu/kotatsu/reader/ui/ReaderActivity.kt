@@ -45,10 +45,7 @@ import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.anim.Motion
-import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
-import org.koitharu.kotatsu.utils.ext.hideAnimated
-import org.koitharu.kotatsu.utils.ext.hitTest
-import org.koitharu.kotatsu.utils.ext.showAnimated
+import org.koitharu.kotatsu.utils.ext.*
 
 class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	ChaptersDialog.OnChapterChangeListener,
@@ -213,7 +210,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	private fun onError(e: Throwable) {
 		val dialog = AlertDialog.Builder(this)
 			.setTitle(R.string.error_occurred)
-			.setMessage(e.message)
+			.setMessage(e.getDisplayMessage(resources))
 			.setPositiveButton(R.string.close, null)
 		if (viewModel.content.value?.pages.isNullOrEmpty()) {
 			dialog.setOnDismissListener {

@@ -16,9 +16,10 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	protected abstract val defaultDomain: String
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
-		SortOrder.UPDATED, SortOrder.POPULARITY,
-		SortOrder.NEWEST, SortOrder.RATING
-		//FIXME SortOrder.ALPHABETICAL
+		SortOrder.UPDATED,
+		SortOrder.POPULARITY,
+		SortOrder.NEWEST,
+		SortOrder.RATING
 	)
 
 	override suspend fun getList(

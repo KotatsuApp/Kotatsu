@@ -1,15 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
-import androidx.collection.arraySetOf
-import org.koitharu.kotatsu.base.domain.MangaLoaderContext
-import org.koitharu.kotatsu.core.exceptions.ParseException
-import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.core.prefs.SourceSettings
-import org.koitharu.kotatsu.utils.ext.*
-import java.util.*
-import java.util.regex.Pattern
-
+/*
 class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
 
 	override val source = MangaSource.NUDEMOON
@@ -153,4 +144,4 @@ class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		private const val DEFAULT_DOMAIN = "nude-moon.me"
 		private val pageUrlPatter = Pattern.compile(".*\\?page=[0-9]+$")
 	}
-}
+}*/

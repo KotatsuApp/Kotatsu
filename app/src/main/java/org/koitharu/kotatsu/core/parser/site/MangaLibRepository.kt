@@ -5,6 +5,7 @@ import androidx.collection.arraySetOf
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
+import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -144,6 +145,9 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val doc = loaderContext.httpGet(chapter.url).parseHtml()
+		if (doc.location()?.endsWith("/register") == true) {
+			throw AuthRequiredException("/login".inContextOf(doc))
+		}
 		val scripts = doc.head().select("script")
 		val pg = doc.body().getElementById("pg").html()
 			.substringAfter('=')

@@ -49,7 +49,8 @@ class MangareadRepository(
 			Manga(
 				id = href.longHashCode(),
 				url = href,
-				coverUrl = div.selectFirst("img").absUrl("src"),
+				coverUrl = div.selectFirst("img").attr("data-srcset")
+					.split(',').firstOrNull()?.substringBeforeLast(' ').orEmpty(),
 				title = summary.selectFirst("h3").text(),
 				rating = div.selectFirst("span.total_votes")?.ownText()
 					?.toFloatOrNull()?.div(5f) ?: -1f,
@@ -75,13 +76,17 @@ class MangareadRepository(
 	override suspend fun getTags(): Set<MangaTag> {
 		val domain = conf.getDomain(DOMAIN)
 		val doc = loaderContext.httpGet("https://$domain/manga/").parseHtml()
-		val root = doc.body().getElementById("main-sidebar")
-			.selectFirst(".genres_wrap")
-			.selectFirst("ul")
-		return root.select("li").mapToSet { li ->
+		val root = doc.body().selectFirst("header")
+			.selectFirst("ul.second-menu")
+		return root.select("li").mapNotNullToSet { li ->
 			val a = li.selectFirst("a")
+			val href = a.attr("href").removeSuffix("/")
+				.substringAfterLast("genres/", "")
+			if (href.isEmpty()) {
+				return@mapNotNullToSet null
+			}
 			MangaTag(
-				key = a.attr("href").removeSuffix("/").substringAfterLast('/'),
+				key = href,
 				title = a.text(),
 				source = MangaSource.MANGAREAD
 			)
@@ -119,7 +124,8 @@ class MangareadRepository(
 				} ?: manga.tags,
 			description = root2.selectFirst("div.description-summary")
 				?.selectFirst("div.summary__content")
-				?.select("p")?.drop(1)
+				?.select("p")
+				?.filterNot { it.ownText().startsWith("A brief description") }
 				?.joinToString { it.html() },
 			chapters = doc2.select("li").asReversed().mapIndexed { i, li ->
 				val a = li.selectFirst("a")
@@ -142,7 +148,7 @@ class MangareadRepository(
 			?: throw ParseException("Root not found")
 		return root.select("div.page-break").map { div ->
 			val img = div.selectFirst("img")
-			val url = img.absUrl("src")
+			val url = img.absUrl("data-src")
 			MangaPage(
 				id = url.longHashCode(),
 				url = url,

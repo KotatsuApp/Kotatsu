@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.AssertX
+import org.koitharu.kotatsu.utils.ext.isDistinctBy
 import java.util.concurrent.TimeUnit
 
 @RunWith(Parameterized::class)
@@ -32,58 +33,93 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 	@Test
 	fun list() {
 		val list = runBlocking { repo.getList(60) }
-		Assert.assertFalse(list.isEmpty())
+		Assert.assertFalse("List is empty", list.isEmpty())
+		Assert.assertTrue("Mangas are not distinct", list.isDistinctBy { it.id })
 		val item = list.random()
-		AssertX.assertContentType(item.coverUrl, "image/*")
-		AssertX.assertContentType(item.url, "text/html", "application/json")
-		Assert.assertFalse(item.title.isBlank())
+		AssertX.assertContentType("Bad cover at ${item.url}", item.coverUrl, "image/*")
+		AssertX.assertContentType(
+			"Wrong content type at ${item.url}",
+			item.url,
+			"text/html",
+			"application/json"
+		)
+		Assert.assertFalse("Title is blank at ${item.url}", item.title.isBlank())
 	}
 
 	@Test
 	fun search() {
 		val list = runBlocking { repo.getList(0, query = "tail") }
-		Assert.assertFalse(list.isEmpty())
+		Assert.assertFalse("List is empty", list.isEmpty())
+		Assert.assertTrue("Mangas are not distinct", list.isDistinctBy { it.id })
 		val item = list.random()
-		AssertX.assertContentType(item.coverUrl, "image/*")
-		AssertX.assertContentType(item.url, "text/html", "application/json")
-		Assert.assertFalse(item.title.isBlank())
+		AssertX.assertContentType("Bad cover at ${item.url}", item.coverUrl, "image/*")
+		AssertX.assertContentType(
+			"Wrong content type at ${item.url}",
+			item.url,
+			"text/html",
+			"application/json"
+		)
+		Assert.assertFalse("Title is blank at ${item.url}", item.title.isBlank())
 	}
 
 	@Test
 	fun tags() {
 		val tags = runBlocking { repo.getTags() }
-		Assert.assertFalse(tags.isEmpty())
+		Assert.assertFalse("No tags found", tags.isEmpty())
 		val tag = tags.random()
-		Assert.assertFalse(tag.key.isBlank())
-		Assert.assertFalse(tag.title.isBlank())
+		Assert.assertFalse("Tag title is blank for ${tag}", tag.key.isBlank())
+		Assert.assertFalse("Tag title is blank for ${tag}", tag.title.isBlank())
 		val list = runBlocking { repo.getList(0, tag = tag) }
-		Assert.assertFalse(list.isEmpty())
+		Assert.assertFalse("List is empty", list.isEmpty())
 		val item = list.random()
-		AssertX.assertContentType(item.coverUrl, "image/*")
-		AssertX.assertContentType(item.url, "text/html", "application/json")
-		Assert.assertFalse(item.title.isBlank())
+		AssertX.assertContentType("Bad cover at ${item.coverUrl}", item.coverUrl, "image/*")
+		AssertX.assertContentType(
+			"Wrong response from ${item.url}",
+			item.url,
+			"text/html",
+			"application/json"
+		)
+		Assert.assertFalse("Title is blank at ${item.url}", item.title.isBlank())
 	}
 
 	@Test
 	fun details() {
 		val manga = runBlocking { repo.getList(0) }.random()
 		val details = runBlocking { repo.getDetails(manga) }
-		Assert.assertFalse(details.chapters.isNullOrEmpty())
-		Assert.assertFalse(details.description.isNullOrEmpty())
-		val chapter = details.chapters!!.random()
-		Assert.assertFalse(chapter.name.isBlank())
-		AssertX.assertContentType(chapter.url, "text/html", "application/json")
+		Assert.assertFalse("Chapter is empty at ${details.url}", details.chapters.isNullOrEmpty())
+		Assert.assertFalse(
+			"Description is empty at ${details.url}",
+			details.description.isNullOrEmpty()
+		)
+		Assert.assertTrue(
+			"Chapters are not distinct",
+			details.chapters.orEmpty().isDistinctBy { it.id })
+		val chapter = details.chapters?.randomOrNull() ?: return
+		Assert.assertFalse(
+			"Chapter name missing at ${details.url}:${chapter.number}",
+			chapter.name.isBlank()
+		)
+		AssertX.assertContentType(
+			"Chapter response wrong at ${chapter.url}",
+			chapter.url,
+			"text/html",
+			"application/json"
+		)
 	}
 
 	@Test
 	fun pages() {
 		val manga = runBlocking { repo.getList(0) }.random()
 		val details = runBlocking { repo.getDetails(manga) }
-		val pages = runBlocking { repo.getPages(details.chapters!!.random()) }
-		Assert.assertFalse(pages.isEmpty())
-		val page = pages.random()
+		val chapter = checkNotNull(details.chapters?.randomOrNull()) {
+			"No chapters at ${details.url}"
+		}
+		val pages = runBlocking { repo.getPages(chapter) }
+		Assert.assertFalse("Cannot find any page at ${chapter.url}", pages.isEmpty())
+		Assert.assertTrue("Pages are not distinct", pages.isDistinctBy { it.id })
+		val page = pages.randomOrNull() ?: return
 		val fullUrl = runBlocking { repo.getPageUrl(page) }
-		AssertX.assertContentType(fullUrl, "image/*")
+		AssertX.assertContentType("Wrong page response from $fullUrl", fullUrl, "image/*")
 	}
 
 	companion object {

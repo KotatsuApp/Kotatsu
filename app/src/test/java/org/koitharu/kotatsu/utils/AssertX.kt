@@ -11,18 +11,14 @@ object AssertX : KoinComponent {
 
 	private val okHttp by inject<OkHttpClient>()
 
-	fun assertContentType(url: String, vararg types: String) {
-		Assert.assertFalse("URL is empty", url.isEmpty())
+	fun assertContentType(message: String, url: String, vararg types: String) {
+		Assert.assertFalse("URL is empty: $message", url.isEmpty())
 		val request = Request.Builder()
 			.url(url)
 			.head()
 			.build()
 		val response = okHttp.newCall(request).execute()
 		when (val code = response.code) {
-			/*HttpURLConnection.HTTP_MOVED_PERM,
-			HttpURLConnection.HTTP_MOVED_TEMP -> {
-				assertContentType(cn.getHeaderField("Location"), *types)
-			}*/
 			HttpURLConnection.HTTP_OK -> {
 				val type = response.body!!.contentType()
 				Assert.assertTrue(types.any {
@@ -30,7 +26,7 @@ object AssertX : KoinComponent {
 					type?.type == x[0] && (x[1] == "*" || type.subtype == x[1])
 				})
 			}
-			else -> Assert.fail("Invalid response code $code at $url")
+			else -> Assert.fail("Invalid response code $code at $url: $message")
 		}
 	}
 

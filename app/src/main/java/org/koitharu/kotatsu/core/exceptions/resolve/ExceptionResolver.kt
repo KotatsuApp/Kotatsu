@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
+import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -18,6 +19,7 @@ class ExceptionResolver(
 
 	suspend fun resolve(e: ResolvableException): Boolean = when (e) {
 		is CloudFlareProtectedException -> resolveCF(e.url)
+		is AuthRequiredException -> false //TODO
 		else -> false
 	}
 

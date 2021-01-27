@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.list.ui.model
 
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.Manga
@@ -58,6 +59,7 @@ fun Throwable.toErrorFooter() = ErrorFooter(
 )
 
 private fun getErrorIcon(error: Throwable) = when (error) {
+	is AuthRequiredException,
 	is CloudFlareProtectedException -> R.drawable.ic_denied_large
 	else -> R.drawable.ic_error_large
 }

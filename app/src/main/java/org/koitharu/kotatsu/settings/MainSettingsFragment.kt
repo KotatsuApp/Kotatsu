@@ -85,7 +85,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		findPreference<PreferenceScreen>(AppSettings.KEY_REMOTE_SOURCES)?.run {
 			val total = MangaSource.values().size - 1
 			summary = getString(
-				R.string.enabled_d_from_d, total - settings.hiddenSources.size, total
+				R.string.enabled_d_of_d, total - settings.hiddenSources.size, total
 			)
 		}
 	}
