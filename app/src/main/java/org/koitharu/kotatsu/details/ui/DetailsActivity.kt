@@ -183,7 +183,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		}
 		R.id.action_browser -> {
 			viewModel.manga.value?.let {
-				startActivity(BrowserActivity.newIntent(this, it.url))
+				startActivity(BrowserActivity.newIntent(this, it.url, it.title))
 			}
 			true
 		}

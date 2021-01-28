@@ -33,6 +33,10 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		if (url.isNullOrEmpty()) {
 			finishAfterTransition()
 		} else {
+			onTitleChanged(
+				intent?.getStringExtra(EXTRA_TITLE) ?: getString(R.string.loading_),
+				url
+			)
 			binding.webView.loadUrl(url)
 		}
 	}
@@ -94,7 +98,12 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 
 	companion object {
 
-		fun newIntent(context: Context, url: String) = Intent(context, BrowserActivity::class.java)
-			.setData(Uri.parse(url))
+		private const val EXTRA_TITLE = "title"
+
+		fun newIntent(context: Context, url: String, title: String?): Intent {
+			return Intent(context, BrowserActivity::class.java)
+				.setData(Uri.parse(url))
+				.putExtra(EXTRA_TITLE, title)
+		}
 	}
 }

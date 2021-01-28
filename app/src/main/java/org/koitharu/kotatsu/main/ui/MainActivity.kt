@@ -80,8 +80,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		} ?: run {
 			openDefaultSection()
 		}
-		TrackWorker.setup(applicationContext)
-		AppUpdateChecker(this).launchIfNeeded()
+		if (savedInstanceState == null) {
+			TrackWorker.setup(applicationContext)
+			AppUpdateChecker(this).launchIfNeeded()
+		}
 
 		viewModel.onOpenReader.observe(this, this::onOpenReader)
 		viewModel.onError.observe(this, this::onError)
