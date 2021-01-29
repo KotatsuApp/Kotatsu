@@ -52,9 +52,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		if (tracks.isEmpty()) {
 			return Result.success()
 		}
-		if (tracks.size >= FOREGROUND_TRACKERS_THRESHOLD) {
-			setForeground(createForegroundInfo())
-		}
+		setForeground(createForegroundInfo())
 		var success = 0
 		val workData = Data.Builder()
 			.putInt(DATA_TOTAL, tracks.size)
@@ -204,8 +202,11 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	private fun createForegroundInfo(): ForegroundInfo {
 		val title = applicationContext.getString(R.string.new_chapters_checking)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val channel =
-				NotificationChannel(WORKER_CHANNEL_ID, title, NotificationManager.IMPORTANCE_NONE)
+			val channel = NotificationChannel(
+				WORKER_CHANNEL_ID,
+				title,
+				NotificationManager.IMPORTANCE_LOW
+			)
 			channel.setShowBadge(false)
 			channel.enableVibration(false)
 			channel.setSound(null, null)
@@ -235,7 +236,6 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		private const val DATA_PROGRESS = "progress"
 		private const val DATA_TOTAL = "total"
 		private const val TAG = "tracking"
-		private const val FOREGROUND_TRACKERS_THRESHOLD = 4
 
 		@RequiresApi(Build.VERSION_CODES.O)
 		private fun createNotificationChannel(context: Context) {

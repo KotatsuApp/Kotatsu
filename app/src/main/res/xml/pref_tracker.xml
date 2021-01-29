@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools">
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<MultiSelectListPreference
 		android:defaultValue="@array/values_track_sources_default"
@@ -11,15 +10,6 @@
 		android:key="track_sources"
 		android:title="@string/track_sources"
 		app:iconSpaceReserved="false" />
-
-	<Preference
-		android:key="doze_whitelist"
-		android:persistent="false"
-		android:summary="@string/power_optimization_simmary"
-		android:title="@string/disable_power_optimization"
-		app:iconSpaceReserved="false"
-		app:isPreferenceVisible="false"
-		tools:isPreferenceVisible="true" />
 
 	<SwitchPreference
 		android:defaultValue="true"

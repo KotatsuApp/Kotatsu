@@ -197,9 +197,6 @@
 	<string name="chapers_checking_progress">Checking for new chapters: %1$d of %2$d</string>
 	<string name="clear_feed">Clear feed</string>
 	<string name="text_clear_updates_feed_prompt">All updates history will be cleared and this action cannot be undone. Are you sure?</string>
-	<string name="power_optimization_already_disabled">Power optimization is already disabled</string>
-	<string name="power_optimization_simmary">Helps with background operations such as checking for new chapters. Use only if you have a troubles with it</string>
-	<string name="disable_power_optimization">Disable power optimization</string>
 	<string name="new_chapters_checking">New chapters checking</string>
 	<string name="reverse">Reverse</string>
 	<string name="sign_in">Sign in</string>
