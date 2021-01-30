@@ -6,6 +6,7 @@ import org.junit.Assert
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.net.HttpURLConnection
+import java.net.URI
 
 object AssertX : KoinComponent {
 
@@ -28,6 +29,14 @@ object AssertX : KoinComponent {
 			}
 			else -> Assert.fail("Invalid response code $code at $url: $message")
 		}
+	}
+
+	fun assertUrlRelative(message: String, url: String) {
+		Assert.assertFalse(message, URI(url).isAbsolute)
+	}
+
+	fun assertUrlAbsolute(message: String, url: String) {
+		Assert.assertTrue(message, URI(url).isAbsolute)
 	}
 
 }

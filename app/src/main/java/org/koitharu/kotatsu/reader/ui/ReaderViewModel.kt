@@ -217,7 +217,7 @@ class ReaderViewModel(
 
 	private suspend fun loadChapter(chapterId: Long): List<ReaderPage> {
 		val manga = checkNotNull(mangaData.value) { "Manga is null" }
-		val chapter = checkNotNull(chapters.get(chapterId)) { "Chapter $chapterId not found" }
+		val chapter = checkNotNull(chapters[chapterId]) { "Requested chapter not found" }
 		val repo = manga.source.repository
 		return repo.getPages(chapter).mapIndexed { index, page ->
 			ReaderPage.from(page, index, chapterId)

@@ -14,6 +14,8 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 
 	override val source = MangaSource.DESUME
 
+	override val defaultDomain = "desu.me"
+
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED,
 		SortOrder.POPULARITY,
@@ -27,7 +29,7 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
-		val domain = conf.getDomain(DOMAIN)
+		val domain = getDomain()
 		val url = buildString {
 			append("https://")
 			append(domain)
@@ -51,8 +53,9 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		for (i in 0 until total) {
 			val jo = json.getJSONObject(i)
 			val cover = jo.getJSONObject("image")
+			val id = jo.getLong("id")
 			list += Manga(
-				url = jo.getString("url"),
+				url = "/manga/api/$id",
 				source = MangaSource.DESUME,
 				title = jo.getString("russian"),
 				altTitle = jo.getString("name"),
@@ -63,7 +66,7 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 					else -> null
 				},
 				rating = jo.getDouble("score").toFloat().coerceIn(0f, 1f),
-				id = ID_MASK + jo.getLong("id"),
+				id = generateUid(id),
 				description = jo.getString("description")
 			)
 		}
@@ -71,10 +74,10 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val domain = conf.getDomain(DOMAIN)
-		val url = "https://$domain/manga/api/${manga.id - ID_MASK}"
+		val url = manga.url.withDomain()
 		val json = loaderContext.httpGet(url).parseJson().getJSONObject("response")
 			?: throw ParseException("Invalid response")
+		val baseChapterUrl = manga.url + "/chapter/"
 		return manga.copy(
 			tags = json.getJSONArray("genres").mapToSet {
 				MangaTag(
@@ -87,9 +90,9 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			chapters = json.getJSONObject("chapters").getJSONArray("list").mapIndexed { i, it ->
 				val chid = it.getLong("id")
 				MangaChapter(
-					id = ID_MASK + chid,
+					id = generateUid(chid),
 					source = manga.source,
-					url = "$url/chapter/$chid",
+					url = "$baseChapterUrl$chid",
 					name = it.optString("title", "${manga.title} #${it.getDouble("ch")}"),
 					number = i + 1
 				)
@@ -98,21 +101,22 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val json = loaderContext.httpGet(chapter.url).parseJson().getJSONObject("response")
-			?: throw ParseException("Invalid response")
-		return json.getJSONObject("pages").getJSONArray("list").map {
+		val fullUrl = chapter.url.withDomain()
+		val json = loaderContext.httpGet(fullUrl)
+			.parseJson()
+			.getJSONObject("response") ?: throw ParseException("Invalid response")
+		return json.getJSONObject("pages").getJSONArray("list").map { jo ->
 			MangaPage(
-				id = it.getLong("id"),
-				referer = chapter.url,
+				id = generateUid(jo.getLong("id")),
+				referer = fullUrl,
 				source = chapter.source,
-				url = it.getString("img")
+				url = jo.getString("img")
 			)
 		}
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val domain = conf.getDomain(DOMAIN)
-		val doc = loaderContext.httpGet("https://$domain/manga/").parseHtml()
+		val doc = loaderContext.httpGet("https://${getDomain()}/manga/").parseHtml()
 		val root = doc.body().getElementById("animeFilter").selectFirst(".catalog-genres")
 		return root.select("li").mapToSet {
 			MangaTag(
@@ -133,10 +137,4 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			SortOrder.NEWEST -> "id"
 			else -> "updated"
 		}
-
-	private companion object {
-
-		private const val ID_MASK = 1000
-		private const val DOMAIN = "desu.me"
-	}
 }

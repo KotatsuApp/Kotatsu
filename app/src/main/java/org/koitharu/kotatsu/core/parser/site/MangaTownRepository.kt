@@ -15,6 +15,8 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 
 	override val source = MangaSource.MANGATOWN
 
+	override val defaultDomain = "www.mangatown.com"
+
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.ALPHABETICAL,
 		SortOrder.RATING,
@@ -28,9 +30,6 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
-		val domain = conf.getDomain(DOMAIN)
-		val ssl = conf.isUseSsl(false)
-		val scheme = if (ssl) "https" else "http"
 		val sortKey = when (sortOrder) {
 			SortOrder.ALPHABETICAL -> "?name.az"
 			SortOrder.RATING -> "?rating.za"
@@ -43,29 +42,28 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 				if (offset != 0) {
 					return emptyList()
 				}
-				"$scheme://$domain/search?name=${query.urlEncoded()}"
+				"/search?name=${query.urlEncoded()}".withDomain()
 			}
-			tag != null -> "$scheme://$domain/directory/${tag.key}/$page.htm$sortKey"
-			else -> "$scheme://$domain/directory/$page.htm$sortKey"
+			tag != null -> "/directory/${tag.key}/$page.htm$sortKey".withDomain()
+			else -> "/directory/$page.htm$sortKey".withDomain()
 		}
 		val doc = loaderContext.httpGet(url).parseHtml()
 		val root = doc.body().selectFirst("ul.manga_pic_list")
 			?: throw ParseException("Root not found")
 		return root.select("li").mapNotNull { li ->
 			val a = li.selectFirst("a.manga_cover")
-			val href = a.attr("href").withDomain(domain, ssl)
+			val href = a.relUrl("href")
 			val views = li.select("p.view")
 			val status = views.findOwnText { x -> x.startsWith("Status:") }
 				?.substringAfter(':')?.trim()?.toLowerCase(Locale.ROOT)
 			Manga(
-				id = href.longHashCode(),
+				id = generateUid(href),
 				title = a.attr("title"),
-				coverUrl = a.selectFirst("img").attr("src"),
+				coverUrl = a.selectFirst("img").absUrl("src"),
 				source = MangaSource.MANGATOWN,
 				altTitle = null,
 				rating = li.selectFirst("p.score")?.selectFirst("b")
 					?.ownText()?.toFloatOrNull()?.div(5f) ?: Manga.NO_RATING,
-				largeCoverUrl = null,
 				author = views.findText { x -> x.startsWith("Author:") }?.substringAfter(':')
 					?.trim(),
 				state = when (status) {
@@ -86,9 +84,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val domain = conf.getDomain(DOMAIN)
-		val ssl = conf.isUseSsl(false)
-		val doc = loaderContext.httpGet(manga.url).parseHtml()
+		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root = doc.body().selectFirst("section.main")
 			?.selectFirst("div.article_content") ?: throw ParseException("Cannot find root")
 		val info = root.selectFirst("div.detail_info").selectFirst("ul")
@@ -106,11 +102,11 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 			}.orEmpty(),
 			description = info.getElementById("show")?.ownText(),
 			chapters = chaptersList?.mapIndexedNotNull { i, li ->
-				val href = li.selectFirst("a").attr("href").withDomain(domain, ssl)
+				val href = li.selectFirst("a").relUrl("href")
 				val name = li.select("span").filter { it.className().isEmpty() }
 					.joinToString(" - ") { it.text() }.trim()
 				MangaChapter(
-					id = href.longHashCode(),
+					id = generateUid(href),
 					url = href,
 					source = MangaSource.MANGATOWN,
 					number = i + 1,
@@ -121,35 +117,31 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val domain = conf.getDomain(DOMAIN)
-		val ssl = conf.isUseSsl(false)
-		val doc = loaderContext.httpGet(chapter.url).parseHtml()
+		val fullUrl = chapter.url.withDomain()
+		val doc = loaderContext.httpGet(fullUrl).parseHtml()
 		val root = doc.body().selectFirst("div.page_select")
 			?: throw ParseException("Cannot find root")
 		return root.selectFirst("select").select("option").mapNotNull {
-			val href = it.attr("value").withDomain(domain, ssl)
+			val href = it.relUrl("value")
 			if (href.endsWith("featured.html")) {
 				return@mapNotNull null
 			}
 			MangaPage(
-				id = href.longHashCode(),
+				id = generateUid(href),
 				url = href,
-				referer = chapter.url,
+				referer = fullUrl,
 				source = MangaSource.MANGATOWN
 			)
 		}
 	}
 
 	override suspend fun getPageUrl(page: MangaPage): String {
-		val domain = conf.getDomain(DOMAIN)
-		val ssl = conf.isUseSsl(false)
-		val doc = loaderContext.httpGet(page.url).parseHtml()
-		return doc.getElementById("image").attr("src").withDomain(domain, ssl)
+		val doc = loaderContext.httpGet(page.url.withDomain()).parseHtml()
+		return doc.getElementById("image").absUrl("src")
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val domain = conf.getDomain(DOMAIN)
-		val doc = loaderContext.httpGet("http://$domain/directory/").parseHtml()
+		val doc = loaderContext.httpGet("/directory/".withDomain()).parseHtml()
 		val root = doc.body().selectFirst("aside.right")
 			.getElementsContainingOwnText("Genres")
 			.first()
@@ -180,6 +172,5 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 
 		@Language("RegExp")
 		val TAG_REGEX = Regex("[^\\-]+-[^\\-]+-[^\\-]+-[^\\-]+-[^\\-]+-[^\\-]+")
-		const val DOMAIN = "www.mangatown.com"
 	}
 }

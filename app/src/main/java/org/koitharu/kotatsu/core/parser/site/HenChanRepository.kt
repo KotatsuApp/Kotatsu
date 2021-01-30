@@ -3,10 +3,8 @@ package org.koitharu.kotatsu.core.parser.site
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.mapToSet
 import org.koitharu.kotatsu.utils.ext.parseHtml
-import org.koitharu.kotatsu.utils.ext.withDomain
 
 class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 
@@ -30,14 +28,13 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val domain = conf.getDomain(defaultDomain)
-		val doc = loaderContext.httpGet(manga.url).parseHtml()
+		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root =
 			doc.body().getElementById("dle-content") ?: throw ParseException("Cannot find root")
 		val readLink = manga.url.replace("manga", "online")
 		return manga.copy(
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
-			largeCoverUrl = root.getElementById("cover")?.attr("src")?.withDomain(domain),
+			largeCoverUrl = root.getElementById("cover")?.absUrl("src"),
 			tags = root.selectFirst("div.sidetags")?.select("li.sidetag")?.mapToSet {
 				val a = it.children().last()
 				MangaTag(
@@ -48,7 +45,7 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 			} ?: manga.tags,
 			chapters = listOf(
 				MangaChapter(
-					id = readLink.longHashCode(),
+					id = generateUid(readLink),
 					url = readLink,
 					source = source,
 					number = 1,

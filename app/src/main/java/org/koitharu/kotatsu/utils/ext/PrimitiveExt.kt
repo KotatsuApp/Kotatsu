@@ -33,7 +33,7 @@ fun Float.toIntUp(): Int {
 	}
 }
 
-fun Int.upBy(step: Int): Int {
+infix fun Int.upBy(step: Int): Int {
 	val mod = this % step
 	return if (mod == this) {
 		this

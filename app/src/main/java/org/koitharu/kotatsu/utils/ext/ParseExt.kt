@@ -7,6 +7,7 @@ import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.internal.StringUtil
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.select.Elements
 
@@ -70,3 +71,24 @@ fun String.inContextOf(node: Node): String {
 		StringUtil.resolve(node.baseUri(), this)
 	}
 }
+
+fun String.toRelativeUrl(domain: String): String {
+	if (isEmpty() || startsWith("/")) {
+		return this
+	}
+	return replace(Regex("^[^/]{2,6}://${Regex.escape(domain)}+/", RegexOption.IGNORE_CASE), "/")
+}
+
+fun Element.relUrl(attributeKey: String): String {
+	val attr = attr(attributeKey)
+	if (attr.isEmpty()) {
+		return ""
+	}
+	if (attr.startsWith("/")) {
+		return attr
+	}
+	val baseUrl = REGEX_URL_BASE.find(baseUri())?.value ?: return attr
+	return attr.removePrefix(baseUrl.dropLast(1))
+}
+
+private val REGEX_URL_BASE = Regex("^[^/]{2,6}://[^/]+/", RegexOption.IGNORE_CASE)

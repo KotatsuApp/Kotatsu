@@ -16,28 +16,6 @@ fun String.longHashCode(): Long {
 	return h
 }
 
-@Deprecated("Use String.inContextOf")
-fun String.withDomain(domain: String, ssl: Boolean = true) = when {
-	this.startsWith("//") -> buildString {
-		append("http")
-		if (ssl) {
-			append('s')
-		}
-		append(":")
-		append(this@withDomain)
-	}
-	this.startsWith("/") -> buildString {
-		append("http")
-		if (ssl) {
-			append('s')
-		}
-		append("://")
-		append(domain)
-		append(this@withDomain)
-	}
-	else -> this
-}
-
 fun String.removeSurrounding(vararg chars: Char): String {
 	if (length == 0) {
 		return this
@@ -125,3 +103,5 @@ fun String.substringBetween(from: String, to: String, fallbackValue: String): St
 		substring(fromIndex + from.length, toIndex)
 	}
 }
+
+fun String.find(regex: Regex) = regex.find(this)?.value

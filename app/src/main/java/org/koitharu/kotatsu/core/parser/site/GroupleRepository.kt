@@ -13,8 +13,6 @@ import java.util.*
 abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	RemoteMangaRepository(loaderContext) {
 
-	protected abstract val defaultDomain: String
-
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED,
 		SortOrder.POPULARITY,
@@ -28,13 +26,13 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
-		val domain = conf.getDomain(defaultDomain)
+		val domain = getDomain()
 		val doc = when {
 			!query.isNullOrEmpty() -> loaderContext.httpPost(
 				"https://$domain/search",
 				mapOf(
 					"q" to query.urlEncoded(),
-					"offset" to offset.upBy(PAGE_SIZE_SEARCH).toString()
+					"offset" to (offset upBy PAGE_SIZE_SEARCH).toString()
 				)
 			)
 			tag == null -> loaderContext.httpGet(
@@ -42,14 +40,14 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 					getSortKey(
 						sortOrder
 					)
-				}&offset=${offset.upBy(PAGE_SIZE)}"
+				}&offset=${offset upBy PAGE_SIZE}"
 			)
 			else -> loaderContext.httpGet(
 				"https://$domain/list/genre/${tag.key}?sortType=${
 					getSortKey(
 						sortOrder
 					)
-				}&offset=${offset.upBy(PAGE_SIZE)}"
+				}&offset=${offset upBy PAGE_SIZE}"
 			)
 		}.parseHtml()
 		val root = doc.body().getElementById("mangaBox")
@@ -68,9 +66,10 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 			val title = descDiv.selectFirst("h3")?.selectFirst("a")?.text()
 				?: return@mapNotNull null
 			val tileInfo = descDiv.selectFirst("div.tile-info")
+			val relUrl = href.toRelativeUrl(baseHost)
 			Manga(
-				id = href.longHashCode(),
-				url = href,
+				id = generateUid(relUrl),
+				url = relUrl,
 				title = title,
 				altTitle = descDiv.selectFirst("h4")?.text(),
 				coverUrl = imgDiv.selectFirst("img.lazy")?.attr("data-original").orEmpty(),
@@ -103,8 +102,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val domain = conf.getDomain(defaultDomain)
-		val doc = loaderContext.httpGet(manga.url).parseHtml()
+		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root = doc.body().getElementById("mangaBox")?.selectFirst("div.leftContent")
 			?: throw ParseException("Cannot find root")
 		return manga.copy(
@@ -122,11 +120,10 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 					)
 				},
 			chapters = root.selectFirst("div.chapters-link")?.selectFirst("table")
-				?.select("a")?.asReversed()?.mapIndexedNotNull { i, a ->
-					val href =
-						a.attr("href")?.withDomain(domain) ?: return@mapIndexedNotNull null
+				?.select("a")?.asReversed()?.mapIndexed { i, a ->
+					val href = a.relUrl("href")
 					MangaChapter(
-						id = href.longHashCode(),
+						id = generateUid(href),
 						name = a.ownText().removePrefix(manga.title).trim(),
 						number = i + 1,
 						url = href,
@@ -137,7 +134,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = loaderContext.httpGet(chapter.url + "?mtr=1").parseHtml()
+		val doc = loaderContext.httpGet(chapter.url.withDomain() + "?mtr=1").parseHtml()
 		val scripts = doc.select("script")
 		for (script in scripts) {
 			val data = script.html()
@@ -153,7 +150,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 				val url = parts[0].value.removeSurrounding('"', '\'') +
 						parts[2].value.removeSurrounding('"', '\'')
 				MangaPage(
-					id = url.longHashCode(),
+					id = generateUid(url),
 					url = url,
 					referer = chapter.url,
 					source = source
@@ -164,8 +161,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val domain = conf.getDomain(defaultDomain)
-		val doc = loaderContext.httpGet("https://$domain/list/genres/sort_name").parseHtml()
+		val doc = loaderContext.httpGet("https://${getDomain()}/list/genres/sort_name").parseHtml()
 		val root = doc.body().getElementById("mangaBox").selectFirst("div.leftContent")
 			.selectFirst("table.table")
 		return root.select("a.element-link").mapToSet { a ->

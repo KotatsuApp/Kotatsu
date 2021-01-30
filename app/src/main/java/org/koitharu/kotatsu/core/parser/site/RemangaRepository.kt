@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import androidx.collection.arraySetOf
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -18,6 +17,8 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 
 	override val source = MangaSource.REMANGA
 
+	override val defaultDomain = "remanga.org"
+
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.POPULARITY,
 		SortOrder.RATING,
@@ -32,7 +33,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
-		val domain = conf.getDomain(DEFAULT_DOMAIN)
+		val domain = getDomain()
 		val urlBuilder = StringBuilder()
 			.append("https://api.")
 			.append(domain)
@@ -40,20 +41,21 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			urlBuilder.append("/api/search/?query=")
 				.append(query.urlEncoded())
 		} else {
-			urlBuilder.append("/api/search/catalog/?page=")
-				.append("&ordering=")
+			urlBuilder.append("/api/search/catalog/?ordering=")
 				.append(getSortKey(sortOrder))
 			if (tag != null) {
 				urlBuilder.append("&genres=" + tag.key)
 			}
 		}
-		urlBuilder.append((offset / PAGE_SIZE) + 1)
+		urlBuilder
+			.append("&page=")
+			.append((offset / PAGE_SIZE) + 1)
 			.append("&count=")
 			.append(PAGE_SIZE)
 		val content = loaderContext.httpGet(urlBuilder.toString()).parseJson()
 			.getJSONArray("content")
 		return content.map { jo ->
-			val url = "https://$domain/manga/${jo.getString("dir")}"
+			val url = "/manga/${jo.getString("dir")}"
 			val img = jo.getJSONObject("img")
 			Manga(
 				id = generateUid(url),
@@ -77,8 +79,9 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val domain = conf.getDomain(DEFAULT_DOMAIN)
-		val slug = manga.url.toHttpUrl().pathSegments.last()
+		val domain = getDomain()
+		val slug = manga.url.find(LAST_URL_PATH_REGEX)
+			?: throw ParseException("Cannot obtain slug from ${manga.url}")
 		val data = loaderContext.httpGet(
 			url = "https://api.$domain/api/titles/$slug/"
 		).parseJson()
@@ -110,7 +113,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 				val id = jo.getLong("id")
 				val name = jo.getString("name")
 				MangaChapter(
-					id = generateUid(id.toInt()),
+					id = generateUid(id),
 					url = "https://api.$domain/api/titles/chapters/$id/",
 					number = chapters.length() - i,
 					name = buildString {
@@ -128,8 +131,8 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val referer = "https://${conf.getDomain(DEFAULT_DOMAIN)}/"
-		val content = loaderContext.httpGet(chapter.url).parseJson()
+		val referer = "https://${getDomain()}/"
+		val content = loaderContext.httpGet(chapter.url.withDomain()).parseJson()
 			.getJSONObject("content").getJSONArray("pages")
 		val pages = ArrayList<MangaPage>(content.length())
 		for (i in 0 until content.length()) {
@@ -143,7 +146,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val domain = conf.getDomain(DEFAULT_DOMAIN)
+		val domain = getDomain()
 		val content = loaderContext.httpGet("https://api.$domain/api/forms/titles/?get=genres")
 			.parseJson().getJSONObject("content").getJSONArray("genres")
 		return content.mapToSet { jo ->
@@ -166,7 +169,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	}
 
 	private fun parsePage(jo: JSONObject, referer: String) = MangaPage(
-		id = generateUid(jo.getLong("id").toInt()),
+		id = generateUid(jo.getLong("id")),
 		url = jo.getString("link"),
 		referer = referer,
 		source = source
@@ -175,9 +178,10 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	private companion object {
 
 		const val PAGE_SIZE = 30
-		const val DEFAULT_DOMAIN = "remanga.org"
 
 		const val STATUS_ONGOING = 1
 		const val STATUS_FINISHED = 0
+
+		val LAST_URL_PATH_REGEX = Regex("/[^/]+/?$")
 	}
 }

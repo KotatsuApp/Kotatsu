@@ -16,7 +16,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 30
 		versionCode gitCommits
-		versionName '1.0-b3'
+		versionName '1.0-rc1'
 
 		kapt {
 			arguments {
@@ -68,7 +68,7 @@ dependencies {
 
 	implementation 'androidx.core:core-ktx:1.5.0-beta01'
 	implementation 'androidx.activity:activity-ktx:1.2.0-rc01'
-	implementation 'androidx.fragment:fragment-ktx:1.3.0-rc01'
+	implementation 'androidx.fragment:fragment-ktx:1.3.0-rc02'
 	implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-rc01'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-rc01'
 	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-rc01'
@@ -79,7 +79,7 @@ dependencies {
 	implementation 'androidx.recyclerview:recyclerview:1.2.0-beta01'
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
 	implementation 'androidx.preference:preference-ktx:1.1.1'
-	implementation 'androidx.work:work-runtime-ktx:2.5.0-rc01'
+	implementation 'androidx.work:work-runtime-ktx:2.5.0'
 	implementation 'com.google.android.material:material:1.3.0-rc01'
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.3.0-rc01'

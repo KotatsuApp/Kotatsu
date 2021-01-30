@@ -17,7 +17,7 @@ import kotlin.collections.ArrayList
 open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	RemoteMangaRepository(loaderContext) {
 
-	protected open val defaultDomain = "mangalib.me"
+	override val defaultDomain = "mangalib.me"
 
 	override val source = MangaSource.MANGALIB
 
@@ -38,11 +38,10 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		if (!query.isNullOrEmpty()) {
 			return search(query)
 		}
-		val domain = conf.getDomain(defaultDomain)
 		val page = (offset / 60f).toIntUp()
 		val url = buildString {
 			append("https://")
-			append(domain)
+			append(getDomain())
 			append("/manga-list?dir=")
 			append(getSortKey(sortOrder))
 			append("&page=")
@@ -57,11 +56,11 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		val items = root.selectFirst("div.media-cards-grid").select("div.media-card-wrap")
 		return items.mapNotNull { card ->
 			val a = card.selectFirst("a.media-card") ?: return@mapNotNull null
-			val href = a.attr("href").withDomain(domain)
+			val href = a.relUrl("href")
 			Manga(
-				id = href.longHashCode(),
+				id = generateUid(href),
 				title = card.selectFirst("h3").text(),
-				coverUrl = a.attr("data-src").withDomain(domain),
+				coverUrl = a.absUrl("data-src"),
 				altTitle = null,
 				author = null,
 				rating = Manga.NO_RATING,
@@ -76,11 +75,12 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	override fun onCreatePreferences() = arraySetOf(SourceSettings.KEY_DOMAIN)
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val doc = loaderContext.httpGet(manga.url + "?section=info").parseHtml()
+		val fullUrl = manga.url.withDomain()
+		val doc = loaderContext.httpGet("$fullUrl?section=info").parseHtml()
 		val root = doc.body().getElementById("main-page") ?: throw ParseException("Root not found")
 		val title = root.selectFirst("div.media-header__wrap")?.children()
 		val info = root.selectFirst("div.media-content")
-		val chaptersDoc = loaderContext.httpGet(manga.url + "?section=chapters").parseHtml()
+		val chaptersDoc = loaderContext.httpGet("$fullUrl?section=chapters").parseHtml()
 		val scripts = chaptersDoc.select("script")
 		var chapters: ArrayList<MangaChapter>? = null
 		scripts@ for (script in scripts) {
@@ -109,7 +109,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 						}
 						chapters.add(
 							MangaChapter(
-								id = url.longHashCode(),
+								id = generateUid(url),
 								url = url,
 								source = source,
 								number = total - i,
@@ -144,7 +144,8 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = loaderContext.httpGet(chapter.url).parseHtml()
+		val fullUrl = chapter.url.withDomain()
+		val doc = loaderContext.httpGet(fullUrl).parseHtml()
 		if (doc.location()?.endsWith("/register") == true) {
 			throw AuthRequiredException("/login".inContextOf(doc))
 		}
@@ -170,9 +171,9 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 				return pages.map { x ->
 					val pageUrl = "$domain/$url${x.getString("u")}"
 					MangaPage(
-						id = pageUrl.longHashCode(),
+						id = generateUid(pageUrl),
 						url = pageUrl,
-						referer = chapter.url,
+						referer = fullUrl,
 						source = source
 					)
 				}
@@ -182,8 +183,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val domain = conf.getDomain(defaultDomain)
-		val url = "https://$domain/manga-list"
+		val url = "https://${getDomain()}/manga-list"
 		val doc = loaderContext.httpGet(url).parseHtml()
 		val scripts = doc.body().select("script")
 		for (script in scripts) {
@@ -215,14 +215,15 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	private suspend fun search(query: String): List<Manga> {
-		val domain = conf.getDomain(defaultDomain)
+		val domain = getDomain()
 		val json = loaderContext.httpGet("https://$domain/search?type=manga&q=$query")
 			.parseJsonArray()
 		return json.map { jo ->
-			val url = "https://$domain/${jo.getString("slug")}"
+			val slug = jo.getString("slug")
+			val url = "https://$domain/$slug"
 			val covers = jo.getJSONObject("covers")
 			Manga(
-				id = url.longHashCode(),
+				id = generateUid(slug),
 				url = url,
 				title = jo.getString("rus_name"),
 				altTitle = jo.getString("name"),

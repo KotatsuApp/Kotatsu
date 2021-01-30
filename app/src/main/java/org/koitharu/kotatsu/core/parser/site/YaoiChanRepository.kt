@@ -5,9 +5,8 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.parseHtml
-import org.koitharu.kotatsu.utils.ext.withDomain
+import org.koitharu.kotatsu.utils.ext.relUrl
 
 class YaoiChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 
@@ -15,20 +14,18 @@ class YaoiChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loa
 	override val defaultDomain = "yaoi-chan.me"
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val domain = conf.getDomain(defaultDomain)
-		val doc = loaderContext.httpGet(manga.url).parseHtml()
+		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root =
 			doc.body().getElementById("dle-content") ?: throw ParseException("Cannot find root")
 		return manga.copy(
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
-			largeCoverUrl = root.getElementById("cover")?.attr("src")?.withDomain(domain),
+			largeCoverUrl = root.getElementById("cover")?.absUrl("src"),
 			chapters = root.select("table.table_cha").flatMap { table ->
 				table.select("div.manga")
-			}.mapNotNull { it.selectFirst("a") }.reversed().mapIndexedNotNull { i, a ->
-				val href = a.attr("href")
-					?.withDomain(domain) ?: return@mapIndexedNotNull null
+			}.mapNotNull { it.selectFirst("a") }.reversed().mapIndexed { i, a ->
+				val href = a.relUrl("href")
 				MangaChapter(
-					id = href.longHashCode(),
+					id = generateUid(href),
 					name = a.text().trim(),
 					number = i + 1,
 					url = href,

@@ -13,8 +13,6 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 	loaderContext
 ) {
 
-	protected abstract val defaultDomain: String
-
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.NEWEST,
 		SortOrder.POPULARITY,
@@ -27,7 +25,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
-		val domain = conf.getDomain(defaultDomain)
+		val domain = getDomain()
 		val url = when {
 			!query.isNullOrEmpty() -> {
 				if (offset != 0) {
@@ -44,9 +42,9 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		return root.select("div.content_row").mapNotNull { row ->
 			val a = row.selectFirst("div.manga_row1")?.selectFirst("h2")?.selectFirst("a")
 				?: return@mapNotNull null
-			val href = a.attr("href").withDomain(domain)
+			val href = a.relUrl("href")
 			Manga(
-				id = href.longHashCode(),
+				id = generateUid(href),
 				url = href,
 				altTitle = a.attr("title"),
 				title = a.text().substringAfterLast('(').substringBeforeLast(')'),
@@ -55,7 +53,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 					"/mangaka"
 				).firstOrNull()?.text(),
 				coverUrl = row.selectFirst("div.manga_images")?.selectFirst("img")
-					?.attr("src")?.withDomain(domain).orEmpty(),
+					?.absUrl("src").orEmpty(),
 				tags = runCatching {
 					row.selectFirst("div.genre")?.select("a")?.mapToSet {
 						MangaTag(
@@ -72,20 +70,18 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val domain = conf.getDomain(defaultDomain)
-		val doc = loaderContext.httpGet(manga.url).parseHtml()
+		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root =
 			doc.body().getElementById("dle-content") ?: throw ParseException("Cannot find root")
 		return manga.copy(
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
-			largeCoverUrl = root.getElementById("cover")?.attr("src")?.withDomain(domain),
+			largeCoverUrl = root.getElementById("cover")?.absUrl("src"),
 			chapters = root.select("table.table_cha").flatMap { table ->
 				table.select("div.manga2")
-			}.mapNotNull { it.selectFirst("a") }.reversed().mapIndexedNotNull { i, a ->
-				val href = a.attr("href")
-					?.withDomain(domain) ?: return@mapIndexedNotNull null
+			}.map { it.selectFirst("a") }.reversed().mapIndexedNotNull { i, a ->
+				val href = a.relUrl("href")
 				MangaChapter(
-					id = href.longHashCode(),
+					id = generateUid(href),
 					name = a.text().trim(),
 					number = i + 1,
 					url = href,
@@ -96,7 +92,8 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = loaderContext.httpGet(chapter.url).parseHtml()
+		val fullUrl = chapter.url.withDomain()
+		val doc = loaderContext.httpGet(fullUrl).parseHtml()
 		val scripts = doc.select("script")
 		for (script in scripts) {
 			val data = script.html()
@@ -106,13 +103,17 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 			}
 			val json = data.substring(pos).substringAfter('[').substringBefore(';')
 				.substringBeforeLast(']')
+			val domain = getDomain()
 			return json.split(",").mapNotNull {
-				it.trim().removeSurrounding('"', '\'').takeUnless(String::isBlank)
+				it.trim()
+					.removeSurrounding('"', '\'')
+					.toRelativeUrl(domain)
+					.takeUnless(String::isBlank)
 			}.map { url ->
 				MangaPage(
-					id = url.longHashCode(),
+					id = generateUid(url),
 					url = url,
-					referer = chapter.url,
+					referer = fullUrl,
 					source = source
 				)
 			}
@@ -121,7 +122,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val domain = conf.getDomain(defaultDomain)
+		val domain = getDomain()
 		val doc = loaderContext.httpGet("https://$domain/catalog").parseHtml()
 		val root = doc.body().selectFirst("div.main_fon").getElementById("side")
 			.select("ul").last()

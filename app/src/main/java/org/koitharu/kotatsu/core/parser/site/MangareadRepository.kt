@@ -15,6 +15,8 @@ class MangareadRepository(
 
 	override val source = MangaSource.MANGAREAD
 
+	override val defaultDomain = "www.mangaread.org"
+
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED,
 		SortOrder.POPULARITY
@@ -29,7 +31,6 @@ class MangareadRepository(
 		if (offset % PAGE_SIZE != 0) {
 			return emptyList()
 		}
-		val domain = conf.getDomain(DOMAIN)
 		val payload = createRequestTemplate()
 		payload["page"] = (offset / PAGE_SIZE).toString()
 		payload["vars[meta_key]"] = when (sortOrder) {
@@ -40,14 +41,14 @@ class MangareadRepository(
 		payload["vars[wp-manga-genre]"] = tag?.key.orEmpty()
 		payload["vars[s]"] = query.orEmpty()
 		val doc = loaderContext.httpPost(
-			"https://${domain}/wp-admin/admin-ajax.php",
+			"https://${getDomain()}/wp-admin/admin-ajax.php",
 			payload
 		).parseHtml()
 		return doc.select("div.row.c-tabs-item__content").map { div ->
-			val href = div.selectFirst("a").absUrl("href")
+			val href = div.selectFirst("a").relUrl("href")
 			val summary = div.selectFirst(".tab-summary")
 			Manga(
-				id = href.longHashCode(),
+				id = generateUid(href),
 				url = href,
 				coverUrl = div.selectFirst("img").attr("data-srcset")
 					.split(',').firstOrNull()?.substringBeforeLast(' ').orEmpty(),
@@ -74,8 +75,7 @@ class MangareadRepository(
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val domain = conf.getDomain(DOMAIN)
-		val doc = loaderContext.httpGet("https://$domain/manga/").parseHtml()
+		val doc = loaderContext.httpGet("https://${getDomain()}/manga/").parseHtml()
 		val root = doc.body().selectFirst("header")
 			.selectFirst("ul.second-menu")
 		return root.select("li").mapNotNullToSet { li ->
@@ -94,8 +94,8 @@ class MangareadRepository(
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val domain = conf.getDomain(DOMAIN)
-		val doc = loaderContext.httpGet(manga.url).parseHtml()
+		val fullUrl = manga.url.withDomain()
+		val doc = loaderContext.httpGet(fullUrl).parseHtml()
 		val root = doc.body().selectFirst("div.profile-manga")
 			?.selectFirst("div.summary_content")
 			?.selectFirst("div.post-content")
@@ -107,7 +107,7 @@ class MangareadRepository(
 			?.attr("data-postid")?.toLongOrNull()
 			?: throw ParseException("Cannot obtain manga id")
 		val doc2 = loaderContext.httpPost(
-			"https://${domain}/wp-admin/admin-ajax.php",
+			"https://${getDomain()}/wp-admin/admin-ajax.php",
 			mapOf(
 				"action" to "manga_get_chapters",
 				"manga" to mangaId.toString()
@@ -129,9 +129,9 @@ class MangareadRepository(
 				?.joinToString { it.html() },
 			chapters = doc2.select("li").asReversed().mapIndexed { i, li ->
 				val a = li.selectFirst("a")
-				val href = a.absUrl("href")
+				val href = a.relUrl("href")
 				MangaChapter(
-					id = href.longHashCode(),
+					id = generateUid(href),
 					name = a.ownText(),
 					number = i + 1,
 					url = href,
@@ -142,17 +142,18 @@ class MangareadRepository(
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = loaderContext.httpGet(chapter.url).parseHtml()
+		val fullUrl = chapter.url.withDomain()
+		val doc = loaderContext.httpGet(fullUrl).parseHtml()
 		val root = doc.body().selectFirst("div.main-col-inner")
 			?.selectFirst("div.reading-content")
 			?: throw ParseException("Root not found")
 		return root.select("div.page-break").map { div ->
 			val img = div.selectFirst("img")
-			val url = img.absUrl("data-src")
+			val url = img.relUrl("data-src")
 			MangaPage(
-				id = url.longHashCode(),
+				id = generateUid(url),
 				url = url,
-				referer = chapter.url,
+				referer = fullUrl,
 				source = MangaSource.MANGAREAD
 			)
 		}
@@ -163,7 +164,6 @@ class MangareadRepository(
 	private companion object {
 
 		private const val PAGE_SIZE = 12
-		private const val DOMAIN = "www.mangaread.org"
 
 		private fun createRequestTemplate() =
 			"action=madara_load_more&page=1&template=madara-core%2Fcontent%2Fcontent-search&vars%5Bs%5D=&vars%5Borderby%5D=meta_value_num&vars%5Bpaged%5D=1&vars%5Btemplate%5D=search&vars%5Bmeta_query%5D%5B0%5D%5Brelation%5D=AND&vars%5Bmeta_query%5D%5Brelation%5D=OR&vars%5Bpost_type%5D=wp-manga&vars%5Bpost_status%5D=publish&vars%5Bmeta_key%5D=_latest_update&vars%5Border%5D=desc&vars%5Bmanga_archives_item_layout%5D=default"

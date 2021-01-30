@@ -15,6 +15,7 @@ import org.koin.test.get
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.AssertX
 import org.koitharu.kotatsu.utils.ext.isDistinctBy
@@ -28,7 +29,7 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 			.newInstance(get<MangaLoaderContext>())
 	} catch (e: NoSuchMethodException) {
 		source.cls.newInstance()
-	}
+	} as RemoteMangaRepository
 
 	@Test
 	fun list() {
@@ -36,13 +37,9 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		Assert.assertFalse("List is empty", list.isEmpty())
 		Assert.assertTrue("Mangas are not distinct", list.isDistinctBy { it.id })
 		val item = list.random()
+		AssertX.assertUrlRelative("Url is not relative", item.url)
+		AssertX.assertUrlAbsolute("Url is not absolute", item.coverUrl)
 		AssertX.assertContentType("Bad cover at ${item.url}", item.coverUrl, "image/*")
-		AssertX.assertContentType(
-			"Wrong content type at ${item.url}",
-			item.url,
-			"text/html",
-			"application/json"
-		)
 		Assert.assertFalse("Title is blank at ${item.url}", item.title.isBlank())
 	}
 
@@ -52,13 +49,8 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		Assert.assertFalse("List is empty", list.isEmpty())
 		Assert.assertTrue("Mangas are not distinct", list.isDistinctBy { it.id })
 		val item = list.random()
+		AssertX.assertUrlRelative("Url is not relative", item.url)
 		AssertX.assertContentType("Bad cover at ${item.url}", item.coverUrl, "image/*")
-		AssertX.assertContentType(
-			"Wrong content type at ${item.url}",
-			item.url,
-			"text/html",
-			"application/json"
-		)
 		Assert.assertFalse("Title is blank at ${item.url}", item.title.isBlank())
 	}
 
@@ -72,13 +64,8 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		val list = runBlocking { repo.getList(0, tag = tag) }
 		Assert.assertFalse("List is empty", list.isEmpty())
 		val item = list.random()
+		AssertX.assertUrlRelative("Url is not relative", item.url)
 		AssertX.assertContentType("Bad cover at ${item.coverUrl}", item.coverUrl, "image/*")
-		AssertX.assertContentType(
-			"Wrong response from ${item.url}",
-			item.url,
-			"text/html",
-			"application/json"
-		)
 		Assert.assertFalse("Title is blank at ${item.url}", item.title.isBlank())
 	}
 
@@ -86,7 +73,7 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 	fun details() {
 		val manga = runBlocking { repo.getList(0) }.random()
 		val details = runBlocking { repo.getDetails(manga) }
-		Assert.assertFalse("Chapter is empty at ${details.url}", details.chapters.isNullOrEmpty())
+		Assert.assertFalse("No chapters at ${details.url}", details.chapters.isNullOrEmpty())
 		Assert.assertFalse(
 			"Description is empty at ${details.url}",
 			details.description.isNullOrEmpty()
@@ -95,15 +82,10 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 			"Chapters are not distinct",
 			details.chapters.orEmpty().isDistinctBy { it.id })
 		val chapter = details.chapters?.randomOrNull() ?: return
+		AssertX.assertUrlRelative("Url is not relative", chapter.url)
 		Assert.assertFalse(
 			"Chapter name missing at ${details.url}:${chapter.number}",
 			chapter.name.isBlank()
-		)
-		AssertX.assertContentType(
-			"Chapter response wrong at ${chapter.url}",
-			chapter.url,
-			"text/html",
-			"application/json"
 		)
 	}
 
