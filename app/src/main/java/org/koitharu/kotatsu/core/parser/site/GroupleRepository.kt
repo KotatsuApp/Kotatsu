@@ -173,8 +173,6 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		}
 	}
 
-	override fun onCreatePreferences() = arraySetOf(SourceSettings.KEY_DOMAIN)
-
 	private fun getSortKey(sortOrder: SortOrder?) =
 		when (sortOrder ?: sortOrders.minByOrNull { it.ordinal }) {
 			SortOrder.ALPHABETICAL -> "name"

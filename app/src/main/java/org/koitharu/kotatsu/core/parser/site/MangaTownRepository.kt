@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.parser.site
 
-import androidx.collection.arraySetOf
 import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
@@ -160,11 +159,10 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		}
 	}
 
-
-	override fun onCreatePreferences() = arraySetOf(
-		SourceSettings.KEY_DOMAIN,
-		SourceSettings.KEY_USE_SSL
-	)
+	override fun onCreatePreferences(map: MutableMap<String, Any>) {
+		super.onCreatePreferences(map)
+		map[SourceSettings.KEY_USE_SSL] = true
+	}
 
 	private fun String.parseTagKey() = split('/').findLast { TAG_REGEX matches it }
 

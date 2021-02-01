@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -52,6 +53,7 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 
 	private fun openFragment(fragment: Fragment) {
 		supportFragmentManager.commit {
+			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 			replace(R.id.container, fragment)
 			setReorderingAllowed(true)
 			addToBackStack(null)

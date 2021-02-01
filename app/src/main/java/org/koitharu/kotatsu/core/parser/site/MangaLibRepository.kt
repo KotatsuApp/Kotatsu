@@ -72,8 +72,6 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		}
 	}
 
-	override fun onCreatePreferences() = arraySetOf(SourceSettings.KEY_DOMAIN)
-
 	override suspend fun getDetails(manga: Manga): Manga {
 		val fullUrl = manga.url.withDomain()
 		val doc = loaderContext.httpGet("$fullUrl?section=info").parseHtml()

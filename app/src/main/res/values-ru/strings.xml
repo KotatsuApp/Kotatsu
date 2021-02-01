@@ -199,4 +199,5 @@
 	<string name="reverse">В обратном порядке</string>
 	<string name="sign_in">Войти</string>
 	<string name="auth_required">Для просмотра этого контента требуется авторизация</string>
+	<string name="default_s">По умолчанию: %s</string>
 </resources>

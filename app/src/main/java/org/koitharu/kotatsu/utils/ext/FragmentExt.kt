@@ -16,11 +16,13 @@ val Fragment.viewLifecycleScope
 	get() = viewLifecycleOwner.lifecycle.coroutineScope
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T : Parcelable> Fragment.parcelableArgument(name: String) =
-	lazy<T>(LazyThreadSafetyMode.NONE) {
-		requireArguments().getParcelable(name)
-			?: error("No argument $name passed in ${javaClass.simpleName}")
+inline fun <T : Parcelable> Fragment.parcelableArgument(name: String): Lazy<T> {
+	return lazy(LazyThreadSafetyMode.NONE) {
+		requireNotNull(arguments?.getParcelable(name)) {
+			"No argument $name passed into ${javaClass.simpleName}"
+		}
 	}
+}
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun Fragment.stringArgument(name: String) = lazy(LazyThreadSafetyMode.NONE) {

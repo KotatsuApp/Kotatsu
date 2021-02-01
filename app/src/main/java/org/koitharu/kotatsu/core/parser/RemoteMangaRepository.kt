@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 
 abstract class RemoteMangaRepository(
 	protected val loaderContext: MangaLoaderContext
@@ -24,7 +25,9 @@ abstract class RemoteMangaRepository(
 
 	override suspend fun getTags(): Set<MangaTag> = emptySet()
 
-	abstract fun onCreatePreferences(): Set<String>
+	open fun onCreatePreferences(map: MutableMap<String, Any>) {
+		map[SourceSettings.KEY_DOMAIN] = defaultDomain
+	}
 
 	protected fun getDomain() = conf.getDomain(defaultDomain)
 

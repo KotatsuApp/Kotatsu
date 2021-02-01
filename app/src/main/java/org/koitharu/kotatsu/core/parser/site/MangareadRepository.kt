@@ -159,8 +159,6 @@ class MangareadRepository(
 		}
 	}
 
-	override fun onCreatePreferences() = arraySetOf(SourceSettings.KEY_DOMAIN)
-
 	private companion object {
 
 		private const val PAGE_SIZE = 12
