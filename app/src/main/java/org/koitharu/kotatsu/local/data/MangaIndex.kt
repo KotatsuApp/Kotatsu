@@ -61,7 +61,7 @@ class MangaIndex(source: String?) {
 		)
 	}.getOrNull()
 
-	fun getCoverEntry(): String? = json.optString("cover_entry")
+	fun getCoverEntry(): String? = json.getStringOrNull("cover_entry")
 
 	fun addChapter(chapter: MangaChapter) {
 		val chapters = json.getJSONObject("chapters")

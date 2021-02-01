@@ -30,7 +30,9 @@ fun <T> JSONArray.mapIndexed(block: (Int, JSONObject) -> T): List<T> {
 	return result
 }
 
-fun JSONObject.getStringOrNull(name: String): String? = opt(name)?.toString()
+fun JSONObject.getStringOrNull(name: String): String? = opt(name)?.takeUnless {
+	it === JSONObject.NULL
+}?.toString()
 
 operator fun JSONArray.iterator(): Iterator<JSONObject> = JSONIterator(this)
 

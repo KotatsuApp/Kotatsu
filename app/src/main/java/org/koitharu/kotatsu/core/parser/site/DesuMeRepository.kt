@@ -27,6 +27,9 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
+		if (query != null && offset != 0) {
+			return emptyList()
+		}
 		val domain = getDomain()
 		val url = buildString {
 			append("https://")
@@ -76,6 +79,8 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		val json = loaderContext.httpGet(url).parseJson().getJSONObject("response")
 			?: throw ParseException("Invalid response")
 		val baseChapterUrl = manga.url + "/chapter/"
+		val chaptersList = json.getJSONObject("chapters").getJSONArray("list")
+		val totalChapters = chaptersList.length()
 		return manga.copy(
 			tags = json.getJSONArray("genres").mapToSet {
 				MangaTag(
@@ -85,16 +90,16 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 				)
 			},
 			description = json.getString("description"),
-			chapters = json.getJSONObject("chapters").getJSONArray("list").mapIndexed { i, it ->
+			chapters = chaptersList.mapIndexed { i, it ->
 				val chid = it.getLong("id")
 				MangaChapter(
 					id = generateUid(chid),
 					source = manga.source,
 					url = "$baseChapterUrl$chid",
-					name = it.optString("title", "${manga.title} #${it.getDouble("ch")}"),
-					number = i + 1
+					name = it.getStringOrNull("title") ?: "${manga.title} #${it.getDouble("ch")}",
+					number = totalChapters - i
 				)
-			}
+			}.reversed()
 		)
 	}
 
