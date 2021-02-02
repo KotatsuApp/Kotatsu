@@ -19,6 +19,7 @@ class MangaIndex(source: String?) {
 		json.put("title", manga.title)
 		json.put("title_alt", manga.altTitle)
 		json.put("url", manga.url)
+		json.put("public_url", manga.publicUrl)
 		json.put("cover", manga.coverUrl)
 		json.put("description", manga.description)
 		json.put("rating", manga.rating)
@@ -46,6 +47,7 @@ class MangaIndex(source: String?) {
 			title = json.getString("title"),
 			altTitle = json.getStringOrNull("title_alt"),
 			url = json.getString("url"),
+			publicUrl = json.getStringOrNull("public_url").orEmpty(),
 			source = source,
 			rating = json.getDouble("rating").toFloat(),
 			coverUrl = json.getString("cover"),

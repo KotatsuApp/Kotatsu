@@ -81,6 +81,7 @@ class BackupRepository(private val db: MangaDatabase) {
 		jo.put("title", title)
 		jo.put("alt_title", altTitle)
 		jo.put("url", url)
+		jo.put("public_url", publicUrl)
 		jo.put("rating", rating)
 		jo.put("cover_url", coverUrl)
 		jo.put("large_cover_url", largeCoverUrl)

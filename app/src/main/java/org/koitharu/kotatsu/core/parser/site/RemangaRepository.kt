@@ -58,6 +58,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			Manga(
 				id = generateUid(url),
 				url = url,
+				publicUrl = "https://$domain$url",
 				title = jo.getString("rus_name"),
 				altTitle = jo.getString("en_name"),
 				rating = jo.getString("avg_rating").toFloatOrNull()?.div(10f) ?: Manga.NO_RATING,
@@ -112,7 +113,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 				val name = jo.getString("name")
 				MangaChapter(
 					id = generateUid(id),
-					url = "https://api.$domain/api/titles/chapters/$id/",
+					url = "/api/titles/chapters/$id/",
 					number = chapters.length() - i,
 					name = buildString {
 						append("Глава ")
@@ -130,7 +131,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val referer = "https://${getDomain()}/"
-		val content = loaderContext.httpGet(chapter.url.withDomain()).parseJson()
+		val content = loaderContext.httpGet(chapter.url.withDomain(subdomain = "api")).parseJson()
 			.getJSONObject("content").getJSONArray("pages")
 		val pages = ArrayList<MangaPage>(content.length())
 		for (i in 0 until content.length()) {

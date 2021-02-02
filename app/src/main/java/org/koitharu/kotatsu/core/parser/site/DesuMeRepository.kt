@@ -57,6 +57,7 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			val id = jo.getLong("id")
 			list += Manga(
 				url = "/manga/api/$id",
+				publicUrl = jo.getString("url"),
 				source = MangaSource.DESUME,
 				title = jo.getString("russian"),
 				altTitle = jo.getString("name"),
@@ -89,6 +90,7 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 					source = manga.source
 				)
 			},
+			publicUrl = json.getString("url"),
 			description = json.getString("description"),
 			chapters = chaptersList.mapIndexed { i, it ->
 				val chid = it.getLong("id")

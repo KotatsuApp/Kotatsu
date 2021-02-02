@@ -15,6 +15,7 @@ data class MangaEntity(
 	@ColumnInfo(name = "title") val title: String,
 	@ColumnInfo(name = "alt_title") val altTitle: String? = null,
 	@ColumnInfo(name = "url") val url: String,
+	@ColumnInfo(name = "public_url") val publicUrl: String,
 	@ColumnInfo(name = "rating") val rating: Float = Manga.NO_RATING, //normalized value [0..1] or -1
 	@ColumnInfo(name = "cover_url") val coverUrl: String,
 	@ColumnInfo(name = "large_cover_url") val largeCoverUrl: String? = null,
@@ -30,6 +31,7 @@ data class MangaEntity(
 		state = this.state?.let { MangaState.valueOf(it) },
 		rating = this.rating,
 		url = this.url,
+		publicUrl = this.publicUrl,
 		coverUrl = this.coverUrl,
 		largeCoverUrl = this.largeCoverUrl,
 		author = this.author,
@@ -42,6 +44,7 @@ data class MangaEntity(
 		fun from(manga: Manga) = MangaEntity(
 			id = manga.id,
 			url = manga.url,
+			publicUrl = manga.publicUrl,
 			source = manga.source.name,
 			largeCoverUrl = manga.largeCoverUrl,
 			coverUrl = manga.coverUrl,

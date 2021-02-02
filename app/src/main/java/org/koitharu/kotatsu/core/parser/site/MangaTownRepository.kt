@@ -77,7 +77,8 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 						source = MangaSource.MANGATOWN
 					)
 				}.orEmpty(),
-				url = href
+				url = href,
+				publicUrl = href.inContextOf(a)
 			)
 		}
 	}

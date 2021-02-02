@@ -1,11 +1,9 @@
 package org.koitharu.kotatsu.core.parser.site
 
-import androidx.collection.arraySetOf
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.*
 
@@ -50,6 +48,7 @@ class MangareadRepository(
 			Manga(
 				id = generateUid(href),
 				url = href,
+				publicUrl = href.inContextOf(div),
 				coverUrl = div.selectFirst("img").attr("data-srcset")
 					.split(',').firstOrNull()?.substringBeforeLast(' ').orEmpty(),
 				title = summary.selectFirst("h3").text(),

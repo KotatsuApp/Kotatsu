@@ -70,6 +70,7 @@ class RestoreRepository(private val db: MangaDatabase) {
 		title = json.getString("title"),
 		altTitle = json.getStringOrNull("alt_title"),
 		url = json.getString("url"),
+		publicUrl = json.getStringOrNull("public_url").orEmpty(),
 		rating = json.getDouble("rating").toFloat(),
 		coverUrl = json.getString("cover_url"),
 		largeCoverUrl = json.getStringOrNull("large_cover_url"),

@@ -112,6 +112,7 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 			id = file.absolutePath.longHashCode(),
 			title = title,
 			url = fileUri,
+			publicUrl = fileUri,
 			source = MangaSource.LOCAL,
 			coverUrl = zipUri(file, findFirstEntry(zip.entries(), isImage = true)?.name.orEmpty()),
 			chapters = chapters.sortedWith(AlphanumComparator()).mapIndexed { i, s ->

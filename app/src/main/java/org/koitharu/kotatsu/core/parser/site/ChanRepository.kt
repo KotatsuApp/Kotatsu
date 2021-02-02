@@ -44,6 +44,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 			Manga(
 				id = generateUid(href),
 				url = href,
+				publicUrl = href.inContextOf(a),
 				altTitle = a.attr("title"),
 				title = a.text().substringAfterLast('(').substringBeforeLast(')'),
 				author = row.getElementsByAttributeValueStarting(

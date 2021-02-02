@@ -31,7 +31,7 @@ abstract class RemoteMangaRepository(
 
 	protected fun getDomain() = conf.getDomain(defaultDomain)
 
-	protected fun String.withDomain() = when {
+	protected fun String.withDomain(subdomain: String? = null) = when {
 		this.startsWith("//") -> buildString {
 			append("http")
 			if (conf.isUseSsl(true)) {
@@ -46,6 +46,10 @@ abstract class RemoteMangaRepository(
 				append('s')
 			}
 			append("://")
+			if (subdomain != null) {
+				append(subdomain)
+				append('.')
+			}
 			append(conf.getDomain(defaultDomain))
 			append(this@withDomain)
 		}

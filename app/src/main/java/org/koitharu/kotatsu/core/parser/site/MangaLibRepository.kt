@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import androidx.collection.ArraySet
-import androidx.collection.arraySetOf
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
@@ -9,7 +8,6 @@ import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -65,6 +63,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 				author = null,
 				rating = Manga.NO_RATING,
 				url = href,
+				publicUrl = href.inContextOf(a),
 				tags = emptySet(),
 				state = null,
 				source = source
@@ -218,11 +217,12 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			.parseJsonArray()
 		return json.map { jo ->
 			val slug = jo.getString("slug")
-			val url = "https://$domain/$slug"
+			val url = "/$slug"
 			val covers = jo.getJSONObject("covers")
 			Manga(
-				id = generateUid(slug),
+				id = generateUid(url),
 				url = url,
+				publicUrl = "https://$domain/$slug",
 				title = jo.getString("rus_name"),
 				altTitle = jo.getString("name"),
 				author = null,

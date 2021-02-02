@@ -40,6 +40,11 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		AssertX.assertUrlRelative("Url is not relative", item.url)
 		AssertX.assertUrlAbsolute("Url is not absolute", item.coverUrl)
 		AssertX.assertContentType("Bad cover at ${item.url}", item.coverUrl, "image/*")
+		AssertX.assertContentType(
+			"invalid public url ${item.publicUrl}",
+			item.publicUrl,
+			"text/html"
+		)
 		Assert.assertFalse("Title is blank at ${item.url}", item.title.isBlank())
 	}
 
@@ -51,6 +56,11 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		val item = list.random()
 		AssertX.assertUrlRelative("Url is not relative", item.url)
 		AssertX.assertContentType("Bad cover at ${item.url}", item.coverUrl, "image/*")
+		AssertX.assertContentType(
+			"invalid public url ${item.publicUrl}",
+			item.publicUrl,
+			"text/html"
+		)
 		Assert.assertFalse("Title is blank at ${item.url}", item.title.isBlank())
 	}
 
@@ -66,6 +76,11 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		val item = list.random()
 		AssertX.assertUrlRelative("Url is not relative", item.url)
 		AssertX.assertContentType("Bad cover at ${item.coverUrl}", item.coverUrl, "image/*")
+		AssertX.assertContentType(
+			"invalid public url ${item.publicUrl}",
+			item.publicUrl,
+			"text/html"
+		)
 		Assert.assertFalse("Title is blank at ${item.url}", item.title.isBlank())
 	}
 
@@ -74,6 +89,11 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		val manga = runBlocking { repo.getList(0) }.random()
 		val details = runBlocking { repo.getDetails(manga) }
 		Assert.assertFalse("No chapters at ${details.url}", details.chapters.isNullOrEmpty())
+		AssertX.assertContentType(
+			"invalid public url ${details.publicUrl}",
+			details.publicUrl,
+			"text/html"
+		)
 		Assert.assertFalse(
 			"Description is empty at ${details.url}",
 			details.description.isNullOrEmpty()

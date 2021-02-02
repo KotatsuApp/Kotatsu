@@ -1,12 +1,10 @@
 package org.koitharu.kotatsu.core.parser.site
 
-import androidx.collection.arraySetOf
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.*
 
@@ -70,6 +68,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 			Manga(
 				id = generateUid(relUrl),
 				url = relUrl,
+				publicUrl = href,
 				title = title,
 				altTitle = descDiv.selectFirst("h4")?.text(),
 				coverUrl = imgDiv.selectFirst("img.lazy")?.attr("data-original").orEmpty(),

@@ -8,7 +8,8 @@ data class Manga(
 	val id: Long,
 	val title: String,
 	val altTitle: String? = null,
-	val url: String,
+	val url: String, // relative url for internal use
+	val publicUrl: String,
 	val rating: Float = NO_RATING, //normalized value [0..1] or -1
 	val coverUrl: String,
 	val largeCoverUrl: String? = null,
