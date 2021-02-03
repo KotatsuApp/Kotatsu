@@ -34,7 +34,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		tag: MangaTag?
 	): List<Manga> {
 		if (!query.isNullOrEmpty()) {
-			return search(query)
+			return if (offset == 0) search(query) else emptyList()
 		}
 		val page = (offset / 60f).toIntUp()
 		val url = buildString {

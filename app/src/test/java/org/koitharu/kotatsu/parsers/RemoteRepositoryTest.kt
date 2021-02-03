@@ -53,6 +53,8 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		val list = runBlocking { repo.getList(0, query = "tail") }
 		Assert.assertFalse("List is empty", list.isEmpty())
 		Assert.assertTrue("Mangas are not distinct", list.isDistinctBy { it.id })
+		val nextList = runBlocking { repo.getList(list.size, query = "tail") }
+		Assert.assertNotEquals("Search pagination is broken", list, nextList)
 		val item = list.random()
 		AssertX.assertUrlRelative("Url is not relative", item.url)
 		AssertX.assertContentType("Bad cover at ${item.url}", item.coverUrl, "image/*")
