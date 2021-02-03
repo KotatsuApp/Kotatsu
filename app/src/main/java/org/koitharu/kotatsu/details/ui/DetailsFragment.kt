@@ -51,7 +51,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	private fun onMangaUpdated(manga: Manga) {
 		with(binding) {
 			imageViewCover.newImageRequest(manga.largeCoverUrl ?: manga.coverUrl)
-				.referer(manga.url)
+				.referer(manga.publicUrl)
 				.fallback(R.drawable.ic_placeholder)
 				.placeholderMemoryCacheKey(CoilUtils.metadata(imageViewCover)?.memoryCacheKey)
 				.lifecycle(viewLifecycleOwner)

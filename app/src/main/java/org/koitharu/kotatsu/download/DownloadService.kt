@@ -106,7 +106,7 @@ class DownloadService : BaseService() {
 				output = MangaZip.findInDir(destination, data)
 				output.prepare(data)
 				val coverUrl = data.largeCoverUrl ?: data.coverUrl
-				downloadFile(coverUrl, data.url, destination).let { file ->
+				downloadFile(coverUrl, data.publicUrl, destination).let { file ->
 					output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
 				}
 				val chapters = if (chaptersIds == null) {

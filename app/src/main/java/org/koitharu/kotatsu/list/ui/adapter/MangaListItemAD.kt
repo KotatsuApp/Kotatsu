@@ -38,7 +38,7 @@ fun mangaListItemAD(
 		binding.textViewTitle.text = item.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle
 		imageRequest = binding.imageViewCover.newImageRequest(item.coverUrl)
-			.referer(item.manga.url)
+			.referer(item.manga.publicUrl)
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)

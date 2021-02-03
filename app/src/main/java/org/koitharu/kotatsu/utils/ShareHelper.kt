@@ -17,7 +17,7 @@ class ShareHelper(private val context: Context) {
 		intent.putExtra(Intent.EXTRA_TEXT, buildString {
 			append(manga.title)
 			append("\n \n")
-			append(manga.url)
+			append(manga.publicUrl)
 		})
 		val shareIntent =
 			Intent.createChooser(intent, context.getString(R.string.share_s, manga.title))
