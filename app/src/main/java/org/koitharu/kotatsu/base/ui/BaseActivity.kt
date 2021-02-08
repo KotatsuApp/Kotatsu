@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.base.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
@@ -96,5 +97,17 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		window?.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
+	}
+
+	override fun onBackPressed() {
+		if ( // https://issuetracker.google.com/issues/139738913
+			Build.VERSION.SDK_INT == Build.VERSION_CODES.Q &&
+			isTaskRoot &&
+			supportFragmentManager.backStackEntryCount == 0
+		) {
+			finishAfterTransition()
+		} else {
+			super.onBackPressed()
+		}
 	}
 }
