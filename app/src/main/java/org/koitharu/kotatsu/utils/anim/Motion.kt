@@ -2,7 +2,8 @@ package org.koitharu.kotatsu.utils.anim
 
 import android.view.View
 import android.view.ViewPropertyAnimator
-import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import org.koitharu.kotatsu.utils.ext.measureHeight
 
 sealed class Motion {
@@ -69,27 +70,25 @@ sealed class Motion {
 		}
 	}
 
-	object CheckEffect : Motion() {
+	object Toast : Motion() {
 		override fun reset(v: View) {
-			v.scaleX = 1f
-			v.scaleY = 1f
+			v.alpha = 1f
 		}
 
 		override fun hideView(v: View) {
-			v.scaleX = 0f
-			v.scaleY = 0f
+			v.alpha = 0f
 		}
 
 		override fun hide(v: View, anim: ViewPropertyAnimator) {
-			anim.scaleX(0f)
-			anim.scaleY(0f)
-			anim.interpolator = AccelerateDecelerateInterpolator()
+			anim.alpha(0f)
+			anim.translationY(v.measureHeight().toFloat())
+			anim.interpolator = AccelerateInterpolator()
 		}
 
 		override fun show(v: View, anim: ViewPropertyAnimator) {
-			anim.scaleY(1f)
-			anim.scaleX(1f)
-			anim.interpolator = AccelerateDecelerateInterpolator()
+			anim.alpha(1f)
+			anim.translationY(0f)
+			anim.interpolator = DecelerateInterpolator()
 		}
 	}
 }

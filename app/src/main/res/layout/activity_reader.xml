@@ -2,6 +2,7 @@
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:keepScreenOn="true">
@@ -11,14 +12,19 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
 
-	<ProgressBar
-		android:id="@+id/progressBar_bottom"
-		android:layout_width="match_parent"
+	<org.koitharu.kotatsu.reader.ui.ReaderToastView
+		android:id="@+id/toastView"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:indeterminate="true"
-		android:layout_gravity="bottom"
+		android:layout_gravity="bottom|center_horizontal"
 		android:layout_marginBottom="20dp"
-		style="@style/Widget.AppCompat.ProgressBar.Horizontal" />
+		android:background="@drawable/bg_reader_indicator"
+		android:singleLine="true"
+		android:drawablePadding="6dp"
+		android:textAppearance="?android:textAppearanceSmall"
+		android:textColor="?android:textColorPrimary"
+		android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+		tools:text="@string/loading_" />
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar_top"
@@ -45,7 +51,8 @@
 		android:background="@color/dim"
 		android:elevation="0dp"
 		android:theme="@style/AppToolbarTheme"
-		app:elevation="0dp">
+		app:elevation="0dp"
+		tools:visibility="gone">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/toolbar_bottom"

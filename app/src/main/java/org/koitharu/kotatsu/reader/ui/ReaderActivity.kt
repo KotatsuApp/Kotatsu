@@ -86,7 +86,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		viewModel.onError.observe(this, this::onError)
 		viewModel.readerMode.observe(this, this::onInitReader)
 		viewModel.onPageSaved.observe(this, this::onPageSaved)
-		viewModel.uiState.observe(this, this::onUiStateChanged)
+		viewModel.uiState.observeWithPrevious(this, this::onUiStateChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.content.observe(this) {
 			onLoadingStateChanged(viewModel.isLoading.value == true)
@@ -204,7 +204,11 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		val hasPages = !viewModel.content.value?.pages.isNullOrEmpty()
 		binding.layoutLoading.isVisible = isLoading && !hasPages
-		binding.progressBarBottom.isVisible = isLoading && hasPages
+		if (isLoading && hasPages) {
+			binding.toastView.show(R.string.loading_, true)
+		} else {
+			binding.toastView.hide()
+		}
 	}
 
 	private fun onError(e: Throwable) {
@@ -336,12 +340,17 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		setUiIsVisible(!binding.appbarTop.isVisible)
 	}
 
-	private fun onUiStateChanged(uiState: ReaderUiState) {
+	private fun onUiStateChanged(uiState: ReaderUiState, previous: ReaderUiState?) {
 		title = uiState.chapterName ?: uiState.mangaName ?: getString(R.string.loading_)
 		supportActionBar?.subtitle = if (uiState.chapterNumber in 1..uiState.chaptersTotal) {
 			getString(R.string.chapter_d_of_d, uiState.chapterNumber, uiState.chaptersTotal)
 		} else {
 			null
+		}
+		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
+			if (!uiState.chapterName.isNullOrEmpty()) {
+				binding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
+			}
 		}
 	}
 
@@ -349,6 +358,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
 		private const val EXTRA_STATE = "state"
+		private const val TOAST_DURATION = 1500L
 
 		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {
 			return Intent(context, ReaderActivity::class.java)

@@ -40,13 +40,6 @@ inline fun <reified T : View> ViewGroup.inflate(@LayoutRes resId: Int) =
 val RecyclerView.hasItems: Boolean
 	get() = (adapter?.itemCount ?: 0) > 0
 
-var TextView.textAndVisible: CharSequence?
-	get() = text?.takeIf { visibility == View.VISIBLE }
-	set(value) {
-		text = value
-		isGone = value.isNullOrEmpty()
-	}
-
 inline fun <T> ChipGroup.addChips(data: Iterable<T>, action: ChipsFactory.(T) -> Chip) {
 	val factory = ChipsFactory(context)
 	data.forEach {
