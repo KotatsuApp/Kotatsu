@@ -124,11 +124,6 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		}
 	}
 
-	override fun onPause() {
-		viewModel.saveCurrentState(reader?.getCurrentState())
-		super.onPause()
-	}
-
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.opt_reader_top, menu)
 		return super.onCreateOptionsMenu(menu)

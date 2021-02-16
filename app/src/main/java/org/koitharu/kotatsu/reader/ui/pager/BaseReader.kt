@@ -18,29 +18,34 @@ abstract class BaseReader<B : ViewBinding> : BaseFragment<B>() {
 	protected val loader by lazy(LazyThreadSafetyMode.NONE) {
 		PageLoader(lifecycleScope, get(), get())
 	}
-	private var lastReaderState: ReaderState? = null
+	private var stateToSave: ReaderState? = null
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		lastReaderState = savedInstanceState?.getParcelable(KEY_STATE) ?: lastReaderState
+		var restoredState = savedInstanceState?.getParcelable<ReaderState?>(KEY_STATE)
 
 		viewModel.content.observe(viewLifecycleOwner) {
-			onPagesChanged(it.pages, lastReaderState ?: it.state)
-			lastReaderState = null
+			onPagesChanged(it.pages, restoredState ?: it.state)
+			restoredState = null
 		}
 	}
 
+	override fun onPause() {
+		super.onPause()
+		viewModel.saveCurrentState(getCurrentState())
+	}
+
 	override fun onDestroyView() {
-		lastReaderState = getCurrentState()
+		stateToSave = getCurrentState()
 		super.onDestroyView()
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
 		getCurrentState()?.let {
-			lastReaderState = it
+			stateToSave = it
 		}
-		outState.putParcelable(KEY_STATE, lastReaderState)
+		outState.putParcelable(KEY_STATE, stateToSave)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
