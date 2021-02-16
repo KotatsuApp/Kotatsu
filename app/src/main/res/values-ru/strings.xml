@@ -200,4 +200,5 @@
 	<string name="sign_in">Войти</string>
 	<string name="auth_required">Для просмотра этого контента требуется авторизация</string>
 	<string name="default_s">По умолчанию: %s</string>
+	<string name="_and_x_more">…и ещё %1$d</string>
 </resources>

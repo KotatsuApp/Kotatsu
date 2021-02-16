@@ -202,4 +202,5 @@
 	<string name="sign_in">Sign in</string>
 	<string name="auth_required">You should authorize to view this content</string>
 	<string name="default_s">Default: %s</string>
+	<string name="_and_x_more">…and %1$d more</string>
 </resources>
