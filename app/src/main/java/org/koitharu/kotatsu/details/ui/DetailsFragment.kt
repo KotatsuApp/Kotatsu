@@ -13,12 +13,14 @@ import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.util.CoilUtils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
@@ -34,6 +36,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>()
+	private var tagsJob: Job? = null
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -67,47 +70,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				ratingBar.progress = (ratingBar.max * manga.rating).roundToInt()
 				ratingBar.isVisible = true
 			}
-			chipsTags.removeAllViews()
-			manga.author?.let { a ->
-				chipsTags.addChips(listOf(a)) {
-					create(
-						text = it,
-						iconRes = R.drawable.ic_chip_user,
-						tag = it
-					)
-				}
-			}
-			chipsTags.addChips(manga.tags) {
-				create(
-					text = it.title,
-					iconRes = R.drawable.ic_chip_tag,
-					tag = it
-				)
-			}
-			manga.url.toUri().toFileOrNull()?.let { f ->
-				viewLifecycleScope.launch {
-					val size = withContext(Dispatchers.IO) {
-						f.length()
-					}
-					chipsTags.addChips(listOf(f)) {
-						create(
-							text = FileSizeUtils.formatBytes(context, size),
-							iconRes = R.drawable.ic_chip_storage,
-							tag = it
-						)
-					}
-				}
-			} ?: chipsTags.addChips(listOf(manga.source)) {
-				create(
-					text = it.title,
-					iconRes = R.drawable.ic_chip_web,
-					tag = it
-				)
-			}
 			imageViewFavourite.setOnClickListener(this@DetailsFragment)
 			buttonRead.setOnClickListener(this@DetailsFragment)
 			buttonRead.setOnLongClickListener(this@DetailsFragment)
 			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
+			bindTags(manga)
 		}
 	}
 
@@ -190,5 +157,40 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			right = insets.right,
 			bottom = insets.bottom
 		)
+	}
+
+	private fun bindTags(manga: Manga) {
+		tagsJob?.cancel()
+		tagsJob = viewLifecycleScope.launch {
+			val tags = ArrayList<ChipsView.ChipModel>(manga.tags.size + 2)
+			if (manga.author != null) {
+				tags += ChipsView.ChipModel(
+					title = manga.author,
+					icon = R.drawable.ic_chip_user
+				)
+			}
+			for (tag in manga.tags) {
+				tags += ChipsView.ChipModel(
+					title = tag.title,
+					icon = R.drawable.ic_chip_tag
+				)
+			}
+			val file = manga.url.toUri().toFileOrNull()
+			if (file != null) {
+				val size = withContext(Dispatchers.IO) {
+					file.length()
+				}
+				tags += ChipsView.ChipModel(
+					title = FileSizeUtils.formatBytes(requireContext(), size),
+					icon = R.drawable.ic_chip_storage
+				)
+			} else {
+				tags += ChipsView.ChipModel(
+					title = manga.source.title,
+					icon = R.drawable.ic_chip_web
+				)
+			}
+			binding.chipsTags.setChips(tags)
+		}
 	}
 }

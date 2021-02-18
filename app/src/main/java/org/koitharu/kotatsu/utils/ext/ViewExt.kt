@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import org.koitharu.kotatsu.core.ui.ChipsFactory
 
 fun View.hideKeyboard() {
 	val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -39,14 +38,6 @@ inline fun <reified T : View> ViewGroup.inflate(@LayoutRes resId: Int) =
 
 val RecyclerView.hasItems: Boolean
 	get() = (adapter?.itemCount ?: 0) > 0
-
-inline fun <T> ChipGroup.addChips(data: Iterable<T>, action: ChipsFactory.(T) -> Chip) {
-	val factory = ChipsFactory(context)
-	data.forEach {
-		val chip = factory.action(it)
-		addView(chip)
-	}
-}
 
 fun RecyclerView.clearItemDecorations() {
 	while (itemDecorationCount > 0) {

@@ -23,8 +23,7 @@
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintWidth_percent="0.3" />
 
-
-		<com.google.android.material.chip.ChipGroup
+		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
