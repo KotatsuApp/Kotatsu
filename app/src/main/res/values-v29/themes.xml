@@ -8,5 +8,6 @@
 		<item name="badgeStyle">@style/Widget.MaterialComponents.Badge</item>
 		<item name="android:statusBarColor">@color/status_bar</item>
 		<item name="android:navigationBarColor">@android:color/transparent</item>
+		<item name="colorOnPrimary">@android:color/white</item>
 	</style>
 </resources>

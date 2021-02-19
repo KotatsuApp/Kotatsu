@@ -106,6 +106,7 @@
 
 		<receiver
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider"
+			android:exported="true"
 			android:label="@string/manga_shelf">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -116,6 +117,7 @@
 		</receiver>
 		<receiver
 			android:name="org.koitharu.kotatsu.widget.recent.RecentWidgetProvider"
+			android:exported="true"
 			android:label="@string/recent_manga">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -124,6 +126,11 @@
 				android:name="android.appwidget.provider"
 				android:resource="@xml/widget_recent" />
 		</receiver>
+
+		<meta-data android:name="android.webkit.WebView.EnableSafeBrowsing"
+			android:value="false" />
+		<meta-data android:name="android.webkit.WebView.MetricsOptOut"
+			android:value="true" />
 
 	</application>
 

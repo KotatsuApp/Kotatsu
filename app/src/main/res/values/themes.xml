@@ -8,6 +8,7 @@
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
 		<item name="badgeStyle">@style/Widget.MaterialComponents.Badge</item>
 		<item name="android:statusBarColor">@color/status_bar</item>
+		<item name="colorOnPrimary">@android:color/white</item>
 	</style>
 
 	<style name="AppTheme" parent="BaseAppTheme">

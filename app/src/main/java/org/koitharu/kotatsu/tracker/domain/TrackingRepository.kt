@@ -28,13 +28,8 @@ class TrackingRepository(
 		}
 		val tracks = db.tracksDao.findAll().groupBy { it.mangaId }
 		return mangaList
-			.mapNotNull {
-				if (it.source == MangaSource.LOCAL) {
-					localMangaRepository.getRemoteManga(it)
-				} else {
-					it
-				}
-			}.distinctBy { it.id }
+			.filterNot { it.source == MangaSource.LOCAL }
+			.distinctBy { it.id }
 			.map { manga ->
 				val track = tracks[manga.id]?.singleOrNull()
 				MangaTracking(

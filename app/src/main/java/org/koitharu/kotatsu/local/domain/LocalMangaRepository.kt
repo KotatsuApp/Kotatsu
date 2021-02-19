@@ -7,6 +7,8 @@ import android.webkit.MimeTypeMap
 import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
@@ -127,14 +129,16 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 		)
 	}
 
-	fun getRemoteManga(localManga: Manga): Manga? {
+	suspend fun getRemoteManga(localManga: Manga): Manga? {
 		val file = runCatching {
 			Uri.parse(localManga.url).toFile()
 		}.getOrNull() ?: return null
-		val zip = ZipFile(file)
-		val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
-		val index = entry?.let(zip::readText)?.let(::MangaIndex) ?: return null
-		return index.getMangaInfo()
+		return withContext(Dispatchers.IO) {
+			val zip = ZipFile(file)
+			val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+			val index = entry?.let(zip::readText)?.let(::MangaIndex) ?: return@withContext null
+			index.getMangaInfo()
+		}
 	}
 
 	private fun zipUri(file: File, entryName: String) =

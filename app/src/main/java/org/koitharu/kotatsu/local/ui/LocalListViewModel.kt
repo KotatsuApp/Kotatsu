@@ -99,6 +99,7 @@ class LocalListViewModel(
 				runCatching {
 					historyRepository.deleteOrSwap(manga, original)
 				}
+				mangaList.value = mangaList.value?.filterNot { it.id == manga.id }
 			}
 			shortcutsRepository.updateShortcuts()
 			onMangaRemoved.call(manga)
