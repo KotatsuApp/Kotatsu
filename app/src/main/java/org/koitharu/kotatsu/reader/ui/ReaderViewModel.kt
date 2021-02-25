@@ -8,8 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
@@ -20,11 +18,11 @@ import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.utils.MediaStoreCompat
@@ -156,20 +154,11 @@ class ReaderViewModel(
 				}?.toMangaPage() ?: error("Page not found")
 				val repo = page.source.repository
 				val pageUrl = repo.getPageUrl(page)
-				val request = Request.Builder()
-					.url(pageUrl)
-					.header(CommonHeaders.REFERER, page.referer)
-					.get()
-					.build()
-				val uri = get<OkHttpClient>().newCall(request).await().use { response ->
-					val fileName =
-						URLUtil.guessFileName(
-							pageUrl,
-							response.contentDisposition,
-							response.mimeType
-						)
+				val file = get<PagesCache>()[pageUrl] ?: error("Page not found in cache")
+				val uri = file.inputStream().use { input ->
+					val fileName = URLUtil.guessFileName(pageUrl, null, null)
 					MediaStoreCompat(resolver).insertImage(fileName) {
-						checkNotNull(response.body).byteStream().copyTo(it)
+						input.copyTo(it)
 					}
 				}
 				onPageSaved.postCall(uri)
