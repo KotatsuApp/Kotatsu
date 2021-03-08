@@ -90,6 +90,8 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					chapters = ArrayList(total)
 					for (i in 0 until total) {
 						val item = list.getJSONObject(i)
+						val chapterId = item.getLong("chapter_id")
+						val branchName = item.getStringOrNull("username")
 						val url = buildString {
 							append(manga.url)
 							append("/v")
@@ -106,9 +108,10 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 						}
 						chapters.add(
 							MangaChapter(
-								id = generateUid(url),
+								id = generateUid(chapterId),
 								url = url,
 								source = source,
+								branch = branchName,
 								number = total - i,
 								name = name
 							)

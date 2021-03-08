@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.details.ui
 
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.mapToSet
 import java.io.IOException
 
 class DetailsViewModel(
@@ -31,6 +33,7 @@ class DetailsViewModel(
 ) : BaseViewModel() {
 
 	private val mangaData = MutableStateFlow<Manga?>(intent.manga)
+	private val selectedBranch = MutableStateFlow<String?>(null)
 
 	private val history = mangaData.mapNotNull { it?.id }
 		.distinctUntilChanged()
@@ -69,12 +72,24 @@ class DetailsViewModel(
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 
+	val branches = mangaData.map {
+		it?.chapters?.mapToSet { x -> x.branch }?.sortedBy { x -> x }.orEmpty()
+	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+
+	val selectedBranchIndex = combine(
+		branches.asFlow(),
+		selectedBranch
+	) { branches, selected ->
+		branches.indexOf(selected)
+	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+
 	val chapters = combine(
 		mangaData.map { it?.chapters.orEmpty() },
 		history.map { it?.chapterId },
 		newChapters,
-		chaptersReversed
-	) { chapters, currentId, newCount, reversed ->
+		chaptersReversed,
+		selectedBranch
+	) { chapters, currentId, newCount, reversed, branch ->
 		val currentIndex = chapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = chapters.size - newCount
 		val res = chapters.mapIndexed { index, chapter ->
@@ -86,7 +101,7 @@ class DetailsViewModel(
 					else -> ChapterExtra.UNREAD
 				}
 			)
-		}
+		}.filter { it.chapter.branch == branch }
 		if (reversed) res.asReversed() else res
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
@@ -96,6 +111,15 @@ class DetailsViewModel(
 				?: throw MangaNotFoundException("Cannot find manga")
 			mangaData.value = manga
 			manga = manga.source.repository.getDetails(manga)
+			// find default branch
+			val hist = historyRepository.getOne(manga)
+			selectedBranch.value = if (hist != null) {
+				manga.chapters?.find { it.id == hist.chapterId }?.branch
+			} else {
+				manga.chapters
+					?.groupBy { it.branch }
+					?.maxByOrNull { it.value.size }?.key
+			}
 			mangaData.value = manga
 		}
 	}
@@ -113,5 +137,9 @@ class DetailsViewModel(
 
 	fun setChaptersReversed(newValue: Boolean) {
 		settings.chaptersReverse = newValue
+	}
+
+	fun setSelectedBranch(branch: String?) {
+		selectedBranch.value = branch
 	}
 }

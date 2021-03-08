@@ -40,7 +40,7 @@ class ReaderViewModel(
 
 	private var loadingJob: Job? = null
 	private val currentState = MutableStateFlow<ReaderState?>(null)
-	private val mangaData = MutableStateFlow<Manga?>(intent.manga)
+	private val mangaData = MutableStateFlow(intent.manga)
 	private val chapters = LongSparseArray<MangaChapter>()
 
 	val readerMode = MutableLiveData<ReaderMode>()
@@ -58,7 +58,7 @@ class ReaderViewModel(
 		)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
-	val content = MutableLiveData<ReaderContent>(ReaderContent(emptyList(), null))
+	val content = MutableLiveData(ReaderContent(emptyList(), null))
 	val manga: Manga?
 		get() = mangaData.value
 
@@ -80,7 +80,6 @@ class ReaderViewModel(
 			manga.chapters?.forEach {
 				chapters.put(it.id, it)
 			}
-			mangaData.value = manga
 			// determine mode
 			val mode =
 				dataRepository.getReaderMode(manga.id) ?: manga.chapters?.randomOrNull()?.let {
@@ -96,6 +95,9 @@ class ReaderViewModel(
 			currentState.value = state ?: historyRepository.getOne(manga)?.let {
 				ReaderState.from(it)
 			} ?: ReaderState.initial(manga)
+
+			val branch = chapters[currentState.value?.chapterId ?: 0L].branch
+			mangaData.value = manga.copy(chapters = manga.chapters?.filter { it.branch == branch })
 			readerMode.postValue(mode)
 
 			val pages = loadChapter(requireNotNull(currentState.value).chapterId)

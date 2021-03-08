@@ -103,7 +103,7 @@ dependencies {
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 
-	testImplementation 'junit:junit:4.13.1'
+	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20201115'
 	testImplementation 'org.koin:koin-test:2.2.2'
 }
