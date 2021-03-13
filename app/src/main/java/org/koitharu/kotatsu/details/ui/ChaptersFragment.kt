@@ -7,6 +7,10 @@ import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
+import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -46,7 +50,12 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		chaptersAdapter = ChaptersAdapter(this)
 		selectionDecoration = ChaptersSelectionDecoration(view.context)
 		with(binding.recyclerViewChapters) {
-			addItemDecoration(DividerItemDecoration(view.context, RecyclerView.VERTICAL))
+			addItemDecoration(
+				DividerItemDecoration(
+					view.context,
+					RecyclerView.VERTICAL
+				)
+			)
 			addItemDecoration(selectionDecoration!!)
 			setHasFixedSize(true)
 			adapter = chaptersAdapter

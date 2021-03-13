@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<com.google.android.material.appbar.AppBarLayout
-		android:id="@+id/app_bar"
-		style="@style/Widget.MaterialComponents.AppBarLayout.Surface"
-		android:layout_width="match_parent"
+	<Spinner
+		android:id="@+id/spinner_branches"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
-
-		<Spinner
-			android:id="@+id/spinner_branches"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:visibility="gone"
-			app:layout_scrollFlags="scroll|enterAlways"
-			tools:listitem="@layout/item_branch"
-			tools:visibility="visible" />
-
-	</com.google.android.material.appbar.AppBarLayout>
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentEnd="true"
+		android:visibility="gone"
+		tools:listitem="@layout/item_branch" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_chapters"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_alignWithParentIfMissing="true"
+		android:layout_below="@id/spinner_branches"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentBottom="true"
 		android:orientation="vertical"
 		android:scrollbars="vertical"
 		app:fastScrollEnabled="true"
@@ -36,7 +33,6 @@
 		app:fastScrollVerticalThumbDrawable="@drawable/list_thumb"
 		app:fastScrollVerticalTrackDrawable="@drawable/list_track"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		tools:listitem="@layout/item_chapter" />
 
 	<ProgressBar
@@ -44,8 +40,9 @@
 		style="@style/Widget.AppCompat.ProgressBar"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_centerInParent="true"
 		android:layout_gravity="center"
 		android:visibility="gone"
 		tools:visibility="visible" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

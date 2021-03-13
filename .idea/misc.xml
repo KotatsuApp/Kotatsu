@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="../../../../../../opt/usr/android-sdk/platforms/android-30/data/res/drawable/list_divider_material.xml" value="0.28512820512820514" />
         <entry key="../../../../../../opt/usr/android-sdk/platforms/android-30/data/res/layout/simple_dropdown_item_1line.xml" value="0.24739583333333334" />
         <entry key="app/src/main/res/layout-w600dp/fragment_details.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/fragment_chapters.xml" value="0.24739583333333334" />

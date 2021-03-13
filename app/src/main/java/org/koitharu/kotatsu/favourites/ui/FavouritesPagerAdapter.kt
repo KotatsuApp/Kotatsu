@@ -25,6 +25,14 @@ class FavouritesPagerAdapter(
 		return FavouritesListFragment.newInstance(item.id)
 	}
 
+	override fun getItemId(position: Int): Long {
+		return differ.currentList[position].id
+	}
+
+	override fun containsItem(itemId: Long): Boolean {
+		return differ.currentList.any { it.id == itemId }
+	}
+
 	override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
 		val item = differ.currentList[position]
 		tab.text = item.title

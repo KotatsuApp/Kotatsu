@@ -21,6 +21,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 
 	init {
 		setHasStableIds(true)
+		stateRestorationPolicy = StateRestorationPolicy.PREVENT
 	}
 
 	override fun onBindViewHolder(holder: H, position: Int) {
