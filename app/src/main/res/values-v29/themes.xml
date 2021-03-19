@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
 	<style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 		<item name="windowActionModeOverlay">true</item>
 		<item name="actionModeCloseDrawable">@drawable/ic_cross</item>
@@ -9,5 +10,6 @@
 		<item name="android:statusBarColor">@color/status_bar</item>
 		<item name="android:navigationBarColor">@android:color/transparent</item>
 		<item name="colorOnPrimary">@android:color/white</item>
+		<item name="tabStyle">@style/Widget.MaterialComponents.TabLayout.New</item>
 	</style>
 </resources>

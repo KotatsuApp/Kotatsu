@@ -6,4 +6,5 @@
 	<color name="red_accent">#FF8A65</color>
 	<color name="dim">#99000000</color>
 	<color name="error">#E57373</color>
+	<color name="tabs_line">#5E636A</color>
 </resources>

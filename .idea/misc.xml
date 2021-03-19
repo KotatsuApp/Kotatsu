@@ -6,9 +6,12 @@
         <entry key="../../../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="../../../../../../opt/usr/android-sdk/platforms/android-30/data/res/drawable/list_divider_material.xml" value="0.28512820512820514" />
         <entry key="../../../../../../opt/usr/android-sdk/platforms/android-30/data/res/layout/simple_dropdown_item_1line.xml" value="0.24739583333333334" />
+        <entry key="app/src/main/res/drawable/tab_indicator.xml" value="0.28512820512820514" />
+        <entry key="app/src/main/res/drawable/tabs_background.xml" value="0.28512820512820514" />
         <entry key="app/src/main/res/layout-w600dp/fragment_details.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/fragment_chapters.xml" value="0.24739583333333334" />
         <entry key="app/src/main/res/layout/fragment_details.xml" value="0.26145833333333335" />
+        <entry key="app/src/main/res/layout/fragment_favourites.xml" value="0.26296296296296295" />
         <entry key="app/src/main/res/layout/item_branch.xml" value="0.24739583333333334" />
         <entry key="app/src/main/res/layout/item_branch_dropdown.xml" value="0.25743589743589745" />
       </map>

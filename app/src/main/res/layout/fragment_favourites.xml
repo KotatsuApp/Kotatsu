@@ -10,7 +10,6 @@
 		android:id="@+id/tabs"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:elevation="4dp"
 		app:tabGravity="center"
 		app:tabMode="scrollable" />
 

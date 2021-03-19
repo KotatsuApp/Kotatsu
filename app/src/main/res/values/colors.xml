@@ -9,4 +9,5 @@
 	<color name="dim">#99000000</color>
 	<color name="error">#D32F2F</color>
 	<color name="status_bar">#33000000</color>
+	<color name="tabs_line">#C3CFDD</color>
 </resources>
