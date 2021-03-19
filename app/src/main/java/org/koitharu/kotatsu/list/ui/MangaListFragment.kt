@@ -55,6 +55,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		spanSizeLookup.invalidateCache()
 	}
 	open val isSwipeRefreshEnabled = true
+	private var drawer: DrawerLayout? = null
 
 	protected abstract val viewModel: MangaListViewModel
 
@@ -70,7 +71,8 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		binding.drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+		drawer = binding.root as? DrawerLayout
+		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		listAdapter = MangaListAdapter(get(), viewLifecycleOwner, this, ::resolveException)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
@@ -101,6 +103,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	}
 
 	override fun onDestroyView() {
+		drawer = null
 		listAdapter = null
 		paginationListener = null
 		spanSizeLookup.invalidateCache()
@@ -118,15 +121,15 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			true
 		}
 		R.id.action_filter -> {
-			binding.drawer?.toggleDrawer(GravityCompat.END)
+			drawer?.toggleDrawer(GravityCompat.END)
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu) {
-		menu.findItem(R.id.action_filter).isVisible = binding.drawer != null &&
-				binding.drawer?.getDrawerLockMode(GravityCompat.END) != DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+		menu.findItem(R.id.action_filter).isVisible = drawer != null &&
+				drawer?.getDrawerLockMode(GravityCompat.END) != DrawerLayout.LOCK_MODE_LOCKED_CLOSED
 		super.onPrepareOptionsMenu(menu)
 	}
 
@@ -199,7 +202,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			state = config.currentFilter,
 			listener = this
 		)
-		binding.drawer?.setDrawerLockMode(
+		drawer?.setDrawerLockMode(
 			if (config.sortOrders.isEmpty() && config.tags.isEmpty()) {
 				DrawerLayout.LOCK_MODE_LOCKED_CLOSED
 			} else {
@@ -214,7 +217,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 
 	@CallSuper
 	override fun onFilterChanged(filter: MangaFilter) {
-		binding.drawer?.closeDrawers()
+		drawer?.closeDrawers()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

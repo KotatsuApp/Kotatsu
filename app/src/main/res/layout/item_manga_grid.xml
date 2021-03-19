@@ -23,6 +23,7 @@
 			android:ellipsize="end"
 			android:gravity="center_vertical|start"
 			android:lines="2"
+			android:elegantTextHeight="true"
 			android:padding="6dp"
 			android:textColor="?android:textColorPrimary"
 			tools:text="@tools:sample/lorem" />

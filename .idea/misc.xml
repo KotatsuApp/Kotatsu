@@ -9,11 +9,19 @@
         <entry key="app/src/main/res/drawable/tab_indicator.xml" value="0.28512820512820514" />
         <entry key="app/src/main/res/drawable/tabs_background.xml" value="0.28512820512820514" />
         <entry key="app/src/main/res/layout-w600dp/fragment_details.xml" value="0.14583333333333334" />
+        <entry key="app/src/main/res/layout-w600dp/fragment_list.xml" value="0.14635416666666667" />
         <entry key="app/src/main/res/layout/fragment_chapters.xml" value="0.24739583333333334" />
         <entry key="app/src/main/res/layout/fragment_details.xml" value="0.26145833333333335" />
         <entry key="app/src/main/res/layout/fragment_favourites.xml" value="0.26296296296296295" />
+        <entry key="app/src/main/res/layout/fragment_feed.xml" value="0.2601851851851852" />
+        <entry key="app/src/main/res/layout/fragment_list.xml" value="0.2601851851851852" />
         <entry key="app/src/main/res/layout/item_branch.xml" value="0.24739583333333334" />
         <entry key="app/src/main/res/layout/item_branch_dropdown.xml" value="0.25743589743589745" />
+        <entry key="app/src/main/res/layout/item_manga_grid.xml" value="0.26042632066728455" />
+        <entry key="app/src/main/res/layout/item_manga_list_details.xml" value="0.2601851851851852" />
+        <entry key="app/src/main/res/layout/item_page_thumb.xml" value="0.2601851851851852" />
+        <entry key="app/src/main/res/layout/item_recent.xml" value="0.2601851851851852" />
+        <entry key="app/src/main/res/layout/sheet_pages.xml" value="0.2601851851851852" />
       </map>
     </option>
   </component>

@@ -1,50 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.drawerlayout.widget.DrawerLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical">
+	android:layout_height="match_parent">
 
-	<androidx.drawerlayout.widget.DrawerLayout
-		android:id="@+id/drawer"
+	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+		android:id="@+id/swipeRefreshLayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-			android:id="@+id/swipeRefreshLayout"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent">
-
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/recyclerView"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:clipToPadding="false"
-				android:orientation="vertical"
-				android:scrollbars="vertical"
-				app:fastScrollEnabled="true"
-				app:fastScrollHorizontalThumbDrawable="@drawable/list_thumb"
-				app:fastScrollHorizontalTrackDrawable="@drawable/list_track"
-				app:fastScrollVerticalThumbDrawable="@drawable/list_thumb"
-				app:fastScrollVerticalTrackDrawable="@drawable/list_track"
-				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-				tools:listitem="@layout/item_manga_list" />
-
-		</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 		<androidx.recyclerview.widget.RecyclerView
-			android:id="@+id/recyclerView_filter"
-			android:layout_width="240dp"
+			android:id="@+id/recyclerView"
+			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:layout_gravity="end"
-			android:background="?android:windowBackground"
 			android:clipToPadding="false"
 			android:orientation="vertical"
+			android:padding="@dimen/grid_spacing_outer"
+			android:scrollbarStyle="outsideOverlay"
 			android:scrollbars="vertical"
+			app:fastScrollEnabled="true"
+			app:fastScrollHorizontalThumbDrawable="@drawable/list_thumb"
+			app:fastScrollHorizontalTrackDrawable="@drawable/list_track"
+			app:fastScrollVerticalThumbDrawable="@drawable/list_thumb"
+			app:fastScrollVerticalTrackDrawable="@drawable/list_track"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-			tools:listitem="@layout/item_category_checkable" />
+			tools:listitem="@layout/item_manga_list" />
 
-	</androidx.drawerlayout.widget.DrawerLayout>
-</LinearLayout>
+	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recyclerView_filter"
+		android:layout_width="240dp"
+		android:layout_height="match_parent"
+		android:layout_gravity="end"
+		android:background="?android:windowBackground"
+		android:clipToPadding="false"
+		android:orientation="vertical"
+		android:scrollbars="vertical"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		tools:listitem="@layout/item_category_checkable" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
