@@ -44,7 +44,7 @@
 
 	<TextView
 		android:id="@+id/textView_grid_title"
-		style="?android:attr/windowTitleStyle"
+		style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:paddingLeft="?attr/dialogPreferredPadding"

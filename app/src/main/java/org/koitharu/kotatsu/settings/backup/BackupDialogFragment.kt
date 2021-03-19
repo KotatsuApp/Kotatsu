@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
@@ -40,7 +41,7 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 	}
 
 	private fun onError(e: Throwable) {
-		AlertDialog.Builder(context ?: return)
+		MaterialAlertDialogBuilder(context ?: return)
 			.setNegativeButton(R.string.close, null)
 			.setTitle(R.string.error)
 			.setMessage(e.getDisplayMessage(resources))

@@ -43,8 +43,8 @@
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:scrollbars="vertical"
 		android:padding="@dimen/grid_spacing"
+		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
 		app:spanCount="3"
 		tools:listitem="@layout/item_page_thumb" />

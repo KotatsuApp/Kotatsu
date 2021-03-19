@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.databinding.DialogCheckboxBinding
 
 class CheckBoxAlertDialog private constructor(private val delegate: AlertDialog) :
@@ -17,7 +18,7 @@ class CheckBoxAlertDialog private constructor(private val delegate: AlertDialog)
 
 		private val binding = DialogCheckboxBinding.inflate(LayoutInflater.from(context))
 
-		private val delegate = AlertDialog.Builder(context)
+		private val delegate = MaterialAlertDialogBuilder(context)
 			.setView(binding.root)
 
 		fun setTitle(@StringRes titleResId: Int): Builder {

@@ -8,6 +8,7 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 
@@ -20,7 +21,7 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 		val inflater = activity?.layoutInflater ?: LayoutInflater.from(requireContext())
 		val binding = onInflateView(inflater, null)
 		viewBinding = binding
-		return AlertDialog.Builder(requireContext(), theme)
+		return MaterialAlertDialogBuilder(requireContext(), theme)
 			.setView(binding.root)
 			.also(::onBuildDialog)
 			.create()
