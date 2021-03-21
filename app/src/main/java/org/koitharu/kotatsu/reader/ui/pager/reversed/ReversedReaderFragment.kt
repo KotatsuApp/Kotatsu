@@ -12,7 +12,9 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import org.koitharu.kotatsu.utils.ext.*
+import kotlin.math.absoluteValue
 
 class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
@@ -58,7 +60,10 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
-		binding.pager.setCurrentItem(reversed(position), smooth)
+		binding.pager.setCurrentItem(
+			reversed(position),
+			smooth && (binding.pager.currentItem - position).absoluteValue < PagerReaderFragment.SMOOTH_SCROLL_LIMIT
+		)
 	}
 
 	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {

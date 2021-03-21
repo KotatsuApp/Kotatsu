@@ -88,10 +88,6 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
-		if (smooth) {
-			binding.recyclerView.smoothScrollToPosition(position)
-		} else {
-			binding.recyclerView.firstItem = position
-		}
+		binding.recyclerView.firstItem = position
 	}
 }

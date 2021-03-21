@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.*
+import kotlin.math.absoluteValue
 
 class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
@@ -78,7 +79,10 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
-		binding.pager.setCurrentItem(position, smooth)
+		binding.pager.setCurrentItem(
+			position,
+			smooth && (binding.pager.currentItem - position).absoluteValue < SMOOTH_SCROLL_LIMIT
+		)
 	}
 
 	override fun getCurrentState(): ReaderState? = bindingOrNull()?.run {
@@ -93,5 +97,10 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	private fun notifyPageChanged(page: Int) {
 		viewModel.onCurrentPageChanged(page)
+	}
+
+	companion object {
+
+		const val SMOOTH_SCROLL_LIMIT = 3
 	}
 }
