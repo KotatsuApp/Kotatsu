@@ -23,13 +23,14 @@
 
 			<com.google.android.material.tabs.TabLayout
 				android:id="@+id/tabs"
-				style="@style/Widget.MaterialComponents.TabLayout.Colored"
+				style="@style/Widget.MaterialComponents.TabLayout.PrimarySurface"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="end"
 				android:background="@android:color/transparent"
 				app:tabGravity="start"
-				app:tabMode="scrollable" />
+				app:tabMode="scrollable"
+				app:tabSelectedTextColor="?colorOnPrimarySurface" />
 
 		</com.google.android.material.appbar.MaterialToolbar>
 
