@@ -88,12 +88,12 @@ class PageLoader(
 	}
 
 	suspend fun convertInPlace(file: File) {
-		convertLock.withLock(file) {
+		convertLock.withLock(Lock) {
 			withContext(Dispatchers.Default) {
 				val image = BitmapFactory.decodeFile(file.absolutePath)
 				try {
 					file.outputStream().use { out ->
-						image.compress(Bitmap.CompressFormat.WEBP, 100, out)
+						image.compress(Bitmap.CompressFormat.PNG, 100, out)
 					}
 				} finally {
 					image.recycle()
@@ -101,4 +101,6 @@ class PageLoader(
 			}
 		}
 	}
+
+	private companion object Lock
 }
