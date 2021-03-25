@@ -15,20 +15,20 @@ Legacy build (Android 4.1+): [available here](https://github.com/nv95/Kotatsu/re
 * Online manga catalogues
 * Search manga by name and genre
 * Reading history
-* Favourites with custom categories
-* Saving manga and reading it offline
-* Tablet-optimized modern UI
-* Reading third-party comics from CBZ
+* Favourites organized by user-defined categories
+* Downloading manga and reading it offline. Third-party CBZ archives also supported
+* Tablet-optimized material design UI
 * Standard and Webtoon-optimized reader
-* Notifications about new chapters
-* Updates feed
-* Global search
+* Notifications about new chapters with updates feed
 
 ### Screenshots
 
-| ![Screenshot_20200226-210337](https://user-images.githubusercontent.com/8948226/80315102-3478db00-87fe-11ea-9ce8-4bbd1c254b2b.png) | ![Screenshot_20200226-210310](https://user-images.githubusercontent.com/8948226/80315110-3f337000-87fe-11ea-95df-944c196b6667.png) | ![Screenshot_20200226-210232](https://user-images.githubusercontent.com/8948226/80315121-49ee0500-87fe-11ea-8d9b-537a041bbf2f.png) |
+| ![Screenshot_20200226-210337](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/1.png) | ![](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/2.png) | ![Screenshot_20200226-210232](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/3.png) |
 |---|---|---|
-| ![Screenshot_20200226-210405](https://user-images.githubusercontent.com/8948226/80315130-55d9c700-87fe-11ea-8350-2c8452906eb7.png)  | ![Screenshot_20200226-210151](https://user-images.githubusercontent.com/8948226/80315135-612cf280-87fe-11ea-984c-aa18567d5bbc.png) | ![Screenshot_20200226-210223](https://user-images.githubusercontent.com/8948226/80315146-6be78780-87fe-11ea-8439-ca1ca578172b.png) |
+| ![Screenshot_20200226-210405](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/4.png)  | ![Screenshot_20200226-210151](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/5.png) | ![Screenshot_20200226-210223](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/6.png) |
+
+| ![](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/tenInchScreenshots/1.png) | ![](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/tenInchScreenshots/2.png) |
+|---|---|
 
 ### License
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)  
