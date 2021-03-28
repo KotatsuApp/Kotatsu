@@ -5,8 +5,6 @@ plugins {
 	id 'kotlin-parcelize'
 }
 
-def gitCommits = 'git rev-list --count HEAD'.execute([], rootDir).text.trim().toInteger()
-
 android {
 	compileSdkVersion 30
 	buildToolsVersion '30.0.3'
@@ -15,8 +13,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 30
-		versionCode gitCommits
-		versionName '1.0'
+		versionCode 364
+		versionName '1.0.1'
 
 		kapt {
 			arguments {
