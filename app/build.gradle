@@ -60,8 +60,8 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3'
 
 	implementation 'androidx.core:core-ktx:1.5.0-rc01'
 	implementation 'androidx.activity:activity-ktx:1.2.2'
@@ -85,7 +85,7 @@ dependencies {
 	implementation 'androidx.room:room-ktx:2.2.6'
 	kapt 'androidx.room:room-compiler:2.2.6'
 
-	implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 	implementation 'com.squareup.okio:okio:2.10.0'
 	implementation 'org.jsoup:jsoup:1.13.1'
 
@@ -96,7 +96,7 @@ dependencies {
 	implementation 'io.insert-koin:koin-android-ext:3.0.1-beta-2'
 	implementation 'io.coil-kt:coil-base:1.1.1'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
-	implementation 'com.tomclaw.cache:cache:1.0'
+	implementation 'com.github.solkin:disk-lru-cache:1.2'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 
