@@ -92,8 +92,8 @@ dependencies {
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.0'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.0'
 
-	implementation 'org.koin:koin-android:2.2.2'
-	implementation 'org.koin:koin-androidx-viewmodel:2.2.2'
+	implementation 'io.insert-koin:koin-android:3.0.1-beta-2'
+	implementation 'io.insert-koin:koin-android-ext:3.0.1-beta-2'
 	implementation 'io.coil-kt:coil-base:1.1.1'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.tomclaw.cache:cache:1.0'
@@ -102,5 +102,5 @@ dependencies {
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20201115'
-	testImplementation 'org.koin:koin-test:2.2.2'
+	testImplementation 'io.insert-koin:koin-test-junit4:3.0.1-beta-2'
 }

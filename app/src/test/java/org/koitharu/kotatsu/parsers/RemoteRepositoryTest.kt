@@ -1,35 +1,32 @@
 package org.koitharu.kotatsu.parsers
 
 import kotlinx.coroutines.runBlocking
-import okhttp3.CookieJar
-import okhttp3.OkHttpClient
 import org.junit.Assert
-import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import org.koin.core.context.startKoin
-import org.koin.dsl.module
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import org.koin.test.KoinTest
-import org.koin.test.get
-import org.koitharu.kotatsu.base.domain.MangaLoaderContext
+import org.koin.test.KoinTestRule
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.AssertX
 import org.koitharu.kotatsu.utils.ext.isDistinctBy
-import java.util.concurrent.TimeUnit
 
 @RunWith(Parameterized::class)
 class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 
-	private val repo = try {
-		source.cls.getDeclaredConstructor(MangaLoaderContext::class.java)
-			.newInstance(get<MangaLoaderContext>())
-	} catch (e: NoSuchMethodException) {
-		source.cls.newInstance()
-	} as RemoteMangaRepository
+	private val repo by inject<RemoteMangaRepository> {
+		parametersOf(source)
+	}
+
+	@get:Rule
+	val koinTestRule = KoinTestRule.create {
+		printLogger()
+		modules(repositoryTestModule)
+	}
 
 	@Test
 	fun list() {
@@ -71,8 +68,8 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 		val tags = runBlocking { repo.getTags() }
 		Assert.assertFalse("No tags found", tags.isEmpty())
 		val tag = tags.random()
-		Assert.assertFalse("Tag title is blank for ${tag}", tag.key.isBlank())
-		Assert.assertFalse("Tag title is blank for ${tag}", tag.title.isBlank())
+		Assert.assertFalse("Tag title is blank for $tag", tag.key.isBlank())
+		Assert.assertFalse("Tag title is blank for $tag", tag.title.isBlank())
 		val list = runBlocking { repo.getList(0, tag = tag) }
 		Assert.assertFalse("List is empty", list.isEmpty())
 		val item = list.random()
@@ -127,34 +124,6 @@ class RemoteRepositoryTest(source: MangaSource) : KoinTest {
 	}
 
 	companion object {
-
-		@JvmStatic
-		@BeforeClass
-		fun initialize() {
-			startKoin {
-				modules(
-					module {
-						single<CookieJar> { TemporaryCookieJar() }
-						factory {
-							OkHttpClient.Builder()
-								.cookieJar(get())
-								.addInterceptor(UserAgentInterceptor())
-								.connectTimeout(20, TimeUnit.SECONDS)
-								.readTimeout(60, TimeUnit.SECONDS)
-								.writeTimeout(20, TimeUnit.SECONDS)
-								.build()
-						}
-						single<MangaLoaderContext> {
-							object : MangaLoaderContext(get(), get()) {
-								override fun getSettings(source: MangaSource): SourceSettings {
-									return SourceSettingsMock()
-								}
-							}
-						}
-					}
-				)
-			}
-		}
 
 		@JvmStatic
 		@Parameterized.Parameters(name = "{0}")
