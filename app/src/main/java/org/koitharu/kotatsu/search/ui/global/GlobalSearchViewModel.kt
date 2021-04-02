@@ -62,8 +62,8 @@ class GlobalSearchViewModel(
 			.catch { e ->
 				listError.value = e
 				isLoading.postValue(false)
-			}.filterNot { x -> x.isEmpty() }
-			.onStart {
+			}.onStart {
+				mangaList.value = null
 				listError.value = null
 				isLoading.postValue(true)
 				hasNextPage.value = true
@@ -75,7 +75,7 @@ class GlobalSearchViewModel(
 			}.onFirst {
 				isLoading.postValue(false)
 			}.onEach {
-				mangaList.value = mangaList.value?.plus(it) ?: it
+				mangaList.value = mangaList.value?.plus(it) ?: listOf(it)
 			}.launchIn(viewModelScope + Dispatchers.Default)
 	}
 }

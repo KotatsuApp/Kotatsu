@@ -54,6 +54,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 		jvmTarget = JavaVersion.VERSION_1_8.toString()
 		freeCompilerArgs += [
 				'-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+				'-Xopt-in=kotlinx.coroutines.FlowPreview',
 				'-Xopt-in=org.koin.core.component.KoinApiExtension'
 		]
 	}
