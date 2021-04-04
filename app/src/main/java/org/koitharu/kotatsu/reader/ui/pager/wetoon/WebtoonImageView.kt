@@ -10,6 +10,7 @@ class WebtoonImageView @JvmOverloads constructor(context: Context, attr: Attribu
 	SubsamplingScaleImageView(context, attr) {
 
 	private val ct = PointF()
+	private val displayHeight = resources.displayMetrics.heightPixels
 
 	private var scrollPos = 0
 	private var scrollRange = SCROLL_UNKNOWN
@@ -44,6 +45,14 @@ class WebtoonImageView @JvmOverloads constructor(context: Context, attr: Attribu
 		scrollRange = SCROLL_UNKNOWN
 		scrollPos = 0
 		super.recycle()
+	}
+
+	override fun getSuggestedMinimumHeight(): Int {
+		var desiredHeight = super.getSuggestedMinimumHeight()
+		if (sHeight == 0 && desiredHeight < displayHeight) {
+			desiredHeight = displayHeight
+		}
+		return desiredHeight
 	}
 
 	private fun scrollToInternal(pos: Int) {

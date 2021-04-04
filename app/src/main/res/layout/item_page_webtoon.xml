@@ -4,12 +4,12 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="wrap_content">
 
 	<org.koitharu.kotatsu.reader.ui.pager.wetoon.WebtoonImageView
 		android:id="@+id/ssiv"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_height="wrap_content"
 		app:zoomEnabled="false"
 		app:quickScaleEnabled="false"
 		app:panEnabled="false" />
