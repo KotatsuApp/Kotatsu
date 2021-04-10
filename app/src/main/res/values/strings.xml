@@ -203,4 +203,8 @@
 	<string name="auth_required">You should authorize to view this content</string>
 	<string name="default_s">Default: %s</string>
 	<string name="_and_x_more">…and %1$d more</string>
+	<string name="next">Next</string>
+	<string name="protect_application_subtitle">Enter password that will be required when the application starts</string>
+	<string name="confirm">Confirm</string>
+	<string name="password_length_hint">Password must be at least 4 characters</string>
 </resources>

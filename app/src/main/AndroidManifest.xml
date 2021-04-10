@@ -78,6 +78,10 @@
 			android:label="@string/search" />
 		<activity
 			android:name="org.koitharu.kotatsu.main.ui.protect.ProtectActivity"
+			android:noHistory="true"
+			android:windowSoftInputMode="adjustResize" />
+		<activity
+			android:name=".settings.protect.ProtectSetupActivity"
 			android:windowSoftInputMode="adjustResize" />
 
 		<service
@@ -127,9 +131,11 @@
 				android:resource="@xml/widget_recent" />
 		</receiver>
 
-		<meta-data android:name="android.webkit.WebView.EnableSafeBrowsing"
+		<meta-data
+			android:name="android.webkit.WebView.EnableSafeBrowsing"
 			android:value="false" />
-		<meta-data android:name="android.webkit.WebView.MetricsOptOut"
+		<meta-data
+			android:name="android.webkit.WebView.MetricsOptOut"
 			android:value="true" />
 
 	</application>

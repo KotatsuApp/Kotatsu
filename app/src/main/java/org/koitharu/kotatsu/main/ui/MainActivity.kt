@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -28,7 +27,6 @@ import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.favourites.ui.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
-import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.ui.SearchHelper
@@ -45,17 +43,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	View.OnClickListener {
 
 	private val viewModel by viewModel<MainViewModel>()
-	private val protectHelper by inject<AppProtectHelper>()
 
 	private lateinit var drawerToggle: ActionBarDrawerToggle
 	private var closeable: Closeable? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		if (protectHelper.check(this)) {
-			finish()
-			return
-		}
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 		drawerToggle =
 			ActionBarDrawerToggle(
@@ -93,7 +86,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	override fun onDestroy() {
 		closeable?.close()
-		protectHelper.lock()
 		super.onDestroy()
 	}
 

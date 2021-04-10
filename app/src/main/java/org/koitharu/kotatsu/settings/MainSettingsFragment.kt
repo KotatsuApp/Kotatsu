@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.settings
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputType
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.base.ui.dialog.TextInputDialog
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.utils.ext.*
 import java.io.File
 
@@ -77,6 +79,10 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 						?: getString(R.string.not_available)
 				}
 			}
+			AppSettings.KEY_APP_PASSWORD -> {
+				findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)
+					?.isChecked = !settings.appPassword.isNullOrEmpty()
+			}
 		}
 	}
 
@@ -102,8 +108,10 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				true
 			}
 			AppSettings.KEY_PROTECT_APP -> {
-				if ((preference as? SwitchPreference ?: return false).isChecked) {
-					enableAppProtection(preference)
+				val pref = (preference as? SwitchPreference ?: return false)
+				if (pref.isChecked) {
+					pref.isChecked = false
+					startActivity(Intent(preference.context, ProtectSetupActivity::class.java))
 				} else {
 					settings.appPassword = null
 				}

@@ -9,4 +9,5 @@
 	<dimen name="header_height">34dp</dimen>
 	<dimen name="elevation_large">16dp</dimen>
 	<dimen name="list_footer_height">48dp</dimen>
+	<dimen name="screen_padding">16dp</dimen>
 </resources>

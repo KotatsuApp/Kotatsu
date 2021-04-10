@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.local.localModule
 import org.koitharu.kotatsu.main.mainModule
+import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.reader.readerModule
 import org.koitharu.kotatsu.remotelist.remoteListModule
 import org.koitharu.kotatsu.search.searchModule
@@ -55,6 +56,7 @@ class KotatsuApp : Application() {
 		initKoin()
 		Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(applicationContext))
 		AppCompatDelegate.setDefaultNightMode(get<AppSettings>().theme)
+		registerActivityLifecycleCallbacks(get<AppProtectHelper>())
 		val widgetUpdater = WidgetUpdater(applicationContext)
 		FavouritesRepository.subscribe(widgetUpdater)
 		HistoryRepository.subscribe(widgetUpdater)

@@ -27,7 +27,6 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	protected lateinit var binding: B
 		private set
 
-
 	protected val exceptionResolver by lazy(LazyThreadSafetyMode.NONE) {
 		ExceptionResolver(this, supportFragmentManager)
 	}
@@ -60,7 +59,9 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		onWindowInsetsChanged(insets.getInsets(WindowInsetsCompat.Type.systemBars()))
+		val baseInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+		onWindowInsetsChanged(Insets.max(baseInsets, imeInsets))
 		return insets
 	}
 

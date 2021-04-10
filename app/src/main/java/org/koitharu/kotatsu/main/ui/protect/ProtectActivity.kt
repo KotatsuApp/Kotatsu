@@ -6,13 +6,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
-import android.view.Menu
-import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -20,50 +17,49 @@ import org.koitharu.kotatsu.databinding.ActivityProtectBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEditorActionListener,
-	TextWatcher {
+	TextWatcher, View.OnClickListener {
 
 	private val viewModel by viewModel<ProtectViewModel>()
-	private val appProtectHelper by inject<AppProtectHelper>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityProtectBinding.inflate(layoutInflater))
 		binding.editPassword.setOnEditorActionListener(this)
 		binding.editPassword.addTextChangedListener(this)
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(R.drawable.ic_cross)
-		}
+		binding.buttonNext.setOnClickListener(this)
+		binding.buttonCancel.setOnClickListener(this)
 
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
-		viewModel.onUnlockSuccess.observe(this, this::onUnlockSuccess)
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-		menuInflater.inflate(R.menu.opt_protect, menu)
-		return super.onCreateOptionsMenu(menu)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_done -> {
-			viewModel.tryUnlock(binding.editPassword.text.toString().orEmpty())
-			true
+		viewModel.onUnlockSuccess.observe(this) {
+			val intent = intent.getParcelableExtra<Intent>(EXTRA_INTENT)
+			startActivity(intent)
+			finishAfterTransition()
 		}
-		else -> super.onOptionsItemSelected(item)
+
+		binding.editPassword.requestFocus()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			top = insets.top
+		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
+		binding.root.setPadding(
+			basePadding + insets.left,
+			basePadding + insets.top,
+			basePadding + insets.right,
+			basePadding + insets.bottom
 		)
 	}
 
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.button_next -> viewModel.tryUnlock(binding.editPassword.text?.toString().orEmpty())
+			R.id.button_cancel -> finish()
+		}
+	}
+
 	override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-		return if (actionId == EditorInfo.IME_ACTION_DONE) {
-			viewModel.tryUnlock(binding.editPassword.text.toString().orEmpty())
+		return if (actionId == EditorInfo.IME_ACTION_DONE && binding.buttonNext.isEnabled) {
+			binding.buttonNext.performClick()
 			true
 		} else {
 			false
@@ -76,10 +72,7 @@ class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEdito
 
 	override fun afterTextChanged(s: Editable?) {
 		binding.layoutPassword.error = null
-	}
-
-	private fun onUnlockSuccess(unit: Unit) {
-		appProtectHelper.unlock(this)
+		binding.buttonNext.isEnabled = !s.isNullOrEmpty()
 	}
 
 	private fun onError(e: Throwable) {
@@ -92,6 +85,11 @@ class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEdito
 
 	companion object {
 
-		fun newIntent(context: Context) = Intent(context, ProtectActivity::class.java)
+		private const val EXTRA_INTENT = "src_intent"
+
+		fun newIntent(context: Context, sourceIntent: Intent): Intent {
+			return Intent(context, ProtectActivity::class.java)
+				.putExtra(EXTRA_INTENT, sourceIntent)
+		}
 	}
 }

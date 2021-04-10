@@ -13,5 +13,5 @@ val mainModule
 		single { AppProtectHelper(get()) }
 		single { ShortcutsRepository(androidContext(), get(), get(), get()) }
 		viewModel { MainViewModel(get(), get()) }
-		viewModel { ProtectViewModel(get()) }
+		viewModel { ProtectViewModel(get(), get()) }
 	}
