@@ -4,6 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="?android:listPreferredItemHeightSmall"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:background="?android:windowBackground"
 	android:gravity="center_vertical"
 	android:orientation="horizontal">
@@ -28,20 +29,17 @@
 		android:textColor="?android:attr/textColorPrimary"
 		tools:text="@tools:sample/lorem[1]" />
 
-	<org.koitharu.kotatsu.base.ui.widgets.CheckableImageView
-		android:id="@+id/imageView_hidden"
+	<com.google.android.material.switchmaterial.SwitchMaterial
+		android:id="@+id/switch_toggle"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:background="?selectableItemBackgroundBorderless"
-		android:padding="?listPreferredItemPaddingEnd"
-		android:scaleType="center"
-		android:src="@drawable/ic_eye_checkable" />
+		android:layout_height="wrap_content"/>
 
 	<ImageView
 		android:id="@+id/imageView_config"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/settings"
 		android:padding="?listPreferredItemPaddingEnd"
 		android:scaleType="center"
 		android:src="@drawable/ic_settings" />

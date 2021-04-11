@@ -5,7 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -42,7 +42,7 @@ class HistoryListFragment : MangaListFragment() {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_clear_history -> {
-				MaterialAlertDialogBuilder(context ?: return false)
+				AlertDialog.Builder(context ?: return false)
 					.setTitle(R.string.clear_history)
 					.setMessage(R.string.text_clear_history_prompt)
 					.setNegativeButton(android.R.string.cancel, null)

@@ -19,7 +19,7 @@ class TextInputDialog private constructor(
 
 		private val binding = DialogInputBinding.inflate(LayoutInflater.from(context))
 
-		private val delegate = MaterialAlertDialogBuilder(context)
+		private val delegate = AlertDialog.Builder(context)
 			.setView(binding.root)
 
 		fun setTitle(@StringRes titleResId: Int): Builder {

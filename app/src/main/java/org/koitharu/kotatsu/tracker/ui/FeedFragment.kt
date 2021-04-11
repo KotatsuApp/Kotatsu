@@ -2,9 +2,9 @@ package org.koitharu.kotatsu.tracker.ui
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -80,7 +80,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 				true
 			}
 			R.id.action_clear_feed -> {
-				MaterialAlertDialogBuilder(context ?: return false)
+				AlertDialog.Builder(context ?: return false)
 					.setTitle(R.string.clear_updates_feed)
 					.setMessage(R.string.text_clear_updates_feed_prompt)
 					.setNegativeButton(android.R.string.cancel, null)

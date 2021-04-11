@@ -24,7 +24,7 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 	class Builder(context: Context, defaultValue: File?, listener: OnStorageSelectListener) {
 
 		private val adapter = VolumesAdapter(context)
-		private val delegate = MaterialAlertDialogBuilder(context)
+		private val delegate = AlertDialog.Builder(context)
 
 		init {
 			if (adapter.isEmpty) {

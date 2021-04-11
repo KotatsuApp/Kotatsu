@@ -37,7 +37,7 @@ class SourcesAdapter(
 
 	@SuppressLint("ClickableViewAccessibility")
 	private fun onViewHolderCreated(holder: SourceViewHolder) {
-		holder.binding.imageViewHidden.setOnCheckedChangeListener {
+		holder.binding.switchToggle.setOnCheckedChangeListener { _, it ->
 			if (it) {
 				hiddenItems.remove(holder.requireData())
 			} else {

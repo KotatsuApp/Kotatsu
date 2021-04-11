@@ -30,6 +30,7 @@
 				android:background="@android:color/transparent"
 				app:tabGravity="start"
 				app:tabMode="scrollable"
+				app:tabIndicatorColor="?colorOnPrimarySurface"
 				app:tabSelectedTextColor="?colorOnPrimarySurface" />
 
 		</com.google.android.material.appbar.MaterialToolbar>

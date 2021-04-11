@@ -6,8 +6,12 @@
         <entry key="../../../../../../layout/custom_preview.xml" value="0.284375" />
         <entry key="../../../../../../opt/usr/android-sdk/platforms/android-30/data/res/drawable/list_divider_material.xml" value="0.28512820512820514" />
         <entry key="../../../../../../opt/usr/android-sdk/platforms/android-30/data/res/layout/simple_dropdown_item_1line.xml" value="0.24739583333333334" />
+        <entry key="../../../../.gradle/caches/transforms-3/0998d1b3fbd6b77213a827054a7dfcfd/transformed/appcompat-1.2.0/res/layout/abc_alert_dialog_material.xml" value="0.25885416666666666" />
+        <entry key="../../../../.gradle/caches/transforms-3/0998d1b3fbd6b77213a827054a7dfcfd/transformed/appcompat-1.2.0/res/layout/abc_select_dialog_material.xml" value="0.25885416666666666" />
+        <entry key="../../../../.gradle/caches/transforms-3/688e95ad986d2d0286c79f787589b7cb/transformed/material-1.3.0/res/layout/mtrl_alert_dialog.xml" value="0.25885416666666666" />
         <entry key="app/src/main/res/drawable/tab_indicator.xml" value="0.28512820512820514" />
         <entry key="app/src/main/res/drawable/tabs_background.xml" value="0.28512820512820514" />
+        <entry key="app/src/main/res/layout-w600dp/activity_details.xml" value="0.18072916666666666" />
         <entry key="app/src/main/res/layout-w600dp/fragment_details.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout-w600dp/fragment_list.xml" value="0.14635416666666667" />
         <entry key="app/src/main/res/layout/activity_protect.xml" value="0.26927083333333335" />
@@ -27,6 +31,7 @@
         <entry key="app/src/main/res/layout/item_page_thumb.xml" value="0.2601851851851852" />
         <entry key="app/src/main/res/layout/item_page_webtoon.xml" value="0.13095238095238096" />
         <entry key="app/src/main/res/layout/item_recent.xml" value="0.2601851851851852" />
+        <entry key="app/src/main/res/layout/item_source_config.xml" value="0.25885416666666666" />
         <entry key="app/src/main/res/layout/sheet_pages.xml" value="0.2601851851851852" />
         <entry key="app/src/main/res/menu/opt_protect.xml" value="0.26927083333333335" />
         <entry key="app/src/main/res/menu/popup_category.xml" value="0.2601851851851852" />

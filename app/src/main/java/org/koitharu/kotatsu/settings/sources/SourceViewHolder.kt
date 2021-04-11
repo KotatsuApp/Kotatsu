@@ -13,6 +13,6 @@ class SourceViewHolder(parent: ViewGroup) :
 
 	override fun onBind(data: MangaSource, extra: Boolean) {
 		binding.textViewTitle.text = data.title
-		binding.imageViewHidden.isChecked = extra
+		binding.switchToggle.isChecked = extra
 	}
 }

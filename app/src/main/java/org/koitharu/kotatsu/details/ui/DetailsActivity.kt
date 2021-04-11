@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -14,7 +15,6 @@ import androidx.core.graphics.Insets
 import androidx.core.net.toFile
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -144,7 +144,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		}
 		R.id.action_delete -> {
 			viewModel.manga.value?.let { m ->
-				MaterialAlertDialogBuilder(this)
+				AlertDialog.Builder(this)
 					.setTitle(R.string.delete_manga)
 					.setMessage(getString(R.string.text_delete_local_manga, m.title))
 					.setPositiveButton(R.string.delete) { _, _ ->
@@ -159,7 +159,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 			viewModel.manga.value?.let {
 				val chaptersCount = it.chapters?.size ?: 0
 				if (chaptersCount > 5) {
-					MaterialAlertDialogBuilder(this)
+					AlertDialog.Builder(this)
 						.setTitle(R.string.save_manga)
 						.setMessage(
 							getString(
