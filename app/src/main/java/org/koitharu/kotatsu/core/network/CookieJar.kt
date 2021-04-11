@@ -7,7 +7,7 @@ import okhttp3.HttpUrl
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class AndroidCookieJar : CookieJar {
+class CookieJar : CookieJar {
 
 	private val cookieManager = CookieManager.getInstance()
 
@@ -26,15 +26,6 @@ class AndroidCookieJar : CookieJar {
 		for (cookie in cookies) {
 			cookieManager.setCookie(urlString, cookie.toString())
 		}
-	}
-
-	fun remove(url: String, vararg names: String) {
-		val cookies = cookieManager.getCookie(url) ?: return
-		val newCookies = cookies.split(";")
-			.filterNot { cookie ->
-				names.any { cookie.startsWith("$it=") }
-			}.joinToString(";")
-		cookieManager.setCookie(url, newCookies)
 	}
 
 	fun clearAsync() {

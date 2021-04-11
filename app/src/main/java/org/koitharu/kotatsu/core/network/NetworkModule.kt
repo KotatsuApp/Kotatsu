@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 val networkModule
 	get() = module {
-		single { AndroidCookieJar() } bind CookieJar::class
+		single { CookieJar() } bind CookieJar::class
 		single(named(CacheUtils.QUALIFIER_HTTP)) { CacheUtils.createHttpCache(androidContext()) }
 		single {
 			OkHttpClient.Builder().apply {

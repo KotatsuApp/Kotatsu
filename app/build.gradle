@@ -74,7 +74,7 @@ dependencies {
 	implementation 'androidx.lifecycle:lifecycle-process:2.3.1'
 	implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-	implementation 'androidx.recyclerview:recyclerview:1.2.0-rc01'
+	implementation 'androidx.recyclerview:recyclerview:1.2.0'
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
 	implementation 'androidx.preference:preference-ktx:1.1.1'
 	implementation 'androidx.work:work-runtime-ktx:2.5.0'
@@ -99,7 +99,7 @@ dependencies {
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.solkin:disk-lru-cache:1.2'
 
-	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
+	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20201115'
