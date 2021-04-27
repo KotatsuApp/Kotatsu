@@ -52,7 +52,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
 	ActivityResultCallback<Boolean>, ReaderControlDelegate.OnInteractionListener {
 
-	private val viewModel by viewModel<ReaderViewModel> {
+	private val viewModel by viewModel<ReaderViewModel>(mode = LazyThreadSafetyMode.NONE) {
 		parametersOf(MangaIntent.from(intent), intent?.getParcelableExtra<ReaderState>(EXTRA_STATE))
 	}
 

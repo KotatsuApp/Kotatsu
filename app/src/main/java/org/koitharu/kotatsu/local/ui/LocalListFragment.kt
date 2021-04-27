@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.utils.ext.ellipsize
 
 class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 
-	override val viewModel by viewModel<LocalListViewModel>()
+	override val viewModel by viewModel<LocalListViewModel>(mode = LazyThreadSafetyMode.NONE)
 	private val importCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocument(),
 		this

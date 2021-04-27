@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	PreferenceFragmentCompat(), OnApplyWindowInsetsListener {
 
-	protected val settings by inject<AppSettings>()
+	protected val settings by inject<AppSettings>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)

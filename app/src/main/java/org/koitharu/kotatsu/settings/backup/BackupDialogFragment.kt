@@ -17,7 +17,7 @@ import java.io.File
 
 class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
-	private val viewModel by viewModel<BackupViewModel>()
+	private val viewModel by viewModel<BackupViewModel>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onInflateView(
 		inflater: LayoutInflater,

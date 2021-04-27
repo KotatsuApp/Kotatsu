@@ -29,7 +29,7 @@ import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 
 class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(), OnListItemClickListener<CategoryItem> {
 
-	private val viewModel by viewModel<ShelfConfigViewModel>()
+	private val viewModel by viewModel<ShelfConfigViewModel>(mode = LazyThreadSafetyMode.NONE)
 
 	private lateinit var adapter: CategorySelectAdapter
 	private lateinit var config: AppWidgetConfig

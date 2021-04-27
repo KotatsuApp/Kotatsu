@@ -42,7 +42,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener,
 	View.OnClickListener {
 
-	private val viewModel by viewModel<MainViewModel>()
+	private val viewModel by viewModel<MainViewModel>(mode = LazyThreadSafetyMode.NONE)
 
 	private lateinit var drawerToggle: ActionBarDrawerToggle
 	private var closeable: Closeable? = null

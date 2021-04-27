@@ -23,7 +23,7 @@ import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cache) {
 
-	private val trackerRepo by inject<TrackingRepository>()
+	private val trackerRepo by inject<TrackingRepository>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)

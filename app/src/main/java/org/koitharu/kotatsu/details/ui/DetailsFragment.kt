@@ -35,7 +35,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	View.OnLongClickListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
-	private val coil by inject<ImageLoader>()
+	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
 	private var tagsJob: Job? = null
 
 	override fun onInflateView(

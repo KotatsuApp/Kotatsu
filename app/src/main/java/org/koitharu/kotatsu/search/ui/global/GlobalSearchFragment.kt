@@ -9,7 +9,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 
 class GlobalSearchFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<GlobalSearchViewModel> {
+	override val viewModel by viewModel<GlobalSearchViewModel>(mode = LazyThreadSafetyMode.NONE) {
 		parametersOf(query)
 	}
 

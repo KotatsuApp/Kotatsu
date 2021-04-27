@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 
 class RemoteListFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<RemoteListViewModel> {
+	override val viewModel by viewModel<RemoteListViewModel>(mode = LazyThreadSafetyMode.NONE) {
 		parametersOf(source)
 	}
 

@@ -5,12 +5,10 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.TrackEntity
 import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
 import org.koitharu.kotatsu.core.model.*
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import java.util.*
 
 class TrackingRepository(
 	private val db: MangaDatabase,
-	private val localMangaRepository: LocalMangaRepository
 ) {
 
 	suspend fun getNewChaptersCount(mangaId: Long): Int {

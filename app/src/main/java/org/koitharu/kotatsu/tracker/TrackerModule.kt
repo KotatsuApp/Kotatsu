@@ -9,7 +9,7 @@ import org.koitharu.kotatsu.tracker.ui.FeedViewModel
 val trackerModule
 	get() = module {
 
-		single { TrackingRepository(get(), get()) }
+		single { TrackingRepository(get()) }
 
 		viewModel { FeedViewModel(androidContext(), get()) }
 	}

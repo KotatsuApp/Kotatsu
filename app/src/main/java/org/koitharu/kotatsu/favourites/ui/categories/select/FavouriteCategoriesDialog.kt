@@ -25,7 +25,7 @@ class FavouriteCategoriesDialog : BaseBottomSheet<DialogFavoriteCategoriesBindin
 	OnListItemClickListener<MangaCategoryItem>, CategoriesEditDelegate.CategoriesEditCallback,
 	View.OnClickListener {
 
-	private val viewModel by viewModel<MangaCategoriesViewModel> {
+	private val viewModel by viewModel<MangaCategoriesViewModel>(mode = LazyThreadSafetyMode.NONE) {
 		parametersOf(requireNotNull(arguments?.getParcelable<Manga>(MangaIntent.KEY_MANGA)))
 	}
 

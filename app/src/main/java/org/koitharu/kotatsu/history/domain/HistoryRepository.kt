@@ -6,8 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
@@ -18,9 +16,10 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
 import org.koitharu.kotatsu.utils.ext.mapToSet
 
-class HistoryRepository(private val db: MangaDatabase) : KoinComponent {
-
-	private val trackingRepository by inject<TrackingRepository>()
+class HistoryRepository(
+	private val db: MangaDatabase,
+	private val trackingRepository: TrackingRepository,
+) {
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
 		val entities = db.historyDao.findAll(offset, limit)

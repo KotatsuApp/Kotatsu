@@ -19,7 +19,7 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEditorActionListener,
 	TextWatcher, View.OnClickListener {
 
-	private val viewModel by viewModel<ProtectViewModel>()
+	private val viewModel by viewModel<ProtectViewModel>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

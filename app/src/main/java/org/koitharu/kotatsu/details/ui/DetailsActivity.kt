@@ -41,7 +41,7 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 	TabLayoutMediator.TabConfigurationStrategy {
 
-	private val viewModel by viewModel<DetailsViewModel> {
+	private val viewModel by viewModel<DetailsViewModel>(mode = LazyThreadSafetyMode.NONE) {
 		parametersOf(MangaIntent.from(intent))
 	}
 

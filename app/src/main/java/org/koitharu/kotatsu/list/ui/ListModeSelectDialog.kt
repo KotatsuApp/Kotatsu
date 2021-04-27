@@ -18,7 +18,7 @@ import org.koitharu.kotatsu.databinding.DialogListModeBinding
 class ListModeSelectDialog : AlertDialogFragment<DialogListModeBinding>(), View.OnClickListener,
 	SeekBar.OnSeekBarChangeListener {
 
-	private val settings by inject<AppSettings>()
+	private val settings by inject<AppSettings>(mode = LazyThreadSafetyMode.NONE)
 
 	private var mode: ListMode = ListMode.GRID
 	private var pendingGridSize: Int = 100

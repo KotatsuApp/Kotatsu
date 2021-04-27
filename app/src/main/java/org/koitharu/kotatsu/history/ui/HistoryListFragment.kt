@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.utils.ext.ellipsize
 
 class HistoryListFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<HistoryListViewModel>()
+	override val viewModel by viewModel<HistoryListViewModel>(mode = LazyThreadSafetyMode.NONE)
 	override val isSwipeRefreshEnabled = false
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
