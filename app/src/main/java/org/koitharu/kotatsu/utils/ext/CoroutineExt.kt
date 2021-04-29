@@ -14,25 +14,6 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-suspend fun Call.await() = suspendCancellableCoroutine<Response> { cont ->
-	this.enqueue(object : Callback {
-		override fun onFailure(call: Call, e: IOException) {
-			if (cont.isActive) {
-				cont.resumeWithException(e)
-			}
-		}
-
-		override fun onResponse(call: Call, response: Response) {
-			if (cont.isActive) {
-				cont.resume(response)
-			}
-		}
-	})
-	cont.invokeOnCancellation {
-		this.cancel()
-	}
-}
-
 inline fun CoroutineScope.launchAfter(
 	job: Job?,
 	context: CoroutineContext = EmptyCoroutineContext,

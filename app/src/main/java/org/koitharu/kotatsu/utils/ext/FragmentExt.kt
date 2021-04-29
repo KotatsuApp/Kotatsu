@@ -13,7 +13,7 @@ inline fun <T : Fragment> T.withArgs(size: Int, block: Bundle.() -> Unit): T {
 }
 
 val Fragment.viewLifecycleScope
-	get() = viewLifecycleOwner.lifecycle.coroutineScope
+	inline get() = viewLifecycleOwner.lifecycle.coroutineScope
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T : Parcelable> Fragment.parcelableArgument(name: String): Lazy<T> {

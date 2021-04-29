@@ -8,22 +8,6 @@ import org.koitharu.kotatsu.core.exceptions.*
 import java.io.FileNotFoundException
 import java.net.SocketTimeoutException
 
-suspend inline fun <T, R> T.retryUntilSuccess(maxAttempts: Int, action: T.() -> R): R {
-	var attempts = maxAttempts
-	while (true) {
-		try {
-			return this.action()
-		} catch (e: Exception) {
-			attempts--
-			if (attempts <= 0) {
-				throw e
-			} else {
-				delay(1000)
-			}
-		}
-	}
-}
-
 fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
 	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required)

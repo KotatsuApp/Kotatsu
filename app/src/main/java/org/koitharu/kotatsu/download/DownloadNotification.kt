@@ -13,6 +13,7 @@ import androidx.core.graphics.drawable.toBitmap
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import kotlin.math.roundToInt
 
@@ -63,7 +64,7 @@ class DownloadNotification(private val context: Context) {
 					context,
 					startId,
 					intent,
-					PendingIntent.FLAG_CANCEL_CURRENT
+					PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
 				)
 			)
 		}
@@ -146,7 +147,7 @@ class DownloadNotification(private val context: Context) {
 			context,
 			manga.hashCode(),
 			DetailsActivity.newIntent(context, manga),
-			PendingIntent.FLAG_CANCEL_CURRENT
+			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
 		)
 	}
 }

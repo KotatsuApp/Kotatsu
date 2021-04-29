@@ -7,7 +7,7 @@ import androidx.core.view.isGone
 
 var TextView.textAndVisible: CharSequence?
 	inline get() = text?.takeIf { visibility == View.VISIBLE }
-	set(value) {
+	inline set(value) {
 		text = value
 		isGone = value.isNullOrEmpty()
 	}

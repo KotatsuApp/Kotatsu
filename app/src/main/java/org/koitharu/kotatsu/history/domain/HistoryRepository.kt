@@ -1,11 +1,8 @@
 package org.koitharu.kotatsu.history.domain
 
-import androidx.collection.ArraySet
 import androidx.room.withTransaction
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
@@ -64,7 +61,6 @@ class HistoryRepository(
 			)
 			trackingRepository.upsert(manga)
 		}
-		notifyHistoryChanged()
 	}
 
 	suspend fun getOne(manga: Manga): MangaHistory? {
@@ -73,12 +69,10 @@ class HistoryRepository(
 
 	suspend fun clear() {
 		db.historyDao.clear()
-		notifyHistoryChanged()
 	}
 
 	suspend fun delete(manga: Manga) {
 		db.historyDao.delete(manga.id)
-		notifyHistoryChanged()
 	}
 
 	/**
@@ -88,26 +82,6 @@ class HistoryRepository(
 	suspend fun deleteOrSwap(manga: Manga, alternative: Manga?) {
 		if (alternative == null || db.mangaDao.update(MangaEntity.from(alternative)) <= 0) {
 			db.historyDao.delete(manga.id)
-			notifyHistoryChanged()
-		}
-	}
-
-	companion object {
-
-		private val listeners = ArraySet<OnHistoryChangeListener>()
-
-		fun subscribe(listener: OnHistoryChangeListener) {
-			listeners += listener
-		}
-
-		fun unsubscribe(listener: OnHistoryChangeListener) {
-			listeners -= listener
-		}
-
-		private suspend fun notifyHistoryChanged() {
-			withContext(Dispatchers.Main) {
-				listeners.forEach { x -> x.onHistoryChanged() }
-			}
 		}
 	}
 }

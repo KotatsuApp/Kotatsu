@@ -2,26 +2,20 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.app.Activity
 import android.graphics.Rect
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 
 fun View.hideKeyboard() {
 	val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -53,13 +47,6 @@ var RecyclerView.firstItem: Int
 			(layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(value, 0)
 		}
 	}
-
-fun View.disableFor(timeInMillis: Long) {
-	isEnabled = false
-	postDelayed(timeInMillis) {
-		isEnabled = true
-	}
-}
 
 inline fun View.showPopupMenu(
 	@MenuRes menuRes: Int,
@@ -134,7 +121,7 @@ inline fun ViewPager2.doOnPageChanged(crossinline callback: (Int) -> Unit) {
 }
 
 val ViewPager2.recyclerView: RecyclerView?
-	get() = children.find { it is RecyclerView } as? RecyclerView
+	inline get() = children.find { it is RecyclerView } as? RecyclerView
 
 fun View.resetTransformations() {
 	alpha = 1f
@@ -161,49 +148,9 @@ inline fun RecyclerView.doOnCurrentItemChanged(crossinline callback: (Int) -> Un
 	})
 }
 
-@Deprecated("Reflection")
-fun RecyclerView.callOnScrollListeners() {
-	try {
-		val field = RecyclerView::class.java.getDeclaredField("mScrollListeners")
-		field.isAccessible = true
-		val listeners = field.get(this) as List<*>
-		for (x in listeners) {
-			(x as RecyclerView.OnScrollListener).onScrolled(this, 0, 0)
-		}
-	} catch (e: Throwable) {
-		Log.e(null, "RecyclerView.callOnScrollListeners() failed", e)
-	}
-}
-
-@Deprecated("Reflection")
-fun ViewPager2.callOnPageChaneListeners() {
-	try {
-		val field = ViewPager2::class.java.getDeclaredField("mExternalPageChangeCallbacks")
-		field.isAccessible = true
-		val compositeCallback = field.get(this)
-		val field2 = compositeCallback.javaClass.getDeclaredField("mCallbacks")
-		field2.isAccessible = true
-		val listeners = field2.get(compositeCallback) as List<*>
-		val position = currentItem
-		for (x in listeners) {
-			(x as ViewPager2.OnPageChangeCallback).onPageSelected(position)
-		}
-	} catch (e: Throwable) {
-		Log.e(null, "ViewPager2.callOnPageChaneListeners() failed", e)
-	}
-}
-
 fun RecyclerView.findCenterViewPosition(): Int {
 	val centerX = width / 2f
 	val centerY = height / 2f
 	val view = findChildViewUnder(centerX, centerY) ?: return RecyclerView.NO_POSITION
 	return getChildAdapterPosition(view)
-}
-
-fun ViewPager2.swapAdapter(newAdapter: RecyclerView.Adapter<*>?) {
-	val position = currentItem
-	adapter = newAdapter
-	if (adapter != null && position != RecyclerView.NO_POSITION) {
-		setCurrentItem(position, false)
-	}
 }

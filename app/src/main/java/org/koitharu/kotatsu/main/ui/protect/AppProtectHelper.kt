@@ -9,14 +9,9 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 class AppProtectHelper(private val settings: AppSettings) : Application.ActivityLifecycleCallbacks {
 
 	private var isUnlocked = settings.appPassword.isNullOrEmpty()
-	private var activityCounter = 0
 
 	override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-		if (activity is ProtectActivity) {
-			return
-		}
-		activityCounter++
-		if (!isUnlocked) {
+		if (activity !is ProtectActivity && !isUnlocked) {
 			val sourceIntent = Intent(activity, activity.javaClass)
 			activity.intent?.let {
 				sourceIntent.putExtras(it)
@@ -39,11 +34,7 @@ class AppProtectHelper(private val settings: AppSettings) : Application.Activity
 	override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
 
 	override fun onActivityDestroyed(activity: Activity) {
-		if (activity is ProtectActivity) {
-			return
-		}
-		activityCounter--
-		if (activityCounter == 0) {
+		if (activity !is ProtectActivity && activity.isTaskRoot) {
 			restoreLock()
 		}
 	}

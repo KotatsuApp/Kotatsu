@@ -4,20 +4,30 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import org.koitharu.kotatsu.favourites.domain.OnFavouritesChangeListener
-import org.koitharu.kotatsu.history.domain.OnHistoryChangeListener
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.retry
+import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.widget.recent.RecentWidgetProvider
 import org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider
 
-class WidgetUpdater(private val context: Context) : OnFavouritesChangeListener,
-	OnHistoryChangeListener {
+class WidgetUpdater(private val context: Context) {
 
-	override fun onFavouritesChanged(mangaId: Long) {
-		updateWidget(ShelfWidgetProvider::class.java)
+	fun subscribeToFavourites(repository: FavouritesRepository) {
+		repository.observeAll()
+			.onEach { updateWidget(ShelfWidgetProvider::class.java) }
+			.retry { error -> error !is CancellationException }
+			.launchIn(processLifecycleScope)
 	}
 
-	override fun onHistoryChanged() {
-		updateWidget(RecentWidgetProvider::class.java)
+	fun subscribeToHistory(repository: HistoryRepository) {
+		repository.observeAll()
+			.onEach { updateWidget(RecentWidgetProvider::class.java) }
+			.retry { error -> error !is CancellationException }
+			.launchIn(processLifecycleScope)
 	}
 
 	private fun updateWidget(cls: Class<*>) {

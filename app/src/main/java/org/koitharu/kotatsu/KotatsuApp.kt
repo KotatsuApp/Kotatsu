@@ -15,9 +15,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.AppCrashHandler
 import org.koitharu.kotatsu.core.ui.uiModule
 import org.koitharu.kotatsu.details.detailsModule
-import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.favouritesModule
-import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.historyModule
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
@@ -37,29 +35,15 @@ class KotatsuApp : Application() {
 	override fun onCreate() {
 		super.onCreate()
 		if (BuildConfig.DEBUG) {
-			StrictMode.setThreadPolicy(
-				StrictMode.ThreadPolicy.Builder()
-					.detectAll()
-					.penaltyLog()
-					.build()
-			)
-			StrictMode.setVmPolicy(
-				StrictMode.VmPolicy.Builder()
-					.detectAll()
-					.setClassInstanceLimit(LocalMangaRepository::class.java, 1)
-					.setClassInstanceLimit(PagesCache::class.java, 1)
-					.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
-					.penaltyLog()
-					.build()
-			)
+			enableStrictMode()
 		}
 		initKoin()
 		Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(applicationContext))
 		AppCompatDelegate.setDefaultNightMode(get<AppSettings>().theme)
 		registerActivityLifecycleCallbacks(get<AppProtectHelper>())
 		val widgetUpdater = WidgetUpdater(applicationContext)
-		FavouritesRepository.subscribe(widgetUpdater)
-		HistoryRepository.subscribe(widgetUpdater)
+		widgetUpdater.subscribeToFavourites(get())
+		widgetUpdater.subscribeToHistory(get())
 	}
 
 	private fun initKoin() {
@@ -84,5 +68,23 @@ class KotatsuApp : Application() {
 				appWidgetModule
 			)
 		}
+	}
+
+	private fun enableStrictMode() {
+		StrictMode.setThreadPolicy(
+			StrictMode.ThreadPolicy.Builder()
+				.detectAll()
+				.penaltyLog()
+				.build()
+		)
+		StrictMode.setVmPolicy(
+			StrictMode.VmPolicy.Builder()
+				.detectAll()
+				.setClassInstanceLimit(LocalMangaRepository::class.java, 1)
+				.setClassInstanceLimit(PagesCache::class.java, 1)
+				.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
+				.penaltyLog()
+				.build()
+		)
 	}
 }

@@ -1,12 +1,9 @@
 package org.koitharu.kotatsu.favourites.domain
 
-import androidx.collection.ArraySet
 import androidx.room.withTransaction
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
@@ -83,18 +80,15 @@ class FavouritesRepository(private val db: MangaDatabase) {
 			categoryId = 0
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
-		notifyCategoriesChanged()
 		return entity.toFavouriteCategory(id)
 	}
 
 	suspend fun renameCategory(id: Long, title: String) {
 		db.favouriteCategoriesDao.update(id, title)
-		notifyCategoriesChanged()
 	}
 
 	suspend fun removeCategory(id: Long) {
 		db.favouriteCategoriesDao.delete(id)
-		notifyCategoriesChanged()
 	}
 
 	suspend fun reorderCategories(orderedIds: List<Long>) {
@@ -104,7 +98,6 @@ class FavouritesRepository(private val db: MangaDatabase) {
 				dao.update(id, i)
 			}
 		}
-		notifyCategoriesChanged()
 	}
 
 	suspend fun addToCategory(manga: Manga, categoryId: Long) {
@@ -115,41 +108,13 @@ class FavouritesRepository(private val db: MangaDatabase) {
 			val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
 			db.favouritesDao.insert(entity)
 		}
-		notifyFavouritesChanged(manga.id)
 	}
 
 	suspend fun removeFromCategory(manga: Manga, categoryId: Long) {
 		db.favouritesDao.delete(categoryId, manga.id)
-		notifyFavouritesChanged(manga.id)
 	}
 
 	suspend fun removeFromFavourites(manga: Manga) {
 		db.favouritesDao.delete(manga.id)
-		notifyFavouritesChanged(manga.id)
-	}
-
-	companion object {
-
-		private val listeners = ArraySet<OnFavouritesChangeListener>()
-
-		fun subscribe(listener: OnFavouritesChangeListener) {
-			listeners += listener
-		}
-
-		fun unsubscribe(listener: OnFavouritesChangeListener) {
-			listeners -= listener
-		}
-
-		private suspend fun notifyFavouritesChanged(mangaId: Long) {
-			withContext(Dispatchers.Main) {
-				listeners.forEach { x -> x.onFavouritesChanged(mangaId) }
-			}
-		}
-
-		private suspend fun notifyCategoriesChanged() {
-			withContext(Dispatchers.Main) {
-				listeners.forEach { x -> x.onCategoriesChanged() }
-			}
-		}
 	}
 }

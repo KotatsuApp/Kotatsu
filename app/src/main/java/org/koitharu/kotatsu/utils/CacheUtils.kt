@@ -7,7 +7,6 @@ import okhttp3.Cache
 import okhttp3.CacheControl
 import org.koitharu.kotatsu.utils.ext.computeSize
 import org.koitharu.kotatsu.utils.ext.sub
-import org.koitharu.kotatsu.utils.ext.sumByLong
 import java.io.File
 
 object CacheUtils {
@@ -25,7 +24,7 @@ object CacheUtils {
 	@WorkerThread
 	fun computeCacheSize(context: Context, name: String) = getCacheDirs(context)
 		.map { it.sub(name) }
-		.sumByLong { x -> x.computeSize() }
+		.sumOf { x -> x.computeSize() }
 
 	@WorkerThread
 	fun clearCache(context: Context, name: String) = getCacheDirs(context)

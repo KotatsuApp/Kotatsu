@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import java.io.File
 import java.util.zip.ZipEntry
@@ -19,7 +21,7 @@ fun ZipFile.readText(entry: ZipEntry) = getInputStream(entry).bufferedReader().u
 	it.readText()
 }
 
-fun File.computeSize(): Long = listFiles()?.sumByLong { x ->
+fun File.computeSize(): Long = listFiles()?.sumOf { x ->
 	if (x.isDirectory) {
 		x.computeSize()
 	} else {
@@ -50,3 +52,7 @@ fun File.getStorageName(context: Context): String = runCatching {
 }.getOrNull() ?: context.getString(R.string.other_storage)
 
 fun Uri.toFileOrNull() = if (scheme == "file") path?.let(::File) else null
+
+suspend fun File.deleteAwait() = withContext(Dispatchers.IO) {
+	delete()
+}

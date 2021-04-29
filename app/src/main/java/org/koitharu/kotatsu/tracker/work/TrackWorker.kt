@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
@@ -174,7 +175,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			setContentIntent(
 				PendingIntent.getActivity(
 					applicationContext, id,
-					intent, PendingIntent.FLAG_UPDATE_CURRENT
+					intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
 				)
 			)
 			setAutoCancel(true)

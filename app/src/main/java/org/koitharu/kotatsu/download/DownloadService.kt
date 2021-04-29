@@ -85,7 +85,7 @@ class DownloadService : BaseService() {
 			wakeLock.acquire(TimeUnit.HOURS.toMillis(1))
 			notification.fillFrom(manga)
 			notification.setCancelId(startId)
-			withContext(Dispatchers.Main.immediate) {
+			withContext(Dispatchers.Main) {
 				startForeground(DownloadNotification.NOTIFICATION_ID, notification())
 			}
 			val destination = settings.getStorageDir(this@DownloadService)
@@ -174,8 +174,8 @@ class DownloadService : BaseService() {
 				withContext(NonCancellable) {
 					jobs.remove(startId)
 					output?.cleanup()
-					destination.sub("page.tmp").delete()
-					withContext(Dispatchers.Main.immediate) {
+					destination.sub(TEMP_PAGE_FILE).deleteAwait()
+					withContext(Dispatchers.Main) {
 						stopForeground(true)
 						notification.dismiss()
 						stopSelf(startId)
@@ -196,13 +196,25 @@ class DownloadService : BaseService() {
 			.cacheControl(CacheUtils.CONTROL_DISABLED)
 			.get()
 			.build()
-		return retryUntilSuccess(3) {
-			okHttp.newCall(request).await().use { response ->
-				val file = destination.sub("page.tmp")
-				file.outputStream().use { out ->
-					response.body!!.byteStream().copyTo(out)
+		val call = okHttp.newCall(request)
+		var attempts = MAX_DOWNLOAD_ATTEMPTS
+		val file = destination.sub(TEMP_PAGE_FILE)
+		while (true) {
+			try {
+				val response = call.clone().await()
+				withContext(Dispatchers.IO) {
+					file.outputStream().use { out ->
+						checkNotNull(response.body).byteStream().copyTo(out)
+					}
 				}
-				file
+				return file
+			} catch (e: IOException) {
+				attempts--
+				if (attempts <= 0) {
+					throw e
+				} else {
+					delay(DOWNLOAD_ERROR_DELAY)
+				}
 			}
 		}
 	}
@@ -217,6 +229,10 @@ class DownloadService : BaseService() {
 		private const val EXTRA_MANGA = "manga"
 		private const val EXTRA_CHAPTERS_IDS = "chapters_ids"
 		private const val EXTRA_CANCEL_ID = "cancel_id"
+
+		private const val MAX_DOWNLOAD_ATTEMPTS = 3
+		private const val DOWNLOAD_ERROR_DELAY = 500L
+		private const val TEMP_PAGE_FILE = "page.tmp"
 
 		fun start(context: Context, manga: Manga, chaptersIds: Collection<Long>? = null) {
 			confirmDataTransfer(context) {
