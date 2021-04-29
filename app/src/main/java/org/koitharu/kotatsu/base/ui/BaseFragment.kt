@@ -24,6 +24,8 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 		ExceptionResolver(viewLifecycleOwner, childFragmentManager)
 	}
 
+	private var lastInsets: Insets = Insets.NONE
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -54,7 +56,11 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 	}
 
 	override fun onApplyWindowInsets(v: View?, insets: WindowInsetsCompat): WindowInsetsCompat {
-		onWindowInsetsChanged(insets.getInsets(WindowInsetsCompat.Type.systemBars()))
+		val newInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		if (newInsets != lastInsets) {
+			onWindowInsetsChanged(newInsets)
+			lastInsets = newInsets
+		}
 		return insets
 	}
 

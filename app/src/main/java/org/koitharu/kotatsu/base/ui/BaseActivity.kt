@@ -31,6 +31,8 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		ExceptionResolver(this, supportFragmentManager)
 	}
 
+	private var lastInsets: Insets = Insets.NONE
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		if (get<AppSettings>().isAmoledTheme) {
 			setTheme(R.style.AppTheme_Amoled)
@@ -61,7 +63,11 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		val baseInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-		onWindowInsetsChanged(Insets.max(baseInsets, imeInsets))
+		val newInsets = Insets.max(baseInsets, imeInsets)
+		if (newInsets != lastInsets) {
+			onWindowInsetsChanged(newInsets)
+			lastInsets = newInsets
+		}
 		return insets
 	}
 
