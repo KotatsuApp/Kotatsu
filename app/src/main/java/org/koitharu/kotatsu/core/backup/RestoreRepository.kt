@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
+import org.koitharu.kotatsu.utils.ext.getBooleanOrDefault
 import org.koitharu.kotatsu.utils.ext.getStringOrNull
 import org.koitharu.kotatsu.utils.ext.iterator
 import org.koitharu.kotatsu.utils.ext.map
@@ -72,6 +73,7 @@ class RestoreRepository(private val db: MangaDatabase) {
 		url = json.getString("url"),
 		publicUrl = json.getStringOrNull("public_url").orEmpty(),
 		rating = json.getDouble("rating").toFloat(),
+		isNsfw = json.getBooleanOrDefault("nsfw", false),
 		coverUrl = json.getString("cover_url"),
 		largeCoverUrl = json.getStringOrNull("large_cover_url"),
 		state = json.getStringOrNull("state"),

@@ -15,8 +15,8 @@ import org.koitharu.kotatsu.history.data.HistoryEntity
 	entities = [
 		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
 		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class,
-		TrackEntity::class, TrackLogEntity::class
-	], version = 7
+		TrackEntity::class, TrackLogEntity::class, SuggestionEntity::class
+	], version = 8
 )
 abstract class MangaDatabase : RoomDatabase() {
 

@@ -34,6 +34,10 @@ fun JSONObject.getStringOrNull(name: String): String? = opt(name)?.takeUnless {
 	it === JSONObject.NULL
 }?.toString()
 
+fun JSONObject.getBooleanOrDefault(name: String, defaultValue: Boolean): Boolean = opt(name)?.takeUnless {
+	it === JSONObject.NULL
+} as? Boolean ?: defaultValue
+
 operator fun JSONArray.iterator(): Iterator<JSONObject> = JSONIterator(this)
 
 private class JSONIterator(private val array: JSONArray) : Iterator<JSONObject> {

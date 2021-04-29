@@ -11,6 +11,7 @@ data class Manga(
 	val url: String, // relative url for internal use
 	val publicUrl: String,
 	val rating: Float = NO_RATING, //normalized value [0..1] or -1
+	val isNsfw: Boolean = false,
 	val coverUrl: String,
 	val largeCoverUrl: String? = null,
 	val description: String? = null, //HTML
