@@ -9,6 +9,8 @@
         <entry key="../../../../.gradle/caches/transforms-3/0998d1b3fbd6b77213a827054a7dfcfd/transformed/appcompat-1.2.0/res/layout/abc_alert_dialog_material.xml" value="0.25885416666666666" />
         <entry key="../../../../.gradle/caches/transforms-3/0998d1b3fbd6b77213a827054a7dfcfd/transformed/appcompat-1.2.0/res/layout/abc_select_dialog_material.xml" value="0.25885416666666666" />
         <entry key="../../../../.gradle/caches/transforms-3/688e95ad986d2d0286c79f787589b7cb/transformed/material-1.3.0/res/layout/mtrl_alert_dialog.xml" value="0.25885416666666666" />
+        <entry key="app/src/main/res/drawable/ic_storage.xml" value="0.275" />
+        <entry key="app/src/main/res/drawable/ic_suggestion.xml" value="0.275" />
         <entry key="app/src/main/res/drawable/tab_indicator.xml" value="0.28512820512820514" />
         <entry key="app/src/main/res/drawable/tabs_background.xml" value="0.28512820512820514" />
         <entry key="app/src/main/res/layout-w600dp/activity_details.xml" value="0.18072916666666666" />
@@ -33,6 +35,7 @@
         <entry key="app/src/main/res/layout/item_recent.xml" value="0.2601851851851852" />
         <entry key="app/src/main/res/layout/item_source_config.xml" value="0.25885416666666666" />
         <entry key="app/src/main/res/layout/sheet_pages.xml" value="0.2601851851851852" />
+        <entry key="app/src/main/res/menu/nav_drawer.xml" value="0.25885416666666666" />
         <entry key="app/src/main/res/menu/opt_protect.xml" value="0.26927083333333335" />
         <entry key="app/src/main/res/menu/popup_category.xml" value="0.2601851851851852" />
         <entry key="app/src/main/res/xml/pref_main.xml" value="0.26927083333333335" />

@@ -2,5 +2,5 @@ package org.koitharu.kotatsu.core.prefs
 
 enum class AppSection {
 
-	LOCAL, FAVOURITES, HISTORY, FEED
+	LOCAL, FAVOURITES, HISTORY, FEED, SUGGESTIONS
 }

@@ -207,4 +207,6 @@
 	<string name="protect_application_subtitle">Enter password that will be required when the application starts</string>
 	<string name="confirm">Confirm</string>
 	<string name="password_length_hint">Password must be at least 4 characters</string>
+	<string name="suggestions">Suggestions</string>
+	<string name="text_suggestion_holder">Start reading manga and you will get personalized suggestions</string>
 </resources>

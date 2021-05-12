@@ -32,6 +32,8 @@ import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.ui.SearchHelper
 import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
+import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -75,6 +77,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		}
 		if (savedInstanceState == null) {
 			TrackWorker.setup(applicationContext)
+			SuggestionsWorker.setup(applicationContext)
 			AppUpdateChecker(this).launchIfNeeded()
 		}
 
@@ -143,6 +146,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			R.id.nav_local_storage -> {
 				viewModel.defaultSection = AppSection.LOCAL
 				setPrimaryFragment(LocalListFragment.newInstance())
+			}
+			R.id.nav_suggestions -> {
+				viewModel.defaultSection = AppSection.SUGGESTIONS
+				setPrimaryFragment(SuggestionsFragment.newInstance())
 			}
 			R.id.nav_feed -> {
 				viewModel.defaultSection = AppSection.FEED
@@ -228,6 +235,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			AppSection.FEED -> {
 				binding.navigationView.setCheckedItem(R.id.nav_feed)
 				setPrimaryFragment(FeedFragment.newInstance())
+			}
+			AppSection.SUGGESTIONS -> {
+				binding.navigationView.setCheckedItem(R.id.nav_suggestions)
+				setPrimaryFragment(SuggestionsFragment.newInstance())
 			}
 		}
 	}
