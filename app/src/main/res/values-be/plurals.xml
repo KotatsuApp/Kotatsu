@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<plurals name="pages">
+		<item quantity="one">Усяго %1$d старонка</item>
+		<item quantity="few">Усяго %1$d старонкі</item>
+		<item quantity="many">Усяго %1$d старонак</item>
+	</plurals>
+	<plurals name="items">
+		<item quantity="one">%1$d элемент</item>
+		<item quantity="few">%1$d элемента</item>
+		<item quantity="many">%1$d элементаў</item>
+	</plurals>
+	<plurals name="new_chapters">
+		<item quantity="one">%1$d новая частка</item>
+		<item quantity="few">%1$d новых часткi</item>
+		<item quantity="many">%1$d новых частак</item>
+	</plurals>
+	<plurals name="chapters">
+		<item quantity="one">%1$d частка</item>
+		<item quantity="few">%1$d часткi</item>
+		<item quantity="many">%1$d частак</item>
+	</plurals>
+	<plurals name="chapters_from_x">
+		<item quantity="one">%1$d частка з %2$d</item>
+		<item quantity="few">%1$d часткi з %2$d</item>
+		<item quantity="many">%1$d частак з %2$d</item>
+	</plurals>
+
+	<plurals name="minutes_ago">
+		<item quantity="one">%1$d хвіліну таму</item>
+		<item quantity="few">%1$d хвіліны таму</item>
+		<item quantity="many">%1$d хвілін таму</item>
+	</plurals>
+	<plurals name="hours_ago">
+		<item quantity="one">%1$d гадзіну таму</item>
+		<item quantity="few">%1$d гадзіны таму</item>
+		<item quantity="many">%1$d гадзін таму</item>
+	</plurals>
+	<plurals name="days_ago">
+		<item quantity="one">%1$d дзень таму</item>
+		<item quantity="few">%1$d дні таму</item>
+		<item quantity="many">%1$d дзён там</item>
+	</plurals>
+</resources>
