@@ -63,7 +63,7 @@
 	<string name="share_image">Поделиться изображением</string>
 	<string name="_import">Импорт</string>
 	<string name="delete">Удалить</string>
-	<string name="operation_not_supported">Операция не пожжерживается</string>
+	<string name="operation_not_supported">Операция не поддерживается</string>
 	<string name="text_file_not_supported">Поддерживаются только файлы ZIP и CBZ.</string>
 	<string name="no_description">Нет описания</string>
 	<string name="history_and_cache">История и кэш</string>
@@ -202,7 +202,7 @@
 	<string name="default_s">По умолчанию: %s</string>
 	<string name="_and_x_more">…и ещё %1$d</string>
 	<string name="next">Далее</string>
-	<string name="protect_application_subtitle">Enter password that will be required when the application starts</string>
+	<string name="protect_application_subtitle">Введите пароль, который вам понадобится при запуске приложения</string>
 	<string name="confirm">Confirm</string>
-	<string name="password_length_hint">Password must be at least 4 characters</string>
+	<string name="password_length_hint">Пароль должен содержать не менее 4 символов</string>
 </resources>
