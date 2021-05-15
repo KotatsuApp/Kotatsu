@@ -15,6 +15,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.*
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
@@ -57,7 +59,13 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		this.binding = binding
 		super.setContentView(binding.root)
 		(binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
+		val params = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.layoutParams as AppBarLayout.LayoutParams
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
+		if (get<AppSettings>().isToolbarHideWhenScrolling) {
+			params.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
+		} else {
+			params.scrollFlags = SCROLL_FLAG_NO_SCROLL
+		}
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {

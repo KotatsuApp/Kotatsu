@@ -207,4 +207,5 @@
 	<string name="protect_application_subtitle">Калі ласка, увядзіце пароль, які спатрэбіцца пры запуску прыкладання</string>
 	<string name="confirm">Пацвярджаць</string>
 	<string name="password_length_hint">Пароль павінен змяшчаць не менш за 4 сімвалаў</string>
+	<string name="hide_toolbar">Схаваць загаловак пры прагортцы</string>
 </resources>

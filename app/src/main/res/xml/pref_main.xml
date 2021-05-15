@@ -20,6 +20,12 @@
 		android:title="@string/black_dark_theme"
 		app:iconSpaceReserved="false" />
 
+	<SwitchPreference
+		android:defaultValue="true"
+		android:key="hide_toolbar"
+		android:title="@string/hide_toolbar"
+		app:iconSpaceReserved="false" />
+
 	<ListPreference
 		android:entries="@array/list_modes"
 		android:key="list_mode_2"

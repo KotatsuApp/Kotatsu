@@ -205,4 +205,5 @@
 	<string name="protect_application_subtitle">Введите пароль, который вам понадобится при запуске приложения</string>
 	<string name="confirm">Confirm</string>
 	<string name="password_length_hint">Пароль должен содержать не менее 4 символов</string>
+	<string name="hide_toolbar">Прятать заголовок при прокрутке</string>
 </resources>

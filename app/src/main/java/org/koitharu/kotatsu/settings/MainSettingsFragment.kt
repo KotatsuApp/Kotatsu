@@ -73,6 +73,9 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			AppSettings.KEY_THEME_AMOLED -> {
 				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
 			}
+			AppSettings.KEY_HIDE_TOOLBAR -> {
+				findPreference<SwitchPreference>(key)?.setSummary(R.string.restart_required)
+			}
 			AppSettings.KEY_LOCAL_STORAGE -> {
 				findPreference<Preference>(key)?.run {
 					summary = settings.getStorageDir(context)?.getStorageName(context)
