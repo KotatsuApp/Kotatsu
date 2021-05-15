@@ -14,7 +14,7 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 	override val defaultDomain = "anibel.net"
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
-		SortOrder.UPDATED
+		SortOrder.NEWEST
 	)
 
 	override suspend fun getList(
@@ -26,42 +26,33 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		if (!query.isNullOrEmpty()) {
 			return if (offset == 0) search(query) else emptyList()
 		}
-		val page = (offset / 12).inc()
-		val tagPage = offset.inc() //TODO Load another pages
-		val link = buildString {
-			append("https://")
-			append(getDomain())
-			append("/manga")
-			if (tag != null) {
-				append("?genre[]=")
-				append(tag.key)
-				append("&page=")
-				append(tagPage)
-			} else {
-				append("?page=")
-				append(page)
-			}
+		val page = (offset / 12f).toIntUp().inc()
+		val link = when {
+			tag != null -> "/manga?genre[]=${tag.key}&page=$page".withDomain()
+			else -> "/manga?page=$page".withDomain()
 		}
 		val doc = loaderContext.httpGet(link).parseHtml()
 		val root = doc.body().select("div.manga-block") ?: throw ParseException("Cannot find root")
 		val items = root.select("div.anime-card")
 		return items.mapNotNull { card ->
-			val href = card.select("a").attr("href")
-			val url = buildString {
-				append("https://")
-				append(getDomain())
-				append("/")
-			}
+			val href = card.selectFirst("a").attr("href")
 			val status = card.select("tr")[2].text()
 			Manga(
 				id = generateUid(href),
 				title = card.selectFirst("h1.anime-card-title").text(),
-				coverUrl = url + card.selectFirst("img").attr("data-src"),
+				coverUrl = card.selectFirst("img").attr("data-src").withDomain(),
 				altTitle = null,
 				author = null,
 				rating = Manga.NO_RATING,
-				url = url + href,
-				publicUrl = "",
+				url = href,
+				publicUrl = href.withDomain(),
+				tags = card.select("p.tupe.tag")?.select("a")?.mapNotNullToSet tags@{ x ->
+					MangaTag(
+						title = x.text(),
+						key = x.attr("href") ?: return@tags null,
+						source = source
+					)
+				}.orEmpty(),
 				state = when (status) {
 					"выпускаецца" -> MangaState.ONGOING
 					"завершанае" -> MangaState.FINISHED
@@ -73,19 +64,14 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
+		val doc = loaderContext.httpGet(manga.publicUrl).parseHtml()
 		val root = doc.body().select("div.container") ?: throw ParseException("Cannot find root")
 		return manga.copy(
 			description = root.select("div.manga-block.grid-12")[2].select("p").text(),
-			largeCoverUrl = manga.coverUrl,
 			chapters = root.select("ul.series").flatMap { table ->
 				table.select("li")
 			}.map { it.selectFirst("a") }.mapIndexedNotNull { i, a ->
-				val url = buildString {
-					append("https://")
-					append(getDomain())
-				}
-				val href = url + a.select("a").first().attr("href")
+				val href = a.select("a").first().attr("href").toRelativeUrl(getDomain())
 				MangaChapter(
 					id = generateUid(href),
 					name = a.select("a").first().text(),
@@ -145,30 +131,23 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		val items = root.select("div.anime-card")
 		return items.mapNotNull { card ->
 			val href = card.select("a").attr("href")
-			val url = buildString {
-				append("https://")
-				append(getDomain())
-			}
 			val status = card.select("tr")[2].text()
 			Manga(
 				id = generateUid(href),
 				title = card.selectFirst("h1.anime-card-title").text(),
-				coverUrl = url + card.selectFirst("img").attr("src"),
+				coverUrl = card.selectFirst("img").attr("src").withDomain(),
 				altTitle = null,
 				author = null,
 				rating = Manga.NO_RATING,
-				url = url + href,
-				publicUrl = "",
-				tags = runCatching {
-					card?.select("p.tupe.tag")
-						?.mapToSet {
-							MangaTag(
-								title = it.select("a").text(),
-								key = it.attr("href"),
-								source = source
-							)
-						}
-				}.getOrNull().orEmpty(),
+				url = href,
+				publicUrl = href.withDomain(),
+				tags = card.select("p.tupe.tag")?.select("a")?.mapNotNullToSet tags@{ x ->
+					MangaTag(
+						title = x.text(),
+						key = x.attr("href") ?: return@tags null,
+						source = source
+					)
+				}.orEmpty(),
 				state = when (status) {
 					"выпускаецца" -> MangaState.ONGOING
 					"завершанае" -> MangaState.FINISHED
