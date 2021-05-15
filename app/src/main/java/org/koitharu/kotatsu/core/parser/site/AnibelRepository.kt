@@ -127,7 +127,7 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 	private suspend fun search(query: String): List<Manga> {
 		val domain = getDomain()
 		val doc = loaderContext.httpGet("https://$domain/search?q=$query").parseHtml()
-		val root = doc.body().select("div.manga-block") ?: throw ParseException("Cannot find root")
+		val root = doc.body().select("div.manga-block").select("article.tab-2") ?: throw ParseException("Cannot find root")
 		val items = root.select("div.anime-card")
 		return items.mapNotNull { card ->
 			val href = card.select("a").attr("href")
