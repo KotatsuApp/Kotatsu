@@ -18,10 +18,9 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	override val defaultDomain = "remanga.org"
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
+		SortOrder.UPDATED,
 		SortOrder.POPULARITY,
 		SortOrder.RATING,
-		SortOrder.ALPHABETICAL,
-		SortOrder.UPDATED,
 		SortOrder.NEWEST
 	)
 
@@ -162,7 +161,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		SortOrder.POPULARITY -> "-rating"
 		SortOrder.RATING -> "-votes"
 		SortOrder.NEWEST -> "-id"
-		else -> "-rating"
+		else -> "-chapter_date"
 	}
 
 	private fun parsePage(jo: JSONObject, referer: String) = MangaPage(

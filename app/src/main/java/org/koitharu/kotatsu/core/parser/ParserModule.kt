@@ -24,4 +24,5 @@ val parserModule
 		factory<MangaRepository>(named(MangaSource.MANGAREAD)) { MangareadRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.REMANGA)) { RemangaRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.HENTAILIB)) { HentaiLibRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.ANIBEL)) { AnibelRepository(get()) }
 	}

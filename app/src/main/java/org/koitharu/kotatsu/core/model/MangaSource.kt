@@ -30,7 +30,8 @@ enum class MangaSource(
 	// NUDEMOON("Nude-Moon", "ru", NudeMoonRepository::class.java),
 	MANGAREAD("MangaRead", "en", MangareadRepository::class.java),
 	REMANGA("Remanga", "ru", RemangaRepository::class.java),
-	HENTAILIB("HentaiLib", "ru", HentaiLibRepository::class.java);
+	HENTAILIB("HentaiLib", "ru", HentaiLibRepository::class.java),
+	ANIBEL("Anibel", "be", AnibelRepository::class.java);
 
 	@get:Throws(NoBeanDefFoundException::class)
 	@Deprecated("")

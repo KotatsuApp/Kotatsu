@@ -41,6 +41,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	val isAmoledTheme by BoolPreferenceDelegate(KEY_THEME_AMOLED, defaultValue = false)
 
+	val isToolbarHideWhenScrolling by BoolPreferenceDelegate(KEY_HIDE_TOOLBAR, defaultValue = true)
+
 	var gridSize by IntPreferenceDelegate(KEY_GRID_SIZE, defaultValue = 100)
 
 	val readerPageSwitch by StringSetPreferenceDelegate(
@@ -147,6 +149,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_APP_SECTION = "app_section"
 		const val KEY_THEME = "theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
+		const val KEY_HIDE_TOOLBAR = "hide_toolbar"
 		const val KEY_SOURCES_ORDER = "sources_order"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"
