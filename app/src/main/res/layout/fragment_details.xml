@@ -129,7 +129,6 @@
 			android:id="@+id/textView_description"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:justificationMode="inter_word"
 			android:lineSpacingMultiplier="1.2"
 			android:padding="12dp"
 			android:textIsSelectable="true"
