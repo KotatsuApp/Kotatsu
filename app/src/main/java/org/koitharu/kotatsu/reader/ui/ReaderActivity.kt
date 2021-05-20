@@ -124,7 +124,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		}
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_reader_top, menu)
 		return super.onCreateOptionsMenu(menu)
 	}

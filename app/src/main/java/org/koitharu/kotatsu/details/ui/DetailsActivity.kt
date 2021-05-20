@@ -113,7 +113,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		}
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_details, menu)
 		return super.onCreateOptionsMenu(menu)
 	}
