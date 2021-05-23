@@ -37,11 +37,14 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		return items.mapNotNull { card ->
 			val href = card.selectFirst("a").attr("href")
 			val status = card.select("tr")[2].text()
+			val fullTitle = card.selectFirst("h1.anime-card-title").text()
+				.substringBeforeLast('[')
+			val titleParts = fullTitle.splitTwoParts('/')
 			Manga(
 				id = generateUid(href),
-				title = card.selectFirst("h1.anime-card-title").text(),
+				title = titleParts?.first?.trim() ?: fullTitle,
 				coverUrl = card.selectFirst("img").attr("data-src").withDomain(),
-				altTitle = null,
+				altTitle = titleParts?.second?.trim(),
 				author = null,
 				rating = Manga.NO_RATING,
 				url = href,
@@ -49,7 +52,7 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 				tags = card.select("p.tupe.tag")?.select("a")?.mapNotNullToSet tags@{ x ->
 					MangaTag(
 						title = x.text(),
-						key = x.attr("href") ?: return@tags null,
+						key = x.attr("href")?.substringAfterLast("=") ?: return@tags null,
 						source = source
 					)
 				}.orEmpty(),
@@ -132,11 +135,14 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		return items.mapNotNull { card ->
 			val href = card.select("a").attr("href")
 			val status = card.select("tr")[2].text()
+			val fullTitle = card.selectFirst("h1.anime-card-title").text()
+				.substringBeforeLast('[')
+			val titleParts = fullTitle.splitTwoParts('/')
 			Manga(
 				id = generateUid(href),
-				title = card.selectFirst("h1.anime-card-title").text(),
+				title = titleParts?.first?.trim() ?: fullTitle,
 				coverUrl = card.selectFirst("img").attr("src").withDomain(),
-				altTitle = null,
+				altTitle = titleParts?.second?.trim(),
 				author = null,
 				rating = Manga.NO_RATING,
 				url = href,
@@ -144,7 +150,7 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 				tags = card.select("p.tupe.tag")?.select("a")?.mapNotNullToSet tags@{ x ->
 					MangaTag(
 						title = x.text(),
-						key = x.attr("href") ?: return@tags null,
+						key = x.attr("href")?.substringAfterLast("=") ?: return@tags null,
 						source = source
 					)
 				}.orEmpty(),

@@ -77,6 +77,20 @@ fun String.ellipsize(maxLength: Int) = if (this.length > maxLength) {
 	this.take(maxLength - 1) + Typography.ellipsis
 } else this
 
+fun String.splitTwoParts(delimiter: Char): Pair<String, String>? {
+	val indices = ArrayList<Int>(4)
+	for ((i, c) in this.withIndex()) {
+		if (c == delimiter) {
+			indices += i
+		}
+	}
+	if (indices.isEmpty() || indices.size and 1 == 0) {
+		return null
+	}
+	val index = indices[indices.size / 2]
+	return substring(0, index) to substring(index + 1)
+}
+
 fun String.urlEncoded(): String = URLEncoder.encode(this, Charsets.UTF_8.name())
 
 fun String.toUriOrNull(): Uri? = if (isEmpty()) {
