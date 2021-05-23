@@ -3,11 +3,11 @@ package org.koitharu.kotatsu.browser.cloudflare
 import android.graphics.Bitmap
 import android.webkit.WebView
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.koitharu.kotatsu.core.network.CookieJar
+import org.koitharu.kotatsu.core.network.AndroidCookieJar
 import org.koitharu.kotatsu.core.network.WebViewClientCompat
 
 class CloudFlareClient(
-	private val cookieJar: CookieJar,
+	private val cookieJar: AndroidCookieJar,
 	private val callback: CloudFlareCallback,
 	private val targetUrl: String
 ) : WebViewClientCompat() {

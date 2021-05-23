@@ -12,10 +12,13 @@ open class MangaLoaderContext(
 	private val cookieJar: CookieJar
 ) : KoinComponent {
 
-	suspend fun httpGet(url: String): Response {
+	suspend fun httpGet(url: String, headers: Headers? = null): Response {
 		val request = Request.Builder()
 			.get()
 			.url(url)
+		if (headers != null) {
+			request.headers(headers)
+		}
 		return okHttp.newCall(request.build()).await()
 	}
 

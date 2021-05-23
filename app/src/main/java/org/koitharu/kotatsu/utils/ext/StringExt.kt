@@ -29,6 +29,25 @@ fun String.removeSurrounding(vararg chars: Char): String {
 	return this
 }
 
+fun String.toCamelCase(): String {
+	if (isEmpty()) {
+		return this
+	}
+	val result = StringBuilder(length)
+	var capitalize = true
+	for (char in this) {
+		result.append(
+			if (capitalize) {
+				char.uppercase()
+			} else {
+				char.lowercase()
+			}
+		)
+		capitalize = char.isWhitespace()
+	}
+	return result.toString()
+}
+
 fun String.transliterate(skipMissing: Boolean): String {
 	val cyr = charArrayOf(
 		'a', 'б', 'в', 'г', 'д', 'ё', 'ж', 'з', 'и', 'к', 'л', 'м', 'н',
@@ -92,8 +111,21 @@ fun String.md5(): String {
 		.padStart(32, '0')
 }
 
-fun String.substringBetween(from: String, to: String, fallbackValue: String): String {
+fun String.substringBetween(from: String, to: String, fallbackValue: String = this): String {
 	val fromIndex = indexOf(from)
+	if (fromIndex == -1) {
+		return fallbackValue
+	}
+	val toIndex = lastIndexOf(to)
+	return if (toIndex == -1) {
+		fallbackValue
+	} else {
+		substring(fromIndex + from.length, toIndex)
+	}
+}
+
+fun String.substringBetweenLast(from: String, to: String, fallbackValue: String = this): String {
+	val fromIndex = lastIndexOf(from)
 	if (fromIndex == -1) {
 		return fallbackValue
 	}

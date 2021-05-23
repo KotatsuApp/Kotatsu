@@ -10,7 +10,7 @@ class TemporaryCookieJar : CookieJar {
 
 	override fun loadForRequest(url: HttpUrl): List<Cookie> {
 		val time = System.currentTimeMillis()
-		return cache.values.filter { it.matches(url) && it.expiresAt < time }
+		return cache.values.filter { it.matches(url) && it.expiresAt >= time }
 	}
 
 	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
