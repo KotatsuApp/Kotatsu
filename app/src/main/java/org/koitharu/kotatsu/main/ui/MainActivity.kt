@@ -11,9 +11,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.Insets
 import androidx.core.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -24,34 +27,41 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
+import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.ui.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
-import org.koitharu.kotatsu.search.ui.SearchHelper
+import org.koitharu.kotatsu.search.ui.SearchActivity
+import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
+import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
+import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
+import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
+import org.koitharu.kotatsu.search.ui.suggestion.SearchUI
 import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.resolveDp
-import java.io.Closeable
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener,
-	View.OnClickListener {
+	View.OnClickListener, SearchSuggestionListener, MenuItem.OnActionExpandListener {
 
 	private val viewModel by viewModel<MainViewModel>(mode = LazyThreadSafetyMode.NONE)
+	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>(
+		mode = LazyThreadSafetyMode.NONE
+	)
 
 	private lateinit var drawerToggle: ActionBarDrawerToggle
-	private var closeable: Closeable? = null
+	private var searchUi: SearchUI? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
-		drawerToggle =
-			ActionBarDrawerToggle(
+		drawerToggle = ActionBarDrawerToggle(
 				this,
 				binding.drawer,
 				binding.toolbar,
@@ -68,7 +78,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			setOnClickListener(this@MainActivity)
 		}
 
-		supportFragmentManager.findFragmentById(R.id.container)?.let {
+		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
 			binding.fab.isVisible = it is HistoryListFragment
 		} ?: run {
 			openDefaultSection()
@@ -82,11 +92,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.remoteSources.observe(this, this::updateSideMenu)
-	}
-
-	override fun onDestroy() {
-		closeable?.close()
-		super.onDestroy()
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -109,8 +114,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_main, menu)
-		menu.findItem(R.id.action_search)?.let { menuItem ->
-			closeable = SearchHelper.setupSearchView(menuItem)
+		searchUi = menu.findItem(R.id.action_search)?.let { menuItem ->
+			onMenuItemActionCollapse(menuItem)
+			menuItem.setOnActionExpandListener(this)
+			SearchUI.from(menuItem, this)
 		}
 		return super.onCreateOptionsMenu(menu)
 	}
@@ -131,28 +138,32 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		if (item.groupId == R.id.group_remote_sources) {
 			val source = MangaSource.values().getOrNull(item.itemId) ?: return false
 			setPrimaryFragment(RemoteListFragment.newInstance(source))
-		} else when (item.itemId) {
-			R.id.nav_history -> {
-				viewModel.defaultSection = AppSection.HISTORY
-				setPrimaryFragment(HistoryListFragment.newInstance())
+			searchSuggestionViewModel.onSourceChanged(source)
+		} else {
+			searchSuggestionViewModel.onSourceChanged(null)
+			when (item.itemId) {
+				R.id.nav_history -> {
+					viewModel.defaultSection = AppSection.HISTORY
+					setPrimaryFragment(HistoryListFragment.newInstance())
+				}
+				R.id.nav_favourites -> {
+					viewModel.defaultSection = AppSection.FAVOURITES
+					setPrimaryFragment(FavouritesContainerFragment.newInstance())
+				}
+				R.id.nav_local_storage -> {
+					viewModel.defaultSection = AppSection.LOCAL
+					setPrimaryFragment(LocalListFragment.newInstance())
+				}
+				R.id.nav_feed -> {
+					viewModel.defaultSection = AppSection.FEED
+					setPrimaryFragment(FeedFragment.newInstance())
+				}
+				R.id.nav_action_settings -> {
+					startActivity(SettingsActivity.newIntent(this))
+					return true
+				}
+				else -> return false
 			}
-			R.id.nav_favourites -> {
-				viewModel.defaultSection = AppSection.FAVOURITES
-				setPrimaryFragment(FavouritesContainerFragment.newInstance())
-			}
-			R.id.nav_local_storage -> {
-				viewModel.defaultSection = AppSection.LOCAL
-				setPrimaryFragment(LocalListFragment.newInstance())
-			}
-			R.id.nav_feed -> {
-				viewModel.defaultSection = AppSection.FEED
-				setPrimaryFragment(FeedFragment.newInstance())
-			}
-			R.id.nav_action_settings -> {
-				startActivity(SettingsActivity.newIntent(this))
-				return true
-			}
-			else -> return false
 		}
 		binding.drawer.closeDrawers()
 		return true
@@ -169,6 +180,62 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			leftMargin = insets.left + topMargin
 			rightMargin = insets.right + topMargin
 		}
+	}
+
+	override fun onMangaClick(manga: Manga) {
+		startActivity(DetailsActivity.newIntent(this, manga))
+	}
+
+	override fun onQueryClick(query: String, submit: Boolean) {
+		if (submit) {
+			if (query.isNotEmpty()) {
+				val source = searchSuggestionViewModel.getLocalSearchSource()
+				if (source != null) {
+					startActivity(SearchActivity.newIntent(this, source, query))
+				} else {
+					startActivity(GlobalSearchActivity.newIntent(this, query))
+				}
+				searchSuggestionViewModel.saveQuery(query)
+			}
+		} else {
+			searchUi?.query = query
+		}
+	}
+
+	override fun onQueryChanged(query: String) {
+		searchSuggestionViewModel.onQueryChanged(query)
+	}
+
+	override fun onClearSearchHistory() {
+		AlertDialog.Builder(this)
+			.setTitle(R.string.clear_search_history)
+			.setMessage(R.string.text_clear_search_history_prompt)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(R.string.clear) { _, _ ->
+				searchSuggestionViewModel.clearSearchHistory()
+			}.show()
+	}
+
+	override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
+		if (fragment == null) {
+			supportFragmentManager.commit {
+				add(R.id.container, SearchSuggestionFragment.newInstance(), TAG_SEARCH)
+				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+			}
+		}
+		return true
+	}
+
+	override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
+		if (fragment != null) {
+			supportFragmentManager.commit {
+				remove(fragment)
+				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+			}
+		}
+		return true
 	}
 
 	private fun onOpenReader(manga: Manga) {
@@ -234,8 +301,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	private fun setPrimaryFragment(fragment: Fragment) {
 		supportFragmentManager.beginTransaction()
-			.replace(R.id.container, fragment)
+			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.commit()
 		binding.fab.isVisible = fragment is HistoryListFragment
+	}
+
+	private companion object {
+
+		const val TAG_PRIMARY = "primary"
+		const val TAG_SEARCH = "search"
 	}
 }

@@ -7,14 +7,20 @@ import android.os.Parcelable
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
+import androidx.fragment.app.commit
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
+import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.utils.ext.showKeyboard
 
 class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQueryTextListener {
 
+	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>(
+		mode = LazyThreadSafetyMode.NONE
+	)
 	private lateinit var source: MangaSource
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +34,6 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		with(binding.searchView) {
 			queryHint = getString(R.string.search_on_s, source.title)
-			suggestionsAdapter = MangaSuggestionsProvider.getSuggestionAdapter(this@SearchActivity)
-			setOnSuggestionListener(SearchHelper.SuggestionListener(this))
 			setOnQueryTextListener(this@SearchActivity)
 
 			if (query.isNullOrBlank()) {
@@ -41,11 +45,6 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 		}
 	}
 
-	override fun onDestroy() {
-		binding.searchView.suggestionsAdapter.changeCursor(null) //close cursor
-		super.onDestroy()
-	}
-
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.toolbar.updatePadding(
 			top = insets.top,
@@ -55,19 +54,20 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	}
 
 	override fun onQueryTextSubmit(query: String?): Boolean {
-		return if (!query.isNullOrBlank()) {
-			title = query
-			supportFragmentManager
-				.beginTransaction()
-				.replace(R.id.container, SearchFragment.newInstance(source, query))
-				.commit()
-			binding.searchView.clearFocus()
-			MangaSuggestionsProvider.saveQueryAsync(applicationContext, query)
-			true
-		} else false
+		val q = query?.trim()
+		if (q.isNullOrEmpty()) {
+			return false
+		}
+		title = query
+		supportFragmentManager.commit {
+			replace(R.id.container, SearchFragment.newInstance(source, q))
+		}
+		binding.searchView.clearFocus()
+		searchSuggestionViewModel.saveQuery(q)
+		return true
 	}
 
-	override fun onQueryTextChange(newText: String?) = false
+	override fun onQueryTextChange(newText: String?): Boolean = false
 
 	companion object {
 

@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.network.AndroidCookieJar
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.Cache
-import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
+import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.FileSizeUtils
@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cache) {
 
 	private val trackerRepo by inject<TrackingRepository>(mode = LazyThreadSafetyMode.NONE)
+	private val searchRepository by inject<MangaSearchRepository>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)
@@ -49,7 +50,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 		}
 		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
-				val items = MangaSuggestionsProvider.getItemsCount(pref.context)
+				val items = searchRepository.getSearchHistoryCount()
 				pref.summary =
 					pref.context.resources.getQuantityString(R.plurals.items, items, items)
 			}
@@ -87,7 +88,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			}
 			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
 				viewLifecycleScope.launch {
-					MangaSuggestionsProvider.clearHistory(preference.context)
+					searchRepository.clearSearchHistory()
 					preference.summary = preference.context.resources
 						.getQuantityString(R.plurals.items, 0, 0)
 					Snackbar.make(

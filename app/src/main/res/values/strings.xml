@@ -208,4 +208,6 @@
 	<string name="confirm">Confirm</string>
 	<string name="password_length_hint">Password must be at least 4 characters</string>
 	<string name="hide_toolbar">Hide toolbar when scrolling</string>
+	<string name="search_only_on_s">Search only on %s</string>
+	<string name="text_clear_search_history_prompt">Do you really want to remove all recent search queries? This action cannot be undone.</string>
 </resources>
