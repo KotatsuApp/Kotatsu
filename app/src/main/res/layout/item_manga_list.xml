@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="@dimen/manga_list_item_height"
-	android:background="?selectableItemBackground"
+	android:background="@drawable/list_selector"
+	android:gravity="center_vertical"
 	android:orientation="horizontal">
 
-	<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
-		android:id="@+id/imageView_cover"
+	<com.google.android.material.card.MaterialCardView
 		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:orientation="vertical"
-		android:scaleType="centerCrop" />
+		android:layout_height="wrap_content"
+		android:layout_margin="4dp"
+		app:cardCornerRadius="4dp"
+		app:cardElevation="4dp">
+
+		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+			android:id="@+id/imageView_cover"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:scaleType="centerCrop"
+			tools:src="@tools:sample/backgrounds/scenic" />
+
+	</com.google.android.material.card.MaterialCardView>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical"
 		android:orientation="vertical"
-		android:paddingStart="16dp"
+		android:paddingStart="20dp"
 		android:paddingEnd="16dp">
 
 		<TextView
@@ -26,17 +39,19 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:ellipsize="end"
-			android:maxLines="2"
-			android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+			android:maxLines="1"
+			android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+			tools:text="@tools:sample/lorem/random" />
 
 		<TextView
 			android:id="@+id/textView_subtitle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:ellipsize="end"
-			android:maxLines="1"
+			android:maxLines="2"
 			android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-			android:textColor="?android:textColorSecondary" />
+			android:textColor="?android:textColorSecondary"
+			tools:text="@tools:sample/lorem/random" />
 
 	</LinearLayout>
 

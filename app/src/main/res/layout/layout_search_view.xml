@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:animateLayoutChanges="true">
+
+	<View
+		android:id="@+id/search_view_shadow"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/search_material_card_view"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<View
+			android:id="@+id/search_view_anim"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+
+			<LinearLayout
+				android:id="@+id/search_linear_layout"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/search_layout_height"
+				android:layoutDirection="locale"
+				android:orientation="horizontal">
+
+				<ImageButton
+					android:id="@+id/search_image_view_navigation"
+					android:layout_width="@dimen/search_icon_56"
+					android:layout_height="match_parent"
+					android:background="?attr/selectableItemBackgroundBorderless"
+					android:contentDescription="@null"
+					android:scaleType="centerInside" />
+
+				<org.koitharu.kotatsu.base.ui.widgets.search.internal.SearchEditText
+					android:id="@+id/search_search_edit_text"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_gravity="center_vertical|start"
+					android:layout_weight="1"
+					android:background="@null"
+					android:ellipsize="end"
+					android:gravity="start|center_vertical"
+					android:imeOptions="actionSearch|flagNoExtractUi"
+					android:inputType="text|textNoSuggestions"
+					android:layoutDirection="locale"
+					android:maxLines="1"
+					android:privateImeOptions="nm"
+					android:singleLine="true"
+					android:textAlignment="viewStart"
+					android:textColor="?android:attr/textColorPrimary"
+					android:textColorHint="?android:attr/textColorSecondary"
+					android:textDirection="locale"
+					android:textSize="@dimen/search_sp_16"
+					android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustNothing" />
+
+				<FrameLayout
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent">
+
+					<ImageButton
+						android:id="@+id/search_image_view_mic"
+						android:layout_width="@dimen/search_icon_48"
+						android:layout_height="match_parent"
+						android:background="?attr/selectableItemBackgroundBorderless"
+						android:contentDescription="@null"
+						android:scaleType="centerInside" />
+
+					<ImageButton
+						android:id="@+id/search_image_view_clear"
+						android:layout_width="@dimen/search_icon_48"
+						android:layout_height="match_parent"
+						android:background="?attr/selectableItemBackgroundBorderless"
+						android:contentDescription="@null"
+						android:scaleType="centerInside" />
+
+					<ImageButton
+						android:id="@+id/search_image_view_menu"
+						android:layout_width="@dimen/search_icon_48"
+						android:layout_height="match_parent"
+						android:background="?attr/selectableItemBackgroundBorderless"
+						android:contentDescription="@null"
+						android:scaleType="centerInside" />
+
+				</FrameLayout>
+
+			</LinearLayout>
+
+			<View
+				android:id="@+id/search_view_divider"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/search_divider"
+				android:background="?android:attr/listDivider" />
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/search_recycler_view"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:overScrollMode="never" />
+
+		</LinearLayout>
+
+	</com.google.android.material.card.MaterialCardView>
+
+</merge>

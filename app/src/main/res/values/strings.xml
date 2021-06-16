@@ -194,7 +194,7 @@
 	<string name="captcha_solve">Solve</string>
 	<string name="clear_cookies">Clear cookies</string>
 	<string name="cookies_cleared">All cookies was removed</string>
-	<string name="chapers_checking_progress">Checking for new chapters: %1$d of %2$d</string>
+	<string name="chapters_checking_progress">Checking for new chapters: %1$d of %2$d</string>
 	<string name="clear_feed">Clear feed</string>
 	<string name="text_clear_updates_feed_prompt">All updates history will be cleared and this action cannot be undone. Are you sure?</string>
 	<string name="new_chapters_checking">New chapters checking</string>
@@ -210,4 +210,5 @@
 	<string name="hide_toolbar">Hide toolbar when scrolling</string>
 	<string name="search_only_on_s">Search only on %s</string>
 	<string name="text_clear_search_history_prompt">Do you really want to remove all recent search queries? This action cannot be undone.</string>
+	<string name="description">Description</string>
 </resources>

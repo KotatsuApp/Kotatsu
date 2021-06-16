@@ -6,10 +6,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.Insets
@@ -17,6 +14,7 @@ import androidx.core.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -27,6 +25,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
+import org.koitharu.kotatsu.databinding.NavigationHeaderBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.ui.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
@@ -44,6 +43,7 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.navigationItemBackground
 import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
@@ -55,12 +55,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		mode = LazyThreadSafetyMode.NONE
 	)
 
+	private lateinit var navHeaderBinding: NavigationHeaderBinding
 	private lateinit var drawerToggle: ActionBarDrawerToggle
 	private var searchUi: SearchUI? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
+		navHeaderBinding = NavigationHeaderBinding.inflate(layoutInflater)
 		drawerToggle = ActionBarDrawerToggle(
 				this,
 				binding.drawer,
@@ -71,7 +73,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		binding.drawer.addDrawerListener(drawerToggle)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-		binding.navigationView.setNavigationItemSelectedListener(this)
+		binding.navigationView.apply {
+			val menuView = findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
+			navHeaderBinding.root.setOnApplyWindowInsetsListener { v, insets ->
+				v.updatePadding(top = insets.systemWindowInsetTop)
+				// NavigationView doesn't dispatch insets to the menu view, so pad the bottom here.
+				menuView.updatePadding(bottom = insets.systemWindowInsetBottom)
+				insets
+			}
+			addHeaderView(navHeaderBinding.root)
+			itemBackground = navigationItemBackground(context)
+			setNavigationItemSelectedListener(this@MainActivity)
+		}
 
 		with(binding.fab) {
 			imageTintList = ColorStateList.valueOf(Color.WHITE)

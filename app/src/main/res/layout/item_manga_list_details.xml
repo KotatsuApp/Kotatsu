@@ -1,96 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="@dimen/manga_list_details_item_height"
-	app:strokeWidth="1dp"
-	app:strokeColor="@color/stroke_color"
-	app:cardElevation="0dp">
+	android:background="@drawable/list_selector"
+	android:orientation="horizontal">
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="horizontal">
 
-		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
-			android:id="@+id/imageView_cover"
+		<com.google.android.material.card.MaterialCardView
 			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:orientation="vertical"
-			android:scaleType="centerCrop" />
+			android:layout_height="wrap_content"
+			android:layout_margin="4dp"
+			app:cardElevation="4dp">
+
+			<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+				android:id="@+id/imageView_cover"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:orientation="vertical"
+				android:scaleType="centerCrop" />
+
+		</com.google.android.material.card.MaterialCardView>
 
 		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
 			android:orientation="vertical">
 
 			<TextView
 				android:id="@+id/textView_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="6dp"
-				android:layout_marginTop="6dp"
-				android:layout_marginEnd="6dp"
+				android:layout_marginBottom="4dp"
 				android:ellipsize="end"
 				android:maxLines="2"
-				android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-				tools:text="@tools:sample/lorem[6]" />
+				android:textAppearance="@style/TextAppearance.Kotatsu.ToolbarTitle"
+				android:textSize="18sp"
+				tools:text="@tools:sample/lorem/random" />
 
 			<TextView
 				android:id="@+id/textView_subtitle"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="6dp"
-				android:layout_marginTop="4dp"
-				android:layout_marginEnd="6dp"
-				android:layout_marginBottom="6dp"
-				android:ellipsize="end"
-				android:maxLines="1"
-				android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-				android:textColor="?android:textColorSecondary"
-				tools:text="@tools:sample/lorem[6]" />
-
-			<Space
 				android:layout_width="wrap_content"
-				android:layout_height="0dp"
-				android:layout_weight="1" />
-
-			<View
-				android:id="@+id/divider"
-				android:layout_width="match_parent"
-				android:layout_height="1dp"
-				android:background="?android:listDivider" />
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="4dp"
+				android:ellipsize="none"
+				android:gravity="center_vertical"
+				android:requiresFadingEdge="horizontal"
+				android:singleLine="true"
+				android:textSize="16sp"
+				tools:text="@tools:sample/lorem/random" />
 
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:gravity="center_vertical"
-				android:orientation="horizontal"
-				android:paddingStart="6dp"
-				android:paddingEnd="6dp">
+				android:orientation="horizontal">
 
 				<TextView
 					android:id="@+id/textView_tags"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
-					android:layout_marginTop="12dp"
-					android:layout_marginBottom="12dp"
 					android:layout_weight="1"
 					android:ellipsize="none"
 					android:gravity="center_vertical"
 					android:requiresFadingEdge="horizontal"
-					android:singleLine="true" />
+					android:singleLine="true"
+					tools:text="@tools:sample/lorem/random" />
 
 				<TextView
 					android:id="@+id/textView_rating"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:layout_gravity="bottom"
 					android:drawablePadding="4dp"
-					android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-					app:drawableStartCompat="@drawable/ic_star_rating"
-					tools:text="10/10" />
+					android:paddingStart="6dp"
+					app:drawableEndCompat="@drawable/ic_star"
+					tools:text="9.6" />
 
 			</LinearLayout>
 
@@ -98,4 +93,4 @@
 
 	</LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

@@ -1,6 +1,52 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-	<style name="AppToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+	<!-- Widget styles -->
+
+	<style name="Widget.Kotatsu" parent="@android:style/Widget.Material" />
+
+	<style name="Widget.Kotatsu.AppBar" parent="@style/Widget.Design.AppBarLayout">
+		<item name="android:background">?attr/colorSurface</item>
+		<item name="android:elevation">8dp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+		<item name="android:paddingEnd">8dp</item>
+		<item name="popupTheme">@style/ThemeOverlay.Kotatsu</item>
+		<item name="titleTextAppearance">@style/TextAppearance.Kotatsu.ToolbarTitle</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Tabs" parent="@style/Widget.MaterialComponents.TabLayout">
+		<item name="tabIndicatorFullWidth">false</item>
+		<item name="android:background">@drawable/tabs_background</item>
+		<item name="tabIndicator">@drawable/tab_indicator</item>
+		<item name="tabIconTint">@color/tab_text</item>
+		<item name="tabSelectedTextColor">?colorPrimary</item>
+		<item name="tabTextColor">@color/tab_text</item>
+		<item name="tabTextAppearance">@style/TextAppearance.Kotatsu.Tab</item>
+		<item name="tabIndicatorAnimationMode">elastic</item>
+	</style>
+
+	<style name="Widget.Kotatsu.NavigationView" parent="@style/Widget.MaterialComponents.NavigationView">
+		<item name="itemBackground">@drawable/navigation_item_background</item>
+		<item name="itemHorizontalPadding">@dimen/nav_item_horizontal_padding</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Chip" parent="Widget.MaterialComponents.Chip.Action">
+		<item name="chipStrokeWidth">1dp</item>
+		<item name="chipStrokeColor">?attr/colorAccent</item>
+		<item name="chipBackgroundColor">@android:color/transparent</item>
+		<item name="chipIconTint">?attr/colorPrimary</item>
+		<item name="android:textColor">?attr/colorAccent</item>
+
+		<!-- Smaller text/height -->
+		<item name="android:textSize">12sp</item>
+
+		<!-- Custom chip states -->
+		<item name="android:clickable">true</item>
+		<item name="android:focusable">true</item>
+	</style>
+
+	<style name="Widget.Kotatsu.ToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
 		<item name="android:checkable">true</item>
 		<item name="android:gravity">center_vertical|start</item>
 		<item name="iconPadding">16dp</item>
@@ -8,36 +54,35 @@
 		<item name="android:paddingBottom">10dp</item>
 	</style>
 
-	<style name="AppPopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
-
-	<style name="AppToolbarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-		<item name="popupTheme">@style/AppPopupTheme</item>
-		<item name="autoCompleteTextViewStyle">@style/AppSuggestion</item>
+	<style name="Widget.Kotatsu.ActionMode" parent="Widget.AppCompat.ActionMode">
+		<item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
+		<item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
 	</style>
 
-	<style name="AppSuggestion" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+	<style name="Widget.Kotatsu.AutoCompleteTextView" parent="Widget.AppCompat.Light.AutoCompleteTextView">
 		<item name="android:popupBackground">@android:color/background_light</item>
 	</style>
 
-	<style name="AppActionMode" parent="Widget.AppCompat.ActionMode">
-		<item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
-		<item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
-		<item name="background">@color/grey</item>
+	<!-- TextAppearance -->
+
+	<style name="TextAppearance.Kotatsu.ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+		<item name="android:textSize" tools:ignore="SpUsage">20dp</item>
 	</style>
 
-	<style name="Widget.MaterialComponents.TabLayout.New">
-		<item name="tabIndicatorFullWidth">false</item>
-		<item name="android:background">@drawable/tabs_background</item>
-		<item name="tabIndicator">@drawable/tab_indicator</item>
-		<item name="tabIconTint">@color/tab_text</item>
-		<item name="tabSelectedTextColor">?colorPrimary</item>
-		<item name="tabTextColor">@color/tab_text</item>
-		<item name="tabTextAppearance">@style/TextAppearance.Design.Tab.New</item>
-	</style>
-
-	<style name="TextAppearance.Design.Tab.New">
+	<style name="TextAppearance.Kotatsu.Tab" parent="@style/TextAppearance.Design.Tab">
 		<item name="textAllCaps">false</item>
 		<item name="android:textAllCaps">false</item>
 	</style>
+
+	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.MaterialComponents.Button">
+		<item name="android:letterSpacing">0</item>
+		<item name="android:textAllCaps">false</item>
+	</style>
+
+	<style name="TextAppearance.Kotatsu.ListPrimary" parent="TextAppearance.MaterialComponents.Body1">
+		<item name="android:letterSpacing">0</item>
+	</style>
+
+	<style name="TextAppearance.Kotatsu.Body2" parent="TextAppearance.MaterialComponents.Body2" />
 
 </resources>

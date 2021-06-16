@@ -12,6 +12,6 @@
 	android:paddingEnd="?listPreferredItemPaddingEnd"
 	android:textAppearance="?textAppearanceListItemSmall"
 	android:textColor="?android:textColorPrimary"
-	android:theme="@style/AppPopupTheme"
-	tools:text="@tools:sample/full_names"
-	app:drawableStartCompat="@drawable/ic_history" />
+	android:theme="@style/ThemeOverlay.Kotatsu"
+	app:drawableStartCompat="@drawable/ic_history"
+	tools:text="@tools:sample/full_names" />

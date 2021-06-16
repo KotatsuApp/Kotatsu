@@ -60,17 +60,41 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				.lifecycle(viewLifecycleOwner)
 				.enqueueWith(coil)
 			textViewTitle.text = manga.title
-			textViewSubtitle.textAndVisible = manga.altTitle
+			textViewAuthor.textAndVisible = manga.author
+			textViewSource.text = manga.source.title
 			textViewDescription.text =
 				manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
 					?: getString(R.string.no_description)
+			if (manga.chapters?.isNotEmpty() == true) {
+				chaptersContainer.isVisible = true
+				textViewChapters.text = manga.chapters.let {
+					resources.getQuantityString(
+						R.plurals.chapters,
+						it.size,
+						manga.chapters.size
+					)
+				}
+			} else {
+				chaptersContainer.isVisible = false
+			}
 			if (manga.rating == Manga.NO_RATING) {
 				ratingBar.isVisible = false
+				ratingContainer.isVisible = false
 			} else {
 				ratingBar.progress = (ratingBar.max * manga.rating).roundToInt()
 				ratingBar.isVisible = true
+				textViewRating.text = String.format("%.1f", manga.rating * 5)
+				ratingContainer.isVisible = true
 			}
-			imageViewFavourite.setOnClickListener(this@DetailsFragment)
+			val file = manga.url.toUri().toFileOrNull()
+			if (file != null) {
+				val size = file.length()
+				textViewSize.text = FileSizeUtils.formatBytes(requireContext(), size)
+				sizeContainer.isVisible = true
+			} else {
+				sizeContainer.isVisible = false
+			}
+			buttonFavorite.setOnClickListener(this@DetailsFragment)
 			buttonRead.setOnClickListener(this@DetailsFragment)
 			buttonRead.setOnLongClickListener(this@DetailsFragment)
 			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
@@ -91,13 +115,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	}
 
 	private fun onFavouriteChanged(isFavourite: Boolean) {
-		binding.imageViewFavourite.setImageResource(
+		with(binding.buttonFavorite) {
 			if (isFavourite) {
-				R.drawable.ic_heart
+				this?.setIconResource(R.drawable.ic_heart)
 			} else {
-				R.drawable.ic_heart_outline
+				this?.setIconResource(R.drawable.ic_heart_outline)
 			}
-		)
+		}
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -107,7 +131,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	override fun onClick(v: View) {
 		val manga = viewModel.manga.value
 		when (v.id) {
-			R.id.imageView_favourite -> {
+			R.id.button_favorite -> {
 				FavouriteCategoriesDialog.show(childFragmentManager, manga ?: return)
 			}
 			R.id.button_read -> {
@@ -163,31 +187,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		tagsJob?.cancel()
 		tagsJob = viewLifecycleScope.launch {
 			val tags = ArrayList<ChipsView.ChipModel>(manga.tags.size + 2)
-			if (manga.author != null) {
-				tags += ChipsView.ChipModel(
-					title = manga.author,
-					icon = R.drawable.ic_chip_user
-				)
-			}
 			for (tag in manga.tags) {
 				tags += ChipsView.ChipModel(
 					title = tag.title,
-					icon = R.drawable.ic_chip_tag
-				)
-			}
-			val file = manga.url.toUri().toFileOrNull()
-			if (file != null) {
-				val size = withContext(Dispatchers.IO) {
-					file.length()
-				}
-				tags += ChipsView.ChipModel(
-					title = FileSizeUtils.formatBytes(requireContext(), size),
-					icon = R.drawable.ic_chip_storage
-				)
-			} else {
-				tags += ChipsView.ChipModel(
-					title = manga.source.title,
-					icon = R.drawable.ic_chip_web
+					icon = 0
 				)
 			}
 			binding.chipsTags.setChips(tags)

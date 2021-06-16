@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.reader.ui.pager.wetoon
+package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
 import android.net.Uri
 import android.view.View

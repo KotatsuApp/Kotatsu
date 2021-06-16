@@ -37,7 +37,7 @@ fun feedItemAD(
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 		binding.textViewTitle.text = item.title
-		binding.textViewSubtitle.text = item.subtitle
+		binding.badge.text = item.subtitle
 		binding.textViewChapters.text = item.chapters
 	}
 

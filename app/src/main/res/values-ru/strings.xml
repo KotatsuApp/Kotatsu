@@ -24,7 +24,7 @@
 	<string name="read">Читать</string>
 	<string name="add_bookmark">Добавить закладку</string>
 	<string name="you_have_not_favourites_yet">Добавьте интересующую Вас мангу в избренное, чтобы не потерять её</string>
-	<string name="add_to_favourites">Добавить в избранное</string>
+	<string name="add_to_favourites">В избранное</string>
 	<string name="add_new_category">Создать категорию</string>
 	<string name="add">Добавить</string>
 	<string name="enter_category_name">Введите название</string>
@@ -192,7 +192,7 @@
 	<string name="captcha_solve">Пройти</string>
 	<string name="clear_cookies">Очистить куки</string>
 	<string name="cookies_cleared">Все куки удалены</string>
-	<string name="chapers_checking_progress">Проверка новых глав: %1$d из %2$d</string>
+	<string name="chapters_checking_progress">Проверка новых глав: %1$d из %2$d</string>
 	<string name="clear_feed">Очистить ленту</string>
 	<string name="text_clear_updates_feed_prompt">Вся история обновлений будет очищена и её нельзя будет вернуть. Вы уверены?</string>
 	<string name="new_chapters_checking">Проверка новых глав</string>
@@ -207,4 +207,6 @@
 	<string name="password_length_hint">Пароль должен содержать не менее 4 символов</string>
 	<string name="hide_toolbar">Прятать заголовок при прокрутке</string>
 	<string name="search_only_on_s">Поиск только по %s</string>
+	<string name="description">Описание</string>
+	<string name="text_clear_search_history_prompt">Вы действительно хотите удалить все последние поисковые запросы? Это действие не может быть отменено.</string>
 </resources>

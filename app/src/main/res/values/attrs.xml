@@ -1,6 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+	<declare-styleable name="Theme">
+		<attr name="navigationBarDividerColor" format="color" />
+		<attr name="colorControlLight" format="color" />
+		<attr name="colorSurfaceSecondary" format="color" />
+	</declare-styleable>
+
+	<!--CoverImageView attrs-->
+
 	<declare-styleable name="CoverImageView">
 		<attr name="android:orientation" />
 	</declare-styleable>
+
+	<!--CircleImageView attrs-->
+
+	<declare-styleable name="CircleImageView">
+		<attr name="civ_border_width" format="dimension" />
+		<attr name="civ_border_color" format="color" />
+		<attr name="civ_border_overlay" format="boolean" />
+		<attr name="civ_fill_color" format="color" />
+		<attr name="civ_circle_background_color" format="color" />
+	</declare-styleable>
+
+	<!--SearchView attrs-->
+
+	<declare-styleable name="MaterialSearchView">
+		<attr name="search_navigationIconSupport" format="enum">
+			<enum name="none" value="0" />
+			<enum name="menu" value="1" />
+			<enum name="arrow" value="2" />
+			<enum name="search" value="3" />
+		</attr>
+		<attr name="search_navigationIcon" format="reference" />
+		<attr name="search_clearIcon" format="reference" />
+		<attr name="search_micIcon" format="reference" />
+		<attr name="search_menuIcon" format="reference" />
+		<attr name="search_textHint" format="string" />
+		<attr name="search_strokeColor" format="reference" />
+		<attr name="search_strokeWidth" format="reference" />
+		<attr name="search_dividerColor" format="reference" />
+		<attr name="search_shadowColor" format="reference" />
+		<attr name="search_transitionDuration" format="integer" />
+		<attr name="search_radius" format="integer" />
+		<attr name="android:elevation" />
+		<attr name="android:imeOptions" />
+		<attr name="android:inputType" />
+	</declare-styleable>
+
+	<!--ExpandableTextView attrs-->
+
+	<declare-styleable name="ExpandableTextView">
+		<attr name="expanded" format="boolean"/>
+		<attr name="expand_enabled" format="boolean"/>
+		<attr name="collapse_lines" format="integer"/>
+	</declare-styleable>
+
 </resources>

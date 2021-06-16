@@ -4,17 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import com.google.android.material.R
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class ChipsView @JvmOverloads constructor(
 	context: Context,
-	attrs: AttributeSet? = null,
-	defStyleAttr: Int = R.attr.chipGroupStyle
-) : ChipGroup(context, attrs, defStyleAttr) {
+	attrs: AttributeSet? = null
+) : ChipGroup(context, attrs) {
 
 	private var isLayoutSuppressedCompat = false
 	private var isLayoutCalledOnSuppressed = false
@@ -64,7 +65,9 @@ class ChipsView @JvmOverloads constructor(
 
 	private fun addChip(): Chip {
 		val chip = Chip(context)
-		chip.setTextColor(context.getThemeColor(android.R.attr.textColorPrimary))
+		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
+		chip.setChipDrawable(drawable)
+		chip.setTextColor(ContextCompat.getColor(context, R.color.blue_primary))
 		chip.isCloseIconVisible = false
 		chip.setEnsureMinTouchTargetSize(false)
 		chip.setOnClickListener(chipOnClickListener)

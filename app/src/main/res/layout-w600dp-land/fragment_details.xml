@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:scrollbars="vertical"
+	app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<View
+			android:id="@+id/guideline"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_marginTop="8dp"
+			app:layout_constraintTop_toBottomOf="@+id/cover_card"
+			tools:ignore="MissingConstraints" />
+
+		<androidx.constraintlayout.widget.Guideline
+			android:id="@+id/guideline2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			app:layout_constraintGuide_percent="0.21" />
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/cover_card"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginEnd="16dp"
+			android:layout_marginBottom="16dp"
+			app:cardCornerRadius="4dp"
+			app:cardElevation="4dp"
+			app:layout_constraintDimensionRatio="13:18"
+			app:layout_constraintEnd_toStartOf="@id/guideline2"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent">
+
+			<ImageView
+				android:id="@+id/imageView_cover"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:scaleType="centerCrop"
+				tools:background="@tools:sample/backgrounds/scenic"
+				tools:ignore="ContentDescription" />
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:id="@+id/constraintLayout"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:layout_marginEnd="16dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="@+id/guideline2"
+			app:layout_constraintTop_toTopOf="parent">
+
+			<TextView
+				android:id="@+id/textView_title"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:ellipsize="end"
+				android:maxLines="3"
+				android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+				android:textColor="?android:textColorPrimary"
+				android:textSize="20sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				tools:text="@tools:sample/lorem[20]" />
+
+			<TextView
+				android:id="@+id/textView_author"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="4dp"
+				android:requiresFadingEdge="horizontal"
+				android:singleLine="true"
+				android:textColor="?colorAccent"
+				android:textStyle="bold"
+				app:layout_constraintEnd_toEndOf="@id/textView_title"
+				app:layout_constraintStart_toStartOf="@id/textView_title"
+				app:layout_constraintTop_toBottomOf="@id/textView_title"
+				tools:text="@tools:sample/lorem/random" />
+
+			<RatingBar
+				android:id="@+id/ratingBar"
+				style="@style/Widget.AppCompat.RatingBar.Small"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="6dp"
+				android:isIndicator="true"
+				android:max="100"
+				app:layout_constraintStart_toStartOf="@id/textView_title"
+				app:layout_constraintTop_toBottomOf="@id/textView_author"
+				tools:progress="70" />
+
+			<LinearLayout
+				android:id="@+id/info_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:divider="?android:dividerHorizontal"
+				android:dividerPadding="8dp"
+				android:orientation="horizontal"
+				android:paddingStart="8dp"
+				android:paddingEnd="8dp"
+				android:showDividers="middle"
+				app:layout_constraintStart_toStartOf="@id/textView_title"
+				app:layout_constraintTop_toBottomOf="@id/ratingBar">
+
+				<LinearLayout
+					android:id="@+id/rating_container"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_weight="1"
+					android:gravity="center">
+
+					<TextView
+						android:id="@+id/textView_rating"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:drawablePadding="4dp"
+						android:padding="4dp"
+						android:textSize="20sp"
+						android:textStyle="bold"
+						app:drawableEndCompat="@drawable/ic_star_manga_info"
+						tools:text="4.8" />
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:id="@+id/chapters_container"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_weight="1"
+					android:gravity="center">
+
+					<TextView
+						android:id="@+id/textView_chapters"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:drawablePadding="4dp"
+						android:gravity="center_horizontal"
+						android:padding="4dp"
+						android:textSize="12sp"
+						app:drawableTopCompat="@drawable/ic_book_page"
+						tools:text="52 chapters" />
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:id="@+id/source_container"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_weight="1"
+					android:gravity="center">
+
+					<TextView
+						android:id="@+id/textView_source"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:drawablePadding="4dp"
+						android:gravity="center_horizontal"
+						android:padding="4dp"
+						android:textSize="12sp"
+						app:drawableTopCompat="@drawable/ic_web"
+						tools:text="Source" />
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:id="@+id/size_container"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_weight="1"
+					android:gravity="center">
+
+					<TextView
+						android:id="@+id/textView_size"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:drawablePadding="4dp"
+						android:gravity="center_horizontal"
+						android:padding="4dp"
+						android:textSize="12sp"
+						app:drawableTopCompat="@drawable/ic_storage"
+						tools:text="1.8 GiB" />
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/buttons_layout"
+				android:layout_width="match_parent"
+				android:layout_height="48dp"
+				android:layout_marginTop="16dp"
+				android:gravity="center_vertical|end"
+				android:orientation="horizontal"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="@id/textView_title"
+				app:layout_constraintTop_toBottomOf="@id/info_layout">
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_favorite"
+					style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:icon="@drawable/ic_heart_outline"
+					app:iconGravity="textTop"
+					app:iconPadding="0dp" />
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_read"
+					style="@style/Widget.MaterialComponents.Button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:enabled="false"
+					android:text="@string/read"
+					android:textAllCaps="false"
+					app:elevation="0dp"
+					app:iconGravity="textStart"
+					app:iconPadding="8dp"
+					tools:text="@string/_continue" />
+
+			</LinearLayout>
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
+			android:id="@+id/chips_tags"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:layout_marginEnd="16dp"
+			app:chipSpacingHorizontal="6dp"
+			app:chipSpacingVertical="6dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="@+id/guideline2"
+			app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+		<TextView
+			android:id="@+id/desc_header"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingTop="16dp"
+			android:paddingBottom="8dp"
+			android:text="@string/description"
+			android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+			android:textColor="?android:textColorPrimary"
+			android:textSize="18sp"
+			app:layout_constraintStart_toStartOf="@+id/guideline2"
+			app:layout_constraintTop_toBottomOf="@id/chips_tags" />
+
+		<TextView
+			android:id="@+id/textView_description"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_marginEnd="16dp"
+			android:lineSpacingMultiplier="1.2"
+			android:textIsSelectable="true"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="@+id/guideline2"
+			app:layout_constraintTop_toBottomOf="@id/desc_header"
+			tools:ignore="UnusedAttribute"
+			tools:text="@tools:sample/lorem/random[25]" />
+
+		<ProgressBar
+			android:id="@+id/progressBar"
+			style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:indeterminate="true"
+			android:visibility="gone"
+			app:layout_constraintBottom_toTopOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:visibility="visible" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
