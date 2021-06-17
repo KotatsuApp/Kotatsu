@@ -25,7 +25,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			app:layout_constraintGuide_percent="0.30" />
+			app:layout_constraintGuide_percent="0.35" />
 
 		<com.google.android.material.card.MaterialCardView
 			android:id="@+id/cover_card"
@@ -53,7 +53,7 @@
 		</com.google.android.material.card.MaterialCardView>
 
 		<androidx.constraintlayout.widget.ConstraintLayout
-			android:id="@+id/constraintLayout2"
+			android:id="@+id/text_container"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
@@ -77,6 +77,19 @@
 				tools:text="@tools:sample/lorem[20]" />
 
 			<TextView
+				android:id="@+id/textView_subtitle"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="4dp"
+				android:ellipsize="end"
+				android:maxLines="2"
+				android:textSize="14sp"
+				app:layout_constraintEnd_toEndOf="@id/textView_title"
+				app:layout_constraintStart_toStartOf="@id/textView_title"
+				app:layout_constraintTop_toBottomOf="@id/textView_title"
+				tools:text="@tools:sample/lorem[20]" />
+
+			<TextView
 				android:id="@+id/textView_author"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
@@ -87,8 +100,8 @@
 				android:textStyle="bold"
 				app:layout_constraintEnd_toEndOf="@id/textView_title"
 				app:layout_constraintStart_toStartOf="@id/textView_title"
-				app:layout_constraintTop_toBottomOf="@id/textView_title"
-				tools:text="@tools:sample/lorem/random" />
+				app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
+				tools:text="@tools:sample/full_names" />
 
 			<RatingBar
 				android:id="@+id/ratingBar"
@@ -134,7 +147,6 @@
 					android:drawablePadding="4dp"
 					android:padding="4dp"
 					android:textSize="20sp"
-					android:textStyle="bold"
 					app:drawableEndCompat="@drawable/ic_star_manga_info"
 					tools:text="4.8" />
 
