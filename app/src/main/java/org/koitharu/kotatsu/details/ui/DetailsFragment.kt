@@ -60,6 +60,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				.lifecycle(viewLifecycleOwner)
 				.enqueueWith(coil)
 			textViewTitle.text = manga.title
+			textViewSubtitle.textAndVisible = manga.altTitle
 			textViewAuthor.textAndVisible = manga.author
 			textViewSource.text = manga.source.title
 			textViewDescription.text =
@@ -88,8 +89,12 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			}
 			val file = manga.url.toUri().toFileOrNull()
 			if (file != null) {
-				val size = file.length()
-				textViewSize.text = FileSizeUtils.formatBytes(requireContext(), size)
+				viewLifecycleScope.launch {
+					val size = withContext(Dispatchers.IO) {
+						file.length()
+					}
+					textViewSize.text = FileSizeUtils.formatBytes(requireContext(), size)
+				}
 				sizeContainer.isVisible = true
 			} else {
 				sizeContainer.isVisible = false
@@ -117,9 +122,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	private fun onFavouriteChanged(isFavourite: Boolean) {
 		with(binding.buttonFavorite) {
 			if (isFavourite) {
-				this?.setIconResource(R.drawable.ic_heart)
+				this.setIconResource(R.drawable.ic_heart)
 			} else {
-				this?.setIconResource(R.drawable.ic_heart_outline)
+				this.setIconResource(R.drawable.ic_heart_outline)
 			}
 		}
 	}

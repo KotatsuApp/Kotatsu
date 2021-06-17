@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
 	<!-- Widget styles -->
 
@@ -60,7 +60,7 @@
 	<!-- TextAppearance -->
 
 	<style name="TextAppearance.Kotatsu.ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
-		<item name="android:textSize" tools:ignore="SpUsage">20dp</item>
+		<item name="android:textSize">20sp</item>
 	</style>
 
 	<style name="TextAppearance.Kotatsu.Tab" parent="@style/TextAppearance.Design.Tab">

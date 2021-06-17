@@ -10,12 +10,12 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class ChipsView @JvmOverloads constructor(
 	context: Context,
-	attrs: AttributeSet? = null
-) : ChipGroup(context, attrs) {
+	attrs: AttributeSet? = null,
+	defStyleAttr: Int = com.google.android.material.R.attr.chipGroupStyle
+) : ChipGroup(context, attrs, defStyleAttr) {
 
 	private var isLayoutSuppressedCompat = false
 	private var isLayoutCalledOnSuppressed = false
