@@ -2,8 +2,6 @@
 
 	<!-- Widget styles -->
 
-	<style name="Widget.Kotatsu" parent="@android:style/Widget.Material" />
-
 	<style name="Widget.Kotatsu.AppBar" parent="@style/Widget.Design.AppBarLayout">
 		<item name="android:background">?attr/colorSurface</item>
 		<item name="android:elevation">8dp</item>
@@ -57,10 +55,6 @@
 	<style name="Widget.Kotatsu.ActionMode" parent="Widget.AppCompat.ActionMode">
 		<item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
 		<item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
-	</style>
-
-	<style name="Widget.Kotatsu.AutoCompleteTextView" parent="Widget.AppCompat.Light.AutoCompleteTextView">
-		<item name="android:popupBackground">@android:color/background_light</item>
 	</style>
 
 	<!-- TextAppearance -->

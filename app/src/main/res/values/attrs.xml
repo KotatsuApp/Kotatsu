@@ -13,16 +13,6 @@
 		<attr name="android:orientation" />
 	</declare-styleable>
 
-	<!--CircleImageView attrs-->
-
-	<declare-styleable name="CircleImageView">
-		<attr name="civ_border_width" format="dimension" />
-		<attr name="civ_border_color" format="color" />
-		<attr name="civ_border_overlay" format="boolean" />
-		<attr name="civ_fill_color" format="color" />
-		<attr name="civ_circle_background_color" format="color" />
-	</declare-styleable>
-
 	<!--SearchView attrs-->
 
 	<declare-styleable name="MaterialSearchView">
@@ -46,14 +36,6 @@
 		<attr name="android:elevation" />
 		<attr name="android:imeOptions" />
 		<attr name="android:inputType" />
-	</declare-styleable>
-
-	<!--ExpandableTextView attrs-->
-
-	<declare-styleable name="ExpandableTextView">
-		<attr name="expanded" format="boolean"/>
-		<attr name="expand_enabled" format="boolean"/>
-		<attr name="collapse_lines" format="integer"/>
 	</declare-styleable>
 
 </resources>

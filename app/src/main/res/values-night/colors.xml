@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
 	<color name="color_primary">#1976D2</color>
 	<color name="color_primary_variant">#1565C0</color>
-	<color name="color_accent">#E57373</color>
 	<color name="color_on_secondary">@android:color/black</color>
 
 	<color name="color_control_light">#2EFFFFFF</color> <!-- 18% white -->
@@ -13,11 +13,8 @@
 	<color name="system_ui_scrim_black">#B3000000</color> <!-- 70% black -->
 
 	<!-- In dark mode without light status bar we can use transparent -->
-	<color name="status_bar_scrim">@android:color/transparent</color>
 
 	<!-- Other colors with light mode alternatives -->
-	<color name="highlighted_card_background">#263238</color>
 	<color name="list_divider">#1fffffff</color>
 
-	<item name="chip_bg_alpha_checked" format="float" type="dimen">0.27</item>
 </resources>

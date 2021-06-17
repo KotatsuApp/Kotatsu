@@ -51,12 +51,4 @@
 
 	<style name="AppTheme.AMOLED" parent="Base.AppTheme" />
 
-	<style name="AlertDialog.Style" parent="MaterialAlertDialog.MaterialComponents">
-		<item name="shapeAppearance">@style/AlertDialog.ShapeAppearance</item>
-	</style>
-
-	<style name="AlertDialog.ShapeAppearance" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-		<item name="cornerSize">@dimen/dialog_corner_radius</item>
-	</style>
-
 </resources>

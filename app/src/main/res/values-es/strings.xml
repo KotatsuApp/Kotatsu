@@ -74,7 +74,6 @@
 	<string name="webtoon">Webtoon</string>
 	<string name="read_mode">Modo de lectura</string>
 	<string name="grid_size">Tamaño de la cuadrícula</string>
-	<string name="search_results_on_s">Resultados de búsqueda en %s</string>
 	<string name="search_on_s">Buscar en %s</string>
 	<string name="delete_manga">Borrar manga</string>
 	<string name="text_delete_local_manga">¿Realmente quieres borrar \"%s\"  del almacenamiento local de tu teléfono? \nEsta operación no se puede deshacer.</string>
@@ -95,7 +94,6 @@
 	<string name="internal_storage">Almacenamiento interno</string>
 	<string name="external_storage">Almacenamiento externo</string>
 	<string name="domain">Dominio</string>
-	<string name="_default">Por defecto</string>
 	<string name="application_update">Comprobar actualizaciones automáticamente</string>
 	<string name="app_update_available">Una nueva versión de la aplicación está disponible</string>
 	<string name="show_notification_app_update">Mostrar notificación si la actualización está disponible</string>

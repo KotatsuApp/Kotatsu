@@ -3,48 +3,28 @@
 
 	<color name="color_primary">#1976D2</color>
 	<color name="color_primary_variant">#1565C0</color>
-	<color name="color_accent">#EF5350</color>
 	<color name="color_on_secondary">@android:color/white</color>
 
-	<color name="color_control_light">#39000000</color> <!-- Same as textColorPrimary disabled -->
-	<color name="color_surface_secondary">#F8F9FA</color> <!-- Same as textColorPrimary disabled -->
+	<color name="color_control_light">#39000000</color>
+	<color name="color_surface_secondary">#F8F9FA</color>
 
 	<!-- Scrim colors -->
 	<color name="system_ui_scrim_light">#B3FFFFFF</color> <!-- 70% white -->
 	<color name="system_ui_scrim_black">#40000000</color> <!-- 25% black -->
-
-	<!-- We use a dark scrim by default since light status is API 23+ -->
-	<color name="status_bar_scrim">@color/system_ui_scrim_black</color>
-	<!-- We use a dark scrim by default since light nav bar is API 27+ -->
 	<color name="nav_bar_scrim">@color/system_ui_scrim_black</color>
 
 	<!-- Other colors with dark mode alternatives -->
-	<color name="highlighted_card_background">#e8f0fe</color>
-	<color name="event_card_header_background">@color/event_card_header_background_light</color>
 	<color name="list_divider">#1f000000</color>>
-
-	<!-- Other colors -->
-	<color name="default_tag_color">#999</color>
-	<color name="light_grey">#e6e6e6</color>
-	<color name="scrim">#33000000</color> <!-- 20% black -->
-
-	<color name="event_card_header_background_light">#f8f9fa</color>
-	<color name="event_card_header_background_dark">#252729</color>
-
-	<item name="chip_bg_alpha_checked" format="float" type="dimen">0.18</item>
 
 	<!-- Other Colors -->
 
 	<color name="blue_primary">#1976D2</color>
 	<color name="blue_primary_dark">#1565C0</color>
-	<color name="blue_primary_darker">#283593</color>
 	<color name="red_accent">#EF5350</color>
 	<color name="grey">#424242</color>
 	<color name="grey_dark">#212121</color>
 	<color name="dim">#99000000</color>
 	<color name="error">#D32F2F</color>
-	<color name="status_bar">#33000000</color>
-	<color name="tabs_line">#C3CFDD</color>
 	<color name="shadow">#99000000</color>
 
 </resources>

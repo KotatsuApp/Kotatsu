@@ -14,7 +14,7 @@
 		android:layout_marginStart="@dimen/nav_item_horizontal_padding"
 		android:layout_marginTop="@dimen/margin_normal"
 		android:layout_marginBottom="@dimen/margin_normal"
-		app:srcCompat="@drawable/totoro" />
+		app:srcCompat="@drawable/ic_totoro" />
 
 	<View
 		android:id="@+id/divider"
