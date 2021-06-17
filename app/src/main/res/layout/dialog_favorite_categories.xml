@@ -9,9 +9,9 @@
 
 	<TextView
 		style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
-		android:padding="16dp"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:padding="16dp"
 		android:text="@string/add_to_favourites" />
 
 	<View
@@ -24,8 +24,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:scrollbars="vertical"
 		android:overScrollMode="never"
+		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_category_checkable" />
 

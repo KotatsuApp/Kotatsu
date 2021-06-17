@@ -8,33 +8,33 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
+		style="@style/Widget.Kotatsu.AppBar"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		app:elevation="0dp"
-		style="@style/Widget.Kotatsu.AppBar">
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
+			style="@style/Widget.Kotatsu.Toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:layout_scrollFlags="scroll|enterAlways"
-			style="@style/Widget.Kotatsu.Toolbar" />
+			app:layout_scrollFlags="scroll|enterAlways" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 
 	<com.google.android.material.card.MaterialCardView
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/appbar"
-		app:layout_constraintWidth_percent="0.6"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
 		android:layout_marginTop="12dp"
 		android:layout_marginBottom="12dp"
-		android:layout_width="0dp"
-		android:layout_height="0dp">
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		app:layout_constraintWidth_percent="0.6">
 
 		<androidx.fragment.app.FragmentContainerView
 			android:id="@id/container"
