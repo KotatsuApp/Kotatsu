@@ -101,6 +101,9 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	var hiddenSources by StringSetPreferenceDelegate(KEY_SOURCES_HIDDEN)
 
+	val isSourcesSelected: Boolean
+		get() = KEY_SOURCES_HIDDEN in prefs
+
 	fun getStorageDir(context: Context): File? {
 		val value = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)

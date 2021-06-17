@@ -20,6 +20,7 @@ import androidx.fragment.app.commit
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -41,6 +42,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.search.ui.suggestion.SearchUI
 import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -86,6 +88,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		if (savedInstanceState == null) {
 			TrackWorker.setup(applicationContext)
 			AppUpdateChecker(this).launchIfNeeded()
+			OnboardDialogFragment.showWelcome(get(), supportFragmentManager)
 		}
 
 		viewModel.onOpenReader.observe(this, this::onOpenReader)

@@ -207,4 +207,7 @@
 	<string name="password_length_hint">Пароль должен содержать не менее 4 символов</string>
 	<string name="hide_toolbar">Прятать заголовок при прокрутке</string>
 	<string name="search_only_on_s">Поиск только по %s</string>
+	<string name="other">Другие</string>
+	<string name="languages">Languages</string>
+	<string name="welcome">Welcome</string>
 </resources>

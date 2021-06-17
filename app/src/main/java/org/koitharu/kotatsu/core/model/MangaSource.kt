@@ -37,7 +37,7 @@ enum class MangaSource(
 	NINEMANGA_RU("NineManga Русский", "ru", NineMangaRepository.Russian::class.java),
 	NINEMANGA_DE("NineManga Deutsch", "de", NineMangaRepository.Deutsch::class.java),
 	NINEMANGA_IT("NineManga Italiano", "it", NineMangaRepository.Italiano::class.java),
-	NINEMANGA_BR("NineManga Brasil", "br", NineMangaRepository.Brazil::class.java),
+	NINEMANGA_BR("NineManga Brasil", "pt", NineMangaRepository.Brazil::class.java),
 	NINEMANGA_FR("NineManga Français", "fr", NineMangaRepository.Francais::class.java),
 	;
 

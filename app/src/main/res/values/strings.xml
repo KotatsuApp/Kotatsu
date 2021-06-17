@@ -210,4 +210,7 @@
 	<string name="hide_toolbar">Hide toolbar when scrolling</string>
 	<string name="search_only_on_s">Search only on %s</string>
 	<string name="text_clear_search_history_prompt">Do you really want to remove all recent search queries? This action cannot be undone.</string>
+	<string name="other">Other</string>
+	<string name="languages">Languages</string>
+	<string name="welcome">Welcome</string>
 </resources>

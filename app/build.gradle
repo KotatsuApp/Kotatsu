@@ -74,7 +74,7 @@ dependencies {
 	implementation 'androidx.lifecycle:lifecycle-process:2.3.1'
 	implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-	implementation 'androidx.recyclerview:recyclerview:1.2.0'
+	implementation 'androidx.recyclerview:recyclerview:1.2.1'
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
 	implementation 'androidx.preference:preference-ktx:1.1.1'
 	implementation 'androidx.work:work-runtime-ktx:2.5.0'

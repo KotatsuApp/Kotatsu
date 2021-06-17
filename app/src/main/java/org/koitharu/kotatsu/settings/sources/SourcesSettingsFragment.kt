@@ -1,9 +1,7 @@
 package org.koitharu.kotatsu.settings.sources
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,6 +14,7 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 
 class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	OnListItemClickListener<MangaSource> {
@@ -25,6 +24,7 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		reorderHelper = ItemTouchHelper(SourcesReorderCallback())
+		setHasOptionsMenu(true)
 	}
 
 	override fun onInflateView(
@@ -49,6 +49,22 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	override fun onDestroyView() {
 		reorderHelper.attachToRecyclerView(null)
 		super.onDestroyView()
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		super.onCreateOptionsMenu(menu, inflater)
+		// TODO handle changes in dialog
+		// inflater.inflate(R.menu.opt_sources, menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when(item.itemId) {
+			R.id.action_languages -> {
+				OnboardDialogFragment.show(parentFragmentManager)
+				true
+			}
+			else -> super.onOptionsItemSelected(item)
+		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
