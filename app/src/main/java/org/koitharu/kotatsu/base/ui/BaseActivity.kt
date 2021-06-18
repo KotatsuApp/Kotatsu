@@ -11,7 +11,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.*
 import androidx.viewbinding.ViewBinding
@@ -22,7 +21,6 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindowInsetsListener {
 
@@ -106,12 +104,6 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		view?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			topMargin = insets.top
 		}
-		window?.statusBarColor = ContextCompat.getColor(this, R.color.grey_dark)
-	}
-
-	override fun onSupportActionModeFinished(mode: ActionMode) {
-		super.onSupportActionModeFinished(mode)
-		window?.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
 	}
 
 	override fun onBackPressed() {
