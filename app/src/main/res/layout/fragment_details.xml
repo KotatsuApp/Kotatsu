@@ -47,7 +47,7 @@
 				android:id="@+id/text_container"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="8dp"
+				android:layout_margin="8dp"
 				android:layout_weight="2">
 
 				<TextView
@@ -194,10 +194,10 @@
 			android:id="@+id/buttons_layout"
 			android:layout_width="match_parent"
 			android:layout_height="48dp"
-			android:paddingStart="16dp"
-			android:paddingEnd="16dp"
 			android:gravity="center"
 			android:orientation="horizontal"
+			android:paddingStart="16dp"
+			android:paddingEnd="16dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/info_layout">
