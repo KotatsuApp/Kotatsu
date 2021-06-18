@@ -12,247 +12,219 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<View
-			android:id="@+id/guideline"
-			android:layout_width="0dp"
-			android:layout_height="0dp"
-			android:layout_marginTop="8dp"
-			app:layout_constraintTop_toBottomOf="@+id/cover_card"
-			tools:ignore="MissingConstraints" />
-
-		<androidx.constraintlayout.widget.Guideline
-			android:id="@+id/guideline2"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			app:layout_constraintGuide_percent="0.35" />
-
-		<com.google.android.material.card.MaterialCardView
-			android:id="@+id/cover_card"
-			android:layout_width="0dp"
-			android:layout_height="0dp"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="16dp"
-			android:layout_marginEnd="16dp"
-			android:layout_marginBottom="16dp"
-			app:cardCornerRadius="4dp"
-			app:cardElevation="4dp"
-			app:layout_constraintDimensionRatio="13:18"
-			app:layout_constraintEnd_toStartOf="@id/guideline2"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent">
-
-			<ImageView
-				android:id="@+id/imageView_cover"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:scaleType="centerCrop"
-				tools:background="@tools:sample/backgrounds/scenic"
-				tools:ignore="ContentDescription" />
-
-		</com.google.android.material.card.MaterialCardView>
-
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:id="@+id/text_container"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
-			android:layout_marginEnd="16dp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="@+id/guideline2"
-			app:layout_constraintTop_toTopOf="parent">
-
-			<TextView
-				android:id="@+id/textView_title"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:ellipsize="end"
-				android:maxLines="4"
-				android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-				android:textColor="?android:textColorPrimary"
-				android:textSize="20sp"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toTopOf="parent"
-				tools:text="@tools:sample/lorem[20]" />
-
-			<TextView
-				android:id="@+id/textView_subtitle"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="4dp"
-				android:ellipsize="end"
-				android:maxLines="2"
-				android:textSize="14sp"
-				app:layout_constraintEnd_toEndOf="@id/textView_title"
-				app:layout_constraintStart_toStartOf="@id/textView_title"
-				app:layout_constraintTop_toBottomOf="@id/textView_title"
-				tools:text="@tools:sample/lorem[20]" />
-
-			<TextView
-				android:id="@+id/textView_author"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="4dp"
-				android:requiresFadingEdge="horizontal"
-				android:singleLine="true"
-				android:textColor="?colorAccent"
-				android:textStyle="bold"
-				app:layout_constraintEnd_toEndOf="@id/textView_title"
-				app:layout_constraintStart_toStartOf="@id/textView_title"
-				app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
-				tools:text="@tools:sample/full_names" />
-
-			<RatingBar
-				android:id="@+id/ratingBar"
-				style="@style/Widget.AppCompat.RatingBar.Small"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="6dp"
-				android:isIndicator="true"
-				android:max="100"
-				app:layout_constraintStart_toStartOf="@id/textView_title"
-				app:layout_constraintTop_toBottomOf="@id/textView_author"
-				tools:progress="70" />
-
-		</androidx.constraintlayout.widget.ConstraintLayout>
-
 		<LinearLayout
-			android:id="@+id/info_layout"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:baselineAligned="false"
-			android:divider="?android:dividerHorizontal"
-			android:dividerPadding="8dp"
-			android:orientation="horizontal"
-			android:paddingStart="8dp"
-			android:paddingEnd="8dp"
-			android:showDividers="middle"
-			app:layout_constraintBottom_toBottomOf="@+id/cover_card"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="@+id/guideline2">
-
-			<LinearLayout
-				android:id="@+id/rating_container"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:gravity="center">
-
-				<TextView
-					android:id="@+id/textView_rating"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:drawablePadding="4dp"
-					android:padding="4dp"
-					android:textSize="20sp"
-					app:drawableEndCompat="@drawable/ic_star_manga_info"
-					tools:text="4.8" />
-
-			</LinearLayout>
-
-			<LinearLayout
-				android:id="@+id/chapters_container"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:gravity="center">
-
-				<TextView
-					android:id="@+id/textView_chapters"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:drawablePadding="4dp"
-					android:gravity="center_horizontal"
-					android:padding="4dp"
-					android:textSize="12sp"
-					app:drawableTopCompat="@drawable/ic_book_page"
-					tools:text="52 chapters" />
-
-			</LinearLayout>
-
-			<LinearLayout
-				android:id="@+id/source_container"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:gravity="center">
-
-				<TextView
-					android:id="@+id/textView_source"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:drawablePadding="4dp"
-					android:gravity="center_horizontal"
-					android:padding="4dp"
-					android:textSize="12sp"
-					app:drawableTopCompat="@drawable/ic_web"
-					tools:text="Source" />
-
-			</LinearLayout>
-
-			<LinearLayout
-				android:id="@+id/size_container"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:layout_weight="1"
-				android:gravity="center">
-
-				<TextView
-					android:id="@+id/textView_size"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:drawablePadding="4dp"
-					android:gravity="center_horizontal"
-					android:padding="4dp"
-					android:textSize="12sp"
-					app:drawableTopCompat="@drawable/ic_storage"
-					tools:text="1.8 GiB" />
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<LinearLayout
-			android:id="@+id/buttons_layout"
+			android:id="@+id/main_container"
 			android:layout_width="match_parent"
-			android:layout_height="48dp"
-			android:layout_marginStart="16dp"
-			android:layout_marginEnd="16dp"
-			android:gravity="center"
+			android:layout_height="0dp"
+			android:layout_margin="8dp"
+			android:gravity="center_horizontal"
 			android:orientation="horizontal"
+			android:weightSum="3"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/guideline">
+			app:layout_constraintTop_toTopOf="parent">
 
-			<com.google.android.material.button.MaterialButton
-				android:id="@+id/button_favorite"
-				style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-				android:layout_width="wrap_content"
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/cover_card"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
-				app:icon="@drawable/ic_heart_outline"
-				app:iconGravity="textTop"
-				app:iconPadding="0dp" />
+				android:layout_margin="8dp"
+				app:cardCornerRadius="4dp"
+				app:cardElevation="4dp">
 
-			<com.google.android.material.button.MaterialButton
-				android:id="@+id/button_read"
-				style="@style/Widget.MaterialComponents.Button"
-				android:layout_width="match_parent"
+				<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+					android:id="@+id/imageView_cover"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:scaleType="centerCrop"
+					tools:background="@tools:sample/backgrounds/scenic"
+					tools:ignore="ContentDescription" />
+
+			</com.google.android.material.card.MaterialCardView>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/text_container"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="16dp"
-				android:layout_weight="1"
-				android:enabled="false"
-				android:text="@string/read"
-				android:textAllCaps="false"
-				app:elevation="0dp"
-				app:iconGravity="textStart"
-				app:iconPadding="8dp"
-				tools:text="@string/_continue" />
+				android:layout_weight="2"
+				android:layout_margin="8dp"
+				android:layout_gravity="center">
+
+				<TextView
+					android:id="@+id/textView_title"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:ellipsize="end"
+					android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+					android:textColor="?android:textColorPrimary"
+					android:textSize="20sp"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					tools:text="@tools:sample/lorem[30]" />
+
+				<TextView
+					android:id="@+id/textView_subtitle"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="4dp"
+					android:ellipsize="end"
+					android:textSize="14sp"
+					app:layout_constraintEnd_toEndOf="@id/textView_title"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/textView_title"
+					tools:text="@tools:sample/lorem[2]" />
+
+				<TextView
+					android:id="@+id/textView_author"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="4dp"
+					android:requiresFadingEdge="horizontal"
+					android:textColor="?colorAccent"
+					android:textStyle="bold"
+					app:layout_constraintEnd_toEndOf="@id/textView_title"
+					app:layout_constraintStart_toStartOf="@id/textView_title"
+					app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
+					tools:text="@tools:sample/full_names" />
+
+				<LinearLayout
+					android:id="@+id/info_layout"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="4dp"
+					android:baselineAligned="false"
+					android:divider="?android:dividerHorizontal"
+					android:dividerPadding="8dp"
+					android:orientation="horizontal"
+					android:showDividers="middle"
+					app:layout_constraintTop_toBottomOf="@+id/textView_author">
+
+					<LinearLayout
+						android:id="@+id/rating_container"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:layout_weight="1"
+						android:gravity="center">
+
+						<TextView
+							android:id="@+id/textView_rating"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:drawablePadding="4dp"
+							android:padding="4dp"
+							android:textSize="20sp"
+							app:drawableEndCompat="@drawable/ic_star_manga_info"
+							tools:text="4.8" />
+
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/chapters_container"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:layout_weight="1"
+						android:gravity="center">
+
+						<TextView
+							android:id="@+id/textView_chapters"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:drawablePadding="4dp"
+							android:gravity="center_horizontal"
+							android:padding="4dp"
+							android:textSize="12sp"
+							app:drawableTopCompat="@drawable/ic_book_page"
+							tools:text="52 chapters" />
+
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/source_container"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:layout_weight="1"
+						android:gravity="center">
+
+						<TextView
+							android:id="@+id/textView_source"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:drawablePadding="4dp"
+							android:gravity="center_horizontal"
+							android:padding="4dp"
+							android:textSize="12sp"
+							app:drawableTopCompat="@drawable/ic_web"
+							tools:text="Source" />
+
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/size_container"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:layout_weight="1"
+						android:gravity="center">
+
+						<TextView
+							android:id="@+id/textView_size"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:drawablePadding="4dp"
+							android:gravity="center_horizontal"
+							android:padding="4dp"
+							android:textSize="12sp"
+							app:drawableTopCompat="@drawable/ic_storage"
+							tools:text="1.8 GiB" />
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:id="@+id/buttons_layout"
+					android:layout_width="match_parent"
+					android:layout_height="48dp"
+					android:layout_marginTop="4dp"
+					android:gravity="center"
+					android:orientation="horizontal"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/info_layout">
+
+					<com.google.android.material.button.MaterialButton
+						android:id="@+id/button_favorite"
+						style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						app:icon="@drawable/ic_heart_outline"
+						app:iconGravity="textTop"
+						app:iconPadding="0dp" />
+
+					<com.google.android.material.button.MaterialButton
+						android:id="@+id/button_read"
+						style="@style/Widget.MaterialComponents.Button"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="16dp"
+						android:layout_weight="1"
+						android:enabled="false"
+						android:text="@string/read"
+						android:textAllCaps="false"
+						app:elevation="0dp"
+						app:iconGravity="textStart"
+						app:iconPadding="8dp"
+						tools:text="@string/_continue" />
+
+				</LinearLayout>
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
 
 		</LinearLayout>
 
@@ -267,7 +239,7 @@
 			app:chipSpacingVertical="6dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/buttons_layout" />
+			app:layout_constraintTop_toBottomOf="@+id/main_container" />
 
 		<TextView
 			android:id="@+id/desc_header"

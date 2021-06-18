@@ -79,11 +79,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				chaptersContainer.isVisible = false
 			}
 			if (manga.rating == Manga.NO_RATING) {
-				ratingBar.isVisible = false
 				ratingContainer.isVisible = false
 			} else {
-				ratingBar.progress = (ratingBar.max * manga.rating).roundToInt()
-				ratingBar.isVisible = true
 				textViewRating.text = String.format("%.1f", manga.rating * 5)
 				ratingContainer.isVisible = true
 			}
