@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.*
 import androidx.annotation.CallSuper
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -81,6 +80,10 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			addOnScrollListener(paginationListener!!)
 		}
 		with(binding.swipeRefreshLayout) {
+			setColorSchemeColors(
+				ContextCompat.getColor(context, R.color.color_primary),
+				ContextCompat.getColor(context, R.color.color_primary_variant)
+			)
 			setOnRefreshListener(this@MangaListFragment)
 			isEnabled = isSwipeRefreshEnabled
 		}
@@ -246,13 +249,9 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			when (mode) {
 				ListMode.LIST -> {
 					layoutManager = LinearLayoutManager(context)
-					addItemDecoration(
-						DividerItemDecoration(
-							context,
-							RecyclerView.VERTICAL
-						)
-					)
-					updatePadding(left = 0, right = 0)
+					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
+					addItemDecoration(SpacingItemDecoration(spacing))
+					updatePadding(left = spacing, right = spacing)
 				}
 				ListMode.DETAILED_LIST -> {
 					layoutManager = LinearLayoutManager(context)

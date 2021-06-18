@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/navigation_header"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:fitsSystemWindows="true"
+	android:orientation="vertical">
+
+	<ImageView
+		android:layout_width="@dimen/nav_header_logo_size"
+		android:layout_height="@dimen/nav_header_logo_size"
+		android:layout_marginStart="@dimen/nav_item_horizontal_padding"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:layout_marginBottom="@dimen/margin_normal"
+		app:srcCompat="@drawable/ic_totoro" />
+
+	<View
+		android:id="@+id/divider"
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="?android:attr/listDivider" />
+
+</LinearLayout>

@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="blue_primary">#1976D2</color>
-	<color name="blue_primary_dark">#0D47A1</color>
-	<color name="blue_primary_darker">#1A237E</color>
-	<color name="red_accent">#FF8A65</color>
-	<color name="dim">#99000000</color>
-	<color name="error">#E57373</color>
-	<color name="tabs_line">#5E636A</color>
+
+	<color name="color_primary">#1976D2</color>
+	<color name="color_primary_variant">#1565C0</color>
+	<color name="color_on_secondary">@android:color/black</color>
+
+	<color name="color_control_light">#2EFFFFFF</color> <!-- 18% white -->
+	<color name="color_surface_secondary">#2a2b2e</color>
+
+	<!-- Scrim colors -->
+	<color name="system_ui_scrim_light">#2EFFFFFF</color> <!-- 18% white -->
+	<color name="system_ui_scrim_black">#B3000000</color> <!-- 70% black -->
+
+	<!-- In dark mode without light status bar we can use transparent -->
+
+	<!-- Other colors with light mode alternatives -->
+	<color name="list_divider">#1fffffff</color>
+
 </resources>

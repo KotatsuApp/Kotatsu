@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-		<item name="windowActionModeOverlay">true</item>
-		<item name="actionModeCloseDrawable">@drawable/ic_cross</item>
-		<item name="actionModeStyle">@style/AppActionMode</item>
-		<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
-		<item name="badgeStyle">@style/Widget.MaterialComponents.Badge</item>
-		<item name="android:statusBarColor">@color/status_bar</item>
+	<style name="AppTheme" parent="Base.AppTheme">
+		<!-- We use a transparent nav bar on API 29, as the system is responsible for applying
+			 context background protection -->
 		<item name="android:navigationBarColor">@android:color/transparent</item>
-		<item name="colorOnPrimary">@android:color/white</item>
-		<item name="tabStyle">@style/Widget.MaterialComponents.TabLayout.New</item>
 	</style>
+
 </resources>

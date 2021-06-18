@@ -8,20 +8,20 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
+		style="@style/Widget.Kotatsu.AppBar"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:background="?colorPrimary"
-		android:theme="@style/AppToolbarTheme"
+		app:elevation="0dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
+			style="@style/Widget.Kotatsu.Toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:layout_scrollFlags="scroll|enterAlways"
-			app:popupTheme="@style/AppPopupTheme" />
+			app:layout_scrollFlags="scroll|enterAlways" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 

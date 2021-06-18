@@ -47,9 +47,6 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 		feedAdapter = FeedAdapter(get(), viewLifecycleOwner, this)
 		with(binding.recyclerView) {
 			adapter = feedAdapter
-			addItemDecoration(
-				SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
-			)
 			setHasFixedSize(true)
 			addOnScrollListener(PaginationScrollListener(4, this@FeedFragment))
 		}
@@ -134,7 +131,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 			return
 		}
 		val summaryText = getString(
-			R.string.chapers_checking_progress,
+			R.string.chapters_checking_progress,
 			progress.value + 1,
 			progress.total
 		)

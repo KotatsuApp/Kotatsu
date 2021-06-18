@@ -38,7 +38,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
-import org.koitharu.kotatsu.reader.ui.pager.wetoon.WebtoonReaderFragment
+import org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.utils.GridTouchHelper

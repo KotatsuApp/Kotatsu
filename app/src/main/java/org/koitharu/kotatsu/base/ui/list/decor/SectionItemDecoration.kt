@@ -37,7 +37,7 @@ class SectionItemDecoration(
 
 	override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
 		super.onDrawOver(c, parent, state)
-		val textView = headerView ?: parent.inflate<TextView>(R.layout.item_header).also {
+		val textView = headerView ?: parent.inflate<TextView>(R.layout.item_filter_header).also {
 			headerView = it
 		}
 		fixLayoutSize(textView, parent)

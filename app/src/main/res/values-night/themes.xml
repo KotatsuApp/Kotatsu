@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<style name="AppTheme.Amoled">
-		<item name="colorPrimary">@color/blue_primary</item>
-		<item name="colorPrimaryDark">@color/blue_primary_darker</item>
+
+	<style name="AppTheme.AMOLED">
 		<item name="android:windowBackground">@android:color/black</item>
 	</style>
+
+	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.MaterialComponents.Dark">
+		<item name="colorPrimary">@color/color_primary</item>
+		<item name="colorPrimaryVariant">@color/color_primary_variant</item>
+	</style>
+
 </resources>

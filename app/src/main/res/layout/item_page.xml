@@ -3,9 +3,9 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:background="?android:windowBackground"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:background="?android:windowBackground">
 
 	<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 		android:id="@+id/ssiv"
@@ -37,8 +37,8 @@
 			android:drawablePadding="12dp"
 			android:gravity="center_horizontal"
 			android:textAppearance="@style/TextAppearance.AppCompat.Small"
-			tools:text="@tools:sample/lorem[6]"
-			app:drawableTopCompat="@drawable/ic_error_large" />
+			app:drawableTopCompat="@drawable/ic_error_large"
+			tools:text="@tools:sample/lorem[6]" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_retry"

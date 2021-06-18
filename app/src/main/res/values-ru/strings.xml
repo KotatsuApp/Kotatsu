@@ -24,7 +24,7 @@
 	<string name="read">Читать</string>
 	<string name="add_bookmark">Добавить закладку</string>
 	<string name="you_have_not_favourites_yet">Добавьте интересующую Вас мангу в избренное, чтобы не потерять её</string>
-	<string name="add_to_favourites">Добавить в избранное</string>
+	<string name="add_to_favourites">В избранное</string>
 	<string name="add_new_category">Создать категорию</string>
 	<string name="add">Добавить</string>
 	<string name="enter_category_name">Введите название</string>
@@ -74,7 +74,6 @@
 	<string name="webtoon">Манхва</string>
 	<string name="read_mode">Режим чтения</string>
 	<string name="grid_size">Размер таблицы</string>
-	<string name="search_results_on_s">Результаты поиска по %s</string>
 	<string name="search_on_s">Поиск по %s</string>
 	<string name="delete_manga">Удалить мангу</string>
 	<string name="text_delete_local_manga">Вы уверены, что хотите удалить \"%s\" с устройства? \nЭто действие нельзя будет отменить.</string>
@@ -95,7 +94,6 @@
 	<string name="internal_storage">Внутренний накопитель</string>
 	<string name="external_storage">Внешнее хранилище</string>
 	<string name="domain">Домен</string>
-	<string name="_default">По умолчанию</string>
 	<string name="application_update">Проверять обновление приложения</string>
 	<string name="app_update_available">Доступно обновление приложения</string>
 	<string name="show_notification_app_update">Показывать уведомление при наличии новой версии</string>
@@ -192,7 +190,7 @@
 	<string name="captcha_solve">Пройти</string>
 	<string name="clear_cookies">Очистить куки</string>
 	<string name="cookies_cleared">Все куки удалены</string>
-	<string name="chapers_checking_progress">Проверка новых глав: %1$d из %2$d</string>
+	<string name="chapters_checking_progress">Проверка новых глав: %1$d из %2$d</string>
 	<string name="clear_feed">Очистить ленту</string>
 	<string name="text_clear_updates_feed_prompt">Вся история обновлений будет очищена и её нельзя будет вернуть. Вы уверены?</string>
 	<string name="new_chapters_checking">Проверка новых глав</string>
@@ -210,4 +208,6 @@
 	<string name="other">Другие</string>
 	<string name="languages">Languages</string>
 	<string name="welcome">Welcome</string>
+	<string name="description">Описание</string>
+	<string name="text_clear_search_history_prompt">Вы действительно хотите удалить все последние поисковые запросы? Это действие не может быть отменено.</string>
 </resources>

@@ -75,7 +75,6 @@
 	<string name="webtoon">Манхва</string>
 	<string name="read_mode">Рэжым чытання</string>
 	<string name="grid_size">Памер табліцы</string>
-	<string name="search_results_on_s">Вынікі пошуку па %s</string>
 	<string name="search_on_s">Пошук па %s</string>
 	<string name="delete_manga">Выдаліць мангу</string>
 	<string name="reader_settings">Настаўленні чытання</string>
@@ -96,7 +95,6 @@
 	<string name="internal_storage">Унутраны назапашвальнік</string>
 	<string name="external_storage">Знешняе сховішча</string>
 	<string name="domain">Дамен</string>
-	<string name="_default">Безумоўна</string>
 	<string name="application_update">Правяраць абнаўленне прыкладання</string>
 	<string name="app_update_available">Даступна абнаўленне прыкладання</string>
 	<string name="show_notification_app_update">Паказваць апавяшчэнне пры наяўнасці новай версіі</string>
@@ -194,7 +192,7 @@
 	<string name="captcha_solve">Прайсці</string>
 	<string name="clear_cookies">Ачысціць кукi</string>
 	<string name="cookies_cleared">Усе кукi выдалены</string>
-	<string name="chapers_checking_progress">Праверка новых частак: %1$d з %2$d</string>
+	<string name="chapters_checking_progress">Праверка новых частак: %1$d з %2$d</string>
 	<string name="clear_feed">Ачысціць стужку</string>
 	<string name="text_clear_updates_feed_prompt">Уся гісторыя абнаўленняў будзе ачышчана і яе нельга будзе вярнуць. Вы ўпэўненыя?</string>
 	<string name="new_chapters_checking">Праверка новых частак</string>
@@ -208,4 +206,7 @@
 	<string name="confirm">Пацвярджаць</string>
 	<string name="password_length_hint">Пароль павінен змяшчаць не менш за 4 сімвалаў</string>
 	<string name="hide_toolbar">Схаваць загаловак пры прагортцы</string>
+	<string name="search_only_on_s">Пошук толькі па %s</string>
+	<string name="text_clear_search_history_prompt">Вы сапраўды хочаце выдаліць усе апошнія пошукавыя запыты? Гэта дзеянне не можа быць адменена.</string>
+	<string name="description">Апісанне</string>
 </resources>

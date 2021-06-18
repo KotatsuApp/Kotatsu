@@ -1,75 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
+	android:layout_height="wrap_content"
+	android:background="?attr/selectableItemBackground"
+	android:paddingEnd="16dp">
 
-	<RelativeLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card_cover"
+		android:layout_width="48dp"
+		android:layout_height="48dp"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="8dp"
+		app:cardCornerRadius="4dp"
+		app:cardElevation="4dp"
+		app:layout_constraintDimensionRatio="h,1:1"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
 
-		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+		<ImageView
 			android:id="@+id/imageView_cover"
-			android:layout_width="87dp"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentStart="true"
-			android:layout_alignParentTop="true" />
+			android:scaleType="centerCrop"
+			tools:src="@tools:sample/backgrounds/scenic" />
+
+	</com.google.android.material.card.MaterialCardView>
+
+	<LinearLayout
+		android:id="@+id/title_container"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="4dp"
+		android:orientation="horizontal"
+		app:layout_constraintBottom_toTopOf="@id/textView_chapters"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/card_cover"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_chainStyle="packed">
 
 		<TextView
 			android:id="@+id/textView_title"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_alignParentTop="true"
-			android:layout_alignParentEnd="true"
-			android:layout_marginStart="6dp"
-			android:layout_marginTop="6dp"
-			android:layout_marginEnd="6dp"
-			android:layout_toEndOf="@id/imageView_cover"
-			android:ellipsize="end"
-			android:maxLines="2"
-			android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-			tools:text="@tools:sample/lorem[6]" />
-
-		<TextView
-			android:id="@+id/textView_subtitle"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_below="@id/textView_title"
-			android:layout_alignParentEnd="true"
-			android:layout_marginStart="6dp"
-			android:layout_marginTop="4dp"
-			android:layout_marginEnd="6dp"
-			android:layout_marginBottom="6dp"
-			android:layout_toEndOf="@id/imageView_cover"
+			android:layout_weight="1"
 			android:ellipsize="end"
 			android:maxLines="1"
-			android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-			android:textColor="?android:textColorSecondary"
-			tools:text="@tools:sample/lorem[6]" />
-
-		<View
-			android:id="@+id/divider"
-			android:layout_width="match_parent"
-			android:layout_height="1dp"
-			android:layout_below="@id/textView_subtitle"
-			android:layout_alignParentEnd="true"
-			android:layout_toEndOf="@id/imageView_cover"
-			android:background="?android:listDivider" />
+			android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+			tools:text="@tools:sample/lorem" />
 
 		<TextView
-			android:id="@+id/textView_chapters"
-			android:layout_width="0dp"
+			android:id="@+id/badge"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_below="@id/divider"
-			android:layout_alignParentEnd="true"
-			android:layout_marginStart="6dp"
-			android:layout_marginTop="8dp"
-			android:layout_marginEnd="6dp"
-			android:layout_toEndOf="@id/imageView_cover"
-			android:ellipsize="none"
-			android:paddingBottom="12dp" />
+			android:layout_gravity="center"
+			android:background="@drawable/badge"
+			android:paddingHorizontal="6dp"
+			android:paddingVertical="2dp"
+			android:textColor="@android:color/white"
+			android:textSize="12sp"
+			android:textStyle="bold"
+			tools:text="54" />
 
-	</RelativeLayout>
+	</LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+	<TextView
+		android:id="@+id/textView_chapters"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginBottom="4dp"
+		android:ellipsize="none"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/card_cover"
+		app:layout_constraintTop_toBottomOf="@id/title_container"
+		tools:text="@tools:sample/lorem[25]" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

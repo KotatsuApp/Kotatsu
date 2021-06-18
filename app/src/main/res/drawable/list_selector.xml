@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+	android:color="@color/selector_overlay">
+	<item>
+		<selector>
+			<item
+				android:state_selected="true"
+				android:top="2dp"
+				android:right="2dp"
+				android:bottom="2dp"
+				android:left="2dp">
+				<shape android:shape="rectangle">
+					<corners android:radius="4dp" />
+					<solid android:color="@color/selector_overlay" />
+				</shape>
+			</item>
+
+			<item
+				android:state_activated="true"
+				android:top="2dp"
+				android:right="2dp"
+				android:bottom="2dp"
+				android:left="2dp">
+				<shape android:shape="rectangle">
+					<corners android:radius="4dp" />
+					<solid android:color="@color/selector_overlay" />
+				</shape>
+			</item>
+
+			<item
+				android:top="2dp"
+				android:right="2dp"
+				android:bottom="2dp"
+				android:left="2dp">
+				<shape android:shape="rectangle">
+					<corners android:radius="4dp" />
+					<solid android:color="?android:attr/windowBackground" />
+				</shape>
+			</item>
+		</selector>
+	</item>
+</ripple>
