@@ -34,7 +34,7 @@ class SearchViewModel(
 		when {
 			list.isNullOrEmpty() && error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
-			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_search, R.string.nothing_found, R.string.text_search_holder_secondary))
+			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_book_search, R.string.nothing_found, R.string.text_search_holder_secondary))
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
 				list.toUi(result, mode)
