@@ -11,7 +11,7 @@
 		style="@style/Widget.Kotatsu.AppBar"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		app:elevation="0dp"
+		android:elevation="4dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">

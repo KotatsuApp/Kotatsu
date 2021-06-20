@@ -11,13 +11,6 @@
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-	<uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-	<queries>
-		<intent>
-			<action android:name="android.speech.RecognitionService" />
-		</intent>
-	</queries>
 
 	<application
 		android:name="org.koitharu.kotatsu.KotatsuApp"

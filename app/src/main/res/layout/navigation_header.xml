@@ -8,13 +8,28 @@
 	android:fitsSystemWindows="true"
 	android:orientation="vertical">
 
-	<ImageView
-		android:layout_width="@dimen/nav_header_logo_size"
-		android:layout_height="@dimen/nav_header_logo_size"
-		android:layout_marginStart="@dimen/nav_item_horizontal_padding"
-		android:layout_marginTop="@dimen/margin_normal"
-		android:layout_marginBottom="@dimen/margin_normal"
-		app:srcCompat="@drawable/ic_totoro" />
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:orientation="horizontal">
+
+		<ImageView
+			android:layout_width="@dimen/nav_header_logo_size"
+			android:layout_height="@dimen/nav_header_logo_size"
+			android:layout_marginStart="@dimen/margin_normal"
+			android:layout_marginTop="24dp"
+			android:layout_marginBottom="24dp"
+			app:srcCompat="@drawable/ic_totoro" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/nav_item_horizontal_padding"
+			android:text="@string/app_name"
+			android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+	</LinearLayout>
 
 	<View
 		android:id="@+id/divider"

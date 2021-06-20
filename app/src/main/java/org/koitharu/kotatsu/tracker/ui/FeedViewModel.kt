@@ -39,7 +39,7 @@ class FeedViewModel(
 		hasNextPage
 	) { list, isHasNextPage ->
 		when {
-			list.isEmpty() -> listOf(EmptyState(R.string.text_feed_holder))
+			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_feed, R.string.text_empty_holder_primary, R.string.text_feed_holder))
 			isHasNextPage -> list + LoadingFooter
 			else -> list
 		}

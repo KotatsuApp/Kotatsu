@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<color name="color_primary">#1976D2</color>
-	<color name="color_primary_variant">#1565C0</color>
+	<color name="color_primary">#4098EF</color>
+	<color name="color_primary_variant">#2C7CD6</color>
 	<color name="color_on_secondary">@android:color/black</color>
 
 	<color name="color_control_light">#2EFFFFFF</color> <!-- 18% white -->

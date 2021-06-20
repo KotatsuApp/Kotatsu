@@ -186,11 +186,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
-			top = insets.top,
-			left = insets.left,
-			right = insets.right
-		)
+		binding.toolbarCard.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = insets.top + 16
+			leftMargin = insets.left + 32
+			rightMargin = insets.right + 32
+		}
 		binding.fab.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			bottomMargin = insets.bottom + topMargin
 			leftMargin = insets.left + topMargin

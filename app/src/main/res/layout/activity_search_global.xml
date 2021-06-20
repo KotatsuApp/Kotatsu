@@ -10,7 +10,7 @@
 		style="@style/Widget.Kotatsu.AppBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		app:elevation="0dp">
+		android:elevation="4dp">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
