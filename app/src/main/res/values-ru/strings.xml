@@ -203,11 +203,11 @@
 	<string name="_and_x_more">…и ещё %1$d</string>
 	<string name="next">Далее</string>
 	<string name="protect_application_subtitle">Введите пароль, который вам понадобится при запуске приложения</string>
-	<string name="confirm">Confirm</string>
+	<string name="confirm">Подтвердить</string>
 	<string name="password_length_hint">Пароль должен содержать не менее 4 символов</string>
 	<string name="hide_toolbar">Прятать заголовок при прокрутке</string>
 	<string name="search_only_on_s">Поиск только по %s</string>
 	<string name="other">Другие</string>
-	<string name="languages">Languages</string>
-	<string name="welcome">Welcome</string>
+	<string name="languages">Языки</string>
+	<string name="welcome">Добро пожаловать</string>
 </resources>
