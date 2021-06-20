@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -87,16 +88,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				true
 			}
 			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
-				viewLifecycleScope.launch {
-					searchRepository.clearSearchHistory()
-					preference.summary = preference.context.resources
-						.getQuantityString(R.plurals.items, 0, 0)
-					Snackbar.make(
-						view ?: return@launch,
-						R.string.search_history_cleared,
-						Snackbar.LENGTH_SHORT
-					).show()
-				}
+				clearSearchHistory(preference)
 				true
 			}
 			AppSettings.KEY_UPDATES_FEED_CLEAR -> {
@@ -132,5 +124,24 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				preference.isEnabled = true
 			}
 		}
+	}
+
+	private fun clearSearchHistory(preference: Preference) {
+		AlertDialog.Builder(context ?: return)
+			.setTitle(R.string.clear_search_history)
+			.setMessage(R.string.text_clear_search_history_prompt)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(R.string.clear) { _, _ ->
+				viewLifecycleScope.launch {
+					searchRepository.clearSearchHistory()
+					preference.summary = preference.context.resources
+						.getQuantityString(R.plurals.items, 0, 0)
+					Snackbar.make(
+						view ?: return@launch,
+						R.string.search_history_cleared,
+						Snackbar.LENGTH_SHORT
+					).show()
+				}
+			}.show()
 	}
 }
