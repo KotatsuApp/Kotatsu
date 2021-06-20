@@ -13,7 +13,12 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 @Suppress("NOTHING_TO_INLINE")
+@Deprecated("Useless", ReplaceWith("File(this, name)", "java.io.File"))
 inline fun File.sub(name: String) = File(this, name)
+
+fun File.subdir(name: String) = File(this, name).also {
+	if (!it.exists()) it.mkdirs()
+}
 
 fun File.takeIfReadable() = takeIf { it.exists() && it.canRead() }
 

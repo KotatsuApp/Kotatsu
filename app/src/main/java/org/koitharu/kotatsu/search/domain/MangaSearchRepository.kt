@@ -96,7 +96,7 @@ class MangaSearchRepository(
 			MangaSuggestionsProvider.QUERY_URI,
 			SUGGESTION_PROJECTION,
 			null,
-			null,
+			arrayOfNulls(1),
 			null
 		)?.use { cursor -> cursor.count } ?: 0
 	}
