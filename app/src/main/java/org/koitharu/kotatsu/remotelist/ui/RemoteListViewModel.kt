@@ -37,7 +37,7 @@ class RemoteListViewModel(
 		when {
 			list.isNullOrEmpty() && error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
-			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_book_search, R.string.nothing_found, R.string._empty))
+			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_book_cross, R.string.nothing_found, R.string._empty))
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
 				list.toUi(result, mode)
