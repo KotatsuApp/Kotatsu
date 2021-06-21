@@ -42,10 +42,8 @@ class SearchUI(
 	companion object {
 
 		fun from(
-			menuItem: MenuItem,
+			searchView: SearchView,
 			listener: SearchSuggestionListener,
-		): SearchUI? = (menuItem.actionView as? SearchView)?.let {
-			SearchUI(it, listener)
-		}
+		): SearchUI = SearchUI(searchView, listener)
 	}
 }

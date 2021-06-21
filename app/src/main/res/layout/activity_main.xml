@@ -39,7 +39,19 @@
 					app:layout_scrollFlags="scroll|enterAlways"
 					app:titleTextAppearance="@style/TextAppearance.Kotatsu.PersistentToolbarTitle"
 					app:titleTextColor="?android:colorControlNormal"
-					tools:title="@string/app_name" />
+					android:focusableInTouchMode="true"
+					android:focusable="true"
+					tools:title="@string/app_name">
+
+					<androidx.appcompat.widget.SearchView
+						android:id="@+id/searchView"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:iconifiedByDefault="false"
+						app:queryHint="@string/search_manga"
+						android:paddingStart="-12dp"/>
+
+				</com.google.android.material.appbar.MaterialToolbar>
 
 			</com.google.android.material.card.MaterialCardView>
 
