@@ -18,11 +18,11 @@ val searchModule
 
 		factory { MangaSuggestionsProvider.createSuggestions(androidContext()) }
 
-		viewModel { (source: MangaSource, query: String) ->
-			SearchViewModel(get(named(source)), query, get())
+		viewModel { params ->
+			SearchViewModel(get(named(params.get<MangaSource>(0))), params[1], get())
 		}
-		viewModel { (query: String) ->
-			GlobalSearchViewModel(query, get(), get())
+		viewModel { query ->
+			GlobalSearchViewModel(query.get(), get(), get())
 		}
 		viewModel { SearchSuggestionViewModel(get()) }
 	}

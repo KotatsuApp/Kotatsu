@@ -35,6 +35,7 @@ class ShortcutsRepository(
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return
 		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
 		val shortcuts = historyRepository.getList(0, manager.maxShortcutCountPerActivity)
+			.filter { x -> x.title.isNotEmpty() }
 			.map { buildShortcutInfo(it).build().toShortcutInfo() }
 		manager.dynamicShortcuts = shortcuts
 	}

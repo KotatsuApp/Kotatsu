@@ -49,18 +49,17 @@ class MangareadRepository(
 				id = generateUid(href),
 				url = href,
 				publicUrl = href.inContextOf(div),
-				coverUrl = div.selectFirst("img").attr("data-srcset")
-					.split(',').firstOrNull()?.substringBeforeLast(' ').orEmpty(),
+				coverUrl = div.selectFirst("img").absUrl("src"),
 				title = summary.selectFirst("h3").text(),
 				rating = div.selectFirst("span.total_votes")?.ownText()
 					?.toFloatOrNull()?.div(5f) ?: -1f,
-				tags = summary.selectFirst(".mg_genres").select("a").mapToSet { a ->
+				tags = summary.selectFirst(".mg_genres")?.select("a")?.mapToSet { a ->
 					MangaTag(
 						key = a.attr("href").removeSuffix("/").substringAfterLast('/'),
 						title = a.text(),
 						source = MangaSource.MANGAREAD
 					)
-				},
+				}.orEmpty(),
 				author = summary.selectFirst(".mg_author")?.selectFirst("a")?.ownText(),
 				state = when (summary.selectFirst(".mg_status")?.selectFirst(".summary-content")
 					?.ownText()?.trim()) {
@@ -148,7 +147,7 @@ class MangareadRepository(
 			?: throw ParseException("Root not found")
 		return root.select("div.page-break").map { div ->
 			val img = div.selectFirst("img")
-			val url = img.relUrl("data-src")
+			val url = img.relUrl("src")
 			MangaPage(
 				id = generateUid(url),
 				url = url,

@@ -23,12 +23,12 @@ object CacheUtils {
 
 	@WorkerThread
 	fun computeCacheSize(context: Context, name: String) = getCacheDirs(context)
-		.map { it.sub(name) }
+		.map { File(it, name) }
 		.sumOf { x -> x.computeSize() }
 
 	@WorkerThread
 	fun clearCache(context: Context, name: String) = getCacheDirs(context)
-		.map { it.sub(name) }
+		.map { File(it, name) }
 		.forEach { it.deleteRecursively() }
 
 	// FIXME need async implementation

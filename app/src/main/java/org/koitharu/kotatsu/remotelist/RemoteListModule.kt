@@ -9,7 +9,7 @@ import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 val remoteListModule
 	get() = module {
 
-		viewModel { (source: MangaSource) ->
-			RemoteListViewModel(get(named(source)), get())
+		viewModel { source ->
+			RemoteListViewModel(get(named(source.get<MangaSource>())), get())
 		}
 	}

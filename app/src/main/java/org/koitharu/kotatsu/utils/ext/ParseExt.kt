@@ -80,7 +80,7 @@ fun String.toRelativeUrl(domain: String): String {
 }
 
 fun Element.relUrl(attributeKey: String): String {
-	val attr = attr(attributeKey)
+	val attr = attr(attributeKey).trim()
 	if (attr.isEmpty()) {
 		return ""
 	}

@@ -20,7 +20,9 @@ val settingsModule
 		single { AppSettings(androidContext()) }
 
 		viewModel { BackupViewModel(get(), androidContext()) }
-		viewModel { (uri: Uri?) -> RestoreViewModel(uri, get(), androidContext()) }
+		viewModel { params ->
+			RestoreViewModel(params.getOrNull(Uri::class), get(), androidContext())
+		}
 		viewModel { ProtectSetupViewModel(get()) }
 		viewModel { OnboardViewModel(get()) }
 	}

@@ -50,18 +50,22 @@ fun String.toCamelCase(): String {
 
 fun String.transliterate(skipMissing: Boolean): String {
 	val cyr = charArrayOf(
-		'a', 'б', 'в', 'г', 'д', 'ё', 'ж', 'з', 'и', 'к', 'л', 'м', 'н',
-		'п', 'р', 'с', 'т', 'у', 'ў', 'ф', 'х', 'ц', 'ш', 'щ', 'ы', 'э', 'ю', 'я'
+		'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п',
+		'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я', 'ё', 'ў'
 	)
 	val lat = arrayOf(
-		"a", "b", "v", "g", "d", "jo", "zh", "z", "i", "k", "l", "m", "n",
-		"p", "r", "s", "t", "u", "w", "f", "h", "ts", "sh", "sch", "", "e", "ju", "ja"
+		"a", "b", "v", "g", "d", "e", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p",
+		"r", "s", "t", "u", "f", "h", "ts", "ch", "sh", "sch", "", "i", "", "e", "ju", "ja", "jo", "w"
 	)
 	return buildString(length + 5) {
 		for (c in this@transliterate) {
-			val p = cyr.binarySearch(c.toLowerCase())
+			val p = cyr.binarySearch(c.lowercaseChar())
 			if (p in lat.indices) {
-				append(lat[p])
+				if (c.isUpperCase()) {
+					append(lat[p].uppercase())
+				} else {
+					append(lat[p])
+				}
 			} else if (!skipMissing) {
 				append(c)
 			}

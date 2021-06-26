@@ -175,10 +175,12 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 		}
 
 		fun getAvailableStorageDirs(context: Context): List<File> {
-			val result = ArrayList<File>(5)
-			result += context.filesDir.sub(DIR_NAME)
+			val result = ArrayList<File?>(5)
+			result += File(context.filesDir, DIR_NAME)
 			result += context.getExternalFilesDirs(DIR_NAME)
-			return result.distinctBy { it.canonicalPath }.filter { it.exists() || it.mkdir() }
+			return result.filterNotNull()
+				.distinctBy { it.canonicalPath }
+				.filter { it.exists() || it.mkdir() }
 		}
 
 		fun getFallbackStorageDir(context: Context): File? {

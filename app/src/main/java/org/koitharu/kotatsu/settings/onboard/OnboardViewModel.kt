@@ -8,7 +8,6 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.map
-import org.koitharu.kotatsu.utils.ext.mapTo
 import org.koitharu.kotatsu.utils.ext.mapToSet
 import java.util.*
 
@@ -30,10 +29,10 @@ class OnboardViewModel(
 		if (settings.isSourcesSelected) {
 			selectedLocales.removeAll(settings.hiddenSources.map { x -> MangaSource.valueOf(x).locale })
 		} else {
-			LocaleListCompat.getDefault().mapTo(selectedLocales) { x ->
+			val deviceLocales = LocaleListCompat.getDefault().map { x ->
 				x.language
 			}
-			selectedLocales.retainAll(allSources.map { x -> x.locale })
+			selectedLocales.retainAll(deviceLocales)
 			if (selectedLocales.isEmpty()) {
 				selectedLocales += "en"
 			}
@@ -71,7 +70,7 @@ class OnboardViewModel(
 		}.sortedWith(SourceLocaleComparator())
 	}
 
-	private class SourceLocaleComparator : Comparator<SourceLocale> {
+	private class SourceLocaleComparator : Comparator<SourceLocale?> {
 
 		private val deviceLocales = LocaleListCompat.getAdjustedDefault()
 			.map { it.language }
