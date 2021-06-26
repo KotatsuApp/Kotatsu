@@ -44,13 +44,12 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.navigationItemBackground
-import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.*
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener,
-	View.OnClickListener, SearchSuggestionListener, MenuItem.OnActionExpandListener {
+	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener,
+	MenuItem.OnActionExpandListener {
 
 	private val viewModel by viewModel<MainViewModel>(mode = LazyThreadSafetyMode.NONE)
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>(
@@ -66,14 +65,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 		navHeaderBinding = NavigationHeaderBinding.inflate(layoutInflater)
 		drawerToggle = ActionBarDrawerToggle(
-				this,
-				binding.drawer,
-				binding.toolbar,
-				R.string.open_menu,
-				R.string.close_menu
-			)
+			this,
+			binding.drawer,
+			binding.toolbar,
+			R.string.open_menu,
+			R.string.close_menu
+		)
 		binding.drawer.addDrawerListener(drawerToggle)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+		binding.searchView.apply {
+			setOnQueryTextFocusChangeListener(this@MainActivity)
+			searchUi = SearchUI.from(this, this@MainActivity)
+		}
 
 		binding.navigationView.apply {
 			val menuView = findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
@@ -121,21 +125,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	override fun onBackPressed() {
-		if (binding.drawer.isDrawerOpen(binding.navigationView)) {
-			binding.drawer.closeDrawer(binding.navigationView)
-		} else {
-			super.onBackPressed()
+		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
+		binding.searchView.setQuery(resources.getString(R.string._empty), false)
+		when {
+			binding.drawer.isDrawerOpen(binding.navigationView) -> binding.drawer.closeDrawer(
+				binding.navigationView)
+			fragment != null -> supportFragmentManager.commit {
+				remove(fragment)
+				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+			}
+			else -> super.onBackPressed()
 		}
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		menuInflater.inflate(R.menu.opt_main, menu)
-		searchUi = menu.findItem(R.id.action_search)?.let { menuItem ->
-			onMenuItemActionCollapse(menuItem)
-			menuItem.setOnActionExpandListener(this)
-			SearchUI.from(menuItem, this)
-		}
-		return super.onCreateOptionsMenu(menu)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -186,15 +186,27 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
-			top = insets.top,
-			left = insets.left,
-			right = insets.right
-		)
+		binding.toolbarCard.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = insets.top + 16
+			leftMargin = insets.left + 32
+			rightMargin = insets.right + 32
+		}
 		binding.fab.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			bottomMargin = insets.bottom + topMargin
 			leftMargin = insets.left + topMargin
 			rightMargin = insets.right + topMargin
+		}
+	}
+
+	override fun onFocusChange(v: View?, hasFocus: Boolean) {
+		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
+		if (v?.id == R.id.searchView && hasFocus) {
+			if (fragment == null) {
+				supportFragmentManager.commit {
+					add(R.id.container, SearchSuggestionFragment.newInstance(), TAG_SEARCH)
+					setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+				}
+			}
 		}
 	}
 

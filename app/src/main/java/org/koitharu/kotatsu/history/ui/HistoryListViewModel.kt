@@ -44,7 +44,7 @@ class HistoryListViewModel(
 		createListModeFlow()
 	) { list, grouped, mode ->
 		when {
-			list.isEmpty() -> listOf(EmptyState(R.string.text_history_holder))
+			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_history, R.string.text_history_holder_primary, R.string.text_history_holder_secondary))
 			else -> mapList(list, grouped, mode)
 		}
 	}.onFirst {

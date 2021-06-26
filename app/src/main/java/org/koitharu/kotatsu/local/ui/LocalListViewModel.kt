@@ -45,7 +45,7 @@ class LocalListViewModel(
 		when {
 			error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
-			list.isEmpty() -> listOf(EmptyState(R.string.text_local_holder))
+			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_storage, R.string.text_local_holder_primary, R.string.text_local_holder_secondary))
 			else -> list.toUi(mode)
 		}
 	}.asLiveDataDistinct(

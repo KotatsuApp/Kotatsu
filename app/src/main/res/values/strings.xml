@@ -1,5 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 	<string name="app_name" translatable="false">Kotatsu</string>
+	<string name="_empty" translatable="false"/>
 	<string name="close_menu">Close menu</string>
 	<string name="open_menu">Open menu</string>
 	<string name="local_storage">Local storage</string>
@@ -117,9 +118,13 @@
 	<string name="rename">Rename</string>
 	<string name="category_delete_confirm">Do you really want to remove category \"%s\" from your favourites? \nAll containing manga will be lost.</string>
 	<string name="remove_category">Remove category</string>
+	<string name="text_empty_holder_primary">It\'s kind of empty here…</string>
 	<string name="text_categories_holder">You can use categories to organize your favourite manga. Press «+» to create a category</string>
-	<string name="text_history_holder">Manga you are reading will be displayed here. You can find what to read in side menu</string>
-	<string name="text_local_holder">You have not any saved manga yet. You can save it from online sources or import from file</string>
+	<string name="text_search_holder_secondary">Try to reformulate the query.</string>
+	<string name="text_history_holder_primary">Manga you are reading will be displayed here</string>
+	<string name="text_history_holder_secondary">You can find what to read in side menu.</string>
+	<string name="text_local_holder_primary">You have not any saved manga yet</string>
+	<string name="text_local_holder_secondary">You can save it from online sources or import from file.</string>
 	<string name="manga_shelf">Manga shelf</string>
 	<string name="recent_manga">Recent manga</string>
 	<string name="pages_animation">Pages animation</string>
