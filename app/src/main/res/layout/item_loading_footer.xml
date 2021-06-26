@@ -5,7 +5,7 @@
 	android:layout_height="@dimen/list_footer_height"
 	android:padding="6dp">
 
-	<ProgressBar
+	<com.google.android.material.progressindicator.CircularProgressIndicator
 		android:id="@+id/progressBar"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
