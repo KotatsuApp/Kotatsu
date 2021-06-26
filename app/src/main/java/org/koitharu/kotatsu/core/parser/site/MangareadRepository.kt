@@ -53,13 +53,13 @@ class MangareadRepository(
 				title = summary.selectFirst("h3").text(),
 				rating = div.selectFirst("span.total_votes")?.ownText()
 					?.toFloatOrNull()?.div(5f) ?: -1f,
-				tags = summary.selectFirst(".mg_genres").select("a").mapToSet { a ->
+				tags = summary.selectFirst(".mg_genres")?.select("a")?.mapToSet { a ->
 					MangaTag(
 						key = a.attr("href").removeSuffix("/").substringAfterLast('/'),
 						title = a.text(),
 						source = MangaSource.MANGAREAD
 					)
-				},
+				}.orEmpty(),
 				author = summary.selectFirst(".mg_author")?.selectFirst("a")?.ownText(),
 				state = when (summary.selectFirst(".mg_status")?.selectFirst(".summary-content")
 					?.ownText()?.trim()) {
