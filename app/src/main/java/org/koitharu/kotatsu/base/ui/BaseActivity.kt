@@ -59,12 +59,12 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		this.binding = binding
 		super.setContentView(binding.root)
 		(binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
-		val params = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.layoutParams as AppBarLayout.LayoutParams
+		val params = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.layoutParams as? AppBarLayout.LayoutParams
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 		if (get<AppSettings>().isToolbarHideWhenScrolling) {
-			params.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
+			params?.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
 		} else {
-			params.scrollFlags = SCROLL_FLAG_NO_SCROLL
+			params?.scrollFlags = SCROLL_FLAG_NO_SCROLL
 		}
 	}
 
