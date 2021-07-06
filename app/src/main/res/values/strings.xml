@@ -213,4 +213,5 @@
 	<string name="other">Other</string>
 	<string name="languages">Languages</string>
 	<string name="welcome">Welcome</string>
+	<string name="backup_saved">Backup saved succesfully</string>
 </resources>

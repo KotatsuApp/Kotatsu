@@ -1,27 +1,41 @@
 package org.koitharu.kotatsu.settings.backup
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
-import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.io.File
+import java.io.FileOutputStream
 
 class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	private val viewModel by viewModel<BackupViewModel>(mode = LazyThreadSafetyMode.NONE)
 
+	private var backup: File? = null
+	private val saveFileContract =
+		registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
+			val file = backup
+			if (uri != null && file != null) {
+				saveBackup(file, uri)
+			} else {
+				dismiss()
+			}
+		}
+
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = DialogProgressBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,8 +74,22 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 	}
 
 	private fun onBackupDone(file: File) {
-		ShareHelper(context ?: return).shareBackup(file)
-		dismiss()
+		this.backup = file
+		saveFileContract.launch(file.name)
+	}
+
+	private fun saveBackup(file: File, output: Uri) {
+		try {
+			requireContext().contentResolver.openFileDescriptor(output, "w")?.use { fd ->
+				FileOutputStream(fd.fileDescriptor).use {
+					it.write(file.readBytes())
+				}
+			}
+			Toast.makeText(requireContext(), R.string.backup_saved, Toast.LENGTH_LONG).show()
+			dismiss()
+		} catch (e: Exception) {
+			onError(e)
+		}
 	}
 
 	companion object {
