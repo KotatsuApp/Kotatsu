@@ -74,7 +74,6 @@
 	<string name="webtoon">Манхва</string>
 	<string name="read_mode">Режим чтения</string>
 	<string name="grid_size">Размер таблицы</string>
-	<string name="search_results_on_s">Результаты поиска по %s</string>
 	<string name="search_on_s">Поиск по %s</string>
 	<string name="delete_manga">Удалить мангу</string>
 	<string name="text_delete_local_manga">Вы уверены, что хотите удалить \"%s\" с устройства? \nЭто действие нельзя будет отменить.</string>
@@ -95,7 +94,6 @@
 	<string name="internal_storage">Внутренний накопитель</string>
 	<string name="external_storage">Внешнее хранилище</string>
 	<string name="domain">Домен</string>
-	<string name="_default">По умолчанию</string>
 	<string name="application_update">Проверять обновление приложения</string>
 	<string name="app_update_available">Доступно обновление приложения</string>
 	<string name="show_notification_app_update">Показывать уведомление при наличии новой версии</string>

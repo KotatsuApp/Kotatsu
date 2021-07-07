@@ -75,7 +75,6 @@
 	<string name="webtoon">Манхва</string>
 	<string name="read_mode">Рэжым чытання</string>
 	<string name="grid_size">Памер табліцы</string>
-	<string name="search_results_on_s">Вынікі пошуку па %s</string>
 	<string name="search_on_s">Пошук па %s</string>
 	<string name="delete_manga">Выдаліць мангу</string>
 	<string name="reader_settings">Настаўленні чытання</string>
@@ -96,7 +95,6 @@
 	<string name="internal_storage">Унутраны назапашвальнік</string>
 	<string name="external_storage">Знешняе сховішча</string>
 	<string name="domain">Дамен</string>
-	<string name="_default">Безумоўна</string>
 	<string name="application_update">Правяраць абнаўленне прыкладання</string>
 	<string name="app_update_available">Даступна абнаўленне прыкладання</string>
 	<string name="show_notification_app_update">Паказваць апавяшчэнне пры наяўнасці новай версіі</string>
