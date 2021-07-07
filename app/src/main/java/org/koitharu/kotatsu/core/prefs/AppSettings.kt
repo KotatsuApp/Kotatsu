@@ -166,6 +166,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_SWITCHERS = "reader_switchers"
 		const val KEY_TRACK_SOURCES = "track_sources"
+		const val KEY_TRACK_WARNING = "track_warning"
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_TRACKER_NOTIFICATIONS = "tracker_notifications"
