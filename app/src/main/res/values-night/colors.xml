@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<color name="color_primary">#4098EF</color>
-	<color name="color_primary_variant">#2C7CD6</color>
+	<color name="color_primary">#42A5F5</color>
+	<color name="color_primary_variant">#1565C0</color>
 	<color name="color_on_secondary">@android:color/black</color>
 
 	<color name="color_control_light">#2EFFFFFF</color> <!-- 18% white -->
@@ -16,5 +16,6 @@
 
 	<!-- Other colors with light mode alternatives -->
 	<color name="list_divider">#1fffffff</color>
+	<color name="error">#CF6679</color>
 
 </resources>
