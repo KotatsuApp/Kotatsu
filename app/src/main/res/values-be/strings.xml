@@ -207,4 +207,16 @@
     <string name="search_only_on_s">Пошук толькі па %s</string>
     <string name="text_clear_search_history_prompt">Вы сапраўды хочаце выдаліць усе апошнія пошукавыя запыты? Гэта дзеянне не можа быць адменена.</string>
     <string name="description">Апісанне</string>
+    <string name="read_more">Падрабязна</string>
+    <string name="tracker_warning">Некаторыя вытворцы могуць змяняць паводзіны сістэмы, што можа парушаць выкананне фонавых задач.</string>
+    <string name="backup_saved">Рэзервовая копія паспяхова захавана</string>
+    <string name="welcome">Вітаю</string>
+    <string name="languages">Мовы</string>
+    <string name="other">Іншыя</string>
+    <string name="text_local_holder_secondary">Вы можаце захаваць яго з онлайн-крыніц або імпартаваць з файла.</string>
+    <string name="text_local_holder_primary">У Вас яшчэ няма ні адной захаванай мангі</string>
+    <string name="text_history_holder_secondary">Вы можаце знайсці, што пачытаць у бакавым меню.</string>
+    <string name="text_history_holder_primary">Тут будзе адлюстроўвацца манга, якую вы чытаеце</string>
+    <string name="text_search_holder_secondary">Паспрабуйце перафармуляваць запыт.</string>
+    <string name="text_empty_holder_primary">Тут неяк пуста…</string>
 </resources>
