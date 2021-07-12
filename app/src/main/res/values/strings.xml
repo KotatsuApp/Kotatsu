@@ -167,7 +167,7 @@
 	<string name="no_update_available">No updates available</string>
 	<string name="right_to_left">Right-to-left ←</string>
 	<string name="prefer_rtl_reader">Prefer right-to-left reader</string>
-	<string name="prefer_rtl_reader_summary">Reading mode can be set up separately for each file</string>
+	<string name="prefer_rtl_reader_summary">Reading mode can be set up separately for each series</string>
 	<string name="create_category">New category</string>
 	<string name="report_github">Create issue on GitHub</string>
 	<string name="scale_mode">Scale mode</string>
