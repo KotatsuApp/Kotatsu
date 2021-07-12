@@ -118,7 +118,6 @@
     <string name="category_delete_confirm">¿Realmente quieres eliminar la categoría \"%s\" de tus favoritos? \nTodo el manga en ella se perderá.</string>
     <string name="remove_category">Quitar categoría</string>
     <string name="text_categories_holder">Puedes usar categorías para organizar tus mangas favoritos. Pulsa «+» para crear una categoría</string>
-    <string name="text_local_holder">Todavía no tienes ningún manga guardado. Puedes guardarlo desde fuentes remotas o importarlo desde un archivo</string>
     <string name="manga_shelf">Estante de manga</string>
     <string name="recent_manga">Manga reciente</string>
     <string name="pages_animation">Animación de páginas</string>
