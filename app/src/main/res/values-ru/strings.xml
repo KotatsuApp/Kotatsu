@@ -214,4 +214,7 @@
 	<string name="languages">Языки</string>
 	<string name="welcome">Добро пожаловать</string>
 	<string name="text_clear_search_history_prompt">Вы действительно хотите удалить все недавние поисковые запросы? Это действие не может быть отменено.</string>
+	<string name="backup_saved">Резервная копия успешно сохранена</string>
+	<string name="tracker_warning">Некоторые производители могут изменять поведение системы, нарушая работу фоновых задач.</string>
+	<string name="read_more">Подробнее</string>
 </resources>

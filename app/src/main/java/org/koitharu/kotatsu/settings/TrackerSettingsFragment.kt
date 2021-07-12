@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.style.URLSpan
+import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import org.koitharu.kotatsu.R
@@ -19,6 +22,17 @@ class TrackerSettingsFragment : BasePreferenceFragment(R.string.new_chapters_che
 
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_TRACK_SOURCES)
 			?.summaryProvider = MultiSummaryProvider(R.string.dont_check)
+		val warningPreference = findPreference<Preference>(AppSettings.KEY_TRACK_WARNING)
+		if (warningPreference != null) {
+			warningPreference.summary = buildSpannedString {
+				append(getString(R.string.tracker_warning))
+				append(" ")
+				inSpans(URLSpan("https://dontkillmyapp.com/")) {
+					append(getString(R.string.read_more))
+				}
+			}
+			warningPreference
+		}
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference?): Boolean {

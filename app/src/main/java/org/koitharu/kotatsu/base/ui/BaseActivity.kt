@@ -56,16 +56,18 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	protected fun setContentView(binding: B) {
 		this.binding = binding
 		super.setContentView(binding.root)
-		(binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
-		val toolbarParams = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.layoutParams as? AppBarLayout.LayoutParams
-		val persistentToolbarParams = (binding.root.findViewById<View>(R.id.toolbar_card))?.layoutParams as? AppBarLayout.LayoutParams
+		val toolbar = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)
+		toolbar?.let(this::setSupportActionBar)
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
-		if (get<AppSettings>().isToolbarHideWhenScrolling) {
-			toolbarParams?.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
-			persistentToolbarParams?.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
-		} else {
-			toolbarParams?.scrollFlags = SCROLL_FLAG_NO_SCROLL
-			persistentToolbarParams?.scrollFlags = SCROLL_FLAG_NO_SCROLL
+
+		val toolbarParams = (toolbar ?: binding.root.findViewById<View>(R.id.toolbar_card))
+			?.layoutParams as? AppBarLayout.LayoutParams
+		if (toolbarParams != null) {
+			if (get<AppSettings>().isToolbarHideWhenScrolling) {
+				toolbarParams.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
+			} else {
+				toolbarParams.scrollFlags = SCROLL_FLAG_NO_SCROLL
+			}
 		}
 	}
 

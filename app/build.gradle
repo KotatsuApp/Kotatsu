@@ -13,8 +13,9 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 30
-		versionCode 365
-		versionName '1.1'
+		versionCode 367
+		versionName '1.1.2'
+		generatedDensities = []
 
 		kapt {
 			arguments {
@@ -93,7 +94,7 @@ dependencies {
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.0'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.0'
 
-	implementation 'io.insert-koin:koin-android:3.1.1'
+	implementation 'io.insert-koin:koin-android:3.1.2'
 	implementation 'io.coil-kt:coil-base:1.2.2'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.solkin:disk-lru-cache:1.2'
@@ -102,5 +103,5 @@ dependencies {
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20210307'
-	testImplementation 'io.insert-koin:koin-test-junit4:3.1.1'
+	testImplementation 'io.insert-koin:koin-test-junit4:3.1.2'
 }

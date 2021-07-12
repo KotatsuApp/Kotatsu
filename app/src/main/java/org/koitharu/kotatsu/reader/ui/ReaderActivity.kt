@@ -220,7 +220,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	}
 
 	override fun onGridTouch(area: Int) {
-		controlDelegate.onGridTouch(area)
+		controlDelegate.onGridTouch(area, binding.container)
 	}
 
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {

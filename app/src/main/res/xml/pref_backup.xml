@@ -16,7 +16,7 @@
 		app:iconSpaceReserved="false" />
 
 	<Preference
-		android:icon="@drawable/ic_info_outilne"
+		android:icon="@drawable/ic_info_outline"
 		android:persistent="false"
 		android:selectable="false"
 		android:summary="@string/backup_information"

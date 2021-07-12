@@ -217,4 +217,7 @@
 	<string name="languages">Languages</string>
 	<string name="welcome">Welcome</string>
 	<string name="description">Description</string>
+	<string name="backup_saved">Backup saved successfully</string>
+	<string name="tracker_warning">Some manufacturers can change the system behavior, which may breaks background tasks.</string>
+	<string name="read_more">Read more</string>
 </resources>
