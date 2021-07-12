@@ -118,7 +118,6 @@
     <string name="category_delete_confirm">Вы ўпэўненыя, што хочаце выдаліць катэгорыю \"%s\"? Уся манга з дадзенай катэгорыі будзе страчана.</string>
     <string name="remove_category">Выдаліць катэгорыю</string>
     <string name="text_categories_holder">Катэгорыі дапамагаюць парадкаваць выбраную мангу. Націсніце «+», каб стварыць катэгорыю</string>
-    <string name="text_local_holder">У вас пакуль няма захаванай мангі. Вы можаце захаваць мангу з онлайн каталога або імпартаваць з файла</string>
     <string name="manga_shelf">Полка з мангай</string>
     <string name="recent_manga">Нядаўняя манга</string>
     <string name="pages_animation">Анімацыя гартання</string>
