@@ -191,7 +191,7 @@
 	<string name="group">Group</string>
 	<string name="today">Today</string>
 	<string name="tap_to_try_again">Tap to try again</string>
-	<string name="reader_mode_hint">Chosen configuration will be remembered for this file</string>
+	<string name="reader_mode_hint">Chosen configuration will be remembered for this series</string>
 	<string name="silent">Silent</string>
 	<string name="captcha_required">CAPTCHA required</string>
 	<string name="captcha_solve">Solve</string>
