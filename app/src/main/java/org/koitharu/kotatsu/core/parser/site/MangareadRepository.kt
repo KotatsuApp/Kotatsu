@@ -43,25 +43,26 @@ class MangareadRepository(
 			payload
 		).parseHtml()
 		return doc.select("div.row.c-tabs-item__content").map { div ->
-			val href = div.selectFirst("a").relUrl("href")
+			val href = div.selectFirst("a")?.relUrl("href")
+				?: parseFailed("Link not found")
 			val summary = div.selectFirst(".tab-summary")
 			Manga(
 				id = generateUid(href),
 				url = href,
 				publicUrl = href.inContextOf(div),
-				coverUrl = div.selectFirst("img").absUrl("src"),
-				title = summary.selectFirst("h3").text(),
+				coverUrl = div.selectFirst("img")?.absUrl("src").orEmpty(),
+				title = summary?.selectFirst("h3")?.text().orEmpty(),
 				rating = div.selectFirst("span.total_votes")?.ownText()
 					?.toFloatOrNull()?.div(5f) ?: -1f,
-				tags = summary.selectFirst(".mg_genres")?.select("a")?.mapToSet { a ->
+				tags = summary?.selectFirst(".mg_genres")?.select("a")?.mapToSet { a ->
 					MangaTag(
 						key = a.attr("href").removeSuffix("/").substringAfterLast('/'),
 						title = a.text(),
 						source = MangaSource.MANGAREAD
 					)
 				}.orEmpty(),
-				author = summary.selectFirst(".mg_author")?.selectFirst("a")?.ownText(),
-				state = when (summary.selectFirst(".mg_status")?.selectFirst(".summary-content")
+				author = summary?.selectFirst(".mg_author")?.selectFirst("a")?.ownText(),
+				state = when (summary?.selectFirst(".mg_status")?.selectFirst(".summary-content")
 					?.ownText()?.trim()) {
 					"OnGoing" -> MangaState.ONGOING
 					"Completed" -> MangaState.FINISHED
@@ -75,9 +76,9 @@ class MangareadRepository(
 	override suspend fun getTags(): Set<MangaTag> {
 		val doc = loaderContext.httpGet("https://${getDomain()}/manga/").parseHtml()
 		val root = doc.body().selectFirst("header")
-			.selectFirst("ul.second-menu")
+			?.selectFirst("ul.second-menu") ?: parseFailed("Root not found")
 		return root.select("li").mapNotNullToSet { li ->
-			val a = li.selectFirst("a")
+			val a = li.selectFirst("a") ?: return@mapNotNullToSet null
 			val href = a.attr("href").removeSuffix("/")
 				.substringAfterLast("genres/", "")
 			if (href.isEmpty()) {
@@ -127,10 +128,12 @@ class MangareadRepository(
 				?.joinToString { it.html() },
 			chapters = doc2.select("li").asReversed().mapIndexed { i, li ->
 				val a = li.selectFirst("a")
-				val href = a.relUrl("href")
+				val href = a?.relUrl("href").orEmpty().ifEmpty {
+					parseFailed("Link is missing")
+				}
 				MangaChapter(
 					id = generateUid(href),
-					name = a.ownText(),
+					name = a!!.ownText(),
 					number = i + 1,
 					url = href,
 					source = MangaSource.MANGAREAD
@@ -147,7 +150,7 @@ class MangareadRepository(
 			?: throw ParseException("Root not found")
 		return root.select("div.page-break").map { div ->
 			val img = div.selectFirst("img")
-			val url = img.relUrl("src")
+			val url = img?.relUrl("src") ?: parseFailed("Page image not found")
 			MangaPage(
 				id = generateUid(url),
 				url = url,

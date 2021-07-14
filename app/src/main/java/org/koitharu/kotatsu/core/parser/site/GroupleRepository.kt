@@ -57,7 +57,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 			if (descDiv.selectFirst("i.fa-user") != null) {
 				return@mapNotNull null //skip author
 			}
-			val href = imgDiv.selectFirst("a").attr("href")?.inContextOf(node)
+			val href = imgDiv.selectFirst("a")?.attr("href")?.inContextOf(node)
 			if (href == null || href.toHttpUrl().host != baseHost) {
 				return@mapNotNull null // skip external links
 			}
@@ -161,11 +161,11 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 
 	override suspend fun getTags(): Set<MangaTag> {
 		val doc = loaderContext.httpGet("https://${getDomain()}/list/genres/sort_name").parseHtml()
-		val root = doc.body().getElementById("mangaBox").selectFirst("div.leftContent")
-			.selectFirst("table.table")
+		val root = doc.body().getElementById("mangaBox")?.selectFirst("div.leftContent")
+			?.selectFirst("table.table") ?: parseFailed("Cannot find root")
 		return root.select("a.element-link").mapToSet { a ->
 			MangaTag(
-				title = a.text().capitalize(),
+				title = a.text().toCamelCase(),
 				key = a.attr("href").substringAfterLast('/'),
 				source = source
 			)

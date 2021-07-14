@@ -56,22 +56,23 @@ abstract class NineMangaRepository(
 			?: throw ParseException("Cannot find root")
 		val baseHost = root.baseUri().toHttpUrl().host
 		return root.select("li").map { node ->
-			val href = node.selectFirst("a").absUrl("href")
+			val href = node.selectFirst("a")?.absUrl("href")
+				?: parseFailed("Link not found")
 			val relUrl = href.toRelativeUrl(baseHost)
 			val dd = node.selectFirst("dd")
 			Manga(
 				id = generateUid(relUrl),
 				url = relUrl,
 				publicUrl = href,
-				title = dd.selectFirst("a.bookname").text().toCamelCase(),
+				title = dd?.selectFirst("a.bookname")?.text()?.toCamelCase().orEmpty(),
 				altTitle = null,
-				coverUrl = node.selectFirst("img").absUrl("src"),
+				coverUrl = node.selectFirst("img")?.absUrl("src").orEmpty(),
 				rating = Manga.NO_RATING,
 				author = null,
 				tags = emptySet(),
 				state = null,
 				source = source,
-				description = dd.selectFirst("p").html(),
+				description = dd?.selectFirst("p")?.html(),
 			)
 		}
 	}
@@ -86,7 +87,7 @@ abstract class NineMangaRepository(
 		val infoRoot = root.selectFirst("div.bookintro")
 			?: throw ParseException("Cannot find info")
 		return manga.copy(
-			tags = infoRoot.getElementsByAttributeValue("itemprop", "genre")?.first()
+			tags = infoRoot.getElementsByAttributeValue("itemprop", "genre").first()
 				?.select("a")?.mapToSet { a ->
 					MangaTag(
 						title = a.text(),
@@ -94,13 +95,13 @@ abstract class NineMangaRepository(
 						source = source,
 					)
 				}.orEmpty(),
-			author = infoRoot.getElementsByAttributeValue("itemprop", "author")?.first()?.text(),
-			description = infoRoot.getElementsByAttributeValue("itemprop", "description")?.first()
+			author = infoRoot.getElementsByAttributeValue("itemprop", "author").first()?.text(),
+			description = infoRoot.getElementsByAttributeValue("itemprop", "description").first()
 				?.html()?.substringAfter("</b>"),
 			chapters = root.selectFirst("div.chapterbox")?.selectFirst("ul")
 				?.select("li")?.asReversed()?.mapIndexed { i, li ->
 					val a = li.selectFirst("a")
-					val href = a.relUrl("href")
+					val href = a?.relUrl("href") ?: parseFailed("Link not found")
 					MangaChapter(
 						id = generateUid(href),
 						name = a.text(),
@@ -138,14 +139,14 @@ abstract class NineMangaRepository(
 		val doc = loaderContext.httpGet("https://${getDomain()}/category/", PREDEFINED_HEADERS)
 			.parseHtml()
 		val root = doc.body().selectFirst("ul.genreidex")
-		return root.select("li").mapToSet { li ->
-			val a = li.selectFirst("a")
+		return root?.select("li")?.mapToSet { li ->
+			val a = li.selectFirst("a") ?: parseFailed("Link not found")
 			MangaTag(
 				title = a.text(),
 				key = a.attr("href").substringBetweenLast("/", "."),
 				source = source
 			)
-		}
+		} ?: parseFailed("Root not found")
 	}
 
 	class English(loaderContext: MangaLoaderContext) : NineMangaRepository(

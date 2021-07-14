@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.parser
 
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
+import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaTag
@@ -74,5 +75,9 @@ abstract class RemoteMangaRepository(
 		}
 		h = 31 * h + id
 		return h
+	}
+
+	protected fun parseFailed(message: String? = null): Nothing {
+		throw ParseException(message)
 	}
 }

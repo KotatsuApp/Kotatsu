@@ -36,7 +36,7 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
 			largeCoverUrl = root.getElementById("cover")?.absUrl("src"),
 			tags = root.selectFirst("div.sidetags")?.select("li.sidetag")?.mapToSet {
-				val a = it.children().last()
+				val a = it.children().last() ?: parseFailed("Invalid tag")
 				MangaTag(
 					title = a.text(),
 					key = a.attr("href").substringAfterLast('/'),

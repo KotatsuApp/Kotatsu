@@ -51,14 +51,15 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 			?: throw ParseException("Root not found")
 		return root.select("li").mapNotNull { li ->
 			val a = li.selectFirst("a.manga_cover")
-			val href = a.relUrl("href")
+			val href = a?.relUrl("href")
+				?: return@mapNotNull null
 			val views = li.select("p.view")
 			val status = views.findOwnText { x -> x.startsWith("Status:") }
-				?.substringAfter(':')?.trim()?.toLowerCase(Locale.ROOT)
+				?.substringAfter(':')?.trim()?.lowercase(Locale.ROOT)
 			Manga(
 				id = generateUid(href),
 				title = a.attr("title"),
-				coverUrl = a.selectFirst("img").absUrl("src"),
+				coverUrl = a.selectFirst("img")?.absUrl("src").orEmpty(),
 				source = MangaSource.MANGATOWN,
 				altTitle = null,
 				rating = li.selectFirst("p.score")?.selectFirst("b")
@@ -87,11 +88,11 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root = doc.body().selectFirst("section.main")
 			?.selectFirst("div.article_content") ?: throw ParseException("Cannot find root")
-		val info = root.selectFirst("div.detail_info").selectFirst("ul")
+		val info = root.selectFirst("div.detail_info")?.selectFirst("ul")
 		val chaptersList = root.selectFirst("div.chapter_content")
 			?.selectFirst("ul.chapter_list")?.select("li")?.asReversed()
 		return manga.copy(
-			tags = manga.tags + info.select("li").find { x ->
+			tags = manga.tags + info?.select("li")?.find { x ->
 				x.selectFirst("b")?.ownText() == "Genre(s):"
 			}?.select("a")?.mapNotNull { a ->
 				MangaTag(
@@ -100,9 +101,10 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 					source = MangaSource.MANGATOWN
 				)
 			}.orEmpty(),
-			description = info.getElementById("show")?.ownText(),
+			description = info?.getElementById("show")?.ownText(),
 			chapters = chaptersList?.mapIndexedNotNull { i, li ->
-				val href = li.selectFirst("a").relUrl("href")
+				val href = li.selectFirst("a")?.relUrl("href")
+					?: return@mapIndexedNotNull null
 				val name = li.select("span").filter { it.className().isEmpty() }
 					.joinToString(" - ") { it.text() }.trim()
 				MangaChapter(
@@ -110,7 +112,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 					url = href,
 					source = MangaSource.MANGATOWN,
 					number = i + 1,
-					name = if (name.isEmpty()) "${manga.title} - ${i + 1}" else name
+					name = name.ifEmpty { "${manga.title} - ${i + 1}" }
 				)
 			}
 		)
@@ -121,7 +123,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		val doc = loaderContext.httpGet(fullUrl).parseHtml()
 		val root = doc.body().selectFirst("div.page_select")
 			?: throw ParseException("Cannot find root")
-		return root.selectFirst("select").select("option").mapNotNull {
+		return root.selectFirst("select")?.select("option")?.mapNotNull {
 			val href = it.relUrl("value")
 			if (href.endsWith("featured.html")) {
 				return@mapNotNull null
@@ -132,20 +134,20 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 				referer = fullUrl,
 				source = MangaSource.MANGATOWN
 			)
-		}
+		} ?: parseFailed("Pages list not found")
 	}
 
 	override suspend fun getPageUrl(page: MangaPage): String {
 		val doc = loaderContext.httpGet(page.url.withDomain()).parseHtml()
-		return doc.getElementById("image").absUrl("src")
+		return doc.getElementById("image")?.absUrl("src") ?: parseFailed("Image not found")
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
 		val doc = loaderContext.httpGet("/directory/".withDomain()).parseHtml()
 		val root = doc.body().selectFirst("aside.right")
-			.getElementsContainingOwnText("Genres")
-			.first()
-			.nextElementSibling()
+			?.getElementsContainingOwnText("Genres")
+			?.first()
+			?.nextElementSibling() ?: parseFailed("Root not found")
 		return root.select("li").mapNotNullToSet { li ->
 			val a = li.selectFirst("a") ?: return@mapNotNullToSet null
 			val key = a.attr("href").parseTagKey()

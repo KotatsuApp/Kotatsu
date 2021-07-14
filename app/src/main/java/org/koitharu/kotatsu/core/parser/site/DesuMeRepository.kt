@@ -6,7 +6,6 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
 
@@ -122,12 +121,13 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 
 	override suspend fun getTags(): Set<MangaTag> {
 		val doc = loaderContext.httpGet("https://${getDomain()}/manga/").parseHtml()
-		val root = doc.body().getElementById("animeFilter").selectFirst(".catalog-genres")
+		val root = doc.body().getElementById("animeFilter")
+			?.selectFirst(".catalog-genres") ?: throw ParseException("Root not found")
 		return root.select("li").mapToSet {
 			MangaTag(
 				source = source,
-				key = it.selectFirst("input").attr("data-genre"),
-				title = it.selectFirst("label").text()
+				key = it.selectFirst("input")?.attr("data-genre") ?: parseFailed(),
+				title = it.selectFirst("label")?.text() ?: parseFailed()
 			)
 		}
 	}
