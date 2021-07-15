@@ -1,10 +1,10 @@
-package org.koitharu.kotatsu.parsers
+package org.koitharu.kotatsu.core.network
 
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
 
-class TemporaryCookieJar : CookieJar {
+class TestCookieJar : CookieJar {
 
 	private val cache = HashMap<CookieKey, Cookie>()
 

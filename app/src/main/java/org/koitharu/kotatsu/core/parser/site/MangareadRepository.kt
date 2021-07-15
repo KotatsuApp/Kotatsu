@@ -26,11 +26,8 @@ class MangareadRepository(
 		sortOrder: SortOrder?,
 		tag: MangaTag?
 	): List<Manga> {
-		if (offset % PAGE_SIZE != 0) {
-			return emptyList()
-		}
 		val payload = createRequestTemplate()
-		payload["page"] = (offset / PAGE_SIZE).toString()
+		payload["page"] = (offset / PAGE_SIZE.toFloat()).toIntUp().toString()
 		payload["vars[meta_key]"] = when (sortOrder) {
 			SortOrder.POPULARITY -> "_wp_manga_views"
 			SortOrder.UPDATED -> "_latest_update"
