@@ -1,2 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="history_and_cache">Cronologia e cache</string>
+    <string name="no_description">Nessuna descrizione</string>
+    <string name="text_file_not_supported">File non valido. Sono supportati solo ZIP e CBZ.</string>
+    <string name="operation_not_supported">Questa operazione non è supportata</string>
+    <string name="delete">Elimina</string>
+    <string name="_import">Importa</string>
+    <string name="share_image">Condividi l\'immagine</string>
+    <string name="page_saved">Pagina salvata correttamente</string>
+    <string name="save_page">Salva la pagina</string>
+    <string name="wait_for_loading_finish">Aspetta che il carico finisca</string>
+    <string name="pages">Pagine</string>
+    <string name="automatic">Automatico</string>
+    <string name="dark">Scuro</string>
+    <string name="light">Chiaro</string>
+    <string name="theme">Tema</string>
+    <string name="filter">Filtro</string>
+    <string name="genre">Genere</string>
+    <string name="sort_order">Ordinamento</string>
+    <string name="all">Tutti</string>
+    <string name="by_rating">Per valutazione</string>
+    <string name="newest">Più recente</string>
+    <string name="updated">Aggiornato</string>
+    <string name="popular">Popolare</string>
+    <string name="by_name">Per nome</string>
+    <string name="downloads">Scaricati</string>
+    <string name="download_complete">Scaricamento finito</string>
+    <string name="processing_">Elaborazione…</string>
+    <string name="manga_downloading_">Scaricamento di manga…</string>
+    <string name="search_manga">Cerca manga</string>
+    <string name="search">Cerca</string>
+    <string name="share_s">Condividi %s</string>
+    <string name="create_shortcut">Crea una scorciatoia…</string>
+    <string name="share">Condividi</string>
+    <string name="save">Salva</string>
+    <string name="enter_category_name">Inserisci il nome della categoria</string>
+    <string name="add">Aggiungi</string>
+    <string name="add_new_category">Aggiungi una nuova categoria</string>
+    <string name="add_to_favourites">Aggiungi ai preferiti</string>
+    <string name="you_have_not_favourites_yet">Non hai ancora preferiti</string>
+    <string name="add_bookmark">Aggiungi un segnalibro</string>
+    <string name="read">Leggi</string>
+    <string name="history_is_empty">La cronologia è vuota</string>
+    <string name="nothing_found">Niente di trovato</string>
+    <string name="clear_history">Cancella la cronologia</string>
+    <string name="try_again">Riprova</string>
+    <string name="text_clear_updates_feed_prompt">Tutta la cronologia degli aggiornamenti sarà cancellata e questa azione non può essere annullata. Sei sicuro/a\?</string>
+    <string name="close">Chiudi</string>
+    <string name="chapter_d_of_d">Capitolo %1$d di %2$d</string>
+    <string name="loading_">Caricamento…</string>
+    <string name="remote_sources">Fonti remote</string>
+    <string name="settings">Impostazioni</string>
+    <string name="list_mode">Modalità elenco</string>
+    <string name="grid">Griglia</string>
+    <string name="detailed_list">Elenco dettagliato</string>
+    <string name="category_delete_confirm">Vuoi davvero rimuovere la categoria «%s» dai tuoi preferiti\?
+\nTutti i manga contenuti saranno persi.</string>
+    <string name="text_delete_local_manga">Vuoi davvero eliminare «%s» dalla memoria locale del tuo telefono\?
+\nQuesta operazione non può essere annullata.</string>
+    <string name="_s_deleted_from_local_storage">«%s» eliminato dall\'archiviazione locale</string>
+    <string name="_s_removed_from_history">«%s» rimosso dalla cronologia</string>
+    <string name="list">Lista</string>
+    <string name="chapters">Capitoli</string>
+    <string name="details">Dettagli</string>
+    <string name="network_error">Errore di connessione alla rete</string>
+    <string name="error_occurred">Si è verificato un errore</string>
+    <string name="history">Cronologia</string>
+    <string name="favourites">Preferiti</string>
+    <string name="local_storage">Archiviazione locale</string>
+    <string name="open_menu">Apri il menù</string>
+    <string name="close_menu">Chiudi il menù</string>
+</resources>
