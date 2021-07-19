@@ -15,7 +15,7 @@
     <string name="confirm">Confirmer</string>
     <string name="protect_application_subtitle">Entrez le mot de passe qui sera demandé au démarrage de l\'application</string>
     <string name="next">Suivant</string>
-    <string name="_and_x_more">… et %1$d autres</string>
+    <string name="_and_x_more">… et %1$d autre(s)</string>
     <string name="default_s">Par défaut : %s</string>
     <string name="auth_required">Vous devez autoriser la visualisation de ce contenu</string>
     <string name="sign_in">Se connecter</string>
@@ -48,7 +48,7 @@
     <string name="restart_required">Redémarrage nécessaire</string>
     <string name="black_dark_theme_summary">Utile pour les écrans AMOLED</string>
     <string name="black_dark_theme">Thème noir foncé</string>
-    <string name="zoom_mode_keep_start">Garder au départ</string>
+    <string name="zoom_mode_keep_start">Garder au début</string>
     <string name="zoom_mode_fit_width">Ajuster à la largeur</string>
     <string name="zoom_mode_fit_height">Ajuster à la hauteur</string>
     <string name="zoom_mode_fit_center">Ajuster au centre</string>
