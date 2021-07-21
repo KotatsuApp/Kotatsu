@@ -1,5 +1,8 @@
 package org.koitharu.kotatsu.core.parser
 
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.qualifier.named
 import org.koitharu.kotatsu.core.model.*
 
 interface MangaRepository {
@@ -20,4 +23,11 @@ interface MangaRepository {
 	suspend fun getPageUrl(page: MangaPage): String
 
 	suspend fun getTags(): Set<MangaTag>
+
+	companion object : KoinComponent {
+
+		operator fun invoke(source: MangaSource): MangaRepository {
+			return get(named(source))
+		}
+	}
 }

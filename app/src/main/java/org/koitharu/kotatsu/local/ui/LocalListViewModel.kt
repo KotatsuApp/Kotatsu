@@ -14,10 +14,7 @@ import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.EmptyState
-import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.MediaStoreCompat
 import org.koitharu.kotatsu.utils.SingleLiveEvent
@@ -36,6 +33,7 @@ class LocalListViewModel(
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
+	private val headerModel = ListHeader(context.getString(R.string.local_storage))
 
 	override val content = combine(
 		mangaList,
@@ -46,7 +44,10 @@ class LocalListViewModel(
 			error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
 			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_storage, R.string.text_local_holder_primary, R.string.text_local_holder_secondary))
-			else -> list.toUi(mode)
+			else -> ArrayList<ListModel>(list.size + 1).apply {
+				add(headerModel)
+				list.toUi(this, mode)
+			}
 		}
 	}.asLiveDataDistinct(
 		viewModelScope.coroutineContext + Dispatchers.Default,

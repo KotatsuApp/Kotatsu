@@ -23,13 +23,13 @@ import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.*
-import kotlin.math.roundToInt
 
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
 	View.OnLongClickListener {
@@ -62,6 +62,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
 			textViewAuthor.textAndVisible = manga.author
+			sourceContainer.isVisible = manga.source != MangaSource.LOCAL
 			textViewSource.text = manga.source.title
 			textViewDescription.text =
 				manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
