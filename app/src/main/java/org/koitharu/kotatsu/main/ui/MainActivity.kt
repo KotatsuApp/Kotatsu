@@ -6,11 +6,18 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.*
+import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
@@ -38,18 +45,19 @@ import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
-import org.koitharu.kotatsu.search.ui.suggestion.SearchUI
 import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.hideKeyboard
+import org.koitharu.kotatsu.utils.ext.navigationItemBackground
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener,
-	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener,
-	MenuItem.OnActionExpandListener {
+	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener {
 
 	private val viewModel by viewModel<MainViewModel>(mode = LazyThreadSafetyMode.NONE)
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>(
@@ -58,11 +66,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	private lateinit var navHeaderBinding: NavigationHeaderBinding
 	private lateinit var drawerToggle: ActionBarDrawerToggle
-	private var searchUi: SearchUI? = null
+	private var searchViewElevation = 0f
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
+		searchViewElevation = binding.toolbarCard.cardElevation
 		navHeaderBinding = NavigationHeaderBinding.inflate(layoutInflater)
 		drawerToggle = ActionBarDrawerToggle(
 			this,
@@ -71,12 +80,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			R.string.open_menu,
 			R.string.close_menu
 		)
+		drawerToggle.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_arrow_back))
+		drawerToggle.setToolbarNavigationClickListener {
+			binding.searchView.hideKeyboard()
+			onBackPressed()
+		}
 		binding.drawer.addDrawerListener(drawerToggle)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		binding.searchView.apply {
-			setOnQueryTextFocusChangeListener(this@MainActivity)
-			searchUi = SearchUI.from(this, this@MainActivity)
+			onFocusChangeListener = this@MainActivity
+			searchSuggestionListener = this@MainActivity
 		}
 
 		binding.navigationView.apply {
@@ -114,6 +128,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		viewModel.remoteSources.observe(this, this::updateSideMenu)
 	}
 
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		super.onRestoreInstanceState(savedInstanceState)
+		drawerToggle.isDrawerIndicatorEnabled =
+			binding.drawer.getDrawerLockMode(GravityCompat.START) == DrawerLayout.LOCK_MODE_UNLOCKED
+	}
+
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
 		drawerToggle.syncState()
@@ -126,13 +146,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	override fun onBackPressed() {
 		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
-		binding.searchView.setQuery(resources.getString(R.string._empty), false)
+		binding.searchView.clearFocus()
 		when {
 			binding.drawer.isDrawerOpen(binding.navigationView) -> binding.drawer.closeDrawer(
 				binding.navigationView)
 			fragment != null -> supportFragmentManager.commit {
 				remove(fragment)
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+				runOnCommit { onSearchClosed() }
 			}
 			else -> super.onBackPressed()
 		}
@@ -205,6 +226,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				supportFragmentManager.commit {
 					add(R.id.container, SearchSuggestionFragment.newInstance(), TAG_SEARCH)
 					setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+					runOnCommit { onSearchOpened() }
 				}
 			}
 		}
@@ -215,6 +237,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	override fun onQueryClick(query: String, submit: Boolean) {
+		binding.searchView.query = query
 		if (submit) {
 			if (query.isNotEmpty()) {
 				val source = searchSuggestionViewModel.getLocalSearchSource()
@@ -225,8 +248,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				}
 				searchSuggestionViewModel.saveQuery(query)
 			}
-		} else {
-			searchUi?.query = query
 		}
 	}
 
@@ -242,28 +263,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			.setPositiveButton(R.string.clear) { _, _ ->
 				searchSuggestionViewModel.clearSearchHistory()
 			}.show()
-	}
-
-	override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
-		if (fragment == null) {
-			supportFragmentManager.commit {
-				add(R.id.container, SearchSuggestionFragment.newInstance(), TAG_SEARCH)
-				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-			}
-		}
-		return true
-	}
-
-	override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
-		if (fragment != null) {
-			supportFragmentManager.commit {
-				remove(fragment)
-				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-			}
-		}
-		return true
 	}
 
 	private fun onOpenReader(manga: Manga) {
@@ -332,6 +331,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.commit()
 		binding.fab.isVisible = fragment is HistoryListFragment
+	}
+
+	private fun onSearchOpened() {
+		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+		drawerToggle.isDrawerIndicatorEnabled = false
+		binding.toolbarCard.cardElevation = 0f
+		binding.appbar.elevation = searchViewElevation
+	}
+
+	private fun onSearchClosed() {
+		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+		drawerToggle.isDrawerIndicatorEnabled = true
+		binding.appbar.elevation = 0f
+		binding.toolbarCard.cardElevation = searchViewElevation
 	}
 
 	private companion object {

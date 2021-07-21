@@ -60,7 +60,7 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		toolbar?.let(this::setSupportActionBar)
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 
-		val toolbarParams = (toolbar ?: binding.root.findViewById<View>(R.id.toolbar_card))
+		val toolbarParams = (binding.root.findViewById<View>(R.id.toolbar_card) ?: toolbar)
 			?.layoutParams as? AppBarLayout.LayoutParams
 		if (toolbarParams != null) {
 			if (get<AppSettings>().isToolbarHideWhenScrolling) {

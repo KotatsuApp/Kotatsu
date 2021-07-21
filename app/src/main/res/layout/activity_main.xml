@@ -17,6 +17,7 @@
 			style="@style/Widget.Kotatsu.AppBar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:stateListAnimator="@null"
 			app:elevation="0dp">
 
 			<com.google.android.material.card.MaterialCardView
@@ -35,21 +36,23 @@
 					style="@style/Widget.Kotatsu.Toolbar"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
+					android:focusable="true"
+					android:focusableInTouchMode="true"
 					app:contentInsetStartWithNavigation="0dp"
-					app:layout_scrollFlags="scroll|enterAlways"
 					app:titleTextAppearance="@style/TextAppearance.Kotatsu.PersistentToolbarTitle"
 					app:titleTextColor="?android:colorControlNormal"
-					android:focusableInTouchMode="true"
-					android:focusable="true"
 					tools:title="@string/app_name">
 
-					<androidx.appcompat.widget.SearchView
+					<org.koitharu.kotatsu.search.ui.widget.SearchEditText
 						android:id="@+id/searchView"
 						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						app:iconifiedByDefault="false"
-						app:queryHint="@string/search_manga"
-						android:paddingStart="-12dp"/>
+						android:layout_height="match_parent"
+						android:background="@null"
+						android:gravity="center_vertical"
+						android:hint="@string/search_manga"
+						android:imeOptions="actionSearch"
+						android:importantForAutofill="no"
+						android:singleLine="true" />
 
 				</com.google.android.material.appbar.MaterialToolbar>
 
