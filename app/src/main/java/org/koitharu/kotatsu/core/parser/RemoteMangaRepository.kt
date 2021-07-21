@@ -20,6 +20,9 @@ abstract class RemoteMangaRepository(
 		loaderContext.getSettings(source)
 	}
 
+	val title: String
+		get() = source.title
+
 	override val sortOrders: Set<SortOrder> get() = emptySet()
 
 	override suspend fun getPageUrl(page: MangaPage): String = page.url.withDomain()

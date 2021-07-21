@@ -37,6 +37,7 @@ class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(onRetryClick))
 			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(onRetryClick))
 			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD())
+			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
 	}
 
 	fun setItems(list: List<ListModel>, commitCallback: Runnable) {
@@ -77,5 +78,6 @@ class MangaListAdapter(
 		const val ITEM_TYPE_ERROR_STATE = 6
 		const val ITEM_TYPE_ERROR_FOOTER = 7
 		const val ITEM_TYPE_EMPTY = 8
+		const val ITEM_TYPE_HEADER = 9
 	}
 }

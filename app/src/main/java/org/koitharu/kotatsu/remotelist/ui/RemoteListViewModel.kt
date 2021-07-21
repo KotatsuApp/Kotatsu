@@ -10,12 +10,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaFilterConfig
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import java.util.*
 
 class RemoteListViewModel(
 	private val repository: MangaRepository,
@@ -27,6 +27,7 @@ class RemoteListViewModel(
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private var appliedFilter: MangaFilter? = null
 	private var loadingJob: Job? = null
+	private val headerModel = ListHeader((repository as RemoteMangaRepository).title)
 
 	override val content = combine(
 		mangaList,
@@ -39,7 +40,8 @@ class RemoteListViewModel(
 			list == null -> listOf(LoadingState)
 			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_book_cross, R.string.nothing_found, R.string._empty))
 			else -> {
-				val result = ArrayList<ListModel>(list.size + 1)
+				val result = ArrayList<ListModel>(list.size + 2)
+				result += headerModel
 				list.toUi(result, mode)
 				when {
 					error != null -> result += error.toErrorFooter()
