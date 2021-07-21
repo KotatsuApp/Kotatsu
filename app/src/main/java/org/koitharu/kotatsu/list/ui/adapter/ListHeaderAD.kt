@@ -9,6 +9,11 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 fun listHeaderAD() = adapterDelegate<ListHeader, ListModel>(R.layout.item_header) {
 
 	bind {
-		(itemView as TextView).text = item.text
+		val textView = (itemView as TextView)
+		if (item.text != null) {
+			textView.text = item.text
+		} else {
+			textView.setText(item.textRes)
+		}
 	}
 }

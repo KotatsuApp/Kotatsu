@@ -33,7 +33,7 @@ class LocalListViewModel(
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
-	private val headerModel = ListHeader(context.getString(R.string.local_storage))
+	private val headerModel = ListHeader(null, R.string.local_storage)
 
 	override val content = combine(
 		mangaList,

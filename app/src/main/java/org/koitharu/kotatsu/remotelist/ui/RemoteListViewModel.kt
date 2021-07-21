@@ -27,7 +27,7 @@ class RemoteListViewModel(
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private var appliedFilter: MangaFilter? = null
 	private var loadingJob: Job? = null
-	private val headerModel = ListHeader((repository as RemoteMangaRepository).title)
+	private val headerModel = ListHeader((repository as RemoteMangaRepository).title, 0)
 
 	override val content = combine(
 		mangaList,
