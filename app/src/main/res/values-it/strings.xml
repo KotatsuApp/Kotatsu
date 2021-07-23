@@ -201,4 +201,24 @@
     <string name="remove">Rimuovi</string>
     <string name="text_clear_history_prompt">Vuoi davvero cancellare tutta la tua cronologia di lettura\? Questa azione non può essere annullata.</string>
     <string name="clear">Cancella</string>
+    <string name="tracker_warning">Alcuni produttori possono cambiare il comportamento del sistema, che può interrompere le attività nello sfondo.</string>
+    <string name="backup_saved">Backup salvato con successo</string>
+    <string name="default_s">Predefinito: %s</string>
+    <string name="auth_required">Devi autorizzare la visualizzazione di questo contenuto</string>
+    <string name="reverse">Inverti</string>
+    <string name="new_chapters_checking">Controllo dei nuovi capitoli</string>
+    <string name="chapters_checking_progress">Controllo dei nuovi capitoli: %1$d di %2$d</string>
+    <string name="cookies_cleared">Tutti i cookie sono stati rimossi</string>
+    <string name="clear_cookies">Cancella i cookie</string>
+    <string name="captcha_solve">Risolvi</string>
+    <string name="captcha_required">CAPTCHA è richiesto</string>
+    <string name="reader_mode_hint">La configurazione scelta sarà ricordata per questo manga</string>
+    <string name="backup_information">Puoi creare un backup della tua cronologia e dei tuoi preferiti e ripristinarlo</string>
+    <string name="data_restored_with_errors">I dati sono ripristinati, ma ci sono errori</string>
+    <string name="data_restored_success">Tutti i dati ripristinati con successo</string>
+    <string name="zoom_mode_keep_start">Tieni all\'inizio</string>
+    <string name="zoom_mode_fit_height">Adatta all\'altezza</string>
+    <string name="zoom_mode_fit_center">Adatta al centro</string>
+    <string name="zoom_mode_fit_width">Adatta alla larghezza</string>
+    <string name="scale_mode">Modalità scala</string>
 </resources>
