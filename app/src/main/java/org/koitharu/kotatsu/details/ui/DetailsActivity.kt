@@ -33,7 +33,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
-import org.koitharu.kotatsu.download.DownloadService
+import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage

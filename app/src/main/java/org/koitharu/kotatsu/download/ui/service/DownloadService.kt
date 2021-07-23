@@ -1,7 +1,9 @@
-package org.koitharu.kotatsu.download
+package org.koitharu.kotatsu.download.ui.service
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Binder
 import android.os.IBinder
@@ -11,11 +13,16 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
 import org.koin.core.context.GlobalContext
 import org.koitharu.kotatsu.BuildConfig
@@ -24,9 +31,9 @@ import org.koitharu.kotatsu.base.ui.BaseService
 import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.utils.LiveStateFlow
+import org.koitharu.kotatsu.download.domain.DownloadManager
+import org.koitharu.kotatsu.utils.JobStateFlow
 import org.koitharu.kotatsu.utils.ext.toArraySet
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.collections.set
 
@@ -35,10 +42,11 @@ class DownloadService : BaseService() {
 	private lateinit var notificationManager: NotificationManagerCompat
 	private lateinit var wakeLock: PowerManager.WakeLock
 	private lateinit var downloadManager: DownloadManager
-	private lateinit var dispatcher: ExecutorCoroutineDispatcher
 
-	private val jobs = HashMap<Int, LiveStateFlow<DownloadManager.State>>()
+	private val jobs = LinkedHashMap<Int, JobStateFlow<DownloadManager.State>>()
+	private val jobCount = MutableStateFlow(0)
 	private val mutex = Mutex()
+	private val controlReceiver = ControlReceiver()
 
 	override fun onCreate() {
 		super.onCreate()
@@ -46,37 +54,23 @@ class DownloadService : BaseService() {
 		wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
 		downloadManager = DownloadManager(this, get(), get(), get(), get(), get())
-		dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 		DownloadNotification.createChannel(this)
+		registerReceiver(controlReceiver, IntentFilter(ACTION_DOWNLOAD_CANCEL))
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		super.onStartCommand(intent, flags, startId)
-		when (intent?.action) {
-			ACTION_DOWNLOAD_START -> {
-				val manga = intent.getParcelableExtra<Manga>(EXTRA_MANGA)
-				val chapters = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toArraySet()
-				if (manga != null) {
-					jobs[startId] = downloadManga(startId, manga, chapters)
-					Toast.makeText(this, R.string.manga_downloading_, Toast.LENGTH_SHORT).show()
-					return START_REDELIVER_INTENT
-				} else {
-					stopSelf(startId)
-				}
-			}
-			ACTION_DOWNLOAD_CANCEL -> {
-				val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
-				jobs.remove(cancelId)?.cancel()
-				stopSelf(startId)
-			}
-			else -> stopSelf(startId)
+		val manga = intent?.getParcelableExtra<Manga>(EXTRA_MANGA)
+		val chapters = intent?.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toArraySet()
+		return if (manga != null) {
+			jobs[startId] = downloadManga(startId, manga, chapters)
+			jobCount.value = jobs.size
+			Toast.makeText(this, R.string.manga_downloading_, Toast.LENGTH_SHORT).show()
+			START_REDELIVER_INTENT
+		} else {
+			stopSelf(startId)
+			START_NOT_STICKY
 		}
-		return START_NOT_STICKY
-	}
-
-	override fun onDestroy() {
-		super.onDestroy()
-		dispatcher.close()
 	}
 
 	override fun onBind(intent: Intent): IBinder {
@@ -84,11 +78,16 @@ class DownloadService : BaseService() {
 		return DownloadBinder()
 	}
 
+	override fun onDestroy() {
+		unregisterReceiver(controlReceiver)
+		super.onDestroy()
+	}
+
 	private fun downloadManga(
 		startId: Int,
 		manga: Manga,
 		chaptersIds: Set<Long>?,
-	): LiveStateFlow<DownloadManager.State> {
+	): JobStateFlow<DownloadManager.State> {
 		val initialState = DownloadManager.State.Queued(startId, manga, null)
 		val stateFlow = MutableStateFlow<DownloadManager.State>(initialState)
 		val job = lifecycleScope.launch {
@@ -97,12 +96,18 @@ class DownloadService : BaseService() {
 				val notification = DownloadNotification(this@DownloadService, startId)
 				startForeground(startId, notification.create(initialState))
 				try {
-					withContext(dispatcher) {
+					withContext(Dispatchers.Default) {
 						downloadManager.downloadManga(manga, chaptersIds, startId)
 							.collect { state ->
 								stateFlow.value = state
 								notificationManager.notify(startId, notification.create(state))
 							}
+					}
+					if (stateFlow.value is DownloadManager.State.Done) {
+						sendBroadcast(
+							Intent(ACTION_DOWNLOAD_COMPLETE)
+								.putExtra(EXTRA_MANGA, manga)
+						)
 					}
 				} finally {
 					ServiceCompat.stopForeground(
@@ -120,19 +125,33 @@ class DownloadService : BaseService() {
 				}
 			}
 		}
-		return LiveStateFlow(stateFlow, job)
+		return JobStateFlow(stateFlow, job)
+	}
+
+	inner class ControlReceiver : BroadcastReceiver() {
+
+		override fun onReceive(context: Context, intent: Intent?) {
+			when (intent?.action) {
+				ACTION_DOWNLOAD_CANCEL -> {
+					val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
+					jobs.remove(cancelId)?.cancel()
+					jobCount.value = jobs.size
+				}
+			}
+		}
 	}
 
 	inner class DownloadBinder : Binder() {
 
-		val downloads: Collection<LiveStateFlow<DownloadManager.State>>
-			get() = jobs.values
+		val downloads: Flow<Collection<JobStateFlow<DownloadManager.State>>>
+			get() = jobCount.mapLatest { jobs.values }
 	}
 
 	companion object {
 
-		private const val ACTION_DOWNLOAD_START =
-			"${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_START"
+		const val ACTION_DOWNLOAD_COMPLETE =
+			"${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_COMPLETE"
+
 		private const val ACTION_DOWNLOAD_CANCEL =
 			"${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"
 
@@ -143,7 +162,6 @@ class DownloadService : BaseService() {
 		fun start(context: Context, manga: Manga, chaptersIds: Collection<Long>? = null) {
 			confirmDataTransfer(context) {
 				val intent = Intent(context, DownloadService::class.java)
-				intent.action = ACTION_DOWNLOAD_START
 				intent.putExtra(EXTRA_MANGA, manga)
 				if (chaptersIds != null) {
 					intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
@@ -152,10 +170,8 @@ class DownloadService : BaseService() {
 			}
 		}
 
-		fun getCancelIntent(context: Context, startId: Int) =
-			Intent(context, DownloadService::class.java)
-				.setAction(ACTION_DOWNLOAD_CANCEL)
-				.putExtra(ACTION_DOWNLOAD_CANCEL, startId)
+		fun getCancelIntent(startId: Int) = Intent(ACTION_DOWNLOAD_CANCEL)
+			.putExtra(ACTION_DOWNLOAD_CANCEL, startId)
 
 		private fun confirmDataTransfer(context: Context, callback: () -> Unit) {
 			val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -220,4 +220,6 @@
 	<string name="backup_saved">Backup saved successfully</string>
 	<string name="tracker_warning">Some manufacturers can change the system behavior, which may breaks background tasks.</string>
 	<string name="read_more">Read more</string>
+	<string name="queued">Queued</string>
+	<string name="text_downloads_holder">There are currently no active downloads</string>
 </resources>

@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.download
+package org.koitharu.kotatsu.download.ui.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -13,9 +13,11 @@ import androidx.core.graphics.drawable.toBitmap
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.download.domain.DownloadManager
+import org.koitharu.kotatsu.download.ui.DownloadsActivity
 import org.koitharu.kotatsu.utils.PendingIntentCompat
+import org.koitharu.kotatsu.utils.ext.format
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import kotlin.math.roundToInt
 
 class DownloadNotification(
 	private val context: Context,
@@ -26,12 +28,18 @@ class DownloadNotification(
 	private val cancelAction = NotificationCompat.Action(
 		R.drawable.ic_cross,
 		context.getString(android.R.string.cancel),
-		PendingIntent.getService(
+		PendingIntent.getBroadcast(
 			context,
 			startId,
-			DownloadService.getCancelIntent(context, startId),
+			DownloadService.getCancelIntent(startId),
 			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
 		)
+	)
+	private val listIntent = PendingIntent.getActivity(
+		context,
+		REQUEST_LIST,
+		DownloadsActivity.newIntent(context),
+		PendingIntentCompat.FLAG_IMMUTABLE,
 	)
 
 	init {
@@ -45,7 +53,7 @@ class DownloadNotification(
 		builder.setContentText(context.getString(R.string.manga_downloading_))
 		builder.setProgress(1, 0, true)
 		builder.setSmallIcon(android.R.drawable.stat_sys_download)
-		builder.setContentIntent(null)
+		builder.setContentIntent(listIntent)
 		builder.setStyle(null)
 		builder.setLargeIcon(state.cover?.toBitmap())
 		builder.clearActions()
@@ -72,7 +80,6 @@ class DownloadNotification(
 				builder.setSubText(context.getString(R.string.error))
 				builder.setContentText(message)
 				builder.setAutoCancel(true)
-				builder.setContentIntent(null)
 				builder.setCategory(NotificationCompat.CATEGORY_ERROR)
 				builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
 			}
@@ -89,13 +96,8 @@ class DownloadNotification(
 				builder.addAction(cancelAction)
 			}
 			is DownloadManager.State.Progress -> {
-				val max = state.totalChapters * PROGRESS_STEP
-				val progress = state.currentChapter * PROGRESS_STEP +
-						(state.currentPage / state.totalPages.toFloat() * PROGRESS_STEP)
-							.roundToInt()
-				val percent = (progress / max.toFloat() * 100).roundToInt()
-				builder.setProgress(max, progress, false)
-				builder.setContentText("%d%%".format(percent))
+				builder.setProgress(state.max, state.progress, false)
+				builder.setContentText((state.percent * 100).format() + "%")
 				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 				builder.setStyle(null)
 				builder.addAction(cancelAction)
@@ -120,7 +122,7 @@ class DownloadNotification(
 	companion object {
 
 		private const val CHANNEL_ID = "download"
-		private const val PROGRESS_STEP = 20
+		private const val REQUEST_LIST = 6
 
 		fun createChannel(context: Context) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

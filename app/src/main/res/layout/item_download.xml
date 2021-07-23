@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?attr/selectableItemBackground"
+	android:paddingStart="16dp"
+	android:paddingTop="4dp"
+	android:paddingEnd="16dp"
+	android:paddingBottom="6dp">
+
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card_cover"
+		android:layout_width="48dp"
+		android:layout_height="48dp"
+		android:layout_marginTop="8dp"
+		android:layout_marginBottom="8dp"
+		app:cardCornerRadius="4dp"
+		app:cardElevation="4dp"
+		app:layout_constraintDimensionRatio="h,1:1"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<ImageView
+			android:id="@+id/imageView_cover"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:contentDescription="@null"
+			android:scaleType="centerCrop"
+			tools:src="@tools:sample/backgrounds/scenic" />
+
+	</com.google.android.material.card.MaterialCardView>
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="4dp"
+		android:ellipsize="end"
+		android:singleLine="true"
+		android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/card_cover"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:text="@tools:sample/lorem" />
+
+	<com.google.android.material.progressindicator.LinearProgressIndicator
+		android:id="@+id/progressBar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="4dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/card_cover"
+		app:layout_constraintTop_toBottomOf="@id/textView_title" />
+
+	<TextView
+		android:id="@+id/textView_status"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="4dp"
+		android:ellipsize="end"
+		android:singleLine="true"
+		android:textAppearance="@style/TextAppearance.AppCompat.Small"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/card_cover"
+		app:layout_constraintTop_toBottomOf="@id/progressBar"
+		tools:text="@string/manga_downloading_" />
+
+	<TextView
+		android:id="@+id/textView_percent"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+		app:layout_constraintBaseline_toBaselineOf="@id/textView_status"
+		app:layout_constraintEnd_toEndOf="parent"
+		tools:text="25%" />
+
+	<TextView
+		android:id="@+id/textView_details"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="4dp"
+		android:ellipsize="end"
+		android:maxLines="4"
+		android:textAppearance="@style/TextAppearance.AppCompat.Small"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/card_cover"
+		app:layout_constraintTop_toBottomOf="@id/textView_status"
+		tools:text="@tools:sample/lorem[3]" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

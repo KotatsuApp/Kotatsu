@@ -217,4 +217,6 @@
 	<string name="backup_saved">Резервная копия успешно сохранена</string>
 	<string name="tracker_warning">Некоторые производители могут изменять поведение системы, нарушая работу фоновых задач.</string>
 	<string name="read_more">Подробнее</string>
+	<string name="queued">В очереди</string>
+	<string name="text_downloads_holder">На данный момент нет активных загрузок</string>
 </resources>

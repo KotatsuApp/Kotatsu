@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.download
+package org.koitharu.kotatsu.download.domain
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.webkit.MimeTypeMap
 import coil.ImageLoader
 import coil.request.ImageRequest
+import coil.size.Scale
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -60,6 +61,7 @@ class DownloadManager(
 					ImageRequest.Builder(context)
 						.data(manga.coverUrl)
 						.size(coverWidth, coverHeight)
+						.scale(Scale.FILL)
 						.build()
 				).drawable
 			}.getOrNull()
@@ -98,7 +100,8 @@ class DownloadManager(
 							}
 						} while (false)
 
-						emit(State.Progress(startId, manga, cover,
+						emit(State.Progress(
+							startId, manga, cover,
 							totalChapters = chapters.size,
 							currentChapter = chapterIndex,
 							totalPages = pages.size,
@@ -186,7 +189,14 @@ class DownloadManager(
 			val currentChapter: Int,
 			val totalPages: Int,
 			val currentPage: Int,
-		): State
+		): State {
+
+			val max: Int = totalChapters * totalPages
+
+			val progress: Int = totalPages * currentChapter + currentPage + 1
+
+			val percent: Float = progress.toFloat() / max
+		}
 
 		data class WaitingForNetwork(
 			override val startId: Int,

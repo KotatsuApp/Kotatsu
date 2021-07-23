@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.sub
+import org.koitharu.kotatsu.utils.ext.toCamelCase
 import java.io.File
 import java.util.*
 import java.util.zip.ZipEntry
@@ -36,8 +37,7 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 		require(offset == 0) {
 			"LocalMangaRepository does not support pagination"
 		}
-		val files = getAvailableStorageDirs(context)
-			.flatMap { x -> x.listFiles(filenameFilter)?.toList().orEmpty() }
+		val files = getAllFiles()
 		return files.mapNotNull { x -> runCatching { getFromFile(x) }.getOrNull() }
 	}
 
@@ -102,7 +102,7 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 			)
 		}
 		// fallback
-		val title = file.nameWithoutExtension.replace("_", " ").capitalize()
+		val title = file.nameWithoutExtension.replace("_", " ").toCamelCase()
 		val chapters = ArraySet<String>()
 		for (x in zip.entries()) {
 			if (!x.isDirectory) {
@@ -120,7 +120,7 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 			chapters = chapters.sortedWith(AlphanumComparator()).mapIndexed { i, s ->
 				MangaChapter(
 					id = "$i$s".longHashCode(),
-					name = if (s.isEmpty()) title else s,
+					name = s.ifEmpty { title },
 					number = i + 1,
 					source = MangaSource.LOCAL,
 					url = uriBuilder.fragment(s).build().toString()
@@ -134,11 +134,34 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 			Uri.parse(localManga.url).toFile()
 		}.getOrNull() ?: return null
 		return withContext(Dispatchers.IO) {
-			val zip = ZipFile(file)
-			val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
-			val index = entry?.let(zip::readText)?.let(::MangaIndex) ?: return@withContext null
-			index.getMangaInfo()
+			@Suppress("BlockingMethodInNonBlockingContext")
+			ZipFile(file).use { zip ->
+				val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+				val index = entry?.let(zip::readText)?.let(::MangaIndex) ?: return@withContext null
+				index.getMangaInfo()
+			}
 		}
+	}
+
+	suspend fun findSavedManga(remoteManga: Manga): Manga? = withContext(Dispatchers.IO) {
+		val files = getAllFiles()
+		for (file in files) {
+			@Suppress("BlockingMethodInNonBlockingContext")
+			val index = ZipFile(file).use { zip ->
+				val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+				entry?.let(zip::readText)?.let(::MangaIndex)
+			} ?: continue
+			val info = index.getMangaInfo() ?: continue
+			if (info.id == remoteManga.id) {
+				val fileUri = file.toUri().toString()
+				return@withContext info.copy(
+					source = MangaSource.LOCAL,
+					url = fileUri,
+					chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
+				)
+			}
+		}
+		null
 	}
 
 	private fun zipUri(file: File, entryName: String) =
@@ -165,12 +188,16 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 
 	override suspend fun getTags() = emptySet<MangaTag>()
 
+	private fun getAllFiles() = getAvailableStorageDirs(context).flatMap { dir ->
+		dir.listFiles(filenameFilter)?.toList().orEmpty()
+	}
+
 	companion object {
 
 		private const val DIR_NAME = "manga"
 
 		fun isFileSupported(name: String): Boolean {
-			val ext = name.substringAfterLast('.').toLowerCase(Locale.ROOT)
+			val ext = name.substringAfterLast('.').lowercase(Locale.ROOT)
 			return ext == "cbz" || ext == "zip"
 		}
 

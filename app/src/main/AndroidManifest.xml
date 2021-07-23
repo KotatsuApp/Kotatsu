@@ -68,6 +68,7 @@
 			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfConfigActivity"
+			android:exported="true"
 			android:label="@string/manga_shelf">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -83,9 +84,12 @@
 		<activity
 			android:name=".settings.protect.ProtectSetupActivity"
 			android:windowSoftInputMode="adjustResize" />
+		<activity
+			android:name="org.koitharu.kotatsu.download.ui.DownloadsActivity"
+			android:label="@string/downloads" />
 
 		<service
-			android:name="org.koitharu.kotatsu.download.DownloadService"
+			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
 			android:foregroundServiceType="dataSync" />
 		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"

@@ -44,6 +44,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		adapter = CategoriesAdapter(this)
 		editDelegate = CategoriesEditDelegate(this, this)
 		binding.recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
+		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		binding.fabAdd.setOnClickListener(this)
 		reorderHelper = ItemTouchHelper(ReorderHelperCallback())

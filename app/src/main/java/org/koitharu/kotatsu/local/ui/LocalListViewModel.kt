@@ -19,7 +19,7 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.MediaStoreCompat
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import org.koitharu.kotatsu.utils.ext.sub
+import java.io.File
 import java.io.IOException
 
 class LocalListViewModel(
@@ -27,7 +27,6 @@ class LocalListViewModel(
 	private val historyRepository: HistoryRepository,
 	private val settings: AppSettings,
 	private val shortcutsRepository: ShortcutsRepository,
-	private val context: Context
 ) : MangaListViewModel(settings) {
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
@@ -71,7 +70,7 @@ class LocalListViewModel(
 
 	override fun onRetry() = onRefresh()
 
-	fun importFile(uri: Uri) {
+	fun importFile(context: Context, uri: Uri) {
 		launchLoadingJob {
 			val contentResolver = context.contentResolver
 			withContext(Dispatchers.IO) {
@@ -80,8 +79,9 @@ class LocalListViewModel(
 				if (!LocalMangaRepository.isFileSupported(name)) {
 					throw UnsupportedFileException("Unsupported file on $uri")
 				}
-				val dest = settings.getStorageDir(context)?.sub(name)
+				val dest = settings.getStorageDir(context)?.let { File(it, name) }
 					?: throw IOException("External files dir unavailable")
+				@Suppress("BlockingMethodInNonBlockingContext")
 				contentResolver.openInputStream(uri)?.use { source ->
 					dest.outputStream().use { output ->
 						source.copyTo(output)
