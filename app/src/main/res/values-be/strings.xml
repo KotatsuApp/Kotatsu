@@ -219,4 +219,8 @@
     <string name="text_history_holder_primary">Тут будзе адлюстроўвацца манга, якую вы чытаеце</string>
     <string name="text_search_holder_secondary">Паспрабуйце перафармуляваць запыт.</string>
     <string name="text_empty_holder_primary">Тут неяк пуста…</string>
+    <string name="chapter_is_missing">Частка адсутнічае</string>
+    <string name="chapter_is_missing_text">Гэтая частка адсутнічае на вашым прыладзе. Загрузіце яе або прачытайце онлайн</string>
+    <string name="text_downloads_holder">На дадзены момант няма актыўных загрузак</string>
+    <string name="queued">У чарзе</string>
 </resources>
