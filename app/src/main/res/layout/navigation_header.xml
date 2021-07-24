@@ -20,7 +20,7 @@
 			android:layout_marginStart="@dimen/margin_normal"
 			android:layout_marginTop="24dp"
 			android:layout_marginBottom="24dp"
-			app:srcCompat="@drawable/ic_totoro" />
+			app:srcCompat="@drawable/ic_totoro_vector" />
 
 		<TextView
 			android:layout_width="wrap_content"

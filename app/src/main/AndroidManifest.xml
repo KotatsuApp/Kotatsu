@@ -23,7 +23,8 @@
 		android:theme="@style/AppTheme"
 		android:usesCleartextTraffic="true"
 		tools:ignore="UnusedAttribute">
-		<activity android:name="org.koitharu.kotatsu.main.ui.MainActivity">
+		<activity android:name="org.koitharu.kotatsu.main.ui.MainActivity"
+			android:theme="@style/AppTheme.Splash">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />

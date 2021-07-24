@@ -34,6 +34,7 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	private var lastInsets: Insets = Insets.NONE
 
 	override fun onCreate(savedInstanceState: Bundle?) {
+		setTheme(R.style.AppTheme)
 		if (get<AppSettings>().isAmoledTheme) {
 			setTheme(R.style.AppTheme_AMOLED)
 		}

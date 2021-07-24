@@ -45,9 +45,13 @@
 	</style>
 
 	<style name="AppTheme" parent="Base.AppTheme">
-		<item name="android:statusBarColor">@color/grey</item>
+		<item name="android:statusBarColor">@color/nav_bar_scrim</item>
 	</style>
 
 	<style name="AppTheme.AMOLED" parent="Base.AppTheme" />
+
+	<style name="AppTheme.Splash" parent="AppTheme">
+		<item name="android:windowBackground">@drawable/splash_background</item>
+	</style>
 
 </resources>

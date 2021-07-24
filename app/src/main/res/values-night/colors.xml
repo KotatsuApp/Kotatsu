@@ -6,7 +6,7 @@
 	<color name="color_on_secondary">@android:color/black</color>
 
 	<color name="color_control_light">#2EFFFFFF</color> <!-- 18% white -->
-	<color name="color_surface_secondary">#2a2b2e</color>
+	<color name="color_surface_secondary">#151515</color>
 
 	<!-- Scrim colors -->
 	<color name="system_ui_scrim_light">#2EFFFFFF</color> <!-- 18% white -->
