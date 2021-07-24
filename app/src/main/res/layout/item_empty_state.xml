@@ -1,37 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:gravity="center"
-	android:orientation="vertical"
-	android:padding="16dp">
+	android:layout_height="match_parent">
+
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline_start"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:orientation="vertical"
+		app:layout_constraintGuide_begin="32dp" />
+
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline_end"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:orientation="vertical"
+		app:layout_constraintGuide_end="32dp" />
 
 	<ImageView
 		android:id="@+id/icon"
 		android:layout_width="98dp"
 		android:layout_height="98dp"
-		android:layout_marginBottom="16dp"
-		tools:src="@drawable/ic_alert_outline" />
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBottom_toTopOf="@+id/textPrimary"
+		app:layout_constraintEnd_toEndOf="@id/guideline_end"
+		app:layout_constraintStart_toStartOf="@id/guideline_start"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_chainStyle="packed"
+		app:srcCompat="@drawable/ic_alert_outline" />
 
 	<TextView
 		android:id="@+id/textPrimary"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
 		android:gravity="center"
-		android:padding="4dp"
-		android:textAppearance="?android:textAppearanceLarge"
+		android:textAppearance="@style/TextAppearance.Kotatsu.H1"
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBottom_toTopOf="@+id/textSecondary"
+		app:layout_constraintEnd_toEndOf="@id/guideline_end"
+		app:layout_constraintStart_toStartOf="@id/guideline_start"
+		app:layout_constraintTop_toBottomOf="@+id/icon"
 		tools:text="@tools:sample/lorem[3]" />
 
 	<TextView
 		android:id="@+id/textSecondary"
+		style="@style/TextAppearance.Kotatsu.NoticeBody"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
 		android:gravity="center"
-		android:padding="4dp"
-		android:textAppearance="?android:textAppearanceMedium"
-		android:textColor="?android:textColorSecondary"
-		tools:text="@tools:sample/lorem[3]" />
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="@id/guideline_end"
+		app:layout_constraintStart_toStartOf="@id/guideline_start"
+		app:layout_constraintTop_toBottomOf="@+id/textPrimary"
+		tools:text="@tools:sample/lorem[15]" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

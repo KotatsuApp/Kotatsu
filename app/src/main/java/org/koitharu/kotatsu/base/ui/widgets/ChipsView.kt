@@ -67,7 +67,7 @@ class ChipsView @JvmOverloads constructor(
 		val chip = Chip(context)
 		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
 		chip.setChipDrawable(drawable)
-		chip.setTextColor(ContextCompat.getColor(context, R.color.blue_primary))
+		chip.setTextColor(ContextCompat.getColor(context, R.color.color_primary))
 		chip.isCloseIconVisible = false
 		chip.setEnsureMinTouchTargetSize(false)
 		chip.setOnClickListener(chipOnClickListener)
