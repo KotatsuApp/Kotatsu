@@ -222,4 +222,6 @@
 	<string name="read_more">Read more</string>
 	<string name="queued">Queued</string>
 	<string name="text_downloads_holder">There are currently no active downloads</string>
+	<string name="chapter_is_missing_text">This chapter is missing on your device. Download it or read online</string>
+	<string name="chapter_is_missing">Chapter is missing</string>
 </resources>

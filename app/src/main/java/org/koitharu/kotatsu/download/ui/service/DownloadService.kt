@@ -47,6 +47,7 @@ class DownloadService : BaseService() {
 	private val jobCount = MutableStateFlow(0)
 	private val mutex = Mutex()
 	private val controlReceiver = ControlReceiver()
+	private var binder: DownloadBinder? = null
 
 	override fun onCreate() {
 		super.onCreate()
@@ -75,11 +76,12 @@ class DownloadService : BaseService() {
 
 	override fun onBind(intent: Intent): IBinder {
 		super.onBind(intent)
-		return DownloadBinder()
+		return binder ?: DownloadBinder(this).also { binder = it }
 	}
 
 	override fun onDestroy() {
 		unregisterReceiver(controlReceiver)
+		binder = null
 		super.onDestroy()
 	}
 
@@ -141,10 +143,10 @@ class DownloadService : BaseService() {
 		}
 	}
 
-	inner class DownloadBinder : Binder() {
+	class DownloadBinder(private val service: DownloadService) : Binder() {
 
 		val downloads: Flow<Collection<JobStateFlow<DownloadManager.State>>>
-			get() = jobCount.mapLatest { jobs.values }
+			get() = service.jobCount.mapLatest { service.jobs.values }
 	}
 
 	companion object {
@@ -160,6 +162,9 @@ class DownloadService : BaseService() {
 		private const val EXTRA_CANCEL_ID = "cancel_id"
 
 		fun start(context: Context, manga: Manga, chaptersIds: Collection<Long>? = null) {
+			if (chaptersIds?.isEmpty() == true) {
+				return
+			}
 			confirmDataTransfer(context) {
 				val intent = Intent(context, DownloadService::class.java)
 				intent.putExtra(EXTRA_MANGA, manga)

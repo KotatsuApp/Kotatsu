@@ -5,5 +5,6 @@ import org.koitharu.kotatsu.history.domain.ChapterExtra
 
 data class ChapterListItem(
 	val chapter: MangaChapter,
-	val extra: ChapterExtra
+	val extra: ChapterExtra,
+	val isMissing: Boolean,
 )

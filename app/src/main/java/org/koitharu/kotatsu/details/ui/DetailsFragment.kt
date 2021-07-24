@@ -128,23 +128,32 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.progressBar.isVisible = isLoading
+		if (isLoading) {
+			binding.progressBar.show()
+		} else {
+			binding.progressBar.hide()
+		}
 	}
 
 	override fun onClick(v: View) {
-		val manga = viewModel.manga.value
+		val manga = viewModel.manga.value ?: return
 		when (v.id) {
 			R.id.button_favorite -> {
-				FavouriteCategoriesDialog.show(childFragmentManager, manga ?: return)
+				FavouriteCategoriesDialog.show(childFragmentManager, manga)
 			}
 			R.id.button_read -> {
-				startActivity(
-					ReaderActivity.newIntent(
-						context ?: return,
-						manga ?: return,
-						null
+				val chapterId = viewModel.readingHistory.value?.chapterId
+				if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
+					(activity as? DetailsActivity)?.showChapterMissingDialog(chapterId)
+				} else {
+					startActivity(
+						ReaderActivity.newIntent(
+							context ?: return,
+							manga,
+							null
+						)
 					)
-				)
+				}
 			}
 		}
 	}

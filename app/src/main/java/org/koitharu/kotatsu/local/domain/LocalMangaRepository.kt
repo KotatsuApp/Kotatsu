@@ -98,7 +98,10 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 					entryName = index.getCoverEntry()
 						?: findFirstEntry(zip.entries(), isImage = true)?.name.orEmpty()
 				),
-				chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
+				chapters = info.chapters?.map { c ->
+					c.copy(url = fileUri,
+						source = MangaSource.LOCAL)
+				}
 			)
 		}
 		// fallback

@@ -15,16 +15,17 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.databinding.DialogChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.history.domain.ChapterExtra
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
-	OnListItemClickListener<MangaChapter> {
+	OnListItemClickListener<ChapterListItem> {
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = DialogChaptersBinding.inflate(inflater, container, false)
 
 	override fun onBuildDialog(builder: AlertDialog.Builder) {
@@ -51,7 +52,8 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 						index < currentPosition -> ChapterExtra.READ
 						index == currentPosition -> ChapterExtra.CURRENT
 						else -> ChapterExtra.UNREAD
-					}
+					},
+					isMissing = false
 				)
 			}) {
 				if (currentPosition >= 0) {
@@ -66,11 +68,11 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 		}
 	}
 
-	override fun onItemClick(item: MangaChapter, view: View) {
+	override fun onItemClick(item: ChapterListItem, view: View) {
 		((parentFragment as? OnChapterChangeListener)
 			?: (activity as? OnChapterChangeListener))?.let {
 			dismiss()
-			it.onChapterChanged(item)
+			it.onChapterChanged(item.chapter)
 		}
 	}
 
