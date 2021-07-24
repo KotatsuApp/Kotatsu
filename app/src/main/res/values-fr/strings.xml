@@ -221,4 +221,8 @@
     <string name="local_storage">Stockage local</string>
     <string name="open_menu">Ouvrir le menu</string>
     <string name="close_menu">Fermer le menu</string>
+    <string name="chapter_is_missing">Chapitre manquant</string>
+    <string name="chapter_is_missing_text">Ce chapitre est manquant sur votre appareil. Téléchargez-le ou lisez-le en ligne</string>
+    <string name="text_downloads_holder">Il n\'y a actuellement aucun téléchargement actif</string>
+    <string name="queued">En file d\'attente</string>
 </resources>
