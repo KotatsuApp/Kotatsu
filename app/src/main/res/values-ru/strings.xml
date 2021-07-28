@@ -6,7 +6,7 @@
     <string name="favourites">Избранное</string>
     <string name="history">История</string>
     <string name="error_occurred">Произошла ошибка</string>
-    <string name="network_error">Ошибка сети</string>
+    <string name="network_error">Ошибка сетевого подключения</string>
     <string name="details">Подробности</string>
     <string name="chapters">Главы</string>
     <string name="list">Список</string>
@@ -65,7 +65,7 @@
     <string name="_import">Импорт</string>
     <string name="delete">Удалить</string>
     <string name="operation_not_supported">Операция не поддерживается</string>
-    <string name="text_file_not_supported">Поддерживаются только файлы ZIP и CBZ.</string>
+    <string name="text_file_not_supported">Неверный файл. Поддерживаются только ZIP и CBZ.</string>
     <string name="no_description">Нет описания</string>
     <string name="history_and_cache">История и кэш</string>
     <string name="clear_pages_cache">Очистить кэш страниц</string>
@@ -221,5 +221,5 @@
     <string name="queued">В очереди</string>
     <string name="text_downloads_holder">На данный момент нет активных загрузок</string>
     <string name="chapter_is_missing">Глава отсутствует</string>
-    <string name="chapter_is_missing_text">Эта глава отсутствует на вашем устройстве. Скачайте её или прочитайте онлайн</string>
+    <string name="chapter_is_missing_text">Эта глава отсутствует на вашем устройстве. Скачайте или прочитайте её онлайн.</string>
 </resources>
