@@ -37,15 +37,15 @@ class ChipsView @JvmOverloads constructor(
 		}
 	}
 
-	fun setChips(items: List<ChipModel>) {
+	fun setChips(items: Collection<ChipModel>) {
 		suppressLayoutCompat(true)
 		try {
 			for ((i, model) in items.withIndex()) {
 				val chip = getChildAt(i) as Chip? ?: addChip()
 				bindChip(chip, model)
 			}
-			for (i in items.size until childCount) {
-				removeViewAt(i)
+			if (childCount > items.size) {
+				removeViews(items.size, childCount - items.size)
 			}
 		} finally {
 			suppressLayoutCompat(false)
@@ -60,6 +60,7 @@ class ChipsView @JvmOverloads constructor(
 			chip.isCheckedIconVisible = true
 			chip.setChipIconResource(model.icon)
 		}
+		chip.isClickable = onChipClickListener != null
 		chip.tag = model.data
 	}
 
@@ -71,7 +72,6 @@ class ChipsView @JvmOverloads constructor(
 		chip.isCloseIconVisible = false
 		chip.setEnsureMinTouchTargetSize(false)
 		chip.setOnClickListener(chipOnClickListener)
-		chip.isClickable = onChipClickListener != null
 		addView(chip)
 		return chip
 	}

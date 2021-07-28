@@ -13,6 +13,7 @@
 		android:layout_width="98dp"
 		android:layout_height="98dp"
 		android:layout_marginBottom="16dp"
+		tools:ignore="ContentDescription"
 		tools:src="@drawable/ic_alert_outline" />
 
 	<TextView

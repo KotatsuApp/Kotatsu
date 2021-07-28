@@ -13,7 +13,6 @@ import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.util.CoilUtils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -30,13 +29,13 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.*
+import kotlin.random.Random
 
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
 	View.OnLongClickListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
-	private var tagsJob: Job? = null
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -196,16 +195,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	}
 
 	private fun bindTags(manga: Manga) {
-		tagsJob?.cancel()
-		tagsJob = viewLifecycleScope.launch {
-			val tags = ArrayList<ChipsView.ChipModel>(manga.tags.size + 2)
-			for (tag in manga.tags) {
-				tags += ChipsView.ChipModel(
+		binding.chipsTags.setChips(
+			manga.tags.map { tag ->
+				ChipsView.ChipModel(
 					title = tag.title,
 					icon = 0
 				)
 			}
-			binding.chipsTags.setChips(tags)
-		}
+		)
 	}
 }

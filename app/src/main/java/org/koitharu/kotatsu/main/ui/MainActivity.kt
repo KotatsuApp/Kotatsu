@@ -13,10 +13,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.GravityCompat
-import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
+import androidx.core.view.*
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -88,17 +85,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		binding.drawer.addDrawerListener(drawerToggle)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-		binding.searchView.apply {
+		with(binding.searchView) {
 			onFocusChangeListener = this@MainActivity
 			searchSuggestionListener = this@MainActivity
 		}
 
-		binding.navigationView.apply {
+		with(binding.navigationView) {
 			val menuView = findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
-			navHeaderBinding.root.setOnApplyWindowInsetsListener { v, insets ->
-				v.updatePadding(top = insets.systemWindowInsetTop)
+			ViewCompat.setOnApplyWindowInsetsListener(navHeaderBinding.root) { v, insets ->
+				val systemWindowInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+				v.updatePadding(top = systemWindowInsets.top)
 				// NavigationView doesn't dispatch insets to the menu view, so pad the bottom here.
-				menuView.updatePadding(bottom = insets.systemWindowInsetBottom)
+				menuView.updatePadding(bottom = systemWindowInsets.bottom)
 				insets
 			}
 			addHeaderView(navHeaderBinding.root)
@@ -117,9 +115,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			openDefaultSection()
 		}
 		if (savedInstanceState == null) {
-			TrackWorker.setup(applicationContext)
-			AppUpdateChecker(this).launchIfNeeded()
-			OnboardDialogFragment.showWelcome(get(), supportFragmentManager)
+			onFirstStart()
 		}
 
 		viewModel.onOpenReader.observe(this, this::onOpenReader)
@@ -345,6 +341,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		drawerToggle.isDrawerIndicatorEnabled = true
 		binding.appbar.elevation = 0f
 		binding.toolbarCard.cardElevation = searchViewElevation
+	}
+
+	private fun onFirstStart() {
+		TrackWorker.setup(applicationContext)
+		AppUpdateChecker(this@MainActivity).launchIfNeeded()
+		OnboardDialogFragment.showWelcome(get(), supportFragmentManager)
 	}
 
 	private companion object {

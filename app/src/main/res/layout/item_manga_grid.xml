@@ -1,50 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="@drawable/list_selector">
+	android:background="@drawable/list_selector"
+	android:orientation="vertical">
 
-	<androidx.constraintlayout.widget.ConstraintLayout
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:layout_margin="4dp"
+		app:cardCornerRadius="4dp"
+		app:cardElevation="4dp">
 
-		<com.google.android.material.card.MaterialCardView
-			android:id="@+id/card"
+		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+			android:id="@+id/imageView_cover"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_margin="4dp"
-			app:cardCornerRadius="4dp"
-			app:cardElevation="4dp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent">
+			android:scaleType="centerCrop"
+			android:orientation="horizontal"
+			tools:ignore="ContentDescription" />
 
-			<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
-				android:id="@+id/imageView_cover"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:scaleType="centerCrop"
-				tools:ignore="ContentDescription" />
+	</com.google.android.material.card.MaterialCardView>
 
-		</com.google.android.material.card.MaterialCardView>
+	<TextView
+		android:id="@+id/textView_title"
+		style="@style/TextAppearance.AppCompat.Body2"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:ellipsize="end"
+		android:lineSpacingExtra="-2dp"
+		android:maxLines="2"
+		android:padding="4dp"
+		android:elegantTextHeight="false"
+		tools:text="Sample name" />
 
-		<TextView
-			android:id="@+id/textView_title"
-			style="@style/TextAppearance.AppCompat.Body1"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:ellipsize="end"
-			android:lineSpacingExtra="-2dp"
-			android:maxLines="2"
-			android:padding="4dp"
-			android:textStyle="bold"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/card"
-			tools:text="Sample name" />
-
-	</androidx.constraintlayout.widget.ConstraintLayout>
-
-</FrameLayout>
+</LinearLayout>
