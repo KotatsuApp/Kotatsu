@@ -31,7 +31,6 @@
 		android:padding="@dimen/grid_spacing"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		app:spanCount="3"
 		tools:listitem="@layout/item_page_thumb" />
 
