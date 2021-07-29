@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.android.ext.android.get
@@ -53,6 +54,15 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+
+		val title = arguments?.getString(ARG_TITLE)
+		binding.toolbar.title = title
+		binding.toolbar.setNavigationOnClickListener { dismiss() }
+		binding.toolbar.subtitle =
+			resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
+
+		val initialTopPosition = binding.recyclerView.top
+
 		with(binding.recyclerView) {
 			addItemDecoration(
 				SpacingItemDecoration(view.resources.getDimensionPixelOffset(R.dimen.grid_spacing))
@@ -64,20 +74,16 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 				get(),
 				this@PagesThumbnailsSheet
 			)
+			addOnScrollListener(object : RecyclerView.OnScrollListener() {
+				override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) = Unit
+
+				override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+					super.onScrolled(recyclerView, dx, dy)
+					binding.appbar.isLifted = getChildAt(0).top < initialTopPosition
+				}
+			})
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver.setGridSize(get<AppSettings>().gridSize / 100f, this)
-		}
-
-		val title = arguments?.getString(ARG_TITLE)
-		binding.toolbar.title = title
-		binding.toolbar.setNavigationOnClickListener { dismiss() }
-		binding.toolbar.subtitle =
-			resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
-		binding.textViewTitle.text = title
-		if (dialog !is BottomSheetDialog) {
-			binding.toolbar.isVisible = true
-			binding.textViewTitle.isVisible = false
-			binding.appbar.elevation = resources.getDimension(R.dimen.elevation_large)
 		}
 	}
 
@@ -85,21 +91,10 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 		super.onCreateDialog(savedInstanceState).also {
 			val behavior = (it as? BottomSheetDialog)?.behavior ?: return@also
 			behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-				private val elevation = resources.getDimension(R.dimen.elevation_large)
 
 				override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
 
-				override fun onStateChanged(bottomSheet: View, newState: Int) {
-					if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-						binding.toolbar.isVisible = true
-						binding.textViewTitle.isVisible = false
-						binding.appbar.elevation = elevation
-					} else {
-						binding.toolbar.isVisible = false
-						binding.textViewTitle.isVisible = true
-						binding.appbar.elevation = 0f
-					}
-				}
+				override fun onStateChanged(bottomSheet: View, newState: Int) = Unit
 			})
 
 		}
