@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:gravity="center"
 	android:orientation="vertical"
-	android:padding="16dp">
+	android:gravity="center">
 
 	<ImageView
 		android:id="@+id/icon"
 		android:layout_width="98dp"
 		android:layout_height="98dp"
-		android:layout_marginBottom="16dp"
-		tools:ignore="ContentDescription"
-		tools:src="@drawable/ic_alert_outline" />
+		android:src="@drawable/ic_alert_outline" />
 
 	<TextView
 		android:id="@+id/textPrimary"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
 		android:gravity="center"
-		android:padding="4dp"
-		android:textAppearance="?android:textAppearanceLarge"
+		android:textAppearance="@style/TextAppearance.Kotatsu.H1"
 		tools:text="@tools:sample/lorem[3]" />
 
 	<TextView
 		android:id="@+id/textSecondary"
+		style="@style/TextAppearance.Kotatsu.NoticeBody"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
 		android:gravity="center"
-		android:padding="4dp"
-		android:textAppearance="?android:textAppearanceMedium"
-		android:textColor="?android:textColorSecondary"
-		tools:text="@tools:sample/lorem[3]" />
+		tools:text="@tools:sample/lorem[15]" />
 
 </LinearLayout>

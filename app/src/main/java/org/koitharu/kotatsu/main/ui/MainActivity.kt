@@ -204,9 +204,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.toolbarCard.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top + 16
-			leftMargin = insets.left + 32
-			rightMargin = insets.right + 32
+			topMargin = insets.top + resources.resolveDp(8)
+			leftMargin = insets.left + resources.resolveDp(16)
+			rightMargin = insets.right + resources.resolveDp(16)
 		}
 		binding.fab.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			bottomMargin = insets.bottom + topMargin
