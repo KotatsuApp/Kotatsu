@@ -9,6 +9,10 @@
 		<item name="android:elevation">8dp</item>
 	</style>
 
+	<style name="Widget.Kotatsu.Sheet.AppBar" parent="@style/Widget.Kotatsu.AppBar">
+		<item name="android:elevation">0dp</item>
+	</style>
+
 	<style name="Widget.Kotatsu.Toolbar" parent="Widget.MaterialComponents.Toolbar">
 		<item name="android:paddingEnd">8dp</item>
 		<item name="popupTheme">@style/ThemeOverlay.Kotatsu</item>
