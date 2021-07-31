@@ -65,7 +65,7 @@
     <string name="_import">Импорт</string>
     <string name="delete">Удалить</string>
     <string name="operation_not_supported">Операция не поддерживается</string>
-    <string name="text_file_not_supported">Неверный файл. Поддерживаются только ZIP и CBZ.</string>
+    <string name="text_file_not_supported">Неподдерживаемый файл. Поддерживаются только ZIP и CBZ.</string>
     <string name="no_description">Нет описания</string>
     <string name="history_and_cache">История и кэш</string>
     <string name="clear_pages_cache">Очистить кэш страниц</string>
@@ -174,7 +174,7 @@
     <string name="black_dark_theme">Чёрная тёмная тема</string>
     <string name="black_dark_theme_summary">Полезно для AMOLED экранов</string>
     <string name="restart_required">Требуется перезапуск</string>
-    <string name="backup_restore">Резервное копирование</string>
+    <string name="backup_restore">Резервное копирование и восстановление</string>
     <string name="create_backup">Создать резервную копию</string>
     <string name="restore_backup">Восстановить данные</string>
     <string name="data_restored">Данные восстановлены</string>
