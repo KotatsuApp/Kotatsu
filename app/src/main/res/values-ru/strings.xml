@@ -222,4 +222,9 @@
     <string name="text_downloads_holder">На данный момент нет активных загрузок</string>
     <string name="chapter_is_missing">Глава отсутствует</string>
     <string name="chapter_is_missing_text">Эта глава отсутствует на вашем устройстве. Скачайте её или прочитайте онлайн</string>
+    <string name="about_app_translation_summary">Помочь с переводом приложения</string>
+    <string name="about_app_translation">Перевод</string>
+    <string name="about_author">Автор</string>
+    <string name="about_feedback_4pda">Тема на 4PDA</string>
+    <string name="about_feedback">Обратная связь</string>
 </resources>

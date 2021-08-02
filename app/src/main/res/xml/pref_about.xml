@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<PreferenceCategory
+		app:iconSpaceReserved="false"
+		app:title="@string/app_name">
+
+		<Preference
+			app:iconSpaceReserved="false"
+			app:key="app_version"
+			app:persistent="false"
+			app:summary="@string/check_for_updates" />
+
+		<SwitchPreference
+			app:defaultValue="true"
+			app:iconSpaceReserved="false"
+			app:isPreferenceVisible="false"
+			app:key="app_update_auto"
+			app:summary="@string/show_notification_app_update"
+			app:title="@string/application_update"
+			tools:isPreferenceVisible="true" />
+
+		<Preference
+			app:iconSpaceReserved="false"
+			app:key="about_app_translation"
+			app:summary="@string/about_app_translation_summary"
+			app:title="@string/about_app_translation" />
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		app:iconSpaceReserved="false"
+		app:title="@string/about_feedback">
+		<Preference
+			app:iconSpaceReserved="false"
+			app:key="about_feedback_4pda"
+			app:summary="https://4pda.to/forum/index.php?showtopic=697669"
+			app:title="@string/about_feedback_4pda" />
+		<Preference
+			app:iconSpaceReserved="false"
+			app:key="about_feedback_github"
+			app:summary="https://github.com/nv95/Kotatsu/issues"
+			app:title="GitHub" />
+	</PreferenceCategory>
+
+</PreferenceScreen>
