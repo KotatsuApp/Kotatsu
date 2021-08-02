@@ -184,5 +184,10 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_RESTORE = "restore"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
+
+		// About
+		const val KEY_APP_TRANSLATION = "about_app_translation"
+		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
+		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
 	}
 }

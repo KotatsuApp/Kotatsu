@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.about.AboutActivity
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -194,6 +195,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				R.id.nav_action_settings -> {
 					startActivity(SettingsActivity.newIntent(this))
 					return true
+				}
+				R.id.nav_action_about -> {
+					startActivity(AboutActivity.newIntent(this))
 				}
 				else -> return false
 			}
