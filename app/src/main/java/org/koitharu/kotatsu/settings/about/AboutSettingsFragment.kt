@@ -50,14 +50,20 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 			}
 			AppSettings.KEY_FEEDBACK_GITHUB -> {
 				startActivity(context?.let { BrowserActivity.newIntent(it,
-					"https://4pda.to/forum/index.php?showtopic=697669",
-					resources.getString(R.string.about_feedback_4pda)) })
+					"https://github.com/nv95/Kotatsu/issues",
+					"GitHub") })
 				true
 			}
 			AppSettings.KEY_SUPPORT_DEVELOPER -> {
 				startActivity(context?.let { BrowserActivity.newIntent(it,
-					"https://4pda.to/forum/index.php?showtopic=697669",
+					"https://yoomoney.ru/to/410012543938752",
 					resources.getString(R.string.about_support_developer)) })
+				true
+			}
+			AppSettings.KEY_APP_GRATITUDES -> {
+				startActivity(context?.let { BrowserActivity.newIntent(it,
+					"https://github.com/nv95/Kotatsu/graphs/contributors",
+					resources.getString(R.string.about_gratitudes)) })
 				true
 			}
 			else -> super.onPreferenceTreeClick(preference)

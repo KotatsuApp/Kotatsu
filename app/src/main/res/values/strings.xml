@@ -235,5 +235,5 @@
     <string name="about_gratitudes">Gratitudes</string>
     <string name="about_gratitudes_summary">These people make Kotatsu become better!</string>
     <string name="about_copyright_and_licenses">Copyright &amp; Licenses</string>
-    <string name="about_copyright">Copyright</string>
+    <string name="about_license">License</string>
 </resources>
