@@ -232,5 +232,5 @@
     <string name="about_gratitudes">Благодарности</string>
     <string name="about_gratitudes_summary">Эти люди помогают Kotatsu стать лучше!</string>
     <string name="about_copyright_and_licenses">Авторские права и лицензии</string>
-    <string name="about_copyright">Авторские права</string>
+    <string name="about_license">Лицензия</string>
 </resources>
