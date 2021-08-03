@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.about
+package org.koitharu.kotatsu.settings.about
 
 import android.os.Bundle
 import android.view.View
@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
-class AboutFragment : BasePreferenceFragment(R.string.about) {
+class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_about)
@@ -37,15 +37,27 @@ class AboutFragment : BasePreferenceFragment(R.string.about) {
 				true
 			}
 			AppSettings.KEY_APP_TRANSLATION -> {
-				startActivity(context?.let { BrowserActivity.newIntent(it, "https://hosted.weblate.org/engage/kotatsu", resources.getString(R.string.about_app_translation)) })
+				startActivity(context?.let { BrowserActivity.newIntent(it,
+					"https://hosted.weblate.org/engage/kotatsu",
+					resources.getString(R.string.about_app_translation)) })
 				true
 			}
 			AppSettings.KEY_FEEDBACK_4PDA -> {
-				startActivity(context?.let { BrowserActivity.newIntent(it, "https://4pda.to/forum/index.php?showtopic=697669", resources.getString(R.string.about_feedback_4pda)) })
+				startActivity(context?.let { BrowserActivity.newIntent(it,
+					"https://4pda.to/forum/index.php?showtopic=697669",
+					resources.getString(R.string.about_feedback_4pda)) })
 				true
 			}
 			AppSettings.KEY_FEEDBACK_GITHUB -> {
-				startActivity(context?.let { BrowserActivity.newIntent(it, "https://github.com/nv95/Kotatsu/issues", "GitHub") })
+				startActivity(context?.let { BrowserActivity.newIntent(it,
+					"https://4pda.to/forum/index.php?showtopic=697669",
+					resources.getString(R.string.about_feedback_4pda)) })
+				true
+			}
+			AppSettings.KEY_SUPPORT_DEVELOPER -> {
+				startActivity(context?.let { BrowserActivity.newIntent(it,
+					"https://4pda.to/forum/index.php?showtopic=697669",
+					resources.getString(R.string.about_support_developer)) })
 				true
 			}
 			else -> super.onPreferenceTreeClick(preference)

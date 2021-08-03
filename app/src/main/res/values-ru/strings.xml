@@ -227,4 +227,10 @@
     <string name="about_author">Автор</string>
     <string name="about_feedback_4pda">Тема на 4PDA</string>
     <string name="about_feedback">Обратная связь</string>
+	<string name="about_support_developer">Поддержать разработчика</string>
+    <string name="about_support_developer_summary">Если вам нравится это приложение, вы можете помочь финансово с помощью ЮMoney (бывш. Яндекс.Деньги)</string>
+    <string name="about_gratitudes">Благодарности</string>
+    <string name="about_gratitudes_summary">Эти люди помогают Kotatsu стать лучше!</string>
+    <string name="about_copyright_and_licenses">Авторские права и лицензии</string>
+    <string name="about_copyright">Авторские права</string>
 </resources>

@@ -167,8 +167,6 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_READER_SWITCHERS = "reader_switchers"
 		const val KEY_TRACK_SOURCES = "track_sources"
 		const val KEY_TRACK_WARNING = "track_warning"
-		const val KEY_APP_UPDATE = "app_update"
-		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_TRACKER_NOTIFICATIONS = "tracker_notifications"
 		const val KEY_NOTIFICATIONS_SETTINGS = "notifications_settings"
 		const val KEY_NOTIFICATIONS_SOUND = "notifications_sound"
@@ -186,8 +184,11 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 
 		// About
+		const val KEY_APP_UPDATE = "app_update"
+		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
 		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
 		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
+		const val KEY_SUPPORT_DEVELOPER = "about_support_developer"
 	}
 }
