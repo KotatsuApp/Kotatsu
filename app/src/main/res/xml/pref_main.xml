@@ -84,4 +84,9 @@
 		android:title="@string/backup_restore"
 		app:iconSpaceReserved="false" />
 
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.about.AboutSettingsFragment"
+		android:title="@string/about"
+		app:iconSpaceReserved="false" />
+
 </PreferenceScreen>

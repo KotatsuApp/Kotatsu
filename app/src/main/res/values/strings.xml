@@ -230,4 +230,10 @@
     <string name="about_author">Author</string>
     <string name="about_feedback">Feedback</string>
     <string name="about_feedback_4pda">Topic on 4PDA</string>
+	<string name="about_support_developer">Support the developer</string>
+    <string name="about_support_developer_summary">If you like this app, you can help financially through Yoomoney (ex. Yandex.Money)</string>
+    <string name="about_gratitudes">Gratitudes</string>
+    <string name="about_gratitudes_summary">These people make Kotatsu become better!</string>
+	<string name="about_copyright_and_licenses">Copyright &amp; Licenses</string>
+    <string name="about_copyright">Copyright</string>
 </resources>

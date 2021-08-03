@@ -37,9 +37,5 @@
 			android:id="@+id/nav_action_settings"
 			android:icon="@drawable/ic_settings"
 			android:title="@string/settings" />
-		<item
-			android:id="@+id/nav_action_about"
-			android:icon="@drawable/ic_info_outline"
-			android:title="@string/about" />
 	</group>
 </menu>

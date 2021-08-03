@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools">
+	xmlns:tools="http://schemas.android.com/tools"
+	app:initialExpandedChildrenCount="5">
 
 	<PreferenceCategory
 		app:iconSpaceReserved="false"
@@ -27,6 +29,20 @@
 			app:key="about_app_translation"
 			app:summary="@string/about_app_translation_summary"
 			app:title="@string/about_app_translation" />
+
+		<Preference
+			app:iconSpaceReserved="false"
+			app:key="about_support_developer"
+			app:summary="@string/about_support_developer_summary"
+			app:title="@string/about_support_developer" />
+
+		<Preference
+			android:fragment="org.koitharu.kotatsu.settings.about.GratitudesFragment"
+			app:iconSpaceReserved="false"
+			app:key="about_gratitudes"
+			app:summary="@string/about_gratitudes_summary"
+			app:title="@string/about_gratitudes" />
+
 	</PreferenceCategory>
 
 	<PreferenceCategory
@@ -42,6 +58,20 @@
 			app:key="about_feedback_github"
 			app:summary="https://github.com/nv95/Kotatsu/issues"
 			app:title="GitHub" />
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		app:iconSpaceReserved="false"
+		app:key="copyright"
+		app:title="@string/about_copyright_and_licenses">
+
+		<Preference
+			android:fragment="org.koitharu.kotatsu.settings.about.CopyrightFragment"
+			app:icon="@drawable/ic_copyright"
+			app:iconSpaceReserved="false"
+			app:key="about_copyright"
+			app:title="@string/about_copyright" />
+
 	</PreferenceCategory>
 
 </PreferenceScreen>
