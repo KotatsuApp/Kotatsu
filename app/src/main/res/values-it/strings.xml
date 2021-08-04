@@ -222,7 +222,7 @@
     <string name="zoom_mode_fit_width">Adatta alla larghezza</string>
     <string name="scale_mode">Modalità scala</string>
     <string name="chapter_is_missing">Capitolo mancante</string>
-    <string name="chapter_is_missing_text">Questo capitolo manca sul tuo dispositivo. Scaricalo o leggilo in linea</string>
+    <string name="chapter_is_missing_text">Questo capitolo manca sul tuo dispositivo. Scaricalo o leggilo in linea.</string>
     <string name="text_downloads_holder">Attualmente non ci sono scaricamenti attivi</string>
     <string name="queued">In coda</string>
 </resources>

@@ -6,7 +6,7 @@
     <string name="favourites">Абраныя</string>
     <string name="history">Гісторыя</string>
     <string name="error_occurred">Адбылася памылка</string>
-    <string name="network_error">Памылка сеткі</string>
+    <string name="network_error">Памылка сеткавага падключэння</string>
     <string name="details">Падрабязнасцi</string>
     <string name="chapters">Часткi</string>
     <string name="list">Спіс</string>
@@ -65,7 +65,7 @@
     <string name="_import">Імпарт</string>
     <string name="delete">Выдаліць</string>
     <string name="operation_not_supported">Аперацыя не падтрымліваецца</string>
-    <string name="text_file_not_supported">Падтрымліваюцца толькі ZIP файлы і CBZ.</string>
+    <string name="text_file_not_supported">Непадтрымоўваны файл. Падтрымліваюцца толькі ZIP і CBZ.</string>
     <string name="no_description">Няма апісання</string>
     <string name="history_and_cache">Гісторыя і кэш</string>
     <string name="clear_pages_cache">Ачысціць кэш старонак</string>
@@ -220,7 +220,7 @@
     <string name="text_search_holder_secondary">Паспрабуйце перафармуляваць запыт.</string>
     <string name="text_empty_holder_primary">Тут неяк пуста…</string>
     <string name="chapter_is_missing">Частка адсутнічае</string>
-    <string name="chapter_is_missing_text">Гэтая частка адсутнічае на вашым прыладзе. Загрузіце яе або прачытайце онлайн</string>
+    <string name="chapter_is_missing_text">Гэтая частка адсутнічае на вашым прыладзе. Загрузіце або прачытайце яе онлайн.</string>
     <string name="text_downloads_holder">На дадзены момант няма актыўных загрузак</string>
     <string name="queued">У чарзе</string>
 </resources>

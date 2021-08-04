@@ -222,7 +222,7 @@
     <string name="domain">Domäne</string>
     <string name="gestures_only">Nur Gesten</string>
     <string name="chapter_is_missing">Kapitel fehlt</string>
-    <string name="chapter_is_missing_text">Dieses Kapitel fehlt auf deinem Gerät. Lade ihn herunter oder lese ihn online</string>
+    <string name="chapter_is_missing_text">Dieses Kapitel fehlt auf deinem Gerät. Lade ihn herunter oder lese ihn online.</string>
     <string name="text_downloads_holder">Zurzeit sind keine aktiven Datenübertragungen vorhanden</string>
     <string name="queued">In Warteschlange</string>
 </resources>
