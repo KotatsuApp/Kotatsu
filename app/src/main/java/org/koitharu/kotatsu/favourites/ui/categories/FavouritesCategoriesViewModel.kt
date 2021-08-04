@@ -4,10 +4,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FavouritesCategoriesViewModel(
 	private val repository: FavouritesRepository
@@ -19,20 +19,26 @@ class FavouritesCategoriesViewModel(
 		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	fun createCategory(name: String) {
-		launchJob(Dispatchers.Default) {
+		launchJob {
 			repository.addCategory(name)
 		}
 	}
 
 	fun renameCategory(id: Long, name: String) {
-		launchJob(Dispatchers.Default) {
+		launchJob {
 			repository.renameCategory(id, name)
 		}
 	}
 
 	fun deleteCategory(id: Long) {
-		launchJob(Dispatchers.Default) {
+		launchJob {
 			repository.removeCategory(id)
+		}
+	}
+
+	fun setCategoryOrder(id: Long, order: SortOrder) {
+		launchJob {
+			repository.setCategoryOrder(id, order)
 		}
 	}
 

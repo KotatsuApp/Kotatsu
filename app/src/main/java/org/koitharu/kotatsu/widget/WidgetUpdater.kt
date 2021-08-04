@@ -8,6 +8,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retry
+import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
@@ -17,7 +18,7 @@ import org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider
 class WidgetUpdater(private val context: Context) {
 
 	fun subscribeToFavourites(repository: FavouritesRepository) {
-		repository.observeAll()
+		repository.observeAll(SortOrder.NEWEST)
 			.onEach { updateWidget(ShelfWidgetProvider::class.java) }
 			.retry { error -> error !is CancellationException }
 			.launchIn(processLifecycleScope)

@@ -5,6 +5,7 @@ import org.json.JSONObject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
+import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
@@ -101,7 +102,8 @@ class RestoreRepository(private val db: MangaDatabase) {
 		categoryId = json.getInt("category_id"),
 		createdAt = json.getLong("created_at"),
 		sortKey = json.getInt("sort_key"),
-		title = json.getString("title")
+		title = json.getString("title"),
+		order = json.getStringOrNull("order") ?: SortOrder.NEWEST.name,
 	)
 
 	private fun parseFavourite(json: JSONObject) = FavouriteEntity(

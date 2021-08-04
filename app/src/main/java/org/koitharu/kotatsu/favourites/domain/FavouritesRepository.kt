@@ -3,12 +3,14 @@ package org.koitharu.kotatsu.favourites.domain
 import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.utils.ext.mapItems
@@ -21,14 +23,9 @@ class FavouritesRepository(private val db: MangaDatabase) {
 		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
-	fun observeAll(): Flow<List<Manga>> {
-		return db.favouritesDao.observeAll()
+	fun observeAll(order: SortOrder): Flow<List<Manga>> {
+		return db.favouritesDao.observeAll(order)
 			.mapItems { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
-	}
-
-	suspend fun getAllManga(offset: Int): List<Manga> {
-		val entities = db.favouritesDao.findAll(offset, 20)
-		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
 	suspend fun getManga(categoryId: Long): List<Manga> {
@@ -36,9 +33,14 @@ class FavouritesRepository(private val db: MangaDatabase) {
 		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
-	fun observeAll(categoryId: Long): Flow<List<Manga>> {
-		return db.favouritesDao.observeAll(categoryId)
+	fun observeAll(categoryId: Long, order: SortOrder): Flow<List<Manga>> {
+		return db.favouritesDao.observeAll(categoryId, order)
 			.mapItems { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
+	}
+
+	fun observeAll(categoryId: Long): Flow<List<Manga>> {
+		return observeOrder(categoryId)
+			.flatMapLatest { order -> observeAll(categoryId, order) }
 	}
 
 	suspend fun getManga(categoryId: Long, offset: Int): List<Manga> {
@@ -77,25 +79,30 @@ class FavouritesRepository(private val db: MangaDatabase) {
 			title = title,
 			createdAt = System.currentTimeMillis(),
 			sortKey = db.favouriteCategoriesDao.getNextSortKey(),
-			categoryId = 0
+			categoryId = 0,
+			order = SortOrder.UPDATED.name,
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
 		return entity.toFavouriteCategory(id)
 	}
 
 	suspend fun renameCategory(id: Long, title: String) {
-		db.favouriteCategoriesDao.update(id, title)
+		db.favouriteCategoriesDao.updateTitle(id, title)
 	}
 
 	suspend fun removeCategory(id: Long) {
 		db.favouriteCategoriesDao.delete(id)
 	}
 
+	suspend fun setCategoryOrder(id: Long, order: SortOrder) {
+		db.favouriteCategoriesDao.updateOrder(id, order.name)
+	}
+
 	suspend fun reorderCategories(orderedIds: List<Long>) {
 		val dao = db.favouriteCategoriesDao
 		db.withTransaction {
 			for ((i, id) in orderedIds.withIndex()) {
-				dao.update(id, i)
+				dao.updateSortKey(id, i)
 			}
 		}
 	}
@@ -116,5 +123,11 @@ class FavouritesRepository(private val db: MangaDatabase) {
 
 	suspend fun removeFromFavourites(manga: Manga) {
 		db.favouritesDao.delete(manga.id)
+	}
+
+	private fun observeOrder(categoryId: Long): Flow<SortOrder> {
+		return db.favouriteCategoriesDao.observe(categoryId)
+			.map { x -> SortOrder.values().find { it.name == x.order } ?: SortOrder.NEWEST }
+			.distinctUntilChanged()
 	}
 }

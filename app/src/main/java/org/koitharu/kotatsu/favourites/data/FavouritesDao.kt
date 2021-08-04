@@ -1,8 +1,11 @@
 package org.koitharu.kotatsu.favourites.data
 
 import androidx.room.*
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
+import org.koitharu.kotatsu.core.model.SortOrder
 
 @Dao
 abstract class FavouritesDao {
@@ -11,9 +14,13 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites GROUP BY manga_id ORDER BY created_at DESC")
 	abstract suspend fun findAll(): List<FavouriteManga>
 
-	@Transaction
-	@Query("SELECT * FROM favourites GROUP BY manga_id ORDER BY created_at DESC")
-	abstract fun observeAll(): Flow<List<FavouriteManga>>
+	fun observeAll(order: SortOrder): Flow<List<FavouriteManga>> {
+		val orderBy = getOrderBy(order)
+		val query = SimpleSQLiteQuery(
+			"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id GROUP BY favourites.manga_id ORDER BY $orderBy",
+		)
+		return observeAllRaw(query)
+	}
 
 	@Transaction
 	@Query("SELECT * FROM favourites GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
@@ -23,9 +30,14 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE category_id = :categoryId GROUP BY manga_id ORDER BY created_at DESC")
 	abstract suspend fun findAll(categoryId: Long): List<FavouriteManga>
 
-	@Transaction
-	@Query("SELECT * FROM favourites WHERE category_id = :categoryId GROUP BY manga_id ORDER BY created_at DESC")
-	abstract fun observeAll(categoryId: Long): Flow<List<FavouriteManga>>
+	fun observeAll(categoryId: Long, order: SortOrder): Flow<List<FavouriteManga>> {
+		val orderBy = getOrderBy(order)
+		val query = SimpleSQLiteQuery(
+			"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id WHERE category_id = ? GROUP BY favourites.manga_id ORDER BY $orderBy",
+			arrayOf<Any>(categoryId),
+		)
+		return observeAllRaw(query)
+	}
 
 	@Transaction
 	@Query("SELECT * FROM favourites WHERE category_id = :categoryId GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
@@ -62,5 +74,17 @@ abstract class FavouritesDao {
 		if (update(entity) == 0) {
 			insert(entity)
 		}
+	}
+
+	@Transaction
+	@RawQuery(observedEntities = [FavouriteEntity::class])
+	protected abstract fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<FavouriteManga>>
+
+	private fun getOrderBy(sortOrder: SortOrder) = when(sortOrder) {
+		SortOrder.RATING -> "rating DESC"
+		SortOrder.NEWEST,
+		SortOrder.UPDATED -> "created_at DESC"
+		SortOrder.ALPHABETICAL -> "title ASC"
+		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
 	}
 }
