@@ -219,4 +219,8 @@
     <string name="local_storage">Lokallagring</string>
     <string name="open_menu">Åpne meny</string>
     <string name="close_menu">Lukk meny</string>
+    <string name="chapter_is_missing_text">Dette kapitlet mangler på din enhet. Last det ned eller les det på nett.</string>
+    <string name="chapter_is_missing">Kapittel mangler</string>
+    <string name="text_downloads_holder">Det er ingen aktive nedlastinger</string>
+    <string name="queued">I kø</string>
 </resources>

@@ -203,4 +203,9 @@
     <string name="protect_application_subtitle">Introduce la contraseña que se requerirá cuando se inicie la aplicación</string>
     <string name="confirm">Confirmar</string>
     <string name="password_length_hint">La contraseña debe tener al menos 4 caracteres</string>
+    <string name="text_local_holder_secondary">Puedes guardarlo desde fuentes in línea o importarlo desde un archivo.</string>
+    <string name="text_local_holder_primary">Todavía no tienes ningún manga guardado</string>
+    <string name="text_history_holder_secondary">Puede encontrar qué leer en el menú lateral.</string>
+    <string name="text_history_holder_primary">El manga que estás leyendo se mostrará aquí</string>
+    <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
 </resources>
