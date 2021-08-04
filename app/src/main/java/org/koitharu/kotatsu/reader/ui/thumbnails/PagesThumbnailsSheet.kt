@@ -58,8 +58,8 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 		val title = arguments?.getString(ARG_TITLE)
 		binding.toolbar.title = title
 		binding.toolbar.setNavigationOnClickListener { dismiss() }
-		binding.toolbar.subtitle =
-			resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
+		binding.toolbar.subtitle = null
+		binding.toolbar.navigationIcon = null
 
 		val initialTopPosition = binding.recyclerView.top
 
@@ -94,7 +94,16 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 
 				override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
 
-				override fun onStateChanged(bottomSheet: View, newState: Int) = Unit
+				override fun onStateChanged(bottomSheet: View, newState: Int) {
+					if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+						binding.toolbar.setNavigationIcon(R.drawable.ic_cross)
+						binding.toolbar.subtitle =
+							resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
+					} else {
+						binding.toolbar.navigationIcon = null
+						binding.toolbar.subtitle = null
+					}
+				}
 			})
 
 		}
