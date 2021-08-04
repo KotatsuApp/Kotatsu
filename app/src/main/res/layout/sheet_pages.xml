@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -14,11 +14,12 @@
 		android:layout_height="?attr/actionBarSize"
 		app:liftOnScroll="true">
 
-		<com.google.android.material.appbar.MaterialToolbar
+		<org.koitharu.kotatsu.base.ui.widgets.AnimatedToolbar
 			android:id="@+id/toolbar"
 			style="@style/Widget.Kotatsu.Toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
+			android:animateLayoutChanges="true"
 			app:navigationIcon="@drawable/ic_cross" />
 
 	</com.google.android.material.appbar.AppBarLayout>
@@ -27,6 +28,7 @@
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="?actionBarSize"
 		android:clipToPadding="false"
 		android:padding="@dimen/grid_spacing"
 		android:scrollbars="vertical"
@@ -34,4 +36,4 @@
 		app:spanCount="3"
 		tools:listitem="@layout/item_page_thumb" />
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
