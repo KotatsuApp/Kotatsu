@@ -199,7 +199,7 @@
     <string name="you_have_not_favourites_yet">Vous n\'avez pas encore de favoris</string>
     <string name="add_bookmark">Ajouter un marque-page</string>
     <string name="read">Lire</string>
-    <string name="history_is_empty">L\'histoire est vide</string>
+    <string name="history_is_empty">L\'historique est vide</string>
     <string name="nothing_found">Rien n\'a été trouvé</string>
     <string name="clear_history">Effacer l\'historique</string>
     <string name="try_again">Réessayer</string>
@@ -225,4 +225,15 @@
     <string name="chapter_is_missing_text">Ce chapitre est manquant sur votre appareil. Téléchargez-le ou lisez-le en ligne.</string>
     <string name="text_downloads_holder">Il n\'y a actuellement aucun téléchargement actif</string>
     <string name="queued">En file d\'attente</string>
+    <string name="about_support_developer_summary">Si vous aimez cette application, vous pouvez aider financièrement par le biais de Yoomoney (Yandex.Money)</string>
+    <string name="about_support_developer">Soutenir le concepteur</string>
+    <string name="about_license">Licence</string>
+    <string name="about_copyright_and_licenses">Droits d\'auteur et licences</string>
+    <string name="about_gratitudes_summary">Ces gens font que Kotatsu s\'améliore !</string>
+    <string name="about_gratitudes">Remerciements</string>
+    <string name="about_feedback_4pda">Sujet sur 4PDA</string>
+    <string name="about_feedback">Remarques</string>
+    <string name="about_author">Auteur</string>
+    <string name="about_app_translation">Traduction</string>
+    <string name="about_app_translation_summary">Traduire cette application</string>
 </resources>
