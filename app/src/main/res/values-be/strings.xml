@@ -223,4 +223,15 @@
     <string name="chapter_is_missing_text">Гэтая частка адсутнічае на вашым прыладзе. Загрузіце або прачытайце яе онлайн.</string>
     <string name="text_downloads_holder">На дадзены момант няма актыўных загрузак</string>
     <string name="queued">У чарзе</string>
+    <string name="about_license">Ліцэнзія</string>
+    <string name="about_copyright_and_licenses">Аўтарскія правы і ліцэнзіі</string>
+    <string name="about_gratitudes_summary">Гэтыя людзі робяць Kotatsu лепш!</string>
+    <string name="about_gratitudes">Падзяка</string>
+    <string name="about_support_developer_summary">Калі вам падабаецца гэта дадатак, вы можаце дапамагчы фінансава з дапамогай Yoomoney (Яндэкс.Грошы)</string>
+    <string name="about_support_developer">Падтрымаць распрацоўніка</string>
+    <string name="about_feedback_4pda">Тэма на 4PDA</string>
+    <string name="about_feedback">Зваротная сувязь</string>
+    <string name="about_author">Аўтар</string>
+    <string name="about_app_translation_summary">Перавесці гэты дадатак</string>
+    <string name="about_app_translation">Пераклад</string>
 </resources>
