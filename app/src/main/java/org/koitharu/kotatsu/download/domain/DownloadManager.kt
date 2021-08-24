@@ -8,7 +8,6 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import okhttp3.OkHttpClient
@@ -48,7 +47,7 @@ class DownloadManager(
 		androidx.core.R.dimen.compat_notification_large_icon_max_height
 	)
 
-	fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int): Flow<State> = flow {
+	fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int) = flow<State> {
 		emit(State.Preparing(startId, manga, null))
 		var cover: Drawable? = null
 		val destination = settings.getStorageDir(context)

@@ -101,7 +101,7 @@ dependencies {
 	implementation 'io.insert-koin:koin-android:3.1.2'
 	implementation 'io.coil-kt:coil-base:1.3.2'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
-	implementation 'com.github.solkin:disk-lru-cache:1.2'
+	implementation 'com.github.solkin:disk-lru-cache:1.3'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 

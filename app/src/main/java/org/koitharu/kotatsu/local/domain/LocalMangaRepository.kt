@@ -15,10 +15,7 @@ import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.MangaZip
 import org.koitharu.kotatsu.utils.AlphanumComparator
-import org.koitharu.kotatsu.utils.ext.longHashCode
-import org.koitharu.kotatsu.utils.ext.readText
-import org.koitharu.kotatsu.utils.ext.sub
-import org.koitharu.kotatsu.utils.ext.toCamelCase
+import org.koitharu.kotatsu.utils.ext.*
 import java.io.File
 import java.util.*
 import java.util.zip.ZipEntry
@@ -78,9 +75,9 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 			}
 	}
 
-	fun delete(manga: Manga): Boolean {
+	suspend fun delete(manga: Manga): Boolean {
 		val file = Uri.parse(manga.url).toFile()
-		return file.delete()
+		return file.deleteAwait()
 	}
 
 	@SuppressLint("DefaultLocale")

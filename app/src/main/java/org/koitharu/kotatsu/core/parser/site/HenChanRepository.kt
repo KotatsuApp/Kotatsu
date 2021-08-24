@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.utils.ext.parseHtml
 
 class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 
-	override val defaultDomain = "hentaichan.pro"
+	override val defaultDomain = "hentaichan.live"
 	override val source = MangaSource.HENCHAN
 
 	override suspend fun getList(
