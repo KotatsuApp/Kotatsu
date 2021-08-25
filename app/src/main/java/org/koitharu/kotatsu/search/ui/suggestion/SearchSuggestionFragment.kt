@@ -12,6 +12,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class SearchSuggestionFragment : BaseFragment<FragmentSearchSuggestionBinding>(),
 	SearchSuggestionItemCallback.SuggestionItemListener {
@@ -40,6 +41,7 @@ class SearchSuggestionFragment : BaseFragment<FragmentSearchSuggestionBinding>()
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
+			top = resources.resolveDp(64) + insets.top,
 			left = insets.left,
 			right = insets.right,
 			bottom = insets.bottom,

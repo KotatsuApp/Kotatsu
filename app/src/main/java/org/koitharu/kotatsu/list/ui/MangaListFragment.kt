@@ -36,11 +36,9 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.filter.FilterAdapter
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
-import org.koitharu.kotatsu.utils.ext.clearItemDecorations
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.toggleDrawer
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import org.koitharu.kotatsu.utils.ext.*
 
 abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	PaginationScrollListener.Callback, OnListItemClickListener<Manga>, OnFilterChangedListener,
@@ -224,16 +222,26 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
-			bottom = insets.bottom
-		)
+		val headerHeight = insets.top + resources.resolveDp(64)
 		binding.recyclerViewFilter.updatePadding(
+			top = headerHeight,
 			bottom = insets.bottom
 		)
 		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right
 		)
+		if (activity is MainActivity) {
+			binding.recyclerView.updatePadding(
+				top = headerHeight,
+				bottom = insets.bottom
+			)
+			binding.swipeRefreshLayout.setProgressViewOffset(
+				true,
+				headerHeight + resources.resolveDp(-72),
+				headerHeight + resources.resolveDp(10)
+			)
+		}
 	}
 
 	private fun onGridScaleChanged(scale: Float) {

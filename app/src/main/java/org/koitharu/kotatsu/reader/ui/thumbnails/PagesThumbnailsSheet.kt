@@ -59,7 +59,13 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 		binding.toolbar.title = title
 		binding.toolbar.setNavigationOnClickListener { dismiss() }
 		binding.toolbar.subtitle = null
-		binding.toolbar.navigationIcon = null
+
+		if (!resources.getBoolean(R.bool.is_tablet)) {
+			binding.toolbar.navigationIcon = null
+		} else {
+			binding.toolbar.subtitle =
+				resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
+		}
 
 		val initialTopPosition = binding.recyclerView.top
 
@@ -98,7 +104,9 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 					if (newState == BottomSheetBehavior.STATE_EXPANDED) {
 						binding.toolbar.setNavigationIcon(R.drawable.ic_cross)
 						binding.toolbar.subtitle =
-							resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
+							resources.getQuantityString(R.plurals.pages,
+								thumbnails.size,
+								thumbnails.size)
 					} else {
 						binding.toolbar.navigationIcon = null
 						binding.toolbar.subtitle = null

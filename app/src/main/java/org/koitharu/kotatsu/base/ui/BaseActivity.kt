@@ -64,7 +64,7 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 			?.layoutParams as? AppBarLayout.LayoutParams
 		if (toolbarParams != null) {
 			if (get<AppSettings>().isToolbarHideWhenScrolling) {
-				toolbarParams.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
+				toolbarParams.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
 			} else {
 				toolbarParams.scrollFlags = SCROLL_FLAG_NO_SCROLL
 			}
