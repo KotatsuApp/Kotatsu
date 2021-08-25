@@ -12,11 +12,18 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@id/container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
 		<com.google.android.material.appbar.AppBarLayout
 			android:id="@+id/appbar"
 			style="@style/Widget.Kotatsu.AppBar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:background="@android:color/transparent"
 			android:stateListAnimator="@null"
 			app:elevation="0dp">
 
@@ -45,6 +52,7 @@
 
 					<org.koitharu.kotatsu.search.ui.widget.SearchEditText
 						android:id="@+id/searchView"
+						style="@style/Widget.Kotatsu.SearchView"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
 						android:background="@null"
@@ -52,6 +60,7 @@
 						android:hint="@string/search_manga"
 						android:imeOptions="actionSearch"
 						android:importantForAutofill="no"
+						android:paddingBottom="1dp"
 						android:singleLine="true" />
 
 				</com.google.android.material.appbar.MaterialToolbar>
@@ -59,12 +68,6 @@
 			</com.google.android.material.card.MaterialCardView>
 
 		</com.google.android.material.appbar.AppBarLayout>
-
-		<androidx.fragment.app.FragmentContainerView
-			android:id="@id/container"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 		<com.google.android.material.floatingactionbutton.FloatingActionButton
 			android:id="@+id/fab"

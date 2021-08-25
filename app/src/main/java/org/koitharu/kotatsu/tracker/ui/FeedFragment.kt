@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.resolveDp
 import org.koitharu.kotatsu.utils.progress.Progress
 
 class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListener.Callback,
@@ -98,6 +99,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.recyclerView.updatePadding(
+			top = resources.resolveDp(64) + insets.top,
 			left = insets.left,
 			right = insets.right,
 			bottom = insets.bottom

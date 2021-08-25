@@ -47,10 +47,7 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hideKeyboard
-import org.koitharu.kotatsu.utils.ext.navigationItemBackground
-import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.*
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener,
@@ -91,7 +88,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		}
 
 		with(binding.navigationView) {
-			val menuView = findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
+			val menuView =
+				findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
 			ViewCompat.setOnApplyWindowInsetsListener(navHeaderBinding.root) { v, insets ->
 				val systemWindowInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 				v.updatePadding(top = systemWindowInsets.top)
@@ -213,6 +211,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			leftMargin = insets.left + topMargin
 			rightMargin = insets.right + topMargin
 		}
+		binding.container.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = -(resources.resolveDp(66) + insets.top)
+		}
 	}
 
 	override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -332,6 +333,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private fun onSearchOpened() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		drawerToggle.isDrawerIndicatorEnabled = false
+		// Avoiding shadows on the sides if the color is transparent, so we make the AppBarLayout white/dark
+		binding.appbar.setBackgroundColor(resources.getColor(R.color.color_on_secondary))
 		binding.toolbarCard.cardElevation = 0f
 		binding.appbar.elevation = searchViewElevation
 	}
@@ -339,6 +342,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private fun onSearchClosed() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 		drawerToggle.isDrawerIndicatorEnabled = true
+		// Returning transparent color
+		binding.appbar.setBackgroundColor(resources.getColor(android.R.color.transparent))
 		binding.appbar.elevation = 0f
 		binding.toolbarCard.cardElevation = searchViewElevation
 	}
