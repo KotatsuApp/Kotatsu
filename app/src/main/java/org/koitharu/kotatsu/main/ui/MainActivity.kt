@@ -212,7 +212,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			rightMargin = insets.right + topMargin
 		}
 		binding.container.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = -(resources.resolveDp(66) + insets.top)
+			topMargin = -(binding.appbar.measureHeight())
 		}
 	}
 
