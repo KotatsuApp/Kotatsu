@@ -14,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
@@ -222,7 +223,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		val headerHeight = insets.top + resources.resolveDp(64)
+		val headerHeight = requireActivity().findViewById<AppBarLayout>(R.id.appbar).measureHeight()
 		binding.recyclerViewFilter.updatePadding(
 			top = headerHeight,
 			bottom = insets.bottom

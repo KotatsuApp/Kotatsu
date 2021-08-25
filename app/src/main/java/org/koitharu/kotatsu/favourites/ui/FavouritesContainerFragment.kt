@@ -6,6 +6,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,7 +20,7 @@ import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
 import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 import java.util.*
 
@@ -67,8 +68,12 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
+		val headerHeight = requireActivity().findViewById<AppBarLayout>(R.id.appbar).measureHeight()
+		binding.root.updatePadding(
+			top = headerHeight - insets.top
+		)
 		binding.pager.updatePadding(
-			top = -(resources.resolveDp(56) + insets.top)
+			top = -headerHeight
 		)
 		binding.tabs.apply {
 			updatePadding(
