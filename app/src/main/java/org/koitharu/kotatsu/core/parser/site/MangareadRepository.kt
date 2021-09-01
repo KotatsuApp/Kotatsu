@@ -99,8 +99,8 @@ class MangareadRepository(
 		val root2 = doc.body().selectFirst("div.content-area")
 			?.selectFirst("div.c-page")
 			?: throw ParseException("Root2 not found")
-		val mangaId = doc.getElementsByAttribute("data-postid").firstOrNull()
-			?.attr("data-postid")?.toLongOrNull()
+		val mangaId = doc.getElementsByAttribute("data-post").firstOrNull()
+			?.attr("data-post")?.toLongOrNull()
 			?: throw ParseException("Cannot obtain manga id")
 		val doc2 = loaderContext.httpPost(
 			"https://${getDomain()}/wp-admin/admin-ajax.php",
