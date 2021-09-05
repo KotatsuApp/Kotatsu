@@ -12,9 +12,21 @@ interface MangaRepository {
 	suspend fun getList(
 		offset: Int,
 		query: String? = null,
+		tags: Set<MangaTag>? = null,
 		sortOrder: SortOrder? = null,
-		tag: MangaTag? = null
-	): List<Manga>
+	): List<Manga> = if (tags == null || tags.size <= 1) {
+		getList(offset, query, sortOrder, tags?.singleOrNull())
+	} else {
+		throw NotImplementedError("Multiple filter are not supported by this source yet")
+	}
+
+	@Deprecated("Use multiple tag variant")
+	suspend fun getList(
+		offset: Int,
+		query: String? = null,
+		sortOrder: SortOrder? = null,
+		tag: MangaTag? = null,
+	): List<Manga> = throw NotImplementedError("This is fine")
 
 	suspend fun getDetails(manga: Manga): Manga
 

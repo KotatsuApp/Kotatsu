@@ -26,30 +26,33 @@ abstract class NineMangaRepository(
 	override suspend fun getList(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?,
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		val page = (offset / PAGE_SIZE.toFloat()).toIntUp() + 1
 		val url = buildString {
 			append("https://")
 			append(getDomain())
-			if (query.isNullOrEmpty()) {
-				append("/category/")
-				if (tag != null) {
-					append(tag.key)
-				} else {
-					append("index")
+			when {
+				!query.isNullOrEmpty() -> {
+					append("/search/?name_sel=&wd=")
+					append(query.urlEncoded())
+					append("&page=")
 				}
-				append("_")
-				append(page)
-				append(".html")
-			} else {
-				append("/search/?name_sel=&wd=")
-				append(query.urlEncoded())
-				append("&page=")
-				append(page)
-				append(".html")
+				!tags.isNullOrEmpty() -> {
+					append("/search/&category_id=")
+					for (tag in tags) {
+						append(tag.key)
+						append(',')
+					}
+					append("&page=")
+				}
+				else -> {
+					append("/category/index_")
+				}
 			}
+			append(page)
+			append(".html")
 		}
 		val doc = loaderContext.httpGet(url, PREDEFINED_HEADERS).parseHtml()
 		val root = doc.body().selectFirst("ul.direlist")
@@ -136,14 +139,15 @@ abstract class NineMangaRepository(
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val doc = loaderContext.httpGet("https://${getDomain()}/category/", PREDEFINED_HEADERS)
+		val doc = loaderContext.httpGet("https://${getDomain()}/search/?type=high", PREDEFINED_HEADERS)
 			.parseHtml()
-		val root = doc.body().selectFirst("ul.genreidex")
-		return root?.select("li")?.mapToSet { li ->
-			val a = li.selectFirst("a") ?: parseFailed("Link not found")
+		val root = doc.body().getElementById("search_form")
+		return root?.select("li.cate_list")?.mapNotNullToSet { li ->
+			val cateId = li.attr("cate_id") ?: return@mapNotNullToSet null
+			val a = li.selectFirst("a") ?: return@mapNotNullToSet null
 			MangaTag(
 				title = a.text(),
-				key = a.attr("href").substringBetweenLast("/", "."),
+				key = cateId,
 				source = source
 			)
 		} ?: parseFailed("Root not found")

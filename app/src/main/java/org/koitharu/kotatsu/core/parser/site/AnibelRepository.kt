@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
-import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
@@ -20,16 +19,20 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 	override suspend fun getList(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		if (!query.isNullOrEmpty()) {
 			return if (offset == 0) search(query) else emptyList()
 		}
 		val page = (offset / 12f).toIntUp().inc()
 		val link = when {
-			tag != null -> "/manga?genre[]=${tag.key}&page=$page".withDomain()
-			else -> "/manga?page=$page".withDomain()
+			tags.isNullOrEmpty() -> "/manga?page=$page".withDomain()
+			else -> tags.joinToString(
+				prefix = "/manga?",
+				postfix = "&page=$page",
+				separator = "&",
+			) { tag -> "genre[]=${tag.key}" }.withDomain()
 		}
 		val doc = loaderContext.httpGet(link).parseHtml()
 		val root = doc.body().select("div.manga-block") ?: parseFailed("Cannot find root")
