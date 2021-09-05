@@ -6,7 +6,7 @@
 
 	<style name="Widget.Kotatsu.AppBar" parent="@style/Widget.Design.AppBarLayout">
 		<item name="android:background">?attr/colorSurface</item>
-		<item name="android:elevation">8dp</item>
+		<item name="android:elevation">4dp</item>
 	</style>
 
 	<style name="Widget.Kotatsu.Sheet.AppBar" parent="@style/Widget.Kotatsu.AppBar">
@@ -39,6 +39,8 @@
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
 		<item name="queryBackground">@null</item>
+		<item name="android:textColorHint">?attr/colorControlNormal</item>
+		<item name="android:textSize">18sp</item>
 	</style>
 
 	<style name="Widget.Kotatsu.Chip" parent="Widget.MaterialComponents.Chip.Action">

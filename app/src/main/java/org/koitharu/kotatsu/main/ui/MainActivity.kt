@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
@@ -47,13 +48,10 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hideKeyboard
-import org.koitharu.kotatsu.utils.ext.navigationItemBackground
-import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.*
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
-	NavigationView.OnNavigationItemSelectedListener,
+	NavigationView.OnNavigationItemSelectedListener, AppBarOwner,
 	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener {
 
 	private val viewModel by viewModel<MainViewModel>(mode = LazyThreadSafetyMode.NONE)
@@ -64,6 +62,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private lateinit var navHeaderBinding: NavigationHeaderBinding
 	private lateinit var drawerToggle: ActionBarDrawerToggle
 	private var searchViewElevation = 0f
+
+	override val appBar: AppBarLayout
+		get() = binding.appbar
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -91,7 +92,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		}
 
 		with(binding.navigationView) {
-			val menuView = findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
+			val menuView =
+				findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
 			ViewCompat.setOnApplyWindowInsetsListener(navHeaderBinding.root) { v, insets ->
 				val systemWindowInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 				v.updatePadding(top = systemWindowInsets.top)
@@ -213,6 +215,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			leftMargin = insets.left + topMargin
 			rightMargin = insets.right + topMargin
 		}
+		binding.container.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = -(binding.appbar.measureHeight())
+		}
 	}
 
 	override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -332,6 +337,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private fun onSearchOpened() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		drawerToggle.isDrawerIndicatorEnabled = false
+		// Avoiding shadows on the sides if the color is transparent, so we make the AppBarLayout white/dark
+		binding.appbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_on_secondary))
 		binding.toolbarCard.cardElevation = 0f
 		binding.appbar.elevation = searchViewElevation
 	}
@@ -339,6 +346,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private fun onSearchClosed() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 		drawerToggle.isDrawerIndicatorEnabled = true
+		// Returning transparent color
+		binding.appbar.setBackgroundColor(Color.TRANSPARENT)
 		binding.appbar.elevation = 0f
 		binding.toolbarCard.cardElevation = searchViewElevation
 	}
