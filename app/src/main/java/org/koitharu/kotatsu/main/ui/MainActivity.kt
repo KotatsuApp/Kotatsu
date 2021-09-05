@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
@@ -50,7 +51,7 @@ import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.*
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
-	NavigationView.OnNavigationItemSelectedListener,
+	NavigationView.OnNavigationItemSelectedListener, AppBarOwner,
 	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener {
 
 	private val viewModel by viewModel<MainViewModel>(mode = LazyThreadSafetyMode.NONE)
@@ -61,6 +62,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private lateinit var navHeaderBinding: NavigationHeaderBinding
 	private lateinit var drawerToggle: ActionBarDrawerToggle
 	private var searchViewElevation = 0f
+
+	override val appBar: AppBarLayout
+		get() = binding.appbar
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -334,7 +338,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		drawerToggle.isDrawerIndicatorEnabled = false
 		// Avoiding shadows on the sides if the color is transparent, so we make the AppBarLayout white/dark
-		binding.appbar.setBackgroundColor(resources.getColor(R.color.color_on_secondary))
+		binding.appbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_on_secondary))
 		binding.toolbarCard.cardElevation = 0f
 		binding.appbar.elevation = searchViewElevation
 	}
@@ -343,7 +347,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 		drawerToggle.isDrawerIndicatorEnabled = true
 		// Returning transparent color
-		binding.appbar.setBackgroundColor(resources.getColor(android.R.color.transparent))
+		binding.appbar.setBackgroundColor(Color.TRANSPARENT)
 		binding.appbar.elevation = 0f
 		binding.toolbarCard.cardElevation = searchViewElevation
 	}

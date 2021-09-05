@@ -14,7 +14,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
@@ -37,6 +36,7 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.filter.FilterAdapter
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
 import org.koitharu.kotatsu.utils.ext.*
@@ -223,7 +223,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		val headerHeight = requireActivity().findViewById<AppBarLayout>(R.id.appbar).measureHeight()
+		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		binding.recyclerViewFilter.updatePadding(
 			top = headerHeight,
 			bottom = insets.bottom
