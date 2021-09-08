@@ -12,7 +12,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import java.util.*
 
 class SearchViewModel(
 	private val repository: MangaRepository,
@@ -74,6 +73,7 @@ class SearchViewModel(
 				listError.value = null
 				val list = repository.getList(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
+					tags = null,
 					query = query
 				)
 				if (!append) {

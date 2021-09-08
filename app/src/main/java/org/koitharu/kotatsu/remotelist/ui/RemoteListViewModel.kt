@@ -90,6 +90,9 @@ class RemoteListViewModel(
 				}
 				hasNextPage.value = list.isNotEmpty()
 			} catch (e: Throwable) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
 				listError.value = e
 			}
 		}

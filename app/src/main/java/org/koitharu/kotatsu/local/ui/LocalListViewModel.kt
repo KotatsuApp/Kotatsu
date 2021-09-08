@@ -61,7 +61,7 @@ class LocalListViewModel(
 		launchLoadingJob(Dispatchers.Default) {
 			try {
 				listError.value = null
-				mangaList.value = repository.getList(0)
+				mangaList.value = repository.getList(0, tags = null)
 			} catch (e: Throwable) {
 				listError.value = e
 			}

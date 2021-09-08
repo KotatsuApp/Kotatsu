@@ -67,6 +67,23 @@ open class MangaLoaderContext(
 		})
 	}
 
+	fun getCookies(domain: String): List<Cookie> {
+		val url = HttpUrl.Builder()
+			.scheme(SCHEME_HTTP)
+			.host(domain)
+			.build()
+		return cookieJar.loadForRequest(url)
+	}
+
+	fun copyCookies(oldDomain: String, newDomain: String) {
+		val url = HttpUrl.Builder()
+			.scheme(SCHEME_HTTP)
+			.host(oldDomain)
+		val cookies = cookieJar.loadForRequest(url.build())
+		url.host(newDomain)
+		cookieJar.saveFromResponse(url.build(), cookies)
+	}
+
 	private companion object {
 
 		private const val SCHEME_HTTP = "http"

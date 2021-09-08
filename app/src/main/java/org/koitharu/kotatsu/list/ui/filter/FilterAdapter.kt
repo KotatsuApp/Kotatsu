@@ -7,7 +7,6 @@ import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FilterAdapter(
 	sortOrders: List<SortOrder> = emptyList(),
@@ -19,7 +18,7 @@ class FilterAdapter(
 	private val sortOrders = ArrayList<SortOrder>(sortOrders)
 	private val tags = ArrayList(Collections.singletonList(null) + tags)
 
-	private var currentState = state ?: MangaFilter(sortOrders.first(), null)
+	private var currentState = state ?: MangaFilter(sortOrders.firstOrNull(), null)
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
 		VIEW_TYPE_SORT -> FilterSortHolder(parent).apply {

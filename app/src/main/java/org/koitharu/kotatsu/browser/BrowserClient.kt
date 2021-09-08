@@ -1,10 +1,8 @@
 package org.koitharu.kotatsu.browser
 
 import android.graphics.Bitmap
-import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.core.network.WebViewClientCompat
@@ -26,20 +24,5 @@ class BrowserClient(private val callback: BrowserCallback) : WebViewClientCompat
 	override fun onPageCommitVisible(view: WebView, url: String?) {
 		super.onPageCommitVisible(view, url)
 		callback.onTitleChanged(view.title.orEmpty(), url)
-	}
-
-	override fun shouldInterceptRequestCompat(view: WebView, url: String): WebResourceResponse? {
-		return runCatching {
-			val request = Request.Builder()
-				.url(url)
-				.build()
-			val response = okHttp.newCall(request).execute()
-			val ct = response.body?.contentType()
-			WebResourceResponse(
-				"${ct?.type}/${ct?.subtype}",
-				ct?.charset()?.name() ?: "utf-8",
-				response.body?.byteStream()
-			)
-		}.getOrNull()
 	}
 }

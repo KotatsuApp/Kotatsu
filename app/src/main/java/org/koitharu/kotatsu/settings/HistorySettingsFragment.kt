@@ -76,15 +76,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				true
 			}
 			AppSettings.KEY_COOKIES_CLEAR -> {
-				viewLifecycleScope.launch {
-					val cookieJar = get<AndroidCookieJar>()
-					cookieJar.clear()
-					Snackbar.make(
-						listView ?: return@launch,
-						R.string.cookies_cleared,
-						Snackbar.LENGTH_SHORT
-					).show()
-				}
+				clearCookies()
 				true
 			}
 			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
@@ -139,6 +131,24 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					Snackbar.make(
 						view ?: return@launch,
 						R.string.search_history_cleared,
+						Snackbar.LENGTH_SHORT
+					).show()
+				}
+			}.show()
+	}
+
+	private fun clearCookies() {
+		AlertDialog.Builder(context ?: return)
+			.setTitle(R.string.clear_cookies)
+			.setMessage(R.string.text_clear_cookies_prompt)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(R.string.clear) { _, _ ->
+				viewLifecycleScope.launch {
+					val cookieJar = get<AndroidCookieJar>()
+					cookieJar.clear()
+					Snackbar.make(
+						listView ?: return@launch,
+						R.string.cookies_cleared,
 						Snackbar.LENGTH_SHORT
 					).show()
 				}
