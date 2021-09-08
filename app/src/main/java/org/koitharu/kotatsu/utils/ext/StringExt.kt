@@ -6,7 +6,6 @@ import java.math.BigInteger
 import java.net.URLEncoder
 import java.security.MessageDigest
 import java.util.*
-import kotlin.contracts.contract
 import kotlin.math.min
 
 fun String.longHashCode(): Long {
@@ -157,6 +156,13 @@ fun String.substringBetweenLast(from: String, to: String, fallbackValue: String 
 }
 
 fun String.find(regex: Regex) = regex.find(this)?.value
+
+fun String.removeSuffix(suffix: Char): String {
+	if (lastOrNull() == suffix) {
+		return substring(0, length - 1)
+	}
+	return this
+}
 
 fun String.levenshteinDistance(other: String): Int {
 	if (this == other) {

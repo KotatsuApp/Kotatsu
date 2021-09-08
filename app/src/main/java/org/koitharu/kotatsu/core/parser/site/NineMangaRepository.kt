@@ -16,7 +16,7 @@ abstract class NineMangaRepository(
 ) : RemoteMangaRepository(loaderContext) {
 
 	init {
-		loaderContext.insertCookies(getDomain(), "ninemanga_template_desk=yes")
+		loaderContext.cookieJar.insertCookies(getDomain(), "ninemanga_template_desk=yes")
 	}
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
