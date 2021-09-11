@@ -48,6 +48,10 @@ fun String.toCamelCase(): String {
 	return result.toString()
 }
 
+fun String.toTitleCase(): String {
+	return replaceFirstChar { x -> x.uppercase() }
+}
+
 fun String.transliterate(skipMissing: Boolean): String {
 	val cyr = charArrayOf(
 		'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п',
@@ -200,4 +204,20 @@ fun String.levenshteinDistance(other: String): Int {
 	}
 
 	return cost[lhsLength - 1]
+}
+
+inline fun <T> StringBuilder.appendAll(
+	items: Iterable<T>,
+	separator: CharSequence,
+	transform: (T) -> CharSequence = { it.toString() },
+) {
+	var isFirst = true
+	for (item in items) {
+		if (isFirst) {
+			isFirst = false
+		} else {
+			append(separator)
+		}
+		append(transform(item))
+	}
 }

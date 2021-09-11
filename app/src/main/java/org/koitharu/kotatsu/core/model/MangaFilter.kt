@@ -6,5 +6,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class MangaFilter(
 	val sortOrder: SortOrder?,
-	val tag: MangaTag?,
+	val tags: Set<MangaTag>,
 ) : Parcelable

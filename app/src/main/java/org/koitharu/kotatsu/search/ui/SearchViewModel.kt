@@ -71,10 +71,9 @@ class SearchViewModel(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			try {
 				listError.value = null
-				val list = repository.getList(
+				val list = repository.getList2(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
-					tags = null,
-					query = query
+					query = query,
 				)
 				if (!append) {
 					mangaList.value = list

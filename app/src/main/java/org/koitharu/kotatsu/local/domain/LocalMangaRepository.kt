@@ -25,11 +25,11 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 
 	private val filenameFilter = CbzFilter()
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		require(offset == 0) {
 			"LocalMangaRepository does not support pagination"

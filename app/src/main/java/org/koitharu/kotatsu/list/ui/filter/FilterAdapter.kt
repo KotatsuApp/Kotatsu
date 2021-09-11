@@ -6,19 +6,15 @@ import org.koitharu.kotatsu.base.ui.list.BaseViewHolder
 import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
-import java.util.*
 
 class FilterAdapter(
-	sortOrders: List<SortOrder> = emptyList(),
-	tags: List<MangaTag> = emptyList(),
+	private val sortOrders: List<SortOrder> = emptyList(),
+	private val tags: List<MangaTag> = emptyList(),
 	state: MangaFilter?,
 	private val listener: OnFilterChangedListener
 ) : RecyclerView.Adapter<BaseViewHolder<*, Boolean, *>>() {
 
-	private val sortOrders = ArrayList<SortOrder>(sortOrders)
-	private val tags = ArrayList(Collections.singletonList(null) + tags)
-
-	private var currentState = state ?: MangaFilter(sortOrders.firstOrNull(), null)
+	private var currentState = state ?: MangaFilter(sortOrders.firstOrNull(), emptySet())
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
 		VIEW_TYPE_SORT -> FilterSortHolder(parent).apply {
@@ -28,7 +24,7 @@ class FilterAdapter(
 		}
 		VIEW_TYPE_TAG -> FilterTagHolder(parent).apply {
 			itemView.setOnClickListener {
-				setCheckedTag(boundData)
+				setCheckedTag(boundData ?: return@setOnClickListener, !isChecked)
 			}
 		}
 		else -> throw IllegalArgumentException("Unknown viewType $viewType")
@@ -44,7 +40,7 @@ class FilterAdapter(
 			}
 			is FilterTagHolder -> {
 				val item = tags[position - sortOrders.size]
-				holder.bind(item, item == currentState.tag)
+				holder.bind(item, item in currentState.tags)
 			}
 		}
 	}
@@ -54,19 +50,25 @@ class FilterAdapter(
 		else -> VIEW_TYPE_TAG
 	}
 
-	fun setCheckedTag(tag: MangaTag?) {
-		if (tag != currentState.tag) {
-			val oldItemPos = tags.indexOf(currentState.tag)
-			val newItemPos = tags.indexOf(tag)
-			currentState = currentState.copy(tag = tag)
-			if (oldItemPos in tags.indices) {
-				notifyItemChanged(sortOrders.size + oldItemPos)
+	fun setCheckedTag(tag: MangaTag, isChecked: Boolean) {
+		currentState = if (tag in currentState.tags) {
+			if (!isChecked) {
+				currentState.copy(tags = currentState.tags - tag)
+			} else {
+				return
 			}
-			if (newItemPos in tags.indices) {
-				notifyItemChanged(sortOrders.size + newItemPos)
+		} else {
+			if (isChecked) {
+				currentState.copy(tags = currentState.tags + tag)
+			} else {
+				return
 			}
-			listener.onFilterChanged(currentState)
 		}
+		val index = tags.indexOf(tag)
+		if (index in tags.indices) {
+			notifyItemChanged(sortOrders.size + index)
+		}
+		listener.onFilterChanged(currentState)
 	}
 
 	fun setCheckedSort(sort: SortOrder) {

@@ -217,10 +217,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		activity?.invalidateOptionsMenu()
 	}
 
-	@CallSuper
-	override fun onFilterChanged(filter: MangaFilter) {
-		drawer?.closeDrawers()
-	}
+	override fun onFilterChanged(filter: MangaFilter) = Unit
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top

@@ -16,7 +16,7 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		SortOrder.NEWEST
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
 		tags: Set<MangaTag>?,

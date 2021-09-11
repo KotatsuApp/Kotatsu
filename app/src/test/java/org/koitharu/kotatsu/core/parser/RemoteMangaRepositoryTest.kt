@@ -38,15 +38,15 @@ class RemoteMangaRepositoryTest(private val source: MangaSource) : KoinTest {
 
 	@Test
 	fun list() = coroutineTestRule.runBlockingTest {
-		val list = repo.getList(20, query = null, sortOrder = SortOrder.POPULARITY, tag = null)
+		val list = repo.getList2(20, query = null, sortOrder = SortOrder.POPULARITY, tags = null)
 		checkMangaList(list)
 	}
 
 	@Test
 	fun search() = coroutineTestRule.runBlockingTest {
-		val subject = repo.getList(20, query = null, sortOrder = SortOrder.POPULARITY, tag = null)
+		val subject = repo.getList2(20, query = null, sortOrder = SortOrder.POPULARITY, tags = null)
 			.first()
-		val list = repo.getList(offset = 0, query = subject.title, sortOrder = null, tag = null)
+		val list = repo.getList2(offset = 0, query = subject.title, sortOrder = null, tags = null)
 		checkMangaList(list)
 		Truth.assertThat(list.map { it.url }).contains(subject.url)
 	}
@@ -63,13 +63,13 @@ class RemoteMangaRepositoryTest(private val source: MangaSource) : KoinTest {
 		Truth.assertThat(titles).doesNotContain("")
 		Truth.assertThat(tags.mapToSet { it.source }).containsExactly(source)
 
-		val list = repo.getList(offset = 0, tag = tags.last(), query = null, sortOrder = null)
+		val list = repo.getList2(offset = 0, tags = setOf(tags.last()), query = null, sortOrder = null)
 		checkMangaList(list)
 	}
 
 	@Test
 	fun details() = coroutineTestRule.runBlockingTest {
-		val list = repo.getList(20, query = null, sortOrder = SortOrder.POPULARITY, tag = null)
+		val list = repo.getList2(20, query = null, sortOrder = SortOrder.POPULARITY, tags = null)
 		val item = list.first()
 		val details = repo.getDetails(item)
 
@@ -87,7 +87,7 @@ class RemoteMangaRepositoryTest(private val source: MangaSource) : KoinTest {
 
 	@Test
 	fun pages() = coroutineTestRule.runBlockingTest {
-		val list = repo.getList(20, query = null, sortOrder = SortOrder.POPULARITY, tag = null)
+		val list = repo.getList2(20, query = null, sortOrder = SortOrder.POPULARITY, tags = null)
 		val chapter =
 			repo.getDetails(list.first()).chapters?.firstOrNull() ?: error("Chapter is null")
 		val pages = repo.getPages(chapter)

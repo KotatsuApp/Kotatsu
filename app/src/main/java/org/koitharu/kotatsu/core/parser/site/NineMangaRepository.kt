@@ -23,7 +23,7 @@ abstract class NineMangaRepository(
 		SortOrder.POPULARITY,
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
 		tags: Set<MangaTag>?,
@@ -146,7 +146,7 @@ abstract class NineMangaRepository(
 			val cateId = li.attr("cate_id") ?: return@mapNotNullToSet null
 			val a = li.selectFirst("a") ?: return@mapNotNullToSet null
 			MangaTag(
-				title = a.text(),
+				title = a.text().toTitleCase(),
 				key = cateId,
 				source = source
 			)

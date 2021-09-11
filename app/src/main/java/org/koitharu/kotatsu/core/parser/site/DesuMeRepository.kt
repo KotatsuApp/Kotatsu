@@ -20,11 +20,11 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		SortOrder.ALPHABETICAL
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		if (query != null && offset != 0) {
 			return emptyList()
@@ -37,9 +37,9 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			append(getSortKey(sortOrder))
 			append("&page=")
 			append((offset / 20) + 1)
-			if (tag != null) {
+			if (!tags.isNullOrEmpty()) {
 				append("&genres=")
-				append(tag.key)
+				appendAll(tags, ",") { it.key }
 			}
 			if (query != null) {
 				append("&search=")

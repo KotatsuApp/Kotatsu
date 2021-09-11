@@ -32,14 +32,7 @@ class ExHentaiRepository(
 		loaderContext.cookieJar.insertCookies(DOMAIN_UNAUTHORIZED, "nw=1", "sl=dm_2")
 	}
 
-	override suspend fun getList(
-		offset: Int,
-		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?,
-	): List<Manga> = getList(offset, query, setOfNotNull(tag), sortOrder)
-
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
 		tags: Set<MangaTag>?,
@@ -80,7 +73,7 @@ class ExHentaiRepository(
 				parseFailed("Cannot find root")
 			} else {
 				updateDm = true
-				return getList(offset, query, tags, sortOrder)
+				return getList2(offset, query, tags, sortOrder)
 			}
 		updateDm = false
 		return root.children().mapNotNull { tr ->

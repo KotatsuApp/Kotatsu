@@ -26,11 +26,11 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		SortOrder.NEWEST
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		if (!query.isNullOrEmpty()) {
 			return if (offset == 0) search(query) else emptyList()
@@ -43,8 +43,8 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			append(getSortKey(sortOrder))
 			append("&page=")
 			append(page)
-			if (tag != null) {
-				append("&includeGenres[]=")
+			tags?.forEach { tag ->
+				append("&genres[include][]=")
 				append(tag.key)
 			}
 		}

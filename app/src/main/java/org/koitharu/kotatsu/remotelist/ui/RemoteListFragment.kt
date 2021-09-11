@@ -31,7 +31,6 @@ class RemoteListFragment : MangaListFragment() {
 
 	override fun onFilterChanged(filter: MangaFilter) {
 		viewModel.applyFilter(filter)
-		super.onFilterChanged(filter)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

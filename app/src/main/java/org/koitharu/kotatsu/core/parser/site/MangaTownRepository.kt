@@ -23,11 +23,11 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		SortOrder.UPDATED
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		val sortKey = when (sortOrder) {
 			SortOrder.ALPHABETICAL -> "?name.az"
@@ -43,8 +43,13 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 				}
 				"/search?name=${query.urlEncoded()}".withDomain()
 			}
-			tag != null -> "/directory/${tag.key}/$page.htm$sortKey".withDomain()
-			else -> "/directory/$page.htm$sortKey".withDomain()
+			tags.isNullOrEmpty() -> "/directory/$page.htm$sortKey".withDomain()
+			tags.size == 1 -> "/directory/${tags.first().key}/$page.htm$sortKey".withDomain()
+			else -> tags.joinToString(
+				prefix = "/search?page=$page".withDomain()
+			) { tag ->
+				"&genres[${tag.key}]=1"
+			}
 		}
 		val doc = loaderContext.httpGet(url).parseHtml()
 		val root = doc.body().selectFirst("ul.manga_pic_list")

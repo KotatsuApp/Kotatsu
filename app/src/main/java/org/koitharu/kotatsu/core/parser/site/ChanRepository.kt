@@ -17,11 +17,11 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		SortOrder.ALPHABETICAL
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		val domain = getDomain()
 		val url = when {
@@ -31,7 +31,11 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				}
 				"https://$domain/?do=search&subaction=search&story=${query.urlEncoded()}"
 			}
-			tag != null -> "https://$domain/tags/${tag.key}&n=${getSortKey2(sortOrder)}?offset=$offset"
+			!tags.isNullOrEmpty() -> tags.joinToString(
+				prefix = "https://$domain/tags/",
+				postfix = "&n=${getSortKey2(sortOrder)}?offset=$offset",
+				separator = "+",
+			) { tag -> tag.key }
 			else -> "https://$domain/${getSortKey(sortOrder)}?offset=$offset"
 		}
 		val doc = loaderContext.httpGet(url).parseHtml()

@@ -11,13 +11,13 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 	override val defaultDomain = "hentaichan.live"
 	override val source = MangaSource.HENCHAN
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
-		return super.getList(offset, query, sortOrder, tag).map {
+		return super.getList2(offset, query, tags, sortOrder).map {
 			val cover = it.coverUrl
 			if (cover.contains("_blur")) {
 				it.copy(coverUrl = cover.replace("_blur", ""))

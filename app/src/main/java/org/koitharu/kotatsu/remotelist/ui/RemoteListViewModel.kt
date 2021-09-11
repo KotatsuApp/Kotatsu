@@ -78,10 +78,10 @@ class RemoteListViewModel(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			try {
 				listError.value = null
-				val list = repository.getList(
+				val list = repository.getList2(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
 					sortOrder = appliedFilter?.sortOrder,
-					tag = appliedFilter?.tag
+					tags = appliedFilter?.tags,
 				)
 				if (!append) {
 					mangaList.value = list
