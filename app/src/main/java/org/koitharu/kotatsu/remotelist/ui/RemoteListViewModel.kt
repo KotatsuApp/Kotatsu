@@ -7,8 +7,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaFilter
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -40,8 +42,9 @@ class RemoteListViewModel(
 			list == null -> listOf(LoadingState)
 			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_book_cross, R.string.nothing_found, R.string._empty))
 			else -> {
-				val result = ArrayList<ListModel>(list.size + 2)
+				val result = ArrayList<ListModel>(list.size + 3)
 				result += headerModel
+				createFilterModel()?.let { result.add(it) }
 				list.toUi(result, mode)
 				when {
 					error != null -> result += error.toErrorFooter()
@@ -63,6 +66,16 @@ class RemoteListViewModel(
 
 	override fun onRetry() {
 		loadList(append = !mangaList.value.isNullOrEmpty())
+	}
+
+	override fun onRemoveFilterTag(tag: MangaTag) {
+		val filter = appliedFilter ?: return
+		if (tag !in filter.tags) {
+			return
+		}
+		applyFilter(
+			filter.copy(tags = filter.tags - tag)
+		)
 	}
 
 	fun loadNextPage() {
@@ -106,6 +119,10 @@ class RemoteListViewModel(
 		filter.value?.run {
 			filter.value = copy(currentFilter = newFilter)
 		}
+	}
+
+	private fun createFilterModel() = appliedFilter?.run {
+		CurrentFilterModel(tags.map { ChipsView.ChipModel(0, it.title, it) })
 	}
 
 	private fun loadFilter() {

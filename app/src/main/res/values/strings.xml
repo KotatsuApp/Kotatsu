@@ -239,4 +239,5 @@
 	<string name="auth_complete">Authorization complete</string>
 	<string name="auth_not_supported_by">Authorization on %s is not supported</string>
 	<string name="text_clear_cookies_prompt">You will be logged out from all sources that you are authorized in</string>
+    <string name="genres">Genres</string>
 </resources>

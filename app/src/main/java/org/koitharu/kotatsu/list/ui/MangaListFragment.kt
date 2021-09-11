@@ -71,7 +71,13 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		super.onViewCreated(view, savedInstanceState)
 		drawer = binding.root as? DrawerLayout
 		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-		listAdapter = MangaListAdapter(get(), viewLifecycleOwner, this, ::resolveException)
+		listAdapter = MangaListAdapter(
+			coil = get(),
+			lifecycleOwner = viewLifecycleOwner,
+			clickListener = this,
+			onRetryClick = ::resolveException,
+			onTagRemoveClick = viewModel::onRemoveFilterTag
+		)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
@@ -287,7 +293,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	final override fun getSectionTitle(position: Int): CharSequence? {
 		return when (binding.recyclerViewFilter.adapter?.getItemViewType(position)) {
 			FilterAdapter.VIEW_TYPE_SORT -> getString(R.string.sort_order)
-			FilterAdapter.VIEW_TYPE_TAG -> getString(R.string.genre)
+			FilterAdapter.VIEW_TYPE_TAG -> getString(R.string.genres)
 			else -> null
 		}
 	}

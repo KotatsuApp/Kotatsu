@@ -22,11 +22,20 @@ class ChipsView @JvmOverloads constructor(
 	private var chipOnClickListener = OnClickListener {
 		onChipClickListener?.onChipClick(it as Chip, it.tag)
 	}
+	private var chipOnCloseListener = OnClickListener {
+		onChipCloseClickListener?.onChipCloseClick(it as Chip, it.tag)
+	}
 	var onChipClickListener: OnChipClickListener? = null
 		set(value) {
 			field = value
 			val isChipClickable = value != null
 			children.forEach { it.isClickable = isChipClickable }
+		}
+	var onChipCloseClickListener: OnChipCloseClickListener? = null
+		set(value) {
+			field = value
+			val isCloseIconVisible = value != null
+			children.forEach { (it as? Chip)?.isCloseIconVisible = isCloseIconVisible }
 		}
 
 	override fun requestLayout() {
@@ -69,7 +78,8 @@ class ChipsView @JvmOverloads constructor(
 		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
 		chip.setChipDrawable(drawable)
 		chip.setTextColor(ContextCompat.getColor(context, R.color.color_primary))
-		chip.isCloseIconVisible = false
+		chip.isCloseIconVisible = onChipCloseClickListener != null
+		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)
 		chip.setOnClickListener(chipOnClickListener)
 		addView(chip)
@@ -95,5 +105,10 @@ class ChipsView @JvmOverloads constructor(
 	fun interface OnChipClickListener {
 
 		fun onChipClick(chip: Chip, data: Any?)
+	}
+
+	fun interface OnChipCloseClickListener {
+
+		fun onChipCloseClick(chip: Chip, data: Any?)
 	}
 }
