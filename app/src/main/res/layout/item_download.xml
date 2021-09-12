@@ -18,9 +18,11 @@
 		android:layout_margin="8dp"
 		app:cardCornerRadius="4dp"
 		app:cardElevation="4dp"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintDimensionRatio="h,1:1"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent">
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_bias="0.0">
 
 		<ImageView
 			android:id="@+id/imageView_cover"
