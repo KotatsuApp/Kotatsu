@@ -8,7 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.databinding.NavigationHeaderBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -85,6 +86,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		}
 		binding.drawer.addDrawerListener(drawerToggle)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+		if (get<AppSettings>().isAmoledTheme) {
+			binding.appbar.setBackgroundColor(Color.BLACK)
+			binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_background))
+		} else {
+			binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_surface))
+		}
 
 		with(binding.searchView) {
 			onFocusChangeListener = this@MainActivity
@@ -205,17 +213,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbarCard.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
 			topMargin = insets.top + resources.resolveDp(8)
-			leftMargin = insets.left + resources.resolveDp(16)
-			rightMargin = insets.right + resources.resolveDp(16)
 		}
-		binding.fab.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+		binding.fab.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = insets.bottom + topMargin
 			leftMargin = insets.left + topMargin
 			rightMargin = insets.right + topMargin
 		}
-		binding.container.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+		binding.container.updateLayoutParams<MarginLayoutParams> {
 			topMargin = -(binding.appbar.measureHeight())
 		}
 	}
@@ -337,19 +343,40 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private fun onSearchOpened() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		drawerToggle.isDrawerIndicatorEnabled = false
-		// Avoiding shadows on the sides if the color is transparent, so we make the AppBarLayout white/dark
-		binding.appbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_on_secondary))
-		binding.toolbarCard.cardElevation = 0f
+		// Avoiding shadows on the sides if the color is transparent, so we make the AppBarLayout white/grey/black
+		if (get<AppSettings>().isAmoledTheme) {
+			binding.toolbar.setBackgroundColor(Color.BLACK)
+		} else {
+			binding.appbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_surface))
+		}
+		binding.toolbarCard.apply {
+			cardElevation = 0f
+			// Remove margin
+			updateLayoutParams<MarginLayoutParams> {
+				leftMargin = 0
+				rightMargin = 0
+			}
+
+		}
 		binding.appbar.elevation = searchViewElevation
 	}
 
 	private fun onSearchClosed() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 		drawerToggle.isDrawerIndicatorEnabled = true
+		if (get<AppSettings>().isAmoledTheme) {
+			binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_background))
+		}
 		// Returning transparent color
 		binding.appbar.setBackgroundColor(Color.TRANSPARENT)
 		binding.appbar.elevation = 0f
-		binding.toolbarCard.cardElevation = searchViewElevation
+		binding.toolbarCard.apply {
+			cardElevation = searchViewElevation
+			updateLayoutParams<MarginLayoutParams> {
+				leftMargin = resources.resolveDp(16)
+				rightMargin = resources.resolveDp(16)
+			}
+		}
 	}
 
 	private fun onFirstStart() {

@@ -9,11 +9,10 @@
 		<item name="colorSecondary">?attr/colorPrimary</item>
 		<item name="colorOnSecondary">@color/color_on_secondary</item>
 		<item name="colorControlLight">@color/color_control_light</item>
-		<item name="colorSurfaceSecondary">@color/color_surface_secondary</item>
 
 		<!-- Window decor -->
 		<item name="android:windowLightStatusBar" tools:targetApi="m">@bool/use_light_status</item>
-		<item name="android:statusBarColor">@color/nav_bar_scrim</item>
+		<item name="android:statusBarColor">@color/status_bar_scrim</item>
 		<item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/use_light_navigation</item>
 		<item name="android:navigationBarColor">@color/nav_bar_scrim</item>
 		<item name="popupTheme">@style/ThemeOverlay.Kotatsu</item>
@@ -28,9 +27,6 @@
 		<item name="textAppearanceBody2">@style/TextAppearance.Kotatsu.Body2</item>
 		<item name="textAppearanceButton">@style/TextAppearance.Kotatsu.Button</item>
 		<item name="textAppearanceListItem">@style/TextAppearance.Kotatsu.ListPrimary</item>
-
-		<!-- Custom theme attrs -->
-		<item name="navigationBarDividerColor">?attr/colorControlLight</item>
 
 		<!-- ActionMode attrs -->
 		<item name="android:windowActionModeOverlay">true</item>
