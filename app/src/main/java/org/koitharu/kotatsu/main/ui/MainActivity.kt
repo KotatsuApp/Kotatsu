@@ -345,7 +345,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		drawerToggle.isDrawerIndicatorEnabled = false
 		// Avoiding shadows on the sides if the color is transparent, so we make the AppBarLayout white/grey/black
-		if (get<AppSettings>().isAmoledTheme) {
+		if (get<AppSettings>().isAmoledTheme && get<AppSettings>().theme == AppCompatDelegate.MODE_NIGHT_YES) {
 			binding.toolbar.setBackgroundColor(Color.BLACK)
 		} else {
 			binding.appbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_surface))
