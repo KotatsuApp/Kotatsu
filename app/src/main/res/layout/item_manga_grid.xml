@@ -12,7 +12,9 @@
 		android:id="@+id/card"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_margin="4dp"
+		android:layout_marginTop="8dp"
+		android:layout_marginBottom="4dp"
+		android:layout_marginHorizontal="8dp"
 		app:cardCornerRadius="4dp"
 		app:cardElevation="4dp">
 
@@ -34,7 +36,8 @@
 		android:ellipsize="end"
 		android:lineSpacingExtra="-2dp"
 		android:maxLines="2"
-		android:padding="4dp"
+		android:paddingHorizontal="8dp"
+		android:paddingBottom="4dp"
 		android:elegantTextHeight="false"
 		tools:text="Sample name" />
 

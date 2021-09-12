@@ -6,17 +6,16 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:background="?attr/selectableItemBackground"
-	android:paddingStart="16dp"
+	android:paddingStart="8dp"
 	android:paddingTop="4dp"
-	android:paddingEnd="16dp"
+	android:paddingEnd="8dp"
 	android:paddingBottom="6dp">
 
 	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/card_cover"
 		android:layout_width="48dp"
 		android:layout_height="48dp"
-		android:layout_marginTop="8dp"
-		android:layout_marginBottom="8dp"
+		android:layout_margin="8dp"
 		app:cardCornerRadius="4dp"
 		app:cardElevation="4dp"
 		app:layout_constraintDimensionRatio="h,1:1"
@@ -39,6 +38,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="16dp"
 		android:layout_marginTop="4dp"
+		android:layout_marginEnd="8dp"
 		android:ellipsize="end"
 		android:singleLine="true"
 		android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
@@ -53,6 +53,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="16dp"
 		android:layout_marginTop="4dp"
+		android:layout_marginEnd="8dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/card_cover"
 		app:layout_constraintTop_toBottomOf="@id/textView_title" />
@@ -63,10 +64,11 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="16dp"
 		android:layout_marginTop="4dp"
+		android:layout_marginEnd="8dp"
 		android:ellipsize="end"
 		android:singleLine="true"
 		android:textAppearance="@style/TextAppearance.AppCompat.Small"
-		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/textView_percent"
 		app:layout_constraintStart_toEndOf="@id/card_cover"
 		app:layout_constraintTop_toBottomOf="@id/progressBar"
 		tools:text="@string/manga_downloading_" />
@@ -78,6 +80,7 @@
 		android:textAppearance="@style/TextAppearance.AppCompat.Body2"
 		app:layout_constraintBaseline_toBaselineOf="@id/textView_status"
 		app:layout_constraintEnd_toEndOf="parent"
+		android:layout_marginEnd="8dp"
 		tools:text="25%" />
 
 	<TextView
@@ -86,6 +89,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="16dp"
 		android:layout_marginTop="4dp"
+		android:layout_marginEnd="8dp"
 		android:ellipsize="end"
 		android:maxLines="4"
 		android:textAppearance="@style/TextAppearance.AppCompat.Small"
