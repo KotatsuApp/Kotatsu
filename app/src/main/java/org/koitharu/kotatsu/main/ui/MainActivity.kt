@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.*
@@ -87,7 +88,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		binding.drawer.addDrawerListener(drawerToggle)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-		if (get<AppSettings>().isAmoledTheme) {
+		if (get<AppSettings>().isAmoledTheme && get<AppSettings>().theme == AppCompatDelegate.MODE_NIGHT_YES) {
 			binding.appbar.setBackgroundColor(Color.BLACK)
 			binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_background))
 		} else {
