@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.base.ui
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -58,9 +57,6 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		this.binding = binding
 		super.setContentView(binding.root)
 		val toolbar = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)
-		if (get<AppSettings>().isAmoledTheme) {
-			toolbar?.setBackgroundColor(Color.BLACK)
-		}
 		toolbar?.let(this::setSupportActionBar)
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 
