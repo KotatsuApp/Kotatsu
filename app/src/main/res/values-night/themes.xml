@@ -2,7 +2,9 @@
 <resources>
 
 	<style name="AppTheme.AMOLED">
-		<item name="android:windowBackground">@android:color/black</item>
+		<item name="android:colorBackground">@android:color/black</item>
+		<item name="colorSurface">@android:color/black</item>
+		<item name="android:statusBarColor">@color/system_ui_scrim_amoled</item>
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.MaterialComponents.Dark">
