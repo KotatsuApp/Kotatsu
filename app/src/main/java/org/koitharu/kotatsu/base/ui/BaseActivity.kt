@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.base.ui
 
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -99,6 +100,12 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 
 	private fun setupToolbar() {
 		(findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
+	}
+
+	protected fun isDarkAmoledTheme(): Boolean {
+		val uiMode = resources.configuration.uiMode
+		val isNight = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+		return isNight && get<AppSettings>().isAmoledTheme
 	}
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {

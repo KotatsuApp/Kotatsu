@@ -34,6 +34,5 @@
 	<color name="grey_dark">#212121</color>
 	<color name="dim">#99000000</color>
 	<color name="shadow">#99000000</color>
-	<color name="transparent">#00FFFFFF</color>
 
 </resources>
