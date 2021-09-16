@@ -230,4 +230,6 @@
     <string name="welcome">Bienvenido/a</string>
     <string name="languages">Idiomas</string>
     <string name="other">Otro</string>
+    <string name="genres">Géneros</string>
+    <string name="text_search_holder_secondary">Intenta reformular la consulta.</string>
 </resources>
