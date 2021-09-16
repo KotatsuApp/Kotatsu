@@ -236,4 +236,8 @@
     <string name="about_author">Autor</string>
     <string name="about_app_translation">Übersetzung</string>
     <string name="about_app_translation_summary">Diese Anwendung übersetzen</string>
+    <string name="text_clear_cookies_prompt">Du wirst von allen Quellen abgemeldet, für die du berechtigt bist</string>
+    <string name="genres">Genres</string>
+    <string name="auth_not_supported_by">Autorisierung auf %s wird nicht unterstützt</string>
+    <string name="auth_complete">Autorisierung abgeschlossen</string>
 </resources>
