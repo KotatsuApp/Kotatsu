@@ -236,4 +236,8 @@
     <string name="about_author">Auteur</string>
     <string name="about_app_translation">Traduction</string>
     <string name="about_app_translation_summary">Traduire cette application</string>
+    <string name="genres">Genres</string>
+    <string name="text_clear_cookies_prompt">Vous serez déconnecté·e de toutes les sources pour lesquelles vous avez une autorisation</string>
+    <string name="auth_not_supported_by">L\'autorisation sur %s n\'est pas prise en charge</string>
+    <string name="auth_complete">Autorisation complète</string>
 </resources>
