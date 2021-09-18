@@ -232,4 +232,5 @@
     <string name="other">Otro</string>
     <string name="genres">Géneros</string>
     <string name="text_search_holder_secondary">Intenta reformular la consulta.</string>
+    <string name="text_clear_search_history_prompt">¿Realmente quiere eliminar todas las consultas de búsqueda recientes\? Esta acción no se puede deshacer.</string>
 </resources>
