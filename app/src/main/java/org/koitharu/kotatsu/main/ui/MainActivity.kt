@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -344,6 +345,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private fun onSearchOpened() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		drawerToggle.isDrawerIndicatorEnabled = false
+		TransitionManager.beginDelayedTransition(binding.appbar)
 		// Avoiding shadows on the sides if the color is transparent, so we make the AppBarLayout white/grey/black
 		if (isDarkAmoledTheme()) {
 			binding.toolbar.setBackgroundColor(Color.BLACK)
@@ -368,6 +370,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		if (isDarkAmoledTheme()) {
 			binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_background))
 		}
+		TransitionManager.beginDelayedTransition(binding.appbar)
 		// Returning transparent color
 		binding.appbar.setBackgroundColor(Color.TRANSPARENT)
 		binding.appbar.elevation = 0f
