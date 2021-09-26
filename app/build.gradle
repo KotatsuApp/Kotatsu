@@ -13,8 +13,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 30
-		versionCode 368
-		versionName '2.0-a1'
+		versionCode 369
+		versionName '2.0-b1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -77,7 +77,7 @@ dependencies {
 	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
 	implementation 'androidx.lifecycle:lifecycle-service:2.3.1'
 	implementation 'androidx.lifecycle:lifecycle-process:2.3.1'
-	implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+	implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 	implementation 'androidx.recyclerview:recyclerview:1.2.1'
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-beta01'
