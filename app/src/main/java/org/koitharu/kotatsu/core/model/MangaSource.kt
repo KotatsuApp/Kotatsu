@@ -30,7 +30,17 @@ enum class MangaSource(
 	// NUDEMOON("Nude-Moon", "ru", NudeMoonRepository::class.java),
 	MANGAREAD("MangaRead", "en", MangareadRepository::class.java),
 	REMANGA("Remanga", "ru", RemangaRepository::class.java),
-	HENTAILIB("HentaiLib", "ru", HentaiLibRepository::class.java);
+	HENTAILIB("HentaiLib", "ru", HentaiLibRepository::class.java),
+	ANIBEL("Anibel", "be", AnibelRepository::class.java),
+	NINEMANGA_EN("NineManga English", "en", NineMangaRepository.English::class.java),
+	NINEMANGA_ES("NineManga Español", "es", NineMangaRepository.Spanish::class.java),
+	NINEMANGA_RU("NineManga Русский", "ru", NineMangaRepository.Russian::class.java),
+	NINEMANGA_DE("NineManga Deutsch", "de", NineMangaRepository.Deutsch::class.java),
+	NINEMANGA_IT("NineManga Italiano", "it", NineMangaRepository.Italiano::class.java),
+	NINEMANGA_BR("NineManga Brasil", "pt", NineMangaRepository.Brazil::class.java),
+	NINEMANGA_FR("NineManga Français", "fr", NineMangaRepository.Francais::class.java),
+	EXHENTAI("ExHentai", null, ExHentaiRepository::class.java)
+	;
 
 	@get:Throws(NoBeanDefFoundException::class)
 	@Deprecated("")

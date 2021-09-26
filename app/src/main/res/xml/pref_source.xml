@@ -14,4 +14,11 @@
 		android:title="@string/use_ssl"
 		app:iconSpaceReserved="false" />
 
+	<Preference
+		android:key="auth"
+		android:persistent="false"
+		android:title="@string/sign_in"
+		app:allowDividerAbove="true"
+		app:iconSpaceReserved="false" />
+
 </PreferenceScreen>

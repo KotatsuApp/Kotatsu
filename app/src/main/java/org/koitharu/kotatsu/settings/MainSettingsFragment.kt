@@ -44,19 +44,12 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		findPreference<Preference>(AppSettings.KEY_APP_UPDATE_AUTO)?.run {
-			isVisible = AppUpdateChecker.isUpdateSupported(context)
-		}
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)
 		}
 		findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
-		findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
-			title = getString(R.string.app_version, BuildConfig.VERSION_NAME)
-			isEnabled = AppUpdateChecker.isUpdateSupported(context)
-		}
 		settings.subscribe(this)
 	}
 
@@ -72,6 +65,9 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			}
 			AppSettings.KEY_THEME_AMOLED -> {
 				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
+			}
+			AppSettings.KEY_HIDE_TOOLBAR -> {
+				findPreference<SwitchPreference>(key)?.setSummary(R.string.restart_required)
 			}
 			AppSettings.KEY_LOCAL_STORAGE -> {
 				findPreference<Preference>(key)?.run {
@@ -115,10 +111,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				} else {
 					settings.appPassword = null
 				}
-				true
-			}
-			AppSettings.KEY_APP_VERSION -> {
-				checkForUpdates()
 				true
 			}
 			else -> super.onPreferenceTreeClick(preference)
@@ -177,25 +169,5 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			}.setTitle(preference.title)
 			.create()
 			.show()
-	}
-
-	private fun checkForUpdates() {
-		viewLifecycleScope.launch {
-			findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
-				setSummary(R.string.checking_for_updates)
-				isSelectable = false
-			}
-			val result = AppUpdateChecker(activity ?: return@launch).checkNow()
-			findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
-				setSummary(
-					when (result) {
-						true -> R.string.check_for_updates
-						false -> R.string.no_update_available
-						null -> R.string.update_check_failed
-					}
-				)
-				isSelectable = true
-			}
-		}
 	}
 }

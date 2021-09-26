@@ -6,7 +6,6 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
 
@@ -21,11 +20,11 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		SortOrder.ALPHABETICAL
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		if (query != null && offset != 0) {
 			return emptyList()
@@ -38,9 +37,9 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			append(getSortKey(sortOrder))
 			append("&page=")
 			append((offset / 20) + 1)
-			if (tag != null) {
+			if (!tags.isNullOrEmpty()) {
 				append("&genres=")
-				append(tag.key)
+				appendAll(tags, ",") { it.key }
 			}
 			if (query != null) {
 				append("&search=")
@@ -122,12 +121,13 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 
 	override suspend fun getTags(): Set<MangaTag> {
 		val doc = loaderContext.httpGet("https://${getDomain()}/manga/").parseHtml()
-		val root = doc.body().getElementById("animeFilter").selectFirst(".catalog-genres")
+		val root = doc.body().getElementById("animeFilter")
+			?.selectFirst(".catalog-genres") ?: throw ParseException("Root not found")
 		return root.select("li").mapToSet {
 			MangaTag(
 				source = source,
-				key = it.selectFirst("input").attr("data-genre"),
-				title = it.selectFirst("label").text()
+				key = it.selectFirst("input")?.attr("data-genre") ?: parseFailed(),
+				title = it.selectFirst("label")?.text() ?: parseFailed()
 			)
 		}
 	}

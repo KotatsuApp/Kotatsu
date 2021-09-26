@@ -9,33 +9,17 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
+		style="@style/Widget.Kotatsu.Sheet.AppBar"
 		android:layout_width="match_parent"
 		android:layout_height="?attr/actionBarSize"
-		android:background="?android:windowBackground"
-		android:elevation="0dp"
-		app:elevation="0dp">
+		app:liftOnScroll="true">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/toolbar"
-			style="@style/Widget.MaterialComponents.Toolbar.Surface"
+			style="@style/Widget.Kotatsu.Toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:elevation="0dp"
-			android:outlineProvider="@null"
-			android:visibility="gone"
-			app:elevation="0dp"
-			app:navigationIcon="@drawable/ic_cross"
-			tools:visibility="visible" />
-
-		<TextView
-			android:id="@+id/textView_title"
-			style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:gravity="center_vertical"
-			android:padding="16dp"
-			android:textColor="?android:textColorSecondary"
-			tools:visibility="gone" />
+			app:navigationIcon="@drawable/ic_cross" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 
@@ -43,6 +27,7 @@
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:clipToPadding="false"
 		android:padding="@dimen/grid_spacing"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

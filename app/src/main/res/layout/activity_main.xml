@@ -6,33 +6,68 @@
 	android:id="@+id/drawer"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".main.ui.MainActivity"
-	tools:openDrawer="start">
+	tools:context=".main.ui.MainActivity">
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
-
-		<com.google.android.material.appbar.AppBarLayout
-			android:id="@+id/appbar"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:background="?colorPrimary"
-			android:theme="@style/AppToolbarTheme">
-
-			<com.google.android.material.appbar.MaterialToolbar
-				android:id="@id/toolbar"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				app:layout_scrollFlags="scroll|enterAlways" />
-
-		</com.google.android.material.appbar.AppBarLayout>
 
 		<androidx.fragment.app.FragmentContainerView
 			android:id="@id/container"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+		<com.google.android.material.appbar.AppBarLayout
+			android:id="@+id/appbar"
+			style="@style/Widget.Kotatsu.AppBar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@android:color/transparent"
+			android:stateListAnimator="@null"
+			app:elevation="0dp">
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/toolbar_card"
+				android:layout_width="match_parent"
+				android:layout_height="50dp"
+				android:layout_marginStart="16dp"
+				android:layout_marginTop="8dp"
+				android:layout_marginEnd="16dp"
+				android:layout_marginBottom="8dp"
+				app:cardCornerRadius="8dp"
+				app:cardElevation="4dp">
+
+				<com.google.android.material.appbar.MaterialToolbar
+					android:id="@id/toolbar"
+					style="@style/Widget.Kotatsu.Toolbar"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:focusable="true"
+					android:focusableInTouchMode="true"
+					app:contentInsetStartWithNavigation="0dp"
+					app:titleTextAppearance="@style/TextAppearance.Kotatsu.PersistentToolbarTitle"
+					app:titleTextColor="?android:colorControlNormal"
+					tools:title="@string/app_name">
+
+					<org.koitharu.kotatsu.search.ui.widget.SearchEditText
+						android:id="@+id/searchView"
+						style="@style/Widget.Kotatsu.SearchView"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:background="@null"
+						android:gravity="center_vertical"
+						android:hint="@string/search_manga"
+						android:imeOptions="actionSearch"
+						android:importantForAutofill="no"
+						android:paddingBottom="1dp"
+						android:singleLine="true" />
+
+				</com.google.android.material.appbar.MaterialToolbar>
+
+			</com.google.android.material.card.MaterialCardView>
+
+		</com.google.android.material.appbar.AppBarLayout>
 
 		<com.google.android.material.floatingactionbutton.FloatingActionButton
 			android:id="@+id/fab"
@@ -54,10 +89,13 @@
 
 	<com.google.android.material.navigation.NavigationView
 		android:id="@+id/navigationView"
-		android:layout_width="260dp"
+		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
 		android:layout_gravity="start"
 		app:insetForeground="@android:color/transparent"
+		app:itemHorizontalPadding="16dp"
+		app:itemIconPadding="24dp"
+		app:itemIconTint="@color/navigation_item_color_tint"
 		app:menu="@menu/nav_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

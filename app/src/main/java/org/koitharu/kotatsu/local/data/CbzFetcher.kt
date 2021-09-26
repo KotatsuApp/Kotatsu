@@ -20,19 +20,22 @@ class CbzFetcher : Fetcher<Uri> {
 		pool: BitmapPool,
 		data: Uri,
 		size: Size,
-		options: Options
+		options: Options,
 	): FetchResult {
 		val zip = ZipFile(data.schemeSpecificPart)
 		val entry = zip.getEntry(data.fragment)
 		val ext = MimeTypeMap.getFileExtensionFromUrl(entry.name)
 		return SourceResult(
-			source = zip.getInputStream(entry).source().buffer(),
+			source = ExtraCloseableBufferedSource(
+				zip.getInputStream(entry).source().buffer(),
+				zip,
+			),
 			mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext),
 			dataSource = DataSource.DISK
 		)
 	}
 
-	override fun key(data: Uri): String? = data.toString()
+	override fun key(data: Uri) = data.toString()
 
 	override fun handles(data: Uri) = data.scheme == "cbz"
 }

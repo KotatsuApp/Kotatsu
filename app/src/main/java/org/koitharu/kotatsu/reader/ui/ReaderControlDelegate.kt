@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.view.KeyEvent
+import android.view.SoundEffectConstants
+import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -30,18 +32,27 @@ class ReaderControlDelegate(
 			}.launchIn(scope)
 	}
 
-	fun onGridTouch(area: Int) {
+	fun onGridTouch(area: Int, view: View) {
 		when (area) {
 			GridTouchHelper.AREA_CENTER -> {
 				listener.toggleUiVisibility()
+				view.playSoundEffect(SoundEffectConstants.CLICK)
 			}
-			GridTouchHelper.AREA_TOP,
+			GridTouchHelper.AREA_TOP -> if (isTapSwitchEnabled) {
+				listener.switchPageBy(-1)
+				view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+			}
 			GridTouchHelper.AREA_LEFT -> if (isTapSwitchEnabled) {
 				listener.switchPageBy(-1)
+				view.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT)
 			}
-			GridTouchHelper.AREA_BOTTOM,
+			GridTouchHelper.AREA_BOTTOM -> if (isTapSwitchEnabled) {
+				listener.switchPageBy(1)
+				view.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN)
+			}
 			GridTouchHelper.AREA_RIGHT -> if (isTapSwitchEnabled) {
 				listener.switchPageBy(1)
+				view.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT)
 			}
 		}
 	}

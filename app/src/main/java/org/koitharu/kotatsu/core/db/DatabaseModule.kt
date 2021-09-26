@@ -20,6 +20,7 @@ val databaseModule
 				Migration5To6(),
 				Migration6To7(),
 				Migration7To8(),
+				Migration8To9(),
 			).addCallback(
 				DatabasePrePopulateCallback(androidContext().resources)
 			).build()

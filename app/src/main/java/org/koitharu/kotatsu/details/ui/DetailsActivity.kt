@@ -33,9 +33,12 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
-import org.koitharu.kotatsu.download.DownloadService
+import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.ShareHelper
+import org.koitharu.kotatsu.utils.ext.buildAlertDialog
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
@@ -113,7 +116,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		}
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_details, menu)
 		return super.onCreateOptionsMenu(menu)
 	}
@@ -226,6 +229,33 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		binding.pager.isUserInputEnabled = true
+	}
+
+	fun showChapterMissingDialog(chapterId: Long) {
+		val remoteManga = viewModel.getRemoteManga()
+		if (remoteManga == null) {
+			Snackbar.make(binding.pager, R.string.chapter_is_missing, Snackbar.LENGTH_LONG)
+				.show()
+			return
+		}
+		buildAlertDialog(this) {
+			setMessage(R.string.chapter_is_missing_text)
+			setTitle(R.string.chapter_is_missing)
+			setNegativeButton(android.R.string.cancel, null)
+			setPositiveButton(R.string.read) { _, _ ->
+				startActivity(
+					ReaderActivity.newIntent(
+						this@DetailsActivity,
+						remoteManga,
+						ReaderState(chapterId, 0, 0)
+					)
+				)
+			}
+			setNeutralButton(R.string.download) { _, _ ->
+				DownloadService.start(this@DetailsActivity, remoteManga, setOf(chapterId))
+			}
+			setCancelable(true)
+		}.show()
 	}
 
 	companion object {

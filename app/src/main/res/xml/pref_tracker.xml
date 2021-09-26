@@ -24,4 +24,12 @@
 		android:title="@string/notifications_settings"
 		app:iconSpaceReserved="false" />
 
+	<org.koitharu.kotatsu.settings.utils.LinksPreference
+		android:key="track_warning"
+		android:icon="@drawable/ic_info_outline"
+		android:persistent="false"
+		android:selectable="false"
+		android:summary="@string/tracker_warning"
+		app:allowDividerAbove="true" />
+
 </PreferenceScreen>

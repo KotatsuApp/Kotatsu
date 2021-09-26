@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:gravity="center_vertical|start"
+	android:minHeight="@dimen/header_height"
+	android:paddingStart="?android:listPreferredItemPaddingStart"
+	android:paddingEnd="?android:listPreferredItemPaddingEnd"
+	android:singleLine="true"
+	android:textAllCaps="true"
+	android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+	android:textColor="?android:textColorSecondary"
+	android:textStyle="bold"
+	tools:text="@tools:sample/lorem[2]" />

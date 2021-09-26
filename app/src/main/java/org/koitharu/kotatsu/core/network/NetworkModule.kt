@@ -6,12 +6,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.utils.CacheUtils
 import java.util.concurrent.TimeUnit
 
 val networkModule
 	get() = module {
-		single { CookieJar() } bind CookieJar::class
+		single { AndroidCookieJar() } bind CookieJar::class
 		single(named(CacheUtils.QUALIFIER_HTTP)) { CacheUtils.createHttpCache(androidContext()) }
 		single {
 			OkHttpClient.Builder().apply {
@@ -22,6 +23,9 @@ val networkModule
 				cache(get(named(CacheUtils.QUALIFIER_HTTP)))
 				addInterceptor(UserAgentInterceptor())
 				addInterceptor(CloudFlareInterceptor())
+				if (BuildConfig.DEBUG) {
+					addNetworkInterceptor(CurlLoggingInterceptor())
+				}
 			}.build()
 		}
 	}

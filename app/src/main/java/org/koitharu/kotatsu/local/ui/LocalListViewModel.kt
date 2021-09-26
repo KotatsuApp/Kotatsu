@@ -14,15 +14,12 @@ import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.EmptyState
-import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.MediaStoreCompat
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import org.koitharu.kotatsu.utils.ext.sub
+import java.io.File
 import java.io.IOException
 
 class LocalListViewModel(
@@ -30,12 +27,12 @@ class LocalListViewModel(
 	private val historyRepository: HistoryRepository,
 	private val settings: AppSettings,
 	private val shortcutsRepository: ShortcutsRepository,
-	private val context: Context
 ) : MangaListViewModel(settings) {
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
+	private val headerModel = ListHeader(null, R.string.local_storage)
 
 	override val content = combine(
 		mangaList,
@@ -45,8 +42,11 @@ class LocalListViewModel(
 		when {
 			error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
-			list.isEmpty() -> listOf(EmptyState(R.string.text_local_holder))
-			else -> list.toUi(mode)
+			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_storage, R.string.text_local_holder_primary, R.string.text_local_holder_secondary))
+			else -> ArrayList<ListModel>(list.size + 1).apply {
+				add(headerModel)
+				list.toUi(this, mode)
+			}
 		}
 	}.asLiveDataDistinct(
 		viewModelScope.coroutineContext + Dispatchers.Default,
@@ -61,7 +61,7 @@ class LocalListViewModel(
 		launchLoadingJob(Dispatchers.Default) {
 			try {
 				listError.value = null
-				mangaList.value = repository.getList(0)
+				mangaList.value = repository.getList2(0)
 			} catch (e: Throwable) {
 				listError.value = e
 			}
@@ -70,7 +70,7 @@ class LocalListViewModel(
 
 	override fun onRetry() = onRefresh()
 
-	fun importFile(uri: Uri) {
+	fun importFile(context: Context, uri: Uri) {
 		launchLoadingJob {
 			val contentResolver = context.contentResolver
 			withContext(Dispatchers.IO) {
@@ -79,8 +79,9 @@ class LocalListViewModel(
 				if (!LocalMangaRepository.isFileSupported(name)) {
 					throw UnsupportedFileException("Unsupported file on $uri")
 				}
-				val dest = settings.getStorageDir(context)?.sub(name)
+				val dest = settings.getStorageDir(context)?.let { File(it, name) }
 					?: throw IOException("External files dir unavailable")
+				@Suppress("BlockingMethodInNonBlockingContext")
 				contentResolver.openInputStream(uri)?.use { source ->
 					dest.outputStream().use { output ->
 						source.copyTo(output)

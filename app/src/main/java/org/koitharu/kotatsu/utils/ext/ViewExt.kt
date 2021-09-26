@@ -16,6 +16,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.progressindicator.BaseProgressIndicator
+import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateViewBindingViewHolder
 
 fun View.hideKeyboard() {
 	val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -153,4 +155,20 @@ fun RecyclerView.findCenterViewPosition(): Int {
 	val centerY = height / 2f
 	val view = findChildViewUnder(centerX, centerY) ?: return RecyclerView.NO_POSITION
 	return getChildAdapterPosition(view)
+}
+
+inline fun <reified T> RecyclerView.ViewHolder.getItem(): T? {
+	return ((this as? AdapterDelegateViewBindingViewHolder<*, *>)?.item as? T)
+}
+
+fun BaseProgressIndicator<*>.setIndeterminateCompat(indeterminate: Boolean) {
+	if (isIndeterminate != indeterminate) {
+		if (indeterminate && visibility == View.VISIBLE) {
+			visibility = View.INVISIBLE
+			isIndeterminate = indeterminate
+			visibility = View.VISIBLE
+		} else {
+			isIndeterminate = indeterminate
+		}
+	}
 }

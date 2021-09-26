@@ -38,6 +38,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		lastInsets = Insets.NONE
 		ViewCompat.setOnApplyWindowInsetsListener(view, this)
 	}
 

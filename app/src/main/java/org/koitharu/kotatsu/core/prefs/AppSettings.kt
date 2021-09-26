@@ -41,6 +41,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	val isAmoledTheme by BoolPreferenceDelegate(KEY_THEME_AMOLED, defaultValue = false)
 
+	val isToolbarHideWhenScrolling by BoolPreferenceDelegate(KEY_HIDE_TOOLBAR, defaultValue = true)
+
 	var gridSize by IntPreferenceDelegate(KEY_GRID_SIZE, defaultValue = 100)
 
 	val readerPageSwitch by StringSetPreferenceDelegate(
@@ -99,6 +101,9 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	var hiddenSources by StringSetPreferenceDelegate(KEY_SOURCES_HIDDEN)
 
+	val isSourcesSelected: Boolean
+		get() = KEY_SOURCES_HIDDEN in prefs
+
 	fun getStorageDir(context: Context): File? {
 		val value = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)
@@ -147,6 +152,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_APP_SECTION = "app_section"
 		const val KEY_THEME = "theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
+		const val KEY_HIDE_TOOLBAR = "hide_toolbar"
 		const val KEY_SOURCES_ORDER = "sources_order"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"
@@ -160,8 +166,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_SWITCHERS = "reader_switchers"
 		const val KEY_TRACK_SOURCES = "track_sources"
-		const val KEY_APP_UPDATE = "app_update"
-		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
+		const val KEY_TRACK_WARNING = "track_warning"
 		const val KEY_TRACKER_NOTIFICATIONS = "tracker_notifications"
 		const val KEY_NOTIFICATIONS_SETTINGS = "notifications_settings"
 		const val KEY_NOTIFICATIONS_SOUND = "notifications_sound"
@@ -177,5 +182,14 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_RESTORE = "restore"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
+
+		// About
+		const val KEY_APP_UPDATE = "app_update"
+		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
+		const val KEY_APP_TRANSLATION = "about_app_translation"
+		const val KEY_APP_GRATITUDES = "about_gratitudes"
+		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
+		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
+		const val KEY_SUPPORT_DEVELOPER = "about_support_developer"
 	}
 }

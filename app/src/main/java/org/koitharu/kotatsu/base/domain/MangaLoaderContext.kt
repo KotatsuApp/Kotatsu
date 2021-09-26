@@ -9,13 +9,16 @@ import org.koitharu.kotatsu.utils.ext.await
 
 open class MangaLoaderContext(
 	private val okHttp: OkHttpClient,
-	private val cookieJar: CookieJar
+	val cookieJar: CookieJar
 ) : KoinComponent {
 
-	suspend fun httpGet(url: String): Response {
+	suspend fun httpGet(url: String, headers: Headers? = null): Response {
 		val request = Request.Builder()
 			.get()
 			.url(url)
+		if (headers != null) {
+			request.headers(headers)
+		}
 		return okHttp.newCall(request.build()).await()
 	}
 
@@ -53,16 +56,6 @@ open class MangaLoaderContext(
 	}
 
 	open fun getSettings(source: MangaSource) = SourceSettings(get(), source)
-
-	fun insertCookies(domain: String, vararg cookies: String) {
-		val url = HttpUrl.Builder()
-			.scheme(SCHEME_HTTP)
-			.host(domain)
-			.build()
-		cookieJar.saveFromResponse(url, cookies.mapNotNull {
-			Cookie.parse(url, it)
-		})
-	}
 
 	private companion object {
 

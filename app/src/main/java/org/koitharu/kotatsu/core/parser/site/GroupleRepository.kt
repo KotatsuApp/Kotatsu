@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.parser.site
 
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.Response
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
@@ -18,11 +19,11 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		SortOrder.RATING
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		val domain = getDomain()
 		val doc = when {
@@ -33,22 +34,24 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 					"offset" to (offset upBy PAGE_SIZE_SEARCH).toString()
 				)
 			)
-			tag == null -> loaderContext.httpGet(
+			tags.isNullOrEmpty() -> loaderContext.httpGet(
 				"https://$domain/list?sortType=${
 					getSortKey(
 						sortOrder
 					)
 				}&offset=${offset upBy PAGE_SIZE}"
 			)
-			else -> loaderContext.httpGet(
-				"https://$domain/list/genre/${tag.key}?sortType=${
+			tags.size == 1 -> loaderContext.httpGet(
+				"https://$domain/list/genre/${tags.first().key}?sortType=${
 					getSortKey(
 						sortOrder
 					)
 				}&offset=${offset upBy PAGE_SIZE}"
 			)
-		}.parseHtml()
-		val root = doc.body().getElementById("mangaBox")
+			offset > 0 -> return emptyList()
+			else -> advancedSearch(domain, tags)
+		}.parseHtml().body()
+		val root = (doc.getElementById("mangaBox") ?: doc.getElementById("mangaResults"))
 			?.selectFirst("div.tiles.row") ?: throw ParseException("Cannot find root")
 		val baseHost = root.baseUri().toHttpUrl().host
 		return root.select("div.tile").mapNotNull { node ->
@@ -57,7 +60,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 			if (descDiv.selectFirst("i.fa-user") != null) {
 				return@mapNotNull null //skip author
 			}
-			val href = imgDiv.selectFirst("a").attr("href")?.inContextOf(node)
+			val href = imgDiv.selectFirst("a")?.attr("href")?.inContextOf(node)
 			if (href == null || href.toHttpUrl().host != baseHost) {
 				return@mapNotNull null // skip external links
 			}
@@ -161,11 +164,11 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 
 	override suspend fun getTags(): Set<MangaTag> {
 		val doc = loaderContext.httpGet("https://${getDomain()}/list/genres/sort_name").parseHtml()
-		val root = doc.body().getElementById("mangaBox").selectFirst("div.leftContent")
-			.selectFirst("table.table")
+		val root = doc.body().getElementById("mangaBox")?.selectFirst("div.leftContent")
+			?.selectFirst("table.table") ?: parseFailed("Cannot find root")
 		return root.select("a.element-link").mapToSet { a ->
 			MangaTag(
-				title = a.text().capitalize(),
+				title = a.text().toCamelCase(),
 				key = a.attr("href").substringAfterLast('/'),
 				source = source
 			)
@@ -181,6 +184,43 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 			SortOrder.RATING -> "votes"
 			null -> "updated"
 		}
+
+	private suspend fun advancedSearch(domain: String, tags: Set<MangaTag>): Response {
+		val url = "https://$domain/search/advanced"
+		// Step 1: map catalog genres names to advanced-search genres ids
+		val tagsIndex = loaderContext.httpGet(url).parseHtml()
+			.body().selectFirst("form.search-form")
+			?.select("div.form-group")
+			?.get(1) ?: parseFailed("Genres filter element not found")
+		val tagNames = tags.map { it.title.lowercase() }
+		val payload = HashMap<String, String>()
+		var foundGenres = 0
+		tagsIndex.select("li.property").forEach { li ->
+			val name = li.text().trim().lowercase()
+			val id = li.selectFirst("input")?.id()
+				?: parseFailed("Id for tag $name not found")
+			payload[id] = if (name in tagNames) {
+				foundGenres++
+				"in"
+			} else ""
+		}
+		if (foundGenres != tags.size) {
+			parseFailed("Some genres are not found")
+		}
+		// Step 2: advanced search
+		payload["q"] = ""
+		payload["s_high_rate"] = ""
+		payload["s_single"] = ""
+		payload["s_mature"] = ""
+		payload["s_completed"] = ""
+		payload["s_translated"] = ""
+		payload["s_many_chapters"] = ""
+		payload["s_wait_upload"] = ""
+		payload["s_sale"] = ""
+		payload["years"] = "1900,2099"
+		payload["+"] = "Искать".urlEncoded()
+		return loaderContext.httpPost(url, payload)
+	}
 
 	private companion object {
 

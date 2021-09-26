@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -35,6 +36,8 @@ abstract class MangaListViewModel(
 				listMode.postValue(it)
 			}
 		}
+
+	open fun onRemoveFilterTag(tag: MangaTag) = Unit
 
 	abstract fun onRefresh()
 

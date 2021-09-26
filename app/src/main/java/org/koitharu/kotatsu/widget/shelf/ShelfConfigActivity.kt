@@ -58,7 +58,7 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(), OnListIte
 		viewModel.onError.observe(this, this::onError)
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_config, menu)
 		return super.onCreateOptionsMenu(menu)
 	}

@@ -16,7 +16,7 @@
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_standard"
-			style="@style/AppToggleButton"
+			style="@style/Widget.Kotatsu.ToggleButton"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:text="@string/standard"
@@ -24,7 +24,7 @@
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_reversed"
-			style="@style/AppToggleButton"
+			style="@style/Widget.Kotatsu.ToggleButton"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:text="@string/right_to_left"
@@ -32,7 +32,7 @@
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_webtoon"
-			style="@style/AppToggleButton"
+			style="@style/Widget.Kotatsu.ToggleButton"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:text="@string/webtoon"

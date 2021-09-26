@@ -13,7 +13,6 @@ import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.util.CoilUtils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -23,20 +22,20 @@ import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.*
-import kotlin.math.roundToInt
+import kotlin.random.Random
 
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
 	View.OnLongClickListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
-	private var tagsJob: Job? = null
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -61,16 +60,43 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				.enqueueWith(coil)
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
+			textViewAuthor.textAndVisible = manga.author
+			sourceContainer.isVisible = manga.source != MangaSource.LOCAL
+			textViewSource.text = manga.source.title
 			textViewDescription.text =
 				manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
 					?: getString(R.string.no_description)
-			if (manga.rating == Manga.NO_RATING) {
-				ratingBar.isVisible = false
+			if (manga.chapters?.isNotEmpty() == true) {
+				chaptersContainer.isVisible = true
+				textViewChapters.text = manga.chapters.let {
+					resources.getQuantityString(
+						R.plurals.chapters,
+						it.size,
+						manga.chapters.size
+					)
+				}
 			} else {
-				ratingBar.progress = (ratingBar.max * manga.rating).roundToInt()
-				ratingBar.isVisible = true
+				chaptersContainer.isVisible = false
 			}
-			imageViewFavourite.setOnClickListener(this@DetailsFragment)
+			if (manga.rating == Manga.NO_RATING) {
+				ratingContainer.isVisible = false
+			} else {
+				textViewRating.text = String.format("%.1f", manga.rating * 5)
+				ratingContainer.isVisible = true
+			}
+			val file = manga.url.toUri().toFileOrNull()
+			if (file != null) {
+				viewLifecycleScope.launch {
+					val size = withContext(Dispatchers.IO) {
+						file.length()
+					}
+					textViewSize.text = FileSizeUtils.formatBytes(requireContext(), size)
+				}
+				sizeContainer.isVisible = true
+			} else {
+				sizeContainer.isVisible = false
+			}
+			buttonFavorite.setOnClickListener(this@DetailsFragment)
 			buttonRead.setOnClickListener(this@DetailsFragment)
 			buttonRead.setOnLongClickListener(this@DetailsFragment)
 			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
@@ -91,33 +117,42 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	}
 
 	private fun onFavouriteChanged(isFavourite: Boolean) {
-		binding.imageViewFavourite.setImageResource(
+		with(binding.buttonFavorite) {
 			if (isFavourite) {
-				R.drawable.ic_heart
+				this.setIconResource(R.drawable.ic_heart)
 			} else {
-				R.drawable.ic_heart_outline
+				this.setIconResource(R.drawable.ic_heart_outline)
 			}
-		)
+		}
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.progressBar.isVisible = isLoading
+		if (isLoading) {
+			binding.progressBar.show()
+		} else {
+			binding.progressBar.hide()
+		}
 	}
 
 	override fun onClick(v: View) {
-		val manga = viewModel.manga.value
+		val manga = viewModel.manga.value ?: return
 		when (v.id) {
-			R.id.imageView_favourite -> {
-				FavouriteCategoriesDialog.show(childFragmentManager, manga ?: return)
+			R.id.button_favorite -> {
+				FavouriteCategoriesDialog.show(childFragmentManager, manga)
 			}
 			R.id.button_read -> {
-				startActivity(
-					ReaderActivity.newIntent(
-						context ?: return,
-						manga ?: return,
-						null
+				val chapterId = viewModel.readingHistory.value?.chapterId
+				if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
+					(activity as? DetailsActivity)?.showChapterMissingDialog(chapterId)
+				} else {
+					startActivity(
+						ReaderActivity.newIntent(
+							context ?: return,
+							manga,
+							null
+						)
 					)
-				)
+				}
 			}
 		}
 	}
@@ -160,37 +195,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	}
 
 	private fun bindTags(manga: Manga) {
-		tagsJob?.cancel()
-		tagsJob = viewLifecycleScope.launch {
-			val tags = ArrayList<ChipsView.ChipModel>(manga.tags.size + 2)
-			if (manga.author != null) {
-				tags += ChipsView.ChipModel(
-					title = manga.author,
-					icon = R.drawable.ic_chip_user
-				)
-			}
-			for (tag in manga.tags) {
-				tags += ChipsView.ChipModel(
+		binding.chipsTags.setChips(
+			manga.tags.map { tag ->
+				ChipsView.ChipModel(
 					title = tag.title,
-					icon = R.drawable.ic_chip_tag
+					icon = 0
 				)
 			}
-			val file = manga.url.toUri().toFileOrNull()
-			if (file != null) {
-				val size = withContext(Dispatchers.IO) {
-					file.length()
-				}
-				tags += ChipsView.ChipModel(
-					title = FileSizeUtils.formatBytes(requireContext(), size),
-					icon = R.drawable.ic_chip_storage
-				)
-			} else {
-				tags += ChipsView.ChipModel(
-					title = manga.source.title,
-					icon = R.drawable.ic_chip_web
-				)
-			}
-			binding.chipsTags.setChips(tags)
-		}
+		)
 	}
 }

@@ -24,7 +24,11 @@ class SuggestionsViewModel(
 		createListModeFlow()
 	) { list, mode ->
 		when {
-			list.isEmpty() -> listOf(EmptyState(R.string.text_suggestion_holder))
+			list.isEmpty() -> listOf(EmptyState(
+				icon = R.drawable.ic_book_cross,
+				textPrimary = R.string.nothing_found,
+				textSecondary = R.string.text_suggestion_holder,
+			))
 			else -> mapList(list, mode)
 		}
 	}.onFirst {

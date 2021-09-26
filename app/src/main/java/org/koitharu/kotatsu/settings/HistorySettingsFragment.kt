@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -11,10 +12,10 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.core.network.CookieJar
+import org.koitharu.kotatsu.core.network.AndroidCookieJar
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.Cache
-import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
+import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.FileSizeUtils
@@ -24,6 +25,7 @@ import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cache) {
 
 	private val trackerRepo by inject<TrackingRepository>(mode = LazyThreadSafetyMode.NONE)
+	private val searchRepository by inject<MangaSearchRepository>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)
@@ -49,7 +51,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 		}
 		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
-				val items = MangaSuggestionsProvider.getItemsCount(pref.context)
+				val items = searchRepository.getSearchHistoryCount()
 				pref.summary =
 					pref.context.resources.getQuantityString(R.plurals.items, items, items)
 			}
@@ -74,28 +76,11 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				true
 			}
 			AppSettings.KEY_COOKIES_CLEAR -> {
-				viewLifecycleScope.launch {
-					val cookieJar = get<CookieJar>()
-					cookieJar.clear()
-					Snackbar.make(
-						listView ?: return@launch,
-						R.string.cookies_cleared,
-						Snackbar.LENGTH_SHORT
-					).show()
-				}
+				clearCookies()
 				true
 			}
 			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
-				viewLifecycleScope.launch {
-					MangaSuggestionsProvider.clearHistory(preference.context)
-					preference.summary = preference.context.resources
-						.getQuantityString(R.plurals.items, 0, 0)
-					Snackbar.make(
-						view ?: return@launch,
-						R.string.search_history_cleared,
-						Snackbar.LENGTH_SHORT
-					).show()
-				}
+				clearSearchHistory(preference)
 				true
 			}
 			AppSettings.KEY_UPDATES_FEED_CLEAR -> {
@@ -131,5 +116,42 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				preference.isEnabled = true
 			}
 		}
+	}
+
+	private fun clearSearchHistory(preference: Preference) {
+		AlertDialog.Builder(context ?: return)
+			.setTitle(R.string.clear_search_history)
+			.setMessage(R.string.text_clear_search_history_prompt)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(R.string.clear) { _, _ ->
+				viewLifecycleScope.launch {
+					searchRepository.clearSearchHistory()
+					preference.summary = preference.context.resources
+						.getQuantityString(R.plurals.items, 0, 0)
+					Snackbar.make(
+						view ?: return@launch,
+						R.string.search_history_cleared,
+						Snackbar.LENGTH_SHORT
+					).show()
+				}
+			}.show()
+	}
+
+	private fun clearCookies() {
+		AlertDialog.Builder(context ?: return)
+			.setTitle(R.string.clear_cookies)
+			.setMessage(R.string.text_clear_cookies_prompt)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(R.string.clear) { _, _ ->
+				viewLifecycleScope.launch {
+					val cookieJar = get<AndroidCookieJar>()
+					cookieJar.clear()
+					Snackbar.make(
+						listView ?: return@launch,
+						R.string.cookies_cleared,
+						Snackbar.LENGTH_SHORT
+					).show()
+				}
+			}.show()
 	}
 }

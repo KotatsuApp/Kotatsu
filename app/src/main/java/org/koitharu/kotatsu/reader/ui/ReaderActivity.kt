@@ -38,7 +38,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
-import org.koitharu.kotatsu.reader.ui.pager.wetoon.WebtoonReaderFragment
+import org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.utils.GridTouchHelper
@@ -124,7 +124,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		}
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.opt_reader_top, menu)
 		return super.onCreateOptionsMenu(menu)
 	}
@@ -220,7 +220,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	}
 
 	override fun onGridTouch(area: Int) {
-		controlDelegate.onGridTouch(area)
+		controlDelegate.onGridTouch(area, binding.container)
 	}
 
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {

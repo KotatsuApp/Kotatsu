@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
@@ -20,6 +21,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
@@ -44,6 +46,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		adapter = CategoriesAdapter(this)
 		editDelegate = CategoriesEditDelegate(this, this)
 		binding.recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
+		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		binding.fabAdd.setOnClickListener(this)
 		reorderHelper = ItemTouchHelper(ReorderHelperCallback())
@@ -60,10 +63,17 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 	}
 
 	override fun onItemClick(item: FavouriteCategory, view: View) {
-		view.showPopupMenu(R.menu.popup_category) {
+		view.showPopupMenu(R.menu.popup_category, { menu ->
+			createOrderSubmenu(menu, item)
+		}) {
 			when (it.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(item)
 				R.id.action_rename -> editDelegate.renameCategory(item)
+				R.id.action_order -> return@showPopupMenu false
+				else -> {
+					val order = SORT_ORDERS.getOrNull(it.order) ?: return@showPopupMenu false
+					viewModel.setCategoryOrder(item.id, order)
+				}
 			}
 			true
 		}
@@ -116,6 +126,21 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		viewModel.createCategory(name)
 	}
 
+	private fun createOrderSubmenu(menu: Menu, category: FavouriteCategory) {
+		val submenu = menu.findItem(R.id.action_order)?.subMenu ?: return
+		for ((i, item) in SORT_ORDERS.withIndex()) {
+			val menuItem = submenu.add(
+				R.id.group_order,
+				Menu.NONE,
+				i,
+				item.titleRes
+			)
+			menuItem.isCheckable = true
+			menuItem.isChecked = item == category.order
+		}
+		submenu.setGroupCheckable(R.id.group_order, true, true)
+	}
+
 	private inner class ReorderHelperCallback : ItemTouchHelper.SimpleCallback(
 		ItemTouchHelper.DOWN or ItemTouchHelper.UP, 0
 	) {
@@ -143,6 +168,12 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 	}
 
 	companion object {
+
+		val SORT_ORDERS = arrayOf(
+			SortOrder.ALPHABETICAL,
+			SortOrder.NEWEST,
+			SortOrder.RATING,
+		)
 
 		fun newIntent(context: Context) = Intent(context, CategoriesActivity::class.java)
 	}

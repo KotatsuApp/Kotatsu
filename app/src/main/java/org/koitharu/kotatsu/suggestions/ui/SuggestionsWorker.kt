@@ -26,10 +26,10 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		for ((source, tags) in tagsBySources) {
 			val repo = mangaRepositoryOf(source)
 			tags.flatMapTo(rawResults) { tag ->
-				repo.getList(
+				repo.getList2(
 					offset = 0,
 					sortOrder = SortOrder.UPDATED,
-					tag = tag,
+					tags = setOf(tag),
 				)
 			}
 		}

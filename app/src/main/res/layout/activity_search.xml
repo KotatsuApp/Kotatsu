@@ -7,17 +7,17 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
+		style="@style/Widget.Kotatsu.AppBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="?colorPrimary"
-		android:theme="@style/AppToolbarTheme">
+		android:elevation="4dp">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
+			style="@style/Widget.Kotatsu.Toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:layout_scrollFlags="scroll|enterAlways"
-			app:popupTheme="@style/AppPopupTheme">
+			app:layout_scrollFlags="scroll|enterAlways">
 
 			<androidx.appcompat.widget.SearchView
 				android:id="@+id/searchView"

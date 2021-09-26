@@ -14,7 +14,8 @@
 		android:layout_alignParentTop="true"
 		android:layout_alignParentEnd="true"
 		android:visibility="gone"
-		tools:listitem="@layout/item_branch" />
+		tools:listitem="@layout/item_branch"
+		tools:visibility="visible" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_chapters"
@@ -26,9 +27,8 @@
 		android:layout_alignParentEnd="true"
 		android:layout_alignParentBottom="true"
 		android:orientation="vertical"
-		android:scrollbars="vertical"
-		app:fastScrollEnabled="true"
 		android:scrollbarStyle="outsideOverlay"
+		app:fastScrollEnabled="true"
 		app:fastScrollHorizontalThumbDrawable="@drawable/list_thumb"
 		app:fastScrollHorizontalTrackDrawable="@drawable/list_track"
 		app:fastScrollVerticalThumbDrawable="@drawable/list_thumb"
@@ -36,12 +36,12 @@
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_chapter" />
 
-	<ProgressBar
+	<com.google.android.material.progressindicator.CircularProgressIndicator
 		android:id="@+id/progressBar"
-		style="@style/Widget.AppCompat.ProgressBar"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_centerInParent="true"
+		android:indeterminate="true"
 		android:layout_gravity="center"
 		android:visibility="gone"
 		tools:visibility="visible" />

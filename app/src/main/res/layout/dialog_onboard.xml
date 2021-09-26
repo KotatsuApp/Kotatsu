@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingStart="?listPreferredItemPaddingStart"
+		android:paddingTop="6dp"
+		android:paddingEnd="?listPreferredItemPaddingEnd"
+		android:paddingBottom="6dp"
+		android:text="Select languages which you want to read manga. You can change it later in settings."
+		android:textAppearance="?android:textAppearanceSmall" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recycler_view"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:scrollbars="vertical"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		tools:listitem="@layout/item_source_locale" />
+
+</LinearLayout>

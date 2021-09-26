@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.*
 import androidx.annotation.CallSuper
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -37,11 +36,10 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.filter.FilterAdapter
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.main.ui.AppBarOwner
+import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
-import org.koitharu.kotatsu.utils.ext.clearItemDecorations
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.toggleDrawer
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import org.koitharu.kotatsu.utils.ext.*
 
 abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	PaginationScrollListener.Callback, OnListItemClickListener<Manga>, OnFilterChangedListener,
@@ -73,7 +71,13 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		super.onViewCreated(view, savedInstanceState)
 		drawer = binding.root as? DrawerLayout
 		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-		listAdapter = MangaListAdapter(get(), viewLifecycleOwner, this, ::resolveException)
+		listAdapter = MangaListAdapter(
+			coil = get(),
+			lifecycleOwner = viewLifecycleOwner,
+			clickListener = this,
+			onRetryClick = ::resolveException,
+			onTagRemoveClick = viewModel::onRemoveFilterTag
+		)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
@@ -81,6 +85,10 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			addOnScrollListener(paginationListener!!)
 		}
 		with(binding.swipeRefreshLayout) {
+			setColorSchemeColors(
+				ContextCompat.getColor(context, R.color.color_primary),
+				ContextCompat.getColor(context, R.color.color_primary_variant)
+			)
 			setOnRefreshListener(this@MangaListFragment)
 			isEnabled = isSwipeRefreshEnabled
 		}
@@ -215,22 +223,29 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		activity?.invalidateOptionsMenu()
 	}
 
-	@CallSuper
-	override fun onFilterChanged(filter: MangaFilter) {
-		drawer?.closeDrawers()
-	}
+	override fun onFilterChanged(filter: MangaFilter) = Unit
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
-			bottom = insets.bottom
-		)
+		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		binding.recyclerViewFilter.updatePadding(
+			top = headerHeight,
 			bottom = insets.bottom
 		)
 		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right
 		)
+		if (activity is MainActivity) {
+			binding.recyclerView.updatePadding(
+				top = headerHeight,
+				bottom = insets.bottom
+			)
+			binding.swipeRefreshLayout.setProgressViewOffset(
+				true,
+				headerHeight + resources.resolveDp(-72),
+				headerHeight + resources.resolveDp(10)
+			)
+		}
 	}
 
 	private fun onGridScaleChanged(scale: Float) {
@@ -246,13 +261,9 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			when (mode) {
 				ListMode.LIST -> {
 					layoutManager = LinearLayoutManager(context)
-					addItemDecoration(
-						DividerItemDecoration(
-							context,
-							RecyclerView.VERTICAL
-						)
-					)
-					updatePadding(left = 0, right = 0)
+					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
+					addItemDecoration(SpacingItemDecoration(spacing))
+					updatePadding(left = spacing, right = spacing)
 				}
 				ListMode.DETAILED_LIST -> {
 					layoutManager = LinearLayoutManager(context)
@@ -282,7 +293,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	final override fun getSectionTitle(position: Int): CharSequence? {
 		return when (binding.recyclerViewFilter.adapter?.getItemViewType(position)) {
 			FilterAdapter.VIEW_TYPE_SORT -> getString(R.string.sort_order)
-			FilterAdapter.VIEW_TYPE_TAG -> getString(R.string.genre)
+			FilterAdapter.VIEW_TYPE_TAG -> getString(R.string.genres)
 			else -> null
 		}
 	}

@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+	<declare-styleable name="Theme">
+		<attr name="navigationBarDividerColor" format="color" />
+		<attr name="colorControlLight" format="color" />
+		<attr name="colorSurfaceSecondary" format="color" />
+	</declare-styleable>
+
+	<!--CoverImageView attrs-->
+
 	<declare-styleable name="CoverImageView">
 		<attr name="android:orientation" />
 	</declare-styleable>
+
 </resources>

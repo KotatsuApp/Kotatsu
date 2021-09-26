@@ -9,7 +9,6 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
 
@@ -18,18 +17,17 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	override val defaultDomain = "remanga.org"
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
+		SortOrder.UPDATED,
 		SortOrder.POPULARITY,
 		SortOrder.RATING,
-		SortOrder.ALPHABETICAL,
-		SortOrder.UPDATED,
 		SortOrder.NEWEST
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		val domain = getDomain()
 		val urlBuilder = StringBuilder()
@@ -41,8 +39,9 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		} else {
 			urlBuilder.append("/api/search/catalog/?ordering=")
 				.append(getSortKey(sortOrder))
-			if (tag != null) {
-				urlBuilder.append("&genres=" + tag.key)
+			tags?.forEach { tag ->
+				urlBuilder.append("&genres=")
+				urlBuilder.append(tag.key)
 			}
 		}
 		urlBuilder
@@ -162,7 +161,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		SortOrder.POPULARITY -> "-rating"
 		SortOrder.RATING -> "-votes"
 		SortOrder.NEWEST -> "-id"
-		else -> "-rating"
+		else -> "-chapter_date"
 	}
 
 	private fun parsePage(jo: JSONObject, referer: String) = MangaPage(

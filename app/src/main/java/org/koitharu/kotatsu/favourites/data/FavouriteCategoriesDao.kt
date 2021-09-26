@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.favourites.data
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import org.koitharu.kotatsu.core.model.FavouriteCategory
 
 @Dao
 abstract class FavouriteCategoriesDao {
@@ -12,6 +11,9 @@ abstract class FavouriteCategoriesDao {
 
 	@Query("SELECT * FROM favourite_categories ORDER BY sort_key")
 	abstract fun observeAll(): Flow<List<FavouriteCategoryEntity>>
+
+	@Query("SELECT * FROM favourite_categories WHERE category_id = :id")
+	abstract fun observe(id: Long): Flow<FavouriteCategoryEntity>
 
 	@Insert(onConflict = OnConflictStrategy.ABORT)
 	abstract suspend fun insert(category: FavouriteCategoryEntity): Long
@@ -23,10 +25,13 @@ abstract class FavouriteCategoriesDao {
 	abstract suspend fun delete(id: Long)
 
 	@Query("UPDATE favourite_categories SET title = :title WHERE category_id = :id")
-	abstract suspend fun update(id: Long, title: String)
+	abstract suspend fun updateTitle(id: Long, title: String)
+
+	@Query("UPDATE favourite_categories SET `order` = :order WHERE category_id = :id")
+	abstract suspend fun updateOrder(id: Long, order: String)
 
 	@Query("UPDATE favourite_categories SET sort_key = :sortKey WHERE category_id = :id")
-	abstract suspend fun update(id: Long, sortKey: Int)
+	abstract suspend fun updateSortKey(id: Long, sortKey: Int)
 
 	@Query("SELECT MAX(sort_key) FROM favourite_categories")
 	protected abstract suspend fun getMaxSortKey(): Int?

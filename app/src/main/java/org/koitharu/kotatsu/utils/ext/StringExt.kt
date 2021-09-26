@@ -29,20 +29,47 @@ fun String.removeSurrounding(vararg chars: Char): String {
 	return this
 }
 
+fun String.toCamelCase(): String {
+	if (isEmpty()) {
+		return this
+	}
+	val result = StringBuilder(length)
+	var capitalize = true
+	for (char in this) {
+		result.append(
+			if (capitalize) {
+				char.uppercase()
+			} else {
+				char.lowercase()
+			}
+		)
+		capitalize = char.isWhitespace()
+	}
+	return result.toString()
+}
+
+fun String.toTitleCase(): String {
+	return replaceFirstChar { x -> x.uppercase() }
+}
+
 fun String.transliterate(skipMissing: Boolean): String {
 	val cyr = charArrayOf(
-		'a', 'б', 'в', 'г', 'д', 'ё', 'ж', 'з', 'и', 'к', 'л', 'м', 'н',
-		'п', 'р', 'с', 'т', 'у', 'ў', 'ф', 'х', 'ц', 'ш', 'щ', 'ы', 'э', 'ю', 'я'
+		'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п',
+		'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я', 'ё', 'ў'
 	)
 	val lat = arrayOf(
-		"a", "b", "v", "g", "d", "jo", "zh", "z", "i", "k", "l", "m", "n",
-		"p", "r", "s", "t", "u", "w", "f", "h", "ts", "sh", "sch", "", "e", "ju", "ja"
+		"a", "b", "v", "g", "d", "e", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p",
+		"r", "s", "t", "u", "f", "h", "ts", "ch", "sh", "sch", "", "i", "", "e", "ju", "ja", "jo", "w"
 	)
 	return buildString(length + 5) {
 		for (c in this@transliterate) {
-			val p = cyr.binarySearch(c.toLowerCase())
+			val p = cyr.binarySearch(c.lowercaseChar())
 			if (p in lat.indices) {
-				append(lat[p])
+				if (c.isUpperCase()) {
+					append(lat[p].uppercase())
+				} else {
+					append(lat[p])
+				}
 			} else if (!skipMissing) {
 				append(c)
 			}
@@ -57,6 +84,20 @@ fun String.toFileNameSafe() = this.transliterate(false)
 fun String.ellipsize(maxLength: Int) = if (this.length > maxLength) {
 	this.take(maxLength - 1) + Typography.ellipsis
 } else this
+
+fun String.splitTwoParts(delimiter: Char): Pair<String, String>? {
+	val indices = ArrayList<Int>(4)
+	for ((i, c) in this.withIndex()) {
+		if (c == delimiter) {
+			indices += i
+		}
+	}
+	if (indices.isEmpty() || indices.size and 1 == 0) {
+		return null
+	}
+	val index = indices[indices.size / 2]
+	return substring(0, index) to substring(index + 1)
+}
 
 fun String.urlEncoded(): String = URLEncoder.encode(this, Charsets.UTF_8.name())
 
@@ -92,7 +133,7 @@ fun String.md5(): String {
 		.padStart(32, '0')
 }
 
-fun String.substringBetween(from: String, to: String, fallbackValue: String): String {
+fun String.substringBetween(from: String, to: String, fallbackValue: String = this): String {
 	val fromIndex = indexOf(from)
 	if (fromIndex == -1) {
 		return fallbackValue
@@ -105,7 +146,27 @@ fun String.substringBetween(from: String, to: String, fallbackValue: String): St
 	}
 }
 
+fun String.substringBetweenLast(from: String, to: String, fallbackValue: String = this): String {
+	val fromIndex = lastIndexOf(from)
+	if (fromIndex == -1) {
+		return fallbackValue
+	}
+	val toIndex = lastIndexOf(to)
+	return if (toIndex == -1) {
+		fallbackValue
+	} else {
+		substring(fromIndex + from.length, toIndex)
+	}
+}
+
 fun String.find(regex: Regex) = regex.find(this)?.value
+
+fun String.removeSuffix(suffix: Char): String {
+	if (lastOrNull() == suffix) {
+		return substring(0, length - 1)
+	}
+	return this
+}
 
 fun String.levenshteinDistance(other: String): Int {
 	if (this == other) {
@@ -143,4 +204,20 @@ fun String.levenshteinDistance(other: String): Int {
 	}
 
 	return cost[lhsLength - 1]
+}
+
+inline fun <T> StringBuilder.appendAll(
+	items: Iterable<T>,
+	separator: CharSequence,
+	transform: (T) -> CharSequence = { it.toString() },
+) {
+	var isFirst = true
+	for (item in items) {
+		if (isFirst) {
+			isFirst = false
+		} else {
+			append(separator)
+		}
+		append(transform(item))
+	}
 }

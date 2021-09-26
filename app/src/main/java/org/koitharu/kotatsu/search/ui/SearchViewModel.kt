@@ -12,7 +12,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import java.util.*
 
 class SearchViewModel(
 	private val repository: MangaRepository,
@@ -34,7 +33,7 @@ class SearchViewModel(
 		when {
 			list.isNullOrEmpty() && error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
-			list.isEmpty() -> listOf(EmptyState(R.string.nothing_found))
+			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_book_search, R.string.nothing_found, R.string.text_search_holder_secondary))
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
 				list.toUi(result, mode)
@@ -72,9 +71,9 @@ class SearchViewModel(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			try {
 				listError.value = null
-				val list = repository.getList(
+				val list = repository.getList2(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
-					query = query
+					query = query,
 				)
 				if (!append) {
 					mangaList.value = list

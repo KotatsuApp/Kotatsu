@@ -11,21 +11,16 @@
 
 	<com.google.android.material.textfield.TextInputLayout
 		android:id="@+id/inputLayout"
+		style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:boxBackgroundColor="@android:color/transparent"
-		app:boxBackgroundMode="filled">
+		android:layout_height="wrap_content">
 
 		<com.google.android.material.textfield.TextInputEditText
 			android:id="@+id/inputEdit"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:imeOptions="actionDone"
-			android:paddingStart="0dp"
-			android:paddingTop="28dp"
-			android:paddingEnd="0dp"
 			android:singleLine="true"
-			tools:hint="@tools:sample/cities"
 			tools:text="@tools:sample/lorem[2]" />
 
 	</com.google.android.material.textfield.TextInputLayout>

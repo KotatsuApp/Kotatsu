@@ -18,7 +18,7 @@ import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
 		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class,
 		TrackEntity::class, TrackLogEntity::class, SuggestionEntity::class
-	], version = 8
+	], version = 9
 )
 abstract class MangaDatabase : RoomDatabase() {
 

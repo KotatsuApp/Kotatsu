@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.network.CommonHeaders
 @Suppress("NOTHING_TO_INLINE")
 inline fun ImageView.newImageRequest(url: String) = ImageRequest.Builder(context)
 	.data(url)
+	.crossfade(true)
 	.target(this)
 
 @Suppress("NOTHING_TO_INLINE")

@@ -9,5 +9,6 @@ data class FavouriteCategory(
 	val id: Long,
 	val title: String,
 	val sortKey: Int,
-	val createdAt: Date
+	val order: SortOrder,
+	val createdAt: Date,
 ) : Parcelable

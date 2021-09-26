@@ -23,7 +23,9 @@
 		android:theme="@style/AppTheme"
 		android:usesCleartextTraffic="true"
 		tools:ignore="UnusedAttribute">
-		<activity android:name="org.koitharu.kotatsu.main.ui.MainActivity">
+		<activity
+			android:name="org.koitharu.kotatsu.main.ui.MainActivity"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -32,12 +34,16 @@
 				android:name="android.app.default_searchable"
 				android:value=".ui.search.SearchActivity" />
 		</activity>
-		<activity android:name="org.koitharu.kotatsu.details.ui.DetailsActivity">
+		<activity
+			android:name="org.koitharu.kotatsu.details.ui.DetailsActivity"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="${applicationId}.action.VIEW_MANGA" />
 			</intent-filter>
 		</activity>
-		<activity android:name="org.koitharu.kotatsu.reader.ui.ReaderActivity">
+		<activity
+			android:name="org.koitharu.kotatsu.reader.ui.ReaderActivity"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="${applicationId}.action.READ_MANGA" />
 			</intent-filter>
@@ -50,13 +56,19 @@
 			android:label="@string/settings" />
 		<activity
 			android:name="org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity"
+			android:exported="true"
 			android:label="@string/settings">
 			<intent-filter>
 				<action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name="org.koitharu.kotatsu.browser.BrowserActivity" />
+		<activity
+			android:name="org.koitharu.kotatsu.browser.BrowserActivity"
+			android:windowSoftInputMode="adjustResize" />
+		<activity
+			android:name="org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity"
+			android:windowSoftInputMode="adjustResize" />
 		<activity
 			android:name="org.koitharu.kotatsu.core.ui.CrashActivity"
 			android:label="@string/error_occurred"
@@ -68,6 +80,7 @@
 			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfConfigActivity"
+			android:exported="true"
 			android:label="@string/manga_shelf">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -83,9 +96,12 @@
 		<activity
 			android:name=".settings.protect.ProtectSetupActivity"
 			android:windowSoftInputMode="adjustResize" />
+		<activity
+			android:name="org.koitharu.kotatsu.download.ui.DownloadsActivity"
+			android:label="@string/downloads" />
 
 		<service
-			android:name="org.koitharu.kotatsu.download.DownloadService"
+			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
 			android:foregroundServiceType="dataSync" />
 		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"

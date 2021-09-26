@@ -80,7 +80,7 @@ fun String.toRelativeUrl(domain: String): String {
 }
 
 fun Element.relUrl(attributeKey: String): String {
-	val attr = attr(attributeKey)
+	val attr = attr(attributeKey).trim()
 	if (attr.isEmpty()) {
 		return ""
 	}
@@ -92,3 +92,9 @@ fun Element.relUrl(attributeKey: String): String {
 }
 
 private val REGEX_URL_BASE = Regex("^[^/]{2,6}://[^/]+/", RegexOption.IGNORE_CASE)
+
+fun Element.css(property: String): String? {
+	val regex = Regex("${Regex.escape(property)}\\s*:\\s*[^;]+")
+	val css = attr("style").find(regex) ?: return null
+	return css.substringAfter(':').removeSuffix(';').trim()
+}

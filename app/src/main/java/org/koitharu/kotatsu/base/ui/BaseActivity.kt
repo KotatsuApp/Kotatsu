@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.base.ui
 
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -11,16 +12,16 @@ import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.*
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindowInsetsListener {
 
@@ -35,7 +36,7 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		if (get<AppSettings>().isAmoledTheme) {
-			setTheme(R.style.AppTheme_Amoled)
+			setTheme(R.style.AppTheme_AMOLED)
 		}
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -56,8 +57,19 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	protected fun setContentView(binding: B) {
 		this.binding = binding
 		super.setContentView(binding.root)
-		(binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
+		val toolbar = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)
+		toolbar?.let(this::setSupportActionBar)
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
+
+		val toolbarParams = (binding.root.findViewById<View>(R.id.toolbar_card) ?: toolbar)
+			?.layoutParams as? AppBarLayout.LayoutParams
+		if (toolbarParams != null) {
+			if (get<AppSettings>().isToolbarHideWhenScrolling) {
+				toolbarParams.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
+			} else {
+				toolbarParams.scrollFlags = SCROLL_FLAG_NO_SCROLL
+			}
+		}
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
@@ -90,6 +102,12 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		(findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
 	}
 
+	protected fun isDarkAmoledTheme(): Boolean {
+		val uiMode = resources.configuration.uiMode
+		val isNight = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+		return isNight && get<AppSettings>().isAmoledTheme
+	}
+
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
 		val insets = ViewCompat.getRootWindowInsets(binding.root)
@@ -98,12 +116,6 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		view?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			topMargin = insets.top
 		}
-		window?.statusBarColor = ContextCompat.getColor(this, R.color.grey_dark)
-	}
-
-	override fun onSupportActionModeFinished(mode: ActionMode) {
-		super.onSupportActionModeFinished(mode)
-		window?.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
 	}
 
 	override fun onBackPressed() {

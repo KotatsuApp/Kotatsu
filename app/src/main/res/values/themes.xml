@@ -1,23 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-	<style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+	<!-- Base application theme. -->
+	<style name="Base.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+		<!-- Customize your theme here. -->
+		<item name="colorPrimary">@color/color_primary</item>
+		<item name="colorPrimaryVariant">@color/color_primary_variant</item>
+		<item name="colorSecondary">?attr/colorPrimary</item>
+		<item name="colorOnSecondary">@color/color_on_secondary</item>
+		<item name="colorControlLight">@color/color_control_light</item>
+
+		<!-- Window decor -->
+		<item name="android:windowLightStatusBar" tools:targetApi="m">@bool/use_light_status</item>
+		<item name="android:statusBarColor">@color/status_bar_scrim</item>
+		<item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/use_light_navigation</item>
+		<item name="android:navigationBarColor">@color/nav_bar_scrim</item>
+		<item name="popupTheme">@style/ThemeOverlay.Kotatsu</item>
+
+		<!-- Widget styles -->
+		<item name="toolbarStyle">@style/Widget.Kotatsu.Toolbar</item>
+		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
+		<item name="navigationViewStyle">@style/Widget.Kotatsu.NavigationView</item>
+		<item name="searchViewStyle">@style/Widget.Kotatsu.SearchView</item>
+
+		<!-- Text appearances -->
+		<item name="textAppearanceBody2">@style/TextAppearance.Kotatsu.Body2</item>
+		<item name="textAppearanceButton">@style/TextAppearance.Kotatsu.Button</item>
+		<item name="textAppearanceListItem">@style/TextAppearance.Kotatsu.ListPrimary</item>
+
+		<!-- ActionMode attrs -->
 		<item name="android:windowActionModeOverlay">true</item>
 		<item name="windowActionModeOverlay">true</item>
 		<item name="actionModeCloseDrawable">@drawable/ic_cross</item>
-		<item name="actionModeStyle">@style/AppActionMode</item>
-		<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
-		<item name="badgeStyle">@style/Widget.MaterialComponents.Badge</item>
-		<item name="android:statusBarColor">@color/status_bar</item>
-		<item name="colorOnPrimary">@android:color/white</item>
-		<item name="tabStyle">@style/Widget.MaterialComponents.TabLayout.New</item>
+		<item name="actionModeStyle">@style/Widget.Kotatsu.ActionMode</item>
 	</style>
 
-	<style name="AppTheme" parent="BaseAppTheme">
-		<item name="colorPrimary">@color/blue_primary</item>
-		<item name="colorPrimaryDark">@color/blue_primary_dark</item>
-		<item name="colorAccent">@color/red_accent</item>
+	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.MaterialComponents.Light">
+		<item name="colorPrimary">@color/color_primary</item>
+		<item name="colorPrimaryVariant">@color/color_primary_variant</item>
 	</style>
 
-	<style name="AppTheme.Amoled" />
+	<style name="AppTheme" parent="Base.AppTheme">
+		<item name="android:statusBarColor">@color/nav_bar_scrim</item>
+	</style>
+
+	<style name="AppTheme.AMOLED" parent="Base.AppTheme" />
+
 </resources>

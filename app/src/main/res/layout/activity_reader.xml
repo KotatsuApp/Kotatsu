@@ -19,8 +19,8 @@
 		android:layout_gravity="bottom|center_horizontal"
 		android:layout_marginBottom="20dp"
 		android:background="@drawable/bg_reader_indicator"
-		android:singleLine="true"
 		android:drawablePadding="6dp"
+		android:singleLine="true"
 		android:textAppearance="?android:textAppearanceSmall"
 		android:textColor="?android:textColorPrimary"
 		android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
@@ -32,14 +32,14 @@
 		android:layout_height="wrap_content"
 		android:background="@color/dim"
 		android:elevation="0dp"
-		android:theme="@style/AppToolbarTheme"
+		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 		app:elevation="0dp">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:popupTheme="@style/AppPopupTheme" />
+			app:popupTheme="@style/ThemeOverlay.Kotatsu" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 
@@ -50,7 +50,7 @@
 		android:layout_gravity="bottom"
 		android:background="@color/dim"
 		android:elevation="0dp"
-		android:theme="@style/AppToolbarTheme"
+		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 		app:elevation="0dp"
 		tools:visibility="gone">
 
@@ -59,7 +59,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_gravity="top"
-			app:popupTheme="@style/AppPopupTheme" />
+			app:popupTheme="@style/ThemeOverlay.Kotatsu" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 
@@ -71,7 +71,7 @@
 		android:gravity="center_horizontal"
 		android:orientation="vertical">
 
-		<ProgressBar
+		<com.google.android.material.progressindicator.CircularProgressIndicator
 			android:id="@+id/progressBar"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"

@@ -1,13 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+	<color name="color_primary">#1976D2</color>
+	<color name="color_primary_variant">#1565C0</color>
+	<color name="color_on_secondary">@android:color/white</color>
+
+	<color name="color_control_light">#39000000</color>
+	<color name="color_surface">#FFFFFF</color>
+	<color name="color_background">#FFFFFF</color>
+
+	<!-- Scrim colors -->
+	<color name="system_ui_scrim_light">#B3FFFFFF</color> <!-- 70% white -->
+	<color name="system_ui_scrim_dark">#40272727</color> <!-- 25% grey -->
+
+	<!-- We use a dark scrim by default since light status is API 23+ -->
+	<color name="status_bar_scrim">@color/system_ui_scrim_dark</color>
+	<!-- We use a dark scrim by default since light nav bar is API 27+ -->
+	<color name="nav_bar_scrim">@color/system_ui_scrim_dark</color>
+
+	<!-- Other colors with dark mode alternatives -->
+	<color name="list_divider">#1f000000</color>
+	<color name="error">#B00020</color>
+
+	<!-- AMOLED colors -->
+	<color name="system_ui_scrim_amoled">#B3000000</color>
+
+	<!-- Other Colors -->
+
 	<color name="blue_primary">#1976D2</color>
 	<color name="blue_primary_dark">#1565C0</color>
-	<color name="blue_primary_darker">#283593</color>
 	<color name="red_accent">#EF5350</color>
 	<color name="grey">#424242</color>
 	<color name="grey_dark">#212121</color>
 	<color name="dim">#99000000</color>
-	<color name="error">#D32F2F</color>
-	<color name="status_bar">#33000000</color>
-	<color name="tabs_line">#C3CFDD</color>
+	<color name="shadow">#99000000</color>
+
 </resources>

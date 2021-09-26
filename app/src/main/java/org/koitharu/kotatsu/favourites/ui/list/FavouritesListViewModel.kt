@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -22,12 +23,18 @@ class FavouritesListViewModel(
 ) : MangaListViewModel(settings) {
 
 	override val content = combine(
-		if (categoryId == 0L) repository.observeAll() else repository.observeAll(categoryId),
+		if (categoryId == 0L) {
+			repository.observeAll(SortOrder.NEWEST)
+		} else {
+			repository.observeAll(categoryId)
+		},
 		createListModeFlow()
 	) { list, mode ->
 		when {
 			list.isEmpty() -> listOf(
 				EmptyState(
+					R.drawable.ic_heart_outline,
+					R.string.text_empty_holder_primary,
 					if (categoryId == 0L) {
 						R.string.you_have_not_favourites_yet
 					} else {

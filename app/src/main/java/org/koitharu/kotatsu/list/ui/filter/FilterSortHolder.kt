@@ -12,7 +12,7 @@ class FilterSortHolder(parent: ViewGroup) :
 	) {
 
 	override fun onBind(data: SortOrder, extra: Boolean) {
-		binding.radio.setText(data.titleRes)
-		binding.radio.isChecked = extra
+		binding.root.setText(data.titleRes)
+		binding.root.isChecked = extra
 	}
 }

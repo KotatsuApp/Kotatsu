@@ -3,23 +3,22 @@ package org.koitharu.kotatsu.details.ui.adapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.databinding.ItemChapterBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.history.domain.ChapterExtra
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 fun chapterListItemAD(
-	clickListener: OnListItemClickListener<MangaChapter>
+	clickListener: OnListItemClickListener<ChapterListItem>,
 ) = adapterDelegateViewBinding<ChapterListItem, ChapterListItem, ItemChapterBinding>(
 	{ inflater, parent -> ItemChapterBinding.inflate(inflater, parent, false) }
 ) {
 
 	itemView.setOnClickListener {
-		clickListener.onItemClick(item.chapter, it)
+		clickListener.onItemClick(item, it)
 	}
 	itemView.setOnLongClickListener {
-		clickListener.onItemLongClick(item.chapter, it)
+		clickListener.onItemLongClick(item, it)
 	}
 
 	bind { payload ->
@@ -43,5 +42,7 @@ fun chapterListItemAD(
 				binding.textViewNumber.setTextColor(context.getThemeColor(android.R.attr.textColorPrimaryInverse))
 			}
 		}
+		binding.textViewTitle.alpha = if (item.isMissing) 0.3f else 1f
+		binding.textViewNumber.alpha = if (item.isMissing) 0.3f else 1f
 	}
 }

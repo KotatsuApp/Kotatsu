@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<style name="AppPopupTheme" parent="ThemeOverlay.MaterialComponents.Dark" />
-
-	<style name="AppSuggestion" parent="Widget.AppCompat.AutoCompleteTextView">
-		<item name="android:popupBackground">@android:color/background_dark</item>
-	</style>
-</resources>
