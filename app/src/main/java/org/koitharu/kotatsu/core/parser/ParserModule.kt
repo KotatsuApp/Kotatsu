@@ -33,4 +33,5 @@ val parserModule
 		factory<MangaRepository>(named(MangaSource.NINEMANGA_IT)) { NineMangaRepository.Italiano(get()) }
 		factory<MangaRepository>(named(MangaSource.NINEMANGA_FR)) { NineMangaRepository.Francais(get()) }
 		factory<MangaRepository>(named(MangaSource.EXHENTAI)) { ExHentaiRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.MANGAOWL)) { MangaOwlRepository(get()) }
 	}
