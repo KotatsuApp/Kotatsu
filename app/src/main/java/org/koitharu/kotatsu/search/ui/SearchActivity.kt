@@ -51,6 +51,9 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 			left = insets.left,
 			right = insets.right
 		)
+		binding.container.updatePadding(
+			bottom = insets.bottom
+		)
 	}
 
 	override fun onQueryTextSubmit(query: String?): Boolean {
