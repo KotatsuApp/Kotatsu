@@ -6,6 +6,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:scrollbars="vertical"
+	android:clipToPadding="false"
 	app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
@@ -88,6 +89,20 @@
 					app:layout_constraintStart_toStartOf="@id/textView_title"
 					app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
 					tools:text="@tools:sample/full_names" />
+
+				<TextView
+					android:id="@+id/textView_state"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="4dp"
+					android:drawablePadding="4dp"
+					android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+					android:textColor="?android:attr/textColorSecondary"
+					app:layout_constraintEnd_toEndOf="@id/textView_title"
+					app:layout_constraintStart_toStartOf="@id/textView_title"
+					app:layout_constraintTop_toBottomOf="@id/textView_author"
+					tools:drawableStart="@drawable/ic_state_finished"
+					tools:text="Finished" />
 
 				<LinearLayout
 					android:id="@+id/info_layout"
@@ -276,12 +291,12 @@
 			android:layout_height="wrap_content"
 			android:indeterminate="true"
 			android:visibility="gone"
-			app:showAnimationBehavior="inward"
 			app:hideAnimationBehavior="outward"
 			app:layout_constraintBottom_toTopOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
+			app:showAnimationBehavior="inward"
 			tools:visibility="visible" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

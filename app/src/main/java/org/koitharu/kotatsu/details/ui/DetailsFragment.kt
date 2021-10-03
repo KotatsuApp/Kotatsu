@@ -5,6 +5,7 @@ import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
@@ -23,13 +24,13 @@ import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaState
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.*
-import kotlin.random.Random
 
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
 	View.OnLongClickListener {
@@ -52,6 +53,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 
 	private fun onMangaUpdated(manga: Manga) {
 		with(binding) {
+
+			// Main
 			imageViewCover.newImageRequest(manga.largeCoverUrl ?: manga.coverUrl)
 				.referer(manga.publicUrl)
 				.fallback(R.drawable.ic_placeholder)
@@ -66,6 +69,28 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			textViewDescription.text =
 				manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
 					?: getString(R.string.no_description)
+			when (manga.state) {
+				MangaState.FINISHED -> {
+					textViewState.apply {
+						text = resources.getString(R.string.state_finished)
+						drawableStart = ResourcesCompat.getDrawable(resources, R.drawable.ic_state_finished, context.theme)
+					}
+				}
+				MangaState.ONGOING -> {
+					textViewState.apply {
+						text = resources.getString(R.string.state_ongoing)
+						drawableStart = ResourcesCompat.getDrawable(resources, R.drawable.ic_state_ongoing, context.theme)
+					}
+				}
+				else -> {
+					textViewState.apply {
+						text = resources.getString(R.string.state_unknown)
+						drawableStart = ResourcesCompat.getDrawable(resources, R.drawable.ic_state_unknown, context.theme)
+					}
+				}
+			}
+
+			// Info containers
 			if (manga.chapters?.isNotEmpty() == true) {
 				chaptersContainer.isVisible = true
 				textViewChapters.text = manga.chapters.let {
@@ -96,10 +121,14 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			} else {
 				sizeContainer.isVisible = false
 			}
+
+			// Buttons
 			buttonFavorite.setOnClickListener(this@DetailsFragment)
 			buttonRead.setOnClickListener(this@DetailsFragment)
 			buttonRead.setOnLongClickListener(this@DetailsFragment)
 			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
+
+			// Chips
 			bindTags(manga)
 		}
 	}
