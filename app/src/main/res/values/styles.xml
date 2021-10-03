@@ -48,6 +48,7 @@
 		<item name="chipStrokeColor">?attr/colorPrimary</item>
 		<item name="chipBackgroundColor">@android:color/transparent</item>
 		<item name="chipIconTint">?attr/colorPrimary</item>
+		<item name="closeIconTint">?attr/colorPrimary</item>
 
 		<!-- Smaller text/height -->
 		<item name="android:textSize">12sp</item>
