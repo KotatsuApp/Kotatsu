@@ -49,12 +49,12 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		val slides = doc.body().select("ul.slides") ?: parseFailed("An error occurred while parsing")
 		val items = slides.select("div.col-md-2")
 		return items.mapNotNull { item ->
-			val href = item.select("h6 a").attr("href") ?: return@mapNotNull null
+			val href = item.selectFirst("h6 a")?.relUrl("href") ?: return@mapNotNull null
 			Manga(
 				id = generateUid(href),
-				title = item.select("h6 a").text(),
+				title = item.selectFirst("h6 a")?.text() ?: return@mapNotNull null,
 				coverUrl = item.select("div.img-responsive").attr("abs:data-background-image"),
-				altTitle = item.select("h6 a").attr("alt") ?: return@mapNotNull null,
+				altTitle = null,
 				author = null,
 				rating = runCatching {
 					item.selectFirst("div.block-stars")
@@ -78,7 +78,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			largeCoverUrl = info.select("img").first()?.let { img ->
 				if (img.hasAttr("data-src")) img.attr("abs:data-src") else img.attr("abs:src")
 			},
-			author = info.select("p.fexi_header_para a.author_link").text(),
+			author = info.selectFirst("p.fexi_header_para a.author_link")?.text(),
 			state = parseStatus(info.select("p.fexi_header_para:contains(status)").first()?.ownText()),
 			tags = manga.tags + info.select("div.col-xs-12.col-md-8.single-right-grid-right > p > a[href*=genres]")
 				.mapNotNull {
@@ -110,7 +110,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		val doc = loaderContext.httpGet(fullUrl).parseHtml()
 		val root = doc.body().select("div.item img.owl-lazy") ?: throw ParseException("Root not found")
 		return root.map { div ->
-			val url = div?.attr("abs:data-src") ?: parseFailed("Page image not found")
+			val url = div?.relUrl("data-src") ?: parseFailed("Page image not found")
 			MangaPage(
 				id = generateUid(url),
 				url = url,
