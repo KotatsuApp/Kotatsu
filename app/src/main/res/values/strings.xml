@@ -240,7 +240,6 @@
 	<string name="auth_not_supported_by">Authorization on %s is not supported</string>
 	<string name="text_clear_cookies_prompt">You will be logged out from all sources that you are authorized in</string>
     <string name="genres">Genres</string>
-	<string name="state_finished">Finished</string>
+    <string name="state_finished">Finished</string>
     <string name="state_ongoing">Ongoing</string>
-    <string name="state_unknown">Unknown</string>
 </resources>
