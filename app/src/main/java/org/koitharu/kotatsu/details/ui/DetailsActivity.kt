@@ -85,13 +85,16 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 				finishAfterTransition()
 			}
 			else -> {
-				Snackbar.make(binding.pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
+				Snackbar.make(binding.coordinator, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
 					.show()
 			}
 		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.coordinator.updatePadding(
+			bottom = insets.bottom
+		)
 		binding.toolbar.updatePadding(
 			top = insets.top,
 			left = insets.left,
