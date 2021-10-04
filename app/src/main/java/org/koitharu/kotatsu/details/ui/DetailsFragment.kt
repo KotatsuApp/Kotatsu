@@ -72,22 +72,17 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			when (manga.state) {
 				MangaState.FINISHED -> {
 					textViewState.apply {
-						text = resources.getString(R.string.state_finished)
+						textAndVisible = resources.getString(R.string.state_finished)
 						drawableStart = ResourcesCompat.getDrawable(resources, R.drawable.ic_state_finished, context.theme)
 					}
 				}
 				MangaState.ONGOING -> {
 					textViewState.apply {
-						text = resources.getString(R.string.state_ongoing)
+						textAndVisible = resources.getString(R.string.state_ongoing)
 						drawableStart = ResourcesCompat.getDrawable(resources, R.drawable.ic_state_ongoing, context.theme)
 					}
 				}
-				else -> {
-					textViewState.apply {
-						text = resources.getString(R.string.state_unknown)
-						drawableStart = ResourcesCompat.getDrawable(resources, R.drawable.ic_state_unknown, context.theme)
-					}
-				}
+				else -> textViewState.isVisible = false
 			}
 
 			// Info containers
