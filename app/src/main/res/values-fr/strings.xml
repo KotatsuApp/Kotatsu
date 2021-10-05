@@ -240,4 +240,6 @@
     <string name="text_clear_cookies_prompt">Vous serez déconnecté·e de toutes les sources pour lesquelles vous avez une autorisation</string>
     <string name="auth_not_supported_by">L\'autorisation sur %s n\'est pas prise en charge</string>
     <string name="auth_complete">Autorisation complète</string>
+    <string name="state_finished">Terminé</string>
+    <string name="state_ongoing">En cours</string>
 </resources>
