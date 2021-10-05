@@ -240,4 +240,6 @@
     <string name="genres">Genres</string>
     <string name="auth_not_supported_by">Autorisierung auf %s wird nicht unterstützt</string>
     <string name="auth_complete">Autorisierung abgeschlossen</string>
+    <string name="state_finished">Beendet</string>
+    <string name="state_ongoing">Fortlaufend</string>
 </resources>
