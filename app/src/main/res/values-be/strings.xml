@@ -240,4 +240,6 @@
     <string name="auth_not_supported_by">Аўтарызацыя на %s не падтрымліваецца</string>
     <string name="auth_complete">Аўтарызацыя выканана</string>
     <string name="genres">Жанры</string>
+    <string name="state_finished">Завершана</string>
+    <string name="state_ongoing">Ангоінг</string>
 </resources>
