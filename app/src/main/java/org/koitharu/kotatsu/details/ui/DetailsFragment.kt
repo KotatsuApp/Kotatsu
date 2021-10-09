@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.*
 
@@ -45,6 +46,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		binding.textViewAuthor.setOnClickListener(this)
+		binding.buttonFavorite.setOnClickListener(this)
+		binding.buttonRead.setOnClickListener(this)
+		binding.buttonRead.setOnLongClickListener(this)
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
@@ -118,9 +123,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			}
 
 			// Buttons
-			buttonFavorite.setOnClickListener(this@DetailsFragment)
-			buttonRead.setOnClickListener(this@DetailsFragment)
-			buttonRead.setOnLongClickListener(this@DetailsFragment)
 			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
 
 			// Chips
@@ -177,6 +179,15 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 						)
 					)
 				}
+			}
+			R.id.textView_author -> {
+				startActivity(
+					SearchActivity.newIntent(
+						context = v.context,
+						source = manga.source,
+						query = manga.author ?: return,
+					)
+				)
 			}
 		}
 	}

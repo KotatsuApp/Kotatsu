@@ -5,8 +5,8 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:scrollbars="vertical"
 	android:clipToPadding="false"
+	android:scrollbars="vertical"
 	app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +37,7 @@
 				<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
 					android:id="@+id/imageView_cover"
 					android:layout_width="match_parent"
-					android:layout_height="match_parent"
+					android:layout_height="wrap_content"
 					android:scaleType="centerCrop"
 					tools:background="@tools:sample/backgrounds/scenic"
 					tools:ignore="ContentDescription" />
@@ -81,12 +81,15 @@
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="4dp"
+					android:background="@drawable/list_selector"
 					android:requiresFadingEdge="horizontal"
 					android:textColor="?colorAccent"
 					android:textStyle="bold"
 					app:layout_constraintEnd_toEndOf="@id/textView_title"
+					app:layout_constraintHorizontal_bias="0"
 					app:layout_constraintStart_toStartOf="@id/textView_title"
 					app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
+					app:layout_constraintWidth_default="wrap"
 					tools:text="@tools:sample/full_names" />
 
 				<TextView
