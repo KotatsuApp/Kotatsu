@@ -233,4 +233,10 @@
     <string name="genres">Géneros</string>
     <string name="text_search_holder_secondary">Intenta reformular la consulta.</string>
     <string name="text_clear_search_history_prompt">¿Realmente quiere eliminar todas las consultas de búsqueda recientes\? Esta acción no se puede deshacer.</string>
+    <string name="state_finished">Terminado</string>
+    <string name="state_ongoing">En curso</string>
+    <string name="hide_toolbar">Ocultar la barra de herramientas al desplazarse</string>
+    <string name="chapter_is_missing_text">Este capítulo no aparece en su dispositivo. Descárguelo o léalo en línea.</string>
+    <string name="auth_complete">Autorización completa</string>
+    <string name="about_feedback_4pda">Tema sobre 4PDA</string>
 </resources>
