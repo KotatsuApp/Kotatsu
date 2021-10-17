@@ -9,6 +9,8 @@ data class MangaChapter(
 	val name: String,
 	val number: Int,
 	val url: String,
+	val scanlator: String? = null,
+	val date_upload: Long,
 	val branch: String? = null,
 	val source: MangaSource
 ) : Parcelable

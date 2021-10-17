@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
@@ -99,6 +100,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 					name = a.select("label").text(),
 					number = i + 1,
 					url = href,
+					date_upload = parseChapterDate(li.select("small:last-of-type").text()),
 					source = MangaSource.MANGAOWL
 				)
 			}
@@ -155,5 +157,19 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			SortOrder.UPDATED -> "3"
 			else -> "3"
 		}
+
+	private fun parseChapterDate(string: String): Long {
+		return try {
+			dateFormat.parse(string)?.time ?: 0
+		} catch (_: ParseException) {
+			0
+		}
+	}
+
+	companion object {
+		private val dateFormat by lazy {
+			SimpleDateFormat("MM/dd/yyyy", Locale.US)
+		}
+	}
 
 }

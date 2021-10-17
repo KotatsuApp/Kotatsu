@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class NineMangaRepository(
@@ -99,18 +100,19 @@ abstract class NineMangaRepository(
 					)
 				}.orEmpty(),
 			author = infoRoot.getElementsByAttributeValue("itemprop", "author").first()?.text(),
+			state = parseStatus(infoRoot.select("li a.red").text()),
 			description = infoRoot.getElementsByAttributeValue("itemprop", "description").first()
 				?.html()?.substringAfter("</b>"),
-			chapters = root.selectFirst("div.chapterbox")?.selectFirst("ul")
-				?.select("li")?.asReversed()?.mapIndexed { i, li ->
-					val a = li.selectFirst("a")
-					val href = a?.relUrl("href") ?: parseFailed("Link not found")
+			chapters = root.selectFirst("div.chapterbox")?.select("ul.sub_vol_ul > li")
+				?.asReversed()?.mapIndexed { i, li ->
+					val a = li.selectFirst("a.chapter_list_a")
+					val href = a?.relUrl("href")?.replace("%20", " ") ?: parseFailed("Link not found")
 					MangaChapter(
 						id = generateUid(href),
 						name = a.text(),
 						number = i + 1,
 						url = href,
-						branch = null,
+						date_upload = parseChapterDateByLang(li.select("span").text()),
 						source = source,
 					)
 				}
@@ -153,7 +155,55 @@ abstract class NineMangaRepository(
 		} ?: parseFailed("Root not found")
 	}
 
-	class English(loaderContext: MangaLoaderContext) : NineMangaRepository(
+	private fun parseStatus(status: String) = when {
+		status.contains("Ongoing") -> MangaState.ONGOING
+		status.contains("Completed") -> MangaState.FINISHED
+		else -> null
+	}
+
+	fun parseChapterDateByLang(date: String): Long {
+		val dateWords = date.split(" ")
+
+		if (dateWords.size == 3) {
+			if (dateWords[1].contains(",")) {
+				return try {
+					SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).parse(date)?.time ?: 0L
+				} catch (e: ParseException) {
+					0L
+				}
+			} else {
+				val timeAgo = Integer.parseInt(dateWords[0])
+				return Calendar.getInstance().apply {
+					when (dateWords[1]) {
+						"minutes" -> Calendar.MINUTE // EN-FR
+						"hours" -> Calendar.HOUR // EN
+
+						"minutos" -> Calendar.MINUTE // ES
+						"horas" -> Calendar.HOUR
+
+						// "minutos" -> Calendar.MINUTE // BR
+						"hora" -> Calendar.HOUR
+
+						"минут" -> Calendar.MINUTE // RU
+						"часа" -> Calendar.HOUR
+
+						"Stunden" -> Calendar.HOUR // DE
+
+						"minuti" -> Calendar.MINUTE // IT
+						"ore" -> Calendar.HOUR
+
+						"heures" -> Calendar.HOUR // FR ("minutes" also French word)
+						else -> null
+					}?.let {
+						add(it, -timeAgo)
+					}
+				}.timeInMillis
+			}
+		}
+		return 0L
+	}
+
+	open class English(loaderContext: MangaLoaderContext) : NineMangaRepository(
 		loaderContext,
 		MangaSource.NINEMANGA_EN,
 		"www.ninemanga.com",

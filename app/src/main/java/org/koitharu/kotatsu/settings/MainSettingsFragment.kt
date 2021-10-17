@@ -9,8 +9,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.launch
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
@@ -21,6 +19,7 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.utils.ext.*
 import java.io.File
+import java.util.*
 
 
 class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
@@ -39,6 +38,20 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
 			entryValues = ListMode.values().names()
 			setDefaultValueCompat(ListMode.GRID.name)
+		}
+		findPreference<ListPreference>(AppSettings.KEY_DATE_FORMAT)?.run {
+			entryValues = arrayOf("", "MM/dd/yy", "dd/MM/yy", "yyyy-MM-dd", "dd MMM yyyy", "MMM dd, yyyy")
+			val now = Date().time
+			entries = entryValues.map { value ->
+				val formattedDate = settings.dateFormat(value.toString()).format(now)
+				if (value == "") {
+					"${context.getString(R.string.system_default)} ($formattedDate)"
+				} else {
+					"$value ($formattedDate)"
+				}
+			}.toTypedArray()
+			setDefaultValueCompat("")
+			summary = "%s"
 		}
 	}
 

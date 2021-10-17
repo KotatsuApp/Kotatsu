@@ -1,12 +1,16 @@
 package org.koitharu.kotatsu.details.ui.adapter
 
+import android.text.SpannableStringBuilder
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.koin.core.context.GlobalContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemChapterBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.history.domain.ChapterExtra
 import org.koitharu.kotatsu.utils.ext.getThemeColor
+import java.util.*
 
 fun chapterListItemAD(
 	clickListener: OnListItemClickListener<ChapterListItem>,
@@ -24,6 +28,20 @@ fun chapterListItemAD(
 	bind { payload ->
 		binding.textViewTitle.text = item.chapter.name
 		binding.textViewNumber.text = item.chapter.number.toString()
+		val settings = GlobalContext.get().get<AppSettings>()
+		val descriptions = mutableListOf<CharSequence>()
+		val dateFormat = settings.dateFormat()
+		if (item.chapter.date_upload > 0) {
+			descriptions.add(dateFormat.format(Date(item.chapter.date_upload)))
+		}
+		if (!item.chapter.scanlator.isNullOrBlank()) {
+			descriptions.add(item.chapter.scanlator!!)
+		}
+		if (descriptions.isNotEmpty()) {
+			binding.textViewDescription.text = descriptions.joinTo(SpannableStringBuilder(), " • ")
+		} else {
+			binding.textViewDescription.text = ""
+		}
 		when (item.extra) {
 			ChapterExtra.UNREAD -> {
 				binding.textViewNumber.setBackgroundResource(R.drawable.bg_badge_default)
@@ -43,6 +61,7 @@ fun chapterListItemAD(
 			}
 		}
 		binding.textViewTitle.alpha = if (item.isMissing) 0.3f else 1f
+		binding.textViewDescription.alpha = if (item.isMissing) 0.3f else 1f
 		binding.textViewNumber.alpha = if (item.isMissing) 0.3f else 1f
 	}
 }

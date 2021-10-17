@@ -241,4 +241,6 @@
     <string name="genres">Жанры</string>
     <string name="state_finished">Завершено</string>
     <string name="state_ongoing">Онгоинг</string>
+    <string name="date_format">Формат даты</string>
+    <string name="system_default">По умолчанию</string>
 </resources>

@@ -242,4 +242,6 @@
     <string name="genres">Genres</string>
     <string name="state_finished">Finished</string>
     <string name="state_ongoing">Ongoing</string>
+    <string name="date_format">Date format</string>
+    <string name="system_default">Default</string>
 </resources>
