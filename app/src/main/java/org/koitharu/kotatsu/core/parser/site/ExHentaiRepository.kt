@@ -141,7 +141,7 @@ class ExHentaiRepository(
 						name = "${manga.title} #$i",
 						number = i,
 						url = url,
-						branch = null,
+						date_upload = 0L,
 						source = source,
 					)
 				}

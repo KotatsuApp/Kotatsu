@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
@@ -109,12 +110,16 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			},
 			chapters = chapters.mapIndexed { i, jo ->
 				val id = jo.getLong("id")
-				val name = jo.getString("name")
+				val name = jo.getString("name").capitalize(Locale.ROOT)
+				val publishers = jo.getJSONArray("publishers")
 				MangaChapter(
 					id = generateUid(id),
 					url = "/api/titles/chapters/$id/",
 					number = chapters.length() - i,
 					name = buildString {
+						append("Том ")
+						append(jo.getString("tome"))
+						append(". ")
 						append("Глава ")
 						append(jo.getString("chapter"))
 						if (name.isNotEmpty()) {
@@ -122,6 +127,8 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 							append(name)
 						}
 					},
+					date_upload = parseChapterDate(jo.getString("upload_date")),
+					scanlator = publishers.optJSONObject(0)?.getStringOrNull("name"),
 					source = MangaSource.REMANGA
 				)
 			}.asReversed()
@@ -171,6 +178,14 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		source = source
 	)
 
+	private fun parseChapterDate(string: String): Long {
+		return try {
+			dateFormat.parse(string)?.time ?: 0
+		} catch (_: ParseException) {
+			0
+		}
+	}
+
 	private companion object {
 
 		const val PAGE_SIZE = 30
@@ -179,5 +194,9 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		const val STATUS_FINISHED = 0
 
 		val LAST_URL_PATH_REGEX = Regex("/[^/]+/?$")
+
+		private val dateFormat by lazy {
+			SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+		}
 	}
 }

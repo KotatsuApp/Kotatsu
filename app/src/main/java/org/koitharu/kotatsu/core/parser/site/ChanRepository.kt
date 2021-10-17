@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(
@@ -79,15 +80,14 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		return manga.copy(
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
 			largeCoverUrl = root.getElementById("cover")?.absUrl("src"),
-			chapters = root.select("table.table_cha").flatMap { table ->
-				table.select("div.manga2")
-			}.map { it.selectFirst("a") }.reversed().mapIndexedNotNull { i, a ->
-				val href = a?.relUrl("href") ?: return@mapIndexedNotNull null
+			chapters = root.select("table.table_cha tr:gt(1)").reversed().mapIndexedNotNull { i, tr ->
+				val href = tr?.selectFirst("a")?.relUrl("href") ?: return@mapIndexedNotNull null
 				MangaChapter(
 					id = generateUid(href),
-					name = a.text().trim(),
+					name = tr.select("a").text().trim(),
 					number = i + 1,
 					url = href,
+					date_upload = parseChapterDate(tr.select("div.date").text()),
 					source = source
 				)
 			}
@@ -154,4 +154,18 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 			SortOrder.NEWEST -> "datedesc"
 			else -> "favdesc"
 		}
+
+	private fun parseChapterDate(string: String): Long {
+		return try {
+			dateFormat.parse(string)?.time ?: 0
+		} catch (_: ParseException) {
+			0
+		}
+	}
+
+	companion object {
+		private val dateFormat by lazy {
+			SimpleDateFormat("yyyy-MM-dd", Locale.US)
+		}
+	}
 }
