@@ -10,6 +10,10 @@
 		<item name="colorOnSecondary">@color/color_on_secondary</item>
 		<item name="colorControlLight">@color/color_control_light</item>
 
+		<!-- Handles RTL text -->
+		<item name="android:textAlignment">gravity</item>
+		<item name="android:textDirection">locale</item>
+
 		<!-- Window decor -->
 		<item name="android:windowLightStatusBar" tools:targetApi="m">@bool/use_light_status</item>
 		<item name="android:statusBarColor">@color/status_bar_scrim</item>

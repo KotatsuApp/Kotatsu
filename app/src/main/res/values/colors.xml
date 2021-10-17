@@ -4,6 +4,7 @@
 	<color name="color_primary">#1976D2</color>
 	<color name="color_primary_variant">#1565C0</color>
 	<color name="color_on_secondary">@android:color/white</color>
+	<color name="color_primary_alpha">#1F1976D2</color>
 
 	<color name="color_control_light">#39000000</color>
 	<color name="color_surface">#FFFFFF</color>

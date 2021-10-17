@@ -203,7 +203,7 @@ abstract class NineMangaRepository(
 		return 0L
 	}
 
-	open class English(loaderContext: MangaLoaderContext) : NineMangaRepository(
+	class English(loaderContext: MangaLoaderContext) : NineMangaRepository(
 		loaderContext,
 		MangaSource.NINEMANGA_EN,
 		"www.ninemanga.com",

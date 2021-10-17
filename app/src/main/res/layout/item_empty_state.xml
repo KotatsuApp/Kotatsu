@@ -4,9 +4,9 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"
+	android:layout_marginHorizontal="32dp"
 	android:gravity="center"
-	android:layout_marginHorizontal="32dp">
+	android:orientation="vertical">
 
 	<ImageView
 		android:id="@+id/icon"

@@ -8,7 +8,6 @@
 	</declare-styleable>
 
 	<!--CoverImageView attrs-->
-
 	<declare-styleable name="CoverImageView">
 		<attr name="android:orientation" />
 	</declare-styleable>
