@@ -84,10 +84,10 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				val href = tr?.selectFirst("a")?.relUrl("href") ?: return@mapIndexedNotNull null
 				MangaChapter(
 					id = generateUid(href),
-					name = tr.select("a").text().trim(),
+					name = tr.selectFirst("a")?.text().orEmpty(),
 					number = i + 1,
 					url = href,
-					date_upload = parseChapterDate(tr.select("div.date").text()),
+					uploadDate = parseChapterDate(tr.selectFirst("div.date")?.text().orEmpty()),
 					source = source
 				)
 			}
@@ -156,16 +156,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		}
 
 	private fun parseChapterDate(string: String): Long {
-		return try {
-			dateFormat.parse(string)?.time ?: 0
-		} catch (_: ParseException) {
-			0
-		}
+		return SimpleDateFormat("yyyy-MM-dd", Locale.US).tryParse(string)
 	}
 
-	companion object {
-		private val dateFormat by lazy {
-			SimpleDateFormat("yyyy-MM-dd", Locale.US)
-		}
-	}
 }

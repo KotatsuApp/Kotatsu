@@ -127,7 +127,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 							append(name)
 						}
 					},
-					date_upload = parseChapterDate(jo.getString("upload_date")),
+					uploadDate = parseChapterDate(jo.getString("upload_date")),
 					scanlator = publishers.optJSONObject(0)?.getStringOrNull("name"),
 					source = MangaSource.REMANGA
 				)
@@ -179,11 +179,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	)
 
 	private fun parseChapterDate(string: String): Long {
-		return try {
-			dateFormat.parse(string)?.time ?: 0
-		} catch (_: ParseException) {
-			0
-		}
+		return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).tryParse(string)
 	}
 
 	private companion object {
@@ -194,9 +190,5 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		const val STATUS_FINISHED = 0
 
 		val LAST_URL_PATH_REGEX = Regex("/[^/]+/?$")
-
-		private val dateFormat by lazy {
-			SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
-		}
 	}
 }

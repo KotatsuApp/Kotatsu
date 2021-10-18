@@ -31,8 +31,8 @@ fun chapterListItemAD(
 		val settings = GlobalContext.get().get<AppSettings>()
 		val descriptions = mutableListOf<CharSequence>()
 		val dateFormat = settings.dateFormat()
-		if (item.chapter.date_upload > 0) {
-			descriptions.add(dateFormat.format(Date(item.chapter.date_upload)))
+		if (item.chapter.uploadDate > 0) {
+			descriptions.add(dateFormat.format(Date(item.chapter.uploadDate)))
 		}
 		if (!item.chapter.scanlator.isNullOrBlank()) {
 			descriptions.add(item.chapter.scanlator!!)

@@ -49,7 +49,7 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 					url = readLink,
 					source = source,
 					number = 1,
-					date_upload = 0L,
+					uploadDate = 0L,
 					name = manga.title
 				)
 			)

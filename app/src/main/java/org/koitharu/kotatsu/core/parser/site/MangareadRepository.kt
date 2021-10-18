@@ -4,6 +4,7 @@ import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.utils.WordSet
 import org.koitharu.kotatsu.utils.ext.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -139,7 +140,7 @@ class MangareadRepository(
 					name = a!!.ownText(),
 					number = i + 1,
 					url = href,
-					date_upload = parseChapterDate(doc2.select("span.chapter-release-date i").firstOrNull()?.text()),
+					uploadDate = parseChapterDate(doc2.selectFirst("span.chapter-release-date i")?.text()),
 					source = MangaSource.MANGAREAD
 				)
 			}
@@ -166,15 +167,6 @@ class MangareadRepository(
 
 	private fun parseChapterDate(date: String?): Long {
 		date ?: return 0
-
-		fun SimpleDateFormat.tryParse(string: String): Long {
-			return try {
-				parse(string)?.time ?: 0
-			} catch (_: ParseException) {
-				0
-			}
-		}
-
 		return when {
 			date.endsWith(" ago", ignoreCase = true) -> {
 				parseRelativeDate(date)
@@ -254,5 +246,3 @@ class MangareadRepository(
 		}
 	}
 }
-
-class WordSet(private vararg val words: String) { fun anyWordIn(dateString: String): Boolean = words.any { dateString.contains(it, ignoreCase = true) } }

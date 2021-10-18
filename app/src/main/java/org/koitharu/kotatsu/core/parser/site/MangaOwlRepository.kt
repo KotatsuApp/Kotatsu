@@ -100,7 +100,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 					name = a.select("label").text(),
 					number = i + 1,
 					url = href,
-					date_upload = parseChapterDate(li.select("small:last-of-type").text()),
+					uploadDate = parseChapterDate(li.select("small:last-of-type").text()),
 					source = MangaSource.MANGAOWL
 				)
 			}
@@ -159,17 +159,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		}
 
 	private fun parseChapterDate(string: String): Long {
-		return try {
-			dateFormat.parse(string)?.time ?: 0
-		} catch (_: ParseException) {
-			0
-		}
-	}
-
-	companion object {
-		private val dateFormat by lazy {
-			SimpleDateFormat("MM/dd/yyyy", Locale.US)
-		}
+		return SimpleDateFormat("MM/dd/yyyy", Locale.US).tryParse(string)
 	}
 
 }

@@ -124,21 +124,22 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 					)
 				},
 			chapters = root.selectFirst("div.chapters-link")?.selectFirst("table")
-				?.select("tr:has(td > a)")?.asReversed()?.mapIndexed { i, tr ->
-					val href = tr.selectFirst("a")?.relUrl("href")
+				?.select("tr:has(td > a)")?.asReversed()?.mapIndexedNotNull { i, tr ->
+					val a = tr.selectFirst("a") ?: return@mapIndexedNotNull null
+					val href = a.relUrl("href")
 					var translators = ""
-					val translatorElement = tr.select("a").attr("title")
+					val translatorElement = a.attr("title")
 					if (!translatorElement.isNullOrBlank()) {
 						translators = translatorElement
 							.replace("(Переводчик),", "&")
 							.removeSuffix(" (Переводчик)")
 					}
 					MangaChapter(
-						id = generateUid(href!!),
-						name = tr.select("a").text().removePrefix(manga.title).trim(),
+						id = generateUid(href),
+						name = tr.selectFirst("a")?.text().orEmpty().removePrefix(manga.title).trim(),
 						number = i + 1,
 						url = href,
-						date_upload = parseChapterDate(tr.select("td.d-none").text()),
+						uploadDate = parseChapterDate(tr.select("td.d-none").text()),
 						scanlator = translators,
 						source = source
 					)
@@ -234,11 +235,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	private fun parseChapterDate(string: String): Long {
-		return try {
-			dateFormat.parse(string)?.time ?: 0
-		} catch (_: ParseException) {
-			0
-		}
+		return SimpleDateFormat("dd.MM.yy", Locale.US).tryParse(string)
 	}
 
 	private companion object {
@@ -248,9 +245,6 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		private val HEADER = Headers.Builder()
 			.add("User-Agent", "readmangafun")
 			.build()
-		private val dateFormat by lazy {
-			SimpleDateFormat("dd.MM.yy", Locale.US)
-		}
 	}
 
 }

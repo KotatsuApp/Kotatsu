@@ -112,7 +112,7 @@ abstract class NineMangaRepository(
 						name = a.text(),
 						number = i + 1,
 						url = href,
-						date_upload = parseChapterDateByLang(li.select("span").text()),
+						uploadDate = parseChapterDateByLang(li.selectFirst("span")?.text().orEmpty()),
 						source = source,
 					)
 				}
@@ -166,11 +166,7 @@ abstract class NineMangaRepository(
 
 		if (dateWords.size == 3) {
 			if (dateWords[1].contains(",")) {
-				return try {
-					SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).parse(date)?.time ?: 0L
-				} catch (e: ParseException) {
-					0L
-				}
+				SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).tryParse(date)
 			} else {
 				val timeAgo = Integer.parseInt(dateWords[0])
 				return Calendar.getInstance().apply {
