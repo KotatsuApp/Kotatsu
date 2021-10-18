@@ -118,7 +118,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 					url = href,
 					source = MangaSource.MANGATOWN,
 					number = i + 1,
-					date_upload = parseChapterDate(li.select("span.time").text()),
+					uploadDate = parseChapterDate(li.selectFirst("span.time")?.text().orEmpty()),
 					name = name.ifEmpty { "${manga.title} - ${i + 1}" }
 				)
 			}
@@ -173,13 +173,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		return when {
 			date.contains("Today") -> Calendar.getInstance().timeInMillis
 			date.contains("Yesterday") -> Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }.timeInMillis
-			else -> {
-				try {
-					SimpleDateFormat("MMM dd,yyyy", Locale.US).parse(date)?.time ?: 0L
-				} catch (e: Exception) {
-					0L
-				}
-			}
+			else -> SimpleDateFormat("MMM dd,yyyy", Locale.US).tryParse(date)
 		}
 	}
 

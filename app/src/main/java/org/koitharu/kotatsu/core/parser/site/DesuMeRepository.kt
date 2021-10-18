@@ -99,7 +99,7 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 					id = generateUid(chid),
 					source = manga.source,
 					url = "$baseChapterUrl$chid",
-					date_upload = it.getLong("date") * 1000,
+					uploadDate = it.getLong("date") * 1000,
 					name = if (title.isEmpty()) volChap else "$volChap: $title",
 					number = totalChapters - i
 				)

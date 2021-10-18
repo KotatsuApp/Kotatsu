@@ -113,7 +113,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 								url = url,
 								source = source,
 								number = total - i,
-								date_upload = parseChapterDate(item.getString("chapter_created_at").substringBefore(" ")),
+								uploadDate = parseChapterDate(item.getString("chapter_created_at").substringBefore(" ")),
 								scanlator = scanlator,
 								name = if (nameChapter.isNullOrBlank()) fullNameChapter else "$fullNameChapter - $nameChapter"
 							)
@@ -243,16 +243,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	private fun parseChapterDate(string: String): Long {
-		return try {
-			dateFormat.parse(string)?.time ?: 0
-		} catch (_: ParseException) {
-			0
-		}
+		return SimpleDateFormat("yyy-MM-dd", Locale.US).tryParse(string)
 	}
 
-	companion object {
-		private val dateFormat by lazy {
-			SimpleDateFormat("yyy-MM-dd", Locale.US)
-		}
-	}
 }
