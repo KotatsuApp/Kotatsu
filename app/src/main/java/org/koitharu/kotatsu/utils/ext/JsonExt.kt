@@ -38,6 +38,10 @@ fun JSONObject.getBooleanOrDefault(name: String, defaultValue: Boolean): Boolean
 	it === JSONObject.NULL
 } as? Boolean ?: defaultValue
 
+fun JSONObject.getLongOrDefault(name: String, defaultValue: Long): Long = opt(name)?.takeUnless {
+	it === JSONObject.NULL
+} as? Long ?: defaultValue
+
 operator fun JSONArray.iterator(): Iterator<JSONObject> = JSONIterator(this)
 
 private class JSONIterator(private val array: JSONArray) : Iterator<JSONObject> {
