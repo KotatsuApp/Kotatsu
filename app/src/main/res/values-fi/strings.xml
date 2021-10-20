@@ -240,4 +240,6 @@
     <string name="protect_application">Suojaa sovellus</string>
     <string name="wrong_password">Väärä salasana</string>
     <string name="enter_password">Syötä salasana</string>
+    <string name="state_finished">Päättynyt</string>
+    <string name="state_ongoing">Jatkuva</string>
 </resources>

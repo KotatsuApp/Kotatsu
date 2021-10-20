@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MangaTownRepository(loaderContext: MangaLoaderContext) :
@@ -117,6 +118,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 					url = href,
 					source = MangaSource.MANGATOWN,
 					number = i + 1,
+					uploadDate = parseChapterDate(li.selectFirst("span.time")?.text().orEmpty()),
 					name = name.ifEmpty { "${manga.title} - ${i + 1}" }
 				)
 			}
@@ -164,6 +166,14 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 				key = key,
 				title = a.text()
 			)
+		}
+	}
+
+	private fun parseChapterDate(date: String): Long {
+		return when {
+			date.contains("Today") -> Calendar.getInstance().timeInMillis
+			date.contains("Yesterday") -> Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }.timeInMillis
+			else -> SimpleDateFormat("MMM dd,yyyy", Locale.US).tryParse(date)
 		}
 	}
 

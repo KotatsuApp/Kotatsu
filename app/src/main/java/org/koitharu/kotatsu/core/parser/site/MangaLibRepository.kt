@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 open class MangaLibRepository(loaderContext: MangaLoaderContext) :
@@ -91,7 +92,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					for (i in 0 until total) {
 						val item = list.getJSONObject(i)
 						val chapterId = item.getLong("chapter_id")
-						val branchName = item.getStringOrNull("username")
+						val scanlator = item.getStringOrNull("username")
 						val url = buildString {
 							append(manga.url)
 							append("/v")
@@ -102,19 +103,19 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 							append('/')
 							append(item.optString("chapter_string"))
 						}
-						var name = item.getStringOrNull("chapter_name")
-						if (name.isNullOrBlank() || name == "null") {
-							name = "Том " + item.getInt("chapter_volume") +
-									" Глава " + item.getString("chapter_number")
-						}
+						val nameChapter = item.getStringOrNull("chapter_name")
+						val volume = item.getInt("chapter_volume")
+						val number = item.getString("chapter_number")
+						val fullNameChapter = "Том $volume. Глава $number"
 						chapters.add(
 							MangaChapter(
 								id = generateUid(chapterId),
 								url = url,
 								source = source,
-								branch = branchName,
 								number = total - i,
-								name = name
+								uploadDate = parseChapterDate(item.getString("chapter_created_at").substringBefore(" ")),
+								scanlator = scanlator,
+								name = if (nameChapter.isNullOrBlank()) fullNameChapter else "$fullNameChapter - $nameChapter"
 							)
 						)
 					}
@@ -235,9 +236,14 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					.toFloatOrNull()?.div(5f) ?: Manga.NO_RATING,
 				state = null,
 				source = source,
-				coverUrl = "https://$domain${covers.getString("thumbnail")}",
-				largeCoverUrl = "https://$domain${covers.getString("default")}"
+				coverUrl = covers.getString("thumbnail"),
+				largeCoverUrl = covers.getString("default")
 			)
 		}
 	}
+
+	private fun parseChapterDate(string: String): Long {
+		return SimpleDateFormat("yyy-MM-dd", Locale.US).tryParse(string)
+	}
+
 }

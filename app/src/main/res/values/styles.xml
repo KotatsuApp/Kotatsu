@@ -28,6 +28,7 @@
 		<item name="tabTextColor">@color/tab_text</item>
 		<item name="tabTextAppearance">@style/TextAppearance.Kotatsu.Tab</item>
 		<item name="tabIndicatorAnimationMode">elastic</item>
+		<item name="tabRippleColor">@color/color_primary_alpha</item>
 	</style>
 
 	<style name="Widget.Kotatsu.NavigationView" parent="@style/Widget.MaterialComponents.NavigationView">

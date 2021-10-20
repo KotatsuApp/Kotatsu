@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
@@ -123,13 +124,23 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 					)
 				},
 			chapters = root.selectFirst("div.chapters-link")?.selectFirst("table")
-				?.select("a")?.asReversed()?.mapIndexed { i, a ->
+				?.select("tr:has(td > a)")?.asReversed()?.mapIndexedNotNull { i, tr ->
+					val a = tr.selectFirst("a") ?: return@mapIndexedNotNull null
 					val href = a.relUrl("href")
+					var translators = ""
+					val translatorElement = a.attr("title")
+					if (!translatorElement.isNullOrBlank()) {
+						translators = translatorElement
+							.replace("(Переводчик),", "&")
+							.removeSuffix(" (Переводчик)")
+					}
 					MangaChapter(
 						id = generateUid(href),
-						name = a.ownText().removePrefix(manga.title).trim(),
+						name = tr.selectFirst("a")?.text().orEmpty().removePrefix(manga.title).trim(),
 						number = i + 1,
 						url = href,
+						uploadDate = parseChapterDate(tr.select("td.d-none").text()),
+						scanlator = translators,
 						source = source
 					)
 				}
@@ -223,11 +234,15 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		return loaderContext.httpPost(url, payload)
 	}
 
+	private fun parseChapterDate(string: String): Long {
+		return SimpleDateFormat("dd.MM.yy", Locale.US).tryParse(string)
+	}
+
 	private companion object {
 
 		private const val PAGE_SIZE = 70
 		private const val PAGE_SIZE_SEARCH = 50
-		val HEADER = Headers.Builder()
+		private val HEADER = Headers.Builder()
 			.add("User-Agent", "readmangafun")
 			.build()
 	}

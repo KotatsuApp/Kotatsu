@@ -4,7 +4,9 @@ import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.utils.WordSet
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MangareadRepository(
@@ -138,6 +140,7 @@ class MangareadRepository(
 					name = a!!.ownText(),
 					number = i + 1,
 					url = href,
+					uploadDate = parseChapterDate(doc2.selectFirst("span.chapter-release-date i")?.text()),
 					source = MangaSource.MANGAREAD
 				)
 			}
@@ -162,6 +165,70 @@ class MangareadRepository(
 		}
 	}
 
+	private fun parseChapterDate(date: String?): Long {
+		date ?: return 0
+		return when {
+			date.endsWith(" ago", ignoreCase = true) -> {
+				parseRelativeDate(date)
+			}
+			// Handle translated 'ago' in Portuguese.
+			date.endsWith(" atrás", ignoreCase = true) -> {
+				parseRelativeDate(date)
+			}
+			// Handle translated 'ago' in Turkish.
+			date.endsWith(" önce", ignoreCase = true) -> {
+				parseRelativeDate(date)
+			}
+			// Handle 'yesterday' and 'today', using midnight
+			date.startsWith("year", ignoreCase = true) -> {
+				Calendar.getInstance().apply {
+					add(Calendar.DAY_OF_MONTH, -1) // yesterday
+					set(Calendar.HOUR_OF_DAY, 0)
+					set(Calendar.MINUTE, 0)
+					set(Calendar.SECOND, 0)
+					set(Calendar.MILLISECOND, 0)
+				}.timeInMillis
+			}
+			date.startsWith("today", ignoreCase = true) -> {
+				Calendar.getInstance().apply {
+					set(Calendar.HOUR_OF_DAY, 0)
+					set(Calendar.MINUTE, 0)
+					set(Calendar.SECOND, 0)
+					set(Calendar.MILLISECOND, 0)
+				}.timeInMillis
+			}
+			date.contains(Regex("""\d(st|nd|rd|th)""")) -> {
+				// Clean date (e.g. 5th December 2019 to 5 December 2019) before parsing it
+				date.split(" ").map {
+					if (it.contains(Regex("""\d\D\D"""))) {
+						it.replace(Regex("""\D"""), "")
+					} else {
+						it
+					}
+				}
+					.let { dateFormat.tryParse(it.joinToString(" ")) }
+			}
+			else -> dateFormat.tryParse(date)
+		}
+	}
+
+	// Parses dates in this form:
+	// 21 hours ago
+	private fun parseRelativeDate(date: String): Long {
+		val number = Regex("""(\d+)""").find(date)?.value?.toIntOrNull() ?: return 0
+		val cal = Calendar.getInstance()
+
+		return when {
+			WordSet("hari", "gün", "jour", "día", "dia", "day").anyWordIn(date) -> cal.apply { add(Calendar.DAY_OF_MONTH, -number) }.timeInMillis
+			WordSet("jam", "saat", "heure", "hora", "hour").anyWordIn(date) -> cal.apply { add(Calendar.HOUR, -number) }.timeInMillis
+			WordSet("menit", "dakika", "min", "minute", "minuto").anyWordIn(date) -> cal.apply { add(Calendar.MINUTE, -number) }.timeInMillis
+			WordSet("detik", "segundo", "second").anyWordIn(date) -> cal.apply { add(Calendar.SECOND, -number) }.timeInMillis
+			WordSet("month").anyWordIn(date) -> cal.apply { add(Calendar.MONTH, -number) }.timeInMillis
+			WordSet("year").anyWordIn(date) -> cal.apply { add(Calendar.YEAR, -number) }.timeInMillis
+			else -> 0
+		}
+	}
+
 	private companion object {
 
 		private const val PAGE_SIZE = 12
@@ -173,5 +240,9 @@ class MangareadRepository(
 					val pos = it.indexOf('=')
 					it.substring(0, pos) to it.substring(pos + 1)
 				}.toMutableMap()
+
+		private val dateFormat by lazy {
+			SimpleDateFormat("MMMM dd, yyyy", Locale.US)
+		}
 	}
 }

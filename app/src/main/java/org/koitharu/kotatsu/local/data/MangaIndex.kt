@@ -72,6 +72,8 @@ class MangaIndex(source: String?) {
 			jo.put("number", chapter.number)
 			jo.put("url", chapter.url)
 			jo.put("name", chapter.name)
+			jo.put("uploadDate", chapter.uploadDate)
+			jo.put("scanlator", chapter.scanlator)
 			jo.put("branch", chapter.branch)
 			jo.put("entries", "%03d\\d{3}".format(chapter.number))
 			chapters.put(chapter.id.toString(), jo)
@@ -98,6 +100,8 @@ class MangaIndex(source: String?) {
 					name = v.getString("name"),
 					url = v.getString("url"),
 					number = v.getInt("number"),
+					uploadDate = v.getLong("uploadDate"),
+					scanlator = v.getStringOrNull("scanlator"),
 					branch = v.getStringOrNull("branch"),
 					source = source
 				)

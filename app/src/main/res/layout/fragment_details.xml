@@ -287,6 +287,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/desc_header"
+			app:layout_constraintBottom_toBottomOf="parent"
 			tools:ignore="UnusedAttribute"
 			tools:text="@tools:sample/lorem/random[25]" />
 

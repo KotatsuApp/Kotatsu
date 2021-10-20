@@ -84,9 +84,10 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 					?.toRelativeUrl(getDomain()) ?: return@mapIndexedNotNull null
 				MangaChapter(
 					id = generateUid(href),
-					name = a.selectFirst("a")?.text().orEmpty(),
+					name = "Глава " + a.selectFirst("a")?.text().orEmpty(),
 					number = i + 1,
 					url = href,
+					uploadDate = 0L,
 					source = source
 				)
 			}

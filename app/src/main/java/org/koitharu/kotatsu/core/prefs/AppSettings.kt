@@ -14,6 +14,9 @@ import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.delegates.prefs.*
 import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AppSettings private constructor(private val prefs: SharedPreferences) :
 	SharedPreferences by prefs {
@@ -121,6 +124,12 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		}
 	}
 
+	fun dateFormat(format: String? = prefs.getString(KEY_DATE_FORMAT, "")): DateFormat =
+		when (format) {
+			"" -> DateFormat.getDateInstance(DateFormat.SHORT)
+			else -> SimpleDateFormat(format, Locale.getDefault())
+		}
+
 	@Deprecated("Use observe()")
 	fun subscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
 		prefs.registerOnSharedPreferenceChangeListener(listener)
@@ -152,6 +161,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_APP_SECTION = "app_section"
 		const val KEY_THEME = "theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
+		const val KEY_DATE_FORMAT = "date_format"
 		const val KEY_HIDE_TOOLBAR = "hide_toolbar"
 		const val KEY_SOURCES_ORDER = "sources_order"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
