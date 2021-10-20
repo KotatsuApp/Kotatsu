@@ -52,6 +52,10 @@ fun String.toTitleCase(): String {
 	return replaceFirstChar { x -> x.uppercase() }
 }
 
+fun String.toTitleCase(locale: Locale): String {
+	return replaceFirstChar { x -> x.uppercase(locale) }
+}
+
 fun String.transliterate(skipMissing: Boolean): String {
 	val cyr = charArrayOf(
 		'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п',

@@ -94,6 +94,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		val chapters = loaderContext.httpGet(
 			url = "https://api.$domain/api/titles/chapters/?branch_id=$branchId"
 		).parseJson().getJSONArray("content")
+		val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
 		return manga.copy(
 			description = content.getString("description"),
 			state = when (content.optJSONObject("status")?.getInt("id")) {
@@ -110,7 +111,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			},
 			chapters = chapters.mapIndexed { i, jo ->
 				val id = jo.getLong("id")
-				val name = jo.getString("name").capitalize(Locale.ROOT)
+				val name = jo.getString("name").toTitleCase(Locale.ROOT)
 				val publishers = jo.getJSONArray("publishers")
 				MangaChapter(
 					id = generateUid(id),
@@ -127,7 +128,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 							append(name)
 						}
 					},
-					uploadDate = parseChapterDate(jo.getString("upload_date")),
+					uploadDate = dateFormat.tryParse(jo.getString("upload_date")),
 					scanlator = publishers.optJSONObject(0)?.getStringOrNull("name"),
 					source = MangaSource.REMANGA
 				)
@@ -177,10 +178,6 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		referer = referer,
 		source = source
 	)
-
-	private fun parseChapterDate(string: String): Long {
-		return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).tryParse(string)
-	}
 
 	private companion object {
 

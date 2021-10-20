@@ -161,7 +161,7 @@ abstract class NineMangaRepository(
 		else -> null
 	}
 
-	fun parseChapterDateByLang(date: String): Long {
+	private fun parseChapterDateByLang(date: String): Long {
 		val dateWords = date.split(" ")
 
 		if (dateWords.size == 3) {

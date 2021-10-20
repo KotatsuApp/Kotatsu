@@ -109,6 +109,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		val doc = loaderContext.httpGet(manga.url.withDomain(), HEADER).parseHtml()
 		val root = doc.body().getElementById("mangaBox")?.selectFirst("div.leftContent")
 			?: throw ParseException("Cannot find root")
+		val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.US)
 		return manga.copy(
 			description = root.selectFirst("div.manga-description")?.html(),
 			largeCoverUrl = root.selectFirst("div.subject-cower")?.selectFirst("img")?.attr(
@@ -139,7 +140,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 						name = tr.selectFirst("a")?.text().orEmpty().removePrefix(manga.title).trim(),
 						number = i + 1,
 						url = href,
-						uploadDate = parseChapterDate(tr.select("td.d-none").text()),
+						uploadDate = dateFormat.tryParse(tr.selectFirst("td.d-none")?.text()),
 						scanlator = translators,
 						source = source
 					)
@@ -232,10 +233,6 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		payload["years"] = "1900,2099"
 		payload["+"] = "Искать".urlEncoded()
 		return loaderContext.httpPost(url, payload)
-	}
-
-	private fun parseChapterDate(string: String): Long {
-		return SimpleDateFormat("dd.MM.yy", Locale.US).tryParse(string)
 	}
 
 	private companion object {

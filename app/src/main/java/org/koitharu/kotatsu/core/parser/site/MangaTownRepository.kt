@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -97,6 +98,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		val info = root.selectFirst("div.detail_info")?.selectFirst("ul")
 		val chaptersList = root.selectFirst("div.chapter_content")
 			?.selectFirst("ul.chapter_list")?.select("li")?.asReversed()
+		val dateFormat = SimpleDateFormat("MMM dd,yyyy", Locale.US)
 		return manga.copy(
 			tags = manga.tags + info?.select("li")?.find { x ->
 				x.selectFirst("b")?.ownText() == "Genre(s):"
@@ -118,7 +120,10 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 					url = href,
 					source = MangaSource.MANGATOWN,
 					number = i + 1,
-					uploadDate = parseChapterDate(li.selectFirst("span.time")?.text().orEmpty()),
+					uploadDate = parseChapterDate(
+						dateFormat,
+						li.selectFirst("span.time")?.text()
+					),
 					name = name.ifEmpty { "${manga.title} - ${i + 1}" }
 				)
 			}
@@ -169,11 +174,12 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		}
 	}
 
-	private fun parseChapterDate(date: String): Long {
+	private fun parseChapterDate(dateFormat: DateFormat, date: String?): Long {
 		return when {
+			date.isNullOrEmpty() -> 0L
 			date.contains("Today") -> Calendar.getInstance().timeInMillis
 			date.contains("Yesterday") -> Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }.timeInMillis
-			else -> SimpleDateFormat("MMM dd,yyyy", Locale.US).tryParse(date)
+			else -> dateFormat.tryParse(date)
 		}
 	}
 

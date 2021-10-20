@@ -6,6 +6,7 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.WordSet
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -116,6 +117,7 @@ class MangareadRepository(
 				"manga" to mangaId.toString()
 			)
 		).parseHtml()
+		val dateFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.US)
 		return manga.copy(
 			tags = root.selectFirst("div.genres-content")?.select("a")
 				?.mapNotNullToSet { a ->
@@ -140,7 +142,10 @@ class MangareadRepository(
 					name = a!!.ownText(),
 					number = i + 1,
 					url = href,
-					uploadDate = parseChapterDate(doc2.selectFirst("span.chapter-release-date i")?.text()),
+					uploadDate = parseChapterDate(
+						dateFormat,
+						doc2.selectFirst("span.chapter-release-date i")?.text()
+					),
 					source = MangaSource.MANGAREAD
 				)
 			}
@@ -165,7 +170,8 @@ class MangareadRepository(
 		}
 	}
 
-	private fun parseChapterDate(date: String?): Long {
+	private fun parseChapterDate(dateFormat: DateFormat, date: String?): Long {
+
 		date ?: return 0
 		return when {
 			date.endsWith(" ago", ignoreCase = true) -> {
@@ -240,9 +246,5 @@ class MangareadRepository(
 					val pos = it.indexOf('=')
 					it.substring(0, pos) to it.substring(pos + 1)
 				}.toMutableMap()
-
-		private val dateFormat by lazy {
-			SimpleDateFormat("MMMM dd, yyyy", Locale.US)
-		}
 	}
 }

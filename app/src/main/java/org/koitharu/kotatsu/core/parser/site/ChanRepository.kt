@@ -77,6 +77,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root =
 			doc.body().getElementById("dle-content") ?: throw ParseException("Cannot find root")
+		val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 		return manga.copy(
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
 			largeCoverUrl = root.getElementById("cover")?.absUrl("src"),
@@ -87,7 +88,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 					name = tr.selectFirst("a")?.text().orEmpty(),
 					number = i + 1,
 					url = href,
-					uploadDate = parseChapterDate(tr.selectFirst("div.date")?.text().orEmpty()),
+					uploadDate = dateFormat.tryParse(tr.selectFirst("div.date")?.text()),
 					source = source
 				)
 			}
@@ -154,9 +155,5 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 			SortOrder.NEWEST -> "datedesc"
 			else -> "favdesc"
 		}
-
-	private fun parseChapterDate(string: String): Long {
-		return SimpleDateFormat("yyyy-MM-dd", Locale.US).tryParse(string)
-	}
 
 }

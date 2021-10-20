@@ -74,6 +74,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		val doc = loaderContext.httpGet(manga.publicUrl).parseHtml()
 		val info = doc.body().selectFirst("div.single_detail") ?: parseFailed("An error occurred while parsing")
 		val table = doc.body().selectFirst("div.single-grid-right") ?: parseFailed("An error occurred while parsing")
+		val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
 		return manga.copy(
 			description = info.selectFirst(".description")?.html(),
 			largeCoverUrl = info.select("img").first()?.let { img ->
@@ -100,7 +101,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 					name = a.select("label").text(),
 					number = i + 1,
 					url = href,
-					uploadDate = parseChapterDate(li.select("small:last-of-type").text()),
+					uploadDate = dateFormat.tryParse(li.selectFirst("small:last-of-type")?.text()),
 					source = MangaSource.MANGAOWL
 				)
 			}
@@ -157,9 +158,4 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			SortOrder.UPDATED -> "3"
 			else -> "3"
 		}
-
-	private fun parseChapterDate(string: String): Long {
-		return SimpleDateFormat("MM/dd/yyyy", Locale.US).tryParse(string)
-	}
-
 }

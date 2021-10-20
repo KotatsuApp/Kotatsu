@@ -10,7 +10,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.select.Elements
-import java.text.SimpleDateFormat
+import java.text.DateFormat
 
 fun Response.parseHtml(): Document {
 	try {
@@ -100,6 +100,10 @@ fun Element.css(property: String): String? {
 	return css.substringAfter(':').removeSuffix(';').trim()
 }
 
-fun SimpleDateFormat.tryParse(str: String): Long = runCatching {
-	parse(str)?.time ?: 0L
-}.getOrDefault(0L)
+fun DateFormat.tryParse(str: String?): Long = if (str.isNullOrEmpty()) {
+	0L
+} else {
+	runCatching {
+		parse(str)?.time ?: 0L
+	}.getOrDefault(0L)
+}

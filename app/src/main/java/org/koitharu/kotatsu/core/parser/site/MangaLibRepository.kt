@@ -80,6 +80,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		val info = root.selectFirst("div.media-content")
 		val chaptersDoc = loaderContext.httpGet("$fullUrl?section=chapters").parseHtml()
 		val scripts = chaptersDoc.select("script")
+		val dateFormat = SimpleDateFormat("yyy-MM-dd", Locale.US)
 		var chapters: ArrayList<MangaChapter>? = null
 		scripts@ for (script in scripts) {
 			val raw = script.html().lines()
@@ -113,7 +114,9 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 								url = url,
 								source = source,
 								number = total - i,
-								uploadDate = parseChapterDate(item.getString("chapter_created_at").substringBefore(" ")),
+								uploadDate = dateFormat.tryParse(
+									item.getString("chapter_created_at").substringBefore(" ")
+								),
 								scanlator = scanlator,
 								name = if (nameChapter.isNullOrBlank()) fullNameChapter else "$fullNameChapter - $nameChapter"
 							)
@@ -241,9 +244,4 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			)
 		}
 	}
-
-	private fun parseChapterDate(string: String): Long {
-		return SimpleDateFormat("yyy-MM-dd", Locale.US).tryParse(string)
-	}
-
 }
