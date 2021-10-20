@@ -9,10 +9,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.DialogChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -45,6 +47,7 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 		}
 		val currentId = arguments?.getLong(ARG_CURRENT_ID, 0L) ?: 0L
 		val currentPosition = chapters.indexOfFirst { it.id == currentId }
+		val dateFormat = get<AppSettings>().dateFormat()
 		binding.recyclerViewChapters.adapter = ChaptersAdapter(this).apply {
 			setItems(chapters.mapIndexed { index, chapter ->
 				chapter.toListItem(
@@ -53,7 +56,8 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 						index == currentPosition -> ChapterExtra.CURRENT
 						else -> ChapterExtra.UNREAD
 					},
-					isMissing = false
+					isMissing = false,
+					dateFormat = dateFormat,
 				)
 			}) {
 				if (currentPosition >= 0) {

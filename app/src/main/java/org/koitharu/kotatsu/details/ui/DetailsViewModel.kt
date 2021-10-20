@@ -171,6 +171,7 @@ class DetailsViewModel(
 		branch: String?,
 	): List<ChapterListItem> {
 		val result = ArrayList<ChapterListItem>(chapters.size)
+		val dateFormat = settings.dateFormat()
 		val currentIndex = chapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = chapters.size - newCount
 		for (i in chapters.indices) {
@@ -185,7 +186,8 @@ class DetailsViewModel(
 					i < currentIndex -> ChapterExtra.READ
 					else -> ChapterExtra.UNREAD
 				},
-				isMissing = false
+				isMissing = false,
+				dateFormat = dateFormat,
 			)
 		}
 		return result
@@ -202,6 +204,7 @@ class DetailsViewModel(
 		val result = ArrayList<ChapterListItem>(sourceChapters.size)
 		val currentIndex = sourceChapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = sourceChapters.size - newCount
+		val dateFormat = settings.dateFormat()
 		for (i in sourceChapters.indices) {
 			val chapter = sourceChapters[i]
 			if (chapter.branch != branch) {
@@ -215,7 +218,8 @@ class DetailsViewModel(
 					i < currentIndex -> ChapterExtra.READ
 					else -> ChapterExtra.UNREAD
 				},
-				isMissing = false
+				isMissing = false,
+				dateFormat = dateFormat,
 			) ?: chapter.toListItem(
 				extra = when {
 					i >= firstNewIndex -> ChapterExtra.NEW
@@ -223,13 +227,14 @@ class DetailsViewModel(
 					i < currentIndex -> ChapterExtra.READ
 					else -> ChapterExtra.UNREAD
 				},
-				isMissing = true
+				isMissing = true,
+				dateFormat = dateFormat,
 			)
 		}
 		if (chaptersMap.isNotEmpty()) { // some chapters on device but not online source
 			result.ensureCapacity(result.size + chaptersMap.size)
 			chaptersMap.values.mapTo(result) {
-				it.toListItem(ChapterExtra.UNREAD, false)
+				it.toListItem(ChapterExtra.UNREAD, false, dateFormat)
 			}
 			result.sortBy { it.chapter.number }
 		}

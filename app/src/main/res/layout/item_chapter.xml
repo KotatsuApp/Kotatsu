@@ -40,6 +40,7 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@+id/textView_number"
 		app:layout_constraintTop_toTopOf="parent"
+		app:layout_goneMarginBottom="8dp"
 		tools:text="@tools:sample/lorem[15]" />
 
 	<TextView
