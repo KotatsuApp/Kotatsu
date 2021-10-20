@@ -25,10 +25,9 @@ class MediaStoreCompat(private val contentResolver: ContentResolver) {
 			MediaStore.Images.Media.MIME_TYPE,
 			MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substringAfterLast('.'))
 		)
-		cv.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis())
+		cv.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1_000)
 		cv.put(MediaStore.Images.Media.DATE_MODIFIED, System.currentTimeMillis())
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			cv.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
 			cv.put(MediaStore.Images.Media.IS_PENDING, 1)
 		}
 		var uri: Uri? = null

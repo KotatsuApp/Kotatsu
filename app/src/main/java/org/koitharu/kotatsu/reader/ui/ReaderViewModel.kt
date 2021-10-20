@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -27,7 +28,9 @@ import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.utils.MediaStoreCompat
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.IgnoreErrors
+import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 
 class ReaderViewModel(
 	intent: MangaIntent,
@@ -154,7 +157,7 @@ class ReaderViewModel(
 				val page = content.value?.pages?.find {
 					it.chapterId == state.chapterId && it.index == state.page
 				}?.toMangaPage() ?: error("Page not found")
-				val repo = page.source.repository
+				val repo = MangaRepository(page.source)
 				val pageUrl = repo.getPageUrl(page)
 				val file = get<PagesCache>()[pageUrl] ?: error("Page not found in cache")
 				val uri = file.inputStream().use { input ->

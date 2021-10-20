@@ -44,7 +44,8 @@ enum class MangaSource(
 	;
 
 	@get:Throws(NoBeanDefFoundException::class)
-	@Deprecated("")
+	@Deprecated("", ReplaceWith("MangaRepository(this)",
+		"org.koitharu.kotatsu.core.parser.MangaRepository"))
 	val repository: MangaRepository
 		get() = GlobalContext.get().get(named(this))
 }

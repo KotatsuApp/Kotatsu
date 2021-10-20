@@ -13,7 +13,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.*
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
+import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -192,6 +195,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 	override fun onActivityResult(result: Boolean) {
 		if (result) {
+			viewModel.saveCurrentState(reader?.getCurrentState())
 			viewModel.saveCurrentPage(contentResolver)
 		}
 	}
