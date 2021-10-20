@@ -33,7 +33,7 @@ data class VersionId(
 	companion object {
 
 		private fun variantWeight(variantType: String) =
-			when (variantType.toLowerCase(Locale.ROOT)) {
+			when (variantType.lowercase(Locale.ROOT)) {
 				"a", "alpha" -> 1
 				"b", "beta" -> 2
 				"rc" -> 4
