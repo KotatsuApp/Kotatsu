@@ -242,4 +242,6 @@
     <string name="auth_complete">Autorizzazione completa</string>
     <string name="state_finished">Finito</string>
     <string name="state_ongoing">In corso</string>
+    <string name="system_default">Predefinito</string>
+    <string name="date_format">Formato della data</string>
 </resources>
