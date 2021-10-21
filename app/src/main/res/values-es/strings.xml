@@ -239,4 +239,6 @@
     <string name="chapter_is_missing_text">Este capítulo no aparece en su dispositivo. Descárguelo o léalo en línea.</string>
     <string name="auth_complete">Autorización completa</string>
     <string name="about_feedback_4pda">Tema sobre 4PDA</string>
+    <string name="date_format">Formato de la fecha</string>
+    <string name="system_default">Por defecto</string>
 </resources>
