@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.download.ui.service.DownloadService
@@ -22,7 +23,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		val adapter = DownloadsAdapter(lifecycleScope)
+		val adapter = DownloadsAdapter(lifecycleScope, get())
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		LifecycleAwareServiceConnection.bindService(
