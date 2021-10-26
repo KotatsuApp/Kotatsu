@@ -242,4 +242,6 @@
     <string name="genres">Жанры</string>
     <string name="state_finished">Завершана</string>
     <string name="state_ongoing">Ангоінг</string>
+    <string name="date_format">Фармат даты</string>
+    <string name="system_default">Па змаўчанні</string>
 </resources>
