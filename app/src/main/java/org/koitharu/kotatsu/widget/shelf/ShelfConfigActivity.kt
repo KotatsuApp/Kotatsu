@@ -27,9 +27,10 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 
-class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(), OnListItemClickListener<CategoryItem> {
+class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
+	OnListItemClickListener<CategoryItem> {
 
-	private val viewModel by viewModel<ShelfConfigViewModel>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by viewModel<ShelfConfigViewModel>()
 
 	private lateinit var adapter: CategorySelectAdapter
 	private lateinit var config: AppWidgetConfig

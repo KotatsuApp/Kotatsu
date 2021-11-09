@@ -57,10 +57,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener, AppBarOwner,
 	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener {
 
-	private val viewModel by viewModel<MainViewModel>(mode = LazyThreadSafetyMode.NONE)
-	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>(
-		mode = LazyThreadSafetyMode.NONE
-	)
+	private val viewModel by viewModel<MainViewModel>()
+	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
 
 	private lateinit var navHeaderBinding: NavigationHeaderBinding
 	private lateinit var drawerToggle: ActionBarDrawerToggle

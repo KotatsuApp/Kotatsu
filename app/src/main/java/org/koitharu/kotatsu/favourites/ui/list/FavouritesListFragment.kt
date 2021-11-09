@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 
 class FavouritesListFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<FavouritesListViewModel>(mode = LazyThreadSafetyMode.NONE) {
+	override val viewModel by viewModel<FavouritesListViewModel> {
 		parametersOf(categoryId)
 	}
 

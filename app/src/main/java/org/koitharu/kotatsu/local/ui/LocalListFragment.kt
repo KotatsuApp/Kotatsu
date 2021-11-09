@@ -19,9 +19,9 @@ import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.ellipsize
 
-class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
+class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri?> {
 
-	override val viewModel by viewModel<LocalListViewModel>(mode = LazyThreadSafetyMode.NONE)
+	override val viewModel by viewModel<LocalListViewModel>()
 	private val importCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocument(),
 		this

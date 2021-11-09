@@ -21,7 +21,7 @@ import java.io.FileOutputStream
 
 class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
-	private val viewModel by viewModel<BackupViewModel>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by viewModel<BackupViewModel>()
 
 	private var backup: File? = null
 	private val saveFileContract =

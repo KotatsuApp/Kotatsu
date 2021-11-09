@@ -21,7 +21,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 class OnboardDialogFragment : AlertDialogFragment<DialogOnboardBinding>(),
 	OnListItemClickListener<SourceLocale>, DialogInterface.OnClickListener {
 
-	private val viewModel by viewModel<OnboardViewModel>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by viewModel<OnboardViewModel>()
 	private var isWelcome: Boolean = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {

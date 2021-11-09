@@ -30,9 +30,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 	OnListItemClickListener<FavouriteCategory>,
 	View.OnClickListener, CategoriesEditDelegate.CategoriesEditCallback {
 
-	private val viewModel by viewModel<FavouritesCategoriesViewModel>(
-		mode = LazyThreadSafetyMode.NONE
-	)
+	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
 	private lateinit var adapter: CategoriesAdapter
 	private lateinit var reorderHelper: ItemTouchHelper

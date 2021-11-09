@@ -10,7 +10,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 
 class SearchFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<SearchViewModel>(mode = LazyThreadSafetyMode.NONE) {
+	override val viewModel by viewModel<SearchViewModel> {
 		parametersOf(source, query)
 	}
 

@@ -26,7 +26,7 @@ import org.koitharu.kotatsu.utils.progress.Progress
 class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListener.Callback,
 	OnListItemClickListener<Manga> {
 
-	private val viewModel by viewModel<FeedViewModel>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by viewModel<FeedViewModel>()
 
 	private var feedAdapter: FeedAdapter? = null
 	private var updateStatusSnackbar: Snackbar? = null

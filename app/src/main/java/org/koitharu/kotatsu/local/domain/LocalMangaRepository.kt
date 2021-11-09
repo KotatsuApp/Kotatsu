@@ -124,7 +124,9 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 					number = i + 1,
 					source = MangaSource.LOCAL,
 					uploadDate = 0L,
-					url = uriBuilder.fragment(s).build().toString()
+					url = uriBuilder.fragment(s).build().toString(),
+					scanlator = null,
+					branch = null,
 				)
 			}
 		)

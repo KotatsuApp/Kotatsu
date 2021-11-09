@@ -18,9 +18,7 @@ import org.koitharu.kotatsu.utils.ext.showKeyboard
 
 class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQueryTextListener {
 
-	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>(
-		mode = LazyThreadSafetyMode.NONE
-	)
+	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
 	private lateinit var source: MangaSource
 
 	override fun onCreate(savedInstanceState: Bundle?) {

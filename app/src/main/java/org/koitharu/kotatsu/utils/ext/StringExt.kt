@@ -122,7 +122,7 @@ fun ByteArray.byte2HexFormatted(): String {
 		if (l > 2) {
 			h = h.substring(l - 2, l)
 		}
-		str.append(h.toUpperCase(Locale.ROOT))
+		str.append(h.uppercase(Locale.ROOT))
 		if (i < size - 1) {
 			str.append(':')
 		}
