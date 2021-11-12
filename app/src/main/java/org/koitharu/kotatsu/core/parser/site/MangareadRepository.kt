@@ -146,7 +146,9 @@ class MangareadRepository(
 						dateFormat,
 						doc2.selectFirst("span.chapter-release-date i")?.text()
 					),
-					source = MangaSource.MANGAREAD
+					source = MangaSource.MANGAREAD,
+					scanlator = null,
+					branch = null,
 				)
 			}
 		)
@@ -164,8 +166,9 @@ class MangareadRepository(
 			MangaPage(
 				id = generateUid(url),
 				url = url,
+				preview = null,
 				referer = fullUrl,
-				source = MangaSource.MANGAREAD
+				source = MangaSource.MANGAREAD,
 			)
 		}
 	}

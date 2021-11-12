@@ -50,7 +50,9 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 					source = source,
 					number = 1,
 					uploadDate = 0L,
-					name = manga.title
+					name = manga.title,
+					scanlator = null,
+					branch = null,
 				)
 			)
 		)

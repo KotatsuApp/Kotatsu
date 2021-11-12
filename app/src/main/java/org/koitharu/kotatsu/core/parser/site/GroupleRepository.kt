@@ -142,7 +142,8 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 						url = href,
 						uploadDate = dateFormat.tryParse(tr.selectFirst("td.d-none")?.text()),
 						scanlator = translators,
-						source = source
+						source = source,
+						branch = null,
 					)
 				}
 		)
@@ -167,8 +168,9 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 				MangaPage(
 					id = generateUid(url),
 					url = url,
+					preview = null,
 					referer = chapter.url,
-					source = source
+					source = source,
 				)
 			}
 		}

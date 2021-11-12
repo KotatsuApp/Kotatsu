@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.core.model.SortOrder
 import java.util.*
 
 @Entity(tableName = "favourite_categories")
-data class FavouriteCategoryEntity(
+class FavouriteCategoryEntity(
 	@PrimaryKey(autoGenerate = true)
 	@ColumnInfo(name = "category_id") val categoryId: Int,
 	@ColumnInfo(name = "created_at") val createdAt: Long,

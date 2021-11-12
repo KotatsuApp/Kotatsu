@@ -30,7 +30,9 @@ class YaoiChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loa
 					number = i + 1,
 					url = href,
 					uploadDate = 0L,
-					source = source
+					source = source,
+					scanlator = null,
+					branch = null,
 				)
 			}
 		)

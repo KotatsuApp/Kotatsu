@@ -130,7 +130,8 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 					},
 					uploadDate = dateFormat.tryParse(jo.getString("upload_date")),
 					scanlator = publishers.optJSONObject(0)?.getStringOrNull("name"),
-					source = MangaSource.REMANGA
+					source = MangaSource.REMANGA,
+					branch = null,
 				)
 			}.asReversed()
 		)
@@ -175,8 +176,9 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	private fun parsePage(jo: JSONObject, referer: String) = MangaPage(
 		id = generateUid(jo.getLong("id")),
 		url = jo.getString("link"),
+		preview = null,
 		referer = referer,
-		source = source
+		source = source,
 	)
 
 	private companion object {

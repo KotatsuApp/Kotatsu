@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.MangaTagsEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 
-data class FavouriteManga(
+class FavouriteManga(
 	@Embedded val favourite: FavouriteEntity,
 	@Relation(
 		parentColumn = "manga_id",

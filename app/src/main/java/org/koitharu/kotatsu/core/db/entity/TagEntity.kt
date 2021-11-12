@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.longHashCode
 
 @Entity(tableName = "tags")
-data class TagEntity(
+class TagEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "tag_id") val id: Long,
 	@ColumnInfo(name = "title") val title: String,

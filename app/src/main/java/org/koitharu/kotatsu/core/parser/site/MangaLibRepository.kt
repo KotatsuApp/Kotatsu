@@ -118,7 +118,8 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 									item.getString("chapter_created_at").substringBefore(" ")
 								),
 								scanlator = scanlator,
-								name = if (nameChapter.isNullOrBlank()) fullNameChapter else "$fullNameChapter - $nameChapter"
+								branch = null,
+								name = if (nameChapter.isNullOrBlank()) fullNameChapter else "$fullNameChapter - $nameChapter",
 							)
 						)
 					}
@@ -178,8 +179,9 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					MangaPage(
 						id = generateUid(pageUrl),
 						url = pageUrl,
+						preview = null,
 						referer = fullUrl,
-						source = source
+						source = source,
 					)
 				}
 			}

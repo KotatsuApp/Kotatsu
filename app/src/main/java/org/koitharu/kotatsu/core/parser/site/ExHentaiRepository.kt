@@ -143,6 +143,8 @@ class ExHentaiRepository(
 						url = url,
 						uploadDate = 0L,
 						source = source,
+						scanlator = null,
+						branch = null,
 					)
 				}
 				chapters

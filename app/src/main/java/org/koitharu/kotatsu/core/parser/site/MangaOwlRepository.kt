@@ -101,8 +101,10 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 					name = a.select("label").text(),
 					number = i + 1,
 					url = href,
+					scanlator = null,
+					branch = null,
 					uploadDate = dateFormat.tryParse(li.selectFirst("small:last-of-type")?.text()),
-					source = MangaSource.MANGAOWL
+					source = MangaSource.MANGAOWL,
 				)
 			}
 		)
@@ -117,8 +119,9 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			MangaPage(
 				id = generateUid(url),
 				url = url,
+				preview = null,
 				referer = fullUrl,
-				source = MangaSource.MANGAOWL
+				source = MangaSource.MANGAOWL,
 			)
 		}
 	}

@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.core.model.TrackingLogItem
 import org.koitharu.kotatsu.utils.ext.mapToSet
 import java.util.*
 
-data class TrackLogWithManga(
+class TrackLogWithManga(
 	@Embedded val trackLog: TrackLogEntity,
 	@Relation(
 		parentColumn = "manga_id",

@@ -124,7 +124,9 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 						dateFormat,
 						li.selectFirst("span.time")?.text()
 					),
-					name = name.ifEmpty { "${manga.title} - ${i + 1}" }
+					name = name.ifEmpty { "${manga.title} - ${i + 1}" },
+					scanlator = null,
+					branch = null,
 				)
 			}
 		)
@@ -143,8 +145,9 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 			MangaPage(
 				id = generateUid(href),
 				url = href,
+				preview = null,
 				referer = fullUrl,
-				source = MangaSource.MANGATOWN
+				source = MangaSource.MANGATOWN,
 			)
 		} ?: parseFailed("Pages list not found")
 	}

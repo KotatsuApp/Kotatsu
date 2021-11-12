@@ -96,11 +96,32 @@ class ChipsView @JvmOverloads constructor(
 		}
 	}
 
-	data class ChipModel(
+	class ChipModel(
 		@DrawableRes val icon: Int,
 		val title: CharSequence,
 		val data: Any? = null
-	)
+	) {
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+
+			other as ChipModel
+
+			if (icon != other.icon) return false
+			if (title != other.title) return false
+			if (data != other.data) return false
+
+			return true
+		}
+
+		override fun hashCode(): Int {
+			var result = icon
+			result = 31 * result + title.hashCode()
+			result = 31 * result + data.hashCode()
+			return result
+		}
+	}
 
 	fun interface OnChipClickListener {
 

@@ -88,8 +88,10 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 					name = tr.selectFirst("a")?.text().orEmpty(),
 					number = i + 1,
 					url = href,
+					scanlator = null,
+					branch = null,
 					uploadDate = dateFormat.tryParse(tr.selectFirst("div.date")?.text()),
-					source = source
+					source = source,
 				)
 			}
 		)
@@ -117,8 +119,9 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				MangaPage(
 					id = generateUid(url),
 					url = url,
+					preview = null,
 					referer = fullUrl,
-					source = source
+					source = source,
 				)
 			}
 		}

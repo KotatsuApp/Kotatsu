@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 enum class MangaSource(
 	val title: String,
 	val locale: String?,
-	val cls: Class<out MangaRepository>
+	val cls: Class<out MangaRepository>,
 ) : Parcelable {
 	LOCAL("Local", null, LocalMangaRepository::class.java),
 	READMANGA_RU("ReadManga", "ru", ReadmangaRepository::class.java),

@@ -101,7 +101,9 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 					url = "$baseChapterUrl$chid",
 					uploadDate = it.getLong("date") * 1000,
 					name = if (title.isEmpty()) volChap else "$volChap: $title",
-					number = totalChapters - i
+					number = totalChapters - i,
+					scanlator = null,
+					branch = null,
 				)
 			}.reversed()
 		)
@@ -116,8 +118,9 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			MangaPage(
 				id = generateUid(jo.getLong("id")),
 				referer = fullUrl,
+				preview = null,
 				source = chapter.source,
-				url = jo.getString("img")
+				url = jo.getString("img"),
 			)
 		}
 	}

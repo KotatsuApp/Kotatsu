@@ -87,8 +87,10 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 					name = "Глава " + a.selectFirst("a")?.text().orEmpty(),
 					number = i + 1,
 					url = href,
+					scanlator = null,
+					branch = null,
 					uploadDate = 0L,
-					source = source
+					source = source,
 				)
 			}
 		)
@@ -115,8 +117,9 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 				MangaPage(
 					id = generateUid(url),
 					url = url,
+					preview = null,
 					referer = fullUrl,
-					source = source
+					source = source,
 				)
 			}
 		}

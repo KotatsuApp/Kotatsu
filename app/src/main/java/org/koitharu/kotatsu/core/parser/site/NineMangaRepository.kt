@@ -114,6 +114,8 @@ abstract class NineMangaRepository(
 						url = href,
 						uploadDate = parseChapterDateByLang(li.selectFirst("span")?.text().orEmpty()),
 						source = source,
+						scanlator = null,
+						branch = null,
 					)
 				}
 		)

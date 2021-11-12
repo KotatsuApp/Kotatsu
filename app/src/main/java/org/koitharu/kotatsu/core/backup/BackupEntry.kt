@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.core.backup
 
 import org.json.JSONArray
 
-data class BackupEntry(
+class BackupEntry(
 	val name: String,
 	val data: JSONArray
 ) {

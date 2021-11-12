@@ -9,8 +9,13 @@ data class MangaChapter(
 	val name: String,
 	val number: Int,
 	val url: String,
-	val scanlator: String? = null,
+	val scanlator: String?,
 	val uploadDate: Long,
-	val branch: String? = null,
-	val source: MangaSource
-) : Parcelable
+	val branch: String?,
+	val source: MangaSource,
+) : Parcelable, Comparable<MangaChapter> {
+
+	override fun compareTo(other: MangaChapter): Int {
+		return number.compareTo(other.number)
+	}
+}
