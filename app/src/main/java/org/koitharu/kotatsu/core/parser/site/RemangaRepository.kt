@@ -6,16 +6,20 @@ import org.json.JSONObject
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
+class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext),
+	MangaRepositoryAuthProvider {
 
 	override val source = MangaSource.REMANGA
 
 	override val defaultDomain = "remanga.org"
+	override val authUrl: String
+		get() = "https://${getDomain()}/user/login"
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED,
@@ -30,6 +34,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		tags: Set<MangaTag>?,
 		sortOrder: SortOrder?
 	): List<Manga> {
+		copyCookies()
 		val domain = getDomain()
 		val urlBuilder = StringBuilder()
 			.append("https://api.")
@@ -78,6 +83,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
+		copyCookies()
 		val domain = getDomain()
 		val slug = manga.url.find(LAST_URL_PATH_REGEX)
 			?: throw ParseException("Cannot obtain slug from ${manga.url}")
@@ -163,6 +169,17 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 				source = source
 			)
 		}
+	}
+
+	override fun isAuthorized(): Boolean {
+		return loaderContext.cookieJar.getCookies(getDomain()).any {
+			it.name == "user"
+		}
+	}
+
+	private fun copyCookies() {
+		val domain = getDomain()
+		loaderContext.cookieJar.copyCookies(domain, "api.$domain")
 	}
 
 	private fun getSortKey(order: SortOrder?) = when (order) {
