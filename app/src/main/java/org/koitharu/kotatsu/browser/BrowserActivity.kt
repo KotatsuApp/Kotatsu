@@ -92,8 +92,16 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.appbar.updatePadding(top = insets.top)
-		binding.webView.updatePadding(bottom = insets.bottom)
+		binding.appbar.updatePadding(
+			top = insets.top,
+			left = insets.left,
+			right = insets.right,
+		)
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right,
+			bottom = insets.bottom,
+		)
 	}
 
 	companion object {
