@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.withStyledAttributes
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.resolveAdjustedSize
+import kotlin.math.roundToInt
 
 
 class CoverImageView @JvmOverloads constructor(
@@ -17,47 +17,22 @@ class CoverImageView @JvmOverloads constructor(
 
 	init {
 		context.withStyledAttributes(attrs, R.styleable.CoverImageView, defStyleAttr) {
-			orientation = getInt(R.styleable.CoverImageView_android_orientation, HORIZONTAL)
+			orientation = getInt(R.styleable.CoverImageView_android_orientation, orientation)
 		}
 	}
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-		val w: Int
-		val h: Int
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+		val desiredWidth: Int
+		val desiredHeight: Int
 		if (orientation == VERTICAL) {
-			val desiredHeight = (drawable?.intrinsicHeight?.coerceAtLeast(0) ?: 0) +
-					paddingTop + paddingBottom
-			h = resolveAdjustedSize(
-				desiredHeight.coerceAtLeast(suggestedMinimumHeight),
-				maxHeight,
-				heightMeasureSpec
-			)
-			val desiredWidth =
-				(h * ASPECT_RATIO_WIDTH / ASPECT_RATIO_HEIGHT).toInt() + paddingLeft + paddingRight
-			w = resolveAdjustedSize(
-				desiredWidth.coerceAtLeast(suggestedMinimumWidth),
-				maxWidth,
-				widthMeasureSpec
-			)
+			desiredHeight = measuredHeight
+			desiredWidth = (desiredHeight * ASPECT_RATIO_WIDTH / ASPECT_RATIO_HEIGHT).roundToInt()
 		} else {
-			val desiredWidth = (drawable?.intrinsicWidth?.coerceAtLeast(0) ?: 0) +
-					paddingLeft + paddingRight
-			w = resolveAdjustedSize(
-				desiredWidth.coerceAtLeast(suggestedMinimumWidth),
-				maxWidth,
-				widthMeasureSpec
-			)
-			val desiredHeight =
-				(w * ASPECT_RATIO_HEIGHT / ASPECT_RATIO_WIDTH).toInt() + paddingTop + paddingBottom
-			h = resolveAdjustedSize(
-				desiredHeight.coerceAtLeast(suggestedMinimumHeight),
-				maxHeight,
-				heightMeasureSpec
-			)
+			desiredWidth = measuredWidth
+			desiredHeight = (desiredWidth * ASPECT_RATIO_HEIGHT / ASPECT_RATIO_WIDTH).roundToInt()
 		}
-		val widthSize = resolveSizeAndState(w, widthMeasureSpec, 0)
-		val heightSize = resolveSizeAndState(h, heightMeasureSpec, 0)
-		setMeasuredDimension(widthSize, heightSize)
+		setMeasuredDimension(desiredWidth, desiredHeight)
 	}
 
 	companion object {
