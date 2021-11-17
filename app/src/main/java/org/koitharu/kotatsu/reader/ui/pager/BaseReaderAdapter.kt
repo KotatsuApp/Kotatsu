@@ -47,10 +47,6 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 		viewType: Int
 	): H = onCreateViewHolder(parent, loader, settings, exceptionResolver)
 
-	fun setItems(items: List<ReaderPage>, callback: Runnable) {
-		differ.submitList(items, callback)
-	}
-
 	suspend fun setItems(items: List<ReaderPage>) = suspendCoroutine<Unit> { cont ->
 		differ.submitList(items) {
 			cont.resume(Unit)

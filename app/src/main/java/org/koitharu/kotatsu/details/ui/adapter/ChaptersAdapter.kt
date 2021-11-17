@@ -19,10 +19,6 @@ class ChaptersAdapter(
 		return items[position].chapter.id
 	}
 
-	fun setItems(newItems: List<ChapterListItem>, callback: Runnable) {
-		differ.submitList(newItems, callback)
-	}
-
 	private class DiffCallback : DiffUtil.ItemCallback<ChapterListItem>() {
 
 		override fun areItemsTheSame(oldItem: ChapterListItem, newItem: ChapterListItem): Boolean {
