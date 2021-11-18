@@ -8,6 +8,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.utils.CacheUtils
+import org.koitharu.kotatsu.utils.DownloadManagerHelper
 import java.util.concurrent.TimeUnit
 
 val networkModule
@@ -28,4 +29,5 @@ val networkModule
 				}
 			}.build()
 		}
+		factory { DownloadManagerHelper(get(), get()) }
 	}

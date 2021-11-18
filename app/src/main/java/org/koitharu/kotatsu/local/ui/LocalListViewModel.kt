@@ -16,9 +16,9 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
-import org.koitharu.kotatsu.utils.MediaStoreCompat
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.resolveName
 import java.io.File
 import java.io.IOException
 
@@ -74,7 +74,7 @@ class LocalListViewModel(
 		launchLoadingJob {
 			val contentResolver = context.contentResolver
 			withContext(Dispatchers.IO) {
-				val name = MediaStoreCompat(contentResolver).getName(uri)
+				val name = contentResolver.resolveName(uri)
 					?: throw IOException("Cannot fetch name from uri: $uri")
 				if (!LocalMangaRepository.isFileSupported(name)) {
 					throw UnsupportedFileException("Unsupported file on $uri")

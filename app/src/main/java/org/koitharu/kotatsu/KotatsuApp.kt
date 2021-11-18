@@ -65,7 +65,7 @@ class KotatsuApp : Application() {
 				trackerModule,
 				settingsModule,
 				readerModule,
-				appWidgetModule
+				appWidgetModule,
 			)
 		}
 	}

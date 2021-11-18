@@ -196,7 +196,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	override fun onActivityResult(result: Boolean) {
 		if (result) {
 			viewModel.saveCurrentState(reader?.getCurrentState())
-			viewModel.saveCurrentPage(contentResolver)
+			viewModel.saveCurrentPage()
 		}
 	}
 
