@@ -79,6 +79,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	var historyGrouping by BoolPreferenceDelegate(KEY_HISTORY_GROUPING, true)
 
+	var isHistoryExcludeNsfw by BoolPreferenceDelegate(KEY_HISTORY_EXCLUDE_NSFW, false)
+
 	var chaptersReverse by BoolPreferenceDelegate(KEY_REVERSE_CHAPTERS, false)
 
 	val zoomMode by EnumPreferenceDelegate(
@@ -192,6 +194,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_RESTORE = "restore"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
+		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
