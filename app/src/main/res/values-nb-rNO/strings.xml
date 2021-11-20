@@ -223,4 +223,24 @@
     <string name="chapter_is_missing">Kapittel mangler</string>
     <string name="text_downloads_holder">Det er ingen aktive nedlastinger</string>
     <string name="queued">I kø</string>
+    <string name="state_finished">Fullført</string>
+    <string name="state_ongoing">Pågående</string>
+    <string name="about_app_translation_summary">Oversett dette programmet</string>
+    <string name="about_app_translation">Oversettelse</string>
+    <string name="about_author">Utvikler</string>
+    <string name="about_feedback">Tilbakemelding</string>
+    <string name="about_feedback_4pda">Emne på 4PDA</string>
+    <string name="about_support_developer">Støtt utvikleren</string>
+    <string name="about_support_developer_summary">Hvis du liker programmet kan du kronerulle det på Yoomoney (tidligere Yandex.Money)</string>
+    <string name="about_gratitudes">Takk rettes til</string>
+    <string name="about_gratitudes_summary">Folk som gjorde Kotatsu enda bedre.</string>
+    <string name="about_copyright_and_licenses">Opphavsrett og lisenser</string>
+    <string name="about_license">Lisens</string>
+    <string name="auth_complete">Identitetsbekreftelse fullført</string>
+    <string name="auth_not_supported_by">Identitetsbekreftelse på %s støttes ikke</string>
+    <string name="text_clear_cookies_prompt">Du vil bli utlogget fra alle kilder du pålogget i</string>
+    <string name="genres">Sjangere</string>
+    <string name="exclude_nsfw_from_history">Utelat NSFW-manga fra historikk</string>
+    <string name="date_format">Datoformat</string>
+    <string name="system_default">Forvalg</string>
 </resources>
