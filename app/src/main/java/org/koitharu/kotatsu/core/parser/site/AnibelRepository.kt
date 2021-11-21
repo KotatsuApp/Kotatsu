@@ -10,7 +10,7 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 
 	override val source = MangaSource.ANIBEL
 
-	override val defaultDomain = "anibel.net"
+	override val defaultDomain = "old.anibel.net"
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.NEWEST
