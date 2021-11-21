@@ -244,4 +244,5 @@
     <string name="state_ongoing">Fortlaufend</string>
     <string name="date_format">Datumsformat</string>
     <string name="system_default">Standard</string>
+    <string name="exclude_nsfw_from_history">NSFW-Manga aus dem Verlauf ausschließen</string>
 </resources>
