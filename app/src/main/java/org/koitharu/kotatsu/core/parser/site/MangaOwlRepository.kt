@@ -93,7 +93,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 				},
 			chapters = table.select("div.table.table-chapter-list").select("li.list-group-item.chapter_list").asReversed().mapIndexed { i, li ->
 				val a = li.select("a")
-				val href = a.attr("href").ifEmpty {
+				val href = a.attr("data-href").ifEmpty {
 					parseFailed("Link is missing")
 				}
 				MangaChapter(
