@@ -70,13 +70,14 @@ class RemoteMangaRepositoryTest(private val source: MangaSource) : KoinTest {
 	@Test
 	fun details() = coroutineTestRule.runBlockingTest {
 		val list = repo.getList2(20, query = null, sortOrder = SortOrder.POPULARITY, tags = null)
-		val item = list.first()
-		val details = repo.getDetails(item)
+		val manga = list.first()
+		println(manga.title + ": " + manga.url)
+		val details = repo.getDetails(manga)
 
 		Truth.assertThat(details.chapters).isNotEmpty()
 		Truth.assertThat(details.publicUrl).isAbsoluteUrl()
 		Truth.assertThat(details.description).isNotNull()
-		Truth.assertThat(details.title).startsWith(item.title)
+		Truth.assertThat(details.title).startsWith(manga.title)
 		Truth.assertThat(details.source).isEqualTo(source)
 
 		Truth.assertThat(details.chapters?.map { it.id }).containsNoDuplicates()
@@ -88,8 +89,9 @@ class RemoteMangaRepositoryTest(private val source: MangaSource) : KoinTest {
 	@Test
 	fun pages() = coroutineTestRule.runBlockingTest {
 		val list = repo.getList2(20, query = null, sortOrder = SortOrder.POPULARITY, tags = null)
-		val chapter =
-			repo.getDetails(list.first()).chapters?.firstOrNull() ?: error("Chapter is null")
+		val manga = list.first()
+		println(manga.title + ": " + manga.url)
+		val chapter = repo.getDetails(manga).chapters?.firstOrNull() ?: error("Chapter is null")
 		val pages = repo.getPages(chapter)
 
 		Truth.assertThat(pages).isNotEmpty()
