@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.favourites.ui.categories
 
 import android.content.Context
 import android.text.InputType
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.TextInputDialog
@@ -32,7 +33,12 @@ class CategoriesEditDelegate(
 			.setNegativeButton(android.R.string.cancel)
 			.setMaxLength(MAX_TITLE_LENGTH, false)
 			.setPositiveButton(R.string.rename) { _, name ->
-				callback.onRenameCategory(category, name)
+				val trimmed = name.trim()
+				if (trimmed.isEmpty()) {
+					Toast.makeText(context, R.string.error_empty_name, Toast.LENGTH_SHORT).show()
+				} else {
+					callback.onRenameCategory(category, name)
+				}
 			}.create()
 			.show()
 	}
@@ -45,7 +51,12 @@ class CategoriesEditDelegate(
 			.setNegativeButton(android.R.string.cancel)
 			.setMaxLength(MAX_TITLE_LENGTH, false)
 			.setPositiveButton(R.string.add) { _, name ->
-				callback.onCreateCategory(name)
+				val trimmed = name.trim()
+				if (trimmed.isEmpty()) {
+					Toast.makeText(context, R.string.error_empty_name, Toast.LENGTH_SHORT).show()
+				} else {
+					callback.onCreateCategory(trimmed)
+				}
 			}.create()
 			.show()
 	}
