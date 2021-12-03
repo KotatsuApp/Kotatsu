@@ -87,7 +87,7 @@
     <string name="_continue">Continue</string>
     <string name="warning">Warning</string>
     <string name="network_consumption_warning">This operation may consume a lot of network traffic</string>
-    <string name="dont_ask_again">Don`t ask again</string>
+    <string name="dont_ask_again">Don\'t ask again</string>
     <string name="cancelling_">Cancelling…</string>
     <string name="error">Error</string>
     <string name="clear_thumbs_cache">Clear thumbnails cache</string>
@@ -245,5 +245,5 @@
     <string name="date_format">Date format</string>
     <string name="system_default">Default</string>
     <string name="exclude_nsfw_from_history">Exclude NSFW manga from history</string>
-	<string name="error_empty_name">Name sould not be empty</string>
+    <string name="error_empty_name">Name sould not be empty</string>
 </resources>
