@@ -44,6 +44,8 @@ fun JSONObject.getLongOrDefault(name: String, defaultValue: Long): Long = opt(na
 
 operator fun JSONArray.iterator(): Iterator<JSONObject> = JSONIterator(this)
 
+fun JSONArray.stringIterator(): Iterator<String> = JSONStringIterator(this)
+
 private class JSONIterator(private val array: JSONArray) : Iterator<JSONObject> {
 
 	private val total = array.length()
@@ -52,7 +54,16 @@ private class JSONIterator(private val array: JSONArray) : Iterator<JSONObject> 
 	override fun hasNext() = index < total - 1
 
 	override fun next(): JSONObject = array.getJSONObject(index++)
+}
 
+private class JSONStringIterator(private val array: JSONArray) : Iterator<String> {
+
+	private val total = array.length()
+	private var index = 0
+
+	override fun hasNext() = index < total - 1
+
+	override fun next(): String = array.getString(index++)
 }
 
 fun <T> JSONArray.mapToSet(block: (JSONObject) -> T): Set<T> {
