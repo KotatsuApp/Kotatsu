@@ -3,6 +3,7 @@ package org.koitharu.kotatsu
 import android.app.Application
 import android.os.StrictMode
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.strictmode.FragmentStrictMode
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -86,5 +87,13 @@ class KotatsuApp : Application() {
 				.penaltyLog()
 				.build()
 		)
+		FragmentStrictMode.defaultPolicy = FragmentStrictMode.Policy.Builder()
+			.penaltyDeath()
+			.detectFragmentReuse()
+			.detectWrongFragmentContainer()
+			.detectRetainInstanceUsage()
+			.detectTargetFragmentUsage()
+			.detectSetUserVisibleHint()
+			.build()
 	}
 }
