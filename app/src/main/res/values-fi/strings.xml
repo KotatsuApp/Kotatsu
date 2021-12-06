@@ -244,4 +244,6 @@
     <string name="state_ongoing">Jatkuva</string>
     <string name="date_format">Päivämäärän muoto</string>
     <string name="system_default">Oletus</string>
+    <string name="error_empty_name">Nimi ei saa olla tyhjä</string>
+    <string name="exclude_nsfw_from_history">Sulje NSFW-mangat pois historiasta</string>
 </resources>
