@@ -241,4 +241,9 @@
     <string name="about_feedback_4pda">Tema sobre 4PDA</string>
     <string name="date_format">Formato de la fecha</string>
     <string name="system_default">Por defecto</string>
+    <string name="tracker_warning">Algunos fabricantes pueden cambiar el comportamiento del sistema, lo que podría interrumpir las tareas en segundo plano.</string>
+    <string name="error_empty_name">Nombre no debe estar vacío</string>
+    <string name="auth_not_supported_by">Autorización en %s no es compatible</string>
+    <string name="text_clear_cookies_prompt">Se cerrará la sesión de todas las fuentes en las que esté autorizado</string>
+    <string name="exclude_nsfw_from_history">Excluye manga NSFW del historial</string>
 </resources>
