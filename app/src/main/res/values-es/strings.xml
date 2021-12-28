@@ -86,7 +86,7 @@
     <string name="_continue">Continuar</string>
     <string name="warning">Advertencia</string>
     <string name="network_consumption_warning">Esta operación puede consumir mucho tráfico de red</string>
-    <string name="dont_ask_again">No volver a preguntar</string>
+    <string name="dont_ask_again">No vuelvas a preguntar</string>
     <string name="cancelling_">Cancelar…</string>
     <string name="error">Error</string>
     <string name="clear_thumbs_cache">Borrar la caché de miniaturas</string>
