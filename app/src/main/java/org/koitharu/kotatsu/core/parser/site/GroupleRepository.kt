@@ -110,11 +110,11 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 		val root = doc.body().getElementById("mangaBox")?.selectFirst("div.leftContent")
 			?: throw ParseException("Cannot find root")
 		val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.US)
+		val coverImg = root.selectFirst("div.subject-cover")?.selectFirst("img")
 		return manga.copy(
 			description = root.selectFirst("div.manga-description")?.html(),
-			largeCoverUrl = root.selectFirst("div.subject-cower")?.selectFirst("img")?.attr(
-				"data-full"
-			),
+			largeCoverUrl = coverImg?.attr("data-full"),
+			coverUrl = coverImg?.attr("data-thumb") ?: manga.coverUrl,
 			tags = manga.tags + root.select("div.subject-meta").select("span.elem_genre ")
 				.mapNotNull {
 					val a = it.selectFirst("a.element-link") ?: return@mapNotNull null
