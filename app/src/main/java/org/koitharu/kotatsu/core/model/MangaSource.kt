@@ -40,7 +40,8 @@ enum class MangaSource(
 	NINEMANGA_BR("NineManga Brasil", "pt", NineMangaRepository.Brazil::class.java),
 	NINEMANGA_FR("NineManga Français", "fr", NineMangaRepository.Francais::class.java),
 	EXHENTAI("ExHentai", null, ExHentaiRepository::class.java),
-	MANGAOWL("MangaOwl", "en", MangaOwlRepository::class.java)
+	MANGAOWL("MangaOwl", "en", MangaOwlRepository::class.java),
+	MANGADEX("MangaDex", null, MangaDexRepository::class.java),
 	;
 
 	@get:Throws(NoBeanDefFoundException::class)

@@ -8,7 +8,7 @@ import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
@@ -143,7 +143,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	fun observe() = callbackFlow<String> {
 		val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-			sendBlocking(key)
+			trySendBlocking(key)
 		}
 		prefs.registerOnSharedPreferenceChangeListener(listener)
 		awaitClose {

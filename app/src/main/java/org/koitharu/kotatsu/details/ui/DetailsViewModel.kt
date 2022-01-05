@@ -24,7 +24,9 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.mapToSet
+import org.koitharu.kotatsu.utils.ext.toTitleCase
 import java.io.IOException
+import java.util.*
 
 class DetailsViewModel(
 	intent: MangaIntent,
@@ -127,9 +129,7 @@ class DetailsViewModel(
 			selectedBranch.value = if (hist != null) {
 				manga.chapters?.find { it.id == hist.chapterId }?.branch
 			} else {
-				manga.chapters
-					?.groupBy { it.branch }
-					?.maxByOrNull { it.value.size }?.key
+				predictBranch(manga.chapters)
 			}
 			mangaData.value = manga
 			if (manga.source == MangaSource.LOCAL) {
@@ -239,5 +239,22 @@ class DetailsViewModel(
 			result.sortBy { it.chapter.number }
 		}
 		return result
+	}
+
+	private fun predictBranch(chapters: List<MangaChapter>?): String? {
+		if (chapters.isNullOrEmpty()) {
+			return null
+		}
+		val groups = chapters.groupBy { it.branch }
+		val locale = Locale.getDefault()
+		var language = locale.displayLanguage.toTitleCase(locale)
+		if (groups.containsKey(language)) {
+			return language
+		}
+		language = locale.displayName.toTitleCase(locale)
+		if (groups.containsKey(language)) {
+			return language
+		}
+		return groups.maxByOrNull { it.value.size }?.key
 	}
 }
