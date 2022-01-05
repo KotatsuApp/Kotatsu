@@ -133,6 +133,8 @@ fun View.resetTransformations() {
 	translationZ = 0f
 	scaleX = 1f
 	scaleY = 1f
+	rotationX = 0f
+	rotationY = 0f
 }
 
 inline fun RecyclerView.doOnCurrentItemChanged(crossinline callback: (Int) -> Unit) {
