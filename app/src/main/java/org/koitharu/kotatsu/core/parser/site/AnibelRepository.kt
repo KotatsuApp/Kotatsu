@@ -220,7 +220,7 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 	}
 
 	private suspend fun apiCall(request: String): JSONObject {
-		return loaderContext.graphQLQuery("https://api.${getDomain()}/", request)
+		return loaderContext.graphQLQuery("https://api.${getDomain()}/graphql", request)
 			.getJSONObject("data")
 	}
 
