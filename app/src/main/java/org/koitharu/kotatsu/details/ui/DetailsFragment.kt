@@ -13,6 +13,7 @@ import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
+import coil.request.ImageRequest
 import coil.util.CoilUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,14 +62,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 
 	private fun onMangaUpdated(manga: Manga) {
 		with(binding) {
-
 			// Main
-			imageViewCover.newImageRequest(manga.largeCoverUrl ?: manga.coverUrl)
-				.referer(manga.publicUrl)
-				.fallback(R.drawable.ic_placeholder)
-				.placeholderMemoryCacheKey(CoilUtils.metadata(imageViewCover)?.memoryCacheKey)
-				.lifecycle(viewLifecycleOwner)
-				.enqueueWith(coil)
+			loadCover(manga)
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
 			textViewAuthor.textAndVisible = manga.author
@@ -252,5 +247,23 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				)
 			}
 		)
+	}
+
+	private fun loadCover(manga: Manga) {
+		val currentCover = binding.imageViewCover.drawable
+		val request = ImageRequest.Builder(context ?: return)
+			.target(binding.imageViewCover)
+		if (currentCover != null) {
+			request.data(manga.largeCoverUrl ?: return)
+				.placeholderMemoryCacheKey(CoilUtils.metadata(binding.imageViewCover)?.memoryCacheKey)
+				.fallback(currentCover)
+		} else {
+			request.crossfade(true)
+				.data(manga.coverUrl)
+				.fallback(R.drawable.ic_placeholder)
+		}
+		request.referer(manga.publicUrl)
+			.lifecycle(viewLifecycleOwner)
+			.enqueueWith(coil)
 	}
 }
