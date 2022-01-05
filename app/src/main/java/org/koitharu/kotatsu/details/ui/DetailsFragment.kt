@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.text.Spanned
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaState
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
+import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.search.ui.SearchActivity
@@ -50,6 +52,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		binding.buttonFavorite.setOnClickListener(this)
 		binding.buttonRead.setOnClickListener(this)
 		binding.buttonRead.setOnLongClickListener(this)
+		binding.coverCard.setOnClickListener(this)
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
@@ -187,6 +190,17 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 						source = manga.source,
 						query = manga.author ?: return,
 					)
+				)
+			}
+			R.id.cover_card -> {
+				val options = ActivityOptions.makeSceneTransitionAnimation(
+					requireActivity(),
+					binding.imageViewCover,
+					binding.imageViewCover.transitionName,
+				)
+				startActivity(
+					ImageActivity.newIntent(v.context, manga.largeCoverUrl ?: manga.coverUrl),
+					options.toBundle()
 				)
 			}
 		}

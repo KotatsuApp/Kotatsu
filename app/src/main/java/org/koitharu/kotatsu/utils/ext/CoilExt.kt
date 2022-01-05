@@ -7,16 +7,16 @@ import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.request.SuccessResult
+import com.google.android.material.progressindicator.BaseProgressIndicator
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.utils.progress.ImageRequestIndicatorListener
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun ImageView.newImageRequest(url: String) = ImageRequest.Builder(context)
+fun ImageView.newImageRequest(url: String) = ImageRequest.Builder(context)
 	.data(url)
 	.crossfade(true)
 	.target(this)
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun ImageRequest.Builder.enqueueWith(loader: ImageLoader) = loader.enqueue(build())
+fun ImageRequest.Builder.enqueueWith(loader: ImageLoader) = loader.enqueue(build())
 
 fun ImageResult.requireBitmap() = when (this) {
 	is SuccessResult -> drawable.toBitmap()
@@ -32,7 +32,10 @@ fun ImageResult.toBitmapOrNull() = when (this) {
 	is ErrorResult -> null
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun ImageRequest.Builder.referer(referer: String): ImageRequest.Builder {
+fun ImageRequest.Builder.referer(referer: String): ImageRequest.Builder {
 	return setHeader(CommonHeaders.REFERER, referer)
+}
+
+fun ImageRequest.Builder.indicator(indicator: BaseProgressIndicator<*>): ImageRequest.Builder {
+	return listener(ImageRequestIndicatorListener(indicator))
 }

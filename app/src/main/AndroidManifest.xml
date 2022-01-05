@@ -99,6 +99,7 @@
 		<activity
 			android:name="org.koitharu.kotatsu.download.ui.DownloadsActivity"
 			android:label="@string/downloads" />
+		<activity android:name=".image.ui.ImageActivity"/>
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"

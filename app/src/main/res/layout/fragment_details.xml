@@ -40,6 +40,7 @@
 					android:layout_height="wrap_content"
 					android:orientation="horizontal"
 					android:scaleType="centerCrop"
+					android:transitionName="cover"
 					tools:background="@tools:sample/backgrounds/scenic"
 					tools:ignore="ContentDescription" />
 
