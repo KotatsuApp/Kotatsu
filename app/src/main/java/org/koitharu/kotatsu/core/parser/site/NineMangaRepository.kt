@@ -41,7 +41,7 @@ abstract class NineMangaRepository(
 					append("&page=")
 				}
 				!tags.isNullOrEmpty() -> {
-					append("/search/&category_id=")
+					append("/search/?category_id=")
 					for (tag in tags) {
 						append(tag.key)
 						append(',')
