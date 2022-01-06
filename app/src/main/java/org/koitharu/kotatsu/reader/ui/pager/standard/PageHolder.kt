@@ -33,7 +33,7 @@ open class PageHolder(
 
 	override fun onBind(data: ReaderPage) {
 		delegate.onBind(data.toMangaPage())
-		binding.textViewNumber.text = data.index.toString()
+		binding.textViewNumber.text = (data.index + 1).toString()
 	}
 
 	override fun onRecycled() {
