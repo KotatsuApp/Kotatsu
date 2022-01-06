@@ -19,6 +19,17 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center" />
 
+	<TextView
+		android:id="@+id/textView_number"
+		android:layout_width="wrap_content"
+		android:layout_margin="8dp"
+		android:singleLine="true"
+		android:textColor="?android:textColorTertiary"
+		android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end|bottom"
+		tools:text="5" />
+
 	<LinearLayout
 		android:id="@+id/layout_error"
 		android:layout_width="wrap_content"

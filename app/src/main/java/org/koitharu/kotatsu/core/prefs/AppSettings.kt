@@ -109,6 +109,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 	val isSourcesSelected: Boolean
 		get() = KEY_SOURCES_HIDDEN in prefs
 
+	val isPagesNumbersEnabled by BoolPreferenceDelegate(KEY_PAGES_NUMBERS, false)
+
 	fun getStorageDir(context: Context): File? {
 		val value = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)
@@ -195,6 +197,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_HISTORY_GROUPING = "history_grouping"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
+		const val KEY_PAGES_NUMBERS = "pages_numbers"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
