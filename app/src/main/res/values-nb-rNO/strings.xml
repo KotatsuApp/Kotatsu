@@ -244,4 +244,7 @@
     <string name="date_format">Datoformat</string>
     <string name="system_default">Forvalg</string>
     <string name="error_empty_name">Navn må angis</string>
+    <string name="available_sources">Tilgjengelige kilder</string>
+    <string name="show_pages_numbers">Vis sidenummerering</string>
+    <string name="enabled_sources">Påskrudde kilder</string>
 </resources>
