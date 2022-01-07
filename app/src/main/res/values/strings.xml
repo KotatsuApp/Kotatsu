@@ -26,7 +26,7 @@
 	<string name="read">Read</string>
 	<string name="add_bookmark">Add bookmark</string>
 	<string name="you_have_not_favourites_yet">No favourites yet</string>
-	<string name="add_to_favourites">Favourite</string>
+	<string name="add_to_favourites">Favourite this</string>
 	<string name="add_new_category">New category</string>
 	<string name="add">Add</string>
 	<string name="enter_category_name">Enter category name</string>
@@ -61,7 +61,6 @@
 	<string name="remove">Remove</string>
 	<string name="_s_removed_from_history">\"%s\" removed from history</string>
 	<string name="_s_deleted_from_local_storage">\"%s\" deleted from local storage</string>
-	<string name="wait_for_loading_finish">Waiting for loading to finish…</string>
 	<string name="save_page">Save page</string>
 	<string name="page_saved">Saved</string>
 	<string name="share_image">Share image</string>
@@ -101,7 +100,7 @@
 	<string name="application_update">Check for new versions of the app</string>
 	<string name="app_update_available">A new version of the app is available</string>
 	<string name="show_notification_app_update">Show notification if a new version is available</string>
-	<string name="open_in_browser">Open in browser</string>
+	<string name="open_in_browser">Open in web browser</string>
 	<string name="large_manga_save_confirm">This manga has %s. Save all of it?</string>
 	<string name="save_manga">Save</string>
 	<string name="notifications">Notifications</string>
