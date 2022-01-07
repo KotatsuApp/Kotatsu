@@ -246,4 +246,6 @@
     <string name="exclude_nsfw_from_history">Исключить NSFW мангу из истории</string>
 	<string name="error_empty_name">Имя не может быть пустым</string>
     <string name="show_pages_numbers">Показывать номера страниц</string>
+    <string name="enabled_sources">Включенные источники</string>
+    <string name="available_sources">Доступные источники</string>
 </resources>

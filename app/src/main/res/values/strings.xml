@@ -247,4 +247,6 @@
     <string name="exclude_nsfw_from_history">Exclude NSFW manga from history</string>
     <string name="error_empty_name">Name should not be empty</string>
     <string name="show_pages_numbers">Show pages numbers</string>
+    <string name="enabled_sources">Enabled sources</string>
+    <string name="available_sources">Available sources</string>
 </resources>

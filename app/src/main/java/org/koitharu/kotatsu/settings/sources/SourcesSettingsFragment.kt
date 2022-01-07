@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -15,8 +14,9 @@ import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
-import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigItem
+import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigItemDecoration
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
+import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
 class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	SourceConfigListener {
@@ -45,7 +45,7 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		val sourcesAdapter = SourceConfigAdapter(this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
-			addItemDecoration(DividerItemDecoration(view.context, RecyclerView.VERTICAL))
+			addItemDecoration(SourceConfigItemDecoration(view.context))
 			adapter = sourcesAdapter
 			reorderHelper.attachToRecyclerView(this)
 		}
@@ -79,7 +79,7 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		reorderHelper.startDrag(holder)
 	}
 
-	override fun onHeaderClick(header: SourceConfigItem.LocaleHeader) {
+	override fun onHeaderClick(header: SourceConfigItem.LocaleGroup) {
 		viewModel.expandOrCollapse(header.localeId)
 	}
 
@@ -91,16 +91,20 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		override fun onMove(
 			recyclerView: RecyclerView,
 			viewHolder: RecyclerView.ViewHolder,
-			target: RecyclerView.ViewHolder
-		): Boolean {
-			if (viewHolder.itemViewType != target.itemViewType) {
-				return false
-			}
-			val oldPos = viewHolder.bindingAdapterPosition
-			val newPos = target.bindingAdapterPosition
-			viewModel.reorderSources(oldPos, newPos)
-			return true
-		}
+			target: RecyclerView.ViewHolder,
+		): Boolean = viewHolder.itemViewType == target.itemViewType && viewModel.reorderSources(
+			viewHolder.bindingAdapterPosition,
+			target.bindingAdapterPosition,
+		)
+
+		override fun canDropOver(
+			recyclerView: RecyclerView,
+			current: RecyclerView.ViewHolder,
+			target: RecyclerView.ViewHolder,
+		): Boolean = current.itemViewType == target.itemViewType && viewModel.canReorder(
+			current.bindingAdapterPosition,
+			target.bindingAdapterPosition,
+		)
 
 		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
 

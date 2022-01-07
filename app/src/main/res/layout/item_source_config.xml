@@ -11,8 +11,8 @@
 	<ImageView
 		android:id="@+id/imageView_handle"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:padding="?listPreferredItemPaddingStart"
+		android:layout_height="match_parent"
+		android:paddingHorizontal="?listPreferredItemPaddingStart"
 		android:scaleType="center"
 		android:src="@drawable/ic_reorder_handle" />
 
@@ -36,10 +36,10 @@
 	<ImageView
 		android:id="@+id/imageView_config"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_height="match_parent"
 		android:background="?selectableItemBackgroundBorderless"
 		android:contentDescription="@string/settings"
-		android:padding="?listPreferredItemPaddingEnd"
+		android:paddingHorizontal="?listPreferredItemPaddingEnd"
 		android:scaleType="center"
 		android:src="@drawable/ic_settings" />
 

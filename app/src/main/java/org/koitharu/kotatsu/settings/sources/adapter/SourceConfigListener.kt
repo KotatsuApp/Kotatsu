@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.settings.sources.adapter
 
 import androidx.recyclerview.widget.RecyclerView
+import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
 interface SourceConfigListener {
 
@@ -10,5 +11,5 @@ interface SourceConfigListener {
 
 	fun onDragHandleTouch(holder: RecyclerView.ViewHolder)
 
-	fun onHeaderClick(header: SourceConfigItem.LocaleHeader)
+	fun onHeaderClick(header: SourceConfigItem.LocaleGroup)
 }

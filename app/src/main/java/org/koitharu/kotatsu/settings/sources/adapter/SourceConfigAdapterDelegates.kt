@@ -4,14 +4,27 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import android.widget.CompoundButton
+import androidx.core.view.isVisible
+import androidx.core.view.updatePaddingRelative
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemExpandableBinding
+import org.koitharu.kotatsu.databinding.ItemFilterHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigBinding
+import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
-fun sourceConfigHeaderDelegate(
+fun sourceConfigHeaderDelegate() = adapterDelegateViewBinding<SourceConfigItem.Header, SourceConfigItem, ItemFilterHeaderBinding>(
+	{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) }
+) {
+
+	bind {
+		binding.root.setText(item.titleResId)
+	}
+}
+
+fun sourceConfigGroupDelegate(
 	listener: SourceConfigListener,
-) = adapterDelegateViewBinding<SourceConfigItem.LocaleHeader, SourceConfigItem, ItemExpandableBinding>(
+) = adapterDelegateViewBinding<SourceConfigItem.LocaleGroup, SourceConfigItem, ItemExpandableBinding>(
 	{ layoutInflater, parent -> ItemExpandableBinding.inflate(layoutInflater, parent, false) }
 ) {
 
@@ -57,5 +70,11 @@ fun sourceConfigItemDelegate(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		binding.switchToggle.isChecked = item.isEnabled
+		binding.imageViewHandle.isVisible = item.isEnabled
+		binding.imageViewConfig.isVisible = item.isEnabled
+		binding.root.updatePaddingRelative(
+			start = if (item.isEnabled) 0 else binding.imageViewHandle.paddingStart * 2,
+			end = if (item.isEnabled) 0 else binding.imageViewConfig.paddingEnd,
+		)
 	}
 }
