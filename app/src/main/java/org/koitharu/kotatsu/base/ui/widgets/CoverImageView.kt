@@ -6,40 +6,33 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.withStyledAttributes
 import org.koitharu.kotatsu.R
+import kotlin.math.roundToInt
 
 
 class CoverImageView @JvmOverloads constructor(
-	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
 	private var orientation: Int = HORIZONTAL
 
 	init {
 		context.withStyledAttributes(attrs, R.styleable.CoverImageView, defStyleAttr) {
-			orientation = getInt(R.styleable.CoverImageView_android_orientation, HORIZONTAL)
+			orientation = getInt(R.styleable.CoverImageView_android_orientation, orientation)
 		}
 	}
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+		val desiredWidth: Int
+		val desiredHeight: Int
 		if (orientation == VERTICAL) {
-			val originalHeight = MeasureSpec.getSize(heightMeasureSpec)
-			super.onMeasure(
-				MeasureSpec.makeMeasureSpec(
-					(originalHeight * ASPECT_RATIO_WIDTH / ASPECT_RATIO_HEIGHT).toInt(),
-					MeasureSpec.EXACTLY
-				),
-				MeasureSpec.makeMeasureSpec(originalHeight, MeasureSpec.EXACTLY)
-			)
+			desiredHeight = measuredHeight
+			desiredWidth = (desiredHeight * ASPECT_RATIO_WIDTH / ASPECT_RATIO_HEIGHT).roundToInt()
 		} else {
-			val originalWidth = MeasureSpec.getSize(widthMeasureSpec)
-			super.onMeasure(
-				MeasureSpec.makeMeasureSpec(originalWidth, MeasureSpec.EXACTLY),
-				MeasureSpec.makeMeasureSpec(
-					(originalWidth * ASPECT_RATIO_HEIGHT / ASPECT_RATIO_WIDTH).toInt(),
-					MeasureSpec.EXACTLY
-				)
-			)
+			desiredWidth = measuredWidth
+			desiredHeight = (desiredWidth * ASPECT_RATIO_HEIGHT / ASPECT_RATIO_WIDTH).roundToInt()
 		}
+		setMeasuredDimension(desiredWidth, desiredHeight)
 	}
 
 	companion object {

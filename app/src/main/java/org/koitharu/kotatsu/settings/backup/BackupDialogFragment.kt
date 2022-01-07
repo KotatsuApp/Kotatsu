@@ -14,13 +14,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.setIndeterminateCompat
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.io.File
 import java.io.FileOutputStream
 
 class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
-	private val viewModel by viewModel<BackupViewModel>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by viewModel<BackupViewModel>()
 
 	private var backup: File? = null
 	private val saveFileContract =
@@ -64,8 +65,8 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	private fun onProgressChanged(progress: Progress?) {
 		with(binding.progressBar) {
+			setIndeterminateCompat(progress == null)
 			isVisible = true
-			isIndeterminate = progress == null
 			if (progress != null) {
 				this.max = progress.total
 				this.progress = progress.value

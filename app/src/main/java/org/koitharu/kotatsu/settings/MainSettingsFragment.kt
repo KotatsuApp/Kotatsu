@@ -1,26 +1,23 @@
 package org.koitharu.kotatsu.settings
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.InputType
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.launch
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
-import org.koitharu.kotatsu.base.ui.dialog.TextInputDialog
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.getStorageName
+import org.koitharu.kotatsu.utils.ext.names
+import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import java.io.File
+import java.util.*
 
 
 class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
@@ -40,23 +37,30 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			entryValues = ListMode.values().names()
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
+		findPreference<ListPreference>(AppSettings.KEY_DATE_FORMAT)?.run {
+			entryValues = arrayOf("", "MM/dd/yy", "dd/MM/yy", "yyyy-MM-dd", "dd MMM yyyy", "MMM dd, yyyy")
+			val now = Date().time
+			entries = entryValues.map { value ->
+				val formattedDate = settings.dateFormat(value.toString()).format(now)
+				if (value == "") {
+					"${context.getString(R.string.system_default)} ($formattedDate)"
+				} else {
+					"$value ($formattedDate)"
+				}
+			}.toTypedArray()
+			setDefaultValueCompat("")
+			summary = "%s"
+		}
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		findPreference<Preference>(AppSettings.KEY_APP_UPDATE_AUTO)?.run {
-			isVisible = AppUpdateChecker.isUpdateSupported(context)
-		}
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)
 		}
 		findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
-		findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
-			title = getString(R.string.app_version, BuildConfig.VERSION_NAME)
-			isEnabled = AppUpdateChecker.isUpdateSupported(context)
-		}
 		settings.subscribe(this)
 	}
 
@@ -120,10 +124,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				}
 				true
 			}
-			AppSettings.KEY_APP_VERSION -> {
-				checkForUpdates()
-				true
-			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
@@ -132,73 +132,4 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		settings.setStorageDir(context ?: return, file)
 	}
 
-	private fun enableAppProtection(preference: SwitchPreference) {
-		val ctx = preference.context ?: return
-		val cancelListener =
-			object : DialogInterface.OnCancelListener, DialogInterface.OnClickListener {
-
-				override fun onCancel(dialog: DialogInterface?) {
-					settings.appPassword = null
-					preference.isChecked = false
-					preference.isEnabled = true
-				}
-
-				override fun onClick(dialog: DialogInterface?, which: Int) = onCancel(dialog)
-			}
-		preference.isEnabled = false
-		TextInputDialog.Builder(ctx)
-			.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
-			.setHint(R.string.enter_password)
-			.setNegativeButton(android.R.string.cancel, cancelListener)
-			.setOnCancelListener(cancelListener)
-			.setPositiveButton(android.R.string.ok) { d, password ->
-				if (password.isBlank()) {
-					cancelListener.onCancel(d)
-					return@setPositiveButton
-				}
-				TextInputDialog.Builder(ctx)
-					.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
-					.setHint(R.string.repeat_password)
-					.setNegativeButton(android.R.string.cancel, cancelListener)
-					.setOnCancelListener(cancelListener)
-					.setPositiveButton(android.R.string.ok) { d2, password2 ->
-						if (password == password2) {
-							settings.appPassword = password.md5()
-							preference.isChecked = true
-							preference.isEnabled = true
-						} else {
-							cancelListener.onCancel(d2)
-							Snackbar.make(
-								listView,
-								R.string.passwords_mismatch,
-								Snackbar.LENGTH_SHORT
-							).show()
-						}
-					}.setTitle(preference.title)
-					.create()
-					.show()
-			}.setTitle(preference.title)
-			.create()
-			.show()
-	}
-
-	private fun checkForUpdates() {
-		viewLifecycleScope.launch {
-			findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
-				setSummary(R.string.checking_for_updates)
-				isSelectable = false
-			}
-			val result = AppUpdateChecker(activity ?: return@launch).checkNow()
-			findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
-				setSummary(
-					when (result) {
-						true -> R.string.check_for_updates
-						false -> R.string.no_update_available
-						null -> R.string.update_check_failed
-					}
-				)
-				isSelectable = true
-			}
-		}
-	}
 }

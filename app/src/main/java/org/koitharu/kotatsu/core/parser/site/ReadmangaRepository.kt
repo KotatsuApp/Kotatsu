@@ -5,6 +5,6 @@ import org.koitharu.kotatsu.core.model.MangaSource
 
 class ReadmangaRepository(loaderContext: MangaLoaderContext) : GroupleRepository(loaderContext) {
 
-	override val defaultDomain = "readmanga.live"
+	override val defaultDomain = "readmanga.io"
 	override val source = MangaSource.READMANGA_RU
 }

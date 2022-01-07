@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 enum class MangaSource(
 	val title: String,
 	val locale: String?,
-	val cls: Class<out MangaRepository>
+	val cls: Class<out MangaRepository>,
 ) : Parcelable {
 	LOCAL("Local", null, LocalMangaRepository::class.java),
 	READMANGA_RU("ReadManga", "ru", ReadmangaRepository::class.java),
@@ -39,10 +39,14 @@ enum class MangaSource(
 	NINEMANGA_IT("NineManga Italiano", "it", NineMangaRepository.Italiano::class.java),
 	NINEMANGA_BR("NineManga Brasil", "pt", NineMangaRepository.Brazil::class.java),
 	NINEMANGA_FR("NineManga Français", "fr", NineMangaRepository.Francais::class.java),
+	EXHENTAI("ExHentai", null, ExHentaiRepository::class.java),
+	MANGAOWL("MangaOwl", "en", MangaOwlRepository::class.java),
+	MANGADEX("MangaDex", null, MangaDexRepository::class.java),
 	;
 
 	@get:Throws(NoBeanDefFoundException::class)
-	@Deprecated("")
+	@Deprecated("", ReplaceWith("MangaRepository(this)",
+		"org.koitharu.kotatsu.core.parser.MangaRepository"))
 	val repository: MangaRepository
 		get() = GlobalContext.get().get(named(this))
 }

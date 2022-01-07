@@ -2,12 +2,12 @@ package org.koitharu.kotatsu.core.github
 
 import java.util.*
 
-data class VersionId(
+class VersionId(
 	val major: Int,
 	val minor: Int,
 	val build: Int,
 	val variantType: String,
-	val variantNumber: Int
+	val variantNumber: Int,
 ) : Comparable<VersionId> {
 
 	override fun compareTo(other: VersionId): Int {
@@ -30,10 +30,34 @@ data class VersionId(
 		return variantNumber.compareTo(other.variantNumber)
 	}
 
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as VersionId
+
+		if (major != other.major) return false
+		if (minor != other.minor) return false
+		if (build != other.build) return false
+		if (variantType != other.variantType) return false
+		if (variantNumber != other.variantNumber) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		var result = major
+		result = 31 * result + minor
+		result = 31 * result + build
+		result = 31 * result + variantType.hashCode()
+		result = 31 * result + variantNumber
+		return result
+	}
+
 	companion object {
 
 		private fun variantWeight(variantType: String) =
-			when (variantType.toLowerCase(Locale.ROOT)) {
+			when (variantType.lowercase(Locale.ROOT)) {
 				"a", "alpha" -> 1
 				"b", "beta" -> 2
 				"rc" -> 4

@@ -11,7 +11,10 @@
 
 	<com.google.android.material.textfield.TextInputLayout
 		android:id="@+id/inputLayout"
-		style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+		app:boxBackgroundMode="filled"
+		app:boxBackgroundColor="@android:color/transparent"
+		app:hintEnabled="false"
+		app:expandedHintEnabled="true"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
 
@@ -21,7 +24,7 @@
 			android:layout_height="wrap_content"
 			android:imeOptions="actionDone"
 			android:singleLine="true"
-			tools:text="@tools:sample/lorem[2]" />
+			tools:hint="@tools:sample/lorem[2]" />
 
 	</com.google.android.material.textfield.TextInputLayout>
 

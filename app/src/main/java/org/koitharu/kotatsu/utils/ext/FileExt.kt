@@ -1,10 +1,13 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
+import android.provider.OpenableColumns
+import androidx.core.database.getStringOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
@@ -60,4 +63,19 @@ fun Uri.toFileOrNull() = if (scheme == "file") path?.let(::File) else null
 
 suspend fun File.deleteAwait() = withContext(Dispatchers.IO) {
 	delete()
+}
+
+fun ContentResolver.resolveName(uri: Uri): String? {
+	val fallback = uri.lastPathSegment
+	if (uri.scheme != "content") {
+		return fallback
+	}
+	query(uri, null, null, null, null)?.use {
+		if (it.moveToFirst()) {
+			it.getStringOrNull(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))?.let { name ->
+				return name
+			}
+		}
+	}
+	return fallback
 }

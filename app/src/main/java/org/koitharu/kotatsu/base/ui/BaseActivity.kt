@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.base.ui
 
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -60,11 +61,11 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		toolbar?.let(this::setSupportActionBar)
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 
-		val toolbarParams = (toolbar ?: binding.root.findViewById<View>(R.id.toolbar_card))
+		val toolbarParams = (binding.root.findViewById<View>(R.id.toolbar_card) ?: toolbar)
 			?.layoutParams as? AppBarLayout.LayoutParams
 		if (toolbarParams != null) {
 			if (get<AppSettings>().isToolbarHideWhenScrolling) {
-				toolbarParams.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
+				toolbarParams.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
 			} else {
 				toolbarParams.scrollFlags = SCROLL_FLAG_NO_SCROLL
 			}
@@ -99,6 +100,12 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 
 	private fun setupToolbar() {
 		(findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
+	}
+
+	protected fun isDarkAmoledTheme(): Boolean {
+		val uiMode = resources.configuration.uiMode
+		val isNight = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+		return isNight && get<AppSettings>().isAmoledTheme
 	}
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {

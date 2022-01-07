@@ -29,7 +29,10 @@ class YaoiChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loa
 					name = a.text().trim(),
 					number = i + 1,
 					url = href,
-					source = source
+					uploadDate = 0L,
+					source = source,
+					scanlator = null,
+					branch = null,
 				)
 			}
 		)

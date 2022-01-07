@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils.ext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transform
 
 fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
 	var isFirstCall = true
@@ -16,4 +17,10 @@ fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
 
 inline fun <T, R> Flow<List<T>>.mapItems(crossinline transform: (T) -> R): Flow<List<R>> {
 	return map { list -> list.map(transform) }
+}
+
+inline fun <T> Flow<T?>.filterNotNull(
+	crossinline predicate: suspend (T) -> Boolean,
+): Flow<T> = transform { value ->
+	if (value != null && predicate(value)) return@transform emit(value)
 }

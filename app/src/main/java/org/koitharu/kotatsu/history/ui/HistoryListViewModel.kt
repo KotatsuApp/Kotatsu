@@ -20,7 +20,6 @@ import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
@@ -81,8 +80,11 @@ class HistoryListViewModel(
 		grouped: Boolean,
 		mode: ListMode
 	): List<ListModel> {
-		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size)
+		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
 		var prevDate: DateTimeAgo? = null
+		if (!grouped) {
+			result += ListHeader(null, R.string.history)
+		}
 		for ((manga, history) in list) {
 			if (grouped) {
 				val date = timeAgo(history.updatedAt)

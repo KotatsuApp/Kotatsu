@@ -8,6 +8,6 @@ data class MangaPage(
 	val id: Long,
 	val url: String,
 	val referer: String,
-	val preview: String? = null,
-	val source: MangaSource
+	val preview: String?,
+	val source: MangaSource,
 ) : Parcelable

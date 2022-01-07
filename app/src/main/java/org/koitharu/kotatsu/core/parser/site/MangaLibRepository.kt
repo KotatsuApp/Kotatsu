@@ -9,8 +9,8 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	RemoteMangaRepository(loaderContext) {
@@ -27,11 +27,11 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		SortOrder.NEWEST
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		if (!query.isNullOrEmpty()) {
 			return if (offset == 0) search(query) else emptyList()
@@ -44,20 +44,21 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			append(getSortKey(sortOrder))
 			append("&page=")
 			append(page)
-			if (tag != null) {
-				append("&includeGenres[]=")
+			tags?.forEach { tag ->
+				append("&genres[include][]=")
 				append(tag.key)
 			}
 		}
 		val doc = loaderContext.httpGet(url).parseHtml()
 		val root = doc.body().getElementById("manga-list") ?: throw ParseException("Root not found")
-		val items = root.selectFirst("div.media-cards-grid").select("div.media-card-wrap")
+		val items = root.selectFirst("div.media-cards-grid")?.select("div.media-card-wrap")
+			?: return emptyList()
 		return items.mapNotNull { card ->
 			val a = card.selectFirst("a.media-card") ?: return@mapNotNull null
 			val href = a.relUrl("href")
 			Manga(
 				id = generateUid(href),
-				title = card.selectFirst("h3").text(),
+				title = card.selectFirst("h3")?.text().orEmpty(),
 				coverUrl = a.absUrl("data-src"),
 				altTitle = null,
 				author = null,
@@ -79,6 +80,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		val info = root.selectFirst("div.media-content")
 		val chaptersDoc = loaderContext.httpGet("$fullUrl?section=chapters").parseHtml()
 		val scripts = chaptersDoc.select("script")
+		val dateFormat = SimpleDateFormat("yyy-MM-dd", Locale.US)
 		var chapters: ArrayList<MangaChapter>? = null
 		scripts@ for (script in scripts) {
 			val raw = script.html().lines()
@@ -91,29 +93,33 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					for (i in 0 until total) {
 						val item = list.getJSONObject(i)
 						val chapterId = item.getLong("chapter_id")
-						val branchName = item.getStringOrNull("username")
+						val scanlator = item.getStringOrNull("username")
 						val url = buildString {
 							append(manga.url)
 							append("/v")
 							append(item.getInt("chapter_volume"))
 							append("/c")
 							append(item.getString("chapter_number"))
+							@Suppress("BlockingMethodInNonBlockingContext") // lint issue
 							append('/')
 							append(item.optString("chapter_string"))
 						}
-						var name = item.getString("chapter_name")
-						if (name.isNullOrBlank() || name == "null") {
-							name = "Том " + item.getInt("chapter_volume") +
-									" Глава " + item.getString("chapter_number")
-						}
+						val nameChapter = item.getStringOrNull("chapter_name")
+						val volume = item.getInt("chapter_volume")
+						val number = item.getString("chapter_number")
+						val fullNameChapter = "Том $volume. Глава $number"
 						chapters.add(
 							MangaChapter(
 								id = generateUid(chapterId),
 								url = url,
 								source = source,
-								branch = branchName,
 								number = total - i,
-								name = name
+								uploadDate = dateFormat.tryParse(
+									item.getString("chapter_created_at").substringBefore(" ")
+								),
+								scanlator = scanlator,
+								branch = null,
+								name = if (nameChapter.isNullOrBlank()) fullNameChapter else "$fullNameChapter - $nameChapter",
 							)
 						)
 					}
@@ -128,17 +134,17 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			rating = root.selectFirst("div.media-stats-item__score")
 				?.selectFirst("span")
 				?.text()?.toFloatOrNull()?.div(5f) ?: manga.rating,
-			author = info.getElementsMatchingOwnText("Автор").firstOrNull()
+			author = info?.getElementsMatchingOwnText("Автор")?.firstOrNull()
 				?.nextElementSibling()?.text() ?: manga.author,
-			tags = info.selectFirst("div.media-tags")
+			tags = info?.selectFirst("div.media-tags")
 				?.select("a.media-tag-item")?.mapToSet { a ->
 					MangaTag(
-						title = a.text().capitalize(),
+						title = a.text().toCamelCase(),
 						key = a.attr("href").substringAfterLast('='),
 						source = source
 					)
 				} ?: manga.tags,
-			description = info.selectFirst("div.media-description__text")?.html(),
+			description = info?.selectFirst("div.media-description__text")?.html(),
 			chapters = chapters
 		)
 	}
@@ -146,11 +152,11 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val fullUrl = chapter.url.withDomain()
 		val doc = loaderContext.httpGet(fullUrl).parseHtml()
-		if (doc.location()?.endsWith("/register") == true) {
+		if (doc.location().endsWith("/register")) {
 			throw AuthRequiredException("/login".inContextOf(doc))
 		}
 		val scripts = doc.head().select("script")
-		val pg = doc.body().getElementById("pg").html()
+		val pg = (doc.body().getElementById("pg")?.html() ?: parseFailed("Element #pg not found"))
 			.substringAfter('=')
 			.substringBeforeLast(';')
 		val pages = JSONArray(pg)
@@ -173,8 +179,9 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					MangaPage(
 						id = generateUid(pageUrl),
 						url = pageUrl,
+						preview = null,
 						referer = fullUrl,
-						source = source
+						source = source,
 					)
 				}
 			}
@@ -196,7 +203,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					result += MangaTag(
 						source = source,
 						key = x.getInt("id").toString(),
-						title = x.getString("name").capitalize()
+						title = x.getString("name").toCamelCase()
 					)
 				}
 				return result
@@ -234,8 +241,8 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					.toFloatOrNull()?.div(5f) ?: Manga.NO_RATING,
 				state = null,
 				source = source,
-				coverUrl = "https://$domain${covers.getString("thumbnail")}",
-				largeCoverUrl = "https://$domain${covers.getString("default")}"
+				coverUrl = covers.getString("thumbnail"),
+				largeCoverUrl = covers.getString("default")
 			)
 		}
 	}

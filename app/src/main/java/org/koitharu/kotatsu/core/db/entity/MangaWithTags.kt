@@ -5,7 +5,7 @@ import androidx.room.Junction
 import androidx.room.Relation
 import org.koitharu.kotatsu.utils.ext.mapToSet
 
-data class MangaWithTags(
+class MangaWithTags(
 	@Embedded val manga: MangaEntity,
 	@Relation(
 		parentColumn = "manga_id",

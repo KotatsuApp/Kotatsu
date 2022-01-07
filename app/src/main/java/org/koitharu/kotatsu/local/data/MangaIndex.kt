@@ -7,6 +7,8 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaTag
+import org.koitharu.kotatsu.utils.ext.getBooleanOrDefault
+import org.koitharu.kotatsu.utils.ext.getLongOrDefault
 import org.koitharu.kotatsu.utils.ext.getStringOrNull
 import org.koitharu.kotatsu.utils.ext.mapToSet
 
@@ -20,9 +22,11 @@ class MangaIndex(source: String?) {
 		json.put("title_alt", manga.altTitle)
 		json.put("url", manga.url)
 		json.put("public_url", manga.publicUrl)
+		json.put("author", manga.author)
 		json.put("cover", manga.coverUrl)
 		json.put("description", manga.description)
 		json.put("rating", manga.rating)
+		json.put("nsfw", manga.isNsfw)
 		json.put("source", manga.source.name)
 		json.put("cover_large", manga.largeCoverUrl)
 		json.put("tags", JSONArray().also { a ->
@@ -48,8 +52,11 @@ class MangaIndex(source: String?) {
 			altTitle = json.getStringOrNull("title_alt"),
 			url = json.getString("url"),
 			publicUrl = json.getStringOrNull("public_url").orEmpty(),
+			author = json.getStringOrNull("author"),
+			largeCoverUrl = json.getStringOrNull("cover_large"),
 			source = source,
 			rating = json.getDouble("rating").toFloat(),
+			isNsfw = json.getBooleanOrDefault("nsfw", false),
 			coverUrl = json.getString("cover"),
 			description = json.getStringOrNull("description"),
 			tags = json.getJSONArray("tags").mapToSet { x ->
@@ -59,7 +66,7 @@ class MangaIndex(source: String?) {
 					source = source
 				)
 			},
-			chapters = getChapters(json.getJSONObject("chapters"), source)
+			chapters = getChapters(json.getJSONObject("chapters"), source),
 		)
 	}.getOrNull()
 
@@ -72,6 +79,8 @@ class MangaIndex(source: String?) {
 			jo.put("number", chapter.number)
 			jo.put("url", chapter.url)
 			jo.put("name", chapter.name)
+			jo.put("uploadDate", chapter.uploadDate)
+			jo.put("scanlator", chapter.scanlator)
 			jo.put("branch", chapter.branch)
 			jo.put("entries", "%03d\\d{3}".format(chapter.number))
 			chapters.put(chapter.id.toString(), jo)
@@ -98,8 +107,10 @@ class MangaIndex(source: String?) {
 					name = v.getString("name"),
 					url = v.getString("url"),
 					number = v.getInt("number"),
+					uploadDate = v.getLongOrDefault("uploadDate", 0L),
+					scanlator = v.getStringOrNull("scanlator"),
 					branch = v.getStringOrNull("branch"),
-					source = source
+					source = source,
 				)
 			)
 		}

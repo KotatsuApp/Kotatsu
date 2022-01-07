@@ -1,16 +1,20 @@
 package org.koitharu.kotatsu.remotelist.ui
 
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import org.koitharu.kotatsu.core.model.MangaFilter
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.list.ui.MangaListFragment
+import org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity
 import org.koitharu.kotatsu.utils.ext.parcelableArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class RemoteListFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<RemoteListViewModel>(mode = LazyThreadSafetyMode.NONE) {
+	override val viewModel by viewModel<RemoteListViewModel> {
 		parametersOf(source)
 	}
 
@@ -24,9 +28,24 @@ class RemoteListFragment : MangaListFragment() {
 		return source.title
 	}
 
-	override fun onFilterChanged(filter: MangaFilter) {
-		viewModel.applyFilter(filter)
-		super.onFilterChanged(filter)
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater.inflate(R.menu.opt_list_remote, menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.action_source_settings -> {
+				startActivity(
+					SimpleSettingsActivity.newSourceSettingsIntent(
+						context ?: return false,
+						source,
+					)
+				)
+				true
+			}
+			else -> super.onOptionsItemSelected(item)
+		}
 	}
 
 	companion object {

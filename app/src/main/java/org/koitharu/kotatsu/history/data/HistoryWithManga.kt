@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.MangaTagsEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 
-data class HistoryWithManga(
+class HistoryWithManga(
 	@Embedded val history: HistoryEntity,
 	@Relation(
 		parentColumn = "manga_id",

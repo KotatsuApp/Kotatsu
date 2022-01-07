@@ -8,7 +8,7 @@
 	android:paddingEnd="?android:listPreferredItemPaddingEnd">
 
 	<com.google.android.material.checkbox.MaterialCheckBox
-		android:id="@android:id/checkbox"
+		android:id="@+id/checkbox"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		tools:text="@tools:sample/lorem[3]" />

@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey
 		)
 	]
 )
-data class SuggestionEntity(
+class SuggestionEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id", index = true) val mangaId: Long,
 	@ColumnInfo(name = "relevance") val relevance: Float,

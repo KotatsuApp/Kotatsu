@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(
@@ -17,11 +18,11 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		SortOrder.ALPHABETICAL
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		val domain = getDomain()
 		val url = when {
@@ -31,11 +32,15 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				}
 				"https://$domain/?do=search&subaction=search&story=${query.urlEncoded()}"
 			}
-			tag != null -> "https://$domain/tags/${tag.key}&n=${getSortKey2(sortOrder)}?offset=$offset"
+			!tags.isNullOrEmpty() -> tags.joinToString(
+				prefix = "https://$domain/tags/",
+				postfix = "&n=${getSortKey2(sortOrder)}?offset=$offset",
+				separator = "+",
+			) { tag -> tag.key }
 			else -> "https://$domain/${getSortKey(sortOrder)}?offset=$offset"
 		}
 		val doc = loaderContext.httpGet(url).parseHtml()
-		val root = doc.body().selectFirst("div.main_fon").getElementById("content")
+		val root = doc.body().selectFirst("div.main_fon")?.getElementById("content")
 			?: throw ParseException("Cannot find root")
 		return root.select("div.content_row").mapNotNull { row ->
 			val a = row.selectFirst("div.manga_row1")?.selectFirst("h2")?.selectFirst("a")
@@ -72,19 +77,21 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root =
 			doc.body().getElementById("dle-content") ?: throw ParseException("Cannot find root")
+		val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 		return manga.copy(
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
 			largeCoverUrl = root.getElementById("cover")?.absUrl("src"),
-			chapters = root.select("table.table_cha").flatMap { table ->
-				table.select("div.manga2")
-			}.map { it.selectFirst("a") }.reversed().mapIndexedNotNull { i, a ->
-				val href = a.relUrl("href")
+			chapters = root.select("table.table_cha tr:gt(1)").reversed().mapIndexedNotNull { i, tr ->
+				val href = tr?.selectFirst("a")?.relUrl("href") ?: return@mapIndexedNotNull null
 				MangaChapter(
 					id = generateUid(href),
-					name = a.text().trim(),
+					name = tr.selectFirst("a")?.text().orEmpty(),
 					number = i + 1,
 					url = href,
-					source = source
+					scanlator = null,
+					branch = null,
+					uploadDate = dateFormat.tryParse(tr.selectFirst("div.date")?.text()),
+					source = source,
 				)
 			}
 		)
@@ -112,8 +119,9 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				MangaPage(
 					id = generateUid(url),
 					url = url,
+					preview = null,
 					referer = fullUrl,
-					source = source
+					source = source,
 				)
 			}
 		}
@@ -123,12 +131,12 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 	override suspend fun getTags(): Set<MangaTag> {
 		val domain = getDomain()
 		val doc = loaderContext.httpGet("https://$domain/catalog").parseHtml()
-		val root = doc.body().selectFirst("div.main_fon").getElementById("side")
-			.select("ul").last()
+		val root = doc.body().selectFirst("div.main_fon")?.getElementById("side")
+			?.select("ul")?.last() ?: throw ParseException("Cannot find root")
 		return root.select("li.sidetag").mapToSet { li ->
-			val a = li.children().last()
+			val a = li.children().last() ?: throw ParseException("a is null")
 			MangaTag(
-				title = a.text().capitalize(),
+				title = a.text().toCamelCase(),
 				key = a.attr("href").substringAfterLast('/'),
 				source = source
 			)
@@ -150,4 +158,5 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 			SortOrder.NEWEST -> "datedesc"
 			else -> "favdesc"
 		}
+
 }

@@ -6,4 +6,5 @@ object CommonHeaders {
 	const val USER_AGENT = "User-Agent"
 	const val ACCEPT = "Accept"
 	const val CONTENT_DISPOSITION = "Content-Disposition"
+	const val COOKIE = "Cookie"
 }

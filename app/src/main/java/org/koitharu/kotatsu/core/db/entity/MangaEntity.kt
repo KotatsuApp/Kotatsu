@@ -9,7 +9,7 @@ import org.koitharu.kotatsu.core.model.MangaState
 import org.koitharu.kotatsu.core.model.MangaTag
 
 @Entity(tableName = "manga")
-data class MangaEntity(
+class MangaEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val id: Long,
 	@ColumnInfo(name = "title") val title: String,

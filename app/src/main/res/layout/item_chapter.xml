@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -13,25 +13,51 @@
 		android:layout_height="wrap_content"
 		android:layout_centerVertical="true"
 		android:layout_marginStart="12dp"
-		android:layout_marginEnd="10dp"
 		android:background="@drawable/bg_badge_default"
 		android:gravity="center"
 		android:minWidth="26dp"
 		android:textAlignment="center"
 		android:textColor="?android:textColorSecondaryInverse"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
 		tools:text="13" />
 
 	<TextView
 		android:id="@+id/textView_title"
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_centerVertical="true"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="8dp"
 		android:layout_marginEnd="12dp"
 		android:layout_toEndOf="@id/textView_number"
 		android:ellipsize="end"
-		android:maxLines="2"
+		android:maxLines="1"
 		android:text="?android:textColorPrimary"
 		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+		app:layout_constraintBottom_toTopOf="@+id/textView_description"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@+id/textView_number"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_goneMarginBottom="8dp"
 		tools:text="@tools:sample/lorem[15]" />
 
-</RelativeLayout>
+	<TextView
+		android:id="@+id/textView_description"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginEnd="12dp"
+		android:layout_marginBottom="8dp"
+		android:ellipsize="end"
+		android:singleLine="true"
+		android:textColor="?attr/colorControlNormal"
+		android:textSize="12sp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@+id/textView_number"
+		app:layout_constraintTop_toBottomOf="@+id/textView_title"
+		tools:text="05.10.2021 • Scanlator" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

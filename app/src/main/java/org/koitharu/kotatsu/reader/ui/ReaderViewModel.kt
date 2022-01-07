@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.reader.ui
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.LongSparseArray
-import android.webkit.URLUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
@@ -19,15 +18,17 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
-import org.koitharu.kotatsu.utils.MediaStoreCompat
+import org.koitharu.kotatsu.utils.DownloadManagerHelper
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.IgnoreErrors
+import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 
 class ReaderViewModel(
 	intent: MangaIntent,
@@ -35,7 +36,8 @@ class ReaderViewModel(
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val shortcutsRepository: ShortcutsRepository,
-	private val settings: AppSettings
+	private val settings: AppSettings,
+	private val downloadManagerHelper: DownloadManagerHelper,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job? = null
@@ -147,22 +149,17 @@ class ReaderViewModel(
 		return pages.filter { it.chapterId == chapterId }.map { it.toMangaPage() }
 	}
 
-	fun saveCurrentPage(resolver: ContentResolver) {
+	fun saveCurrentPage() {
 		launchJob(Dispatchers.Default) {
 			try {
 				val state = currentState.value ?: error("Undefined state")
 				val page = content.value?.pages?.find {
 					it.chapterId == state.chapterId && it.index == state.page
 				}?.toMangaPage() ?: error("Page not found")
-				val repo = page.source.repository
+				val repo = MangaRepository(page.source)
 				val pageUrl = repo.getPageUrl(page)
-				val file = get<PagesCache>()[pageUrl] ?: error("Page not found in cache")
-				val uri = file.inputStream().use { input ->
-					val fileName = URLUtil.guessFileName(pageUrl, null, null)
-					MediaStoreCompat(resolver).insertImage(fileName) {
-						input.copyTo(it)
-					}
-				}
+				val downloadId = downloadManagerHelper.downloadPage(page, pageUrl)
+				val uri = downloadManagerHelper.awaitDownload(downloadId)
 				onPageSaved.postCall(uri)
 			} catch (e: CancellationException) {
 			} catch (e: Exception) {

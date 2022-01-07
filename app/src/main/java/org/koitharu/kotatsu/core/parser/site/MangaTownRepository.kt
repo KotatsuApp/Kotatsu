@@ -7,6 +7,8 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MangaTownRepository(loaderContext: MangaLoaderContext) :
@@ -23,11 +25,11 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		SortOrder.UPDATED
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		val sortKey = when (sortOrder) {
 			SortOrder.ALPHABETICAL -> "?name.az"
@@ -43,22 +45,28 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 				}
 				"/search?name=${query.urlEncoded()}".withDomain()
 			}
-			tag != null -> "/directory/${tag.key}/$page.htm$sortKey".withDomain()
-			else -> "/directory/$page.htm$sortKey".withDomain()
+			tags.isNullOrEmpty() -> "/directory/$page.htm$sortKey".withDomain()
+			tags.size == 1 -> "/directory/${tags.first().key}/$page.htm$sortKey".withDomain()
+			else -> tags.joinToString(
+				prefix = "/search?page=$page".withDomain()
+			) { tag ->
+				"&genres[${tag.key}]=1"
+			}
 		}
 		val doc = loaderContext.httpGet(url).parseHtml()
 		val root = doc.body().selectFirst("ul.manga_pic_list")
 			?: throw ParseException("Root not found")
 		return root.select("li").mapNotNull { li ->
 			val a = li.selectFirst("a.manga_cover")
-			val href = a.relUrl("href")
+			val href = a?.relUrl("href")
+				?: return@mapNotNull null
 			val views = li.select("p.view")
 			val status = views.findOwnText { x -> x.startsWith("Status:") }
-				?.substringAfter(':')?.trim()?.toLowerCase(Locale.ROOT)
+				?.substringAfter(':')?.trim()?.lowercase(Locale.ROOT)
 			Manga(
 				id = generateUid(href),
 				title = a.attr("title"),
-				coverUrl = a.selectFirst("img").absUrl("src"),
+				coverUrl = a.selectFirst("img")?.absUrl("src").orEmpty(),
 				source = MangaSource.MANGATOWN,
 				altTitle = null,
 				rating = li.selectFirst("p.score")?.selectFirst("b")
@@ -87,11 +95,12 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root = doc.body().selectFirst("section.main")
 			?.selectFirst("div.article_content") ?: throw ParseException("Cannot find root")
-		val info = root.selectFirst("div.detail_info").selectFirst("ul")
+		val info = root.selectFirst("div.detail_info")?.selectFirst("ul")
 		val chaptersList = root.selectFirst("div.chapter_content")
 			?.selectFirst("ul.chapter_list")?.select("li")?.asReversed()
+		val dateFormat = SimpleDateFormat("MMM dd,yyyy", Locale.US)
 		return manga.copy(
-			tags = manga.tags + info.select("li").find { x ->
+			tags = manga.tags + info?.select("li")?.find { x ->
 				x.selectFirst("b")?.ownText() == "Genre(s):"
 			}?.select("a")?.mapNotNull { a ->
 				MangaTag(
@@ -100,9 +109,10 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 					source = MangaSource.MANGATOWN
 				)
 			}.orEmpty(),
-			description = info.getElementById("show")?.ownText(),
+			description = info?.getElementById("show")?.ownText(),
 			chapters = chaptersList?.mapIndexedNotNull { i, li ->
-				val href = li.selectFirst("a").relUrl("href")
+				val href = li.selectFirst("a")?.relUrl("href")
+					?: return@mapIndexedNotNull null
 				val name = li.select("span").filter { it.className().isEmpty() }
 					.joinToString(" - ") { it.text() }.trim()
 				MangaChapter(
@@ -110,7 +120,13 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 					url = href,
 					source = MangaSource.MANGATOWN,
 					number = i + 1,
-					name = if (name.isEmpty()) "${manga.title} - ${i + 1}" else name
+					uploadDate = parseChapterDate(
+						dateFormat,
+						li.selectFirst("span.time")?.text()
+					),
+					name = name.ifEmpty { "${manga.title} - ${i + 1}" },
+					scanlator = null,
+					branch = null,
 				)
 			}
 		)
@@ -121,7 +137,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		val doc = loaderContext.httpGet(fullUrl).parseHtml()
 		val root = doc.body().selectFirst("div.page_select")
 			?: throw ParseException("Cannot find root")
-		return root.selectFirst("select").select("option").mapNotNull {
+		return root.selectFirst("select")?.select("option")?.mapNotNull {
 			val href = it.relUrl("value")
 			if (href.endsWith("featured.html")) {
 				return@mapNotNull null
@@ -129,23 +145,24 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 			MangaPage(
 				id = generateUid(href),
 				url = href,
+				preview = null,
 				referer = fullUrl,
-				source = MangaSource.MANGATOWN
+				source = MangaSource.MANGATOWN,
 			)
-		}
+		} ?: parseFailed("Pages list not found")
 	}
 
 	override suspend fun getPageUrl(page: MangaPage): String {
 		val doc = loaderContext.httpGet(page.url.withDomain()).parseHtml()
-		return doc.getElementById("image").absUrl("src")
+		return doc.getElementById("image")?.absUrl("src") ?: parseFailed("Image not found")
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
 		val doc = loaderContext.httpGet("/directory/".withDomain()).parseHtml()
 		val root = doc.body().selectFirst("aside.right")
-			.getElementsContainingOwnText("Genres")
-			.first()
-			.nextElementSibling()
+			?.getElementsContainingOwnText("Genres")
+			?.first()
+			?.nextElementSibling() ?: parseFailed("Root not found")
 		return root.select("li").mapNotNullToSet { li ->
 			val a = li.selectFirst("a") ?: return@mapNotNullToSet null
 			val key = a.attr("href").parseTagKey()
@@ -157,6 +174,15 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 				key = key,
 				title = a.text()
 			)
+		}
+	}
+
+	private fun parseChapterDate(dateFormat: DateFormat, date: String?): Long {
+		return when {
+			date.isNullOrEmpty() -> 0L
+			date.contains("Today") -> Calendar.getInstance().timeInMillis
+			date.contains("Yesterday") -> Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }.timeInMillis
+			else -> dateFormat.tryParse(date)
 		}
 	}
 

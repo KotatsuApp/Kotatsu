@@ -1,0 +1,24 @@
+<p><a href="https://github.com/nv95/Kotatsu">Kotatsu</a> is a free and open source manga reader for Android.</p>
+<p>Copyright (C) 2020 by Koitharu</p>
+<p>This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+   along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+<h3>Open Source Licenses</h3>
+<ul>
+   <li>AOSP: <a href="https://source.android.com/setup/start/licenses">APL 2.0</a></li>
+   <li>OkHttp: <a href="https://github.com/square/okhttp/blob/master/LICENSE.txt">APL 2.0</a></li>
+   <li>Okio: <a href="https://github.com/square/okio/blob/master/LICENSE.txt">APL 2.0</a></li>
+   <li>jsoup: <a href="https://github.com/jhy/jsoup/blob/master/LICENSE">MIT</a></li>
+   <li>AdapterDelegates: <a href="https://github.com/sockeqwe/AdapterDelegates/blob/master/LICENSE">APL 2.0</a></li>
+   <li>Koin: <a href="https://github.com/InsertKoinIO/koin/blob/master/LICENSE">APL 2.0</a></li>
+   <li>Coil: <a href="https://github.com/coil-kt/coil/blob/main/LICENSE.txt">APL 2.0</a></li>
+   <li>Subsampling Scale Image View: <a href="https://github.com/davemorrissey/subsampling-scale-image-view/blob/master/LICENSE">APL 2.0</a></li>
+   <li>Disk LRU Cache: <a href="https://github.com/solkin/disk-lru-cache/blob/master/LICENSE">MIT</a></li>
+</ul>

@@ -6,15 +6,14 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:background="?attr/selectableItemBackground"
-	android:paddingStart="16dp"
-	android:paddingEnd="16dp">
+	android:paddingStart="8dp"
+	android:paddingEnd="8dp">
 
 	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/card_cover"
 		android:layout_width="48dp"
 		android:layout_height="48dp"
-		android:layout_marginTop="8dp"
-		android:layout_marginBottom="8dp"
+		android:layout_margin="8dp"
 		app:cardCornerRadius="4dp"
 		app:cardElevation="4dp"
 		app:layout_constraintBottom_toBottomOf="parent"
@@ -38,6 +37,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="16dp"
 		android:layout_marginTop="4dp"
+		android:layout_marginEnd="8dp"
 		android:orientation="horizontal"
 		app:layout_constraintBottom_toTopOf="@id/textView_chapters"
 		app:layout_constraintEnd_toEndOf="parent"
@@ -75,6 +75,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="16dp"
+		android:layout_marginEnd="8dp"
 		android:layout_marginBottom="4dp"
 		android:ellipsize="none"
 		app:layout_constraintBottom_toBottomOf="parent"

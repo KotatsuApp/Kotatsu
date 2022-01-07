@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.utils.ext
 
 import androidx.core.os.LocaleListCompat
 import java.util.*
-import kotlin.collections.ArrayList
 
 fun LocaleListCompat.toList(): List<Locale> {
 	val list = ArrayList<Locale>(size())
@@ -26,4 +25,8 @@ inline fun <R, C : MutableCollection<in R>> LocaleListCompat.mapTo(
 
 inline fun <T> LocaleListCompat.map(block: (Locale) -> T): List<T> {
 	return mapTo(ArrayList(size()), block)
+}
+
+inline fun <T> LocaleListCompat.mapToSet(block: (Locale) -> T): Set<T> {
+	return mapTo(LinkedHashSet(size()), block)
 }

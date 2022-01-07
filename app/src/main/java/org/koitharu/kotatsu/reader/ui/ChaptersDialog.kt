@@ -9,22 +9,25 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.DialogChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.history.domain.ChapterExtra
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
-	OnListItemClickListener<MangaChapter> {
+	OnListItemClickListener<ChapterListItem> {
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = DialogChaptersBinding.inflate(inflater, container, false)
 
 	override fun onBuildDialog(builder: AlertDialog.Builder) {
@@ -44,6 +47,7 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 		}
 		val currentId = arguments?.getLong(ARG_CURRENT_ID, 0L) ?: 0L
 		val currentPosition = chapters.indexOfFirst { it.id == currentId }
+		val dateFormat = get<AppSettings>().dateFormat()
 		binding.recyclerViewChapters.adapter = ChaptersAdapter(this).apply {
 			setItems(chapters.mapIndexed { index, chapter ->
 				chapter.toListItem(
@@ -51,7 +55,9 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 						index < currentPosition -> ChapterExtra.READ
 						index == currentPosition -> ChapterExtra.CURRENT
 						else -> ChapterExtra.UNREAD
-					}
+					},
+					isMissing = false,
+					dateFormat = dateFormat,
 				)
 			}) {
 				if (currentPosition >= 0) {
@@ -66,11 +72,11 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 		}
 	}
 
-	override fun onItemClick(item: MangaChapter, view: View) {
+	override fun onItemClick(item: ChapterListItem, view: View) {
 		((parentFragment as? OnChapterChangeListener)
 			?: (activity as? OnChapterChangeListener))?.let {
 			dismiss()
-			it.onChapterChanged(item)
+			it.onChapterChanged(item.chapter)
 		}
 	}
 

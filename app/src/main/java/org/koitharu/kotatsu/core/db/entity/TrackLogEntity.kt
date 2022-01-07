@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
 		)
 	]
 )
-data class TrackLogEntity(
+class TrackLogEntity(
 	@PrimaryKey(autoGenerate = true)
 	@ColumnInfo(name = "id") val id: Long = 0L,
 	@ColumnInfo(name = "manga_id", index = true) val mangaId: Long,

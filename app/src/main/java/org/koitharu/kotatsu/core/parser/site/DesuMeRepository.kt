@@ -6,7 +6,6 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
 
@@ -21,11 +20,11 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		SortOrder.ALPHABETICAL
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		if (query != null && offset != 0) {
 			return emptyList()
@@ -38,9 +37,9 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			append(getSortKey(sortOrder))
 			append("&page=")
 			append((offset / 20) + 1)
-			if (tag != null) {
+			if (!tags.isNullOrEmpty()) {
 				append("&genres=")
-				append(tag.key)
+				appendAll(tags, ",") { it.key }
 			}
 			if (query != null) {
 				append("&search=")
@@ -94,12 +93,17 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			description = json.getString("description"),
 			chapters = chaptersList.mapIndexed { i, it ->
 				val chid = it.getLong("id")
+				val volChap = "Том " + it.getString("vol") + ". " + "Глава " + it.getString("ch")
+				val title = if (it.getString("title") == "null") "" else it.getString("title")
 				MangaChapter(
 					id = generateUid(chid),
 					source = manga.source,
 					url = "$baseChapterUrl$chid",
-					name = it.getStringOrNull("title") ?: "${manga.title} #${it.getDouble("ch")}",
-					number = totalChapters - i
+					uploadDate = it.getLong("date") * 1000,
+					name = if (title.isEmpty()) volChap else "$volChap: $title",
+					number = totalChapters - i,
+					scanlator = null,
+					branch = null,
 				)
 			}.reversed()
 		)
@@ -114,20 +118,22 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			MangaPage(
 				id = generateUid(jo.getLong("id")),
 				referer = fullUrl,
+				preview = null,
 				source = chapter.source,
-				url = jo.getString("img")
+				url = jo.getString("img"),
 			)
 		}
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
 		val doc = loaderContext.httpGet("https://${getDomain()}/manga/").parseHtml()
-		val root = doc.body().getElementById("animeFilter").selectFirst(".catalog-genres")
+		val root = doc.body().getElementById("animeFilter")
+			?.selectFirst(".catalog-genres") ?: throw ParseException("Root not found")
 		return root.select("li").mapToSet {
 			MangaTag(
 				source = source,
-				key = it.selectFirst("input").attr("data-genre"),
-				title = it.selectFirst("label").text()
+				key = it.selectFirst("input")?.attr("data-genre") ?: parseFailed(),
+				title = it.selectFirst("label")?.text() ?: parseFailed()
 			)
 		}
 	}

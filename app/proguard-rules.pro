@@ -5,9 +5,7 @@
 	public static void checkReturnedValueIsNotNull(...);
 	public static void checkFieldIsNotNull(...);
 	public static void checkParameterIsNotNull(...);
+	public static void checkNotNullParameter(...);
 }
 -keep class org.koitharu.kotatsu.core.db.entity.* { *; }
--keepclassmembers public class * extends org.koitharu.kotatsu.core.parser.MangaRepository {
-	public <init>(...);
-}
 -dontwarn okhttp3.internal.platform.ConscryptPlatform

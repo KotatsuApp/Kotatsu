@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class NineMangaRepository(
@@ -16,62 +17,66 @@ abstract class NineMangaRepository(
 ) : RemoteMangaRepository(loaderContext) {
 
 	init {
-		loaderContext.insertCookies(getDomain(), "ninemanga_template_desk=yes")
+		loaderContext.cookieJar.insertCookies(getDomain(), "ninemanga_template_desk=yes")
 	}
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.POPULARITY,
 	)
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?,
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
 		val page = (offset / PAGE_SIZE.toFloat()).toIntUp() + 1
 		val url = buildString {
 			append("https://")
 			append(getDomain())
-			if (query.isNullOrEmpty()) {
-				append("/category/")
-				if (tag != null) {
-					append(tag.key)
-				} else {
-					append("index")
+			when {
+				!query.isNullOrEmpty() -> {
+					append("/search/?name_sel=&wd=")
+					append(query.urlEncoded())
+					append("&page=")
 				}
-				append("_")
-				append(page)
-				append(".html")
-			} else {
-				append("/search/?name_sel=&wd=")
-				append(query.urlEncoded())
-				append("&page=")
-				append(page)
-				append(".html")
+				!tags.isNullOrEmpty() -> {
+					append("/search/?category_id=")
+					for (tag in tags) {
+						append(tag.key)
+						append(',')
+					}
+					append("&page=")
+				}
+				else -> {
+					append("/category/index_")
+				}
 			}
+			append(page)
+			append(".html")
 		}
 		val doc = loaderContext.httpGet(url, PREDEFINED_HEADERS).parseHtml()
 		val root = doc.body().selectFirst("ul.direlist")
 			?: throw ParseException("Cannot find root")
 		val baseHost = root.baseUri().toHttpUrl().host
 		return root.select("li").map { node ->
-			val href = node.selectFirst("a").absUrl("href")
+			val href = node.selectFirst("a")?.absUrl("href")
+				?: parseFailed("Link not found")
 			val relUrl = href.toRelativeUrl(baseHost)
 			val dd = node.selectFirst("dd")
 			Manga(
 				id = generateUid(relUrl),
 				url = relUrl,
 				publicUrl = href,
-				title = dd.selectFirst("a.bookname").text().toCamelCase(),
+				title = dd?.selectFirst("a.bookname")?.text()?.toCamelCase().orEmpty(),
 				altTitle = null,
-				coverUrl = node.selectFirst("img").absUrl("src"),
+				coverUrl = node.selectFirst("img")?.absUrl("src").orEmpty(),
 				rating = Manga.NO_RATING,
 				author = null,
 				tags = emptySet(),
 				state = null,
 				source = source,
-				description = dd.selectFirst("p").html(),
+				description = dd?.selectFirst("p")?.html(),
 			)
 		}
 	}
@@ -86,7 +91,7 @@ abstract class NineMangaRepository(
 		val infoRoot = root.selectFirst("div.bookintro")
 			?: throw ParseException("Cannot find info")
 		return manga.copy(
-			tags = infoRoot.getElementsByAttributeValue("itemprop", "genre")?.first()
+			tags = infoRoot.getElementsByAttributeValue("itemprop", "genre").first()
 				?.select("a")?.mapToSet { a ->
 					MangaTag(
 						title = a.text(),
@@ -94,20 +99,23 @@ abstract class NineMangaRepository(
 						source = source,
 					)
 				}.orEmpty(),
-			author = infoRoot.getElementsByAttributeValue("itemprop", "author")?.first()?.text(),
-			description = infoRoot.getElementsByAttributeValue("itemprop", "description")?.first()
+			author = infoRoot.getElementsByAttributeValue("itemprop", "author").first()?.text(),
+			state = parseStatus(infoRoot.select("li a.red").text()),
+			description = infoRoot.getElementsByAttributeValue("itemprop", "description").first()
 				?.html()?.substringAfter("</b>"),
-			chapters = root.selectFirst("div.chapterbox")?.selectFirst("ul")
-				?.select("li")?.asReversed()?.mapIndexed { i, li ->
-					val a = li.selectFirst("a")
-					val href = a.relUrl("href")
+			chapters = root.selectFirst("div.chapterbox")?.select("ul.sub_vol_ul > li")
+				?.asReversed()?.mapIndexed { i, li ->
+					val a = li.selectFirst("a.chapter_list_a")
+					val href = a?.relUrl("href")?.replace("%20", " ") ?: parseFailed("Link not found")
 					MangaChapter(
 						id = generateUid(href),
 						name = a.text(),
 						number = i + 1,
 						url = href,
-						branch = null,
+						uploadDate = parseChapterDateByLang(li.selectFirst("span")?.text().orEmpty()),
 						source = source,
+						scanlator = null,
+						branch = null,
 					)
 				}
 		)
@@ -135,17 +143,62 @@ abstract class NineMangaRepository(
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val doc = loaderContext.httpGet("https://${getDomain()}/category/", PREDEFINED_HEADERS)
+		val doc = loaderContext.httpGet("https://${getDomain()}/search/?type=high", PREDEFINED_HEADERS)
 			.parseHtml()
-		val root = doc.body().selectFirst("ul.genreidex")
-		return root.select("li").mapToSet { li ->
-			val a = li.selectFirst("a")
+		val root = doc.body().getElementById("search_form")
+		return root?.select("li.cate_list")?.mapNotNullToSet { li ->
+			val cateId = li.attr("cate_id") ?: return@mapNotNullToSet null
+			val a = li.selectFirst("a") ?: return@mapNotNullToSet null
 			MangaTag(
-				title = a.text(),
-				key = a.attr("href").substringBetweenLast("/", "."),
+				title = a.text().toTitleCase(),
+				key = cateId,
 				source = source
 			)
+		} ?: parseFailed("Root not found")
+	}
+
+	private fun parseStatus(status: String) = when {
+		status.contains("Ongoing") -> MangaState.ONGOING
+		status.contains("Completed") -> MangaState.FINISHED
+		else -> null
+	}
+
+	private fun parseChapterDateByLang(date: String): Long {
+		val dateWords = date.split(" ")
+
+		if (dateWords.size == 3) {
+			if (dateWords[1].contains(",")) {
+				SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).tryParse(date)
+			} else {
+				val timeAgo = Integer.parseInt(dateWords[0])
+				return Calendar.getInstance().apply {
+					when (dateWords[1]) {
+						"minutes" -> Calendar.MINUTE // EN-FR
+						"hours" -> Calendar.HOUR // EN
+
+						"minutos" -> Calendar.MINUTE // ES
+						"horas" -> Calendar.HOUR
+
+						// "minutos" -> Calendar.MINUTE // BR
+						"hora" -> Calendar.HOUR
+
+						"минут" -> Calendar.MINUTE // RU
+						"часа" -> Calendar.HOUR
+
+						"Stunden" -> Calendar.HOUR // DE
+
+						"minuti" -> Calendar.MINUTE // IT
+						"ore" -> Calendar.HOUR
+
+						"heures" -> Calendar.HOUR // FR ("minutes" also French word)
+						else -> null
+					}?.let {
+						add(it, -timeAgo)
+					}
+				}.timeInMillis
+			}
 		}
+		return 0L
 	}
 
 	class English(loaderContext: MangaLoaderContext) : NineMangaRepository(

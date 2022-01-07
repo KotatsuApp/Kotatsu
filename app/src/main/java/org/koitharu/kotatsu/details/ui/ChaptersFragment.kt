@@ -15,19 +15,20 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
-import org.koitharu.kotatsu.download.DownloadService
+import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 
 class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
-	OnListItemClickListener<MangaChapter>, ActionMode.Callback, AdapterView.OnItemSelectedListener {
+	OnListItemClickListener<ChapterListItem>,
+	ActionMode.Callback,
+	AdapterView.OnItemSelectedListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 
@@ -105,15 +106,19 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onItemClick(item: MangaChapter, view: View) {
+	override fun onItemClick(item: ChapterListItem, view: View) {
 		if (selectionDecoration?.checkedItemsCount != 0) {
-			selectionDecoration?.toggleItemChecked(item.id)
+			selectionDecoration?.toggleItemChecked(item.chapter.id)
 			if (selectionDecoration?.checkedItemsCount == 0) {
 				actionMode?.finish()
 			} else {
 				actionMode?.invalidate()
 				binding.recyclerViewChapters.invalidateItemDecorations()
 			}
+			return
+		}
+		if (item.isMissing) {
+			(activity as? DetailsActivity)?.showChapterMissingDialog(item.chapter.id)
 			return
 		}
 		val options = ActivityOptions.makeScaleUpAnimation(
@@ -127,17 +132,17 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 			ReaderActivity.newIntent(
 				view.context,
 				viewModel.manga.value ?: return,
-				ReaderState(item.id, 0, 0)
+				ReaderState(item.chapter.id, 0, 0)
 			), options.toBundle()
 		)
 	}
 
-	override fun onItemLongClick(item: MangaChapter, view: View): Boolean {
+	override fun onItemLongClick(item: ChapterListItem, view: View): Boolean {
 		if (actionMode == null) {
 			actionMode = (activity as? AppCompatActivity)?.startSupportActionMode(this)
 		}
 		return actionMode?.also {
-			selectionDecoration?.setItemIsChecked(item.id, true)
+			selectionDecoration?.setItemIsChecked(item.chapter.id, true)
 			binding.recyclerViewChapters.invalidateItemDecorations()
 			it.invalidate()
 		} != null
@@ -148,7 +153,7 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 			R.id.action_save -> {
 				DownloadService.start(
 					context ?: return false,
-					viewModel.manga.value ?: return false,
+					viewModel.getRemoteManga() ?: viewModel.manga.value ?: return false,
 					selectionDecoration?.checkedItemsIds
 				)
 				mode.finish()
@@ -174,17 +179,20 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
 		val manga = viewModel.manga.value
 		mode.menuInflater.inflate(R.menu.mode_chapters, menu)
-		menu.findItem(R.id.action_save).isVisible = manga?.source != MangaSource.LOCAL
 		mode.title = manga?.title
 		return true
 	}
 
 	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		val count = selectionDecoration?.checkedItemsCount ?: return false
+		val selectedIds = selectionDecoration?.checkedItemsIds ?: return false
+		val items = chaptersAdapter?.items?.filter { x -> x.chapter.id in selectedIds }.orEmpty()
+		menu.findItem(R.id.action_save).isVisible = items.none { x ->
+			x.chapter.source == MangaSource.LOCAL
+		}
 		mode.subtitle = resources.getQuantityString(
 			R.plurals.chapters_from_x,
-			count,
-			count,
+			items.size,
+			items.size,
 			chaptersAdapter?.itemCount ?: 0
 		)
 		return true

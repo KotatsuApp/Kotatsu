@@ -48,6 +48,14 @@ fun String.toCamelCase(): String {
 	return result.toString()
 }
 
+fun String.toTitleCase(): String {
+	return replaceFirstChar { x -> x.uppercase() }
+}
+
+fun String.toTitleCase(locale: Locale): String {
+	return replaceFirstChar { x -> x.uppercase(locale) }
+}
+
 fun String.transliterate(skipMissing: Boolean): String {
 	val cyr = charArrayOf(
 		'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п',
@@ -114,7 +122,7 @@ fun ByteArray.byte2HexFormatted(): String {
 		if (l > 2) {
 			h = h.substring(l - 2, l)
 		}
-		str.append(h.toUpperCase(Locale.ROOT))
+		str.append(h.uppercase(Locale.ROOT))
 		if (i < size - 1) {
 			str.append(':')
 		}
@@ -157,6 +165,13 @@ fun String.substringBetweenLast(from: String, to: String, fallbackValue: String 
 
 fun String.find(regex: Regex) = regex.find(this)?.value
 
+fun String.removeSuffix(suffix: Char): String {
+	if (lastOrNull() == suffix) {
+		return substring(0, length - 1)
+	}
+	return this
+}
+
 fun String.levenshteinDistance(other: String): Int {
 	if (this == other) {
 		return 0
@@ -193,4 +208,20 @@ fun String.levenshteinDistance(other: String): Int {
 	}
 
 	return cost[lhsLength - 1]
+}
+
+inline fun <T> StringBuilder.appendAll(
+	items: Iterable<T>,
+	separator: CharSequence,
+	transform: (T) -> CharSequence = { it.toString() },
+) {
+	var isFirst = true
+	for (item in items) {
+		if (isFirst) {
+			isFirst = false
+		} else {
+			append(separator)
+		}
+		append(transform(item))
+	}
 }

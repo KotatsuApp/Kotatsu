@@ -36,7 +36,7 @@ class FavouritesPagerAdapter(
 	override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
 		val item = differ.currentList[position]
 		tab.text = item.title
-		tab.view.tag = item
+		tab.view.tag = item.id
 		tab.view.setOnLongClickListener(this)
 	}
 
@@ -45,7 +45,8 @@ class FavouritesPagerAdapter(
 	}
 
 	override fun onLongClick(v: View): Boolean {
-		val item = v.tag as? FavouriteCategory ?: return false
+		val itemId = v.tag as? Long ?: return false
+		val item = differ.currentList.find { x -> x.id == itemId } ?: return false
 		return longClickListener.onTabLongClick(v, item)
 	}
 

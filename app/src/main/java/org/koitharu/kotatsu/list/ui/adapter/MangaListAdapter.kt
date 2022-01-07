@@ -6,6 +6,7 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
@@ -17,7 +18,8 @@ class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>,
-	onRetryClick: (Throwable) -> Unit
+	onRetryClick: (Throwable) -> Unit,
+	onTagRemoveClick: (MangaTag) -> Unit,
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
 	init {
@@ -37,10 +39,8 @@ class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(onRetryClick))
 			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(onRetryClick))
 			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD())
-	}
-
-	fun setItems(list: List<ListModel>, commitCallback: Runnable) {
-		differ.submitList(list, commitCallback)
+			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
+			.addDelegate(ITEM_TYPE_FILTER, currentFilterAD(onTagRemoveClick))
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {
@@ -77,5 +77,7 @@ class MangaListAdapter(
 		const val ITEM_TYPE_ERROR_STATE = 6
 		const val ITEM_TYPE_ERROR_FOOTER = 7
 		const val ITEM_TYPE_EMPTY = 8
+		const val ITEM_TYPE_HEADER = 9
+		const val ITEM_TYPE_FILTER = 10
 	}
 }

@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey
 			onDelete = ForeignKey.CASCADE
 		)]
 )
-data class MangaPrefsEntity(
+class MangaPrefsEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val mangaId: Long,
 	@ColumnInfo(name = "mode") val mode: Int

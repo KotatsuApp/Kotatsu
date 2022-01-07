@@ -1,15 +1,21 @@
 package org.koitharu.kotatsu.base.domain
 
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koitharu.kotatsu.core.exceptions.GraphQLException
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.await
+import org.koitharu.kotatsu.utils.ext.parseJson
+
 
 open class MangaLoaderContext(
 	private val okHttp: OkHttpClient,
-	private val cookieJar: CookieJar
+	val cookieJar: CookieJar,
 ) : KoinComponent {
 
 	suspend fun httpGet(url: String, headers: Headers? = null): Response {
@@ -24,7 +30,7 @@ open class MangaLoaderContext(
 
 	suspend fun httpPost(
 		url: String,
-		form: Map<String, String>
+		form: Map<String, String>,
 	): Response {
 		val body = FormBody.Builder()
 		form.forEach { (k, v) ->
@@ -38,7 +44,7 @@ open class MangaLoaderContext(
 
 	suspend fun httpPost(
 		url: String,
-		payload: String
+		payload: String,
 	): Response {
 		val body = FormBody.Builder()
 		payload.split('&').forEach {
@@ -55,20 +61,24 @@ open class MangaLoaderContext(
 		return okHttp.newCall(request.build()).await()
 	}
 
+	suspend fun graphQLQuery(endpoint: String, query: String): JSONObject {
+		val body = JSONObject()
+		body.put("operationName", null)
+		body.put("variables", JSONObject())
+		body.put("query", "{${query}}")
+		val mediaType = "application/json; charset=utf-8".toMediaType()
+		val requestBody = body.toString().toRequestBody(mediaType)
+		val request = Request.Builder()
+			.post(requestBody)
+			.url(endpoint)
+		val json = okHttp.newCall(request.build()).await().parseJson()
+		json.optJSONArray("errors")?.let {
+			if (it.length() != 0) {
+				throw GraphQLException(it)
+			}
+		}
+		return json
+	}
+
 	open fun getSettings(source: MangaSource) = SourceSettings(get(), source)
-
-	fun insertCookies(domain: String, vararg cookies: String) {
-		val url = HttpUrl.Builder()
-			.scheme(SCHEME_HTTP)
-			.host(domain)
-			.build()
-		cookieJar.saveFromResponse(url, cookies.mapNotNull {
-			Cookie.parse(url, it)
-		})
-	}
-
-	private companion object {
-
-		private const val SCHEME_HTTP = "http"
-	}
 }

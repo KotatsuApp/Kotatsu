@@ -8,22 +8,20 @@ import org.koitharu.kotatsu.utils.ext.parseHtml
 
 class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 
-	override val defaultDomain = "hentaichan.pro"
+	override val defaultDomain = "hentaichan.live"
 	override val source = MangaSource.HENCHAN
 
-	override suspend fun getList(
+	override suspend fun getList2(
 		offset: Int,
 		query: String?,
-		sortOrder: SortOrder?,
-		tag: MangaTag?
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
 	): List<Manga> {
-		return super.getList(offset, query, sortOrder, tag).map {
-			val cover = it.coverUrl
-			if (cover.contains("_blur")) {
-				it.copy(coverUrl = cover.replace("_blur", ""))
-			} else {
-				it
-			}
+		return super.getList2(offset, query, tags, sortOrder).map {
+			it.copy(
+				coverUrl = it.coverUrl.replace("_blur", ""),
+				isNsfw = true,
+			)
 		}
 	}
 
@@ -36,7 +34,7 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
 			largeCoverUrl = root.getElementById("cover")?.absUrl("src"),
 			tags = root.selectFirst("div.sidetags")?.select("li.sidetag")?.mapToSet {
-				val a = it.children().last()
+				val a = it.children().last() ?: parseFailed("Invalid tag")
 				MangaTag(
 					title = a.text(),
 					key = a.attr("href").substringAfterLast('/'),
@@ -49,7 +47,10 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 					url = readLink,
 					source = source,
 					number = 1,
-					name = manga.title
+					uploadDate = 0L,
+					name = manga.title,
+					scanlator = null,
+					branch = null,
 				)
 			)
 		)

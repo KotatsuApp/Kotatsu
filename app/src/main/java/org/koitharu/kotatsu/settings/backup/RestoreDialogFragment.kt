@@ -22,10 +22,10 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = DialogProgressBinding.inflate(inflater, container, false)
 
-	private val viewModel by viewModel<RestoreViewModel>(mode = LazyThreadSafetyMode.NONE) {
+	private val viewModel by viewModel<RestoreViewModel> {
 		parametersOf(arguments?.getString(ARG_FILE)?.toUriOrNull())
 	}
 

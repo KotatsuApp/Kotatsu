@@ -10,4 +10,17 @@
 		android:id="@+id/action_rename"
 		android:title="@string/rename" />
 
+	<item
+		android:id="@+id/action_order"
+		android:title="@string/sort_order">
+
+		<menu>
+
+			<group
+				android:id="@+id/group_order"
+				android:checkableBehavior="single" />
+		</menu>
+
+	</item>
+
 </menu>

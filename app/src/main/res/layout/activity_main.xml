@@ -12,11 +12,19 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@id/container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
 		<com.google.android.material.appbar.AppBarLayout
 			android:id="@+id/appbar"
 			style="@style/Widget.Kotatsu.AppBar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:background="@android:color/transparent"
+			android:stateListAnimator="@null"
 			app:elevation="0dp">
 
 			<com.google.android.material.card.MaterialCardView
@@ -35,33 +43,31 @@
 					style="@style/Widget.Kotatsu.Toolbar"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
+					android:focusable="true"
+					android:focusableInTouchMode="true"
 					app:contentInsetStartWithNavigation="0dp"
-					app:layout_scrollFlags="scroll|enterAlways"
 					app:titleTextAppearance="@style/TextAppearance.Kotatsu.PersistentToolbarTitle"
 					app:titleTextColor="?android:colorControlNormal"
-					android:focusableInTouchMode="true"
-					android:focusable="true"
 					tools:title="@string/app_name">
 
-					<androidx.appcompat.widget.SearchView
+					<org.koitharu.kotatsu.search.ui.widget.SearchEditText
 						android:id="@+id/searchView"
+						style="@style/Widget.Kotatsu.SearchView"
 						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						app:iconifiedByDefault="false"
-						app:queryHint="@string/search_manga"
-						android:paddingStart="-12dp"/>
+						android:layout_height="match_parent"
+						android:background="@null"
+						android:gravity="center_vertical"
+						android:hint="@string/search_manga"
+						android:imeOptions="actionSearch"
+						android:importantForAutofill="no"
+						android:paddingBottom="1dp"
+						android:singleLine="true" />
 
 				</com.google.android.material.appbar.MaterialToolbar>
 
 			</com.google.android.material.card.MaterialCardView>
 
 		</com.google.android.material.appbar.AppBarLayout>
-
-		<androidx.fragment.app.FragmentContainerView
-			android:id="@id/container"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 		<com.google.android.material.floatingactionbutton.FloatingActionButton
 			android:id="@+id/fab"

@@ -29,7 +29,11 @@ class MangaSearchRepository(
 		MangaProviderFactory.getSources(settings, includeHidden = false).asFlow()
 			.flatMapMerge(concurrency) { source ->
 				runCatching {
-					source.repository.getList(0, query, SortOrder.POPULARITY)
+					source.repository.getList2(
+						offset = 0,
+						query = query,
+						sortOrder = SortOrder.POPULARITY
+					)
 				}.getOrElse {
 					emptyList()
 				}.asFlow()

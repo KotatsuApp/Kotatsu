@@ -27,5 +27,6 @@ interface SourceSettings {
 
 		const val KEY_DOMAIN = "domain"
 		const val KEY_USE_SSL = "ssl"
+		const val KEY_AUTH = "auth"
 	}
 }

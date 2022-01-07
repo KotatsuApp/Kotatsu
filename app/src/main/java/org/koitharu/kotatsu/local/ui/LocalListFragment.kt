@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.local.ui
 
-import android.content.ActivityNotFoundException
+import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -15,20 +15,41 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.ellipsize
 
-class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
+class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri?> {
 
-	override val viewModel by viewModel<LocalListViewModel>(mode = LazyThreadSafetyMode.NONE)
+	override val viewModel by viewModel<LocalListViewModel>()
 	private val importCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocument(),
 		this
 	)
+	private val downloadReceiver = object : BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) {
+			if (intent?.action == DownloadService.ACTION_DOWNLOAD_COMPLETE) {
+				viewModel.onRefresh()
+			}
+		}
+	}
+
+	override fun onAttach(context: Context) {
+		super.onAttach(context)
+		context.registerReceiver(
+			downloadReceiver,
+			IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE)
+		)
+	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		viewModel.onMangaRemoved.observe(viewLifecycleOwner, ::onItemRemoved)
+	}
+
+	override fun onDetach() {
+		requireContext().unregisterReceiver(downloadReceiver)
+		super.onDetach()
 	}
 
 	override fun onScrolledToEnd() = Unit
@@ -65,7 +86,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 
 	override fun onActivityResult(result: Uri?) {
 		if (result != null) {
-			viewModel.importFile(result)
+			viewModel.importFile(context?.applicationContext ?: return, result)
 		}
 	}
 

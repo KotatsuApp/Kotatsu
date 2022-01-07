@@ -12,20 +12,21 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.progress.Progress
 
 class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListener.Callback,
 	OnListItemClickListener<Manga> {
 
-	private val viewModel by viewModel<FeedViewModel>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by viewModel<FeedViewModel>()
 
 	private var feedAdapter: FeedAdapter? = null
 	private var updateStatusSnackbar: Snackbar? = null
@@ -97,7 +98,9 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
+		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		binding.recyclerView.updatePadding(
+			top = headerHeight,
 			left = insets.left,
 			right = insets.right,
 			bottom = insets.bottom

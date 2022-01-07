@@ -2,9 +2,15 @@
 
 	<!-- Widget styles -->
 
+	<style name="Widget.Kotatsu" parent="@android:style/Widget.Material" />
+
 	<style name="Widget.Kotatsu.AppBar" parent="@style/Widget.Design.AppBarLayout">
 		<item name="android:background">?attr/colorSurface</item>
-		<item name="android:elevation">8dp</item>
+		<item name="android:elevation">4dp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Sheet.AppBar" parent="@style/Widget.Kotatsu.AppBar">
+		<item name="android:elevation">0dp</item>
 	</style>
 
 	<style name="Widget.Kotatsu.Toolbar" parent="Widget.MaterialComponents.Toolbar">
@@ -22,6 +28,7 @@
 		<item name="tabTextColor">@color/tab_text</item>
 		<item name="tabTextAppearance">@style/TextAppearance.Kotatsu.Tab</item>
 		<item name="tabIndicatorAnimationMode">elastic</item>
+		<item name="tabRippleColor">@color/color_primary_alpha</item>
 	</style>
 
 	<style name="Widget.Kotatsu.NavigationView" parent="@style/Widget.MaterialComponents.NavigationView">
@@ -33,14 +40,16 @@
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
 		<item name="queryBackground">@null</item>
+		<item name="android:textColorHint">?attr/colorControlNormal</item>
+		<item name="android:textSize">18sp</item>
 	</style>
 
 	<style name="Widget.Kotatsu.Chip" parent="Widget.MaterialComponents.Chip.Action">
 		<item name="chipStrokeWidth">1dp</item>
-		<item name="chipStrokeColor">?attr/colorAccent</item>
+		<item name="chipStrokeColor">?attr/colorPrimary</item>
 		<item name="chipBackgroundColor">@android:color/transparent</item>
 		<item name="chipIconTint">?attr/colorPrimary</item>
-		<item name="android:textColor">?attr/colorAccent</item>
+		<item name="closeIconTint">?attr/colorPrimary</item>
 
 		<!-- Smaller text/height -->
 		<item name="android:textSize">12sp</item>
@@ -61,6 +70,14 @@
 	<style name="Widget.Kotatsu.ActionMode" parent="Widget.AppCompat.ActionMode">
 		<item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
 		<item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
+	</style>
+
+	<!-- textAppearance alone doesn't support line spacing attrs. Multiline body text will use
+         style="Widget.Kotatsu.MultilineBody" instead of the equivalent textAppearance.
+	-->
+	<style name="Widget.Kotatsu.MultilineBody">
+		<item name="android:lineSpacingExtra">4sp</item>
+		<item name="android:textColor">?android:textColorSecondary</item>
 	</style>
 
 	<!-- TextAppearance -->
@@ -88,5 +105,13 @@
 	</style>
 
 	<style name="TextAppearance.Kotatsu.Body2" parent="TextAppearance.MaterialComponents.Body2" />
+
+	<style name="TextAppearance.Kotatsu.H1" parent="@style/TextAppearance.MaterialComponents.Headline5">
+		<item name="android:textSize">@dimen/text_size_h1</item>
+	</style>
+
+	<style name="TextAppearance.Kotatsu.NoticeBody" parent="@style/Widget.Kotatsu.MultilineBody">
+		<item name="android:textSize">18sp</item>
+	</style>
 
 </resources>

@@ -20,6 +20,11 @@
 		android:title="@string/black_dark_theme"
 		app:iconSpaceReserved="false" />
 
+	<ListPreference
+		android:key="date_format"
+		android:title="@string/date_format"
+		app:iconSpaceReserved="false" />
+
 	<SwitchPreference
 		android:defaultValue="true"
 		android:key="hide_toolbar"
@@ -79,30 +84,14 @@
 		android:title="@string/new_chapters_checking"
 		app:iconSpaceReserved="false" />
 
-	<PreferenceCategory
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
+		android:title="@string/backup_restore"
+		app:iconSpaceReserved="false" />
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.about.AboutSettingsFragment"
 		android:title="@string/about"
-		app:iconSpaceReserved="false">
-
-		<PreferenceScreen
-			android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
-			android:title="@string/backup_restore"
-			app:iconSpaceReserved="false" />
-
-		<SwitchPreference
-			android:defaultValue="true"
-			android:key="app_update_auto"
-			android:summary="@string/show_notification_app_update"
-			android:title="@string/application_update"
-			app:iconSpaceReserved="false"
-			app:isPreferenceVisible="false"
-			tools:isPreferenceVisible="true" />
-
-		<Preference
-			android:key="app_version"
-			android:persistent="false"
-			android:summary="@string/check_for_updates"
-			app:iconSpaceReserved="false" />
-
-	</PreferenceCategory>
+		app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

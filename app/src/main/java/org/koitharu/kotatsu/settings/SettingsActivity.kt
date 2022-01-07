@@ -30,7 +30,6 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 		}
 	}
 
-	@Suppress("DEPRECATION")
 	override fun onPreferenceStartFragment(
 		caller: PreferenceFragmentCompat,
 		pref: Preference
