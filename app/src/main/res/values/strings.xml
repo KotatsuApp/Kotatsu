@@ -53,7 +53,7 @@
     <string name="theme">Theme</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
-    <string name="automatic">System</string>
+    <string name="automatic">Follow system</string>
     <string name="pages">Pages</string>
     <string name="clear">Clear</string>
     <string name="text_clear_history_prompt">Clear all reading history permanently?</string>
@@ -86,7 +86,7 @@
     <string name="volume_buttons">Volume buttons</string>
     <string name="_continue">Continue</string>
     <string name="warning">Warning</string>
-    <string name="network_consumption_warning">This may download a lot of power</string>
+    <string name="network_consumption_warning">This may transfer a lot of data</string>
     <string name="dont_ask_again">Don\'t ask again</string>
     <string name="cancelling_">Cancelling…</string>
     <string name="error">Error</string>
@@ -129,7 +129,7 @@
     <string name="manga_shelf">Shelf</string>
     <string name="recent_manga">Recent</string>
     <string name="pages_animation">Page animation</string>
-    <string name="manga_save_location">Downloads</string>
+    <string name="manga_save_location">Folder for downloads</string>
     <string name="not_available">Not available</string>
     <string name="cannot_find_available_storage">No available storage</string>
     <string name="other_storage">Other storage</string>
@@ -175,7 +175,7 @@
     <string name="zoom_mode_fit_width">Fit to width</string>
     <string name="zoom_mode_keep_start">Keep at start</string>
     <string name="black_dark_theme">Black</string>
-    <string name="black_dark_theme_summary">Useful for AMOLED screens</string>
+    <string name="black_dark_theme_summary">Uses less power on AMOLED screens</string>
     <string name="restart_required">Restart required</string>
     <string name="backup_restore"><![CDATA[Backup and restore]]></string>
     <string name="create_backup">Create data backup</string>
@@ -245,7 +245,7 @@
     <string name="date_format">Date format</string>
     <string name="system_default">Default</string>
     <string name="exclude_nsfw_from_history">Exclude NSFW manga from history</string>
-    <string name="error_empty_name">You must pick a name</string>
+    <string name="error_empty_name">You must enter a name</string>
     <string name="show_pages_numbers">Numbered pages</string>
     <string name="enabled_sources">Used sources</string>
     <string name="available_sources">Available sources</string>
