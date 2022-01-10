@@ -93,14 +93,14 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			description = json.getString("description"),
 			chapters = chaptersList.mapIndexed { i, it ->
 				val chid = it.getLong("id")
-				val volChap = "Том " + it.getString("vol") + ". " + "Глава " + it.getString("ch")
-				val title = if (it.getString("title") == "null") "" else it.getString("title")
+				val volChap = "Том " + it.optString("vol", "0") + ". " + "Глава " + it.optString("ch", "0")
+				val title = it.optString("title", "null").takeUnless { it == "null" }
 				MangaChapter(
 					id = generateUid(chid),
 					source = manga.source,
 					url = "$baseChapterUrl$chid",
 					uploadDate = it.getLong("date") * 1000,
-					name = if (title.isEmpty()) volChap else "$volChap: $title",
+					name = if (title.isNullOrEmpty()) volChap else "$volChap: $title",
 					number = totalChapters - i,
 					scanlator = null,
 					branch = null,

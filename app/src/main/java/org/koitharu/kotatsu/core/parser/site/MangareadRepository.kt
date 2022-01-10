@@ -55,7 +55,7 @@ class MangareadRepository(
 				id = generateUid(href),
 				url = href,
 				publicUrl = href.inContextOf(div),
-				coverUrl = div.selectFirst("img")?.absUrl("src").orEmpty(),
+				coverUrl = div.selectFirst("img")?.absUrl("data-src").orEmpty(),
 				title = summary?.selectFirst("h3")?.text().orEmpty(),
 				rating = div.selectFirst("span.total_votes")?.ownText()
 					?.toFloatOrNull()?.div(5f) ?: -1f,
@@ -107,16 +107,6 @@ class MangareadRepository(
 		val root2 = doc.body().selectFirst("div.content-area")
 			?.selectFirst("div.c-page")
 			?: throw ParseException("Root2 not found")
-		val mangaId = doc.getElementsByAttribute("data-post").firstOrNull()
-			?.attr("data-post")?.toLongOrNull()
-			?: throw ParseException("Cannot obtain manga id")
-		val doc2 = loaderContext.httpPost(
-			"https://${getDomain()}/wp-admin/admin-ajax.php",
-			mapOf(
-				"action" to "manga_get_chapters",
-				"manga" to mangaId.toString()
-			)
-		).parseHtml()
 		val dateFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.US)
 		return manga.copy(
 			tags = root.selectFirst("div.genres-content")?.select("a")
@@ -132,7 +122,7 @@ class MangareadRepository(
 				?.select("p")
 				?.filterNot { it.ownText().startsWith("A brief description") }
 				?.joinToString { it.html() },
-			chapters = doc2.select("li").asReversed().mapIndexed { i, li ->
+			chapters = root2.select("li").asReversed().mapIndexed { i, li ->
 				val a = li.selectFirst("a")
 				val href = a?.relUrl("href").orEmpty().ifEmpty {
 					parseFailed("Link is missing")
@@ -144,7 +134,7 @@ class MangareadRepository(
 					url = href,
 					uploadDate = parseChapterDate(
 						dateFormat,
-						doc2.selectFirst("span.chapter-release-date i")?.text()
+						li.selectFirst("span.chapter-release-date i")?.text()
 					),
 					source = MangaSource.MANGAREAD,
 					scanlator = null,

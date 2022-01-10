@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.koin.core.component.inject
+import org.koin.core.logger.Level
 import org.koin.core.parameter.parametersOf
 import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
@@ -18,7 +19,7 @@ import org.koitharu.kotatsu.utils.TestResponse
 import org.koitharu.kotatsu.utils.ext.mapToSet
 import org.koitharu.kotatsu.utils.ext.medianOrNull
 import org.koitharu.kotatsu.utils.isAbsoluteUrl
-import org.koitharu.kotatsu.utils.isRelativeUrl
+import org.koitharu.kotatsu.utils.isNotAbsoluteUrl
 
 @RunWith(Parameterized::class)
 class RemoteMangaRepositoryTest(private val source: MangaSource) : KoinTest {
@@ -29,7 +30,7 @@ class RemoteMangaRepositoryTest(private val source: MangaSource) : KoinTest {
 
 	@get:Rule
 	val koinTestRule = KoinTestRule.create {
-		printLogger()
+		printLogger(Level.ERROR)
 		modules(repositoryTestModule)
 	}
 
@@ -112,7 +113,7 @@ class RemoteMangaRepositoryTest(private val source: MangaSource) : KoinTest {
 		Truth.assertThat(list.map { it.id }).containsNoDuplicates()
 		for (item in list) {
 			Truth.assertThat(item.url).isNotEmpty()
-			Truth.assertThat(item.url).isRelativeUrl()
+			Truth.assertThat(item.url).isNotAbsoluteUrl()
 			Truth.assertThat(item.coverUrl).isAbsoluteUrl()
 			Truth.assertThat(item.title).isNotEmpty()
 			Truth.assertThat(item.publicUrl).isAbsoluteUrl()

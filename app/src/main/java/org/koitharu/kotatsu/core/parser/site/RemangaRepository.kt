@@ -125,10 +125,10 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 					number = chapters.length() - i,
 					name = buildString {
 						append("Том ")
-						append(jo.getString("tome"))
+						append(jo.optString("tome", "0"))
 						append(". ")
 						append("Глава ")
-						append(jo.getString("chapter"))
+						append(jo.optString("chapter", "0"))
 						if (name.isNotEmpty()) {
 							append(" - ")
 							append(name)

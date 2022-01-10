@@ -148,7 +148,7 @@ class MangaDexRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			chapters = feed.mapNotNull { jo ->
 				val id = jo.getString("id")
 				val attrs = jo.getJSONObject("attributes")
-				if (attrs.optJSONArray("data").isNullOrEmpty()) {
+				if (!attrs.isNull("externalUrl")) {
 					return@mapNotNull null
 				}
 				val locale = Locale.forLanguageTag(attrs.getString("translatedLanguage"))
@@ -175,11 +175,11 @@ class MangaDexRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			.parseJson()
 			.getJSONObject("data")
 			.getJSONObject("attributes")
-		val data = attrs.getJSONArray("data")
+		val pages = attrs.getJSONArray("pages")
 		val prefix = "https://uploads.$domain/data/${attrs.getString("hash")}/"
 		val referer = "https://$domain/"
-		return List(data.length()) { i ->
-			val url = prefix + data.getString(i)
+		return List(pages.length()) { i ->
+			val url = prefix + pages.getString(i)
 			MangaPage(
 				id = generateUid(url),
 				url = url,
