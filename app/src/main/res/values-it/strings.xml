@@ -246,4 +246,7 @@
     <string name="date_format">Formato della data</string>
     <string name="exclude_nsfw_from_history">Escludi i manga NSFW dalla storia</string>
     <string name="error_empty_name">Il nome non dovrebbe essere vuoto</string>
+    <string name="show_pages_numbers">Mostra i numeri delle pagine</string>
+    <string name="enabled_sources">Fonti abilitate</string>
+    <string name="available_sources">Fonti disponibili</string>
 </resources>
