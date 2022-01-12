@@ -246,4 +246,7 @@
     <string name="system_default">Par défaut</string>
     <string name="exclude_nsfw_from_history">Exclure les mangas osés de l\'historique</string>
     <string name="error_empty_name">Le nom ne doit pas être vide</string>
+    <string name="show_pages_numbers">Afficher les numéros de pages</string>
+    <string name="enabled_sources">Sources activées</string>
+    <string name="available_sources">Sources disponibles</string>
 </resources>
