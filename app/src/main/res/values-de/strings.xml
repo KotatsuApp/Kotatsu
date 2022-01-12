@@ -246,4 +246,7 @@
     <string name="system_default">Standard</string>
     <string name="exclude_nsfw_from_history">NSFW-Manga aus dem Verlauf ausschließen</string>
     <string name="error_empty_name">Der Name sollte nicht leer sein</string>
+    <string name="show_pages_numbers">Seitenzahlen anzeigen</string>
+    <string name="enabled_sources">Freigegebene Quellen</string>
+    <string name="available_sources">Verfügbare Quellen</string>
 </resources>
