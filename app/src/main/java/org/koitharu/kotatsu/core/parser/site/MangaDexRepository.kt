@@ -171,12 +171,11 @@ class MangaDexRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val domain = getDomain()
-		val attrs = loaderContext.httpGet("https://api.$domain/chapter/${chapter.url}")
+		val chapter = loaderContext.httpGet("https://api.$domain/at-home/server/${chapter.url}?forcePort443=false")
 			.parseJson()
-			.getJSONObject("data")
-			.getJSONObject("attributes")
-		val pages = attrs.getJSONArray("pages")
-		val prefix = "https://uploads.$domain/data/${attrs.getString("hash")}/"
+			.getJSONObject("chapter")
+		val pages = chapter.getJSONArray("data")
+		val prefix = "https://uploads.$domain/data/${chapter.getString("hash")}/"
 		val referer = "https://$domain/"
 		return List(pages.length()) { i ->
 			val url = prefix + pages.getString(i)
