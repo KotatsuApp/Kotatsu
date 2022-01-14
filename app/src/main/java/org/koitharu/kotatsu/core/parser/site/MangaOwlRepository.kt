@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import android.util.Base64
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
@@ -75,6 +76,10 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		val info = doc.body().selectFirst("div.single_detail") ?: parseFailed("An error occurred while parsing")
 		val table = doc.body().selectFirst("div.single-grid-right") ?: parseFailed("An error occurred while parsing")
 		val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
+		val trRegex = "window\\['tr'] = '([^']*)';".toRegex(RegexOption.IGNORE_CASE)
+		val trElement = doc.getElementsByTag("script").find { trRegex.find(it.data()) != null } ?: parseFailed("Oops, tr not found")
+		val tr = trRegex.find(trElement.data())!!.groups[1]!!.value
+		val s = Base64.encodeToString(defaultDomain.toByteArray(), Base64.NO_PADDING)
 		return manga.copy(
 			description = info.selectFirst(".description")?.html(),
 			largeCoverUrl = info.select("img").first()?.let { img ->
@@ -100,7 +105,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 					id = generateUid(href),
 					name = a.select("label").text(),
 					number = i + 1,
-					url = href,
+					url = "$href?tr=$tr&s=$s",
 					scanlator = null,
 					branch = null,
 					uploadDate = dateFormat.tryParse(li.selectFirst("small:last-of-type")?.text()),
@@ -120,7 +125,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 				id = generateUid(url),
 				url = url,
 				preview = null,
-				referer = fullUrl,
+				referer = url,
 				source = MangaSource.MANGAOWL,
 			)
 		}
