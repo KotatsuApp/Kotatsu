@@ -308,6 +308,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		submenu.removeGroup(R.id.group_remote_sources)
 		remoteSources.forEachIndexed { index, source ->
 			submenu.add(R.id.group_remote_sources, source.ordinal, index, source.title)
+				.setIcon(R.drawable.ic_manga_source)
 		}
 		submenu.setGroupCheckable(R.id.group_remote_sources, true, true)
 	}
