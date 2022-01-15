@@ -1,16 +1,19 @@
 package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.PointF
 import android.util.AttributeSet
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.utils.ext.toIntUp
 
-class WebtoonImageView @JvmOverloads constructor(context: Context, attr: AttributeSet? = null) :
-	SubsamplingScaleImageView(context, attr) {
+class WebtoonImageView @JvmOverloads constructor(
+	context: Context,
+	attr: AttributeSet? = null,
+) : SubsamplingScaleImageView(context, attr) {
 
 	private val ct = PointF()
-	private val displayHeight = resources.displayMetrics.heightPixels
+	private val displayHeight = (context as Activity).window.decorView.height
 
 	private var scrollPos = 0
 	private var scrollRange = SCROLL_UNKNOWN
@@ -53,6 +56,30 @@ class WebtoonImageView @JvmOverloads constructor(context: Context, attr: Attribu
 			desiredHeight = displayHeight
 		}
 		return desiredHeight
+	}
+
+	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+		val widthSpecMode = MeasureSpec.getMode(widthMeasureSpec)
+		val heightSpecMode = MeasureSpec.getMode(heightMeasureSpec)
+		val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
+		val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
+		val resizeWidth = widthSpecMode != MeasureSpec.EXACTLY
+		val resizeHeight = heightSpecMode != MeasureSpec.EXACTLY
+		var width = parentWidth
+		var height = parentHeight
+		if (sWidth > 0 && sHeight > 0) {
+			if (resizeWidth && resizeHeight) {
+				width = sWidth
+				height = sHeight
+			} else if (resizeHeight) {
+				height = (sHeight.toDouble() / sWidth.toDouble() * width).toInt()
+			} else if (resizeWidth) {
+				width = (sWidth.toDouble() / sHeight.toDouble() * height).toInt()
+			}
+		}
+		width = width.coerceAtLeast(suggestedMinimumWidth)
+		height = height.coerceIn(suggestedMinimumHeight, displayHeight)
+		setMeasuredDimension(width, height)
 	}
 
 	private fun scrollToInternal(pos: Int) {
