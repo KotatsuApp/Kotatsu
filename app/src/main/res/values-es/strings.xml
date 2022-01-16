@@ -242,8 +242,11 @@
     <string name="date_format">Formato de la fecha</string>
     <string name="system_default">Por defecto</string>
     <string name="tracker_warning">Algunos fabricantes pueden cambiar el comportamiento del sistema, lo que podría interrumpir las tareas en segundo plano.</string>
-    <string name="error_empty_name">Nombre no debe estar vacío</string>
+    <string name="error_empty_name">El nombre no debe estar vacío</string>
     <string name="auth_not_supported_by">Autorización en %s no es compatible</string>
     <string name="text_clear_cookies_prompt">Se cerrará la sesión de todas las fuentes en las que esté autorizado</string>
     <string name="exclude_nsfw_from_history">Excluye manga NSFW del historial</string>
+    <string name="show_pages_numbers">Mostrar los números de páginas</string>
+    <string name="enabled_sources">Fuentes activadas</string>
+    <string name="available_sources">Fuentes disponibles</string>
 </resources>
