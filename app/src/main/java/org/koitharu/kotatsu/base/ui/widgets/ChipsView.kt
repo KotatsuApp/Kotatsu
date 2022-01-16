@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
@@ -77,7 +76,6 @@ class ChipsView @JvmOverloads constructor(
 		val chip = Chip(context)
 		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
 		chip.setChipDrawable(drawable)
-		chip.setTextColor(ContextCompat.getColor(context, R.color.color_primary))
 		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)

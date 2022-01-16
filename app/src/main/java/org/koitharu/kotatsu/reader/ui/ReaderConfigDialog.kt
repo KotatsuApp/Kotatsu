@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.prefs.ReaderMode
@@ -30,7 +30,7 @@ class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 			?: ReaderMode.STANDARD
 	}
 
-	override fun onBuildDialog(builder: AlertDialog.Builder) {
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
 		builder.setTitle(R.string.read_mode)
 			.setPositiveButton(R.string.done, null)
 			.setCancelable(true)

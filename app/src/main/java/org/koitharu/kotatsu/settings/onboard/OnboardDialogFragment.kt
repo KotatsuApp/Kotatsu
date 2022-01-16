@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
@@ -36,7 +36,7 @@ class OnboardDialogFragment : AlertDialogFragment<DialogOnboardBinding>(),
 		container: ViewGroup?,
 	) = DialogOnboardBinding.inflate(inflater, container, false)
 
-	override fun onBuildDialog(builder: AlertDialog.Builder) {
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
 		builder
 			.setPositiveButton(R.string.done, this)
 			.setCancelable(true)

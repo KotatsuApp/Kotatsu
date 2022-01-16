@@ -30,9 +30,7 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_margin="8dp"
-				android:layout_weight="1"
-				app:cardCornerRadius="4dp"
-				app:cardElevation="4dp">
+				android:layout_weight="1">
 
 				<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
 					android:id="@+id/imageView_cover"
@@ -57,9 +55,7 @@
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:ellipsize="end"
-					android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-					android:textColor="?android:textColorPrimary"
-					android:textSize="20sp"
+					android:textAppearance="?attr/textAppearanceHeadlineSmall"
 					app:layout_constraintEnd_toEndOf="parent"
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toTopOf="parent"
@@ -71,7 +67,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginTop="4dp"
 					android:ellipsize="end"
-					android:textSize="14sp"
+					android:textAppearance="?attr/textAppearanceBodyMedium"
 					app:layout_constraintEnd_toEndOf="@id/textView_title"
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/textView_title"
@@ -84,7 +80,7 @@
 					android:layout_marginTop="4dp"
 					android:background="@drawable/list_selector"
 					android:requiresFadingEdge="horizontal"
-					android:textColor="?colorAccent"
+					android:textColor="?colorTertiary"
 					android:textStyle="bold"
 					app:layout_constraintEnd_toEndOf="@id/textView_title"
 					app:layout_constraintHorizontal_bias="0"
@@ -99,8 +95,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginTop="4dp"
 					android:drawablePadding="4dp"
-					android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-					android:textColor="?android:attr/textColorSecondary"
+					android:textAppearance="?attr/textAppearanceBodySmall"
 					app:layout_constraintEnd_toEndOf="@id/textView_title"
 					app:layout_constraintStart_toStartOf="@id/textView_title"
 					app:layout_constraintTop_toBottomOf="@id/textView_author"
@@ -113,7 +108,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginTop="4dp"
 					android:baselineAligned="false"
-					android:divider="?android:dividerHorizontal"
+					android:divider="?attr/colorOutline"
 					android:dividerPadding="8dp"
 					android:orientation="horizontal"
 					android:showDividers="middle"
@@ -217,7 +212,7 @@
 
 					<com.google.android.material.button.MaterialButton
 						android:id="@+id/button_favorite"
-						style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+						style="@style/Widget.Material3.Button.OutlinedButton"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
@@ -227,7 +222,7 @@
 
 					<com.google.android.material.button.MaterialButton
 						android:id="@+id/button_read"
-						style="@style/Widget.MaterialComponents.Button"
+						style="@style/Widget.Material3.Button.TonalButton"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:layout_marginStart="16dp"
@@ -260,31 +255,19 @@
 			app:layout_constraintTop_toBottomOf="@+id/main_container" />
 
 		<TextView
-			android:id="@+id/desc_header"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginEnd="16dp"
-			android:paddingTop="8dp"
-			android:paddingBottom="8dp"
-			android:text="@string/description"
-			android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-			android:textColor="?android:textColorPrimary"
-			android:textSize="18sp"
-			app:layout_constraintTop_toBottomOf="@id/chips_tags" />
-
-		<TextView
 			android:id="@+id/textView_description"
 			android:layout_width="0dp"
 			android:layout_height="match_parent"
 			android:layout_marginStart="16dp"
 			android:layout_marginEnd="16dp"
+			android:paddingTop="8dp"
 			android:layout_marginBottom="16dp"
 			android:lineSpacingMultiplier="1.2"
 			android:textIsSelectable="true"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/desc_header"
+			app:layout_constraintTop_toBottomOf="@id/chips_tags"
 			tools:ignore="UnusedAttribute"
 			tools:text="@tools:sample/lorem/random[25]" />
 

@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
@@ -34,7 +34,7 @@ class ListModeSelectDialog : AlertDialogFragment<DialogListModeBinding>(), View.
 		container: ViewGroup?
 	) = DialogListModeBinding.inflate(inflater, container, false)
 
-	override fun onBuildDialog(builder: AlertDialog.Builder) {
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
 		builder.setTitle(R.string.list_mode)
 			.setPositiveButton(R.string.done, null)
 			.setCancelable(true)

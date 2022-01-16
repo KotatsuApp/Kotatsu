@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
+import com.google.android.material.color.DynamicColors
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
@@ -55,6 +56,8 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		findPreference<SwitchPreference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible =
+			DynamicColors.isDynamicColorAvailable()
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)

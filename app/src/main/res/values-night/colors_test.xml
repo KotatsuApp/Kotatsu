@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="test_primary">#C2D000</color>
+	<color name="test_onPrimary">#2E3300</color>
+	<color name="test_primaryContainer">#444B00</color>
+	<color name="test_onPrimaryContainer">#DEED21</color>
+	<color name="test_secondary">#C8C9A6</color>
+	<color name="test_onSecondary">#303219</color>
+	<color name="test_secondaryContainer">#47492E</color>
+	<color name="test_onSecondaryContainer">#E4E5C0</color>
+	<color name="test_tertiary">#A2D0C0</color>
+	<color name="test_onTertiary">#07372C</color>
+	<color name="test_tertiaryContainer">#234E42</color>
+	<color name="test_onTertiaryContainer">#BEEDDC</color>
+	<color name="test_background">#1C1C17</color>
+	<color name="test_onBackground">#E5E2DA</color>
+	<color name="test_surface">#1C1C17</color>
+	<color name="test_onSurface">#E5E2DA</color>
+	<color name="test_surfaceVariant">#47473B</color>
+	<color name="test_onSurfaceVariant">#C8C7B7</color>
+	<color name="test_outline">#929282</color>
+	<color name="test_inverseOnSurface">#1C1C17</color>
+	<color name="test_inverseSurface">#E5E2DA</color>
+	<color name="test_primaryInverse">#5B6400</color>
+</resources>

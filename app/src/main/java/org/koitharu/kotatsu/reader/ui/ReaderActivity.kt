@@ -10,7 +10,6 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.WindowInsetsCompat
@@ -19,6 +18,7 @@ import androidx.core.view.postDelayed
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
@@ -211,7 +211,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	}
 
 	private fun onError(e: Throwable) {
-		val dialog = AlertDialog.Builder(this)
+		val dialog = MaterialAlertDialogBuilder(this)
 			.setTitle(R.string.error_occurred)
 			.setMessage(e.getDisplayMessage(resources))
 			.setPositiveButton(R.string.close, null)

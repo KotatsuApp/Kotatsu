@@ -24,8 +24,7 @@
 		android:ellipsize="marquee"
 		android:fadingEdge="horizontal"
 		android:singleLine="true"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:textColor="?android:attr/textColorPrimary"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
 		tools:text="@tools:sample/lorem[1]" />
 
 	<com.google.android.material.switchmaterial.SwitchMaterial

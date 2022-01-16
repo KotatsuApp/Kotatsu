@@ -8,16 +8,16 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
-		style="@style/Widget.Kotatsu.AppBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:elevation="4dp">
+		android:fitsSystemWindows="true"
+		app:elevation="0dp">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/toolbar"
-			style="@style/Widget.Kotatsu.Toolbar"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="?attr/actionBarSize"
+			android:theme="?attr/actionBarTheme"/>
 
 	</com.google.android.material.appbar.AppBarLayout>
 
@@ -39,8 +39,7 @@
 		android:layout_margin="20dp"
 		android:gravity="center"
 		android:text="@string/text_downloads_holder"
-		android:textAppearance="?android:textAppearanceMedium"
-		android:textColor="?android:textColorSecondary"
+		android:textAppearance="?attr/textAppearanceBody2"
 		android:visibility="gone"
 		tools:visibility="visible" />
 

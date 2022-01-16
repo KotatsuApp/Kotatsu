@@ -20,31 +20,28 @@
 
 		<com.google.android.material.appbar.AppBarLayout
 			android:id="@+id/appbar"
-			style="@style/Widget.Kotatsu.AppBar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:background="@android:color/transparent"
-			android:stateListAnimator="@null"
-			app:elevation="0dp">
+			android:stateListAnimator="@null">
 
-			<com.google.android.material.card.MaterialCardView
+			<FrameLayout
 				android:id="@+id/toolbar_card"
+				android:background="@drawable/toolbar_background"
 				android:layout_width="match_parent"
 				android:layout_height="50dp"
 				android:layout_marginStart="16dp"
 				android:layout_marginTop="8dp"
 				android:layout_marginEnd="16dp"
-				android:layout_marginBottom="8dp"
-				app:cardCornerRadius="8dp"
-				app:cardElevation="4dp">
+				android:layout_marginBottom="8dp">
 
 				<com.google.android.material.appbar.MaterialToolbar
 					android:id="@id/toolbar"
-					style="@style/Widget.Kotatsu.Toolbar"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:focusable="true"
 					android:focusableInTouchMode="true"
+					android:background="@android:color/transparent"
 					app:contentInsetStartWithNavigation="0dp"
 					app:titleTextAppearance="@style/TextAppearance.Kotatsu.PersistentToolbarTitle"
 					app:titleTextColor="?android:colorControlNormal"
@@ -65,7 +62,7 @@
 
 				</com.google.android.material.appbar.MaterialToolbar>
 
-			</com.google.android.material.card.MaterialCardView>
+			</FrameLayout>
 
 		</com.google.android.material.appbar.AppBarLayout>
 
@@ -77,7 +74,6 @@
 			android:contentDescription="@string/_continue"
 			android:src="@drawable/ic_read_fill"
 			android:visibility="gone"
-			app:backgroundTint="?colorAccent"
 			app:fabSize="normal"
 			app:layout_anchor="@id/container"
 			app:layout_anchorGravity="bottom|end"
@@ -92,10 +88,8 @@
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
 		android:layout_gravity="start"
+		android:fitsSystemWindows="true"
 		app:insetForeground="@android:color/transparent"
-		app:itemHorizontalPadding="16dp"
-		app:itemIconPadding="24dp"
-		app:itemIconTint="@color/navigation_item_color_tint"
 		app:menu="@menu/nav_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

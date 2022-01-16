@@ -12,7 +12,7 @@
 		android:id="@+id/textView_title"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
 		android:textColor="?android:textColorPrimary"
 		tools:text="Title" />
 
@@ -27,7 +27,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="4dp"
-		android:textAppearance="@style/TextAppearance.AppCompat.Small"
+		android:textAppearance="?attr/textAppearanceBodyMedium"
 		android:textColor="?android:textColorSecondary"
 		tools:text="Subtitle" />
 

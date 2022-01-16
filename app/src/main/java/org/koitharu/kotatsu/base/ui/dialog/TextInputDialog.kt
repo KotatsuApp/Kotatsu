@@ -6,6 +6,7 @@ import android.text.InputFilter
 import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.databinding.DialogInputBinding
 
 class TextInputDialog private constructor(
@@ -18,7 +19,7 @@ class TextInputDialog private constructor(
 
 		private val binding = DialogInputBinding.inflate(LayoutInflater.from(context))
 
-		private val delegate = AlertDialog.Builder(context)
+		private val delegate = MaterialAlertDialogBuilder(context)
 			.setView(binding.root)
 
 		fun setTitle(@StringRes titleResId: Int): Builder {

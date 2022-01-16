@@ -5,9 +5,11 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.request.CachePolicy
@@ -36,11 +38,15 @@ class ImageActivity : BaseActivity<ActivityImageBinding>() {
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			top = insets.top,
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 	}
 
 	private fun loadImage(url: Uri?) {

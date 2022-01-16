@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
@@ -39,12 +39,12 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
 	}
 
-	override fun onBuildDialog(builder: AlertDialog.Builder) {
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
 		builder.setCancelable(false)
 	}
 
 	private fun onError(e: Throwable) {
-		AlertDialog.Builder(context ?: return)
+		MaterialAlertDialogBuilder(context ?: return)
 			.setNegativeButton(R.string.close, null)
 			.setTitle(R.string.error)
 			.setMessage(e.getDisplayMessage(resources))
@@ -64,7 +64,7 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 	}
 
 	private fun onRestoreDone(result: CompositeResult) {
-		val builder = AlertDialog.Builder(context ?: return)
+		val builder = MaterialAlertDialogBuilder(context ?: return)
 		when {
 			result.isAllSuccess -> builder.setTitle(R.string.data_restored)
 				.setMessage(R.string.data_restored_success)

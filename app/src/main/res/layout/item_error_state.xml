@@ -15,14 +15,12 @@
 		android:layout_height="wrap_content"
 		android:drawablePadding="12dp"
 		android:gravity="center_horizontal"
-		android:textAppearance="?android:textAppearanceMedium"
-		android:textColor="?android:textColorSecondary"
+		android:textAppearance="?attr/textAppearanceBodySmall"
 		app:drawableTopCompat="@drawable/ic_error_large"
 		tools:text="@tools:sample/lorem[6]" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_retry"
-		style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="16dp"

@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.core.graphics.Insets
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -60,11 +62,15 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
-			top = insets.top,
-			left = insets.left,
-			right = insets.right
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 	}
 
 	companion object {

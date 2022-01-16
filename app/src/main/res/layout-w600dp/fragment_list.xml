@@ -36,7 +36,7 @@
 		android:id="@+id/divider_filter"
 		android:layout_width="1dp"
 		android:layout_height="match_parent"
-		android:background="?dividerVertical"
+		android:background="?attr/colorOutline"
 		android:visibility="gone"
 		tools:visibility="visible" />
 

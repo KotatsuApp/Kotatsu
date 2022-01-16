@@ -15,6 +15,13 @@
 
 	<SwitchPreference
 		android:defaultValue="false"
+		android:key="dynamic_theme"
+		android:summary="@string/dynamic_theme_summary"
+		android:title="@string/dynamic_theme"
+		app:iconSpaceReserved="false" />
+
+	<SwitchPreference
+		android:defaultValue="false"
 		android:key="amoled_theme"
 		android:summary="@string/black_dark_theme_summary"
 		android:title="@string/black_dark_theme"

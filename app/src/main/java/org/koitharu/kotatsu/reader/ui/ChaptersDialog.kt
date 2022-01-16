@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
@@ -30,7 +30,7 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 		container: ViewGroup?,
 	) = DialogChaptersBinding.inflate(inflater, container, false)
 
-	override fun onBuildDialog(builder: AlertDialog.Builder) {
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
 		builder.setTitle(R.string.chapters)
 			.setNegativeButton(R.string.close, null)
 			.setCancelable(true)

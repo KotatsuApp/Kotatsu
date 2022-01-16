@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 
 class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
@@ -40,7 +41,6 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		binding.fabAdd.imageTintList = ColorStateList.valueOf(Color.WHITE)
 		adapter = CategoriesAdapter(this)
 		editDelegate = CategoriesEditDelegate(this, this)
 		binding.recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
@@ -93,13 +93,17 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		binding.recyclerView.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			bottom = insets.bottom
+			bottom = 2 * insets.bottom + binding.fabAdd.measureHeight()
 		)
-		binding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			top = insets.top
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {

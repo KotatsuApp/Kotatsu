@@ -60,7 +60,7 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 		binding.toolbar.setNavigationOnClickListener { dismiss() }
 		binding.toolbar.subtitle = null
 
-		if (!resources.getBoolean(R.bool.is_tablet)) {
+		if (!resources.getBoolean(R.bool.isTablet)) {
 			binding.toolbar.navigationIcon = null
 		} else {
 			binding.toolbar.subtitle =

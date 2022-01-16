@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<bool name="is_tablet">false</bool>
-	<bool name="use_light_status">false</bool>
-	<bool name="use_light_navigation">false</bool>
+	<bool name="isTablet">false</bool>
+	<bool name="lightStatusBar">true</bool>
+	<bool name="lightNavigationBar">false</bool>
+	<bool name="elevationOverlayEnabled">false</bool>
 </resources>
