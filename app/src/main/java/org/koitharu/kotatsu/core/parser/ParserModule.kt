@@ -2,14 +2,11 @@ package org.koitharu.kotatsu.core.parser
 
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.site.*
 
 val parserModule
 	get() = module {
-
-		single { MangaLoaderContext(get(), get()) }
 
 		factory<MangaRepository>(named(MangaSource.READMANGA_RU)) { ReadmangaRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.MINTMANGA)) { MintMangaRepository(get()) }

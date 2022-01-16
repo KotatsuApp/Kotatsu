@@ -50,7 +50,7 @@ class PageLoader(
 
 	private fun loadAsync(page: MangaPage): Deferred<File> {
 		var repo = repository
-		if (repo?.javaClass != page.source.cls) {
+		if (repo?.source != page.source) {
 			repo = mangaRepositoryOf(page.source)
 			repository = repo
 		}

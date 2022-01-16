@@ -11,6 +11,7 @@ import org.koin.core.component.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.medianOrNull
@@ -28,7 +29,7 @@ object MangaUtils : KoinComponent {
 	suspend fun determineMangaIsWebtoon(pages: List<MangaPage>): Boolean? {
 		try {
 			val page = pages.medianOrNull() ?: return null
-			val url = page.source.repository.getPageUrl(page)
+			val url = MangaRepository(page.source).getPageUrl(page)
 			val uri = Uri.parse(url)
 			val size = if (uri.scheme == "cbz") {
 				val zip = ZipFile(uri.schemeSpecificPart)

@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.reader.ui
 
-import android.content.ContentResolver
 import android.net.Uri
 import android.util.LongSparseArray
 import androidx.lifecycle.MutableLiveData
@@ -77,7 +76,7 @@ class ReaderViewModel(
 			var manga = dataRepository.resolveIntent(intent)
 				?: throw MangaNotFoundException("Cannot find manga")
 			mangaData.value = manga
-			val repo = manga.source.repository
+			val repo = MangaRepository(manga.source)
 			manga = repo.getDetails(manga)
 			manga.chapters?.forEach {
 				chapters.put(it.id, it)
@@ -206,7 +205,7 @@ class ReaderViewModel(
 	private suspend fun loadChapter(chapterId: Long): List<ReaderPage> {
 		val manga = checkNotNull(mangaData.value) { "Manga is null" }
 		val chapter = checkNotNull(chapters[chapterId]) { "Requested chapter not found" }
-		val repo = manga.source.repository
+		val repo = MangaRepository(manga.source)
 		return repo.getPages(chapter).mapIndexed { index, page ->
 			ReaderPage.from(page, index, chapterId)
 		}

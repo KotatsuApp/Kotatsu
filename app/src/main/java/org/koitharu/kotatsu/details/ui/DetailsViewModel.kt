@@ -123,7 +123,7 @@ class DetailsViewModel(
 			var manga = mangaDataRepository.resolveIntent(intent)
 				?: throw MangaNotFoundException("Cannot find manga")
 			mangaData.value = manga
-			manga = manga.source.repository.getDetails(manga)
+			manga = MangaRepository(manga.source).getDetails(manga)
 			// find default branch
 			val hist = historyRepository.getOne(manga)
 			selectedBranch.value = if (hist != null) {

@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.core.parser
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.core.prefs.SourceSettings
@@ -11,8 +10,6 @@ import org.koitharu.kotatsu.core.prefs.SourceSettings
 abstract class RemoteMangaRepository(
 	protected val loaderContext: MangaLoaderContext
 ) : MangaRepository {
-
-	protected abstract val source: MangaSource
 
 	protected abstract val defaultDomain: String
 
@@ -28,6 +25,8 @@ abstract class RemoteMangaRepository(
 	override suspend fun getPageUrl(page: MangaPage): String = page.url.withDomain()
 
 	override suspend fun getTags(): Set<MangaTag> = emptySet()
+
+	fun getFaviconUrl() = "https://${getDomain()}/favicon.ico"
 
 	open fun onCreatePreferences(map: MutableMap<String, Any>) {
 		map[SourceSettings.KEY_DOMAIN] = defaultDomain

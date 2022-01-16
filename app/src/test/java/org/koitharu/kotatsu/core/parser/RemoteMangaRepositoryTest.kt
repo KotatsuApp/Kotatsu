@@ -31,7 +31,7 @@ class RemoteMangaRepositoryTest(private val source: MangaSource) : KoinTest {
 	@get:Rule
 	val koinTestRule = KoinTestRule.create {
 		printLogger(Level.ERROR)
-		modules(repositoryTestModule)
+		modules(repositoryTestModule, parserModule)
 	}
 
 	@get:Rule
