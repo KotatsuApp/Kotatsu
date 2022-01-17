@@ -102,7 +102,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		binding.fab.setOnClickListener(this@MainActivity)
 
 		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
-			binding.fab.isVisible = it is HistoryListFragment
+			if (it is HistoryListFragment) binding.fab.show() else binding.fab.hide()
 		} ?: run {
 			openDefaultSection()
 		}
@@ -320,7 +320,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.commit()
-		binding.fab.isVisible = fragment is HistoryListFragment
+		if (fragment is HistoryListFragment) binding.fab.show() else binding.fab.hide()
 	}
 
 	private fun onSearchOpened() {

@@ -39,11 +39,10 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		binding.fabAdd.imageTintList = ColorStateList.valueOf(Color.WHITE)
 		adapter = CategorySelectAdapter(this)
 		binding.recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
 		binding.recyclerView.adapter = adapter
-		binding.fabAdd.isVisible = false
+		binding.fabAdd.hide()
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
 			AppWidgetManager.INVALID_APPWIDGET_ID
@@ -93,11 +92,15 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 			right = insets.right,
 			bottom = insets.bottom
 		)
-		binding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			top = insets.top
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 	}
 
 	private fun onContentChanged(categories: List<CategoryItem>) {
