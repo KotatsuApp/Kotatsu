@@ -43,14 +43,14 @@
 		<item name="android:textDirection">locale</item>
 
 		<!-- Themes -->
-		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/lightStatusBar</item>
+		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/light_status_bar</item>
 		<item name="android:statusBarColor">@android:color/transparent</item>
 		<item name="android:navigationBarColor">@color/surface_amoled</item>
 		<item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@null</item>
 		<item name="android:enforceNavigationBarContrast" tools:targetApi="Q">false</item>
 		<item name="android:enforceStatusBarContrast" tools:targetApi="Q">false</item>
 		<item name="android:itemTextAppearance">@style/TextAppearance.Widget.Menu</item>
-		<item name="android:alertDialogTheme">@style/ThemeOverlay.Kotatsu.MaterialAlertDialog</item>
+		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.MaterialAlertDialog</item>
 		<item name="materialAlertDialogTheme">@style/ThemeOverlay.Kotatsu.MaterialAlertDialog</item>
 		<item name="textAppearanceButton">@style/TextAppearance.Kotatsu.Button</item>
 		<item name="android:buttonStyle">?attr/borderlessButtonStyle</item>

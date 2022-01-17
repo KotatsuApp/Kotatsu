@@ -28,5 +28,8 @@
 
 	<!--Text dimens-->
 	<dimen name="text_size_h1">22sp</dimen>
+	<dimen name="menu_radius">16dp</dimen>
+
+	<item name="material_emphasis_medium" format="float" type="dimen">0.6</item>
 
 </resources>

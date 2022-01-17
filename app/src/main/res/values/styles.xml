@@ -16,6 +16,7 @@
 		<item name="android:background">?attr/colorSurface</item>
 		<item name="android:textColorPrimary">?attr/colorOnSurface</item>
 		<item name="android:textColor">?attr/colorOnSurface</item>
+		<item name="dialogCornerRadius">28dp</item>
 	</style>
 
 	<!-- Widget styles -->
@@ -84,7 +85,7 @@
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.Switch" parent="">
-		<item name="elevationOverlayEnabled">@bool/elevationOverlayEnabled</item>
+		<item name="elevationOverlayEnabled">@bool/elevation_overlay_enabled</item>
 	</style>
 
 	<!-- TextAppearance -->

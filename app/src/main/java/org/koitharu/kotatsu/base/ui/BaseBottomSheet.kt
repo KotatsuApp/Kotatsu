@@ -34,7 +34,7 @@ abstract class BaseBottomSheet<B : ViewBinding> :
 	}
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		return if (resources.getBoolean(R.bool.isTablet)) {
+		return if (resources.getBoolean(R.bool.is_tablet)) {
 			AppCompatDialog(context, theme)
 		} else super.onCreateDialog(savedInstanceState)
 	}
