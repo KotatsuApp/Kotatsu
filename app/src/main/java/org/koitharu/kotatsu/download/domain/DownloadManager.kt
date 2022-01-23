@@ -145,7 +145,7 @@ class DownloadManager(
 		while (true) {
 			try {
 				val response = call.clone().await()
-				withContext(Dispatchers.IO) {
+				runInterruptible(Dispatchers.IO) {
 					file.outputStream().use { out ->
 						checkNotNull(response.body).byteStream().copyTo(out)
 					}

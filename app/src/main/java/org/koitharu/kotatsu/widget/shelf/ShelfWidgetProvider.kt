@@ -31,7 +31,7 @@ class ShelfWidgetProvider : AppWidgetProvider() {
 					context,
 					0,
 					intent,
-					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
+					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_MUTABLE
 				)
 			)
 			views.setEmptyView(R.id.gridView, R.id.textView_holder)

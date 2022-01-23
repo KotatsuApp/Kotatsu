@@ -128,7 +128,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 					scanlator = null,
 					branch = null,
 				)
-			}
+			} ?: bypassLicensedChapters(manga)
 		)
 	}
 
@@ -189,6 +189,32 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 	override fun onCreatePreferences(map: MutableMap<String, Any>) {
 		super.onCreatePreferences(map)
 		map[SourceSettings.KEY_USE_SSL] = true
+	}
+
+	private suspend fun bypassLicensedChapters(manga: Manga): List<MangaChapter> {
+		val doc = loaderContext.httpGet(manga.url.withDomain("m")).parseHtml()
+		val list = doc.body().selectFirst("ul.detail-ch-list") ?: return emptyList()
+		val dateFormat = SimpleDateFormat("MMM dd,yyyy", Locale.US)
+		return list.select("li").asReversed().mapIndexedNotNull { i, li ->
+			val a = li.selectFirst("a") ?: return@mapIndexedNotNull null
+			val href = a.relUrl("href")
+			val name = a.selectFirst("span.vol")?.text().orEmpty().ifEmpty {
+				a.ownText()
+			}
+			MangaChapter(
+				id = generateUid(href),
+				url = href,
+				source = MangaSource.MANGATOWN,
+				number = i + 1,
+				uploadDate = parseChapterDate(
+					dateFormat,
+					li.selectFirst("span.time")?.text()
+				),
+				name = name.ifEmpty { "${manga.title} - ${i + 1}" },
+				scanlator = null,
+				branch = null,
+			)
+		}
 	}
 
 	private fun String.parseTagKey() = split('/').findLast { TAG_REGEX matches it }
