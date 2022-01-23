@@ -53,8 +53,10 @@ abstract class RemoteMangaRepository(
 			if (subdomain != null) {
 				append(subdomain)
 				append('.')
+				append(conf.getDomain(defaultDomain).removePrefix("www."))
+			} else {
+				append(conf.getDomain(defaultDomain))
 			}
-			append(conf.getDomain(defaultDomain))
 			append(this@withDomain)
 		}
 		else -> this
