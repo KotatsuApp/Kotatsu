@@ -26,7 +26,7 @@ abstract class RemoteMangaRepository(
 
 	override suspend fun getTags(): Set<MangaTag> = emptySet()
 
-	fun getFaviconUrl() = "https://${getDomain()}/favicon.ico"
+	open fun getFaviconUrl() = "https://${getDomain()}/favicon.ico"
 
 	open fun onCreatePreferences(map: MutableMap<String, Any>) {
 		map[SourceSettings.KEY_DOMAIN] = defaultDomain
