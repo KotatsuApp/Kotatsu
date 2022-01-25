@@ -12,7 +12,4 @@
 		<attr name="android:orientation" />
 	</declare-styleable>
 
-	<!-- Setting chip color values for specific themes -->
-	<attr name="chipTextColor" format="reference|integer"/>
-
 </resources>

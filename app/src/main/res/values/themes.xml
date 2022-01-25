@@ -61,7 +61,6 @@
 		<item name="actionModeCloseDrawable">@drawable/ic_close</item>
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
 		<item name="chipStyle">@style/Widget.Kotatsu.Chip</item>
-		<item name="chipTextColor">?android:attr/textColorPrimary</item>
 		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
 		<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>
 		<item name="appBarLayoutStyle">@style/Widget.Material3.AppBarLayout</item>
