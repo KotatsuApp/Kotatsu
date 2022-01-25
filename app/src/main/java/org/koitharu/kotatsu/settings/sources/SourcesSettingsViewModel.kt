@@ -81,6 +81,7 @@ class SourcesSettingsViewModel(
 				SourceConfigItem.SourceItem(
 					source = it,
 					isEnabled = true,
+					isDraggable = true,
 				)
 			}
 		}
@@ -102,6 +103,7 @@ class SourcesSettingsViewModel(
 						SourceConfigItem.SourceItem(
 							source = it,
 							isEnabled = false,
+							isDraggable = false,
 						)
 					}
 				}

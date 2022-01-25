@@ -8,6 +8,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -41,7 +42,7 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val sourcesAdapter = SourceConfigAdapter(this)
+		val sourcesAdapter = SourceConfigAdapter(this, get(), viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			addItemDecoration(SourceConfigItemDecoration(view.context))
