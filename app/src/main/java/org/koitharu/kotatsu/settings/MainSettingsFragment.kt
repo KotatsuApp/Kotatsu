@@ -77,6 +77,9 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			AppSettings.KEY_THEME -> {
 				AppCompatDelegate.setDefaultNightMode(settings.theme)
 			}
+			AppSettings.KEY_DYNAMIC_THEME -> {
+				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
+			}
 			AppSettings.KEY_THEME_AMOLED -> {
 				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
 			}

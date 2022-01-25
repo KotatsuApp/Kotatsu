@@ -84,8 +84,8 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			addOnScrollListener(paginationListener!!)
 		}
 		with(binding.swipeRefreshLayout) {
-			setProgressBackgroundColorSchemeColor(ContextCompat.getColor(context, R.color.kotatsu_primary))
-			setColorSchemeColors(ContextCompat.getColor(context, R.color.kotatsu_onPrimary))
+			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
+			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
 			setOnRefreshListener(this@MangaListFragment)
 			isEnabled = isSwipeRefreshEnabled
 		}
