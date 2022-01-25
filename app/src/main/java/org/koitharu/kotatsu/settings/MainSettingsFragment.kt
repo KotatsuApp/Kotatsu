@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
+import org.koitharu.kotatsu.utils.DeviceUtil
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.names
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
@@ -57,7 +58,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<SwitchPreference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible =
-			DynamicColors.isDynamicColorAvailable()
+			DeviceUtil.isDynamicColorAvailable
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)
