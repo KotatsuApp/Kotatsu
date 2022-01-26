@@ -1,9 +1,8 @@
 package org.koitharu.kotatsu.settings.sources
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -20,7 +19,7 @@ import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
 class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
-	SourceConfigListener {
+	SourceConfigListener, SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
 	private var reorderHelper: ItemTouchHelper? = null
 	private val viewModel by viewModel<SourcesSettingsViewModel>()
@@ -61,6 +60,17 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		super.onDestroyView()
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater.inflate(R.menu.opt_sources, menu)
+		val searchMenuItem = menu.findItem(R.id.action_search)
+		searchMenuItem.setOnActionExpandListener(this)
+		val searchView = searchMenuItem.actionView as SearchView
+		searchView.setOnQueryTextListener(this)
+		searchView.setIconifiedByDefault(false)
+		searchView.queryHint = searchMenuItem.title
+	}
+
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
@@ -83,6 +93,20 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 
 	override fun onHeaderClick(header: SourceConfigItem.LocaleGroup) {
 		viewModel.expandOrCollapse(header.localeId)
+	}
+
+	override fun onQueryTextSubmit(query: String?): Boolean = false
+
+	override fun onQueryTextChange(newText: String?): Boolean {
+		viewModel.performSearch(newText)
+		return true
+	}
+
+	override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+
+	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+		(item.actionView as SearchView).setQuery("", false)
+		return true
 	}
 
 	private inner class SourcesReorderCallback : ItemTouchHelper.SimpleCallback(
