@@ -178,7 +178,7 @@
     <string name="preparing_">Preparando…</string>
     <string name="file_not_found">Archivo no encontrado</string>
     <string name="data_restored_success">Todos los datos fueron restaurados con éxito</string>
-    <string name="data_restored_with_errors">Los datos fueron restaurados, pero hay errores</string>
+    <string name="data_restored_with_errors">Los datos fueron restaurados, pero hay errores.</string>
     <string name="backup_information">Puedes crear una copia de seguridad de tu historial y favoritos para restaurarla</string>
     <string name="just_now">Ahora mismo</string>
     <string name="yesterday">Ayer</string>
@@ -214,7 +214,7 @@
     <string name="about_support_developer_summary">Si te gusta esta aplicación, puedes ayudar económicamente a través de Yoomoney (ex. Yandex.Money)</string>
     <string name="about_support_developer">Apoyar al desarrollador</string>
     <string name="search_only_on_s">Buscar sólo en %s</string>
-    <string name="about_gratitudes_summary">¡Estas personas hacen que Kotatsu sea mejor!</string>
+    <string name="about_gratitudes_summary">Todas estas personas hicieron que Kotatsu fuera mejor.</string>
     <string name="about_license">Licencia</string>
     <string name="about_copyright_and_licenses">Derechos de autor y licencias</string>
     <string name="chapter_is_missing">Falta un capítulo</string>
@@ -237,14 +237,14 @@
     <string name="state_ongoing">En curso</string>
     <string name="hide_toolbar">Ocultar la barra de herramientas al desplazarse</string>
     <string name="chapter_is_missing_text">Este capítulo no aparece en su dispositivo. Descárguelo o léalo en línea.</string>
-    <string name="auth_complete">Autorización completa</string>
+    <string name="auth_complete">Autorizado</string>
     <string name="about_feedback_4pda">Tema sobre 4PDA</string>
     <string name="date_format">Formato de la fecha</string>
     <string name="system_default">Por defecto</string>
     <string name="tracker_warning">Algunos fabricantes pueden cambiar el comportamiento del sistema, lo que podría interrumpir las tareas en segundo plano.</string>
     <string name="error_empty_name">El nombre no debe estar vacío</string>
-    <string name="auth_not_supported_by">Autorización en %s no es compatible</string>
-    <string name="text_clear_cookies_prompt">Se cerrará la sesión de todas las fuentes en las que esté autorizado</string>
+    <string name="auth_not_supported_by">No se admite iniciar sesión en %s</string>
+    <string name="text_clear_cookies_prompt">Serás desconectado de todas las fuentes.</string>
     <string name="exclude_nsfw_from_history">Excluye manga NSFW del historial</string>
     <string name="show_pages_numbers">Mostrar los números de páginas</string>
     <string name="enabled_sources">Fuentes activadas</string>
