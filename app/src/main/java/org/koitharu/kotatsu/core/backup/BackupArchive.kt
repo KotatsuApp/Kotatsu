@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.backup
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.koitharu.kotatsu.R
@@ -33,8 +34,7 @@ class BackupArchive(file: File) : MutableZipFile(file) {
 
 		private const val DIR_BACKUPS = "backups"
 
-		@Suppress("BlockingMethodInNonBlockingContext")
-		suspend fun createNew(context: Context): BackupArchive = withContext(Dispatchers.IO) {
+		suspend fun createNew(context: Context): BackupArchive = runInterruptible(Dispatchers.IO) {
 			val dir = context.run {
 				getExternalFilesDir(DIR_BACKUPS) ?: File(filesDir, DIR_BACKUPS)
 			}
