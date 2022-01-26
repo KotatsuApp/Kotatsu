@@ -9,23 +9,24 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.size.Size
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runInterruptible
 import okio.buffer
 import okio.source
 import java.util.zip.ZipFile
 
 class CbzFetcher : Fetcher<Uri> {
 
-	@Suppress("BlockingMethodInNonBlockingContext")
 	override suspend fun fetch(
 		pool: BitmapPool,
 		data: Uri,
 		size: Size,
 		options: Options,
-	): FetchResult {
+	): FetchResult = runInterruptible(Dispatchers.IO) {
 		val zip = ZipFile(data.schemeSpecificPart)
 		val entry = zip.getEntry(data.fragment)
 		val ext = MimeTypeMap.getFileExtensionFromUrl(entry.name)
-		return SourceResult(
+		SourceResult(
 			source = ExtraCloseableBufferedSource(
 				zip.getInputStream(entry).source().buffer(),
 				zip,

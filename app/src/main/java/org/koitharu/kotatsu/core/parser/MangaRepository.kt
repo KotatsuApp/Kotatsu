@@ -7,6 +7,8 @@ import org.koitharu.kotatsu.core.model.*
 
 interface MangaRepository {
 
+	val source: MangaSource
+
 	val sortOrders: Set<SortOrder>
 
 	suspend fun getList2(

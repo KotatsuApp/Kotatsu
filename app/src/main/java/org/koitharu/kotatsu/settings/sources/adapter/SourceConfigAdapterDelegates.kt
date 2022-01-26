@@ -4,14 +4,19 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import android.widget.CompoundButton
-import androidx.core.view.isVisible
-import androidx.core.view.updatePaddingRelative
+import androidx.lifecycle.LifecycleOwner
+import coil.ImageLoader
+import coil.request.Disposable
+import coil.request.ImageRequest
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemExpandableBinding
 import org.koitharu.kotatsu.databinding.ItemFilterHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigBinding
+import org.koitharu.kotatsu.databinding.ItemSourceConfigDraggableBinding
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
+import org.koitharu.kotatsu.utils.ext.enqueueWith
 
 fun sourceConfigHeaderDelegate() = adapterDelegateViewBinding<SourceConfigItem.Header, SourceConfigItem, ItemFilterHeaderBinding>(
 	{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) }
@@ -38,11 +43,44 @@ fun sourceConfigGroupDelegate(
 	}
 }
 
-@SuppressLint("ClickableViewAccessibility")
 fun sourceConfigItemDelegate(
 	listener: SourceConfigListener,
+	coil: ImageLoader,
+	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<SourceConfigItem.SourceItem, SourceConfigItem, ItemSourceConfigBinding>(
-	{ layoutInflater, parent -> ItemSourceConfigBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemSourceConfigBinding.inflate(layoutInflater, parent, false) },
+	on = { item, _, _ -> item is SourceConfigItem.SourceItem && !item.isDraggable }
+) {
+
+	var imageRequest: Disposable? = null
+
+	binding.switchToggle.setOnCheckedChangeListener { _, isChecked ->
+		listener.onItemEnabledChanged(item, isChecked)
+	}
+
+	bind {
+		binding.textViewTitle.text = item.source.title
+		binding.switchToggle.isChecked = item.isEnabled
+		imageRequest = ImageRequest.Builder(context)
+			.data(item.faviconUrl)
+			.error(R.drawable.ic_favicon_fallback)
+			.target(binding.imageViewIcon)
+			.lifecycle(lifecycleOwner)
+			.enqueueWith(coil)
+	}
+
+	onViewRecycled {
+		imageRequest?.dispose()
+		imageRequest = null
+	}
+}
+
+@SuppressLint("ClickableViewAccessibility")
+fun sourceConfigDraggableItemDelegate(
+	listener: SourceConfigListener,
+) = adapterDelegateViewBinding<SourceConfigItem.SourceItem, SourceConfigItem, ItemSourceConfigDraggableBinding>(
+	{ layoutInflater, parent -> ItemSourceConfigDraggableBinding.inflate(layoutInflater, parent, false) },
+	on = { item, _, _ -> item is SourceConfigItem.SourceItem && item.isDraggable }
 ) {
 
 	val eventListener = object : View.OnClickListener, View.OnTouchListener,
@@ -70,11 +108,9 @@ fun sourceConfigItemDelegate(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		binding.switchToggle.isChecked = item.isEnabled
-		binding.imageViewHandle.isVisible = item.isEnabled
-		binding.imageViewConfig.isVisible = item.isEnabled
-		binding.root.updatePaddingRelative(
-			start = if (item.isEnabled) 0 else binding.imageViewHandle.paddingStart * 2,
-			end = if (item.isEnabled) 0 else binding.imageViewConfig.paddingEnd,
-		)
 	}
 }
+
+fun sourceConfigEmptySearchDelegate() = adapterDelegate<SourceConfigItem.EmptySearchResult, SourceConfigItem>(
+	R.layout.item_sources_empty
+) { }

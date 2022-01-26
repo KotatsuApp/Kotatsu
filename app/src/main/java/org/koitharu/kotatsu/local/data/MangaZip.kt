@@ -31,7 +31,7 @@ class MangaZip(val file: File) {
 		return writableCbz.flush()
 	}
 
-	fun addCover(file: File, ext: String) {
+	suspend fun addCover(file: File, ext: String) {
 		val name = buildString {
 			append(FILENAME_PATTERN.format(0, 0))
 			if (ext.isNotEmpty() && ext.length <= 4) {
@@ -39,11 +39,11 @@ class MangaZip(val file: File) {
 				append(ext)
 			}
 		}
-		writableCbz[name] = file
+		writableCbz.put(name, file)
 		index.setCoverEntry(name)
 	}
 
-	fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) {
+	suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) {
 		val name = buildString {
 			append(FILENAME_PATTERN.format(chapter.number, pageNumber))
 			if (ext.isNotEmpty() && ext.length <= 4) {
@@ -51,7 +51,7 @@ class MangaZip(val file: File) {
 				append(ext)
 			}
 		}
-		writableCbz[name] = file
+		writableCbz.put(name, file)
 		index.addChapter(chapter)
 	}
 

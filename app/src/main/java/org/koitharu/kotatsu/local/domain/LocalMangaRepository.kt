@@ -23,6 +23,7 @@ import java.util.zip.ZipFile
 
 class LocalMangaRepository(private val context: Context) : MangaRepository {
 
+	override val source = MangaSource.LOCAL
 	private val filenameFilter = CbzFilter()
 
 	override suspend fun getList2(

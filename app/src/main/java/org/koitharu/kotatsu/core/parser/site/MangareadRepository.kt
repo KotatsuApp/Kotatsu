@@ -151,8 +151,10 @@ class MangareadRepository(
 			?.selectFirst("div.reading-content")
 			?: throw ParseException("Root not found")
 		return root.select("div.page-break").map { div ->
-			val img = div.selectFirst("img")
-			val url = img?.relUrl("src") ?: parseFailed("Page image not found")
+			val img = div.selectFirst("img") ?: parseFailed("Page image not found")
+			val url = img.relUrl("data-src").ifEmpty {
+				img.relUrl("src")
+			}
 			MangaPage(
 				id = generateUid(url),
 				url = url,

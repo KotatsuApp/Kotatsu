@@ -246,4 +246,7 @@
     <string name="system_default">Па змаўчанні</string>
     <string name="exclude_nsfw_from_history">Не паказваць NSFW мангу з гісторыі</string>
     <string name="error_empty_name">Імя не можа быць пустым</string>
+    <string name="show_pages_numbers">Паказваць нумары старонак</string>
+    <string name="enabled_sources">Уключаныя крыніцы</string>
+    <string name="available_sources">Даступныя крыніцы</string>
 </resources>
