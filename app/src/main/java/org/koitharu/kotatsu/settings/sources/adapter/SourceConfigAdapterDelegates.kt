@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import android.widget.CompoundButton
-import androidx.core.view.isVisible
-import androidx.core.view.updatePaddingRelative
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemExpandableBinding
@@ -53,25 +52,15 @@ fun sourceConfigItemDelegate(
 	on = { item, _, _ -> item is SourceConfigItem.SourceItem && !item.isDraggable }
 ) {
 
-	val eventListener = object : View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-		override fun onClick(v: View?) = listener.onItemSettingsClick(item)
-
-		override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-			listener.onItemEnabledChanged(item, isChecked)
-		}
-	}
 	var imageRequest: Disposable? = null
 
-	binding.imageViewConfig.setOnClickListener(eventListener)
-	binding.switchToggle.setOnCheckedChangeListener(eventListener)
+	binding.switchToggle.setOnCheckedChangeListener { _, isChecked ->
+		listener.onItemEnabledChanged(item, isChecked)
+	}
 
 	bind {
 		binding.textViewTitle.text = item.source.title
 		binding.switchToggle.isChecked = item.isEnabled
-		binding.imageViewConfig.isVisible = item.isEnabled
-		binding.root.updatePaddingRelative(
-			end = if (item.isEnabled) 0 else binding.imageViewConfig.paddingEnd,
-		)
 		imageRequest = ImageRequest.Builder(context)
 			.data(item.faviconUrl)
 			.error(R.drawable.ic_favicon_fallback)
@@ -119,9 +108,9 @@ fun sourceConfigDraggableItemDelegate(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		binding.switchToggle.isChecked = item.isEnabled
-		binding.imageViewConfig.isVisible = item.isEnabled
-		binding.root.updatePaddingRelative(
-			end = if (item.isEnabled) 0 else binding.imageViewConfig.paddingEnd,
-		)
 	}
 }
+
+fun sourceConfigEmptySearchDelegate() = adapterDelegate<SourceConfigItem.EmptySearchResult, SourceConfigItem>(
+	R.layout.item_sources_empty
+) { }

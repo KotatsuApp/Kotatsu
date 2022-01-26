@@ -4,7 +4,6 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="?android:listPreferredItemHeightSmall"
-	android:background="?android:windowBackground"
 	android:gravity="center_vertical"
 	android:orientation="horizontal">
 
@@ -14,7 +13,7 @@
 		android:layout_height="?android:listPreferredItemHeightSmall"
 		android:layout_marginHorizontal="?listPreferredItemPaddingStart"
 		android:labelFor="@id/textView_title"
-		android:padding="6dp"
+		android:padding="8dp"
 		android:scaleType="fitCenter"
 		tools:src="@tools:sample/avatars" />
 
@@ -33,16 +32,7 @@
 	<com.google.android.material.switchmaterial.SwitchMaterial
 		android:id="@+id/switch_toggle"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
-
-	<ImageView
-		android:id="@+id/imageView_config"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:background="?selectableItemBackgroundBorderless"
-		android:contentDescription="@string/settings"
-		android:paddingHorizontal="?listPreferredItemPaddingEnd"
-		android:scaleType="center"
-		android:src="@drawable/ic_settings" />
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="?listPreferredItemPaddingEnd" />
 
 </LinearLayout>

@@ -76,4 +76,6 @@ sealed interface SourceConfigItem {
 			return result
 		}
 	}
+
+	object EmptySearchResult : SourceConfigItem
 }

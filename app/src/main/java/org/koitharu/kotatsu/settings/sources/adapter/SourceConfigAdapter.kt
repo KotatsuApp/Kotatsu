@@ -15,4 +15,5 @@ class SourceConfigAdapter(
 	sourceConfigGroupDelegate(listener),
 	sourceConfigItemDelegate(listener, coil, lifecycleOwner),
 	sourceConfigDraggableItemDelegate(listener),
+	sourceConfigEmptySearchDelegate(),
 )
