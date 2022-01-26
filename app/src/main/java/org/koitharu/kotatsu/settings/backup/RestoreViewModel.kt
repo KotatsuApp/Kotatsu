@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.backup.BackupArchive
@@ -32,8 +33,7 @@ class RestoreViewModel(
 			}
 			val contentResolver = context.contentResolver
 
-			@Suppress("BlockingMethodInNonBlockingContext")
-			val backup = withContext(Dispatchers.IO) {
+			val backup = runInterruptible(Dispatchers.IO) {
 				val tempFile = File.createTempFile("backup_", ".tmp")
 				(contentResolver.openInputStream(uri)
 					?: throw FileNotFoundException()).use { input ->

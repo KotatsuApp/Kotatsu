@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.local.data
 
 import androidx.annotation.CheckResult
 import kotlinx.coroutines.*
+import org.koitharu.kotatsu.utils.ext.deleteAwait
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -13,7 +14,6 @@ class WritableCbzFile(private val file: File) {
 
 	private val dir = File(file.parentFile, file.nameWithoutExtension)
 
-	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun prepare() = withContext(Dispatchers.IO) {
 		check(dir.list().isNullOrEmpty()) {
 			"Dir ${dir.name} is not empty"
@@ -45,11 +45,10 @@ class WritableCbzFile(private val file: File) {
 	}
 
 	@CheckResult
-	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun flush() = withContext(Dispatchers.IO) {
 		val tempFile = File(file.path + ".tmp")
 		if (tempFile.exists()) {
-			tempFile.delete()
+			tempFile.deleteAwait()
 		}
 		try {
 			runInterruptible {
@@ -63,7 +62,7 @@ class WritableCbzFile(private val file: File) {
 			tempFile.renameTo(file)
 		} finally {
 			if (tempFile.exists()) {
-				tempFile.delete()
+				tempFile.deleteAwait()
 			}
 		}
 	}

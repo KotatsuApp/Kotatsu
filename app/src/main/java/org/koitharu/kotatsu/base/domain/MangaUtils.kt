@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.base.domain
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Size
-import androidx.annotation.WorkerThread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.component.KoinComponent
@@ -24,18 +26,18 @@ object MangaUtils : KoinComponent {
 	 * Automatic determine type of manga by page size
 	 * @return ReaderMode.WEBTOON if page is wide
 	 */
-	@WorkerThread
-	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun determineMangaIsWebtoon(pages: List<MangaPage>): Boolean? {
 		try {
 			val page = pages.medianOrNull() ?: return null
 			val url = MangaRepository(page.source).getPageUrl(page)
 			val uri = Uri.parse(url)
 			val size = if (uri.scheme == "cbz") {
-				val zip = ZipFile(uri.schemeSpecificPart)
-				val entry = zip.getEntry(uri.fragment)
-				zip.getInputStream(entry).use {
-					getBitmapSize(it)
+				runInterruptible(Dispatchers.IO) {
+					val zip = ZipFile(uri.schemeSpecificPart)
+					val entry = zip.getEntry(uri.fragment)
+					zip.getInputStream(entry).use {
+						getBitmapSize(it)
+					}
 				}
 			} else {
 				val client = get<OkHttpClient>()
@@ -46,7 +48,9 @@ object MangaUtils : KoinComponent {
 					.cacheControl(CacheUtils.CONTROL_DISABLED)
 					.build()
 				client.newCall(request).await().use {
-					getBitmapSize(it.body?.byteStream())
+					withContext(Dispatchers.IO) {
+						getBitmapSize(it.body?.byteStream())
+					}
 				}
 			}
 			return size.width * 2 < size.height

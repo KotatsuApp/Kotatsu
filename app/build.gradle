@@ -24,10 +24,6 @@ android {
 			}
 		}
 	}
-	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_1_8
-		targetCompatibility JavaVersion.VERSION_1_8
-	}
 	buildTypes {
 		debug {
 			applicationIdSuffix = '.debug'
@@ -45,16 +41,10 @@ android {
 	sourceSets {
 		androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
 	}
-	lintOptions {
-		disable 'MissingTranslation'
-		abortOnError false
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
 	}
-	testOptions {
-		unitTests.includeAndroidResources = true
-		unitTests.returnDefaultValues = false
-	}
-}
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 	kotlinOptions {
 		jvmTarget = JavaVersion.VERSION_1_8.toString()
 		freeCompilerArgs += [
@@ -62,6 +52,14 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 				'-Xopt-in=kotlinx.coroutines.FlowPreview',
 				'-Xopt-in=kotlin.contracts.ExperimentalContracts',
 		]
+	}
+	lintOptions {
+		disable 'MissingTranslation'
+		abortOnError false
+	}
+	testOptions {
+		unitTests.includeAndroidResources = true
+		unitTests.returnDefaultValues = false
 	}
 }
 dependencies {
