@@ -8,7 +8,7 @@
     <string name="welcome">Bienvenue</string>
     <string name="languages">Langues</string>
     <string name="other">Autre</string>
-    <string name="text_clear_search_history_prompt">Voulez-vous vraiment supprimer toutes les requêtes de recherche récentes \? Cette action ne peut pas être annulée.</string>
+    <string name="text_clear_search_history_prompt">Supprimer définitivement toutes les requêtes de recherche récentes \?</string>
     <string name="search_only_on_s">Rechercher uniquement sur %s</string>
     <string name="hide_toolbar">Masquer la barre d\'outils lors du défilement</string>
     <string name="password_length_hint">Le mot de passe doit comporter au moins 4 caractères</string>
@@ -20,7 +20,7 @@
     <string name="auth_required">Vous devez autoriser la visualisation de ce contenu</string>
     <string name="sign_in">Se connecter</string>
     <string name="reverse">Inverser</string>
-    <string name="new_chapters_checking">Recherche de nouveaux chapitres</string>
+    <string name="new_chapters_checking">À la recherche de nouveaux chapitres…</string>
     <string name="text_clear_updates_feed_prompt">L\'historique des mises à jour sera effacé et cette action ne pourra pas être annulée. Êtes-vous sûr·e \?</string>
     <string name="clear_feed">Effacer le flux</string>
     <string name="chapters_checking_progress">Recherche de nouveaux chapitres : %1$d sur %2$d</string>
@@ -97,18 +97,18 @@
     <string name="recent_manga">Mangas récents</string>
     <string name="manga_shelf">Étagère à mangas</string>
     <string name="text_local_holder_secondary">Vous pouvez l\'enregistrer à partir de sources en ligne ou l\'importer à partir d\'un fichier.</string>
-    <string name="text_local_holder_primary">Vous n\'avez pas encore enregistré de manga</string>
-    <string name="text_history_holder_secondary">Vous pouvez trouver ce qu\'il faut lire dans le menu latéral.</string>
-    <string name="text_history_holder_primary">Les mangas que vous lisez seront affichés ici</string>
+    <string name="text_local_holder_primary">Sauvegardez d\'abord quelque chose</string>
+    <string name="text_history_holder_secondary">Trouvez ce que vous voulez lire dans le menu latéral.</string>
+    <string name="text_history_holder_primary">Ce que vous lisez sera affiché ici</string>
     <string name="text_search_holder_secondary">Essayez de reformuler la requête.</string>
-    <string name="text_categories_holder">Vous pouvez utiliser des catégories pour organiser vos mangas préférés. Appuyez sur « + » pour créer une catégorie</string>
+    <string name="text_categories_holder">Vous pouvez utiliser des catégories pour organiser vos favoris. Appuyez sur « + » pour créer une catégorie</string>
     <string name="text_empty_holder_primary">C\'est un peu vide ici…</string>
-    <string name="remove_category">Retirer la catégorie</string>
-    <string name="category_delete_confirm">Voulez-vous vraiment supprimer la catégorie « %s » de vos favoris \?
+    <string name="remove_category">Retirer</string>
+    <string name="category_delete_confirm">Retirer la catégorie « %s » de vos favoris \?
 \nTous les mangas qu\'elle contient seront perdus.</string>
     <string name="rename">Renommer</string>
     <string name="categories_">Catégories…</string>
-    <string name="favourites_categories">Catégories de favoris</string>
+    <string name="favourites_categories">Catégories favorites</string>
     <string name="vibration">Vibration</string>
     <string name="light_indicator">Indicateur lumineux</string>
     <string name="notification_sound">Son de notification</string>
@@ -120,10 +120,10 @@
     <string name="new_chapters">Nouveaux chapitres</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Activé %1$d sur %2$d</string>
     <string name="notifications">Notifications</string>
-    <string name="large_manga_save_confirm">Ce manga a %s. Voulez-vous l\'enregistrer en entier \?</string>
-    <string name="save_manga">Enregistrer le manga</string>
+    <string name="large_manga_save_confirm">Ce manga a %s. Tout sauvegarder \?</string>
+    <string name="save_manga">Enregistrer</string>
     <string name="open_in_browser">Ouvrir dans le navigateur</string>
-    <string name="show_notification_app_update">Afficher une notification si une mise à jour est disponible</string>
+    <string name="show_notification_app_update">Afficher une notification si une nouvelle version est disponible</string>
     <string name="app_update_available">Une nouvelle version de l\'application est disponible</string>
     <string name="application_update">Vérifier les nouvelles versions de l\'application</string>
     <string name="domain">Domaine</string>
@@ -228,7 +228,7 @@
     <string name="about_support_developer">Soutenir le concepteur</string>
     <string name="about_license">Licence</string>
     <string name="about_copyright_and_licenses">Droits d\'auteur et licences</string>
-    <string name="about_gratitudes_summary">Ces gens font que Kotatsu s\'améliore !</string>
+    <string name="about_gratitudes_summary">Ces personnes ont toutes rendu Kotatsu meilleur</string>
     <string name="about_gratitudes">Remerciements</string>
     <string name="about_feedback_4pda">Sujet sur 4PDA</string>
     <string name="about_feedback">Remarques</string>
@@ -248,4 +248,6 @@
     <string name="show_pages_numbers">Afficher les numéros de pages</string>
     <string name="enabled_sources">Sources activées</string>
     <string name="available_sources">Sources disponibles</string>
+    <string name="dynamic_theme">Thème dynamique</string>
+    <string name="dynamic_theme_summary">Applique un thème créé d\'après la palette de couleurs de votre fond d\'écran</string>
 </resources>
