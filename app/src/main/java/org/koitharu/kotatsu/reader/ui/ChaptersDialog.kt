@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.databinding.DialogChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
-import org.koitharu.kotatsu.history.domain.ChapterExtra
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
@@ -51,12 +50,11 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 		binding.recyclerViewChapters.adapter = ChaptersAdapter(this).apply {
 			setItems(chapters.mapIndexed { index, chapter ->
 				chapter.toListItem(
-					when {
-						index < currentPosition -> ChapterExtra.READ
-						index == currentPosition -> ChapterExtra.CURRENT
-						else -> ChapterExtra.UNREAD
-					},
+					isCurrent = index == currentPosition,
+					isUnread = index > currentPosition,
+					isNew = false,
 					isMissing = false,
+					isDownloaded = false,
 					dateFormat = dateFormat,
 				)
 			}) {

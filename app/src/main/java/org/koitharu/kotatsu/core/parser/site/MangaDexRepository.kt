@@ -162,7 +162,7 @@ class MangaDexRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 					url = id,
 					scanlator = relations["scanlation_group"]?.getStringOrNull("name"),
 					uploadDate = dateFormat.tryParse(attrs.getString("publishAt")),
-					branch = locale.displayName.toTitleCase(locale),
+					branch = locale.getDisplayName(locale).toTitleCase(locale),
 					source = source,
 				)
 			}

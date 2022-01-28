@@ -9,8 +9,8 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -51,12 +51,7 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		chaptersAdapter = ChaptersAdapter(this)
 		selectionDecoration = ChaptersSelectionDecoration(view.context)
 		with(binding.recyclerViewChapters) {
-			addItemDecoration(
-				DividerItemDecoration(
-					view.context,
-					RecyclerView.VERTICAL
-				)
-			)
+			addItemDecoration(MaterialDividerItemDecoration(view.context, RecyclerView.VERTICAL))
 			addItemDecoration(selectionDecoration!!)
 			setHasFixedSize(true)
 			adapter = chaptersAdapter
@@ -117,7 +112,7 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 			}
 			return
 		}
-		if (item.isMissing) {
+		if (item.hasFlag(ChapterListItem.FLAG_MISSING)) {
 			(activity as? DetailsActivity)?.showChapterMissingDialog(item.chapter.id)
 			return
 		}

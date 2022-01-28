@@ -11,6 +11,12 @@ fun LocaleListCompat.toList(): List<Locale> {
 	return list
 }
 
+operator fun LocaleListCompat.iterator() = object : Iterator<Locale> {
+	private var index = 0
+	override fun hasNext(): Boolean = index < size()
+	override fun next(): Locale = get(index++)
+}
+
 inline fun <R, C : MutableCollection<in R>> LocaleListCompat.mapTo(
 	destination: C,
 	block: (Locale) -> R,

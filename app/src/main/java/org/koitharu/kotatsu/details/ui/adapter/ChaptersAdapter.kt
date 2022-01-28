@@ -33,8 +33,8 @@ class ChaptersAdapter(
 		}
 
 		override fun getChangePayload(oldItem: ChapterListItem, newItem: ChapterListItem): Any? {
-			if (oldItem.extra != newItem.extra && oldItem.chapter == newItem.chapter) {
-				return newItem.extra
+			if (oldItem.flags != newItem.flags && oldItem.chapter == newItem.chapter) {
+				return newItem.flags
 			}
 			return null
 		}

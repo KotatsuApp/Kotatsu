@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.details.ui
 
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -18,15 +19,14 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.history.domain.ChapterExtra
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.iterator
 import org.koitharu.kotatsu.utils.ext.mapToSet
 import org.koitharu.kotatsu.utils.ext.toTitleCase
 import java.io.IOException
-import java.util.*
 
 class DetailsViewModel(
 	intent: MangaIntent,
@@ -60,16 +60,6 @@ class DetailsViewModel(
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	private val remoteManga = MutableStateFlow<Manga?>(null)
-	/*private val remoteManga = mangaData.mapLatest {
-		if (it?.source == MangaSource.LOCAL) {
-			runCatching {
-				val m = localMangaRepository.getRemoteManga(it) ?: return@mapLatest null
-				MangaRepository(m.source).getDetails(m)
-			}.getOrNull()
-		} else {
-			null
-		}
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)*/
 
 	private val chaptersReversed = settings.observe()
 		.filter { it == AppSettings.KEY_REVERSE_CHAPTERS }
@@ -109,10 +99,10 @@ class DetailsViewModel(
 		selectedBranch
 	) { chapters, sourceManga, currentId, newCount, branch ->
 		val sourceChapters = sourceManga?.chapters
-		if (sourceChapters.isNullOrEmpty()) {
-			mapChapters(chapters, currentId, newCount, branch)
-		} else {
+		if (sourceManga?.source != MangaSource.LOCAL && !sourceChapters.isNullOrEmpty()) {
 			mapChaptersWithSource(chapters, sourceChapters, currentId, newCount, branch)
+		} else {
+			mapChapters(chapters, sourceChapters, currentId, newCount, branch)
 		}
 	}.combine(chaptersReversed) { list, reversed ->
 		if (reversed) list.asReversed() else list
@@ -132,12 +122,14 @@ class DetailsViewModel(
 				predictBranch(manga.chapters)
 			}
 			mangaData.value = manga
-			if (manga.source == MangaSource.LOCAL) {
-				remoteManga.value = runCatching {
+			remoteManga.value = runCatching {
+				if (manga.source == MangaSource.LOCAL) {
 					val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatching null
 					MangaRepository(m.source).getDetails(m)
-				}.getOrNull()
-			}
+				} else {
+					localMangaRepository.findSavedManga(manga)
+				}
+			}.getOrNull()
 		}
 	}
 
@@ -166,6 +158,7 @@ class DetailsViewModel(
 
 	private fun mapChapters(
 		chapters: List<MangaChapter>,
+		downloadedChapters: List<MangaChapter>?,
 		currentId: Long?,
 		newCount: Int,
 		branch: String?,
@@ -174,19 +167,18 @@ class DetailsViewModel(
 		val dateFormat = settings.dateFormat()
 		val currentIndex = chapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = chapters.size - newCount
+		val downloadedIds = downloadedChapters?.mapToSet { it.id }
 		for (i in chapters.indices) {
 			val chapter = chapters[i]
 			if (chapter.branch != branch) {
 				continue
 			}
 			result += chapter.toListItem(
-				extra = when {
-					i >= firstNewIndex -> ChapterExtra.NEW
-					i == currentIndex -> ChapterExtra.CURRENT
-					i < currentIndex -> ChapterExtra.READ
-					else -> ChapterExtra.UNREAD
-				},
+				isCurrent = i == currentIndex,
+				isUnread = i > currentIndex,
+				isNew = i >= firstNewIndex,
 				isMissing = false,
+				isDownloaded = downloadedIds?.contains(chapter.id) == true,
 				dateFormat = dateFormat,
 			)
 		}
@@ -212,29 +204,32 @@ class DetailsViewModel(
 			}
 			val localChapter = chaptersMap.remove(chapter.id)
 			result += localChapter?.toListItem(
-				extra = when {
-					i >= firstNewIndex -> ChapterExtra.NEW
-					i == currentIndex -> ChapterExtra.CURRENT
-					i < currentIndex -> ChapterExtra.READ
-					else -> ChapterExtra.UNREAD
-				},
+				isCurrent = i == currentIndex,
+				isUnread = i > currentIndex,
+				isNew = i >= firstNewIndex,
 				isMissing = false,
+				isDownloaded = false,
 				dateFormat = dateFormat,
 			) ?: chapter.toListItem(
-				extra = when {
-					i >= firstNewIndex -> ChapterExtra.NEW
-					i == currentIndex -> ChapterExtra.CURRENT
-					i < currentIndex -> ChapterExtra.READ
-					else -> ChapterExtra.UNREAD
-				},
+				isCurrent = i == currentIndex,
+				isUnread = i > currentIndex,
+				isNew = i >= firstNewIndex,
 				isMissing = true,
+				isDownloaded = false,
 				dateFormat = dateFormat,
 			)
 		}
 		if (chaptersMap.isNotEmpty()) { // some chapters on device but not online source
 			result.ensureCapacity(result.size + chaptersMap.size)
 			chaptersMap.values.mapTo(result) {
-				it.toListItem(ChapterExtra.UNREAD, false, dateFormat)
+				it.toListItem(
+					isCurrent = false,
+					isUnread = true,
+					isNew = false,
+					isMissing = false,
+					isDownloaded = false,
+					dateFormat = dateFormat,
+				)
 			}
 			result.sortBy { it.chapter.number }
 		}
@@ -246,14 +241,15 @@ class DetailsViewModel(
 			return null
 		}
 		val groups = chapters.groupBy { it.branch }
-		val locale = Locale.getDefault()
-		var language = locale.displayLanguage.toTitleCase(locale)
-		if (groups.containsKey(language)) {
-			return language
-		}
-		language = locale.displayName.toTitleCase(locale)
-		if (groups.containsKey(language)) {
-			return language
+		for (locale in LocaleListCompat.getAdjustedDefault()) {
+			var language = locale.getDisplayLanguage(locale).toTitleCase(locale)
+			if (groups.containsKey(language)) {
+				return language
+			}
+			language = locale.getDisplayName(locale).toTitleCase(locale)
+			if (groups.containsKey(language)) {
+				return language
+			}
 		}
 		return groups.maxByOrNull { it.value.size }?.key
 	}
