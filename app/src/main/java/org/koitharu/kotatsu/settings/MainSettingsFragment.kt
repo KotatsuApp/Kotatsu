@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
-import com.google.android.material.color.DynamicColors
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
@@ -39,6 +38,8 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			entryValues = ListMode.values().names()
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
+		findPreference<SwitchPreference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible =
+			DeviceUtil.isDynamicColorAvailable
 		findPreference<ListPreference>(AppSettings.KEY_DATE_FORMAT)?.run {
 			entryValues = arrayOf("", "MM/dd/yy", "dd/MM/yy", "yyyy-MM-dd", "dd MMM yyyy", "MMM dd, yyyy")
 			val now = Date().time
@@ -57,8 +58,6 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		findPreference<SwitchPreference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible =
-			DeviceUtil.isDynamicColorAvailable
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)
