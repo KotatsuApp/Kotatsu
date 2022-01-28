@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -44,11 +46,15 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
-			top = insets.top,
-			left = insets.left,
-			right = insets.right
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 		binding.container.updatePadding(
 			bottom = insets.bottom
 		)

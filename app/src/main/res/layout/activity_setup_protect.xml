@@ -62,17 +62,18 @@
 
 	</com.google.android.material.textfield.TextInputLayout>
 
-	<Button
+	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_cancel"
-		style="?borderlessButtonStyle"
+		style="@style/Widget.Material3.Button.OutlinedButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@android:string/cancel"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintStart_toStartOf="parent" />
 
-	<Button
+	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_next"
+		style="@style/Widget.Material3.Button.TonalButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:enabled="false"

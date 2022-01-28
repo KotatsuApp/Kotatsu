@@ -42,6 +42,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 	)
 
+	val isDynamicTheme by BoolPreferenceDelegate(KEY_DYNAMIC_THEME, defaultValue = false)
+
 	val isAmoledTheme by BoolPreferenceDelegate(KEY_THEME_AMOLED, defaultValue = false)
 
 	val isToolbarHideWhenScrolling by BoolPreferenceDelegate(KEY_HIDE_TOOLBAR, defaultValue = true)
@@ -164,6 +166,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_LIST_MODE = "list_mode_2"
 		const val KEY_APP_SECTION = "app_section"
 		const val KEY_THEME = "theme"
+		const val KEY_DYNAMIC_THEME = "dynamic_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
 		const val KEY_DATE_FORMAT = "date_format"
 		const val KEY_HIDE_TOOLBAR = "hide_toolbar"

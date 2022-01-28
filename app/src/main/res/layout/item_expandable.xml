@@ -10,6 +10,7 @@
 	android:gravity="center_vertical|start"
 	android:paddingStart="?android:listPreferredItemPaddingStart"
 	android:paddingEnd="?android:listPreferredItemPaddingEnd"
+	android:textAppearance="?attr/textAppearanceBodyMedium"
 	app:drawableEndCompat="@drawable/ic_expand_collapse"
 	app:drawableTint="?android:textColorPrimary"
 	tools:text="@tools:sample/full_names" />

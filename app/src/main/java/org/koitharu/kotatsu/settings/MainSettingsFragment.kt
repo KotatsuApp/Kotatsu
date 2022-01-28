@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
+import com.google.android.material.color.DynamicColors
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
+import org.koitharu.kotatsu.utils.DeviceUtil
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.names
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
@@ -55,6 +57,8 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		findPreference<SwitchPreference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible =
+			DeviceUtil.isDynamicColorAvailable
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
 			summary = settings.getStorageDir(context)?.getStorageName(context)
 				?: getString(R.string.not_available)
@@ -73,6 +77,9 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		when (key) {
 			AppSettings.KEY_THEME -> {
 				AppCompatDelegate.setDefaultNightMode(settings.theme)
+			}
+			AppSettings.KEY_DYNAMIC_THEME -> {
+				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
 			}
 			AppSettings.KEY_THEME_AMOLED -> {
 				findPreference<Preference>(key)?.setSummary(R.string.restart_required)

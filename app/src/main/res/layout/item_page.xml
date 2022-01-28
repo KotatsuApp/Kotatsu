@@ -25,7 +25,7 @@
 		android:layout_margin="8dp"
 		android:singleLine="true"
 		android:textColor="?android:textColorTertiary"
-		android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+		android:textAppearance="?attr/textAppearanceBodyMedium"
 		android:layout_height="wrap_content"
 		android:layout_gravity="end|bottom"
 		tools:text="5" />
@@ -48,13 +48,13 @@
 			android:layout_height="wrap_content"
 			android:drawablePadding="12dp"
 			android:gravity="center_horizontal"
-			android:textAppearance="@style/TextAppearance.AppCompat.Small"
+			android:textAppearance="?attr/textAppearanceBodySmall"
 			app:drawableTopCompat="@drawable/ic_error_large"
 			tools:text="@tools:sample/lorem[6]" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_retry"
-			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+			style="@style/Widget.Material3.Button.TonalButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"

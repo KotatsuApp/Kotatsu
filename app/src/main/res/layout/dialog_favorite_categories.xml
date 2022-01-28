@@ -8,7 +8,7 @@
 	android:orientation="vertical">
 
 	<TextView
-		style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
+		style="?attr/textAppearanceTitleLarge"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:padding="16dp"
@@ -17,7 +17,7 @@
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
-		android:background="?android:listDivider" />
+		android:background="?attr/colorOutline" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_categories"
@@ -32,7 +32,7 @@
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
-		android:background="?android:listDivider" />
+		android:background="?attr/colorOutline" />
 
 	<TextView
 		android:id="@+id/textView_add"
@@ -43,8 +43,7 @@
 		android:paddingStart="?android:listPreferredItemPaddingStart"
 		android:paddingEnd="?android:listPreferredItemPaddingEnd"
 		android:text="@string/add_new_category"
-		android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-		android:textColor="?android:textColorPrimary"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
 		app:drawableEndCompat="@drawable/ic_add" />
 
 </LinearLayout>

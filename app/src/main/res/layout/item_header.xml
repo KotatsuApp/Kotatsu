@@ -8,8 +8,5 @@
 	android:paddingStart="8dp"
 	android:paddingEnd="8dp"
 	android:singleLine="true"
-	android:textAllCaps="true"
-	android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-	android:textColor="?android:textColorSecondary"
-	android:textStyle="bold"
+	android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
 	tools:text="@tools:sample/lorem[2]" />

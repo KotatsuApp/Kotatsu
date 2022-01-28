@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.favourites.ui.categories
 import android.content.Context
 import android.text.InputType
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.TextInputDialog
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -14,7 +14,7 @@ class CategoriesEditDelegate(
 ) {
 
 	fun deleteCategory(category: FavouriteCategory) {
-		AlertDialog.Builder(context)
+		MaterialAlertDialogBuilder(context)
 			.setMessage(context.getString(R.string.category_delete_confirm, category.title))
 			.setTitle(R.string.remove_category)
 			.setNegativeButton(android.R.string.cancel, null)

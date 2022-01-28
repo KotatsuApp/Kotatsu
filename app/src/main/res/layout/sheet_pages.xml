@@ -9,14 +9,11 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
-		style="@style/Widget.Kotatsu.Sheet.AppBar"
 		android:layout_width="match_parent"
-		android:layout_height="?attr/actionBarSize"
-		app:liftOnScroll="true">
+		android:layout_height="?attr/actionBarSize">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/toolbar"
-			style="@style/Widget.Kotatsu.Toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			app:navigationIcon="@drawable/ic_cross" />

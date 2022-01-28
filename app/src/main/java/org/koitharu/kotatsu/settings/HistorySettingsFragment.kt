@@ -2,8 +2,8 @@ package org.koitharu.kotatsu.settings
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -119,7 +119,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	}
 
 	private fun clearSearchHistory(preference: Preference) {
-		AlertDialog.Builder(context ?: return)
+		MaterialAlertDialogBuilder(context ?: return)
 			.setTitle(R.string.clear_search_history)
 			.setMessage(R.string.text_clear_search_history_prompt)
 			.setNegativeButton(android.R.string.cancel, null)
@@ -138,7 +138,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	}
 
 	private fun clearCookies() {
-		AlertDialog.Builder(context ?: return)
+		MaterialAlertDialogBuilder(context ?: return)
 			.setTitle(R.string.clear_cookies)
 			.setMessage(R.string.text_clear_cookies_prompt)
 			.setNegativeButton(android.R.string.cancel, null)

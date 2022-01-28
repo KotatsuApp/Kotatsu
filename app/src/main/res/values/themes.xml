@@ -2,52 +2,86 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
 	<!-- Base application theme. -->
-	<style name="Base.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-		<!-- Customize your theme here. -->
-		<item name="colorPrimary">@color/color_primary</item>
-		<item name="colorPrimaryVariant">@color/color_primary_variant</item>
-		<item name="colorSecondary">?attr/colorPrimary</item>
-		<item name="colorOnSecondary">@color/color_on_secondary</item>
-		<item name="colorControlLight">@color/color_control_light</item>
+	<style name="Base.Theme.Kotatsu" parent="Theme.Material3.DayNight.NoActionBar">
+
+		<!-- Disallow 'Force dark theme' -->
+		<item name="android:forceDarkAllowed" tools:targetApi="Q">false</item>
+
+		<!-- Theme Colors -->
+		<item name="colorPrimary">@color/kotatsu_primary</item>
+		<item name="colorOnPrimary">@color/kotatsu_onPrimary</item>
+		<item name="colorPrimaryContainer">@color/kotatsu_primaryContainer</item>
+		<item name="colorOnPrimaryContainer">@color/kotatsu_onPrimaryContainer</item>
+		<item name="colorSecondary">@color/kotatsu_secondary</item>
+		<item name="colorOnSecondary">@color/kotatsu_onSecondary</item>
+		<item name="colorSecondaryContainer">@color/kotatsu_secondaryContainer</item>
+		<item name="colorOnSecondaryContainer">@color/kotatsu_onSecondaryContainer</item>
+		<item name="colorTertiary">@color/kotatsu_tertiary</item>
+		<item name="colorOnTertiary">@color/kotatsu_onTertiary</item>
+		<item name="colorTertiaryContainer">@color/kotatsu_tertiaryContainer</item>
+		<item name="colorOnTertiaryContainer">@color/kotatsu_onTertiaryContainer</item>
+		<item name="android:colorBackground">@color/kotatsu_background</item>
+		<item name="colorOnBackground">@color/kotatsu_onBackground</item>
+		<item name="colorSurface">@color/kotatsu_surface</item>
+		<item name="colorOnSurface">@color/kotatsu_onSurface</item>
+		<item name="colorSurfaceVariant">@color/kotatsu_surfaceVariant</item>
+		<item name="colorOnSurfaceVariant">@color/kotatsu_onSurfaceVariant</item>
+		<item name="colorOutline">@color/kotatsu_outline</item>
+		<item name="colorOnSurfaceInverse">@color/kotatsu_inverseOnSurface</item>
+		<item name="colorSurfaceInverse">@color/kotatsu_inverseSurface</item>
+		<item name="colorPrimaryInverse">@color/kotatsu_primaryInverse</item>
+		<item name="colorError">@color/error</item>
+		<item name="colorOnError">@color/onError</item>
+		<item name="colorErrorContainer">@color/errorContainer</item>
+		<item name="colorOnErrorContainer">@color/onErrorContainer</item>
+
+		<!-- Ripples -->
+		<item name="colorControlHighlight">?attr/colorSurfaceVariant</item>
 
 		<!-- Handles RTL text -->
 		<item name="android:textAlignment">gravity</item>
 		<item name="android:textDirection">locale</item>
 
-		<!-- Window decor -->
-		<item name="android:windowLightStatusBar" tools:targetApi="m">@bool/use_light_status</item>
-		<item name="android:statusBarColor">@color/status_bar_scrim</item>
-		<item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/use_light_navigation</item>
-		<item name="android:navigationBarColor">@color/nav_bar_scrim</item>
-		<item name="popupTheme">@style/ThemeOverlay.Kotatsu</item>
-
-		<!-- Widget styles -->
-		<item name="toolbarStyle">@style/Widget.Kotatsu.Toolbar</item>
-		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
-		<item name="navigationViewStyle">@style/Widget.Kotatsu.NavigationView</item>
-		<item name="searchViewStyle">@style/Widget.Kotatsu.SearchView</item>
-
-		<!-- Text appearances -->
-		<item name="textAppearanceBody2">@style/TextAppearance.Kotatsu.Body2</item>
+		<!-- Themes -->
+		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/light_status_bar</item>
+		<item name="android:statusBarColor">@android:color/transparent</item>
+		<item name="android:navigationBarColor">@color/surface_amoled</item>
+		<item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@null</item>
+		<item name="android:enforceNavigationBarContrast" tools:targetApi="Q">false</item>
+		<item name="android:enforceStatusBarContrast" tools:targetApi="Q">false</item>
+		<item name="android:itemTextAppearance">@style/TextAppearance.Widget.Menu</item>
+		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.MaterialAlertDialog</item>
+		<item name="materialAlertDialogTheme">@style/ThemeOverlay.Kotatsu.MaterialAlertDialog</item>
 		<item name="textAppearanceButton">@style/TextAppearance.Kotatsu.Button</item>
-		<item name="textAppearanceListItem">@style/TextAppearance.Kotatsu.ListPrimary</item>
-
-		<!-- ActionMode attrs -->
-		<item name="android:windowActionModeOverlay">true</item>
+		<item name="android:buttonStyle">?attr/borderlessButtonStyle</item>
+		<item name="android:backgroundDimAmount">0.32</item>
 		<item name="windowActionModeOverlay">true</item>
-		<item name="actionModeCloseDrawable">@drawable/ic_cross</item>
-		<item name="actionModeStyle">@style/Widget.Kotatsu.ActionMode</item>
+		<item name="actionOverflowButtonStyle">@style/Theme.Kotatsu.ActionButton.Overflow</item>
+		<item name="actionModeCloseButtonStyle">@style/Theme.Kotatsu.ActionMode.CloseButton</item>
+		<item name="actionModeCloseDrawable">@drawable/ic_close</item>
+		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
+		<item name="chipStyle">@style/Widget.Kotatsu.Chip</item>
+		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
+		<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>
+		<item name="appBarLayoutStyle">@style/Widget.Material3.AppBarLayout</item>
+		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
+		<item name="switchStyle">@style/Widget.Kotatsu.Switch</item>
+		<item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated</item>
+
+		<!-- Preference text appearance -->
+		<item name="android:textAppearanceListItem">?attr/textAppearanceBodyLarge</item>
+		<item name="android:textAppearanceListItemSecondary">@style/TextAppearance.Kotatsu.Preference.Secondary</item>
+
 	</style>
 
-	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.MaterialComponents.Light">
-		<item name="colorPrimary">@color/color_primary</item>
-		<item name="colorPrimaryVariant">@color/color_primary_variant</item>
-	</style>
+	<!--== Default Theme ==-->
+	<style name="Theme.Kotatsu" parent="Base.Theme.Kotatsu" />
 
-	<style name="AppTheme" parent="Base.AppTheme">
-		<item name="android:statusBarColor">@color/nav_bar_scrim</item>
-	</style>
+	<!-- Monet theme only support S+ -->
+	<style name="Theme.Kotatsu.Monet" />
 
-	<style name="AppTheme.AMOLED" parent="Base.AppTheme" />
+	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Light" />
+
+	<style name="ThemeOverlay.Kotatsu.AMOLED" parent="" />
 
 </resources>

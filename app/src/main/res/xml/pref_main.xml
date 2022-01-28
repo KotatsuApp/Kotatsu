@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools">
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<ListPreference
 		android:defaultValue="-1"
@@ -12,6 +11,13 @@
 		android:title="@string/theme"
 		app:iconSpaceReserved="false"
 		app:useSimpleSummaryProvider="true" />
+
+	<SwitchPreference
+		android:defaultValue="false"
+		android:key="dynamic_theme"
+		android:summary="@string/dynamic_theme_summary"
+		android:title="@string/dynamic_theme"
+		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="false"

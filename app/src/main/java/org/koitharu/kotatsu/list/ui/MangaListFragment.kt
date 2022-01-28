@@ -21,7 +21,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.base.ui.list.decor.ItemTypeDividerDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
@@ -85,10 +84,8 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			addOnScrollListener(paginationListener!!)
 		}
 		with(binding.swipeRefreshLayout) {
-			setColorSchemeColors(
-				ContextCompat.getColor(context, R.color.color_primary),
-				ContextCompat.getColor(context, R.color.color_primary_variant)
-			)
+			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
+			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
 			setOnRefreshListener(this@MangaListFragment)
 			isEnabled = isSwipeRefreshEnabled
 		}

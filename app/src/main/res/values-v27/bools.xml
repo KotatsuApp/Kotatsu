@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<bool name="light_status_bar">true</bool>
+	<bool name="light_navigation_bar">true</bool>
+</resources>

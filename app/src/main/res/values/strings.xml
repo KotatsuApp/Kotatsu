@@ -249,4 +249,6 @@
     <string name="show_pages_numbers">Numbered pages</string>
     <string name="enabled_sources">Used sources</string>
     <string name="available_sources">Available sources</string>
+    <string name="dynamic_theme">Dynamic theme</string>
+    <string name="dynamic_theme_summary">Applies a theme created on the color scheme of your wallpaper</string>
 </resources>

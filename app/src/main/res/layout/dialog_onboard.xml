@@ -15,7 +15,7 @@
 		android:paddingEnd="?listPreferredItemPaddingEnd"
 		android:paddingBottom="6dp"
 		android:text="Select languages which you want to read manga. You can change it later in settings."
-		android:textAppearance="?android:textAppearanceSmall" />
+		android:textAppearance="?attr/textAppearanceBodyMedium" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recycler_view"

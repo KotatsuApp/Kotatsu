@@ -44,7 +44,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentDetailsBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,13 +76,17 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				MangaState.FINISHED -> {
 					textViewState.apply {
 						textAndVisible = resources.getString(R.string.state_finished)
-						drawableStart = ResourcesCompat.getDrawable(resources, R.drawable.ic_state_finished, context.theme)
+						drawableStart = ResourcesCompat.getDrawable(resources,
+							R.drawable.ic_state_finished,
+							context.theme)
 					}
 				}
 				MangaState.ONGOING -> {
 					textViewState.apply {
 						textAndVisible = resources.getString(R.string.state_ongoing)
-						drawableStart = ResourcesCompat.getDrawable(resources, R.drawable.ic_state_ongoing, context.theme)
+						drawableStart = ResourcesCompat.getDrawable(resources,
+							R.drawable.ic_state_ongoing,
+							context.theme)
 					}
 				}
 				else -> textViewState.isVisible = false

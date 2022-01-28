@@ -4,13 +4,13 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?selectableItemBackground"
+	android:background="?attr/selectableItemBackground"
 	android:gravity="center_vertical"
-	android:minHeight="?listPreferredItemHeightLarge"
+	android:minHeight="?attr/listPreferredItemHeightLarge"
 	android:orientation="vertical"
-	android:paddingStart="?listPreferredItemPaddingStart"
+	android:paddingStart="?attr/listPreferredItemPaddingStart"
 	android:paddingTop="16dp"
-	android:paddingEnd="?listPreferredItemPaddingEnd"
+	android:paddingEnd="?attr/listPreferredItemPaddingEnd"
 	android:paddingBottom="16dp">
 
 	<TextView
@@ -19,8 +19,7 @@
 		android:layout_height="wrap_content"
 		android:ellipsize="end"
 		android:maxLines="1"
-		android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-		android:textColor="?android:textColorPrimary"
+		android:textAppearance="?attr/textAppearanceTitleSmall"
 		tools:text="@tools:sample/lorem[3]" />
 
 	<TextView
@@ -29,8 +28,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginTop="6dp"
 		android:ellipsize="end"
-		android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-		android:textColor="?android:textColorSecondary"
+		android:textAppearance="?attr/textAppearanceBodyMedium"
 		tools:text="@tools:sample/lorem[20]" />
 
 </LinearLayout>

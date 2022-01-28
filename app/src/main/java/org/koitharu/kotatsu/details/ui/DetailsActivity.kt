@@ -6,15 +6,17 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toFile
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -94,11 +96,15 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		binding.snackbar.updatePadding(
 			bottom = insets.bottom
 		)
-		binding.toolbar.updatePadding(
-			top = insets.top,
-			left = insets.left,
-			right = insets.right
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 		if (binding.tabs.parent !is Toolbar) {
 			binding.tabs.updatePadding(
 				left = insets.left,
@@ -149,7 +155,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		}
 		R.id.action_delete -> {
 			viewModel.manga.value?.let { m ->
-				AlertDialog.Builder(this)
+				MaterialAlertDialogBuilder(this)
 					.setTitle(R.string.delete_manga)
 					.setMessage(getString(R.string.text_delete_local_manga, m.title))
 					.setPositiveButton(R.string.delete) { _, _ ->
@@ -164,7 +170,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 			viewModel.manga.value?.let {
 				val chaptersCount = it.chapters?.size ?: 0
 				if (chaptersCount > 5) {
-					AlertDialog.Builder(this)
+					MaterialAlertDialogBuilder(this)
 						.setTitle(R.string.save_manga)
 						.setMessage(
 							getString(
