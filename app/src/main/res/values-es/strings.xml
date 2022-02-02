@@ -45,7 +45,7 @@
     <string name="newest">Recientes</string>
     <string name="by_rating">Calificación</string>
     <string name="all">Todo</string>
-    <string name="sort_order">Establecer orden</string>
+    <string name="sort_order">Orden de clasificación</string>
     <string name="genre">Género</string>
     <string name="filter">Filtrar</string>
     <string name="theme">Tema</string>
@@ -95,12 +95,12 @@
     <string name="internal_storage">Almacenamiento interno</string>
     <string name="external_storage">Almacenamiento externo</string>
     <string name="domain">Dominio</string>
-    <string name="application_update">Comprobar actualizaciones automáticamente</string>
+    <string name="application_update">Comprobar nuevas versiones de la aplicación</string>
     <string name="app_update_available">Una nueva versión de la aplicación está disponible</string>
-    <string name="show_notification_app_update">Mostrar notificación si la actualización está disponible</string>
-    <string name="open_in_browser">Abrir en el navegador</string>
+    <string name="show_notification_app_update">Mostrar notificación si una nueva versión está disponible</string>
+    <string name="open_in_browser">Abrir en navegador web</string>
     <string name="large_manga_save_confirm">Este manga tiene %s. ¿Quieres guardarlo todo?</string>
-    <string name="save_manga">Guardar manga</string>
+    <string name="save_manga">Guardar</string>
     <string name="notifications">Notificaciones</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Activado %1$d de %2$d</string>
     <string name="new_chapters">Nuevos capítulos</string>
@@ -110,26 +110,26 @@
     <string name="restart">Reiniciar</string>
     <string name="notifications_settings">Configuración de las notificaciones</string>
     <string name="notification_sound">Sonido de las notificaciones</string>
-    <string name="light_indicator">Indicador de luz</string>
+    <string name="light_indicator">Indicador LED</string>
     <string name="vibration">Vibración</string>
     <string name="favourites_categories">Categorías favoritas</string>
     <string name="categories_">Categorías…</string>
     <string name="rename">Renombrar</string>
-    <string name="category_delete_confirm">¿Realmente quieres eliminar la categoría «%s» de tus favoritos\?
-\nTodo el manga en ella se perderá.</string>
-    <string name="remove_category">Quitar categoría</string>
-    <string name="text_categories_holder">Puedes usar categorías para organizar tus mangas favoritos. Pulsa «+» para crear una categoría</string>
-    <string name="manga_shelf">Estante de manga</string>
-    <string name="recent_manga">Manga reciente</string>
-    <string name="pages_animation">Animación de páginas</string>
-    <string name="manga_save_location">Ubicación de descarga del manga</string>
+    <string name="category_delete_confirm">¿Remover la categoría \"%s\" de sus favoritos\?
+\nTodo el manga en esta se perderá.</string>
+    <string name="remove_category">Remover</string>
+    <string name="text_categories_holder">Puedes usar categorías para organizar tus favoritos. Pulsa «+» para crear una categoría</string>
+    <string name="manga_shelf">Estante</string>
+    <string name="recent_manga">Reciente</string>
+    <string name="pages_animation">Animación de página</string>
+    <string name="manga_save_location">Carpeta para descargas</string>
     <string name="not_available">No disponible</string>
-    <string name="cannot_find_available_storage">No se puede encontrar ningún almacenamiento disponible</string>
+    <string name="cannot_find_available_storage">No hay almacenamiento disponible</string>
     <string name="other_storage">Otro almacenamiento</string>
     <string name="use_ssl">Utilizar conexión segura (HTTPS)</string>
     <string name="done">Aceptar</string>
     <string name="all_favourites">Todos los favoritos</string>
-    <string name="favourites_category_empty">Esta categoría está vacía</string>
+    <string name="favourites_category_empty">Categoría vacía</string>
     <string name="read_later">Leer más tarde</string>
     <string name="updates">Actualizaciones</string>
     <string name="text_feed_holder">Aquí verás los nuevos episodios del manga que estás leyendo</string>
@@ -148,7 +148,7 @@
     <string name="enter_password">Introducir contraseña</string>
     <string name="wrong_password">Contraseña incorrecta</string>
     <string name="protect_application">Proteger aplicación</string>
-    <string name="protect_application_summary">Pide la contraseña al iniciar la aplicación</string>
+    <string name="protect_application_summary">Pedir una contraseña al iniciar Kotatsu</string>
     <string name="repeat_password">Repite la contraseña</string>
     <string name="passwords_mismatch">Las contraseñas no coinciden</string>
     <string name="about">Acerca de</string>
@@ -157,8 +157,8 @@
     <string name="checking_for_updates">Comprobar si hay actualizaciones…</string>
     <string name="update_check_failed">Fallo en la comprobación de actualizaciones</string>
     <string name="no_update_available">No hay actualizaciones disponibles</string>
-    <string name="right_to_left">Derecha a izquierda</string>
-    <string name="prefer_rtl_reader">Preferir lector de derecha a izquierda</string>
+    <string name="right_to_left">Derecha a izquierda (←)</string>
+    <string name="prefer_rtl_reader">Preferir lector de derecha a izquierda (→)</string>
     <string name="prefer_rtl_reader_summary">Puedes configurar el modo de lectura para cada manga por separado</string>
     <string name="create_category">Nueva categoría</string>
     <string name="report_github">Crear incidencia en GitHub</string>
@@ -206,8 +206,8 @@
     <string name="password_length_hint">La contraseña debe tener al menos 4 caracteres</string>
     <string name="text_local_holder_secondary">Puedes guardarlo desde fuentes in línea o importarlo desde un archivo.</string>
     <string name="text_local_holder_primary">Todavía no tienes ningún manga guardado</string>
-    <string name="text_history_holder_secondary">Puede encontrar qué leer en el menú lateral.</string>
-    <string name="text_history_holder_primary">El manga que estás leyendo se mostrará aquí</string>
+    <string name="text_history_holder_secondary">Encuentra qué leer en el menú lateral.</string>
+    <string name="text_history_holder_primary">Lo que leas se mostrará aquí</string>
     <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
     <string name="about_gratitudes">Agradecimientos</string>
     <string name="about_support_developer_summary">Si te gusta esta aplicación, puedes ayudar económicamente a través de Yoomoney (ex. Yandex.Money)</string>
