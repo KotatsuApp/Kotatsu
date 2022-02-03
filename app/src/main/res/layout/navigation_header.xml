@@ -38,7 +38,6 @@
 		android:layout_below="@id/imageView_logo"
 		android:layout_alignParentStart="true"
 		android:layout_alignParentEnd="true"
-		android:layout_marginHorizontal="28dp"
-		android:background="?attr/colorOutline" />
+		android:layout_marginHorizontal="28dp" />
 
 </RelativeLayout>

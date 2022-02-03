@@ -2,11 +2,13 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
@@ -210,5 +212,12 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
 		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
 		const val KEY_SUPPORT_DEVELOPER = "about_support_developer"
+
+		val isDynamicColorAvailable: Boolean
+			get() = DynamicColors.isDynamicColorAvailable() ||
+					(isSamsung && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+
+		private val isSamsung
+			get() = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
 	}
 }

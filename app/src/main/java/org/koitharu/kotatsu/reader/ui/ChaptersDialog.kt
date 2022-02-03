@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
@@ -37,7 +37,7 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		binding.recyclerViewChapters.addItemDecoration(
-			DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
+			MaterialDividerItemDecoration(view.context, RecyclerView.VERTICAL)
 		)
 		val chapters = arguments?.getParcelableArrayList<MangaChapter>(ARG_CHAPTERS)
 		if (chapters == null) {

@@ -13,7 +13,6 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
-import org.koitharu.kotatsu.utils.DeviceUtil
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.names
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
@@ -39,7 +38,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
 		findPreference<SwitchPreference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible =
-			DeviceUtil.isDynamicColorAvailable
+			AppSettings.isDynamicColorAvailable
 		findPreference<ListPreference>(AppSettings.KEY_DATE_FORMAT)?.run {
 			entryValues = arrayOf("", "MM/dd/yy", "dd/MM/yy", "yyyy-MM-dd", "dd MMM yyyy", "MMM dd, yyyy")
 			val now = Date().time

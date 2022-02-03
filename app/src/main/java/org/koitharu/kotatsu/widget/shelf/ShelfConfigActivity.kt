@@ -3,19 +3,16 @@ package org.koitharu.kotatsu.widget.shelf
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -40,7 +37,9 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		adapter = CategorySelectAdapter(this)
-		binding.recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
+		binding.recyclerView.addItemDecoration(
+			MaterialDividerItemDecoration(this, RecyclerView.VERTICAL)
+		)
 		binding.recyclerView.adapter = adapter
 		binding.fabAdd.hide()
 		val appWidgetId = intent?.getIntExtra(

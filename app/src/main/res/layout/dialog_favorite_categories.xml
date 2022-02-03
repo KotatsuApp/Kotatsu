@@ -14,10 +14,9 @@
 		android:padding="16dp"
 		android:text="@string/add_to_favourites" />
 
-	<View
+	<com.google.android.material.divider.MaterialDivider
 		android:layout_width="match_parent"
-		android:layout_height="1dp"
-		android:background="?attr/colorOutline" />
+		android:layout_height="wrap_content" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_categories"
@@ -29,10 +28,9 @@
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_category_checkable" />
 
-	<View
+	<com.google.android.material.divider.MaterialDivider
 		android:layout_width="match_parent"
-		android:layout_height="1dp"
-		android:background="?attr/colorOutline" />
+		android:layout_height="wrap_content" />
 
 	<TextView
 		android:id="@+id/textView_add"
