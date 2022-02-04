@@ -8,10 +8,11 @@ class EditTextSummaryProvider(@StringRes private val emptySummaryId: Int) :
 	Preference.SummaryProvider<EditTextPreference> {
 
 	override fun provideSummary(preference: EditTextPreference): CharSequence {
-		return if (preference.text.isNullOrEmpty()) {
+		val text = preference.text
+		return if (text.isNullOrEmpty()) {
 			preference.context.getString(emptySummaryId)
 		} else {
-			preference.text
+			text
 		}
 	}
 }

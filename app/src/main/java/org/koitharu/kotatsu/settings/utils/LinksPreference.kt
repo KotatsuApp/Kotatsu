@@ -8,7 +8,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 
 class LinksPreference @JvmOverloads constructor(
-	context: Context?,
+	context: Context,
 	attrs: AttributeSet? = null,
 	defStyleAttr: Int = androidx.preference.R.attr.preferenceStyle,
 	defStyleRes: Int = 0,

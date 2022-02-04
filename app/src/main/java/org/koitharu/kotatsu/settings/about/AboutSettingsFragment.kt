@@ -30,8 +30,8 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 	}
 
 
-	override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-		return when (preference?.key) {
+	override fun onPreferenceTreeClick(preference: Preference): Boolean {
+		return when (preference.key) {
 			AppSettings.KEY_APP_VERSION -> {
 				checkForUpdates()
 				true

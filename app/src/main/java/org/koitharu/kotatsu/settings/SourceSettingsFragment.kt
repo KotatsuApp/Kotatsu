@@ -51,8 +51,8 @@ class SourceSettingsFragment : PreferenceFragmentCompat() {
 		}
 	}
 
-	override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-		return when (preference?.key) {
+	override fun onPreferenceTreeClick(preference: Preference): Boolean {
+		return when (preference.key) {
 			SourceSettings.KEY_AUTH -> {
 				startActivity(
 					SourceAuthActivity.newIntent(

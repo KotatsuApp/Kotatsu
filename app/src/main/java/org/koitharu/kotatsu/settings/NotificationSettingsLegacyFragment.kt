@@ -37,8 +37,8 @@ class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notif
 		}
 	}
 
-	override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-		return when (preference?.key) {
+	override fun onPreferenceTreeClick(preference: Preference): Boolean {
+		return when (preference.key) {
 			AppSettings.KEY_NOTIFICATIONS_SOUND -> {
 				ringtonePickContract.launch(settings.notificationSound.toUriOrNull())
 				true

@@ -53,7 +53,7 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 		pref: Preference
 	): Boolean {
 		val fm = supportFragmentManager
-		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment)
+		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment ?: return false)
 		fragment.arguments = pref.extras
 		fragment.setTargetFragment(caller, 0)
 		openFragment(fragment)

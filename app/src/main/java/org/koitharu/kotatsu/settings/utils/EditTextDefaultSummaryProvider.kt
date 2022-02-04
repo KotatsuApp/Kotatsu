@@ -9,10 +9,11 @@ class EditTextDefaultSummaryProvider(
 ) : Preference.SummaryProvider<EditTextPreference> {
 
 	override fun provideSummary(preference: EditTextPreference): CharSequence {
-		return if (preference.text.isNullOrEmpty()) {
+		val text = preference.text
+		return if (text.isNullOrEmpty()) {
 			preference.context.getString(R.string.default_s, defaultValue)
 		} else {
-			preference.text
+			text
 		}
 	}
 }

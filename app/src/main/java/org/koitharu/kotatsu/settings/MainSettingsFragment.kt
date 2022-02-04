@@ -108,12 +108,12 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		}
 	}
 
-	override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-		return when (preference?.key) {
+	override fun onPreferenceTreeClick(preference: Preference): Boolean {
+		return when (preference.key) {
 			AppSettings.KEY_LOCAL_STORAGE -> {
 				val ctx = context ?: return false
 				StorageSelectDialog.Builder(ctx, settings.getStorageDir(ctx), this)
-					.setTitle(preference.title)
+					.setTitle(preference.title ?: "")
 					.setNegativeButton(android.R.string.cancel)
 					.create()
 					.show()
