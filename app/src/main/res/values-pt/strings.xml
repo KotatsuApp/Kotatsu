@@ -17,10 +17,10 @@
     <string name="clear_history">Limpar histórico</string>
     <string name="nothing_found">Nada encontrado</string>
     <string name="history_is_empty">Sem histórico ainda</string>
-    <string name="add_bookmark">Add marca páginas</string>
+    <string name="add_bookmark">Adicionar marca páginas</string>
     <string name="you_have_not_favourites_yet">Ainda não há favoritos</string>
     <string name="add_to_favourites">Favoritar isso</string>
-    <string name="add">Add</string>
+    <string name="add">Adicionar</string>
     <string name="enter_category_name">Nomeie a categoria</string>
     <string name="save">Salvar</string>
     <string name="share">Compartilhar</string>
@@ -55,13 +55,13 @@
     <string name="delete">Deletar</string>
     <string name="operation_not_supported">Essa operação não é suportada</string>
     <string name="history_and_cache">Histórico e cache</string>
-    <string name="clear_pages_cache">Limpar cache da página</string>
+    <string name="clear_pages_cache">Limpar cache de página</string>
     <string name="cache">Cache</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="standard">Padrão</string>
     <string name="webtoon">Webtoon</string>
     <string name="read_mode">Modo leitura</string>
-    <string name="grid_size">Tamanho de grade</string>
+    <string name="grid_size">Tamanho da grade</string>
     <string name="search_on_s">Pesquisar em %s</string>
     <string name="delete_manga">Deletar mangá</string>
     <string name="reader_settings">Configurações de leitura</string>
@@ -95,7 +95,7 @@
     <string name="close_menu">Fechar menu</string>
     <string name="remote_sources">Fontes remotas</string>
     <string name="close">Fechar</string>
-    <string name="light">Brilho</string>
+    <string name="light">Claro</string>
     <string name="history">Histórico</string>
     <string name="read">Ler</string>
     <string name="processing_">Processando…</string>
