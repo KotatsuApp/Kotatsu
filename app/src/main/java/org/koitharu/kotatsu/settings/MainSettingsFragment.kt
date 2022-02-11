@@ -3,9 +3,13 @@ package org.koitharu.kotatsu.settings
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
+import leakcanary.LeakCanary
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
@@ -23,6 +27,11 @@ import java.util.*
 class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 	SharedPreferences.OnSharedPreferenceChangeListener,
 	StorageSelectDialog.OnStorageSelectListener {
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setHasOptionsMenu(true)
+	}
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_main)
@@ -64,6 +73,21 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
 		settings.subscribe(this)
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater.inflate(R.menu.opt_settings, menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.action_leaks -> {
+				startActivity(LeakCanary.newLeakDisplayActivityIntent())
+				true
+			}
+			else -> super.onOptionsItemSelected(item)
+		}
 	}
 
 	override fun onDestroyView() {
