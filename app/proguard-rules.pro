@@ -1,3 +1,4 @@
+-optimizationpasses 8
 -dontobfuscate
 -assumenosideeffects class kotlin.jvm.internal.Intrinsics {
 	public static void checkExpressionValueIsNotNull(...);
