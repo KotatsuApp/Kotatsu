@@ -21,12 +21,11 @@ import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	SourceConfigListener {
 
-	private lateinit var reorderHelper: ItemTouchHelper
+	private var reorderHelper: ItemTouchHelper? = null
 	private val viewModel by viewModel<SourcesSettingsViewModel>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		reorderHelper = ItemTouchHelper(SourcesReorderCallback())
 		setHasOptionsMenu(true)
 	}
 
@@ -47,7 +46,9 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 			setHasFixedSize(true)
 			addItemDecoration(SourceConfigItemDecoration(view.context))
 			adapter = sourcesAdapter
-			reorderHelper.attachToRecyclerView(this)
+			reorderHelper = ItemTouchHelper(SourcesReorderCallback()).also {
+				it.attachToRecyclerView(this)
+			}
 		}
 		viewModel.items.observe(viewLifecycleOwner) {
 			sourcesAdapter.items = it
@@ -55,7 +56,7 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	}
 
 	override fun onDestroyView() {
-		reorderHelper.attachToRecyclerView(null)
+		reorderHelper = null
 		super.onDestroyView()
 	}
 
@@ -76,7 +77,7 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	}
 
 	override fun onDragHandleTouch(holder: RecyclerView.ViewHolder) {
-		reorderHelper.startDrag(holder)
+		reorderHelper?.startDrag(holder)
 	}
 
 	override fun onHeaderClick(header: SourceConfigItem.LocaleGroup) {
