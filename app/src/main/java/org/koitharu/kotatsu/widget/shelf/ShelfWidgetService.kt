@@ -12,6 +12,6 @@ class ShelfWidgetService : RemoteViewsService() {
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
 			AppWidgetManager.INVALID_APPWIDGET_ID
 		)
-		return ShelfListFactory(this, get(), get(), widgetId)
+		return ShelfListFactory(applicationContext, get(), get(), widgetId)
 	}
 }

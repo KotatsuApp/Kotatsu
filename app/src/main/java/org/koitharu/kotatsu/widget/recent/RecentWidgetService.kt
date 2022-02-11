@@ -7,6 +7,6 @@ import org.koin.android.ext.android.get
 class RecentWidgetService : RemoteViewsService() {
 
 	override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-		return RecentListFactory(this, get(), get())
+		return RecentListFactory(applicationContext, get(), get())
 	}
 }
