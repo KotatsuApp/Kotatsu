@@ -57,7 +57,7 @@
 \nAlle mangaer i den vil bli tapt.</string>
     <string name="restart">Programomstart</string>
     <string name="show_notification_new_chapters">Gi merknad om oppdateringer av det du leser</string>
-    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Skrudde på %1$d av %2$d</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d av %2$d påskrudd</string>
     <string name="large_manga_save_confirm">Denne mangaen har %s. Lagre hele\?</string>
     <string name="open_in_browser">Åpne i nettleser</string>
     <string name="show_notification_app_update">Vis merknad hvis en ny versjon er tilgjengelig</string>
