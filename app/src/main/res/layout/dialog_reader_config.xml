@@ -4,15 +4,15 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:padding="16dp">
+	android:paddingHorizontal="16dp"
+	android:orientation="vertical">
 
-	<com.google.android.material.button.MaterialButtonToggleGroup
+	<org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
+		android:id="@+id/checkableGroup"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		app:selectionRequired="true"
-		app:singleSelection="true">
+		android:layout_marginTop="16dp"
+		android:orientation="vertical">
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_standard"
@@ -38,7 +38,7 @@
 			android:text="@string/webtoon"
 			app:icon="@drawable/ic_script" />
 
-	</com.google.android.material.button.MaterialButtonToggleGroup>
+	</org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup>
 
 	<TextView
 		android:layout_width="match_parent"

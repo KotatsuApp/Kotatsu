@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.progressindicator.BaseProgressIndicator
+import com.google.android.material.slider.Slider
 import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateViewBindingViewHolder
+import kotlin.math.roundToInt
 
 fun View.hideKeyboard() {
 	val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -200,4 +202,9 @@ fun resolveAdjustedSize(
 			// This should not happen
 			desiredSize
 	}
+}
+
+fun Slider.setValueRounded(newValue: Float) {
+	val step = stepSize
+	value = (newValue / step).roundToInt() * step
 }

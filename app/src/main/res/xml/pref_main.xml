@@ -45,16 +45,14 @@
 		app:iconSpaceReserved="false"
 		app:useSimpleSummaryProvider="true" />
 
-	<SeekBarPreference
+	<org.koitharu.kotatsu.settings.utils.SliderPreference
 		android:key="grid_size"
-		android:max="150"
+		android:stepSize="5"
 		android:title="@string/grid_size"
+		android:valueFrom="50"
+		android:valueTo="150"
 		app:defaultValue="100"
-		app:iconSpaceReserved="false"
-		app:min="50"
-		app:seekBarIncrement="10"
-		app:showSeekBarValue="false"
-		app:updatesContinuously="true" />
+		app:iconSpaceReserved="false" />
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment"

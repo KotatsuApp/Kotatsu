@@ -8,13 +8,12 @@
 	android:animateLayoutChanges="true"
 	android:orientation="vertical">
 
-	<com.google.android.material.button.MaterialButtonToggleGroup
+	<org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
+		android:id="@+id/checkableGroup"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_margin="16dp"
-		android:orientation="vertical"
-		app:selectionRequired="true"
-		app:singleSelection="true">
+		android:orientation="vertical">
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_list"
@@ -40,11 +39,11 @@
 			android:text="@string/grid"
 			app:icon="@drawable/ic_grid" />
 
-	</com.google.android.material.button.MaterialButtonToggleGroup>
+	</org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup>
 
 	<TextView
 		android:id="@+id/textView_grid_title"
-		style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
+		style="?materialAlertDialogTitleTextStyle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:paddingLeft="?attr/dialogPreferredPadding"
@@ -54,14 +53,18 @@
 		android:visibility="gone"
 		tools:visibility="visible" />
 
-	<SeekBar
-		android:id="@+id/seekbar_grid"
+	<com.google.android.material.slider.Slider
+		android:id="@+id/slider_grid"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_margin="16dp"
-		android:max="100"
+		android:layout_marginHorizontal="16dp"
+		android:stepSize="5"
+		android:valueFrom="50"
+		android:valueTo="150"
 		android:visibility="gone"
-		tools:progress="50"
+		app:labelBehavior="floating"
+		app:tickVisible="false"
+		tools:value="100"
 		tools:visibility="visible" />
 
 </LinearLayout>

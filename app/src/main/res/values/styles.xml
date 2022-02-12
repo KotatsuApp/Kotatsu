@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
 	<!--Toolbars-->
 
@@ -58,11 +58,11 @@
 
 	<style name="Widget.Kotatsu.ToggleButton" parent="Widget.Material3.Button.OutlinedButton">
 		<item name="android:checkable">true</item>
-		<item name="android:gravity">center_vertical|start</item>
+		<item name="android:textAlignment">textStart</item>
 		<item name="iconPadding">16dp</item>
 	</style>
 
-	<style name="Widget.Kotatsu.ActionMode" parent="Widget.AppCompat.ActionMode">
+	<style name="Widget.Kotatsu.ActionMode" parent="Widget.Material3.ActionMode">
 		<item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
 		<item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
 	</style>
@@ -134,6 +134,10 @@
 	<style name="PreferenceThemeOverlay.Kotatsu">
 		<item name="preferenceCategoryTitleTextAppearance">?attr/textAppearanceBodyMedium</item>
 		<item name="singleLineTitle">false</item>
+	</style>
+
+	<style name="Preference.Slider" parent="Preference.SeekBarPreference.Material">
+		<item name="android:layout">@layout/pref_slider</item>
 	</style>
 
 </resources>

@@ -8,7 +8,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.*
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceScreen
+import androidx.preference.SwitchPreference
 import leakcanary.LeakCanary
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
@@ -17,6 +20,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
+import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.names
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
@@ -35,7 +39,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_main)
-		findPreference<SeekBarPreference>(AppSettings.KEY_GRID_SIZE)?.run {
+		findPreference<SliderPreference>(AppSettings.KEY_GRID_SIZE)?.run {
 			summary = "%d%%".format(value)
 			setOnPreferenceChangeListener { preference, newValue ->
 				preference.summary = "%d%%".format(newValue)
