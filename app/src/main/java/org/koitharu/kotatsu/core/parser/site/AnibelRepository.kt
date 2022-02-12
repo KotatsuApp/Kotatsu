@@ -21,6 +21,10 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		SortOrder.NEWEST
 	)
 
+	override fun getFaviconUrl(): String {
+		return "https://cdn.${getDomain()}/favicons/favicon.png"
+	}
+
 	override suspend fun getList2(
 		offset: Int,
 		query: String?,

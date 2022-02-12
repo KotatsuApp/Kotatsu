@@ -21,6 +21,7 @@ class SourcesSettingsViewModel(
 
 	val items = MutableLiveData<List<SourceConfigItem>>(emptyList())
 	private val expandedGroups = HashSet<String?>()
+	private var searchQuery: String? = null
 
 	init {
 		buildList()
@@ -63,9 +64,30 @@ class SourcesSettingsViewModel(
 		buildList()
 	}
 
+	fun performSearch(query: String?) {
+		searchQuery = query?.trim()
+		buildList()
+	}
+
 	private fun buildList() {
 		val sources = MangaProviderFactory.getSources(settings, includeHidden = true)
 		val hiddenSources = settings.hiddenSources
+		val query = searchQuery
+		if (!query.isNullOrEmpty()) {
+			items.value = sources.mapNotNull {
+				if (!it.title.contains(query, ignoreCase = true)) {
+					return@mapNotNull null
+				}
+				SourceConfigItem.SourceItem(
+					source = it,
+					isEnabled = it.name !in hiddenSources,
+					isDraggable = false,
+				)
+			}.ifEmpty {
+				listOf(SourceConfigItem.EmptySearchResult)
+			}
+			return
+		}
 		val map = sources.groupByTo(TreeMap(LocaleKeyComparator())) {
 			if (it.name !in hiddenSources) {
 				KEY_ENABLED
@@ -81,6 +103,7 @@ class SourcesSettingsViewModel(
 				SourceConfigItem.SourceItem(
 					source = it,
 					isEnabled = true,
+					isDraggable = true,
 				)
 			}
 		}
@@ -102,6 +125,7 @@ class SourcesSettingsViewModel(
 						SourceConfigItem.SourceItem(
 							source = it,
 							isEnabled = false,
+							isDraggable = false,
 						)
 					}
 				}

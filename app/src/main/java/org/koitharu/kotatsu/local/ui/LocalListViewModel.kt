@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
@@ -81,10 +82,11 @@ class LocalListViewModel(
 				}
 				val dest = settings.getStorageDir(context)?.let { File(it, name) }
 					?: throw IOException("External files dir unavailable")
-				@Suppress("BlockingMethodInNonBlockingContext")
-				contentResolver.openInputStream(uri)?.use { source ->
-					dest.outputStream().use { output ->
-						source.copyTo(output)
+				runInterruptible {
+					contentResolver.openInputStream(uri)?.use { source ->
+						dest.outputStream().use { output ->
+							source.copyTo(output)
+						}
 					}
 				} ?: throw IOException("Cannot open input stream: $uri")
 			}

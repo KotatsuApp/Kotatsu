@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils
 import androidx.annotation.CheckResult
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
@@ -11,12 +12,11 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
-@Suppress("BlockingMethodInNonBlockingContext")
 open class MutableZipFile(val file: File) {
 
 	protected val dir = File(file.parentFile, file.nameWithoutExtension)
 
-	suspend fun unpack(): Unit = withContext(Dispatchers.IO) {
+	suspend fun unpack(): Unit = runInterruptible(Dispatchers.IO) {
 		check(dir.list().isNullOrEmpty()) {
 			"Dir ${dir.name} is not empty"
 		}
@@ -24,7 +24,7 @@ open class MutableZipFile(val file: File) {
 			dir.mkdir()
 		}
 		if (!file.exists()) {
-			return@withContext
+			return@runInterruptible
 		}
 		ZipInputStream(FileInputStream(file)).use { zip ->
 			var entry = zip.nextEntry
@@ -45,7 +45,7 @@ open class MutableZipFile(val file: File) {
 	}
 
 	@CheckResult
-	suspend fun flush(): Boolean = withContext(Dispatchers.IO) {
+	suspend fun flush(): Boolean = runInterruptible(Dispatchers.IO) {
 		val tempFile = File(file.path + ".tmp")
 		if (tempFile.exists()) {
 			tempFile.delete()
@@ -57,7 +57,7 @@ open class MutableZipFile(val file: File) {
 				}
 				zip.flush()
 			}
-			return@withContext tempFile.renameTo(file)
+			tempFile.renameTo(file)
 		} finally {
 			if (tempFile.exists()) {
 				tempFile.delete()
