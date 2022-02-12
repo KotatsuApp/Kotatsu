@@ -133,6 +133,7 @@
 
 	<style name="PreferenceThemeOverlay.Kotatsu">
 		<item name="preferenceCategoryTitleTextAppearance">?attr/textAppearanceBodyMedium</item>
+		<item name="singleLineTitle">false</item>
 	</style>
 
 </resources>

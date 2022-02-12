@@ -13,7 +13,6 @@ import org.koitharu.kotatsu.databinding.ItemStorageBinding
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.inflate
-import org.koitharu.kotatsu.utils.ext.longHashCode
 import java.io.File
 
 class StorageSelectDialog private constructor(private val delegate: AlertDialog) :
@@ -30,10 +29,10 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 			if (adapter.isEmpty) {
 				delegate.setMessage(R.string.cannot_find_available_storage)
 			} else {
-				val checked = adapter.volumes.indexOfFirst {
+				adapter.selectedItemPosition = adapter.volumes.indexOfFirst {
 					it.first.canonicalPath == defaultValue?.canonicalPath
 				}
-				delegate.setSingleChoiceItems(adapter, checked) { d, i ->
+				delegate.setAdapter(adapter) { d, i ->
 					listener.onStorageSelected(adapter.getItem(i).first)
 					d.dismiss()
 				}
@@ -60,12 +59,16 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 
 	private class VolumesAdapter(context: Context) : BaseAdapter() {
 
+		var selectedItemPosition: Int = -1
 		val volumes = getAvailableVolumes(context)
 
 		override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 			val view = convertView ?: parent.inflate(R.layout.item_storage)
+			val binding = (view.tag as? ItemStorageBinding) ?: ItemStorageBinding.bind(view).also {
+				view.tag = it
+			}
 			val item = volumes[position]
-			val binding = ItemStorageBinding.bind(view)
+			binding.imageViewIndicator.isChecked = selectedItemPosition == position
 			binding.textViewTitle.text = item.second
 			binding.textViewSubtitle.text = item.first.path
 			return view
@@ -73,23 +76,21 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 
 		override fun getItem(position: Int): Pair<File, String> = volumes[position]
 
-		override fun getItemId(position: Int) = volumes[position].first.absolutePath.longHashCode()
+		override fun getItemId(position: Int) = position.toLong()
 
 		override fun getCount() = volumes.size
 
+		override fun hasStableIds() = true
+
+		private fun getAvailableVolumes(context: Context): List<Pair<File, String>> {
+			return LocalMangaRepository.getAvailableStorageDirs(context).map {
+				it to it.getStorageName(context)
+			}
+		}
 	}
 
 	fun interface OnStorageSelectListener {
 
 		fun onStorageSelected(file: File)
-	}
-
-	private companion object {
-
-		fun getAvailableVolumes(context: Context): List<Pair<File, String>> {
-			return LocalMangaRepository.getAvailableStorageDirs(context).map {
-				it to it.getStorageName(context)
-			}
-		}
 	}
 }

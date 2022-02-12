@@ -31,7 +31,7 @@
 		android:title="@string/date_format"
 		app:iconSpaceReserved="false" />
 
-	<SwitchPreference
+	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="hide_toolbar"
 		android:title="@string/hide_toolbar"
