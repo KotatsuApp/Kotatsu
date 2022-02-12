@@ -31,7 +31,7 @@
 			</intent-filter>
 			<meta-data
 				android:name="android.app.default_searchable"
-				android:value=".ui.search.SearchActivity" />
+				android:value="org.koitharu.kotatsu.ui.search.SearchActivity" />
 		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.details.ui.DetailsActivity"
@@ -93,12 +93,12 @@
 			android:noHistory="true"
 			android:windowSoftInputMode="adjustResize" />
 		<activity
-			android:name=".settings.protect.ProtectSetupActivity"
+			android:name="org.koitharu.kotatsu.settings.protect.ProtectSetupActivity"
 			android:windowSoftInputMode="adjustResize" />
 		<activity
 			android:name="org.koitharu.kotatsu.download.ui.DownloadsActivity"
 			android:label="@string/downloads" />
-		<activity android:name=".image.ui.ImageActivity"/>
+		<activity android:name="org.koitharu.kotatsu.image.ui.ImageActivity"/>
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
