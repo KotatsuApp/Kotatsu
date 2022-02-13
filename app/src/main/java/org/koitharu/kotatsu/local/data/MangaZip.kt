@@ -16,7 +16,7 @@ class MangaZip(val file: File) {
 	private var index = MangaIndex(null)
 
 	suspend fun prepare(manga: Manga) {
-		writableCbz.prepare()
+		writableCbz.prepare(overwrite = true)
 		index = MangaIndex(writableCbz[INDEX_ENTRY].takeIfReadable()?.readText())
 		index.setMangaInfo(manga, append = true)
 	}
