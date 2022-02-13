@@ -12,18 +12,22 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreference
+import kotlinx.coroutines.launch
 import leakcanary.LeakCanary
+import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.names
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import java.io.File
 import java.util.*
 
@@ -31,6 +35,8 @@ import java.util.*
 class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 	SharedPreferences.OnSharedPreferenceChangeListener,
 	StorageSelectDialog.OnStorageSelectListener {
+
+	private val storageManager by inject<LocalStorageManager>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -70,10 +76,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.run {
-			summary = settings.getStorageDir(context)?.getStorageName(context)
-				?: getString(R.string.not_available)
-		}
+		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.bindStorageName()
 		findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
 		settings.subscribe(this)
@@ -114,10 +117,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				findPreference<SwitchPreference>(key)?.setSummary(R.string.restart_required)
 			}
 			AppSettings.KEY_LOCAL_STORAGE -> {
-				findPreference<Preference>(key)?.run {
-					summary = settings.getStorageDir(context)?.getStorageName(context)
-						?: getString(R.string.not_available)
-				}
+				findPreference<Preference>(key)?.bindStorageName()
 			}
 			AppSettings.KEY_APP_PASSWORD -> {
 				findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)
@@ -140,7 +140,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		return when (preference.key) {
 			AppSettings.KEY_LOCAL_STORAGE -> {
 				val ctx = context ?: return false
-				StorageSelectDialog.Builder(ctx, settings.getStorageDir(ctx), this)
+				StorageSelectDialog.Builder(ctx, storageManager, this)
 					.setTitle(preference.title ?: "")
 					.setNegativeButton(android.R.string.cancel)
 					.create()
@@ -162,7 +162,13 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 	}
 
 	override fun onStorageSelected(file: File) {
-		settings.setStorageDir(context ?: return, file)
+		settings.setStorageDir(file)
 	}
 
+	private fun Preference.bindStorageName() {
+		viewLifecycleScope.launch {
+			val storage = storageManager.getDefaultWriteableDir()
+			summary = storage?.getStorageName(context) ?: getString(R.string.not_available)
+		}
+	}
 }

@@ -18,7 +18,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.MangaZip
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
@@ -30,7 +29,6 @@ import java.io.File
 
 class DownloadManager(
 	private val context: Context,
-	private val settings: AppSettings,
 	private val imageLoader: ImageLoader,
 	private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
@@ -50,7 +48,7 @@ class DownloadManager(
 	fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int) = flow<State> {
 		emit(State.Preparing(startId, manga, null))
 		var cover: Drawable? = null
-		val destination = settings.getStorageDir(context)
+		val destination = localMangaRepository.getOutputDir()
 		checkNotNull(destination) { context.getString(R.string.cannot_find_available_storage) }
 		var output: MangaZip? = null
 		try {

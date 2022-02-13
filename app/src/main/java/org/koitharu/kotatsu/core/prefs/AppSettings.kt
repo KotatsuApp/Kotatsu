@@ -13,7 +13,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.core.model.ZoomMode
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.delegates.prefs.*
 import java.io.File
 import java.text.DateFormat
@@ -115,14 +114,14 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	val isPagesNumbersEnabled by BoolPreferenceDelegate(KEY_PAGES_NUMBERS, false)
 
-	fun getStorageDir(context: Context): File? {
-		val value = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
+	fun getFallbackStorageDir(): File? {
+		return prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)
-		}?.takeIf { it.exists() && it.canWrite() }
-		return value ?: LocalMangaRepository.getFallbackStorageDir(context)
+		}?.takeIf { it.exists() }
 	}
 
-	fun setStorageDir(context: Context, file: File?) {
+	@Deprecated("Use LocalStorageManager instead")
+	fun setStorageDir(file: File?) {
 		prefs.edit {
 			if (file == null) {
 				remove(KEY_LOCAL_STORAGE)

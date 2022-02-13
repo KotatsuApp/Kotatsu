@@ -53,7 +53,7 @@ class DownloadService : BaseService() {
 		notificationManager = NotificationManagerCompat.from(this)
 		wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
-		downloadManager = DownloadManager(this, get(), get(), get(), get(), get())
+		downloadManager = DownloadManager(this, get(), get(), get(), get())
 		DownloadNotification.createChannel(this)
 		registerReceiver(controlReceiver, IntentFilter(ACTION_DOWNLOAD_CANCEL))
 	}

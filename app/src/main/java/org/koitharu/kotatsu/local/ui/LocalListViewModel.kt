@@ -20,13 +20,12 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.resolveName
-import java.io.File
 import java.io.IOException
 
 class LocalListViewModel(
 	private val repository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
-	private val settings: AppSettings,
+	settings: AppSettings,
 	private val shortcutsRepository: ShortcutsRepository,
 ) : MangaListViewModel(settings) {
 
@@ -77,10 +76,10 @@ class LocalListViewModel(
 			withContext(Dispatchers.IO) {
 				val name = contentResolver.resolveName(uri)
 					?: throw IOException("Cannot fetch name from uri: $uri")
-				if (!LocalMangaRepository.isFileSupported(name)) {
+				if (!repository.isFileSupported(name)) {
 					throw UnsupportedFileException("Unsupported file on $uri")
 				}
-				val dest = settings.getStorageDir(context)?.let { File(it, name) }
+				val dest = repository.getOutputDir()
 					?: throw IOException("External files dir unavailable")
 				runInterruptible {
 					contentResolver.openInputStream(uri)?.use { source ->

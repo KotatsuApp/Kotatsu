@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.local.domain
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.collection.ArraySet
@@ -9,20 +8,23 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
+import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.MangaZip
 import org.koitharu.kotatsu.utils.AlphanumComparator
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.deleteAwait
+import org.koitharu.kotatsu.utils.ext.longHashCode
+import org.koitharu.kotatsu.utils.ext.readText
+import org.koitharu.kotatsu.utils.ext.toCamelCase
 import java.io.File
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
-class LocalMangaRepository(private val context: Context) : MangaRepository {
+class LocalMangaRepository(private val storageManager: LocalStorageManager) : MangaRepository {
 
 	override val source = MangaSource.LOCAL
 	private val filenameFilter = CbzFilter()
@@ -149,24 +151,26 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 		}
 	}
 
-	suspend fun findSavedManga(remoteManga: Manga): Manga? = runInterruptible(Dispatchers.IO) {
+	suspend fun findSavedManga(remoteManga: Manga): Manga? {
 		val files = getAllFiles()
-		for (file in files) {
-			val index = ZipFile(file).use { zip ->
-				val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
-				entry?.let(zip::readText)?.let(::MangaIndex)
-			} ?: continue
-			val info = index.getMangaInfo() ?: continue
-			if (info.id == remoteManga.id) {
-				val fileUri = file.toUri().toString()
-				return@runInterruptible info.copy(
-					source = MangaSource.LOCAL,
-					url = fileUri,
-					chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
-				)
+		return runInterruptible(Dispatchers.IO) {
+			for (file in files) {
+				val index = ZipFile(file).use { zip ->
+					val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+					entry?.let(zip::readText)?.let(::MangaIndex)
+				} ?: continue
+				val info = index.getMangaInfo() ?: continue
+				if (info.id == remoteManga.id) {
+					val fileUri = file.toUri().toString()
+					return@runInterruptible info.copy(
+						source = MangaSource.LOCAL,
+						url = fileUri,
+						chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
+					)
+				}
 			}
+			null
 		}
-		null
 	}
 
 	private fun zipUri(file: File, entryName: String) =
@@ -193,32 +197,16 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 
 	override suspend fun getTags() = emptySet<MangaTag>()
 
-	private fun getAllFiles() = getAvailableStorageDirs(context).flatMap { dir ->
-		dir.listFiles(filenameFilter)?.toList().orEmpty()
+	fun isFileSupported(name: String): Boolean {
+		val ext = name.substringAfterLast('.').lowercase(Locale.ROOT)
+		return ext == "cbz" || ext == "zip"
 	}
 
-	companion object {
+	suspend fun getOutputDir(): File? {
+		return storageManager.getDefaultWriteableDir()
+	}
 
-		private const val DIR_NAME = "manga"
-
-		fun isFileSupported(name: String): Boolean {
-			val ext = name.substringAfterLast('.').lowercase(Locale.ROOT)
-			return ext == "cbz" || ext == "zip"
-		}
-
-		fun getAvailableStorageDirs(context: Context): List<File> {
-			val result = ArrayList<File?>(5)
-			result += File(context.filesDir, DIR_NAME)
-			result += context.getExternalFilesDirs(DIR_NAME)
-			return result.filterNotNull()
-				.distinctBy { it.canonicalPath }
-				.filter { it.exists() || it.mkdir() }
-		}
-
-		fun getFallbackStorageDir(context: Context): File? {
-			return context.getExternalFilesDir(DIR_NAME) ?: context.filesDir.sub(DIR_NAME).takeIf {
-				(it.exists() || it.mkdir()) && it.canWrite()
-			}
-		}
+	private suspend fun getAllFiles() = storageManager.getReadableDirs().flatMap { dir ->
+		dir.listFiles(filenameFilter)?.toList().orEmpty()
 	}
 }

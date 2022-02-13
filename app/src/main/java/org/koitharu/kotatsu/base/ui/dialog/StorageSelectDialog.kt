@@ -8,10 +8,10 @@ import android.widget.BaseAdapter
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemStorageBinding
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
-import org.koitharu.kotatsu.utils.ext.getStorageName
+import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.utils.ext.inflate
 import java.io.File
 
@@ -20,15 +20,18 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 
 	fun show() = delegate.show()
 
-	class Builder(context: Context, defaultValue: File?, listener: OnStorageSelectListener) {
+	class Builder(context: Context, storageManager: LocalStorageManager, listener: OnStorageSelectListener) {
 
-		private val adapter = VolumesAdapter(context)
+		private val adapter = VolumesAdapter(storageManager)
 		private val delegate = MaterialAlertDialogBuilder(context)
 
 		init {
 			if (adapter.isEmpty) {
 				delegate.setMessage(R.string.cannot_find_available_storage)
 			} else {
+				val defaultValue = runBlocking {
+					storageManager.getDefaultWriteableDir()
+				}
 				adapter.selectedItemPosition = adapter.volumes.indexOfFirst {
 					it.first.canonicalPath == defaultValue?.canonicalPath
 				}
@@ -57,10 +60,10 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 		fun create() = StorageSelectDialog(delegate.create())
 	}
 
-	private class VolumesAdapter(context: Context) : BaseAdapter() {
+	private class VolumesAdapter(storageManager: LocalStorageManager) : BaseAdapter() {
 
 		var selectedItemPosition: Int = -1
-		val volumes = getAvailableVolumes(context)
+		val volumes = getAvailableVolumes(storageManager)
 
 		override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 			val view = convertView ?: parent.inflate(R.layout.item_storage)
@@ -82,9 +85,11 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 
 		override fun hasStableIds() = true
 
-		private fun getAvailableVolumes(context: Context): List<Pair<File, String>> {
-			return LocalMangaRepository.getAvailableStorageDirs(context).map {
-				it to it.getStorageName(context)
+		private fun getAvailableVolumes(storageManager: LocalStorageManager): List<Pair<File, String>> {
+			return runBlocking {
+				storageManager.getWriteableDirs().map {
+					it to storageManager.getStorageDisplayName(it)
+				}
 			}
 		}
 	}
