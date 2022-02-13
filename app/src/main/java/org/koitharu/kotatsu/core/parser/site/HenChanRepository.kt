@@ -18,12 +18,10 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 		sortOrder: SortOrder?
 	): List<Manga> {
 		return super.getList2(offset, query, tags, sortOrder).map {
-			val cover = it.coverUrl
-			if (cover.contains("_blur")) {
-				it.copy(coverUrl = cover.replace("_blur", ""))
-			} else {
-				it
-			}
+			it.copy(
+				coverUrl = it.coverUrl.replace("_blur", ""),
+				isNsfw = true,
+			)
 		}
 	}
 
@@ -49,7 +47,10 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 					url = readLink,
 					source = source,
 					number = 1,
-					name = manga.title
+					uploadDate = 0L,
+					name = manga.title,
+					scanlator = null,
+					branch = null,
 				)
 			)
 		)

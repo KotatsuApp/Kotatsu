@@ -8,6 +8,7 @@ import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -23,6 +24,7 @@ import java.util.zip.ZipFile
 
 class LocalMangaRepository(private val context: Context) : MangaRepository {
 
+	override val source = MangaSource.LOCAL
 	private val filenameFilter = CbzFilter()
 
 	override suspend fun getList2(
@@ -42,37 +44,39 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 		getFromFile(Uri.parse(manga.url).toFile())
 	} else manga
 
-	@Suppress("BlockingMethodInNonBlockingContext")
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val uri = Uri.parse(chapter.url)
-		val file = uri.toFile()
-		val zip = ZipFile(file)
-		val index = zip.getEntry(MangaZip.INDEX_ENTRY)?.let(zip::readText)?.let(::MangaIndex)
-		var entries = zip.entries().asSequence()
-		entries = if (index != null) {
-			val pattern = index.getChapterNamesPattern(chapter)
-			entries.filter { x -> !x.isDirectory && x.name.substringBefore('.').matches(pattern) }
-		} else {
-			val parent = uri.fragment.orEmpty()
-			entries.filter { x ->
-				!x.isDirectory && x.name.substringBeforeLast(
-					File.separatorChar,
-					""
-				) == parent
+		return runInterruptible(Dispatchers.IO){
+			val uri = Uri.parse(chapter.url)
+			val file = uri.toFile()
+			val zip = ZipFile(file)
+			val index = zip.getEntry(MangaZip.INDEX_ENTRY)?.let(zip::readText)?.let(::MangaIndex)
+			var entries = zip.entries().asSequence()
+			entries = if (index != null) {
+				val pattern = index.getChapterNamesPattern(chapter)
+				entries.filter { x -> !x.isDirectory && x.name.substringBefore('.').matches(pattern) }
+			} else {
+				val parent = uri.fragment.orEmpty()
+				entries.filter { x ->
+					!x.isDirectory && x.name.substringBeforeLast(
+						File.separatorChar,
+						""
+					) == parent
+				}
 			}
+			entries
+				.toList()
+				.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
+				.map { x ->
+					val entryUri = zipUri(file, x.name)
+					MangaPage(
+						id = entryUri.longHashCode(),
+						url = entryUri,
+						preview = null,
+						referer = chapter.url,
+						source = MangaSource.LOCAL,
+					)
+				}
 		}
-		return entries
-			.toList()
-			.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
-			.map { x ->
-				val entryUri = zipUri(file, x.name)
-				MangaPage(
-					id = entryUri.longHashCode(),
-					url = entryUri,
-					referer = chapter.url,
-					source = MangaSource.LOCAL
-				)
-			}
 	}
 
 	suspend fun delete(manga: Manga): Boolean {
@@ -123,7 +127,10 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 					name = s.ifEmpty { title },
 					number = i + 1,
 					source = MangaSource.LOCAL,
-					url = uriBuilder.fragment(s).build().toString()
+					uploadDate = 0L,
+					url = uriBuilder.fragment(s).build().toString(),
+					scanlator = null,
+					branch = null,
 				)
 			}
 		)
@@ -133,20 +140,18 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 		val file = runCatching {
 			Uri.parse(localManga.url).toFile()
 		}.getOrNull() ?: return null
-		return withContext(Dispatchers.IO) {
-			@Suppress("BlockingMethodInNonBlockingContext")
+		return runInterruptible(Dispatchers.IO) {
 			ZipFile(file).use { zip ->
 				val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
-				val index = entry?.let(zip::readText)?.let(::MangaIndex) ?: return@withContext null
-				index.getMangaInfo()
+				val index = entry?.let(zip::readText)?.let(::MangaIndex)
+				index?.getMangaInfo()
 			}
 		}
 	}
 
-	suspend fun findSavedManga(remoteManga: Manga): Manga? = withContext(Dispatchers.IO) {
+	suspend fun findSavedManga(remoteManga: Manga): Manga? = runInterruptible(Dispatchers.IO) {
 		val files = getAllFiles()
 		for (file in files) {
-			@Suppress("BlockingMethodInNonBlockingContext")
 			val index = ZipFile(file).use { zip ->
 				val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
 				entry?.let(zip::readText)?.let(::MangaIndex)
@@ -154,7 +159,7 @@ class LocalMangaRepository(private val context: Context) : MangaRepository {
 			val info = index.getMangaInfo() ?: continue
 			if (info.id == remoteManga.id) {
 				val fileUri = file.toUri().toString()
-				return@withContext info.copy(
+				return@runInterruptible info.copy(
 					source = MangaSource.LOCAL,
 					url = fileUri,
 					chapters = info.chapters?.map { c -> c.copy(url = fileUri) }

@@ -2,18 +2,23 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.delegates.prefs.*
 import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AppSettings private constructor(private val prefs: SharedPreferences) :
 	SharedPreferences by prefs {
@@ -38,6 +43,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		KEY_THEME,
 		AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 	)
+
+	val isDynamicTheme by BoolPreferenceDelegate(KEY_DYNAMIC_THEME, defaultValue = false)
 
 	val isAmoledTheme by BoolPreferenceDelegate(KEY_THEME_AMOLED, defaultValue = false)
 
@@ -76,6 +83,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	var historyGrouping by BoolPreferenceDelegate(KEY_HISTORY_GROUPING, true)
 
+	var isHistoryExcludeNsfw by BoolPreferenceDelegate(KEY_HISTORY_EXCLUDE_NSFW, false)
+
 	var chaptersReverse by BoolPreferenceDelegate(KEY_REVERSE_CHAPTERS, false)
 
 	val zoomMode by EnumPreferenceDelegate(
@@ -104,6 +113,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 	val isSourcesSelected: Boolean
 		get() = KEY_SOURCES_HIDDEN in prefs
 
+	val isPagesNumbersEnabled by BoolPreferenceDelegate(KEY_PAGES_NUMBERS, false)
+
 	fun getStorageDir(context: Context): File? {
 		val value = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)
@@ -121,6 +132,12 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		}
 	}
 
+	fun dateFormat(format: String? = prefs.getString(KEY_DATE_FORMAT, "")): DateFormat =
+		when (format) {
+			"" -> DateFormat.getDateInstance(DateFormat.SHORT)
+			else -> SimpleDateFormat(format, Locale.getDefault())
+		}
+
 	@Deprecated("Use observe()")
 	fun subscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
 		prefs.registerOnSharedPreferenceChangeListener(listener)
@@ -132,7 +149,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 
 	fun observe() = callbackFlow<String> {
 		val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-			sendBlocking(key)
+			trySendBlocking(key)
 		}
 		prefs.registerOnSharedPreferenceChangeListener(listener)
 		awaitClose {
@@ -151,7 +168,9 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_LIST_MODE = "list_mode_2"
 		const val KEY_APP_SECTION = "app_section"
 		const val KEY_THEME = "theme"
+		const val KEY_DYNAMIC_THEME = "dynamic_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
+		const val KEY_DATE_FORMAT = "date_format"
 		const val KEY_HIDE_TOOLBAR = "hide_toolbar"
 		const val KEY_SOURCES_ORDER = "sources_order"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
@@ -182,6 +201,8 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_RESTORE = "restore"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
+		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
+		const val KEY_PAGES_NUMBERS = "pages_numbers"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
@@ -191,5 +212,12 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
 		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
 		const val KEY_SUPPORT_DEVELOPER = "about_support_developer"
+
+		val isDynamicColorAvailable: Boolean
+			get() = DynamicColors.isDynamicColorAvailable() ||
+					(isSamsung && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+
+		private val isSamsung
+			get() = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
 	}
 }

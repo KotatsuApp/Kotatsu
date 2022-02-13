@@ -30,9 +30,7 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 
 	override val recycledViewPool = RecyclerView.RecycledViewPool()
 
-	private val viewModel by viewModel<FavouritesCategoriesViewModel>(
-		mode = LazyThreadSafetyMode.NONE
-	)
+	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {
 		CategoriesEditDelegate(requireContext(), this)
 	}

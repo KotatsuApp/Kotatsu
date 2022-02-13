@@ -1,16 +1,19 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
+import coil.request.ImageRequest
 import coil.util.CoilUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,13 +26,15 @@ import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaState
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
+import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSizeUtils
 import org.koitharu.kotatsu.utils.ext.*
-import kotlin.random.Random
 
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
 	View.OnLongClickListener {
@@ -39,11 +44,16 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentDetailsBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		binding.textViewAuthor.setOnClickListener(this)
+		binding.buttonFavorite.setOnClickListener(this)
+		binding.buttonRead.setOnClickListener(this)
+		binding.buttonRead.setOnLongClickListener(this)
+		binding.coverCard.setOnClickListener(this)
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
@@ -52,12 +62,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 
 	private fun onMangaUpdated(manga: Manga) {
 		with(binding) {
-			imageViewCover.newImageRequest(manga.largeCoverUrl ?: manga.coverUrl)
-				.referer(manga.publicUrl)
-				.fallback(R.drawable.ic_placeholder)
-				.placeholderMemoryCacheKey(CoilUtils.metadata(imageViewCover)?.memoryCacheKey)
-				.lifecycle(viewLifecycleOwner)
-				.enqueueWith(coil)
+			// Main
+			loadCover(manga)
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
 			textViewAuthor.textAndVisible = manga.author
@@ -66,6 +72,27 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			textViewDescription.text =
 				manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
 					?: getString(R.string.no_description)
+			when (manga.state) {
+				MangaState.FINISHED -> {
+					textViewState.apply {
+						textAndVisible = resources.getString(R.string.state_finished)
+						drawableStart = ResourcesCompat.getDrawable(resources,
+							R.drawable.ic_state_finished,
+							context.theme)
+					}
+				}
+				MangaState.ONGOING -> {
+					textViewState.apply {
+						textAndVisible = resources.getString(R.string.state_ongoing)
+						drawableStart = ResourcesCompat.getDrawable(resources,
+							R.drawable.ic_state_ongoing,
+							context.theme)
+					}
+				}
+				else -> textViewState.isVisible = false
+			}
+
+			// Info containers
 			if (manga.chapters?.isNotEmpty() == true) {
 				chaptersContainer.isVisible = true
 				textViewChapters.text = manga.chapters.let {
@@ -96,10 +123,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			} else {
 				sizeContainer.isVisible = false
 			}
-			buttonFavorite.setOnClickListener(this@DetailsFragment)
-			buttonRead.setOnClickListener(this@DetailsFragment)
-			buttonRead.setOnLongClickListener(this@DetailsFragment)
+
+			// Buttons
 			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
+
+			// Chips
 			bindTags(manga)
 		}
 	}
@@ -154,6 +182,26 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 					)
 				}
 			}
+			R.id.textView_author -> {
+				startActivity(
+					SearchActivity.newIntent(
+						context = v.context,
+						source = manga.source,
+						query = manga.author ?: return,
+					)
+				)
+			}
+			R.id.cover_card -> {
+				val options = ActivityOptions.makeSceneTransitionAnimation(
+					requireActivity(),
+					binding.imageViewCover,
+					binding.imageViewCover.transitionName,
+				)
+				startActivity(
+					ImageActivity.newIntent(v.context, manga.largeCoverUrl ?: manga.coverUrl),
+					options.toBundle()
+				)
+			}
 		}
 	}
 
@@ -203,5 +251,23 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				)
 			}
 		)
+	}
+
+	private fun loadCover(manga: Manga) {
+		val currentCover = binding.imageViewCover.drawable
+		val request = ImageRequest.Builder(context ?: return)
+			.target(binding.imageViewCover)
+		if (currentCover != null) {
+			request.data(manga.largeCoverUrl ?: return)
+				.placeholderMemoryCacheKey(CoilUtils.metadata(binding.imageViewCover)?.memoryCacheKey)
+				.fallback(currentCover)
+		} else {
+			request.crossfade(true)
+				.data(manga.coverUrl)
+				.fallback(R.drawable.ic_placeholder)
+		}
+		request.referer(manga.publicUrl)
+			.lifecycle(viewLifecycleOwner)
+			.enqueueWith(coil)
 	}
 }

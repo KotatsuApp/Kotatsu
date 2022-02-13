@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools">
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<ListPreference
 		android:defaultValue="-1"
@@ -15,12 +14,24 @@
 
 	<SwitchPreference
 		android:defaultValue="false"
+		android:key="dynamic_theme"
+		android:summary="@string/dynamic_theme_summary"
+		android:title="@string/dynamic_theme"
+		app:iconSpaceReserved="false" />
+
+	<SwitchPreference
+		android:defaultValue="false"
 		android:key="amoled_theme"
 		android:summary="@string/black_dark_theme_summary"
 		android:title="@string/black_dark_theme"
 		app:iconSpaceReserved="false" />
 
-	<SwitchPreference
+	<ListPreference
+		android:key="date_format"
+		android:title="@string/date_format"
+		app:iconSpaceReserved="false" />
+
+	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="hide_toolbar"
 		android:title="@string/hide_toolbar"
@@ -34,16 +45,14 @@
 		app:iconSpaceReserved="false"
 		app:useSimpleSummaryProvider="true" />
 
-	<SeekBarPreference
+	<org.koitharu.kotatsu.settings.utils.SliderPreference
 		android:key="grid_size"
-		android:max="150"
+		android:stepSize="5"
 		android:title="@string/grid_size"
+		android:valueFrom="50"
+		android:valueTo="150"
 		app:defaultValue="100"
-		app:iconSpaceReserved="false"
-		app:min="50"
-		app:seekBarIncrement="10"
-		app:showSeekBarValue="false"
-		app:updatesContinuously="true" />
+		app:iconSpaceReserved="false" />
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment"

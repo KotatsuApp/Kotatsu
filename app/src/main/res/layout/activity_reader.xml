@@ -21,9 +21,8 @@
 		android:background="@drawable/bg_reader_indicator"
 		android:drawablePadding="6dp"
 		android:singleLine="true"
-		android:textAppearance="?android:textAppearanceSmall"
-		android:textColor="?android:textColorPrimary"
-		android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+		android:textAppearance="?attr/textAppearanceBodySmall"
+		android:theme="@style/ThemeOverlay.Material3.Dark"
 		tools:text="@string/loading_" />
 
 	<com.google.android.material.appbar.AppBarLayout
@@ -32,7 +31,7 @@
 		android:layout_height="wrap_content"
 		android:background="@color/dim"
 		android:elevation="0dp"
-		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+		android:theme="@style/ThemeOverlay.Material3.Dark"
 		app:elevation="0dp">
 
 		<com.google.android.material.appbar.MaterialToolbar
@@ -50,7 +49,7 @@
 		android:layout_gravity="bottom"
 		android:background="@color/dim"
 		android:elevation="0dp"
-		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+		android:theme="@style/ThemeOverlay.Material3.Dark"
 		app:elevation="0dp"
 		tools:visibility="gone">
 
@@ -83,7 +82,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
 			android:text="@string/loading_"
-			android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
+			android:textAppearance="?attr/textAppearanceBody2" />
 
 	</LinearLayout>
 

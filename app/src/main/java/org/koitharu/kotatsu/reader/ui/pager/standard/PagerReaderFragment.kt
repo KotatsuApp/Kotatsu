@@ -12,7 +12,10 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.doOnPageChanged
+import org.koitharu.kotatsu.utils.ext.recyclerView
+import org.koitharu.kotatsu.utils.ext.resetTransformations
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import kotlin.math.absoluteValue
 
 class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
@@ -37,8 +40,8 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 			val transformer = if (it) PageAnimTransformer() else null
 			binding.pager.setPageTransformer(transformer)
 			if (transformer == null) {
-				binding.pager.recyclerView?.children?.forEach {
-					it.resetTransformations()
+				binding.pager.recyclerView?.children?.forEach { view ->
+					view.resetTransformations()
 				}
 			}
 		}

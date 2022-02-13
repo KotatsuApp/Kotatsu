@@ -3,9 +3,12 @@ package org.koitharu.kotatsu.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.core.graphics.Insets
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.preference.Preference
@@ -16,7 +19,8 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 
 class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
-	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
+	FragmentManager.OnBackStackChangedListener {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -30,13 +34,26 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 		}
 	}
 
-	@Suppress("DEPRECATION")
+	override fun onStart() {
+		super.onStart()
+		supportFragmentManager.addOnBackStackChangedListener(this)
+	}
+
+	override fun onStop() {
+		supportFragmentManager.removeOnBackStackChangedListener(this)
+		super.onStop()
+	}
+
+	override fun onBackStackChanged() {
+		binding.appbar.setExpanded(true, true)
+	}
+
 	override fun onPreferenceStartFragment(
 		caller: PreferenceFragmentCompat,
 		pref: Preference
 	): Boolean {
 		val fm = supportFragmentManager
-		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment)
+		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment ?: return false)
 		fragment.arguments = pref.extras
 		fragment.setTargetFragment(caller, 0)
 		openFragment(fragment)
@@ -61,11 +78,15 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
-			top = insets.top,
-			left = insets.left,
-			right = insets.right
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 	}
 
 	companion object {

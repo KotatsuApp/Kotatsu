@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
 class BackupSettingsFragment : BasePreferenceFragment(R.string.backup_restore),
-	ActivityResultCallback<Uri> {
+	ActivityResultCallback<Uri?> {
 
 	private val backupSelectCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocument(),

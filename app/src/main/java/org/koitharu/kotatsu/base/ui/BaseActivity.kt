@@ -35,8 +35,9 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	private var lastInsets: Insets = Insets.NONE
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		if (get<AppSettings>().isAmoledTheme) {
-			setTheme(R.style.AppTheme_AMOLED)
+		when {
+			get<AppSettings>().isAmoledTheme -> setTheme(R.style.ThemeOverlay_Kotatsu_AMOLED)
+			get<AppSettings>().isDynamicTheme -> setTheme(R.style.Theme_Kotatsu_Monet)
 		}
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)

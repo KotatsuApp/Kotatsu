@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+		android:id="@+id/ssiv"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:transitionName="cover" />
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" />
+
+	<com.google.android.material.progressindicator.CircularProgressIndicator
+		android:id="@+id/progressBar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:indeterminate="true" />
+
+</FrameLayout>

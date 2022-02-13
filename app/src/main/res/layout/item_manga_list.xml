@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="@dimen/manga_list_item_height"
@@ -11,15 +10,13 @@
 
 	<com.google.android.material.card.MaterialCardView
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_margin="8dp"
-		app:cardCornerRadius="4dp"
-		app:cardElevation="4dp">
+		android:layout_height="match_parent"
+		android:layout_margin="8dp">
 
 		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
 			android:id="@+id/imageView_cover"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
 			android:orientation="vertical"
 			android:scaleType="centerCrop"
 			tools:src="@tools:sample/backgrounds/scenic" />
@@ -40,7 +37,7 @@
 			android:layout_height="wrap_content"
 			android:ellipsize="end"
 			android:maxLines="2"
-			android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+			android:textAppearance="?attr/textAppearanceBodyLarge"
 			tools:text="@tools:sample/lorem/random" />
 
 		<TextView
@@ -49,7 +46,7 @@
 			android:layout_height="wrap_content"
 			android:ellipsize="end"
 			android:maxLines="1"
-			android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
 			android:textColor="?android:textColorSecondary"
 			tools:text="@tools:sample/lorem/random" />
 

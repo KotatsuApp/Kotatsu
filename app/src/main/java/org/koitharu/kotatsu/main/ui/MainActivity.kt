@@ -1,17 +1,13 @@
 package org.koitharu.kotatsu.main.ui
 
 import android.app.ActivityOptions
-import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.*
@@ -21,8 +17,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
@@ -32,7 +28,6 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.databinding.NavigationHeaderBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -59,14 +54,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener, AppBarOwner,
 	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener {
 
-	private val viewModel by viewModel<MainViewModel>(mode = LazyThreadSafetyMode.NONE)
-	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>(
-		mode = LazyThreadSafetyMode.NONE
-	)
+	private val viewModel by viewModel<MainViewModel>()
+	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
 
 	private lateinit var navHeaderBinding: NavigationHeaderBinding
 	private lateinit var drawerToggle: ActionBarDrawerToggle
-	private var searchViewElevation = 0f
 
 	override val appBar: AppBarLayout
 		get() = binding.appbar
@@ -74,7 +66,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
-		searchViewElevation = binding.toolbarCard.cardElevation
 		navHeaderBinding = NavigationHeaderBinding.inflate(layoutInflater)
 		drawerToggle = ActionBarDrawerToggle(
 			this,
@@ -90,13 +81,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		}
 		binding.drawer.addDrawerListener(drawerToggle)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-		if (get<AppSettings>().isAmoledTheme && get<AppSettings>().theme == AppCompatDelegate.MODE_NIGHT_YES) {
-			binding.appbar.setBackgroundColor(Color.BLACK)
-			binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_background))
-		} else {
-			binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_surface))
-		}
 
 		with(binding.searchView) {
 			onFocusChangeListener = this@MainActivity
@@ -114,17 +98,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				insets
 			}
 			addHeaderView(navHeaderBinding.root)
-			itemBackground = navigationItemBackground(context)
 			setNavigationItemSelectedListener(this@MainActivity)
 		}
 
-		with(binding.fab) {
-			imageTintList = ColorStateList.valueOf(Color.WHITE)
-			setOnClickListener(this@MainActivity)
-		}
+		binding.fab.setOnClickListener(this@MainActivity)
 
 		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
-			binding.fab.isVisible = it is HistoryListFragment
+			if (it is HistoryListFragment) binding.fab.show() else binding.fab.hide()
 		} ?: run {
 			openDefaultSection()
 		}
@@ -271,7 +251,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	override fun onClearSearchHistory() {
-		AlertDialog.Builder(this)
+		MaterialAlertDialogBuilder(this)
 			.setTitle(R.string.clear_search_history)
 			.setMessage(R.string.text_clear_search_history_prompt)
 			.setNegativeButton(android.R.string.cancel, null)
@@ -302,7 +282,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		binding.fab.isEnabled = !isLoading
 		if (isLoading) {
 			binding.fab.setImageDrawable(CircularProgressDrawable(this).also {
-				it.setColorSchemeColors(Color.WHITE)
+				it.setColorSchemeColors(R.color.kotatsu_onPrimaryContainer)
 				it.strokeWidth = resources.resolveDp(2f)
 				it.start()
 			})
@@ -316,6 +296,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		submenu.removeGroup(R.id.group_remote_sources)
 		remoteSources.forEachIndexed { index, source ->
 			submenu.add(R.id.group_remote_sources, source.ordinal, index, source.title)
+				.setIcon(R.drawable.ic_manga_source)
 		}
 		submenu.setGroupCheckable(R.id.group_remote_sources, true, true)
 	}
@@ -349,48 +330,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.commit()
-		binding.fab.isVisible = fragment is HistoryListFragment
+		if (fragment is HistoryListFragment) binding.fab.show() else binding.fab.hide()
 	}
 
 	private fun onSearchOpened() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		drawerToggle.isDrawerIndicatorEnabled = false
-		TransitionManager.beginDelayedTransition(binding.appbar)
-		// Avoiding shadows on the sides if the color is transparent, so we make the AppBarLayout white/grey/black
-		if (isDarkAmoledTheme()) {
-			binding.toolbar.setBackgroundColor(Color.BLACK)
-		} else {
-			binding.appbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_surface))
-		}
-		binding.toolbarCard.apply {
-			cardElevation = 0f
-			// Remove margin
-			updateLayoutParams<MarginLayoutParams> {
-				leftMargin = 0
-				rightMargin = 0
-			}
-
-		}
-		binding.appbar.elevation = searchViewElevation
 	}
 
 	private fun onSearchClosed() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 		drawerToggle.isDrawerIndicatorEnabled = true
-		if (isDarkAmoledTheme()) {
-			binding.toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_background))
-		}
-		TransitionManager.beginDelayedTransition(binding.appbar)
-		// Returning transparent color
-		binding.appbar.setBackgroundColor(Color.TRANSPARENT)
-		binding.appbar.elevation = 0f
-		binding.toolbarCard.apply {
-			cardElevation = searchViewElevation
-			updateLayoutParams<MarginLayoutParams> {
-				leftMargin = resources.resolveDp(16)
-				rightMargin = resources.resolveDp(16)
-			}
-		}
 	}
 
 	private fun onFirstStart() {

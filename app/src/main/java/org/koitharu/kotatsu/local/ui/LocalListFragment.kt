@@ -9,7 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.BuildConfig
@@ -19,9 +19,9 @@ import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.ellipsize
 
-class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
+class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri?> {
 
-	override val viewModel by viewModel<LocalListViewModel>(mode = LazyThreadSafetyMode.NONE)
+	override val viewModel by viewModel<LocalListViewModel>()
 	private val importCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocument(),
 		this
@@ -98,7 +98,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri> {
 	override fun onPopupMenuItemSelected(item: MenuItem, data: Manga): Boolean {
 		return when (item.itemId) {
 			R.id.action_delete -> {
-				AlertDialog.Builder(context ?: return false)
+				MaterialAlertDialogBuilder(context ?: return false)
 					.setTitle(R.string.delete_manga)
 					.setMessage(getString(R.string.text_delete_local_manga, data.title))
 					.setPositiveButton(R.string.delete) { _, _ ->

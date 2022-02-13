@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebSettings
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isInvisible
 import androidx.fragment.app.setFragmentResult
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
@@ -52,7 +52,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 		super.onDestroyView()
 	}
 
-	override fun onBuildDialog(builder: AlertDialog.Builder) {
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
 		builder.setNegativeButton(android.R.string.cancel, null)
 	}
 

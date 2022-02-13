@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import org.koitharu.kotatsu.core.model.Manga
 
-data class MangaIntent(
+class MangaIntent(
 	val manga: Manga?,
 	val mangaId: Long,
 	val uri: Uri?

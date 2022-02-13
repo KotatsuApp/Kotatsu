@@ -4,7 +4,10 @@ import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.utils.WordSet
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MangareadRepository(
@@ -52,7 +55,7 @@ class MangareadRepository(
 				id = generateUid(href),
 				url = href,
 				publicUrl = href.inContextOf(div),
-				coverUrl = div.selectFirst("img")?.absUrl("src").orEmpty(),
+				coverUrl = div.selectFirst("img")?.absUrl("data-src").orEmpty(),
 				title = summary?.selectFirst("h3")?.text().orEmpty(),
 				rating = div.selectFirst("span.total_votes")?.ownText()
 					?.toFloatOrNull()?.div(5f) ?: -1f,
@@ -104,16 +107,7 @@ class MangareadRepository(
 		val root2 = doc.body().selectFirst("div.content-area")
 			?.selectFirst("div.c-page")
 			?: throw ParseException("Root2 not found")
-		val mangaId = doc.getElementsByAttribute("data-post").firstOrNull()
-			?.attr("data-post")?.toLongOrNull()
-			?: throw ParseException("Cannot obtain manga id")
-		val doc2 = loaderContext.httpPost(
-			"https://${getDomain()}/wp-admin/admin-ajax.php",
-			mapOf(
-				"action" to "manga_get_chapters",
-				"manga" to mangaId.toString()
-			)
-		).parseHtml()
+		val dateFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.US)
 		return manga.copy(
 			tags = root.selectFirst("div.genres-content")?.select("a")
 				?.mapNotNullToSet { a ->
@@ -128,7 +122,7 @@ class MangareadRepository(
 				?.select("p")
 				?.filterNot { it.ownText().startsWith("A brief description") }
 				?.joinToString { it.html() },
-			chapters = doc2.select("li").asReversed().mapIndexed { i, li ->
+			chapters = root2.select("li").asReversed().mapIndexed { i, li ->
 				val a = li.selectFirst("a")
 				val href = a?.relUrl("href").orEmpty().ifEmpty {
 					parseFailed("Link is missing")
@@ -138,7 +132,13 @@ class MangareadRepository(
 					name = a!!.ownText(),
 					number = i + 1,
 					url = href,
-					source = MangaSource.MANGAREAD
+					uploadDate = parseChapterDate(
+						dateFormat,
+						li.selectFirst("span.chapter-release-date i")?.text()
+					),
+					source = MangaSource.MANGAREAD,
+					scanlator = null,
+					branch = null,
 				)
 			}
 		)
@@ -151,14 +151,82 @@ class MangareadRepository(
 			?.selectFirst("div.reading-content")
 			?: throw ParseException("Root not found")
 		return root.select("div.page-break").map { div ->
-			val img = div.selectFirst("img")
-			val url = img?.relUrl("src") ?: parseFailed("Page image not found")
+			val img = div.selectFirst("img") ?: parseFailed("Page image not found")
+			val url = img.relUrl("data-src").ifEmpty {
+				img.relUrl("src")
+			}
 			MangaPage(
 				id = generateUid(url),
 				url = url,
+				preview = null,
 				referer = fullUrl,
-				source = MangaSource.MANGAREAD
+				source = MangaSource.MANGAREAD,
 			)
+		}
+	}
+
+	private fun parseChapterDate(dateFormat: DateFormat, date: String?): Long {
+
+		date ?: return 0
+		return when {
+			date.endsWith(" ago", ignoreCase = true) -> {
+				parseRelativeDate(date)
+			}
+			// Handle translated 'ago' in Portuguese.
+			date.endsWith(" atrás", ignoreCase = true) -> {
+				parseRelativeDate(date)
+			}
+			// Handle translated 'ago' in Turkish.
+			date.endsWith(" önce", ignoreCase = true) -> {
+				parseRelativeDate(date)
+			}
+			// Handle 'yesterday' and 'today', using midnight
+			date.startsWith("year", ignoreCase = true) -> {
+				Calendar.getInstance().apply {
+					add(Calendar.DAY_OF_MONTH, -1) // yesterday
+					set(Calendar.HOUR_OF_DAY, 0)
+					set(Calendar.MINUTE, 0)
+					set(Calendar.SECOND, 0)
+					set(Calendar.MILLISECOND, 0)
+				}.timeInMillis
+			}
+			date.startsWith("today", ignoreCase = true) -> {
+				Calendar.getInstance().apply {
+					set(Calendar.HOUR_OF_DAY, 0)
+					set(Calendar.MINUTE, 0)
+					set(Calendar.SECOND, 0)
+					set(Calendar.MILLISECOND, 0)
+				}.timeInMillis
+			}
+			date.contains(Regex("""\d(st|nd|rd|th)""")) -> {
+				// Clean date (e.g. 5th December 2019 to 5 December 2019) before parsing it
+				date.split(" ").map {
+					if (it.contains(Regex("""\d\D\D"""))) {
+						it.replace(Regex("""\D"""), "")
+					} else {
+						it
+					}
+				}
+					.let { dateFormat.tryParse(it.joinToString(" ")) }
+			}
+			else -> dateFormat.tryParse(date)
+		}
+	}
+
+	// Parses dates in this form:
+	// 21 hours ago
+	private fun parseRelativeDate(date: String): Long {
+		val number = Regex("""(\d+)""").find(date)?.value?.toIntOrNull() ?: return 0
+		val cal = Calendar.getInstance()
+
+		return when {
+			WordSet("hari", "gün", "jour", "día", "dia", "day").anyWordIn(date) -> cal.apply { add(Calendar.DAY_OF_MONTH, -number) }.timeInMillis
+			WordSet("jam", "saat", "heure", "hora", "hour").anyWordIn(date) -> cal.apply { add(Calendar.HOUR, -number) }.timeInMillis
+			WordSet("menit", "dakika", "min", "minute", "minuto").anyWordIn(date) -> cal.apply { add(Calendar.MINUTE, -number) }.timeInMillis
+			WordSet("detik", "segundo", "second").anyWordIn(date) -> cal.apply { add(Calendar.SECOND, -number) }.timeInMillis
+			WordSet("month").anyWordIn(date) -> cal.apply { add(Calendar.MONTH, -number) }.timeInMillis
+			WordSet("year").anyWordIn(date) -> cal.apply { add(Calendar.YEAR, -number) }.timeInMillis
+			else -> 0
 		}
 	}
 

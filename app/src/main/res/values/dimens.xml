@@ -18,9 +18,9 @@
 	<dimen name="grid_spacing_outer">2dp</dimen>
 	<dimen name="manga_list_item_height">86dp</dimen>
 	<dimen name="manga_list_details_item_height">120dp</dimen>
-	<dimen name="chapter_list_item_height">46dp</dimen>
+	<dimen name="chapter_list_item_height">56dp</dimen>
 	<dimen name="preferred_grid_width">120dp</dimen>
-	<dimen name="header_height">34dp</dimen>
+	<dimen name="header_height">48dp</dimen>
 	<dimen name="elevation_large">16dp</dimen>
 	<dimen name="list_footer_height_inner">36dp</dimen>
 	<dimen name="list_footer_height_outer">48dp</dimen>

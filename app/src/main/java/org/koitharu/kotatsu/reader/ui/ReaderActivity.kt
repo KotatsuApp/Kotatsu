@@ -10,12 +10,15 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.*
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
+import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
@@ -52,7 +55,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
 	ActivityResultCallback<Boolean>, ReaderControlDelegate.OnInteractionListener {
 
-	private val viewModel by viewModel<ReaderViewModel>(mode = LazyThreadSafetyMode.NONE) {
+	private val viewModel by viewModel<ReaderViewModel> {
 		parametersOf(MangaIntent.from(intent), intent?.getParcelableExtra<ReaderState>(EXTRA_STATE))
 	}
 
@@ -192,7 +195,8 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 	override fun onActivityResult(result: Boolean) {
 		if (result) {
-			viewModel.saveCurrentPage(contentResolver)
+			viewModel.saveCurrentState(reader?.getCurrentState())
+			viewModel.saveCurrentPage()
 		}
 	}
 
@@ -207,7 +211,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	}
 
 	private fun onError(e: Throwable) {
-		val dialog = AlertDialog.Builder(this)
+		val dialog = MaterialAlertDialogBuilder(this)
 			.setTitle(R.string.error_occurred)
 			.setMessage(e.getDisplayMessage(resources))
 			.setPositiveButton(R.string.close, null)
@@ -234,8 +238,8 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		) {
 			false
 		} else {
-			val targets = binding.root.hitTest(rawX, rawY)
-			targets.none { it.hasOnClickListeners() }
+			val touchables = window.peekDecorView()?.touchables
+			touchables?.none { it.hasGlobalPoint(rawX, rawY) } ?: true
 		}
 	}
 
@@ -277,7 +281,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
-			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
+			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_INDEFINITE)
 				.setAnchorView(binding.appbarBottom)
 				.setAction(R.string.share) {
 					ShareHelper(this).shareImage(uri)

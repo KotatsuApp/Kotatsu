@@ -1,37 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="@dimen/chapter_list_item_height"
-	android:background="?selectableItemBackground">
+	android:background="?selectableItemBackground"
+	android:baselineAligned="false"
+	android:gravity="center_vertical"
+	android:orientation="horizontal">
 
 	<TextView
 		android:id="@+id/textView_number"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
 		android:layout_marginStart="12dp"
-		android:layout_marginEnd="10dp"
 		android:background="@drawable/bg_badge_default"
 		android:gravity="center"
 		android:minWidth="26dp"
 		android:textAlignment="center"
-		android:textColor="?android:textColorSecondaryInverse"
-		tools:text="13" />
+		tools:text="13"
+		tools:textColor="?attr/colorOnPrimary" />
 
-	<TextView
-		android:id="@+id/textView_title"
-		android:layout_width="match_parent"
+	<LinearLayout
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
+		android:layout_marginVertical="8dp"
+		android:layout_marginStart="16dp"
 		android:layout_marginEnd="12dp"
-		android:layout_toEndOf="@id/textView_number"
-		android:ellipsize="end"
-		android:maxLines="2"
-		android:text="?android:textColorPrimary"
-		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-		tools:text="@tools:sample/lorem[15]" />
+		android:layout_weight="1"
+		android:orientation="vertical">
 
-</RelativeLayout>
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:singleLine="true"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			tools:text="@tools:sample/lorem[15]" />
+
+		<TextView
+			android:id="@+id/textView_description"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:singleLine="true"
+			android:textAppearance="?attr/textAppearanceBodySmall"
+			tools:text="05.10.2021 • Scanlator" />
+	</LinearLayout>
+
+	<ImageView
+		android:id="@+id/imageView_new"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="12dp"
+		android:src="@drawable/ic_new" />
+
+	<ImageView
+		android:id="@+id/imageView_downloaded"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="12dp"
+		android:src="@drawable/ic_save_ok" />
+
+</LinearLayout>

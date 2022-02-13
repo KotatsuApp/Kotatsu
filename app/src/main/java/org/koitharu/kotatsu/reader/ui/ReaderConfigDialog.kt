@@ -5,16 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
+import org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.DialogReaderConfigBinding
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
-	View.OnClickListener {
+	CheckableButtonGroup.OnCheckedChangeListener {
 
 	private lateinit var mode: ReaderMode
 
@@ -30,7 +31,7 @@ class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 			?: ReaderMode.STANDARD
 	}
 
-	override fun onBuildDialog(builder: AlertDialog.Builder) {
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
 		builder.setTitle(R.string.read_mode)
 			.setPositiveButton(R.string.done, null)
 			.setCancelable(true)
@@ -42,9 +43,7 @@ class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 		binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
 		binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
 
-		binding.buttonStandard.setOnClickListener(this)
-		binding.buttonReversed.setOnClickListener(this)
-		binding.buttonWebtoon.setOnClickListener(this)
+		binding.checkableGroup.onCheckedChangeListener = this
 	}
 
 	override fun onDismiss(dialog: DialogInterface) {
@@ -53,11 +52,12 @@ class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 		super.onDismiss(dialog)
 	}
 
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_standard -> mode = ReaderMode.STANDARD
-			R.id.button_webtoon -> mode = ReaderMode.WEBTOON
-			R.id.button_reversed -> mode = ReaderMode.REVERSED
+	override fun onCheckedChanged(group: CheckableButtonGroup, checkedId: Int) {
+		mode = when (checkedId) {
+			R.id.button_standard -> ReaderMode.STANDARD
+			R.id.button_webtoon -> ReaderMode.WEBTOON
+			R.id.button_reversed -> ReaderMode.REVERSED
+			else -> return
 		}
 	}
 

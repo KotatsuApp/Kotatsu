@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.list.ui.filter
 
-import org.koitharu.kotatsu.core.model.MangaFilter
+interface OnFilterChangedListener {
 
-fun interface OnFilterChangedListener {
+	fun onSortItemClick(item: FilterItem.Sort)
 
-	fun onFilterChanged(filter: MangaFilter)
+	fun onTagItemClick(item: FilterItem.Tag)
 }

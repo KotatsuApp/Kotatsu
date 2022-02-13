@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.local.data
 
 import androidx.annotation.CheckResult
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import org.koitharu.kotatsu.utils.ext.deleteAwait
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -14,7 +14,6 @@ class WritableCbzFile(private val file: File) {
 
 	private val dir = File(file.parentFile, file.nameWithoutExtension)
 
-	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun prepare() = withContext(Dispatchers.IO) {
 		check(dir.list().isNullOrEmpty()) {
 			"Dir ${dir.name} is not empty"
@@ -27,11 +26,13 @@ class WritableCbzFile(private val file: File) {
 		}
 		ZipInputStream(FileInputStream(file)).use { zip ->
 			var entry = zip.nextEntry
-			while (entry != null) {
+			while (entry != null && currentCoroutineContext().isActive) {
 				val target = File(dir.path + File.separator + entry.name)
-				target.parentFile?.mkdirs()
-				target.outputStream().use { out ->
-					zip.copyTo(out)
+				runInterruptible {
+					target.parentFile?.mkdirs()
+					target.outputStream().use { out ->
+						zip.copyTo(out)
+					}
 				}
 				zip.closeEntry()
 				entry = zip.nextEntry
@@ -44,52 +45,50 @@ class WritableCbzFile(private val file: File) {
 	}
 
 	@CheckResult
-	@Suppress("BlockingMethodInNonBlockingContext")
 	suspend fun flush() = withContext(Dispatchers.IO) {
 		val tempFile = File(file.path + ".tmp")
 		if (tempFile.exists()) {
-			tempFile.delete()
+			tempFile.deleteAwait()
 		}
 		try {
-			ZipOutputStream(FileOutputStream(tempFile)).use { zip ->
-				dir.listFiles()?.forEach {
-					zipFile(it, it.name, zip)
+			runInterruptible {
+				ZipOutputStream(FileOutputStream(tempFile)).use { zip ->
+					dir.listFiles()?.forEach {
+						zipFile(it, it.name, zip)
+					}
+					zip.flush()
 				}
-				zip.flush()
 			}
 			tempFile.renameTo(file)
 		} finally {
 			if (tempFile.exists()) {
-				tempFile.delete()
+				tempFile.deleteAwait()
 			}
 		}
 	}
 
 	operator fun get(name: String) = File(dir, name)
 
-	operator fun set(name: String, file: File) {
+	suspend fun put(name: String, file: File) = runInterruptible(Dispatchers.IO) {
 		file.copyTo(this[name], overwrite = true)
 	}
 
-	companion object {
-
-		private fun zipFile(fileToZip: File, fileName: String, zipOut: ZipOutputStream) {
-			if (fileToZip.isDirectory) {
-				if (fileName.endsWith("/")) {
-					zipOut.putNextEntry(ZipEntry(fileName))
-				} else {
-					zipOut.putNextEntry(ZipEntry("$fileName/"))
-				}
-				zipOut.closeEntry()
-				fileToZip.listFiles()?.forEach { childFile ->
-					zipFile(childFile, "$fileName/${childFile.name}", zipOut)
-				}
+	private fun zipFile(fileToZip: File, fileName: String, zipOut: ZipOutputStream) {
+		if (fileToZip.isDirectory) {
+			if (fileName.endsWith("/")) {
+				zipOut.putNextEntry(ZipEntry(fileName))
 			} else {
-				FileInputStream(fileToZip).use { fis ->
-					val zipEntry = ZipEntry(fileName)
-					zipOut.putNextEntry(zipEntry)
-					fis.copyTo(zipOut)
-				}
+				zipOut.putNextEntry(ZipEntry("$fileName/"))
+			}
+			zipOut.closeEntry()
+			fileToZip.listFiles()?.forEach { childFile ->
+				zipFile(childFile, "$fileName/${childFile.name}", zipOut)
+			}
+		} else {
+			FileInputStream(fileToZip).use { fis ->
+				val zipEntry = ZipEntry(fileName)
+				zipOut.putNextEntry(zipEntry)
+				fis.copyTo(zipOut)
 			}
 		}
 	}

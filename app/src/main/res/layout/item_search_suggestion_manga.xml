@@ -28,7 +28,7 @@
 			android:layout_height="wrap_content"
 			android:ellipsize="end"
 			android:singleLine="true"
-			android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
 			tools:text="@tools:sample/lorem[6]" />
 
 		<TextView
@@ -37,7 +37,7 @@
 			android:layout_height="wrap_content"
 			android:ellipsize="end"
 			android:singleLine="true"
-			android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+			android:textAppearance="?attr/textAppearanceBodySmall"
 			android:textColor="?android:textColorSecondary"
 			tools:text="@tools:sample/lorem[6]" />
 

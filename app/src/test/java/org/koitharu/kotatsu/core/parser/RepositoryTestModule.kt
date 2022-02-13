@@ -7,7 +7,6 @@ import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.TestCookieJar
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.parser.SourceSettingsStub
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import java.util.concurrent.TimeUnit
@@ -30,13 +29,5 @@ val repositoryTestModule
 					return SourceSettingsStub()
 				}
 			}
-		}
-		factory { (source: MangaSource) ->
-			runCatching {
-				source.cls.getDeclaredConstructor(MangaLoaderContext::class.java)
-					.newInstance(get<MangaLoaderContext>())
-			}.recoverCatching {
-				source.cls.newInstance()
-			}.getOrThrow() as RemoteMangaRepository
 		}
 	}

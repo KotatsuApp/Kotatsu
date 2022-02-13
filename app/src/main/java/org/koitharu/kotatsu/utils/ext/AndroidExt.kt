@@ -4,7 +4,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.os.Build
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -23,6 +25,6 @@ suspend fun ConnectivityManager.waitForNetwork(): Network {
 	}
 }
 
-inline fun buildAlertDialog(context: Context, block: AlertDialog.Builder.() -> Unit): AlertDialog {
-	return AlertDialog.Builder(context).apply(block).create()
+inline fun buildAlertDialog(context: Context, block: MaterialAlertDialogBuilder.() -> Unit): AlertDialog {
+	return MaterialAlertDialogBuilder(context).apply(block).create()
 }

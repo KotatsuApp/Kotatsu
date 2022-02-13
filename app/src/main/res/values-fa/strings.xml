@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="close_menu">بستن منو</string>
+    <string name="open_menu">بازکردن منو</string>
+    <string name="local_storage">محل ذخیره سازی</string>
+    <string name="favourites">موارد دلخواه</string>
+    <string name="history">تاریخچه</string>
+    <string name="error_occurred">خطایی رخ داده است</string>
+    <string name="network_error">خطای اتصال به شبکه</string>
+</resources>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+	<attr name="sliderPreferenceStyle" />
+
 	<declare-styleable name="Theme">
 		<attr name="navigationBarDividerColor" format="color" />
 		<attr name="colorControlLight" format="color" />
@@ -8,9 +10,14 @@
 	</declare-styleable>
 
 	<!--CoverImageView attrs-->
-
 	<declare-styleable name="CoverImageView">
 		<attr name="android:orientation" />
+	</declare-styleable>
+
+	<declare-styleable name="SliderPreference">
+		<attr name="android:valueFrom" />
+		<attr name="android:valueTo" />
+		<attr name="android:stepSize" />
 	</declare-styleable>
 
 </resources>

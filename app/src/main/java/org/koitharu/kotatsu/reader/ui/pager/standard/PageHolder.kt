@@ -20,17 +20,20 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 open class PageHolder(
 	binding: ItemPageBinding,
 	loader: PageLoader,
-	settings: AppSettings, exceptionResolver: ExceptionResolver
+	settings: AppSettings,
+	exceptionResolver: ExceptionResolver,
 ) : BasePageHolder<ItemPageBinding>(binding, loader, settings, exceptionResolver),
 	View.OnClickListener {
 
 	init {
 		binding.ssiv.setOnImageEventListener(delegate)
 		binding.buttonRetry.setOnClickListener(this)
+		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
 	override fun onBind(data: ReaderPage) {
 		delegate.onBind(data.toMangaPage())
+		binding.textViewNumber.text = (data.index + 1).toString()
 	}
 
 	override fun onRecycled() {

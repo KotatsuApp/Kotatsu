@@ -30,7 +30,7 @@
 		android:minWidth="26dp"
 		android:singleLine="true"
 		android:textAlignment="center"
-		android:textColor="?android:textColorSecondaryInverse"
+		android:textColor="?attr/colorOnTertiary"
 		tools:background="@drawable/bg_badge_default"
 		tools:text="2" />
 

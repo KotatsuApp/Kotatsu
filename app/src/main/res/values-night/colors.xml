@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<color name="color_primary">#42A5F5</color>
-	<color name="color_primary_variant">#1565C0</color>
-	<color name="color_on_secondary">@android:color/black</color>
+	<color name="splash_color_background">#252525</color>
+	<color name="splash_color">#A4C8FF</color>
 
-	<color name="color_control_light">#2EFFFFFF</color> <!-- 18% white -->
-	<color name="color_surface">#272727</color>
-	<color name="color_background">#121212</color>
-
-	<!-- Scrim colors -->
-	<color name="system_ui_scrim_light">#2EFFFFFF</color> <!-- 18% white -->
-	<color name="system_ui_scrim_dark">#B3121212</color> <!-- 70% grey -->
-	<color name="status_bar_scrim">@color/system_ui_scrim_dark</color>
-
-	<!-- Other colors with light mode alternatives -->
-	<color name="list_divider">#1fffffff</color>
-	<color name="error">#CF6679</color>
+	<color name="error">#FFB4A9</color>
+	<color name="errorContainer">#930006</color>
+	<color name="onError">#680003</color>
+	<color name="onErrorContainer">#FFDAD4</color>
 
 </resources>

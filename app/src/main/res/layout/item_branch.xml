@@ -6,4 +6,4 @@
 	android:layout_height="?android:attr/listPreferredItemHeightSmall"
 	android:gravity="center_vertical"
 	android:singleLine="true"
-	android:textAppearance="?android:attr/textAppearanceLargePopupMenu" />
+	android:textAppearance="?attr/textAppearanceBodyLarge" />

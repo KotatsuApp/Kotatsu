@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(
@@ -76,19 +77,21 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
 		val root =
 			doc.body().getElementById("dle-content") ?: throw ParseException("Cannot find root")
+		val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 		return manga.copy(
 			description = root.getElementById("description")?.html()?.substringBeforeLast("<div"),
 			largeCoverUrl = root.getElementById("cover")?.absUrl("src"),
-			chapters = root.select("table.table_cha").flatMap { table ->
-				table.select("div.manga2")
-			}.map { it.selectFirst("a") }.reversed().mapIndexedNotNull { i, a ->
-				val href = a?.relUrl("href") ?: return@mapIndexedNotNull null
+			chapters = root.select("table.table_cha tr:gt(1)").reversed().mapIndexedNotNull { i, tr ->
+				val href = tr?.selectFirst("a")?.relUrl("href") ?: return@mapIndexedNotNull null
 				MangaChapter(
 					id = generateUid(href),
-					name = a.text().trim(),
+					name = tr.selectFirst("a")?.text().orEmpty(),
 					number = i + 1,
 					url = href,
-					source = source
+					scanlator = null,
+					branch = null,
+					uploadDate = dateFormat.tryParse(tr.selectFirst("div.date")?.text()),
+					source = source,
 				)
 			}
 		)
@@ -116,8 +119,9 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				MangaPage(
 					id = generateUid(url),
 					url = url,
+					preview = null,
 					referer = fullUrl,
-					source = source
+					source = source,
 				)
 			}
 		}
@@ -154,4 +158,5 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 			SortOrder.NEWEST -> "datedesc"
 			else -> "favdesc"
 		}
+
 }

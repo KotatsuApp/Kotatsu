@@ -236,4 +236,17 @@
     <string name="about_author">Autor</string>
     <string name="about_app_translation">Übersetzung</string>
     <string name="about_app_translation_summary">Diese Anwendung übersetzen</string>
+    <string name="text_clear_cookies_prompt">Du wirst von allen Quellen abgemeldet, für die du berechtigt bist</string>
+    <string name="genres">Genres</string>
+    <string name="auth_not_supported_by">Autorisierung auf %s wird nicht unterstützt</string>
+    <string name="auth_complete">Autorisierung abgeschlossen</string>
+    <string name="state_finished">Beendet</string>
+    <string name="state_ongoing">Fortlaufend</string>
+    <string name="date_format">Datumsformat</string>
+    <string name="system_default">Standard</string>
+    <string name="exclude_nsfw_from_history">NSFW-Manga aus dem Verlauf ausschließen</string>
+    <string name="error_empty_name">Der Name sollte nicht leer sein</string>
+    <string name="show_pages_numbers">Seitenzahlen anzeigen</string>
+    <string name="enabled_sources">Freigegebene Quellen</string>
+    <string name="available_sources">Verfügbare Quellen</string>
 </resources>

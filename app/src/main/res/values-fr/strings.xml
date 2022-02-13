@@ -236,4 +236,17 @@
     <string name="about_author">Auteur</string>
     <string name="about_app_translation">Traduction</string>
     <string name="about_app_translation_summary">Traduire cette application</string>
+    <string name="genres">Genres</string>
+    <string name="text_clear_cookies_prompt">Vous serez déconnecté·e de toutes les sources pour lesquelles vous avez une autorisation</string>
+    <string name="auth_not_supported_by">L\'autorisation sur %s n\'est pas prise en charge</string>
+    <string name="auth_complete">Autorisation complète</string>
+    <string name="state_finished">Terminé</string>
+    <string name="state_ongoing">En cours</string>
+    <string name="date_format">Format de la date</string>
+    <string name="system_default">Par défaut</string>
+    <string name="exclude_nsfw_from_history">Exclure les mangas osés de l\'historique</string>
+    <string name="error_empty_name">Le nom ne doit pas être vide</string>
+    <string name="show_pages_numbers">Afficher les numéros de pages</string>
+    <string name="enabled_sources">Sources activées</string>
+    <string name="available_sources">Sources disponibles</string>
 </resources>

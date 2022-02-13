@@ -25,7 +25,7 @@ class FavouriteCategoriesDialog : BaseBottomSheet<DialogFavoriteCategoriesBindin
 	OnListItemClickListener<MangaCategoryItem>, CategoriesEditDelegate.CategoriesEditCallback,
 	View.OnClickListener {
 
-	private val viewModel by viewModel<MangaCategoriesViewModel>(mode = LazyThreadSafetyMode.NONE) {
+	private val viewModel by viewModel<MangaCategoriesViewModel> {
 		parametersOf(requireNotNull(arguments?.getParcelable<Manga>(MangaIntent.KEY_MANGA)))
 	}
 
@@ -36,7 +36,7 @@ class FavouriteCategoriesDialog : BaseBottomSheet<DialogFavoriteCategoriesBindin
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = DialogFavoriteCategoriesBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

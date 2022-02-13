@@ -43,10 +43,6 @@ class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_FILTER, currentFilterAD(onTagRemoveClick))
 	}
 
-	fun setItems(list: List<ListModel>, commitCallback: Runnable) {
-		differ.submitList(list, commitCallback)
-	}
-
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {
 
 		override fun areItemsTheSame(oldItem: ListModel, newItem: ListModel) = when {

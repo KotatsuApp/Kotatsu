@@ -3,23 +3,24 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/coordinator"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	tools:context=".details.ui.DetailsActivity">
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
-		style="@style/Widget.Kotatsu.AppBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		app:liftOnScroll="false"
 		app:elevation="0dp">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
-			style="@style/Widget.Kotatsu.Toolbar"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			app:layout_scrollFlags="scroll|enterAlways" />
+			android:layout_height="?attr/actionBarSize"
+			android:theme="?attr/actionBarTheme"
+			app:layout_scrollFlags="scroll|enterAlways"/>
 
 		<com.google.android.material.tabs.TabLayout
 			android:id="@+id/tabs"
@@ -37,5 +38,12 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+	<org.koitharu.kotatsu.base.ui.widgets.FadingSnackbar
+		android:id="@+id/snackbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

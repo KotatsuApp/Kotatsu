@@ -4,17 +4,18 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="?android:listPreferredItemHeightSmall"
-	android:background="?android:windowBackground"
 	android:gravity="center_vertical"
 	android:orientation="horizontal">
 
 	<ImageView
-		android:id="@+id/imageView_handle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:padding="?listPreferredItemPaddingStart"
-		android:scaleType="center"
-		android:src="@drawable/ic_reorder_handle" />
+		android:id="@+id/imageView_icon"
+		android:layout_width="?android:listPreferredItemHeightSmall"
+		android:layout_height="?android:listPreferredItemHeightSmall"
+		android:layout_marginHorizontal="?listPreferredItemPaddingStart"
+		android:labelFor="@id/textView_title"
+		android:padding="8dp"
+		android:scaleType="fitCenter"
+		tools:src="@tools:sample/avatars" />
 
 	<TextView
 		android:id="@+id/textView_title"
@@ -24,23 +25,13 @@
 		android:ellipsize="marquee"
 		android:fadingEdge="horizontal"
 		android:singleLine="true"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:textColor="?android:attr/textColorPrimary"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
 		tools:text="@tools:sample/lorem[1]" />
 
 	<com.google.android.material.switchmaterial.SwitchMaterial
 		android:id="@+id/switch_toggle"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
-
-	<ImageView
-		android:id="@+id/imageView_config"
-		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="?selectableItemBackgroundBorderless"
-		android:contentDescription="@string/settings"
-		android:padding="?listPreferredItemPaddingEnd"
-		android:scaleType="center"
-		android:src="@drawable/ic_settings" />
+		android:layout_marginEnd="?listPreferredItemPaddingEnd" />
 
 </LinearLayout>

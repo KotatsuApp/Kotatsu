@@ -18,7 +18,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 		)
 	]
 )
-data class SuggestionEntity(
+class SuggestionEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id", index = true) val mangaId: Long,
 	@FloatRange(from = 0.0, to = 1.0)

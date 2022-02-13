@@ -2,8 +2,6 @@ package org.koitharu.kotatsu.favourites.ui.categories
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -12,9 +10,9 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -24,15 +22,14 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 
 class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 	OnListItemClickListener<FavouriteCategory>,
 	View.OnClickListener, CategoriesEditDelegate.CategoriesEditCallback {
 
-	private val viewModel by viewModel<FavouritesCategoriesViewModel>(
-		mode = LazyThreadSafetyMode.NONE
-	)
+	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
 	private lateinit var adapter: CategoriesAdapter
 	private lateinit var reorderHelper: ItemTouchHelper
@@ -42,10 +39,9 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		binding.fabAdd.imageTintList = ColorStateList.valueOf(Color.WHITE)
 		adapter = CategoriesAdapter(this)
 		editDelegate = CategoriesEditDelegate(this, this)
-		binding.recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
+		binding.recyclerView.addItemDecoration(MaterialDividerItemDecoration(this, RecyclerView.VERTICAL))
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		binding.fabAdd.setOnClickListener(this)
@@ -95,13 +91,17 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		binding.recyclerView.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			bottom = insets.bottom
+			bottom = 2 * insets.bottom + binding.fabAdd.measureHeight()
 		)
-		binding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			top = insets.top
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {

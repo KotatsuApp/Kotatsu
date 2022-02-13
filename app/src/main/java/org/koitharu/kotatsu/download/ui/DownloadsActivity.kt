@@ -3,14 +3,17 @@ package org.koitharu.kotatsu.download.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.download.ui.service.DownloadService
@@ -22,7 +25,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		val adapter = DownloadsAdapter(lifecycleScope)
+		val adapter = DownloadsAdapter(lifecycleScope, get())
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		LifecycleAwareServiceConnection.bindService(
@@ -44,11 +47,15 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 			right = insets.right,
 			bottom = insets.bottom
 		)
-		binding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			top = insets.top
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 	}
 
 	companion object {

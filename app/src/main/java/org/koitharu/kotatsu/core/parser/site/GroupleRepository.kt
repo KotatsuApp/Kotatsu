@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import okhttp3.Headers
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Response
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
@@ -7,6 +8,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
@@ -39,14 +41,14 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 					getSortKey(
 						sortOrder
 					)
-				}&offset=${offset upBy PAGE_SIZE}"
+				}&offset=${offset upBy PAGE_SIZE}", HEADER
 			)
 			tags.size == 1 -> loaderContext.httpGet(
 				"https://$domain/list/genre/${tags.first().key}?sortType=${
 					getSortKey(
 						sortOrder
 					)
-				}&offset=${offset upBy PAGE_SIZE}"
+				}&offset=${offset upBy PAGE_SIZE}", HEADER
 			)
 			offset > 0 -> return emptyList()
 			else -> advancedSearch(domain, tags)
@@ -104,14 +106,15 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
-		val doc = loaderContext.httpGet(manga.url.withDomain()).parseHtml()
+		val doc = loaderContext.httpGet(manga.url.withDomain(), HEADER).parseHtml()
 		val root = doc.body().getElementById("mangaBox")?.selectFirst("div.leftContent")
 			?: throw ParseException("Cannot find root")
+		val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.US)
+		val coverImg = root.selectFirst("div.subject-cover")?.selectFirst("img")
 		return manga.copy(
 			description = root.selectFirst("div.manga-description")?.html(),
-			largeCoverUrl = root.selectFirst("div.subject-cower")?.selectFirst("img")?.attr(
-				"data-full"
-			),
+			largeCoverUrl = coverImg?.attr("data-full"),
+			coverUrl = coverImg?.attr("data-thumb") ?: manga.coverUrl,
 			tags = manga.tags + root.select("div.subject-meta").select("span.elem_genre ")
 				.mapNotNull {
 					val a = it.selectFirst("a.element-link") ?: return@mapNotNull null
@@ -122,21 +125,32 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 					)
 				},
 			chapters = root.selectFirst("div.chapters-link")?.selectFirst("table")
-				?.select("a")?.asReversed()?.mapIndexed { i, a ->
+				?.select("tr:has(td > a)")?.asReversed()?.mapIndexedNotNull { i, tr ->
+					val a = tr.selectFirst("a") ?: return@mapIndexedNotNull null
 					val href = a.relUrl("href")
+					var translators = ""
+					val translatorElement = a.attr("title")
+					if (!translatorElement.isNullOrBlank()) {
+						translators = translatorElement
+							.replace("(Переводчик),", "&")
+							.removeSuffix(" (Переводчик)")
+					}
 					MangaChapter(
 						id = generateUid(href),
-						name = a.ownText().removePrefix(manga.title).trim(),
+						name = tr.selectFirst("a")?.text().orEmpty().removePrefix(manga.title).trim(),
 						number = i + 1,
 						url = href,
-						source = source
+						uploadDate = dateFormat.tryParse(tr.selectFirst("td.d-none")?.text()),
+						scanlator = translators,
+						source = source,
+						branch = null,
 					)
 				}
 		)
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = loaderContext.httpGet(chapter.url.withDomain() + "?mtr=1").parseHtml()
+		val doc = loaderContext.httpGet(chapter.url.withDomain() + "?mtr=1", HEADER).parseHtml()
 		val scripts = doc.select("script")
 		for (script in scripts) {
 			val data = script.html()
@@ -154,8 +168,9 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 				MangaPage(
 					id = generateUid(url),
 					url = url,
+					preview = null,
 					referer = chapter.url,
-					source = source
+					source = source,
 				)
 			}
 		}
@@ -163,7 +178,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val doc = loaderContext.httpGet("https://${getDomain()}/list/genres/sort_name").parseHtml()
+		val doc = loaderContext.httpGet("https://${getDomain()}/list/genres/sort_name", HEADER).parseHtml()
 		val root = doc.body().getElementById("mangaBox")?.selectFirst("div.leftContent")
 			?.selectFirst("table.table") ?: parseFailed("Cannot find root")
 		return root.select("a.element-link").mapToSet { a ->
@@ -188,7 +203,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	private suspend fun advancedSearch(domain: String, tags: Set<MangaTag>): Response {
 		val url = "https://$domain/search/advanced"
 		// Step 1: map catalog genres names to advanced-search genres ids
-		val tagsIndex = loaderContext.httpGet(url).parseHtml()
+		val tagsIndex = loaderContext.httpGet(url, HEADER).parseHtml()
 			.body().selectFirst("form.search-form")
 			?.select("div.form-group")
 			?.get(1) ?: parseFailed("Genres filter element not found")
@@ -226,5 +241,9 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 
 		private const val PAGE_SIZE = 70
 		private const val PAGE_SIZE_SEARCH = 50
+		private val HEADER = Headers.Builder()
+			.add("User-Agent", "readmangafun")
+			.build()
 	}
+
 }

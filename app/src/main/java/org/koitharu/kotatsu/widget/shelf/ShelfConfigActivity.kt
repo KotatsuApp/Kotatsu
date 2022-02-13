@@ -3,19 +3,16 @@ package org.koitharu.kotatsu.widget.shelf
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -27,9 +24,10 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 
-class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(), OnListItemClickListener<CategoryItem> {
+class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
+	OnListItemClickListener<CategoryItem> {
 
-	private val viewModel by viewModel<ShelfConfigViewModel>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by viewModel<ShelfConfigViewModel>()
 
 	private lateinit var adapter: CategorySelectAdapter
 	private lateinit var config: AppWidgetConfig
@@ -38,11 +36,12 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(), OnListIte
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		binding.fabAdd.imageTintList = ColorStateList.valueOf(Color.WHITE)
 		adapter = CategorySelectAdapter(this)
-		binding.recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
+		binding.recyclerView.addItemDecoration(
+			MaterialDividerItemDecoration(this, RecyclerView.VERTICAL)
+		)
 		binding.recyclerView.adapter = adapter
-		binding.fabAdd.isVisible = false
+		binding.fabAdd.hide()
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
 			AppWidgetManager.INVALID_APPWIDGET_ID
@@ -92,11 +91,15 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(), OnListIte
 			right = insets.right,
 			bottom = insets.bottom
 		)
-		binding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			top = insets.top
-		)
+		with(binding.toolbar) {
+			updatePadding(
+				left = insets.left,
+				right = insets.right
+			)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
 	}
 
 	private fun onContentChanged(categories: List<CategoryItem>) {

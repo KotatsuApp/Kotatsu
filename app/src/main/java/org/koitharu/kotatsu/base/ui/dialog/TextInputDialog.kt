@@ -10,7 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.databinding.DialogInputBinding
 
 class TextInputDialog private constructor(
-	private val delegate: AlertDialog
+	private val delegate: AlertDialog,
 ) : DialogInterface by delegate {
 
 	fun show() = delegate.show()
@@ -19,7 +19,7 @@ class TextInputDialog private constructor(
 
 		private val binding = DialogInputBinding.inflate(LayoutInflater.from(context))
 
-		private val delegate = AlertDialog.Builder(context)
+		private val delegate = MaterialAlertDialogBuilder(context)
 			.setView(binding.root)
 
 		fun setTitle(@StringRes titleResId: Int): Builder {
@@ -33,7 +33,7 @@ class TextInputDialog private constructor(
 		}
 
 		fun setHint(@StringRes hintResId: Int): Builder {
-			binding.inputLayout.hint = binding.root.context.getString(hintResId)
+			binding.inputEdit.hint = binding.root.context.getString(hintResId)
 			return this
 		}
 
@@ -64,7 +64,7 @@ class TextInputDialog private constructor(
 			listener: (DialogInterface, String) -> Unit
 		): Builder {
 			delegate.setPositiveButton(textId) { dialog, _ ->
-				listener(dialog, binding.inputEdit.text.toString().orEmpty())
+				listener(dialog, binding.inputEdit.text?.toString().orEmpty())
 			}
 			return this
 		}

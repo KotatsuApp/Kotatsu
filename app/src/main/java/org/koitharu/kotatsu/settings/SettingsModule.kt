@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.settings.backup.BackupViewModel
 import org.koitharu.kotatsu.settings.backup.RestoreViewModel
 import org.koitharu.kotatsu.settings.onboard.OnboardViewModel
 import org.koitharu.kotatsu.settings.protect.ProtectSetupViewModel
+import org.koitharu.kotatsu.settings.sources.SourcesSettingsViewModel
 
 val settingsModule
 	get() = module {
@@ -25,4 +26,5 @@ val settingsModule
 		}
 		viewModel { ProtectSetupViewModel(get()) }
 		viewModel { OnboardViewModel(get()) }
+		viewModel { SourcesSettingsViewModel(get()) }
 	}

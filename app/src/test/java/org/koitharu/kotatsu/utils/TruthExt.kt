@@ -9,3 +9,5 @@ private val PATTERN_URL_RELATIVE = Pattern.compile("^/[^\\s]+", Pattern.CASE_INS
 fun StringSubject.isRelativeUrl() = matches(PATTERN_URL_RELATIVE)
 
 fun StringSubject.isAbsoluteUrl() = matches(PATTERN_URL_ABSOLUTE)
+
+fun StringSubject.isNotAbsoluteUrl() = doesNotMatch(PATTERN_URL_ABSOLUTE)

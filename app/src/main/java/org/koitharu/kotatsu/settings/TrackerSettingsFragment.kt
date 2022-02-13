@@ -35,8 +35,8 @@ class TrackerSettingsFragment : BasePreferenceFragment(R.string.new_chapters_che
 		}
 	}
 
-	override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-		return when (preference?.key) {
+	override fun onPreferenceTreeClick(preference: Preference): Boolean {
+		return when (preference.key) {
 			AppSettings.KEY_NOTIFICATIONS_SETTINGS -> {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 					val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)

@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import org.koitharu.kotatsu.utils.ext.levenshteinDistance
@@ -29,7 +30,7 @@ class MangaSearchRepository(
 		MangaProviderFactory.getSources(settings, includeHidden = false).asFlow()
 			.flatMapMerge(concurrency) { source ->
 				runCatching {
-					source.repository.getList2(
+					MangaRepository(source).getList2(
 						offset = 0,
 						query = query,
 						sortOrder = SortOrder.POPULARITY

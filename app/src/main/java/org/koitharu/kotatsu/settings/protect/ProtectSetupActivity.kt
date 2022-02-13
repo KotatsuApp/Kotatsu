@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
 class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWatcher,
 	View.OnClickListener, TextView.OnEditorActionListener {
 
-	private val viewModel by viewModel<ProtectSetupViewModel>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by viewModel<ProtectSetupViewModel>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

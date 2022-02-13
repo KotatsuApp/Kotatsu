@@ -16,7 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -77,6 +76,11 @@ class DownloadService : BaseService() {
 	override fun onBind(intent: Intent): IBinder {
 		super.onBind(intent)
 		return binder ?: DownloadBinder(this).also { binder = it }
+	}
+
+	override fun onUnbind(intent: Intent?): Boolean {
+		binder = null
+		return super.onUnbind(intent)
 	}
 
 	override fun onDestroy() {

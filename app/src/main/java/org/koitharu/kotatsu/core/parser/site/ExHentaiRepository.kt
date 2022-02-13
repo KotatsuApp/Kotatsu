@@ -141,8 +141,10 @@ class ExHentaiRepository(
 						name = "${manga.title} #$i",
 						number = i,
 						url = url,
-						branch = null,
+						uploadDate = 0L,
 						source = source,
+						scanlator = null,
+						branch = null,
 					)
 				}
 				chapters

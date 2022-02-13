@@ -7,6 +7,8 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MangaTownRepository(loaderContext: MangaLoaderContext) :
@@ -96,6 +98,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		val info = root.selectFirst("div.detail_info")?.selectFirst("ul")
 		val chaptersList = root.selectFirst("div.chapter_content")
 			?.selectFirst("ul.chapter_list")?.select("li")?.asReversed()
+		val dateFormat = SimpleDateFormat("MMM dd,yyyy", Locale.US)
 		return manga.copy(
 			tags = manga.tags + info?.select("li")?.find { x ->
 				x.selectFirst("b")?.ownText() == "Genre(s):"
@@ -117,9 +120,15 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 					url = href,
 					source = MangaSource.MANGATOWN,
 					number = i + 1,
-					name = name.ifEmpty { "${manga.title} - ${i + 1}" }
+					uploadDate = parseChapterDate(
+						dateFormat,
+						li.selectFirst("span.time")?.text()
+					),
+					name = name.ifEmpty { "${manga.title} - ${i + 1}" },
+					scanlator = null,
+					branch = null,
 				)
-			}
+			} ?: bypassLicensedChapters(manga)
 		)
 	}
 
@@ -136,8 +145,9 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 			MangaPage(
 				id = generateUid(href),
 				url = href,
+				preview = null,
 				referer = fullUrl,
-				source = MangaSource.MANGATOWN
+				source = MangaSource.MANGATOWN,
 			)
 		} ?: parseFailed("Pages list not found")
 	}
@@ -167,9 +177,44 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		}
 	}
 
+	private fun parseChapterDate(dateFormat: DateFormat, date: String?): Long {
+		return when {
+			date.isNullOrEmpty() -> 0L
+			date.contains("Today") -> Calendar.getInstance().timeInMillis
+			date.contains("Yesterday") -> Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }.timeInMillis
+			else -> dateFormat.tryParse(date)
+		}
+	}
+
 	override fun onCreatePreferences(map: MutableMap<String, Any>) {
 		super.onCreatePreferences(map)
 		map[SourceSettings.KEY_USE_SSL] = true
+	}
+
+	private suspend fun bypassLicensedChapters(manga: Manga): List<MangaChapter> {
+		val doc = loaderContext.httpGet(manga.url.withDomain("m")).parseHtml()
+		val list = doc.body().selectFirst("ul.detail-ch-list") ?: return emptyList()
+		val dateFormat = SimpleDateFormat("MMM dd,yyyy", Locale.US)
+		return list.select("li").asReversed().mapIndexedNotNull { i, li ->
+			val a = li.selectFirst("a") ?: return@mapIndexedNotNull null
+			val href = a.relUrl("href")
+			val name = a.selectFirst("span.vol")?.text().orEmpty().ifEmpty {
+				a.ownText()
+			}
+			MangaChapter(
+				id = generateUid(href),
+				url = href,
+				source = MangaSource.MANGATOWN,
+				number = i + 1,
+				uploadDate = parseChapterDate(
+					dateFormat,
+					li.selectFirst("span.time")?.text()
+				),
+				name = name.ifEmpty { "${manga.title} - ${i + 1}" },
+				scanlator = null,
+				branch = null,
+			)
+		}
 	}
 
 	private fun String.parseTagKey() = split('/').findLast { TAG_REGEX matches it }

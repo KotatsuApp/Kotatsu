@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils.ext
 import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
 import androidx.collection.LongSparseArray
+import java.util.*
 
 fun <T> MutableCollection<T>.replaceWith(subject: Iterable<T>) {
 	clear()
@@ -72,4 +73,12 @@ fun <T, K> Collection<T>.isDistinctBy(selector: (T) -> K): Boolean {
 		}
 	}
 	return set.size == size
+}
+
+fun <T> MutableList<T>.move(sourceIndex: Int, targetIndex: Int) {
+	if (sourceIndex <= targetIndex) {
+		Collections.rotate(subList(sourceIndex, targetIndex + 1), -1)
+	} else {
+		Collections.rotate(subList(targetIndex, sourceIndex + 1), 1)
+	}
 }

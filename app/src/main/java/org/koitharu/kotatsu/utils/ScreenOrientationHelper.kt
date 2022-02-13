@@ -7,7 +7,7 @@ import android.database.ContentObserver
 import android.os.Handler
 import android.provider.Settings
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onStart
@@ -38,7 +38,7 @@ class ScreenOrientationHelper(private val activity: Activity) {
 	fun observeAutoOrientation() = callbackFlow<Boolean> {
 		val observer = object : ContentObserver(Handler(activity.mainLooper)) {
 			override fun onChange(selfChange: Boolean) {
-				sendBlocking(isAutoRotationEnabled)
+				trySendBlocking(isAutoRotationEnabled)
 			}
 		}
 		activity.contentResolver.registerContentObserver(

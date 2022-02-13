@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
@@ -12,33 +11,32 @@
 		android:id="@+id/card"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		android:layout_marginBottom="4dp"
 		android:layout_marginHorizontal="8dp"
-		app:cardCornerRadius="4dp"
-		app:cardElevation="4dp">
+		android:layout_marginTop="8dp"
+		android:layout_marginBottom="4dp">
 
 		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:scaleType="centerCrop"
 			android:orientation="horizontal"
-			tools:ignore="ContentDescription" />
+			android:scaleType="centerCrop"
+			tools:ignore="ContentDescription"
+			tools:src="@tools:sample/backgrounds/scenic[3]" />
 
 	</com.google.android.material.card.MaterialCardView>
 
 	<TextView
 		android:id="@+id/textView_title"
-		style="@style/TextAppearance.AppCompat.Body2"
+		style="?attr/textAppearanceBodyMedium"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:elegantTextHeight="false"
 		android:ellipsize="end"
 		android:lineSpacingExtra="-2dp"
 		android:maxLines="2"
 		android:paddingHorizontal="8dp"
 		android:paddingBottom="4dp"
-		android:elegantTextHeight="false"
 		tools:text="Sample name" />
 
 </LinearLayout>

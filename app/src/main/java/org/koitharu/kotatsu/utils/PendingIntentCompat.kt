@@ -10,4 +10,10 @@ object PendingIntentCompat {
 	} else {
 		0
 	}
+
+	val FLAG_MUTABLE = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+		PendingIntent.FLAG_MUTABLE
+	} else {
+		0
+	}
 }

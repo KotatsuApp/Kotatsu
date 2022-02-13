@@ -56,8 +56,8 @@
     <string name="clear">Borrar</string>
     <string name="text_clear_history_prompt">¿Realmente quieres borrar todo tu historial de lectura? Esta acción no se puede deshacer.</string>
     <string name="remove">Eliminar</string>
-    <string name="_s_removed_from_history">\"%s\" retirado del historial</string>
-    <string name="_s_deleted_from_local_storage">\"%s\" borrado del almacenamiento local</string>
+    <string name="_s_removed_from_history">«%s» retirado del historial</string>
+    <string name="_s_deleted_from_local_storage">«%s» borrado del almacenamiento local</string>
     <string name="wait_for_loading_finish">Espera que termine la carga</string>
     <string name="save_page">Guardar página</string>
     <string name="page_saved">Página guardada con éxito</string>
@@ -77,7 +77,8 @@
     <string name="grid_size">Tamaño de la cuadrícula</string>
     <string name="search_on_s">Buscar en %s</string>
     <string name="delete_manga">Borrar manga</string>
-    <string name="text_delete_local_manga">¿Realmente quieres borrar \"%s\"  del almacenamiento local de tu teléfono? \nEsta operación no se puede deshacer.</string>
+    <string name="text_delete_local_manga">¿Realmente quieres borrar «%s» del almacenamiento local de tu teléfono\?
+\nEsta operación no se puede deshacer.</string>
     <string name="reader_settings">Ajustes del lector</string>
     <string name="switch_pages">Cambiar de página</string>
     <string name="taps_on_edges">Tapas en los bordes</string>
@@ -85,7 +86,7 @@
     <string name="_continue">Continuar</string>
     <string name="warning">Advertencia</string>
     <string name="network_consumption_warning">Esta operación puede consumir mucho tráfico de red</string>
-    <string name="dont_ask_again">No volver a preguntar</string>
+    <string name="dont_ask_again">No vuelvas a preguntar</string>
     <string name="cancelling_">Cancelar…</string>
     <string name="error">Error</string>
     <string name="clear_thumbs_cache">Borrar la caché de miniaturas</string>
@@ -115,7 +116,8 @@
     <string name="favourites_categories">Categorías favoritas</string>
     <string name="categories_">Categorías…</string>
     <string name="rename">Renombrar</string>
-    <string name="category_delete_confirm">¿Realmente quieres eliminar la categoría \"%s\" de tus favoritos? \nTodo el manga en ella se perderá.</string>
+    <string name="category_delete_confirm">¿Realmente quieres eliminar la categoría «%s» de tus favoritos\?
+\nTodo el manga en ella se perderá.</string>
     <string name="remove_category">Quitar categoría</string>
     <string name="text_categories_holder">Puedes usar categorías para organizar tus mangas favoritos. Pulsa «+» para crear una categoría</string>
     <string name="manga_shelf">Estante de manga</string>
@@ -208,4 +210,43 @@
     <string name="text_history_holder_secondary">Puede encontrar qué leer en el menú lateral.</string>
     <string name="text_history_holder_primary">El manga que estás leyendo se mostrará aquí</string>
     <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
+    <string name="about_gratitudes">Agradecimientos</string>
+    <string name="about_support_developer_summary">Si te gusta esta aplicación, puedes ayudar económicamente a través de Yoomoney (ex. Yandex.Money)</string>
+    <string name="about_support_developer">Apoyar al desarrollador</string>
+    <string name="search_only_on_s">Buscar sólo en %s</string>
+    <string name="about_gratitudes_summary">¡Estas personas hacen que Kotatsu sea mejor!</string>
+    <string name="about_license">Licencia</string>
+    <string name="about_copyright_and_licenses">Derechos de autor y licencias</string>
+    <string name="chapter_is_missing">Falta un capítulo</string>
+    <string name="about_app_translation_summary">Traducir esta aplicación</string>
+    <string name="about_feedback">Comentarios</string>
+    <string name="about_author">Autor</string>
+    <string name="about_app_translation">Traducción</string>
+    <string name="text_downloads_holder">Actualmente no hay descargas activas</string>
+    <string name="queued">En la cola</string>
+    <string name="read_more">Leer más</string>
+    <string name="backup_saved">Copia de seguridad guardada correctamente</string>
+    <string name="description">Descripción</string>
+    <string name="welcome">Bienvenido/a</string>
+    <string name="languages">Idiomas</string>
+    <string name="other">Otro</string>
+    <string name="genres">Géneros</string>
+    <string name="text_search_holder_secondary">Intenta reformular la consulta.</string>
+    <string name="text_clear_search_history_prompt">¿Realmente quiere eliminar todas las consultas de búsqueda recientes\? Esta acción no se puede deshacer.</string>
+    <string name="state_finished">Terminado</string>
+    <string name="state_ongoing">En curso</string>
+    <string name="hide_toolbar">Ocultar la barra de herramientas al desplazarse</string>
+    <string name="chapter_is_missing_text">Este capítulo no aparece en su dispositivo. Descárguelo o léalo en línea.</string>
+    <string name="auth_complete">Autorización completa</string>
+    <string name="about_feedback_4pda">Tema sobre 4PDA</string>
+    <string name="date_format">Formato de la fecha</string>
+    <string name="system_default">Por defecto</string>
+    <string name="tracker_warning">Algunos fabricantes pueden cambiar el comportamiento del sistema, lo que podría interrumpir las tareas en segundo plano.</string>
+    <string name="error_empty_name">El nombre no debe estar vacío</string>
+    <string name="auth_not_supported_by">Autorización en %s no es compatible</string>
+    <string name="text_clear_cookies_prompt">Se cerrará la sesión de todas las fuentes en las que esté autorizado</string>
+    <string name="exclude_nsfw_from_history">Excluye manga NSFW del historial</string>
+    <string name="show_pages_numbers">Mostrar los números de páginas</string>
+    <string name="enabled_sources">Fuentes activadas</string>
+    <string name="available_sources">Fuentes disponibles</string>
 </resources>

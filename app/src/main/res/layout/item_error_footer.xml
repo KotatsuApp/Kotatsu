@@ -26,16 +26,14 @@
 			android:id="@+id/textView_title"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-			android:textColor="?android:textColorPrimary"
+			android:textAppearance="?attr/textAppearanceBodyLarge"
 			tools:text="@string/error_occurred" />
 
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/tap_to_try_again"
-			android:textAppearance="?android:textAppearanceSmall"
-			android:textColor="?android:textColorSecondary" />
+			android:textAppearance="?attr/textAppearanceBodySmall" />
 
 	</LinearLayout>
 

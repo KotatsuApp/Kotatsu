@@ -6,15 +6,20 @@ import org.json.JSONObject
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.SimpleDateFormat
 import java.util.*
 
-class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext) {
+class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext),
+	MangaRepositoryAuthProvider {
 
 	override val source = MangaSource.REMANGA
 
 	override val defaultDomain = "remanga.org"
+	override val authUrl: String
+		get() = "https://${getDomain()}/user/login"
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED,
@@ -29,6 +34,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		tags: Set<MangaTag>?,
 		sortOrder: SortOrder?
 	): List<Manga> {
+		copyCookies()
 		val domain = getDomain()
 		val urlBuilder = StringBuilder()
 			.append("https://api.")
@@ -77,6 +83,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
+		copyCookies()
 		val domain = getDomain()
 		val slug = manga.url.find(LAST_URL_PATH_REGEX)
 			?: throw ParseException("Cannot obtain slug from ${manga.url}")
@@ -93,6 +100,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		val chapters = loaderContext.httpGet(
 			url = "https://api.$domain/api/titles/chapters/?branch_id=$branchId"
 		).parseJson().getJSONArray("content")
+		val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
 		return manga.copy(
 			description = content.getString("description"),
 			state = when (content.optJSONObject("status")?.getInt("id")) {
@@ -109,20 +117,27 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			},
 			chapters = chapters.mapIndexed { i, jo ->
 				val id = jo.getLong("id")
-				val name = jo.getString("name")
+				val name = jo.getString("name").toTitleCase(Locale.ROOT)
+				val publishers = jo.getJSONArray("publishers")
 				MangaChapter(
 					id = generateUid(id),
 					url = "/api/titles/chapters/$id/",
 					number = chapters.length() - i,
 					name = buildString {
+						append("Том ")
+						append(jo.optString("tome", "0"))
+						append(". ")
 						append("Глава ")
-						append(jo.getString("chapter"))
+						append(jo.optString("chapter", "0"))
 						if (name.isNotEmpty()) {
 							append(" - ")
 							append(name)
 						}
 					},
-					source = MangaSource.REMANGA
+					uploadDate = dateFormat.tryParse(jo.getString("upload_date")),
+					scanlator = publishers.optJSONObject(0)?.getStringOrNull("name"),
+					source = MangaSource.REMANGA,
+					branch = null,
 				)
 			}.asReversed()
 		)
@@ -156,6 +171,17 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		}
 	}
 
+	override fun isAuthorized(): Boolean {
+		return loaderContext.cookieJar.getCookies(getDomain()).any {
+			it.name == "user"
+		}
+	}
+
+	private fun copyCookies() {
+		val domain = getDomain()
+		loaderContext.cookieJar.copyCookies(domain, "api.$domain")
+	}
+
 	private fun getSortKey(order: SortOrder?) = when (order) {
 		SortOrder.UPDATED -> "-chapter_date"
 		SortOrder.POPULARITY -> "-rating"
@@ -167,8 +193,9 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	private fun parsePage(jo: JSONObject, referer: String) = MangaPage(
 		id = generateUid(jo.getLong("id")),
 		url = jo.getString("link"),
+		preview = null,
 		referer = referer,
-		source = source
+		source = source,
 	)
 
 	private companion object {

@@ -34,7 +34,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 			consumed[0] = 0
 			consumed[1] = consumedY
 		}
-		return consumedY != 0
+		return consumedY != 0 || dy == 0
 	}
 
 	private fun consumeVerticalScroll(dy: Int): Int {

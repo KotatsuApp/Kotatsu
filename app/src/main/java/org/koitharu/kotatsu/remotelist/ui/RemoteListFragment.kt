@@ -6,7 +6,6 @@ import android.view.MenuItem
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity
@@ -15,7 +14,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 
 class RemoteListFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<RemoteListViewModel>(mode = LazyThreadSafetyMode.NONE) {
+	override val viewModel by viewModel<RemoteListViewModel> {
 		parametersOf(source)
 	}
 
@@ -27,10 +26,6 @@ class RemoteListFragment : MangaListFragment() {
 
 	override fun getTitle(): CharSequence {
 		return source.title
-	}
-
-	override fun onFilterChanged(filter: MangaFilter) {
-		viewModel.applyFilter(filter)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

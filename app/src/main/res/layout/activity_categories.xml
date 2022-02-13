@@ -8,16 +8,14 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
-		style="@style/Widget.Kotatsu.AppBar"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:elevation="4dp">
+		android:layout_height="wrap_content">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/toolbar"
-			style="@style/Widget.Kotatsu.Toolbar"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="?attr/actionBarSize"
+			android:theme="?attr/actionBarTheme"/>
 
 	</com.google.android.material.appbar.AppBarLayout>
 
@@ -39,8 +37,7 @@
 		android:layout_margin="20dp"
 		android:gravity="center"
 		android:text="@string/text_categories_holder"
-		android:textAppearance="?android:textAppearanceMedium"
-		android:textColor="?android:textColorSecondary"
+		android:textAppearance="?attr/textAppearanceBody2"
 		android:visibility="gone"
 		tools:visibility="visible" />
 
@@ -51,7 +48,6 @@
 		android:layout_margin="16dp"
 		android:contentDescription="@string/add_new_category"
 		android:src="@drawable/ic_add"
-		app:backgroundTint="?colorAccent"
 		app:fabSize="normal"
 		app:layout_anchor="@id/recyclerView"
 		app:layout_anchorGravity="bottom|end"

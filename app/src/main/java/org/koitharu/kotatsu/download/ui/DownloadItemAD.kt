@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.download.ui
 
 import androidx.core.view.isVisible
+import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -10,12 +11,11 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.utils.JobStateFlow
-import org.koitharu.kotatsu.utils.ext.format
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.setIndeterminateCompat
+import org.koitharu.kotatsu.utils.ext.*
 
 fun downloadItemAD(
 	scope: CoroutineScope,
+	coil: ImageLoader,
 ) = adapterDelegateViewBinding<JobStateFlow<DownloadManager.State>, JobStateFlow<DownloadManager.State>, ItemDownloadBinding>(
 	{ inflater, parent -> ItemDownloadBinding.inflate(inflater, parent, false) }
 ) {
@@ -24,11 +24,16 @@ fun downloadItemAD(
 
 	bind {
 		job?.cancel()
-		job = item.onEach { state ->
+		job = item.onFirst { state ->
+			binding.imageViewCover.newImageRequest(state.manga.coverUrl)
+				.referer(state.manga.publicUrl)
+				.placeholder(state.cover)
+				.fallback(R.drawable.ic_placeholder)
+				.error(R.drawable.ic_placeholder)
+				.allowRgb565(true)
+				.enqueueWith(coil)
+		}.onEach { state ->
 			binding.textViewTitle.text = state.manga.title
-			binding.imageViewCover.setImageDrawable(
-				state.cover ?: getDrawable(R.drawable.ic_placeholder)
-			)
 			when (state) {
 				is DownloadManager.State.Cancelling -> {
 					binding.textViewStatus.setText(R.string.cancelling_)

@@ -14,16 +14,35 @@ sealed class DateTimeAgo : ListModel {
 		}
 	}
 
-	data class MinutesAgo(val minutes: Int) : DateTimeAgo() {
+	class MinutesAgo(val minutes: Int) : DateTimeAgo() {
+
 		override fun format(resources: Resources): String {
 			return resources.getQuantityString(R.plurals.minutes_ago, minutes, minutes)
 		}
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+			other as MinutesAgo
+			return minutes == other.minutes
+		}
+
+		override fun hashCode(): Int = minutes
 	}
 
-	data class HoursAgo(val hours: Int) : DateTimeAgo() {
+	class HoursAgo(val hours: Int) : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return resources.getQuantityString(R.plurals.hours_ago, hours, hours)
 		}
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+			other as HoursAgo
+			return hours == other.hours
+		}
+
+		override fun hashCode(): Int = hours
 	}
 
 	object Today : DateTimeAgo() {
@@ -38,10 +57,19 @@ sealed class DateTimeAgo : ListModel {
 		}
 	}
 
-	data class DaysAgo(val days: Int) : DateTimeAgo() {
+	class DaysAgo(val days: Int) : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return resources.getQuantityString(R.plurals.days_ago, days, days)
 		}
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+			other as DaysAgo
+			return days == other.days
+		}
+
+		override fun hashCode(): Int = days
 	}
 
 	object LongAgo : DateTimeAgo() {

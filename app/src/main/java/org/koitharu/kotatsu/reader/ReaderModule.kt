@@ -13,6 +13,6 @@ val readerModule
 		single { PagesCache(get()) }
 
 		viewModel { params ->
-			ReaderViewModel(params[0], params[1], get(), get(), get(), get())
+			ReaderViewModel(params[0], params[1], get(), get(), get(), get(), get())
 		}
 	}

@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
@@ -77,7 +76,6 @@ class ChipsView @JvmOverloads constructor(
 		val chip = Chip(context)
 		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
 		chip.setChipDrawable(drawable)
-		chip.setTextColor(ContextCompat.getColor(context, R.color.color_primary))
 		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)
@@ -96,11 +94,32 @@ class ChipsView @JvmOverloads constructor(
 		}
 	}
 
-	data class ChipModel(
+	class ChipModel(
 		@DrawableRes val icon: Int,
 		val title: CharSequence,
 		val data: Any? = null
-	)
+	) {
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+
+			other as ChipModel
+
+			if (icon != other.icon) return false
+			if (title != other.title) return false
+			if (data != other.data) return false
+
+			return true
+		}
+
+		override fun hashCode(): Int {
+			var result = icon
+			result = 31 * result + title.hashCode()
+			result = 31 * result + data.hashCode()
+			return result
+		}
+	}
 
 	fun interface OnChipClickListener {
 

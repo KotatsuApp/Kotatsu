@@ -20,7 +20,7 @@ import androidx.room.ForeignKey
 		)
 	]
 )
-data class MangaTagsEntity(
+class MangaTagsEntity(
 	@ColumnInfo(name = "manga_id", index = true) val mangaId: Long,
 	@ColumnInfo(name = "tag_id", index = true) val tagId: Long
 )

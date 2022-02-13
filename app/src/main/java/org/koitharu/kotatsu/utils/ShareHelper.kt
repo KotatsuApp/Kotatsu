@@ -46,7 +46,7 @@ class ShareHelper(private val context: Context) {
 
 	fun shareImage(uri: Uri) {
 		val intent = Intent(Intent.ACTION_SEND)
-		intent.setDataAndType(uri, context.contentResolver.getType(uri))
+		intent.setDataAndType(uri, context.contentResolver.getType(uri) ?: "image/*")
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 		val shareIntent = Intent.createChooser(intent, context.getString(R.string.share_image))
 		context.startActivity(shareIntent)

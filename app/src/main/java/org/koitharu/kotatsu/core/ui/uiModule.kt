@@ -5,6 +5,7 @@ import coil.ImageLoader
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
+import org.koitharu.kotatsu.core.parser.FaviconMapper
 import org.koitharu.kotatsu.local.data.CbzFetcher
 
 val uiModule
@@ -15,6 +16,7 @@ val uiModule
 				.componentRegistry(
 					ComponentRegistry.Builder()
 						.add(CbzFetcher())
+						.add(FaviconMapper())
 						.build()
 				).build()
 		}

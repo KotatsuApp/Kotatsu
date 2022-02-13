@@ -1,39 +1,35 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+	<!--Toolbars-->
+
+	<style name="Theme.Kotatsu.ActionMode.CloseButton" parent="Widget.AppCompat.ActionButton.CloseMode">
+		<item name="android:tint">?attr/colorOnSurface</item>
+	</style>
+
+	<style name="Theme.Kotatsu.ActionButton.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
+		<item name="android:tint">?attr/colorOnSurface</item>
+	</style>
+
+	<!--AlertDialog-->
+
+	<style name="ThemeOverlay.Kotatsu.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+		<item name="android:background">?attr/colorSurface</item>
+		<item name="android:textColorPrimary">?attr/colorOnSurface</item>
+		<item name="android:textColor">?attr/colorOnSurface</item>
+		<item name="dialogCornerRadius">28dp</item>
+	</style>
 
 	<!-- Widget styles -->
 
-	<style name="Widget.Kotatsu" parent="@android:style/Widget.Material" />
-
-	<style name="Widget.Kotatsu.AppBar" parent="@style/Widget.Design.AppBarLayout">
-		<item name="android:background">?attr/colorSurface</item>
-		<item name="android:elevation">4dp</item>
+	<style name="Widget.Kotatsu.Tabs" parent="@style/Widget.Material3.TabLayout">
+		<item name="tabGravity">center</item>
+		<item name="tabInlineLabel">true</item>
+		<item name="tabMinWidth">75dp</item>
+		<item name="tabMode">scrollable</item>
+		<item name="tabRippleColor">@color/ripple_toolbar</item>
 	</style>
 
-	<style name="Widget.Kotatsu.Sheet.AppBar" parent="@style/Widget.Kotatsu.AppBar">
-		<item name="android:elevation">0dp</item>
-	</style>
-
-	<style name="Widget.Kotatsu.Toolbar" parent="Widget.MaterialComponents.Toolbar">
-		<item name="android:paddingEnd">8dp</item>
-		<item name="popupTheme">@style/ThemeOverlay.Kotatsu</item>
-		<item name="titleTextAppearance">@style/TextAppearance.Kotatsu.ToolbarTitle</item>
-	</style>
-
-	<style name="Widget.Kotatsu.Tabs" parent="@style/Widget.MaterialComponents.TabLayout">
-		<item name="tabIndicatorFullWidth">false</item>
-		<item name="android:background">@drawable/tabs_background</item>
-		<item name="tabIndicator">@drawable/tab_indicator</item>
-		<item name="tabIconTint">@color/tab_text</item>
-		<item name="tabSelectedTextColor">?colorPrimary</item>
-		<item name="tabTextColor">@color/tab_text</item>
-		<item name="tabTextAppearance">@style/TextAppearance.Kotatsu.Tab</item>
-		<item name="tabIndicatorAnimationMode">elastic</item>
-	</style>
-
-	<style name="Widget.Kotatsu.NavigationView" parent="@style/Widget.MaterialComponents.NavigationView">
-		<item name="itemBackground">@drawable/navigation_item_background</item>
-		<item name="itemHorizontalPadding">@dimen/nav_item_horizontal_padding</item>
-	</style>
+	<style name="Widget.Kotatsu.NavigationView" parent="@style/Widget.Material3.NavigationView" />
 
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
@@ -43,42 +39,60 @@
 		<item name="android:textSize">18sp</item>
 	</style>
 
-	<style name="Widget.Kotatsu.Chip" parent="Widget.MaterialComponents.Chip.Action">
-		<item name="chipStrokeWidth">1dp</item>
-		<item name="chipStrokeColor">?attr/colorPrimary</item>
-		<item name="chipBackgroundColor">@android:color/transparent</item>
-		<item name="chipIconTint">?attr/colorPrimary</item>
-
-		<!-- Smaller text/height -->
-		<item name="android:textSize">12sp</item>
+	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
+		<item name="chipSurfaceColor">?attr/colorSurface</item>
+		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+		<item name="strokeColor">?attr/colorOutline</item>
+		<item name="rippleColor">?attr/colorControlHighlight</item>
 
 		<!-- Custom chip states -->
 		<item name="android:clickable">true</item>
 		<item name="android:focusable">true</item>
+
+		<!-- Smaller text/height -->
+		<item name="chipMinHeight">28dp</item>
+
+		<!-- Collapse horizontal margin -->
+		<item name="chipMinTouchTargetSize">28dp</item>
 	</style>
 
-	<style name="Widget.Kotatsu.ToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+	<style name="Widget.Kotatsu.ToggleButton" parent="Widget.Material3.Button.OutlinedButton">
 		<item name="android:checkable">true</item>
-		<item name="android:gravity">center_vertical|start</item>
+		<item name="android:textAlignment">textStart</item>
 		<item name="iconPadding">16dp</item>
-		<item name="android:paddingTop">10dp</item>
-		<item name="android:paddingBottom">10dp</item>
 	</style>
 
-	<style name="Widget.Kotatsu.ActionMode" parent="Widget.AppCompat.ActionMode">
+	<style name="Widget.Kotatsu.ActionMode" parent="Widget.Material3.ActionMode">
 		<item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
 		<item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
 	</style>
 
-	<!-- textAppearance alone doesn't support line spacing attrs. Multiline body text will use
-         style="Widget.Kotatsu.MultilineBody" instead of the equivalent textAppearance.
-	-->
-	<style name="Widget.Kotatsu.MultilineBody">
-		<item name="android:lineSpacingExtra">4sp</item>
-		<item name="android:textColor">?android:textColorSecondary</item>
+	<style name="Widget.Kotatsu.Switch" parent="Widget.Material3.CompoundButton.Switch">
+		<item name="materialThemeOverlay">@style/ThemeOverlay.Kotatsu.Switch</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Button.InlineButton" parent="Widget.Material3.Button.TextButton">
+		<item name="android:minHeight">0dp</item>
+		<item name="android:minWidth">0dp</item>
+		<item name="android:paddingTop">0dp</item>
+		<item name="android:paddingBottom">0dp</item>
+		<item name="android:insetTop">0dp</item>
+		<item name="android:insetBottom">0dp</item>
+
+		<item name="android:background">?android:attr/colorBackground</item>
+		<item name="backgroundTint">@null</item>
+		<item name="rippleColor">@null</item>
+	</style>
+
+	<style name="ThemeOverlay.Kotatsu.Switch" parent="">
+		<item name="elevationOverlayEnabled">@bool/elevation_overlay_enabled</item>
 	</style>
 
 	<!-- TextAppearance -->
+
+	<style name="TextAppearance.Widget.Menu" parent="TextAppearance.AppCompat.Menu">
+		<item name="android:textColor">?attr/colorOnBackground</item>
+	</style>
 
 	<style name="TextAppearance.Kotatsu.ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
 		<item name="android:textSize">20sp</item>
@@ -93,10 +107,7 @@
 		<item name="android:textAllCaps">false</item>
 	</style>
 
-	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.MaterialComponents.Button">
-		<item name="android:letterSpacing">0</item>
-		<item name="android:textAllCaps">false</item>
-	</style>
+	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall"/>
 
 	<style name="TextAppearance.Kotatsu.ListPrimary" parent="TextAppearance.MaterialComponents.Body1">
 		<item name="android:letterSpacing">0</item>
@@ -104,12 +115,29 @@
 
 	<style name="TextAppearance.Kotatsu.Body2" parent="TextAppearance.MaterialComponents.Body2" />
 
-	<style name="TextAppearance.Kotatsu.H1" parent="@style/TextAppearance.MaterialComponents.Headline5">
+	<style name="TextAppearance.Kotatsu.H1" parent="@style/TextAppearance.Material3.HeadlineLarge">
 		<item name="android:textSize">@dimen/text_size_h1</item>
 	</style>
 
-	<style name="TextAppearance.Kotatsu.NoticeBody" parent="@style/Widget.Kotatsu.MultilineBody">
-		<item name="android:textSize">18sp</item>
+	<style name="TextAppearance.Kotatsu.FloatingTitle" parent="TextAppearance.Material3.TitleLarge">
+		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="TextAppearance.Kotatsu.Preference.Secondary" parent="TextAppearance.Material3.BodySmall" />
+
+	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.LabelLarge">
+		<item name="android:textColor">?android:attr/textColorSecondary</item>
+	</style>
+
+	<!--Preferences-->
+
+	<style name="PreferenceThemeOverlay.Kotatsu">
+		<item name="preferenceCategoryTitleTextAppearance">?attr/textAppearanceBodyMedium</item>
+		<item name="singleLineTitle">false</item>
+	</style>
+
+	<style name="Preference.Slider" parent="Preference.SeekBarPreference.Material">
+		<item name="android:layout">@layout/pref_slider</item>
 	</style>
 
 </resources>

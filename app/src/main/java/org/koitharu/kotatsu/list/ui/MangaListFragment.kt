@@ -21,20 +21,17 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.base.ui.list.decor.ItemTypeDividerDecoration
-import org.koitharu.kotatsu.base.ui.list.decor.SectionItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaFilter
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
-import org.koitharu.kotatsu.list.ui.filter.FilterAdapter
-import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
+import org.koitharu.kotatsu.list.ui.filter.FilterAdapter2
+import org.koitharu.kotatsu.list.ui.filter.FilterItem
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.main.ui.MainActivity
@@ -42,10 +39,11 @@ import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
 import org.koitharu.kotatsu.utils.ext.*
 
 abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
-	PaginationScrollListener.Callback, OnListItemClickListener<Manga>, OnFilterChangedListener,
-	SectionItemDecoration.Callback, SwipeRefreshLayout.OnRefreshListener {
+	PaginationScrollListener.Callback, OnListItemClickListener<Manga>,
+	SwipeRefreshLayout.OnRefreshListener {
 
 	private var listAdapter: MangaListAdapter? = null
+	private var filterAdapter: FilterAdapter2? = null
 	private var paginationListener: PaginationScrollListener? = null
 	private val spanResolver = MangaListSpanResolver()
 	private val spanSizeLookup = SpanSizeLookup()
@@ -78,6 +76,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			onRetryClick = ::resolveException,
 			onTagRemoveClick = viewModel::onRemoveFilterTag
 		)
+		filterAdapter = FilterAdapter2(viewModel)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
@@ -85,17 +84,14 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			addOnScrollListener(paginationListener!!)
 		}
 		with(binding.swipeRefreshLayout) {
-			setColorSchemeColors(
-				ContextCompat.getColor(context, R.color.color_primary),
-				ContextCompat.getColor(context, R.color.color_primary_variant)
-			)
+			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
+			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
 			setOnRefreshListener(this@MangaListFragment)
 			isEnabled = isSwipeRefreshEnabled
 		}
 		with(binding.recyclerViewFilter) {
 			setHasFixedSize(true)
-			addItemDecoration(ItemTypeDividerDecoration(view.context))
-			addItemDecoration(SectionItemDecoration(false, this@MangaListFragment))
+			adapter = filterAdapter
 		}
 
 		(parentFragment as? RecycledViewPoolHolder)?.let {
@@ -113,6 +109,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	override fun onDestroyView() {
 		drawer = null
 		listAdapter = null
+		filterAdapter = null
 		paginationListener = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
@@ -203,27 +200,20 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		}
 	}
 
-	protected fun onInitFilter(config: MangaFilterConfig) {
-		binding.recyclerViewFilter.adapter = FilterAdapter(
-			sortOrders = config.sortOrders,
-			tags = config.tags,
-			state = config.currentFilter,
-			listener = this
-		)
+	protected fun onInitFilter(filter: List<FilterItem>) {
+		filterAdapter?.items = filter
 		drawer?.setDrawerLockMode(
-			if (config.sortOrders.isEmpty() && config.tags.isEmpty()) {
+			if (filter.isEmpty()) {
 				DrawerLayout.LOCK_MODE_LOCKED_CLOSED
 			} else {
 				DrawerLayout.LOCK_MODE_UNLOCKED
 			}
 		) ?: binding.dividerFilter?.let {
-			it.isGone = config.sortOrders.isEmpty() && config.tags.isEmpty()
+			it.isGone = filter.isEmpty()
 			binding.recyclerViewFilter.isVisible = it.isVisible
 		}
 		activity?.invalidateOptionsMenu()
 	}
-
-	override fun onFilterChanged(filter: MangaFilter) = Unit
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
@@ -281,20 +271,6 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 					addOnLayoutChangeListener(spanResolver)
 				}
 			}
-		}
-	}
-
-	final override fun isSection(position: Int): Boolean {
-		return position == 0 || binding.recyclerViewFilter.adapter?.run {
-			getItemViewType(position) != getItemViewType(position - 1)
-		} ?: false
-	}
-
-	final override fun getSectionTitle(position: Int): CharSequence? {
-		return when (binding.recyclerViewFilter.adapter?.getItemViewType(position)) {
-			FilterAdapter.VIEW_TYPE_SORT -> getString(R.string.sort_order)
-			FilterAdapter.VIEW_TYPE_TAG -> getString(R.string.genres)
-			else -> null
 		}
 	}
 

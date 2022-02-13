@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.MangaTag
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.utils.ext.mapToSet
 class HistoryRepository(
 	private val db: MangaDatabase,
 	private val trackingRepository: TrackingRepository,
+	private val settings: AppSettings,
 ) {
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
@@ -46,6 +48,9 @@ class HistoryRepository(
 	}
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int) {
+		if (manga.isNsfw && settings.isHistoryExcludeNsfw) {
+			return
+		}
 		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
 		db.withTransaction {
 			db.tagsDao.upsert(tags)

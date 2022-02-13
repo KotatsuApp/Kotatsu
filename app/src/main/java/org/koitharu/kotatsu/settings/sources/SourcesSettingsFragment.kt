@@ -2,28 +2,30 @@ package org.koitharu.kotatsu.settings.sources
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
+import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
+import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigItemDecoration
+import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
+import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
 class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
-	OnListItemClickListener<MangaSource> {
+	SourceConfigListener, SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
-	private lateinit var reorderHelper: ItemTouchHelper
+	private var reorderHelper: ItemTouchHelper? = null
+	private val viewModel by viewModel<SourcesSettingsViewModel>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		reorderHelper = ItemTouchHelper(SourcesReorderCallback())
 		setHasOptionsMenu(true)
 	}
 
@@ -39,32 +41,34 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		val sourcesAdapter = SourceConfigAdapter(this, get(), viewLifecycleOwner)
 		with(binding.recyclerView) {
-			addItemDecoration(DividerItemDecoration(view.context, RecyclerView.VERTICAL))
-			adapter = SourcesAdapter(get(), this@SourcesSettingsFragment)
-			reorderHelper.attachToRecyclerView(this)
+			setHasFixedSize(true)
+			addItemDecoration(SourceConfigItemDecoration(view.context))
+			adapter = sourcesAdapter
+			reorderHelper = ItemTouchHelper(SourcesReorderCallback()).also {
+				it.attachToRecyclerView(this)
+			}
+		}
+		viewModel.items.observe(viewLifecycleOwner) {
+			sourcesAdapter.items = it
 		}
 	}
 
 	override fun onDestroyView() {
-		reorderHelper.attachToRecyclerView(null)
+		reorderHelper = null
 		super.onDestroyView()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
-		// TODO handle changes in dialog
-		// inflater.inflate(R.menu.opt_sources, menu)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return when(item.itemId) {
-			R.id.action_languages -> {
-				OnboardDialogFragment.show(parentFragmentManager)
-				true
-			}
-			else -> super.onOptionsItemSelected(item)
-		}
+		inflater.inflate(R.menu.opt_sources, menu)
+		val searchMenuItem = menu.findItem(R.id.action_search)
+		searchMenuItem.setOnActionExpandListener(this)
+		val searchView = searchMenuItem.actionView as SearchView
+		searchView.setOnQueryTextListener(this)
+		searchView.setIconifiedByDefault(false)
+		searchView.queryHint = searchMenuItem.title
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -75,14 +79,61 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		)
 	}
 
-	override fun onItemClick(item: MangaSource, view: View) {
-		(activity as? SettingsActivity)?.openMangaSourceSettings(item)
+	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {
+		(activity as? SettingsActivity)?.openMangaSourceSettings(item.source)
 	}
 
-	override fun onItemLongClick(item: MangaSource, view: View): Boolean {
-		reorderHelper.startDrag(
-			binding.recyclerView.findContainingViewHolder(view) ?: return false
-		)
+	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
+		viewModel.setEnabled(item.source, isEnabled)
+	}
+
+	override fun onDragHandleTouch(holder: RecyclerView.ViewHolder) {
+		reorderHelper?.startDrag(holder)
+	}
+
+	override fun onHeaderClick(header: SourceConfigItem.LocaleGroup) {
+		viewModel.expandOrCollapse(header.localeId)
+	}
+
+	override fun onQueryTextSubmit(query: String?): Boolean = false
+
+	override fun onQueryTextChange(newText: String?): Boolean {
+		viewModel.performSearch(newText)
 		return true
+	}
+
+	override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+
+	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+		(item.actionView as SearchView).setQuery("", false)
+		return true
+	}
+
+	private inner class SourcesReorderCallback : ItemTouchHelper.SimpleCallback(
+		ItemTouchHelper.DOWN or ItemTouchHelper.UP,
+		0,
+	) {
+
+		override fun onMove(
+			recyclerView: RecyclerView,
+			viewHolder: RecyclerView.ViewHolder,
+			target: RecyclerView.ViewHolder,
+		): Boolean = viewHolder.itemViewType == target.itemViewType && viewModel.reorderSources(
+			viewHolder.bindingAdapterPosition,
+			target.bindingAdapterPosition,
+		)
+
+		override fun canDropOver(
+			recyclerView: RecyclerView,
+			current: RecyclerView.ViewHolder,
+			target: RecyclerView.ViewHolder,
+		): Boolean = current.itemViewType == target.itemViewType && viewModel.canReorder(
+			current.bindingAdapterPosition,
+			target.bindingAdapterPosition,
+		)
+
+		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
+
+		override fun isLongPressDragEnabled() = false
 	}
 }

@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.select.Elements
+import java.text.DateFormat
 
 fun Response.parseHtml(): Document {
 	try {
@@ -97,4 +98,12 @@ fun Element.css(property: String): String? {
 	val regex = Regex("${Regex.escape(property)}\\s*:\\s*[^;]+")
 	val css = attr("style").find(regex) ?: return null
 	return css.substringAfter(':').removeSuffix(';').trim()
+}
+
+fun DateFormat.tryParse(str: String?): Long = if (str.isNullOrEmpty()) {
+	0L
+} else {
+	runCatching {
+		parse(str)?.time ?: 0L
+	}.getOrDefault(0L)
 }
