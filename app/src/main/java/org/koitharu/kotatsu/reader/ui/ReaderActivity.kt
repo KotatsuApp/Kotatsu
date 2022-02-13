@@ -238,8 +238,8 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		) {
 			false
 		} else {
-			val targets = binding.root.hitTest(rawX, rawY)
-			targets.none { it.hasOnClickListeners() }
+			val touchables = window.peekDecorView()?.touchables
+			touchables?.none { it.hasGlobalPoint(rawX, rawY) } ?: true
 		}
 	}
 
@@ -281,7 +281,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
-			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
+			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_INDEFINITE)
 				.setAnchorView(binding.appbarBottom)
 				.setAction(R.string.share) {
 					ShareHelper(this).shareImage(uri)
