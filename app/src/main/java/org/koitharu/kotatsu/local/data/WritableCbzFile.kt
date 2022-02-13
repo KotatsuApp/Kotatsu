@@ -14,9 +14,13 @@ class WritableCbzFile(private val file: File) {
 
 	private val dir = File(file.parentFile, file.nameWithoutExtension)
 
-	suspend fun prepare() = withContext(Dispatchers.IO) {
-		check(dir.list().isNullOrEmpty()) {
-			"Dir ${dir.name} is not empty"
+	suspend fun prepare(overwrite: Boolean) = withContext(Dispatchers.IO) {
+		if (!dir.list().isNullOrEmpty()) {
+			if (overwrite) {
+				dir.deleteRecursively()
+			} else {
+				throw IllegalStateException("Dir ${dir.name} is not empty")
+			}
 		}
 		if (!dir.exists()) {
 			dir.mkdir()
