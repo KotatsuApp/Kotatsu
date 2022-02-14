@@ -118,7 +118,7 @@
     <string name="download">Télécharger</string>
     <string name="show_notification_new_chapters">Avertir des mises à jour des mangas que vous lisez</string>
     <string name="new_chapters">Nouveaux chapitres</string>
-    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Activé %1$d sur %2$d</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d de %2$d activé(s)</string>
     <string name="notifications">Notifications</string>
     <string name="large_manga_save_confirm">Ce manga a %s. Tout sauvegarder \?</string>
     <string name="save_manga">Enregistrer</string>
