@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,7 +33,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		offset: Int,
 		query: String?,
 		tags: Set<MangaTag>?,
-		sortOrder: SortOrder?
+		sortOrder: SortOrder?,
 	): List<Manga> {
 		copyCookies()
 		val domain = getDomain()
@@ -118,7 +119,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			chapters = chapters.mapIndexed { i, jo ->
 				val id = jo.getLong("id")
 				val name = jo.getString("name").toTitleCase(Locale.ROOT)
-				val publishers = jo.getJSONArray("publishers")
+				val publishers = jo.optJSONArray("publishers")
 				MangaChapter(
 					id = generateUid(id),
 					url = "/api/titles/chapters/$id/",
@@ -135,7 +136,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 						}
 					},
 					uploadDate = dateFormat.tryParse(jo.getString("upload_date")),
-					scanlator = publishers.optJSONObject(0)?.getStringOrNull("name"),
+					scanlator = publishers?.optJSONObject(0)?.getStringOrNull("name"),
 					source = MangaSource.REMANGA,
 					branch = null,
 				)
@@ -146,16 +147,28 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val referer = "https://${getDomain()}/"
 		val content = loaderContext.httpGet(chapter.url.withDomain(subdomain = "api")).parseJson()
-			.getJSONObject("content").getJSONArray("pages")
-		val pages = ArrayList<MangaPage>(content.length())
-		for (i in 0 until content.length()) {
-			when (val item = content.get(i)) {
-				is JSONObject -> pages += parsePage(item, referer)
-				is JSONArray -> item.mapTo(pages) { parsePage(it, referer) }
+			.getJSONObject("content")
+		val pages = content.optJSONArray("pages")
+		if (pages == null) {
+			val pubDate = content.getStringOrNull("pub_date")?.let {
+				SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).tryParse(it)
+			}
+			if (pubDate != null && pubDate > System.currentTimeMillis()) {
+				val at = SimpleDateFormat.getDateInstance(DateFormat.LONG).format(Date(pubDate))
+				parseFailed("Глава станет доступной $at")
+			} else {
+				parseFailed("Глава недоступна")
+			}
+		}
+		val result = ArrayList<MangaPage>(pages.length())
+		for (i in 0 until pages.length()) {
+			when (val item = pages.get(i)) {
+				is JSONObject -> result += parsePage(item, referer)
+				is JSONArray -> item.mapTo(result) { parsePage(it, referer) }
 				else -> throw ParseException("Unknown json item $item")
 			}
 		}
-		return pages
+		return result
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
