@@ -250,4 +250,6 @@
     <string name="available_sources">Verfügbare Quellen</string>
     <string name="dynamic_theme">Dynamisches Thema</string>
     <string name="dynamic_theme_summary">Wendet ein Thema an, das auf dem Farbschema Ihres Hintergrundbildes basiert</string>
+    <string name="app_name" translatable="false"></string>
+    <string name="_empty" translatable="false"></string>
 </resources>
