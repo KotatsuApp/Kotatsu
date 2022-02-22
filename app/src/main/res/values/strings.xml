@@ -104,7 +104,7 @@
     <string name="large_manga_save_confirm">This manga has %s. Save all of it?</string>
     <string name="save_manga">Save</string>
     <string name="notifications">Notifications</string>
-    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Turned on %1$d of %2$d</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d of %2$d on</string>
     <string name="new_chapters">New chapters</string>
     <string name="show_notification_new_chapters">Notify about updates of manga you are reading</string>
     <string name="download">Download</string>

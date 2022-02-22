@@ -249,4 +249,6 @@
     <string name="show_pages_numbers">Паказваць нумары старонак</string>
     <string name="enabled_sources">Уключаныя крыніцы</string>
     <string name="available_sources">Даступныя крыніцы</string>
+    <string name="dynamic_theme">Дынамічная тэма</string>
+    <string name="dynamic_theme_summary">Ужывае тэму праграмы, заснаваную на каляровай палітры шпалер на прыладзе</string>
 </resources>
