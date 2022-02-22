@@ -98,9 +98,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		}
 		val branchId = content.getJSONArray("branches").optJSONObject(0)
 			?.getLong("id") ?: throw ParseException("No branches found")
-		val chapters = loaderContext.httpGet(
-			url = "https://api.$domain/api/titles/chapters/?branch_id=$branchId"
-		).parseJson().getJSONArray("content")
+		val chapters = grabChapters(domain, branchId)
 		val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
 		return manga.copy(
 			description = content.getString("description"),
@@ -123,7 +121,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 				MangaChapter(
 					id = generateUid(id),
 					url = "/api/titles/chapters/$id/",
-					number = chapters.length() - i,
+					number = chapters.size - i,
 					name = buildString {
 						append("Том ")
 						append(jo.optString("tome", "0"))
@@ -210,6 +208,26 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		referer = referer,
 		source = source,
 	)
+
+	private suspend fun grabChapters(domain: String, branchId: Long): List<JSONObject> {
+		val result = ArrayList<JSONObject>(100)
+		var page = 1
+		while (true) {
+			val content = loaderContext.httpGet(
+				"https://api.$domain/api/titles/chapters/?branch_id=$branchId&page=$page&count=100"
+			).parseJson().getJSONArray("content")
+			val len = content.length()
+			if (len == 0) {
+				break
+			}
+			result.ensureCapacity(result.size + len)
+			for (i in 0 until len) {
+				result.add(content.getJSONObject(i))
+			}
+			page++
+		}
+		return result
+	}
 
 	private companion object {
 
