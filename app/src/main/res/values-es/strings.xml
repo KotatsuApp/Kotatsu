@@ -54,7 +54,7 @@
     <string name="automatic">De acuerdo al sistema</string>
     <string name="pages">Páginas</string>
     <string name="clear">Borrar</string>
-    <string name="text_clear_history_prompt">¿Realmente quieres borrar todo tu historial de lectura? Esta acción no se puede deshacer.</string>
+    <string name="text_clear_history_prompt">¿Realmente quieres borrar todo tu historial de lectura\? Esta acción no se puede deshacer.</string>
     <string name="remove">Eliminar</string>
     <string name="_s_removed_from_history">«%s» retirado del historial</string>
     <string name="_s_deleted_from_local_storage">«%s» borrado del almacenamiento local</string>
@@ -99,7 +99,7 @@
     <string name="app_update_available">Una nueva versión de la aplicación está disponible</string>
     <string name="show_notification_app_update">Mostrar notificación si una nueva versión está disponible</string>
     <string name="open_in_browser">Abrir en navegador web</string>
-    <string name="large_manga_save_confirm">Este manga tiene %s. ¿Quieres guardarlo todo?</string>
+    <string name="large_manga_save_confirm">Este manga tiene %s. ¿Quieres guardarlo todo\?</string>
     <string name="save_manga">Guardar</string>
     <string name="notifications">Notificaciones</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Activado %1$d de %2$d</string>
@@ -170,7 +170,7 @@
     <string name="black_dark_theme">Tema oscuro auténtico</string>
     <string name="black_dark_theme_summary">Útil para pantallas AMOLED</string>
     <string name="restart_required">Se requiere reinicio</string>
-    <string name="backup_restore"><![CDATA[Respaldo y restauración]]></string>
+    <string name="backup_restore">Respaldo y restauración</string>
     <string name="create_backup">Crear copia de seguridad de datos</string>
     <string name="restore_backup">Restaurar desde la copia de seguridad</string>
     <string name="data_restored">Datos restaurados</string>
@@ -193,7 +193,7 @@
     <string name="cookies_cleared">Se han eliminado todas las cookies</string>
     <string name="chapters_checking_progress">Buscando nuevos capítulos: %1$d de %2$d</string>
     <string name="clear_feed">Limpiar feed</string>
-    <string name="text_clear_updates_feed_prompt">Todo el historial de actualizaciones se borrará y esta acción no se puede deshacer. ¿Está seguro?</string>
+    <string name="text_clear_updates_feed_prompt">Todo el historial de actualizaciones se borrará y esta acción no se puede deshacer. ¿Está seguro\?</string>
     <string name="new_chapters_checking">Comprobación de nuevos capítulos</string>
     <string name="reverse">Invertir</string>
     <string name="sign_in">Iniciar sesión</string>
@@ -250,4 +250,6 @@
     <string name="available_sources">Fuentes disponibles</string>
     <string name="dynamic_theme">Tema dinámico</string>
     <string name="dynamic_theme_summary">Aplica un tema creado a partir del esquema de colores de su fondo de pantalla</string>
+    <string name="app_name" translatable="false"></string>
+    <string name="_empty" translatable="false"></string>
 </resources>
