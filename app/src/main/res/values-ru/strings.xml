@@ -249,4 +249,7 @@
     <string name="available_sources">Доступные источники</string>
     <string name="dynamic_theme">Динамическая тема</string>
     <string name="dynamic_theme_summary">Применяет тему приложения, основанную на цветовой палитре обоев на устройстве</string>
+    <string name="_empty" translatable="false"></string>
+    <string name="report_github"></string>
+    <string name="app_name" translatable="false"></string>
 </resources>
