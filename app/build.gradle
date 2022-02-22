@@ -14,8 +14,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 31
-		versionCode 380
-		versionName '2.1.4'
+		versionCode 381
+		versionName '2.1.5'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
