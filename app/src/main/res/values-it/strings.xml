@@ -249,4 +249,8 @@
     <string name="show_pages_numbers">Mostra i numeri delle pagine</string>
     <string name="enabled_sources">Fonti abilitate</string>
     <string name="available_sources">Fonti disponibili</string>
+    <string name="app_name" translatable="false"></string>
+    <string name="_empty" translatable="false"></string>
+    <string name="dynamic_theme"></string>
+    <string name="dynamic_theme_summary"></string>
 </resources>
