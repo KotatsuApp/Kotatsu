@@ -209,6 +209,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) :
 		const val KEY_APP_TRANSLATION = "about_app_translation"
 		const val KEY_APP_GRATITUDES = "about_gratitudes"
 		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
+		const val KEY_FEEDBACK_DISCORD = "about_feedback_discord"
 		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
 		const val KEY_SUPPORT_DEVELOPER = "about_support_developer"
 

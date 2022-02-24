@@ -48,6 +48,12 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 					resources.getString(R.string.about_feedback_4pda)) })
 				true
 			}
+			AppSettings.KEY_FEEDBACK_DISCORD -> {
+				startActivity(context?.let { BrowserActivity.newIntent(it,
+					"https://discord.gg/NNJ5RgVBC5",
+					"Discord") })
+				true
+			}
 			AppSettings.KEY_FEEDBACK_GITHUB -> {
 				startActivity(context?.let { BrowserActivity.newIntent(it,
 					"https://github.com/nv95/Kotatsu/issues",

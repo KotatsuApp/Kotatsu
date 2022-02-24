@@ -47,16 +47,25 @@
 	<PreferenceCategory
 		app:iconSpaceReserved="false"
 		app:title="@string/about_feedback">
+
 		<Preference
 			app:iconSpaceReserved="false"
 			app:key="about_feedback_4pda"
 			app:summary="https://4pda.to/forum/index.php?showtopic=697669"
 			app:title="@string/about_feedback_4pda" />
+
+		<Preference
+			app:iconSpaceReserved="false"
+			app:key="about_feedback_discord"
+			app:summary="https://discord.gg/NNJ5RgVBC5"
+			app:title="Discord" />
+
 		<Preference
 			app:iconSpaceReserved="false"
 			app:key="about_feedback_github"
 			app:summary="https://github.com/nv95/Kotatsu/issues"
 			app:title="GitHub" />
+
 	</PreferenceCategory>
 
 	<PreferenceCategory
