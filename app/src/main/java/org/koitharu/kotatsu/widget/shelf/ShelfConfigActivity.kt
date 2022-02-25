@@ -50,7 +50,7 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 			finishAfterTransition()
 			return
 		}
-		config = AppWidgetConfig.getInstance(this, appWidgetId)
+		config = AppWidgetConfig(this, appWidgetId)
 		viewModel.checkedId = config.categoryId
 
 		viewModel.content.observe(this, this::onContentChanged)

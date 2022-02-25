@@ -10,14 +10,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.utils.RingtonePickContract
-import org.koitharu.kotatsu.utils.ext.toUriOrNull
 
 class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notifications) {
 
 	private val ringtonePickContract = registerForActivityResult(
 		RingtonePickContract(get<Context>().getString(R.string.notification_sound))
 	) { uri ->
-		settings.notificationSound = uri?.toString() ?: return@registerForActivityResult
+		settings.notificationSound = uri ?: return@registerForActivityResult
 		findPreference<Preference>(AppSettings.KEY_NOTIFICATIONS_SOUND)?.run {
 			summary = RingtoneManager.getRingtone(context, uri)?.getTitle(context)
 				?: getString(R.string.silent)
@@ -31,7 +30,7 @@ class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notif
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_NOTIFICATIONS_SOUND)?.run {
-			val uri = settings.notificationSound.toUriOrNull()
+			val uri = settings.notificationSound
 			summary = RingtoneManager.getRingtone(context, uri)?.getTitle(context)
 				?: getString(R.string.silent)
 		}
@@ -40,7 +39,7 @@ class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notif
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			AppSettings.KEY_NOTIFICATIONS_SOUND -> {
-				ringtonePickContract.launch(settings.notificationSound.toUriOrNull())
+				ringtonePickContract.launch(settings.notificationSound)
 				true
 			}
 			else -> super.onPreferenceTreeClick(preference)

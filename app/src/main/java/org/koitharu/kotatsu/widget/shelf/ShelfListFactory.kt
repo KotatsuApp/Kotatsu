@@ -24,7 +24,7 @@ class ShelfListFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
-	private val config = AppWidgetConfig.getInstance(context, widgetId)
+	private val config = AppWidgetConfig(context, widgetId)
 
 	override fun onCreate() {
 	}

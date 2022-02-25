@@ -183,7 +183,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			setShortcutId(manga.id.toString())
 			priority = NotificationCompat.PRIORITY_DEFAULT
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-				builder.setSound(settings.notificationSound.toUriOrNull())
+				builder.setSound(settings.notificationSound)
 				var defaults = if (settings.notificationLight) {
 					setLights(colorPrimary, 1000, 5000)
 					NotificationCompat.DEFAULT_LIGHTS

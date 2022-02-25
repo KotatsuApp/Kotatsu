@@ -62,7 +62,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			entryValues = arrayOf("", "MM/dd/yy", "dd/MM/yy", "yyyy-MM-dd", "dd MMM yyyy", "MMM dd, yyyy")
 			val now = Date().time
 			entries = entryValues.map { value ->
-				val formattedDate = settings.dateFormat(value.toString()).format(now)
+				val formattedDate = settings.getDateFormat(value.toString()).format(now)
 				if (value == "") {
 					"${context.getString(R.string.system_default)} ($formattedDate)"
 				} else {
