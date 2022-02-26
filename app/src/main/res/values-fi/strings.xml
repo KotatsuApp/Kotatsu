@@ -71,7 +71,6 @@
     <string name="zoom_mode_fit_height">Sovita korkeuteen</string>
     <string name="zoom_mode_fit_center">Sovita keskelle</string>
     <string name="scale_mode">Skaalaustila</string>
-    <string name="report_github">Luo ongelma GitHubissa</string>
     <string name="create_category">Uusi luokka</string>
     <string name="prefer_rtl_reader_summary">Voit määrittää lukutilan jokaiselle mangalle erikseen</string>
     <string name="prefer_rtl_reader">Mieluummin oikealta vasemmalle lukutila</string>

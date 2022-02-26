@@ -53,7 +53,6 @@
     <string name="zoom_mode_fit_height">Ajuster à la hauteur</string>
     <string name="zoom_mode_fit_center">Ajuster au centre</string>
     <string name="scale_mode">Mode mise à l\'échelle</string>
-    <string name="report_github">Signaler un problème sur GitHub</string>
     <string name="create_category">Nouvelle catégorie</string>
     <string name="prefer_rtl_reader_summary">Le mode de lecture peut être configuré séparément pour chaque série</string>
     <string name="prefer_rtl_reader">Préférer le lecteur de droite à gauche (→)</string>
