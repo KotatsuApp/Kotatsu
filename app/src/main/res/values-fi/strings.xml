@@ -245,9 +245,4 @@
     <string name="system_default">Oletus</string>
     <string name="error_empty_name">Nimi ei saa olla tyhjä</string>
     <string name="exclude_nsfw_from_history">Sulje NSFW-mangat pois historiasta</string>
-    <string name="enabled_sources"></string>
-    <string name="show_pages_numbers"></string>
-    <string name="dynamic_theme"></string>
-    <string name="available_sources"></string>
-    <string name="dynamic_theme_summary"></string>
 </resources>
