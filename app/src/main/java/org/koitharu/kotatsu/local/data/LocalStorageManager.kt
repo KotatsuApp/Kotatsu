@@ -6,6 +6,7 @@ import android.os.StatFs
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.withContext
 import okhttp3.Cache
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.ext.computeSize
@@ -32,7 +33,7 @@ class LocalStorageManager(
 		return Cache(directory, maxSize)
 	}
 
-	suspend fun computeCacheSize(cache: CacheDir) = runInterruptible(Dispatchers.IO) {
+	suspend fun computeCacheSize(cache: CacheDir) = withContext(Dispatchers.IO) {
 		getCacheDirs(cache.dir).sumOf { it.computeSize() }
 	}
 
@@ -86,7 +87,9 @@ class LocalStorageManager(
 	private fun getCacheDirs(subDir: String): MutableSet<File> {
 		val result = LinkedHashSet<File>()
 		result += File(context.cacheDir, subDir)
-		result += context.getExternalFilesDirs(subDir)
+		context.externalCacheDirs.mapTo(result) {
+			File(it, subDir)
+		}
 		return result
 	}
 

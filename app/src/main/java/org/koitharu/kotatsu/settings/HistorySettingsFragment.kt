@@ -32,18 +32,8 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		findPreference<Preference>(AppSettings.KEY_PAGES_CACHE_CLEAR)?.let { pref ->
-			viewLifecycleScope.launchWhenResumed {
-				val size = storageManager.computeCacheSize(CacheDir.PAGES)
-				pref.summary = FileSize.BYTES.format(pref.context, size)
-			}
-		}
-		findPreference<Preference>(AppSettings.KEY_THUMBS_CACHE_CLEAR)?.let { pref ->
-			viewLifecycleScope.launchWhenResumed {
-				val size = storageManager.computeCacheSize(CacheDir.THUMBS)
-				pref.summary = FileSize.BYTES.format(pref.context, size)
-			}
-		}
+		findPreference<Preference>(AppSettings.KEY_PAGES_CACHE_CLEAR)?.bindSummaryToCacheSize(CacheDir.PAGES)
+		findPreference<Preference>(AppSettings.KEY_THUMBS_CACHE_CLEAR)?.bindSummaryToCacheSize(CacheDir.THUMBS)
 		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
 				val items = searchRepository.getSearchHistoryCount()
@@ -109,6 +99,11 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				preference.isEnabled = true
 			}
 		}
+	}
+
+	private fun Preference.bindSummaryToCacheSize(dir: CacheDir) = viewLifecycleScope.launch {
+		val size = storageManager.computeCacheSize(dir)
+		summary = FileSize.BYTES.format(context, size)
 	}
 
 	private fun clearSearchHistory(preference: Preference) {

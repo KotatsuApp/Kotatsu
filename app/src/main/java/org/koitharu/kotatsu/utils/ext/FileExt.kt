@@ -7,8 +7,10 @@ import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
 import android.provider.OpenableColumns
+import androidx.annotation.WorkerThread
 import androidx.core.database.getStringOrNull
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import java.io.File
@@ -24,14 +26,6 @@ fun File.takeIfReadable() = takeIf { it.exists() && it.canRead() }
 fun ZipFile.readText(entry: ZipEntry) = getInputStream(entry).bufferedReader().use {
 	it.readText()
 }
-
-fun File.computeSize(): Long = listFiles()?.sumOf { x ->
-	if (x.isDirectory) {
-		x.computeSize()
-	} else {
-		x.length()
-	}
-} ?: 0L
 
 fun File.getStorageName(context: Context): String = runCatching {
 	val manager = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
@@ -66,4 +60,18 @@ fun ContentResolver.resolveName(uri: Uri): String? {
 		}
 	}
 	return fallback
+}
+
+suspend fun File.computeSize(): Long = runInterruptible(Dispatchers.IO) {
+	computeSizeInternal(this)
+}
+
+@WorkerThread
+private fun computeSizeInternal(file: File): Long {
+	if (file.isDirectory) {
+		val files = file.listFiles() ?: return 0L
+		return files.sumOf { computeSizeInternal(it) }
+	} else {
+		return file.length()
+	}
 }
