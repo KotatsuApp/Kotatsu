@@ -42,6 +42,6 @@
 		android:paddingEnd="?android:listPreferredItemPaddingEnd"
 		android:text="@string/add_new_category"
 		android:textAppearance="?attr/textAppearanceBodyLarge"
-		app:drawableEndCompat="@drawable/ic_add" />
+		app:drawableEndCompat="@drawable/ic_list_add" />
 
 </LinearLayout>
