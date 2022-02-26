@@ -26,7 +26,6 @@
     <string name="zoom_mode_fit_height">Tilpass høyde</string>
     <string name="zoom_mode_fit_center">Tilpass sentrum</string>
     <string name="scale_mode">Skaleringsmodus</string>
-    <string name="report_github">Opprett feilrapport på GitHub</string>
     <string name="prefer_rtl_reader_summary">Lesemodus kan settes opp for hver serie</string>
     <string name="right_to_left">Høyre-til-venstre (←)</string>
     <string name="prefer_rtl_reader">Foretrekk høyre-til-venstre (→)-leser</string>
