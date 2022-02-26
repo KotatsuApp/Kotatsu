@@ -250,4 +250,6 @@
     <string name="system_default">Padrão</string>
     <string name="dynamic_theme">Tema dinâmico</string>
     <string name="dynamic_theme_summary">Aplica um tema criado no esquema de cores do seu papel de parede</string>
+    <string name="_empty" translatable="false"></string>
+    <string name="app_name" translatable="false"></string>
 </resources>
