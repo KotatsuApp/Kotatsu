@@ -81,7 +81,6 @@
     <string name="local_storage">Lokaler Speicher</string>
     <string name="open_menu">Menü öffnen</string>
     <string name="close_menu">Menü schließen</string>
-    <string name="report_github">Ein Problem auf GitHub melden</string>
     <string name="manga_save_location">Speicherort, um die Manga zu herunterladen</string>
     <string name="text_history_holder_primary">Die Manga, die du gerade liest, werden hier angezeigt</string>
     <string name="zoom_mode_keep_start">Am Anfang halten</string>

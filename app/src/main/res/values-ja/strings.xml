@@ -228,7 +228,6 @@
     <string name="reverse">リバース</string>
     <string name="reader_mode_hint">選択した構成はこの漫画のために記憶されます</string>
     <string name="clear_cookies">クッキーを削除</string>
-    <string name="report_github">GitHubでissueを作成する(GitHubのアカウントが必要です)</string>
     <string name="zoom_mode_fit_center">フィットセンター</string>
     <string name="text_downloads_holder">アクティブなダウンロードはありません</string>
     <string name="text_clear_cookies_prompt">全てのソースからログアウトされます</string>

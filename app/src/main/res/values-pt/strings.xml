@@ -139,7 +139,6 @@
     <string name="no_update_available">Nenhuma atualização disponível</string>
     <string name="right_to_left">Da direita para a esquerda (←)</string>
     <string name="create_category">Nova categoria</string>
-    <string name="report_github">Criar problema no GitHub</string>
     <string name="scale_mode">Modo de escala</string>
     <string name="zoom_mode_fit_center">Centro de ajuste</string>
     <string name="zoom_mode_fit_width">Ajustar à largura</string>
