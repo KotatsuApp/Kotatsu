@@ -162,7 +162,6 @@
     <string name="prefer_rtl_reader">Аддаваць перавагу рэжыму Справа налева</string>
     <string name="prefer_rtl_reader_summary">Вы можаце наладзіць рэжым чытання для кожнай мангі асобна</string>
     <string name="create_category">Стварыць катэгорыю</string>
-    <string name="report_github">Пачаць абмеркаванне праблемы на GitHub</string>
     <string name="scale_mode">Маштабаванне</string>
     <string name="zoom_mode_fit_center">Умясціць у экран</string>
     <string name="zoom_mode_fit_height">Падагнаць па вышыні</string>

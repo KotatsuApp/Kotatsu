@@ -161,7 +161,6 @@
     <string name="prefer_rtl_reader">Preferir lector de derecha a izquierda (→)</string>
     <string name="prefer_rtl_reader_summary">Puedes configurar el modo de lectura para cada manga por separado</string>
     <string name="create_category">Nueva categoría</string>
-    <string name="report_github">Crear incidencia en GitHub</string>
     <string name="scale_mode">Modo de escala</string>
     <string name="zoom_mode_fit_center">Ajuste al centro</string>
     <string name="zoom_mode_fit_height">Ajuste a la altura</string>
