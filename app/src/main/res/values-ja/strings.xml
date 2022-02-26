@@ -161,8 +161,8 @@
     <string name="wrong_password">パスワードが間違っています</string>
     <string name="protect_application">アプリを保護する</string>
     <string name="check_for_updates">最新のアップデートを確認する</string>
-    <string name="app_name" translatable="false"/>
-    <string name="_empty" translatable="false"/>
+    <string name="app_name" translatable="false"></string>
+    <string name="_empty" translatable="false"></string>
     <string name="update_check_failed">アップデートを見つける事が出来ませんでした</string>
     <string name="no_update_available">利用可能なアップデートはありません</string>
     <string name="right_to_left">右から左(←)</string>
