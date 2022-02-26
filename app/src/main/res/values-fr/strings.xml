@@ -250,4 +250,6 @@
     <string name="available_sources">Sources disponibles</string>
     <string name="dynamic_theme">Thème dynamique</string>
     <string name="dynamic_theme_summary">Applique un thème créé d\'après la palette de couleurs de votre fond d\'écran</string>
+    <string name="_empty" translatable="false"></string>
+    <string name="app_name" translatable="false"></string>
 </resources>
