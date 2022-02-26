@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.tracker.ui
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +21,6 @@ import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.mapItems
 
 class FeedViewModel(
-	context: Context,
 	private val repository: TrackingRepository
 ) : BaseViewModel() {
 
@@ -34,7 +32,7 @@ class FeedViewModel(
 	val onFeedCleared = SingleLiveEvent<Unit>()
 	val content = combine(
 		logList.filterNotNull().mapItems {
-			it.toFeedItem(context.resources)
+			it.toFeedItem()
 		},
 		hasNextPage
 	) { list, isHasNextPage ->

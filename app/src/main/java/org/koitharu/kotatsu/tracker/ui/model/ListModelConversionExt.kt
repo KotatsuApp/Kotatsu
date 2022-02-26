@@ -1,19 +1,15 @@
 package org.koitharu.kotatsu.tracker.ui.model
 
-import android.content.res.Resources
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.TrackingLogItem
 
-fun TrackingLogItem.toFeedItem(resources: Resources): FeedItem {
-	val chaptersString = if (chapters.size > MAX_CHAPTERS) {
+fun TrackingLogItem.toFeedItem(): FeedItem {
+	val truncate = chapters.size > MAX_CHAPTERS
+	val chaptersString = if (truncate) {
 		chapters.joinToString(
 			separator = "\n",
 			limit = MAX_CHAPTERS - 1,
-			truncated = resources.getString(
-				R.string._and_x_more,
-				chapters.size - MAX_CHAPTERS + 1
-			)
-		)
+			truncated = "",
+		).trimEnd()
 	} else {
 		chapters.joinToString("\n")
 	}
@@ -23,7 +19,8 @@ fun TrackingLogItem.toFeedItem(resources: Resources): FeedItem {
 		title = manga.title,
 		subtitle = chapters.size.toString(),
 		chapters = chaptersString,
-		manga = manga
+		manga = manga,
+		truncated = chapters.size - MAX_CHAPTERS + 1,
 	)
 }
 

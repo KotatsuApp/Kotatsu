@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -50,6 +52,9 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 			adapter = feedAdapter
 			setHasFixedSize(true)
 			addOnScrollListener(PaginationScrollListener(4, this@FeedFragment))
+			val dividerDecoration = MaterialDividerItemDecoration(context, RecyclerView.VERTICAL)
+			dividerDecoration.setDividerInsetStartResource(context, R.dimen.feed_dividers_offset)
+			addItemDecoration(dividerDecoration)
 		}
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)

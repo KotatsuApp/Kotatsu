@@ -9,5 +9,6 @@ data class FeedItem(
 	val title: String,
 	val subtitle: String,
 	val chapters: CharSequence,
-	val manga: Manga
+	val manga: Manga,
+	val truncated: Int,
 ) : ListModel
