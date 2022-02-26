@@ -251,6 +251,4 @@
     <string name="available_sources">Даступныя крыніцы</string>
     <string name="dynamic_theme">Дынамічная тэма</string>
     <string name="dynamic_theme_summary">Ужывае тэму праграмы, заснаваную на каляровай палітры шпалер на прыладзе</string>
-    <string name="app_name" translatable="false"></string>
-    <string name="_empty" translatable="false"></string>
 </resources>
