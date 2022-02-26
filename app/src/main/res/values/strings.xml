@@ -249,4 +249,5 @@
     <string name="available_sources">Available sources</string>
     <string name="dynamic_theme">Dynamic theme</string>
     <string name="dynamic_theme_summary">Applies a theme created on the color scheme of your wallpaper</string>
+	<string name="importing_progress">Importing manga: %1$d of %2$d</string>
 </resources>

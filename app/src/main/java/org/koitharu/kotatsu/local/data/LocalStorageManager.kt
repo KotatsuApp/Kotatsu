@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.local.data
 
+import android.content.ContentResolver
 import android.content.Context
 import android.os.StatFs
 import androidx.annotation.WorkerThread
@@ -20,6 +21,9 @@ class LocalStorageManager(
 	private val context: Context,
 	private val settings: AppSettings,
 ) {
+
+	val contentResolver: ContentResolver
+		get() = context.contentResolver
 
 	fun createHttpCache(): Cache {
 		val directory = File(context.externalCacheDir ?: context.cacheDir, "http")

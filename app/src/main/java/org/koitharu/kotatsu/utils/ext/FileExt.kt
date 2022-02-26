@@ -15,10 +15,6 @@ import java.io.File
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
-@Suppress("NOTHING_TO_INLINE")
-@Deprecated("Useless", ReplaceWith("File(this, name)", "java.io.File"))
-inline fun File.sub(name: String) = File(this, name)
-
 fun File.subdir(name: String) = File(this, name).also {
 	if (!it.exists()) it.mkdirs()
 }
@@ -36,14 +32,6 @@ fun File.computeSize(): Long = listFiles()?.sumOf { x ->
 		x.length()
 	}
 } ?: 0L
-
-inline fun File.findParent(predicate: (File) -> Boolean): File? {
-	var current = this
-	while (!predicate(current)) {
-		current = current.parentFile ?: return null
-	}
-	return current
-}
 
 fun File.getStorageName(context: Context): String = runCatching {
 	val manager = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
