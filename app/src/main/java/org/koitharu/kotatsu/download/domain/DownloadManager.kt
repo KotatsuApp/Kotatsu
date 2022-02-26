@@ -21,7 +21,6 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.MangaZip
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
-import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.waitForNetwork
@@ -134,7 +133,7 @@ class DownloadManager(
 		val request = Request.Builder()
 			.url(url)
 			.header(CommonHeaders.REFERER, referer)
-			.cacheControl(CacheUtils.CONTROL_DISABLED)
+			.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
 			.get()
 			.build()
 		val call = okHttp.newCall(request)

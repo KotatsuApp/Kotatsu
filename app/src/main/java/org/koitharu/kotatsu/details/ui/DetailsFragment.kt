@@ -15,9 +15,7 @@ import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.util.CoilUtils
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
@@ -33,7 +31,7 @@ import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.search.ui.SearchActivity
-import org.koitharu.kotatsu.utils.FileSizeUtils
+import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.*
 
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
@@ -114,10 +112,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			val file = manga.url.toUri().toFileOrNull()
 			if (file != null) {
 				viewLifecycleScope.launch {
-					val size = withContext(Dispatchers.IO) {
-						file.length()
-					}
-					textViewSize.text = FileSizeUtils.formatBytes(requireContext(), size)
+					val size = file.computeSize()
+					textViewSize.text = FileSize.BYTES.format(requireContext(), size)
 				}
 				sizeContainer.isVisible = true
 			} else {

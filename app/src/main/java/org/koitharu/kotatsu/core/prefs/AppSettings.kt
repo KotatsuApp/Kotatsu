@@ -13,6 +13,7 @@ import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.io.File
@@ -122,22 +123,17 @@ class AppSettings(context: Context) {
 	val isPagesNumbersEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PAGES_NUMBERS, false)
 
-	fun getFallbackStorageDir(): File? {
-		return prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
+	var mangaStorageDir: File?
+		get() = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)
 		}?.takeIf { it.exists() }
-	}
-
-	@Deprecated("Use LocalStorageManager instead")
-	fun setStorageDir(file: File?) {
-		prefs.edit {
-			if (file == null) {
+		set(value) = prefs.edit {
+			if (value == null) {
 				remove(KEY_LOCAL_STORAGE)
 			} else {
-				putString(KEY_LOCAL_STORAGE, file.path)
+				putString(KEY_LOCAL_STORAGE, value.path)
 			}
 		}
-	}
 
 	fun getDateFormat(format: String = prefs.getString(KEY_DATE_FORMAT, "").orEmpty()): DateFormat =
 		when (format) {
@@ -145,7 +141,21 @@ class AppSettings(context: Context) {
 			else -> SimpleDateFormat(format, Locale.getDefault())
 		}
 
-	@Deprecated("Use observe()")
+	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
+		val list = MangaSource.values().toMutableList()
+		list.remove(MangaSource.LOCAL)
+		val order = sourcesOrder
+		list.sortBy { x ->
+			val e = order.indexOf(x.ordinal)
+			if (e == -1) order.size + x.ordinal else e
+		}
+		if (!includeHidden) {
+			val hidden = hiddenSources
+			list.removeAll { x -> x.name in hidden }
+		}
+		return list
+	}
+
 	fun subscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
 		prefs.registerOnSharedPreferenceChangeListener(listener)
 	}

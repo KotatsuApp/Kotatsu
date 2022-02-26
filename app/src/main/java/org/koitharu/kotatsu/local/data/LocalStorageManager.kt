@@ -1,19 +1,40 @@
 package org.koitharu.kotatsu.local.data
 
 import android.content.Context
+import android.os.StatFs
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import okhttp3.Cache
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.utils.ext.computeSize
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import java.io.File
 
 private const val DIR_NAME = "manga"
+private const val CACHE_DISK_PERCENTAGE = 0.02
+private const val CACHE_SIZE_MIN: Long = 10 * 1024 * 1024 // 10MB
+private const val CACHE_SIZE_MAX: Long = 250 * 1024 * 1024 // 250MB
 
 class LocalStorageManager(
 	private val context: Context,
 	private val settings: AppSettings,
 ) {
+
+	fun createHttpCache(): Cache {
+		val directory = File(context.externalCacheDir ?: context.cacheDir, "http")
+		directory.mkdirs()
+		val maxSize = calculateDiskCacheSize(directory)
+		return Cache(directory, maxSize)
+	}
+
+	suspend fun computeCacheSize(cache: CacheDir) = runInterruptible(Dispatchers.IO) {
+		getCacheDirs(cache.dir).sumOf { it.computeSize() }
+	}
+
+	suspend fun clearCache(cache: CacheDir) = runInterruptible(Dispatchers.IO) {
+		getCacheDirs(cache.dir).forEach { it.deleteRecursively() }
+	}
 
 	suspend fun getReadableDirs(): List<File> = runInterruptible(Dispatchers.IO) {
 		getConfiguredStorageDirs()
@@ -26,7 +47,7 @@ class LocalStorageManager(
 	}
 
 	suspend fun getDefaultWriteableDir(): File? = runInterruptible(Dispatchers.IO) {
-		val preferredDir = settings.getFallbackStorageDir()?.takeIf { it.isWriteable() }
+		val preferredDir = settings.mangaStorageDir?.takeIf { it.isWriteable() }
 		preferredDir ?: getFallbackStorageDir()?.takeIf { it.isWriteable() }
 	}
 
@@ -35,7 +56,7 @@ class LocalStorageManager(
 	@WorkerThread
 	private fun getConfiguredStorageDirs(): MutableSet<File> {
 		val set = getAvailableStorageDirs()
-		settings.getFallbackStorageDir()?.let {
+		settings.mangaStorageDir?.let {
 			set.add(it)
 		}
 		return set
@@ -54,6 +75,24 @@ class LocalStorageManager(
 	private fun getFallbackStorageDir(): File? {
 		return context.getExternalFilesDir(DIR_NAME) ?: File(context.filesDir, DIR_NAME).takeIf {
 			it.exists() || it.mkdirs()
+		}
+	}
+
+	@WorkerThread
+	private fun getCacheDirs(subDir: String): MutableSet<File> {
+		val result = LinkedHashSet<File>()
+		result += File(context.cacheDir, subDir)
+		result += context.getExternalFilesDirs(subDir)
+		return result
+	}
+
+	private fun calculateDiskCacheSize(cacheDirectory: File): Long {
+		return try {
+			val cacheDir = StatFs(cacheDirectory.absolutePath)
+			val size = CACHE_DISK_PERCENTAGE * cacheDir.blockCountLong * cacheDir.blockSizeLong
+			return size.toLong().coerceIn(CACHE_SIZE_MIN, CACHE_SIZE_MAX)
+		} catch (_: Exception) {
+			CACHE_SIZE_MIN
 		}
 	}
 

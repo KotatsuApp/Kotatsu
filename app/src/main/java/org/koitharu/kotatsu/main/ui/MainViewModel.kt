@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import org.koitharu.kotatsu.base.domain.MangaProviderFactory
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.model.Manga
@@ -25,7 +24,7 @@ class MainViewModel(
 	val remoteSources = settings.observe()
 		.filter { it == AppSettings.KEY_SOURCES_ORDER || it == AppSettings.KEY_SOURCES_HIDDEN }
 		.onStart { emit("") }
-		.map { MangaProviderFactory.getSources(settings, includeHidden = false) }
+		.map { settings.getMangaSources(includeHidden = false) }
 		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	fun openLastReader() {

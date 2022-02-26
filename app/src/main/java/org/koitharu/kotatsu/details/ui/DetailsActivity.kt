@@ -47,7 +47,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 	TabLayoutMediator.TabConfigurationStrategy {
 
 	private val viewModel by viewModel<DetailsViewModel> {
-		parametersOf(MangaIntent.from(intent))
+		parametersOf(MangaIntent(intent))
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {

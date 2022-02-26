@@ -5,7 +5,6 @@ import android.net.Uri
 import android.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.component.KoinComponent
@@ -14,7 +13,6 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.medianOrNull
 import java.io.InputStream
@@ -40,15 +38,14 @@ object MangaUtils : KoinComponent {
 					}
 				}
 			} else {
-				val client = get<OkHttpClient>()
 				val request = Request.Builder()
 					.url(url)
 					.get()
 					.header(CommonHeaders.REFERER, page.referer)
-					.cacheControl(CacheUtils.CONTROL_DISABLED)
+					.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
 					.build()
-				client.newCall(request).await().use {
-					withContext(Dispatchers.IO) {
+				get<OkHttpClient>().newCall(request).await().use {
+					runInterruptible(Dispatchers.IO) {
 						getBitmapSize(it.body?.byteStream())
 					}
 				}
@@ -66,7 +63,7 @@ object MangaUtils : KoinComponent {
 		val options = BitmapFactory.Options().apply {
 			inJustDecodeBounds = true
 		}
-		BitmapFactory.decodeStream(input, null, options)
+		BitmapFactory.decodeStream(input, null, options)?.recycle()
 		val imageHeight: Int = options.outHeight
 		val imageWidth: Int = options.outWidth
 		check(imageHeight > 0 && imageWidth > 0)

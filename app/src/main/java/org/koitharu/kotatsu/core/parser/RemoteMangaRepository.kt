@@ -64,10 +64,10 @@ abstract class RemoteMangaRepository(
 	protected fun generateUid(url: String): Long {
 		var h = 1125899906842597L
 		source.name.forEach { c ->
-			h = 31 * h + c.toLong()
+			h = 31 * h + c.code
 		}
 		url.forEach { c ->
-			h = 31 * h + c.toLong()
+			h = 31 * h + c.code
 		}
 		return h
 	}
@@ -75,7 +75,7 @@ abstract class RemoteMangaRepository(
 	protected fun generateUid(id: Long): Long {
 		var h = 1125899906842597L
 		source.name.forEach { c ->
-			h = 31 * h + c.toLong()
+			h = 31 * h + c.code
 		}
 		h = 31 * h + id
 		return h

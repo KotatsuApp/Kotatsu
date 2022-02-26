@@ -162,7 +162,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 	}
 
 	override fun onStorageSelected(file: File) {
-		settings.setStorageDir(file)
+		settings.mangaStorageDir = file
 	}
 
 	private fun Preference.bindStorageName() {

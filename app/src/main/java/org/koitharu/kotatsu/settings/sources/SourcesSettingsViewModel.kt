@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.settings.sources
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.MangaProviderFactory
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -70,7 +69,7 @@ class SourcesSettingsViewModel(
 	}
 
 	private fun buildList() {
-		val sources = MangaProviderFactory.getSources(settings, includeHidden = true)
+		val sources = settings.getMangaSources(includeHidden = true)
 		val hiddenSources = settings.hiddenSources
 		val query = searchQuery
 		if (!query.isNullOrEmpty()) {
