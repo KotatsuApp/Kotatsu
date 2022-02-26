@@ -20,13 +20,8 @@
 			android:layout_height="match_parent"
 			android:orientation="vertical"
 			android:padding="@dimen/grid_spacing_outer"
-			android:scrollbarStyle="outsideOverlay"
 			android:scrollbars="vertical"
 			app:fastScrollEnabled="true"
-			app:fastScrollHorizontalThumbDrawable="@drawable/list_thumb"
-			app:fastScrollHorizontalTrackDrawable="@drawable/list_track"
-			app:fastScrollVerticalThumbDrawable="@drawable/list_thumb"
-			app:fastScrollVerticalTrackDrawable="@drawable/list_track"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 			tools:listitem="@layout/item_manga_list" />
 

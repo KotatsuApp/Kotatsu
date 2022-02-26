@@ -174,11 +174,12 @@
     <string name="black_dark_theme">Black</string>
     <string name="black_dark_theme_summary">Uses less power on AMOLED screens</string>
     <string name="restart_required">Restart required</string>
-    <string name="backup_restore"><![CDATA[Backup and restore]]></string>
+    <string name="backup_restore">Backup and restore</string>
     <string name="create_backup">Create data backup</string>
     <string name="restore_backup">Restore from backup</string>
     <string name="data_restored">Restored</string>
     <string name="preparing_">Preparing…</string>
+	<string name="report_github">Create issue on GitHub</string>
     <string name="file_not_found">File not found</string>
     <string name="data_restored_success">All data was restored</string>
     <string name="data_restored_with_errors">The data was restored, but there are errors</string>

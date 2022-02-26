@@ -8,5 +8,6 @@
 	<color name="errorContainer">#930006</color>
 	<color name="onError">#680003</color>
 	<color name="onErrorContainer">#FFDAD4</color>
+	<color name="scrollbar">#66FFFFFF</color>
 
 </resources>

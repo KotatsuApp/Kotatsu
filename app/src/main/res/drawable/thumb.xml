@@ -3,12 +3,14 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:shape="rectangle">
 
-	<corners android:radius="50dp" />
+	<corners android:radius="10dp" />
 
 	<padding
-		android:paddingLeft="22dp"
-		android:paddingRight="22dp" />
+		android:bottom="10dp"
+		android:left="10dp"
+		android:right="10dp"
+		android:top="10dp" />
 
-	<solid android:color="?colorPrimary" />
+	<solid android:color="@color/scrollbar" />
 
 </shape>
