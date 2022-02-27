@@ -5,9 +5,11 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retry
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -21,14 +23,14 @@ class WidgetUpdater(private val context: Context) {
 		repository.observeAll(SortOrder.NEWEST)
 			.onEach { updateWidget(ShelfWidgetProvider::class.java) }
 			.retry { error -> error !is CancellationException }
-			.launchIn(processLifecycleScope)
+			.launchIn(processLifecycleScope + Dispatchers.Default)
 	}
 
 	fun subscribeToHistory(repository: HistoryRepository) {
 		repository.observeAll()
 			.onEach { updateWidget(RecentWidgetProvider::class.java) }
 			.retry { error -> error !is CancellationException }
-			.launchIn(processLifecycleScope)
+			.launchIn(processLifecycleScope + Dispatchers.Default)
 	}
 
 	private fun updateWidget(cls: Class<*>) {
