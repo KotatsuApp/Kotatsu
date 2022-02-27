@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="suggestions"
+		android:summary="@string/suggestions_summary"
+		android:title="@string/suggestions_enable"
+		app:iconSpaceReserved="false" />
+
+	<SwitchPreferenceCompat
+		android:dependency="suggestions"
+		android:key="suggestions_exclude_nsfw"
+		android:title="@string/exclude_nsfw_from_suggestions"
+		app:iconSpaceReserved="false" />
+
+	<Preference
+		android:icon="@drawable/ic_info_outline"
+		android:key="track_warning"
+		android:persistent="false"
+		android:selectable="false"
+		android:summary="@string/suggestions_info"
+		app:allowDividerAbove="true" />
+
+</PreferenceScreen>

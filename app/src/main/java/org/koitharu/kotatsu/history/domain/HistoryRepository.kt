@@ -91,7 +91,7 @@ class HistoryRepository(
 		}
 	}
 
-	suspend fun getAllTags(): List<MangaTag> {
-		return db.historyDao.findAllTags().map { x -> x.toMangaTag() }
+	suspend fun getAllTags(): Set<MangaTag> {
+		return db.historyDao.findAllTags().mapToSet { x -> x.toMangaTag() }
 	}
 }

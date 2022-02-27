@@ -10,6 +10,9 @@ abstract class SuggestionDao {
 	@Query("SELECT * FROM suggestions ORDER BY relevance DESC")
 	abstract fun observeAll(): Flow<List<SuggestionWithManga>>
 
+	@Query("SELECT COUNT(*) FROM suggestions")
+	abstract suspend fun count(): Int
+
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(entity: SuggestionEntity): Long
 

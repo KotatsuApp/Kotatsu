@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.list.ui.MangaListFragment
 
 class SuggestionsFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<SuggestionsViewModel>(mode = LazyThreadSafetyMode.NONE)
+	override val viewModel by viewModel<SuggestionsViewModel>()
 	override val isSwipeRefreshEnabled = false
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

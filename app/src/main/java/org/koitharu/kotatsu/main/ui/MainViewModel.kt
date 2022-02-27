@@ -21,6 +21,12 @@ class MainViewModel(
 	val onOpenReader = SingleLiveEvent<Manga>()
 	var defaultSection by settings::defaultSection
 
+	val isSuggestionsEnabled = settings.observe()
+		.filter { it == AppSettings.KEY_SUGGESTIONS }
+		.onStart { emit("") }
+		.map { settings.isSuggestionsEnabled }
+		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+
 	val remoteSources = settings.observe()
 		.filter { it == AppSettings.KEY_SOURCES_ORDER || it == AppSettings.KEY_SOURCES_HIDDEN }
 		.onStart { emit("") }

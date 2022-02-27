@@ -135,6 +135,12 @@ class AppSettings(context: Context) {
 			}
 		}
 
+	val isSuggestionsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_SUGGESTIONS, false)
+
+	val isSuggestionsExcludeNsfw: Boolean
+		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
+
 	fun getDateFormat(format: String = prefs.getString(KEY_DATE_FORMAT, "").orEmpty()): DateFormat =
 		when (format) {
 			"" -> DateFormat.getDateInstance(DateFormat.SHORT)
@@ -224,6 +230,8 @@ class AppSettings(context: Context) {
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
 		const val KEY_PAGES_NUMBERS = "pages_numbers"
+		const val KEY_SUGGESTIONS = "suggestions"
+		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

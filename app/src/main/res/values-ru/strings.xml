@@ -249,4 +249,12 @@
     <string name="available_sources">Доступные источники</string>
     <string name="dynamic_theme">Динамическая тема</string>
     <string name="dynamic_theme_summary">Применяет тему приложения, основанную на цветовой палитре обоев на устройстве</string>
+	<string name="suggestions">Рекомендации</string>
+	<string name="suggestions_enable">Включить рекомендации</string>
+	<string name="suggestions_summary">Предлагать мангу на основе Ваших предпочтений</string>
+	<string name="suggestions_info">Все данные анализируются локально на устройстве. Ваши персональные данные не передаются в какие-либо сервисы</string>
+	<string name="text_suggestion_holder">Начните читать мангу, чтобы получать персональные предложения</string>
+	<string name="exclude_nsfw_from_suggestions">Не предлагать NSFW мангу</string>
+	<string name="enabled">Включено</string>
+	<string name="disabled">Выключено</string>
 </resources>

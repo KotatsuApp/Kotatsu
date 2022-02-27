@@ -26,7 +26,6 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
-import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.util.concurrent.TimeUnit
 
@@ -237,6 +236,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		private const val DATA_PROGRESS = "progress"
 		private const val DATA_TOTAL = "total"
 		private const val TAG = "tracking"
+		private const val TAG_ONESHOT = "tracking_oneshot"
 
 		@RequiresApi(Build.VERSION_CODES.O)
 		private fun createNotificationChannel(context: Context) {
@@ -277,7 +277,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				.build()
 			val request = OneTimeWorkRequestBuilder<TrackWorker>()
 				.setConstraints(constraints)
-				.addTag(TAG)
+				.addTag(TAG_ONESHOT)
 				.build()
 			WorkManager.getInstance(context)
 				.enqueue(request)

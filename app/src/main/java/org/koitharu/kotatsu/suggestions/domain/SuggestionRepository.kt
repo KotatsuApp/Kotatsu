@@ -20,6 +20,14 @@ class SuggestionRepository(
 		}
 	}
 
+	suspend fun clear() {
+		db.suggestionDao.deleteAll()
+	}
+
+	suspend fun isEmpty(): Boolean {
+		return db.suggestionDao.count() == 0
+	}
+
 	suspend fun replace(suggestions: Iterable<MangaSuggestion>) {
 		db.withTransaction {
 			db.suggestionDao.deleteAll()

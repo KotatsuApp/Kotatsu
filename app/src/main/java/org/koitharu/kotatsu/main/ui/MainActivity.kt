@@ -43,12 +43,15 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
-import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.hideKeyboard
+import org.koitharu.kotatsu.utils.ext.measureHeight
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener, AppBarOwner,
@@ -116,6 +119,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.remoteSources.observe(this, this::updateSideMenu)
+		viewModel.isSuggestionsEnabled.observe(this, this::setSuggestionsEnabled)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -299,6 +303,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				.setIcon(R.drawable.ic_manga_source)
 		}
 		submenu.setGroupCheckable(R.id.group_remote_sources, true, true)
+	}
+
+	private fun setSuggestionsEnabled(isEnabled: Boolean) {
+		val item = binding.navigationView.menu.findItem(R.id.nav_suggestions) ?: return
+		if (!isEnabled && item.isChecked) {
+			binding.navigationView.setCheckedItem(R.id.nav_history)
+		}
+		item.isVisible = isEnabled
 	}
 
 	private fun openDefaultSection() {
