@@ -249,4 +249,8 @@
     <string name="available_sources">Доступные источники</string>
     <string name="dynamic_theme">Динамическая тема</string>
     <string name="dynamic_theme_summary">Применяет тему приложения, основанную на цветовой палитре обоев на устройстве</string>
+	<string name="screenshots_policy">Разрешить скриншоты</string>
+	<string name="screenshots_allow">Разрешить</string>
+	<string name="screenshots_block_nsfw">Запретить для NSFW</string>
+	<string name="screenshots_block_all">Запретить всегда</string>
 </resources>

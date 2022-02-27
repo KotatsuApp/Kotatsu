@@ -38,4 +38,13 @@
 		android:title="@string/show_pages_numbers"
 		app:iconSpaceReserved="false" />
 
+	<ListPreference
+		android:entries="@array/screenshots_policy"
+		android:entryValues="@array/values_screenshots_policy"
+		android:key="screenshots_policy"
+		android:title="@string/screenshots_policy"
+		app:defaultValue="allow"
+		app:iconSpaceReserved="false"
+		app:useSimpleSummaryProvider="true" />
+
 </PreferenceScreen>

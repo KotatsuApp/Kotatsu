@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
@@ -68,6 +69,17 @@ class ReaderViewModel(
 		.map { settings.readerAnimation }
 		.onStart { emit(settings.readerAnimation) }
 		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.IO)
+
+	val isScreenshotsBlockEnabled = combine(
+		mangaData,
+		settings.observe()
+			.filter { it == AppSettings.KEY_SCREENSHOTS_POLICY }
+			.onStart { emit("") }
+			.map { settings.screenshotsPolicy },
+	) { manga, policy ->
+		policy == ScreenshotsPolicy.BLOCK_ALL ||
+			(policy == ScreenshotsPolicy.BLOCK_NSFW && manga != null && manga.isNsfw)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.IO)
 
 	val onZoomChanged = SingleLiveEvent<Unit>()
 

@@ -251,4 +251,8 @@
     <string name="dynamic_theme">Dynamic theme</string>
     <string name="dynamic_theme_summary">Applies a theme created on the color scheme of your wallpaper</string>
 	<string name="importing_progress">Importing manga: %1$d of %2$d</string>
+	<string name="screenshots_policy">Screenshots policy</string>
+	<string name="screenshots_allow">Allow</string>
+	<string name="screenshots_block_nsfw">Block on NSFW</string>
+	<string name="screenshots_block_all">Block always</string>
 </resources>

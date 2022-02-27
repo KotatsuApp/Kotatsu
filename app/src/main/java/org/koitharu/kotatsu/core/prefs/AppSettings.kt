@@ -123,6 +123,12 @@ class AppSettings(context: Context) {
 	val isPagesNumbersEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PAGES_NUMBERS, false)
 
+	val screenshotsPolicy: ScreenshotsPolicy
+		get() = runCatching {
+			val key = prefs.getString(KEY_SCREENSHOTS_POLICY, null)?.uppercase(Locale.ROOT)
+			if (key == null) ScreenshotsPolicy.ALLOW else ScreenshotsPolicy.valueOf(key)
+		}.getOrDefault(ScreenshotsPolicy.ALLOW)
+
 	var mangaStorageDir: File?
 		get() = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)
@@ -224,6 +230,7 @@ class AppSettings(context: Context) {
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
 		const val KEY_PAGES_NUMBERS = "pages_numbers"
+		const val KEY_SCREENSHOTS_POLICY = "screenshots_policy"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

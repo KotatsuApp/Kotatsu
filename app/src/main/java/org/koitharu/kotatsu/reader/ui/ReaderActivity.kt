@@ -94,6 +94,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		viewModel.content.observe(this) {
 			onLoadingStateChanged(viewModel.isLoading.value == true)
 		}
+		viewModel.isScreenshotsBlockEnabled.observe(this, this::setWindowSecure)
 	}
 
 	private fun onInitReader(mode: ReaderMode) {
@@ -297,6 +298,14 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		Toast.makeText(this, R.string.wait_for_loading_finish, Toast.LENGTH_SHORT).apply {
 			setGravity(Gravity.CENTER, 0, 0)
 		}.show()
+	}
+
+	private fun setWindowSecure(isSecure: Boolean) {
+		if (isSecure) {
+			window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+		} else {
+			window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+		}
 	}
 
 	private fun setUiIsVisible(isUiVisible: Boolean) {
