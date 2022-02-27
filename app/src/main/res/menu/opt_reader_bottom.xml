@@ -13,13 +13,6 @@
 		app:showAsAction="always" />
 
 	<item
-		android:id="@+id/action_bookmark_add"
-		android:icon="@drawable/ic_bookmark_add"
-		android:title="@string/add_bookmark"
-		android:visible="false"
-		app:showAsAction="always" />
-
-	<item
 		android:id="@+id/action_pages_thumbs"
 		android:icon="@drawable/ic_grid"
 		android:title="@string/pages"
@@ -27,7 +20,7 @@
 
 	<item
 		android:id="@+id/action_reader_mode"
-		android:icon="@drawable/ic_book_page"
+		android:icon="@drawable/ic_loading"
 		android:title="@string/read_mode"
 		app:showAsAction="always" />
 

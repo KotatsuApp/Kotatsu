@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.github.GithubRepository
 import org.koitharu.kotatsu.core.github.VersionId
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.utils.FileSizeUtils
+import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.byte2HexFormatted
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -85,7 +85,7 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 				append(
 					activity.getString(
 						R.string.size_s,
-						FileSizeUtils.formatBytes(activity, version.apkSize)
+						FileSize.BYTES.format(activity, version.apkSize),
 					)
 				)
 				appendLine()

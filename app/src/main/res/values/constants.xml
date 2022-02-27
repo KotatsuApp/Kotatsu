@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string-array name="values_theme">
+	<string name="empty" translatable="false" />
+	<string-array name="values_theme" translatable="false">
 		<item>-1</item>
 		<item>1</item>
 		<item>2</item>
 	</string-array>
-	<string-array name="values_reader_switchers">
+	<string-array name="values_reader_switchers" translatable="false">
 		<item>taps</item>
 		<item>volume</item>
 	</string-array>
-	<string-array name="values_reader_switchers_default">
+	<string-array name="values_reader_switchers_default" translatable="false">
 		<item>taps</item>
 	</string-array>
-	<string-array name="values_track_sources">
+	<string-array name="values_track_sources" translatable="false">
 		<item>favourites</item>
 		<item>history</item>
 	</string-array>
-	<string-array name="values_track_sources_default">
+	<string-array name="values_track_sources_default" translatable="false">
 		<item>favourites</item>
 	</string-array>
 </resources>

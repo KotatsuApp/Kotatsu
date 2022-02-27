@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,7 +33,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		offset: Int,
 		query: String?,
 		tags: Set<MangaTag>?,
-		sortOrder: SortOrder?
+		sortOrder: SortOrder?,
 	): List<Manga> {
 		copyCookies()
 		val domain = getDomain()
@@ -97,9 +98,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		}
 		val branchId = content.getJSONArray("branches").optJSONObject(0)
 			?.getLong("id") ?: throw ParseException("No branches found")
-		val chapters = loaderContext.httpGet(
-			url = "https://api.$domain/api/titles/chapters/?branch_id=$branchId"
-		).parseJson().getJSONArray("content")
+		val chapters = grabChapters(domain, branchId)
 		val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
 		return manga.copy(
 			description = content.getString("description"),
@@ -118,11 +117,11 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			chapters = chapters.mapIndexed { i, jo ->
 				val id = jo.getLong("id")
 				val name = jo.getString("name").toTitleCase(Locale.ROOT)
-				val publishers = jo.getJSONArray("publishers")
+				val publishers = jo.optJSONArray("publishers")
 				MangaChapter(
 					id = generateUid(id),
 					url = "/api/titles/chapters/$id/",
-					number = chapters.length() - i,
+					number = chapters.size - i,
 					name = buildString {
 						append("Том ")
 						append(jo.optString("tome", "0"))
@@ -135,7 +134,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 						}
 					},
 					uploadDate = dateFormat.tryParse(jo.getString("upload_date")),
-					scanlator = publishers.optJSONObject(0)?.getStringOrNull("name"),
+					scanlator = publishers?.optJSONObject(0)?.getStringOrNull("name"),
 					source = MangaSource.REMANGA,
 					branch = null,
 				)
@@ -146,16 +145,28 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val referer = "https://${getDomain()}/"
 		val content = loaderContext.httpGet(chapter.url.withDomain(subdomain = "api")).parseJson()
-			.getJSONObject("content").getJSONArray("pages")
-		val pages = ArrayList<MangaPage>(content.length())
-		for (i in 0 until content.length()) {
-			when (val item = content.get(i)) {
-				is JSONObject -> pages += parsePage(item, referer)
-				is JSONArray -> item.mapTo(pages) { parsePage(it, referer) }
+			.getJSONObject("content")
+		val pages = content.optJSONArray("pages")
+		if (pages == null) {
+			val pubDate = content.getStringOrNull("pub_date")?.let {
+				SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).tryParse(it)
+			}
+			if (pubDate != null && pubDate > System.currentTimeMillis()) {
+				val at = SimpleDateFormat.getDateInstance(DateFormat.LONG).format(Date(pubDate))
+				parseFailed("Глава станет доступной $at")
+			} else {
+				parseFailed("Глава недоступна")
+			}
+		}
+		val result = ArrayList<MangaPage>(pages.length())
+		for (i in 0 until pages.length()) {
+			when (val item = pages.get(i)) {
+				is JSONObject -> result += parsePage(item, referer)
+				is JSONArray -> item.mapTo(result) { parsePage(it, referer) }
 				else -> throw ParseException("Unknown json item $item")
 			}
 		}
-		return pages
+		return result
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
@@ -197,6 +208,26 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		referer = referer,
 		source = source,
 	)
+
+	private suspend fun grabChapters(domain: String, branchId: Long): List<JSONObject> {
+		val result = ArrayList<JSONObject>(100)
+		var page = 1
+		while (true) {
+			val content = loaderContext.httpGet(
+				"https://api.$domain/api/titles/chapters/?branch_id=$branchId&page=$page&count=100"
+			).parseJson().getJSONArray("content")
+			val len = content.length()
+			if (len == 0) {
+				break
+			}
+			result.ensureCapacity(result.size + len)
+			for (i in 0 until len) {
+				result.add(content.getJSONObject(i))
+			}
+			page++
+		}
+		return result
+	}
 
 	private companion object {
 

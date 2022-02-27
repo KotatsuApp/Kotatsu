@@ -46,7 +46,7 @@ class ChaptersDialog : AlertDialogFragment<DialogChaptersBinding>(),
 		}
 		val currentId = arguments?.getLong(ARG_CURRENT_ID, 0L) ?: 0L
 		val currentPosition = chapters.indexOfFirst { it.id == currentId }
-		val dateFormat = get<AppSettings>().dateFormat()
+		val dateFormat = get<AppSettings>().getDateFormat()
 		binding.recyclerViewChapters.adapter = ChaptersAdapter(this).apply {
 			setItems(chapters.mapIndexed { index, chapter ->
 				chapter.toListItem(

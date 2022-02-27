@@ -1,26 +1,15 @@
 package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
-import android.content.SharedPreferences
-import org.koitharu.kotatsu.utils.delegates.prefs.LongPreferenceDelegate
+import androidx.core.content.edit
 
-class AppWidgetConfig private constructor(
-	private val prefs: SharedPreferences,
-	val widgetId: Int
-) : SharedPreferences by prefs {
+private const val CATEGORY_ID = "cat_id"
 
-	var categoryId by LongPreferenceDelegate(CATEGORY_ID, 0L)
+class AppWidgetConfig(context: Context, val widgetId: Int) {
 
-	companion object {
+	private val prefs = context.getSharedPreferences("appwidget_$widgetId", Context.MODE_PRIVATE)
 
-		private const val CATEGORY_ID = "cat_id"
-
-		fun getInstance(context: Context, widgetId: Int) = AppWidgetConfig(
-			context.getSharedPreferences(
-				"appwidget_$widgetId",
-				Context.MODE_PRIVATE
-			), widgetId
-		)
-	}
-
+	var categoryId: Long
+		get() = prefs.getLong(CATEGORY_ID, 0L)
+		set(value) = prefs.edit { putLong(CATEGORY_ID, value) }
 }

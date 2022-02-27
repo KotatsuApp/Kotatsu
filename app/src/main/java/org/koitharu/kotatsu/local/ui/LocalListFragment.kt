@@ -18,14 +18,16 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.ellipsize
+import org.koitharu.kotatsu.utils.progress.Progress
 
-class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri?> {
+class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmSuppressWildcards Uri>> {
 
 	override val viewModel by viewModel<LocalListViewModel>()
 	private val importCall = registerForActivityResult(
-		ActivityResultContracts.OpenDocument(),
+		ActivityResultContracts.OpenMultipleDocuments(),
 		this
 	)
+	private var importSnackbar: Snackbar? = null
 	private val downloadReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
 			if (intent?.action == DownloadService.ACTION_DOWNLOAD_COMPLETE) {
@@ -45,6 +47,12 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri?> {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		viewModel.onMangaRemoved.observe(viewLifecycleOwner, ::onItemRemoved)
+		viewModel.importProgress.observe(viewLifecycleOwner, ::onImportProgressChanged)
+	}
+
+	override fun onDestroyView() {
+		importSnackbar = null
+		super.onDestroyView()
 	}
 
 	override fun onDetach() {
@@ -84,10 +92,9 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri?> {
 		return context?.getString(R.string.local_storage)
 	}
 
-	override fun onActivityResult(result: Uri?) {
-		if (result != null) {
-			viewModel.importFile(context?.applicationContext ?: return, result)
-		}
+	override fun onActivityResult(result: List<@JvmSuppressWildcards Uri>) {
+		if (result.isEmpty()) return
+		viewModel.importFiles(result)
 	}
 
 	override fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) {
@@ -119,6 +126,25 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<Uri?> {
 				item.title.ellipsize(16)
 			), Snackbar.LENGTH_SHORT
 		).show()
+	}
+
+	private fun onImportProgressChanged(progress: Progress?) {
+		if (progress == null) {
+			importSnackbar?.dismiss()
+			importSnackbar = null
+			return
+		}
+		val summaryText = getString(
+			R.string.importing_progress,
+			progress.value + 1,
+			progress.total,
+		)
+		importSnackbar?.setText(summaryText) ?: run {
+			val snackbar =
+				Snackbar.make(binding.recyclerView, summaryText, Snackbar.LENGTH_INDEFINITE)
+			importSnackbar = snackbar
+			snackbar.show()
+		}
 	}
 
 	companion object {

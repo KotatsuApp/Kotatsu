@@ -54,7 +54,7 @@
     <string name="automatic">Аўтаматычна</string>
     <string name="pages">Старонкi</string>
     <string name="clear">Ачысціць</string>
-    <string name="text_clear_history_prompt">Вы ўпэўненыя, што жадаеце ачысціць гісторыю? Гэта дзеянне нельга будзе адмяніць.</string>
+    <string name="text_clear_history_prompt">Вы ўпэўненыя, што жадаеце ачысціць гісторыю\? Гэта дзеянне нельга будзе адмяніць.</string>
     <string name="remove">Выдаліць</string>
     <string name="_s_removed_from_history">\"%s\" выдалена з гiсторыi</string>
     <string name="_s_deleted_from_local_storage">\"%s\" выдалена з прылады</string>
@@ -100,7 +100,7 @@
     <string name="app_update_available">Даступна абнаўленне праграмы</string>
     <string name="show_notification_app_update">Паказваць апавяшчэнне пры наяўнасці новай версіі</string>
     <string name="open_in_browser">Адкрыць у браўзеры</string>
-    <string name="large_manga_save_confirm">У гэтай манге %s. Вы ўпэўненыя, што хочаце захаваць іх усё?</string>
+    <string name="large_manga_save_confirm">У гэтай манге %s. Вы ўпэўненыя, што хочаце захаваць іх усё\?</string>
     <string name="save_manga">Захаваць мангу</string>
     <string name="notifications">Паведамленні</string>
     <string name="enabled_d_of_d">Уключана %1$d з %2$d</string>
@@ -194,7 +194,7 @@
     <string name="cookies_cleared">Усе кукi выдалены</string>
     <string name="chapters_checking_progress">Праверка новых частак: %1$d з %2$d</string>
     <string name="clear_feed">Ачысціць стужку</string>
-    <string name="text_clear_updates_feed_prompt">Уся гісторыя абнаўленняў будзе ачышчана і яе нельга будзе вярнуць. Вы ўпэўненыя?</string>
+    <string name="text_clear_updates_feed_prompt">Уся гісторыя абнаўленняў будзе ачышчана і яе нельга будзе вярнуць. Вы ўпэўненыя\?</string>
     <string name="new_chapters_checking">Праверка новых глаў</string>
     <string name="reverse">У адваротным парадку</string>
     <string name="sign_in">Увайсці</string>
@@ -249,4 +249,6 @@
     <string name="show_pages_numbers">Паказваць нумары старонак</string>
     <string name="enabled_sources">Уключаныя крыніцы</string>
     <string name="available_sources">Даступныя крыніцы</string>
+    <string name="dynamic_theme">Дынамічная тэма</string>
+    <string name="dynamic_theme_summary">Ужывае тэму праграмы, заснаваную на каляровай палітры шпалер на прыладзе</string>
 </resources>

@@ -56,7 +56,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	ActivityResultCallback<Boolean>, ReaderControlDelegate.OnInteractionListener {
 
 	private val viewModel by viewModel<ReaderViewModel> {
-		parametersOf(MangaIntent.from(intent), intent?.getParcelableExtra<ReaderState>(EXTRA_STATE))
+		parametersOf(MangaIntent(intent), intent?.getParcelableExtra<ReaderState>(EXTRA_STATE))
 	}
 
 	private lateinit var touchHelper: GridTouchHelper

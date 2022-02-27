@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="remove">Entfernen</string>
-    <string name="text_clear_history_prompt">Möchtest du wirklich deinen gesamten Leseverlauf löschen\? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="text_clear_history_prompt">Möchtest du wirklich deinen gesamten Leseverlauf löschen\?</string>
     <string name="theme">Design</string>
     <string name="pages">Seiten</string>
-    <string name="automatic">Automatisch</string>
+    <string name="automatic">Nach System</string>
     <string name="dark">Dunkel</string>
     <string name="light">Hell</string>
     <string name="filter">Filter</string>
     <string name="genre">Genre</string>
-    <string name="sort_order">Sortierung</string>
+    <string name="sort_order">Sortierreihenfolge</string>
     <string name="all">Alle</string>
-    <string name="by_rating">Nach Bewertung</string>
+    <string name="by_rating">Bewertung</string>
     <string name="newest">Neuestes</string>
     <string name="popular">Beliebt</string>
-    <string name="by_name">Nach Name</string>
+    <string name="by_name">Name</string>
     <string name="downloads">Heruntergeladene</string>
-    <string name="download_complete">Herunterladen abgeschlossen</string>
+    <string name="download_complete">Heruntergeladen</string>
     <string name="search_manga">Manga suchen</string>
     <string name="search">Suchen</string>
     <string name="share_s">Teilen %s</string>
@@ -24,12 +24,12 @@
     <string name="save">Speichern</string>
     <string name="enter_category_name">Gib den Name der Kategorie ein</string>
     <string name="add">Hinzufügen</string>
-    <string name="add_new_category">Neue Kategorie hinzufügen</string>
+    <string name="add_new_category">Neue Kategorie</string>
     <string name="add_to_favourites">Zu Favoriten hinzufügen</string>
-    <string name="you_have_not_favourites_yet">Du hast noch keine Favoriten</string>
+    <string name="you_have_not_favourites_yet">Noch keine Favoriten</string>
     <string name="add_bookmark">Lesezeichen hinzufügen</string>
     <string name="read">Lesen</string>
-    <string name="history_is_empty">Verlauf ist leer</string>
+    <string name="history_is_empty">Noch kein Verlauf</string>
     <string name="nothing_found">Nichts gefunden</string>
     <string name="clear_history">Verlauf löschen</string>
     <string name="try_again">Erneut versuchen</string>
@@ -62,21 +62,20 @@
     <string name="categories_">Kategorien …</string>
     <string name="cancelling_">Abbrechen …</string>
     <string name="processing_">Verarbeiten …</string>
-    <string name="manga_downloading_">Manga wird heruntergeladen …</string>
+    <string name="manga_downloading_">Wird heruntergeladen …</string>
     <string name="create_shortcut">Verknüpfung erstellen …</string>
     <string name="loading_">Wird geladen …</string>
     <string name="category_delete_confirm">Möchtest du die Kategorie „%s“ wirklich aus deinen Favoriten entfernen\?
 \nAlle enthaltenen Manga gehen dabei verloren.</string>
-    <string name="text_delete_local_manga">Möchtest du wirklich „%s“ aus dem lokalen Speicher des Telefons löschen\?
-\nDieser Vorgang kann nicht rückgängig gemacht werden.</string>
+    <string name="text_delete_local_manga">\"%s\" dauerhaft vom Gerät löschen\?</string>
     <string name="_s_deleted_from_local_storage">„%s“ aus lokalem Speicher gelöscht</string>
     <string name="_s_removed_from_history">„%s“ aus dem Verlauf entfernt</string>
     <string name="detailed_list">Detaillierte Liste</string>
     <string name="list">Liste</string>
     <string name="chapters">Kapitel</string>
     <string name="details">Einzelheiten</string>
-    <string name="network_error">Fehler bei der Netzwerkverbindung</string>
-    <string name="error_occurred">Ein Fehler ist aufgetreten</string>
+    <string name="network_error">Keine Verbindung zum Internet möglich</string>
+    <string name="error_occurred">Es ist ein Fehler aufgetreten</string>
     <string name="history">Verlauf</string>
     <string name="favourites">Favoriten</string>
     <string name="local_storage">Lokaler Speicher</string>
@@ -108,7 +107,7 @@
     <string name="default_s">Standard: %s</string>
     <string name="auth_required">Du solltest diesen Inhalt autorisieren, um ihn zu sehen</string>
     <string name="reverse">Umkehren</string>
-    <string name="new_chapters_checking">Neue Kapitel prüfen</string>
+    <string name="new_chapters_checking">Neue Kapitel prüfen…</string>
     <string name="clear_feed">Feed löschen</string>
     <string name="sign_in">Anmelden</string>
     <string name="password_length_hint">Das Passwort muss mindestens 4 Zeichen lang sein</string>
@@ -116,7 +115,7 @@
     <string name="protect_application_subtitle">Gib das Passwort ein, das beim Starten der Anwendung benötigt wird</string>
     <string name="next">Nächste</string>
     <string name="other">Anderes</string>
-    <string name="text_clear_search_history_prompt">Möchtest du wirklich alle letzten Suchanfragen entfernen\? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="text_clear_search_history_prompt">Möchtest du wirklich alle letzten Suchanfragen entfernen\?</string>
     <string name="search_only_on_s">Nur auf %s suchen</string>
     <string name="hide_toolbar">Symbolleiste beim Blättern ausblenden</string>
     <string name="read_more">Mehr erfahren</string>
@@ -187,14 +186,14 @@
     <string name="clear_pages_cache">Seitencache löschen</string>
     <string name="history_and_cache">Verlauf und Cache</string>
     <string name="no_description">Keine Beschreibung</string>
-    <string name="text_file_not_supported">Ungültige Datei. Nur ZIP und CBZ werden unterstützt.</string>
+    <string name="text_file_not_supported">Wählen Sie entweder eine ZIP- oder CBZ-Datei.</string>
     <string name="operation_not_supported">Dieser Vorgang wird nicht unterstützt</string>
     <string name="delete">Löschen</string>
     <string name="_import">Importieren</string>
     <string name="share_image">Bild teilen</string>
-    <string name="page_saved">Seite erfolgreich gespeichert</string>
+    <string name="page_saved">Gespeichert</string>
     <string name="save_page">Seite speichern</string>
-    <string name="wait_for_loading_finish">Warte, bis der Ladevorgang beendet ist</string>
+    <string name="wait_for_loading_finish">Warte, bis der Ladevorgang beendet ist…</string>
     <string name="clear">Löschen</string>
     <string name="taps_on_edges">Auf Kanten tippen</string>
     <string name="captcha_solve">Löse</string>
@@ -228,7 +227,7 @@
     <string name="about_support_developer_summary">Wenn diese Anwendung dir gefällt, kannst du über Yoomoney (Yandex.Money) finanziell helfen</string>
     <string name="about_license">Lizenz</string>
     <string name="about_copyright_and_licenses">Urheberrecht und Lizenzen</string>
-    <string name="about_gratitudes_summary">Diese Leute machen Kotatsu besser!</string>
+    <string name="about_gratitudes_summary">Diese Leute machen Kotatsu besser</string>
     <string name="about_gratitudes">Danksagung</string>
     <string name="about_support_developer">Den Entwickler unterstützen</string>
     <string name="about_feedback_4pda">Thema auf 4PDA</string>
@@ -249,4 +248,6 @@
     <string name="show_pages_numbers">Seitenzahlen anzeigen</string>
     <string name="enabled_sources">Freigegebene Quellen</string>
     <string name="available_sources">Verfügbare Quellen</string>
+    <string name="dynamic_theme">Dynamisches Thema</string>
+    <string name="dynamic_theme_summary">Wendet ein Thema an, das auf dem Farbschema Ihres Hintergrundbildes basiert</string>
 </resources>

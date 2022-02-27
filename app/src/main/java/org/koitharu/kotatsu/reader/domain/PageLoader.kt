@@ -15,7 +15,6 @@ import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
-import org.koitharu.kotatsu.utils.CacheUtils
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import java.io.File
@@ -70,7 +69,7 @@ class PageLoader(
 					.get()
 					.header(CommonHeaders.REFERER, page.referer)
 					.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
-					.cacheControl(CacheUtils.CONTROL_DISABLED)
+					.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
 					.build()
 				okHttp.newCall(request).await().use { response ->
 					check(response.isSuccessful) {

@@ -5,20 +5,18 @@ import android.view.View
 import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.network.AndroidCookieJar
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.local.data.Cache
+import org.koitharu.kotatsu.local.data.CacheDir
+import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
-import org.koitharu.kotatsu.utils.CacheUtils
-import org.koitharu.kotatsu.utils.FileSizeUtils
+import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
@@ -26,6 +24,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	private val trackerRepo by inject<TrackingRepository>(mode = LazyThreadSafetyMode.NONE)
 	private val searchRepository by inject<MangaSearchRepository>(mode = LazyThreadSafetyMode.NONE)
+	private val storageManager by inject<LocalStorageManager>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)
@@ -33,22 +32,8 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		findPreference<Preference>(AppSettings.KEY_PAGES_CACHE_CLEAR)?.let { pref ->
-			viewLifecycleScope.launchWhenResumed {
-				val size = withContext(Dispatchers.IO) {
-					CacheUtils.computeCacheSize(pref.context, Cache.PAGES.dir)
-				}
-				pref.summary = FileSizeUtils.formatBytes(pref.context, size)
-			}
-		}
-		findPreference<Preference>(AppSettings.KEY_THUMBS_CACHE_CLEAR)?.let { pref ->
-			viewLifecycleScope.launchWhenResumed {
-				val size = withContext(Dispatchers.IO) {
-					CacheUtils.computeCacheSize(pref.context, Cache.THUMBS.dir)
-				}
-				pref.summary = FileSizeUtils.formatBytes(pref.context, size)
-			}
-		}
+		findPreference<Preference>(AppSettings.KEY_PAGES_CACHE_CLEAR)?.bindSummaryToCacheSize(CacheDir.PAGES)
+		findPreference<Preference>(AppSettings.KEY_THUMBS_CACHE_CLEAR)?.bindSummaryToCacheSize(CacheDir.THUMBS)
 		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
 				val items = searchRepository.getSearchHistoryCount()
@@ -68,11 +53,11 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			AppSettings.KEY_PAGES_CACHE_CLEAR -> {
-				clearCache(preference, Cache.PAGES)
+				clearCache(preference, CacheDir.PAGES)
 				true
 			}
 			AppSettings.KEY_THUMBS_CACHE_CLEAR -> {
-				clearCache(preference, Cache.THUMBS)
+				clearCache(preference, CacheDir.THUMBS)
 				true
 			}
 			AppSettings.KEY_COOKIES_CLEAR -> {
@@ -100,22 +85,25 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 		}
 	}
 
-	private fun clearCache(preference: Preference, cache: Cache) {
+	private fun clearCache(preference: Preference, cache: CacheDir) {
 		val ctx = preference.context.applicationContext
 		viewLifecycleScope.launch {
 			try {
 				preference.isEnabled = false
-				val size = withContext(Dispatchers.IO) {
-					CacheUtils.clearCache(ctx, cache.dir)
-					CacheUtils.computeCacheSize(ctx, cache.dir)
-				}
-				preference.summary = FileSizeUtils.formatBytes(ctx, size)
+				storageManager.clearCache(cache)
+				val size = storageManager.computeCacheSize(cache)
+				preference.summary = FileSize.BYTES.format(ctx, size)
 			} catch (e: Exception) {
 				preference.summary = e.getDisplayMessage(ctx.resources)
 			} finally {
 				preference.isEnabled = true
 			}
 		}
+	}
+
+	private fun Preference.bindSummaryToCacheSize(dir: CacheDir) = viewLifecycleScope.launch {
+		val size = storageManager.computeCacheSize(dir)
+		summary = FileSize.BYTES.format(context, size)
 	}
 
 	private fun clearSearchHistory(preference: Preference) {

@@ -22,5 +22,6 @@
 	<color name="grey_dark">#212121</color>
 	<color name="dim">#99000000</color>
 	<color name="shadow">#99000000</color>
+	<color name="scrollbar">#66000000</color>
 
 </resources>

@@ -25,6 +25,7 @@
 	<dimen name="list_footer_height_inner">36dp</dimen>
 	<dimen name="list_footer_height_outer">48dp</dimen>
 	<dimen name="screen_padding">16dp</dimen>
+	<dimen name="feed_dividers_offset">72dp</dimen>
 
 	<!--Text dimens-->
 	<dimen name="text_size_h1">22sp</dimen>

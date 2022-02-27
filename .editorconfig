@@ -1,0 +1,17 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = tab
+insert_final_newline = false
+max_line_length = 120
+tab_width = 4
+
+[{*.ant,*.fxml,*.jhm,*.jnlp,*.jrxml,*.rng,*.tld,*.wsdl,*.xml,*.xsd,*.xsl,*.xslt,*.xul}]
+ij_continuation_indent_size = 4
+
+[{*.gradle.kts,*.kt,*.kts,*.main.kts}]
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL

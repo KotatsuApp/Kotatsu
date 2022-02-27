@@ -1,15 +1,14 @@
 package org.koitharu.kotatsu.local.ui
 
-import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -19,21 +18,22 @@ import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import org.koitharu.kotatsu.utils.ext.resolveName
-import java.io.File
+import org.koitharu.kotatsu.utils.progress.Progress
 import java.io.IOException
 
 class LocalListViewModel(
 	private val repository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
-	private val settings: AppSettings,
+	settings: AppSettings,
 	private val shortcutsRepository: ShortcutsRepository,
 ) : MangaListViewModel(settings) {
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
+	val importProgress = MutableLiveData<Progress?>(null)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val headerModel = ListHeader(null, R.string.local_storage)
+	private var importJob: Job? = null
 
 	override val content = combine(
 		mangaList,
@@ -60,37 +60,23 @@ class LocalListViewModel(
 
 	override fun onRefresh() {
 		launchLoadingJob(Dispatchers.Default) {
-			try {
-				listError.value = null
-				mangaList.value = repository.getList2(0)
-			} catch (e: Throwable) {
-				listError.value = e
-			}
+			doRefresh()
 		}
 	}
 
 	override fun onRetry() = onRefresh()
 
-	fun importFile(context: Context, uri: Uri) {
-		launchLoadingJob {
-			val contentResolver = context.contentResolver
-			withContext(Dispatchers.IO) {
-				val name = contentResolver.resolveName(uri)
-					?: throw IOException("Cannot fetch name from uri: $uri")
-				if (!LocalMangaRepository.isFileSupported(name)) {
-					throw UnsupportedFileException("Unsupported file on $uri")
-				}
-				val dest = settings.getStorageDir(context)?.let { File(it, name) }
-					?: throw IOException("External files dir unavailable")
-				runInterruptible {
-					contentResolver.openInputStream(uri)?.use { source ->
-						dest.outputStream().use { output ->
-							source.copyTo(output)
-						}
-					}
-				} ?: throw IOException("Cannot open input stream: $uri")
+	fun importFiles(uris: List<Uri>) {
+		val previousJob = importJob
+		importJob = launchJob(Dispatchers.Default) {
+			previousJob?.join()
+			importProgress.postValue(Progress(0, uris.size))
+			for ((i, uri) in uris.withIndex()) {
+				repository.import(uri)
+				importProgress.postValue(Progress(i + 1, uris.size))
+				doRefresh()
 			}
-			onRefresh()
+			importProgress.postValue(null)
 		}
 	}
 
@@ -106,6 +92,15 @@ class LocalListViewModel(
 			}
 			shortcutsRepository.updateShortcuts()
 			onMangaRemoved.call(manga)
+		}
+	}
+
+	private suspend fun doRefresh() {
+		try {
+			listError.value = null
+			mangaList.value = repository.getList2(0)
+		} catch (e: Throwable) {
+			listError.value = e
 		}
 	}
 }

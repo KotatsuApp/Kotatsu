@@ -17,8 +17,7 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 		get() = checkNotNull(viewBinding)
 
 	final override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		val inflater = activity?.layoutInflater ?: LayoutInflater.from(requireContext())
-		val binding = onInflateView(inflater, null)
+		val binding = onInflateView(layoutInflater, null)
 		viewBinding = binding
 		return MaterialAlertDialogBuilder(requireContext(), theme)
 			.setView(binding.root)

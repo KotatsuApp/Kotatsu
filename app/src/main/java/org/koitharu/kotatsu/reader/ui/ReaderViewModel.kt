@@ -160,7 +160,7 @@ class ReaderViewModel(
 				val downloadId = downloadManagerHelper.downloadPage(page, pageUrl)
 				val uri = downloadManagerHelper.awaitDownload(downloadId)
 				onPageSaved.postCall(uri)
-			} catch (e: CancellationException) {
+			} catch (_: CancellationException) {
 			} catch (e: Exception) {
 				onPageSaved.postCall(null)
 			}

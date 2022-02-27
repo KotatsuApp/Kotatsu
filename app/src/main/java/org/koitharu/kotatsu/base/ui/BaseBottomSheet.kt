@@ -10,8 +10,7 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koitharu.kotatsu.R
 
-abstract class BaseBottomSheet<B : ViewBinding> :
-	BottomSheetDialogFragment() {
+abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 
 	private var viewBinding: B? = null
 

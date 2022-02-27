@@ -6,8 +6,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:background="?attr/selectableItemBackground"
-	android:paddingStart="8dp"
-	android:paddingEnd="8dp">
+	android:paddingVertical="6dp"
+	android:paddingHorizontal="8dp">
 
 	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/card_cover"
@@ -75,11 +75,26 @@
 		android:layout_marginStart="16dp"
 		android:layout_marginEnd="8dp"
 		android:layout_marginBottom="4dp"
+		android:layout_marginTop="4dp"
 		android:ellipsize="none"
-		app:layout_constraintBottom_toBottomOf="parent"
+		android:lineSpacingExtra="4sp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/card_cover"
 		app:layout_constraintTop_toBottomOf="@id/title_container"
 		tools:text="@tools:sample/lorem[25]" />
+
+	<TextView
+		android:id="@+id/textView_truncated"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="4dp"
+		android:layout_marginEnd="8dp"
+		android:layout_marginBottom="4dp"
+		android:textColor="?android:textColorHint"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/card_cover"
+		app:layout_constraintTop_toBottomOf="@id/textView_chapters"
+		tools:text="@string/_and_x_more" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

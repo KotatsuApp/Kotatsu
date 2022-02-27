@@ -164,7 +164,7 @@ class DetailsViewModel(
 		branch: String?,
 	): List<ChapterListItem> {
 		val result = ArrayList<ChapterListItem>(chapters.size)
-		val dateFormat = settings.dateFormat()
+		val dateFormat = settings.getDateFormat()
 		val currentIndex = chapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = chapters.size - newCount
 		val downloadedIds = downloadedChapters?.mapToSet { it.id }
@@ -196,7 +196,7 @@ class DetailsViewModel(
 		val result = ArrayList<ChapterListItem>(sourceChapters.size)
 		val currentIndex = sourceChapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = sourceChapters.size - newCount
-		val dateFormat = settings.dateFormat()
+		val dateFormat = settings.getDateFormat()
 		for (i in sourceChapters.indices) {
 			val chapter = sourceChapters[i]
 			if (chapter.branch != branch) {

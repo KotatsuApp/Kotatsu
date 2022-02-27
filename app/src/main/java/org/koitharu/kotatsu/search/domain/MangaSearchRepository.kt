@@ -9,7 +9,6 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import org.koitharu.kotatsu.base.domain.MangaProviderFactory
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -27,7 +26,7 @@ class MangaSearchRepository(
 ) {
 
 	fun globalSearch(query: String, concurrency: Int = DEFAULT_CONCURRENCY): Flow<Manga> =
-		MangaProviderFactory.getSources(settings, includeHidden = false).asFlow()
+		settings.getMangaSources(includeHidden = false).asFlow()
 			.flatMapMerge(concurrency) { source ->
 				runCatching {
 					MangaRepository(source).getList2(
