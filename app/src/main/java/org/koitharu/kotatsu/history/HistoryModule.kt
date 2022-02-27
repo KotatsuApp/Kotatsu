@@ -9,5 +9,5 @@ val historyModule
 	get() = module {
 
 		single { HistoryRepository(get(), get(), get()) }
-		viewModel { HistoryListViewModel(get(), get(), get()) }
+		viewModel { HistoryListViewModel(get(), get(), get(), get()) }
 	}

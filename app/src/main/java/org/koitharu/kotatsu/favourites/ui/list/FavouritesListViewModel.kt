@@ -9,18 +9,21 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.list.domain.CountersProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class FavouritesListViewModel(
 	private val categoryId: Long,
 	private val repository: FavouritesRepository,
-	settings: AppSettings
-) : MangaListViewModel(settings) {
+	private val trackingRepository: TrackingRepository,
+	settings: AppSettings,
+) : MangaListViewModel(settings), CountersProvider {
 
 	override val content = combine(
 		if (categoryId == 0L) {
@@ -42,7 +45,7 @@ class FavouritesListViewModel(
 					}
 				)
 			)
-			else -> list.toUi(mode)
+			else -> list.toUi(mode, this)
 		}
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
@@ -60,5 +63,9 @@ class FavouritesListViewModel(
 				repository.removeFromCategory(manga, categoryId)
 			}
 		}
+	}
+
+	override suspend fun getCounter(mangaId: Long): Int {
+		return trackingRepository.getNewChaptersCount(mangaId)
 	}
 }

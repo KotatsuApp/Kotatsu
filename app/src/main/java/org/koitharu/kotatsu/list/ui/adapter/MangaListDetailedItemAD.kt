@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
 import coil.util.CoilUtils
+import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -25,6 +26,7 @@ fun mangaListDetailedItemAD(
 ) {
 
 	var imageRequest: Disposable? = null
+	var badge: BadgeDrawable? = null
 
 	itemView.setOnClickListener {
 		clickListener.onItemClick(item.manga, it)
@@ -47,9 +49,12 @@ fun mangaListDetailedItemAD(
 			.enqueueWith(coil)
 		binding.textViewRating.textAndVisible = item.rating
 		binding.textViewTags.text = item.tags
+		itemView.bindBadge(badge, item.counter)
 	}
 
 	onViewRecycled {
+		itemView.clearBadge(badge)
+		badge = null
 		imageRequest?.dispose()
 		CoilUtils.clear(binding.imageViewCover)
 		binding.imageViewCover.setImageDrawable(null)

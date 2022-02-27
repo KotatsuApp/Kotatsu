@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
@@ -24,7 +25,8 @@ import java.util.concurrent.TimeUnit
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
 	private val settings: AppSettings,
-	private val shortcutsRepository: ShortcutsRepository
+	private val shortcutsRepository: ShortcutsRepository,
+	private val trackingRepository: TrackingRepository,
 ) : MangaListViewModel(settings) {
 
 	val onItemRemoved = SingleLiveEvent<Manga>()
@@ -75,7 +77,7 @@ class HistoryListViewModel(
 		settings.historyGrouping = isGroupingEnabled
 	}
 
-	private fun mapList(
+	private suspend fun mapList(
 		list: List<MangaWithHistory>,
 		grouped: Boolean,
 		mode: ListMode
@@ -93,10 +95,11 @@ class HistoryListViewModel(
 				}
 				prevDate = date
 			}
+			val counter = trackingRepository.getNewChaptersCount(manga.id)
 			result += when (mode) {
-				ListMode.LIST -> manga.toListModel()
-				ListMode.DETAILED_LIST -> manga.toListDetailedModel()
-				ListMode.GRID -> manga.toGridModel()
+				ListMode.LIST -> manga.toListModel(counter)
+				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter)
+				ListMode.GRID -> manga.toGridModel(counter)
 			}
 		}
 		return result

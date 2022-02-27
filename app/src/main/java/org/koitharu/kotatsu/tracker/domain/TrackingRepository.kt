@@ -12,8 +12,7 @@ class TrackingRepository(
 ) {
 
 	suspend fun getNewChaptersCount(mangaId: Long): Int {
-		val entity = db.tracksDao.find(mangaId) ?: return 0
-		return entity.newChapters
+		return db.tracksDao.findNewChapters(mangaId) ?: 0
 	}
 
 	suspend fun getAllTracks(useFavourites: Boolean, useHistory: Boolean): List<MangaTracking> {
