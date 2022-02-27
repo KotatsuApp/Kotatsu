@@ -27,21 +27,21 @@
 
 			<FrameLayout
 				android:id="@+id/toolbar_card"
-				android:background="@drawable/toolbar_background"
 				android:layout_width="match_parent"
 				android:layout_height="48dp"
 				android:layout_marginStart="16dp"
 				android:layout_marginTop="8dp"
 				android:layout_marginEnd="16dp"
-				android:layout_marginBottom="8dp">
+				android:layout_marginBottom="8dp"
+				android:background="@drawable/toolbar_background">
 
 				<com.google.android.material.appbar.MaterialToolbar
 					android:id="@id/toolbar"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
+					android:background="@android:color/transparent"
 					android:focusable="true"
 					android:focusableInTouchMode="true"
-					android:background="@android:color/transparent"
 					app:contentInsetStartWithNavigation="0dp"
 					app:titleTextAppearance="@style/TextAppearance.Kotatsu.PersistentToolbarTitle"
 					app:titleTextColor="?android:colorControlNormal"

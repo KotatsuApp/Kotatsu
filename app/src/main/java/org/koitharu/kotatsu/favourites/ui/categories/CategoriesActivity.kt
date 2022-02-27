@@ -148,7 +148,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		override fun onMove(
 			recyclerView: RecyclerView,
 			viewHolder: RecyclerView.ViewHolder,
-			target: RecyclerView.ViewHolder
+			target: RecyclerView.ViewHolder,
 		): Boolean = true
 
 		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
@@ -160,7 +160,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 			target: RecyclerView.ViewHolder,
 			toPos: Int,
 			x: Int,
-			y: Int
+			y: Int,
 		) {
 			super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
 			viewModel.reorderCategories(fromPos, toPos)

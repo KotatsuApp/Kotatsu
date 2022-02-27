@@ -3,9 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:paddingStart="8dp"
-	android:paddingEnd="8dp">
+	android:layout_height="wrap_content">
 
 	<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 		android:id="@+id/chips_tags"

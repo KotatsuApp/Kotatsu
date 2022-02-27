@@ -257,7 +257,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 				}
 				ListMode.DETAILED_LIST -> {
 					layoutManager = LinearLayoutManager(context)
-					val spacing = resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 					updatePadding(left = spacing, right = spacing)
 					addItemDecoration(SpacingItemDecoration(spacing))
 				}

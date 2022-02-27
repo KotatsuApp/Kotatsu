@@ -7,14 +7,9 @@
 	<!-- Navigation -->
 	<dimen name="nav_header_logo_size">36dp</dimen>
 	<dimen name="nav_item_horizontal_padding">24dp</dimen>
-	<!-- Intrinsic height may vary. Use a large radius to ensure a semicircle. -->
-	<dimen name="nav_item_background_corner_radius_left">0dp</dimen>
-	<dimen name="nav_item_background_corner_radius_right">100dp</dimen>
-	<dimen name="nav_item_background_inset_left">0dp</dimen>
-	<dimen name="nav_item_background_inset_right">8dp</dimen>>
 
-	<dimen name="grid_spacing">4dp</dimen>
-	<dimen name="list_spacing">4dp</dimen>
+	<dimen name="grid_spacing">8dp</dimen>
+	<dimen name="list_spacing">8dp</dimen>
 	<dimen name="grid_spacing_outer">2dp</dimen>
 	<dimen name="manga_list_item_height">86dp</dimen>
 	<dimen name="manga_list_details_item_height">120dp</dimen>
