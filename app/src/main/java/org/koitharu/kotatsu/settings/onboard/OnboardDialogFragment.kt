@@ -11,7 +11,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.DialogOnboardBinding
 import org.koitharu.kotatsu.settings.onboard.adapter.SourceLocalesAdapter
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
@@ -75,12 +74,10 @@ class OnboardDialogFragment : AlertDialogFragment<DialogOnboardBinding>(),
 
 		fun show(fm: FragmentManager) = OnboardDialogFragment().show(fm, TAG)
 
-		fun showWelcome(settings: AppSettings, fm: FragmentManager) {
-			if (!settings.isSourcesSelected) {
-				OnboardDialogFragment().withArgs(1) {
-					putBoolean(ARG_WELCOME, true)
-				}.show(fm, TAG)
-			}
+		fun showWelcome(fm: FragmentManager) {
+			OnboardDialogFragment().withArgs(1) {
+				putBoolean(ARG_WELCOME, true)
+			}.show(fm, TAG)
 		}
 	}
 }

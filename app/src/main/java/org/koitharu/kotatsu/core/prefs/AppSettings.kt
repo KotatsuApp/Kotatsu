@@ -56,10 +56,10 @@ class AppSettings(context: Context) {
 		get() = prefs.getBoolean(KEY_TRAFFIC_WARNING, true)
 		set(value) = prefs.edit { putBoolean(KEY_TRAFFIC_WARNING, value) }
 
-	val appUpdateAuto: Boolean
+	val isUpdateCheckingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_APP_UPDATE_AUTO, true)
 
-	var appUpdate: Long
+	var lastUpdateCheckTimestamp: Long
 		get() = prefs.getLong(KEY_APP_UPDATE, 0L)
 		set(value) = prefs.edit { putLong(KEY_APP_UPDATE, value) }
 
