@@ -9,5 +9,6 @@ data class MangaListDetailedModel(
 	val tags: String,
 	val coverUrl: String,
 	val rating: String?,
-	val manga: Manga
+	val manga: Manga,
+	val counter: Int,
 ) : ListModel

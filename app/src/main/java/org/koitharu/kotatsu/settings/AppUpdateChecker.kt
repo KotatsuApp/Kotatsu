@@ -7,11 +7,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
@@ -37,43 +34,30 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 	private val settings = activity.get<AppSettings>()
 	private val repo = activity.get<GithubRepository>()
 
-	fun launchIfNeeded(): Job? {
-		return if (settings.appUpdateAuto && settings.appUpdate + PERIOD < System.currentTimeMillis()) {
-			launch()
-		} else {
-			null
-		}
-	}
-
-	fun launch(): Job? {
-		return if (isUpdateSupported(activity)) {
-			launchInternal()
-		} else {
-			null
-		}
+	suspend fun checkIfNeeded(): Boolean? = if (
+		settings.isUpdateCheckingEnabled &&
+		settings.lastUpdateCheckTimestamp + PERIOD < System.currentTimeMillis()
+	) {
+		checkNow()
+	} else {
+		null
 	}
 
 	suspend fun checkNow() = runCatching {
-		withContext(Dispatchers.Default) {
-			val version = repo.getLatestVersion()
-			val newVersionId = VersionId.parse(version.name)
-			val currentVersionId = VersionId.parse(BuildConfig.VERSION_NAME)
-			val result = newVersionId > currentVersionId
-			if (result) {
-				withContext(Dispatchers.Main) {
-					showUpdateDialog(version)
-				}
+		val version = repo.getLatestVersion()
+		val newVersionId = VersionId.parse(version.name)
+		val currentVersionId = VersionId.parse(BuildConfig.VERSION_NAME)
+		val result = newVersionId > currentVersionId
+		if (result) {
+			withContext(Dispatchers.Main) {
+				showUpdateDialog(version)
 			}
-			settings.appUpdate = System.currentTimeMillis()
-			result
 		}
+		settings.lastUpdateCheckTimestamp = System.currentTimeMillis()
+		result
 	}.onFailure {
 		it.printStackTrace()
 	}.getOrNull()
-
-	private fun launchInternal() = activity.lifecycleScope.launch {
-		checkNow()
-	}
 
 	@MainThread
 	private fun showUpdateDialog(version: AppVersion) {

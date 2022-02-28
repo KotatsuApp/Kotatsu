@@ -13,6 +13,9 @@ abstract class TracksDao {
 	@Query("SELECT * FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun find(mangaId: Long): TrackEntity?
 
+	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
+	abstract suspend fun findNewChapters(mangaId: Long): Int?
+
 	@Query("DELETE FROM tracks")
 	abstract suspend fun clear()
 

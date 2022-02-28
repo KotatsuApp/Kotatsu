@@ -44,7 +44,7 @@
 
 		<!-- Themes -->
 		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/light_status_bar</item>
-		<item name="android:statusBarColor">@android:color/transparent</item>
+		<item name="android:statusBarColor">@color/surface_amoled</item>
 		<item name="android:navigationBarColor">@color/surface_amoled</item>
 		<item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@null</item>
 		<item name="android:enforceNavigationBarContrast" tools:targetApi="Q">false</item>
@@ -66,7 +66,7 @@
 		<item name="appBarLayoutStyle">@style/Widget.Material3.AppBarLayout</item>
 		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
 		<item name="switchStyle">@style/Widget.Kotatsu.Switch</item>
-		<item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated</item>
+		<item name="materialCardViewStyle">@style/Widget.Material3.CardView.Filled</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
 
 		<!-- Preference text appearance -->

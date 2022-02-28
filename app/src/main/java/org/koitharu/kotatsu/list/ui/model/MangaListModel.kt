@@ -7,5 +7,6 @@ data class MangaListModel(
 	val title: String,
 	val subtitle: String,
 	val coverUrl: String,
-	val manga: Manga
+	val manga: Manga,
+	val counter: Int,
 ) : ListModel

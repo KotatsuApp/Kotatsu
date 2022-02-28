@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.graphics.Insets
@@ -23,6 +24,7 @@ class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEdito
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 		setContentView(ActivityProtectBinding.inflate(layoutInflater))
 		binding.editPassword.setOnEditorActionListener(this)
 		binding.editPassword.addTextChangedListener(this)

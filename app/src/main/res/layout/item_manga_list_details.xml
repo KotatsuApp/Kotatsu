@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="@dimen/manga_list_details_item_height"
-	android:background="@drawable/list_selector"
-	android:orientation="horizontal">
+	app:cardCornerRadius="12dp">
 
-	<com.google.android.material.card.MaterialCardView
-		android:layout_width="wrap_content"
+	<LinearLayout
+		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_margin="8dp">
+		android:orientation="horizontal">
 
 		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
 			android:id="@+id/imageView_cover"
@@ -19,70 +18,71 @@
 			android:layout_height="match_parent"
 			android:orientation="vertical"
 			android:scaleType="centerCrop"
-			tools:src="@tools:sample/backgrounds/scenic"/>
-
-	</com.google.android.material.card.MaterialCardView>
-
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_vertical"
-		android:layout_margin="8dp"
-		android:orientation="vertical">
-
-		<TextView
-			android:id="@+id/textView_title"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginBottom="4dp"
-			android:ellipsize="end"
-			android:maxLines="2"
-			android:textAppearance="?attr/textAppearanceTitleMedium"
-			tools:text="@tools:sample/lorem/random" />
-
-		<TextView
-			android:id="@+id/textView_subtitle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginBottom="4dp"
-			android:ellipsize="none"
-			android:gravity="center_vertical"
-			android:requiresFadingEdge="horizontal"
-			android:singleLine="true"
-			android:textAppearance="?attr/textAppearanceBodyMedium"
-			tools:text="@tools:sample/lorem/random" />
+			tools:src="@tools:sample/backgrounds/scenic"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"/>
 
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:gravity="center">
+			android:layout_gravity="center_vertical"
+			android:layout_margin="16dp"
+			android:orientation="vertical">
 
 			<TextView
-				android:id="@+id/textView_tags"
-				android:layout_width="0dp"
+				android:id="@+id/textView_title"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_weight="1"
+				android:layout_marginBottom="4dp"
+				android:ellipsize="end"
+				android:maxLines="2"
+				android:textAppearance="?attr/textAppearanceTitleMedium"
+				tools:text="@tools:sample/lorem/random" />
+
+			<TextView
+				android:id="@+id/textView_subtitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="4dp"
 				android:ellipsize="none"
 				android:gravity="center_vertical"
 				android:requiresFadingEdge="horizontal"
 				android:singleLine="true"
-				android:textAppearance="?attr/textAppearanceBodySmall"
+				android:textAppearance="?attr/textAppearanceBodyMedium"
 				tools:text="@tools:sample/lorem/random" />
 
-			<TextView
-				android:id="@+id/textView_rating"
-				android:layout_width="wrap_content"
+			<LinearLayout
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_gravity="bottom"
-				android:drawablePadding="4dp"
-				android:paddingStart="6dp"
-				app:drawableEndCompat="@drawable/ic_star"
-				tools:ignore="RtlSymmetry"
-				tools:text="9.6" />
+				android:orientation="horizontal"
+				android:gravity="center">
+
+				<TextView
+					android:id="@+id/textView_tags"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:ellipsize="none"
+					android:gravity="center_vertical"
+					android:requiresFadingEdge="horizontal"
+					android:singleLine="true"
+					android:textAppearance="?attr/textAppearanceBodySmall"
+					tools:text="@tools:sample/lorem/random" />
+
+				<TextView
+					android:id="@+id/textView_rating"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="bottom"
+					android:drawablePadding="4dp"
+					android:paddingStart="6dp"
+					app:drawableEndCompat="@drawable/ic_star"
+					tools:ignore="RtlSymmetry"
+					tools:text="9.6" />
+
+			</LinearLayout>
 
 		</LinearLayout>
 
 	</LinearLayout>
 
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -15,12 +15,16 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -28,6 +32,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.databinding.NavigationHeaderBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -356,10 +361,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	private fun onFirstStart() {
-		TrackWorker.setup(applicationContext)
-		SuggestionsWorker.setup(applicationContext)
-		AppUpdateChecker(this@MainActivity).launchIfNeeded()
-		OnboardDialogFragment.showWelcome(get(), supportFragmentManager)
+		lifecycleScope.launch(Dispatchers.Default) {
+			TrackWorker.setup(applicationContext)
+			SuggestionsWorker.setup(applicationContext)
+			AppUpdateChecker(this@MainActivity).checkIfNeeded()
+			if (!get<AppSettings>().isSourcesSelected) {
+				withContext(Dispatchers.Main) {
+					OnboardDialogFragment.showWelcome(supportFragmentManager)
+				}
+			}
+		}
 	}
 
 	private companion object {

@@ -3,15 +3,14 @@ package org.koitharu.kotatsu.base.ui.widgets
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.withStyledAttributes
+import com.google.android.material.imageview.ShapeableImageView
 import org.koitharu.kotatsu.R
 import kotlin.math.roundToInt
 
-
 class CoverImageView @JvmOverloads constructor(
 	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
-) : AppCompatImageView(context, attrs, defStyleAttr) {
+) : ShapeableImageView(context, attrs, defStyleAttr) {
 
 	private var orientation: Int = HORIZONTAL
 

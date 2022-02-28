@@ -4,16 +4,16 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:background="@drawable/list_selector"
+	android:clipChildren="false"
 	android:orientation="vertical">
 
 	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/card"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginHorizontal="8dp"
-		android:layout_marginTop="8dp"
-		android:layout_marginBottom="4dp">
+		app:cardCornerRadius="12dp">
 
 		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
 			android:id="@+id/imageView_cover"
@@ -28,15 +28,15 @@
 
 	<TextView
 		android:id="@+id/textView_title"
-		style="?attr/textAppearanceBodyMedium"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:elegantTextHeight="false"
 		android:ellipsize="end"
-		android:lineSpacingExtra="-2dp"
 		android:maxLines="2"
-		android:paddingHorizontal="8dp"
-		android:paddingBottom="4dp"
+		android:padding="4dp"
+		android:textAppearance="?attr/textAppearanceTitleSmall"
+		android:textColor="?android:attr/textColorPrimary"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/thumbnail"
 		tools:text="Sample name" />
 
 </LinearLayout>

@@ -137,6 +137,12 @@
 		<item name="android:textColor">?android:attr/textColorSecondary</item>
 	</style>
 
+	<!-- Shapes -->
+
+	<style name="ShapeAppearanceOverlay.Kotatsu.Cover" parent="">
+		<item name="cornerSize">12dp</item>
+	</style>
+
 	<!--Preferences-->
 
 	<style name="PreferenceThemeOverlay.Kotatsu">

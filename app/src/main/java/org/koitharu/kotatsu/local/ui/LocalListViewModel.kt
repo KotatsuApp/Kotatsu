@@ -43,7 +43,13 @@ class LocalListViewModel(
 		when {
 			error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
-			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_storage, R.string.text_local_holder_primary, R.string.text_local_holder_secondary))
+			list.isEmpty() -> listOf(
+				EmptyState(
+					R.drawable.ic_storage,
+					R.string.text_local_holder_primary,
+					R.string.text_local_holder_secondary
+				)
+			)
 			else -> ArrayList<ListModel>(list.size + 1).apply {
 				add(headerModel)
 				list.toUi(this, mode)

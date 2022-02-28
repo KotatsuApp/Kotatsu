@@ -10,7 +10,7 @@
 				android:bottom="2dp"
 				android:left="2dp">
 				<shape android:shape="rectangle">
-					<corners android:radius="4dp" />
+					<corners android:radius="12dp" />
 					<solid android:color="@color/selector_overlay" />
 				</shape>
 			</item>
@@ -22,7 +22,7 @@
 				android:bottom="2dp"
 				android:left="2dp">
 				<shape android:shape="rectangle">
-					<corners android:radius="4dp" />
+					<corners android:radius="12dp" />
 					<solid android:color="@color/selector_overlay" />
 				</shape>
 			</item>
@@ -33,7 +33,7 @@
 				android:bottom="2dp"
 				android:left="2dp">
 				<shape android:shape="rectangle">
-					<corners android:radius="4dp" />
+					<corners android:radius="12dp" />
 					<solid android:color="?android:attr/windowBackground" />
 				</shape>
 			</item>

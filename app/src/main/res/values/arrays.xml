@@ -24,4 +24,9 @@
 		<item>@string/detailed_list</item>
 		<item>@string/grid</item>
 	</string-array>
+	<string-array name="screenshots_policy">
+		<item>@string/screenshots_allow</item>
+		<item>@string/screenshots_block_nsfw</item>
+		<item>@string/screenshots_block_all</item>
+	</string-array>
 </resources>

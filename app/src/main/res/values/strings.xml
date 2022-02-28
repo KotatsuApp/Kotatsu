@@ -251,12 +251,16 @@
     <string name="dynamic_theme">Dynamic theme</string>
     <string name="dynamic_theme_summary">Applies a theme created on the color scheme of your wallpaper</string>
 	<string name="importing_progress">Importing manga: %1$d of %2$d</string>
-    <string name="suggestions">Suggestions</string>
-    <string name="suggestions_enable">Enable suggestions</string>
-    <string name="suggestions_summary">Suggest manga based on your preferences</string>
-    <string name="suggestions_info">All data is analyzed locally on this device. There is no transfer of your personal data to any services</string>
-    <string name="text_suggestion_holder">Start reading manga and you will get personalized suggestions</string>
-    <string name="exclude_nsfw_from_suggestions">Do not suggest NSFW manga</string>
+	<string name="screenshots_policy">Screenshots policy</string>
+	<string name="screenshots_allow">Allow</string>
+	<string name="screenshots_block_nsfw">Block on NSFW</string>
+	<string name="screenshots_block_all">Block always</string>
+	<string name="suggestions">Suggestions</string>
+	<string name="suggestions_enable">Enable suggestions</string>
+	<string name="suggestions_summary">Suggest manga based on your preferences</string>
+	<string name="suggestions_info">All data is analyzed locally on this device. There is no transfer of your personal data to any services</string>
+	<string name="text_suggestion_holder">Start reading manga and you will get personalized suggestions</string>
+	<string name="exclude_nsfw_from_suggestions">Do not suggest NSFW manga</string>
 	<string name="enabled">Enabled</string>
 	<string name="disabled">Disabled</string>
 </resources>
