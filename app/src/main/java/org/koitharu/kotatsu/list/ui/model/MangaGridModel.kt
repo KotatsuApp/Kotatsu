@@ -6,5 +6,6 @@ data class MangaGridModel(
 	val id: Long,
 	val title: String,
 	val coverUrl: String,
-	val manga: Manga
+	val manga: Manga,
+	val counter: Int,
 ) : ListModel

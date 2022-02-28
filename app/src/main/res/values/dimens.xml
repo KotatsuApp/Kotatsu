@@ -21,6 +21,8 @@
 	<dimen name="list_footer_height_outer">48dp</dimen>
 	<dimen name="screen_padding">16dp</dimen>
 	<dimen name="feed_dividers_offset">72dp</dimen>
+	<dimen name="manga_badge_offset_horizontal">4dp</dimen>
+	<dimen name="manga_badge_offset_vertical">2dp</dimen>
 
 	<!--Text dimens-->
 	<dimen name="text_size_h1">22sp</dimen>

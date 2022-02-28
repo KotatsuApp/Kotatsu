@@ -13,7 +13,7 @@ val favouritesModule
 		single { FavouritesRepository(get()) }
 
 		viewModel { categoryId ->
-			FavouritesListViewModel(categoryId.get(), get(), get())
+			FavouritesListViewModel(categoryId.get(), get(), get(), get())
 		}
 		viewModel { FavouritesCategoriesViewModel(get()) }
 		viewModel { manga ->

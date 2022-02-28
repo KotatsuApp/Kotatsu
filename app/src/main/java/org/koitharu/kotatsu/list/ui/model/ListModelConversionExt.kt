@@ -6,44 +6,71 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.list.domain.CountersProvider
 
-fun Manga.toListModel() = MangaListModel(
+fun Manga.toListModel(counter: Int) = MangaListModel(
 	id = id,
 	title = title,
 	subtitle = tags.joinToString(", ") { it.title },
 	coverUrl = coverUrl,
-	manga = this
+	manga = this,
+	counter = counter,
 )
 
-fun Manga.toListDetailedModel() = MangaListDetailedModel(
+fun Manga.toListDetailedModel(counter: Int) = MangaListDetailedModel(
 	id = id,
 	title = title,
 	subtitle = altTitle,
 	rating = if (rating == Manga.NO_RATING) null else String.format("%.1f", rating * 5),
 	tags = tags.joinToString(", ") { it.title },
 	coverUrl = coverUrl,
-	manga = this
+	manga = this,
+	counter = counter,
 )
 
-fun Manga.toGridModel() = MangaGridModel(
+fun Manga.toGridModel(counter: Int) = MangaGridModel(
 	id = id,
 	title = title,
 	coverUrl = coverUrl,
-	manga = this
+	manga = this,
+	counter = counter,
 )
 
-fun List<Manga>.toUi(mode: ListMode): List<ListModel> = when (mode) {
-	ListMode.LIST -> map(Manga::toListModel)
-	ListMode.DETAILED_LIST -> map(Manga::toListDetailedModel)
-	ListMode.GRID -> map(Manga::toGridModel)
+suspend fun List<Manga>.toUi(
+	mode: ListMode,
+	countersProvider: CountersProvider,
+): List<ListModel> = when (mode) {
+	ListMode.LIST -> map { it.toListModel(countersProvider.getCounter(it.id)) }
+	ListMode.DETAILED_LIST -> map { it.toListDetailedModel(countersProvider.getCounter(it.id)) }
+	ListMode.GRID -> map { it.toGridModel(countersProvider.getCounter(it.id)) }
 }
 
-fun <C : MutableCollection<ListModel>> List<Manga>.toUi(destination: C, mode: ListMode): C =
-	when (mode) {
-		ListMode.LIST -> mapTo(destination, Manga::toListModel)
-		ListMode.DETAILED_LIST -> mapTo(destination, Manga::toListDetailedModel)
-		ListMode.GRID -> mapTo(destination, Manga::toGridModel)
-	}
+suspend fun <C : MutableCollection<ListModel>> List<Manga>.toUi(
+	destination: C,
+	mode: ListMode,
+	countersProvider: CountersProvider,
+): C = when (mode) {
+	ListMode.LIST -> mapTo(destination) { it.toListModel(countersProvider.getCounter(it.id)) }
+	ListMode.DETAILED_LIST -> mapTo(destination) { it.toListDetailedModel(countersProvider.getCounter(it.id)) }
+	ListMode.GRID -> mapTo(destination) { it.toGridModel(countersProvider.getCounter(it.id)) }
+}
+
+fun List<Manga>.toUi(
+	mode: ListMode,
+): List<ListModel> = when (mode) {
+	ListMode.LIST -> map { it.toListModel(0) }
+	ListMode.DETAILED_LIST -> map { it.toListDetailedModel(0) }
+	ListMode.GRID -> map { it.toGridModel(0) }
+}
+
+fun <C : MutableCollection<ListModel>> List<Manga>.toUi(
+	destination: C,
+	mode: ListMode,
+): C = when (mode) {
+	ListMode.LIST -> mapTo(destination) { it.toListModel(0) }
+	ListMode.DETAILED_LIST -> mapTo(destination) { it.toListDetailedModel(0) }
+	ListMode.GRID -> mapTo(destination) { it.toGridModel(0) }
+}
 
 fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(
 	exception = this,
