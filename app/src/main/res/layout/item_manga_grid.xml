@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:background="@drawable/list_selector"
 	android:clipChildren="false"
-	android:orientation="vertical">
+	app:cardCornerRadius="12dp">
 
-	<com.google.android.material.card.MaterialCardView
-		android:id="@+id/card"
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		app:cardCornerRadius="12dp">
+		android:orientation="vertical">
 
 		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
 			android:id="@+id/imageView_cover"
@@ -21,22 +19,23 @@
 			android:layout_height="wrap_content"
 			android:orientation="horizontal"
 			android:scaleType="centerCrop"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 			tools:ignore="ContentDescription"
 			tools:src="@tools:sample/backgrounds/scenic[3]" />
 
-	</com.google.android.material.card.MaterialCardView>
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:padding="8dp"
+			android:textAppearance="?attr/textAppearanceTitleSmall"
+			android:textColor="?android:attr/textColorPrimary"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/thumbnail"
+			tools:text="Sample name" />
 
-	<TextView
-		android:id="@+id/textView_title"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:ellipsize="end"
-		android:maxLines="2"
-		android:padding="4dp"
-		android:textAppearance="?attr/textAppearanceTitleSmall"
-		android:textColor="?android:attr/textColorPrimary"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/thumbnail"
-		tools:text="Sample name" />
+	</LinearLayout>
 
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
