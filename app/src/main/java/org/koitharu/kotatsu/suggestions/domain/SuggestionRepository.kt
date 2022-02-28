@@ -32,7 +32,9 @@ class SuggestionRepository(
 		db.withTransaction {
 			db.suggestionDao.deleteAll()
 			suggestions.forEach { x ->
-				db.mangaDao.upsert(MangaEntity.from(x.manga))
+				val tags = x.manga.tags.map(TagEntity.Companion::fromMangaTag)
+				db.tagsDao.upsert(tags)
+				db.mangaDao.upsert(MangaEntity.from(x.manga), tags)
 				db.suggestionDao.upsert(
 					SuggestionEntity(
 						mangaId = x.manga.id,
