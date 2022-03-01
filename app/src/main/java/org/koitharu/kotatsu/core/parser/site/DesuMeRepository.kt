@@ -85,7 +85,7 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			tags = json.getJSONArray("genres").mapToSet {
 				MangaTag(
 					key = it.getString("text"),
-					title = it.getString("russian"),
+					title = it.getString("russian").toTitleCase(),
 					source = manga.source
 				)
 			},
@@ -133,7 +133,7 @@ class DesuMeRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			MangaTag(
 				source = source,
 				key = it.selectFirst("input")?.attr("data-genre") ?: parseFailed(),
-				title = it.selectFirst("label")?.text() ?: parseFailed()
+				title = it.selectFirst("label")?.text()?.toTitleCase() ?: parseFailed()
 			)
 		}
 	}

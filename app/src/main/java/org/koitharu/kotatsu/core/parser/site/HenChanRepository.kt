@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.utils.ext.mapToSet
 import org.koitharu.kotatsu.utils.ext.parseHtml
+import org.koitharu.kotatsu.utils.ext.toTitleCase
 
 class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(loaderContext) {
 
@@ -36,7 +37,7 @@ class HenChanRepository(loaderContext: MangaLoaderContext) : ChanRepository(load
 			tags = root.selectFirst("div.sidetags")?.select("li.sidetag")?.mapToSet {
 				val a = it.children().last() ?: parseFailed("Invalid tag")
 				MangaTag(
-					title = a.text(),
+					title = a.text().toTitleCase(),
 					key = a.attr("href").substringAfterLast('/'),
 					source = source
 				)

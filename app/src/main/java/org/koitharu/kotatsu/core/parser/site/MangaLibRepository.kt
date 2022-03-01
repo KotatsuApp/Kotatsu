@@ -139,7 +139,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			tags = info?.selectFirst("div.media-tags")
 				?.select("a.media-tag-item")?.mapToSet { a ->
 					MangaTag(
-						title = a.text().toCamelCase(),
+						title = a.text().toTitleCase(),
 						key = a.attr("href").substringAfterLast('='),
 						source = source
 					)
@@ -203,7 +203,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 					result += MangaTag(
 						source = source,
 						key = x.getInt("id").toString(),
-						title = x.getString("name").toCamelCase()
+						title = x.getString("name").toTitleCase(),
 					)
 				}
 				return result
