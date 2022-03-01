@@ -250,4 +250,10 @@
     <string name="sign_in">サインイン</string>
     <string name="welcome">ようこそ</string>
     <string name="black_dark_theme_summary">AMOLEDスクリーンでさらに少ない電力を使用</string>
+    <string name="computing_">コンピューティング…</string>
+    <string name="importing_progress">マンガをインポート: %1$d of %2$d</string>
+    <string name="screenshots_allow">許可する</string>
+    <string name="screenshots_block_all">常にブロック</string>
+    <string name="screenshots_policy">スクリーンショットポリシー</string>
+    <string name="screenshots_block_nsfw">NSFWでブロック</string>
 </resources>
