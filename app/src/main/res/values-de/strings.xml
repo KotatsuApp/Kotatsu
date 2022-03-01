@@ -67,7 +67,7 @@
     <string name="loading_">Wird geladen …</string>
     <string name="category_delete_confirm">Möchtest du die Kategorie „%s“ wirklich aus deinen Favoriten entfernen\?
 \nAlle enthaltenen Manga gehen dabei verloren.</string>
-    <string name="text_delete_local_manga">\"%s\" dauerhaft vom Gerät löschen\?</string>
+    <string name="text_delete_local_manga">„%s“ dauerhaft vom Gerät löschen\?</string>
     <string name="_s_deleted_from_local_storage">„%s“ aus lokalem Speicher gelöscht</string>
     <string name="_s_removed_from_history">„%s“ aus dem Verlauf entfernt</string>
     <string name="detailed_list">Detaillierte Liste</string>
@@ -248,6 +248,12 @@
     <string name="show_pages_numbers">Seitenzahlen anzeigen</string>
     <string name="enabled_sources">Freigegebene Quellen</string>
     <string name="available_sources">Verfügbare Quellen</string>
-    <string name="dynamic_theme">Dynamisches Thema</string>
-    <string name="dynamic_theme_summary">Wendet ein Thema an, das auf dem Farbschema Ihres Hintergrundbildes basiert</string>
+    <string name="dynamic_theme">Dynamisches Farbschema</string>
+    <string name="dynamic_theme_summary">Wendet ein Farbschema an, das auf dem Farbschema Ihres Hintergrundbildes basiert</string>
+    <string name="computing_">Wird gerechnet …</string>
+    <string name="importing_progress">Manga werden importiert: %1$d von %2$d</string>
+    <string name="screenshots_allow">Erlauben</string>
+    <string name="screenshots_policy">Bildschirmfoto-Richtlinie</string>
+    <string name="screenshots_block_nsfw">Für NSFW blockieren</string>
+    <string name="screenshots_block_all">Immer blockieren</string>
 </resources>

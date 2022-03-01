@@ -250,4 +250,10 @@
     <string name="available_sources">Sources disponibles</string>
     <string name="dynamic_theme">Thème dynamique</string>
     <string name="dynamic_theme_summary">Applique un thème créé d\'après la palette de couleurs de votre fond d\'écran</string>
+    <string name="computing_">Calcul…</string>
+    <string name="importing_progress">Importation de mangas : %1$d sur %2$d</string>
+    <string name="screenshots_block_nsfw">Bloquer pour contenu sensible</string>
+    <string name="screenshots_block_all">Toujours bloquer</string>
+    <string name="screenshots_policy">Politique relative aux captures d\'écran</string>
+    <string name="screenshots_allow">Autoriser</string>
 </resources>
