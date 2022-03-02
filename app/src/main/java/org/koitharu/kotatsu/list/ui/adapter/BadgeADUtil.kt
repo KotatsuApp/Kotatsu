@@ -29,8 +29,6 @@ private fun initBadge(anchor: View): BadgeDrawable {
 	val badge = BadgeDrawable.create(anchor.context)
 	val resources = anchor.resources
 	badge.maxCharacterCount = resources.getInteger(R.integer.manga_badge_max_character_count)
-	badge.horizontalOffsetWithoutText = resources.getDimensionPixelOffset(R.dimen.manga_badge_offset_horizontal)
-	badge.verticalOffsetWithoutText = resources.getDimensionPixelOffset(R.dimen.manga_badge_offset_vertical)
 	anchor.doOnNextLayout {
 		BadgeUtils.attachBadgeDrawable(badge, it)
 		badge.align()
@@ -39,6 +37,6 @@ private fun initBadge(anchor: View): BadgeDrawable {
 }
 
 private fun BadgeDrawable.align() {
-	horizontalOffsetWithText = horizontalOffsetWithoutText + intrinsicWidth / 2
-	verticalOffsetWithText = verticalOffsetWithoutText + intrinsicHeight / 2
+	horizontalOffset = intrinsicWidth
+	verticalOffset = intrinsicHeight
 }
