@@ -250,4 +250,6 @@
     <string name="enabled_sources">Brukte kilder</string>
     <string name="dynamic_theme">Dynamisk tema</string>
     <string name="dynamic_theme_summary">Bruker et tema basert på fargene til bakgrunnen din</string>
+    <string name="computing_">Beregner …</string>
+    <string name="importing_progress">Importerer manga: %1$d av %2$d</string>
 </resources>

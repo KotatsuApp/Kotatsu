@@ -9,7 +9,7 @@
     <string name="share_image">Condividi l\'immagine</string>
     <string name="page_saved">Pagina salvata correttamente</string>
     <string name="save_page">Salva la pagina</string>
-    <string name="wait_for_loading_finish">Aspetta che il carico finisca</string>
+    <string name="wait_for_loading_finish">Aspetta che il carico finisca…</string>
     <string name="pages">Pagine</string>
     <string name="automatic">Automatico</string>
     <string name="dark">Scuro</string>
@@ -56,8 +56,7 @@
     <string name="detailed_list">Elenco dettagliato</string>
     <string name="category_delete_confirm">Vuoi davvero rimuovere la categoria «%s» dai tuoi preferiti\?
 \nTutti i manga contenuti saranno persi.</string>
-    <string name="text_delete_local_manga">Vuoi davvero eliminare «%s» dalla memoria locale del tuo telefono\?
-\nQuesta operazione non può essere annullata.</string>
+    <string name="text_delete_local_manga">Vuoi davvero eliminare «%s» dalla memoria locale del tuo dispositivo\?</string>
     <string name="_s_deleted_from_local_storage">«%s» eliminato dall\'archiviazione locale</string>
     <string name="_s_removed_from_history">«%s» rimosso dalla cronologia</string>
     <string name="list">Lista</string>
@@ -75,7 +74,7 @@
     <string name="welcome">Benvenuto/a</string>
     <string name="languages">Lingue</string>
     <string name="other">Altro</string>
-    <string name="text_clear_search_history_prompt">Vuoi davvero rimuovere tutte le ricerche recenti\? Questa azione non può essere annullata.</string>
+    <string name="text_clear_search_history_prompt">Vuoi davvero rimuovere tutte le ricerche recenti\?</string>
     <string name="search_only_on_s">Cerca solo su %s</string>
     <string name="hide_toolbar">Nascondi la barra degli strumenti quando si scorre</string>
     <string name="password_length_hint">La password deve essere di almeno 4 caratteri</string>
@@ -199,7 +198,7 @@
     <string name="cache">Cache</string>
     <string name="clear_pages_cache">Cancella la cache delle pagine</string>
     <string name="remove">Rimuovi</string>
-    <string name="text_clear_history_prompt">Vuoi davvero cancellare tutta la tua cronologia di lettura\? Questa azione non può essere annullata.</string>
+    <string name="text_clear_history_prompt">Vuoi davvero cancellare tutta la tua cronologia di lettura\?</string>
     <string name="clear">Cancella</string>
     <string name="tracker_warning">Alcuni produttori possono cambiare il comportamento del sistema, che può interrompere le attività nello sfondo.</string>
     <string name="backup_saved">Backup salvato con successo</string>
@@ -227,7 +226,7 @@
     <string name="queued">In coda</string>
     <string name="about_license">Licenza</string>
     <string name="about_copyright_and_licenses">Diritti d\'autore e licenze</string>
-    <string name="about_gratitudes_summary">Queste persone rendono Kotatsu migliore!</string>
+    <string name="about_gratitudes_summary">Queste persone rendono Kotatsu migliore</string>
     <string name="about_gratitudes">Ringraziamenti</string>
     <string name="about_support_developer_summary">Se ti piace questa applicazione, puoi aiutare finanziariamente via Yoomoney (Yandex.Money)</string>
     <string name="about_support_developer">Sostieni lo sviluppatore</string>
@@ -249,4 +248,12 @@
     <string name="show_pages_numbers">Mostra i numeri delle pagine</string>
     <string name="enabled_sources">Fonti abilitate</string>
     <string name="available_sources">Fonti disponibili</string>
+    <string name="dynamic_theme_summary">Applica un tema creato sulla combinazione di colori del tuo sfondo</string>
+    <string name="computing_">Calcolo…</string>
+    <string name="importing_progress">Importazione di manga: %1$d di %2$d</string>
+    <string name="dynamic_theme">Tema dinamico</string>
+    <string name="screenshots_policy">Politica sulle schermate</string>
+    <string name="screenshots_allow">Permetti</string>
+    <string name="screenshots_block_nsfw">Blocca per NSFW</string>
+    <string name="screenshots_block_all">Blocca sempre</string>
 </resources>
