@@ -7,10 +7,7 @@ import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.EmptyState
-import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.onFirst
@@ -19,6 +16,8 @@ class SuggestionsViewModel(
 	repository: SuggestionRepository,
 	settings: AppSettings,
 ) : MangaListViewModel(settings) {
+
+	private val headerModel = ListHeader(null, R.string.suggestions)
 
 	override val content = combine(
 		repository.observeAll(),
@@ -30,7 +29,10 @@ class SuggestionsViewModel(
 				textPrimary = R.string.nothing_found,
 				textSecondary = R.string.text_suggestion_holder,
 			))
-			else -> list.toUi(mode)
+			else -> buildList<ListModel>(list.size + 1) {
+				add(headerModel)
+				list.toUi(this, mode)
+			}
 		}
 	}.onFirst {
 		isLoading.postValue(false)

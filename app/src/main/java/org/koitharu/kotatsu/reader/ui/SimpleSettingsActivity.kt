@@ -14,10 +14,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.ActivitySettingsSimpleBinding
-import org.koitharu.kotatsu.settings.MainSettingsFragment
-import org.koitharu.kotatsu.settings.NetworkSettingsFragment
-import org.koitharu.kotatsu.settings.ReaderSettingsFragment
-import org.koitharu.kotatsu.settings.SourceSettingsFragment
+import org.koitharu.kotatsu.settings.*
 
 class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 
@@ -27,9 +24,11 @@ class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		supportFragmentManager.commit {
 			replace(
-				R.id.container, when (intent?.action) {
+				R.id.container,
+				when (intent?.action) {
 					Intent.ACTION_MANAGE_NETWORK_USAGE -> NetworkSettingsFragment()
 					ACTION_READER -> ReaderSettingsFragment()
+					ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
 					ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 						intent.getParcelableExtra(EXTRA_SOURCE) ?: MangaSource.LOCAL
 					)
@@ -55,6 +54,8 @@ class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 
 		private const val ACTION_READER =
 			"${BuildConfig.APPLICATION_ID}.action.MANAGE_READER_SETTINGS"
+		private const val ACTION_SUGGESTIONS =
+			"${BuildConfig.APPLICATION_ID}.action.MANAGE_SUGGESTIONS"
 		private const val ACTION_SOURCE =
 			"${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
 		private const val EXTRA_SOURCE = "source"
@@ -62,6 +63,10 @@ class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 		fun newReaderSettingsIntent(context: Context) =
 			Intent(context, SimpleSettingsActivity::class.java)
 				.setAction(ACTION_READER)
+
+		fun newSuggestionsSettingsIntent(context: Context) =
+			Intent(context, SimpleSettingsActivity::class.java)
+				.setAction(ACTION_SUGGESTIONS)
 
 		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
 			Intent(context, SimpleSettingsActivity::class.java)

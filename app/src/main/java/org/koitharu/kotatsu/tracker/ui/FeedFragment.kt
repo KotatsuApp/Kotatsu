@@ -78,7 +78,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 				Snackbar.make(
 					binding.recyclerView,
 					R.string.feed_will_update_soon,
-					Snackbar.LENGTH_SHORT
+					Snackbar.LENGTH_LONG,
 				).show()
 				true
 			}
