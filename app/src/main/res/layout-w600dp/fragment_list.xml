@@ -20,7 +20,6 @@
 			android:layout_height="match_parent"
 			android:orientation="vertical"
 			android:padding="@dimen/grid_spacing_outer"
-			android:scrollbars="vertical"
 			app:fastScrollEnabled="true"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 			tools:listitem="@layout/item_manga_list" />
