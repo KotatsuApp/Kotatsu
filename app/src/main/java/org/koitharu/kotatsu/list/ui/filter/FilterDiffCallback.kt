@@ -6,6 +6,7 @@ class FilterDiffCallback : DiffUtil.ItemCallback<FilterItem>() {
 
 	override fun areItemsTheSame(oldItem: FilterItem, newItem: FilterItem): Boolean {
 		return when {
+			oldItem === newItem -> true
 			oldItem.javaClass != newItem.javaClass -> false
 			oldItem is FilterItem.Header && newItem is FilterItem.Header -> {
 				oldItem.titleResId == newItem.titleResId
@@ -22,6 +23,7 @@ class FilterDiffCallback : DiffUtil.ItemCallback<FilterItem>() {
 
 	override fun areContentsTheSame(oldItem: FilterItem, newItem: FilterItem): Boolean {
 		return when {
+			oldItem === newItem -> true
 			oldItem is FilterItem.Header && newItem is FilterItem.Header -> true
 			oldItem is FilterItem.Tag && newItem is FilterItem.Tag -> {
 				oldItem.isChecked == newItem.isChecked

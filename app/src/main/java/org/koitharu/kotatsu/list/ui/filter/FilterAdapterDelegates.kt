@@ -4,6 +4,7 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.databinding.ItemCheckableMultipleBinding
 import org.koitharu.kotatsu.databinding.ItemCheckableSingleBinding
 import org.koitharu.kotatsu.databinding.ItemFilterHeaderBinding
+import org.koitharu.kotatsu.databinding.ItemLoadingFooterBinding
 
 fun filterSortDelegate(
 	listener: OnFilterChangedListener,
@@ -45,3 +46,7 @@ fun filterHeaderDelegate() = adapterDelegateViewBinding<FilterItem.Header, Filte
 		binding.root.setText(item.titleResId)
 	}
 }
+
+fun filterLoadingDelegate() = adapterDelegateViewBinding<FilterItem.Loading, FilterItem, ItemLoadingFooterBinding>(
+	{ layoutInflater, parent -> ItemLoadingFooterBinding.inflate(layoutInflater, parent, false) }
+) { }

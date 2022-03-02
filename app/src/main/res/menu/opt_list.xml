@@ -9,9 +9,4 @@
 		android:title="@string/list_mode"
 		app:showAsAction="never" />
 
-	<item
-		android:id="@+id/action_filter"
-		android:orderInCategory="30"
-		android:title="@string/filter"
-		app:showAsAction="never" />
 </menu>

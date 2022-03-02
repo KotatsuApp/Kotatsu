@@ -9,11 +9,12 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.list.domain.AvailableFilters
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
+import org.koitharu.kotatsu.list.ui.filter.FilterState
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
@@ -22,6 +23,8 @@ class RemoteListViewModel(
 	settings: AppSettings
 ) : MangaListViewModel(settings) {
 
+	var filter = FilterState(repository.sortOrders.firstOrNull(), emptySet())
+		private set
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private val listError = MutableStateFlow<Throwable?>(null)
@@ -54,7 +57,6 @@ class RemoteListViewModel(
 
 	init {
 		loadList(false)
-		loadFilter()
 	}
 
 	override fun onRefresh() {
@@ -65,10 +67,25 @@ class RemoteListViewModel(
 		loadList(append = !mangaList.value.isNullOrEmpty())
 	}
 
+	override fun onRemoveFilterTag(tag: MangaTag) {
+		val tags = filter.tags
+		if (tag !in tags) {
+			return
+		}
+		applyFilter(FilterState(filter.sortOrder, tags - tag))
+	}
+
 	fun loadNextPage() {
 		if (hasNextPage.value && listError.value == null) {
 			loadList(append = true)
 		}
+	}
+
+	fun applyFilter(newFilter: FilterState) {
+		filter = newFilter
+		mangaList.value = null
+		hasNextPage.value = false
+		loadList(false)
 	}
 
 	private fun loadList(append: Boolean) {
@@ -80,8 +97,8 @@ class RemoteListViewModel(
 				listError.value = null
 				val list = repository.getList2(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
-					sortOrder = currentFilter.sortOrder,
-					tags = currentFilter.tags,
+					sortOrder = filter.sortOrder,
+					tags = filter.tags,
 				)
 				if (!append) {
 					mangaList.value = list
@@ -98,34 +115,12 @@ class RemoteListViewModel(
 		}
 	}
 
-	override fun onFilterChanged() {
-		super.onFilterChanged()
-		mangaList.value = null
-		hasNextPage.value = false
-		loadList(false)
-	}
-
 	private fun createFilterModel(): CurrentFilterModel? {
-		val tags = currentFilter.tags
+		val tags = filter.tags
 		return if (tags.isEmpty()) {
 			null
 		} else {
 			CurrentFilterModel(tags.map { ChipsView.ChipModel(0, it.title, it) })
-		}
-	}
-
-	private fun loadFilter() {
-		launchJob(Dispatchers.Default) {
-			try {
-				val sorts = repository.sortOrders
-				val tags = repository.getTags()
-				availableFilters = AvailableFilters(sorts, tags)
-				onFilterChanged()
-			} catch (e: Exception) {
-				if (BuildConfig.DEBUG) {
-					e.printStackTrace()
-				}
-			}
 		}
 	}
 }
