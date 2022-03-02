@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -14,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
+import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -32,6 +31,8 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 
 	private var feedAdapter: FeedAdapter? = null
 	private var updateStatusSnackbar: Snackbar? = null
+	private var paddingVertical = 0
+	private var paddingHorizontal = 0
 
 	override fun getTitle() = context?.getString(R.string.updates)
 
@@ -52,9 +53,10 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 			adapter = feedAdapter
 			setHasFixedSize(true)
 			addOnScrollListener(PaginationScrollListener(4, this@FeedFragment))
-			val dividerDecoration = MaterialDividerItemDecoration(context, RecyclerView.VERTICAL)
-			dividerDecoration.setDividerInsetStartResource(context, R.dimen.feed_dividers_offset)
-			addItemDecoration(dividerDecoration)
+			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
+			paddingHorizontal = spacing
+			paddingVertical = resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
+			addItemDecoration(SpacingItemDecoration(spacing))
 		}
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
@@ -105,10 +107,10 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 	override fun onWindowInsetsChanged(insets: Insets) {
 		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		binding.recyclerView.updatePadding(
-			top = headerHeight,
-			left = insets.left,
-			right = insets.right,
-			bottom = insets.bottom
+			top = headerHeight + paddingVertical,
+			left = insets.left + paddingHorizontal,
+			right = insets.right + paddingHorizontal,
+			bottom = insets.bottom + paddingVertical,
 		)
 	}
 
