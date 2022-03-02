@@ -26,7 +26,6 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
-import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.util.concurrent.TimeUnit
 
@@ -201,7 +200,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	}
 
 	private fun createForegroundInfo(): ForegroundInfo {
-		val title = applicationContext.getString(R.string.new_chapters_checking)
+		val title = applicationContext.getString(R.string.check_for_new_chapters)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			val channel = NotificationChannel(
 				WORKER_CHANNEL_ID,

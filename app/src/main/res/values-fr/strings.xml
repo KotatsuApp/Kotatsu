@@ -20,7 +20,7 @@
     <string name="auth_required">Connectez-vous pour voir ce contenu</string>
     <string name="sign_in">Se connecter</string>
     <string name="reverse">Inverser</string>
-    <string name="new_chapters_checking">À la recherche de nouveaux chapitres…</string>
+    <string name="check_for_new_chapters">À la recherche de nouveaux chapitres</string>
     <string name="text_clear_updates_feed_prompt">Effacer définitivement l\'historique des mises à jour \?</string>
     <string name="clear_feed">Effacer le flux</string>
     <string name="chapters_checking_progress">Recherche de nouveaux chapitres : %1$d sur %2$d</string>

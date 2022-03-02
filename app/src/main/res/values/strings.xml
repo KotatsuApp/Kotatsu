@@ -200,7 +200,7 @@
     <string name="chapters_checking_progress">Checking for new chapters: %1$d of %2$d</string>
     <string name="clear_feed">Clear feed</string>
     <string name="text_clear_updates_feed_prompt">Clear all update history permanently?</string>
-    <string name="new_chapters_checking">Looking for new chapters…</string>
+    <string name="check_for_new_chapters">Check for new chapters</string>
     <string name="reverse">Reverse</string>
     <string name="sign_in">Sign in</string>
     <string name="auth_required">Sign in to view this content</string>

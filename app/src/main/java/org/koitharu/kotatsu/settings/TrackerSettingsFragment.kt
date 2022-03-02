@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 
-class TrackerSettingsFragment : BasePreferenceFragment(R.string.new_chapters_checking) {
+class TrackerSettingsFragment : BasePreferenceFragment(R.string.check_for_new_chapters) {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_tracker)

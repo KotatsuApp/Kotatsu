@@ -85,7 +85,7 @@
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.TrackerSettingsFragment"
-		android:title="@string/new_chapters_checking"
+		android:title="@string/check_for_new_chapters"
 		app:iconSpaceReserved="false" />
 
 	<PreferenceScreen

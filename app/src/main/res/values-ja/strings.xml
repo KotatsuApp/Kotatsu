@@ -206,7 +206,7 @@
     <string name="data_restored_with_errors">データは復元されましたがエラーが発生しました</string>
     <string name="text_clear_search_history_prompt">最近の検索クエリを全て完全に削除しますか？</string>
     <string name="zoom_mode_fit_width">幅を合わせる</string>
-    <string name="new_chapters_checking">新しいチャプターを探しています…</string>
+    <string name="check_for_new_chapters">新しいチャプターを探しています</string>
     <string name="languages">言語</string>
     <string name="protect_application_subtitle">アプリを起動するためのパスワードを入力してください</string>
     <string name="create_backup">データバックアップを作成</string>

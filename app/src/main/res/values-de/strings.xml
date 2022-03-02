@@ -107,7 +107,7 @@
     <string name="default_s">Standard: %s</string>
     <string name="auth_required">Du solltest diesen Inhalt autorisieren, um ihn zu sehen</string>
     <string name="reverse">Umkehren</string>
-    <string name="new_chapters_checking">Neue Kapitel prüfen…</string>
+    <string name="check_for_new_chapters">Neue Kapitel prüfen</string>
     <string name="clear_feed">Feed löschen</string>
     <string name="sign_in">Anmelden</string>
     <string name="password_length_hint">Das Passwort muss mindestens 4 Zeichen lang sein</string>

@@ -206,7 +206,7 @@
     <string name="default_s">Predefinito: %s</string>
     <string name="auth_required">Devi autorizzare la visualizzazione di questo contenuto</string>
     <string name="reverse">Inverti</string>
-    <string name="new_chapters_checking">Controllo dei nuovi capitoli</string>
+    <string name="check_for_new_chapters">Controllo dei nuovi capitoli</string>
     <string name="chapters_checking_progress">Controllo dei nuovi capitoli: %1$d di %2$d</string>
     <string name="cookies_cleared">Tutti i cookie sono stati rimossi</string>
     <string name="clear_cookies">Cancella i cookie</string>

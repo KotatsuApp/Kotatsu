@@ -38,7 +38,7 @@
     <string name="auth_required">Sinun pitäisi valtuuttaa nähdäksesi tämän sisällön</string>
     <string name="sign_in">Kirjaudu sisään</string>
     <string name="reverse">Takaperin</string>
-    <string name="new_chapters_checking">Uusien lukujen tarkastaminen</string>
+    <string name="check_for_new_chapters">Uusien lukujen tarkastaminen</string>
     <string name="text_clear_updates_feed_prompt">Kaikki päivityshistoria tyhjennetään, eikä tätä toimenpidettä voi peruuttaa. Oletko varma\?</string>
     <string name="clear_feed">Tyhjennä syöttö</string>
     <string name="chapters_checking_progress">Uusien lukujen tarkistaminen: %1$d ja %2$d välillä</string>

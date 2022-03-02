@@ -165,7 +165,7 @@
     <string name="chapters_checking_progress">Verificando novos capítulos: %1$d de %2$d</string>
     <string name="clear_feed">Limpar feed</string>
     <string name="text_clear_updates_feed_prompt">Limpar todo o histórico de atualizações permanentemente\?</string>
-    <string name="new_chapters_checking">Em busca de novos capítulos…</string>
+    <string name="check_for_new_chapters">Em busca de novos capítulos</string>
     <string name="reverse">Reverter</string>
     <string name="sign_in">Entrar</string>
     <string name="default_s">Padrão: %s</string>

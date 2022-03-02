@@ -12,7 +12,7 @@
     <string name="_and_x_more">… og %1$d til</string>
     <string name="auth_required">Logg inn for å se dette innholdet</string>
     <string name="reverse">Inverter</string>
-    <string name="new_chapters_checking">Sjekker etter nye kapitler…</string>
+    <string name="check_for_new_chapters">Sjekker etter nye kapitler</string>
     <string name="text_clear_updates_feed_prompt">Tøm all oppdateringshistorikk for godt\?</string>
     <string name="clear_feed">Tøm flyt</string>
     <string name="chapters_checking_progress">Ser etter nye kapitler: %1$d av %2$d</string>

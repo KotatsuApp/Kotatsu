@@ -195,7 +195,7 @@
     <string name="chapters_checking_progress">Праверка новых частак: %1$d з %2$d</string>
     <string name="clear_feed">Ачысціць стужку</string>
     <string name="text_clear_updates_feed_prompt">Уся гісторыя абнаўленняў будзе ачышчана і яе нельга будзе вярнуць. Вы ўпэўненыя\?</string>
-    <string name="new_chapters_checking">Праверка новых глаў</string>
+    <string name="check_for_new_chapters">Праверка новых глаў</string>
     <string name="reverse">У адваротным парадку</string>
     <string name="sign_in">Увайсці</string>
     <string name="auth_required">Для прагляду гэтага кантэнту патрабуецца аўтарызацыя</string>
