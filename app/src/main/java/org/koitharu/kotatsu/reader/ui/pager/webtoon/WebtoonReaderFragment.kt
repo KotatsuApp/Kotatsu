@@ -12,7 +12,10 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.doOnCurrentItemChanged
+import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
+import org.koitharu.kotatsu.utils.ext.firstItem
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
@@ -26,7 +29,7 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		webtoonAdapter = WebtoonAdapter(loader, get(), exceptionResolver)
+		webtoonAdapter = WebtoonAdapter(viewModel.pageLoader, get(), exceptionResolver)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = webtoonAdapter

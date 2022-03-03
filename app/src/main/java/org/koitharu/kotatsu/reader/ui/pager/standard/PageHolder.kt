@@ -37,7 +37,7 @@ open class PageHolder(
 	}
 
 	override fun onRecycled() {
-		delegate.onRecycle()
+		super.onRecycled()
 		binding.ssiv.recycle()
 	}
 

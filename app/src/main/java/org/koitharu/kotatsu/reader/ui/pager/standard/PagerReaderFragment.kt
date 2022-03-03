@@ -29,7 +29,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		pagesAdapter = PagesAdapter(loader, get(), exceptionResolver)
+		pagesAdapter = PagesAdapter(viewModel.pageLoader, get(), exceptionResolver)
 		with(binding.pager) {
 			adapter = pagesAdapter
 			offscreenPageLimit = 2

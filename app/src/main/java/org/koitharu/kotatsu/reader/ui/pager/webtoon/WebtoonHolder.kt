@@ -37,7 +37,7 @@ class WebtoonHolder(
 	}
 
 	override fun onRecycled() {
-		delegate.onRecycle()
+		super.onRecycled()
 		binding.ssiv.recycle()
 	}
 

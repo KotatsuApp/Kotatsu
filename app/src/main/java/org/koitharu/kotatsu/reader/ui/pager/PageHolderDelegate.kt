@@ -3,7 +3,10 @@ package org.koitharu.kotatsu.reader.ui.pager
 import android.net.Uri
 import androidx.core.net.toUri
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.MangaPage
@@ -20,21 +23,22 @@ class PageHolderDelegate(
 	private val settings: AppSettings,
 	private val callback: Callback,
 	private val exceptionResolver: ExceptionResolver
-) : SubsamplingScaleImageView.DefaultOnImageEventListener(), CoroutineScope by loader {
+) : SubsamplingScaleImageView.DefaultOnImageEventListener() {
 
+	private val scope = loader.loaderScope + Dispatchers.Main.immediate
 	private var state = State.EMPTY
 	private var job: Job? = null
 	private var file: File? = null
 	private var error: Throwable? = null
 
 	fun onBind(page: MangaPage) {
-		job = launchInstead(job) {
+		job = scope.launchInstead(job) {
 			doLoad(page, force = false)
 		}
 	}
 
 	fun retry(page: MangaPage) {
-		job = launchInstead(job) {
+		job = scope.launchInstead(job) {
 			(error as? ResolvableException)?.let {
 				exceptionResolver.resolve(it)
 			}
@@ -65,7 +69,7 @@ class PageHolderDelegate(
 		val file = this.file
 		error = e
 		if (state == State.LOADED && e is IOException && file != null && file.exists()) {
-			job = launchAfter(job) {
+			job = scope.launchAfter(job) {
 				state = State.CONVERTING
 				try {
 					loader.convertInPlace(file)
