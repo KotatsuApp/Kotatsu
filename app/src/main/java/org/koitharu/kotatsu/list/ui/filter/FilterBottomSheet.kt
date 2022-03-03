@@ -8,7 +8,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
@@ -18,7 +19,9 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 
 class FilterBottomSheet : BaseBottomSheet<SheetFilterBinding>() {
 
-	private val viewModel by viewModel<FilterViewModel> {
+	private val viewModel by sharedViewModel<FilterViewModel>(
+		owner = { from(requireParentFragment(), requireParentFragment()) }
+	) {
 		parametersOf(
 			requireArguments().getParcelable<MangaSource>(ARG_SOURCE),
 			requireArguments().getParcelable<FilterState>(ARG_STATE),

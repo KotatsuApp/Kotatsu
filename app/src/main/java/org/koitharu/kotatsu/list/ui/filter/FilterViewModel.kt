@@ -4,13 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.SortOrder
-import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import java.util.*
 
 class FilterViewModel(
-	private val repository: MangaRepository,
+	private val repository: RemoteMangaRepository,
+	dataRepository: MangaDataRepository,
 	state: FilterState,
 ) : BaseViewModel(), OnFilterChangedListener {
 
@@ -21,6 +23,9 @@ class FilterViewModel(
 	private val selectedTags = HashSet(state.tags)
 	private val availableTagsDeferred = viewModelScope.async(Dispatchers.Default + createErrorHandler()) {
 		repository.getTags()
+	}
+	private val localTagsDeferred = viewModelScope.async(Dispatchers.Default + createErrorHandler()) {
+		dataRepository.findTags(repository.source)
 	}
 
 	init {
@@ -48,6 +53,7 @@ class FilterViewModel(
 		job = launchJob(Dispatchers.Default) {
 			previousJob?.cancelAndJoin()
 			val tags = availableTagsDeferred.await()
+			val localTags = localTagsDeferred.await()
 			val sortOrders = repository.sortOrders
 			val list = ArrayList<FilterItem>(sortOrders.size + tags.size + 2)
 			list.add(FilterItem.Header(R.string.sort_order))
@@ -57,6 +63,7 @@ class FilterViewModel(
 			if (tags.isNotEmpty() || selectedTags.isNotEmpty()) {
 				list.add(FilterItem.Header(R.string.genres))
 				val mappedTags = TreeSet<FilterItem.Tag>(compareBy({ !it.isChecked }, { it.tag.title }))
+				localTags.mapTo(mappedTags) { FilterItem.Tag(it, isChecked = it in selectedTags) }
 				tags.mapTo(mappedTags) { FilterItem.Tag(it, isChecked = it in selectedTags) }
 				selectedTags.mapTo(mappedTags) { FilterItem.Tag(it, isChecked = true) }
 				list.addAll(mappedTags)

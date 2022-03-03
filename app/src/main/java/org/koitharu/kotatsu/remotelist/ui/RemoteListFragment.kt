@@ -54,11 +54,15 @@ class RemoteListFragment : MangaListFragment(), FragmentResultListener {
 				true
 			}
 			R.id.action_filter -> {
-				FilterBottomSheet.show(childFragmentManager, source, viewModel.filter)
+				onFilterClick()
 				true
 			}
 			else -> super.onOptionsItemSelected(item)
 		}
+	}
+
+	override fun onFilterClick() {
+		FilterBottomSheet.show(childFragmentManager, source, viewModel.filter)
 	}
 
 	override fun onFragmentResult(requestKey: String, result: Bundle) {

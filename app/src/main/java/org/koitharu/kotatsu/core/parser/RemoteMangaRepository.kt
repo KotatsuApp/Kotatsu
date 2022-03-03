@@ -4,7 +4,6 @@ import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.MangaTag
-import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 
 abstract class RemoteMangaRepository(
@@ -19,8 +18,6 @@ abstract class RemoteMangaRepository(
 
 	val title: String
 		get() = source.title
-
-	override val sortOrders: Set<SortOrder> get() = emptySet()
 
 	override suspend fun getPageUrl(page: MangaPage): String = page.url.withDomain()
 

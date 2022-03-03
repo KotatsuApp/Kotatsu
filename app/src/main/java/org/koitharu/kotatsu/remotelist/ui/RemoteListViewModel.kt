@@ -10,7 +10,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaTag
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -19,7 +18,7 @@ import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class RemoteListViewModel(
-	private val repository: MangaRepository,
+	private val repository: RemoteMangaRepository,
 	settings: AppSettings
 ) : MangaListViewModel(settings) {
 
@@ -29,21 +28,24 @@ class RemoteListViewModel(
 	private val hasNextPage = MutableStateFlow(false)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private var loadingJob: Job? = null
-	private val headerModel = ListHeader((repository as RemoteMangaRepository).title, 0)
+	private val headerModel = MutableStateFlow(
+		ListHeader(repository.title, 0, filter.sortOrder)
+	)
 
 	override val content = combine(
 		mangaList,
 		createListModeFlow(),
+		headerModel,
 		listError,
 		hasNextPage
-	) { list, mode, error, hasNext ->
+	) { list, mode, header, error, hasNext ->
 		when {
 			list.isNullOrEmpty() && error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
 			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_book_cross, R.string.nothing_found, R.string.empty))
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 3)
-				result += headerModel
+				result += header
 				createFilterModel()?.let { result.add(it) }
 				list.toUi(result, mode)
 				when {
@@ -83,6 +85,7 @@ class RemoteListViewModel(
 
 	fun applyFilter(newFilter: FilterState) {
 		filter = newFilter
+		headerModel.value = ListHeader(repository.title, 0, newFilter.sortOrder)
 		mangaList.value = null
 		hasNextPage.value = false
 		loadList(false)

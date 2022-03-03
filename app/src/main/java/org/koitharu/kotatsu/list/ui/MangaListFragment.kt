@@ -64,7 +64,8 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			lifecycleOwner = viewLifecycleOwner,
 			clickListener = this,
 			onRetryClick = ::resolveException,
-			onTagRemoveClick = viewModel::onRemoveFilterTag
+			onTagRemoveClick = viewModel::onRemoveFilterTag,
+			onFilterClickListener = this::onFilterClick,
 		)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
@@ -190,6 +191,8 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			)
 		}
 	}
+
+	protected open fun onFilterClick() = Unit
 
 	private fun onGridScaleChanged(scale: Float) {
 		spanSizeLookup.invalidateCache()
