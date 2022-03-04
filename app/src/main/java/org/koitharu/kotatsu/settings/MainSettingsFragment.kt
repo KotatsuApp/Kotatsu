@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceScreen
-import androidx.preference.SwitchPreference
+import androidx.preference.TwoStatePreference
 import kotlinx.coroutines.launch
 import leakcanary.LeakCanary
 import org.koin.android.ext.android.inject
@@ -56,7 +56,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			entryValues = ListMode.values().names()
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
-		findPreference<SwitchPreference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible =
+		findPreference<Preference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible =
 			AppSettings.isDynamicColorAvailable
 		findPreference<ListPreference>(AppSettings.KEY_DATE_FORMAT)?.run {
 			entryValues = arrayOf("", "MM/dd/yy", "dd/MM/yy", "yyyy-MM-dd", "dd MMM yyyy", "MMM dd, yyyy")
@@ -72,12 +72,15 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			setDefaultValueCompat("")
 			summary = "%s"
 		}
+		findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
+			if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled
+		)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.bindStorageName()
-		findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
+		findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)?.isChecked =
 			!settings.appPassword.isNullOrEmpty()
 		settings.subscribe(this)
 	}
@@ -114,14 +117,19 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
 			}
 			AppSettings.KEY_HIDE_TOOLBAR -> {
-				findPreference<SwitchPreference>(key)?.setSummary(R.string.restart_required)
+				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
 			}
 			AppSettings.KEY_LOCAL_STORAGE -> {
 				findPreference<Preference>(key)?.bindStorageName()
 			}
 			AppSettings.KEY_APP_PASSWORD -> {
-				findPreference<SwitchPreference>(AppSettings.KEY_PROTECT_APP)
+				findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)
 					?.isChecked = !settings.appPassword.isNullOrEmpty()
+			}
+			AppSettings.KEY_SUGGESTIONS -> {
+				findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
+					if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled
+				)
 			}
 		}
 	}
@@ -148,7 +156,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				true
 			}
 			AppSettings.KEY_PROTECT_APP -> {
-				val pref = (preference as? SwitchPreference ?: return false)
+				val pref = (preference as? TwoStatePreference ?: return false)
 				if (pref.isChecked) {
 					pref.isChecked = false
 					startActivity(Intent(preference.context, ProtectSetupActivity::class.java))

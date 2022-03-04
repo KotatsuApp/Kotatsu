@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
@@ -88,5 +89,9 @@ class HistoryRepository(
 		if (alternative == null || db.mangaDao.update(MangaEntity.from(alternative)) <= 0) {
 			db.historyDao.delete(manga.id)
 		}
+	}
+
+	suspend fun getAllTags(): Set<MangaTag> {
+		return db.historyDao.findAllTags().mapToSet { x -> x.toMangaTag() }
 	}
 }

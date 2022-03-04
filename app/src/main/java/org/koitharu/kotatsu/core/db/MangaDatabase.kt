@@ -10,6 +10,8 @@ import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.favourites.data.FavouritesDao
 import org.koitharu.kotatsu.history.data.HistoryDao
 import org.koitharu.kotatsu.history.data.HistoryEntity
+import org.koitharu.kotatsu.suggestions.data.SuggestionDao
+import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 
 @Database(
 	entities = [
@@ -35,4 +37,6 @@ abstract class MangaDatabase : RoomDatabase() {
 	abstract val tracksDao: TracksDao
 
 	abstract val trackLogsDao: TrackLogsDao
+
+	abstract val suggestionDao: SuggestionDao
 }

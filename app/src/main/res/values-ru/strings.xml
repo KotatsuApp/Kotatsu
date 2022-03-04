@@ -253,4 +253,12 @@
 	<string name="screenshots_allow">Разрешить</string>
 	<string name="screenshots_block_nsfw">Запретить для NSFW</string>
 	<string name="screenshots_block_all">Запретить всегда</string>
+	<string name="suggestions">Рекомендации</string>
+	<string name="suggestions_enable">Включить рекомендации</string>
+	<string name="suggestions_summary">Предлагать мангу на основе Ваших предпочтений</string>
+	<string name="suggestions_info">Все данные анализируются локально на устройстве. Ваши персональные данные не передаются в какие-либо сервисы</string>
+	<string name="text_suggestion_holder">Начните читать мангу, чтобы получать персональные предложения</string>
+	<string name="exclude_nsfw_from_suggestions">Не предлагать NSFW мангу</string>
+	<string name="enabled">Включено</string>
+	<string name="disabled">Выключено</string>
 </resources>

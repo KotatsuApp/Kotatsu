@@ -61,6 +61,13 @@
 		app:allowDividerAbove="true"
 		app:iconSpaceReserved="false" />
 
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.SuggestionsSettingsFragment"
+		android:key="suggestions"
+		android:persistent="false"
+		android:title="@string/suggestions"
+		app:iconSpaceReserved="false" />
+
 	<Preference
 		android:key="local_storage"
 		android:title="@string/manga_save_location"
@@ -71,7 +78,7 @@
 		android:title="@string/history_and_cache"
 		app:iconSpaceReserved="false" />
 
-	<SwitchPreference
+	<SwitchPreferenceCompat
 		android:key="protect_app"
 		android:persistent="false"
 		android:summary="@string/protect_application_summary"

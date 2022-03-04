@@ -62,7 +62,7 @@ class MangareadRepository(
 				tags = summary?.selectFirst(".mg_genres")?.select("a")?.mapToSet { a ->
 					MangaTag(
 						key = a.attr("href").removeSuffix("/").substringAfterLast('/'),
-						title = a.text(),
+						title = a.text().toTitleCase(),
 						source = MangaSource.MANGAREAD
 					)
 				}.orEmpty(),
@@ -91,7 +91,7 @@ class MangareadRepository(
 			}
 			MangaTag(
 				key = href,
-				title = a.text(),
+				title = a.text().toTitleCase(),
 				source = MangaSource.MANGAREAD
 			)
 		}
@@ -113,7 +113,7 @@ class MangareadRepository(
 				?.mapNotNullToSet { a ->
 					MangaTag(
 						key = a.attr("href").removeSuffix("/").substringAfterLast('/'),
-						title = a.text(),
+						title = a.text().toTitleCase(),
 						source = MangaSource.MANGAREAD
 					)
 				} ?: manga.tags,

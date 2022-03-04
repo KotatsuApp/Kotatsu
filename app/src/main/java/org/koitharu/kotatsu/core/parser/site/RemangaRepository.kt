@@ -73,7 +73,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 				author = null,
 				tags = jo.optJSONArray("genres")?.mapToSet { g ->
 					MangaTag(
-						title = g.getString("name"),
+						title = g.getString("name").toTitleCase(),
 						key = g.getInt("id").toString(),
 						source = MangaSource.REMANGA
 					)
@@ -109,7 +109,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			},
 			tags = content.getJSONArray("genres").mapToSet { g ->
 				MangaTag(
-					title = g.getString("name"),
+					title = g.getString("name").toTitleCase(),
 					key = g.getInt("id").toString(),
 					source = MangaSource.REMANGA
 				)
@@ -175,7 +175,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			.parseJson().getJSONObject("content").getJSONArray("genres")
 		return content.mapToSet { jo ->
 			MangaTag(
-				title = jo.getString("name"),
+				title = jo.getString("name").toTitleCase(),
 				key = jo.getInt("id").toString(),
 				source = source
 			)
