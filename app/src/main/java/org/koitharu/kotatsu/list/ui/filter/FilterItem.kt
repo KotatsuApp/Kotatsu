@@ -21,4 +21,8 @@ sealed interface FilterItem {
 	) : FilterItem
 
 	object Loading : FilterItem
+
+	class Error(
+		@StringRes val textResId: Int,
+	) : FilterItem
 }

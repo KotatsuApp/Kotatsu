@@ -10,4 +10,5 @@ class FilterAdapter(
 	filterTagDelegate(listener),
 	filterHeaderDelegate(),
 	filterLoadingDelegate(),
+	filterErrorDelegate(),
 )

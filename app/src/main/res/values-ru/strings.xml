@@ -253,4 +253,5 @@
 	<string name="screenshots_allow">Разрешить</string>
 	<string name="screenshots_block_nsfw">Запретить для NSFW</string>
 	<string name="screenshots_block_all">Запретить всегда</string>
+	<string name="filter_load_error">Не удалось загрузить список жанров</string>
 </resources>

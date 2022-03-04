@@ -255,4 +255,5 @@
 	<string name="screenshots_allow">Allow</string>
 	<string name="screenshots_block_nsfw">Block on NSFW</string>
 	<string name="screenshots_block_all">Block always</string>
+	<string name="filter_load_error">Unable to load genres list</string>
 </resources>
