@@ -292,7 +292,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		if (isLoading) {
 			binding.fab.setImageDrawable(CircularProgressDrawable(this).also {
 				it.setColorSchemeColors(R.color.kotatsu_onPrimaryContainer)
-				it.strokeWidth = resources.resolveDp(2f)
+				it.strokeWidth = resources.resolveDp(3.5f)
 				it.start()
 			})
 		} else {

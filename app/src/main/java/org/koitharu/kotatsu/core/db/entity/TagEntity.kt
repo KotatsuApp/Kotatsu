@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.longHashCode
+import org.koitharu.kotatsu.utils.ext.toTitleCase
 
 @Entity(tableName = "tags")
 class TagEntity(
@@ -18,7 +19,7 @@ class TagEntity(
 
 	fun toMangaTag() = MangaTag(
 		key = this.key,
-		title = this.title,
+		title = this.title.toTitleCase(),
 		source = MangaSource.valueOf(this.source)
 	)
 

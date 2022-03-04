@@ -22,7 +22,7 @@
 			android:id="@+id/appbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@android:color/transparent"
+			android:background="@null"
 			android:stateListAnimator="@null">
 
 			<FrameLayout
@@ -39,7 +39,7 @@
 					android:id="@id/toolbar"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:background="@android:color/transparent"
+					android:background="@null"
 					android:focusable="true"
 					android:focusableInTouchMode="true"
 					app:contentInsetStartWithNavigation="0dp"
@@ -74,6 +74,7 @@
 			android:contentDescription="@string/_continue"
 			android:src="@drawable/ic_read_fill"
 			android:visibility="gone"
+			app:backgroundTint="?attr/colorContainer"
 			app:fabSize="normal"
 			app:layout_anchor="@id/container"
 			app:layout_anchorGravity="bottom|end"
@@ -89,7 +90,6 @@
 		android:layout_height="match_parent"
 		android:layout_gravity="start"
 		android:fitsSystemWindows="true"
-		app:insetForeground="@android:color/transparent"
 		app:menu="@menu/nav_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
