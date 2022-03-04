@@ -256,4 +256,5 @@
     <string name="screenshots_block_nsfw">Uygunsuzlarda engelle</string>
     <string name="screenshots_block_all">Her zaman engelle</string>
     <string name="screenshots_allow">İzin ver</string>
+    <string name="check_for_new_chapters">Yeni bölümleri denetle</string>
 </resources>
