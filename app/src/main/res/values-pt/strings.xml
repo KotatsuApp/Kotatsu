@@ -202,7 +202,7 @@
     <string name="chapter_is_missing">O capítulo está em falta</string>
     <string name="auth_complete">Autorizado</string>
     <string name="auth_not_supported_by">O login em %s não é suportado</string>
-    <string name="genres">Géneros</string>
+    <string name="genres">Gêneros</string>
     <string name="about_app_translation">Tradução</string>
     <string name="text_clear_cookies_prompt">Você será desconectado de todas as fontes</string>
     <string name="vibration">Vibração</string>
@@ -250,4 +250,10 @@
     <string name="system_default">Padrão</string>
     <string name="dynamic_theme">Tema dinâmico</string>
     <string name="dynamic_theme_summary">Aplica um tema criado no esquema de cores do seu papel de parede</string>
+    <string name="computing_">Computando…</string>
+    <string name="importing_progress">Importando mangá: %1$d de %2$d</string>
+    <string name="screenshots_allow">Permitir</string>
+    <string name="screenshots_block_nsfw">Bloquear no NSFW</string>
+    <string name="screenshots_policy">Política de captura de tela</string>
+    <string name="screenshots_block_all">Sempre bloquear</string>
 </resources>
