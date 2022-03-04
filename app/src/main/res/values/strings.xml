@@ -263,4 +263,5 @@
 	<string name="exclude_nsfw_from_suggestions">Do not suggest NSFW manga</string>
 	<string name="enabled">Enabled</string>
 	<string name="disabled">Disabled</string>
+	<string name="filter_load_error">Unable to load genres list</string>
 </resources>

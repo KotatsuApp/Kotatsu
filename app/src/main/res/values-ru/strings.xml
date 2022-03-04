@@ -261,4 +261,5 @@
 	<string name="exclude_nsfw_from_suggestions">Не предлагать NSFW мангу</string>
 	<string name="enabled">Включено</string>
 	<string name="disabled">Выключено</string>
+	<string name="filter_load_error">Не удалось загрузить список жанров</string>
 </resources>

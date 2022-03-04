@@ -17,6 +17,8 @@ class ExHentaiRepository(
 
 	override val source = MangaSource.EXHENTAI
 
+	override val sortOrders: Set<SortOrder> = emptySet()
+
 	override val defaultDomain: String
 		get() = if (isAuthorized()) DOMAIN_AUTHORIZED else DOMAIN_UNAUTHORIZED
 

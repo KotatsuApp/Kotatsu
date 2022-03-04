@@ -20,6 +20,7 @@ class MangaListAdapter(
 	clickListener: OnListItemClickListener<Manga>,
 	onRetryClick: (Throwable) -> Unit,
 	onTagRemoveClick: (MangaTag) -> Unit,
+	onFilterClickListener: () -> Unit,
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
 	init {
@@ -41,6 +42,7 @@ class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD())
 			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
 			.addDelegate(ITEM_TYPE_FILTER, currentFilterAD(onTagRemoveClick))
+			.addDelegate(ITEM_TYPE_HEADER_FILTER, listHeaderWithFilterAD(onFilterClickListener))
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {
@@ -79,5 +81,6 @@ class MangaListAdapter(
 		const val ITEM_TYPE_EMPTY = 8
 		const val ITEM_TYPE_HEADER = 9
 		const val ITEM_TYPE_FILTER = 10
+		const val ITEM_TYPE_HEADER_FILTER = 11
 	}
 }

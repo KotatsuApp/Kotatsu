@@ -32,7 +32,7 @@ class LocalListViewModel(
 	val importProgress = MutableLiveData<Progress?>(null)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
-	private val headerModel = ListHeader(null, R.string.local_storage)
+	private val headerModel = ListHeader(null, R.string.local_storage, null)
 	private var importJob: Job? = null
 
 	override val content = combine(

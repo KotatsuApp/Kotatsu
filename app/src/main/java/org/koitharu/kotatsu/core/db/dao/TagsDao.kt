@@ -6,8 +6,8 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 @Dao
 abstract class TagsDao {
 
-	@Query("SELECT * FROM tags")
-	abstract suspend fun getAllTags(): List<TagEntity>
+	@Query("SELECT * FROM tags WHERE source = :source")
+	abstract suspend fun findTags(source: String): List<TagEntity>
 
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(tag: TagEntity): Long
