@@ -17,7 +17,7 @@ class SuggestionsViewModel(
 	settings: AppSettings,
 ) : MangaListViewModel(settings) {
 
-	private val headerModel = ListHeader(null, R.string.suggestions)
+	private val headerModel = ListHeader(null, R.string.suggestions, null)
 
 	override val content = combine(
 		repository.observeAll(),
