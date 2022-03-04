@@ -180,7 +180,7 @@
     <string name="restore_backup">Restore from backup</string>
     <string name="data_restored">Restored</string>
     <string name="preparing_">Preparing…</string>
-	<string name="report_github">Create issue on GitHub</string>
+    <string name="report_github">Create issue on GitHub</string>
     <string name="file_not_found">File not found</string>
     <string name="data_restored_success">All data was restored</string>
     <string name="data_restored_with_errors">The data was restored, but there are errors</string>
@@ -251,10 +251,10 @@
     <string name="dynamic_theme">Dynamic theme</string>
     <string name="dynamic_theme_summary">Applies a theme created on the color scheme of your wallpaper</string>
 	<string name="importing_progress">Importing manga: %1$d of %2$d</string>
-	<string name="screenshots_policy">Screenshots policy</string>
+	<string name="screenshots_policy">Screenshot policy</string>
 	<string name="screenshots_allow">Allow</string>
 	<string name="screenshots_block_nsfw">Block on NSFW</string>
-	<string name="screenshots_block_all">Block always</string>
+	<string name="screenshots_block_all">Always block</string>
 	<string name="suggestions">Suggestions</string>
 	<string name="suggestions_enable">Enable suggestions</string>
 	<string name="suggestions_summary">Suggest manga based on your preferences</string>
