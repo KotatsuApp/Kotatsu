@@ -29,6 +29,9 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			javaScriptEnabled = true
 		}
 		binding.webView.webViewClient = BrowserClient(this)
+		if (savedInstanceState != null) {
+			return
+		}
 		val url = intent?.dataString
 		if (url.isNullOrEmpty()) {
 			finishAfterTransition()
@@ -39,6 +42,16 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			)
 			binding.webView.loadUrl(url)
 		}
+	}
+
+	override fun onSaveInstanceState(outState: Bundle) {
+		super.onSaveInstanceState(outState)
+		binding.webView.saveState(outState)
+	}
+
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		super.onRestoreInstanceState(savedInstanceState)
+		binding.webView.restoreState(savedInstanceState)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -80,6 +93,11 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 	override fun onResume() {
 		super.onResume()
 		binding.webView.onResume()
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		binding.webView.destroy()
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
