@@ -29,6 +29,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			javaScriptEnabled = true
 		}
 		binding.webView.webViewClient = BrowserClient(this)
+		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)
 		if (savedInstanceState != null) {
 			return
 		}
