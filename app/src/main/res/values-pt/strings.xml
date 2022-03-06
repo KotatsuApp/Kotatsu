@@ -256,4 +256,13 @@
     <string name="screenshots_block_nsfw">Bloquear no NSFW</string>
     <string name="screenshots_policy">Política de captura de tela</string>
     <string name="screenshots_block_all">Sempre bloquear</string>
+    <string name="suggestions_summary">Sugira mangá com base em suas preferências</string>
+    <string name="suggestions_info">Todos os dados são analisados localmente neste dispositivo. Não há transferência de seus dados pessoais para nenhum serviço</string>
+    <string name="text_suggestion_holder">Comece a ler mangá e você receberá sugestões personalizadas</string>
+    <string name="suggestions">Sugestões</string>
+    <string name="suggestions_enable">Ativar sugestões</string>
+    <string name="exclude_nsfw_from_suggestions">Não sugira mangá NSFW</string>
+    <string name="enabled">Habilitado</string>
+    <string name="disabled">Desabilitado</string>
+    <string name="filter_load_error">Não foi possível carregar a lista de gêneros</string>
 </resources>
