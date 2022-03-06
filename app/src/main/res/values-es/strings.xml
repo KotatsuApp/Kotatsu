@@ -158,7 +158,7 @@
     <string name="update_check_failed">Fallo en la comprobación de actualizaciones</string>
     <string name="no_update_available">No hay actualizaciones disponibles</string>
     <string name="right_to_left">Derecha a izquierda (←)</string>
-    <string name="prefer_rtl_reader">Preferir lector de derecha a izquierda (→)</string>
+    <string name="prefer_rtl_reader">Preferir lector de derecha a izquierda (←)</string>
     <string name="prefer_rtl_reader_summary">Puedes configurar el modo de lectura para cada manga por separado</string>
     <string name="create_category">Nueva categoría</string>
     <string name="report_github">Crear incidencia en GitHub</string>

@@ -164,7 +164,7 @@
     <string name="update_check_failed">アップデートを見つける事が出来ませんでした</string>
     <string name="no_update_available">利用可能なアップデートはありません</string>
     <string name="right_to_left">右から左(←)</string>
-    <string name="prefer_rtl_reader">右から左（→）の読書を好む</string>
+    <string name="prefer_rtl_reader">右から左（←）の読書を好む</string>
     <string name="about_feedback">フィードバック</string>
     <string name="about_feedback_4pda">4PDAに関する話題</string>
     <string name="about_support_developer">開発者をサポートします(Yoomoneyが開きます)</string>

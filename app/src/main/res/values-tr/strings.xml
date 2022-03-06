@@ -204,7 +204,7 @@
     <string name="search_results">Arama sonuçları</string>
     <string name="waiting_for_network">Ağ bekleniyor…</string>
     <string name="repeat_password">Parolayı tekrarla</string>
-    <string name="prefer_rtl_reader">Sağdan sola (→) okuyucuyu tercih et</string>
+    <string name="prefer_rtl_reader">Sağdan sola (←) okuyucuyu tercih et</string>
     <string name="dont_check">Denetleme</string>
     <string name="wrong_password">Yanlış parola</string>
     <string name="report_github">GitHub\'da sorun oluştur</string>
