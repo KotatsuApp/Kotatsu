@@ -54,7 +54,7 @@
     <string name="automatic">De acuerdo al sistema</string>
     <string name="pages">Páginas</string>
     <string name="clear">Borrar</string>
-    <string name="text_clear_history_prompt">¿Realmente quieres borrar todo tu historial de lectura\? Esta acción no se puede deshacer.</string>
+    <string name="text_clear_history_prompt">Borrar todo el historial de lectura de forma permanente\?</string>
     <string name="remove">Eliminar</string>
     <string name="_s_removed_from_history">«%s» retirado del historial</string>
     <string name="_s_deleted_from_local_storage">«%s» borrado del almacenamiento local</string>
@@ -72,7 +72,7 @@
     <string name="cache">Caché</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="standard">Estándar</string>
-    <string name="webtoon">Webtoon</string>
+    <string name="webtoon">Sitio web</string>
     <string name="read_mode">Modo de lectura</string>
     <string name="grid_size">Tamaño de la cuadrícula</string>
     <string name="search_on_s">Buscar en %s</string>
@@ -177,7 +177,7 @@
     <string name="preparing_">Preparando…</string>
     <string name="file_not_found">Archivo no encontrado</string>
     <string name="data_restored_success">Todos los datos fueron restaurados con éxito</string>
-    <string name="data_restored_with_errors">Los datos fueron restaurados, pero hay errores.</string>
+    <string name="data_restored_with_errors">Los datos fueron restaurados, pero hay errores</string>
     <string name="backup_information">Puedes crear una copia de seguridad de tu historial y favoritos para restaurarla</string>
     <string name="just_now">Ahora mismo</string>
     <string name="yesterday">Ayer</string>
@@ -213,7 +213,7 @@
     <string name="about_support_developer_summary">Si te gusta esta aplicación, puedes ayudar económicamente a través de Yoomoney (ex. Yandex.Money)</string>
     <string name="about_support_developer">Apoyar al desarrollador</string>
     <string name="search_only_on_s">Buscar sólo en %s</string>
-    <string name="about_gratitudes_summary">Todas estas personas hicieron que Kotatsu fuera mejor.</string>
+    <string name="about_gratitudes_summary">Todas estas personas hicieron que Kotatsu fuera mejor</string>
     <string name="about_license">Licencia</string>
     <string name="about_copyright_and_licenses">Derechos de autor y licencias</string>
     <string name="chapter_is_missing">Falta un capítulo</string>
@@ -231,7 +231,7 @@
     <string name="other">Otro</string>
     <string name="genres">Géneros</string>
     <string name="text_search_holder_secondary">Intenta reformular la consulta.</string>
-    <string name="text_clear_search_history_prompt">¿Realmente quiere eliminar todas las consultas de búsqueda recientes\? Esta acción no se puede deshacer.</string>
+    <string name="text_clear_search_history_prompt">¿Realmente quiere eliminar todas las consultas de búsqueda recientes\?</string>
     <string name="state_finished">Terminado</string>
     <string name="state_ongoing">En curso</string>
     <string name="hide_toolbar">Ocultar la barra de herramientas al desplazarse</string>
@@ -243,11 +243,26 @@
     <string name="tracker_warning">Algunos fabricantes pueden cambiar el comportamiento del sistema, lo que podría interrumpir las tareas en segundo plano.</string>
     <string name="error_empty_name">El nombre no debe estar vacío</string>
     <string name="auth_not_supported_by">No se admite iniciar sesión en %s</string>
-    <string name="text_clear_cookies_prompt">Serás desconectado de todas las fuentes.</string>
+    <string name="text_clear_cookies_prompt">Serás desconectado de todas las fuentes</string>
     <string name="exclude_nsfw_from_history">Excluye manga NSFW del historial</string>
     <string name="show_pages_numbers">Mostrar los números de páginas</string>
     <string name="enabled_sources">Fuentes activadas</string>
     <string name="available_sources">Fuentes disponibles</string>
     <string name="dynamic_theme">Tema dinámico</string>
     <string name="dynamic_theme_summary">Aplica un tema creado a partir del esquema de colores de su fondo de pantalla</string>
+    <string name="computing_">Informática…</string>
+    <string name="importing_progress">Importando manga: %1$d de %2$d</string>
+    <string name="screenshots_policy">Política de capturas de pantalla</string>
+    <string name="screenshots_allow">Permitir</string>
+    <string name="screenshots_block_all">Bloquear siempre</string>
+    <string name="suggestions">Sugerencias</string>
+    <string name="suggestions_enable">Activar sugerencias</string>
+    <string name="suggestions_summary">Sugiere mangas según tus preferencias</string>
+    <string name="suggestions_info">Todos los datos se analizan localmente en este dispositivo. No hay transferencia de sus datos personales a ningún servicio</string>
+    <string name="text_suggestion_holder">Empieza a leer manga y recibirás sugerencias personalizadas</string>
+    <string name="exclude_nsfw_from_suggestions">No sugerir manga NSFW</string>
+    <string name="enabled">Activado</string>
+    <string name="disabled">Desactivado</string>
+    <string name="filter_load_error">No se puede cargar la lista de géneros</string>
+    <string name="screenshots_block_nsfw">Bloqueo en NSFW</string>
 </resources>
