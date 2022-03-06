@@ -3,18 +3,17 @@ package org.koitharu.kotatsu.reader.ui.pager
 import android.net.Uri
 import androidx.core.net.toUri
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.plus
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.reader.domain.PageLoader
-import org.koitharu.kotatsu.utils.ext.launchAfter
-import org.koitharu.kotatsu.utils.ext.launchInstead
 import java.io.File
 import java.io.IOException
 
@@ -32,13 +31,17 @@ class PageHolderDelegate(
 	private var error: Throwable? = null
 
 	fun onBind(page: MangaPage) {
-		job = scope.launchInstead(job) {
+		val prevJob = job
+		job = scope.launch {
+			prevJob?.cancelAndJoin()
 			doLoad(page, force = false)
 		}
 	}
 
 	fun retry(page: MangaPage) {
-		job = scope.launchInstead(job) {
+		val prevJob = job
+		job = scope.launch {
+			prevJob?.cancelAndJoin()
 			(error as? ResolvableException)?.let {
 				exceptionResolver.resolve(it)
 			}
@@ -69,30 +72,39 @@ class PageHolderDelegate(
 		val file = this.file
 		error = e
 		if (state == State.LOADED && e is IOException && file != null && file.exists()) {
-			job = scope.launchAfter(job) {
-				state = State.CONVERTING
-				try {
-					loader.convertInPlace(file)
-					state = State.CONVERTED
-					callback.onImageReady(file.toUri())
-				} catch (e2: Throwable) {
-					e.addSuppressed(e2)
-					state = State.ERROR
-					callback.onError(e)
-				}
-			}
+			tryConvert(file, e)
 		} else {
 			state = State.ERROR
 			callback.onError(e)
 		}
 	}
 
-	private suspend fun doLoad(data: MangaPage, force: Boolean) {
+	private fun tryConvert(file: File, e: Exception) {
+		val prevJob = job
+		job = scope.launch {
+			prevJob?.join()
+			state = State.CONVERTING
+			try {
+				loader.convertInPlace(file)
+				state = State.CONVERTED
+				callback.onImageReady(file.toUri())
+			} catch (e2: Throwable) {
+				e.addSuppressed(e2)
+				state = State.ERROR
+				callback.onError(e)
+			}
+		}
+	}
+
+	private suspend fun CoroutineScope.doLoad(data: MangaPage, force: Boolean) {
 		state = State.LOADING
 		error = null
 		callback.onLoadingStarted()
 		try {
-			val file = loader.loadPage(data, force)
+			val task = loader.loadPageAsync(data, force)
+			val progressObserver = observeProgress(this, task.progressAsFlow())
+			val file = task.await()
+			progressObserver.cancel()
 			this@PageHolderDelegate.file = file
 			state = State.LOADED
 			callback.onImageReady(file.toUri())
@@ -104,6 +116,11 @@ class PageHolderDelegate(
 			callback.onError(e)
 		}
 	}
+
+	private fun observeProgress(scope: CoroutineScope, progress: Flow<Float>) = progress
+		.debounce(500)
+		.onEach { callback.onProgressChanged((100 * it).toInt()) }
+		.launchIn(scope)
 
 	private enum class State {
 		EMPTY, LOADING, LOADED, CONVERTING, CONVERTED, SHOWING, SHOWN, ERROR
@@ -120,5 +137,7 @@ class PageHolderDelegate(
 		fun onImageShowing(zoom: ZoomMode)
 
 		fun onImageShown()
+
+		fun onProgressChanged(progress: Int)
 	}
 }
