@@ -255,4 +255,8 @@
 	<string name="screenshots_allow">Allow</string>
 	<string name="screenshots_block_nsfw">Block on NSFW</string>
 	<string name="screenshots_block_all">Block always</string>
+	<string name="never">Never</string>
+	<string name="only_using_wifi">Only using WiFi</string>
+	<string name="always">Always</string>
+	<string name="preload_pages">Preload pages</string>
 </resources>

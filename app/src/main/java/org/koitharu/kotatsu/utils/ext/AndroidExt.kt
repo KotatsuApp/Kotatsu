@@ -11,6 +11,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
+val Context.connectivityManager: ConnectivityManager
+	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
 suspend fun ConnectivityManager.waitForNetwork(): Network {
 	val request = NetworkRequest.Builder().build()
 	return suspendCancellableCoroutine<Network> { cont ->

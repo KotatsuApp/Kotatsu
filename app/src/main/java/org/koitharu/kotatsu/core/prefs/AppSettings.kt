@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -141,6 +142,14 @@ class AppSettings(context: Context) {
 			}
 		}
 
+	fun isPagesPreloadAllowed(cm: ConnectivityManager): Boolean {
+		return when (prefs.getString(KEY_PAGES_PRELOAD, null)?.toIntOrNull()) {
+			NETWORK_ALWAYS -> true
+			NETWORK_NEVER -> false
+			else -> cm.isActiveNetworkMetered
+		}
+	}
+
 	fun getDateFormat(format: String = prefs.getString(KEY_DATE_FORMAT, "").orEmpty()): DateFormat =
 		when (format) {
 			"" -> DateFormat.getDateInstance(DateFormat.SHORT)
@@ -231,6 +240,7 @@ class AppSettings(context: Context) {
 		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
 		const val KEY_PAGES_NUMBERS = "pages_numbers"
 		const val KEY_SCREENSHOTS_POLICY = "screenshots_policy"
+		const val KEY_PAGES_PRELOAD = "pages_preload"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
@@ -241,6 +251,10 @@ class AppSettings(context: Context) {
 		const val KEY_FEEDBACK_DISCORD = "about_feedback_discord"
 		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
 		const val KEY_SUPPORT_DEVELOPER = "about_support_developer"
+
+		private const val NETWORK_NEVER = 0
+		private const val NETWORK_ALWAYS = 1
+		private const val NETWORK_NON_METERED = 2
 
 		val isDynamicColorAvailable: Boolean
 			get() = DynamicColors.isDynamicColorAvailable() ||

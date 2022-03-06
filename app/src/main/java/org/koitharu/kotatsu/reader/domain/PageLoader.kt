@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.domain
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -20,9 +21,11 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.await
+import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
 import java.io.File
@@ -39,6 +42,8 @@ class PageLoader : KoinComponent, Closeable {
 
 	private val okHttp = get<OkHttpClient>()
 	private val cache = get<PagesCache>()
+	private val settings = get<AppSettings>()
+	private val connectivityManager = get<Context>().connectivityManager
 	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
 	private val convertLock = Mutex()
 	private var repository: MangaRepository? = null
@@ -53,7 +58,7 @@ class PageLoader : KoinComponent, Closeable {
 	}
 
 	fun isPrefetchApplicable(): Boolean {
-		return repository is RemoteMangaRepository
+		return repository is RemoteMangaRepository && settings.isPagesPreloadAllowed(connectivityManager)
 	}
 
 	fun prefetch(pages: List<ReaderPage>) {
