@@ -256,4 +256,13 @@
     <string name="screenshots_block_all">Toujours bloquer</string>
     <string name="screenshots_policy">Politique relative aux captures d\'écran</string>
     <string name="screenshots_allow">Autoriser</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="exclude_nsfw_from_suggestions">Ne pas suggérer de mangas osés</string>
+    <string name="suggestions_enable">Activer les suggestions</string>
+    <string name="suggestions_summary">Suggérer des mangas en fonction de vos préférences</string>
+    <string name="suggestions_info">Toutes les données sont analysées localement sur cet appareil. Vos données personnelles ne sont pas transférées à d\'autres services</string>
+    <string name="text_suggestion_holder">Commencez à lire des mangas et vous recevrez des suggestions personnalisées</string>
+    <string name="filter_load_error">Impossible de charger la liste des genres</string>
+    <string name="enabled">Activé</string>
+    <string name="disabled">Désactivé</string>
 </resources>
