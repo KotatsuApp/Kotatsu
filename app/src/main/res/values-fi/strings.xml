@@ -256,4 +256,13 @@
     <string name="computing_">Lasketaan…</string>
     <string name="available_sources">Käytettävissä olevat lähteet</string>
     <string name="dynamic_theme">Dynaaminen teema</string>
+    <string name="suggestions">Ehdotukset</string>
+    <string name="suggestions_summary">Ehdota mangaa mieltymystesi perusteella</string>
+    <string name="suggestions_info">Kaikki tiedot analysoidaan paikallisesti tässä laitteessa. Henkilötietojasi ei siirretä mihinkään palveluihin</string>
+    <string name="suggestions_enable">Ota ehdotukset käyttöön</string>
+    <string name="exclude_nsfw_from_suggestions">Älä ehdota NSFW-mangaa</string>
+    <string name="text_suggestion_holder">Aloita mangan lukeminen ja saat henkilökohtaisia ehdotuksia</string>
+    <string name="enabled">Käytössä</string>
+    <string name="disabled">Pois päältä</string>
+    <string name="filter_load_error">Genreluetteloa ei voida ladata</string>
 </resources>
