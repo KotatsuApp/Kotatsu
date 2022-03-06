@@ -251,7 +251,7 @@
     <string name="dynamic_theme">Dynamisk tema</string>
     <string name="dynamic_theme_summary">Bruker et tema basert på fargene til bakgrunnen din</string>
     <string name="computing_">Beregner …</string>
-    <string name="importing_progress">Importerer manga: %1$d av %2$d</string>
+    <string name="importing_progress">Importere manga: %1$d av %2$d</string>
     <string name="screenshots_allow">Tillat</string>
     <string name="screenshots_block_nsfw">Blokker for sensurerbare</string>
     <string name="screenshots_block_all">Alltid blokker</string>
@@ -259,7 +259,7 @@
     <string name="suggestions_enable">Skru på forslag</string>
     <string name="suggestions">Forslag</string>
     <string name="text_suggestion_holder">Du vil få personaliserte forslag når du begynner å lese manga</string>
-    <string name="suggestions_info">All data analyseres lokalt på enheten. Det er ingen overføring av persondata til noen tjenester.</string>
+    <string name="suggestions_info">Alle data analyseres lokalt på denne enheten. Det er ingen overføring av dine personlige data til noen tjenester</string>
     <string name="exclude_nsfw_from_suggestions">Ikke foreslå sensurerbar manga</string>
     <string name="filter_load_error">Kunne ikke laste inn sjangerliste</string>
     <string name="suggestions_summary">Foreslå manga basert på vaner</string>

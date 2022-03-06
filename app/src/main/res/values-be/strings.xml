@@ -54,11 +54,11 @@
     <string name="automatic">Аўтаматычна</string>
     <string name="pages">Старонкi</string>
     <string name="clear">Ачысціць</string>
-    <string name="text_clear_history_prompt">Вы ўпэўненыя, што жадаеце ачысціць гісторыю\? Гэта дзеянне нельга будзе адмяніць.</string>
+    <string name="text_clear_history_prompt">Вы ўпэўненыя, што жадаеце ачысціць гісторыю\?</string>
     <string name="remove">Выдаліць</string>
     <string name="_s_removed_from_history">\"%s\" выдалена з гiсторыi</string>
     <string name="_s_deleted_from_local_storage">\"%s\" выдалена з прылады</string>
-    <string name="wait_for_loading_finish">Дачакайцеся заканчэння загрузкі</string>
+    <string name="wait_for_loading_finish">Дачакайцеся заканчэння загрузкі…</string>
     <string name="save_page">Захаваць старонку</string>
     <string name="page_saved">Старонка захавана</string>
     <string name="share_image">Падзяліцца выявай</string>
@@ -79,8 +79,7 @@
     <string name="delete_manga">Выдаліць мангу</string>
     <string name="reader_settings">Налады чытання</string>
     <string name="switch_pages">Гартанне старонак</string>
-    <string name="text_delete_local_manga">Вы ўпэўненыя, што жадаеце выдаліць \"%s\" з прылады\?
-\nГэта дзеянне нельга будзе адмяніць.</string>
+    <string name="text_delete_local_manga">Вы ўпэўненыя, што жадаеце выдаліць \"%s\" з прылады\?</string>
     <string name="taps_on_edges">Націск па краях</string>
     <string name="volume_buttons">Кнопкі гучнасці</string>
     <string name="_continue">Працягнцуць</string>
@@ -207,7 +206,7 @@
     <string name="password_length_hint">Пароль павінен змяшчаць не менш за 4 сімвалы</string>
     <string name="hide_toolbar">Схаваць загаловак пры прагортцы</string>
     <string name="search_only_on_s">Пошук толькі па %s</string>
-    <string name="text_clear_search_history_prompt">Вы сапраўды хочаце выдаліць усе апошнія пошукавыя запыты\? Гэта дзеянне нельга будзе адмяніць.</string>
+    <string name="text_clear_search_history_prompt">Вы сапраўды хочаце выдаліць усе апошнія пошукавыя запыты\?</string>
     <string name="description">Апісанне</string>
     <string name="read_more">Падрабязна</string>
     <string name="tracker_warning">Некаторыя вытворцы могуць змяняць паводзіны сістэмы, што можа парушаць выкананне фонавых задач.</string>
@@ -227,7 +226,7 @@
     <string name="queued">У чарзе</string>
     <string name="about_license">Ліцэнзія</string>
     <string name="about_copyright_and_licenses">Аўтарскія правы і ліцэнзіі</string>
-    <string name="about_gratitudes_summary">Гэтыя людзі робяць Kotatsu лепш!</string>
+    <string name="about_gratitudes_summary">Гэтыя людзі робяць Kotatsu лепш</string>
     <string name="about_gratitudes">Падзякі</string>
     <string name="about_support_developer_summary">Калі вам падабаецца гэтая праграма, вы можаце дапамагчы фінансава з дапамогай ЮMoney (был. Яндекс.Деньги)</string>
     <string name="about_support_developer">Падтрымаць распрацоўшчыка</string>
@@ -251,4 +250,19 @@
     <string name="available_sources">Даступныя крыніцы</string>
     <string name="dynamic_theme">Дынамічная тэма</string>
     <string name="dynamic_theme_summary">Ужывае тэму праграмы, заснаваную на каляровай палітры шпалер на прыладзе</string>
+    <string name="computing_">Вылічэнні…</string>
+    <string name="importing_progress">Імпарт мангі: %1$d of %2$d</string>
+    <string name="screenshots_allow">Дазваляць</string>
+    <string name="screenshots_policy">Палітыка скрыншотаў</string>
+    <string name="screenshots_block_all">Заўсёды блакуйце</string>
+    <string name="screenshots_block_nsfw">Блок на NSFW</string>
+    <string name="filter_load_error">Немагчыма загрузіць спіс жанраў</string>
+    <string name="disabled">Непрацаздольны</string>
+    <string name="enabled">Уключаны</string>
+    <string name="exclude_nsfw_from_suggestions">Не прапануйце мангу NSFW</string>
+    <string name="text_suggestion_holder">Пачніце чытаць мангу, і вы атрымаеце персаналізаваныя прапановы</string>
+    <string name="suggestions_info">Усе дадзеныя аналізуюцца лакальна на гэтай прыладзе. Перадача вашых персанальных дадзеных якім-небудзь сэрвісам не ажыццяўляецца</string>
+    <string name="suggestions_summary">Прапануеце мангу, заснаваную на вашых перавагах</string>
+    <string name="suggestions_enable">Уключыць прапановы</string>
+    <string name="suggestions">Прапанова</string>
 </resources>
