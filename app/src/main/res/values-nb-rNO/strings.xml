@@ -256,4 +256,13 @@
     <string name="screenshots_block_nsfw">Blokker for sensurerbare</string>
     <string name="screenshots_block_all">Alltid blokker</string>
     <string name="screenshots_policy">Skjermavbildningspraksis</string>
+    <string name="suggestions_enable">Skru på forslag</string>
+    <string name="suggestions">Forslag</string>
+    <string name="text_suggestion_holder">Du vil få personaliserte forslag når du begynner å lese manga</string>
+    <string name="suggestions_info">All data analyseres lokalt på enheten. Det er ingen overføring av persondata til noen tjenester.</string>
+    <string name="exclude_nsfw_from_suggestions">Ikke foreslå sensurerbar manga</string>
+    <string name="filter_load_error">Kunne ikke laste inn sjangerliste</string>
+    <string name="suggestions_summary">Foreslå manga basert på vaner</string>
+    <string name="enabled">Påskrudd</string>
+    <string name="disabled">Avskrudd</string>
 </resources>
