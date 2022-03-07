@@ -17,10 +17,6 @@ class GlobalSearchFragment : MangaListFragment() {
 
 	override fun onScrolledToEnd() = Unit
 
-	override fun getTitle(): CharSequence? {
-		return query
-	}
-
 	companion object {
 
 		private const val ARG_QUERY = "query"

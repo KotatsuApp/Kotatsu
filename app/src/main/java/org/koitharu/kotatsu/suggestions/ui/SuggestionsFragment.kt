@@ -46,10 +46,6 @@ class SuggestionsFragment : MangaListFragment() {
 
 	override fun onScrolledToEnd() = Unit
 
-	override fun getTitle(): CharSequence? {
-		return context?.getString(R.string.suggestions)
-	}
-
 	companion object {
 
 		fun newInstance() = SuggestionsFragment()

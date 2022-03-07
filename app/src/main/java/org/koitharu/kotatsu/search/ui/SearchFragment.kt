@@ -21,8 +21,6 @@ class SearchFragment : MangaListFragment() {
 		viewModel.loadNextPage()
 	}
 
-	override fun getTitle() = query
-
 	companion object {
 
 		private const val ARG_QUERY = "query"

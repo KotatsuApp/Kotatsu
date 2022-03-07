@@ -7,15 +7,18 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 
 private const val DEBOUNCE_TIMEOUT = 500L
 private const val SEARCH_THRESHOLD = 3
 private const val MAX_MANGA_ITEMS = 3
-private const val MAX_QUERY_ITEMS = 120
-private const val MAX_SUGGESTION_ITEMS = MAX_MANGA_ITEMS + MAX_QUERY_ITEMS + 1
+private const val MAX_QUERY_ITEMS = 16
+private const val MAX_TAGS_ITEMS = 8
+private const val MAX_SUGGESTION_ITEMS = MAX_MANGA_ITEMS + MAX_QUERY_ITEMS + 2
 
 class SearchSuggestionViewModel(
 	private val repository: MangaSearchRepository,
@@ -77,6 +80,10 @@ class SearchSuggestionViewModel(
 			if (src != null) {
 				result += SearchSuggestionItem.Header(src, isLocalSearch)
 			}
+			val tags = repository.getTagsSuggestion(q, MAX_TAGS_ITEMS, src.takeIf { srcOnly })
+			if (tags.isNotEmpty()) {
+				result.add(SearchSuggestionItem.Tags(mapTags(tags)))
+			}
 			if (q.length >= SEARCH_THRESHOLD) {
 				repository.getMangaSuggestion(q, MAX_MANGA_ITEMS, src.takeIf { srcOnly })
 					.mapTo(result) {
@@ -88,5 +95,13 @@ class SearchSuggestionViewModel(
 		}.onEach {
 			suggestion.postValue(it)
 		}.launchIn(viewModelScope + Dispatchers.Default)
+	}
+
+	private fun mapTags(tags: List<MangaTag>): List<ChipsView.ChipModel> = tags.map { tag ->
+		ChipsView.ChipModel(
+			icon = 0,
+			title = tag.title,
+			data = tag,
+		)
 	}
 }

@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.prefs.AppSection
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
@@ -42,6 +43,7 @@ import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.ui.SearchActivity
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
@@ -256,6 +258,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				searchSuggestionViewModel.saveQuery(query)
 			}
 		}
+	}
+
+	override fun onTagClick(tag: MangaTag) {
+		startActivity(
+			MangaListActivity.newIntent(this, tag)
+		)
 	}
 
 	override fun onQueryChanged(query: String) {

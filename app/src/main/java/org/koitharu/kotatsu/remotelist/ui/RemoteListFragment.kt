@@ -25,10 +25,6 @@ class RemoteListFragment : MangaListFragment() {
 		viewModel.loadNextPage()
 	}
 
-	override fun getTitle(): CharSequence {
-		return source.title
-	}
-
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
 		inflater.inflate(R.menu.opt_list_remote, menu)

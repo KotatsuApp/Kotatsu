@@ -92,10 +92,6 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 		}
 	}
 
-	override fun getTitle(): CharSequence? {
-		return context?.getString(R.string.local_storage)
-	}
-
 	override fun onActivityResult(result: List<@JvmSuppressWildcards Uri>) {
 		if (result.isEmpty()) return
 		viewModel.importFiles(result)

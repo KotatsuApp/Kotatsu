@@ -50,6 +50,8 @@
 		<activity
 			android:name="org.koitharu.kotatsu.search.ui.SearchActivity"
 			android:label="@string/search" />
+		<activity android:name="org.koitharu.kotatsu.search.ui.MangaListActivity"
+			android:label="@string/search_manga" />
 		<activity
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
 			android:label="@string/settings" />

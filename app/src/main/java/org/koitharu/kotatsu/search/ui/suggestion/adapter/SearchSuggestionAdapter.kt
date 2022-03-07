@@ -18,6 +18,7 @@ class SearchSuggestionAdapter(
 		delegatesManager.addDelegate(ITEM_TYPE_MANGA, searchSuggestionMangaAD(coil, lifecycleOwner, listener))
 			.addDelegate(ITEM_TYPE_QUERY, searchSuggestionQueryAD(listener))
 			.addDelegate(ITEM_TYPE_HEADER, searchSuggestionHeaderAD(listener))
+			.addDelegate(ITEM_TYPE_TAGS, searchSuggestionTagsAD(listener))
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<SearchSuggestionItem>() {
@@ -33,6 +34,7 @@ class SearchSuggestionAdapter(
 				oldItem.query == newItem.query
 			}
 			oldItem is SearchSuggestionItem.Header && newItem is SearchSuggestionItem.Header -> true
+			oldItem is SearchSuggestionItem.Tags && newItem is SearchSuggestionItem.Tags -> true
 			else -> false
 		}
 
@@ -47,5 +49,6 @@ class SearchSuggestionAdapter(
 		const val ITEM_TYPE_MANGA = 0
 		const val ITEM_TYPE_QUERY = 1
 		const val ITEM_TYPE_HEADER = 2
+		const val ITEM_TYPE_TAGS = 3
 	}
 }
