@@ -35,8 +35,6 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 	private var paddingVertical = 0
 	private var paddingHorizontal = 0
 
-	override fun getTitle() = context?.getString(R.string.updates)
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setHasOptionsMenu(true)

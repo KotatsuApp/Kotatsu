@@ -103,10 +103,6 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun getTitle(): CharSequence? {
-		return context?.getString(R.string.favourites)
-	}
-
 	private fun onError(e: Throwable) {
 		Snackbar.make(binding.pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
 	}

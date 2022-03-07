@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -77,6 +78,17 @@ class MangaSearchRepository(
 			}
 			result
 		}.orEmpty()
+	}
+
+	suspend fun getTagsSuggestion(query: String, limit: Int, source: MangaSource?): List<MangaTag> {
+		return when {
+			query.isNotEmpty() && source != null -> db.tagsDao.findTags(source.name, "%$query%", limit)
+			query.isNotEmpty() -> db.tagsDao.findTags("%$query%", limit)
+			source != null -> db.tagsDao.findTags(source.name, limit)
+			else -> db.tagsDao.findPopularTags(limit)
+		}.map {
+			it.toMangaTag()
+		}
 	}
 
 	fun saveSearchQuery(query: String) {

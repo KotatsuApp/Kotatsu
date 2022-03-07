@@ -59,10 +59,6 @@ class HistoryListFragment : MangaListFragment() {
 		}
 	}
 
-	override fun getTitle(): CharSequence? {
-		return context?.getString(R.string.history)
-	}
-
 	override fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) {
 		super.onCreatePopupMenu(inflater, menu, data)
 		inflater.inflate(R.menu.popup_history, menu)
