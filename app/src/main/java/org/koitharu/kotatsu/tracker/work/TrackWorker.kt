@@ -13,6 +13,7 @@ import androidx.lifecycle.map
 import androidx.work.*
 import coil.ImageLoader
 import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -159,6 +160,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				coil.execute(
 					ImageRequest.Builder(applicationContext)
 						.data(manga.coverUrl)
+						.transformations(CircleCropTransformation())
 						.build()
 				).toBitmapOrNull()
 			)
