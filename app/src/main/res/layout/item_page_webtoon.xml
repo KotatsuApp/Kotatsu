@@ -21,15 +21,6 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center" />
 
-	<TextView
-		android:id="@+id/textView_progress"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:singleLine="true"
-		android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-		tools:text="146%" />
-
 	<LinearLayout
 		android:id="@+id/layout_error"
 		android:layout_width="wrap_content"

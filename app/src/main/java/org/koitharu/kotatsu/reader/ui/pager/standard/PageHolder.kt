@@ -44,12 +44,16 @@ open class PageHolder(
 	override fun onLoadingStarted() {
 		binding.layoutError.isVisible = false
 		binding.progressBar.isVisible = true
-		binding.textViewProgress.isVisible = true
 		binding.ssiv.recycle()
 	}
 
 	override fun onProgressChanged(progress: Int) {
-		binding.textViewProgress.text = if (progress in 0..100) "%d%%".format(progress) else null
+		if (progress in 0..100) {
+			binding.progressBar.isIndeterminate = false
+			binding.progressBar.setProgressCompat(progress, true)
+		} else {
+			binding.progressBar.isIndeterminate = true
+		}
 	}
 
 	override fun onImageReady(uri: Uri) {
@@ -94,7 +98,6 @@ open class PageHolder(
 
 	override fun onImageShown() {
 		binding.progressBar.isVisible = false
-		binding.textViewProgress.isVisible = false
 	}
 
 	override fun onClick(v: View) {
@@ -110,6 +113,5 @@ open class PageHolder(
 		)
 		binding.layoutError.isVisible = true
 		binding.progressBar.isVisible = false
-		binding.textViewProgress.isVisible = false
 	}
 }
