@@ -17,6 +17,8 @@ class ExHentaiRepository(
 
 	override val source = MangaSource.EXHENTAI
 
+	override val sortOrders: Set<SortOrder> = emptySet()
+
 	override val defaultDomain: String
 		get() = if (isAuthorized()) DOMAIN_AUTHORIZED else DOMAIN_UNAUTHORIZED
 
@@ -85,7 +87,7 @@ class ExHentaiRepository(
 			val tagsDiv = glink.nextElementSibling() ?: parseFailed("tags div not found")
 			val mainTag = td2.selectFirst("div.cn")?.let { div ->
 				MangaTag(
-					title = div.text(),
+					title = div.text().toTitleCase(),
 					key = tagIdByClass(div.classNames()) ?: return@let null,
 					source = source,
 				)
@@ -181,7 +183,7 @@ class ExHentaiRepository(
 			val id = div.id().substringAfterLast('_').toIntOrNull()
 				?: return@mapNotNullToSet null
 			MangaTag(
-				title = div.text(),
+				title = div.text().toTitleCase(),
 				key = id.toString(),
 				source = source
 			)

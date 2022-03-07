@@ -87,9 +87,9 @@ dependencies {
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.4.1'
 
-	implementation 'androidx.room:room-runtime:2.4.1'
-	implementation 'androidx.room:room-ktx:2.4.1'
-	kapt 'androidx.room:room-compiler:2.4.1'
+	implementation 'androidx.room:room-runtime:2.4.2'
+	implementation 'androidx.room:room-ktx:2.4.2'
+	kapt 'androidx.room:room-compiler:2.4.2'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 	implementation 'com.squareup.okio:okio:3.0.0'
@@ -115,6 +115,6 @@ dependencies {
 	androidTestImplementation 'androidx.test:rules:1.4.0'
 	androidTestImplementation 'androidx.test:core-ktx:1.4.0'
 	androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.3'
-	androidTestImplementation 'androidx.room:room-testing:2.4.1'
+	androidTestImplementation 'androidx.room:room-testing:2.4.2'
 	androidTestImplementation 'com.google.truth:truth:1.1.3'
 }

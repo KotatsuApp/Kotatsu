@@ -64,6 +64,7 @@
 		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.browser.BrowserActivity"
+			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
 		<activity
 			android:name="org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity"

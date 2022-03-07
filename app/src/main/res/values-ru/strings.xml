@@ -249,8 +249,20 @@
     <string name="available_sources">Доступные источники</string>
     <string name="dynamic_theme">Динамическая тема</string>
     <string name="dynamic_theme_summary">Применяет тему приложения, основанную на цветовой палитре обоев на устройстве</string>
-	<string name="screenshots_policy">Разрешить скриншоты</string>
-	<string name="screenshots_allow">Разрешить</string>
-	<string name="screenshots_block_nsfw">Запретить для NSFW</string>
-	<string name="screenshots_block_all">Запретить всегда</string>
+    <string name="screenshots_policy">Политика скриншотов</string>
+    <string name="screenshots_allow">Разрешить</string>
+    <string name="screenshots_block_nsfw">Запретить для NSFW</string>
+    <string name="screenshots_block_all">Всегда блокировать</string>
+    <string name="suggestions">Рекомендации</string>
+    <string name="suggestions_enable">Включить рекомендации</string>
+    <string name="suggestions_summary">Предлагать мангу на основе Ваших предпочтений</string>
+    <string name="suggestions_info">Все данные анализируются локально на устройстве. Ваши персональные данные не передаются в какие-либо сервисы</string>
+    <string name="text_suggestion_holder">Начните читать мангу, чтобы получать персональные предложения</string>
+    <string name="exclude_nsfw_from_suggestions">Не предлагать NSFW мангу</string>
+    <string name="enabled">Включено</string>
+    <string name="disabled">Выключено</string>
+    <string name="filter_load_error">Не удалось загрузить список жанров</string>
+    <string name="computing_">Вычисления…</string>
+    <string name="report_github">Создать проблему на GitHub</string>
+    <string name="importing_progress">Импорт манги: %1$d из %2$d</string>
 </resources>

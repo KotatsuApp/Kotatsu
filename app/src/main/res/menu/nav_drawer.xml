@@ -15,6 +15,10 @@
 			android:icon="@drawable/ic_history"
 			android:title="@string/history" />
 		<item
+			android:id="@+id/nav_suggestions"
+			android:icon="@drawable/ic_suggestion"
+			android:title="@string/suggestions" />
+		<item
 			android:id="@+id/nav_feed"
 			android:icon="@drawable/ic_feed"
 			android:title="@string/updates" />

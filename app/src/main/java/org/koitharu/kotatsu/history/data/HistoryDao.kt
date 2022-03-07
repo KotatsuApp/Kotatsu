@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.history.data
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
+import org.koitharu.kotatsu.core.db.entity.TagEntity
 
 
 @Dao
@@ -21,6 +22,9 @@ abstract class HistoryDao {
 
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM history)")
 	abstract suspend fun findAllManga(): List<MangaEntity>
+
+	@Query("SELECT * FROM tags WHERE tag_id IN (SELECT tag_id FROM manga_tags WHERE manga_id IN (SELECT manga_id FROM history))")
+	abstract suspend fun findAllTags(): List<TagEntity>
 
 	@Query("SELECT * FROM history WHERE manga_id = :id")
 	abstract suspend fun find(id: Long): HistoryEntity?

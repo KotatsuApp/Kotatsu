@@ -29,7 +29,7 @@
     <string name="report_github">Opprett feilrapport på GitHub</string>
     <string name="prefer_rtl_reader_summary">Lesemodus kan settes opp for hver serie</string>
     <string name="right_to_left">Høyre-til-venstre (←)</string>
-    <string name="prefer_rtl_reader">Foretrekk høyre-til-venstre (→)-leser</string>
+    <string name="prefer_rtl_reader">Foretrekk høyre-til-venstre (←)-leser</string>
     <string name="no_update_available">Ingen tilgjengelige oppdateringer</string>
     <string name="update_check_failed">Kunne ikke se etter oppdateringer</string>
     <string name="checking_for_updates">Ser etter oppdateringer …</string>
@@ -241,7 +241,7 @@
     <string name="auth_not_supported_by">Innlogging på %s støttes ikke</string>
     <string name="text_clear_cookies_prompt">Du vil bli utlogget fra alle kilder</string>
     <string name="genres">Sjangere</string>
-    <string name="exclude_nsfw_from_history">Utelat NSFW-manga fra historikk</string>
+    <string name="exclude_nsfw_from_history">Utelat sensurerbar-manga fra historikk</string>
     <string name="date_format">Datoformat</string>
     <string name="system_default">Forvalg</string>
     <string name="error_empty_name">Du må angi ett navn</string>
@@ -251,5 +251,18 @@
     <string name="dynamic_theme">Dynamisk tema</string>
     <string name="dynamic_theme_summary">Bruker et tema basert på fargene til bakgrunnen din</string>
     <string name="computing_">Beregner …</string>
-    <string name="importing_progress">Importerer manga: %1$d av %2$d</string>
+    <string name="importing_progress">Importere manga: %1$d av %2$d</string>
+    <string name="screenshots_allow">Tillat</string>
+    <string name="screenshots_block_nsfw">Blokker for sensurerbare</string>
+    <string name="screenshots_block_all">Alltid blokker</string>
+    <string name="screenshots_policy">Skjermavbildningspraksis</string>
+    <string name="suggestions_enable">Skru på forslag</string>
+    <string name="suggestions">Forslag</string>
+    <string name="text_suggestion_holder">Du vil få personaliserte forslag når du begynner å lese manga</string>
+    <string name="suggestions_info">Alle data analyseres lokalt på denne enheten. Det er ingen overføring av dine personlige data til noen tjenester</string>
+    <string name="exclude_nsfw_from_suggestions">Ikke foreslå sensurerbar manga</string>
+    <string name="filter_load_error">Kunne ikke laste inn sjangerliste</string>
+    <string name="suggestions_summary">Foreslå manga basert på vaner</string>
+    <string name="enabled">Påskrudd</string>
+    <string name="disabled">Avskrudd</string>
 </resources>

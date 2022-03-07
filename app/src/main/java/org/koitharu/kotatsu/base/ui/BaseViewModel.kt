@@ -33,7 +33,7 @@ abstract class BaseViewModel : ViewModel() {
 		}
 	}
 
-	private fun createErrorHandler() = CoroutineExceptionHandler { _, throwable ->
+	protected fun createErrorHandler() = CoroutineExceptionHandler { _, throwable ->
 		if (BuildConfig.DEBUG) {
 			throwable.printStackTrace()
 		}

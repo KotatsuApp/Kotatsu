@@ -256,4 +256,13 @@
     <string name="screenshots_policy">Bildschirmfoto-Richtlinie</string>
     <string name="screenshots_block_nsfw">Für NSFW blockieren</string>
     <string name="screenshots_block_all">Immer blockieren</string>
+    <string name="suggestions">Vorschläge</string>
+    <string name="suggestions_enable">Vorschläge einschalten</string>
+    <string name="suggestions_summary">Manga nach deinen Vorlieben vorschlagen</string>
+    <string name="suggestions_info">Alle Daten werden lokal auf diesem Gerät ausgewertet. Es findet keine Übertragung Ihrer persönlichen Daten an andere Dienste statt</string>
+    <string name="exclude_nsfw_from_suggestions">Keine NSFW-Manga vorschlagen</string>
+    <string name="enabled">Aktiviert</string>
+    <string name="text_suggestion_holder">Fang an, Manga zu lesen und du bekommst personalisierte Vorschläge</string>
+    <string name="disabled">Deaktiviert</string>
+    <string name="filter_load_error">Liste der Genres kann nicht geladen werden</string>
 </resources>

@@ -51,7 +51,7 @@ import org.koitharu.kotatsu.utils.anim.Motion
 import org.koitharu.kotatsu.utils.ext.*
 
 class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
-	ChaptersDialog.OnChapterChangeListener,
+	ChaptersBottomSheet.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
 	ActivityResultCallback<Boolean>, ReaderControlDelegate.OnInteractionListener {
 
@@ -152,7 +152,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 				startActivity(SimpleSettingsActivity.newReaderSettingsIntent(this))
 			}
 			R.id.action_chapters -> {
-				ChaptersDialog.show(
+				ChaptersBottomSheet.show(
 					supportFragmentManager,
 					viewModel.manga?.chapters.orEmpty(),
 					viewModel.getCurrentState()?.chapterId ?: 0L

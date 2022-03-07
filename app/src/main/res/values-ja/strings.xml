@@ -164,7 +164,7 @@
     <string name="update_check_failed">アップデートを見つける事が出来ませんでした</string>
     <string name="no_update_available">利用可能なアップデートはありません</string>
     <string name="right_to_left">右から左(←)</string>
-    <string name="prefer_rtl_reader">右から左（→）の読書を好む</string>
+    <string name="prefer_rtl_reader">右から左（←）の読書を好む</string>
     <string name="about_feedback">フィードバック</string>
     <string name="about_feedback_4pda">4PDAに関する話題</string>
     <string name="about_support_developer">開発者をサポートします(Yoomoneyが開きます)</string>
@@ -256,4 +256,13 @@
     <string name="screenshots_block_all">常にブロック</string>
     <string name="screenshots_policy">スクリーンショットポリシー</string>
     <string name="screenshots_block_nsfw">NSFWでブロック</string>
+    <string name="suggestions">提案</string>
+    <string name="suggestions_info">すべてのデータは、このデバイス上でローカルに分析されます。お客様のデータが他のサービスに転送されることはありません</string>
+    <string name="suggestions_enable">サジェスト機能を有効</string>
+    <string name="suggestions_summary">あなたの好みに合わせて漫画を提案</string>
+    <string name="filter_load_error">ジャンルリストを読み込めません</string>
+    <string name="disabled">無効</string>
+    <string name="text_suggestion_holder">マンガを読み始めると、個人的な提案を受けることができます</string>
+    <string name="enabled">有効</string>
+    <string name="exclude_nsfw_from_suggestions">NSFWのマンガを提案しない</string>
 </resources>

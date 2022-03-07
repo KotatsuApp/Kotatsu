@@ -89,7 +89,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 					tileInfo?.select("a.element-link")
 						?.mapToSet {
 							MangaTag(
-								title = it.text(),
+								title = it.text().toTitleCase(),
 								key = it.attr("href").substringAfterLast('/'),
 								source = source
 							)
@@ -119,7 +119,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 				.mapNotNull {
 					val a = it.selectFirst("a.element-link") ?: return@mapNotNull null
 					MangaTag(
-						title = a.text(),
+						title = a.text().toTitleCase(),
 						key = a.attr("href").substringAfterLast('/'),
 						source = source
 					)
@@ -183,7 +183,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 			?.selectFirst("table.table") ?: parseFailed("Cannot find root")
 		return root.select("a.element-link").mapToSet { a ->
 			MangaTag(
-				title = a.text().toCamelCase(),
+				title = a.text().toTitleCase(),
 				key = a.attr("href").substringAfterLast('/'),
 				source = source
 			)

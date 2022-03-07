@@ -85,7 +85,7 @@ class HistoryListViewModel(
 		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
 		var prevDate: DateTimeAgo? = null
 		if (!grouped) {
-			result += ListHeader(null, R.string.history)
+			result += ListHeader(null, R.string.history, null)
 		}
 		for ((manga, history) in list) {
 			if (grouped) {

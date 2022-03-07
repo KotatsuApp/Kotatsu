@@ -49,6 +49,8 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
+import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
+import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -122,6 +124,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.remoteSources.observe(this, this::updateSideMenu)
+		viewModel.isSuggestionsEnabled.observe(this, this::setSuggestionsEnabled)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -186,6 +189,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				R.id.nav_local_storage -> {
 					viewModel.defaultSection = AppSection.LOCAL
 					setPrimaryFragment(LocalListFragment.newInstance())
+				}
+				R.id.nav_suggestions -> {
+					viewModel.defaultSection = AppSection.SUGGESTIONS
+					setPrimaryFragment(SuggestionsFragment.newInstance())
 				}
 				R.id.nav_feed -> {
 					viewModel.defaultSection = AppSection.FEED
@@ -285,7 +292,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		if (isLoading) {
 			binding.fab.setImageDrawable(CircularProgressDrawable(this).also {
 				it.setColorSchemeColors(R.color.kotatsu_onPrimaryContainer)
-				it.strokeWidth = resources.resolveDp(2f)
+				it.strokeWidth = resources.resolveDp(3.5f)
 				it.start()
 			})
 		} else {
@@ -301,6 +308,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				.setIcon(R.drawable.ic_manga_source)
 		}
 		submenu.setGroupCheckable(R.id.group_remote_sources, true, true)
+	}
+
+	private fun setSuggestionsEnabled(isEnabled: Boolean) {
+		val item = binding.navigationView.menu.findItem(R.id.nav_suggestions) ?: return
+		if (!isEnabled && item.isChecked) {
+			binding.navigationView.setCheckedItem(R.id.nav_history)
+		}
+		item.isVisible = isEnabled
 	}
 
 	private fun openDefaultSection() {
@@ -320,6 +335,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			AppSection.FEED -> {
 				binding.navigationView.setCheckedItem(R.id.nav_feed)
 				setPrimaryFragment(FeedFragment.newInstance())
+			}
+			AppSection.SUGGESTIONS -> {
+				binding.navigationView.setCheckedItem(R.id.nav_suggestions)
+				setPrimaryFragment(SuggestionsFragment.newInstance())
 			}
 		}
 	}
@@ -344,6 +363,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private fun onFirstStart() {
 		lifecycleScope.launch(Dispatchers.Default) {
 			TrackWorker.setup(applicationContext)
+			SuggestionsWorker.setup(applicationContext)
 			AppUpdateChecker(this@MainActivity).checkIfNeeded()
 			if (!get<AppSettings>().isSourcesSelected) {
 				withContext(Dispatchers.Main) {

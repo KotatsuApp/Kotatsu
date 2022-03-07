@@ -256,4 +256,13 @@
     <string name="screenshots_allow">Permetti</string>
     <string name="screenshots_block_nsfw">Blocca per NSFW</string>
     <string name="screenshots_block_all">Blocca sempre</string>
+    <string name="filter_load_error">Impossibile caricare la lista dei generi</string>
+    <string name="suggestions_enable">Abilita i suggerimenti</string>
+    <string name="suggestions_summary">Suggerisci manga in base alle tue preferenze</string>
+    <string name="suggestions_info">Tutti i dati sono analizzati localmente su questo dispositivo. Non c\'è trasferimento dei suoi dati personali a nessun servizio</string>
+    <string name="text_suggestion_holder">Inizia a leggere manga e riceverai suggerimenti personalizzati</string>
+    <string name="suggestions">Suggerimenti</string>
+    <string name="enabled">Abilitato</string>
+    <string name="disabled">Disabilitato</string>
+    <string name="exclude_nsfw_from_suggestions">Non suggerire manga NSFW</string>
 </resources>

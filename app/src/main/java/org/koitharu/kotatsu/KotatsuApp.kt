@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.reader.readerModule
 import org.koitharu.kotatsu.remotelist.remoteListModule
 import org.koitharu.kotatsu.search.searchModule
 import org.koitharu.kotatsu.settings.settingsModule
+import org.koitharu.kotatsu.suggestions.suggestionsModule
 import org.koitharu.kotatsu.tracker.trackerModule
 import org.koitharu.kotatsu.widget.WidgetUpdater
 import org.koitharu.kotatsu.widget.appWidgetModule
@@ -67,6 +68,7 @@ class KotatsuApp : Application() {
 				settingsModule,
 				readerModule,
 				appWidgetModule,
+				suggestionsModule,
 			)
 		}
 	}

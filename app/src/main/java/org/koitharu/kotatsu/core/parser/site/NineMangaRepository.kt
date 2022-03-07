@@ -94,7 +94,7 @@ abstract class NineMangaRepository(
 			tags = infoRoot.getElementsByAttributeValue("itemprop", "genre").first()
 				?.select("a")?.mapToSet { a ->
 					MangaTag(
-						title = a.text(),
+						title = a.text().toTitleCase(),
 						key = a.attr("href").substringBetween("/", "."),
 						source = source,
 					)

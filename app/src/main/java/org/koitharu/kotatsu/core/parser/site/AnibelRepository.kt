@@ -237,7 +237,6 @@ class AnibelRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 				when {
 					c == '-' -> {
 						builder.setCharAt(i, ' ')
-						capitalize = true
 					}
 					capitalize -> {
 						builder.setCharAt(i, c.uppercaseChar())

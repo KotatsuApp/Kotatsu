@@ -142,6 +142,12 @@ class AppSettings(context: Context) {
 			}
 		}
 
+	val isSuggestionsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_SUGGESTIONS, false)
+
+	val isSuggestionsExcludeNsfw: Boolean
+		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
+
 	fun isPagesPreloadAllowed(cm: ConnectivityManager): Boolean {
 		return when (prefs.getString(KEY_PAGES_PRELOAD, null)?.toIntOrNull()) {
 			NETWORK_ALWAYS -> true
@@ -241,6 +247,8 @@ class AppSettings(context: Context) {
 		const val KEY_PAGES_NUMBERS = "pages_numbers"
 		const val KEY_SCREENSHOTS_POLICY = "screenshots_policy"
 		const val KEY_PAGES_PRELOAD = "pages_preload"
+		const val KEY_SUGGESTIONS = "suggestions"
+		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

@@ -6,7 +6,10 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class MangaDataRepository(private val db: MangaDatabase) {
 
@@ -43,6 +46,12 @@ class MangaDataRepository(private val db: MangaDatabase) {
 		db.withTransaction {
 			db.tagsDao.upsert(tags)
 			db.mangaDao.upsert(MangaEntity.from(manga), tags)
+		}
+	}
+
+	suspend fun findTags(source: MangaSource): Set<MangaTag> {
+		return db.tagsDao.findTags(source.name).mapToSet {
+			it.toMangaTag()
 		}
 	}
 }

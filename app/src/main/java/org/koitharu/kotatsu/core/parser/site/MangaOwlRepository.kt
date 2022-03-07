@@ -91,7 +91,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 				.mapNotNull {
 					val a = it.selectFirst("a") ?: return@mapNotNull null
 					MangaTag(
-						title = a.text(),
+						title = a.text().toTitleCase(),
 						key = a.attr("href"),
 						source = source
 					)
@@ -144,7 +144,7 @@ class MangaOwlRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		return root.mapToSet { p ->
 			val a = p.selectFirst("a") ?: parseFailed("a is null")
 			MangaTag(
-				title = a.text().toCamelCase(),
+				title = a.text().toTitleCase(),
 				key = a.attr("href"),
 				source = source
 			)

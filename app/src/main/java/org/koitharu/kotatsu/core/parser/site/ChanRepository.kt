@@ -61,7 +61,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 				tags = runCatching {
 					row.selectFirst("div.genre")?.select("a")?.mapToSet {
 						MangaTag(
-							title = it.text(),
+							title = it.text().toTitleCase(),
 							key = it.attr("href").substringAfterLast('/').urlEncoded(),
 							source = source
 						)
@@ -136,7 +136,7 @@ abstract class ChanRepository(loaderContext: MangaLoaderContext) : RemoteMangaRe
 		return root.select("li.sidetag").mapToSet { li ->
 			val a = li.children().last() ?: throw ParseException("a is null")
 			MangaTag(
-				title = a.text().toCamelCase(),
+				title = a.text().toTitleCase(),
 				key = a.attr("href").substringAfterLast('/'),
 				source = source
 			)

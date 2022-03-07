@@ -80,7 +80,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 				},
 				tags = li.selectFirst("p.keyWord")?.select("a")?.mapNotNullToSet tags@{ x ->
 					MangaTag(
-						title = x.attr("title"),
+						title = x.attr("title").toTitleCase(),
 						key = x.attr("href").parseTagKey() ?: return@tags null,
 						source = MangaSource.MANGATOWN
 					)
@@ -104,7 +104,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 				x.selectFirst("b")?.ownText() == "Genre(s):"
 			}?.select("a")?.mapNotNull { a ->
 				MangaTag(
-					title = a.attr("title"),
+					title = a.attr("title").toTitleCase(),
 					key = a.attr("href").parseTagKey() ?: return@mapNotNull null,
 					source = MangaSource.MANGATOWN
 				)
@@ -172,7 +172,7 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 			MangaTag(
 				source = MangaSource.MANGATOWN,
 				key = key,
-				title = a.text()
+				title = a.text().toTitleCase()
 			)
 		}
 	}

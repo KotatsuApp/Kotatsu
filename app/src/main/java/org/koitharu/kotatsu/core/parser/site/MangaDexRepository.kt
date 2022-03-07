@@ -94,7 +94,8 @@ class MangaDexRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 					MangaTag(
 						title = tag.getJSONObject("attributes")
 							.getJSONObject("name")
-							.firstStringValue(),
+							.firstStringValue()
+							.toTitleCase(),
 						key = tag.getString("id"),
 						source = source,
 					)
@@ -194,7 +195,7 @@ class MangaDexRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			.getJSONArray("data")
 		return tags.mapToSet { jo ->
 			MangaTag(
-				title = jo.getJSONObject("attributes").getJSONObject("name").firstStringValue(),
+				title = jo.getJSONObject("attributes").getJSONObject("name").firstStringValue().toTitleCase(),
 				key = jo.getString("id"),
 				source = source,
 			)

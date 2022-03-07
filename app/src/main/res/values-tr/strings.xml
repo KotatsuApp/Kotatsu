@@ -204,7 +204,7 @@
     <string name="search_results">Arama sonuçları</string>
     <string name="waiting_for_network">Ağ bekleniyor…</string>
     <string name="repeat_password">Parolayı tekrarla</string>
-    <string name="prefer_rtl_reader">Sağdan sola (→) okuyucuyu tercih et</string>
+    <string name="prefer_rtl_reader">Sağdan sola (←) okuyucuyu tercih et</string>
     <string name="dont_check">Denetleme</string>
     <string name="wrong_password">Yanlış parola</string>
     <string name="report_github">GitHub\'da sorun oluştur</string>
@@ -256,4 +256,14 @@
     <string name="screenshots_block_nsfw">Uygunsuzlarda engelle</string>
     <string name="screenshots_block_all">Her zaman engelle</string>
     <string name="screenshots_allow">İzin ver</string>
+    <string name="check_for_new_chapters">Yeni bölümleri denetle</string>
+    <string name="suggestions">Öneriler</string>
+    <string name="suggestions_enable">Önerileri etkinleştir</string>
+    <string name="suggestions_summary">Tercihlerinize göre manga önerileri alın</string>
+    <string name="suggestions_info">Tüm veriler aygıt üzerinde yerel olarak işlenir. Kişisel verilerinizin herhangi bir hizmete aktarılması söz konusu değildir</string>
+    <string name="text_suggestion_holder">Manga okumaya başladıktan sonra kişiselleştirilmiş öneriler alacaksınız</string>
+    <string name="exclude_nsfw_from_suggestions">Uygunsuz manga önerme</string>
+    <string name="enabled">Etkin</string>
+    <string name="disabled">Devre dışı</string>
+    <string name="filter_load_error">Türler listesi yüklenemiyor</string>
 </resources>
