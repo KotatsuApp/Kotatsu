@@ -58,7 +58,8 @@
 						android:imeOptions="actionSearch"
 						android:importantForAutofill="no"
 						android:paddingBottom="1dp"
-						android:singleLine="true" />
+						android:singleLine="true"
+						tools:drawableEnd="@drawable/ic_clear" />
 
 				</com.google.android.material.appbar.MaterialToolbar>
 
