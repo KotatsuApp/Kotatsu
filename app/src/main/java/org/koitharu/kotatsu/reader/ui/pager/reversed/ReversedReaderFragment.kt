@@ -13,7 +13,10 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.doOnPageChanged
+import org.koitharu.kotatsu.utils.ext.recyclerView
+import org.koitharu.kotatsu.utils.ext.resetTransformations
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import kotlin.math.absoluteValue
 
 class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
@@ -27,7 +30,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		pagerAdapter = ReversedPagesAdapter(loader, get(), exceptionResolver)
+		pagerAdapter = ReversedPagesAdapter(viewModel.pageLoader, get(), exceptionResolver)
 		with(binding.pager) {
 			adapter = pagerAdapter
 			offscreenPageLimit = 2

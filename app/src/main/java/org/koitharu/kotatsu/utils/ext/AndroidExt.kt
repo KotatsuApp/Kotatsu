@@ -4,10 +4,15 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.os.Bundle
+import android.os.Parcelable
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+
+val Context.connectivityManager: ConnectivityManager
+	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 suspend fun ConnectivityManager.waitForNetwork(): Network {
 	val request = NetworkRequest.Builder().build()
@@ -26,4 +31,10 @@ suspend fun ConnectivityManager.waitForNetwork(): Network {
 
 inline fun buildAlertDialog(context: Context, block: MaterialAlertDialogBuilder.() -> Unit): AlertDialog {
 	return MaterialAlertDialogBuilder(context).apply(block).create()
+}
+
+fun <T : Parcelable> Bundle.requireParcelable(key: String): T {
+	return checkNotNull(getParcelable(key)) {
+		"Value for key $key not found"
+	}
 }

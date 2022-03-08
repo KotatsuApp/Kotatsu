@@ -261,4 +261,8 @@
 	<string name="reset_filter">Reset filter</string>
 	<string name="find_genre">Find genre</string>
 	<string name="onboard_text">Select languages which you want to read manga. You can change it later in settings.</string>
+	<string name="never">Never</string>
+	<string name="only_using_wifi">Only using WiFi</string>
+	<string name="always">Always</string>
+	<string name="preload_pages">Preload pages</string>
 </resources>

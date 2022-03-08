@@ -37,7 +37,7 @@ open class PageHolder(
 	}
 
 	override fun onRecycled() {
-		delegate.onRecycle()
+		super.onRecycled()
 		binding.ssiv.recycle()
 	}
 
@@ -45,6 +45,15 @@ open class PageHolder(
 		binding.layoutError.isVisible = false
 		binding.progressBar.isVisible = true
 		binding.ssiv.recycle()
+	}
+
+	override fun onProgressChanged(progress: Int) {
+		if (progress in 0..100) {
+			binding.progressBar.isIndeterminate = false
+			binding.progressBar.setProgressCompat(progress, true)
+		} else {
+			binding.progressBar.isIndeterminate = true
+		}
 	}
 
 	override fun onImageReady(uri: Uri) {

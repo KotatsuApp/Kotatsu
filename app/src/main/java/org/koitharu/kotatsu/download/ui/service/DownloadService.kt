@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
@@ -31,8 +30,9 @@ import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.domain.DownloadManager
-import org.koitharu.kotatsu.utils.JobStateFlow
+import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.toArraySet
+import org.koitharu.kotatsu.utils.progress.ProgressJob
 import java.util.concurrent.TimeUnit
 import kotlin.collections.set
 
@@ -42,7 +42,7 @@ class DownloadService : BaseService() {
 	private lateinit var wakeLock: PowerManager.WakeLock
 	private lateinit var downloadManager: DownloadManager
 
-	private val jobs = LinkedHashMap<Int, JobStateFlow<DownloadManager.State>>()
+	private val jobs = LinkedHashMap<Int, ProgressJob<DownloadManager.State>>()
 	private val jobCount = MutableStateFlow(0)
 	private val mutex = Mutex()
 	private val controlReceiver = ControlReceiver()
@@ -93,7 +93,7 @@ class DownloadService : BaseService() {
 		startId: Int,
 		manga: Manga,
 		chaptersIds: Set<Long>?,
-	): JobStateFlow<DownloadManager.State> {
+	): ProgressJob<DownloadManager.State> {
 		val initialState = DownloadManager.State.Queued(startId, manga, null)
 		val stateFlow = MutableStateFlow<DownloadManager.State>(initialState)
 		val job = lifecycleScope.launch {
@@ -131,7 +131,7 @@ class DownloadService : BaseService() {
 				}
 			}
 		}
-		return JobStateFlow(stateFlow, job)
+		return ProgressJob(job, stateFlow)
 	}
 
 	inner class ControlReceiver : BroadcastReceiver() {
@@ -149,7 +149,7 @@ class DownloadService : BaseService() {
 
 	class DownloadBinder(private val service: DownloadService) : Binder() {
 
-		val downloads: Flow<Collection<JobStateFlow<DownloadManager.State>>>
+		val downloads: Flow<Collection<ProgressJob<DownloadManager.State>>>
 			get() = service.jobCount.mapLatest { service.jobs.values }
 	}
 
@@ -183,9 +183,8 @@ class DownloadService : BaseService() {
 			.putExtra(ACTION_DOWNLOAD_CANCEL, startId)
 
 		private fun confirmDataTransfer(context: Context, callback: () -> Unit) {
-			val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 			val settings = GlobalContext.get().get<AppSettings>()
-			if (cm.isActiveNetworkMetered && settings.isTrafficWarningEnabled) {
+			if (context.connectivityManager.isActiveNetworkMetered && settings.isTrafficWarningEnabled) {
 				CheckBoxAlertDialog.Builder(context)
 					.setTitle(R.string.warning)
 					.setMessage(R.string.network_consumption_warning)

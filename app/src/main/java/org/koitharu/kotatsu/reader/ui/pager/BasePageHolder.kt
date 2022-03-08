@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
 import android.content.Context
+import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
@@ -33,5 +34,8 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 	protected abstract fun onBind(data: ReaderPage)
 
-	open fun onRecycled() = Unit
+	@CallSuper
+	open fun onRecycled() {
+		delegate.onRecycle()
+	}
 }

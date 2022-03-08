@@ -3,12 +3,9 @@ package org.koitharu.kotatsu.reader.ui.pager
 import android.os.Bundle
 import android.view.View
 import androidx.core.graphics.Insets
-import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 
@@ -17,9 +14,6 @@ private const val KEY_STATE = "state"
 abstract class BaseReader<B : ViewBinding> : BaseFragment<B>() {
 
 	protected val viewModel by sharedViewModel<ReaderViewModel>()
-	protected val loader by lazy(LazyThreadSafetyMode.NONE) {
-		PageLoader(lifecycleScope, get(), get())
-	}
 	private var stateToSave: ReaderState? = null
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -24,4 +24,9 @@
 		<item>block_nsfw</item>
 		<item>block_all</item>
 	</string-array>
+	<string-array name="values_network_policy">
+		<item>1</item>
+		<item>2</item>
+		<item>0</item>
+	</string-array>
 </resources>

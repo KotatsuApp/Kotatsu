@@ -47,4 +47,13 @@
 		app:iconSpaceReserved="false"
 		app:useSimpleSummaryProvider="true" />
 
+	<ListPreference
+		android:entries="@array/network_policy"
+		android:entryValues="@array/values_network_policy"
+		android:key="pages_preload"
+		android:title="@string/preload_pages"
+		app:defaultValue="2"
+		app:iconSpaceReserved="false"
+		app:useSimpleSummaryProvider="true" />
+
 </PreferenceScreen>

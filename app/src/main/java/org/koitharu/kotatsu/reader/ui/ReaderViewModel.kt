@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.utils.DownloadManagerHelper
@@ -44,6 +45,8 @@ class ReaderViewModel(
 	private val currentState = MutableStateFlow<ReaderState?>(null)
 	private val mangaData = MutableStateFlow(intent.manga)
 	private val chapters = LongSparseArray<MangaChapter>()
+
+	val pageLoader = PageLoader()
 
 	val readerMode = MutableLiveData<ReaderMode>()
 	val onPageSaved = SingleLiveEvent<Uri?>()
@@ -126,6 +129,11 @@ class ReaderViewModel(
 		subscribeToSettings()
 	}
 
+	override fun onCleared() {
+		pageLoader.close()
+		super.onCleared()
+	}
+
 	fun switchMode(newMode: ReaderMode) {
 		launchJob {
 			val manga = checkNotNull(mangaData.value)
@@ -206,6 +214,9 @@ class ReaderViewModel(
 		if (position >= pages.size - BOUNDS_PAGE_OFFSET) {
 			loadPrevNextChapter(pages.last().chapterId, 1)
 		}
+		if (pageLoader.isPrefetchApplicable()) {
+			pageLoader.prefetch(pages.trySublist(position + 1, position + PREFETCH_LIMIT))
+		}
 	}
 
 	private fun getReaderMode(isWebtoon: Boolean?) = when {
@@ -262,10 +273,21 @@ class ReaderViewModel(
 			.launchIn(viewModelScope + Dispatchers.IO)
 	}
 
+	private fun <T> List<T>.trySublist(fromIndex: Int, toIndex: Int): List<T> {
+		val fromIndexBounded = fromIndex.coerceAtMost(lastIndex)
+		val toIndexBounded = toIndex.coerceIn(fromIndexBounded, lastIndex)
+		return if (fromIndexBounded == toIndexBounded) {
+			emptyList()
+		} else {
+			subList(fromIndexBounded, toIndexBounded)
+		}
+	}
+
 	private companion object : KoinComponent {
 
 		const val BOUNDS_PAGE_OFFSET = 2
 		const val PAGES_TRIM_THRESHOLD = 120
+		const val PREFETCH_LIMIT = 10
 
 		fun saveState(manga: Manga, state: ReaderState) {
 			processLifecycleScope.launch(Dispatchers.Default + IgnoreErrors) {

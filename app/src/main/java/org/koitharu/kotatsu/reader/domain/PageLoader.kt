@@ -1,94 +1,107 @@
 package org.koitharu.kotatsu.reader.domain
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okio.Closeable
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.await
+import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
+import org.koitharu.kotatsu.utils.progress.ProgressDeferred
 import java.io.File
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipFile
 
-class PageLoader(
-	scope: CoroutineScope,
-	private val okHttp: OkHttpClient,
-	private val cache: PagesCache
-) : CoroutineScope by scope, KoinComponent {
+private const val PROGRESS_UNDEFINED = -1f
+private const val PREFETCH_LIMIT_DEFAULT = 10
 
-	private var repository: MangaRepository? = null
-	private val tasks = LongSparseArray<Deferred<File>>()
+class PageLoader : KoinComponent, Closeable {
+
+	val loaderScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+	private val okHttp = get<OkHttpClient>()
+	private val cache = get<PagesCache>()
+	private val settings = get<AppSettings>()
+	private val connectivityManager = get<Context>().connectivityManager
+	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
 	private val convertLock = Mutex()
+	private var repository: MangaRepository? = null
+	private var prefetchQueue = LinkedList<MangaPage>()
+	private val counter = AtomicInteger(0)
+	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
+	private val emptyProgressFlow: StateFlow<Float> = MutableStateFlow(-1f)
 
-	suspend fun loadPage(page: MangaPage, force: Boolean): File {
+	override fun close() {
+		loaderScope.cancel()
+		tasks.clear()
+	}
+
+	fun isPrefetchApplicable(): Boolean {
+		return repository is RemoteMangaRepository && settings.isPagesPreloadAllowed(connectivityManager)
+	}
+
+	fun prefetch(pages: List<ReaderPage>) {
+		synchronized(prefetchQueue) {
+			for (page in pages.asReversed()) {
+				if (tasks.containsKey(page.id)) {
+					continue
+				}
+				prefetchQueue.offerFirst(page.toMangaPage())
+				if (prefetchQueue.size > prefetchQueueLimit) {
+					prefetchQueue.pollLast()
+				}
+			}
+		}
+		if (counter.get() == 0) {
+			onIdle()
+		}
+	}
+
+	fun loadPageAsync(page: MangaPage, force: Boolean) : ProgressDeferred<File, Float> {
 		if (!force) {
 			cache[page.url]?.let {
-				return it
+				return getCompletedTask(it)
 			}
 		}
 		var task = tasks[page.id]
 		if (force) {
 			task?.cancel()
 		} else if (task?.isCancelled == false) {
-			return task.await()
+			return task
 		}
-		task = loadAsync(page)
+		task = loadPageAsyncImpl(page)
 		tasks[page.id] = task
-		return task.await()
+		return task
 	}
 
-	private fun loadAsync(page: MangaPage): Deferred<File> {
-		var repo = repository
-		if (repo?.source != page.source) {
-			repo = mangaRepositoryOf(page.source)
-			repository = repo
-		}
-		return async(Dispatchers.IO) {
-			val pageUrl = repo.getPageUrl(page)
-			check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
-			val uri = Uri.parse(pageUrl)
-			if (uri.scheme == "cbz") {
-				val zip = ZipFile(uri.schemeSpecificPart)
-				val entry = zip.getEntry(uri.fragment)
-				zip.getInputStream(entry).use {
-					cache.put(pageUrl, it)
-				}
-			} else {
-				val request = Request.Builder()
-					.url(pageUrl)
-					.get()
-					.header(CommonHeaders.REFERER, page.referer)
-					.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
-					.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
-					.build()
-				okHttp.newCall(request).await().use { response ->
-					check(response.isSuccessful) {
-						"Invalid response: ${response.code} ${response.message}"
-					}
-					val body = checkNotNull(response.body) {
-						"Null response"
-					}
-					body.byteStream().use {
-						cache.put(pageUrl, it)
-					}
-				}
-			}
-		}
+	suspend fun loadPage(page: MangaPage, force: Boolean): File {
+		return loadPageAsync(page, force).await()
 	}
 
 	suspend fun convertInPlace(file: File) {
-		convertLock.withLock(Lock) {
-			withContext(Dispatchers.Default) {
+		convertLock.withLock {
+			runInterruptible(Dispatchers.Default) {
 				val image = BitmapFactory.decodeFile(file.absolutePath)
 				try {
 					file.outputStream().use { out ->
@@ -101,5 +114,76 @@ class PageLoader(
 		}
 	}
 
-	private companion object Lock
+	private fun onIdle() {
+		synchronized(prefetchQueue) {
+			val page = prefetchQueue.pollFirst() ?: return
+			tasks[page.id] = loadPageAsyncImpl(page)
+		}
+	}
+
+	private fun loadPageAsyncImpl(page: MangaPage): ProgressDeferred<File, Float> {
+		val progress = MutableStateFlow(PROGRESS_UNDEFINED)
+		val deferred = loaderScope.async {
+			counter.incrementAndGet()
+			try {
+				loadPageImpl(page, progress)
+			} finally {
+				if (counter.decrementAndGet() == 0) {
+					onIdle()
+				}
+			}
+		}
+		return ProgressDeferred(deferred, progress)
+	}
+
+	@Synchronized
+	private fun getRepository(source: MangaSource): MangaRepository {
+		val result = repository
+		return if (result != null && result.source == source) {
+			result
+		} else {
+			mangaRepositoryOf(source).also { repository = it }
+		}
+	}
+
+	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): File {
+		val pageUrl = getRepository(page.source).getPageUrl(page)
+		check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
+		val uri = Uri.parse(pageUrl)
+		return if (uri.scheme == "cbz") {
+			runInterruptible(Dispatchers.IO) {
+				val zip = ZipFile(uri.schemeSpecificPart)
+				val entry = zip.getEntry(uri.fragment)
+				zip.getInputStream(entry).use {
+					cache.put(pageUrl, it)
+				}
+			}
+		} else {
+			val request = Request.Builder()
+				.url(pageUrl)
+				.get()
+				.header(CommonHeaders.REFERER, page.referer)
+				.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
+				.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
+				.build()
+			okHttp.newCall(request).await().use { response ->
+				check(response.isSuccessful) {
+					"Invalid response: ${response.code} ${response.message}"
+				}
+				val body = checkNotNull(response.body) {
+					"Null response"
+				}
+				runInterruptible(Dispatchers.IO) {
+					body.byteStream().use {
+						cache.put(pageUrl, it, body.contentLength(), progress)
+					}
+				}
+			}
+		}
+	}
+
+	private fun getCompletedTask(file: File): ProgressDeferred<File, Float> {
+		val deferred = CompletableDeferred(file)
+		return ProgressDeferred(deferred, emptyProgressFlow)
+	}
 }

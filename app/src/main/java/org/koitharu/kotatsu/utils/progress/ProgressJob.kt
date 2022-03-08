@@ -1,0 +1,16 @@
+package org.koitharu.kotatsu.utils.progress
+
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+
+class ProgressJob<P>(
+	private val job: Job,
+	private val progress: StateFlow<P>,
+) : Job by job {
+
+	val progressValue: P
+		get() = progress.value
+
+	fun progressAsFlow(): Flow<P> = progress
+}

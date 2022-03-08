@@ -166,6 +166,7 @@ inline fun <reified T> RecyclerView.ViewHolder.getItem(): T? {
 	return ((this as? AdapterDelegateViewBindingViewHolder<*, *>)?.item as? T)
 }
 
+@Deprecated("Useless")
 fun BaseProgressIndicator<*>.setIndeterminateCompat(indeterminate: Boolean) {
 	if (isIndeterminate != indeterminate) {
 		if (indeterminate && visibility == View.VISIBLE) {

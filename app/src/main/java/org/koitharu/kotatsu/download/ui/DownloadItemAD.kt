@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
 import org.koitharu.kotatsu.download.domain.DownloadManager
-import org.koitharu.kotatsu.utils.JobStateFlow
 import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.progress.ProgressJob
 
 fun downloadItemAD(
 	scope: CoroutineScope,
 	coil: ImageLoader,
-) = adapterDelegateViewBinding<JobStateFlow<DownloadManager.State>, JobStateFlow<DownloadManager.State>, ItemDownloadBinding>(
+) = adapterDelegateViewBinding<ProgressJob<DownloadManager.State>, ProgressJob<DownloadManager.State>, ItemDownloadBinding>(
 	{ inflater, parent -> ItemDownloadBinding.inflate(inflater, parent, false) }
 ) {
 
@@ -24,7 +24,7 @@ fun downloadItemAD(
 
 	bind {
 		job?.cancel()
-		job = item.onFirst { state ->
+		job = item.progressAsFlow().onFirst { state ->
 			binding.imageViewCover.newImageRequest(state.manga.coverUrl)
 				.referer(state.manga.publicUrl)
 				.placeholder(state.cover)
