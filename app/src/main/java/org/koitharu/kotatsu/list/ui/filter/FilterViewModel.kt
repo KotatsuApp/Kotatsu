@@ -11,27 +11,23 @@ import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.utils.ext.replaceWith
 import java.util.*
 
 class FilterViewModel(
 	private val repository: RemoteMangaRepository,
 	dataRepository: MangaDataRepository,
-	state: FilterState,
 ) : BaseViewModel(), OnFilterChangedListener {
 
 	val filter = MutableLiveData<List<FilterItem>>()
 	val result = MutableLiveData<FilterState>()
 	private var job: Job? = null
-	private var selectedSortOrder: SortOrder? = state.sortOrder
-	private val selectedTags = HashSet(state.tags)
+	private var selectedSortOrder: SortOrder? = repository.sortOrders.firstOrNull()
+	private val selectedTags = HashSet<MangaTag>()
 	private val localTagsDeferred = viewModelScope.async(Dispatchers.Default) {
 		dataRepository.findTags(repository.source)
 	}
 	private var availableTagsDeferred = loadTagsAsync()
-
-	init {
-		showFilter()
-	}
 
 	override fun onSortItemClick(item: FilterItem.Sort) {
 		selectedSortOrder = item.order
@@ -45,6 +41,18 @@ class FilterViewModel(
 			selectedTags.add(item.tag)
 		}
 		if (isModified) {
+			updateFilters()
+		}
+	}
+
+	fun updateState(state: FilterState?) {
+		if (state != null) {
+			selectedSortOrder = state.sortOrder
+			selectedTags.replaceWith(state.tags)
+		}
+		if (job == null) {
+			showFilter()
+		} else {
 			updateFilters()
 		}
 	}

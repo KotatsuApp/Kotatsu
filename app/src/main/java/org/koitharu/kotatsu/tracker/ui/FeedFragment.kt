@@ -10,12 +10,13 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
@@ -25,7 +26,7 @@ import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.progress.Progress
 
 class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListener.Callback,
-	OnListItemClickListener<Manga> {
+	MangaListListener {
 
 	private val viewModel by viewModel<FeedViewModel>()
 
@@ -113,6 +114,14 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListen
 			bottom = insets.bottom + paddingVertical,
 		)
 	}
+
+	override fun onRetryClick(error: Throwable) = Unit
+
+	override fun onTagRemoveClick(tag: MangaTag) = Unit
+
+	override fun onFilterClick() = Unit
+
+	override fun onEmptyActionClick() = Unit
 
 	private fun onListChanged(list: List<ListModel>) {
 		feedAdapter?.items = list

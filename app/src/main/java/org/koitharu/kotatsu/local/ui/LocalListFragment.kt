@@ -62,6 +62,21 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 
 	override fun onScrolledToEnd() = Unit
 
+	override fun onEmptyActionClick() {
+		try {
+			importCall.launch(arrayOf("*/*"))
+		} catch (e: ActivityNotFoundException) {
+			if (BuildConfig.DEBUG) {
+				e.printStackTrace()
+			}
+			Snackbar.make(
+				binding.recyclerView,
+				R.string.operation_not_supported,
+				Snackbar.LENGTH_SHORT
+			).show()
+		}
+	}
+
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.opt_local, menu)
 		super.onCreateOptionsMenu(menu, inflater)
@@ -70,18 +85,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_import -> {
-				try {
-					importCall.launch(arrayOf("*/*"))
-				} catch (e: ActivityNotFoundException) {
-					if (BuildConfig.DEBUG) {
-						e.printStackTrace()
-					}
-					Snackbar.make(
-						binding.recyclerView,
-						R.string.operation_not_supported,
-						Snackbar.LENGTH_SHORT
-					).show()
-				}
+				onEmptyActionClick()
 				true
 			}
 			else -> super.onOptionsItemSelected(item)

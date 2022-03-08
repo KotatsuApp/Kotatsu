@@ -8,13 +8,13 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 fun errorStateListAD(
-	onRetryClick: (Throwable) -> Unit
+	listener: MangaListListener,
 ) = adapterDelegateViewBinding<ErrorState, ListModel, ItemErrorStateBinding>(
 	{ inflater, parent -> ItemErrorStateBinding.inflate(inflater, parent, false) }
 ) {
 
 	binding.buttonRetry.setOnClickListener {
-		onRetryClick(item.exception)
+		listener.onRetryClick(item.exception)
 	}
 
 	bind {

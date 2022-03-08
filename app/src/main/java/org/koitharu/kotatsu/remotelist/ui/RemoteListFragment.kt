@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.filter.FilterBottomSheet
+import org.koitharu.kotatsu.list.ui.filter.FilterState
 import org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity
 import org.koitharu.kotatsu.utils.ext.parcelableArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
@@ -63,6 +64,10 @@ class RemoteListFragment : MangaListFragment(), FragmentResultListener {
 
 	override fun onFilterClick() {
 		FilterBottomSheet.show(childFragmentManager, source, viewModel.filter)
+	}
+
+	override fun onEmptyActionClick() {
+		viewModel.applyFilter(FilterState(viewModel.filter.sortOrder, emptySet()))
 	}
 
 	override fun onFragmentResult(requestKey: String, result: Bundle) {

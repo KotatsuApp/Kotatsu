@@ -34,4 +34,14 @@
 		android:textAppearance="?attr/textAppearanceBodyMedium"
 		tools:text="@tools:sample/lorem[15]" />
 
+	<Button
+		android:id="@+id/button_retry"
+		style="@style/Widget.Material3.Button.TonalButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:visibility="gone"
+		tools:text="@string/try_again"
+		tools:visibility="visible" />
+
 </LinearLayout>

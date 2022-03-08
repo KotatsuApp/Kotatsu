@@ -4,9 +4,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
@@ -17,32 +14,29 @@ import kotlin.jvm.internal.Intrinsics
 class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-	clickListener: OnListItemClickListener<Manga>,
-	onRetryClick: (Throwable) -> Unit,
-	onTagRemoveClick: (MangaTag) -> Unit,
-	onFilterClickListener: () -> Unit,
+	listener: MangaListListener,
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
 	init {
 		delegatesManager
 			.addDelegate(
 				ITEM_TYPE_MANGA_LIST,
-				mangaListItemAD(coil, lifecycleOwner, clickListener)
+				mangaListItemAD(coil, lifecycleOwner, listener)
 			)
 			.addDelegate(
 				ITEM_TYPE_MANGA_LIST_DETAILED,
-				mangaListDetailedItemAD(coil, lifecycleOwner, clickListener)
+				mangaListDetailedItemAD(coil, lifecycleOwner, listener)
 			)
-			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, clickListener))
+			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, listener))
 			.addDelegate(ITEM_TYPE_LOADING_FOOTER, loadingFooterAD())
 			.addDelegate(ITEM_TYPE_LOADING_STATE, loadingStateAD())
 			.addDelegate(ITEM_TYPE_DATE, relatedDateItemAD())
-			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(onRetryClick))
-			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(onRetryClick))
-			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD())
+			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(listener))
+			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(listener))
+			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(listener))
 			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
-			.addDelegate(ITEM_TYPE_FILTER, currentFilterAD(onTagRemoveClick))
-			.addDelegate(ITEM_TYPE_HEADER_FILTER, listHeaderWithFilterAD(onFilterClickListener))
+			.addDelegate(ITEM_TYPE_FILTER, currentFilterAD(listener))
+			.addDelegate(ITEM_TYPE_HEADER_FILTER, listHeaderWithFilterAD(listener))
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {

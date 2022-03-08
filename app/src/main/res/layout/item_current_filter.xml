@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HorizontalScrollView
+<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/chips_tags"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
-
-	<org.koitharu.kotatsu.base.ui.widgets.ChipsView
-		android:id="@+id/chips_tags"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:closeIconEnabled="true"
-		app:singleLine="true" />
-
-</HorizontalScrollView>
+	android:layout_height="wrap_content"
+	app:closeIconEnabled="true" />

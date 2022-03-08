@@ -264,4 +264,5 @@
 	<string name="enabled">Enabled</string>
 	<string name="disabled">Disabled</string>
 	<string name="filter_load_error">Unable to load genres list</string>
+	<string name="reset_filter">Reset filter</string>
 </resources>

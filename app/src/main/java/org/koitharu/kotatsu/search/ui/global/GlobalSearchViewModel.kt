@@ -13,7 +13,6 @@ import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.onFirst
-import java.util.*
 
 class GlobalSearchViewModel(
 	private val query: String,
@@ -35,7 +34,14 @@ class GlobalSearchViewModel(
 		when {
 			list.isNullOrEmpty() && error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
-			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_book_search, R.string.nothing_found, R.string.text_search_holder_secondary))
+			list.isEmpty() -> listOf(
+				EmptyState(
+					icon = R.drawable.ic_book_search,
+					textPrimary = R.string.nothing_found,
+					textSecondary = R.string.text_search_holder_secondary,
+					actionStringRes = 0,
+				)
+			)
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
 				list.toUi(result, mode)

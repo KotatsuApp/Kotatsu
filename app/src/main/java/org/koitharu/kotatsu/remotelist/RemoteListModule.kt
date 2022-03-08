@@ -23,7 +23,6 @@ val remoteListModule
 			FilterViewModel(
 				repository = get<MangaRepository>(named(params.get<MangaSource>())) as RemoteMangaRepository,
 				dataRepository = get(),
-				state = params.get(),
 			)
 		}
 	}

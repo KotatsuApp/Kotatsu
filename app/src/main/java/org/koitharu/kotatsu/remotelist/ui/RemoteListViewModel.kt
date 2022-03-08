@@ -42,7 +42,7 @@ class RemoteListViewModel(
 		when {
 			list.isNullOrEmpty() && error != null -> listOf(error.toErrorState(canRetry = true))
 			list == null -> listOf(LoadingState)
-			list.isEmpty() -> listOf(EmptyState(R.drawable.ic_book_cross, R.string.nothing_found, R.string.empty))
+			list.isEmpty() -> createEmptyState()
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 3)
 				result += header
@@ -126,4 +126,13 @@ class RemoteListViewModel(
 			CurrentFilterModel(tags.map { ChipsView.ChipModel(0, it.title, it) })
 		}
 	}
+
+	private fun createEmptyState() = listOf(
+		EmptyState(
+			icon = R.drawable.ic_book_cross,
+			textPrimary = R.string.nothing_found,
+			textSecondary = 0,
+			actionStringRes = if (filter.tags.isEmpty()) 0 else R.string.reset_filter,
+		)
+	)
 }

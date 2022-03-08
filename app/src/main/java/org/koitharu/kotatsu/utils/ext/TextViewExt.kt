@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils.ext
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.core.view.isGone
 
 var TextView.textAndVisible: CharSequence?
@@ -18,3 +19,13 @@ var TextView.drawableStart: Drawable?
 		val dr = compoundDrawablesRelative
 		setCompoundDrawablesRelativeWithIntrinsicBounds(value, dr[1], dr[2], dr[3])
 	}
+
+fun TextView.setTextAndVisible(@StringRes textResId: Int) {
+	if (textResId == 0) {
+		text = null
+		isGone = true
+	} else {
+		setText(textResId)
+		isGone = text.isNullOrEmpty()
+	}
+}

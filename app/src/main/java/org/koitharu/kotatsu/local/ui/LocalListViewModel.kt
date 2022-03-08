@@ -45,9 +45,10 @@ class LocalListViewModel(
 			list == null -> listOf(LoadingState)
 			list.isEmpty() -> listOf(
 				EmptyState(
-					R.drawable.ic_storage,
-					R.string.text_local_holder_primary,
-					R.string.text_local_holder_secondary
+					icon = R.drawable.ic_storage,
+					textPrimary = R.string.text_local_holder_primary,
+					textSecondary = R.string.text_local_holder_secondary,
+					actionStringRes = R.string._import,
 				)
 			)
 			else -> ArrayList<ListModel>(list.size + 1).apply {

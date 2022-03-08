@@ -24,11 +24,14 @@ class SuggestionsViewModel(
 		createListModeFlow()
 	) { list, mode ->
 		when {
-			list.isEmpty() -> listOf(EmptyState(
-				icon = R.drawable.ic_book_cross,
-				textPrimary = R.string.nothing_found,
-				textSecondary = R.string.text_suggestion_holder,
-			))
+			list.isEmpty() -> listOf(
+				EmptyState(
+					icon = R.drawable.ic_book_cross,
+					textPrimary = R.string.nothing_found,
+					textSecondary = R.string.text_suggestion_holder,
+					actionStringRes = 0,
+				)
+			)
 			else -> buildList<ListModel>(list.size + 1) {
 				add(headerModel)
 				list.toUi(this, mode)

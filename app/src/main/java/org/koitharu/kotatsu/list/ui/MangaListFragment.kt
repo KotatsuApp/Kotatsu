@@ -15,17 +15,18 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
+import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.main.ui.MainActivity
@@ -33,7 +34,7 @@ import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
 import org.koitharu.kotatsu.utils.ext.*
 
 abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
-	PaginationScrollListener.Callback, OnListItemClickListener<Manga>,
+	PaginationScrollListener.Callback, MangaListListener,
 	SwipeRefreshLayout.OnRefreshListener {
 
 	private var listAdapter: MangaListAdapter? = null
@@ -62,10 +63,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		listAdapter = MangaListAdapter(
 			coil = get(),
 			lifecycleOwner = viewLifecycleOwner,
-			clickListener = this,
-			onRetryClick = ::resolveException,
-			onTagRemoveClick = viewModel::onRemoveFilterTag,
-			onFilterClickListener = this::onFilterClick,
+			listener = this,
 		)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
@@ -192,7 +190,17 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		}
 	}
 
-	protected open fun onFilterClick() = Unit
+	override fun onFilterClick() = Unit
+
+	override fun onEmptyActionClick() = Unit
+
+	override fun onRetryClick(error: Throwable) {
+		resolveException(error)
+	}
+
+	override fun onTagRemoveClick(tag: MangaTag) {
+		viewModel.onRemoveFilterTag(tag)
+	}
 
 	private fun onGridScaleChanged(scale: Float) {
 		spanSizeLookup.invalidateCache()

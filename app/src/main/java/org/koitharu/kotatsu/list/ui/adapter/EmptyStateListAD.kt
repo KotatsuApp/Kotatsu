@@ -4,20 +4,20 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 
-fun emptyStateListAD() = adapterDelegateViewBinding<EmptyState, ListModel, ItemEmptyStateBinding>(
+fun emptyStateListAD(
+	listener: MangaListListener,
+) = adapterDelegateViewBinding<EmptyState, ListModel, ItemEmptyStateBinding>(
 	{ inflater, parent -> ItemEmptyStateBinding.inflate(inflater, parent, false) }
 ) {
 
+	binding.buttonRetry.setOnClickListener { listener.onEmptyActionClick() }
+
 	bind {
-		with(binding.icon) {
-			setImageResource(item.icon)
-		}
-		with(binding.textPrimary) {
-			setText(item.textPrimary)
-		}
-		with(binding.textSecondary) {
-			setText(item.textSecondary)
-		}
+		binding.icon.setImageResource(item.icon)
+		binding.textPrimary.setText(item.textPrimary)
+		binding.textSecondary.setTextAndVisible(item.textSecondary)
+		binding.buttonRetry.setTextAndVisible(item.actionStringRes)
 	}
 }

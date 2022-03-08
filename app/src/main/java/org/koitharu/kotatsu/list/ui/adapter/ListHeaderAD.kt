@@ -24,14 +24,14 @@ fun listHeaderAD() = adapterDelegate<ListHeader, ListModel>(
 }
 
 fun listHeaderWithFilterAD(
-	onFilterClickListener: () -> Unit,
+	listener: MangaListListener,
 ) = adapterDelegateViewBinding<ListHeader, ListModel, ItemHeaderWithFilterBinding>(
 	viewBinding = { inflater, parent -> ItemHeaderWithFilterBinding.inflate(inflater, parent, false) },
 	on = { item, _, _ -> item is ListHeader && item.sortOrder != null },
 ) {
 
 	binding.textViewFilter.setOnClickListener {
-		onFilterClickListener()
+		listener.onFilterClick()
 	}
 
 	bind {

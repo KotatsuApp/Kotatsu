@@ -24,8 +24,13 @@ class FilterBottomSheet : BaseBottomSheet<SheetFilterBinding>() {
 	) {
 		parametersOf(
 			requireArguments().getParcelable<MangaSource>(ARG_SOURCE),
-			requireArguments().getParcelable<FilterState>(ARG_STATE),
 		)
+	}
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		val state = requireArguments().getParcelable<FilterState>(ARG_STATE)
+		viewModel.updateState(state)
 	}
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
