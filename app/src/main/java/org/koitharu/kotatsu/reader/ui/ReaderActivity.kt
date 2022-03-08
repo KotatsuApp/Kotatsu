@@ -18,6 +18,9 @@ import androidx.core.view.postDelayed
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -47,8 +50,9 @@ import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.anim.Motion
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
+import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 
 class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	ChaptersBottomSheet.OnChapterChangeListener,
@@ -310,13 +314,16 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 	private fun setUiIsVisible(isUiVisible: Boolean) {
 		if (binding.appbarTop.isVisible != isUiVisible) {
+			val transition = TransitionSet()
+				.setOrdering(TransitionSet.ORDERING_TOGETHER)
+				.addTransition(Slide(Gravity.BOTTOM).addTarget(binding.appbarBottom))
+				.addTransition(Slide(Gravity.TOP).addTarget(binding.appbarTop))
+			TransitionManager.beginDelayedTransition(binding.root, transition)
+			binding.appbarTop.isVisible = isUiVisible
+			binding.appbarBottom.isVisible = isUiVisible
 			if (isUiVisible) {
-				binding.appbarTop.showAnimated(Motion.SlideTop)
-				binding.appbarBottom.showAnimated(Motion.SlideBottom)
 				showSystemUI()
 			} else {
-				binding.appbarTop.hideAnimated(Motion.SlideTop)
-				binding.appbarBottom.hideAnimated(Motion.SlideBottom)
 				hideSystemUI()
 			}
 		}
