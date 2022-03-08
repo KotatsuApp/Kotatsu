@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="empty" translatable="false" />
 	<string-array name="values_theme" translatable="false">
 		<item>-1</item>
 		<item>1</item>

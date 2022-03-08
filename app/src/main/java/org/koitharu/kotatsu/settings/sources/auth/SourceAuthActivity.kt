@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
+import com.google.android.material.R as materialR
 
 class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
 
@@ -43,7 +44,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		}
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(R.drawable.ic_cross)
+			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		with(binding.webView.settings) {
 			javaScriptEnabled = true

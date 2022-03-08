@@ -6,6 +6,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.koitharu.kotatsu.core.network.AndroidCookieJar
 import org.koitharu.kotatsu.core.network.WebViewClientCompat
 
+private const val CF_CLEARANCE = "cf_clearance"
+
 class CloudFlareClient(
 	private val cookieJar: AndroidCookieJar,
 	private val callback: CloudFlareCallback,
@@ -39,10 +41,5 @@ class CloudFlareClient(
 	private fun getCookieValue(name: String): String? {
 		return cookieJar.loadForRequest(targetUrl.toHttpUrl())
 			.find { it.name == name }?.value
-	}
-
-	private companion object {
-
-		const val CF_CLEARANCE = "cf_clearance"
 	}
 }

@@ -5,8 +5,7 @@
 
 	<item
 		android:id="@+id/action_done"
-		android:icon="@drawable/ic_done"
 		android:orderInCategory="0"
 		android:title="@string/done"
-		app:showAsAction="ifRoom|withText" />
+		app:showAsAction="always|withText" />
 </menu>

@@ -8,6 +8,8 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.md5
 
+private const val PASSWORD_COMPARE_DELAY = 1_000L
+
 class ProtectViewModel(
 	private val settings: AppSettings,
 	private val protectHelper: AppProtectHelper,
@@ -32,10 +34,5 @@ class ProtectViewModel(
 				throw WrongPasswordException()
 			}
 		}
-	}
-
-	private companion object {
-
-		const val PASSWORD_COMPARE_DELAY = 1_000L
 	}
 }

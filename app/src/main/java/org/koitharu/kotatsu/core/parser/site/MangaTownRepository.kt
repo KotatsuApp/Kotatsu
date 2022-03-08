@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.parser.site
 
-import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
@@ -24,6 +23,8 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		SortOrder.POPULARITY,
 		SortOrder.UPDATED
 	)
+
+	private val regexTag = Regex("[^\\-]+-[^\\-]+-[^\\-]+-[^\\-]+-[^\\-]+-[^\\-]+")
 
 	override suspend fun getList2(
 		offset: Int,
@@ -217,11 +218,5 @@ class MangaTownRepository(loaderContext: MangaLoaderContext) :
 		}
 	}
 
-	private fun String.parseTagKey() = split('/').findLast { TAG_REGEX matches it }
-
-	private companion object {
-
-		@Language("RegExp")
-		val TAG_REGEX = Regex("[^\\-]+-[^\\-]+-[^\\-]+-[^\\-]+-[^\\-]+-[^\\-]+")
-	}
+	private fun String.parseTagKey() = split('/').findLast { regexTag matches it }
 }

@@ -8,6 +8,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.TextInputDialog
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 
+private const val MAX_TITLE_LENGTH = 24
+
 class CategoriesEditDelegate(
 	private val context: Context,
 	private val callback: CategoriesEditCallback
@@ -68,10 +70,5 @@ class CategoriesEditDelegate(
 		fun onRenameCategory(category: FavouriteCategory, newName: String)
 
 		fun onCreateCategory(name: String)
-	}
-
-	private companion object {
-
-		const val MAX_TITLE_LENGTH = 24
 	}
 }

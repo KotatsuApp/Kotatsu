@@ -27,6 +27,10 @@ import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.waitForNetwork
 import java.io.File
 
+private const val MAX_DOWNLOAD_ATTEMPTS = 3
+private const val DOWNLOAD_ERROR_DELAY = 500L
+private const val TEMP_PAGE_FILE = "page.tmp"
+
 class DownloadManager(
 	private val context: Context,
 	private val imageLoader: ImageLoader,
@@ -227,12 +231,5 @@ class DownloadManager(
 			override val manga: Manga,
 			override val cover: Drawable?,
 		) : State
-	}
-
-	private companion object {
-
-		private const val MAX_DOWNLOAD_ATTEMPTS = 3
-		private const val DOWNLOAD_ERROR_DELAY = 500L
-		private const val TEMP_PAGE_FILE = "page.tmp"
 	}
 }

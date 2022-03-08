@@ -12,8 +12,7 @@
     <string name="about_support_developer">Tue kehittäjää</string>
     <string name="about_feedback_4pda">Aihe 4PDA: ssa</string>
     <string name="about_feedback">Palaute</string>
-    <string name="about_author">Kirjailija</string>
-    <string name="about_app_translation">Käännös</string>
+	<string name="about_app_translation">Käännös</string>
     <string name="about_app_translation_summary">Käännä tämä sovellus</string>
     <string name="chapter_is_missing">Luku puuttuu</string>
     <string name="chapter_is_missing_text">Tämä luku puuttuu laitteestasi. Lataa tai lue se verkossa.</string>
@@ -22,10 +21,8 @@
     <string name="read_more">Lue lisää</string>
     <string name="tracker_warning">Jotkin valmistajat voivat muuttaa järjestelmän käyttäytymistä, mikä voi keskeyttää taustatehtäviä.</string>
     <string name="backup_saved">Varmuuskopiointi tallennettu onnistuneesti</string>
-    <string name="description">Kuvaus</string>
-    <string name="welcome">Tervetuloa</string>
-    <string name="languages">Kielet</string>
-    <string name="other">Muut</string>
+	<string name="welcome">Tervetuloa</string>
+	<string name="other">Muut</string>
     <string name="text_clear_search_history_prompt">Haluatko todella poistaa kaikki viimeaikaiset hakukyselyt\?</string>
     <string name="search_only_on_s">Hae vain kohteesta %s</string>
     <string name="hide_toolbar">Piilota työkalupalkki selattaessa</string>
@@ -187,10 +184,8 @@
     <string name="light">Vaalea</string>
     <string name="theme">Teema</string>
     <string name="filter">Suodatin</string>
-    <string name="genre">Tyylilaji</string>
-    <string name="sort_order">Lajittelujärjestys</string>
-    <string name="all">Kaikki</string>
-    <string name="by_rating">Luokituksen mukaan</string>
+	<string name="sort_order">Lajittelujärjestys</string>
+	<string name="by_rating">Luokituksen mukaan</string>
     <string name="newest">Uusimmat</string>
     <string name="updated">Päivitetty</string>
     <string name="popular">Suosittu</string>
@@ -210,8 +205,7 @@
     <string name="add_new_category">Lisää uusi luokka</string>
     <string name="add_to_favourites">Lisää suosikkeihin</string>
     <string name="you_have_not_favourites_yet">Sinulla ei ole vielä suosikkeja</string>
-    <string name="add_bookmark">Lisää kirjanmerkki</string>
-    <string name="read">Lue</string>
+	<string name="read">Lue</string>
     <string name="history_is_empty">Historia on tyhjä</string>
     <string name="nothing_found">Mitään ei löytynyt</string>
     <string name="clear_history">Tyhjennä historia</string>

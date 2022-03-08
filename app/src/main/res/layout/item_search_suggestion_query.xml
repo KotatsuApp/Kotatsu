@@ -30,6 +30,7 @@
 		android:layout_height="wrap_content"
 		android:background="?selectableItemBackgroundBorderless"
 		android:padding="8dp"
-		android:src="@drawable/ic_complete" />
+		android:src="@drawable/abc_ic_commit_search_api_mtrl_alpha"
+		app:tint="?colorControlNormal" />
 
 </LinearLayout>

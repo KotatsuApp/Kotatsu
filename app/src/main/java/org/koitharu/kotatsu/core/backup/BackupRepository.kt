@@ -10,6 +10,8 @@ import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
 
+private const val PAGE_SIZE = 10
+
 class BackupRepository(private val db: MangaDatabase) {
 
 	suspend fun dumpHistory(): BackupEntry {
@@ -65,7 +67,7 @@ class BackupRepository(private val db: MangaDatabase) {
 		return entry
 	}
 
-	suspend fun createIndex(): BackupEntry {
+	fun createIndex(): BackupEntry {
 		val entry = BackupEntry(BackupEntry.INDEX, JSONArray())
 		val json = JSONObject()
 		json.put("app_id", BuildConfig.APPLICATION_ID)
@@ -128,10 +130,5 @@ class BackupRepository(private val db: MangaDatabase) {
 		jo.put("category_id", categoryId)
 		jo.put("created_at", createdAt)
 		return jo
-	}
-
-	private companion object {
-
-		const val PAGE_SIZE = 10
 	}
 }

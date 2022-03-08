@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
+import com.google.android.material.R as materialR
 
 class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 	OnListItemClickListener<CategoryItem> {
@@ -35,7 +36,10 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		supportActionBar?.run {
+			setDisplayHomeAsUpEnabled(true)
+			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
+		}
 		adapter = CategorySelectAdapter(this)
 		binding.recyclerView.addItemDecoration(
 			MaterialDividerItemDecoration(this, RecyclerView.VERTICAL)

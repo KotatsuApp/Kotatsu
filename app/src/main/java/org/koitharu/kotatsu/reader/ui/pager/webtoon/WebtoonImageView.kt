@@ -7,13 +7,19 @@ import android.util.AttributeSet
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.utils.ext.toIntUp
 
+private const val SCROLL_UNKNOWN = -1
+
 class WebtoonImageView @JvmOverloads constructor(
 	context: Context,
 	attr: AttributeSet? = null,
 ) : SubsamplingScaleImageView(context, attr) {
 
 	private val ct = PointF()
-	private val displayHeight = (context as Activity).window.decorView.height
+	private val displayHeight = if (context is Activity) {
+		context.window.decorView.height
+	} else {
+		context.resources.displayMetrics.heightPixels
+	}
 
 	private var scrollPos = 0
 	private var scrollRange = SCROLL_UNKNOWN
@@ -94,10 +100,5 @@ class WebtoonImageView @JvmOverloads constructor(
 		}
 		val totalHeight = (sHeight * minScale).toIntUp()
 		scrollRange = (totalHeight - height).coerceAtLeast(0)
-	}
-
-	private companion object {
-
-		const val SCROLL_UNKNOWN = -1
 	}
 }

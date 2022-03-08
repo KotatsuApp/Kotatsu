@@ -43,9 +43,9 @@
 			app:drawableTopCompat="@drawable/ic_error_large"
 			tools:text="@tools:sample/lorem[6]" />
 
-		<com.google.android.material.button.MaterialButton
+		<Button
 			android:id="@+id/button_retry"
-			style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+			style="@style/Widget.Material3.Button.TonalButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"

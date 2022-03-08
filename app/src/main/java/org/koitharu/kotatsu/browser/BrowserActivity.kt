@@ -14,6 +14,7 @@ import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import com.google.android.material.R as materialR
 
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
@@ -23,7 +24,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		setContentView(ActivityBrowserBinding.inflate(layoutInflater))
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(R.drawable.ic_cross)
+			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		with(binding.webView.settings) {
 			javaScriptEnabled = true

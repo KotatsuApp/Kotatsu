@@ -7,6 +7,16 @@ import android.view.View
 import android.view.WindowManager
 import androidx.viewbinding.ViewBinding
 
+private const val SYSTEM_UI_FLAGS_SHOWN = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+	View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+	View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+
+private const val SYSTEM_UI_FLAGS_HIDDEN = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+	View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+	View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+	View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+	View.SYSTEM_UI_FLAG_FULLSCREEN or
+	View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
 abstract class BaseFullscreenActivity<B : ViewBinding> : BaseActivity<B>(),
 	View.OnSystemUiVisibilityChangeListener {
@@ -25,6 +35,7 @@ abstract class BaseFullscreenActivity<B : ViewBinding> : BaseActivity<B>(),
 		showSystemUI()
 	}
 
+	@Deprecated("Deprecated in Java")
 	final override fun onSystemUiVisibilityChange(visibility: Int) {
 		onSystemUiVisibilityChanged(visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0)
 	}
@@ -39,19 +50,4 @@ abstract class BaseFullscreenActivity<B : ViewBinding> : BaseActivity<B>(),
 	}
 
 	protected open fun onSystemUiVisibilityChanged(isVisible: Boolean) = Unit
-
-	@Suppress("DEPRECATION")
-	private companion object {
-
-		const val SYSTEM_UI_FLAGS_SHOWN = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-				View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-				View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-
-		const val SYSTEM_UI_FLAGS_HIDDEN = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-				View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-				View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-				View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-				View.SYSTEM_UI_FLAG_FULLSCREEN or
-				View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-	}
 }

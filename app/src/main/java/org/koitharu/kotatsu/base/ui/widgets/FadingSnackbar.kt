@@ -26,6 +26,10 @@ import androidx.annotation.StringRes
 import androidx.core.view.postDelayed
 import org.koitharu.kotatsu.R
 
+private const val ENTER_DURATION = 300L
+private const val EXIT_DURATION = 200L
+private const val SHORT_DURATION = 1_500L
+private const val LONG_DURATION = 2_750L
 /**
  * A custom snackbar implementation allowing more control over placement and entry/exit animations.
  *
@@ -86,12 +90,5 @@ class FadingSnackbar @JvmOverloads constructor(
 			dismiss()
 			dismissListener()
 		}
-	}
-
-	companion object {
-		private const val ENTER_DURATION = 300L
-		private const val EXIT_DURATION = 200L
-		private const val SHORT_DURATION = 1_500L
-		private const val LONG_DURATION = 2_750L
 	}
 }

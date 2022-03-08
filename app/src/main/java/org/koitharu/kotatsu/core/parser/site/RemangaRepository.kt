@@ -13,6 +13,10 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+private const val PAGE_SIZE = 30
+private const val STATUS_ONGOING = 1
+private const val STATUS_FINISHED = 0
+
 class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepository(loaderContext),
 	MangaRepositoryAuthProvider {
 
@@ -28,6 +32,8 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		SortOrder.RATING,
 		SortOrder.NEWEST
 	)
+
+	private val regexLastUrlPath = Regex("/[^/]+/?$")
 
 	override suspend fun getList2(
 		offset: Int,
@@ -86,7 +92,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 	override suspend fun getDetails(manga: Manga): Manga {
 		copyCookies()
 		val domain = getDomain()
-		val slug = manga.url.find(LAST_URL_PATH_REGEX)
+		val slug = manga.url.find(regexLastUrlPath)
 			?: throw ParseException("Cannot obtain slug from ${manga.url}")
 		val data = loaderContext.httpGet(
 			url = "https://api.$domain/api/titles/$slug/"
@@ -227,15 +233,5 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			page++
 		}
 		return result
-	}
-
-	private companion object {
-
-		const val PAGE_SIZE = 30
-
-		const val STATUS_ONGOING = 1
-		const val STATUS_FINISHED = 0
-
-		val LAST_URL_PATH_REGEX = Regex("/[^/]+/?$")
 	}
 }

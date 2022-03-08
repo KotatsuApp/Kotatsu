@@ -10,6 +10,8 @@ import org.koitharu.kotatsu.utils.ext.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+private const val PAGE_SIZE = 26
+
 abstract class NineMangaRepository(
 	loaderContext: MangaLoaderContext,
 	override val source: MangaSource,
@@ -19,6 +21,10 @@ abstract class NineMangaRepository(
 	init {
 		loaderContext.cookieJar.insertCookies(getDomain(), "ninemanga_template_desk=yes")
 	}
+
+	private val headers = Headers.Builder()
+		.add("Accept-Language", "en-US;q=0.7,en;q=0.3")
+		.build()
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.POPULARITY,
@@ -55,7 +61,7 @@ abstract class NineMangaRepository(
 			append(page)
 			append(".html")
 		}
-		val doc = loaderContext.httpGet(url, PREDEFINED_HEADERS).parseHtml()
+		val doc = loaderContext.httpGet(url, headers).parseHtml()
 		val root = doc.body().selectFirst("ul.direlist")
 			?: throw ParseException("Cannot find root")
 		val baseHost = root.baseUri().toHttpUrl().host
@@ -84,7 +90,7 @@ abstract class NineMangaRepository(
 	override suspend fun getDetails(manga: Manga): Manga {
 		val doc = loaderContext.httpGet(
 			manga.url.withDomain() + "?waring=1",
-			PREDEFINED_HEADERS
+			headers
 		).parseHtml()
 		val root = doc.body().selectFirst("div.manga")
 			?: throw ParseException("Cannot find root")
@@ -122,7 +128,7 @@ abstract class NineMangaRepository(
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = loaderContext.httpGet(chapter.url.withDomain(), PREDEFINED_HEADERS).parseHtml()
+		val doc = loaderContext.httpGet(chapter.url.withDomain(), headers).parseHtml()
 		return doc.body().getElementById("page")?.select("option")?.map { option ->
 			val url = option.attr("value")
 			MangaPage(
@@ -136,14 +142,14 @@ abstract class NineMangaRepository(
 	}
 
 	override suspend fun getPageUrl(page: MangaPage): String {
-		val doc = loaderContext.httpGet(page.url.withDomain(), PREDEFINED_HEADERS).parseHtml()
+		val doc = loaderContext.httpGet(page.url.withDomain(), headers).parseHtml()
 		val root = doc.body()
 		return root.selectFirst("a.pic_download")?.absUrl("href")
 			?: throw ParseException("Page image not found")
 	}
 
 	override suspend fun getTags(): Set<MangaTag> {
-		val doc = loaderContext.httpGet("https://${getDomain()}/search/?type=high", PREDEFINED_HEADERS)
+		val doc = loaderContext.httpGet("https://${getDomain()}/search/?type=high", headers)
 			.parseHtml()
 		val root = doc.body().getElementById("search_form")
 		return root?.select("li.cate_list")?.mapNotNullToSet { li ->
@@ -242,13 +248,4 @@ abstract class NineMangaRepository(
 		MangaSource.NINEMANGA_FR,
 		"fr.ninemanga.com",
 	)
-
-	private companion object {
-
-		const val PAGE_SIZE = 26
-
-		val PREDEFINED_HEADERS = Headers.Builder()
-			.add("Accept-Language", "en-US;q=0.7,en;q=0.3")
-			.build()
-	}
 }

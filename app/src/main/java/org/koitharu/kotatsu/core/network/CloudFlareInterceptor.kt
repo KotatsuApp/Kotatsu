@@ -7,6 +7,9 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import java.net.HttpURLConnection.HTTP_FORBIDDEN
 import java.net.HttpURLConnection.HTTP_UNAVAILABLE
 
+private const val HEADER_SERVER = "Server"
+private const val SERVER_CLOUDFLARE = "cloudflare"
+
 class CloudFlareInterceptor : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
@@ -18,11 +21,5 @@ class CloudFlareInterceptor : Interceptor {
 			}
 		}
 		return response
-	}
-
-	private companion object {
-
-		private const val HEADER_SERVER = "Server"
-		private const val SERVER_CLOUDFLARE = "cloudflare"
 	}
 }

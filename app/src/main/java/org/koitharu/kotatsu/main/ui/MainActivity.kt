@@ -58,6 +58,9 @@ import org.koitharu.kotatsu.utils.ext.hideKeyboard
 import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.resolveDp
 
+private const val TAG_PRIMARY = "primary"
+private const val TAG_SEARCH = "search"
+
 class MainActivity : BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener, AppBarOwner,
 	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener {
@@ -371,11 +374,5 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				}
 			}
 		}
-	}
-
-	private companion object {
-
-		const val TAG_PRIMARY = "primary"
-		const val TAG_SEARCH = "search"
 	}
 }

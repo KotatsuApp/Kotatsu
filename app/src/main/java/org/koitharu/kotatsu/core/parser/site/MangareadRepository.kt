@@ -10,6 +10,8 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+private const val PAGE_SIZE = 12
+
 class MangareadRepository(
 	loaderContext: MangaLoaderContext
 ) : RemoteMangaRepository(loaderContext) {
@@ -230,16 +232,11 @@ class MangareadRepository(
 		}
 	}
 
-	private companion object {
-
-		private const val PAGE_SIZE = 12
-
-		private fun createRequestTemplate() =
-			"action=madara_load_more&page=1&template=madara-core%2Fcontent%2Fcontent-search&vars%5Bs%5D=&vars%5Borderby%5D=meta_value_num&vars%5Bpaged%5D=1&vars%5Btemplate%5D=search&vars%5Bmeta_query%5D%5B0%5D%5Brelation%5D=AND&vars%5Bmeta_query%5D%5Brelation%5D=OR&vars%5Bpost_type%5D=wp-manga&vars%5Bpost_status%5D=publish&vars%5Bmeta_key%5D=_latest_update&vars%5Border%5D=desc&vars%5Bmanga_archives_item_layout%5D=default"
-				.split('&')
-				.map {
-					val pos = it.indexOf('=')
-					it.substring(0, pos) to it.substring(pos + 1)
-				}.toMutableMap()
-	}
+	private fun createRequestTemplate() =
+		"action=madara_load_more&page=1&template=madara-core%2Fcontent%2Fcontent-search&vars%5Bs%5D=&vars%5Borderby%5D=meta_value_num&vars%5Bpaged%5D=1&vars%5Btemplate%5D=search&vars%5Bmeta_query%5D%5B0%5D%5Brelation%5D=AND&vars%5Bmeta_query%5D%5Brelation%5D=OR&vars%5Bpost_type%5D=wp-manga&vars%5Bpost_status%5D=publish&vars%5Bmeta_key%5D=_latest_update&vars%5Border%5D=desc&vars%5Bmanga_archives_item_layout%5D=default"
+			.split('&')
+			.map {
+				val pos = it.indexOf('=')
+				it.substring(0, pos) to it.substring(pos + 1)
+			}.toMutableMap()
 }

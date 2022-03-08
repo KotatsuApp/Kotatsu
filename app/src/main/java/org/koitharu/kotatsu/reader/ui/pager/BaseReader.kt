@@ -12,6 +12,8 @@ import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 
+private const val KEY_STATE = "state"
+
 abstract class BaseReader<B : ViewBinding> : BaseFragment<B>() {
 
 	protected val viewModel by sharedViewModel<ReaderViewModel>()
@@ -57,9 +59,4 @@ abstract class BaseReader<B : ViewBinding> : BaseFragment<B>() {
 	abstract fun getCurrentState(): ReaderState?
 
 	protected abstract fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?)
-
-	private companion object {
-
-		const val KEY_STATE = "state"
-	}
 }

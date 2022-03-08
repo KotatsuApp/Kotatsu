@@ -15,6 +15,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
 
+private const val MIN_PASSWORD_LENGTH = 4
+
 class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWatcher,
 	View.OnClickListener, TextView.OnEditorActionListener {
 
@@ -90,10 +92,5 @@ class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWa
 			binding.layoutPassword.helperText = getString(R.string.password_length_hint)
 			binding.buttonNext.setText(R.string.next)
 		}
-	}
-
-	private companion object {
-
-		const val MIN_PASSWORD_LENGTH = 4
 	}
 }

@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.download.ui.DownloadsActivity
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.format
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import com.google.android.material.R as materialR
 
 class DownloadNotification(
 	private val context: Context,
@@ -26,7 +27,7 @@ class DownloadNotification(
 
 	private val builder = NotificationCompat.Builder(context, CHANNEL_ID)
 	private val cancelAction = NotificationCompat.Action(
-		R.drawable.ic_cross,
+		materialR.drawable.material_ic_clear_black_24dp,
 		context.getString(android.R.string.cancel),
 		PendingIntent.getBroadcast(
 			context,

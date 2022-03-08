@@ -29,8 +29,6 @@
 		<item name="tabRippleColor">@color/ripple_toolbar</item>
 	</style>
 
-	<style name="Widget.Kotatsu.NavigationView" parent="@style/Widget.Material3.NavigationView" />
-
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
@@ -62,26 +60,8 @@
 		<item name="iconPadding">16dp</item>
 	</style>
 
-	<style name="Widget.Kotatsu.ActionMode" parent="Widget.Material3.ActionMode">
-		<item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
-		<item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
-	</style>
-
 	<style name="Widget.Kotatsu.Switch" parent="Widget.Material3.CompoundButton.Switch">
 		<item name="materialThemeOverlay">@style/ThemeOverlay.Kotatsu.Switch</item>
-	</style>
-
-	<style name="Widget.Kotatsu.Button.InlineButton" parent="Widget.Material3.Button.TextButton">
-		<item name="android:minHeight">0dp</item>
-		<item name="android:minWidth">0dp</item>
-		<item name="android:paddingTop">0dp</item>
-		<item name="android:paddingBottom">0dp</item>
-		<item name="android:insetTop">0dp</item>
-		<item name="android:insetBottom">0dp</item>
-
-		<item name="android:background">?android:attr/colorBackground</item>
-		<item name="backgroundTint">@null</item>
-		<item name="rippleColor">@null</item>
 	</style>
 
 	<style name="Widget.Kotatsu.RecyclerView" parent="">
@@ -102,34 +82,11 @@
 		<item name="android:textColor">?attr/colorOnBackground</item>
 	</style>
 
-	<style name="TextAppearance.Kotatsu.ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
-		<item name="android:textSize">20sp</item>
-	</style>
-
 	<style name="TextAppearance.Kotatsu.PersistentToolbarTitle" parent="@style/TextAppearance.AppCompat">
 		<item name="android:textSize">16sp</item>
 	</style>
 
-	<style name="TextAppearance.Kotatsu.Tab" parent="@style/TextAppearance.Design.Tab">
-		<item name="textAllCaps">false</item>
-		<item name="android:textAllCaps">false</item>
-	</style>
-
 	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall"/>
-
-	<style name="TextAppearance.Kotatsu.ListPrimary" parent="TextAppearance.MaterialComponents.Body1">
-		<item name="android:letterSpacing">0</item>
-	</style>
-
-	<style name="TextAppearance.Kotatsu.Body2" parent="TextAppearance.MaterialComponents.Body2" />
-
-	<style name="TextAppearance.Kotatsu.H1" parent="@style/TextAppearance.Material3.HeadlineLarge">
-		<item name="android:textSize">@dimen/text_size_h1</item>
-	</style>
-
-	<style name="TextAppearance.Kotatsu.FloatingTitle" parent="TextAppearance.Material3.TitleLarge">
-		<item name="android:textSize">16sp</item>
-	</style>
 
 	<style name="TextAppearance.Kotatsu.Preference.Secondary" parent="TextAppearance.Material3.BodySmall" />
 

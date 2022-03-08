@@ -8,6 +8,8 @@ import okio.Buffer
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
+private const val TAG = "CURL"
+
 class CurlLoggingInterceptor(
 	private val extraCurlOptions: String? = null,
 ) : Interceptor {
@@ -50,10 +52,5 @@ class CurlLoggingInterceptor(
 		Log.d(TAG, curlCmd.toString())
 		Log.d(TAG, "╰--- (copy and paste the above line to a terminal)")
 		return chain.proceed(request)
-	}
-
-	private companion object {
-
-		const val TAG = "CURL"
 	}
 }

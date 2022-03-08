@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<color name="splash_color_background">#FFFFFF</color>
-	<color name="splash_color">#1976D2</color>
-
 	<color name="error">#BA1B1B</color>
 	<color name="errorContainer">#FFDAD4</color>
 	<color name="onError">#FFFFFF</color>

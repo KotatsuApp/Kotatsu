@@ -16,7 +16,7 @@
 			android:id="@+id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			app:navigationIcon="@drawable/ic_cross"
+			app:navigationIcon="?actionModeCloseDrawable"
 			app:title="@string/filter" />
 
 	</com.google.android.material.appbar.AppBarLayout>

@@ -37,10 +37,8 @@
     <string name="local_storage">ローカルストレージ</string>
     <string name="newest">最新</string>
     <string name="by_rating">評価</string>
-    <string name="all">全て</string>
-    <string name="sort_order">ソート順に並べ替え</string>
-    <string name="genre">ジャンル</string>
-    <string name="automatic">フォローシステム</string>
+	<string name="sort_order">ソート順に並べ替え</string>
+	<string name="automatic">フォローシステム</string>
     <string name="clear">クリア</string>
     <string name="text_clear_history_prompt">すべての履歴を永久にクリアしますか？</string>
     <string name="remove">削除</string>
@@ -66,8 +64,7 @@
     <string name="pages">ページ</string>
     <string name="theme">テーマ</string>
     <string name="network_error">インターネットに接続出来ませんでした</string>
-    <string name="add_bookmark">ブックマークに追加</string>
-    <string name="enter_category_name">カテゴリー名を入力してください</string>
+	<string name="enter_category_name">カテゴリー名を入力してください</string>
     <string name="updated">アップデート</string>
     <string name="cache">キャッシュ</string>
     <string name="text_file_not_supported">ZIPファイルまたはCBZファイルを選択してください。</string>
@@ -207,8 +204,7 @@
     <string name="text_clear_search_history_prompt">最近の検索クエリを全て完全に削除しますか？</string>
     <string name="zoom_mode_fit_width">幅を合わせる</string>
     <string name="check_for_new_chapters">新しいチャプターを探しています</string>
-    <string name="languages">言語</string>
-    <string name="protect_application_subtitle">アプリを起動するためのパスワードを入力してください</string>
+	<string name="protect_application_subtitle">アプリを起動するためのパスワードを入力してください</string>
     <string name="create_backup">データバックアップを作成</string>
     <string name="captcha_solve">解決しました</string>
     <string name="tap_to_try_again">タップして再試行してください</string>
@@ -218,12 +214,10 @@
     <string name="about_app_translation">翻訳</string>
     <string name="data_restored_success">全てのデータが復元されました</string>
     <string name="data_restored">復元</string>
-    <string name="about_author">著者</string>
-    <string name="about_gratitudes">感謝の気持ち</string>
+	<string name="about_gratitudes">感謝の気持ち</string>
     <string name="preparing_">準備中…</string>
     <string name="zoom_mode_keep_start">開始時に維持</string>
-    <string name="description">説明</string>
-    <string name="backup_restore">バックアップと復元</string>
+	<string name="backup_restore">バックアップと復元</string>
     <string name="about_copyright_and_licenses">著作権とライセンス</string>
     <string name="reverse">リバース</string>
     <string name="reader_mode_hint">選択した構成はこの漫画のために記憶されます</string>
