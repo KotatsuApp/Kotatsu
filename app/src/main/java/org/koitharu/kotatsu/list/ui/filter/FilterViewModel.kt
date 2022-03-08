@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.list.ui.filter
 
 import androidx.annotation.AnyThread
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
@@ -24,6 +25,7 @@ class FilterViewModel(
 	private var job: Job? = null
 	private var selectedSortOrder: SortOrder? = repository.sortOrders.firstOrNull()
 	private val selectedTags = HashSet<MangaTag>()
+	private var searchQuery: String = ""
 	private val localTagsDeferred = viewModelScope.async(Dispatchers.Default) {
 		dataRepository.findTags(repository.source)
 	}
@@ -31,7 +33,7 @@ class FilterViewModel(
 
 	override fun onSortItemClick(item: FilterItem.Sort) {
 		selectedSortOrder = item.order
-		updateFilters()
+		updateFilters(updateResults = true)
 	}
 
 	override fun onTagItemClick(item: FilterItem.Tag) {
@@ -41,7 +43,7 @@ class FilterViewModel(
 			selectedTags.add(item.tag)
 		}
 		if (isModified) {
-			updateFilters()
+			updateFilters(updateResults = true)
 		}
 	}
 
@@ -53,15 +55,27 @@ class FilterViewModel(
 		if (job == null) {
 			showFilter()
 		} else {
-			updateFilters()
+			updateFilters(updateResults = false)
+		}
+	}
+
+	fun performSearch(query: String) {
+		if (searchQuery != query) {
+			searchQuery = query
+			updateFilters(updateResults = false)
 		}
 	}
 
 	@AnyThread
-	private fun updateFilters() {
+	private fun updateFilters(updateResults: Boolean) {
 		val previousJob = job
+		val query = searchQuery
 		job = launchJob(Dispatchers.Default) {
 			previousJob?.cancelAndJoin()
+			if (query.isNotEmpty()) {
+				showFilteredTags(query)
+				return@launchJob
+			}
 			val tags = tryLoadTags()
 			val localTags = localTagsDeferred.await()
 			val sortOrders = repository.sortOrders
@@ -84,7 +98,9 @@ class FilterViewModel(
 			ensureActive()
 			filter.postValue(list)
 		}
-		result.postValue(FilterState(selectedSortOrder, selectedTags))
+		if (updateResults) {
+			result.postValue(FilterState(selectedSortOrder, selectedTags))
+		}
 	}
 
 	private fun showFilter() {
@@ -103,8 +119,46 @@ class FilterViewModel(
 			}
 			list.add(FilterItem.Loading)
 			filter.postValue(list)
-			updateFilters()
+			updateFilters(updateResults = false)
 		}
+	}
+
+	@WorkerThread
+	private suspend fun showFilteredTags(query: String) {
+		val tags = tryLoadTags()
+		val localTags = localTagsDeferred.await()
+		val list = ArrayList<FilterItem>()
+		val mappedTags = TreeSet<FilterItem.Tag>(compareBy({ !it.isChecked }, { it.tag.title }))
+		localTags.mapNotNullTo(mappedTags) {
+			if (it.title.contains(query, ignoreCase = true)) {
+				FilterItem.Tag(it, isChecked = it in selectedTags)
+			} else {
+				null
+			}
+		}
+		tags?.mapNotNullTo(mappedTags) {
+			if (it.title.contains(query, ignoreCase = true)) {
+				FilterItem.Tag(it, isChecked = it in selectedTags)
+			} else {
+				null
+			}
+		}
+		selectedTags.mapNotNullTo(mappedTags) {
+			if (it.title.contains(query, ignoreCase = true)) {
+				FilterItem.Tag(it, isChecked = true)
+			} else {
+				null
+			}
+		}
+		list.addAll(mappedTags)
+		if (tags == null) {
+			list.add(FilterItem.Error(R.string.filter_load_error))
+		}
+		if (list.isEmpty()) {
+			list.add(FilterItem.Error(R.string.nothing_found))
+		}
+		currentCoroutineContext().ensureActive()
+		filter.postValue(list)
 	}
 
 	private suspend fun tryLoadTags(): Set<MangaTag>? {

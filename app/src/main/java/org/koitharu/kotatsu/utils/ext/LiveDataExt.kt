@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import org.koitharu.kotatsu.utils.BufferedObserver
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -14,6 +13,16 @@ fun <T> LiveData<T?>.observeNotNull(owner: LifecycleOwner, observer: Observer<T>
 	this.observe(owner) {
 		if (it != null) {
 			observer.onChanged(it)
+		}
+	}
+}
+
+fun <T> LiveData<T>.observeDistinct(owner: LifecycleOwner, observer: Observer<T>) {
+	var previousValue: T? = null
+	this.observe(owner) {
+		if (it != previousValue) {
+			observer.onChanged(it)
+			previousValue = it
 		}
 	}
 }

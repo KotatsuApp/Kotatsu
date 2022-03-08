@@ -84,6 +84,9 @@ class RemoteListViewModel(
 	}
 
 	fun applyFilter(newFilter: FilterState) {
+		if (filter == newFilter) {
+			return
+		}
 		filter = newFilter
 		headerModel.value = ListHeader(repository.title, 0, newFilter.sortOrder)
 		mangaList.value = null

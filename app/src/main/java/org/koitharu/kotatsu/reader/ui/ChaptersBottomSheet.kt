@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
@@ -20,6 +18,7 @@ import org.koitharu.kotatsu.databinding.SheetChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
+import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemClickListener<ChapterListItem> {
@@ -31,6 +30,7 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		binding.toolbar.setNavigationOnClickListener { dismiss() }
+		behavior?.addBottomSheetCallback(BottomSheetToolbarController(binding.toolbar))
 		if (!resources.getBoolean(R.bool.is_tablet)) {
 			binding.toolbar.navigationIcon = null
 		}
@@ -63,24 +63,6 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 				adapter.items = items
 			}
 		}
-	}
-
-	override fun onCreateDialog(savedInstanceState: Bundle?) = super.onCreateDialog(savedInstanceState).also {
-		val behavior = (it as? BottomSheetDialog)?.behavior ?: return@also
-		behavior.addBottomSheetCallback(
-			object : BottomSheetBehavior.BottomSheetCallback() {
-
-				override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
-
-				override fun onStateChanged(bottomSheet: View, newState: Int) {
-					if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-						binding.toolbar.setNavigationIcon(R.drawable.ic_cross)
-					} else {
-						binding.toolbar.navigationIcon = null
-					}
-				}
-			}
-		)
 	}
 
 	override fun onItemClick(item: ChapterListItem, view: View) {
