@@ -62,12 +62,7 @@ class BatoToRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			append("&page=")
 			append(page)
 		}
-		val body = loaderContext.httpGet(url).parseHtml().body()
-		val activePage = getActivePage(body)
-		if (activePage != page) {
-			return emptyList()
-		}
-		return parseList(body.getElementById("series-list") ?: parseFailed("Cannot find root"))
+		return parseList(url, page)
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
@@ -170,12 +165,7 @@ class BatoToRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 			append("&page=")
 			append(page)
 		}
-		val body = loaderContext.httpGet(url).parseHtml().body()
-		val activePage = getActivePage(body)
-		if (activePage != page) {
-			return emptyList()
-		}
-		return parseList(body.getElementById("series-list") ?: parseFailed("Cannot find root"))
+		return parseList(url, page)
 	}
 
 	private fun getActivePage(body: Element): Int = body.select("nav ul.pagination > li.page-item.active")
@@ -183,26 +173,37 @@ class BatoToRepository(loaderContext: MangaLoaderContext) : RemoteMangaRepositor
 		?.text()
 		?.toIntOrNull() ?: parseFailed("Cannot determine current page")
 
-	private fun parseList(root: Element) = root.children().map { div ->
-		val a = div.selectFirst("a") ?: parseFailed()
-		val href = a.relUrl("href")
-		val title = div.selectFirst(".item-title")?.text() ?: parseFailed("Title not found")
-		Manga(
-			id = generateUid(href),
-			title = title,
-			altTitle = div.selectFirst(".item-alias")?.text()?.takeUnless { it == title },
-			url = href,
-			publicUrl = a.absUrl("href"),
-			rating = Manga.NO_RATING,
-			isNsfw = false,
-			coverUrl = div.selectFirst("img[src]")?.absUrl("src").orEmpty(),
-			largeCoverUrl = null,
-			description = null,
-			tags = div.selectFirst(".item-genre")?.parseTags().orEmpty(),
-			state = null,
-			author = null,
-			source = source,
-		)
+	private suspend fun parseList(url: String, page: Int): List<Manga> {
+		val body = loaderContext.httpGet(url).parseHtml().body()
+		if (body.selectFirst(".browse-no-matches") != null) {
+			return emptyList()
+		}
+		val activePage = getActivePage(body)
+		if (activePage != page) {
+			return emptyList()
+		}
+		val root = body.getElementById("series-list") ?: parseFailed("Cannot find root")
+		return root.children().map { div ->
+			val a = div.selectFirst("a") ?: parseFailed()
+			val href = a.relUrl("href")
+			val title = div.selectFirst(".item-title")?.text() ?: parseFailed("Title not found")
+			Manga(
+				id = generateUid(href),
+				title = title,
+				altTitle = div.selectFirst(".item-alias")?.text()?.takeUnless { it == title },
+				url = href,
+				publicUrl = a.absUrl("href"),
+				rating = Manga.NO_RATING,
+				isNsfw = false,
+				coverUrl = div.selectFirst("img[src]")?.absUrl("src").orEmpty(),
+				largeCoverUrl = null,
+				description = null,
+				tags = div.selectFirst(".item-genre")?.parseTags().orEmpty(),
+				state = null,
+				author = null,
+				source = source,
+			)
+		}
 	}
 
 	private fun Element.parseTags() = children().mapToSet { span ->
