@@ -72,6 +72,7 @@ class WebtoonHolder(
 					else -> 0
 				}
 			)
+			scrollToRestore = 0
 		}
 	}
 
