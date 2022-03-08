@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.list.ui.filter
 
+import androidx.annotation.AnyThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -47,6 +49,7 @@ class FilterViewModel(
 		}
 	}
 
+	@AnyThread
 	private fun updateFilters() {
 		val previousJob = job
 		job = launchJob(Dispatchers.Default) {
@@ -73,7 +76,7 @@ class FilterViewModel(
 			ensureActive()
 			filter.postValue(list)
 		}
-		result.value = FilterState(selectedSortOrder, selectedTags)
+		result.postValue(FilterState(selectedSortOrder, selectedTags))
 	}
 
 	private fun showFilter() {
@@ -107,8 +110,12 @@ class FilterViewModel(
 	}
 
 	private fun loadTagsAsync() = viewModelScope.async(Dispatchers.Default) {
-		kotlin.runCatching {
+		runCatching {
 			repository.getTags()
+		}.onFailure { error ->
+			if (BuildConfig.DEBUG) {
+				error.printStackTrace()
+			}
 		}.getOrNull()
 	}
 }

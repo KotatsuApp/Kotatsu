@@ -150,6 +150,19 @@ fun String.substringBetween(from: String, to: String, fallbackValue: String = th
 	}
 }
 
+fun String.substringBetweenFirst(from: String, to: String): String? {
+	val fromIndex = indexOf(from)
+	if (fromIndex == -1) {
+		return null
+	}
+	val toIndex = indexOf(to, fromIndex)
+	return if (toIndex == -1) {
+		null
+	} else {
+		substring(fromIndex + from.length, toIndex)
+	}
+}
+
 fun String.substringBetweenLast(from: String, to: String, fallbackValue: String = this): String {
 	val fromIndex = lastIndexOf(from)
 	if (fromIndex == -1) {
@@ -210,7 +223,7 @@ fun String.levenshteinDistance(other: String): Int {
 	return cost[lhsLength - 1]
 }
 
-inline fun <T> StringBuilder.appendAll(
+inline fun <T> Appendable.appendAll(
 	items: Iterable<T>,
 	separator: CharSequence,
 	transform: (T) -> CharSequence = { it.toString() },

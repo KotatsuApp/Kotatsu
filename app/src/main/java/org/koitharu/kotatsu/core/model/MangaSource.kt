@@ -35,5 +35,6 @@ enum class MangaSource(
 	EXHENTAI("ExHentai", null),
 	MANGAOWL("MangaOwl", "en"),
 	MANGADEX("MangaDex", null),
+	BATOTO("Bato.To", null),
 	;
 }

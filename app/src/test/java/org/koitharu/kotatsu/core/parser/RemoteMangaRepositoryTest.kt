@@ -13,7 +13,6 @@ import org.koin.test.KoinTestRule
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.SortOrder
-import org.koitharu.kotatsu.parsers.repositoryTestModule
 import org.koitharu.kotatsu.utils.CoroutineTestRule
 import org.koitharu.kotatsu.utils.TestResponse
 import org.koitharu.kotatsu.utils.ext.mapToSet

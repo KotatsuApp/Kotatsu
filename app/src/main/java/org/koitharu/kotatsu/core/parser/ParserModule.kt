@@ -32,4 +32,5 @@ val parserModule
 		factory<MangaRepository>(named(MangaSource.EXHENTAI)) { ExHentaiRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.MANGAOWL)) { MangaOwlRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.MANGADEX)) { MangaDexRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.BATOTO)) { BatoToRepository(get()) }
 	}

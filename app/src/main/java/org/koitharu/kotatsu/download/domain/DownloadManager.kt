@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.deleteAwait
+import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.waitForNetwork
 import java.io.File
 
@@ -56,6 +57,7 @@ class DownloadManager(
 				imageLoader.execute(
 					ImageRequest.Builder(context)
 						.data(manga.coverUrl)
+						.referer(manga.publicUrl)
 						.size(coverWidth, coverHeight)
 						.scale(Scale.FILL)
 						.build()
