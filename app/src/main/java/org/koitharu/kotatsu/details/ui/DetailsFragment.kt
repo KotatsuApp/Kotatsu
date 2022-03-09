@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.details.ui
 import android.app.ActivityOptions
 import android.os.Bundle
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +53,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		binding.buttonRead.setOnClickListener(this)
 		binding.buttonRead.setOnLongClickListener(this)
 		binding.coverCard.setOnClickListener(this)
+		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
