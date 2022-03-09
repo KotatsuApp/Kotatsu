@@ -52,7 +52,9 @@ fun <T> JSONArray.mapIndexed(block: (Int, JSONObject) -> T): List<T> {
 
 fun JSONObject.getStringOrNull(name: String): String? = opt(name)?.takeUnless {
 	it === JSONObject.NULL
-}?.toString()
+}?.toString()?.takeUnless {
+	it.isEmpty()
+}
 
 fun JSONObject.getBooleanOrDefault(name: String, defaultValue: Boolean): Boolean = opt(name)?.takeUnless {
 	it === JSONObject.NULL

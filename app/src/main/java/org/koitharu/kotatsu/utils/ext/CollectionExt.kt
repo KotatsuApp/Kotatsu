@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.util.SparseArray
 import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
 import androidx.collection.LongSparseArray
