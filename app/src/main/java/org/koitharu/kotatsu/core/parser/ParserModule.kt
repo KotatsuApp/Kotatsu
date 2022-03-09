@@ -17,7 +17,7 @@ val parserModule
 		factory<MangaRepository>(named(MangaSource.YAOICHAN)) { YaoiChanRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.MANGATOWN)) { MangaTownRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.MANGALIB)) { MangaLibRepository(get()) }
-		// factory<MangaRepository>(named(MangaSource.NUDEMOON)) { NudeMoonRepository(get()) }
+		factory<MangaRepository>(named(MangaSource.NUDEMOON)) { NudeMoonRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.MANGAREAD)) { MangareadRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.REMANGA)) { RemangaRepository(get()) }
 		factory<MangaRepository>(named(MangaSource.HENTAILIB)) { HentaiLibRepository(get()) }

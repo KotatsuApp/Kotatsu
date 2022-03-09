@@ -19,8 +19,7 @@ enum class MangaSource(
 	YAOICHAN("Яой-тян", "ru"),
 	MANGATOWN("MangaTown", "en"),
 	MANGALIB("MangaLib", "ru"),
-
-	// NUDEMOON("Nude-Moon", "ru", NudeMoonRepository::class.java),
+	NUDEMOON("Nude-Moon", "ru"),
 	MANGAREAD("MangaRead", "en"),
 	REMANGA("Remanga", "ru"),
 	HENTAILIB("HentaiLib", "ru"),
