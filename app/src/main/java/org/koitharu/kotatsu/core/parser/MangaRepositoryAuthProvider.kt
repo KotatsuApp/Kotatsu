@@ -5,4 +5,6 @@ interface MangaRepositoryAuthProvider {
 	val authUrl: String
 
 	fun isAuthorized(): Boolean
+
+	suspend fun getUsername(): String
 }

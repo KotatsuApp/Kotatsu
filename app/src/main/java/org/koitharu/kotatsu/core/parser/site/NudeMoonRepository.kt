@@ -170,7 +170,7 @@ class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 		}
 	}
 
-	suspend fun getUsername(): String {
+	override suspend fun getUsername(): String {
 		val body = loaderContext.httpGet("https://${getDomain()}/").parseHtml()
 			.body()
 		return body
@@ -180,7 +180,7 @@ class NudeMoonRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposit
 			?.substringAfterLast('/')
 			?: run {
 				throw if (body.selectFirst("form[name=\"loginform\"]") != null) {
-					AuthRequiredException(authUrl)
+					AuthRequiredException(source)
 				} else {
 					ParseException("Cannot find username")
 				}

@@ -20,9 +20,8 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 	protected val binding: B
 		get() = checkNotNull(viewBinding)
 
-	protected val exceptionResolver by lazy(LazyThreadSafetyMode.NONE) {
-		ExceptionResolver(viewLifecycleOwner, childFragmentManager)
-	}
+	@Suppress("LeakingThis")
+	protected val exceptionResolver = ExceptionResolver(this)
 
 	private var lastInsets: Insets = Insets.NONE
 

@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.reader.ui
 
 import android.Manifest
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -35,6 +36,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
+import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaChapter
 import org.koitharu.kotatsu.core.model.MangaPage
@@ -216,14 +218,14 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	}
 
 	private fun onError(e: Throwable) {
+		val listener = ErrorDialogListener(e)
 		val dialog = MaterialAlertDialogBuilder(this)
 			.setTitle(R.string.error_occurred)
 			.setMessage(e.getDisplayMessage(resources))
-			.setPositiveButton(R.string.close, null)
-		if (viewModel.content.value?.pages.isNullOrEmpty()) {
-			dialog.setOnDismissListener {
-				finish()
-			}
+			.setNegativeButton(R.string.close, listener)
+			.setOnCancelListener(listener)
+		if (e is ResolvableException) {
+			dialog.setPositiveButton(e.resolveTextId, listener)
 		}
 		dialog.show()
 	}
@@ -365,6 +367,36 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
 			if (!uiState.chapterName.isNullOrEmpty()) {
 				binding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
+			}
+		}
+	}
+
+	private inner class ErrorDialogListener(
+		private val exception: Throwable,
+	) : DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
+
+		override fun onClick(dialog: DialogInterface?, which: Int) {
+			if (which == DialogInterface.BUTTON_POSITIVE && exception is ResolvableException) {
+				dialog?.dismiss()
+				tryResolve(exception)
+			} else {
+				onCancel(dialog)
+			}
+		}
+
+		override fun onCancel(dialog: DialogInterface?) {
+			if (viewModel.content.value?.pages.isNullOrEmpty()) {
+				finishAfterTransition()
+			}
+		}
+
+		private fun tryResolve(e: ResolvableException) {
+			lifecycleScope.launch {
+				if (exceptionResolver.resolve(e)) {
+					viewModel.reload()
+				} else {
+					onCancel(null)
+				}
 			}
 		}
 	}

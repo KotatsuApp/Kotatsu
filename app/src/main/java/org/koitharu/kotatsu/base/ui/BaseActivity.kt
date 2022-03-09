@@ -28,9 +28,8 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	protected lateinit var binding: B
 		private set
 
-	protected val exceptionResolver by lazy(LazyThreadSafetyMode.NONE) {
-		ExceptionResolver(this, supportFragmentManager)
-	}
+	@Suppress("LeakingThis")
+	protected val exceptionResolver = ExceptionResolver(this)
 
 	private var lastInsets: Insets = Insets.NONE
 

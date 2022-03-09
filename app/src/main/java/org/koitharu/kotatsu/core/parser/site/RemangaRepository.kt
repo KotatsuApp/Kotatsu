@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser.site
 
+import okhttp3.Headers
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -9,6 +10,7 @@ import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.net.URLDecoder
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -62,7 +64,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 			.append((offset / PAGE_SIZE) + 1)
 			.append("&count=")
 			.append(PAGE_SIZE)
-		val content = loaderContext.httpGet(urlBuilder.toString()).parseJson()
+		val content = loaderContext.httpGet(urlBuilder.toString(), getApiHeaders()).parseJson()
 			.getJSONArray("content")
 		return content.map { jo ->
 			val url = "/manga/${jo.getString("dir")}"
@@ -95,7 +97,8 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		val slug = manga.url.find(regexLastUrlPath)
 			?: throw ParseException("Cannot obtain slug from ${manga.url}")
 		val data = loaderContext.httpGet(
-			url = "https://api.$domain/api/titles/$slug/"
+			url = "https://api.$domain/api/titles/$slug/",
+			headers = getApiHeaders(),
 		).parseJson()
 		val content = try {
 			data.getJSONObject("content")
@@ -150,7 +153,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val referer = "https://${getDomain()}/"
-		val content = loaderContext.httpGet(chapter.url.withDomain(subdomain = "api")).parseJson()
+		val content = loaderContext.httpGet(chapter.url.withDomain(subdomain = "api"), getApiHeaders()).parseJson()
 			.getJSONObject("content")
 		val pages = content.optJSONArray("pages")
 		if (pages == null) {
@@ -177,7 +180,7 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 
 	override suspend fun getTags(): Set<MangaTag> {
 		val domain = getDomain()
-		val content = loaderContext.httpGet("https://api.$domain/api/forms/titles/?get=genres")
+		val content = loaderContext.httpGet("https://api.$domain/api/forms/titles/?get=genres", getApiHeaders())
 			.parseJson().getJSONObject("content").getJSONArray("genres")
 		return content.mapToSet { jo ->
 			MangaTag(
@@ -192,6 +195,23 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		return loaderContext.cookieJar.getCookies(getDomain()).any {
 			it.name == "user"
 		}
+	}
+
+	override suspend fun getUsername(): String {
+		val jo = loaderContext.httpGet(
+			url = "https://api.${getDomain()}/api/users/current/",
+			headers = getApiHeaders(),
+		).parseJson()
+		return jo.getJSONObject("content").getString("username")
+	}
+
+	private fun getApiHeaders(): Headers? {
+		val userCookie = loaderContext.cookieJar.getCookies(getDomain()).find {
+			it.name == "user"
+		} ?: return null
+		val jo = JSONObject(URLDecoder.decode(userCookie.value, Charsets.UTF_8.name()))
+		val accessToken = jo.getStringOrNull("access_token") ?: return null
+		return Headers.headersOf("authorization", "bearer $accessToken")
 	}
 
 	private fun copyCookies() {
@@ -220,7 +240,8 @@ class RemangaRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposito
 		var page = 1
 		while (true) {
 			val content = loaderContext.httpGet(
-				"https://api.$domain/api/titles/chapters/?branch_id=$branchId&page=$page&count=100"
+				url = "https://api.$domain/api/titles/chapters/?branch_id=$branchId&page=$page&count=100",
+				headers = getApiHeaders(),
 			).parseJson().getJSONArray("content")
 			val len = content.length()
 			if (len == 0) {

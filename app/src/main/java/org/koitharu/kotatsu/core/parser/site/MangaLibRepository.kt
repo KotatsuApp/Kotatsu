@@ -7,17 +7,21 @@ import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
 import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 open class MangaLibRepository(loaderContext: MangaLoaderContext) :
-	RemoteMangaRepository(loaderContext) {
+	RemoteMangaRepository(loaderContext), MangaRepositoryAuthProvider {
 
 	override val defaultDomain = "mangalib.me"
 
 	override val source = MangaSource.MANGALIB
+
+	override val authUrl: String
+		get() = "https://${getDomain()}/login"
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.RATING,
@@ -153,7 +157,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 		val fullUrl = chapter.url.withDomain()
 		val doc = loaderContext.httpGet(fullUrl).parseHtml()
 		if (doc.location().endsWith("/register")) {
-			throw AuthRequiredException("/login".inContextOf(doc))
+			throw AuthRequiredException(source)
 		}
 		val scripts = doc.head().select("script")
 		val pg = (doc.body().getElementById("pg")?.html() ?: parseFailed("Element #pg not found"))
@@ -210,6 +214,14 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			}
 		}
 		throw ParseException("Script with genres not found")
+	}
+
+	override fun isAuthorized(): Boolean {
+		return false
+	}
+
+	override suspend fun getUsername(): String {
+		TODO("Not yet implemented")
 	}
 
 	private fun getSortKey(sortOrder: SortOrder?) = when (sortOrder) {

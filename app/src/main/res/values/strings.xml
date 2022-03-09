@@ -265,4 +265,5 @@
 	<string name="only_using_wifi">Only using WiFi</string>
 	<string name="always">Always</string>
 	<string name="preload_pages">Preload pages</string>
+	<string name="logged_in_as">Logged in as %s</string>
 </resources>

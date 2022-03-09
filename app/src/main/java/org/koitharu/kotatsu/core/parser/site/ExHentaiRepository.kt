@@ -2,10 +2,13 @@ package org.koitharu.kotatsu.core.parser.site
 
 import org.jsoup.nodes.Element
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
+import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
+import org.koitharu.kotatsu.core.exceptions.ParseException
 import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.utils.ext.*
+import java.util.*
 import kotlin.math.pow
 
 private const val DOMAIN_UNAUTHORIZED = "e-hentai.org"
@@ -17,7 +20,9 @@ class ExHentaiRepository(
 
 	override val source = MangaSource.EXHENTAI
 
-	override val sortOrders: Set<SortOrder> = emptySet()
+	override val sortOrders: Set<SortOrder> = EnumSet.of(
+		SortOrder.NEWEST,
+	)
 
 	override val defaultDomain: String
 		get() = if (isAuthorized()) DOMAIN_AUTHORIZED else DOMAIN_UNAUTHORIZED
@@ -204,6 +209,20 @@ class ExHentaiRepository(
 			return true
 		}
 		return false
+	}
+
+	override suspend fun getUsername(): String {
+		val doc = loaderContext.httpGet("https://forums.${DOMAIN_UNAUTHORIZED}/").parseHtml().body()
+		val username = doc.getElementById("userlinks")
+			?.getElementsByAttributeValueContaining("href", "?showuser=")
+			?.firstOrNull()
+			?.ownText()
+			?: if (doc.getElementById("userlinksguest") != null) {
+				throw AuthRequiredException(source)
+			} else {
+				throw ParseException()
+			}
+		return username
 	}
 
 	private fun isAuthorized(domain: String): Boolean {

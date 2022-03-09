@@ -2,12 +2,18 @@ package org.koitharu.kotatsu.settings
 
 import android.os.Bundle
 import android.util.ArrayMap
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -17,6 +23,7 @@ import org.koitharu.kotatsu.settings.utils.EditTextBindListener
 import org.koitharu.kotatsu.settings.utils.EditTextDefaultSummaryProvider
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.parcelableArgument
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class SourceSettingsFragment : PreferenceFragmentCompat() {
@@ -48,6 +55,15 @@ class SourceSettingsFragment : PreferenceFragmentCompat() {
 		findPreference<Preference>(SourceSettings.KEY_AUTH)?.run {
 			isVisible = repo is MangaRepositoryAuthProvider
 			isEnabled = (repo as? MangaRepositoryAuthProvider)?.isAuthorized() == false
+		}
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		findPreference<Preference>(SourceSettings.KEY_AUTH)?.run {
+			if (isVisible) {
+				loadUsername(this)
+			}
 		}
 	}
 
@@ -83,6 +99,21 @@ class SourceSettingsFragment : PreferenceFragmentCompat() {
 				if (defaultValue is Boolean) {
 					preference.isChecked = defaultValue
 				}
+			}
+		}
+	}
+
+	private fun loadUsername(preference: Preference) = viewLifecycleScope.launch {
+		runCatching {
+			withContext(Dispatchers.Default) {
+				(repository as MangaRepositoryAuthProvider).getUsername()
+			}
+		}.onSuccess { username ->
+			preference.title = getString(R.string.logged_in_as, username)
+		}.onFailure { error ->
+			preference.isEnabled = error is AuthRequiredException
+			if (BuildConfig.DEBUG) {
+				error.printStackTrace()
 			}
 		}
 	}

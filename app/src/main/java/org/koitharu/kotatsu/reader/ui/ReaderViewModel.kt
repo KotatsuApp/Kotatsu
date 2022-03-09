@@ -32,8 +32,8 @@ import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 
 class ReaderViewModel(
-	intent: MangaIntent,
-	state: ReaderState?,
+	private val intent: MangaIntent,
+	initialState: ReaderState?,
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val shortcutsRepository: ShortcutsRepository,
@@ -42,7 +42,7 @@ class ReaderViewModel(
 ) : BaseViewModel() {
 
 	private var loadingJob: Job? = null
-	private val currentState = MutableStateFlow<ReaderState?>(null)
+	private val currentState = MutableStateFlow(initialState)
 	private val mangaData = MutableStateFlow(intent.manga)
 	private val chapters = LongSparseArray<MangaChapter>()
 
@@ -87,51 +87,18 @@ class ReaderViewModel(
 	val onZoomChanged = SingleLiveEvent<Unit>()
 
 	init {
-		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			var manga = dataRepository.resolveIntent(intent)
-				?: throw MangaNotFoundException("Cannot find manga")
-			mangaData.value = manga
-			val repo = MangaRepository(manga.source)
-			manga = repo.getDetails(manga)
-			manga.chapters?.forEach {
-				chapters.put(it.id, it)
-			}
-			// determine mode
-			val mode =
-				dataRepository.getReaderMode(manga.id) ?: manga.chapters?.randomOrNull()?.let {
-					val pages = repo.getPages(it)
-					val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
-					val newMode = getReaderMode(isWebtoon)
-					if (isWebtoon != null) {
-						dataRepository.savePreferences(manga, newMode)
-					}
-					newMode
-				} ?: error("There are no chapters in this manga")
-			// obtain state
-			currentState.value = state ?: historyRepository.getOne(manga)?.let {
-				ReaderState.from(it)
-			} ?: ReaderState.initial(manga)
-
-			val branch = chapters[currentState.value?.chapterId ?: 0L].branch
-			mangaData.value = manga.copy(chapters = manga.chapters?.filter { it.branch == branch })
-			readerMode.postValue(mode)
-
-			val pages = loadChapter(requireNotNull(currentState.value).chapterId)
-			// save state
-			currentState.value?.let {
-				historyRepository.addOrUpdate(manga, it.chapterId, it.page, it.scroll)
-				shortcutsRepository.updateShortcuts()
-			}
-
-			content.postValue(ReaderContent(pages, currentState.value))
-		}
-
+		loadImpl()
 		subscribeToSettings()
 	}
 
 	override fun onCleared() {
 		pageLoader.close()
 		super.onCleared()
+	}
+
+	fun reload() {
+		loadingJob?.cancel()
+		loadImpl()
 	}
 
 	fun switchMode(newMode: ReaderMode) {
@@ -216,6 +183,49 @@ class ReaderViewModel(
 		}
 		if (pageLoader.isPrefetchApplicable()) {
 			pageLoader.prefetch(pages.trySublist(position + 1, position + PREFETCH_LIMIT))
+		}
+	}
+
+	private fun loadImpl() {
+		loadingJob = launchLoadingJob(Dispatchers.Default) {
+			var manga = dataRepository.resolveIntent(intent)
+				?: throw MangaNotFoundException("Cannot find manga")
+			mangaData.value = manga
+			val repo = MangaRepository(manga.source)
+			manga = repo.getDetails(manga)
+			manga.chapters?.forEach {
+				chapters.put(it.id, it)
+			}
+			// determine mode
+			val mode =
+				dataRepository.getReaderMode(manga.id) ?: manga.chapters?.randomOrNull()?.let {
+					val pages = repo.getPages(it)
+					val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
+					val newMode = getReaderMode(isWebtoon)
+					if (isWebtoon != null) {
+						dataRepository.savePreferences(manga, newMode)
+					}
+					newMode
+				} ?: error("There are no chapters in this manga")
+			// obtain state
+			if (currentState.value == null) {
+				currentState.value = historyRepository.getOne(manga)?.let {
+					ReaderState.from(it)
+				} ?: ReaderState.initial(manga)
+			}
+
+			val branch = chapters[currentState.value?.chapterId ?: 0L].branch
+			mangaData.value = manga.copy(chapters = manga.chapters?.filter { it.branch == branch })
+			readerMode.postValue(mode)
+
+			val pages = loadChapter(requireNotNull(currentState.value).chapterId)
+			// save state
+			currentState.value?.let {
+				historyRepository.addOrUpdate(manga, it.chapterId, it.page, it.scroll)
+				shortcutsRepository.updateShortcuts()
+			}
+
+			content.postValue(ReaderContent(pages, currentState.value))
 		}
 	}
 
