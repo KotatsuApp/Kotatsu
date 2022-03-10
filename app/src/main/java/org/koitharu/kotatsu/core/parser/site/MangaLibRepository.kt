@@ -217,11 +217,17 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 	}
 
 	override fun isAuthorized(): Boolean {
-		return false
+		return loaderContext.cookieJar.getCookies(getDomain()).any {
+			it.name.startsWith("remember_web_")
+		}
 	}
 
 	override suspend fun getUsername(): String {
-		TODO("Not yet implemented")
+		val body = loaderContext.httpGet("https://${getDomain()}/messages").parseHtml().body()
+		if (body.baseUri().endsWith("/login")) {
+			throw AuthRequiredException(source)
+		}
+		return body.selectFirst(".profile-user__username")?.text() ?: parseFailed("Cannot find username")
 	}
 
 	private fun getSortKey(sortOrder: SortOrder?) = when (sortOrder) {

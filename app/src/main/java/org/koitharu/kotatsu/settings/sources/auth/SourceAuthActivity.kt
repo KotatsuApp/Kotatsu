@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
+import org.koitharu.kotatsu.browser.ProgressChromeClient
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
@@ -33,7 +34,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		setContentView(ActivityBrowserBinding.inflate(layoutInflater))
 		val source = intent?.getParcelableExtra<MangaSource>(EXTRA_SOURCE)
 		if (source == null) {
-			finish()
+			finishAfterTransition()
 			return
 		}
 		repository = mangaRepositoryOf(source) as? MangaRepositoryAuthProvider ?: run {
@@ -53,12 +54,31 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 			javaScriptEnabled = true
 		}
 		binding.webView.webViewClient = BrowserClient(this)
+		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)
+		if (savedInstanceState != null) {
+			return
+		}
 		val url = repository.authUrl
 		onTitleChanged(
 			source.title,
 			getString(R.string.loading_)
 		)
 		binding.webView.loadUrl(url)
+	}
+
+	override fun onSaveInstanceState(outState: Bundle) {
+		super.onSaveInstanceState(outState)
+		binding.webView.saveState(outState)
+	}
+
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		super.onRestoreInstanceState(savedInstanceState)
+		binding.webView.restoreState(savedInstanceState)
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		binding.webView.destroy()
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
