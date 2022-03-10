@@ -4,8 +4,8 @@
     <string name="read_more">Lire la suite</string>
     <string name="tracker_warning">Certains appareils ont un comportement différent du système, ce qui peut interrompre les tâches d\'arrière-plan.</string>
     <string name="backup_saved">Sauvegarde enregistrée</string>
-	<string name="welcome">Bienvenue</string>
-	<string name="other">Autre</string>
+    <string name="welcome">Bienvenue</string>
+    <string name="other">Autre</string>
     <string name="text_clear_search_history_prompt">Supprimer définitivement toutes les requêtes de recherche récentes \?</string>
     <string name="search_only_on_s">Rechercher uniquement sur %s</string>
     <string name="hide_toolbar">Masquer la barre d\'outils lors du défilement</string>
@@ -171,8 +171,8 @@
     <string name="light">Clair</string>
     <string name="theme">Thème</string>
     <string name="filter">Filtre</string>
-	<string name="sort_order">Ordre de tri</string>
-	<string name="by_rating">Évaluation</string>
+    <string name="sort_order">Ordre de tri</string>
+    <string name="by_rating">Évaluation</string>
     <string name="newest">Le plus récent</string>
     <string name="updated">Mis à jour</string>
     <string name="popular">Populaire</string>
@@ -192,7 +192,7 @@
     <string name="add_new_category">Nouvelle catégorie</string>
     <string name="add_to_favourites">Ajouter aux favoris</string>
     <string name="you_have_not_favourites_yet">Aucun favori pour le moment</string>
-	<string name="read">Lire</string>
+    <string name="read">Lire</string>
     <string name="history_is_empty">Pas encore d\'historique</string>
     <string name="nothing_found">Rien n\'a été trouvé</string>
     <string name="clear_history">Effacer l\'historique</string>
@@ -227,7 +227,7 @@
     <string name="about_gratitudes">Remerciements</string>
     <string name="about_feedback_4pda">Sujet sur 4PDA</string>
     <string name="about_feedback">Remarques</string>
-	<string name="about_app_translation">Traduction</string>
+    <string name="about_app_translation">Traduction</string>
     <string name="about_app_translation_summary">Traduire cette application</string>
     <string name="genres">Genres</string>
     <string name="text_clear_cookies_prompt">Vous serez déconnecté de toutes les sources</string>
@@ -259,4 +259,11 @@
     <string name="filter_load_error">Impossible de charger la liste des genres</string>
     <string name="enabled">Activé</string>
     <string name="disabled">Désactivé</string>
+    <string name="only_using_wifi">Uniquement en Wi-Fi</string>
+    <string name="always">Toujours</string>
+    <string name="preload_pages">Précharger les pages</string>
+    <string name="find_genre">Trouver le genre</string>
+    <string name="never">Jamais</string>
+    <string name="reset_filter">Réinitialiser le filtre</string>
+    <string name="onboard_text">Sélectionnez les langues dans lesquelles vous souhaitez lire les mangas. Vous pouvez le changer plus tard dans les paramètres.</string>
 </resources>

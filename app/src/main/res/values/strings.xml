@@ -24,7 +24,7 @@
     <string name="nothing_found">Nothing found</string>
     <string name="history_is_empty">No history yet</string>
     <string name="read">Read</string>
-	<string name="you_have_not_favourites_yet">No favourites yet</string>
+    <string name="you_have_not_favourites_yet">No favourites yet</string>
     <string name="add_to_favourites">Favourite this</string>
     <string name="add_new_category">New category</string>
     <string name="add">Add</string>
@@ -44,8 +44,8 @@
     <string name="updated">Updated</string>
     <string name="newest">Newest</string>
     <string name="by_rating">Rating</string>
-	<string name="sort_order">Sorting order</string>
-	<string name="filter">Filter</string>
+    <string name="sort_order">Sorting order</string>
+    <string name="filter">Filter</string>
     <string name="theme">Theme</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
@@ -211,8 +211,8 @@
     <string name="search_only_on_s">Search only on %s</string>
     <string name="text_clear_search_history_prompt">Remove all recent search queries permanently?</string>
     <string name="other">Other</string>
-	<string name="welcome">Welcome</string>
-	<string name="backup_saved">Backup saved</string>
+    <string name="welcome">Welcome</string>
+    <string name="backup_saved">Backup saved</string>
     <string name="tracker_warning">Some devices have different system behavior, which may break background tasks.</string>
     <string name="read_more">Read more</string>
     <string name="queued">Queued</string>
@@ -221,7 +221,7 @@
     <string name="chapter_is_missing">The chapter is missing</string>
     <string name="about_app_translation_summary">Translate this app</string>
     <string name="about_app_translation">Translation</string>
-	<string name="about_feedback">Feedback</string>
+    <string name="about_feedback">Feedback</string>
     <string name="about_feedback_4pda">Topic on 4PDA</string>
     <string name="about_support_developer">Support the developer</string>
     <string name="about_support_developer_summary">If you like this app, you can send money through Yoomoney (ex. Yandex.Money)</string>
@@ -262,7 +262,7 @@
 	<string name="find_genre">Find genre</string>
 	<string name="onboard_text">Select languages which you want to read manga. You can change it later in settings.</string>
 	<string name="never">Never</string>
-	<string name="only_using_wifi">Only using WiFi</string>
+	<string name="only_using_wifi">Only on Wi-Fi</string>
 	<string name="always">Always</string>
 	<string name="preload_pages">Preload pages</string>
 	<string name="logged_in_as">Logged in as %s</string>

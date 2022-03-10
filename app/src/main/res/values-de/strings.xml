@@ -8,8 +8,8 @@
     <string name="dark">Dunkel</string>
     <string name="light">Hell</string>
     <string name="filter">Filter</string>
-	<string name="sort_order">Sortierreihenfolge</string>
-	<string name="by_rating">Bewertung</string>
+    <string name="sort_order">Sortierreihenfolge</string>
+    <string name="by_rating">Bewertung</string>
     <string name="newest">Neuestes</string>
     <string name="popular">Beliebt</string>
     <string name="by_name">Name</string>
@@ -25,7 +25,7 @@
     <string name="add_new_category">Neue Kategorie</string>
     <string name="add_to_favourites">Zu Favoriten hinzufügen</string>
     <string name="you_have_not_favourites_yet">Noch keine Favoriten</string>
-	<string name="read">Lesen</string>
+    <string name="read">Lesen</string>
     <string name="history_is_empty">Noch kein Verlauf</string>
     <string name="nothing_found">Nichts gefunden</string>
     <string name="clear_history">Verlauf löschen</string>
@@ -118,8 +118,8 @@
     <string name="read_more">Mehr erfahren</string>
     <string name="tracker_warning">Einige Hersteller können das Systemverhalten ändern, wodurch Hintergrundaufgaben unterbrochen werden können.</string>
     <string name="backup_saved">Sicherung erfolgreich gespeichert</string>
-	<string name="welcome">Willkommen</string>
-	<string name="remove_category">Kategorie entfernen</string>
+    <string name="welcome">Willkommen</string>
+    <string name="remove_category">Kategorie entfernen</string>
     <string name="rotate_screen">Bildschirm drehen</string>
     <string name="size_s">Größe: %s</string>
     <string name="new_version_s">Neue Version: %s</string>
@@ -227,7 +227,7 @@
     <string name="about_support_developer">Den Entwickler unterstützen</string>
     <string name="about_feedback_4pda">Thema auf 4PDA</string>
     <string name="about_feedback">Rückmeldung</string>
-	<string name="about_app_translation">Übersetzung</string>
+    <string name="about_app_translation">Übersetzung</string>
     <string name="about_app_translation_summary">Diese Anwendung übersetzen</string>
     <string name="text_clear_cookies_prompt">Du wirst von allen Quellen abgemeldet, für die du berechtigt bist</string>
     <string name="genres">Genres</string>
@@ -259,4 +259,11 @@
     <string name="text_suggestion_holder">Fang an, Manga zu lesen und du bekommst personalisierte Vorschläge</string>
     <string name="disabled">Deaktiviert</string>
     <string name="filter_load_error">Liste der Genres kann nicht geladen werden</string>
+    <string name="never">Nie</string>
+    <string name="always">Immer</string>
+    <string name="preload_pages">Seiten vorladen</string>
+    <string name="reset_filter">Filter zurücksetzen</string>
+    <string name="find_genre">Genre finden</string>
+    <string name="only_using_wifi">Nur über WLAN</string>
+    <string name="onboard_text">Wählen Sie die Sprachen aus, in denen Sie Mangas lesen möchten. Sie können dies später in den Einstellungen ändern.</string>
 </resources>

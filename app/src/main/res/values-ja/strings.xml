@@ -259,4 +259,6 @@
     <string name="text_suggestion_holder">マンガを読み始めると、個人的な提案を受けることができます</string>
     <string name="enabled">有効</string>
     <string name="exclude_nsfw_from_suggestions">NSFWのマンガを提案しない</string>
+    <string name="reset_filter">フィルターをリセット</string>
+    <string name="find_genre">ジャンルを探す</string>
 </resources>

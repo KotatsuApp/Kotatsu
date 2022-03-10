@@ -18,7 +18,7 @@
     <string name="nothing_found">Hiçbir şey bulunamadı</string>
     <string name="history_is_empty">Sen geçmişiniz yok</string>
     <string name="read">Oku</string>
-	<string name="you_have_not_favourites_yet">Henüz favorileriniz yok</string>
+    <string name="you_have_not_favourites_yet">Henüz favorileriniz yok</string>
     <string name="add_to_favourites">Favoriniz</string>
     <string name="add_new_category">Yeni kategori</string>
     <string name="add">Ekle</string>
@@ -36,7 +36,7 @@
     <string name="updated">Güncellenme</string>
     <string name="newest">Yeniler</string>
     <string name="by_rating">Puanlama</string>
-	<string name="filter">Litre</string>
+    <string name="filter">Litre</string>
     <string name="theme">Tema</string>
     <string name="light">Açık</string>
     <string name="dark">Koyu</string>
@@ -129,7 +129,7 @@
     <string name="clear_feed">Akışı temizle</string>
     <string name="chapter_is_missing_text">Bu eksik bölümü çevrim içi olarak indirin veya okuyun.</string>
     <string name="restore_backup">Yedekten geri yükle</string>
-	<string name="update">Güncelle</string>
+    <string name="update">Güncelle</string>
     <string name="sign_in">Oturum aç</string>
     <string name="about_license">Lisans</string>
     <string name="state_finished">Bitti</string>
@@ -179,7 +179,7 @@
     <string name="reverse">Ters</string>
     <string name="password_length_hint">Parola 4 veya daha fazla karakterden oluşmalıdır</string>
     <string name="welcome">Hoş geldiniz</string>
-	<string name="queued">Sıraya alındı</string>
+    <string name="queued">Sıraya alındı</string>
     <string name="text_downloads_holder">Etkin indirme yok</string>
     <string name="chapter_is_missing">Bölüm eksik</string>
     <string name="about_app_translation_summary">Bu uygulamayı çevirin</string>
@@ -230,7 +230,7 @@
     <string name="reader_mode_hint">Seçilen yapılandırma bu manga için hatırlanacak</string>
     <string name="about_support_developer_summary">Bu uygulamayı beğendiyseniz Yoomoney (eski Yandex.Money) üzerinden para gönderebilirsiniz</string>
     <string name="text_clear_updates_feed_prompt">Tüm güncelleme geçmişi kalıcı olarak silinsin mi\?</string>
-	<string name="_and_x_more">…ve %1$d daha fazlası</string>
+    <string name="_and_x_more">…ve %1$d daha fazlası</string>
     <string name="protect_application_subtitle">Uygulamayı başlatmak için bir parola girin</string>
     <string name="text_clear_search_history_prompt">Tüm son arama sorguları kalıcı olarak kaldırılsın mı\?</string>
     <string name="about_feedback">Geri bildirim</string>
@@ -243,7 +243,7 @@
     <string name="error_empty_name">Bir ad girmelisiniz</string>
     <string name="auth_not_supported_by">%s üzerinde oturum açma desteklenmiyor</string>
     <string name="show_notification_new_chapters">Okunan manga güncellemeleri hakkında bildirimde bulun</string>
-	<string name="read_more">Daha fazla oku</string>
+    <string name="read_more">Daha fazla oku</string>
     <string name="tracker_warning">Bazı aygıtların arka plan görevlerini bozabilecek farklı sistem davranışları vardır.</string>
     <string name="screenshots_policy">Ekran görüntüsü politikası</string>
     <string name="screenshots_block_nsfw">Uygunsuzlarda engelle</string>
@@ -259,4 +259,11 @@
     <string name="enabled">Etkin</string>
     <string name="disabled">Devre dışı</string>
     <string name="filter_load_error">Türler listesi yüklenemiyor</string>
+    <string name="reset_filter">Filtreyi sıfırla</string>
+    <string name="find_genre">Tür bul</string>
+    <string name="onboard_text">Manga okumak istediğiniz dilleri seçin. Daha sonra ayarlardan değiştirebilirsiniz.</string>
+    <string name="always">Her zaman</string>
+    <string name="never">Hiçbir zaman</string>
+    <string name="only_using_wifi">Yalnızca Wi-Fi kullanarak</string>
+    <string name="preload_pages">Sayfaları önceden yükle</string>
 </resources>
