@@ -266,4 +266,6 @@
 	<string name="always">Always</string>
 	<string name="preload_pages">Preload pages</string>
 	<string name="logged_in_as">Logged in as %s</string>
+	<string name="shikimori" translatable="false">Shikimori</string>
+	<string name="shikimori_info">Sign in into your Shikimori account to get more features</string>
 </resources>

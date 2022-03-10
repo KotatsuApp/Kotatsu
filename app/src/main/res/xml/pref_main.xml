@@ -96,6 +96,12 @@
 		app:iconSpaceReserved="false" />
 
 	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.shikimori.ui.ShikimoriSettingsFragment"
+		android:title="@string/shikimori"
+		android:key="shikimori"
+		app:iconSpaceReserved="false" />
+
+	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
 		android:title="@string/backup_restore"
 		app:iconSpaceReserved="false" />

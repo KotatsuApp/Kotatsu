@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.settings
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,6 +13,8 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceScreen
 import androidx.preference.TwoStatePreference
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import leakcanary.LeakCanary
 import org.koin.android.ext.android.inject
@@ -24,6 +27,7 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.settings.utils.SliderPreference
+import org.koitharu.kotatsu.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.names
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
@@ -37,6 +41,7 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 	StorageSelectDialog.OnStorageSelectListener {
 
 	private val storageManager by inject<LocalStorageManager>()
+	private val shikimoriRepository by inject<ShikimoriRepository>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -165,6 +170,14 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 				}
 				true
 			}
+			AppSettings.KEY_SHIKIMORI -> {
+				if (!shikimoriRepository.isAuthorized) {
+					showShikimoriDialog()
+					true
+				} else {
+					super.onPreferenceTreeClick(preference)
+				}
+			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
@@ -178,5 +191,21 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 			val storage = storageManager.getDefaultWriteableDir()
 			summary = storage?.getStorageName(context) ?: getString(R.string.not_available)
 		}
+	}
+
+	private fun showShikimoriDialog() {
+		MaterialAlertDialogBuilder(context ?: return)
+			.setTitle(R.string.shikimori)
+			.setMessage(R.string.shikimori_info)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(R.string.sign_in) { _, _ ->
+				runCatching {
+					val intent = Intent(Intent.ACTION_VIEW)
+					intent.data = Uri.parse(shikimoriRepository.oauthUrl)
+					startActivity(intent)
+				}.onFailure {
+					Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_LONG).show()
+				}
+			}.show()
 	}
 }

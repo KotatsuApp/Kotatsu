@@ -2,12 +2,14 @@ package org.koitharu.kotatsu.reader.ui
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
@@ -15,6 +17,9 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.ActivitySettingsSimpleBinding
 import org.koitharu.kotatsu.settings.*
+import org.koitharu.kotatsu.shikimori.ui.ShikimoriSettingsFragment
+
+private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
 
 class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 
@@ -27,6 +32,7 @@ class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 				R.id.container,
 				when (intent?.action) {
 					Intent.ACTION_MANAGE_NETWORK_USAGE -> NetworkSettingsFragment()
+					Intent.ACTION_VIEW -> handleUri(intent.data) ?: return
 					ACTION_READER -> ReaderSettingsFragment()
 					ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
 					ACTION_SOURCE -> SourceSettingsFragment.newInstance(
@@ -48,6 +54,15 @@ class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 				topMargin = insets.top
 			}
 		}
+	}
+
+	private fun handleUri(uri: Uri?): Fragment? {
+		when (uri?.host) {
+			HOST_SHIKIMORI_AUTH -> return ShikimoriSettingsFragment
+				.newInstance(authCode = uri.getQueryParameter("code"))
+		}
+		finishAfterTransition()
+		return null
 	}
 
 	companion object {

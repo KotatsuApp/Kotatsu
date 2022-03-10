@@ -249,6 +249,7 @@ class AppSettings(context: Context) {
 		const val KEY_PAGES_PRELOAD = "pages_preload"
 		const val KEY_SUGGESTIONS = "suggestions"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
+		const val KEY_SHIKIMORI = "shikimori"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
