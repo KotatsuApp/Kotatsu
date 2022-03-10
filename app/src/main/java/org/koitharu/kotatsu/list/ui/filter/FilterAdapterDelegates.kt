@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.list.ui.filter
 
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
@@ -45,7 +46,13 @@ fun filterHeaderDelegate() = adapterDelegateViewBinding<FilterItem.Header, Filte
 ) {
 
 	bind {
-		binding.root.setText(item.titleResId)
+		binding.textViewTitle.setText(item.titleResId)
+		binding.badge.isVisible = if (item.counter == 0) {
+			false
+		} else {
+			binding.badge.text = item.counter.toString()
+			true
+		}
 	}
 }
 

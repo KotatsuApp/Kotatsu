@@ -8,6 +8,7 @@ sealed interface FilterItem {
 
 	class Header(
 		@StringRes val titleResId: Int,
+		val counter: Int,
 	) : FilterItem
 
 	class Sort(

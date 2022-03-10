@@ -8,13 +8,14 @@ import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.base.ui.list.FitHeightGridLayoutManager
+import org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
@@ -214,19 +215,19 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			removeOnLayoutChangeListener(spanResolver)
 			when (mode) {
 				ListMode.LIST -> {
-					layoutManager = LinearLayoutManager(context)
+					layoutManager = FitHeightLinearLayoutManager(context)
 					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 					addItemDecoration(SpacingItemDecoration(spacing))
 					updatePadding(left = spacing, right = spacing)
 				}
 				ListMode.DETAILED_LIST -> {
-					layoutManager = LinearLayoutManager(context)
+					layoutManager = FitHeightLinearLayoutManager(context)
 					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 					updatePadding(left = spacing, right = spacing)
 					addItemDecoration(SpacingItemDecoration(spacing))
 				}
 				ListMode.GRID -> {
-					layoutManager = GridLayoutManager(context, spanResolver.spanCount).also {
+					layoutManager = FitHeightGridLayoutManager(context, spanResolver.spanCount).also {
 						it.spanSizeLookup = spanSizeLookup
 					}
 					val spacing = resources.getDimensionPixelOffset(R.dimen.grid_spacing)

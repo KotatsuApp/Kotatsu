@@ -23,7 +23,7 @@ fun sourceConfigHeaderDelegate() = adapterDelegateViewBinding<SourceConfigItem.H
 ) {
 
 	bind {
-		binding.root.setText(item.titleResId)
+		binding.textViewTitle.setText(item.titleResId)
 	}
 }
 

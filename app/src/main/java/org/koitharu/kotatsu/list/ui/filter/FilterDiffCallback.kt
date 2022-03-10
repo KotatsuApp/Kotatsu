@@ -27,7 +27,9 @@ class FilterDiffCallback : DiffUtil.ItemCallback<FilterItem>() {
 	override fun areContentsTheSame(oldItem: FilterItem, newItem: FilterItem): Boolean {
 		return when {
 			oldItem == FilterItem.Loading && newItem == FilterItem.Loading -> true
-			oldItem is FilterItem.Header && newItem is FilterItem.Header -> true
+			oldItem is FilterItem.Header && newItem is FilterItem.Header -> {
+				oldItem.counter == newItem.counter
+			}
 			oldItem is FilterItem.Error && newItem is FilterItem.Error -> true
 			oldItem is FilterItem.Tag && newItem is FilterItem.Tag -> {
 				oldItem.isChecked == newItem.isChecked
@@ -40,15 +42,18 @@ class FilterDiffCallback : DiffUtil.ItemCallback<FilterItem>() {
 	}
 
 	override fun getChangePayload(oldItem: FilterItem, newItem: FilterItem): Any? {
-		val isCheckedChanged = when {
+		val hasPayload = when {
 			oldItem is FilterItem.Tag && newItem is FilterItem.Tag -> {
 				oldItem.isChecked != newItem.isChecked
 			}
 			oldItem is FilterItem.Sort && newItem is FilterItem.Sort -> {
 				oldItem.isSelected != newItem.isSelected
 			}
+			oldItem is FilterItem.Header && newItem is FilterItem.Header -> {
+				oldItem.counter != newItem.counter
+			}
 			else -> false
 		}
-		return if (isCheckedChanged) Unit else super.getChangePayload(oldItem, newItem)
+		return if (hasPayload) Unit else super.getChangePayload(oldItem, newItem)
 	}
 }

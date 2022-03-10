@@ -5,10 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
-import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaGridModel
-import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
-import org.koitharu.kotatsu.list.ui.model.MangaListModel
+import org.koitharu.kotatsu.list.ui.model.*
 import kotlin.jvm.internal.Intrinsics
 
 class MangaListAdapter(
@@ -59,6 +56,16 @@ class MangaListAdapter(
 
 		override fun areContentsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
 			return Intrinsics.areEqual(oldItem, newItem)
+		}
+
+		override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
+			return when (newItem) {
+				is MangaListModel,
+				is MangaGridModel,
+				is MangaListDetailedModel,
+				is CurrentFilterModel -> Unit
+				else -> super.getChangePayload(oldItem, newItem)
+			}
 		}
 	}
 

@@ -20,6 +20,13 @@ var TextView.drawableStart: Drawable?
 		setCompoundDrawablesRelativeWithIntrinsicBounds(value, dr[1], dr[2], dr[3])
 	}
 
+var TextView.drawableEnd: Drawable?
+	inline get() = compoundDrawablesRelative[2]
+	set(value) {
+		val dr = compoundDrawablesRelative
+		setCompoundDrawablesRelativeWithIntrinsicBounds(dr[0], dr[1], value, dr[3])
+	}
+
 fun TextView.setTextAndVisible(@StringRes textResId: Int) {
 	if (textResId == 0) {
 		text = null

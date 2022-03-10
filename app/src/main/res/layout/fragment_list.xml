@@ -15,7 +15,7 @@
 		android:orientation="vertical"
 		android:padding="@dimen/grid_spacing_outer"
 		app:fastScrollEnabled="true"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:layoutManager="org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager"
 		tools:listitem="@layout/item_manga_list" />
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
