@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
+import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.util.concurrent.TimeUnit
@@ -159,6 +160,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				coil.execute(
 					ImageRequest.Builder(applicationContext)
 						.data(manga.coverUrl)
+						.referer(manga.publicUrl)
 						.build()
 				).toBitmapOrNull()
 			)
