@@ -9,6 +9,8 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.core.view.updatePaddingRelative
+import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -24,6 +26,7 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.utils.ext.getEnd
 
 class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem>,
@@ -200,11 +203,19 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerViewChapters.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			bottom = insets.bottom + binding.spinnerBranches.height
-		)
+		val root = binding.root
+		if (root.parent is FragmentContainerView) {
+			binding.recyclerViewChapters.updatePaddingRelative(
+				end = insets.getEnd(root),
+				bottom = insets.bottom + binding.spinnerBranches.height,
+			)
+		} else {
+			binding.recyclerViewChapters.updatePadding(
+				left = insets.left,
+				right = insets.right,
+				bottom = insets.bottom + binding.spinnerBranches.height,
+			)
+		}
 	}
 
 	private fun onChaptersChanged(list: List<ChapterListItem>) {

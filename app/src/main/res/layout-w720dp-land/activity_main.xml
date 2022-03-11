@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".main.ui.MainActivity">
+	android:orientation="horizontal">
+
+	<com.google.android.material.navigation.NavigationView
+		android:id="@+id/navigationView"
+		android:layout_width="260dp"
+		android:layout_height="match_parent"
+		app:drawerLayoutCornerSize="0dp"
+		app:elevation="0dp"
+		android:fitsSystemWindows="false"
+		app:menu="@menu/nav_drawer" />
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
-
-		<androidx.fragment.app.FragmentContainerView
-			android:id="@id/container"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			tools:layout="@layout/fragment_list"
-			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 		<com.google.android.material.appbar.AppBarLayout
 			android:id="@+id/appbar"
@@ -53,6 +55,7 @@
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
 						android:background="@null"
+						android:drawablePadding="6dp"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
 						android:imeOptions="actionSearch"
@@ -65,6 +68,13 @@
 			</FrameLayout>
 
 		</com.google.android.material.appbar.AppBarLayout>
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@id/container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+			tools:layout="@layout/fragment_list" />
 
 		<com.google.android.material.floatingactionbutton.FloatingActionButton
 			android:id="@+id/fab"
@@ -83,13 +93,4 @@
 			tools:visibility="visible" />
 
 	</androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-	<com.google.android.material.navigation.NavigationView
-		android:id="@+id/navigationView"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_gravity="start"
-		android:fitsSystemWindows="true"
-		app:menu="@menu/nav_drawer" />
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</LinearLayout>

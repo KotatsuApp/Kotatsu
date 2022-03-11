@@ -13,6 +13,8 @@ import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.core.view.updatePaddingRelative
+import androidx.fragment.app.FragmentContainerView
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.util.CoilUtils
@@ -232,11 +234,19 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			bottom = insets.bottom
-		)
+		val root = binding.root
+		if (root.parent is FragmentContainerView) {
+			root.updatePaddingRelative(
+				start = insets.getStart(root),
+				bottom = insets.bottom,
+			)
+		} else {
+			root.updatePadding(
+				left = insets.left,
+				right = insets.right,
+				bottom = insets.bottom,
+			)
+		}
 	}
 
 	private fun bindTags(manga: Manga) {

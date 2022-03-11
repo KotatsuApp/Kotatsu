@@ -21,4 +21,8 @@
 
 	<!--Text dimens-->
 
+	<!-- Keylines -->
+	<array name="keylines_details">
+		<item>600</item>
+	</array>
 </resources>

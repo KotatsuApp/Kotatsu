@@ -17,14 +17,12 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -43,8 +41,7 @@ import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.buildAlertDialog
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
-	TabLayoutMediator.TabConfigurationStrategy {
+class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediator.TabConfigurationStrategy {
 
 	private val viewModel by viewModel<DetailsViewModel> {
 		parametersOf(MangaIntent(intent))
@@ -54,8 +51,11 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDetailsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		binding.pager.adapter = MangaDetailsAdapter(this)
-		TabLayoutMediator(binding.tabs, binding.pager, this).attach()
+		val pager = binding.pager
+		if (pager != null) {
+			pager.adapter = MangaDetailsAdapter(this)
+			TabLayoutMediator(checkNotNull(binding.tabs), pager, this).attach()
+		}
 
 		viewModel.manga.observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
@@ -105,8 +105,9 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 				topMargin = insets.top
 			}
 		}
-		if (binding.tabs.parent !is Toolbar) {
-			binding.tabs.updatePadding(
+		val tabs = binding.tabs
+		if (tabs != null && tabs.parent !is Toolbar) {
+			tabs.updatePadding(
 				left = insets.left,
 				right = insets.right
 			)
@@ -114,7 +115,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 	}
 
 	private fun onNewChaptersChanged(newChapters: Int) {
-		val tab = binding.tabs.getTabAt(1) ?: return
+		val tab = binding.tabs?.getTabAt(1) ?: return
 		if (newChapters == 0) {
 			tab.removeBadge()
 		} else {
@@ -208,11 +209,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 			viewModel.manga.value?.let {
 				lifecycleScope.launch {
 					if (!get<ShortcutsRepository>().requestPinShortcut(it)) {
-						Snackbar.make(
-							binding.pager,
-							R.string.operation_not_supported,
-							Snackbar.LENGTH_SHORT
-						).show()
+						binding.snackbar.show(getString(R.string.operation_not_supported))
 					}
 				}
 			}
@@ -231,19 +228,18 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
-		binding.pager.isUserInputEnabled = false
+		binding.pager?.isUserInputEnabled = false
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
-		binding.pager.isUserInputEnabled = true
+		binding.pager?.isUserInputEnabled = true
 	}
 
 	fun showChapterMissingDialog(chapterId: Long) {
 		val remoteManga = viewModel.getRemoteManga()
 		if (remoteManga == null) {
-			Snackbar.make(binding.pager, R.string.chapter_is_missing, Snackbar.LENGTH_LONG)
-				.show()
+			binding.snackbar.show(getString( R.string.chapter_is_missing))
 			return
 		}
 		buildAlertDialog(this) {
@@ -267,8 +263,6 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 	}
 
 	companion object {
-
-		const val ACTION_MANGA_VIEW = "${BuildConfig.APPLICATION_ID}.action.VIEW_MANGA"
 
 		fun newIntent(context: Context, manga: Manga): Intent {
 			return Intent(context, DetailsActivity::class.java)
