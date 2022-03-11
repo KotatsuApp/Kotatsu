@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.parser.site
 import androidx.collection.ArraySet
 import org.json.JSONArray
 import org.json.JSONObject
+import org.jsoup.nodes.Document
 import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
 import org.koitharu.kotatsu.core.exceptions.ParseException
@@ -148,6 +149,7 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 						source = source
 					)
 				} ?: manga.tags,
+			isNsfw = isNsfw(doc),
 			description = info?.selectFirst("div.media-description__text")?.html(),
 			chapters = chapters
 		)
@@ -228,6 +230,11 @@ open class MangaLibRepository(loaderContext: MangaLoaderContext) :
 			throw AuthRequiredException(source)
 		}
 		return body.selectFirst(".profile-user__username")?.text() ?: parseFailed("Cannot find username")
+	}
+
+	protected open fun isNsfw(doc: Document): Boolean {
+		val sidebar = doc.body().selectFirst(".media-sidebar") ?: parseFailed("Sidebar not found")
+		return sidebar.getElementsContainingOwnText("18+").isNotEmpty()
 	}
 
 	private fun getSortKey(sortOrder: SortOrder?) = when (sortOrder) {

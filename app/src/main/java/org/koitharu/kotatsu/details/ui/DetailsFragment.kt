@@ -7,7 +7,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
@@ -52,7 +52,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		binding.buttonFavorite.setOnClickListener(this)
 		binding.buttonRead.setOnClickListener(this)
 		binding.buttonRead.setOnLongClickListener(this)
-		binding.coverCard.setOnClickListener(this)
+		binding.imageViewCover.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
@@ -67,60 +67,60 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
 			textViewAuthor.textAndVisible = manga.author
-			sourceContainer.isVisible = manga.source != MangaSource.LOCAL
-			textViewSource.text = manga.source.title
-			textViewDescription.text =
-				manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
-					?: getString(R.string.no_description)
+			textViewDescription.text = manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
+				?: getString(R.string.no_description)
 			when (manga.state) {
 				MangaState.FINISHED -> {
 					textViewState.apply {
 						textAndVisible = resources.getString(R.string.state_finished)
-						drawableStart = ResourcesCompat.getDrawable(resources,
-							R.drawable.ic_state_finished,
-							context.theme)
+						drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_state_finished)
 					}
 				}
 				MangaState.ONGOING -> {
 					textViewState.apply {
 						textAndVisible = resources.getString(R.string.state_ongoing)
-						drawableStart = ResourcesCompat.getDrawable(resources,
-							R.drawable.ic_state_ongoing,
-							context.theme)
+						drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_state_ongoing)
 					}
 				}
 				else -> textViewState.isVisible = false
 			}
 
 			// Info containers
-			if (manga.chapters?.isNotEmpty() == true) {
-				chaptersContainer.isVisible = true
-				textViewChapters.text = manga.chapters.let {
-					resources.getQuantityString(
-						R.plurals.chapters,
-						it.size,
-						manga.chapters.size
-					)
-				}
+			if (manga.chapters.isNullOrEmpty()) {
+				infoLayout.textViewChapters.isVisible = false
 			} else {
-				chaptersContainer.isVisible = false
+				infoLayout.textViewChapters.isVisible = true
+				infoLayout.textViewChapters.text = resources.getQuantityString(
+					R.plurals.chapters,
+					manga.chapters.size,
+					manga.chapters.size,
+				)
 			}
 			if (manga.rating == Manga.NO_RATING) {
-				ratingContainer.isVisible = false
+				infoLayout.ratingContainer.isVisible = false
 			} else {
-				textViewRating.text = String.format("%.1f", manga.rating * 5)
-				ratingContainer.isVisible = true
+				infoLayout.textViewRating.text = String.format("%.1f", manga.rating * 5)
+				infoLayout.ratingContainer.isVisible = true
 			}
-			val file = manga.url.toUri().toFileOrNull()
-			if (file != null) {
-				viewLifecycleScope.launch {
-					val size = file.computeSize()
-					textViewSize.text = FileSize.BYTES.format(requireContext(), size)
+			if (manga.source == MangaSource.LOCAL) {
+				infoLayout.textViewSource.isVisible = false
+				val file = manga.url.toUri().toFileOrNull()
+				if (file != null) {
+					viewLifecycleScope.launch {
+						val size = file.computeSize()
+						infoLayout.textViewSize.text = FileSize.BYTES.format(requireContext(), size)
+						infoLayout.textViewSize.isVisible = true
+					}
+				} else {
+					infoLayout.textViewSize.isVisible = false
 				}
-				sizeContainer.isVisible = true
 			} else {
-				sizeContainer.isVisible = false
+				infoLayout.textViewSource.text = manga.source.title
+				infoLayout.textViewSource.isVisible = true
+				infoLayout.textViewSize.isVisible = false
 			}
+
+			infoLayout.textViewNsfw.isVisible = manga.isNsfw
 
 			// Buttons
 			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
@@ -143,13 +143,12 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	}
 
 	private fun onFavouriteChanged(isFavourite: Boolean) {
-		with(binding.buttonFavorite) {
-			if (isFavourite) {
-				this.setIconResource(R.drawable.ic_heart)
-			} else {
-				this.setIconResource(R.drawable.ic_heart_outline)
-			}
+		val iconRes = if (isFavourite) {
+			R.drawable.ic_heart
+		} else {
+			R.drawable.ic_heart_outline
 		}
+		binding.buttonFavorite.setIconResource(iconRes)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -189,7 +188,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 					)
 				)
 			}
-			R.id.cover_card -> {
+			R.id.imageView_cover -> {
 				val options = ActivityOptions.makeSceneTransitionAnimation(
 					requireActivity(),
 					binding.imageViewCover,

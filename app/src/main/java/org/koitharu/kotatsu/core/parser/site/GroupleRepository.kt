@@ -13,6 +13,7 @@ import java.util.*
 
 private const val PAGE_SIZE = 70
 private const val PAGE_SIZE_SEARCH = 50
+private const val NSFW_ALERT = "сексуальные сцены"
 
 abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 	RemoteMangaRepository(loaderContext) {
@@ -131,6 +132,7 @@ abstract class GroupleRepository(loaderContext: MangaLoaderContext) :
 						source = source
 					)
 				},
+			isNsfw = root.select(".alert-warning").any { it.ownText().contains(NSFW_ALERT) },
 			chapters = root.selectFirst("div.chapters-link")?.selectFirst("table")
 				?.select("tr:has(td > a)")?.asReversed()?.mapIndexedNotNull { i, tr ->
 					val a = tr.selectFirst("a") ?: return@mapIndexedNotNull null
