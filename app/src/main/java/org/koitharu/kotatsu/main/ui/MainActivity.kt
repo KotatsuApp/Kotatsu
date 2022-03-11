@@ -227,10 +227,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			leftMargin = insets.left + topMargin
 			rightMargin = insets.right + topMargin
 		}
-		if (drawer != null) {
-			binding.container.updateLayoutParams<MarginLayoutParams> {
-				topMargin = -(binding.appbar.measureHeight())
-			}
+		binding.container.updateLayoutParams<MarginLayoutParams> {
+			topMargin = -(binding.appbar.measureHeight())
 		}
 	}
 

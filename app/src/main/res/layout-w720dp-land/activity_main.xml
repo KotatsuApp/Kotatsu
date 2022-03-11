@@ -11,26 +11,33 @@
 		android:id="@+id/navigationView"
 		android:layout_width="260dp"
 		android:layout_height="match_parent"
+		android:fitsSystemWindows="false"
 		app:drawerLayoutCornerSize="0dp"
 		app:elevation="0dp"
-		android:fitsSystemWindows="false"
 		app:menu="@menu/nav_drawer" />
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@id/container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+			tools:layout="@layout/fragment_list" />
+
 		<com.google.android.material.appbar.AppBarLayout
 			android:id="@+id/appbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@null"
-			android:stateListAnimator="@null">
+			app:elevation="0dp"
+			app:liftOnScroll="false">
 
 			<FrameLayout
 				android:id="@+id/toolbar_card"
 				android:layout_width="match_parent"
-				android:layout_height="48dp"
+				android:layout_height="54dp"
 				android:layout_marginStart="16dp"
 				android:layout_marginTop="8dp"
 				android:layout_marginEnd="16dp"
@@ -43,11 +50,7 @@
 					android:layout_height="wrap_content"
 					android:background="@null"
 					android:focusable="true"
-					android:focusableInTouchMode="true"
-					app:contentInsetStartWithNavigation="0dp"
-					app:titleTextAppearance="@style/TextAppearance.Kotatsu.PersistentToolbarTitle"
-					app:titleTextColor="?android:colorControlNormal"
-					tools:title="@string/app_name">
+					android:focusableInTouchMode="true">
 
 					<org.koitharu.kotatsu.search.ui.widget.SearchEditText
 						android:id="@+id/searchView"
@@ -55,12 +58,11 @@
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
 						android:background="@null"
-						android:drawablePadding="6dp"
+						android:drawablePadding="16dp"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
 						android:imeOptions="actionSearch"
 						android:importantForAutofill="no"
-						android:paddingBottom="1dp"
 						android:singleLine="true" />
 
 				</com.google.android.material.appbar.MaterialToolbar>
@@ -68,13 +70,6 @@
 			</FrameLayout>
 
 		</com.google.android.material.appbar.AppBarLayout>
-
-		<androidx.fragment.app.FragmentContainerView
-			android:id="@id/container"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-			tools:layout="@layout/fragment_list" />
 
 		<com.google.android.material.floatingactionbutton.FloatingActionButton
 			android:id="@+id/fab"
