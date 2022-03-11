@@ -15,7 +15,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.databinding.ActivitySearchGlobalBinding
-import org.koitharu.kotatsu.list.ui.filter.FilterState
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 
@@ -63,7 +62,7 @@ class MangaListActivity : BaseActivity<ActivitySearchGlobalBinding>() {
 			val viewModel = fragment.getViewModel<RemoteListViewModel> {
 				parametersOf(tag.source)
 			}
-			viewModel.applyFilter(FilterState(viewModel.filter.sortOrder, setOf(tag)))
+			viewModel.applyFilter(setOf(tag))
 		}
 	}
 
