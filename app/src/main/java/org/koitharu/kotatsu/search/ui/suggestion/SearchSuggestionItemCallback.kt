@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.search.ui.suggestion
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
+import org.koitharu.kotatsu.search.ui.suggestion.adapter.SEARCH_SUGGESTION_ITEM_TYPE_QUERY
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import org.koitharu.kotatsu.utils.ext.getItem
 
@@ -18,7 +18,7 @@ class SearchSuggestionItemCallback(
 	override fun getMovementFlags(
 		recyclerView: RecyclerView,
 		viewHolder: RecyclerView.ViewHolder,
-	): Int = if (viewHolder.itemViewType == SearchSuggestionAdapter.ITEM_TYPE_QUERY) {
+	): Int = if (viewHolder.itemViewType == SEARCH_SUGGESTION_ITEM_TYPE_QUERY) {
 		movementFlags
 	} else {
 		0

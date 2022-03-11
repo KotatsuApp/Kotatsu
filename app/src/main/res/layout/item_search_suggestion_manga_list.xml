@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.recyclerview.widget.RecyclerView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:orientation="horizontal"
+	android:scrollbars="none"
+	android:clipChildren="false"
+	android:clipToPadding="false"
+	android:paddingStart="?listPreferredItemPaddingStart"
+	android:paddingEnd="?listPreferredItemPaddingEnd"
+	app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+	tools:listitem="@layout/item_search_suggestion_manga_grid"
+	android:layout_height="@dimen/search_suggestions_manga_height" />
