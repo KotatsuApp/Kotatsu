@@ -74,24 +74,32 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	override val appBar: AppBarLayout
 		get() = binding.appbar
 
+	private var isDrawerFixed = false
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
+
+		isDrawerFixed = resources.getBoolean(R.bool.is_drawer_fixed)
+
 		navHeaderBinding = NavigationHeaderBinding.inflate(layoutInflater)
-		drawerToggle = ActionBarDrawerToggle(
-			this,
-			binding.drawer,
-			binding.toolbar,
-			R.string.open_menu,
-			R.string.close_menu
-		)
-		drawerToggle.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_arrow_back))
-		drawerToggle.setToolbarNavigationClickListener {
-			binding.searchView.hideKeyboard()
-			onBackPressed()
+
+		if (!isDrawerFixed) {
+			drawerToggle = ActionBarDrawerToggle(
+				this,
+				binding.drawer,
+				binding.toolbar,
+				R.string.open_menu,
+				R.string.close_menu
+			)
+			binding.drawer.addDrawerListener(drawerToggle)
+			drawerToggle.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_arrow_back))
+			drawerToggle.setToolbarNavigationClickListener {
+				binding.searchView.hideKeyboard()
+				onBackPressed()
+			}
+			supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		}
-		binding.drawer.addDrawerListener(drawerToggle)
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		with(binding.searchView) {
 			onFocusChangeListener = this@MainActivity
@@ -132,25 +140,25 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		drawerToggle.isDrawerIndicatorEnabled =
+		if (!isDrawerFixed) drawerToggle.isDrawerIndicatorEnabled =
 			binding.drawer.getDrawerLockMode(GravityCompat.START) == DrawerLayout.LOCK_MODE_UNLOCKED
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
-		drawerToggle.syncState()
+		if (!isDrawerFixed) drawerToggle.syncState()
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) {
 		super.onConfigurationChanged(newConfig)
-		drawerToggle.onConfigurationChanged(newConfig)
+		if (!isDrawerFixed) drawerToggle.onConfigurationChanged(newConfig)
 	}
 
 	override fun onBackPressed() {
 		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
 		binding.searchView.clearFocus()
 		when {
-			binding.drawer.isDrawerOpen(binding.navigationView) -> binding.drawer.closeDrawer(
+			binding.drawer.isDrawerOpen(binding.navigationView) -> if (!isDrawerFixed) binding.drawer.closeDrawer(
 				binding.navigationView)
 			fragment != null -> supportFragmentManager.commit {
 				remove(fragment)
@@ -208,7 +216,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				else -> return false
 			}
 		}
-		binding.drawer.closeDrawers()
+		if (!isDrawerFixed) binding.drawer.closeDrawers()
 		return true
 	}
 
@@ -355,12 +363,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	private fun onSearchOpened() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-		drawerToggle.isDrawerIndicatorEnabled = false
+		if (!isDrawerFixed) drawerToggle.isDrawerIndicatorEnabled = false
 	}
 
 	private fun onSearchClosed() {
 		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-		drawerToggle.isDrawerIndicatorEnabled = true
+		if (!isDrawerFixed) drawerToggle.isDrawerIndicatorEnabled = true
 	}
 
 	private fun onFirstStart() {

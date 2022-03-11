@@ -4,4 +4,5 @@
 	<bool name="light_status_bar">true</bool>
 	<bool name="light_navigation_bar">false</bool>
 	<bool name="elevation_overlay_enabled">false</bool>
+	<bool name="is_drawer_fixed">false</bool>
 </resources>
