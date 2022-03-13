@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.databinding.ItemSearchSuggestionMangaGridBinding
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
-import org.koitharu.kotatsu.utils.ScrollResetCallback
+import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 
@@ -37,7 +37,7 @@ fun searchSuggestionMangaListAD(
 		right = recyclerView.paddingRight - spacing,
 	)
 	recyclerView.addItemDecoration(SpacingItemDecoration(spacing))
-	val scrollResetCallback = ScrollResetCallback(recyclerView)
+	val scrollResetCallback = RecyclerViewScrollCallback(recyclerView, 0)
 
 	bind {
 		adapter.setItems(item.items, scrollResetCallback)

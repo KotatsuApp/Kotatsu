@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 
 class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem>,
@@ -211,7 +212,17 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	}
 
 	private fun onChaptersChanged(list: List<ChapterListItem>) {
-		chaptersAdapter?.items = list
+		val adapter = chaptersAdapter ?: return
+		if (adapter.itemCount == 0) {
+			val position = list.indexOfFirst { it.hasFlag(ChapterListItem.FLAG_CURRENT) } - 1
+			if (position > 0) {
+				adapter.setItems(list, RecyclerViewScrollCallback(binding.recyclerViewChapters, position))
+			} else {
+				adapter.items = list
+			}
+		} else {
+			adapter.items = list
+		}
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {

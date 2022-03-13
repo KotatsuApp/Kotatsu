@@ -14,6 +14,8 @@ import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.setTextColorAttr
+import com.google.android.material.R as materialR
 
 fun pageThumbnailAD(
 	coil: ImageLoader,
@@ -31,7 +33,7 @@ fun pageThumbnailAD(
 		height = (gridWidth * 13f / 18f).toInt()
 	)
 
-	binding.handle.setOnClickListener {
+	binding.root.setOnClickListener {
 		clickListener.onItemClick(item.page, itemView)
 	}
 
@@ -39,7 +41,8 @@ fun pageThumbnailAD(
 		job?.cancel()
 		binding.imageViewThumb.setImageDrawable(null)
 		with(binding.textViewNumber) {
-			setBackgroundResource(if (item.isCurrent) R.drawable.bg_badge_accent else R.drawable.bg_badge_default)
+			setBackgroundResource(if (item.isCurrent) R.drawable.bg_badge_accent else R.drawable.bg_badge_empty)
+			setTextColorAttr(if (item.isCurrent) materialR.attr.colorOnTertiary else android.R.attr.textColorPrimary)
 			text = (item.number).toString()
 		}
 		job = scope.launch(Dispatchers.Default + IgnoreErrors) {

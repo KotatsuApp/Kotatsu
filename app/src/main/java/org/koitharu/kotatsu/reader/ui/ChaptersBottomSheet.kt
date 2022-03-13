@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import org.koin.android.ext.android.get
@@ -19,6 +18,7 @@ import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
+import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemClickListener<ChapterListItem> {
@@ -58,7 +58,7 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 		binding.recyclerView.adapter = ChaptersAdapter(this).also { adapter ->
 			if (currentPosition >= 0) {
 				val targetPosition = (currentPosition - 1).coerceAtLeast(0)
-				adapter.setItems(items, Scroller(binding.recyclerView, targetPosition))
+				adapter.setItems(items, RecyclerViewScrollCallback(binding.recyclerView, targetPosition))
 			} else {
 				adapter.items = items
 			}
@@ -75,13 +75,6 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 	fun interface OnChapterChangeListener {
 
 		fun onChapterChanged(chapter: MangaChapter)
-	}
-
-	private class Scroller(private val recyclerView: RecyclerView, private val position: Int) : Runnable {
-		override fun run() {
-			val offset = recyclerView.resources.getDimensionPixelSize(R.dimen.chapter_list_item_height) / 2
-			(recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
-		}
 	}
 
 	companion object {

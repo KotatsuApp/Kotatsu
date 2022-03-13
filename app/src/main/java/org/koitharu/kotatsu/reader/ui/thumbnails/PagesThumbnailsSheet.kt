@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
@@ -28,6 +28,7 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 
 	private lateinit var thumbnails: List<PageThumbnail>
 	private val spanResolver = MangaListSpanResolver()
+	private var currentPageIndex = -1
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -36,12 +37,12 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 			dismissAllowingStateLoss()
 			return
 		}
-		val current = arguments?.getInt(ARG_CURRENT, -1) ?: -1
+		currentPageIndex = requireArguments().getInt(ARG_CURRENT, currentPageIndex)
 		val repository = mangaRepositoryOf(pages.first().source)
 		thumbnails = pages.mapIndexed { i, x ->
 			PageThumbnail(
 				number = i + 1,
-				isCurrent = i == current,
+				isCurrent = i == currentPageIndex,
 				repository = repository,
 				page = x
 			)
@@ -68,11 +69,9 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 				resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
 		}
 
-		val initialTopPosition = binding.recyclerView.top
-
 		with(binding.recyclerView) {
 			addItemDecoration(
-				SpacingItemDecoration(view.resources.getDimensionPixelOffset(R.dimen.grid_spacing))
+				SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
 			)
 			adapter = PageThumbnailAdapter(
 				thumbnails,
@@ -81,16 +80,12 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 				get(),
 				this@PagesThumbnailsSheet
 			)
-			addOnScrollListener(object : RecyclerView.OnScrollListener() {
-				override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) = Unit
-
-				override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-					super.onScrolled(recyclerView, dx, dy)
-					binding.appbar.isLifted = getChildAt(0).top < initialTopPosition
-				}
-			})
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver.setGridSize(get<AppSettings>().gridSize / 100f, this)
+			if (currentPageIndex > 0) {
+				val offset = resources.getDimensionPixelOffset(R.dimen.preferred_grid_width)
+				(layoutManager as GridLayoutManager).scrollToPositionWithOffset(currentPageIndex, offset)
+			}
 		}
 	}
 
