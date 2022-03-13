@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.base.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,15 +50,6 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 		viewBinding = null
 		lastInsets = null
 		super.onDestroyView()
-	}
-
-	open fun getTitle(): CharSequence? = null
-
-	override fun onAttach(context: Context) {
-		super.onAttach(context)
-		getTitle()?.let {
-			activity?.title = it
-		}
 	}
 
 	override fun onApplyWindowInsets(v: View?, insets: WindowInsetsCompat): WindowInsetsCompat {

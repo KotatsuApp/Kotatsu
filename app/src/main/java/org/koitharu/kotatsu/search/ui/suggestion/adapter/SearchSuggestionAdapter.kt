@@ -8,6 +8,8 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import kotlin.jvm.internal.Intrinsics
 
+const val SEARCH_SUGGESTION_ITEM_TYPE_QUERY = 0
+
 class SearchSuggestionAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
@@ -15,9 +17,11 @@ class SearchSuggestionAdapter(
 ) : AsyncListDifferDelegationAdapter<SearchSuggestionItem>(DiffCallback()) {
 
 	init {
-		delegatesManager.addDelegate(ITEM_TYPE_MANGA, searchSuggestionMangaAD(coil, lifecycleOwner, listener))
-			.addDelegate(ITEM_TYPE_QUERY, searchSuggestionQueryAD(listener))
-			.addDelegate(ITEM_TYPE_HEADER, searchSuggestionHeaderAD(listener))
+		delegatesManager
+			.addDelegate(SEARCH_SUGGESTION_ITEM_TYPE_QUERY, searchSuggestionQueryAD(listener))
+			.addDelegate(searchSuggestionHeaderAD(listener))
+			.addDelegate(searchSuggestionTagsAD(listener))
+			.addDelegate(searchSuggestionMangaListAD(coil, lifecycleOwner, listener))
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<SearchSuggestionItem>() {
@@ -26,26 +30,15 @@ class SearchSuggestionAdapter(
 			oldItem: SearchSuggestionItem,
 			newItem: SearchSuggestionItem,
 		): Boolean = when {
-			oldItem is SearchSuggestionItem.MangaItem && newItem is SearchSuggestionItem.MangaItem -> {
-				oldItem.manga.id == newItem.manga.id
-			}
 			oldItem is SearchSuggestionItem.RecentQuery && newItem is SearchSuggestionItem.RecentQuery -> {
 				oldItem.query == newItem.query
 			}
-			oldItem is SearchSuggestionItem.Header && newItem is SearchSuggestionItem.Header -> true
-			else -> false
+			else -> oldItem.javaClass == newItem.javaClass
 		}
 
 		override fun areContentsTheSame(
 			oldItem: SearchSuggestionItem,
 			newItem: SearchSuggestionItem,
 		): Boolean = Intrinsics.areEqual(oldItem, newItem)
-	}
-
-	companion object {
-
-		const val ITEM_TYPE_MANGA = 0
-		const val ITEM_TYPE_QUERY = 1
-		const val ITEM_TYPE_HEADER = 2
 	}
 }

@@ -110,6 +110,10 @@ class RemoteListViewModel(
 
 	fun resetFilter() = filter.reset()
 
+	fun applyFilter(tags: Set<MangaTag>) {
+		filter.setTags(tags)
+	}
+
 	private fun loadList(filterState: FilterState, append: Boolean) {
 		if (loadingJob?.isActive == true) {
 			return

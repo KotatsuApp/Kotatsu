@@ -16,27 +16,26 @@ import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.util.CoilUtils
+import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaHistory
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.MangaState
+import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.*
 
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
-	View.OnLongClickListener {
+	View.OnLongClickListener, ChipsView.OnChipClickListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
@@ -54,6 +53,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		binding.buttonRead.setOnLongClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
+		binding.chipsTags.onChipClickListener = this
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
@@ -231,6 +231,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		}
 	}
 
+	override fun onChipClick(chip: Chip, data: Any?) {
+		val tag = data as? MangaTag ?: return
+		startActivity(MangaListActivity.newIntent(requireContext(), tag))
+	}
+
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
 			bottom = insets.bottom,
@@ -242,7 +247,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			manga.tags.map { tag ->
 				ChipsView.ChipModel(
 					title = tag.title,
-					icon = 0
+					icon = 0,
+					data = tag,
 				)
 			}
 		)

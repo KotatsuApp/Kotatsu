@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.prefs.AppSection
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
@@ -43,6 +44,7 @@ import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
@@ -261,6 +263,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		}
 	}
 
+	override fun onTagClick(tag: MangaTag) {
+		startActivity(
+			MangaListActivity.newIntent(this, tag)
+		)
+	}
+
 	override fun onQueryChanged(query: String) {
 		searchSuggestionViewModel.onQueryChanged(query)
 	}
@@ -353,17 +361,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.commit()
-		if (fragment is HistoryListFragment) binding.fab.show() else binding.fab.hide()
+		adjustFabVisibility(topFragment = fragment)
 	}
 
 	private fun onSearchOpened() {
 		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		drawerToggle?.isDrawerIndicatorEnabled = false
+		adjustFabVisibility(isSearchOpened = true)
 	}
 
 	private fun onSearchClosed() {
 		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 		drawerToggle?.isDrawerIndicatorEnabled = true
+		adjustFabVisibility(isSearchOpened = false)
 	}
 
 	private fun onFirstStart() {
@@ -377,5 +387,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				}
 			}
 		}
+	}
+
+	private fun adjustFabVisibility(
+		topFragment: Fragment? = supportFragmentManager.findFragmentByTag(TAG_PRIMARY),
+		isSearchOpened: Boolean = supportFragmentManager.findFragmentByTag(TAG_SEARCH)?.isVisible == true,
+	) {
+		if (!isSearchOpened && topFragment is HistoryListFragment) binding.fab.show() else binding.fab.hide()
 	}
 }

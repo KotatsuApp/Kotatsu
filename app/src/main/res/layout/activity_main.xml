@@ -48,12 +48,15 @@
 						style="@style/Widget.Kotatsu.SearchView"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
+						android:layout_marginEnd="2dp"
 						android:background="@null"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
 						android:imeOptions="actionSearch"
 						android:importantForAutofill="no"
-						android:singleLine="true" />
+						android:paddingBottom="1dp"
+						android:singleLine="true"
+						tools:drawableEnd="@drawable/abc_ic_clear_material" />
 
 				</com.google.android.material.appbar.MaterialToolbar>
 

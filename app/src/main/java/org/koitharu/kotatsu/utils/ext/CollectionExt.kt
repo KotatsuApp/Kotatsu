@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.utils.ext
 
-import android.util.SparseArray
 import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
 import androidx.collection.LongSparseArray
@@ -82,4 +81,18 @@ fun <T> MutableList<T>.move(sourceIndex: Int, targetIndex: Int) {
 	} else {
 		Collections.rotate(subList(targetIndex, sourceIndex + 1), 1)
 	}
+}
+
+inline fun <T> List<T>.areItemsEquals(other: List<T>, equals: (T, T) -> Boolean): Boolean {
+	if (size != other.size) {
+		return false
+	}
+	for (i in indices) {
+		val a = this[i]
+		val b = other[i]
+		if (!equals(a, b)) {
+			return false
+		}
+	}
+	return true
 }

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
 	<!--Toolbars-->
 
@@ -76,6 +76,10 @@
 		<item name="elevationOverlayEnabled">@bool/elevation_overlay_enabled</item>
 	</style>
 
+	<style name="ThemeOverlay.Kotatsu.MainToolbar" parent="">
+		<item name="colorControlHighlight">@color/selector_overlay</item>
+	</style>
+
 	<!-- TextAppearance -->
 
 	<style name="TextAppearance.Widget.Menu" parent="TextAppearance.AppCompat.Menu">
@@ -98,6 +102,10 @@
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover" parent="">
 		<item name="cornerSize">12dp</item>
+	</style>
+
+	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Small" parent="">
+		<item name="cornerSize">6dp</item>
 	</style>
 
 	<!--Preferences-->

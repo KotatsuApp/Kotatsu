@@ -59,6 +59,12 @@ class FilterCoordinator(
 		}
 	}
 
+	fun setTags(tags: Set<MangaTag>) {
+		currentState.update { oldValue ->
+			FilterState(oldValue.sortOrder, tags)
+		}
+	}
+
 	fun reset() {
 		currentState.update { oldValue ->
 			FilterState(oldValue.sortOrder, emptySet())
