@@ -77,7 +77,7 @@ class ComickFunRepository(loaderContext: MangaLoaderContext) : RemoteMangaReposi
 				altTitle = null,
 				url = slug,
 				publicUrl = "https://$domain/comic/$slug",
-				rating = jo.getDouble("rating").toFloat() / 10f,
+				rating = jo.optDouble("rating", -10.0).toFloat() / 10f,
 				isNsfw = false,
 				coverUrl = jo.getString("cover_url"),
 				largeCoverUrl = null,

@@ -6,12 +6,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toFile
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
@@ -32,6 +36,7 @@ import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
+import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -40,7 +45,8 @@ import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.buildAlertDialog
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediator.TabConfigurationStrategy {
+class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediator.TabConfigurationStrategy,
+	AdapterView.OnItemSelectedListener {
 
 	private val viewModel by viewModel<DetailsViewModel> {
 		parametersOf(MangaIntent(intent))
@@ -49,12 +55,16 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDetailsBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		supportActionBar?.run {
+			setDisplayHomeAsUpEnabled(true)
+			setDisplayShowTitleEnabled(false)
+		}
 		val pager = binding.pager
 		if (pager != null) {
 			pager.adapter = MangaDetailsAdapter(this)
 			TabLayoutMediator(checkNotNull(binding.tabs), pager, this).attach()
 		}
+		binding.spinnerBranches?.let(::initSpinner)
 
 		viewModel.manga.observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
@@ -226,6 +236,13 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 		binding.pager?.isUserInputEnabled = true
 	}
 
+	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+		val spinner = binding.spinnerBranches ?: return
+		viewModel.setSelectedBranch(spinner.selectedItem as String?)
+	}
+
+	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+
 	fun showChapterMissingDialog(chapterId: Long) {
 		val remoteManga = viewModel.getRemoteManga()
 		if (remoteManga == null) {
@@ -250,6 +267,21 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 			}
 			setCancelable(true)
 		}.show()
+	}
+
+	private fun initSpinner(spinner: Spinner) {
+		val branchesAdapter = BranchesAdapter()
+		spinner.adapter = branchesAdapter
+		spinner.onItemSelectedListener = this
+		viewModel.branches.observe(this) {
+			branchesAdapter.setItems(it)
+			spinner.isVisible = it.size > 1
+		}
+		viewModel.selectedBranchIndex.observe(this) {
+			if (it != -1 && it != spinner.selectedItemPosition) {
+				spinner.setSelection(it)
+			}
+		}
 	}
 
 	companion object {

@@ -209,6 +209,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			}
 		}
 		drawer?.closeDrawers()
+		appBar.setExpanded(true)
 		return true
 	}
 
