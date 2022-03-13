@@ -241,7 +241,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			rawX >= binding.root.width - gestureInsets.right ||
 			rawY >= binding.root.height - gestureInsets.bottom ||
 			binding.appbarTop.hasGlobalPoint(rawX, rawY) ||
-			binding.appbarBottom.hasGlobalPoint(rawX, rawY)
+			binding.appbarBottom?.hasGlobalPoint(rawX, rawY) == true
 		) {
 			false
 		} else {
@@ -318,11 +318,13 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		if (binding.appbarTop.isVisible != isUiVisible) {
 			val transition = TransitionSet()
 				.setOrdering(TransitionSet.ORDERING_TOGETHER)
-				.addTransition(Slide(Gravity.BOTTOM).addTarget(binding.appbarBottom))
 				.addTransition(Slide(Gravity.TOP).addTarget(binding.appbarTop))
+			binding.appbarBottom?.let { botomBar ->
+				transition.addTransition(Slide(Gravity.BOTTOM).addTarget(botomBar))
+			}
 			TransitionManager.beginDelayedTransition(binding.root, transition)
 			binding.appbarTop.isVisible = isUiVisible
-			binding.appbarBottom.isVisible = isUiVisible
+			binding.appbarBottom?.isVisible = isUiVisible
 			if (isUiVisible) {
 				showSystemUI()
 			} else {
@@ -339,7 +341,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			right = systemBars.right,
 			left = systemBars.left
 		)
-		binding.appbarBottom.updatePadding(
+		binding.appbarBottom?.updatePadding(
 			bottom = systemBars.bottom,
 			right = systemBars.right,
 			left = systemBars.left

@@ -42,7 +42,7 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		return if (resources.getBoolean(R.bool.is_tablet)) {
-			AppCompatDialog(context, theme)
+			AppCompatDialog(context, R.style.Theme_Kotatsu_Dialog)
 		} else super.onCreateDialog(savedInstanceState)
 	}
 
