@@ -10,13 +10,15 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.*
+import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -104,15 +106,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		}
 
 		with(binding.navigationView) {
-			val menuView =
-				findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
-			ViewCompat.setOnApplyWindowInsetsListener(navHeaderBinding.root) { v, insets ->
-				val systemWindowInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-				v.updatePadding(top = systemWindowInsets.top)
-				// NavigationView doesn't dispatch insets to the menu view, so pad the bottom here.
-				menuView.updatePadding(bottom = systemWindowInsets.bottom)
-				insets
-			}
+			ViewCompat.setOnApplyWindowInsetsListener(this, NavigationViewInsetsListener())
 			addHeaderView(navHeaderBinding.root)
 			setNavigationItemSelectedListener(this@MainActivity)
 		}
@@ -219,14 +213,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
-			topMargin = insets.top + resources.resolveDp(8)
-		}
 		binding.fab.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = insets.bottom + topMargin
-			leftMargin = insets.left + topMargin
-			rightMargin = insets.right + topMargin
 		}
+		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
+			topMargin = insets.top + bottomMargin
+		}
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 		binding.container.updateLayoutParams<MarginLayoutParams> {
 			topMargin = -(binding.appbar.measureHeight())
 		}

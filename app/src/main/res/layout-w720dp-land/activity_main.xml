@@ -32,16 +32,15 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			app:elevation="0dp"
+			android:paddingLeft="16dp"
+			android:paddingRight="16dp"
 			app:liftOnScroll="false">
 
 			<FrameLayout
 				android:id="@+id/toolbar_card"
 				android:layout_width="match_parent"
 				android:layout_height="54dp"
-				android:layout_marginStart="16dp"
-				android:layout_marginTop="8dp"
-				android:layout_marginEnd="16dp"
-				android:layout_marginBottom="8dp"
+				android:layout_marginVertical="8dp"
 				android:background="@drawable/toolbar_background">
 
 				<com.google.android.material.appbar.MaterialToolbar

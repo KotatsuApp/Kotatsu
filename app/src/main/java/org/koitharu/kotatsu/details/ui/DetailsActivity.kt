@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toFile
@@ -96,22 +95,13 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 		binding.snackbar.updatePadding(
 			bottom = insets.bottom
 		)
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right
-			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
+		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = insets.top
 		}
-		val tabs = binding.tabs
-		if (tabs != null && tabs.parent !is Toolbar) {
-			tabs.updatePadding(
-				left = insets.left,
-				right = insets.right
-			)
-		}
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	private fun onNewChaptersChanged(newChapters: Int) {

@@ -203,19 +203,9 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		val root = binding.root
-		if (root.parent is FragmentContainerView) {
-			binding.recyclerViewChapters.updatePaddingRelative(
-				end = insets.getEnd(root),
-				bottom = insets.bottom + binding.spinnerBranches.height,
-			)
-		} else {
-			binding.recyclerViewChapters.updatePadding(
-				left = insets.left,
-				right = insets.right,
-				bottom = insets.bottom + binding.spinnerBranches.height,
-			)
-		}
+		binding.recyclerViewChapters.updatePadding(
+			bottom = insets.bottom + binding.spinnerBranches.height,
+		)
 	}
 
 	private fun onChaptersChanged(list: List<ChapterListItem>) {

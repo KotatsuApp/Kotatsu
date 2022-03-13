@@ -9,6 +9,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnNextLayout
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
@@ -23,7 +24,7 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 	@Suppress("LeakingThis")
 	protected val exceptionResolver = ExceptionResolver(this)
 
-	private var lastInsets: Insets = Insets.NONE
+	private var lastInsets: Insets? = null
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -37,12 +38,18 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		lastInsets = Insets.NONE
 		ViewCompat.setOnApplyWindowInsetsListener(view, this)
+		view.doOnNextLayout {
+			// Listener may not be called
+			if (lastInsets == null) {
+				onWindowInsetsChanged(Insets.NONE)
+			}
+		}
 	}
 
 	override fun onDestroyView() {
 		viewBinding = null
+		lastInsets = null
 		super.onDestroyView()
 	}
 

@@ -31,7 +31,7 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	@Suppress("LeakingThis")
 	protected val exceptionResolver = ExceptionResolver(this)
 
-	private var lastInsets: Insets = Insets.NONE
+	private var lastInsets: Insets? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		val settings = get<AppSettings>()
