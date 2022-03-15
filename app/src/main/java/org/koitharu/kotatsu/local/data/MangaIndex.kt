@@ -3,11 +3,15 @@ package org.koitharu.kotatsu.local.data
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.MangaTag
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.json.getBooleanOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
+import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
+import org.koitharu.kotatsu.parsers.util.toTitleCase
 
 class MangaIndex(source: String?) {
 
@@ -56,7 +60,7 @@ class MangaIndex(source: String?) {
 			isNsfw = json.getBooleanOrDefault("nsfw", false),
 			coverUrl = json.getString("cover"),
 			description = json.getStringOrNull("description"),
-			tags = json.getJSONArray("tags").mapToSet { x ->
+			tags = json.getJSONArray("tags").mapJSONToSet { x ->
 				MangaTag(
 					title = x.getString("title").toTitleCase(),
 					key = x.getString("key"),

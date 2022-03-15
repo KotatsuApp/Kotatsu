@@ -5,15 +5,12 @@ import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
-import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
-import androidx.core.view.isVisible
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -65,23 +62,6 @@ inline fun View.showPopupMenu(
 	menu.show()
 }
 
-fun ViewGroup.hitTest(x: Int, y: Int): Set<View> {
-	val result = HashSet<View>(4)
-	val rect = Rect()
-	for (child in children) {
-		if (child.isVisible && child.getGlobalVisibleRect(rect)) {
-			if (rect.contains(x, y)) {
-				if (child is ViewGroup) {
-					result += child.hitTest(x, y)
-				} else {
-					result += child
-				}
-			}
-		}
-	}
-	return result
-}
-
 fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	if (visibility != View.VISIBLE) {
 		return false
@@ -89,14 +69,6 @@ fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	val rect = Rect()
 	getGlobalVisibleRect(rect)
 	return rect.contains(x, y)
-}
-
-fun DrawerLayout.toggleDrawer(gravity: Int) {
-	if (isDrawerOpen(gravity)) {
-		closeDrawer(gravity)
-	} else {
-		openDrawer(gravity)
-	}
 }
 
 fun View.measureHeight(): Int {
@@ -176,32 +148,6 @@ fun BaseProgressIndicator<*>.setIndeterminateCompat(indeterminate: Boolean) {
 		} else {
 			isIndeterminate = indeterminate
 		}
-	}
-}
-
-fun resolveAdjustedSize(
-	desiredSize: Int,
-	maxSize: Int,
-	measureSpec: Int,
-): Int {
-	val specMode = MeasureSpec.getMode(measureSpec)
-	val specSize = MeasureSpec.getSize(measureSpec)
-	return when (specMode) {
-		MeasureSpec.UNSPECIFIED ->
-			// Parent says we can be as big as we want. Just don't be larger
-			// than max size imposed on ourselves.
-			desiredSize.coerceAtMost(maxSize)
-		MeasureSpec.AT_MOST ->
-			// Parent says we can be as big as we want, up to specSize.
-			// Don't be larger than specSize, and don't be larger than
-			// the max size imposed on ourselves.
-			desiredSize.coerceAtMost(specSize).coerceAtMost(maxSize)
-		MeasureSpec.EXACTLY ->
-			// No choice. Do what we are told.
-			specSize
-		else ->
-			// This should not happen
-			desiredSize
 	}
 }
 

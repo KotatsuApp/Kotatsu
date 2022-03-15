@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.search.ui.suggestion
 
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaTag
 
 interface SearchSuggestionListener {
 

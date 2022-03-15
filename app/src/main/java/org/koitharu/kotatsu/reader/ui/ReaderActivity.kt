@@ -36,12 +36,13 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
-import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
@@ -224,8 +225,9 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			.setMessage(e.getDisplayMessage(resources))
 			.setNegativeButton(R.string.close, listener)
 			.setOnCancelListener(listener)
-		if (e is ResolvableException) {
-			dialog.setPositiveButton(e.resolveTextId, listener)
+		val resolveTextId = ExceptionResolver.getResolveStringId(e)
+		if (resolveTextId != 0) {
+			dialog.setPositiveButton(resolveTextId, listener)
 		}
 		dialog.show()
 	}
@@ -376,7 +378,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	) : DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
 
 		override fun onClick(dialog: DialogInterface?, which: Int) {
-			if (which == DialogInterface.BUTTON_POSITIVE && exception is ResolvableException) {
+			if (which == DialogInterface.BUTTON_POSITIVE) {
 				dialog?.dismiss()
 				tryResolve(exception)
 			} else {
@@ -390,7 +392,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			}
 		}
 
-		private fun tryResolve(e: ResolvableException) {
+		private fun tryResolve(e: Throwable) {
 			lifecycleScope.launch {
 				if (exceptionResolver.resolve(e)) {
 					viewModel.reload()
@@ -409,7 +411,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {
 			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, manga)
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 				.putExtra(EXTRA_STATE, state)
 		}
 

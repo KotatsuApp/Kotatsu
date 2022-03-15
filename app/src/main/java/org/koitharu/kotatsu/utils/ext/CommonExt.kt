@@ -2,9 +2,12 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.content.res.Resources
 import android.util.Log
-import kotlinx.coroutines.delay
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.exceptions.*
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
+import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
+import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
+import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import java.io.FileNotFoundException
 import java.net.SocketTimeoutException
 

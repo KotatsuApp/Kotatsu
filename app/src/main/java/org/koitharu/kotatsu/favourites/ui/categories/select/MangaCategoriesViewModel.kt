@@ -4,9 +4,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class MangaCategoriesViewModel(

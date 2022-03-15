@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.list.ui.model
 
-import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.parsers.model.Manga
 
 data class MangaListDetailedModel(
 	val id: Long,

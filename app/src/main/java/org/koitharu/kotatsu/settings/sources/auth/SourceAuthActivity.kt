@@ -17,27 +17,28 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.browser.ProgressChromeClient
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
+import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.TaggedActivityResult
-import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import com.google.android.material.R as materialR
 
 class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
 
-	private lateinit var repository: MangaRepositoryAuthProvider
+	private lateinit var authProvider: MangaParserAuthProvider
 
 	@SuppressLint("SetJavaScriptEnabled")
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityBrowserBinding.inflate(layoutInflater))
-		val source = intent?.getParcelableExtra<MangaSource>(EXTRA_SOURCE)
+		val source = intent?.getSerializableExtra(EXTRA_SOURCE) as? MangaSource
 		if (source == null) {
 			finishAfterTransition()
 			return
 		}
-		repository = mangaRepositoryOf(source) as? MangaRepositoryAuthProvider ?: run {
+		authProvider = (MangaRepository(source) as? RemoteMangaRepository)?.getAuthProvider() ?: run {
 			Toast.makeText(
 				this,
 				getString(R.string.auth_not_supported_by, source.title),
@@ -58,7 +59,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		if (savedInstanceState != null) {
 			return
 		}
-		val url = repository.authUrl
+		val url = authProvider.authUrl
 		onTitleChanged(
 			source.title,
 			getString(R.string.loading_)
@@ -111,7 +112,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.progressBar.isVisible = isLoading
-		if (!isLoading && repository.isAuthorized()) {
+		if (!isLoading && authProvider.isAuthorized) {
 			Toast.makeText(this, R.string.auth_complete, Toast.LENGTH_SHORT).show()
 			setResult(Activity.RESULT_OK)
 			finishAfterTransition()

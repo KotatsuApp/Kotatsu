@@ -12,8 +12,8 @@ import androidx.fragment.app.commit
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.ActivitySettingsSimpleBinding
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.*
 
 class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
@@ -30,7 +30,7 @@ class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 					ACTION_READER -> ReaderSettingsFragment()
 					ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
 					ACTION_SOURCE -> SourceSettingsFragment.newInstance(
-						intent.getParcelableExtra(EXTRA_SOURCE) ?: MangaSource.LOCAL
+						intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL
 					)
 					else -> MainSettingsFragment()
 				}

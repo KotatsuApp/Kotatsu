@@ -6,7 +6,7 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.parsers.model.Manga
 import java.io.File
 
 class ShareHelper(private val context: Context) {

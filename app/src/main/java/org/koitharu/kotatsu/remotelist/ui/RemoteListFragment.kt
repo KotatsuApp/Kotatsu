@@ -6,11 +6,11 @@ import android.view.MenuItem
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.filter.FilterBottomSheet
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity
-import org.koitharu.kotatsu.utils.ext.parcelableArgument
+import org.koitharu.kotatsu.utils.ext.serializableArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class RemoteListFragment : MangaListFragment() {
@@ -19,7 +19,7 @@ class RemoteListFragment : MangaListFragment() {
 		parametersOf(source)
 	}
 
-	private val source by parcelableArgument<MangaSource>(ARG_SOURCE)
+	private val source by serializableArgument<MangaSource>(ARG_SOURCE)
 
 	override fun onScrolledToEnd() {
 		viewModel.loadNextPage()
@@ -62,7 +62,7 @@ class RemoteListFragment : MangaListFragment() {
 		private const val ARG_SOURCE = "provider"
 
 		fun newInstance(provider: MangaSource) = RemoteListFragment().withArgs(1) {
-			putParcelable(ARG_SOURCE, provider)
+			putSerializable(ARG_SOURCE, provider)
 		}
 	}
 }

@@ -10,8 +10,6 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -20,6 +18,8 @@ import org.koitharu.kotatsu.list.ui.filter.FilterItem
 import org.koitharu.kotatsu.list.ui.filter.FilterState
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 private const val FILTER_MIN_INTERVAL = 750L
@@ -47,7 +47,7 @@ class RemoteListViewModel(
 		hasNextPage,
 	) { list, mode, filterState, error, hasNext ->
 		buildList(list?.size?.plus(3) ?: 3) {
-			add(ListHeader(repository.title, 0, filterState.sortOrder))
+			add(ListHeader(repository.source.title, 0, filterState.sortOrder))
 			createFilterModel(filterState)?.let { add(it) }
 			when {
 				list.isNullOrEmpty() && error != null -> add(error.toErrorState(canRetry = true))
@@ -64,7 +64,7 @@ class RemoteListViewModel(
 		}
 	}.asLiveDataDistinct(
 		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(ListHeader(repository.title, 0, null), LoadingState),
+		listOf(ListHeader(repository.source.title, 0, null), LoadingState),
 	)
 
 	init {
@@ -121,7 +121,7 @@ class RemoteListViewModel(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			try {
 				listError.value = null
-				val list = repository.getList2(
+				val list = repository.getList(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
 					sortOrder = filterState.sortOrder,
 					tags = filterState.tags,

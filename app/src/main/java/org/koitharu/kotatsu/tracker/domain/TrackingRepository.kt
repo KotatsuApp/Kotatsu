@@ -4,7 +4,11 @@ import androidx.room.withTransaction
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.TrackEntity
 import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
-import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.core.model.MangaTracking
+import org.koitharu.kotatsu.core.model.TrackingLogItem
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import java.util.*
 
 class TrackingRepository(

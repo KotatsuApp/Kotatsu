@@ -27,9 +27,10 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseService
 import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
-import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.domain.DownloadManager
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.toArraySet
 import org.koitharu.kotatsu.utils.progress.ProgressJob
@@ -60,7 +61,7 @@ class DownloadService : BaseService() {
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		super.onStartCommand(intent, flags, startId)
-		val manga = intent?.getParcelableExtra<Manga>(EXTRA_MANGA)
+		val manga = intent?.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga
 		val chapters = intent?.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toArraySet()
 		return if (manga != null) {
 			jobs[startId] = downloadManga(startId, manga, chapters)
@@ -112,7 +113,7 @@ class DownloadService : BaseService() {
 					if (stateFlow.value is DownloadManager.State.Done) {
 						sendBroadcast(
 							Intent(ACTION_DOWNLOAD_COMPLETE)
-								.putExtra(EXTRA_MANGA, manga)
+								.putExtra(EXTRA_MANGA, ParcelableManga(manga))
 						)
 					}
 				} finally {
@@ -171,7 +172,7 @@ class DownloadService : BaseService() {
 			}
 			confirmDataTransfer(context) {
 				val intent = Intent(context, DownloadService::class.java)
-				intent.putExtra(EXTRA_MANGA, manga)
+				intent.putExtra(EXTRA_MANGA, ParcelableManga(manga))
 				if (chaptersIds != null) {
 					intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
 				}

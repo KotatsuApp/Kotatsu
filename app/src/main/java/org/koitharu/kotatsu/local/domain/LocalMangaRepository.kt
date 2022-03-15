@@ -10,12 +10,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
-import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.MangaZip
+import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.util.longHashCode
+import org.koitharu.kotatsu.parsers.util.toCamelCase
 import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.ext.*
 import java.io.File
@@ -29,7 +31,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 	override val source = MangaSource.LOCAL
 	private val filenameFilter = CbzFilter()
 
-	override suspend fun getList2(
+	override suspend fun getList(
 		offset: Int,
 		query: String?,
 		tags: Set<MangaTag>?,

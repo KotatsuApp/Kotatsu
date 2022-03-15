@@ -11,8 +11,8 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.databinding.ItemSearchSuggestionMangaGridBinding
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import org.koitharu.kotatsu.utils.ScrollResetCallback

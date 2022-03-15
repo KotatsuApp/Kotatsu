@@ -13,8 +13,9 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.core.model.MangaTag
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import org.koitharu.kotatsu.databinding.ActivitySearchGlobalBinding
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 
@@ -23,7 +24,7 @@ class MangaListActivity : BaseActivity<ActivitySearchGlobalBinding>() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchGlobalBinding.inflate(layoutInflater))
-		val tag = intent.getParcelableExtra<MangaTag>(EXTRA_TAG) ?: run {
+		val tags = intent.getParcelableExtra<ParcelableMangaTags>(EXTRA_TAGS)?.tags ?: run {
 			finishAfterTransition()
 			return
 		}
@@ -31,9 +32,9 @@ class MangaListActivity : BaseActivity<ActivitySearchGlobalBinding>() {
 		val fm = supportFragmentManager
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {
-				val fragment = RemoteListFragment.newInstance(tag.source)
+				val fragment = RemoteListFragment.newInstance(tags.first().source)
 				replace(R.id.container, fragment)
-				runOnCommit(ApplyFilterRunnable(fragment, tag))
+				runOnCommit(ApplyFilterRunnable(fragment, tags))
 			}
 		}
 	}
@@ -55,23 +56,23 @@ class MangaListActivity : BaseActivity<ActivitySearchGlobalBinding>() {
 
 	private class ApplyFilterRunnable(
 		private val fragment: Fragment,
-		private val tag: MangaTag,
+		private val tags: Set<MangaTag>,
 	) : Runnable {
 
 		override fun run() {
 			val viewModel = fragment.getViewModel<RemoteListViewModel> {
-				parametersOf(tag.source)
+				parametersOf(tags.first().source)
 			}
-			viewModel.applyFilter(setOf(tag))
+			viewModel.applyFilter(tags)
 		}
 	}
 
 	companion object {
 
-		private const val EXTRA_TAG = "tag"
+		private const val EXTRA_TAGS = "tags"
 
-		fun newIntent(context: Context, tag: MangaTag) =
+		fun newIntent(context: Context, tags: Set<MangaTag>) =
 			Intent(context, MangaListActivity::class.java)
-				.putExtra(EXTRA_TAG, tag)
+				.putExtra(EXTRA_TAGS, ParcelableMangaTags(tags))
 	}
 }

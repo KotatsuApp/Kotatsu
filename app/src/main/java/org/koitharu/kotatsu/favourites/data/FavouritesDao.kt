@@ -5,7 +5,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
-import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.parsers.model.SortOrder
 
 @Dao
 abstract class FavouritesDao {

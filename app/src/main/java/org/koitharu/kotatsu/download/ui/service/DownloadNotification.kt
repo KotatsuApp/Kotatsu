@@ -11,10 +11,10 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.download.ui.DownloadsActivity
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.format
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage

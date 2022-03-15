@@ -5,6 +5,7 @@ import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.ItemCheckableMultipleBinding
 import org.koitharu.kotatsu.databinding.ItemCheckableSingleBinding
 import org.koitharu.kotatsu.databinding.ItemFilterHeaderBinding

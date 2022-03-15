@@ -7,7 +7,6 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
@@ -15,6 +14,7 @@ import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.ifZero
 
 
 class WebtoonHolder(
@@ -89,7 +89,7 @@ class WebtoonHolder(
 	override fun onError(e: Throwable) {
 		binding.textViewError.text = e.getDisplayMessage(context.resources)
 		binding.buttonRetry.setText(
-			(e as? ResolvableException)?.resolveTextId ?: R.string.try_again
+			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again }
 		)
 		binding.layoutError.isVisible = true
 		binding.progressBar.isVisible = false

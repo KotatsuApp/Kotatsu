@@ -1,12 +1,13 @@
 package org.koitharu.kotatsu.list.ui.model
 
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
-import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
-import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.list.domain.CountersProvider
+import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.utils.ext.ifZero
 
 fun Manga.toListModel(counter: Int) = MangaListModel(
 	id = id,
@@ -76,7 +77,7 @@ fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(
 	exception = this,
 	icon = getErrorIcon(this),
 	canRetry = canRetry,
-	buttonText = (this as? ResolvableException)?.resolveTextId ?: R.string.try_again
+	buttonText = ExceptionResolver.getResolveStringId(this).ifZero { R.string.try_again }
 )
 
 fun Throwable.toErrorFooter() = ErrorFooter(

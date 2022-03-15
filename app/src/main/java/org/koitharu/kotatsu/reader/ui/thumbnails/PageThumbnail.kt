@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.reader.ui.thumbnails
 
-import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.parsers.model.MangaPage
 
 data class PageThumbnail(
 	val number: Int,

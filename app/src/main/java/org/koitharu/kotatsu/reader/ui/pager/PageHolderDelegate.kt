@@ -9,10 +9,9 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
-import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import java.io.File
 import java.io.IOException
@@ -42,8 +41,9 @@ class PageHolderDelegate(
 		val prevJob = job
 		job = scope.launch {
 			prevJob?.cancelAndJoin()
-			(error as? ResolvableException)?.let {
-				exceptionResolver.resolve(it)
+			val e = error
+			if (e != null && ExceptionResolver.canResolve(e)) {
+				exceptionResolver.resolve(e)
 			}
 			doLoad(page, force = true)
 		}

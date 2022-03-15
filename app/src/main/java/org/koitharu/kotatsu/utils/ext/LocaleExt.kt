@@ -3,13 +3,7 @@ package org.koitharu.kotatsu.utils.ext
 import androidx.core.os.LocaleListCompat
 import java.util.*
 
-fun LocaleListCompat.toList(): List<Locale> {
-	val list = ArrayList<Locale>(size())
-	for (i in 0 until size()) {
-		list += get(i)
-	}
-	return list
-}
+fun LocaleListCompat.toList(): List<Locale> = createList(size()) { i -> get(i) }
 
 operator fun LocaleListCompat.iterator() = object : Iterator<Locale> {
 	private var index = 0

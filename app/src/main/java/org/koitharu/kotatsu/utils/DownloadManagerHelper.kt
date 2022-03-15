@@ -17,9 +17,9 @@ import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.network.CommonHeaders
-import org.koitharu.kotatsu.utils.ext.toFileNameSafe
+import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import java.io.File
 import kotlin.coroutines.resume
 

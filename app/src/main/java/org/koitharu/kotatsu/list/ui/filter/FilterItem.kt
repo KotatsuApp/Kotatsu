@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.list.ui.filter
 
 import androidx.annotation.StringRes
-import org.koitharu.kotatsu.core.model.MangaTag
-import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
 
 sealed interface FilterItem {
 

@@ -4,12 +4,12 @@ import androidx.collection.ArraySet
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
 import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.mapToSet
-import org.koitharu.kotatsu.utils.ext.toTitleCase
 import java.util.*
 
 class OnboardViewModel(

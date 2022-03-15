@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.*
 
 @Entity(tableName = "favourite_categories")

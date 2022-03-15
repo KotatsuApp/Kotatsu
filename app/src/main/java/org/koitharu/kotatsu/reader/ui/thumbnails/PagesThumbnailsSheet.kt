@@ -13,13 +13,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
+import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
-import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -31,13 +32,13 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		val pages = arguments?.getParcelableArrayList<MangaPage>(ARG_PAGES)
+		val pages = arguments?.getParcelable<ParcelableMangaPages>(ARG_PAGES)?.pages
 		if (pages.isNullOrEmpty()) {
 			dismissAllowingStateLoss()
 			return
 		}
 		val current = arguments?.getInt(ARG_CURRENT, -1) ?: -1
-		val repository = mangaRepositoryOf(pages.first().source)
+		val repository = MangaRepository(pages.first().source)
 		thumbnails = pages.mapIndexed { i, x ->
 			PageThumbnail(
 				number = i + 1,
@@ -127,7 +128,7 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 
 		fun show(fm: FragmentManager, pages: List<MangaPage>, title: String, currentPage: Int) =
 			PagesThumbnailsSheet().withArgs(3) {
-				putParcelableArrayList(ARG_PAGES, ArrayList<MangaPage>(pages))
+				putParcelable(ARG_PAGES, ParcelableMangaPages(pages))
 				putString(ARG_TITLE, title)
 				putInt(ARG_CURRENT, currentPage)
 			}.show(fm, TAG)

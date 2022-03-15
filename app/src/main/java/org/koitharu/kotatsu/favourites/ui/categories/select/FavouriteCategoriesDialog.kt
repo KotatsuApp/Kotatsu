@@ -13,11 +13,12 @@ import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.databinding.DialogFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -26,7 +27,7 @@ class FavouriteCategoriesDialog : BaseBottomSheet<DialogFavoriteCategoriesBindin
 	View.OnClickListener {
 
 	private val viewModel by viewModel<MangaCategoriesViewModel> {
-		parametersOf(requireNotNull(arguments?.getParcelable<Manga>(MangaIntent.KEY_MANGA)))
+		parametersOf(requireNotNull(arguments?.getParcelable<ParcelableManga>(MangaIntent.KEY_MANGA)).manga)
 	}
 
 	private var adapter: MangaCategoriesAdapter? = null
@@ -86,7 +87,7 @@ class FavouriteCategoriesDialog : BaseBottomSheet<DialogFavoriteCategoriesBindin
 
 		fun show(fm: FragmentManager, manga: Manga) = FavouriteCategoriesDialog()
 			.withArgs(1) {
-				putParcelable(MangaIntent.KEY_MANGA, manga)
+				putParcelable(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 			}.show(fm, TAG)
 	}
 }

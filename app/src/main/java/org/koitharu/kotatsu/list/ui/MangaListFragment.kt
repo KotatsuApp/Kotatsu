@@ -20,9 +20,7 @@ import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
-import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaTag
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -31,6 +29,8 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.main.ui.MainActivity
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
 import org.koitharu.kotatsu.utils.ext.*
 
@@ -152,7 +152,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	}
 
 	private fun resolveException(e: Throwable) {
-		if (e is ResolvableException) {
+		if (ExceptionResolver.canResolve(e)) {
 			viewLifecycleScope.launch {
 				if (exceptionResolver.resolve(e)) {
 					viewModel.onRetry()

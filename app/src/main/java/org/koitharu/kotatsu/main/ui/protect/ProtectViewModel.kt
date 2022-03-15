@@ -5,8 +5,8 @@ import kotlinx.coroutines.delay
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.parsers.util.md5
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.md5
 
 private const val PASSWORD_COMPARE_DELAY = 1_000L
 

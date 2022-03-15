@@ -2,8 +2,8 @@ package org.koitharu.kotatsu.search.ui.suggestion.model
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.areItemsEquals
 
 sealed interface SearchSuggestionItem {

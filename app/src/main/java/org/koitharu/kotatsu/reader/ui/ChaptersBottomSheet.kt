@@ -12,12 +12,13 @@ import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaChapters
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.SheetChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -37,7 +38,7 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 		binding.recyclerView.addItemDecoration(
 			MaterialDividerItemDecoration(view.context, RecyclerView.VERTICAL)
 		)
-		val chapters = arguments?.getParcelableArrayList<MangaChapter>(ARG_CHAPTERS)
+		val chapters = arguments?.getParcelable<ParcelableMangaChapters>(ARG_CHAPTERS)?.chapters
 		if (chapters.isNullOrEmpty()) {
 			dismissAllowingStateLoss()
 			return
@@ -96,7 +97,7 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 			chapters: List<MangaChapter>,
 			currentId: Long,
 		) = ChaptersBottomSheet().withArgs(2) {
-			putParcelableArrayList(ARG_CHAPTERS, chapters.asArrayList())
+			putParcelable(ARG_CHAPTERS, ParcelableMangaChapters(chapters))
 			putLong(ARG_CURRENT_ID, currentId)
 		}.show(fm, TAG)
 

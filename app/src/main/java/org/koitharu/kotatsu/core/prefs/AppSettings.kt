@@ -14,8 +14,8 @@ import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.io.File
 import java.text.DateFormat

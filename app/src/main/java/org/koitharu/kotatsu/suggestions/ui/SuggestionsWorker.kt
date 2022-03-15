@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.work.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
-import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 
@@ -40,9 +40,9 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		}
 		val tagsBySources = allTags.groupBy { x -> x.source }
 		for ((source, tags) in tagsBySources) {
-			val repo = mangaRepositoryOf(source)
+			val repo = MangaRepository(source)
 			tags.flatMapTo(rawResults) { tag ->
-				repo.getList2(
+				repo.getList(
 					offset = 0,
 					sortOrder = SortOrder.UPDATED,
 					tags = setOf(tag),

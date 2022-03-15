@@ -5,23 +5,23 @@ import org.json.JSONObject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
-import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
-import org.koitharu.kotatsu.utils.ext.getBooleanOrDefault
-import org.koitharu.kotatsu.utils.ext.getStringOrNull
-import org.koitharu.kotatsu.utils.ext.iterator
-import org.koitharu.kotatsu.utils.ext.map
+import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.json.JSONIterator
+import org.koitharu.kotatsu.parsers.util.json.getBooleanOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
+import org.koitharu.kotatsu.parsers.util.json.mapJSON
 
 class RestoreRepository(private val db: MangaDatabase) {
 
 	suspend fun upsertHistory(entry: BackupEntry): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data) {
+		for (item in entry.data.JSONIterator()) {
 			val mangaJson = item.getJSONObject("manga")
 			val manga = parseManga(mangaJson)
-			val tags = mangaJson.getJSONArray("tags").map {
+			val tags = mangaJson.getJSONArray("tags").mapJSON {
 				parseTag(it)
 			}
 			val history = parseHistory(item)
@@ -38,7 +38,7 @@ class RestoreRepository(private val db: MangaDatabase) {
 
 	suspend fun upsertCategories(entry: BackupEntry): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data) {
+		for (item in entry.data.JSONIterator()) {
 			val category = parseCategory(item)
 			result += runCatching {
 				db.favouriteCategoriesDao.upsert(category)
@@ -49,10 +49,10 @@ class RestoreRepository(private val db: MangaDatabase) {
 
 	suspend fun upsertFavourites(entry: BackupEntry): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data) {
+		for (item in entry.data.JSONIterator()) {
 			val mangaJson = item.getJSONObject("manga")
 			val manga = parseManga(mangaJson)
-			val tags = mangaJson.getJSONArray("tags").map {
+			val tags = mangaJson.getJSONArray("tags").mapJSON {
 				parseTag(it)
 			}
 			val favourite = parseFavourite(item)

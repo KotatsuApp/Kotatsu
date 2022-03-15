@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.settings.sources.model
 
 import android.net.Uri
 import androidx.annotation.StringRes
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaSource
 
 sealed interface SourceConfigItem {
 

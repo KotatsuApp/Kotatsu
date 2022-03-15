@@ -2,9 +2,8 @@ package org.koitharu.kotatsu.search
 
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import org.koitharu.kotatsu.search.ui.SearchViewModel
@@ -19,7 +18,7 @@ val searchModule
 		factory { MangaSuggestionsProvider.createSuggestions(androidContext()) }
 
 		viewModel { params ->
-			SearchViewModel(get(named(params.get<MangaSource>(0))), params[1], get())
+			SearchViewModel(MangaRepository(params[0]), params[1], get())
 		}
 		viewModel { query ->
 			GlobalSearchViewModel(query.get(), get(), get())

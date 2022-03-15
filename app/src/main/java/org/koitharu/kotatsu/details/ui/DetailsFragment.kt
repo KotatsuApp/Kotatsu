@@ -23,10 +23,14 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.model.*
+import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.image.ui.ImageActivity
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaState
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.search.ui.MangaListActivity
@@ -86,14 +90,15 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			}
 
 			// Info containers
-			if (manga.chapters.isNullOrEmpty()) {
+			val chapters = manga.chapters
+			if (chapters.isNullOrEmpty()) {
 				infoLayout.textViewChapters.isVisible = false
 			} else {
 				infoLayout.textViewChapters.isVisible = true
 				infoLayout.textViewChapters.text = resources.getQuantityString(
 					R.plurals.chapters,
-					manga.chapters.size,
-					manga.chapters.size,
+					chapters.size,
+					chapters.size,
 				)
 			}
 			if (manga.rating == Manga.NO_RATING) {
@@ -233,7 +238,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag ?: return
-		startActivity(MangaListActivity.newIntent(requireContext(), tag))
+		startActivity(MangaListActivity.newIntent(requireContext(), setOf(tag)))
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

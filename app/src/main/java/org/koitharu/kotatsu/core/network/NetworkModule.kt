@@ -5,8 +5,9 @@ import okhttp3.OkHttpClient
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.base.domain.MangaLoaderContext
+import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.local.data.LocalStorageManager
+import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.utils.DownloadManagerHelper
 import java.util.concurrent.TimeUnit
 
@@ -28,5 +29,5 @@ val networkModule
 			}.build()
 		}
 		factory { DownloadManagerHelper(get(), get()) }
-		single { MangaLoaderContext(get(), get()) }
+		single<MangaLoaderContext> { MangaLoaderContextImpl(get(), get(), get()) }
 	}

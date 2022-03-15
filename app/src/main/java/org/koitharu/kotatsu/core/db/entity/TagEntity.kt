@@ -3,10 +3,10 @@ package org.koitharu.kotatsu.core.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.MangaTag
-import org.koitharu.kotatsu.utils.ext.longHashCode
-import org.koitharu.kotatsu.utils.ext.toTitleCase
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.longHashCode
+import org.koitharu.kotatsu.parsers.util.toTitleCase
 
 @Entity(tableName = "tags")
 class TagEntity(

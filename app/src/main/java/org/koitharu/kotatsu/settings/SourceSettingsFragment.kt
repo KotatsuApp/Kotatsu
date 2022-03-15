@@ -13,22 +13,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.exceptions.AuthRequiredException
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.parser.MangaRepositoryAuthProvider
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
+import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import org.koitharu.kotatsu.settings.utils.EditTextBindListener
 import org.koitharu.kotatsu.settings.utils.EditTextDefaultSummaryProvider
-import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
-import org.koitharu.kotatsu.utils.ext.parcelableArgument
+import org.koitharu.kotatsu.utils.ext.serializableArgument
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class SourceSettingsFragment : PreferenceFragmentCompat() {
 
-	private val source by parcelableArgument<MangaSource>(EXTRA_SOURCE)
+	private val source by serializableArgument<MangaSource>(EXTRA_SOURCE)
 	private var repository: RemoteMangaRepository? = null
 
 	override fun onResume() {
@@ -38,7 +37,7 @@ class SourceSettingsFragment : PreferenceFragmentCompat() {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		preferenceManager.sharedPreferencesName = source.name
-		val repo = mangaRepositoryOf(source) as? RemoteMangaRepository ?: return
+		val repo = MangaRepository(source) as? RemoteMangaRepository ?: return
 		repository = repo
 		addPreferencesFromResource(R.xml.pref_source)
 		val screen = preferenceScreen
@@ -53,8 +52,9 @@ class SourceSettingsFragment : PreferenceFragmentCompat() {
 			}
 		}
 		findPreference<Preference>(SourceSettings.KEY_AUTH)?.run {
-			isVisible = repo is MangaRepositoryAuthProvider
-			isEnabled = (repo as? MangaRepositoryAuthProvider)?.isAuthorized() == false
+			val authProvider = repo.getAuthProvider()
+			isVisible = authProvider != null
+			isEnabled = authProvider?.isAuthorized == false
 		}
 	}
 
@@ -106,7 +106,7 @@ class SourceSettingsFragment : PreferenceFragmentCompat() {
 	private fun loadUsername(preference: Preference) = viewLifecycleScope.launch {
 		runCatching {
 			withContext(Dispatchers.Default) {
-				(repository as MangaRepositoryAuthProvider).getUsername()
+				requireNotNull(repository?.getAuthProvider()?.getUsername())
 			}
 		}.onSuccess { username ->
 			preference.title = getString(R.string.logged_in_as, username)
@@ -123,7 +123,7 @@ class SourceSettingsFragment : PreferenceFragmentCompat() {
 		private const val EXTRA_SOURCE = "source"
 
 		fun newInstance(source: MangaSource) = SourceSettingsFragment().withArgs(1) {
-			putParcelable(EXTRA_SOURCE, source)
+			putSerializable(EXTRA_SOURCE, source)
 		}
 	}
 }

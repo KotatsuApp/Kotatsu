@@ -16,17 +16,16 @@ import okhttp3.Request
 import okio.Closeable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.connectivityManager
-import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
 import java.io.File
 import java.util.*
@@ -142,7 +141,7 @@ class PageLoader : KoinComponent, Closeable {
 		return if (result != null && result.source == source) {
 			result
 		} else {
-			mangaRepositoryOf(source).also { repository = it }
+			MangaRepository(source).also { repository = it }
 		}
 	}
 

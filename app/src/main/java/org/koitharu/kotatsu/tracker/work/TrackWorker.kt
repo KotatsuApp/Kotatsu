@@ -18,13 +18,13 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.PendingIntentCompat
-import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.progress.Progress
@@ -59,7 +59,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			.putInt(DATA_TOTAL, tracks.size)
 		for ((index, track) in tracks.withIndex()) {
 			val details = runCatching {
-				mangaRepositoryOf(track.manga.source).getDetails(track.manga)
+				MangaRepository(track.manga.source).getDetails(track.manga)
 			}.getOrNull()
 			workData.putInt(DATA_PROGRESS, index)
 			setProgress(workData.build())

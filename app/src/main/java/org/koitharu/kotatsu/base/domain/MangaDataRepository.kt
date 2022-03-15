@@ -5,10 +5,10 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class MangaDataRepository(private val db: MangaDatabase) {
@@ -37,7 +37,7 @@ class MangaDataRepository(private val db: MangaDatabase) {
 
 	suspend fun resolveIntent(intent: MangaIntent): Manga? = when {
 		intent.manga != null -> intent.manga
-		intent.mangaId != MangaIntent.ID_NONE -> db.mangaDao.find(intent.mangaId)?.toManga()
+		intent.mangaId != 0L -> db.mangaDao.find(intent.mangaId)?.toManga()
 		else -> null // TODO resolve uri
 	}
 

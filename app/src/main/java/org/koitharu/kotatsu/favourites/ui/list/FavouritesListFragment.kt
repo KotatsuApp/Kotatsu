@@ -6,8 +6,8 @@ import android.view.MenuItem
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.list.ui.MangaListFragment
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class FavouritesListFragment : MangaListFragment() {

@@ -24,20 +24,4 @@ fun Number.format(decimals: Int = 0, decPoint: Char = '.', thousandsSep: Char? =
 	}
 }
 
-fun Float.toIntUp(): Int {
-	val intValue = toInt()
-	return if (this == intValue.toFloat()) {
-		intValue
-	} else {
-		intValue + 1
-	}
-}
-
-infix fun Int.upBy(step: Int): Int {
-	val mod = this % step
-	return if (mod == 0) {
-		this
-	} else {
-		this - mod + step
-	}
-}
+inline fun Int.ifZero(defaultValue: () -> Int): Int = if (this == 0) defaultValue() else this

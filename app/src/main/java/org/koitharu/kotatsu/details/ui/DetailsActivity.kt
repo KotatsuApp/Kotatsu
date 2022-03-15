@@ -31,16 +31,16 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.buildAlertDialog
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
@@ -246,7 +246,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 				.show()
 			return
 		}
-		buildAlertDialog(this) {
+		MaterialAlertDialogBuilder(this).apply {
 			setMessage(R.string.chapter_is_missing_text)
 			setTitle(R.string.chapter_is_missing)
 			setNegativeButton(android.R.string.cancel, null)
@@ -272,7 +272,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 
 		fun newIntent(context: Context, manga: Manga): Intent {
 			return Intent(context, DetailsActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, manga)
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 		}
 
 		fun newIntent(context: Context, mangaId: Long): Intent {
