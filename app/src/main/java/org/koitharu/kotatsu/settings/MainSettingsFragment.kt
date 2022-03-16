@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings
 
+import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -13,7 +14,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceScreen
 import androidx.preference.TwoStatePreference
 import kotlinx.coroutines.launch
-import leakcanary.LeakCanary
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
@@ -93,7 +93,10 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_leaks -> {
-				startActivity(LeakCanary.newLeakDisplayActivityIntent())
+				val intent = Intent()
+				intent.component = ComponentName(requireContext(), "leakcanary.internal.activity.LeakActivity")
+				intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+				startActivity(intent)
 				true
 			}
 			else -> super.onOptionsItemSelected(item)
