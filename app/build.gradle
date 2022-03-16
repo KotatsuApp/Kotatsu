@@ -66,7 +66,7 @@ android {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation 'com.github.nv95:kotatsu-parsers:master-SNAPSHOT'
+	implementation 'com.github.nv95:kotatsu-parsers:6ab5743f66'
 
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'

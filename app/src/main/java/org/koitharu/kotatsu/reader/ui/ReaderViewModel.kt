@@ -293,6 +293,24 @@ class ReaderViewModel(
 		}
 	}
 
+	private fun Manga.copy(chapters: List<MangaChapter>?) = Manga(
+		id = id,
+		title = title,
+		altTitle = altTitle,
+		url = url,
+		publicUrl = publicUrl,
+		rating = rating,
+		isNsfw = isNsfw,
+		coverUrl = coverUrl,
+		tags = tags,
+		state = state,
+		author = author,
+		largeCoverUrl = largeCoverUrl,
+		description = description,
+		chapters = chapters,
+		source = source,
+	)
+
 	private companion object : KoinComponent {
 
 		const val BOUNDS_PAGE_OFFSET = 2

@@ -101,11 +101,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 					chapters.size,
 				)
 			}
-			if (manga.rating == Manga.NO_RATING) {
-				infoLayout.ratingContainer.isVisible = false
-			} else {
+			if (manga.hasRating) {
 				infoLayout.textViewRating.text = String.format("%.1f", manga.rating * 5)
 				infoLayout.ratingContainer.isVisible = true
+			} else {
+				infoLayout.ratingContainer.isVisible = false
 			}
 			if (manga.source == MangaSource.LOCAL) {
 				infoLayout.textViewSource.isVisible = false

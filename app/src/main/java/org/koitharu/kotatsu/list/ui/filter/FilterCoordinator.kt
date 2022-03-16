@@ -20,7 +20,7 @@ class FilterCoordinator(
 	private val coroutineScope: CoroutineScope,
 ) : OnFilterChangedListener {
 
-	private val currentState = MutableStateFlow(FilterState(repository.sortOrders.firstOrNull(), emptySet()))
+	private val currentState = MutableStateFlow(FilterState(repository.defaultSortOrder, emptySet()))
 	private var searchQuery = MutableStateFlow("")
 	private val localTagsDeferred = coroutineScope.async(Dispatchers.Default, CoroutineStart.LAZY) {
 		dataRepository.findTags(repository.source)
@@ -38,6 +38,7 @@ class FilterCoordinator(
 		currentState.update { oldValue ->
 			FilterState(item.order, oldValue.tags)
 		}
+		repository.defaultSortOrder = item.order
 	}
 
 	override fun onTagItemClick(item: FilterItem.Tag) {

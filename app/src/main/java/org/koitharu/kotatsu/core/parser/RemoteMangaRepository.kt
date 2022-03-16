@@ -4,6 +4,7 @@ import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.newParser
 
@@ -16,6 +17,12 @@ class RemoteMangaRepository(
 
 	override val sortOrders: Set<SortOrder>
 		get() = parser.sortOrders
+
+	var defaultSortOrder: SortOrder?
+		get() = getConfig().defaultSortOrder ?: sortOrders.firstOrNull()
+		set(value) {
+			getConfig().defaultSortOrder = value
+		}
 
 	override suspend fun getList(
 		offset: Int,
@@ -36,7 +43,9 @@ class RemoteMangaRepository(
 
 	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider
 
-	fun onCreatePreferences(map: MutableMap<String, Any>) {
-		map[SourceSettings.KEY_DOMAIN] = parser.defaultDomain
+	fun getConfigKeys(): List<ConfigKey<*>> = ArrayList<ConfigKey<*>>().also {
+		parser.onCreateConfig(it)
 	}
+
+	private fun getConfig() = parser.config as SourceSettings
 }

@@ -19,7 +19,9 @@ import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.parsers.util.toCamelCase
 import org.koitharu.kotatsu.utils.AlphanumComparator
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.deleteAwait
+import org.koitharu.kotatsu.utils.ext.readText
+import org.koitharu.kotatsu.utils.ext.resolveName
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -95,7 +97,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		val index = entry?.let(zip::readText)?.let(::MangaIndex)
 		val info = index?.getMangaInfo()
 		if (index != null && info != null) {
-			return info.copy(
+			return info.copy2(
 				source = MangaSource.LOCAL,
 				url = fileUri,
 				coverUrl = zipUri(
@@ -104,8 +106,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 						?: findFirstEntry(zip.entries(), isImage = true)?.name.orEmpty()
 				),
 				chapters = info.chapters?.map { c ->
-					c.copy(url = fileUri,
-						source = MangaSource.LOCAL)
+					c.copy(url = fileUri, source = MangaSource.LOCAL)
 				}
 			)
 		}
@@ -136,7 +137,15 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 					scanlator = null,
 					branch = null,
 				)
-			}
+			},
+			altTitle = null,
+			rating = -1f,
+			isNsfw = false,
+			tags = setOf(),
+			state = null,
+			author = null,
+			largeCoverUrl = null,
+			description = null,
 		)
 	}
 
@@ -164,7 +173,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				val info = index.getMangaInfo() ?: continue
 				if (info.id == remoteManga.id) {
 					val fileUri = file.toUri().toString()
-					return@runInterruptible info.copy(
+					return@runInterruptible info.copy2(
 						source = MangaSource.LOCAL,
 						url = fileUri,
 						chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
@@ -175,8 +184,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		}
 	}
 
-	private fun zipUri(file: File, entryName: String) =
-		Uri.fromParts("cbz", file.path, entryName).toString()
+	private fun zipUri(file: File, entryName: String) = Uri.fromParts("cbz", file.path, entryName).toString()
 
 	private fun findFirstEntry(entries: Enumeration<out ZipEntry>, isImage: Boolean): ZipEntry? {
 		val list = entries.toList()
@@ -233,4 +241,41 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 	private suspend fun getAllFiles() = storageManager.getReadableDirs().flatMap { dir ->
 		dir.listFiles(filenameFilter)?.toList().orEmpty()
 	}
+
+	private fun Manga.copy2(
+		url: String = this.url,
+		coverUrl: String = this.coverUrl,
+		chapters: List<MangaChapter>? = this.chapters,
+		source: MangaSource = this.source,
+	) = Manga(
+		id = id,
+		title = title,
+		altTitle = altTitle,
+		url = url,
+		publicUrl = publicUrl,
+		rating = rating,
+		isNsfw = isNsfw,
+		coverUrl = coverUrl,
+		tags = tags,
+		state = state,
+		author = author,
+		largeCoverUrl = largeCoverUrl,
+		description = description,
+		chapters = chapters,
+		source = source,
+	)
+
+	private fun MangaChapter.copy(
+		url: String = this.url,
+		source: MangaSource = this.source,
+	) = MangaChapter(
+		id = id,
+		name = name,
+		number = number,
+		url = url,
+		scanlator = scanlator,
+		uploadDate = uploadDate,
+		branch = branch,
+		source = source,
+	)
 }

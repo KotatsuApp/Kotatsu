@@ -22,7 +22,7 @@ fun Manga.toListDetailedModel(counter: Int) = MangaListDetailedModel(
 	id = id,
 	title = title,
 	subtitle = altTitle,
-	rating = if (rating == Manga.NO_RATING) null else String.format("%.1f", rating * 5),
+	rating = if (hasRating) String.format("%.1f", rating * 5) else null,
 	tags = tags.joinToString(", ") { it.title },
 	coverUrl = coverUrl,
 	manga = this,

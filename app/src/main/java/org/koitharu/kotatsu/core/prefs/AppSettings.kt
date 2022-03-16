@@ -16,6 +16,8 @@ import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.utils.ext.getEnumValue
+import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.io.File
 import java.text.DateFormat
@@ -27,12 +29,12 @@ class AppSettings(context: Context) {
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
 	var listMode: ListMode
-		get() = prefs.getString(KEY_LIST_MODE, null)?.findEnumValue(ListMode.values()) ?: ListMode.DETAILED_LIST
-		set(value) = prefs.edit { putString(KEY_LIST_MODE, value.name) }
+		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.DETAILED_LIST)
+		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE, value) }
 
 	var defaultSection: AppSection
-		get() = prefs.getString(KEY_APP_SECTION, null)?.findEnumValue(AppSection.values()) ?: AppSection.HISTORY
-		set(value) = prefs.edit { putString(KEY_APP_SECTION, value.name) }
+		get() = prefs.getEnumValue(KEY_APP_SECTION, AppSection.HISTORY)
+		set(value) = prefs.edit { putEnumValue(KEY_APP_SECTION, value) }
 
 	val theme: Int
 		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -96,7 +98,7 @@ class AppSettings(context: Context) {
 		set(value) = prefs.edit { putBoolean(KEY_REVERSE_CHAPTERS, value) }
 
 	val zoomMode: ZoomMode
-		get() = prefs.getString(KEY_ZOOM_MODE, null)?.findEnumValue(ZoomMode.values()) ?: ZoomMode.FIT_CENTER
+		get() = prefs.getEnumValue(KEY_ZOOM_MODE, ZoomMode.FIT_CENTER)
 
 	val trackSources: Set<String>
 		get() = prefs.getStringSet(KEY_TRACK_SOURCES, null) ?: arraySetOf(TRACK_FAVOURITES, TRACK_HISTORY)
@@ -193,10 +195,6 @@ class AppSettings(context: Context) {
 		awaitClose {
 			prefs.unregisterOnSharedPreferenceChangeListener(listener)
 		}
-	}
-
-	private fun <E : Enum<E>> String.findEnumValue(values: Array<E>): E? {
-		return values.find { it.name == this }
 	}
 
 	companion object {
