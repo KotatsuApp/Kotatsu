@@ -17,8 +17,8 @@
 			android:id="@+id/imageView_cover"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="16dp"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			android:transitionName="cover"
@@ -35,9 +35,9 @@
 			android:id="@+id/textView_title"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="16dp"
-			android:layout_marginEnd="16dp"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
 			android:ellipsize="end"
 			android:maxLines="3"
 			android:textAppearance="?attr/textAppearanceHeadlineSmall"
@@ -50,9 +50,9 @@
 			android:id="@+id/textView_subtitle"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="6dp"
-			android:layout_marginEnd="16dp"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="4dp"
+			android:layout_marginEnd="8dp"
 			android:ellipsize="end"
 			android:maxLines="3"
 			android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -65,11 +65,11 @@
 			android:id="@+id/textView_author"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="12dp"
+			android:layout_marginStart="6dp"
 			android:layout_marginTop="2dp"
-			android:layout_marginEnd="12dp"
+			android:layout_marginEnd="6dp"
 			android:background="@drawable/list_selector"
-			android:padding="4dp"
+			android:padding="2dp"
 			android:singleLine="true"
 			android:textColor="?attr/colorTertiary"
 			android:textStyle="bold"
@@ -84,9 +84,9 @@
 			android:id="@+id/textView_state"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
+			android:layout_marginStart="8dp"
 			android:layout_marginTop="4dp"
-			android:layout_marginEnd="16dp"
+			android:layout_marginEnd="8dp"
 			android:drawablePadding="4dp"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceBodySmall"
@@ -96,12 +96,19 @@
 			tools:drawableStart="@drawable/ic_state_finished"
 			tools:text="Finished" />
 
+		<androidx.constraintlayout.widget.Barrier
+			android:id="@+id/barrier_header"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			app:barrierDirection="bottom"
+			app:barrierMargin="8dp"
+			app:constraint_referenced_ids="imageView_cover,button_read" />
+
 		<include
 			android:id="@+id/info_layout"
 			layout="@layout/layout_details_info"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="6dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_state" />
@@ -128,7 +135,6 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
-			android:layout_marginTop="16dp"
 			android:layout_marginEnd="16dp"
 			android:enabled="false"
 			android:text="@string/read"
@@ -139,14 +145,6 @@
 			app:layout_constraintStart_toEndOf="@id/button_favorite"
 			app:layout_constraintTop_toBottomOf="@id/info_layout"
 			tools:text="@string/_continue" />
-
-		<androidx.constraintlayout.widget.Barrier
-			android:id="@+id/barrier_header"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			app:barrierDirection="bottom"
-			app:barrierMargin="8dp"
-			app:constraint_referenced_ids="imageView_cover,button_read" />
 
 		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"

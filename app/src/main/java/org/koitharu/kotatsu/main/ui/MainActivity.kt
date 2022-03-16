@@ -10,13 +10,15 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.*
+import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -55,10 +57,7 @@ import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hideKeyboard
-import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.*
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
@@ -71,7 +70,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
 
 	private lateinit var navHeaderBinding: NavigationHeaderBinding
-	private lateinit var drawerToggle: ActionBarDrawerToggle
+	private var drawerToggle: ActionBarDrawerToggle? = null
+	private var drawer: DrawerLayout? = null
 
 	override val appBar: AppBarLayout
 		get() = binding.appbar
@@ -80,36 +80,35 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 		navHeaderBinding = NavigationHeaderBinding.inflate(layoutInflater)
-		drawerToggle = ActionBarDrawerToggle(
-			this,
-			binding.drawer,
-			binding.toolbar,
-			R.string.open_menu,
-			R.string.close_menu
-		)
-		drawerToggle.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_arrow_back))
-		drawerToggle.setToolbarNavigationClickListener {
-			binding.searchView.hideKeyboard()
-			onBackPressed()
+		drawer = binding.root as? DrawerLayout
+		drawerToggle = drawer?.let {
+			ActionBarDrawerToggle(
+				this,
+				it,
+				binding.toolbar,
+				R.string.open_menu,
+				R.string.close_menu
+			).apply {
+				setHomeAsUpIndicator(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_arrow_back))
+				setToolbarNavigationClickListener {
+					binding.searchView.hideKeyboard()
+					onBackPressed()
+				}
+				it.addDrawerListener(this)
+				supportActionBar?.setDisplayHomeAsUpEnabled(true)
+			}
 		}
-		binding.drawer.addDrawerListener(drawerToggle)
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		with(binding.searchView) {
 			onFocusChangeListener = this@MainActivity
 			searchSuggestionListener = this@MainActivity
+			if (drawer == null) {
+				drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_search)
+			}
 		}
 
 		with(binding.navigationView) {
-			val menuView =
-				findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
-			ViewCompat.setOnApplyWindowInsetsListener(navHeaderBinding.root) { v, insets ->
-				val systemWindowInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-				v.updatePadding(top = systemWindowInsets.top)
-				// NavigationView doesn't dispatch insets to the menu view, so pad the bottom here.
-				menuView.updatePadding(bottom = systemWindowInsets.bottom)
-				insets
-			}
+			ViewCompat.setOnApplyWindowInsetsListener(this, NavigationViewInsetsListener())
 			addHeaderView(navHeaderBinding.root)
 			setNavigationItemSelectedListener(this@MainActivity)
 		}
@@ -134,26 +133,27 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		drawerToggle.isDrawerIndicatorEnabled =
-			binding.drawer.getDrawerLockMode(GravityCompat.START) == DrawerLayout.LOCK_MODE_UNLOCKED
+		drawerToggle?.isDrawerIndicatorEnabled =
+			drawer?.getDrawerLockMode(GravityCompat.START) == DrawerLayout.LOCK_MODE_UNLOCKED
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
-		drawerToggle.syncState()
+		drawerToggle?.syncState()
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) {
 		super.onConfigurationChanged(newConfig)
-		drawerToggle.onConfigurationChanged(newConfig)
+		drawerToggle?.onConfigurationChanged(newConfig)
 	}
 
 	override fun onBackPressed() {
 		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
 		binding.searchView.clearFocus()
 		when {
-			binding.drawer.isDrawerOpen(binding.navigationView) -> binding.drawer.closeDrawer(
-				binding.navigationView)
+			drawer?.isDrawerOpen(binding.navigationView) == true -> {
+				drawer?.closeDrawer(binding.navigationView)
+			}
 			fragment != null -> supportFragmentManager.commit {
 				remove(fragment)
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -164,7 +164,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return drawerToggle.onOptionsItemSelected(item) || when (item.itemId) {
+		return drawerToggle?.onOptionsItemSelected(item) == true || when (item.itemId) {
 			else -> super.onOptionsItemSelected(item)
 		}
 	}
@@ -210,19 +210,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				else -> return false
 			}
 		}
-		binding.drawer.closeDrawers()
+		drawer?.closeDrawers()
+		appBar.setExpanded(true)
 		return true
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
-			topMargin = insets.top + resources.resolveDp(8)
-		}
 		binding.fab.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = insets.bottom + topMargin
-			leftMargin = insets.left + topMargin
-			rightMargin = insets.right + topMargin
 		}
+		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
+			topMargin = insets.top + bottomMargin
+		}
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 		binding.container.updateLayoutParams<MarginLayoutParams> {
 			topMargin = -(binding.appbar.measureHeight())
 		}
@@ -360,14 +363,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	private fun onSearchOpened() {
-		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-		drawerToggle.isDrawerIndicatorEnabled = false
+		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+		drawerToggle?.isDrawerIndicatorEnabled = false
 		adjustFabVisibility(isSearchOpened = true)
 	}
 
 	private fun onSearchClosed() {
-		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-		drawerToggle.isDrawerIndicatorEnabled = true
+		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+		drawerToggle?.isDrawerIndicatorEnabled = true
 		adjustFabVisibility(isSearchOpened = false)
 	}
 

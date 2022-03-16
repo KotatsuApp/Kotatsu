@@ -4,6 +4,7 @@ import android.app.ActivityOptions
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
@@ -24,6 +25,7 @@ import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 
 class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem>,
@@ -56,21 +58,9 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 			setHasFixedSize(true)
 			adapter = chaptersAdapter
 		}
-		val branchesAdapter = BranchesAdapter()
-		binding.spinnerBranches.adapter = branchesAdapter
-		binding.spinnerBranches.onItemSelectedListener = this
-
+		binding.spinnerBranches?.let(::initSpinner)
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, this::onChaptersChanged)
-		viewModel.branches.observe(viewLifecycleOwner) {
-			branchesAdapter.setItems(it)
-			binding.spinnerBranches.isVisible = it.size > 1
-		}
-		viewModel.selectedBranchIndex.observe(viewLifecycleOwner) {
-			if (it != -1 && it != binding.spinnerBranches.selectedItemPosition) {
-				binding.spinnerBranches.setSelection(it)
-			}
-		}
 		viewModel.isChaptersReversed.observe(viewLifecycleOwner) {
 			activity?.invalidateOptionsMenu()
 		}
@@ -79,7 +69,7 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	override fun onDestroyView() {
 		chaptersAdapter = null
 		selectionDecoration = null
-		binding.spinnerBranches.adapter = null
+		binding.spinnerBranches?.adapter = null
 		super.onDestroyView()
 	}
 
@@ -166,7 +156,8 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-		viewModel.setSelectedBranch(binding.spinnerBranches.selectedItem as String?)
+		val spinner = binding.spinnerBranches ?: return
+		viewModel.setSelectedBranch(spinner.selectedItem as String?)
 	}
 
 	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
@@ -201,14 +192,37 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.recyclerViewChapters.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			bottom = insets.bottom + binding.spinnerBranches.height
+			bottom = insets.bottom + (binding.spinnerBranches?.height ?: 0),
 		)
 	}
 
+	private fun initSpinner(spinner: Spinner) {
+		val branchesAdapter = BranchesAdapter()
+		spinner.adapter = branchesAdapter
+		spinner.onItemSelectedListener = this
+		viewModel.branches.observe(viewLifecycleOwner) {
+			branchesAdapter.setItems(it)
+			spinner.isVisible = it.size > 1
+		}
+		viewModel.selectedBranchIndex.observe(viewLifecycleOwner) {
+			if (it != -1 && it != spinner.selectedItemPosition) {
+				spinner.setSelection(it)
+			}
+		}
+	}
+
 	private fun onChaptersChanged(list: List<ChapterListItem>) {
-		chaptersAdapter?.items = list
+		val adapter = chaptersAdapter ?: return
+		if (adapter.itemCount == 0) {
+			val position = list.indexOfFirst { it.hasFlag(ChapterListItem.FLAG_CURRENT) } - 1
+			if (position > 0) {
+				adapter.setItems(list, RecyclerViewScrollCallback(binding.recyclerViewChapters, position))
+			} else {
+				adapter.items = list
+			}
+		} else {
+			adapter.items = list
+		}
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {

@@ -21,6 +21,4 @@
 
 	<dimen name="search_suggestions_manga_height">124dp</dimen>
 	<dimen name="search_suggestions_manga_spacing">4dp</dimen>
-	<!--Text dimens-->
-
 </resources>

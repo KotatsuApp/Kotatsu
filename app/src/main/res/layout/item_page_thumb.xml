@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?attr/scrimBackground">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	style="@style/Widget.Material3.CardView.Outlined"
+	app:cardBackgroundColor="?scrimBackground">
 
 	<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
 		android:id="@+id/imageView_thumb"
@@ -13,18 +15,12 @@
 		android:scaleType="centerCrop"
 		tools:src="@drawable/ic_placeholder" />
 
-	<View
-		android:id="@+id/handle"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:background="?selectableItemBackground" />
-
 	<TextView
 		android:id="@+id/textView_number"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom|end"
-		android:layout_margin="8dp"
+		android:layout_margin="4dp"
 		android:ellipsize="none"
 		android:gravity="center"
 		android:minWidth="26dp"
@@ -34,4 +30,4 @@
 		tools:background="@drawable/bg_badge_default"
 		tools:text="2" />
 
-</FrameLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".main.ui.MainActivity">
+	android:orientation="horizontal">
+
+	<com.google.android.material.navigation.NavigationView
+		android:id="@+id/navigationView"
+		android:layout_width="260dp"
+		android:layout_height="match_parent"
+		android:fitsSystemWindows="false"
+		app:drawerLayoutCornerSize="0dp"
+		app:elevation="0dp"
+		app:menu="@menu/nav_drawer" />
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
@@ -15,22 +24,22 @@
 			android:id="@id/container"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			tools:layout="@layout/fragment_list"
-			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+			tools:layout="@layout/fragment_list" />
 
 		<com.google.android.material.appbar.AppBarLayout
 			android:id="@+id/appbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			app:elevation="0dp"
 			android:paddingLeft="16dp"
 			android:paddingRight="16dp"
-			android:background="@null"
-			android:stateListAnimator="@null">
+			app:liftOnScroll="false">
 
 			<FrameLayout
 				android:id="@+id/toolbar_card"
 				android:layout_width="match_parent"
-				android:layout_height="48dp"
+				android:layout_height="54dp"
 				android:layout_marginVertical="8dp"
 				android:background="@drawable/toolbar_background">
 
@@ -40,23 +49,20 @@
 					android:layout_height="wrap_content"
 					android:background="@null"
 					android:focusable="true"
-					android:focusableInTouchMode="true"
-					app:contentInsetStartWithNavigation="0dp">
+					android:focusableInTouchMode="true">
 
 					<org.koitharu.kotatsu.search.ui.widget.SearchEditText
 						android:id="@+id/searchView"
 						style="@style/Widget.Kotatsu.SearchView"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
-						android:layout_marginEnd="2dp"
 						android:background="@null"
+						android:drawablePadding="16dp"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
 						android:imeOptions="actionSearch"
 						android:importantForAutofill="no"
-						android:paddingBottom="1dp"
-						android:singleLine="true"
-						tools:drawableEnd="@drawable/abc_ic_clear_material" />
+						android:singleLine="true" />
 
 				</com.google.android.material.appbar.MaterialToolbar>
 
@@ -81,13 +87,4 @@
 			tools:visibility="visible" />
 
 	</androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-	<com.google.android.material.navigation.NavigationView
-		android:id="@+id/navigationView"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_gravity="start"
-		android:fitsSystemWindows="true"
-		app:menu="@menu/nav_drawer" />
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</LinearLayout>
