@@ -19,9 +19,16 @@ import org.koitharu.kotatsu.utils.ext.referer
 fun mangaGridItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-	clickListener: OnListItemClickListener<Manga>
+	clickListener: OnListItemClickListener<Manga>,
+	viewFactory: AsyncViewFactory,
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
-	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) }
+	{ inflater, parent ->
+		viewFactory[R.layout.item_manga_grid]?.let {
+			ItemMangaGridBinding.bind(it)
+		} ?: run {
+			ItemMangaGridBinding.inflate(inflater, parent, false)
+		}
+	}
 ) {
 
 	var imageRequest: Disposable? = null
@@ -52,6 +59,7 @@ fun mangaGridItemAD(
 		itemView.clearBadge(badge)
 		badge = null
 		imageRequest?.dispose()
+		imageRequest = null
 		CoilUtils.clear(binding.imageViewCover)
 		binding.imageViewCover.setImageDrawable(null)
 	}

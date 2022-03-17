@@ -20,9 +20,16 @@ import org.koitharu.kotatsu.utils.ext.textAndVisible
 fun mangaListDetailedItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-	clickListener: OnListItemClickListener<Manga>
+	clickListener: OnListItemClickListener<Manga>,
+	viewFactory: AsyncViewFactory,
 ) = adapterDelegateViewBinding<MangaListDetailedModel, ListModel, ItemMangaListDetailsBinding>(
-	{ inflater, parent -> ItemMangaListDetailsBinding.inflate(inflater, parent, false) }
+	{ inflater, parent ->
+		viewFactory[R.layout.item_manga_list_details]?.let {
+			ItemMangaListDetailsBinding.bind(it)
+		} ?: run {
+			ItemMangaListDetailsBinding.inflate(inflater, parent, false)
+		}
+	}
 ) {
 
 	var imageRequest: Disposable? = null
@@ -56,6 +63,7 @@ fun mangaListDetailedItemAD(
 		itemView.clearBadge(badge)
 		badge = null
 		imageRequest?.dispose()
+		imageRequest = null
 		CoilUtils.clear(binding.imageViewCover)
 		binding.imageViewCover.setImageDrawable(null)
 	}

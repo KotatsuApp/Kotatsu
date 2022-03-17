@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.list.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
@@ -12,19 +13,20 @@ class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
+	viewFactory: AsyncViewFactory,
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
 	init {
 		delegatesManager
 			.addDelegate(
 				ITEM_TYPE_MANGA_LIST,
-				mangaListItemAD(coil, lifecycleOwner, listener)
+				mangaListItemAD(coil, lifecycleOwner, listener, viewFactory)
 			)
 			.addDelegate(
 				ITEM_TYPE_MANGA_LIST_DETAILED,
-				mangaListDetailedItemAD(coil, lifecycleOwner, listener)
+				mangaListDetailedItemAD(coil, lifecycleOwner, listener, viewFactory)
 			)
-			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, listener))
+			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, listener, viewFactory))
 			.addDelegate(ITEM_TYPE_LOADING_FOOTER, loadingFooterAD())
 			.addDelegate(ITEM_TYPE_LOADING_STATE, loadingStateAD())
 			.addDelegate(ITEM_TYPE_DATE, relatedDateItemAD())

@@ -63,8 +63,11 @@ private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
 
 class MainActivity : BaseActivity<ActivityMainBinding>(),
-	NavigationView.OnNavigationItemSelectedListener, AppBarOwner,
-	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener {
+	NavigationView.OnNavigationItemSelectedListener,
+	AppBarOwner,
+	View.OnClickListener,
+	View.OnFocusChangeListener,
+	SearchSuggestionListener {
 
 	private val viewModel by viewModel<MainViewModel>()
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()

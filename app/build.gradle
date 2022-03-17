@@ -83,6 +83,7 @@ dependencies {
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 	implementation 'androidx.recyclerview:recyclerview:1.2.1'
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-beta01'
+	implementation 'androidx.asynclayoutinflater:asynclayoutinflater:1.0.0'
 	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.work:work-runtime-ktx:2.7.1'
 	implementation 'com.google.android.material:material:1.6.0-alpha03'

@@ -5,7 +5,6 @@ import android.view.*
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,17 +18,13 @@ import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
 import java.util.*
 
 class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
-	FavouritesTabLongClickListener, CategoriesEditDelegate.CategoriesEditCallback,
-	RecycledViewPoolHolder {
-
-	override val recycledViewPool = RecyclerView.RecycledViewPool()
+	FavouritesTabLongClickListener, CategoriesEditDelegate.CategoriesEditCallback {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {

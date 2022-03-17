@@ -12,11 +12,14 @@ import org.koitharu.kotatsu.local.data.CbzFetcher
 val uiModule
 	get() = module {
 		single {
-			val httpClient = get<OkHttpClient>().newBuilder()
-				.cache(CoilUtils.createDefaultCache(androidContext()))
-				.build()
+			val httpClientFactory = {
+				get<OkHttpClient>().newBuilder()
+					.cache(CoilUtils.createDefaultCache(androidContext()))
+					.build()
+			}
 			ImageLoader.Builder(androidContext())
-				.okHttpClient(httpClient)
+				.okHttpClient(httpClientFactory)
+				.launchInterceptorChainOnMainThread(false)
 				.componentRegistry(
 					ComponentRegistry.Builder()
 						.add(CbzFetcher())
