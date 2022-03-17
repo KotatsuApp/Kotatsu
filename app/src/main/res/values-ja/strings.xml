@@ -134,7 +134,7 @@
     <string name="updates_feed_cleared">クリア</string>
     <string name="update">アップデート</string>
     <string name="feed_will_update_soon">フィードの更新はまもなく開始されます</string>
-    <string name="track_sources">更新を探す</string>
+    <string name="track_sources">アップデートを確認</string>
     <string name="dont_check">チェックしない</string>
     <string name="protect_application_summary">Kotatsuを起動したときにパスワードを入力する</string>
     <string name="repeat_password">パスワードを繰り返す</string>
@@ -158,14 +158,14 @@
     <string name="wrong_password">パスワードが間違っています</string>
     <string name="protect_application">アプリを保護する</string>
     <string name="check_for_updates">最新のアップデートを確認する</string>
-    <string name="update_check_failed">アップデートを見つける事が出来ませんでした</string>
+    <string name="update_check_failed">アップデートを確認する事が出来ませんでした</string>
     <string name="no_update_available">利用可能なアップデートはありません</string>
     <string name="right_to_left">右から左(←)</string>
     <string name="prefer_rtl_reader">右から左（←）の読書を好む</string>
     <string name="about_feedback">フィードバック</string>
     <string name="about_feedback_4pda">4PDAに関する話題</string>
     <string name="about_support_developer">開発者をサポートします(Yoomoneyが開きます)</string>
-    <string name="about_support_developer_summary">このアプリが気に入ったら、Yoomoney(Yandex.Moneyなど)からサポートできます</string>
+    <string name="about_support_developer_summary">このアプリが気に入ったら、Yoomoney(Yandex.Moneyなど)から開発者をサポートできます</string>
     <string name="about_license">ライセンス</string>
     <string name="auth_complete">承認済み</string>
     <string name="auth_not_supported_by">%sへのログインはサポートされていません</string>
@@ -211,7 +211,7 @@
     <string name="captcha_required">CAPTCHAが必要です</string>
     <string name="default_s">デフォルト:%s</string>
     <string name="yesterday">昨日</string>
-    <string name="about_app_translation">翻訳</string>
+    <string name="about_app_translation">このアプリを翻訳</string>
     <string name="data_restored_success">全てのデータが復元されました</string>
     <string name="data_restored">復元</string>
     <string name="about_gratitudes">感謝の気持ち</string>
@@ -238,7 +238,7 @@
     <string name="error_empty_name">名前を入力する必要があります</string>
     <string name="today">今日</string>
     <string name="about_gratitudes_summary">この人達のお陰でKotatsuがより良くなりました</string>
-    <string name="about_app_translation_summary">Kotatsuを翻訳する(Weblateのサイトを開きます)</string>
+    <string name="about_app_translation_summary">Kotatsuを翻訳する(Weblateのサイトに移動します)</string>
     <string name="next">次のページ</string>
     <string name="silent">サイレント</string>
     <string name="sign_in">サインイン</string>
@@ -262,4 +262,10 @@
     <string name="reset_filter">フィルターをリセット</string>
     <string name="find_genre">ジャンルを探す</string>
     <string name="only_using_wifi">Wi-Fiのみ使用</string>
+    <string name="never">決して</string>
+    <string name="onboard_text">漫画を読みたい言語を選択します。後で設定から変更することができます。</string>
+    <string name="always">常に</string>
+    <string name="preload_pages">ページのプリロード</string>
+    <string name="logged_in_as">%s としてログイン</string>
+    <string name="nsfw">18歳以上</string>
 </resources>
