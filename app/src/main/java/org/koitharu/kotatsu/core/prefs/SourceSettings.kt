@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getEnumValue
+import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 
 private const val KEY_SORT_ORDER = "sort_order"
@@ -22,7 +23,7 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 	@Suppress("UNCHECKED_CAST")
 	override fun <T> get(key: ConfigKey<T>): T {
 		return when (key) {
-			is ConfigKey.Domain -> prefs.getString(key.key, key.defaultValue) ?: key.defaultValue
+			is ConfigKey.Domain -> prefs.getString(key.key, key.defaultValue).ifNullOrEmpty { key.defaultValue }
 		} as T
 	}
 }

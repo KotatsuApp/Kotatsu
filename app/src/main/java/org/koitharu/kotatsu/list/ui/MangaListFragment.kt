@@ -87,11 +87,11 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			isEnabled = isSwipeRefreshEnabled
 		}
 
-		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
-		viewModel.onError.observe(viewLifecycleOwner, ::onError)
-		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
+		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
+		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
+		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 	}
 
 	override fun onDestroyView() {
@@ -185,12 +185,10 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 			right = insets.right,
 		)
 		if (activity is MainActivity) {
-			val topOffsetDiff = binding.recyclerView.paddingTop - headerHeight
 			binding.recyclerView.updatePadding(
 				top = headerHeight,
 				bottom = insets.bottom,
 			)
-			binding.recyclerView.scrollBy(0, topOffsetDiff)
 			binding.swipeRefreshLayout.setProgressViewOffset(
 				true,
 				headerHeight + resources.resolveDp(-72),

@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.list.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
