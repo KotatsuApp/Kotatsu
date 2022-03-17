@@ -6,6 +6,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
@@ -18,17 +19,21 @@ private const val MAX_TAGS_ITEMS = 8
 
 class SearchSuggestionViewModel(
 	private val repository: MangaSearchRepository,
+	private val settings: AppSettings,
 ) : BaseViewModel() {
 
 	private val query = MutableStateFlow("")
 	private val source = MutableStateFlow<MangaSource?>(null)
-	private val isLocalSearch = MutableStateFlow(false)
+	private val isLocalSearch = MutableStateFlow(settings.isSearchSingleSource)
 	private var suggestionJob: Job? = null
 
 	val suggestion = MutableLiveData<List<SearchSuggestionItem>>()
 
 	init {
 		setupSuggestion()
+		isLocalSearch.onEach {
+			settings.isSearchSingleSource = it
+		}.launchIn(viewModelScope)
 	}
 
 	fun onQueryChanged(newQuery: String) {

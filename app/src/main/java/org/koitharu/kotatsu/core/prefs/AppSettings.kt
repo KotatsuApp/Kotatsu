@@ -150,6 +150,10 @@ class AppSettings(context: Context) {
 	val isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
 
+	var isSearchSingleSource: Boolean
+		get() = prefs.getBoolean(KEY_SEARCH_SINGLE_SOURCE, false)
+		set(value) = prefs.edit { putBoolean(KEY_SEARCH_SINGLE_SOURCE, value) }
+
 	fun isPagesPreloadAllowed(cm: ConnectivityManager): Boolean {
 		return when (prefs.getString(KEY_PAGES_PRELOAD, null)?.toIntOrNull()) {
 			NETWORK_ALWAYS -> true
@@ -247,6 +251,7 @@ class AppSettings(context: Context) {
 		const val KEY_PAGES_PRELOAD = "pages_preload"
 		const val KEY_SUGGESTIONS = "suggestions"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
+		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

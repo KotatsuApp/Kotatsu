@@ -23,5 +23,5 @@ val searchModule
 		viewModel { query ->
 			GlobalSearchViewModel(query.get(), get(), get())
 		}
-		viewModel { SearchSuggestionViewModel(get()) }
+		viewModel { SearchSuggestionViewModel(get(), get()) }
 	}
