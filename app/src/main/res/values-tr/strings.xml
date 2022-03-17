@@ -264,6 +264,8 @@
     <string name="onboard_text">Manga okumak istediğiniz dilleri seçin. Daha sonra ayarlardan değiştirebilirsiniz.</string>
     <string name="always">Her zaman</string>
     <string name="never">Hiçbir zaman</string>
-    <string name="only_using_wifi">Yalnızca Wi-Fi kullanarak</string>
+    <string name="only_using_wifi">Yalnızca Wi-Fi\'de</string>
     <string name="preload_pages">Sayfaları önceden yükle</string>
+    <string name="logged_in_as">%s olarak oturum açıldı</string>
+    <string name="nsfw">18+</string>
 </resources>
