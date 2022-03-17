@@ -84,8 +84,8 @@
     <string name="remote_sources">Kilder annensteds hen</string>
     <string name="read_more">Les mer</string>
     <string name="backup_saved">Sikkerhetskopi lagret</string>
-	<string name="welcome">Velkommen</string>
-	<string name="other">Annet</string>
+    <string name="welcome">Velkommen</string>
+    <string name="other">Annet</string>
     <string name="search_only_on_s">Kun søk på %s</string>
     <string name="confirm">Bekreft</string>
     <string name="next">Neste</string>
@@ -175,8 +175,8 @@
     <string name="by_name">Navn</string>
     <string name="theme">Drakt</string>
     <string name="filter">Filter</string>
-	<string name="sort_order">Sorteringsrekkefølge</string>
-	<string name="by_rating">Vurdering</string>
+    <string name="sort_order">Sorteringsrekkefølge</string>
+    <string name="by_rating">Vurdering</string>
     <string name="newest">Nyeste</string>
     <string name="updated">Oppdatert</string>
     <string name="popular">Popularitet</string>
@@ -195,7 +195,7 @@
     <string name="add_new_category">Ny kategori</string>
     <string name="add_to_favourites">Favorittmerk dette</string>
     <string name="you_have_not_favourites_yet">Ingen favoritter enda</string>
-	<string name="history_is_empty">Ingen historikk enda</string>
+    <string name="history_is_empty">Ingen historikk enda</string>
     <string name="clear_history">Tøm historikk</string>
     <string name="try_again">Prøv igjen</string>
     <string name="close">Lukk</string>
@@ -223,7 +223,7 @@
     <string name="state_ongoing">Pågående</string>
     <string name="about_app_translation_summary">Oversett dette programmet</string>
     <string name="about_app_translation">Oversettelse</string>
-	<string name="about_feedback">Tilbakemelding</string>
+    <string name="about_feedback">Tilbakemelding</string>
     <string name="about_feedback_4pda">Emne på 4PDA</string>
     <string name="about_support_developer">Støtt utvikleren</string>
     <string name="about_support_developer_summary">Hvis du liker programmet kan du kronerulle det på Yoomoney (tidligere Yandex.Money)</string>
@@ -259,4 +259,13 @@
     <string name="suggestions_summary">Foreslå manga basert på vaner</string>
     <string name="enabled">Påskrudd</string>
     <string name="disabled">Avskrudd</string>
+    <string name="always">Alltid</string>
+    <string name="preload_pages">Forhåndsinnlast bilder</string>
+    <string name="reset_filter">Tilbakestill filter</string>
+    <string name="find_genre">Finn sjanger</string>
+    <string name="never">Aldri</string>
+    <string name="only_using_wifi">Kun på Wi-Fi</string>
+    <string name="onboard_text">Velg språkene du ønsker å lese manga. Du kan endre dette senere i innstillingene.</string>
+    <string name="logged_in_as">Innlogget som %s</string>
+    <string name="nsfw">18+</string>
 </resources>
