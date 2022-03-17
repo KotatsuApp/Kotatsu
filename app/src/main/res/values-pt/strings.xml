@@ -267,4 +267,5 @@
     <string name="never">Nunca</string>
     <string name="preload_pages">Pré-carregar páginas</string>
     <string name="logged_in_as">Conectado como %s</string>
+    <string name="nsfw">18+</string>
 </resources>

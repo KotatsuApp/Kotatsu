@@ -266,4 +266,6 @@
     <string name="find_genre">Genre finden</string>
     <string name="only_using_wifi">Nur über WLAN</string>
     <string name="onboard_text">Wählen Sie die Sprachen aus, in denen Sie Mangas lesen möchten. Sie können dies später in den Einstellungen ändern.</string>
+    <string name="logged_in_as">Angemeldet als %s</string>
+    <string name="nsfw">18+</string>
 </resources>
