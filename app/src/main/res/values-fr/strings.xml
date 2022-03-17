@@ -266,4 +266,6 @@
     <string name="never">Jamais</string>
     <string name="reset_filter">Réinitialiser le filtre</string>
     <string name="onboard_text">Sélectionnez les langues dans lesquelles vous souhaitez lire les mangas. Vous pouvez le changer plus tard dans les paramètres.</string>
+    <string name="logged_in_as">Connecté en tant que %s</string>
+    <string name="nsfw">18+</string>
 </resources>

@@ -266,4 +266,6 @@
     <string name="reset_filter">Nollaa suodatin</string>
     <string name="find_genre">Etsi genre</string>
     <string name="onboard_text">Valitse kielet, joilla haluat lukea mangaa. Voit muuttaa sitä myöhemmin asetuksissa.</string>
+    <string name="logged_in_as">Kirjautunut sisään nimellä %s</string>
+    <string name="nsfw">18+</string>
 </resources>

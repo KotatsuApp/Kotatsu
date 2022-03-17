@@ -266,4 +266,6 @@
     <string name="preload_pages">Precarica le pagine</string>
     <string name="only_using_wifi">Solo usando il Wi-Fi</string>
     <string name="always">Sempre</string>
+    <string name="logged_in_as">Registrato come %s</string>
+    <string name="nsfw">18+</string>
 </resources>
