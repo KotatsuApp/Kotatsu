@@ -30,8 +30,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
-import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
-import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
@@ -87,9 +86,8 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 
 	private fun onError(e: Throwable) {
 		when {
-			e is CloudFlareProtectedException -> {
-				CloudFlareDialog.newInstance(e.url)
-					.show(supportFragmentManager, CloudFlareDialog.TAG)
+			ExceptionResolver.canResolve(e) -> {
+				resolveError(e)
 			}
 			viewModel.manga.value == null -> {
 				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
@@ -280,6 +278,17 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 		viewModel.selectedBranchIndex.observe(this) {
 			if (it != -1 && it != spinner.selectedItemPosition) {
 				spinner.setSelection(it)
+			}
+		}
+	}
+
+	private fun resolveError(e: Throwable) {
+		lifecycleScope.launch {
+			if (exceptionResolver.resolve(e)) {
+				viewModel.reload()
+			} else if (viewModel.manga.value == null) {
+				Toast.makeText(this@DetailsActivity, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
+				finishAfterTransition()
 			}
 		}
 	}

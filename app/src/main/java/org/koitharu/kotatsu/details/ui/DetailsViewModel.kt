@@ -5,6 +5,7 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
@@ -29,7 +30,7 @@ import org.koitharu.kotatsu.utils.ext.mapToSet
 import java.io.IOException
 
 class DetailsViewModel(
-	intent: MangaIntent,
+	private val intent: MangaIntent,
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
@@ -38,6 +39,7 @@ class DetailsViewModel(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
+	private var loadingJob: Job
 	private val mangaData = MutableStateFlow<Manga?>(intent.manga)
 	private val selectedBranch = MutableStateFlow<String?>(null)
 
@@ -109,28 +111,12 @@ class DetailsViewModel(
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
-		launchLoadingJob(Dispatchers.Default) {
-			var manga = mangaDataRepository.resolveIntent(intent)
-				?: throw MangaNotFoundException("Cannot find manga")
-			mangaData.value = manga
-			manga = MangaRepository(manga.source).getDetails(manga)
-			// find default branch
-			val hist = historyRepository.getOne(manga)
-			selectedBranch.value = if (hist != null) {
-				manga.chapters?.find { it.id == hist.chapterId }?.branch
-			} else {
-				predictBranch(manga.chapters)
-			}
-			mangaData.value = manga
-			remoteManga.value = runCatching {
-				if (manga.source == MangaSource.LOCAL) {
-					val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatching null
-					MangaRepository(m.source).getDetails(m)
-				} else {
-					localMangaRepository.findSavedManga(manga)
-				}
-			}.getOrNull()
-		}
+		loadingJob = doLoad()
+	}
+
+	fun reload() {
+		loadingJob.cancel()
+		loadingJob = doLoad()
 	}
 
 	fun deleteLocal(manga: Manga) {
@@ -154,6 +140,29 @@ class DetailsViewModel(
 
 	fun getRemoteManga(): Manga? {
 		return remoteManga.value
+	}
+
+	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
+		var manga = mangaDataRepository.resolveIntent(intent)
+			?: throw MangaNotFoundException("Cannot find manga")
+		mangaData.value = manga
+		manga = MangaRepository(manga.source).getDetails(manga)
+		// find default branch
+		val hist = historyRepository.getOne(manga)
+		selectedBranch.value = if (hist != null) {
+			manga.chapters?.find { it.id == hist.chapterId }?.branch
+		} else {
+			predictBranch(manga.chapters)
+		}
+		mangaData.value = manga
+		remoteManga.value = runCatching {
+			if (manga.source == MangaSource.LOCAL) {
+				val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatching null
+				MangaRepository(m.source).getDetails(m)
+			} else {
+				localMangaRepository.findSavedManga(manga)
+			}
+		}.getOrNull()
 	}
 
 	private fun mapChapters(
