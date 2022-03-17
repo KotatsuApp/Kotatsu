@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
@@ -146,7 +145,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 
 		fun newIntent(context: Context, source: MangaSource): Intent {
 			return Intent(context, SourceAuthActivity::class.java)
-				.putExtra(EXTRA_SOURCE, source as Parcelable)
+				.putExtra(EXTRA_SOURCE, source)
 		}
 	}
 }

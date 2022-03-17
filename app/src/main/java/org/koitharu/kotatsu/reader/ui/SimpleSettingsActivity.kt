@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.reader.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
@@ -71,6 +70,6 @@ class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
 		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
 			Intent(context, SimpleSettingsActivity::class.java)
 				.setAction(ACTION_SOURCE)
-				.putExtra(EXTRA_SOURCE, source as Parcelable)
+				.putExtra(EXTRA_SOURCE, source)
 	}
 }
