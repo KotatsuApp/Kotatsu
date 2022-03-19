@@ -97,8 +97,8 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 	implementation 'com.squareup.okio:okio:3.0.0'
 
-	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.1'
-	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.1'
+	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
+	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
 
 	implementation 'io.insert-koin:koin-android:3.1.5'
 	implementation 'io.coil-kt:coil-base:1.4.0'

@@ -18,6 +18,7 @@ import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -63,6 +64,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 			pager.adapter = MangaDetailsAdapter(this)
 			TabLayoutMediator(checkNotNull(binding.tabs), pager, this).attach()
 		}
+		gcFragments()
 		binding.spinnerBranches?.let(::initSpinner)
 
 		viewModel.manga.observe(this, ::onMangaUpdated)
@@ -289,6 +291,23 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 			} else if (viewModel.manga.value == null) {
 				Toast.makeText(this@DetailsActivity, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 				finishAfterTransition()
+			}
+		}
+	}
+
+	private fun gcFragments() {
+		val mustHaveId = binding.pager == null
+		val fm = supportFragmentManager
+		val fragmentsToRemove = fm.fragments.filter { f ->
+			(f.id == 0) == mustHaveId
+		}
+		if (fragmentsToRemove.isEmpty()) {
+			return
+		}
+		fm.commit {
+			setReorderingAllowed(true)
+			for (f in fragmentsToRemove) {
+				remove(f)
 			}
 		}
 	}

@@ -75,10 +75,7 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
-		// workaround: duplication after screen rotation
-		if (menu.findItem(R.id.action_reversed) == null) {
-			inflater.inflate(R.menu.opt_chapters, menu)
-		}
+		inflater.inflate(R.menu.opt_chapters, menu)
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu) {

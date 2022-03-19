@@ -93,6 +93,7 @@ class KotatsuApp : Application() {
 			.detectWrongFragmentContainer()
 			.detectRetainInstanceUsage()
 			.detectSetUserVisibleHint()
+			.detectFragmentTagUsage()
 			.build()
 	}
 }
