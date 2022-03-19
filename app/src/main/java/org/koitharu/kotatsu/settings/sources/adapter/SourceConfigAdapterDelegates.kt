@@ -38,7 +38,7 @@ fun sourceConfigGroupDelegate(
 	}
 
 	bind {
-		binding.root.text = item.title ?: getString(R.string.other)
+		binding.root.text = item.title ?: getString(R.string.various_languages)
 		binding.root.isChecked = item.isExpanded
 	}
 }
@@ -107,6 +107,7 @@ fun sourceConfigDraggableItemDelegate(
 
 	bind {
 		binding.textViewTitle.text = item.source.title
+		binding.textViewDescription.text = item.summary ?: getString(R.string.various_languages)
 		binding.switchToggle.isChecked = item.isEnabled
 	}
 }

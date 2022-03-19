@@ -14,7 +14,7 @@
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
-			android:theme="?attr/actionBarTheme" />
+			app:layout_scrollFlags="scroll|enterAlways" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 

@@ -45,9 +45,6 @@ class AppSettings(context: Context) {
 	val isAmoledTheme: Boolean
 		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
 
-	val isToolbarHideWhenScrolling: Boolean
-		get() = prefs.getBoolean(KEY_HIDE_TOOLBAR, true)
-
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
 		set(value) = prefs.edit { putInt(KEY_GRID_SIZE, value) }
@@ -215,7 +212,6 @@ class AppSettings(context: Context) {
 		const val KEY_DYNAMIC_THEME = "dynamic_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
 		const val KEY_DATE_FORMAT = "date_format"
-		const val KEY_HIDE_TOOLBAR = "hide_toolbar"
 		const val KEY_SOURCES_ORDER = "sources_order"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"

@@ -3,10 +3,7 @@ package org.koitharu.kotatsu.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -15,8 +12,10 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
 class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
@@ -34,6 +33,11 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 		}
 	}
 
+	override fun onTitleChanged(title: CharSequence?, color: Int) {
+		super.onTitleChanged(title, color)
+		binding.collapsingToolbarLayout.title = title
+	}
+
 	override fun onStart() {
 		super.onStart()
 		supportFragmentManager.addOnBackStackChangedListener(this)
@@ -45,7 +49,11 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 	}
 
 	override fun onBackStackChanged() {
-		binding.appbar.setExpanded(true, true)
+		val fragment = supportFragmentManager.findFragmentById(R.id.container) as? RecyclerViewOwner ?: return
+		val recyclerView = fragment.recyclerView
+		recyclerView.post {
+			binding.appbar.setExpanded(recyclerView.isScrolledToTop, false)
+		}
 	}
 
 	override fun onPreferenceStartFragment(
@@ -77,17 +85,7 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>(),
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right
-			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
-		}
-	}
+	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	companion object {
 

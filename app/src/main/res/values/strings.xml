@@ -268,4 +268,5 @@
 	<string name="preload_pages">Preload pages</string>
 	<string name="logged_in_as">Logged in as %s</string>
 	<string name="nsfw">18+</string>
+	<string name="various_languages">Various languages</string>
 </resources>

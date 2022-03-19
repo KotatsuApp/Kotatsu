@@ -72,6 +72,18 @@
 		<item name="android:scrollbarStyle">outsideOverlay</item>
 	</style>
 
+	<style name="Widget.Kotatsu.ListItemTextView" parent="">
+		<item name="android:textColor">@color/list_item_text_color</item>
+		<item name="backgroundTint">@color/list_item_background_color</item>
+		<item name="checkedDrawableStart">@drawable/ic_check</item>
+		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Material3.NavigationView.Item</item>
+		<item name="android:gravity">center_vertical|start</item>
+		<item name="android:insetRight">6dp</item>
+		<item name="android:insetLeft">6dp</item>
+		<item name="android:insetTop">2dp</item>
+		<item name="android:insetBottom">2dp</item>
+	</style>
+
 	<style name="ThemeOverlay.Kotatsu.Switch" parent="">
 		<item name="elevationOverlayEnabled">@bool/elevation_overlay_enabled</item>
 	</style>
@@ -96,6 +108,11 @@
 
 	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.LabelLarge">
 		<item name="android:textColor">?android:attr/textColorSecondary</item>
+	</style>
+
+	<style name="TextAppearance.Kotatsu.SectionHeader2" parent="TextAppearance.Material3.LabelSmall">
+		<item name="android:textColor">?colorPrimary</item>
+		<item name="android:textAllCaps">true</item>
 	</style>
 
 	<!-- Shapes -->

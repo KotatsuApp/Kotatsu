@@ -68,6 +68,7 @@
 		<item name="switchStyle">@style/Widget.Kotatsu.Switch</item>
 		<item name="materialCardViewStyle">@style/Widget.Material3.CardView.Filled</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
+		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
 
 		<!-- Preference text appearance -->
 		<item name="android:textAppearanceListItem">?attr/textAppearanceBodyLarge</item>

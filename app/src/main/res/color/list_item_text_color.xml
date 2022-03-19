@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:alpha="@dimen/material_emphasis_disabled" android:color="?attr/colorOnSurfaceVariant" android:state_enabled="false" />
+	<item android:color="?attr/colorPrimaryDark" android:state_checked="true" />
+	<item android:color="?attr/colorOnSurfaceVariant" />
+</selector>

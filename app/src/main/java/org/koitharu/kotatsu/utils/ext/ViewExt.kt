@@ -155,3 +155,12 @@ fun Slider.setValueRounded(newValue: Float) {
 	val step = stepSize
 	value = (newValue / step).roundToInt() * step
 }
+
+val RecyclerView.isScrolledToTop: Boolean
+	get() {
+		if (childCount == 0) {
+			return true
+		}
+		val holder = findViewHolderForAdapterPosition(0)
+		return holder != null && holder.itemView.top >= 0
+	}

@@ -53,7 +53,6 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		chaptersAdapter = ChaptersAdapter(this)
 		selectionDecoration = ChaptersSelectionDecoration(view.context)
 		with(binding.recyclerViewChapters) {
-			addItemDecoration(MaterialDividerItemDecoration(view.context, RecyclerView.VERTICAL))
 			addItemDecoration(selectionDecoration!!)
 			setHasFixedSize(true)
 			adapter = chaptersAdapter

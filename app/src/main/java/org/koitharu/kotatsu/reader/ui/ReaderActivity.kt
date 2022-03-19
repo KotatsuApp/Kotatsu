@@ -13,10 +13,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
-import androidx.core.view.updatePadding
+import androidx.core.view.*
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.Slide
@@ -60,7 +57,7 @@ import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	ChaptersBottomSheet.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
-	ActivityResultCallback<Boolean>, ReaderControlDelegate.OnInteractionListener {
+	ActivityResultCallback<Boolean>, ReaderControlDelegate.OnInteractionListener, OnApplyWindowInsetsListener {
 
 	private val viewModel by viewModel<ReaderViewModel> {
 		parametersOf(MangaIntent(intent), intent?.getParcelableExtra<ReaderState>(EXTRA_STATE))
@@ -87,6 +84,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		controlDelegate = ReaderControlDelegate(lifecycleScope, get(), this)
 		binding.toolbarBottom.inflateMenu(R.menu.opt_reader_bottom)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
+		insetsDelegate.interceptingWindowInsetsListener = this
 
 		orientationHelper.observeAutoOrientation()
 			.onEach {
@@ -286,8 +284,6 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		viewModel.switchMode(mode)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
-
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
 			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_INDEFINITE)
@@ -352,6 +348,8 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
 			.build()
 	}
+
+	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun switchPageBy(delta: Int) {
 		reader?.switchPageBy(delta)

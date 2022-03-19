@@ -12,7 +12,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -42,7 +41,6 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		adapter = CategoriesAdapter(this)
 		editDelegate = CategoriesEditDelegate(this, this)
-		binding.recyclerView.addItemDecoration(MaterialDividerItemDecoration(this, RecyclerView.VERTICAL))
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		binding.fabAdd.setOnClickListener(this)
@@ -94,15 +92,6 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 			right = insets.right,
 			bottom = 2 * insets.bottom + binding.fabAdd.measureHeight()
 		)
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right
-			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
-		}
 	}
 
 	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
