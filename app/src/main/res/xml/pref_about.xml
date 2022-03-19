@@ -15,7 +15,7 @@
 			app:persistent="false"
 			app:summary="@string/check_for_updates" />
 
-		<SwitchPreference
+		<SwitchPreferenceCompat
 			app:defaultValue="true"
 			app:iconSpaceReserved="false"
 			app:isPreferenceVisible="false"
