@@ -43,7 +43,8 @@
 			android:ellipsize="end"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceBodySmall"
-			tools:text="05.10.2021 • Scanlator" />
+			tools:text="English" />
+
 	</LinearLayout>
 
 	<com.google.android.material.switchmaterial.SwitchMaterial
