@@ -254,7 +254,17 @@
     <string name="enabled">Включено</string>
     <string name="disabled">Выключено</string>
     <string name="filter_load_error">Не удалось загрузить список жанров</string>
-    <string name="computing_">Вычисления…</string>
+    <string name="computing_">Вычисление…</string>
     <string name="report_github">Создать проблему на GitHub</string>
     <string name="importing_progress">Импорт манги: %1$d из %2$d</string>
+	<string name="reset_filter">Сбросить фильтр</string>
+	<string name="find_genre">Поиск по жанрам</string>
+	<string name="onboard_text">Выберите языки, на которых Вы хоите читать мангу. Это можно будет изменить позже в настройках.</string>
+	<string name="never">Никогда</string>
+	<string name="only_using_wifi">Только по Wi-Fi</string>
+	<string name="always">Всегда</string>
+	<string name="preload_pages">Предварительная загрузка страниц</string>
+	<string name="logged_in_as">Вы авторизованы как %s</string>
+	<string name="nsfw">18+</string>
+	<string name="various_languages">Разные языки</string>
 </resources>
