@@ -123,8 +123,7 @@
     <string name="not_available">Недаступна</string>
     <string name="cannot_find_available_storage">Не атрымалася знайсці ніводнага даступнага сховішча</string>
     <string name="other_storage">Іншае сховішча</string>
-    <string name="use_ssl">Бяспечнае злучэнне (HTTPS)</string>
-    <string name="done">Гатова</string>
+	<string name="done">Гатова</string>
     <string name="all_favourites">Усе абраныя</string>
     <string name="favourites_category_empty">У гэтай катэгорыі нічога няма</string>
     <string name="read_later">Прачытаць пазней</string>
@@ -201,8 +200,7 @@
     <string name="protect_application_subtitle">Калі ласка, увядзіце пароль, які спатрэбіцца пры запуску праграмы</string>
     <string name="confirm">Пацвердзіць</string>
     <string name="password_length_hint">Пароль павінен змяшчаць не менш за 4 сімвалы</string>
-    <string name="hide_toolbar">Схаваць загаловак пры прагортцы</string>
-    <string name="search_only_on_s">Пошук толькі па %s</string>
+	<string name="search_only_on_s">Пошук толькі па %s</string>
     <string name="text_clear_search_history_prompt">Вы сапраўды хочаце выдаліць усе апошнія пошукавыя запыты\?</string>
     <string name="read_more">Падрабязна</string>
     <string name="tracker_warning">Некаторыя вытворцы могуць змяняць паводзіны сістэмы, што можа парушаць выкананне фонавых задач.</string>

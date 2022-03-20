@@ -150,8 +150,7 @@
     <string name="text_local_holder_secondary">Çevrim içi kaynaklardan kaydedin veya dosyaları içe aktarın.</string>
     <string name="manga_shelf">Raf</string>
     <string name="recent_manga">Son</string>
-    <string name="use_ssl">Güvenli (HTTPS) bağlantı kullan</string>
-    <string name="size_s">Boyut: %s</string>
+	<string name="size_s">Boyut: %s</string>
     <string name="related">İlgili</string>
     <string name="updates_feed_cleared">Temizlendi</string>
     <string name="enter_password">Parola gir</string>
@@ -223,8 +222,7 @@
     <string name="data_restored_with_errors">Veriler geri yüklendi, ancak hatalar var</string>
     <string name="tap_to_try_again">Tekrar denemek için dokunun</string>
     <string name="next">İleri</string>
-    <string name="hide_toolbar">Kaydırırken araç çubuğunu gizle</string>
-    <string name="other">Diğer</string>
+	<string name="other">Diğer</string>
     <string name="captcha_required">CAPTCHA gerekli</string>
     <string name="cookies_cleared">Tüm çerezler kaldırıldı</string>
     <string name="reader_mode_hint">Seçilen yapılandırma bu manga için hatırlanacak</string>

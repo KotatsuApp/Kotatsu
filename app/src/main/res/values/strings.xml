@@ -130,8 +130,7 @@
     <string name="not_available">Not available</string>
     <string name="cannot_find_available_storage">No available storage</string>
     <string name="other_storage">Other storage</string>
-    <string name="use_ssl">Use secure (HTTPS) connection</string>
-    <string name="done">Done</string>
+	<string name="done">Done</string>
     <string name="all_favourites">All favourites</string>
     <string name="favourites_category_empty">Empty category</string>
     <string name="read_later">Read later</string>
@@ -208,8 +207,7 @@
     <string name="protect_application_subtitle">Enter a password to start the app with</string>
     <string name="confirm">Confirm</string>
     <string name="password_length_hint">The password must be 4 characters or more</string>
-    <string name="hide_toolbar">Hide toolbar when scrolling</string>
-    <string name="search_only_on_s">Search only on %s</string>
+	<string name="search_only_on_s">Search only on %s</string>
     <string name="text_clear_search_history_prompt">Remove all recent search queries permanently?</string>
     <string name="other">Other</string>
     <string name="welcome">Welcome</string>

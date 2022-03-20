@@ -120,8 +120,7 @@
     <string name="not_available">利用出来ません</string>
     <string name="cannot_find_available_storage">使用可能なストレージがありません</string>
     <string name="other_storage">その他のストレージ</string>
-    <string name="use_ssl">安全な(HTTPS)接続を使用する</string>
-    <string name="done">完了</string>
+	<string name="done">完了</string>
     <string name="all_favourites">全てのお気に入り</string>
     <string name="read_later">後で読む</string>
     <string name="updates">更新</string>
@@ -180,8 +179,7 @@
     <string name="chapters_checking_progress">新しいチャプターの確認:%1$dの%2$d</string>
     <string name="create_category">新しいカテゴリー</string>
     <string name="zoom_mode_fit_height">高さを合わせる</string>
-    <string name="hide_toolbar">スクロール時にツールバーを非表示にする</string>
-    <string name="chapter_is_missing">チャプターがありません</string>
+	<string name="chapter_is_missing">チャプターがありません</string>
     <string name="text_clear_updates_feed_prompt">すべての更新履歴を完全に消去しますか？</string>
     <string name="chapter_is_missing_text">この不足した章をダウンロードしたり、オンラインで読んだりすることができます。</string>
     <string name="auth_required">このコンテンツを表示するにはサインインしてください</string>

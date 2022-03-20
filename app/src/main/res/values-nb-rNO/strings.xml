@@ -6,8 +6,7 @@
     <string name="text_local_holder_secondary">Lagre fra nettbaserte kilder, eller importer filer.</string>
     <string name="tracker_warning">Noen enheter endrer systemoppførselen, noe som kan ødelegge for bakgrunnsoppgaver.</string>
     <string name="text_clear_search_history_prompt">Fjern alle nylige søkespørringer for godt\?</string>
-    <string name="hide_toolbar">Skjul verktøylinje under rulling</string>
-    <string name="password_length_hint">Passordet må være minst fire tegn</string>
+	<string name="password_length_hint">Passordet må være minst fire tegn</string>
     <string name="protect_application_subtitle">Skriv inn passord å kreve for å starte programmet</string>
     <string name="_and_x_more">… og %1$d til</string>
     <string name="auth_required">Logg inn for å se dette innholdet</string>
@@ -44,8 +43,7 @@
     <string name="new_version_s">Ny versjon: %s</string>
     <string name="text_feed_holder">Nye kapitler av det du leser vises her</string>
     <string name="updates">Oppdatering</string>
-    <string name="use_ssl">Bruk sikker (HTTPS)-tilkobling</string>
-    <string name="other_storage">Annen lagring</string>
+	<string name="other_storage">Annen lagring</string>
     <string name="manga_shelf">Hylle</string>
     <string name="text_local_holder_primary">Lagre noe først</string>
     <string name="text_history_holder_secondary">Finn lesestoff i sidemenyen.</string>

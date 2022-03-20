@@ -174,8 +174,7 @@
     <string name="backup_saved">Backup salvo</string>
     <string name="tracker_warning">Alguns dispositivos têm um comportamento de sistema diferente, o que pode interromper as tarefas em segundo plano.</string>
     <string name="read_more">Leia mais</string>
-    <string name="hide_toolbar">Ocultar a barra de ferramentas ao rolar</string>
-    <string name="search_only_on_s">Pesquise apenas em %s</string>
+	<string name="search_only_on_s">Pesquise apenas em %s</string>
     <string name="other">Outros</string>
     <string name="welcome">Bem vindo</string>
     <string name="available_sources">Fontes disponíveis</string>
@@ -220,8 +219,7 @@
     <string name="updates">Atualizações</string>
     <string name="all_favourites">Todos os favoritos</string>
     <string name="waiting_for_network">À espera de rede…</string>
-    <string name="use_ssl">Usar conexão segura (HTTPS)</string>
-    <string name="search_results">Resultados da pesquisa</string>
+	<string name="search_results">Resultados da pesquisa</string>
     <string name="text_feed_holder">Novos capítulos do que você está lendo são mostrados aqui</string>
     <string name="new_version_s">Nova versão: %s</string>
     <string name="rotate_screen">Girar a tela</string>

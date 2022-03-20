@@ -25,8 +25,7 @@
     <string name="other">Muut</string>
     <string name="text_clear_search_history_prompt">Haluatko todella poistaa kaikki viimeaikaiset hakukyselyt\?</string>
     <string name="search_only_on_s">Hae vain kohteesta %s</string>
-    <string name="hide_toolbar">Piilota työkalupalkki selattaessa</string>
-    <string name="password_length_hint">Salasanan on oltava vähintään 4 merkkiä</string>
+	<string name="password_length_hint">Salasanan on oltava vähintään 4 merkkiä</string>
     <string name="confirm">Vahvista</string>
     <string name="protect_application_subtitle">Syötä salasana, joka vaaditaan, kun sovellus käynnistyy</string>
     <string name="next">Seuraava</string>
@@ -98,8 +97,7 @@
     <string name="favourites_category_empty">Tämä luokka on tyhjä</string>
     <string name="all_favourites">Kaikki suosikit</string>
     <string name="done">Valmis</string>
-    <string name="use_ssl">Käytä suojattua yhteyttä (HTTPS)</string>
-    <string name="other_storage">Muu tallennustila</string>
+	<string name="other_storage">Muu tallennustila</string>
     <string name="cannot_find_available_storage">Ei löydy vapaata tallennustilaa</string>
     <string name="not_available">Ei saatavilla</string>
     <string name="manga_save_location">Mangan latauspaikka</string>

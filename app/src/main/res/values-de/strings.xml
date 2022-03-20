@@ -114,8 +114,7 @@
     <string name="other">Anderes</string>
     <string name="text_clear_search_history_prompt">Möchtest du wirklich alle letzten Suchanfragen entfernen\?</string>
     <string name="search_only_on_s">Nur auf %s suchen</string>
-    <string name="hide_toolbar">Symbolleiste beim Blättern ausblenden</string>
-    <string name="read_more">Mehr erfahren</string>
+	<string name="read_more">Mehr erfahren</string>
     <string name="tracker_warning">Einige Hersteller können das Systemverhalten ändern, wodurch Hintergrundaufgaben unterbrochen werden können.</string>
     <string name="backup_saved">Sicherung erfolgreich gespeichert</string>
     <string name="welcome">Willkommen</string>
@@ -130,8 +129,7 @@
     <string name="favourites_category_empty">Diese Kategorie ist leer</string>
     <string name="all_favourites">Alle Favoriten</string>
     <string name="done">Fertig</string>
-    <string name="use_ssl">Sichere Verbindung verwenden (HTTPS)</string>
-    <string name="other_storage">Sonstiger Speicherort</string>
+	<string name="other_storage">Sonstiger Speicherort</string>
     <string name="cannot_find_available_storage">Verfügbarer Speicher kann nicht gefunden werden</string>
     <string name="not_available">Nicht verfügbar</string>
     <string name="pages_animation">Seitenanimation</string>

@@ -48,7 +48,7 @@
     <string name="theme">Тема</string>
     <string name="light">Светлая</string>
     <string name="dark">Тёмная</string>
-    <string name="automatic">Следовать системе</string>
+    <string name="automatic">Как в системе</string>
     <string name="pages">Страницы</string>
     <string name="clear">Очистить</string>
     <string name="text_clear_history_prompt">Очистить всю историю чтения полностью\?</string>
@@ -129,8 +129,7 @@
     <string name="not_available">Недоступно</string>
     <string name="cannot_find_available_storage">Нет доступного хранилища</string>
     <string name="other_storage">Другое хранилище</string>
-    <string name="use_ssl">Использовать безопасное (HTTPS) соединение</string>
-    <string name="done">Готово</string>
+	<string name="done">Готово</string>
     <string name="all_favourites">Всё избранное</string>
     <string name="favourites_category_empty">Категория пуста</string>
     <string name="read_later">Прочитать позже</string>
@@ -206,8 +205,7 @@
     <string name="protect_application_subtitle">Введите пароль для запуска приложения</string>
     <string name="confirm">Подтвердить</string>
     <string name="password_length_hint">Пароль должен состоять из 4 символов или более</string>
-    <string name="hide_toolbar">Прятать заголовок при прокрутке</string>
-    <string name="search_only_on_s">Поиск только по %s</string>
+	<string name="search_only_on_s">Поиск только по %s</string>
     <string name="other">Другие</string>
 	<string name="welcome">Добро пожаловать</string>
     <string name="text_clear_search_history_prompt">Удалить все последние поисковые запросы навсегда\?</string>
