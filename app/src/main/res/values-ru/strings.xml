@@ -236,7 +236,7 @@
     <string name="system_default">По умолчанию</string>
     <string name="exclude_nsfw_from_history">Исключить NSFW мангу из истории</string>
     <string name="error_empty_name">Вы должны ввести имя</string>
-    <string name="show_pages_numbers">Пронумерованные страницы</string>
+    <string name="show_pages_numbers">Показывать номера страницы</string>
     <string name="enabled_sources">Включенные источники</string>
     <string name="available_sources">Доступные источники</string>
     <string name="dynamic_theme">Динамическая тема</string>

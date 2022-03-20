@@ -59,14 +59,14 @@ class MainSettingsFragment : BasePreferenceFragment(R.string.settings),
 		findPreference<Preference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible =
 			AppSettings.isDynamicColorAvailable
 		findPreference<ListPreference>(AppSettings.KEY_DATE_FORMAT)?.run {
-			entryValues = arrayOf("", "MM/dd/yy", "dd/MM/yy", "yyyy-MM-dd", "dd MMM yyyy", "MMM dd, yyyy")
+			entryValues = resources.getStringArray(R.array.date_formats)
 			val now = Date().time
 			entries = entryValues.map { value ->
 				val formattedDate = settings.getDateFormat(value.toString()).format(now)
 				if (value == "") {
 					"${context.getString(R.string.system_default)} ($formattedDate)"
 				} else {
-					"$value ($formattedDate)"
+					formattedDate
 				}
 			}.toTypedArray()
 			setDefaultValueCompat("")
