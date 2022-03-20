@@ -15,7 +15,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 31
 		versionCode 399
-		versionName '3.0-a0'
+		versionName '3.0-alpha1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
