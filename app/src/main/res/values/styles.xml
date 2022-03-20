@@ -61,6 +61,10 @@
 	</style>
 
 	<style name="Widget.Kotatsu.Switch" parent="Widget.Material3.CompoundButton.Switch">
+		<item name="android:thumb">@drawable/switch_thumb</item>
+		<item name="thumbTint">@color/selector_switch_thumb</item>
+		<item name="track">@drawable/switch_track</item>
+		<item name="trackTint">@color/selector_switch_track</item>
 		<item name="materialThemeOverlay">@style/ThemeOverlay.Kotatsu.Switch</item>
 	</style>
 
@@ -70,6 +74,18 @@
 		<item name="fastScrollHorizontalTrackDrawable">@drawable/list_track</item>
 		<item name="fastScrollVerticalTrackDrawable">@drawable/list_track</item>
 		<item name="android:scrollbarStyle">outsideOverlay</item>
+	</style>
+
+	<style name="Widget.Kotatsu.ListItemTextView" parent="">
+		<item name="android:textColor">@color/list_item_text_color</item>
+		<item name="backgroundTint">@color/list_item_background_color</item>
+		<item name="checkedDrawableStart">@drawable/ic_check</item>
+		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Material3.NavigationView.Item</item>
+		<item name="android:gravity">center_vertical|start</item>
+		<item name="android:insetRight">6dp</item>
+		<item name="android:insetLeft">6dp</item>
+		<item name="android:insetTop">2dp</item>
+		<item name="android:insetBottom">2dp</item>
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.Switch" parent="">
@@ -96,6 +112,11 @@
 
 	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.LabelLarge">
 		<item name="android:textColor">?android:attr/textColorSecondary</item>
+	</style>
+
+	<style name="TextAppearance.Kotatsu.SectionHeader2" parent="TextAppearance.Material3.LabelSmall">
+		<item name="android:textColor">?colorPrimary</item>
+		<item name="android:textAllCaps">true</item>
 	</style>
 
 	<!-- Shapes -->

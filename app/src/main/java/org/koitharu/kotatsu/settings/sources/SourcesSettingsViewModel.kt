@@ -79,6 +79,7 @@ class SourcesSettingsViewModel(
 				}
 				SourceConfigItem.SourceItem(
 					source = it,
+					summary = null,
 					isEnabled = it.name !in hiddenSources,
 					isDraggable = false,
 				)
@@ -101,6 +102,7 @@ class SourcesSettingsViewModel(
 			enabledSources.mapTo(result) {
 				SourceConfigItem.SourceItem(
 					source = it,
+					summary = getLocaleTitle(it.locale),
 					isEnabled = true,
 					isDraggable = true,
 				)
@@ -116,13 +118,14 @@ class SourcesSettingsViewModel(
 				val isExpanded = key in expandedGroups
 				result += SourceConfigItem.LocaleGroup(
 					localeId = key,
-					title = locale?.getDisplayLanguage(locale)?.toTitleCase(locale),
+					title = getLocaleTitle(key),
 					isExpanded = isExpanded,
 				)
 				if (isExpanded) {
 					list.mapTo(result) {
 						SourceConfigItem.SourceItem(
 							source = it,
+							summary = null,
 							isEnabled = false,
 							isDraggable = false,
 						)
@@ -131,6 +134,11 @@ class SourcesSettingsViewModel(
 			}
 		}
 		items.value = result
+	}
+
+	private fun getLocaleTitle(localeKey: String?): String? {
+		val locale = Locale(localeKey ?: return null)
+		return locale.getDisplayLanguage(locale).toTitleCase(locale)
 	}
 
 	private class LocaleKeyComparator : Comparator<String?> {

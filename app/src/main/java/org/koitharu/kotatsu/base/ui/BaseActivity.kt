@@ -12,18 +12,20 @@ import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.graphics.Insets
-import androidx.core.view.*
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
-abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindowInsetsListener {
+abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(),
+	WindowInsetsDelegate.WindowInsetsListener {
 
 	protected lateinit var binding: B
 		private set
@@ -31,7 +33,8 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 	@Suppress("LeakingThis")
 	protected val exceptionResolver = ExceptionResolver(this)
 
-	private var lastInsets: Insets? = null
+	@Suppress("LeakingThis")
+	protected val insetsDelegate = WindowInsetsDelegate(this)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		val settings = get<AppSettings>()
@@ -41,6 +44,7 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		}
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)
+		insetsDelegate.handleImeInsets = true
 	}
 
 	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
@@ -60,28 +64,7 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		super.setContentView(binding.root)
 		val toolbar = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)
 		toolbar?.let(this::setSupportActionBar)
-		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
-
-		val toolbarParams = (binding.root.findViewById<View>(R.id.toolbar_card) ?: toolbar)
-			?.layoutParams as? AppBarLayout.LayoutParams
-		if (toolbarParams != null) {
-			if (get<AppSettings>().isToolbarHideWhenScrolling) {
-				toolbarParams.scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
-			} else {
-				toolbarParams.scrollFlags = SCROLL_FLAG_NO_SCROLL
-			}
-		}
-	}
-
-	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val baseInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-		val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-		val newInsets = Insets.max(baseInsets, imeInsets)
-		if (newInsets != lastInsets) {
-			onWindowInsetsChanged(newInsets)
-			lastInsets = newInsets
-		}
-		return insets
+		insetsDelegate.onViewCreated(binding.root)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = if (item.itemId == android.R.id.home) {
@@ -96,8 +79,6 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), OnApplyWindo
 		}
 		return super.onKeyDown(keyCode, event)
 	}
-
-	protected abstract fun onWindowInsetsChanged(insets: Insets)
 
 	private fun setupToolbar() {
 		(findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)

@@ -11,7 +11,7 @@
 		android:title="@string/track_sources"
 		app:iconSpaceReserved="false" />
 
-	<SwitchPreference
+	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="tracker_notifications"
 		android:summary="@string/show_notification_new_chapters"

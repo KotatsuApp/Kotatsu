@@ -3,12 +3,12 @@ package org.koitharu.kotatsu.settings
 import android.os.Bundle
 import android.view.View
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
@@ -18,7 +18,7 @@ import org.koitharu.kotatsu.utils.ext.serializableArgument
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class SourceSettingsFragment : PreferenceFragmentCompat() {
+class SourceSettingsFragment : BasePreferenceFragment(0) {
 
 	private val source by serializableArgument<MangaSource>(EXTRA_SOURCE)
 	private var repository: RemoteMangaRepository? = null

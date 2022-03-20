@@ -2,6 +2,7 @@
 <resources>
 
 	<attr name="sliderPreferenceStyle" />
+	<attr name="listItemTextViewStyle" />
 
 	<declare-styleable name="Theme">
 		<attr name="navigationBarDividerColor" format="color" />
@@ -18,6 +19,19 @@
 		<attr name="android:valueFrom" />
 		<attr name="android:valueTo" />
 		<attr name="android:stepSize" />
+	</declare-styleable>
+
+	<declare-styleable name="ListItemTextView">
+		<attr name="shapeAppearance" />
+		<attr name="shapeAppearanceOverlay" />
+		<attr name="backgroundTint" />
+		<attr name="rippleColor" />
+		<attr name="checkedDrawableStart" format="reference" />
+		<attr name="checkedDrawableEnd" format="reference" />
+		<attr name="android:insetTop" />
+		<attr name="android:insetBottom" />
+		<attr name="android:insetLeft" />
+		<attr name="android:insetRight" />
 	</declare-styleable>
 
 </resources>

@@ -11,18 +11,24 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
-import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigItemDecoration
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
 class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
-	SourceConfigListener, SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
+	SourceConfigListener,
+	SearchView.OnQueryTextListener,
+	MenuItem.OnActionExpandListener,
+	RecyclerViewOwner {
 
 	private var reorderHelper: ItemTouchHelper? = null
 	private val viewModel by viewModel<SourcesSettingsViewModel>()
+
+	override val recyclerView: RecyclerView
+		get() = binding.recyclerView
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -44,7 +50,7 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		val sourcesAdapter = SourceConfigAdapter(this, get(), viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
-			addItemDecoration(SourceConfigItemDecoration(view.context))
+			// addItemDecoration(SourceConfigItemDecoration(view.context))
 			adapter = sourcesAdapter
 			reorderHelper = ItemTouchHelper(SourcesReorderCallback()).also {
 				it.attachToRecyclerView(this)

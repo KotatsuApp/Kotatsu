@@ -4,16 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.doOnNextLayout
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 
-abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsListener {
+abstract class BaseFragment<B : ViewBinding> : Fragment(),
+	WindowInsetsDelegate.WindowInsetsListener {
 
 	private var viewBinding: B? = null
 
@@ -23,7 +20,8 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 	@Suppress("LeakingThis")
 	protected val exceptionResolver = ExceptionResolver(this)
 
-	private var lastInsets: Insets? = null
+	@Suppress("LeakingThis")
+	protected val insetsDelegate = WindowInsetsDelegate(this)
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -37,33 +35,16 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		ViewCompat.setOnApplyWindowInsetsListener(view, this)
-		view.doOnNextLayout {
-			// Listener may not be called
-			if (lastInsets == null) {
-				onWindowInsetsChanged(Insets.NONE)
-			}
-		}
+		insetsDelegate.onViewCreated(view)
 	}
 
 	override fun onDestroyView() {
 		viewBinding = null
-		lastInsets = null
+		insetsDelegate.onDestroyView()
 		super.onDestroyView()
-	}
-
-	override fun onApplyWindowInsets(v: View?, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val newInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-		if (newInsets != lastInsets) {
-			onWindowInsetsChanged(newInsets)
-			lastInsets = newInsets
-		}
-		return insets
 	}
 
 	protected fun bindingOrNull() = viewBinding
 
 	protected abstract fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): B
-
-	protected abstract fun onWindowInsetsChanged(insets: Insets)
 }
