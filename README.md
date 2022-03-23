@@ -28,12 +28,12 @@ Download APK from Github Releases:
 
 ### Screenshots
 
-| ![Screenshot_20200226-210337](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/1.png) | ![](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/2.png) | ![Screenshot_20200226-210232](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/3.png) |
-|---|---|---|
-| ![Screenshot_20200226-210405](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/4.png)  | ![Screenshot_20200226-210151](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/5.png) | ![Screenshot_20200226-210223](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/6.png) |
+| ![Screenshot_20200226-210337](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/1.png) | ![](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/2.png)                           | ![Screenshot_20200226-210232](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/3.png) |
+|-----------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| ![Screenshot_20200226-210405](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/4.png) | ![Screenshot_20200226-210151](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/5.png) | ![Screenshot_20200226-210223](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/6.png) |
 
 | ![](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/tenInchScreenshots/1.png) | ![](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/tenInchScreenshots/2.png) |
-|---|---|
+|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 
 ### License
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)  

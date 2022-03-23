@@ -11,7 +11,7 @@ import java.io.File
 
 class BackupViewModel(
 	private val repository: BackupRepository,
-	private val context: Context
+	context: Context
 ) : BaseViewModel() {
 
 	val progress = MutableLiveData<Progress?>(null)

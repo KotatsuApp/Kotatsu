@@ -21,6 +21,7 @@ fun downloadItemAD(
 ) {
 
 	var job: Job? = null
+	val percentPattern = context.resources.getString(R.string.percent_string_pattern)
 
 	bind {
 		job?.cancel()
@@ -37,21 +38,21 @@ fun downloadItemAD(
 			when (state) {
 				is DownloadManager.State.Cancelling -> {
 					binding.textViewStatus.setText(R.string.cancelling_)
-					binding.progressBar.setIndeterminateCompat(true)
+					binding.progressBar.isIndeterminate = true
 					binding.progressBar.isVisible = true
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
 				}
 				is DownloadManager.State.Done -> {
 					binding.textViewStatus.setText(R.string.download_complete)
-					binding.progressBar.setIndeterminateCompat(false)
+					binding.progressBar.isIndeterminate = false
 					binding.progressBar.isVisible = false
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
 				}
 				is DownloadManager.State.Error -> {
 					binding.textViewStatus.setText(R.string.error_occurred)
-					binding.progressBar.setIndeterminateCompat(false)
+					binding.progressBar.isIndeterminate = false
 					binding.progressBar.isVisible = false
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.text = state.error.getDisplayMessage(context.resources)
@@ -59,38 +60,38 @@ fun downloadItemAD(
 				}
 				is DownloadManager.State.PostProcessing -> {
 					binding.textViewStatus.setText(R.string.processing_)
-					binding.progressBar.setIndeterminateCompat(true)
+					binding.progressBar.isIndeterminate = true
 					binding.progressBar.isVisible = true
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
 				}
 				is DownloadManager.State.Preparing -> {
 					binding.textViewStatus.setText(R.string.preparing_)
-					binding.progressBar.setIndeterminateCompat(true)
+					binding.progressBar.isIndeterminate = true
 					binding.progressBar.isVisible = true
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
 				}
 				is DownloadManager.State.Progress -> {
 					binding.textViewStatus.setText(R.string.manga_downloading_)
-					binding.progressBar.setIndeterminateCompat(false)
+					binding.progressBar.isIndeterminate = false
 					binding.progressBar.isVisible = true
 					binding.progressBar.max = state.max
 					binding.progressBar.setProgressCompat(state.progress, true)
-					binding.textViewPercent.text = (state.percent * 100f).format(1) + "%"
+					binding.textViewPercent.text = percentPattern.format((state.percent * 100f).format(1))
 					binding.textViewPercent.isVisible = true
 					binding.textViewDetails.isVisible = false
 				}
 				is DownloadManager.State.Queued -> {
 					binding.textViewStatus.setText(R.string.queued)
-					binding.progressBar.setIndeterminateCompat(false)
+					binding.progressBar.isIndeterminate = false
 					binding.progressBar.isVisible = false
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
 				}
 				is DownloadManager.State.WaitingForNetwork -> {
 					binding.textViewStatus.setText(R.string.waiting_for_network)
-					binding.progressBar.setIndeterminateCompat(false)
+					binding.progressBar.isIndeterminate = false
 					binding.progressBar.isVisible = false
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false

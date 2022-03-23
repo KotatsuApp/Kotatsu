@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager.standard
 
+import android.annotation.SuppressLint
 import android.graphics.PointF
 import android.net.Uri
 import android.view.View
@@ -27,10 +28,12 @@ open class PageHolder(
 
 	init {
 		binding.ssiv.setOnImageEventListener(delegate)
+		@Suppress("LeakingThis")
 		binding.buttonRetry.setOnClickListener(this)
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
+	@SuppressLint("SetTextI18n")
 	override fun onBind(data: ReaderPage) {
 		delegate.onBind(data.toMangaPage())
 		binding.textViewNumber.text = (data.index + 1).toString()

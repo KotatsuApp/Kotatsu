@@ -1,10 +1,12 @@
 package org.koitharu.kotatsu.reader.ui.pager.standard
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.async
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
@@ -16,7 +18,6 @@ import org.koitharu.kotatsu.utils.ext.doOnPageChanged
 import org.koitharu.kotatsu.utils.ext.recyclerView
 import org.koitharu.kotatsu.utils.ext.resetTransformations
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
-import kotlin.math.absoluteValue
 
 class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
@@ -27,6 +28,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 		container: ViewGroup?
 	) = FragmentReaderStandardBinding.inflate(inflater, container, false)
 
+	@SuppressLint("NotifyDataSetChanged")
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		pagesAdapter = PagesAdapter(viewModel.pageLoader, get(), exceptionResolver)

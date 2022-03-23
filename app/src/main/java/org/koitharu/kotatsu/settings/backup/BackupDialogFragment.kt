@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.setIndeterminateCompat
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.io.File
 import java.io.FileOutputStream
@@ -65,7 +64,7 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	private fun onProgressChanged(progress: Progress?) {
 		with(binding.progressBar) {
-			setIndeterminateCompat(progress == null)
+			isIndeterminate = progress == null
 			isVisible = true
 			if (progress != null) {
 				this.max = progress.total

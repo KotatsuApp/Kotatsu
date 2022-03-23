@@ -14,7 +14,6 @@ import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.slider.Slider
 import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateViewBindingViewHolder
 import kotlin.math.roundToInt
@@ -136,19 +135,6 @@ fun RecyclerView.findCenterViewPosition(): Int {
 
 inline fun <reified T> RecyclerView.ViewHolder.getItem(): T? {
 	return ((this as? AdapterDelegateViewBindingViewHolder<*, *>)?.item as? T)
-}
-
-@Deprecated("Useless")
-fun BaseProgressIndicator<*>.setIndeterminateCompat(indeterminate: Boolean) {
-	if (isIndeterminate != indeterminate) {
-		if (indeterminate && visibility == View.VISIBLE) {
-			visibility = View.INVISIBLE
-			isIndeterminate = indeterminate
-			visibility = View.VISIBLE
-		} else {
-			isIndeterminate = indeterminate
-		}
-	}
 }
 
 fun Slider.setValueRounded(newValue: Float) {

@@ -3,11 +3,11 @@ package org.koitharu.kotatsu.base.ui
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 abstract class BaseViewModel : ViewModel() {
 
@@ -33,7 +33,7 @@ abstract class BaseViewModel : ViewModel() {
 		}
 	}
 
-	protected fun createErrorHandler() = CoroutineExceptionHandler { _, throwable ->
+	private fun createErrorHandler() = CoroutineExceptionHandler { _, throwable ->
 		if (BuildConfig.DEBUG) {
 			throwable.printStackTrace()
 		}
