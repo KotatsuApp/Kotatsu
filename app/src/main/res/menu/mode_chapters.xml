@@ -5,7 +5,7 @@
 
 	<item
 		android:id="@+id/action_select_all"
-		android:icon="@drawable/ic_select_all"
+		android:icon="?actionModeSelectAllDrawable"
 		android:title="@android:string/selectAll"
 		app:showAsAction="ifRoom|withText" />
 

@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -58,6 +57,7 @@ import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.*
+import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
@@ -92,7 +92,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				R.string.open_menu,
 				R.string.close_menu
 			).apply {
-				setHomeAsUpIndicator(ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_arrow_back))
 				setToolbarNavigationClickListener {
 					binding.searchView.hideKeyboard()
 					onBackPressed()
@@ -106,7 +105,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			onFocusChangeListener = this@MainActivity
 			searchSuggestionListener = this@MainActivity
 			if (drawer == null) {
-				drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_search)
+				drawableStart = context.getThemeDrawable(materialR.attr.actionModeWebSearchDrawable)
 			}
 		}
 

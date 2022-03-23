@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+<ripple
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:color="@color/selector_overlay">
 	<item>
 		<selector>
@@ -14,7 +15,6 @@
 					<solid android:color="@color/selector_overlay" />
 				</shape>
 			</item>
-
 			<item
 				android:state_activated="true"
 				android:top="2dp"
@@ -26,7 +26,6 @@
 					<solid android:color="@color/selector_overlay" />
 				</shape>
 			</item>
-
 			<item
 				android:top="2dp"
 				android:right="2dp"

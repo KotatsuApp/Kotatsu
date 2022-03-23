@@ -4,6 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="?android:listPreferredItemHeightSmall"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:background="?android:windowBackground"
 	android:gravity="center_vertical"
 	android:orientation="horizontal"
@@ -35,6 +36,6 @@
 		android:background="?selectableItemBackgroundBorderless"
 		android:padding="?listPreferredItemPaddingEnd"
 		android:scaleType="center"
-		android:src="@drawable/ic_more" />
+		app:srcCompat="@drawable/abc_ic_menu_overflow_material" />
 
 </LinearLayout>

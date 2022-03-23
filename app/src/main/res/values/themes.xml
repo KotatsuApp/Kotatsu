@@ -58,7 +58,8 @@
 		<item name="windowActionModeOverlay">true</item>
 		<item name="actionOverflowButtonStyle">@style/Theme.Kotatsu.ActionButton.Overflow</item>
 		<item name="actionModeCloseButtonStyle">@style/Theme.Kotatsu.ActionMode.CloseButton</item>
-		<item name="actionModeCloseDrawable">@drawable/ic_close</item>
+		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
+		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
 		<item name="chipStyle">@style/Widget.Kotatsu.Chip</item>
 		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
