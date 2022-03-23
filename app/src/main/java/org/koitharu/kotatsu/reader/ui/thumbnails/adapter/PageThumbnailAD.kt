@@ -66,6 +66,7 @@ fun pageThumbnailAD(
 
 	onViewRecycled {
 		job?.cancel()
+		job = null
 		binding.imageViewThumb.setImageDrawable(null)
 	}
 }

@@ -40,7 +40,7 @@ class DetailsViewModel(
 ) : BaseViewModel() {
 
 	private var loadingJob: Job
-	private val mangaData = MutableStateFlow<Manga?>(intent.manga)
+	private val mangaData = MutableStateFlow(intent.manga)
 	private val selectedBranch = MutableStateFlow<String?>(null)
 
 	private val history = mangaData.mapNotNull { it?.id }
@@ -62,6 +62,7 @@ class DetailsViewModel(
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	private val remoteManga = MutableStateFlow<Manga?>(null)
+	private val chaptersQuery = MutableStateFlow("")
 
 	private val chaptersReversed = settings.observe()
 		.filter { it == AppSettings.KEY_REVERSE_CHAPTERS }
@@ -93,21 +94,29 @@ class DetailsViewModel(
 		branches.indexOf(selected)
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
+	val hasChapters = mangaData.map {
+		!(it?.chapters.isNullOrEmpty())
+	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+
 	val chapters = combine(
-		mangaData.map { it?.chapters.orEmpty() },
-		remoteManga,
-		history.map { it?.chapterId },
-		newChapters,
-		selectedBranch
-	) { chapters, sourceManga, currentId, newCount, branch ->
-		val sourceChapters = sourceManga?.chapters
-		if (sourceManga?.source != MangaSource.LOCAL && !sourceChapters.isNullOrEmpty()) {
-			mapChaptersWithSource(chapters, sourceChapters, currentId, newCount, branch)
-		} else {
-			mapChapters(chapters, sourceChapters, currentId, newCount, branch)
-		}
-	}.combine(chaptersReversed) { list, reversed ->
-		if (reversed) list.asReversed() else list
+		combine(
+			mangaData.map { it?.chapters.orEmpty() },
+			remoteManga,
+			history.map { it?.chapterId },
+			newChapters,
+			selectedBranch
+		) { chapters, sourceManga, currentId, newCount, branch ->
+			val sourceChapters = sourceManga?.chapters
+			if (sourceManga?.source != MangaSource.LOCAL && !sourceChapters.isNullOrEmpty()) {
+				mapChaptersWithSource(chapters, sourceChapters, currentId, newCount, branch)
+			} else {
+				mapChapters(chapters, sourceChapters, currentId, newCount, branch)
+			}
+		},
+		chaptersReversed,
+		chaptersQuery,
+	) { list, reversed, query ->
+		(if (reversed) list.asReversed() else list).filterSearch(query)
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
@@ -140,6 +149,10 @@ class DetailsViewModel(
 
 	fun getRemoteManga(): Manga? {
 		return remoteManga.value
+	}
+
+	fun performChapterSearch(query: String?) {
+		chaptersQuery.value = query?.trim().orEmpty()
 	}
 
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
@@ -261,5 +274,14 @@ class DetailsViewModel(
 			}
 		}
 		return groups.maxByOrNull { it.value.size }?.key
+	}
+
+	private fun List<ChapterListItem>.filterSearch(query: String): List<ChapterListItem> {
+		if (query.isEmpty() || this.isEmpty()) {
+			return this
+		}
+		return filter {
+			it.chapter.name.contains(query, ignoreCase = true)
+		}
 	}
 }

@@ -4,9 +4,7 @@ import android.app.ActivityOptions
 import android.os.Bundle
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toUri
@@ -38,11 +36,19 @@ import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.*
 
-class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
-	View.OnLongClickListener, ChipsView.OnChipClickListener {
+class DetailsFragment :
+	BaseFragment<FragmentDetailsBinding>(),
+	View.OnClickListener,
+	View.OnLongClickListener,
+	ChipsView.OnChipClickListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setHasOptionsMenu(true)
+	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -62,6 +68,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
 		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater.inflate(R.menu.opt_details_info, menu)
 	}
 
 	private fun onMangaUpdated(manga: Manga) {

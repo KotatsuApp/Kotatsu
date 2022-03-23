@@ -7,11 +7,11 @@ import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.divider.MaterialDividerItemDecoration
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -27,10 +27,13 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 
-class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
+class ChaptersFragment :
+	BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem>,
 	ActionMode.Callback,
-	AdapterView.OnItemSelectedListener {
+	AdapterView.OnItemSelectedListener,
+	MenuItem.OnActionExpandListener,
+	SearchView.OnQueryTextListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 
@@ -63,6 +66,10 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		viewModel.isChaptersReversed.observe(viewLifecycleOwner) {
 			activity?.invalidateOptionsMenu()
 		}
+		viewModel.hasChapters.observe(viewLifecycleOwner) {
+			binding.textViewHolder.isGone = it
+			activity?.invalidateOptionsMenu()
+		}
 	}
 
 	override fun onDestroyView() {
@@ -75,11 +82,18 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
 		inflater.inflate(R.menu.opt_chapters, menu)
+		val searchMenuItem = menu.findItem(R.id.action_search)
+		searchMenuItem.setOnActionExpandListener(this)
+		val searchView = searchMenuItem.actionView as SearchView
+		searchView.setOnQueryTextListener(this)
+		searchView.setIconifiedByDefault(false)
+		searchView.queryHint = searchMenuItem.title
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		super.onPrepareOptionsMenu(menu)
 		menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
+		menu.findItem(R.id.action_search).isVisible = viewModel.hasChapters.value == true
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -117,7 +131,8 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 				view.context,
 				viewModel.manga.value ?: return,
 				ReaderState(item.chapter.id, 0, 0)
-			), options.toBundle()
+			),
+			options.toBundle()
 		)
 	}
 
@@ -187,6 +202,21 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		selectionDecoration?.clearSelection()
 		binding.recyclerViewChapters.invalidateItemDecorations()
 		actionMode = null
+	}
+
+	override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+
+	override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+		(item?.actionView as? SearchView)?.setQuery("", false)
+		viewModel.performChapterSearch(null)
+		return true
+	}
+
+	override fun onQueryTextSubmit(query: String?): Boolean = false
+
+	override fun onQueryTextChange(newText: String?): Boolean {
+		viewModel.performChapterSearch(newText)
+		return true
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

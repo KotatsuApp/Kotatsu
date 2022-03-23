@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.divider.MaterialDividerItemDecoration
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
@@ -35,9 +33,6 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 		if (!resources.getBoolean(R.bool.is_tablet)) {
 			binding.toolbar.navigationIcon = null
 		}
-		binding.recyclerView.addItemDecoration(
-			MaterialDividerItemDecoration(view.context, RecyclerView.VERTICAL)
-		)
 		val chapters = arguments?.getParcelable<ParcelableMangaChapters>(ARG_CHAPTERS)?.chapters
 		if (chapters.isNullOrEmpty()) {
 			dismissAllowingStateLoss()

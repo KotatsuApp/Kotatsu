@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.databinding.DialogOnboardBinding
 import org.koitharu.kotatsu.settings.onboard.adapter.SourceLocalesAdapter
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.observeNotNull
+import org.koitharu.kotatsu.utils.ext.showAllowStateLoss
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class OnboardDialogFragment : AlertDialogFragment<DialogOnboardBinding>(),
@@ -77,7 +78,7 @@ class OnboardDialogFragment : AlertDialogFragment<DialogOnboardBinding>(),
 		fun showWelcome(fm: FragmentManager) {
 			OnboardDialogFragment().withArgs(1) {
 				putBoolean(ARG_WELCOME, true)
-			}.show(fm, TAG)
+			}.showAllowStateLoss(fm, TAG)
 		}
 	}
 }
