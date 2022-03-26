@@ -15,7 +15,8 @@ import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
 import org.koitharu.kotatsu.utils.ext.measureHeight
 
-class SearchSuggestionFragment : BaseFragment<FragmentSearchSuggestionBinding>(),
+class SearchSuggestionFragment :
+	BaseFragment<FragmentSearchSuggestionBinding>(),
 	SearchSuggestionItemCallback.SuggestionItemListener {
 
 	private val viewModel by sharedViewModel<SearchSuggestionViewModel>()
@@ -44,8 +45,8 @@ class SearchSuggestionFragment : BaseFragment<FragmentSearchSuggestionBinding>()
 		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		binding.root.updatePadding(
 			top = headerHeight,
-			left = insets.left,
-			right = insets.right,
+			// left = insets.left,
+			// right = insets.right,
 			bottom = insets.bottom,
 		)
 	}

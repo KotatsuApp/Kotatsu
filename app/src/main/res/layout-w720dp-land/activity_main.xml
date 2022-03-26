@@ -62,8 +62,9 @@
 						android:drawablePadding="16dp"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
-						android:imeOptions="actionSearch"
+						android:imeOptions="actionSearch|flagNoFullscreen"
 						android:importantForAutofill="no"
+						android:inputType="textShortMessage"
 						android:singleLine="true" />
 
 				</com.google.android.material.appbar.MaterialToolbar>

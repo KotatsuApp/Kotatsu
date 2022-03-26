@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import com.google.android.material.R
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
+import org.koitharu.kotatsu.utils.ext.drawableStart
 
 private const val DRAWABLE_END = 2
 
@@ -57,7 +58,7 @@ class SearchEditText @JvmOverloads constructor(
 	) {
 		super.onTextChanged(text, start, lengthBefore, lengthAfter)
 		setCompoundDrawablesRelativeWithIntrinsicBounds(
-			null,
+			drawableStart,
 			null,
 			if (text.isNullOrEmpty()) null else clearIcon,
 			null,
@@ -86,4 +87,4 @@ class SearchEditText @JvmOverloads constructor(
 		super.clearFocus()
 		text?.clear()
 	}
-} 
+}

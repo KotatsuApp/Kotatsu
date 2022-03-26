@@ -6,5 +6,6 @@
 	<color name="onError">#680003</color>
 	<color name="onErrorContainer">#FFDAD4</color>
 	<color name="scrollbar">#66FFFFFF</color>
+	<color name="selector_foreground">#29FFFFFF</color>
 
 </resources>

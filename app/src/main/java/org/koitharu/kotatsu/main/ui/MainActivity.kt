@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -62,7 +63,8 @@ import com.google.android.material.R as materialR
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
 
-class MainActivity : BaseActivity<ActivityMainBinding>(),
+class MainActivity :
+	BaseActivity<ActivityMainBinding>(),
 	NavigationView.OnNavigationItemSelectedListener,
 	AppBarOwner,
 	View.OnClickListener,
@@ -92,6 +94,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				R.string.open_menu,
 				R.string.close_menu
 			).apply {
+				setHomeAsUpIndicator(
+					ContextCompat.getDrawable(this@MainActivity, materialR.drawable.abc_ic_ab_back_material)
+				)
 				setToolbarNavigationClickListener {
 					binding.searchView.hideKeyboard()
 					onBackPressed()
@@ -304,11 +309,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.fab.isEnabled = !isLoading
 		if (isLoading) {
-			binding.fab.setImageDrawable(CircularProgressDrawable(this).also {
-				it.setColorSchemeColors(R.color.kotatsu_onPrimaryContainer)
-				it.strokeWidth = resources.resolveDp(3.5f)
-				it.start()
-			})
+			binding.fab.setImageDrawable(
+				CircularProgressDrawable(this).also {
+					it.setColorSchemeColors(R.color.kotatsu_onPrimaryContainer)
+					it.strokeWidth = resources.resolveDp(3.5f)
+					it.start()
+				}
+			)
 		} else {
 			binding.fab.setImageResource(R.drawable.ic_read_fill)
 		}

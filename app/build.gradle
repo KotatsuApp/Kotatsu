@@ -56,7 +56,7 @@ android {
 	}
 	lint {
 		abortOnError false
-		disable 'MissingTranslation'
+		disable 'MissingTranslation', 'PrivateResource'
 	}
 	testOptions {
 		unitTests.includeAndroidResources = true
@@ -65,7 +65,7 @@ android {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation 'com.github.nv95:kotatsu-parsers:e15dbf2a4b'
+	implementation 'com.github.nv95:kotatsu-parsers:1ba2bba12e'
 
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'

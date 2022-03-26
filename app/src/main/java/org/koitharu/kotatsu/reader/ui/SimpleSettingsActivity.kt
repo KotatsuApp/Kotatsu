@@ -8,14 +8,19 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
+import com.google.android.material.appbar.AppBarLayout
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySettingsSimpleBinding
+import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.*
 
-class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>() {
+class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>(), AppBarOwner {
+
+	override val appBar: AppBarLayout
+		get() = binding.appbar
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

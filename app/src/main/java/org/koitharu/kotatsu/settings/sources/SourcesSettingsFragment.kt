@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
+import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
@@ -108,7 +109,10 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		return true
 	}
 
-	override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+	override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+		(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
+		return true
+	}
 
 	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
 		(item.actionView as SearchView).setQuery("", false)
