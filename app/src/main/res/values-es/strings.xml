@@ -123,7 +123,7 @@
     <string name="not_available">No disponible</string>
     <string name="cannot_find_available_storage">No hay almacenamiento disponible</string>
     <string name="other_storage">Otro almacenamiento</string>
-	<string name="done">Aceptar</string>
+    <string name="done">Aceptar</string>
     <string name="all_favourites">Todos los favoritos</string>
     <string name="favourites_category_empty">Categoría vacía</string>
     <string name="read_later">Leer más tarde</string>
@@ -227,7 +227,7 @@
     <string name="text_clear_search_history_prompt">¿Realmente quiere eliminar todas las consultas de búsqueda recientes\?</string>
     <string name="state_finished">Terminado</string>
     <string name="state_ongoing">En curso</string>
-	<string name="chapter_is_missing_text">Este capítulo no aparece en su dispositivo. Descárguelo o léalo en línea.</string>
+    <string name="chapter_is_missing_text">Este capítulo no aparece en su dispositivo. Descárguelo o léalo en línea.</string>
     <string name="auth_complete">Autorizado</string>
     <string name="about_feedback_4pda">Tema sobre 4PDA</string>
     <string name="date_format">Formato de la fecha</string>
@@ -266,4 +266,7 @@
     <string name="always">Siempre</string>
     <string name="preload_pages">Precargar las páginas</string>
     <string name="only_using_wifi">Sólo en Wi-Fi</string>
+    <string name="various_languages">Varios idiomas</string>
+    <string name="search_chapters">Buscar capítulo</string>
+    <string name="chapters_empty">No hay capítulos en este manga</string>
 </resources>
