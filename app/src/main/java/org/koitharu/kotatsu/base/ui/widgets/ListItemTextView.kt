@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.base.ui.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.TypedArray
@@ -14,10 +15,12 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatCheckedTextView
 import androidx.core.content.res.use
 import androidx.core.content.withStyledAttributes
+import com.google.android.material.ripple.RippleUtils
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import org.koitharu.kotatsu.R
 
+@SuppressLint("RestrictedApi")
 class ListItemTextView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
@@ -33,9 +36,12 @@ class ListItemTextView @JvmOverloads constructor(
 
 	init {
 		context.withStyledAttributes(attrs, R.styleable.ListItemTextView, defStyleAttr) {
+			val itemRippleColor = getColorStateList(R.styleable.ListItemTextView_rippleColor)
+				?: getRippleColorFallback(context)
+			val shape = createShapeDrawable(this)
 			background = RippleDrawable(
-				getColorStateList(R.styleable.ListItemTextView_rippleColor) ?: getRippleColorFallback(context),
-				createShapeDrawable(this),
+				RippleUtils.sanitizeRippleDrawableColor(itemRippleColor),
+				shape,
 				ShapeDrawable(RectShape()),
 			)
 			checkedDrawableStart = getDrawable(R.styleable.ListItemTextView_checkedDrawableStart)

@@ -15,8 +15,7 @@ import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.ifZero
+import org.koitharu.kotatsu.utils.ext.*
 
 open class PageHolder(
 	binding: ItemPageBinding,
@@ -29,7 +28,7 @@ open class PageHolder(
 	init {
 		binding.ssiv.setOnImageEventListener(delegate)
 		@Suppress("LeakingThis")
-		binding.buttonRetry.setOnClickListener(this)
+		bindingInfo.buttonRetry.setOnClickListener(this)
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
@@ -45,17 +44,17 @@ open class PageHolder(
 	}
 
 	override fun onLoadingStarted() {
-		binding.layoutError.isVisible = false
-		binding.progressBar.isVisible = true
+		bindingInfo.layoutError.isVisible = false
+		bindingInfo.progressBar.showCompat()
 		binding.ssiv.recycle()
 	}
 
 	override fun onProgressChanged(progress: Int) {
 		if (progress in 0..100) {
-			binding.progressBar.isIndeterminate = false
-			binding.progressBar.setProgressCompat(progress, true)
+			bindingInfo.progressBar.isIndeterminate = false
+			bindingInfo.progressBar.setProgressCompat(progress, true)
 		} else {
-			binding.progressBar.isIndeterminate = true
+			bindingInfo.progressBar.isIndeterminate = true
 		}
 	}
 
@@ -100,7 +99,7 @@ open class PageHolder(
 	}
 
 	override fun onImageShown() {
-		binding.progressBar.isVisible = false
+		bindingInfo.progressBar.hideCompat()
 	}
 
 	override fun onClick(v: View) {
@@ -110,11 +109,11 @@ open class PageHolder(
 	}
 
 	override fun onError(e: Throwable) {
-		binding.textViewError.text = e.getDisplayMessage(context.resources)
-		binding.buttonRetry.setText(
+		bindingInfo.textViewError.text = e.getDisplayMessage(context.resources)
+		bindingInfo.buttonRetry.setText(
 			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again }
 		)
-		binding.layoutError.isVisible = true
-		binding.progressBar.isVisible = false
+		bindingInfo.layoutError.isVisible = true
+		bindingInfo.progressBar.hideCompat()
 	}
 }

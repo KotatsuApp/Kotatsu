@@ -5,7 +5,7 @@
 	android:layout_height="match_parent"
 	android:paddingBottom="?actionBarSize">
 
-	<ProgressBar
+	<com.google.android.material.progressindicator.CircularProgressIndicator
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"

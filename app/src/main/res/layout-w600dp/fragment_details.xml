@@ -31,120 +31,116 @@
 			tools:background="@tools:sample/backgrounds/scenic"
 			tools:ignore="ContentDescription,UnusedAttribute" />
 
-		<TextView
-			android:id="@+id/textView_title"
+		<LinearLayout
+			android:id="@+id/layout_titles"
 			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="16dp"
-			android:layout_marginEnd="16dp"
-			android:ellipsize="end"
-			android:maxLines="3"
-			android:textAppearance="?attr/textAppearanceHeadlineSmall"
+			android:layout_height="0dp"
+			android:orientation="vertical"
+			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@tools:sample/lorem[15]" />
+			app:layout_constraintVertical_bias="0">
 
-		<TextView
-			android:id="@+id/textView_subtitle"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="4dp"
-			android:layout_marginEnd="16dp"
-			android:ellipsize="end"
-			android:maxLines="3"
-			android:textAppearance="?attr/textAppearanceBodyMedium"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/textView_title"
-			tools:text="@tools:sample/lorem[12]" />
+			<TextView
+				android:id="@+id/textView_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				android:layout_marginTop="16dp"
+				android:ellipsize="end"
+				android:maxLines="3"
+				android:textAppearance="?attr/textAppearanceHeadlineSmall"
+				tools:text="@tools:sample/lorem[15]" />
 
-		<TextView
-			android:id="@+id/textView_author"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="4dp"
-			android:layout_marginEnd="16dp"
-			android:background="@drawable/list_selector"
-			android:padding="2dp"
-			android:singleLine="true"
-			android:textColor="?attr/colorTertiary"
-			android:textStyle="bold"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0"
-			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
-			app:layout_constraintWidth_default="wrap"
-			tools:text="@tools:sample/full_names" />
+			<TextView
+				android:id="@+id/textView_subtitle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				android:layout_marginTop="4dp"
+				android:ellipsize="end"
+				android:maxLines="3"
+				android:textAppearance="?attr/textAppearanceBodyMedium"
+				tools:text="@tools:sample/lorem[12]" />
 
-		<TextView
-			android:id="@+id/textView_state"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="4dp"
-			android:layout_marginEnd="16dp"
-			android:drawablePadding="4dp"
-			android:singleLine="true"
-			android:textAppearance="?attr/textAppearanceBodySmall"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/textView_author"
-			tools:drawableStart="@drawable/ic_state_finished"
-			tools:text="Finished" />
+			<TextView
+				android:id="@+id/textView_author"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="14dp"
+				android:layout_marginTop="4dp"
+				android:background="@drawable/list_selector"
+				android:padding="2dp"
+				android:singleLine="true"
+				android:textColor="?attr/colorTertiary"
+				android:textStyle="bold"
+				tools:text="@tools:sample/full_names" />
 
-		<androidx.constraintlayout.widget.Barrier
-			android:id="@+id/barrier_header"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			app:barrierDirection="bottom"
-			app:barrierMargin="8dp"
-			app:constraint_referenced_ids="imageView_cover,button_read" />
+			<TextView
+				android:id="@+id/textView_state"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				android:layout_marginTop="4dp"
+				android:drawablePadding="4dp"
+				android:singleLine="true"
+				android:textAppearance="?attr/textAppearanceBodySmall"
+				tools:drawableStart="@drawable/ic_state_finished"
+				tools:text="Finished" />
 
-		<include
-			android:id="@+id/info_layout"
-			layout="@layout/layout_details_info"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/textView_state" />
+			<Space
+				android:layout_width="wrap_content"
+				android:layout_height="0dp"
+				android:layout_weight="1" />
 
-		<com.google.android.material.button.MaterialButton
-			android:id="@+id/button_favorite"
-			style="@style/Widget.Material3.Button.OutlinedButton"
-			android:layout_width="0dp"
-			android:layout_height="0dp"
-			android:layout_marginStart="16dp"
-			android:paddingStart="0dp"
-			android:paddingEnd="0dp"
-			app:icon="@drawable/ic_heart_outline"
-			app:iconGravity="textTop"
-			app:iconPadding="0dp"
-			app:layout_constraintBottom_toBottomOf="@id/button_read"
-			app:layout_constraintDimensionRatio="1:1"
-			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toTopOf="@id/button_read" />
+			<include
+				android:id="@+id/info_layout"
+				layout="@layout/layout_details_info"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
 
-		<com.google.android.material.button.MaterialButton
-			android:id="@+id/button_read"
-			style="@style/Widget.Material3.Button.TonalButton"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginEnd="16dp"
-			android:enabled="false"
-			android:text="@string/read"
-			android:textAllCaps="false"
-			app:iconGravity="textStart"
-			app:iconPadding="8dp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/button_favorite"
-			app:layout_constraintTop_toBottomOf="@id/info_layout"
-			tools:text="@string/_continue" />
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_favorite"
+					style="@style/Widget.Material3.Button.OutlinedButton"
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:layout_marginStart="16dp"
+					android:paddingStart="0dp"
+					android:paddingEnd="0dp"
+					app:icon="@drawable/ic_heart_outline"
+					app:iconGravity="textTop"
+					app:iconPadding="0dp"
+					app:layout_constraintBottom_toBottomOf="@id/button_read"
+					app:layout_constraintDimensionRatio="1:1"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="@id/button_read" />
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_read"
+					style="@style/Widget.Material3.Button.TonalButton"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:layout_marginEnd="16dp"
+					android:enabled="false"
+					android:text="@string/read"
+					android:textAllCaps="false"
+					app:iconGravity="textStart"
+					app:iconPadding="8dp"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toEndOf="@id/button_favorite"
+					app:layout_constraintTop_toTopOf="parent"
+					tools:text="@string/_continue" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</LinearLayout>
 
 		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"
@@ -157,7 +153,7 @@
 			app:chipSpacingVertical="6dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
+			app:layout_constraintTop_toBottomOf="@+id/layout_titles" />
 
 		<TextView
 			android:id="@+id/textView_description"

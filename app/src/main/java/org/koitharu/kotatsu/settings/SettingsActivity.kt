@@ -42,7 +42,7 @@ class SettingsActivity :
 
 	override fun onTitleChanged(title: CharSequence?, color: Int) {
 		super.onTitleChanged(title, color)
-		binding.collapsingToolbarLayout.title = title
+		binding.collapsingToolbarLayout?.title = title
 	}
 
 	override fun onStart() {

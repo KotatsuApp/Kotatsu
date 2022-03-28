@@ -286,7 +286,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
-			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_INDEFINITE)
+			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
 				.setAnchorView(binding.appbarBottom)
 				.setAction(R.string.share) {
 					ShareHelper(this).shareImage(uri)
