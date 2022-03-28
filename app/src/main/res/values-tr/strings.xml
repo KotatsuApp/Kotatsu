@@ -150,7 +150,7 @@
     <string name="text_local_holder_secondary">Çevrim içi kaynaklardan kaydedin veya dosyaları içe aktarın.</string>
     <string name="manga_shelf">Raf</string>
     <string name="recent_manga">Son</string>
-	<string name="size_s">Boyut: %s</string>
+    <string name="size_s">Boyut: %s</string>
     <string name="related">İlgili</string>
     <string name="updates_feed_cleared">Temizlendi</string>
     <string name="enter_password">Parola gir</string>
@@ -222,7 +222,7 @@
     <string name="data_restored_with_errors">Veriler geri yüklendi, ancak hatalar var</string>
     <string name="tap_to_try_again">Tekrar denemek için dokunun</string>
     <string name="next">İleri</string>
-	<string name="other">Diğer</string>
+    <string name="other">Diğer</string>
     <string name="captcha_required">CAPTCHA gerekli</string>
     <string name="cookies_cleared">Tüm çerezler kaldırıldı</string>
     <string name="reader_mode_hint">Seçilen yapılandırma bu manga için hatırlanacak</string>
@@ -266,4 +266,8 @@
     <string name="preload_pages">Sayfaları önceden yükle</string>
     <string name="logged_in_as">%s olarak oturum açıldı</string>
     <string name="nsfw">18+</string>
+    <string name="various_languages">Çeşitli diller</string>
+    <string name="search_chapters">Bölüm bul</string>
+    <string name="chapters_empty">Bu mangada bölüm yok</string>
+    <string name="percent_string_pattern">%%%1$s</string>
 </resources>
