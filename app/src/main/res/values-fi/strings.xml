@@ -25,7 +25,7 @@
     <string name="other">Muut</string>
     <string name="text_clear_search_history_prompt">Haluatko todella poistaa kaikki viimeaikaiset hakukyselyt\?</string>
     <string name="search_only_on_s">Hae vain kohteesta %s</string>
-	<string name="password_length_hint">Salasanan on oltava vähintään 4 merkkiä</string>
+    <string name="password_length_hint">Salasanan on oltava vähintään 4 merkkiä</string>
     <string name="confirm">Vahvista</string>
     <string name="protect_application_subtitle">Syötä salasana, joka vaaditaan, kun sovellus käynnistyy</string>
     <string name="next">Seuraava</string>
@@ -97,7 +97,7 @@
     <string name="favourites_category_empty">Tämä luokka on tyhjä</string>
     <string name="all_favourites">Kaikki suosikit</string>
     <string name="done">Valmis</string>
-	<string name="other_storage">Muu tallennustila</string>
+    <string name="other_storage">Muu tallennustila</string>
     <string name="cannot_find_available_storage">Ei löydy vapaata tallennustilaa</string>
     <string name="not_available">Ei saatavilla</string>
     <string name="manga_save_location">Mangan latauspaikka</string>
@@ -266,4 +266,8 @@
     <string name="onboard_text">Valitse kielet, joilla haluat lukea mangaa. Voit muuttaa sitä myöhemmin asetuksissa.</string>
     <string name="logged_in_as">Kirjautunut sisään nimellä %s</string>
     <string name="nsfw">18+</string>
+    <string name="search_chapters">Etsi luku</string>
+    <string name="percent_string_pattern">%1$s%%</string>
+    <string name="various_languages">Eri kieliä</string>
+    <string name="chapters_empty">Ei lukuja tässä mangassa</string>
 </resources>

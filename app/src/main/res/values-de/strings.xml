@@ -267,4 +267,7 @@
     <string name="logged_in_as">Angemeldet als %s</string>
     <string name="nsfw">18+</string>
     <string name="various_languages">Verschiedene Sprachen</string>
+    <string name="search_chapters">Kapitel suchen</string>
+    <string name="chapters_empty">Keine Kapitel in diesem Manga</string>
+    <string name="percent_string_pattern">%1$s%%</string>
 </resources>
