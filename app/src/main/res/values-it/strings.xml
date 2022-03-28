@@ -71,7 +71,7 @@
     <string name="other">Altro</string>
     <string name="text_clear_search_history_prompt">Vuoi davvero rimuovere tutte le ricerche recenti\?</string>
     <string name="search_only_on_s">Cerca solo su %s</string>
-	<string name="password_length_hint">La password deve essere di almeno 4 caratteri</string>
+    <string name="password_length_hint">La password deve essere di almeno 4 caratteri</string>
     <string name="confirm">Conferma</string>
     <string name="protect_application_subtitle">Inserisci la password che sarà richiesta all\'avvio dell\'applicazione</string>
     <string name="next">Prossimo</string>
@@ -129,7 +129,7 @@
     <string name="favourites_category_empty">Questa categoria è vuota</string>
     <string name="all_favourites">Tutti i preferiti</string>
     <string name="done">Finito</string>
-	<string name="other_storage">Altro spazio di archiviazione</string>
+    <string name="other_storage">Altro spazio di archiviazione</string>
     <string name="cannot_find_available_storage">Impossibile trovare uno spazio di archiviazione disponibile</string>
     <string name="not_available">Non disponibile</string>
     <string name="manga_save_location">Posizione per lo scaricamento dei manga</string>
@@ -266,4 +266,5 @@
     <string name="always">Sempre</string>
     <string name="logged_in_as">Registrato come %s</string>
     <string name="nsfw">18+</string>
+    <string name="various_languages">Varie lingue</string>
 </resources>

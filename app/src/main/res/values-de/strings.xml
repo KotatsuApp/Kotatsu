@@ -114,7 +114,7 @@
     <string name="other">Anderes</string>
     <string name="text_clear_search_history_prompt">Möchtest du wirklich alle letzten Suchanfragen entfernen\?</string>
     <string name="search_only_on_s">Nur auf %s suchen</string>
-	<string name="read_more">Mehr erfahren</string>
+    <string name="read_more">Mehr erfahren</string>
     <string name="tracker_warning">Einige Hersteller können das Systemverhalten ändern, wodurch Hintergrundaufgaben unterbrochen werden können.</string>
     <string name="backup_saved">Sicherung erfolgreich gespeichert</string>
     <string name="welcome">Willkommen</string>
@@ -129,7 +129,7 @@
     <string name="favourites_category_empty">Diese Kategorie ist leer</string>
     <string name="all_favourites">Alle Favoriten</string>
     <string name="done">Fertig</string>
-	<string name="other_storage">Sonstiger Speicherort</string>
+    <string name="other_storage">Sonstiger Speicherort</string>
     <string name="cannot_find_available_storage">Verfügbarer Speicher kann nicht gefunden werden</string>
     <string name="not_available">Nicht verfügbar</string>
     <string name="pages_animation">Seitenanimation</string>
@@ -266,4 +266,5 @@
     <string name="onboard_text">Wählen Sie die Sprachen aus, in denen Sie Mangas lesen möchten. Sie können dies später in den Einstellungen ändern.</string>
     <string name="logged_in_as">Angemeldet als %s</string>
     <string name="nsfw">18+</string>
+    <string name="various_languages">Verschiedene Sprachen</string>
 </resources>

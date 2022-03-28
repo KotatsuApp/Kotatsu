@@ -8,7 +8,7 @@
     <string name="other">Autre</string>
     <string name="text_clear_search_history_prompt">Supprimer définitivement toutes les requêtes de recherche récentes \?</string>
     <string name="search_only_on_s">Rechercher uniquement sur %s</string>
-	<string name="password_length_hint">Le mot de passe doit comporter 4 caractères ou plus</string>
+    <string name="password_length_hint">Le mot de passe doit comporter 4 caractères ou plus</string>
     <string name="confirm">Confirmer</string>
     <string name="protect_application_subtitle">Entrez un mot de passe pour démarrer l\'application avec</string>
     <string name="next">Suivant</string>
@@ -85,7 +85,7 @@
     <string name="favourites_category_empty">Catégorie vide</string>
     <string name="all_favourites">Tous les favoris</string>
     <string name="done">Terminé</string>
-	<string name="other_storage">Autre stockage</string>
+    <string name="other_storage">Autre stockage</string>
     <string name="cannot_find_available_storage">Pas de stockage disponible</string>
     <string name="not_available">Non disponible</string>
     <string name="manga_save_location">Dossier pour les téléchargements</string>
@@ -266,4 +266,5 @@
     <string name="onboard_text">Sélectionnez les langues dans lesquelles vous souhaitez lire les mangas. Vous pouvez le changer plus tard dans les paramètres.</string>
     <string name="logged_in_as">Connecté en tant que %s</string>
     <string name="nsfw">18+</string>
+    <string name="various_languages">Langues diverses</string>
 </resources>
