@@ -269,4 +269,5 @@
     <string name="various_languages">Varios idiomas</string>
     <string name="search_chapters">Buscar capítulo</string>
     <string name="chapters_empty">No hay capítulos en este manga</string>
+    <string name="percent_string_pattern">%1$s%%</string>
 </resources>
