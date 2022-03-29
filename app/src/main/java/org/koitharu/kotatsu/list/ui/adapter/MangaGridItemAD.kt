@@ -20,15 +20,8 @@ fun mangaGridItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>,
-	viewFactory: AsyncViewFactory,
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
-	{ inflater, parent ->
-		viewFactory[R.layout.item_manga_grid]?.let {
-			ItemMangaGridBinding.bind(it)
-		} ?: run {
-			ItemMangaGridBinding.inflate(inflater, parent, false)
-		}
-	}
+	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) }
 ) {
 
 	var imageRequest: Disposable? = null

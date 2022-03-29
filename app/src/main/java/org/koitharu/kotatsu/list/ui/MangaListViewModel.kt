@@ -44,10 +44,4 @@ abstract class MangaListViewModel(
 	abstract fun onRefresh()
 
 	abstract fun onRetry()
-
-	fun isListPending(): Boolean {
-		return content.value?.any {
-			it is MangaListModel || it is MangaGridModel || it is MangaListDetailedModel
-		} != true
-	}
 }

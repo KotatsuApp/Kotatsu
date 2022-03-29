@@ -24,7 +24,6 @@ import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.list.ui.adapter.AsyncViewFactory
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter.Companion.ITEM_TYPE_MANGA_GRID
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -35,12 +34,10 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.*
 
-private const val PREFETCH_ITEM_LIST = 10
-private const val PREFETCH_ITEM_DETAILED = 8
-private const val PREFETCH_ITEM_GRID = 16
-
-abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
-	PaginationScrollListener.Callback, MangaListListener,
+abstract class MangaListFragment :
+	BaseFragment<FragmentListBinding>(),
+	PaginationScrollListener.Callback,
+	MangaListListener,
 	SwipeRefreshLayout.OnRefreshListener {
 
 	private var listAdapter: MangaListAdapter? = null
@@ -50,7 +47,6 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	private val listCommitCallback = Runnable {
 		spanSizeLookup.invalidateCache()
 	}
-	private var asyncViewFactory: AsyncViewFactory? = null
 	open val isSwipeRefreshEnabled = true
 
 	protected abstract val viewModel: MangaListViewModel
@@ -67,12 +63,10 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		asyncViewFactory = AsyncViewFactory(binding.recyclerView)
 		listAdapter = MangaListAdapter(
 			coil = get(),
 			lifecycleOwner = viewLifecycleOwner,
 			listener = this,
-			viewFactory = checkNotNull(asyncViewFactory),
 		)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
@@ -97,8 +91,6 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	override fun onDestroyView() {
 		listAdapter = null
 		paginationListener = null
-		asyncViewFactory?.clear()
-		asyncViewFactory = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
 	}
@@ -172,7 +164,7 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 	@CallSuper
 	protected open fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.swipeRefreshLayout.isEnabled = binding.swipeRefreshLayout.isRefreshing ||
-				isSwipeRefreshEnabled && !isLoading
+			isSwipeRefreshEnabled && !isLoading
 		if (!isLoading) {
 			binding.swipeRefreshLayout.isRefreshing = false
 		}
@@ -219,26 +211,18 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 		with(binding.recyclerView) {
 			clearItemDecorations()
 			removeOnLayoutChangeListener(spanResolver)
-			asyncViewFactory?.clear()
-			val isListPending = viewModel.isListPending()
 			when (mode) {
 				ListMode.LIST -> {
 					layoutManager = FitHeightLinearLayoutManager(context)
 					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 					addItemDecoration(SpacingItemDecoration(spacing))
 					updatePadding(left = spacing, right = spacing)
-					if (isListPending) {
-						asyncViewFactory?.prefetch(R.layout.item_manga_list, PREFETCH_ITEM_LIST)
-					}
 				}
 				ListMode.DETAILED_LIST -> {
 					layoutManager = FitHeightLinearLayoutManager(context)
 					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 					updatePadding(left = spacing, right = spacing)
 					addItemDecoration(SpacingItemDecoration(spacing))
-					if (isListPending) {
-						asyncViewFactory?.prefetch(R.layout.item_manga_list_details, PREFETCH_ITEM_DETAILED)
-					}
 				}
 				ListMode.GRID -> {
 					layoutManager = FitHeightGridLayoutManager(context, spanResolver.spanCount).also {
@@ -248,9 +232,6 @@ abstract class MangaListFragment : BaseFragment<FragmentListBinding>(),
 					addItemDecoration(SpacingItemDecoration(spacing))
 					updatePadding(left = spacing, right = spacing)
 					addOnLayoutChangeListener(spanResolver)
-					if (isListPending) {
-						asyncViewFactory?.prefetch(R.layout.item_manga_grid, PREFETCH_ITEM_GRID)
-					}
 				}
 			}
 		}

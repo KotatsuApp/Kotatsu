@@ -21,15 +21,8 @@ fun mangaListDetailedItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>,
-	viewFactory: AsyncViewFactory,
 ) = adapterDelegateViewBinding<MangaListDetailedModel, ListModel, ItemMangaListDetailsBinding>(
-	{ inflater, parent ->
-		viewFactory[R.layout.item_manga_list_details]?.let {
-			ItemMangaListDetailsBinding.bind(it)
-		} ?: run {
-			ItemMangaListDetailsBinding.inflate(inflater, parent, false)
-		}
-	}
+	{ inflater, parent -> ItemMangaListDetailsBinding.inflate(inflater, parent, false) }
 ) {
 
 	var imageRequest: Disposable? = null

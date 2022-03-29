@@ -14,8 +14,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 399
-		versionName '3.0-alpha1'
+		versionCode 400
+		versionName '3.0'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -65,7 +65,7 @@ android {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation 'com.github.nv95:kotatsu-parsers:1ba2bba12e'
+	implementation 'com.github.nv95:kotatsu-parsers:3ea7e92e64'
 
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
@@ -82,7 +82,6 @@ dependencies {
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 	implementation 'androidx.recyclerview:recyclerview:1.2.1'
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-beta01'
-	implementation 'androidx.asynclayoutinflater:asynclayoutinflater:1.0.0'
 	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.work:work-runtime-ktx:2.7.1'
 	implementation 'com.google.android.material:material:1.6.0-beta01'

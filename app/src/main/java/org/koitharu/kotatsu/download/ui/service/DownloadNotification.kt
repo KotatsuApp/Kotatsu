@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.CrashActivity
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.download.ui.DownloadsActivity
@@ -81,6 +82,14 @@ class DownloadNotification(
 				builder.setSubText(context.getString(R.string.error))
 				builder.setContentText(message)
 				builder.setAutoCancel(true)
+				builder.setContentIntent(
+					PendingIntent.getActivity(
+						context,
+						state.manga.hashCode(),
+						CrashActivity.newIntent(context, state.error),
+						PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
+					)
+				)
 				builder.setCategory(NotificationCompat.CATEGORY_ERROR)
 				builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
 			}

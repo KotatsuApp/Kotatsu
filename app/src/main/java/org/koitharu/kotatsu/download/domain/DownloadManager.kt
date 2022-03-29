@@ -8,6 +8,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import okhttp3.OkHttpClient
@@ -39,7 +40,7 @@ class DownloadManager(
 	private val localMangaRepository: LocalMangaRepository,
 ) {
 
-	private val connectivityManager = context.getSystemService(
+	private val connectivityManager = context.applicationContext.getSystemService(
 		Context.CONNECTIVITY_SERVICE
 	) as ConnectivityManager
 	private val coverWidth = context.resources.getDimensionPixelSize(
@@ -49,7 +50,7 @@ class DownloadManager(
 		androidx.core.R.dimen.compat_notification_large_icon_max_height
 	)
 
-	fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int) = flow<State> {
+	fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int): Flow<State> = flow {
 		emit(State.Preparing(startId, manga, null))
 		var cover: Drawable? = null
 		val destination = localMangaRepository.getOutputDir()
@@ -102,13 +103,15 @@ class DownloadManager(
 							}
 						} while (false)
 
-						emit(State.Progress(
-							startId, manga, cover,
-							totalChapters = chapters.size,
-							currentChapter = chapterIndex,
-							totalPages = pages.size,
-							currentPage = pageIndex,
-						))
+						emit(
+							State.Progress(
+								startId, manga, cover,
+								totalChapters = chapters.size,
+								currentChapter = chapterIndex,
+								totalPages = pages.size,
+								currentPage = pageIndex,
+							)
+						)
 					}
 				}
 			}
@@ -191,7 +194,7 @@ class DownloadManager(
 			val currentChapter: Int,
 			val totalPages: Int,
 			val currentPage: Int,
-		): State {
+		) : State {
 
 			val max: Int = totalChapters * totalPages
 
@@ -204,7 +207,7 @@ class DownloadManager(
 			override val startId: Int,
 			override val manga: Manga,
 			override val cover: Drawable?,
-		): State
+		) : State
 
 		data class Done(
 			override val startId: Int,
@@ -224,7 +227,7 @@ class DownloadManager(
 			override val startId: Int,
 			override val manga: Manga,
 			override val cover: Drawable?,
-		): State
+		) : State
 
 		data class PostProcessing(
 			override val startId: Int,

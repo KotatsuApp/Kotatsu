@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -105,6 +106,7 @@ class DownloadService : BaseService() {
 				try {
 					withContext(Dispatchers.Default) {
 						downloadManager.downloadManga(manga, chaptersIds, startId)
+							.distinctUntilChanged()
 							.collect { state ->
 								stateFlow.value = state
 								notificationManager.notify(startId, notification.create(state))
@@ -181,7 +183,7 @@ class DownloadService : BaseService() {
 		}
 
 		fun getCancelIntent(startId: Int) = Intent(ACTION_DOWNLOAD_CANCEL)
-			.putExtra(ACTION_DOWNLOAD_CANCEL, startId)
+			.putExtra(EXTRA_CANCEL_ID, startId)
 
 		private fun confirmDataTransfer(context: Context, callback: () -> Unit) {
 			val settings = GlobalContext.get().get<AppSettings>()
