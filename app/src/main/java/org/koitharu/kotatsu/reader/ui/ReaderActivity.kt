@@ -54,13 +54,22 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
 import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 
-class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
+class ReaderActivity :
+	BaseFullscreenActivity<ActivityReaderBinding>(),
 	ChaptersBottomSheet.OnChapterChangeListener,
-	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
-	ActivityResultCallback<Boolean>, ReaderControlDelegate.OnInteractionListener, OnApplyWindowInsetsListener {
+	GridTouchHelper.OnGridTouchListener,
+	OnPageSelectListener,
+	ReaderConfigDialog.Callback,
+	ActivityResultCallback<Boolean>,
+	ReaderControlDelegate.OnInteractionListener,
+	OnApplyWindowInsetsListener {
 
 	private val viewModel by viewModel<ReaderViewModel> {
-		parametersOf(MangaIntent(intent), intent?.getParcelableExtra<ReaderState>(EXTRA_STATE))
+		parametersOf(
+			MangaIntent(intent),
+			intent?.getParcelableExtra<ReaderState>(EXTRA_STATE),
+			intent?.getStringExtra(EXTRA_BRANCH),
+		)
 	}
 
 	private lateinit var touchHelper: GridTouchHelper
@@ -142,7 +151,8 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		when (item.itemId) {
 			R.id.action_reader_mode -> {
 				ReaderConfigDialog.show(
-					supportFragmentManager, when (reader) {
+					supportFragmentManager,
+					when (reader) {
 						is PagerReaderFragment -> ReaderMode.STANDARD
 						is WebtoonReaderFragment -> ReaderMode.WEBTOON
 						is ReversedReaderFragment -> ReaderMode.REVERSED
@@ -407,7 +417,19 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
 		private const val EXTRA_STATE = "state"
+		private const val EXTRA_BRANCH = "branch"
 		private const val TOAST_DURATION = 1500L
+
+		fun newIntent(context: Context, manga: Manga): Intent {
+			return Intent(context, ReaderActivity::class.java)
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+		}
+
+		fun newIntent(context: Context, manga: Manga, branch: String?): Intent {
+			return Intent(context, ReaderActivity::class.java)
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+				.putExtra(EXTRA_BRANCH, branch)
+		}
 
 		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {
 			return Intent(context, ReaderActivity::class.java)
@@ -415,10 +437,9 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 				.putExtra(EXTRA_STATE, state)
 		}
 
-		fun newIntent(context: Context, mangaId: Long, state: ReaderState?): Intent {
+		fun newIntent(context: Context, mangaId: Long): Intent {
 			return Intent(context, ReaderActivity::class.java)
 				.putExtra(MangaIntent.KEY_ID, mangaId)
-				.putExtra(EXTRA_STATE, state)
 		}
 	}
 }

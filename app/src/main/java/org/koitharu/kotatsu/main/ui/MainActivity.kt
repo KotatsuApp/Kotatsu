@@ -298,7 +298,7 @@ class MainActivity :
 				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
 			)
 		}
-		startActivity(ReaderActivity.newIntent(this, manga, null), options?.toBundle())
+		startActivity(ReaderActivity.newIntent(this, manga), options?.toBundle())
 	}
 
 	private fun onError(e: Throwable) {

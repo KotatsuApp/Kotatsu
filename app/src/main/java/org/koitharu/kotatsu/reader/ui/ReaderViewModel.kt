@@ -34,6 +34,7 @@ import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 class ReaderViewModel(
 	private val intent: MangaIntent,
 	initialState: ReaderState?,
+	private val preselectedBranch: String?,
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val shortcutsRepository: ShortcutsRepository,
@@ -188,8 +189,7 @@ class ReaderViewModel(
 
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			var manga = dataRepository.resolveIntent(intent)
-				?: throw MangaNotFoundException("Cannot find manga")
+			var manga = dataRepository.resolveIntent(intent) ?: throw MangaNotFoundException("Cannot find manga")
 			mangaData.value = manga
 			val repo = MangaRepository(manga.source)
 			manga = repo.getDetails(manga)
@@ -197,21 +197,20 @@ class ReaderViewModel(
 				chapters.put(it.id, it)
 			}
 			// determine mode
-			val mode =
-				dataRepository.getReaderMode(manga.id) ?: manga.chapters?.randomOrNull()?.let {
-					val pages = repo.getPages(it)
-					val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
-					val newMode = getReaderMode(isWebtoon)
-					if (isWebtoon != null) {
-						dataRepository.savePreferences(manga, newMode)
-					}
-					newMode
-				} ?: error("There are no chapters in this manga")
+			val mode = dataRepository.getReaderMode(manga.id) ?: manga.chapters?.randomOrNull()?.let {
+				val pages = repo.getPages(it)
+				val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
+				val newMode = getReaderMode(isWebtoon)
+				if (isWebtoon != null) {
+					dataRepository.savePreferences(manga, newMode)
+				}
+				newMode
+			} ?: error("There are no chapters in this manga")
 			// obtain state
 			if (currentState.value == null) {
 				currentState.value = historyRepository.getOne(manga)?.let {
 					ReaderState.from(it)
-				} ?: ReaderState.initial(manga)
+				} ?: ReaderState.initial(manga, preselectedBranch)
 			}
 
 			val branch = chapters[currentState.value?.chapterId ?: 0L].branch
@@ -327,6 +326,5 @@ class ReaderViewModel(
 				)
 			}
 		}
-
 	}
 }

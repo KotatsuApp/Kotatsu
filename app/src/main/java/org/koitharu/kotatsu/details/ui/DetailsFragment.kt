@@ -188,9 +188,9 @@ class DetailsFragment :
 				} else {
 					startActivity(
 						ReaderActivity.newIntent(
-							context ?: return,
-							manga,
-							null
+							context = context ?: return,
+							manga = manga,
+							branch = viewModel.selectedBranchValue,
 						)
 					)
 				}
@@ -227,11 +227,14 @@ class DetailsFragment :
 				v.showPopupMenu(R.menu.popup_read) {
 					when (it.itemId) {
 						R.id.action_read -> {
+							val branch = viewModel.selectedBranchValue
 							startActivity(
 								ReaderActivity.newIntent(
-									context ?: return@showPopupMenu false,
-									viewModel.manga.value ?: return@showPopupMenu false,
-									viewModel.chapters.value?.firstOrNull()?.let { c ->
+									context = context ?: return@showPopupMenu false,
+									manga = viewModel.manga.value ?: return@showPopupMenu false,
+									state = viewModel.chapters.value?.firstOrNull { c ->
+										c.chapter.branch == branch
+									}?.let { c ->
 										ReaderState(c.chapter.id, 0, 0)
 									}
 								)

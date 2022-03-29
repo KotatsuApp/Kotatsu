@@ -256,9 +256,9 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 			setPositiveButton(R.string.read) { _, _ ->
 				startActivity(
 					ReaderActivity.newIntent(
-						this@DetailsActivity,
-						remoteManga,
-						ReaderState(chapterId, 0, 0)
+						context = this@DetailsActivity,
+						manga = remoteManga,
+						state = ReaderState(chapterId, 0, 0)
 					)
 				)
 			}

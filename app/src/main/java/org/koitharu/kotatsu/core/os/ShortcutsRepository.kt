@@ -69,7 +69,7 @@ class ShortcutsRepository(
 			.setLongLabel(manga.title)
 			.setIcon(icon)
 			.setIntent(
-				ReaderActivity.newIntent(context, manga.id, null)
+				ReaderActivity.newIntent(context, manga.id)
 					.setAction(ReaderActivity.ACTION_MANGA_READ)
 			)
 	}

@@ -119,6 +119,9 @@ class DetailsViewModel(
 		(if (reversed) list.asReversed() else list).filterSearch(query)
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
+	val selectedBranchValue: String?
+		get() = selectedBranch.value
+
 	init {
 		loadingJob = doLoad()
 	}

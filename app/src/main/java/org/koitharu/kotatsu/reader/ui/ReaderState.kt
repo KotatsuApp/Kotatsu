@@ -20,8 +20,10 @@ data class ReaderState(
 			scroll = history.scroll
 		)
 
-		fun initial(manga: Manga) = ReaderState(
-			chapterId = manga.chapters?.firstOrNull()?.id ?: error("Cannot find first chapter"),
+		fun initial(manga: Manga, branch: String?) = ReaderState(
+			chapterId = manga.chapters?.firstOrNull {
+				it.branch == branch
+			}?.id ?: error("Cannot find first chapter"),
 			page = 0,
 			scroll = 0
 		)

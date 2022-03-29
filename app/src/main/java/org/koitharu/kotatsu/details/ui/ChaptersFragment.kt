@@ -128,9 +128,9 @@ class ChaptersFragment :
 		)
 		startActivity(
 			ReaderActivity.newIntent(
-				view.context,
-				viewModel.manga.value ?: return,
-				ReaderState(item.chapter.id, 0, 0)
+				context = view.context,
+				manga = viewModel.manga.value ?: return,
+				state = ReaderState(item.chapter.id, 0, 0),
 			),
 			options.toBundle()
 		)
