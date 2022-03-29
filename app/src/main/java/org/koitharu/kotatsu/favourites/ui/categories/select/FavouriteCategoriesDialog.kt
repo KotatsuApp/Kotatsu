@@ -22,8 +22,10 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class FavouriteCategoriesDialog : BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
-	OnListItemClickListener<MangaCategoryItem>, CategoriesEditDelegate.CategoriesEditCallback,
+class FavouriteCategoriesDialog :
+	BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
+	OnListItemClickListener<MangaCategoryItem>,
+	CategoriesEditDelegate.CategoriesEditCallback,
 	View.OnClickListener {
 
 	private val viewModel by viewModel<MangaCategoriesViewModel> {

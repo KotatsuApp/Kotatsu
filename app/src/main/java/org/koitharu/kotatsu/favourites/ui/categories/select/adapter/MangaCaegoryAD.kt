@@ -2,13 +2,13 @@ package org.koitharu.kotatsu.favourites.ui.categories.select.adapter
 
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.databinding.ItemCategoryCheckableBinding
+import org.koitharu.kotatsu.databinding.ItemCheckableNewBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 
 fun mangaCategoryAD(
 	clickListener: OnListItemClickListener<MangaCategoryItem>
-) = adapterDelegateViewBinding<MangaCategoryItem, MangaCategoryItem, ItemCategoryCheckableBinding>(
-	{ inflater, parent -> ItemCategoryCheckableBinding.inflate(inflater, parent, false) }
+) = adapterDelegateViewBinding<MangaCategoryItem, MangaCategoryItem, ItemCheckableNewBinding>(
+	{ inflater, parent -> ItemCheckableNewBinding.inflate(inflater, parent, false) }
 ) {
 
 	itemView.setOnClickListener {
@@ -16,7 +16,7 @@ fun mangaCategoryAD(
 	}
 
 	bind {
-		with(binding.checkedTextView) {
+		with(binding.root) {
 			text = item.name
 			isChecked = item.isChecked
 		}

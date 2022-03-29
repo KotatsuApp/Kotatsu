@@ -9,11 +9,11 @@ import android.view.ViewGroup.LayoutParams
 import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.R as materialR
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koitharu.kotatsu.R
-import com.google.android.material.R as materialR
 
 abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 
