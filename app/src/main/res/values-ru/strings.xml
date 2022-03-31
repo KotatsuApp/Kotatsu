@@ -267,4 +267,6 @@
 	<string name="logged_in_as">Вы авторизованы как %s</string>
 	<string name="nsfw">18+</string>
 	<string name="various_languages">Разные языки</string>
+	<string name="search_chapters">Найти главу</string>
+	<string name="chapters_empty">В этой манге нет глав</string>
 </resources>
