@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
+import kotlin.math.roundToInt
 
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
@@ -245,7 +246,8 @@ class ChaptersFragment :
 		if (adapter.itemCount == 0) {
 			val position = list.indexOfFirst { it.hasFlag(ChapterListItem.FLAG_CURRENT) } - 1
 			if (position > 0) {
-				adapter.setItems(list, RecyclerViewScrollCallback(binding.recyclerViewChapters, position))
+				val offset = (resources.getDimensionPixelSize(R.dimen.chapter_list_item_height) * 0.6).roundToInt()
+				adapter.setItems(list, RecyclerViewScrollCallback(binding.recyclerViewChapters, position, offset))
 			} else {
 				adapter.items = list
 			}

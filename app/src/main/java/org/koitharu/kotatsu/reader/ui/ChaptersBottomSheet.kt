@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.withArgs
+import kotlin.math.roundToInt
 
 class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemClickListener<ChapterListItem> {
 
@@ -54,7 +55,8 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 		binding.recyclerView.adapter = ChaptersAdapter(this).also { adapter ->
 			if (currentPosition >= 0) {
 				val targetPosition = (currentPosition - 1).coerceAtLeast(0)
-				adapter.setItems(items, RecyclerViewScrollCallback(binding.recyclerView, targetPosition))
+				val offset = (resources.getDimensionPixelSize(R.dimen.chapter_list_item_height) * 0.6).roundToInt()
+				adapter.setItems(items, RecyclerViewScrollCallback(binding.recyclerView, targetPosition, offset))
 			} else {
 				adapter.items = items
 			}

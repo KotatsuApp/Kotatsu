@@ -13,7 +13,7 @@ import androidx.core.graphics.drawable.toBitmap
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.CrashActivity
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.domain.DownloadManager
+import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.DownloadsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.PendingIntentCompat
@@ -21,10 +21,7 @@ import org.koitharu.kotatsu.utils.ext.format
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import com.google.android.material.R as materialR
 
-class DownloadNotification(
-	private val context: Context,
-	startId: Int,
-) {
+class DownloadNotification(private val context: Context, startId: Int) {
 
 	private val builder = NotificationCompat.Builder(context, CHANNEL_ID)
 	private val cancelAction = NotificationCompat.Action(
@@ -48,9 +45,11 @@ class DownloadNotification(
 		builder.setOnlyAlertOnce(true)
 		builder.setDefaults(0)
 		builder.color = ContextCompat.getColor(context, R.color.blue_primary)
+		builder.foregroundServiceBehavior = NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
+		builder.setSilent(true)
 	}
 
-	fun create(state: DownloadManager.State): Notification {
+	fun create(state: DownloadState): Notification {
 		builder.setContentTitle(state.manga.title)
 		builder.setContentText(context.getString(R.string.manga_downloading_))
 		builder.setProgress(1, 0, true)
@@ -60,13 +59,14 @@ class DownloadNotification(
 		builder.setLargeIcon(state.cover?.toBitmap())
 		builder.clearActions()
 		when (state) {
-			is DownloadManager.State.Cancelling -> {
+			is DownloadState.Cancelled -> {
 				builder.setProgress(1, 0, true)
 				builder.setContentText(context.getString(R.string.cancelling_))
 				builder.setContentIntent(null)
 				builder.setStyle(null)
+				builder.setOngoing(true)
 			}
-			is DownloadManager.State.Done -> {
+			is DownloadState.Done -> {
 				builder.setProgress(0, 0, false)
 				builder.setContentText(context.getString(R.string.download_complete))
 				builder.setContentIntent(createMangaIntent(context, state.localManga))
@@ -74,14 +74,16 @@ class DownloadNotification(
 				builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
 				builder.setCategory(null)
 				builder.setStyle(null)
+				builder.setOngoing(false)
 			}
-			is DownloadManager.State.Error -> {
+			is DownloadState.Error -> {
 				val message = state.error.getDisplayMessage(context.resources)
 				builder.setProgress(0, 0, false)
 				builder.setSmallIcon(android.R.drawable.stat_notify_error)
 				builder.setSubText(context.getString(R.string.error))
 				builder.setContentText(message)
 				builder.setAutoCancel(true)
+				builder.setOngoing(false)
 				builder.setContentIntent(
 					PendingIntent.getActivity(
 						context,
@@ -93,29 +95,39 @@ class DownloadNotification(
 				builder.setCategory(NotificationCompat.CATEGORY_ERROR)
 				builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
 			}
-			is DownloadManager.State.PostProcessing -> {
+			is DownloadState.PostProcessing -> {
 				builder.setProgress(1, 0, true)
 				builder.setContentText(context.getString(R.string.processing_))
 				builder.setStyle(null)
+				builder.setOngoing(true)
 			}
-			is DownloadManager.State.Queued,
-			is DownloadManager.State.Preparing -> {
+			is DownloadState.Queued -> {
+				builder.setProgress(0, 0, false)
+				builder.setContentText(context.getString(R.string.queued))
+				builder.setStyle(null)
+				builder.setOngoing(true)
+				builder.addAction(cancelAction)
+			}
+			is DownloadState.Preparing -> {
 				builder.setProgress(1, 0, true)
 				builder.setContentText(context.getString(R.string.preparing_))
 				builder.setStyle(null)
+				builder.setOngoing(true)
 				builder.addAction(cancelAction)
 			}
-			is DownloadManager.State.Progress -> {
+			is DownloadState.Progress -> {
 				builder.setProgress(state.max, state.progress, false)
 				builder.setContentText((state.percent * 100).format() + "%")
 				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 				builder.setStyle(null)
+				builder.setOngoing(true)
 				builder.addAction(cancelAction)
 			}
-			is DownloadManager.State.WaitingForNetwork -> {
+			is DownloadState.WaitingForNetwork -> {
 				builder.setProgress(0, 0, false)
 				builder.setContentText(context.getString(R.string.waiting_for_network))
 				builder.setStyle(null)
+				builder.setOngoing(true)
 				builder.addAction(cancelAction)
 			}
 		}

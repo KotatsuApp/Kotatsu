@@ -186,6 +186,10 @@ abstract class MangaListFragment :
 				headerHeight + resources.resolveDp(-72),
 				headerHeight + resources.resolveDp(10),
 			)
+		} else {
+			binding.recyclerView.updatePadding(
+				bottom = insets.bottom,
+			)
 		}
 	}
 

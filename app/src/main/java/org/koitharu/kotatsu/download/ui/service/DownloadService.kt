@@ -8,20 +8,14 @@ import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
 import android.widget.Toast
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.plus
 import org.koin.android.ext.android.get
 import org.koin.core.context.GlobalContext
 import org.koitharu.kotatsu.BuildConfig
@@ -29,10 +23,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseService
 import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.model.withoutChapters
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.domain.DownloadManager
+import org.koitharu.kotatsu.download.domain.DownloadState
+import org.koitharu.kotatsu.download.domain.WakeLockNode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.connectivityManager
+import org.koitharu.kotatsu.utils.ext.throttle
 import org.koitharu.kotatsu.utils.ext.toArraySet
 import org.koitharu.kotatsu.utils.progress.ProgressJob
 import java.util.concurrent.TimeUnit
@@ -40,22 +38,27 @@ import kotlin.collections.set
 
 class DownloadService : BaseService() {
 
-	private lateinit var notificationManager: NotificationManagerCompat
-	private lateinit var wakeLock: PowerManager.WakeLock
 	private lateinit var downloadManager: DownloadManager
+	private lateinit var notificationSwitcher: ForegroundNotificationSwitcher
 
-	private val jobs = LinkedHashMap<Int, ProgressJob<DownloadManager.State>>()
+	private val jobs = LinkedHashMap<Int, ProgressJob<DownloadState>>()
 	private val jobCount = MutableStateFlow(0)
-	private val mutex = Mutex()
 	private val controlReceiver = ControlReceiver()
 	private var binder: DownloadBinder? = null
 
 	override fun onCreate() {
 		super.onCreate()
-		notificationManager = NotificationManagerCompat.from(this)
-		wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
+		notificationSwitcher = ForegroundNotificationSwitcher(this)
+		val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
-		downloadManager = DownloadManager(this, get(), get(), get(), get())
+		downloadManager = DownloadManager(
+			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1)),
+			context = this,
+			imageLoader = get(),
+			okHttp = get(),
+			cache = get(),
+			localMangaRepository = get(),
+		)
 		DownloadNotification.createChannel(this)
 		registerReceiver(controlReceiver, IntentFilter(ACTION_DOWNLOAD_CANCEL))
 	}
@@ -95,47 +98,49 @@ class DownloadService : BaseService() {
 		startId: Int,
 		manga: Manga,
 		chaptersIds: Set<Long>?,
-	): ProgressJob<DownloadManager.State> {
-		val initialState = DownloadManager.State.Queued(startId, manga, null)
-		val stateFlow = MutableStateFlow<DownloadManager.State>(initialState)
-		val job = lifecycleScope.launch {
-			mutex.withLock {
-				wakeLock.acquire(TimeUnit.HOURS.toMillis(1))
-				val notification = DownloadNotification(this@DownloadService, startId)
-				startForeground(startId, notification.create(initialState))
-				try {
-					withContext(Dispatchers.Default) {
-						downloadManager.downloadManga(manga, chaptersIds, startId)
-							.distinctUntilChanged()
-							.collect { state ->
-								stateFlow.value = state
-								notificationManager.notify(startId, notification.create(state))
-							}
-					}
-					if (stateFlow.value is DownloadManager.State.Done) {
-						sendBroadcast(
-							Intent(ACTION_DOWNLOAD_COMPLETE)
-								.putExtra(EXTRA_MANGA, ParcelableManga(manga))
-						)
-					}
-				} finally {
-					ServiceCompat.stopForeground(
-						this@DownloadService,
-						if (isActive) {
-							ServiceCompat.STOP_FOREGROUND_DETACH
-						} else {
-							ServiceCompat.STOP_FOREGROUND_REMOVE
-						}
-					)
-					if (wakeLock.isHeld) {
-						wakeLock.release()
-					}
-					stopSelf(startId)
-				}
-			}
-		}
-		return ProgressJob(job, stateFlow)
+	): ProgressJob<DownloadState> {
+		val job = downloadManager.downloadManga(manga, chaptersIds, startId)
+		listenJob(job)
+		return job
 	}
+
+	private fun listenJob(job: ProgressJob<DownloadState>) {
+		lifecycleScope.launch {
+			val startId = job.progressValue.startId
+			val notification = DownloadNotification(this@DownloadService, startId)
+			notificationSwitcher.notify(startId, notification.create(job.progressValue))
+			job.progressAsFlow()
+				.throttle { state -> if (state is DownloadState.Progress) 400L else 0L }
+				.whileActive()
+				.collect { state ->
+					notificationSwitcher.notify(startId, notification.create(state))
+				}
+			job.join()
+			(job.progressValue as? DownloadState.Done)?.let {
+				sendBroadcast(
+					Intent(ACTION_DOWNLOAD_COMPLETE)
+						.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga.withoutChapters()))
+				)
+			}
+			notificationSwitcher.detach(
+				startId,
+				if (job.isCancelled) {
+					null
+				} else {
+					notification.create(job.progressValue)
+				}
+			)
+			stopSelf(startId)
+		}
+	}
+
+	private fun Flow<DownloadState>.whileActive(): Flow<DownloadState> = transformWhile { state ->
+		emit(state)
+		!state.isTerminal
+	}
+
+	private val DownloadState.isTerminal: Boolean
+		get() = this is DownloadState.Done || this is DownloadState.Error || this is DownloadState.Cancelled
 
 	inner class ControlReceiver : BroadcastReceiver() {
 
@@ -152,7 +157,7 @@ class DownloadService : BaseService() {
 
 	class DownloadBinder(private val service: DownloadService) : Binder() {
 
-		val downloads: Flow<Collection<ProgressJob<DownloadManager.State>>>
+		val downloads: Flow<Collection<ProgressJob<DownloadState>>>
 			get() = service.jobCount.mapLatest { service.jobs.values }
 	}
 
@@ -184,6 +189,13 @@ class DownloadService : BaseService() {
 
 		fun getCancelIntent(startId: Int) = Intent(ACTION_DOWNLOAD_CANCEL)
 			.putExtra(EXTRA_CANCEL_ID, startId)
+
+		fun getDownloadedManga(intent: Intent?): Manga? {
+			if (intent?.action == ACTION_DOWNLOAD_COMPLETE) {
+				return intent.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga
+			}
+			return null
+		}
 
 		private fun confirmDataTransfer(context: Context, callback: () -> Unit) {
 			val settings = GlobalContext.get().get<AppSettings>()

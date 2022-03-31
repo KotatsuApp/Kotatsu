@@ -1,10 +1,15 @@
 package org.koitharu.kotatsu.utils
 
+import androidx.annotation.Px
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.ref.WeakReference
 
-class RecyclerViewScrollCallback(recyclerView: RecyclerView, private val position: Int) : Runnable {
+class RecyclerViewScrollCallback(
+	recyclerView: RecyclerView,
+	private val position: Int,
+	@Px private val offset: Int,
+) : Runnable {
 
 	private val recyclerViewRef = WeakReference(recyclerView)
 
@@ -13,7 +18,7 @@ class RecyclerViewScrollCallback(recyclerView: RecyclerView, private val positio
 		val lm = rv.layoutManager ?: return
 		rv.stopScroll()
 		if (lm is LinearLayoutManager) {
-			lm.scrollToPositionWithOffset(position, 0)
+			lm.scrollToPositionWithOffset(position, offset)
 		} else {
 			lm.scrollToPosition(position)
 		}

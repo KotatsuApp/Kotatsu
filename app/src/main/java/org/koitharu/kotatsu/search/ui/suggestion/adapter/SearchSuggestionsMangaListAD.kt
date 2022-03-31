@@ -37,7 +37,7 @@ fun searchSuggestionMangaListAD(
 		right = recyclerView.paddingRight - spacing,
 	)
 	recyclerView.addItemDecoration(SpacingItemDecoration(spacing))
-	val scrollResetCallback = RecyclerViewScrollCallback(recyclerView, 0)
+	val scrollResetCallback = RecyclerViewScrollCallback(recyclerView, 0, 0)
 
 	bind {
 		adapter.setItems(item.items, scrollResetCallback)

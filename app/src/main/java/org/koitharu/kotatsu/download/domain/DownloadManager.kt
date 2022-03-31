@@ -8,9 +8,8 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.sync.Semaphore
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
@@ -26,13 +25,16 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.waitForNetwork
+import org.koitharu.kotatsu.utils.progress.ProgressJob
 import java.io.File
 
 private const val MAX_DOWNLOAD_ATTEMPTS = 3
+private const val MAX_PARALLEL_DOWNLOADS = 2
 private const val DOWNLOAD_ERROR_DELAY = 500L
 private const val TEMP_PAGE_FILE = "page.tmp"
 
 class DownloadManager(
+	private val coroutineScope: CoroutineScope,
 	private val context: Context,
 	private val imageLoader: ImageLoader,
 	private val okHttp: OkHttpClient,
@@ -49,9 +51,29 @@ class DownloadManager(
 	private val coverHeight = context.resources.getDimensionPixelSize(
 		androidx.core.R.dimen.compat_notification_large_icon_max_height
 	)
+	private val semaphore = Semaphore(MAX_PARALLEL_DOWNLOADS)
 
-	fun downloadManga(manga: Manga, chaptersIds: Set<Long>?, startId: Int): Flow<State> = flow {
-		emit(State.Preparing(startId, manga, null))
+	fun downloadManga(
+		manga: Manga,
+		chaptersIds: Set<Long>?,
+		startId: Int,
+	): ProgressJob<DownloadState> {
+		val stateFlow = MutableStateFlow<DownloadState>(
+			DownloadState.Queued(startId = startId, manga = manga, cover = null)
+		)
+		val job = downloadMangaImpl(manga, chaptersIds, stateFlow, startId)
+		return ProgressJob(job, stateFlow)
+	}
+
+	private fun downloadMangaImpl(
+		manga: Manga,
+		chaptersIds: Set<Long>?,
+		outState: MutableStateFlow<DownloadState>,
+		startId: Int,
+	): Job = coroutineScope.launch(Dispatchers.Default + errorStateHandler(outState)) {
+		semaphore.acquire()
+		coroutineContext[WakeLockNode]?.acquire()
+		outState.value = DownloadState.Preparing(startId, manga, null)
 		var cover: Drawable? = null
 		val destination = localMangaRepository.getOutputDir()
 		checkNotNull(destination) { context.getString(R.string.cannot_find_available_storage) }
@@ -68,7 +90,7 @@ class DownloadManager(
 						.build()
 				).drawable
 			}.getOrNull()
-			emit(State.Preparing(startId, manga, cover))
+			outState.value = DownloadState.Preparing(startId, manga, cover)
 			val data = if (manga.chapters == null) repo.getDetails(manga) else manga
 			output = MangaZip.findInDir(destination, data)
 			output.prepare(data)
@@ -97,45 +119,43 @@ class DownloadManager(
 									MimeTypeMap.getFileExtensionFromUrl(url)
 								)
 							} catch (e: IOException) {
-								emit(State.WaitingForNetwork(startId, manga, cover))
+								outState.value = DownloadState.WaitingForNetwork(startId, data, cover)
 								connectivityManager.waitForNetwork()
 								continue@failsafe
 							}
 						} while (false)
 
-						emit(
-							State.Progress(
-								startId, manga, cover,
-								totalChapters = chapters.size,
-								currentChapter = chapterIndex,
-								totalPages = pages.size,
-								currentPage = pageIndex,
-							)
+						outState.value = DownloadState.Progress(
+							startId, data, cover,
+							totalChapters = chapters.size,
+							currentChapter = chapterIndex,
+							totalPages = pages.size,
+							currentPage = pageIndex,
 						)
 					}
 				}
 			}
-			emit(State.PostProcessing(startId, manga, cover))
+			outState.value = DownloadState.PostProcessing(startId, data, cover)
 			if (!output.compress()) {
 				throw RuntimeException("Cannot create target file")
 			}
 			val localManga = localMangaRepository.getFromFile(output.file)
-			emit(State.Done(startId, manga, cover, localManga))
+			outState.value = DownloadState.Done(startId, data, cover, localManga)
 		} catch (_: CancellationException) {
-			emit(State.Cancelling(startId, manga, cover))
+			outState.value = DownloadState.Cancelled(startId, manga, cover)
 		} catch (e: Throwable) {
 			if (BuildConfig.DEBUG) {
 				e.printStackTrace()
 			}
-			emit(State.Error(startId, manga, cover, e))
+			outState.value = DownloadState.Error(startId, manga, cover, e)
 		} finally {
 			withContext(NonCancellable) {
 				output?.cleanup()
 				File(destination, TEMP_PAGE_FILE).deleteAwait()
 			}
+			coroutineContext[WakeLockNode]?.release()
+			semaphore.release()
 		}
-	}.catch { e ->
-		emit(State.Error(startId, manga, null, e))
 	}
 
 	private suspend fun downloadFile(url: String, referer: String, destination: File): File {
@@ -168,71 +188,13 @@ class DownloadManager(
 		}
 	}
 
-	sealed interface State {
-
-		val startId: Int
-		val manga: Manga
-		val cover: Drawable?
-
-		data class Queued(
-			override val startId: Int,
-			override val manga: Manga,
-			override val cover: Drawable?,
-		) : State
-
-		data class Preparing(
-			override val startId: Int,
-			override val manga: Manga,
-			override val cover: Drawable?,
-		) : State
-
-		data class Progress(
-			override val startId: Int,
-			override val manga: Manga,
-			override val cover: Drawable?,
-			val totalChapters: Int,
-			val currentChapter: Int,
-			val totalPages: Int,
-			val currentPage: Int,
-		) : State {
-
-			val max: Int = totalChapters * totalPages
-
-			val progress: Int = totalPages * currentChapter + currentPage + 1
-
-			val percent: Float = progress.toFloat() / max
-		}
-
-		data class WaitingForNetwork(
-			override val startId: Int,
-			override val manga: Manga,
-			override val cover: Drawable?,
-		) : State
-
-		data class Done(
-			override val startId: Int,
-			override val manga: Manga,
-			override val cover: Drawable?,
-			val localManga: Manga,
-		) : State
-
-		data class Error(
-			override val startId: Int,
-			override val manga: Manga,
-			override val cover: Drawable?,
-			val error: Throwable,
-		) : State
-
-		data class Cancelling(
-			override val startId: Int,
-			override val manga: Manga,
-			override val cover: Drawable?,
-		) : State
-
-		data class PostProcessing(
-			override val startId: Int,
-			override val manga: Manga,
-			override val cover: Drawable?,
-		) : State
+	private fun errorStateHandler(outState: MutableStateFlow<DownloadState>) = CoroutineExceptionHandler { _, throwable ->
+		val prevValue = outState.value
+		outState.value = DownloadState.Error(
+			startId = prevValue.startId,
+			manga = prevValue.manga,
+			cover = prevValue.cover,
+			error = throwable,
+		)
 	}
 }

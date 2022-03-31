@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -52,6 +54,13 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 		parametersOf(MangaIntent(intent))
 	}
 
+	private val downloadReceiver = object : BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) {
+			val downloadedManga = DownloadService.getDownloadedManga(intent) ?: return
+			viewModel.onDownloadComplete(downloadedManga)
+		}
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDetailsBinding.inflate(layoutInflater))
@@ -71,6 +80,13 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
+
+		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
+	}
+
+	override fun onDestroy() {
+		unregisterReceiver(downloadReceiver)
+		super.onDestroy()
 	}
 
 	private fun onMangaUpdated(manga: Manga) {

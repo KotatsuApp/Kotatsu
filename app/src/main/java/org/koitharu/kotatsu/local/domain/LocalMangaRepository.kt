@@ -46,9 +46,13 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		return files.mapNotNull { x -> runCatching { getFromFile(x) }.getOrNull() }
 	}
 
-	override suspend fun getDetails(manga: Manga) = if (manga.chapters == null) {
-		getFromFile(Uri.parse(manga.url).toFile())
-	} else manga
+	override suspend fun getDetails(manga: Manga) = when {
+		manga.source != MangaSource.LOCAL -> requireNotNull(findSavedManga(manga)) {
+			"Manga is not local or saved"
+		}
+		manga.chapters == null -> getFromFile(Uri.parse(manga.url).toFile())
+		else -> manga
+	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		return runInterruptible(Dispatchers.IO){

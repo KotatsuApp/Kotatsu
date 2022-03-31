@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -61,7 +63,8 @@ class DetailsViewModel(
 			trackingRepository.getNewChaptersCount(mangaId)
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
-	private val remoteManga = MutableStateFlow<Manga?>(null)
+	// Remote manga for saved and saved for remote
+	private val relatedManga = MutableStateFlow<Manga?>(null)
 	private val chaptersQuery = MutableStateFlow("")
 
 	private val chaptersReversed = settings.observe()
@@ -101,16 +104,16 @@ class DetailsViewModel(
 	val chapters = combine(
 		combine(
 			mangaData.map { it?.chapters.orEmpty() },
-			remoteManga,
+			relatedManga,
 			history.map { it?.chapterId },
 			newChapters,
 			selectedBranch
-		) { chapters, sourceManga, currentId, newCount, branch ->
-			val sourceChapters = sourceManga?.chapters
-			if (sourceManga?.source != MangaSource.LOCAL && !sourceChapters.isNullOrEmpty()) {
-				mapChaptersWithSource(chapters, sourceChapters, currentId, newCount, branch)
+		) { chapters, related, currentId, newCount, branch ->
+			val relatedChapters = related?.chapters
+			if (related?.source != MangaSource.LOCAL && !relatedChapters.isNullOrEmpty()) {
+				mapChaptersWithSource(chapters, relatedChapters, currentId, newCount, branch)
 			} else {
-				mapChapters(chapters, sourceChapters, currentId, newCount, branch)
+				mapChapters(chapters, relatedChapters, currentId, newCount, branch)
 			}
 		},
 		chaptersReversed,
@@ -151,11 +154,33 @@ class DetailsViewModel(
 	}
 
 	fun getRemoteManga(): Manga? {
-		return remoteManga.value
+		return relatedManga.value?.takeUnless { it.source == MangaSource.LOCAL }
 	}
 
 	fun performChapterSearch(query: String?) {
 		chaptersQuery.value = query?.trim().orEmpty()
+	}
+
+	fun onDownloadComplete(downloadedManga: Manga) {
+		val currentManga = mangaData.value ?: return
+		if (currentManga.id != downloadedManga.id) {
+			return
+		}
+		if (currentManga.source == MangaSource.LOCAL) {
+			reload()
+		} else {
+			viewModelScope.launch(Dispatchers.Default) {
+				runCatching {
+					localMangaRepository.getDetails(downloadedManga)
+				}.onSuccess {
+					relatedManga.value = it
+				}.onFailure {
+					if (BuildConfig.DEBUG) {
+						it.printStackTrace()
+					}
+				}
+			}
+		}
 	}
 
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
@@ -171,7 +196,7 @@ class DetailsViewModel(
 			predictBranch(manga.chapters)
 		}
 		mangaData.value = manga
-		remoteManga.value = runCatching {
+		relatedManga.value = runCatching {
 			if (manga.source == MangaSource.LOCAL) {
 				val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatching null
 				MangaRepository(m.source).getDetails(m)

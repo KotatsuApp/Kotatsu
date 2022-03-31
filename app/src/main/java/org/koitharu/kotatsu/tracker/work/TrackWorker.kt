@@ -65,7 +65,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			setProgress(workData.build())
 			val chapters = details?.chapters ?: continue
 			when {
-				track.knownChaptersCount == -1 -> { //first check
+				track.knownChaptersCount == -1 -> { // first check
 					repository.storeTrackResult(
 						mangaId = track.manga.id,
 						knownChaptersCount = chapters.size,
@@ -74,7 +74,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						newChapters = emptyList()
 					)
 				}
-				track.knownChaptersCount == 0 && track.lastChapterId == 0L -> { //manga was empty on last check
+				track.knownChaptersCount == 0 && track.lastChapterId == 0L -> { // manga was empty on last check
 					repository.storeTrackResult(
 						mangaId = track.manga.id,
 						knownChaptersCount = track.knownChaptersCount,
@@ -82,7 +82,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						previousTrackChapterId = track.lastNotifiedChapterId,
 						newChapters = chapters
 					)
-					showNotification(track.manga, chapters)
+					showNotification(details, chapters)
 				}
 				chapters.size == track.knownChaptersCount -> {
 					if (chapters.lastOrNull()?.id == track.lastChapterId) {
@@ -110,7 +110,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 								newChapters = newChapters
 							)
 							showNotification(
-								track.manga,
+								details,
 								newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId }
 							)
 						}
@@ -224,6 +224,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)
+			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
 			.setOngoing(true)
 			.build()
 
