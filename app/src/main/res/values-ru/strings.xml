@@ -6,7 +6,7 @@
     <string name="favourites">Избранное</string>
     <string name="history">История</string>
     <string name="error_occurred">Произошла ошибка</string>
-    <string name="network_error">Не удалось подключиться к Интернету</string>
+    <string name="network_error">Не удалось подключиться к интернету</string>
     <string name="details">Подробности</string>
     <string name="chapters">Главы</string>
     <string name="list">Список</string>
@@ -21,7 +21,7 @@
     <string name="try_again">Повторить</string>
     <string name="clear_history">Очистить историю</string>
     <string name="nothing_found">Ничего не найдено</string>
-    <string name="history_is_empty">Истории еще нет</string>
+    <string name="history_is_empty">Истории пока нет</string>
     <string name="read">Читать</string>
 	<string name="you_have_not_favourites_yet">Избранного пока нет</string>
     <string name="add_to_favourites">В избранное</string>
@@ -62,7 +62,7 @@
     <string name="_import">Импорт</string>
     <string name="delete">Удалить</string>
     <string name="operation_not_supported">Операция не поддерживается</string>
-    <string name="text_file_not_supported">Выберите ZIP-файл, либо файл CBZ.</string>
+    <string name="text_file_not_supported">Выберите CBZ-файл или ZIP</string>
     <string name="no_description">Нет описания</string>
     <string name="history_and_cache">История и кэш</string>
     <string name="clear_pages_cache">Очистить кэш страниц</string>
