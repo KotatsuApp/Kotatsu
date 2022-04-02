@@ -30,18 +30,22 @@ class SliderPreference @JvmOverloads constructor(
 		set(value) = setValueInternal(value, notifyChanged = true)
 
 	private val sliderListener = Slider.OnChangeListener { _, value, fromUser ->
-			if (fromUser) {
-				syncValueInternal(value.toInt())
-			}
+		if (fromUser) {
+			syncValueInternal(value.toInt())
 		}
+	}
 
 	init {
-		context.withStyledAttributes(attrs,
+		context.withStyledAttributes(
+			attrs,
 			R.styleable.SliderPreference,
 			defStyleAttr,
-			defStyleRes) {
-			valueFrom = getFloat(R.styleable.SliderPreference_android_valueFrom,
-				valueFrom.toFloat()).toInt()
+			defStyleRes
+		) {
+			valueFrom = getFloat(
+				R.styleable.SliderPreference_android_valueFrom,
+				valueFrom.toFloat()
+			).toInt()
 			valueTo =
 				getFloat(R.styleable.SliderPreference_android_valueTo, valueTo.toFloat()).toInt()
 			stepSize =

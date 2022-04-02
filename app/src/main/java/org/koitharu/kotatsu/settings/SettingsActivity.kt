@@ -1,9 +1,13 @@
 package org.koitharu.kotatsu.settings
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -16,7 +20,6 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.AppBarOwner
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
 class SettingsActivity :
@@ -35,7 +38,7 @@ class SettingsActivity :
 
 		if (supportFragmentManager.findFragmentById(R.id.container) == null) {
 			supportFragmentManager.commit {
-				replace(R.id.container, MainSettingsFragment())
+				replace(R.id.container, SettingsHeadersFragment())
 			}
 		}
 	}
@@ -55,6 +58,22 @@ class SettingsActivity :
 		super.onStop()
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		menuInflater.inflate(R.menu.opt_settings, menu)
+		return super.onCreateOptionsMenu(menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+		R.id.action_leaks -> {
+			val intent = Intent()
+			intent.component = ComponentName(this, "leakcanary.internal.activity.LeakActivity")
+			intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+			startActivity(intent)
+			true
+		}
+		else -> super.onOptionsItemSelected(item)
+	}
+
 	override fun onBackStackChanged() {
 		val fragment = supportFragmentManager.findFragmentById(R.id.container) as? RecyclerViewOwner ?: return
 		val recyclerView = fragment.recyclerView
@@ -70,29 +89,30 @@ class SettingsActivity :
 		val fm = supportFragmentManager
 		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment ?: return false)
 		fragment.arguments = pref.extras
-		fragment.setTargetFragment(caller, 0)
+		// fragment.setTargetFragment(caller, 0)
 		openFragment(fragment)
 		return true
 	}
 
-	fun openMangaSourceSettings(mangaSource: MangaSource) {
-		openFragment(SourceSettingsFragment.newInstance(mangaSource))
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.appbar.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
+		binding.container.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 	}
 
-	fun openNotificationSettingsLegacy() {
-		openFragment(NotificationSettingsLegacyFragment())
-	}
-
-	private fun openFragment(fragment: Fragment) {
+	fun openFragment(fragment: Fragment) {
 		supportFragmentManager.commit {
-			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-			replace(R.id.container, fragment)
 			setReorderingAllowed(true)
+			replace(R.id.container, fragment)
+			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 			addToBackStack(null)
 		}
 	}
-
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	companion object {
 

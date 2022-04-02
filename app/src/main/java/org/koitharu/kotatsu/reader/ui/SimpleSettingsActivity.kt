@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.*
 
+@Deprecated("")
 class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>(), AppBarOwner {
 
 	override val appBar: AppBarLayout
@@ -36,7 +37,7 @@ class SimpleSettingsActivity : BaseActivity<ActivitySettingsSimpleBinding>(), Ap
 					ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 						intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL
 					)
-					else -> MainSettingsFragment()
+					else -> SettingsHeadersFragment()
 				}
 			)
 		}

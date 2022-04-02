@@ -217,13 +217,7 @@
     <string name="chapter_is_missing_text">Téléchargez ou lisez ce chapitre manquant en ligne.</string>
     <string name="text_downloads_holder">Aucun téléchargement actif</string>
     <string name="queued">En file d\'attente</string>
-    <string name="about_support_developer_summary">Si vous aimez cette application, vous pouvez envoyer de l\'argent via Yoomoney (ex. Yandex.Money)</string>
-    <string name="about_support_developer">Soutenir le concepteur</string>
-    <string name="about_license">Licence</string>
-    <string name="about_copyright_and_licenses">Droits d\'auteur et licences</string>
-    <string name="about_gratitudes_summary">Ces personnes ont toutes rendu Kotatsu meilleur</string>
-    <string name="about_gratitudes">Remerciements</string>
-    <string name="about_feedback_4pda">Sujet sur 4PDA</string>
+	<string name="about_feedback_4pda">Sujet sur 4PDA</string>
     <string name="about_feedback">Remarques</string>
     <string name="about_app_translation">Traduction</string>
     <string name="about_app_translation_summary">Traduire cette application</string>

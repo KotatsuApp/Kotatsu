@@ -4,13 +4,7 @@
     <string name="genres">Tyylilajit</string>
     <string name="auth_not_supported_by">%s -valtuutusta ei tueta</string>
     <string name="auth_complete">Valtuutus valmis</string>
-    <string name="about_license">Lisenssi</string>
-    <string name="about_copyright_and_licenses">Tekijänoikeudet ja lisenssit</string>
-    <string name="about_gratitudes_summary">Nämä ihmiset tekevät Kotatsusta paremman</string>
-    <string name="about_gratitudes">Kiitokset</string>
-    <string name="about_support_developer_summary">Jos pidät tästä sovelluksesta, voit auttaa taloudellisesti Yoomoneyn (ent. Yandex.Money) kautta</string>
-    <string name="about_support_developer">Tue kehittäjää</string>
-    <string name="about_feedback_4pda">Aihe 4PDA: ssa</string>
+	<string name="about_feedback_4pda">Aihe 4PDA: ssa</string>
     <string name="about_feedback">Palaute</string>
     <string name="about_app_translation">Käännös</string>
     <string name="about_app_translation_summary">Käännä tämä sovellus</string>

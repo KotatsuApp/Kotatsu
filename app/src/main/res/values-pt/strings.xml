@@ -185,13 +185,7 @@
     <string name="about_app_translation_summary">Traduzir esta aplicação</string>
     <string name="about_feedback">Comentar</string>
     <string name="about_feedback_4pda">Tópico no 4PDA</string>
-    <string name="about_support_developer">Apoiar o desenvolvedor</string>
-    <string name="about_support_developer_summary">Se você gosta deste aplicativo, você pode enviar dinheiro através do Yoomoney (ex. Yandex.Money)</string>
-    <string name="about_gratitudes">Agradecimentos</string>
-    <string name="about_gratitudes_summary">Todas essas pessoas tornaram o Kotatsu melhor</string>
-    <string name="about_copyright_and_licenses">Direitos de autor e licenças</string>
-    <string name="about_license">Licença</string>
-    <string name="chapter_is_missing_text">Baixe ou leia este capítulo perdido online.</string>
+	<string name="chapter_is_missing_text">Baixe ou leia este capítulo perdido online.</string>
     <string name="chapter_is_missing">O capítulo está em falta</string>
     <string name="auth_complete">Autorizado</string>
     <string name="auth_not_supported_by">O login em %s não é suportado</string>

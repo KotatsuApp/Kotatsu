@@ -183,12 +183,7 @@
     <string name="about_app_translation">Tradução</string>
     <string name="about_feedback">Comentar</string>
     <string name="about_feedback_4pda">Tópico no 4PDA</string>
-    <string name="about_support_developer">Apoie o desenvolvedor</string>
-    <string name="about_support_developer_summary">Se você gosta deste aplicativo, você pode enviar dinheiro através do Yoomoney (ex. Yandex.Money)</string>
-    <string name="about_gratitudes">Gratidão</string>
-    <string name="about_gratitudes_summary">Todas essas pessoas tornaram o Kotatsu melhor</string>
-    <string name="about_license">Licença</string>
-    <string name="auth_complete">Autorizado</string>
+	<string name="auth_complete">Autorizado</string>
     <string name="auth_not_supported_by">O login em %s não é suportado</string>
     <string name="text_clear_cookies_prompt">Você será desconectado de todas as fontes</string>
     <string name="genres">Gêneros</string>
@@ -266,8 +261,7 @@
     <string name="data_restored_with_errors">Os dados foram restaurados, mas há erros</string>
     <string name="report_github">Criar problema no GitHub</string>
     <string name="file_not_found">Arquivo não encontrado</string>
-    <string name="about_copyright_and_licenses">Direitos autorais e licenças</string>
-    <string name="search_chapters">Localizar capítulo</string>
+	<string name="search_chapters">Localizar capítulo</string>
     <string name="chapters_empty">Não há capítulos neste mangá</string>
     <string name="percent_string_pattern">%1$s%%</string>
 </resources>

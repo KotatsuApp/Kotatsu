@@ -31,7 +31,6 @@ class TrackerSettingsFragment : BasePreferenceFragment(R.string.check_for_new_ch
 					append(getString(R.string.read_more))
 				}
 			}
-			warningPreference
 		}
 	}
 
@@ -43,10 +42,10 @@ class TrackerSettingsFragment : BasePreferenceFragment(R.string.check_for_new_ch
 						.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
 						.putExtra(Settings.EXTRA_CHANNEL_ID, TrackWorker.CHANNEL_ID)
 					startActivity(intent)
+					true
 				} else {
-					(activity as? SettingsActivity)?.openNotificationSettingsLegacy()
+					super.onPreferenceTreeClick(preference)
 				}
-				true
 			}
 			else -> super.onPreferenceTreeClick(preference)
 		}

@@ -7,14 +7,13 @@
 		android:defaultValue="false"
 		android:key="reader_prefer_rtl"
 		android:summary="@string/prefer_rtl_reader_summary"
-		android:title="@string/prefer_rtl_reader"
-		app:iconSpaceReserved="false" />
+		android:title="@string/prefer_rtl_reader" />
 
 	<ListPreference
 		android:entries="@array/zoom_modes"
 		android:key="zoom_mode"
 		android:title="@string/scale_mode"
-		app:iconSpaceReserved="false"
+
 		app:useSimpleSummaryProvider="true" />
 
 	<MultiSelectListPreference
@@ -23,20 +22,17 @@
 		android:entryValues="@array/values_reader_switchers"
 		android:key="reader_switchers"
 		android:title="@string/switch_pages"
-		app:allowDividerAbove="true"
-		app:iconSpaceReserved="false" />
+		app:allowDividerAbove="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="reader_animation"
-		android:title="@string/pages_animation"
-		app:iconSpaceReserved="false" />
+		android:title="@string/pages_animation" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="pages_numbers"
-		android:title="@string/show_pages_numbers"
-		app:iconSpaceReserved="false" />
+		android:title="@string/show_pages_numbers" />
 
 	<ListPreference
 		android:entries="@array/screenshots_policy"
@@ -44,7 +40,7 @@
 		android:key="screenshots_policy"
 		android:title="@string/screenshots_policy"
 		app:defaultValue="allow"
-		app:iconSpaceReserved="false"
+
 		app:useSimpleSummaryProvider="true" />
 
 	<ListPreference
@@ -53,7 +49,7 @@
 		android:key="pages_preload"
 		android:title="@string/preload_pages"
 		app:defaultValue="2"
-		app:iconSpaceReserved="false"
+
 		app:useSimpleSummaryProvider="true" />
 
 </PreferenceScreen>

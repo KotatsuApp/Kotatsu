@@ -6,14 +6,12 @@
 	<Preference
 		android:key="backup"
 		android:persistent="false"
-		android:title="@string/create_backup"
-		app:iconSpaceReserved="false" />
+		android:title="@string/create_backup" />
 
 	<Preference
 		android:key="restore"
 		android:persistent="false"
-		android:title="@string/restore_backup"
-		app:iconSpaceReserved="false" />
+		android:title="@string/restore_backup" />
 
 	<Preference
 		android:icon="@drawable/ic_info_outline"

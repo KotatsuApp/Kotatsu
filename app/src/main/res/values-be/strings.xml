@@ -217,13 +217,7 @@
     <string name="chapter_is_missing_text">Гэтая глава адсутнічае на вашай прыладзе. Спампуйце ціпрачытайце яе онлайн.</string>
     <string name="text_downloads_holder">На дадзены момант няма актыўных спамповак</string>
     <string name="queued">У чарзе</string>
-    <string name="about_license">Ліцэнзія</string>
-    <string name="about_copyright_and_licenses">Аўтарскія правы і ліцэнзіі</string>
-    <string name="about_gratitudes_summary">Гэтыя людзі робяць Kotatsu лепш</string>
-    <string name="about_gratitudes">Падзякі</string>
-    <string name="about_support_developer_summary">Калі вам падабаецца гэтая праграма, вы можаце дапамагчы фінансава з дапамогай ЮMoney (был. Яндекс.Деньги)</string>
-    <string name="about_support_developer">Падтрымаць распрацоўшчыка</string>
-    <string name="about_feedback_4pda">Тэма на 4PDA</string>
+	<string name="about_feedback_4pda">Тэма на 4PDA</string>
     <string name="about_feedback">Зваротная сувязь</string>
     <string name="about_app_translation_summary">Дапамагчы з перакладам праграмы</string>
     <string name="about_app_translation">Пераклад</string>
