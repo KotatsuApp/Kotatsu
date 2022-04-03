@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.domain.MangaUtils
@@ -25,7 +26,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
-import org.koitharu.kotatsu.utils.DownloadManagerHelper
+import org.koitharu.kotatsu.utils.ExternalStorageHelper
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
@@ -39,7 +40,7 @@ class ReaderViewModel(
 	private val historyRepository: HistoryRepository,
 	private val shortcutsRepository: ShortcutsRepository,
 	private val settings: AppSettings,
-	private val downloadManagerHelper: DownloadManagerHelper,
+	private val externalStorageHelper: ExternalStorageHelper,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job? = null
@@ -136,23 +137,27 @@ class ReaderViewModel(
 		return pages.filter { it.chapterId == chapterId }.map { it.toMangaPage() }
 	}
 
-	fun saveCurrentPage() {
+	fun saveCurrentPage(destination: Uri) {
 		launchJob(Dispatchers.Default) {
 			try {
-				val state = currentState.value ?: error("Undefined state")
-				val page = content.value?.pages?.find {
-					it.chapterId == state.chapterId && it.index == state.page
-				}?.toMangaPage() ?: error("Page not found")
-				val repo = MangaRepository(page.source)
-				val pageUrl = repo.getPageUrl(page)
-				val downloadId = downloadManagerHelper.downloadPage(page, pageUrl)
-				val uri = downloadManagerHelper.awaitDownload(downloadId)
-				onPageSaved.postCall(uri)
+				val page = getCurrentPage() ?: error("Page not found")
+				externalStorageHelper.savePage(page, destination)
+				onPageSaved.postCall(destination)
 			} catch (_: CancellationException) {
 			} catch (e: Exception) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
 				onPageSaved.postCall(null)
 			}
 		}
+	}
+
+	fun getCurrentPage(): MangaPage? {
+		val state = currentState.value ?: return null
+		return content.value?.pages?.find {
+			it.chapterId == state.chapterId && it.index == state.page
+		}?.toMangaPage()
 	}
 
 	fun switchChapter(id: Long) {

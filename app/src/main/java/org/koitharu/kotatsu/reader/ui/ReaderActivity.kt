@@ -1,18 +1,15 @@
 package org.koitharu.kotatsu.reader.ui
 
-import android.Manifest
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
+import androidx.core.net.toUri
 import androidx.core.view.*
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
@@ -60,7 +57,7 @@ class ReaderActivity :
 	GridTouchHelper.OnGridTouchListener,
 	OnPageSelectListener,
 	ReaderConfigDialog.Callback,
-	ActivityResultCallback<Boolean>,
+	ActivityResultCallback<Uri?>,
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener {
 
@@ -75,10 +72,7 @@ class ReaderActivity :
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var orientationHelper: ScreenOrientationHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
-	private val permissionsRequest = registerForActivityResult(
-		ActivityResultContracts.RequestPermission(),
-		this
-	)
+	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
 	private var gestureInsets: Insets = Insets.NONE
 
 	private val reader
@@ -190,29 +184,20 @@ class ReaderActivity :
 				}
 			}
 			R.id.action_save_page -> {
-				if (!viewModel.content.value?.pages.isNullOrEmpty()) {
-					if (ContextCompat.checkSelfPermission(
-							this,
-							Manifest.permission.WRITE_EXTERNAL_STORAGE
-						) == PackageManager.PERMISSION_GRANTED
-					) {
-						onActivityResult(true)
-					} else {
-						permissionsRequest.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-					}
-				} else {
-					showWaitWhileLoading()
-				}
+				viewModel.getCurrentPage()?.also { page ->
+					viewModel.saveCurrentState(reader?.getCurrentState())
+					val name = page.url.toUri().lastPathSegment
+					savePageRequest.launch(name)
+				} ?: showWaitWhileLoading()
 			}
 			else -> return super.onOptionsItemSelected(item)
 		}
 		return true
 	}
 
-	override fun onActivityResult(result: Boolean) {
-		if (result) {
-			viewModel.saveCurrentState(reader?.getCurrentState())
-			viewModel.saveCurrentPage()
+	override fun onActivityResult(uri: Uri?) {
+		if (uri != null) {
+			viewModel.saveCurrentPage(uri)
 		}
 	}
 

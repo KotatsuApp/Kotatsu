@@ -21,7 +21,7 @@ val readerModule
 				historyRepository = get(),
 				shortcutsRepository = get(),
 				settings = get(),
-				downloadManagerHelper = get(),
+				externalStorageHelper = get(),
 			)
 		}
 	}

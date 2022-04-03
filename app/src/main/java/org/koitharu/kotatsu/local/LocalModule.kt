@@ -6,12 +6,15 @@ import org.koin.dsl.module
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.local.ui.LocalListViewModel
+import org.koitharu.kotatsu.utils.ExternalStorageHelper
 
 val localModule
 	get() = module {
 
 		single { LocalStorageManager(androidContext(), get()) }
 		single { LocalMangaRepository(get()) }
+
+		factory { ExternalStorageHelper(androidContext()) }
 
 		viewModel { LocalListViewModel(get(), get(), get(), get()) }
 	}
