@@ -1,5 +1,11 @@
 <resources>
 
+	<!--Toolbars-->
+
+	<style name="Theme.Kotatsu.ActionMode.CloseButton" parent="Widget.AppCompat.ActionButton.CloseMode">
+		<item name="android:tint">?colorControlNormal</item>
+	</style>
+
 	<!--AlertDialog-->
 
 	<style name="ThemeOverlay.Kotatsu.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
