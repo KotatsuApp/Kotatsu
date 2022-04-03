@@ -186,7 +186,9 @@ class ReaderActivity :
 			R.id.action_save_page -> {
 				viewModel.getCurrentPage()?.also { page ->
 					viewModel.saveCurrentState(reader?.getCurrentState())
-					val name = page.url.toUri().lastPathSegment
+					val name = page.url.toUri().run {
+						fragment ?: lastPathSegment ?: ""
+					}
 					savePageRequest.launch(name)
 				} ?: showWaitWhileLoading()
 			}

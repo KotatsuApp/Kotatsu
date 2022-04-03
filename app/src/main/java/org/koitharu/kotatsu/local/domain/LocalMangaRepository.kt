@@ -106,8 +106,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				url = fileUri,
 				coverUrl = zipUri(
 					file,
-					entryName = index.getCoverEntry()
-						?: findFirstEntry(zip.entries(), isImage = true)?.name.orEmpty()
+					entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty()
 				),
 				chapters = info.chapters?.map { c ->
 					c.copy(url = fileUri, source = MangaSource.LOCAL)
@@ -129,7 +128,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 			url = fileUri,
 			publicUrl = fileUri,
 			source = MangaSource.LOCAL,
-			coverUrl = zipUri(file, findFirstEntry(zip.entries(), isImage = true)?.name.orEmpty()),
+			coverUrl = zipUri(file, findFirstImageEntry(zip.entries())?.name.orEmpty()),
 			chapters = chapters.sortedWith(AlphanumComparator()).mapIndexed { i, s ->
 				MangaChapter(
 					id = "$i$s".longHashCode(),
@@ -188,20 +187,16 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		}
 	}
 
-	private fun zipUri(file: File, entryName: String) = Uri.fromParts("cbz", file.path, entryName).toString()
+	private fun zipUri(file: File, entryName: String) = "cbz://${file.path}#$entryName"
 
-	private fun findFirstEntry(entries: Enumeration<out ZipEntry>, isImage: Boolean): ZipEntry? {
+	private fun findFirstImageEntry(entries: Enumeration<out ZipEntry>): ZipEntry? {
 		val list = entries.toList()
 			.filterNot { it.isDirectory }
 			.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
-		return if (isImage) {
-			val map = MimeTypeMap.getSingleton()
-			list.firstOrNull {
-				map.getMimeTypeFromExtension(it.name.substringAfterLast('.'))
-					?.startsWith("image/") == true
-			}
-		} else {
-			list.firstOrNull()
+		val map = MimeTypeMap.getSingleton()
+		return list.firstOrNull {
+			map.getMimeTypeFromExtension(it.name.substringAfterLast('.'))
+				?.startsWith("image/") == true
 		}
 	}
 
