@@ -15,11 +15,13 @@ import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.appbar.AppBarLayout
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.AppBarOwner
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
 class SettingsActivity :
@@ -37,9 +39,7 @@ class SettingsActivity :
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		if (supportFragmentManager.findFragmentById(R.id.container) == null) {
-			supportFragmentManager.commit {
-				replace(R.id.container, SettingsHeadersFragment())
-			}
+			openDefaultFragment()
 		}
 	}
 
@@ -114,8 +114,41 @@ class SettingsActivity :
 		}
 	}
 
+	private fun openDefaultFragment() {
+		val fragment = when (intent?.action) {
+			ACTION_READER -> ReaderSettingsFragment()
+			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
+			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
+				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL
+			)
+			else -> SettingsHeadersFragment()
+		}
+		supportFragmentManager.commit {
+			setReorderingAllowed(true)
+			replace(R.id.container, fragment)
+		}
+	}
+
 	companion object {
 
+		private const val ACTION_READER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_READER_SETTINGS"
+		private const val ACTION_SUGGESTIONS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SUGGESTIONS"
+		private const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
+		private const val EXTRA_SOURCE = "source"
+
 		fun newIntent(context: Context) = Intent(context, SettingsActivity::class.java)
+
+		fun newReaderSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_READER)
+
+		fun newSuggestionsSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_SUGGESTIONS)
+
+		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_SOURCE)
+				.putExtra(EXTRA_SOURCE, source)
 	}
 }
