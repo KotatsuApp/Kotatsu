@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.utils
 
-import androidx.annotation.CheckResult
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
@@ -44,7 +43,6 @@ open class MutableZipFile(val file: File) {
 		dir.deleteRecursively()
 	}
 
-	@CheckResult
 	suspend fun flush(): Boolean = runInterruptible(Dispatchers.IO) {
 		val tempFile = File(file.path + ".tmp")
 		if (tempFile.exists()) {
