@@ -4,19 +4,20 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class MangaCategoriesViewModel(
-	private val manga: Manga,
+	private val manga: List<Manga>,
 	private val favouritesRepository: FavouritesRepository
 ) : BaseViewModel() {
 
 	val content = combine(
 		favouritesRepository.observeCategories(),
-		favouritesRepository.observeCategoriesIds(manga.id)
+		observeCategoriesIds(),
 	) { all, checked ->
 		all.map {
 			MangaCategoryItem(
@@ -30,9 +31,9 @@ class MangaCategoriesViewModel(
 	fun setChecked(categoryId: Long, isChecked: Boolean) {
 		launchJob(Dispatchers.Default) {
 			if (isChecked) {
-				favouritesRepository.addToCategory(manga, categoryId)
+				favouritesRepository.addToCategory(categoryId, manga)
 			} else {
-				favouritesRepository.removeFromCategory(manga, categoryId)
+				favouritesRepository.removeFromCategory(categoryId, manga.ids())
 			}
 		}
 	}
@@ -40,6 +41,27 @@ class MangaCategoriesViewModel(
 	fun createCategory(name: String) {
 		launchJob(Dispatchers.Default) {
 			favouritesRepository.addCategory(name)
+		}
+	}
+
+	private fun observeCategoriesIds() = if (manga.size == 1) {
+		// Fast path
+		favouritesRepository.observeCategoriesIds(manga[0].id)
+	} else {
+		combine(
+			manga.map { favouritesRepository.observeCategoriesIds(it.id) }
+		) { array ->
+			val result = HashSet<Long>()
+			var isFirst = true
+			for (ids in array) {
+				if (isFirst) {
+					result.addAll(ids)
+					isFirst = false
+				} else {
+					result.retainAll(ids.toSet())
+				}
+			}
+			result
 		}
 	}
 }

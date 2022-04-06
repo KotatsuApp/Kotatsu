@@ -10,6 +10,7 @@ import android.os.PowerManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
@@ -185,6 +186,29 @@ class DownloadService : BaseService() {
 				}
 				ContextCompat.startForegroundService(context, intent)
 			}
+		}
+
+		fun start(context: Context, manga: Collection<Manga>) {
+			if (manga.isEmpty()) {
+				return
+			}
+			confirmDataTransfer(context) {
+				for (item in manga) {
+					val intent = Intent(context, DownloadService::class.java)
+					intent.putExtra(EXTRA_MANGA, ParcelableManga(item))
+					ContextCompat.startForegroundService(context, intent)
+				}
+			}
+		}
+
+		fun confirmAndStart(context: Context, items: Set<Manga>) {
+			MaterialAlertDialogBuilder(context)
+				.setTitle(R.string.save_manga)
+				.setMessage(R.string.batch_manga_save_confirm)
+				.setNegativeButton(android.R.string.cancel, null)
+				.setPositiveButton(R.string.save) { _, _ ->
+					start(context, items)
+				}.show()
 		}
 
 		fun getCancelIntent(startId: Int) = Intent(ACTION_DOWNLOAD_CANCEL)

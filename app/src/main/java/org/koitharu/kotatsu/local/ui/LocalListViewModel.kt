@@ -3,10 +3,12 @@ package org.koitharu.kotatsu.local.ui
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
@@ -19,7 +21,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.io.IOException
 
 class LocalListViewModel(
 	private val repository: LocalMangaRepository,
@@ -28,7 +29,7 @@ class LocalListViewModel(
 	private val shortcutsRepository: ShortcutsRepository,
 ) : MangaListViewModel(settings) {
 
-	val onMangaRemoved = SingleLiveEvent<Manga>()
+	val onMangaRemoved = SingleLiveEvent<Unit>()
 	val importProgress = MutableLiveData<Progress?>(null)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
@@ -87,18 +88,23 @@ class LocalListViewModel(
 		}
 	}
 
-	fun delete(manga: Manga) {
-		launchJob {
+	fun delete(ids: Set<Long>) {
+		launchLoadingJob {
 			withContext(Dispatchers.Default) {
-				val original = repository.getRemoteManga(manga)
-				repository.delete(manga) || throw IOException("Unable to delete file")
-				runCatching {
-					historyRepository.deleteOrSwap(manga, original)
+				val itemsToRemove = checkNotNull(mangaList.value).filter { it.id in ids }
+				for (manga in itemsToRemove) {
+					val original = repository.getRemoteManga(manga)
+					repository.delete(manga) || throw IOException("Unable to delete file")
+					runCatching {
+						historyRepository.deleteOrSwap(manga, original)
+					}
+					mangaList.update { list ->
+						list?.filterNot { it.id == manga.id }
+					}
 				}
-				mangaList.value = mangaList.value?.filterNot { it.id == manga.id }
 			}
 			shortcutsRepository.updateShortcuts()
-			onMangaRemoved.call(manga)
+			onMangaRemoved.call(Unit)
 		}
 	}
 

@@ -1,11 +1,13 @@
 package org.koitharu.kotatsu.search.ui.global
 
+import android.view.Menu
+import androidx.appcompat.view.ActionMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ext.stringArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
-
 
 class GlobalSearchFragment : MangaListFragment() {
 
@@ -16,6 +18,11 @@ class GlobalSearchFragment : MangaListFragment() {
 	private val query by stringArgument(ARG_QUERY)
 
 	override fun onScrolledToEnd() = Unit
+
+	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+		mode.menuInflater.inflate(R.menu.mode_remote, menu)
+		return super.onCreateActionMode(mode, menu)
+	}
 
 	companion object {
 

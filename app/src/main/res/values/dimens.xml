@@ -19,6 +19,7 @@
 	<dimen name="list_footer_height_inner">36dp</dimen>
 	<dimen name="list_footer_height_outer">48dp</dimen>
 	<dimen name="screen_padding">16dp</dimen>
+	<dimen name="selection_stroke_width">2dp</dimen>
 
 	<dimen name="search_suggestions_manga_height">124dp</dimen>
 	<dimen name="search_suggestions_manga_spacing">4dp</dimen>

@@ -1,62 +1,82 @@
 package org.koitharu.kotatsu.utils
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
+import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
+import java.io.File
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.model.Manga
-import java.io.File
+
+private const val TYPE_TEXT = "text/plain"
+private const val TYPE_IMAGE = "image/*"
+private const val TYPE_CBZ = "application/x-cbz"
 
 class ShareHelper(private val context: Context) {
 
 	fun shareMangaLink(manga: Manga) {
-		val intent = Intent(Intent.ACTION_SEND)
-		intent.type = "text/plain"
-		intent.putExtra(Intent.EXTRA_TEXT, buildString {
+		val text = buildString {
 			append(manga.title)
 			append("\n \n")
 			append(manga.publicUrl)
-		})
-		val shareIntent =
-			Intent.createChooser(intent, context.getString(R.string.share_s, manga.title))
-		context.startActivity(shareIntent)
+		}
+		ShareCompat.IntentBuilder(context)
+			.setText(text)
+			.setType(TYPE_TEXT)
+			.setChooserTitle(context.getString(R.string.share_s, manga.title))
+			.startChooser()
 	}
 
-	fun shareCbz(file: File) {
-		val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", file)
-		val intent = Intent(Intent.ACTION_SEND)
-		intent.setDataAndType(uri, context.contentResolver.getType(uri))
-		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-		val shareIntent =
-			Intent.createChooser(intent, context.getString(R.string.share_s, file.name))
-		context.startActivity(shareIntent)
+	fun shareMangaLinks(manga: Collection<Manga>) {
+		if (manga.isEmpty()) {
+			return
+		}
+		if (manga.size == 1) {
+			shareMangaLink(manga.first())
+			return
+		}
+		val text = manga.joinToString("\n \n") {
+			"${it.title} - ${it.publicUrl}"
+		}
+		ShareCompat.IntentBuilder(context)
+			.setText(text)
+			.setType(TYPE_TEXT)
+			.setChooserTitle(R.string.share)
+			.startChooser()
 	}
 
-	fun shareBackup(file: File) {
-		val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", file)
-		val intent = Intent(Intent.ACTION_SEND)
-		intent.setDataAndType(uri, context.contentResolver.getType(uri))
-		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-		val shareIntent =
-			Intent.createChooser(intent, context.getString(R.string.share_s, file.name))
-		context.startActivity(shareIntent)
+	fun shareCbz(files: Collection<File>) {
+		if (files.isEmpty()) {
+			return
+		}
+		val intentBuilder = ShareCompat.IntentBuilder(context)
+			.setType(TYPE_CBZ)
+		for (file in files) {
+			val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", file)
+			intentBuilder.addStream(uri)
+		}
+		files.singleOrNull()?.let {
+			intentBuilder.setChooserTitle(context.getString(R.string.share_s, it.name))
+		} ?: run {
+			intentBuilder.setChooserTitle(R.string.share)
+		}
+		intentBuilder.startChooser()
 	}
 
 	fun shareImage(uri: Uri) {
-		val intent = Intent(Intent.ACTION_SEND)
-		intent.setDataAndType(uri, context.contentResolver.getType(uri) ?: "image/*")
-		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-		val shareIntent = Intent.createChooser(intent, context.getString(R.string.share_image))
-		context.startActivity(shareIntent)
+		ShareCompat.IntentBuilder(context)
+			.setStream(uri)
+			.setType(context.contentResolver.getType(uri) ?: TYPE_IMAGE)
+			.setChooserTitle(R.string.share_image)
+			.startChooser()
 	}
 
 	fun shareText(text: String) {
-		val intent = Intent(Intent.ACTION_SEND)
-		intent.type = "text/plain"
-		intent.putExtra(Intent.EXTRA_TEXT, text)
-		val shareIntent = Intent.createChooser(intent, context.getString(R.string.share))
-		context.startActivity(shareIntent)
+		ShareCompat.IntentBuilder(context)
+			.setText(text)
+			.setType(TYPE_TEXT)
+			.setChooserTitle(R.string.share)
+			.startChooser()
 	}
 }

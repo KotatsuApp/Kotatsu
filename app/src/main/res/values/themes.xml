@@ -51,11 +51,13 @@
 		<item name="android:enforceStatusBarContrast" tools:targetApi="Q">false</item>
 		<item name="android:itemTextAppearance">@style/TextAppearance.Widget.Menu</item>
 		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.MaterialAlertDialog</item>
+		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
 		<item name="materialAlertDialogTheme">@style/ThemeOverlay.Kotatsu.MaterialAlertDialog</item>
 		<item name="textAppearanceButton">@style/TextAppearance.Kotatsu.Button</item>
 		<item name="android:buttonStyle">?attr/borderlessButtonStyle</item>
 		<item name="android:backgroundDimAmount">0.32</item>
 		<item name="windowActionModeOverlay">true</item>
+		<item name="actionModeStyle">@style/Widget.Kotatsu.ActionMode</item>
 		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
 		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>

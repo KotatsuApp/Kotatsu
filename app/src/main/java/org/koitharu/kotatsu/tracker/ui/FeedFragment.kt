@@ -25,7 +25,9 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.progress.Progress
 
-class FeedFragment : BaseFragment<FragmentFeedBinding>(), PaginationScrollListener.Callback,
+class FeedFragment :
+	BaseFragment<FragmentFeedBinding>(),
+	PaginationScrollListener.Callback,
 	MangaListListener {
 
 	private val viewModel by viewModel<FeedViewModel>()

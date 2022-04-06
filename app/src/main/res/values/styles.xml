@@ -6,6 +6,11 @@
 		<item name="android:tint">?colorControlNormal</item>
 	</style>
 
+	<style name="Widget.Kotatsu.ActionMode" parent="Base.Widget.Material3.ActionMode">
+		<!--<item name="titleTextStyle">@style/TextAppearance.Kotatsu.ActionBar.Title</item>-->
+		<item name="theme">@style/ThemeOverlay.Kotatsu.ActionMode</item>
+	</style>
+
 	<!--AlertDialog-->
 
 	<style name="ThemeOverlay.Kotatsu.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
@@ -13,6 +18,12 @@
 		<item name="android:textColorPrimary">?attr/colorOnSurface</item>
 		<item name="android:textColor">?attr/colorOnSurface</item>
 		<item name="dialogCornerRadius">28dp</item>
+	</style>
+
+	<!-- Bottom sheet -->
+
+	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+		<item name="android:navigationBarColor">?colorSurfaceVariant</item>
 	</style>
 
 	<!-- Widget styles -->
@@ -92,6 +103,11 @@
 		<item name="colorControlHighlight">@color/selector_overlay</item>
 	</style>
 
+	<style name="ThemeOverlay.Kotatsu.ActionMode" parent="">
+		<item name="colorOnSurface">?colorPrimary</item>
+		<item name="colorControlNormal">?colorPrimary</item>
+	</style>
+
 	<!-- TextAppearance -->
 
 	<style name="TextAppearance.Widget.Menu" parent="TextAppearance.AppCompat.Menu">
@@ -109,6 +125,10 @@
 	<style name="TextAppearance.Kotatsu.SectionHeader2" parent="TextAppearance.Material3.LabelSmall">
 		<item name="android:textColor">?colorPrimary</item>
 		<item name="android:textAllCaps">true</item>
+	</style>
+
+	<style name="TextAppearance.Kotatsu.ActionBar.Title" parent="TextAppearance.Material3.TitleLarge">
+		<item name="android:textColor">?attr/colorPrimary</item>
 	</style>
 
 	<!-- Shapes -->

@@ -270,4 +270,7 @@
 	<string name="search_chapters">Find chapter</string>
 	<string name="chapters_empty">No chapters in this manga</string>
 	<string name="percent_string_pattern">%1$s%%</string>
+	<string name="text_delete_local_manga_batch">Delete selected items from device permanently?</string>
+	<string name="removal_completed">Removal completed</string>
+	<string name="batch_manga_save_confirm">Are you sure you want to download all selected manga with all its chapters? This action can consume a lot of traffic and storage</string>
 </resources>

@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 
-abstract class BaseFragment<B : ViewBinding> : Fragment(),
+abstract class BaseFragment<B : ViewBinding> :
+	Fragment(),
 	WindowInsetsDelegate.WindowInsetsListener {
 
 	private var viewBinding: B? = null
@@ -22,6 +24,9 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(),
 
 	@Suppress("LeakingThis")
 	protected val insetsDelegate = WindowInsetsDelegate(this)
+
+	protected val actionModeDelegate: ActionModeDelegate
+		get() = (requireActivity() as BaseActivity<*>).actionModeDelegate
 
 	override fun onCreateView(
 		inflater: LayoutInflater,

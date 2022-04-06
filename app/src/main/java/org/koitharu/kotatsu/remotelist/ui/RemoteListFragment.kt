@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.remotelist.ui
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.view.ActionMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
@@ -47,6 +48,11 @@ class RemoteListFragment : MangaListFragment() {
 			}
 			else -> super.onOptionsItemSelected(item)
 		}
+	}
+
+	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+		mode.menuInflater.inflate(R.menu.mode_remote, menu)
+		return super.onCreateActionMode(mode, menu)
 	}
 
 	override fun onFilterClick() {
