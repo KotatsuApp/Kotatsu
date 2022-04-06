@@ -217,13 +217,7 @@
     <string name="chapter_is_missing_text">Questo capitolo manca sul tuo dispositivo. Scaricalo o leggilo in linea.</string>
     <string name="text_downloads_holder">Attualmente non ci sono scaricamenti attivi</string>
     <string name="queued">In coda</string>
-    <string name="about_license">Licenza</string>
-    <string name="about_copyright_and_licenses">Diritti d\'autore e licenze</string>
-    <string name="about_gratitudes_summary">Queste persone rendono Kotatsu migliore</string>
-    <string name="about_gratitudes">Ringraziamenti</string>
-    <string name="about_support_developer_summary">Se ti piace questa applicazione, puoi aiutare finanziariamente via Yoomoney (Yandex.Money)</string>
-    <string name="about_support_developer">Sostieni lo sviluppatore</string>
-    <string name="about_feedback_4pda">Argomento su 4PDA</string>
+	<string name="about_feedback_4pda">Argomento su 4PDA</string>
     <string name="about_feedback">Commenti</string>
     <string name="about_app_translation">Traduzione</string>
     <string name="about_app_translation_summary">Traduci questa applicazione</string>

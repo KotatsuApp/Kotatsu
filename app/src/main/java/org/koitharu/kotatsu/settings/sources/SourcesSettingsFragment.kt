@@ -15,6 +15,8 @@ import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.SettingsHeadersFragment
+import org.koitharu.kotatsu.settings.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
@@ -87,7 +89,9 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	}
 
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {
-		(activity as? SettingsActivity)?.openMangaSourceSettings(item.source)
+		val fragment = SourceSettingsFragment.newInstance(item.source)
+		(parentFragment as? SettingsHeadersFragment)?.openFragment(fragment)
+			?: (activity as? SettingsActivity)?.openFragment(fragment)
 	}
 
 	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {

@@ -8,7 +8,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity
+import org.koitharu.kotatsu.settings.SettingsActivity
 
 class SuggestionsFragment : MangaListFragment() {
 
@@ -37,7 +37,7 @@ class SuggestionsFragment : MangaListFragment() {
 				true
 			}
 			R.id.action_settings -> {
-				startActivity(SimpleSettingsActivity.newSuggestionsSettingsIntent(requireContext()))
+				startActivity(SettingsActivity.newSuggestionsSettingsIntent(requireContext()))
 				true
 			}
 			else -> super.onOptionsItemSelected(item)

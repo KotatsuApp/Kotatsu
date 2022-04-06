@@ -222,13 +222,7 @@
     <string name="about_app_translation">Translation</string>
     <string name="about_feedback">Feedback</string>
     <string name="about_feedback_4pda">Topic on 4PDA</string>
-    <string name="about_support_developer">Support the developer</string>
-    <string name="about_support_developer_summary">If you like this app, you can send money through Yoomoney (ex. Yandex.Money)</string>
-    <string name="about_gratitudes">Gratitudes</string>
-    <string name="about_gratitudes_summary">These people all made Kotatsu better</string>
-    <string name="about_copyright_and_licenses">Copyright and Licenses</string>
-    <string name="about_license">License</string>
-    <string name="auth_complete">Authorized</string>
+	<string name="auth_complete">Authorized</string>
     <string name="auth_not_supported_by">Logging in on %s is not supported</string>
     <string name="text_clear_cookies_prompt">You will be logged out from all sources</string>
     <string name="genres">Genres</string>
@@ -270,4 +264,8 @@
 	<string name="search_chapters">Find chapter</string>
 	<string name="chapters_empty">No chapters in this manga</string>
 	<string name="percent_string_pattern">%1$s%%</string>
+	<string name="appearance">Appearance</string>
+	<string name="content">Content</string>
+	<string name="github" translatable="false">GitHub</string>
+	<string name="discord" translatable="false">Discord</string>
 </resources>

@@ -59,15 +59,6 @@
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
 			android:label="@string/settings" />
 		<activity
-			android:name="org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity"
-			android:exported="true"
-			android:label="@string/settings">
-			<intent-filter>
-				<action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity
 			android:name="org.koitharu.kotatsu.browser.BrowserActivity"
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />

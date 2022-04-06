@@ -6,14 +6,18 @@ import androidx.annotation.CallSuper
 import androidx.annotation.StringRes
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.SettingsHeadersFragment
 
-abstract class BasePreferenceFragment(@StringRes private val titleId: Int) : PreferenceFragmentCompat(),
+abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
+	PreferenceFragmentCompat(),
 	WindowInsetsDelegate.WindowInsetsListener,
 	RecyclerViewOwner {
 
@@ -39,16 +43,20 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) : Pre
 	override fun onResume() {
 		super.onResume()
 		if (titleId != 0) {
-			activity?.setTitle(titleId)
+			setTitle(getString(titleId))
 		}
 	}
 
 	@CallSuper
 	override fun onWindowInsetsChanged(insets: Insets) {
 		listView.updatePadding(
-			left = insets.left,
-			right = insets.right,
 			bottom = insets.bottom
 		)
+	}
+
+	@Suppress("UsePropertyAccessSyntax")
+	protected fun setTitle(title: CharSequence) {
+		(parentFragment as? SettingsHeadersFragment)?.setTitle(title)
+			?: activity?.setTitle(title)
 	}
 }

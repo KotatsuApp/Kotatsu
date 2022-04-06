@@ -253,11 +253,9 @@ class AppSettings(context: Context) {
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
-		const val KEY_APP_GRATITUDES = "about_gratitudes"
 		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
 		const val KEY_FEEDBACK_DISCORD = "about_feedback_discord"
 		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
-		const val KEY_SUPPORT_DEVELOPER = "about_support_developer"
 
 		private const val NETWORK_NEVER = 0
 		private const val NETWORK_ALWAYS = 1
