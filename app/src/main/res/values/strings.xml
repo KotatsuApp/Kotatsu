@@ -268,4 +268,5 @@
 	<string name="content">Content</string>
 	<string name="github" translatable="false">GitHub</string>
 	<string name="discord" translatable="false">Discord</string>
+	<string name="suggestions_updating">Suggestions updating</string>
 </resources>
