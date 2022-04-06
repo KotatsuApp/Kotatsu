@@ -25,7 +25,7 @@ Download APK from Github Releases:
 * Tablet-optimized material design UI
 * Standard and Webtoon-optimized reader
 * Notifications about new chapters with updates feed
-* Localized in multiple languages
+* Available in multiple languages
 * Password protect access to the app
 
 ### Screenshots
