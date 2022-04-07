@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
+import org.koitharu.kotatsu.utils.ext.trySetForeground
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.util.concurrent.TimeUnit
 
@@ -53,7 +54,9 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		if (tracks.isEmpty()) {
 			return Result.success()
 		}
-		setForeground(getForegroundInfo())
+		if (TAG in tags) { // not expedited
+			trySetForeground()
+		}
 		var success = 0
 		val workData = Data.Builder()
 			.putInt(DATA_TOTAL, tracks.size)

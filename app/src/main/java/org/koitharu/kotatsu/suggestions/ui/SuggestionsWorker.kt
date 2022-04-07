@@ -4,21 +4,28 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import androidx.annotation.FloatRange
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.*
-import java.util.concurrent.TimeUnit
-import kotlin.math.pow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
+import org.koitharu.kotatsu.utils.ext.asArrayList
+import org.koitharu.kotatsu.utils.ext.trySetForeground
+import java.util.concurrent.TimeUnit
+import kotlin.math.pow
 
 class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 	CoroutineWorker(appContext, params), KoinComponent {
@@ -27,11 +34,10 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 	private val historyRepository by inject<HistoryRepository>()
 	private val appSettings by inject<AppSettings>()
 
-	override suspend fun doWork(): Result = try {
+	override suspend fun doWork(): Result {
 		val count = doWorkImpl()
-		Result.success(workDataOf(DATA_COUNT to count))
-	} catch (t: Throwable) {
-		Result.failure()
+		val outputData = workDataOf(DATA_COUNT to count)
+		return Result.success(outputData)
 	}
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
@@ -70,21 +76,28 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 			suggestionRepository.clear()
 			return 0
 		}
-		val rawResults = ArrayList<Manga>()
-		val allTags = historyRepository.getAllTags()
+		val allTags = historyRepository.getPopularTags(TAGS_LIMIT)
 		if (allTags.isEmpty()) {
 			return 0
 		}
+		if (TAG in tags) { // not expedited
+			trySetForeground()
+		}
 		val tagsBySources = allTags.groupBy { x -> x.source }
-		for ((source, tags) in tagsBySources) {
-			val repo = MangaRepository(source)
-			tags.flatMapTo(rawResults) { tag ->
-				repo.getList(
-					offset = 0,
-					sortOrder = SortOrder.UPDATED,
-					tags = setOf(tag),
-				)
-			}
+		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
+		val rawResults = coroutineScope {
+			tagsBySources.flatMap { (source, tags) ->
+				val repo = MangaRepository(source)
+				tags.map { tag ->
+					async(dispatcher) {
+						repo.getList(
+							offset = 0,
+							sortOrder = SortOrder.UPDATED,
+							tags = setOf(tag),
+						)
+					}
+				}
+			}.awaitAll().flatten().asArrayList()
 		}
 		if (appSettings.isSuggestionsExcludeNsfw) {
 			rawResults.removeAll { it.isNsfw }
@@ -95,14 +108,23 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		val suggestions = rawResults.distinctBy { manga ->
 			manga.id
 		}.map { manga ->
-			val jointTags = manga.tags intersect allTags
 			MangaSuggestion(
 				manga = manga,
-				relevance = (jointTags.size / manga.tags.size.toDouble()).pow(2.0).toFloat(),
+				relevance = computeRelevance(manga.tags, allTags)
 			)
 		}.sortedBy { it.relevance }.take(LIMIT)
 		suggestionRepository.replace(suggestions)
 		return suggestions.size
+	}
+
+	@FloatRange(from = 0.0, to = 1.0)
+	private fun computeRelevance(mangaTags: Set<MangaTag>, allTags: List<MangaTag>): Float {
+		val maxWeight = (allTags.size + allTags.size + 1 - mangaTags.size) * mangaTags.size / 2.0
+		val weight = mangaTags.sumOf { tag ->
+			val index = allTags.indexOf(tag)
+			if (index < 0) 0 else allTags.size - index
+		}
+		return (weight / maxWeight).pow(2.0).toFloat()
 	}
 
 	companion object {
@@ -110,6 +132,8 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		private const val TAG = "suggestions"
 		private const val TAG_ONESHOT = "suggestions_oneshot"
 		private const val LIMIT = 140
+		private const val TAGS_LIMIT = 20
+		private const val MAX_PARALLELISM = 4
 		private const val DATA_COUNT = "count"
 		private const val WORKER_CHANNEL_ID = "suggestion_worker"
 		private const val WORKER_NOTIFICATION_ID = 36

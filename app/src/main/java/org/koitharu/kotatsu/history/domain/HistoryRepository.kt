@@ -11,9 +11,9 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
-import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class HistoryRepository(
 	private val db: MangaDatabase,
@@ -91,7 +91,7 @@ class HistoryRepository(
 		}
 	}
 
-	suspend fun getAllTags(): Set<MangaTag> {
-		return db.historyDao.findAllTags().mapToSet { x -> x.toMangaTag() }
+	suspend fun getPopularTags(limit: Int): List<MangaTag> {
+		return db.historyDao.findPopularTags(limit).map { x -> x.toMangaTag() }
 	}
 }

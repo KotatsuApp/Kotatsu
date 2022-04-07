@@ -13,8 +13,8 @@ import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.utils.ext.mapItems
-import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class FavouritesRepository(private val db: MangaDatabase) {
 

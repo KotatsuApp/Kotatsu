@@ -16,8 +16,8 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.DownloadsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.utils.PendingIntentCompat
-import org.koitharu.kotatsu.utils.ext.format
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import com.google.android.material.R as materialR
 

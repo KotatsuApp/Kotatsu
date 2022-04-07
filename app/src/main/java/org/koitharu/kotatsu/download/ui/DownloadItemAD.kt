@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
 import org.koitharu.kotatsu.download.domain.DownloadState
+import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.utils.ext.*
 import org.koitharu.kotatsu.utils.progress.ProgressJob
 

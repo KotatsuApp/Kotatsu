@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.map
