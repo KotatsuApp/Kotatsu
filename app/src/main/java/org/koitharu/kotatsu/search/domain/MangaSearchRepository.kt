@@ -84,7 +84,7 @@ class MangaSearchRepository(
 		return when {
 			query.isNotEmpty() && source != null -> db.tagsDao.findTags(source.name, "%$query%", limit)
 			query.isNotEmpty() -> db.tagsDao.findTags("%$query%", limit)
-			source != null -> db.tagsDao.findTags(source.name, limit)
+			source != null -> db.tagsDao.findPopularTags(source.name, limit)
 			else -> db.tagsDao.findPopularTags(limit)
 		}.map {
 			it.toMangaTag()

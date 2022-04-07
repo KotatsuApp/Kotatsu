@@ -12,7 +12,7 @@ abstract class TagsDao {
 	@Query(
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id
-		GROUP BY manga_tags.tag_id 
+		GROUP BY tags.title 
 		ORDER BY COUNT(manga_id) DESC 
 		LIMIT :limit"""
 	)
@@ -22,7 +22,7 @@ abstract class TagsDao {
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id 
 		WHERE tags.source = :source 
-		GROUP BY manga_tags.tag_id 
+		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 
 		LIMIT :limit"""
 	)
@@ -32,7 +32,7 @@ abstract class TagsDao {
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id 
 		WHERE tags.source = :source AND title LIKE :query
-		GROUP BY manga_tags.tag_id 
+		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 
 		LIMIT :limit"""
 	)
@@ -42,7 +42,7 @@ abstract class TagsDao {
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id 
 		WHERE title LIKE :query
-		GROUP BY manga_tags.tag_id 
+		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 
 		LIMIT :limit"""
 	)
