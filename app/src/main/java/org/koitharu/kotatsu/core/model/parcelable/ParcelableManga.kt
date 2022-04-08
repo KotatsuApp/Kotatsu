@@ -2,9 +2,11 @@ package org.koitharu.kotatsu.core.model.parcelable
 
 import android.os.Parcel
 import android.os.Parcelable
-import android.util.Log
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.parsers.model.Manga
+
+// Limits to avoid TransactionTooLargeException
+private const val MAX_SAFE_SIZE = 1024 * 512 // Assume that 512 kb is safe parcel size
+private const val MAX_SAFE_CHAPTERS_COUNT = 40 // this is 100% safe
 
 class ParcelableManga(
 	val manga: Manga,
@@ -12,14 +14,22 @@ class ParcelableManga(
 
 	constructor(parcel: Parcel) : this(parcel.readManga())
 
-	init {
-		if (BuildConfig.DEBUG && manga.chapters != null) {
-			Log.w("ParcelableManga", "Passing manga with chapters as Parcelable is dangerous!")
-		}
-	}
-
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
-		manga.writeToParcel(parcel, flags)
+		val chapters = manga.chapters
+		if (chapters == null || chapters.size <= MAX_SAFE_CHAPTERS_COUNT) {
+			// fast path
+			manga.writeToParcel(parcel, flags, withChapters = true)
+			return
+		}
+		val tempParcel = Parcel.obtain()
+		manga.writeToParcel(tempParcel, flags, withChapters = true)
+		val size = tempParcel.dataSize()
+		if (size < MAX_SAFE_SIZE) {
+			parcel.appendFrom(tempParcel, 0, size)
+		} else {
+			manga.writeToParcel(parcel, flags, withChapters = false)
+		}
+		tempParcel.recycle()
 	}
 
 	override fun describeContents(): Int {
