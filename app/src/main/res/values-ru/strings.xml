@@ -265,4 +265,7 @@
 	<string name="chapters_empty">В этой манге нет глав</string>
 	<string name="appearance">Оформление</string>
 	<string name="content">Контент</string>
+	<string name="suggestions_updating">Обновление рекомендаций</string>
+	<string name="suggestions_excluded_genres">Исключить жанры</string>
+	<string name="suggestions_excluded_genres_summary">Укажите жанры, которые Вы не хотите видеть в рекомендациях</string>
 </resources>

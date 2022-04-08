@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_marginTop="48dp"
+	android:layout_marginBottom="48dp"
+	android:overScrollMode="ifContentScrolls">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@android:id/message"
+			style="?android:attr/textAppearanceSmall"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="24dp"
+			android:layout_marginLeft="24dp"
+			android:layout_marginEnd="24dp"
+			android:layout_marginRight="24dp"
+			android:layout_marginBottom="48dp"
+			android:labelFor="@android:id/edit"
+			android:textColor="?android:attr/textColorSecondary"
+			tools:ignore="LabelFor" />
+
+		<MultiAutoCompleteTextView
+			android:id="@android:id/edit"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="20dp"
+			android:layout_marginLeft="20dp"
+			android:layout_marginEnd="20dp"
+			android:layout_marginRight="20dp"
+			android:importantForAutofill="no"
+			android:minHeight="48dp" />
+
+	</LinearLayout>
+</ScrollView>

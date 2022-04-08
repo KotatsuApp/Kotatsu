@@ -4,10 +4,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.settings.utils.MultiAutoCompleteTextViewPreference
+import org.koitharu.kotatsu.settings.utils.TagsAutoCompleteProvider
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 
@@ -23,6 +26,11 @@ class SuggestionsSettingsFragment : BasePreferenceFragment(R.string.suggestions)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_suggestions)
+
+		findPreference<MultiAutoCompleteTextViewPreference>(AppSettings.KEY_SUGGESTIONS_EXCLUDE_TAGS)?.run {
+			autoCompleteProvider = TagsAutoCompleteProvider(get())
+			summaryProvider = MultiAutoCompleteTextViewPreference.SimpleSummaryProvider(summary)
+		}
 	}
 
 	override fun onDestroy() {

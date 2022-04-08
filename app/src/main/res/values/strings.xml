@@ -269,4 +269,6 @@
 	<string name="github" translatable="false">GitHub</string>
 	<string name="discord" translatable="false">Discord</string>
 	<string name="suggestions_updating">Suggestions updating</string>
+	<string name="suggestions_excluded_genres">Exclude genres</string>
+	<string name="suggestions_excluded_genres_summary">Specify genres that you do not want to see in the suggestions</string>
 </resources>

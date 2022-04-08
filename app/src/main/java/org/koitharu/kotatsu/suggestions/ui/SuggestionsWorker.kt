@@ -76,7 +76,10 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 			suggestionRepository.clear()
 			return 0
 		}
-		val allTags = historyRepository.getPopularTags(TAGS_LIMIT)
+		val blacklistTagRegex = appSettings.getSuggestionsTagsBlacklistRegex()
+		val allTags = historyRepository.getPopularTags(TAGS_LIMIT).filterNot {
+			blacklistTagRegex?.containsMatchIn(it.title) ?: false
+		}
 		if (allTags.isEmpty()) {
 			return 0
 		}
@@ -101,6 +104,11 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		}
 		if (appSettings.isSuggestionsExcludeNsfw) {
 			rawResults.removeAll { it.isNsfw }
+		}
+		if (blacklistTagRegex != null) {
+			rawResults.removeAll {
+				it.tags.any { x -> blacklistTagRegex.containsMatchIn(x.title) }
+			}
 		}
 		if (rawResults.isEmpty()) {
 			return 0
