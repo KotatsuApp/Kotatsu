@@ -25,6 +25,8 @@ Download APK from Github Releases:
 * Tablet-optimized material design UI
 * Standard and Webtoon-optimized reader
 * Notifications about new chapters with updates feed
+* Available in multiple languages
+* Password protect access to the app
 
 ### Screenshots
 
@@ -34,6 +36,14 @@ Download APK from Github Releases:
 
 | ![](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/tenInchScreenshots/1.png) | ![](https://github.com/nv95/Kotatsu/raw/devel/metadata/en-US/images/tenInchScreenshots/2.png) |
 |-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+
+### Localization
+
+<a href="https://hosted.weblate.org/engage/kotatsu/">
+<img src="https://hosted.weblate.org/widgets/kotatsu/-/287x66-white.png" alt="Translation status" />
+</a>
+
+Kotatsu is localized in a number of different languages, if you would like to help improve these or add new languages, please head over to the Weblate <a href="https://hosted.weblate.org/engage/kotatsu/">project page</a> 
 
 ### License
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)  
