@@ -268,4 +268,7 @@
 	<string name="suggestions_updating">Обновление рекомендаций</string>
 	<string name="suggestions_excluded_genres">Исключить жанры</string>
 	<string name="suggestions_excluded_genres_summary">Укажите жанры, которые Вы не хотите видеть в рекомендациях</string>
+	<string name="text_delete_local_manga_batch">Удалить выбранную мангу с накопителя?</string>
+	<string name="removal_completed">Удаление завершено</string>
+	<string name="batch_manga_save_confirm">Загрузить выбранную мангу со всеми главами? Это может привести к большому расходу трафика и места на накопителе</string>
 </resources>
