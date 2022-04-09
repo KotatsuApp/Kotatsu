@@ -5,7 +5,6 @@ import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -22,9 +21,6 @@ val networkModule
 				cache(get<LocalStorageManager>().createHttpCache())
 				addInterceptor(UserAgentInterceptor())
 				addInterceptor(CloudFlareInterceptor())
-				if (BuildConfig.DEBUG) {
-					addNetworkInterceptor(CurlLoggingInterceptor())
-				}
 			}.build()
 		}
 		single<MangaLoaderContext> { MangaLoaderContextImpl(get(), get(), get()) }

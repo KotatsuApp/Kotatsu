@@ -5,10 +5,9 @@
 
 	<Preference
 		android:key="auth"
+		android:order="100"
 		android:persistent="false"
 		android:title="@string/sign_in"
-		android:order="100"
-		app:allowDividerAbove="true"
-		app:iconSpaceReserved="false" />
+		app:allowDividerAbove="true" />
 
 </PreferenceScreen>

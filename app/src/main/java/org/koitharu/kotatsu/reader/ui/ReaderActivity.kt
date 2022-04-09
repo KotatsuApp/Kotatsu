@@ -44,6 +44,7 @@ import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
+import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
@@ -158,7 +159,7 @@ class ReaderActivity :
 				)
 			}
 			R.id.action_settings -> {
-				startActivity(SimpleSettingsActivity.newReaderSettingsIntent(this))
+				startActivity(SettingsActivity.newReaderSettingsIntent(this))
 			}
 			R.id.action_chapters -> {
 				ChaptersBottomSheet.show(

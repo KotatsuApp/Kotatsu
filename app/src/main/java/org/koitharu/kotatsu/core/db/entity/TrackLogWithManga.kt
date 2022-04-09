@@ -3,9 +3,10 @@ package org.koitharu.kotatsu.core.db.entity
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import org.koitharu.kotatsu.core.model.TrackingLogItem
-import org.koitharu.kotatsu.utils.ext.mapToSet
 import java.util.*
+import org.koitharu.kotatsu.core.model.TrackingLogItem
+import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class TrackLogWithManga(
 	@Embedded val trackLog: TrackLogEntity,

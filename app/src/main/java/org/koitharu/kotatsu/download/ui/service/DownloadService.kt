@@ -35,7 +35,6 @@ import org.koitharu.kotatsu.utils.ext.throttle
 import org.koitharu.kotatsu.utils.ext.toArraySet
 import org.koitharu.kotatsu.utils.progress.ProgressJob
 import java.util.concurrent.TimeUnit
-import kotlin.collections.set
 
 class DownloadService : BaseService() {
 
@@ -71,7 +70,6 @@ class DownloadService : BaseService() {
 		return if (manga != null) {
 			jobs[startId] = downloadManga(startId, manga, chapters)
 			jobCount.value = jobs.size
-			Toast.makeText(this, R.string.manga_downloading_, Toast.LENGTH_SHORT).show()
 			START_REDELIVER_INTENT
 		} else {
 			stopSelf(startId)
@@ -185,6 +183,7 @@ class DownloadService : BaseService() {
 					intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
 				}
 				ContextCompat.startForegroundService(context, intent)
+				Toast.makeText(context, R.string.manga_downloading_, Toast.LENGTH_SHORT).show()
 			}
 		}
 

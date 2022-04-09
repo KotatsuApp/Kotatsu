@@ -1,16 +1,29 @@
 package org.koitharu.kotatsu.suggestions.ui
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
+import androidx.annotation.FloatRange
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.work.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
+import org.koitharu.kotatsu.utils.ext.asArrayList
+import org.koitharu.kotatsu.utils.ext.trySetForeground
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 
@@ -21,11 +34,41 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 	private val historyRepository by inject<HistoryRepository>()
 	private val appSettings by inject<AppSettings>()
 
-	override suspend fun doWork(): Result = try {
+	override suspend fun doWork(): Result {
 		val count = doWorkImpl()
-		Result.success(workDataOf(DATA_COUNT to count))
-	} catch (t: Throwable) {
-		Result.failure()
+		val outputData = workDataOf(DATA_COUNT to count)
+		return Result.success(outputData)
+	}
+
+	override suspend fun getForegroundInfo(): ForegroundInfo {
+		val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+		val title = applicationContext.getString(R.string.suggestions_updating)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			val channel = NotificationChannel(
+				WORKER_CHANNEL_ID,
+				title,
+				NotificationManager.IMPORTANCE_LOW
+			)
+			channel.setShowBadge(false)
+			channel.enableVibration(false)
+			channel.setSound(null, null)
+			channel.enableLights(false)
+			manager.createNotificationChannel(channel)
+		}
+
+		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
+			.setContentTitle(title)
+			.setPriority(NotificationCompat.PRIORITY_MIN)
+			.setDefaults(0)
+			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
+			.setSilent(true)
+			.setProgress(0, 0, true)
+			.setSmallIcon(android.R.drawable.stat_notify_sync)
+			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
+			.setOngoing(true)
+			.build()
+
+		return ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
 	}
 
 	private suspend fun doWorkImpl(): Int {
@@ -33,24 +76,39 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 			suggestionRepository.clear()
 			return 0
 		}
-		val rawResults = ArrayList<Manga>()
-		val allTags = historyRepository.getAllTags()
+		val blacklistTagRegex = appSettings.getSuggestionsTagsBlacklistRegex()
+		val allTags = historyRepository.getPopularTags(TAGS_LIMIT).filterNot {
+			blacklistTagRegex?.containsMatchIn(it.title) ?: false
+		}
 		if (allTags.isEmpty()) {
 			return 0
 		}
+		if (TAG in tags) { // not expedited
+			trySetForeground()
+		}
 		val tagsBySources = allTags.groupBy { x -> x.source }
-		for ((source, tags) in tagsBySources) {
-			val repo = MangaRepository(source)
-			tags.flatMapTo(rawResults) { tag ->
-				repo.getList(
-					offset = 0,
-					sortOrder = SortOrder.UPDATED,
-					tags = setOf(tag),
-				)
-			}
+		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
+		val rawResults = coroutineScope {
+			tagsBySources.flatMap { (source, tags) ->
+				val repo = MangaRepository(source)
+				tags.map { tag ->
+					async(dispatcher) {
+						repo.getList(
+							offset = 0,
+							sortOrder = SortOrder.UPDATED,
+							tags = setOf(tag),
+						)
+					}
+				}
+			}.awaitAll().flatten().asArrayList()
 		}
 		if (appSettings.isSuggestionsExcludeNsfw) {
 			rawResults.removeAll { it.isNsfw }
+		}
+		if (blacklistTagRegex != null) {
+			rawResults.removeAll {
+				it.tags.any { x -> blacklistTagRegex.containsMatchIn(x.title) }
+			}
 		}
 		if (rawResults.isEmpty()) {
 			return 0
@@ -58,14 +116,23 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		val suggestions = rawResults.distinctBy { manga ->
 			manga.id
 		}.map { manga ->
-			val jointTags = manga.tags intersect allTags
 			MangaSuggestion(
 				manga = manga,
-				relevance = (jointTags.size / manga.tags.size.toDouble()).pow(2.0).toFloat(),
+				relevance = computeRelevance(manga.tags, allTags)
 			)
 		}.sortedBy { it.relevance }.take(LIMIT)
 		suggestionRepository.replace(suggestions)
 		return suggestions.size
+	}
+
+	@FloatRange(from = 0.0, to = 1.0)
+	private fun computeRelevance(mangaTags: Set<MangaTag>, allTags: List<MangaTag>): Float {
+		val maxWeight = (allTags.size + allTags.size + 1 - mangaTags.size) * mangaTags.size / 2.0
+		val weight = mangaTags.sumOf { tag ->
+			val index = allTags.indexOf(tag)
+			if (index < 0) 0 else allTags.size - index
+		}
+		return (weight / maxWeight).pow(2.0).toFloat()
 	}
 
 	companion object {
@@ -73,7 +140,11 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		private const val TAG = "suggestions"
 		private const val TAG_ONESHOT = "suggestions_oneshot"
 		private const val LIMIT = 140
+		private const val TAGS_LIMIT = 20
+		private const val MAX_PARALLELISM = 4
 		private const val DATA_COUNT = "count"
+		private const val WORKER_CHANNEL_ID = "suggestion_worker"
+		private const val WORKER_NOTIFICATION_ID = 36
 
 		fun setup(context: Context) {
 			val constraints = Constraints.Builder()
@@ -96,6 +167,7 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 			val request = OneTimeWorkRequestBuilder<SuggestionsWorker>()
 				.setConstraints(constraints)
 				.addTag(TAG_ONESHOT)
+				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
 			WorkManager.getInstance(context)
 				.enqueue(request)

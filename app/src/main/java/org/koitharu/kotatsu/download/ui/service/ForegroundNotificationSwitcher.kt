@@ -24,9 +24,10 @@ class ForegroundNotificationSwitcher(
 	@Synchronized
 	fun notify(startId: Int, notification: Notification) {
 		if (notifications.isEmpty()) {
-			handler.postDelayed(StartForegroundRunnable(startId, notification), DEFAULT_DELAY)
+			StartForegroundRunnable(startId, notification)
+		} else {
+			notificationManager.notify(startId, notification)
 		}
-		notificationManager.notify(startId, notification)
 		notifications[startId] = notification
 	}
 

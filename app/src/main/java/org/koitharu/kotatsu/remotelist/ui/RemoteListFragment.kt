@@ -10,7 +10,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.filter.FilterBottomSheet
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity
+import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ext.serializableArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -35,10 +35,7 @@ class RemoteListFragment : MangaListFragment() {
 		return when (item.itemId) {
 			R.id.action_source_settings -> {
 				startActivity(
-					SimpleSettingsActivity.newSourceSettingsIntent(
-						context ?: return false,
-						source,
-					)
+					SettingsActivity.newSourceSettingsIntent(context ?: return false, source)
 				)
 				true
 			}

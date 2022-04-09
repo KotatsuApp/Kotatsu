@@ -1,9 +1,13 @@
 package org.koitharu.kotatsu.settings
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -11,6 +15,7 @@ import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.appbar.AppBarLayout
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
@@ -34,9 +39,7 @@ class SettingsActivity :
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		if (supportFragmentManager.findFragmentById(R.id.container) == null) {
-			supportFragmentManager.commit {
-				replace(R.id.container, MainSettingsFragment())
-			}
+			openDefaultFragment()
 		}
 	}
 
@@ -55,6 +58,22 @@ class SettingsActivity :
 		super.onStop()
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		menuInflater.inflate(R.menu.opt_settings, menu)
+		return super.onCreateOptionsMenu(menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+		R.id.action_leaks -> {
+			val intent = Intent()
+			intent.component = ComponentName(this, "leakcanary.internal.activity.LeakActivity")
+			intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+			startActivity(intent)
+			true
+		}
+		else -> super.onOptionsItemSelected(item)
+	}
+
 	override fun onBackStackChanged() {
 		val fragment = supportFragmentManager.findFragmentById(R.id.container) as? RecyclerViewOwner ?: return
 		val recyclerView = fragment.recyclerView
@@ -70,32 +89,66 @@ class SettingsActivity :
 		val fm = supportFragmentManager
 		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment ?: return false)
 		fragment.arguments = pref.extras
-		fragment.setTargetFragment(caller, 0)
+		// fragment.setTargetFragment(caller, 0)
 		openFragment(fragment)
 		return true
 	}
 
-	fun openMangaSourceSettings(mangaSource: MangaSource) {
-		openFragment(SourceSettingsFragment.newInstance(mangaSource))
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.appbar.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
+		binding.container.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 	}
 
-	fun openNotificationSettingsLegacy() {
-		openFragment(NotificationSettingsLegacyFragment())
-	}
-
-	private fun openFragment(fragment: Fragment) {
+	fun openFragment(fragment: Fragment) {
 		supportFragmentManager.commit {
-			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-			replace(R.id.container, fragment)
 			setReorderingAllowed(true)
+			replace(R.id.container, fragment)
+			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 			addToBackStack(null)
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
+	private fun openDefaultFragment() {
+		val fragment = when (intent?.action) {
+			ACTION_READER -> ReaderSettingsFragment()
+			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
+			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
+				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL
+			)
+			else -> SettingsHeadersFragment()
+		}
+		supportFragmentManager.commit {
+			setReorderingAllowed(true)
+			replace(R.id.container, fragment)
+		}
+	}
 
 	companion object {
 
+		private const val ACTION_READER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_READER_SETTINGS"
+		private const val ACTION_SUGGESTIONS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SUGGESTIONS"
+		private const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
+		private const val EXTRA_SOURCE = "source"
+
 		fun newIntent(context: Context) = Intent(context, SettingsActivity::class.java)
+
+		fun newReaderSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_READER)
+
+		fun newSuggestionsSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_SUGGESTIONS)
+
+		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_SOURCE)
+				.putExtra(EXTRA_SOURCE, source)
 	}
 }

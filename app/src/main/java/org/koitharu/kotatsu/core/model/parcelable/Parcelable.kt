@@ -4,7 +4,7 @@ import android.os.Parcel
 import androidx.core.os.ParcelCompat
 import org.koitharu.kotatsu.parsers.model.*
 
-fun Manga.writeToParcel(out: Parcel, flags: Int) {
+fun Manga.writeToParcel(out: Parcel, flags: Int, withChapters: Boolean) {
 	out.writeLong(id)
 	out.writeString(title)
 	out.writeString(altTitle)
@@ -18,7 +18,11 @@ fun Manga.writeToParcel(out: Parcel, flags: Int) {
 	out.writeParcelable(ParcelableMangaTags(tags), flags)
 	out.writeSerializable(state)
 	out.writeString(author)
-	out.writeParcelable(chapters?.let(::ParcelableMangaChapters), flags)
+	if (withChapters) {
+		out.writeParcelable(chapters?.let(::ParcelableMangaChapters), flags)
+	} else {
+		out.writeString(null)
+	}
 	out.writeSerializable(source)
 }
 

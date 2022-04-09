@@ -165,6 +165,18 @@ class AppSettings(context: Context) {
 			else -> SimpleDateFormat(format, Locale.getDefault())
 		}
 
+	fun getSuggestionsTagsBlacklistRegex(): Regex? {
+		val string = prefs.getString(KEY_SUGGESTIONS_EXCLUDE_TAGS, null)?.trimEnd(' ', ',')
+		if (string.isNullOrEmpty()) {
+			return null
+		}
+		val tags = string.split(',')
+		val regex = tags.joinToString(prefix = "(", separator = "|", postfix = ")") { tag ->
+			Regex.escape(tag.trim())
+		}
+		return Regex(regex, RegexOption.IGNORE_CASE)
+	}
+
 	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
 		val list = MangaSource.values().toMutableList()
 		list.remove(MangaSource.LOCAL)
@@ -247,17 +259,16 @@ class AppSettings(context: Context) {
 		const val KEY_PAGES_PRELOAD = "pages_preload"
 		const val KEY_SUGGESTIONS = "suggestions"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
+		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
 		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
-		const val KEY_APP_GRATITUDES = "about_gratitudes"
 		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
 		const val KEY_FEEDBACK_DISCORD = "about_feedback_discord"
 		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
-		const val KEY_SUPPORT_DEVELOPER = "about_support_developer"
 
 		private const val NETWORK_NEVER = 0
 		private const val NETWORK_ALWAYS = 1

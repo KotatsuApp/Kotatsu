@@ -205,14 +205,8 @@
     <string name="text_history_holder_secondary">Encuentra qué leer en el menú lateral.</string>
     <string name="text_history_holder_primary">Lo que leas se mostrará aquí</string>
     <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
-    <string name="about_gratitudes">Agradecimientos</string>
-    <string name="about_support_developer_summary">Si te gusta esta aplicación, puedes ayudar económicamente a través de Yoomoney (ex. Yandex.Money)</string>
-    <string name="about_support_developer">Apoyar al desarrollador</string>
-    <string name="search_only_on_s">Buscar sólo en %s</string>
-    <string name="about_gratitudes_summary">Todas estas personas hicieron que Kotatsu fuera mejor</string>
-    <string name="about_license">Licencia</string>
-    <string name="about_copyright_and_licenses">Derechos de autor y licencias</string>
-    <string name="chapter_is_missing">Falta un capítulo</string>
+	<string name="search_only_on_s">Buscar sólo en %s</string>
+	<string name="chapter_is_missing">Falta un capítulo</string>
     <string name="about_app_translation_summary">Traducir esta aplicación</string>
     <string name="about_feedback">Comentarios</string>
     <string name="about_app_translation">Traducción</string>

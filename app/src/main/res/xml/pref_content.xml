@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment"
+		android:key="remote_sources"
+		android:title="@string/remote_sources" />
+
+	<Preference
+		android:key="local_storage"
+		android:persistent="false"
+		android:title="@string/manga_save_location" />
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.SuggestionsSettingsFragment"
+		android:key="suggestions"
+		android:persistent="false"
+		android:title="@string/suggestions" />
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
+		android:title="@string/backup_restore"
+		app:allowDividerAbove="true" />
+
+</PreferenceScreen>

@@ -1,51 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<Preference
 		android:key="search_history_clear"
 		android:persistent="false"
 		android:summary="@string/loading_"
-		android:title="@string/clear_search_history"
-		app:iconSpaceReserved="false" />
+		android:title="@string/clear_search_history" />
 
 	<Preference
 		android:key="updates_feed_clear"
 		android:persistent="false"
 		android:summary="@string/loading_"
-		android:title="@string/clear_updates_feed"
-		app:iconSpaceReserved="false" />
+		android:title="@string/clear_updates_feed" />
 
 	<SwitchPreferenceCompat
 		android:key="history_exclude_nsfw"
-		android:title="@string/exclude_nsfw_from_history"
-		app:iconSpaceReserved="false" />
+		android:title="@string/exclude_nsfw_from_history" />
 
-	<PreferenceCategory
-		android:title="@string/cache"
-		app:iconSpaceReserved="false">
+	<PreferenceCategory android:title="@string/cache">
 
 		<Preference
 			android:key="thumbs_cache_clear"
 			android:persistent="false"
 			android:summary="@string/computing_"
-			android:title="@string/clear_thumbs_cache"
-			app:iconSpaceReserved="false" />
+			android:title="@string/clear_thumbs_cache" />
 
 		<Preference
 			android:key="pages_cache_clear"
 			android:persistent="false"
 			android:summary="@string/computing_"
-			android:title="@string/clear_pages_cache"
-			app:iconSpaceReserved="false" />
+			android:title="@string/clear_pages_cache" />
 
 	</PreferenceCategory>
 
 	<Preference
 		android:key="cookies_clear"
 		android:persistent="false"
-		android:title="@string/clear_cookies"
-		app:iconSpaceReserved="false" />
+		android:title="@string/clear_cookies" />
 
 </PreferenceScreen>

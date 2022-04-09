@@ -220,13 +220,7 @@
     <string name="about_app_translation">Перевод</string>
 	<string name="about_feedback_4pda">Тема на 4PDA</string>
     <string name="about_feedback">Обратная связь</string>
-    <string name="about_support_developer">Поддержать разработчика</string>
-    <string name="about_support_developer_summary">Если вам нравится это приложение, вы можете помочь финансово с помощью ЮMoney (бывш. Яндекс.Деньги)</string>
-    <string name="about_gratitudes">Благодарности</string>
-    <string name="about_gratitudes_summary">Все эти люди сделали Kotatsu лучше</string>
-    <string name="about_copyright_and_licenses">Авторские права и лицензии</string>
-    <string name="about_license">Лицензия</string>
-    <string name="auth_complete">Авторизация выполнена</string>
+	<string name="auth_complete">Авторизация выполнена</string>
     <string name="auth_not_supported_by">Вход в %s не поддерживается</string>
     <string name="text_clear_cookies_prompt">Вы выйдете из всех источников</string>
     <string name="genres">Жанры</string>
@@ -269,4 +263,9 @@
 	<string name="various_languages">Разные языки</string>
 	<string name="search_chapters">Найти главу</string>
 	<string name="chapters_empty">В этой манге нет глав</string>
+	<string name="appearance">Оформление</string>
+	<string name="content">Контент</string>
+	<string name="suggestions_updating">Обновление рекомендаций</string>
+	<string name="suggestions_excluded_genres">Исключить жанры</string>
+	<string name="suggestions_excluded_genres_summary">Укажите жанры, которые Вы не хотите видеть в рекомендациях</string>
 </resources>

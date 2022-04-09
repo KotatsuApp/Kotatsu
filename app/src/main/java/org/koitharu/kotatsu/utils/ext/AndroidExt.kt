@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.net.Uri
+import androidx.work.CoroutineWorker
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -29,3 +30,8 @@ suspend fun ConnectivityManager.waitForNetwork(): Network {
 }
 
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
+
+suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatching {
+	val info = getForegroundInfo()
+	setForeground(info)
+}.isSuccess

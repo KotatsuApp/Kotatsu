@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<Preference
 		android:key="notifications_sound"
-		android:title="@string/notification_sound"
-		app:iconSpaceReserved="false" />
+		android:title="@string/notification_sound" />
 
 	<CheckBoxPreference
 		android:defaultValue="false"
 		android:key="notifications_vibrate"
-		android:title="@string/vibration"
-		app:iconSpaceReserved="false" />
+		android:title="@string/vibration" />
 
 	<CheckBoxPreference
 		android:defaultValue="true"
 		android:key="notifications_light"
-		android:title="@string/light_indicator"
-		app:iconSpaceReserved="false" />
+		android:title="@string/light_indicator" />
 
 </PreferenceScreen>

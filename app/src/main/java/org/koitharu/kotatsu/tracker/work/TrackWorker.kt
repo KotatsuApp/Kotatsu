@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
+import org.koitharu.kotatsu.utils.ext.trySetForeground
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.util.concurrent.TimeUnit
 
@@ -53,7 +54,9 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		if (tracks.isEmpty()) {
 			return Result.success()
 		}
-		setForeground(createForegroundInfo())
+		if (TAG in tags) { // not expedited
+			trySetForeground()
+		}
 		var success = 0
 		val workData = Data.Builder()
 			.putInt(DATA_TOTAL, tracks.size)
@@ -201,7 +204,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		}
 	}
 
-	private fun createForegroundInfo(): ForegroundInfo {
+	override suspend fun getForegroundInfo(): ForegroundInfo {
 		val title = applicationContext.getString(R.string.check_for_new_chapters)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			val channel = NotificationChannel(
@@ -281,6 +284,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			val request = OneTimeWorkRequestBuilder<TrackWorker>()
 				.setConstraints(constraints)
 				.addTag(TAG_ONESHOT)
+				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
 			WorkManager.getInstance(context)
 				.enqueue(request)

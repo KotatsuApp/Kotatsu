@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
 	<!--Toolbars-->
 
@@ -149,7 +149,11 @@
 	</style>
 
 	<style name="Preference.Slider" parent="Preference.SeekBarPreference.Material">
-		<item name="android:layout">@layout/pref_slider</item>
+		<item name="android:layout">@layout/preference_slider</item>
+	</style>
+
+	<style name="Preference.MultiAutoCompleteTextView" parent="Preference.DialogPreference.EditTextPreference.Material">
+		<item name="android:dialogLayout">@layout/preference_dialog_multiautocompletetextview</item>
 	</style>
 
 </resources>
