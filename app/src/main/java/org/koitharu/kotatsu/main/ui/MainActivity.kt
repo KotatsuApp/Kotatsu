@@ -308,17 +308,6 @@ class MainActivity :
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.fab.isEnabled = !isLoading
-		if (isLoading) {
-			binding.fab.setImageDrawable(
-				CircularProgressDrawable(this).also {
-					it.setColorSchemeColors(R.color.kotatsu_onPrimaryContainer)
-					it.strokeWidth = resources.resolveDp(3.5f)
-					it.start()
-				}
-			)
-		} else {
-			binding.fab.setImageResource(R.drawable.ic_read_fill)
-		}
 	}
 
 	private fun updateSideMenu(remoteSources: List<MangaSource>) {

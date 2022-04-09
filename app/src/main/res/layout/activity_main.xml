@@ -67,19 +67,20 @@
 
 		</com.google.android.material.appbar.AppBarLayout>
 
-		<com.google.android.material.floatingactionbutton.FloatingActionButton
+		<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 			android:id="@+id/fab"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_margin="16dp"
-			android:contentDescription="@string/_continue"
-			android:src="@drawable/ic_read_fill"
+			android:text="@string/_continue"
 			android:visibility="gone"
 			app:backgroundTint="?attr/colorContainer"
-			app:fabSize="normal"
+			app:behavior_autoHide="true"
+			app:behavior_autoShrink="true"
+			app:icon="@drawable/ic_read"
 			app:layout_anchor="@id/container"
 			app:layout_anchorGravity="bottom|end"
-			app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+			app:layout_behavior="org.koitharu.kotatsu.base.ui.util.ShrinkOnScrollBehavior"
 			app:layout_dodgeInsetEdges="bottom"
 			tools:visibility="visible" />
 

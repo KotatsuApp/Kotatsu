@@ -63,6 +63,7 @@
 		app:icon="@drawable/ic_add"
 		app:layout_anchor="@id/recyclerView"
 		app:layout_anchorGravity="bottom|end"
+		app:layout_behavior="org.koitharu.kotatsu.base.ui.util.ShrinkOnScrollBehavior"
 		app:layout_dodgeInsetEdges="bottom" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
