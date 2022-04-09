@@ -65,12 +65,12 @@ android {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation('com.github.nv95:kotatsu-parsers:3ea7e92e64') {
+	implementation('com.github.nv95:kotatsu-parsers:0ee689cd2f') {
 		exclude group: 'org.json', module: 'json'
 	}
 
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
 
 	implementation 'androidx.core:core-ktx:1.7.0'
 	implementation 'androidx.activity:activity-ktx:1.4.0'
@@ -108,7 +108,7 @@ dependencies {
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
 
 	testImplementation 'junit:junit:4.13.2'
-	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1'
 	testImplementation 'io.insert-koin:koin-test-junit4:3.1.5'
 
 	androidTestImplementation 'androidx.test:runner:1.4.0'
