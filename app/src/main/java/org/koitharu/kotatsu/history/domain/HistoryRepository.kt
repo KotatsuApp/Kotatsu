@@ -81,6 +81,14 @@ class HistoryRepository(
 		db.historyDao.delete(manga.id)
 	}
 
+	suspend fun delete(ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				db.historyDao.delete(id)
+			}
+		}
+	}
+
 	/**
 	 * Try to replace one manga with another one
 	 * Useful for replacing saved manga on deleting it with remove source

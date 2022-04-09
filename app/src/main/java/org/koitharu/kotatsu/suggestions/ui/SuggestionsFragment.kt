@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.view.ActionMode
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -45,6 +46,11 @@ class SuggestionsFragment : MangaListFragment() {
 	}
 
 	override fun onScrolledToEnd() = Unit
+
+	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+		mode.menuInflater.inflate(R.menu.mode_remote, menu)
+		return super.onCreateActionMode(mode, menu)
+	}
 
 	companion object {
 

@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
@@ -288,6 +289,16 @@ class MainActivity :
 			}.show()
 	}
 
+	override fun onSupportActionModeStarted(mode: ActionMode) {
+		super.onSupportActionModeStarted(mode)
+		adjustDrawerLock()
+	}
+
+	override fun onSupportActionModeFinished(mode: ActionMode) {
+		super.onSupportActionModeFinished(mode)
+		adjustDrawerLock()
+	}
+
 	private fun onOpenReader(manga: Manga) {
 		val options = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			ActivityOptions.makeClipRevealAnimation(
@@ -361,14 +372,14 @@ class MainActivity :
 	}
 
 	private fun onSearchOpened() {
-		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 		drawerToggle?.isDrawerIndicatorEnabled = false
+		adjustDrawerLock()
 		adjustFabVisibility(isSearchOpened = true)
 	}
 
 	private fun onSearchClosed() {
-		drawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 		drawerToggle?.isDrawerIndicatorEnabled = true
+		adjustDrawerLock()
 		adjustFabVisibility(isSearchOpened = false)
 	}
 
@@ -390,5 +401,13 @@ class MainActivity :
 		isSearchOpened: Boolean = supportFragmentManager.findFragmentByTag(TAG_SEARCH)?.isVisible == true,
 	) {
 		if (!isSearchOpened && topFragment is HistoryListFragment) binding.fab.show() else binding.fab.hide()
+	}
+
+	private fun adjustDrawerLock() {
+		val drawer = drawer ?: return
+		val isLocked = actionModeDelegate.isActionModeStarted || (drawerToggle?.isDrawerIndicatorEnabled == false)
+		drawer.setDrawerLockMode(
+			if (isLocked) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED
+		)
 	}
 }

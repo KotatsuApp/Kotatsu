@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.tracker.ui
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,13 +11,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.TrackingLogItem
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.ui.model.toFeedItem
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import org.koitharu.kotatsu.utils.ext.mapItems
 
 class FeedViewModel(
 	private val repository: TrackingRepository
@@ -27,30 +26,34 @@ class FeedViewModel(
 	private val logList = MutableStateFlow<List<TrackingLogItem>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private var loadingJob: Job? = null
+	private val header = ListHeader(null, R.string.updates, null)
 
-	val isEmptyState = MutableLiveData(false)
 	val onFeedCleared = SingleLiveEvent<Unit>()
 	val content = combine(
-		logList.filterNotNull().mapItems {
-			it.toFeedItem()
-		},
+		logList.filterNotNull(),
 		hasNextPage
 	) { list, isHasNextPage ->
-		when {
-			list.isEmpty() -> listOf(
-				EmptyState(
-					icon = R.drawable.ic_feed,
-					textPrimary = R.string.text_empty_holder_primary,
-					textSecondary = R.string.text_feed_holder,
-					actionStringRes = 0,
+		buildList(list.size + 2) {
+			add(header)
+			if (list.isEmpty()) {
+				add(
+					EmptyState(
+						icon = R.drawable.ic_feed,
+						textPrimary = R.string.text_empty_holder_primary,
+						textSecondary = R.string.text_feed_holder,
+						actionStringRes = 0,
+					)
 				)
-			)
-			isHasNextPage -> list + LoadingFooter
-			else -> list
+			} else {
+				list.mapTo(this) { it.toFeedItem() }
+				if (isHasNextPage) {
+					add(LoadingFooter)
+				}
+			}
 		}
 	}.asLiveDataDistinct(
 		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(LoadingState)
+		listOf(header, LoadingState)
 	)
 
 	init {
@@ -66,7 +69,6 @@ class FeedViewModel(
 			val list = repository.getTrackingLog(offset, 20)
 			if (!append) {
 				logList.value = list
-				isEmptyState.postValue(list.isEmpty())
 			} else if (list.isNotEmpty()) {
 				logList.value = logList.value?.plus(list) ?: list
 			}
@@ -80,7 +82,6 @@ class FeedViewModel(
 			lastJob?.cancelAndJoin()
 			repository.clearLogs()
 			logList.value = emptyList()
-			isEmptyState.postValue(true)
 			onFeedCleared.postCall(Unit)
 		}
 	}

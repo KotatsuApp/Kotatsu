@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.history.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
@@ -13,14 +15,10 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
-import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
@@ -29,7 +27,6 @@ class HistoryListViewModel(
 	private val trackingRepository: TrackingRepository,
 ) : MangaListViewModel(settings) {
 
-	val onItemRemoved = SingleLiveEvent<Manga>()
 	val isGroupingEnabled = MutableLiveData<Boolean>()
 
 	private val historyGrouping = settings.observe()
@@ -72,10 +69,12 @@ class HistoryListViewModel(
 		}
 	}
 
-	fun removeFromHistory(manga: Manga) {
+	fun removeFromHistory(ids: Set<Long>) {
+		if (ids.isEmpty()) {
+			return
+		}
 		launchJob {
-			repository.delete(manga)
-			onItemRemoved.call(manga)
+			repository.delete(ids)
 			shortcutsRepository.updateShortcuts()
 		}
 	}

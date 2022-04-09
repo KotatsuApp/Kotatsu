@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -17,6 +16,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -163,7 +163,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 		R.id.action_share -> {
 			viewModel.manga.value?.let {
 				if (it.source == MangaSource.LOCAL) {
-					ShareHelper(this).shareCbz(Uri.parse(it.url).toFile())
+					ShareHelper(this).shareCbz(listOf(it.url.toUri().toFile()))
 				} else {
 					ShareHelper(this).shareMangaLink(it)
 				}

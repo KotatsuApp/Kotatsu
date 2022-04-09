@@ -271,4 +271,7 @@
 	<string name="suggestions_updating">Suggestions updating</string>
 	<string name="suggestions_excluded_genres">Exclude genres</string>
 	<string name="suggestions_excluded_genres_summary">Specify genres that you do not want to see in the suggestions</string>
+	<string name="text_delete_local_manga_batch">Delete selected items from device permanently?</string>
+	<string name="removal_completed">Removal completed</string>
+	<string name="batch_manga_save_confirm">Are you sure you want to download all selected manga with all its chapters? This action can consume a lot of traffic and storage</string>
 </resources>

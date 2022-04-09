@@ -24,7 +24,7 @@ class ShortcutsRepository(
 	private val context: Context,
 	private val coil: ImageLoader,
 	private val historyRepository: HistoryRepository,
-	private val mangaRepository: MangaDataRepository
+	private val mangaRepository: MangaDataRepository,
 ) {
 
 	private val iconSize by lazy {

@@ -178,9 +178,7 @@ class ChaptersFragment :
 	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
 
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-		val manga = viewModel.manga.value
 		mode.menuInflater.inflate(R.menu.mode_chapters, menu)
-		mode.title = manga?.title
 		return true
 	}
 
@@ -190,12 +188,7 @@ class ChaptersFragment :
 		menu.findItem(R.id.action_save).isVisible = items.none { x ->
 			x.chapter.source == MangaSource.LOCAL
 		}
-		mode.subtitle = resources.getQuantityString(
-			R.plurals.chapters_from_x,
-			items.size,
-			items.size,
-			chaptersAdapter?.itemCount ?: 0
-		)
+		mode.title = items.size.toString()
 		return true
 	}
 

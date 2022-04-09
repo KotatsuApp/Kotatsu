@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.ActionBarContextView
@@ -20,6 +21,7 @@ import androidx.viewbinding.ViewBinding
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -35,6 +37,8 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(),
 
 	@Suppress("LeakingThis")
 	protected val insetsDelegate = WindowInsetsDelegate(this)
+
+	val actionModeDelegate = ActionModeDelegate()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		val settings = get<AppSettings>()
@@ -90,14 +94,22 @@ abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(),
 		return isNight && get<AppSettings>().isAmoledTheme
 	}
 
+	@CallSuper
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
+		actionModeDelegate.onSupportActionModeStarted(mode)
 		val insets = ViewCompat.getRootWindowInsets(binding.root)
 			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
 		val view = findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)
 		view?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			topMargin = insets.top
 		}
+	}
+
+	@CallSuper
+	override fun onSupportActionModeFinished(mode: ActionMode) {
+		super.onSupportActionModeFinished(mode)
+		actionModeDelegate.onSupportActionModeFinished(mode)
 	}
 
 	override fun onBackPressed() {
