@@ -5,11 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
-import org.koitharu.kotatsu.core.model.MangaHistory
-import java.util.*
 
 @Entity(
-	tableName = "history", foreignKeys = [
+	tableName = "history",
+	foreignKeys = [
 		ForeignKey(
 			entity = MangaEntity::class,
 			parentColumns = ["manga_id"],
@@ -26,13 +25,4 @@ class HistoryEntity(
 	@ColumnInfo(name = "chapter_id") val chapterId: Long,
 	@ColumnInfo(name = "page") val page: Int,
 	@ColumnInfo(name = "scroll") val scroll: Float,
-) {
-
-	fun toMangaHistory() = MangaHistory(
-		createdAt = Date(createdAt),
-		updatedAt = Date(updatedAt),
-		chapterId = chapterId,
-		page = page,
-		scroll = scroll.toInt()
-	)
-}
+)

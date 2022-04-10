@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.db.entity.toManga
+import org.koitharu.kotatsu.core.db.entity.toMangaTag
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.Manga

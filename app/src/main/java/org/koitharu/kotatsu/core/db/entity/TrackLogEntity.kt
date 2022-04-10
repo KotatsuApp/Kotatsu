@@ -6,7 +6,8 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-	tableName = "track_logs", foreignKeys = [
+	tableName = "track_logs",
+	foreignKeys = [
 		ForeignKey(
 			entity = MangaEntity::class,
 			parentColumns = ["manga_id"],
@@ -20,5 +21,5 @@ class TrackLogEntity(
 	@ColumnInfo(name = "id") val id: Long = 0L,
 	@ColumnInfo(name = "manga_id", index = true) val mangaId: Long,
 	@ColumnInfo(name = "chapters") val chapters: String,
-	@ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis()
+	@ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis(),
 )

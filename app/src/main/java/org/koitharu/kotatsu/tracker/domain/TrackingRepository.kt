@@ -4,6 +4,8 @@ import androidx.room.withTransaction
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.TrackEntity
 import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
+import org.koitharu.kotatsu.core.db.entity.toManga
+import org.koitharu.kotatsu.core.db.entity.toTrackingLogItem
 import org.koitharu.kotatsu.core.model.MangaTracking
 import org.koitharu.kotatsu.core.model.TrackingLogItem
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -22,10 +24,10 @@ class TrackingRepository(
 	suspend fun getAllTracks(useFavourites: Boolean, useHistory: Boolean): List<MangaTracking> {
 		val mangaList = ArrayList<Manga>()
 		if (useFavourites) {
-			db.favouritesDao.findAllManga().mapTo(mangaList) { it.toManga() }
+			db.favouritesDao.findAllManga().mapTo(mangaList) { it.toManga(emptySet()) }
 		}
 		if (useHistory) {
-			db.historyDao.findAllManga().mapTo(mangaList) { it.toManga() }
+			db.historyDao.findAllManga().mapTo(mangaList) { it.toManga(emptySet()) }
 		}
 		val tracks = db.tracksDao.findAll().groupBy { it.mangaId }
 		return mangaList

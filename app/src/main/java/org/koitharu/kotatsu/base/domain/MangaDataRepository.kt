@@ -2,22 +2,19 @@ package org.koitharu.kotatsu.base.domain
 
 import androidx.room.withTransaction
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
-import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
-import org.koitharu.kotatsu.core.db.entity.TagEntity
+import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.parsers.util.mapToSet
 
 class MangaDataRepository(private val db: MangaDatabase) {
 
 	suspend fun savePreferences(manga: Manga, mode: ReaderMode) {
-		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
+		val tags = manga.tags.toEntities()
 		db.withTransaction {
 			db.tagsDao.upsert(tags)
-			db.mangaDao.upsert(MangaEntity.from(manga), tags)
+			db.mangaDao.upsert(manga.toEntity(), tags)
 			db.preferencesDao.upsert(
 				MangaPrefsEntity(
 					mangaId = manga.id,
@@ -42,16 +39,14 @@ class MangaDataRepository(private val db: MangaDatabase) {
 	}
 
 	suspend fun storeManga(manga: Manga) {
-		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
+		val tags = manga.tags.toEntities()
 		db.withTransaction {
 			db.tagsDao.upsert(tags)
-			db.mangaDao.upsert(MangaEntity.from(manga), tags)
+			db.mangaDao.upsert(manga.toEntity(), tags)
 		}
 	}
 
 	suspend fun findTags(source: MangaSource): Set<MangaTag> {
-		return db.tagsDao.findTags(source.name).mapToSet {
-			it.toMangaTag()
-		}
+		return db.tagsDao.findTags(source.name).toMangaTags()
 	}
 }

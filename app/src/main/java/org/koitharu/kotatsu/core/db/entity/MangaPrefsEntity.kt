@@ -6,13 +6,15 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-	tableName = "preferences", foreignKeys = [
+	tableName = "preferences",
+	foreignKeys = [
 		ForeignKey(
 			entity = MangaEntity::class,
 			parentColumns = ["manga_id"],
 			childColumns = ["manga_id"],
 			onDelete = ForeignKey.CASCADE
-		)]
+		)
+	]
 )
 class MangaPrefsEntity(
 	@PrimaryKey(autoGenerate = false)

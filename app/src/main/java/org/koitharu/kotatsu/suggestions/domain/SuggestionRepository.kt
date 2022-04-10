@@ -3,10 +3,11 @@ package org.koitharu.kotatsu.suggestions.domain
 import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
-import org.koitharu.kotatsu.core.db.entity.TagEntity
+import org.koitharu.kotatsu.core.db.entity.toEntities
+import org.koitharu.kotatsu.core.db.entity.toEntity
+import org.koitharu.kotatsu.core.db.entity.toManga
+import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 import org.koitharu.kotatsu.utils.ext.mapItems
 
@@ -16,7 +17,7 @@ class SuggestionRepository(
 
 	fun observeAll(): Flow<List<Manga>> {
 		return db.suggestionDao.observeAll().mapItems {
-			it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag))
+			it.manga.toManga(it.tags.toMangaTags())
 		}
 	}
 
@@ -32,9 +33,9 @@ class SuggestionRepository(
 		db.withTransaction {
 			db.suggestionDao.deleteAll()
 			suggestions.forEach { x ->
-				val tags = x.manga.tags.map(TagEntity.Companion::fromMangaTag)
+				val tags = x.manga.tags.toEntities()
 				db.tagsDao.upsert(tags)
-				db.mangaDao.upsert(MangaEntity.from(x.manga), tags)
+				db.mangaDao.upsert(x.manga.toEntity(), tags)
 				db.suggestionDao.upsert(
 					SuggestionEntity(
 						mangaId = x.manga.id,
