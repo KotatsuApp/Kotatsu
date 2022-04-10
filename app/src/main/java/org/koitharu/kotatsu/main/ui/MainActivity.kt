@@ -11,16 +11,12 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
+import androidx.core.view.*
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
@@ -135,6 +131,7 @@ class MainActivity :
 		viewModel.onOpenReader.observe(this, this::onOpenReader)
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
+		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.remoteSources.observe(this, this::updateSideMenu)
 		viewModel.isSuggestionsEnabled.observe(this, this::setSuggestionsEnabled)
 	}
@@ -313,12 +310,15 @@ class MainActivity :
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
-			.show()
+		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.fab.isEnabled = !isLoading
+	}
+
+	private fun onResumeEnabledChanged(isEnabled: Boolean) {
+		adjustFabVisibility(isResumeEnabled = isEnabled)
 	}
 
 	private fun updateSideMenu(remoteSources: List<MangaSource>) {
@@ -397,10 +397,20 @@ class MainActivity :
 	}
 
 	private fun adjustFabVisibility(
+		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value == true,
 		topFragment: Fragment? = supportFragmentManager.findFragmentByTag(TAG_PRIMARY),
 		isSearchOpened: Boolean = supportFragmentManager.findFragmentByTag(TAG_SEARCH)?.isVisible == true,
 	) {
-		if (!isSearchOpened && topFragment is HistoryListFragment) binding.fab.show() else binding.fab.hide()
+		val fab = binding.fab
+		if (isResumeEnabled && !isSearchOpened && topFragment is HistoryListFragment) {
+			if (!fab.isVisible) {
+				fab.show()
+			}
+		} else {
+			if (fab.isVisible) {
+				fab.hide()
+			}
+		}
 	}
 
 	private fun adjustDrawerLock() {

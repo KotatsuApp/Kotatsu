@@ -27,6 +27,10 @@ class MainViewModel(
 		.map { settings.isSuggestionsEnabled }
 		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
+	val isResumeEnabled = historyRepository
+		.observeHasItems()
+		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+
 	val remoteSources = settings.observe()
 		.filter { it == AppSettings.KEY_SOURCES_ORDER || it == AppSettings.KEY_SOURCES_HIDDEN }
 		.onStart { emit("") }
@@ -35,8 +39,7 @@ class MainViewModel(
 
 	fun openLastReader() {
 		launchLoadingJob {
-			val manga = historyRepository.getList(0, 1).firstOrNull()
-				?: throw EmptyHistoryException()
+			val manga = historyRepository.getLastOrNull() ?: throw EmptyHistoryException()
 			onOpenReader.call(manga)
 		}
 	}

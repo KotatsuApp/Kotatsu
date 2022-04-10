@@ -38,6 +38,9 @@ abstract class HistoryDao {
 	@Query("SELECT * FROM history WHERE manga_id = :id")
 	abstract fun observe(id: Long): Flow<HistoryEntity?>
 
+	@Query("SELECT COUNT(*) FROM history")
+	abstract fun observeCount(): Flow<Int>
+
 	@Query("DELETE FROM history")
 	abstract suspend fun clear()
 

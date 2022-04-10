@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.history.domain
 
 import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
@@ -26,6 +27,11 @@ class HistoryRepository(
 		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
 	}
 
+	suspend fun getLastOrNull(): Manga? {
+		val entity = db.historyDao.findAll(0, 1).firstOrNull() ?: return null
+		return entity.manga.toManga(entity.tags.mapToSet { it.toMangaTag() })
+	}
+
 	fun observeAll(): Flow<List<Manga>> {
 		return db.historyDao.observeAll().mapItems {
 			it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag))
@@ -45,6 +51,12 @@ class HistoryRepository(
 		return db.historyDao.observe(id).map {
 			it?.toMangaHistory()
 		}
+	}
+
+	fun observeHasItems(): Flow<Boolean> {
+		return db.historyDao.observeCount()
+			.map { it > 0 }
+			.distinctUntilChanged()
 	}
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int) {
