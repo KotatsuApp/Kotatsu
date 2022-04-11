@@ -14,8 +14,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 400
-		versionName '3.0'
+		versionCode 401
+		versionName '3.1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -65,7 +65,7 @@ android {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation('com.github.nv95:kotatsu-parsers:0ee689cd2f') {
+	implementation('com.github.nv95:kotatsu-parsers:8e23a7fcd4') {
 		exclude group: 'org.json', module: 'json'
 	}
 
