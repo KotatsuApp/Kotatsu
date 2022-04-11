@@ -3,8 +3,11 @@ package org.koitharu.kotatsu.shikimori.data
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.koitharu.kotatsu.parsers.util.await
-import org.koitharu.kotatsu.parsers.util.parseJson
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.*
+import org.koitharu.kotatsu.parsers.util.json.mapJSON
+import org.koitharu.kotatsu.shikimori.data.model.ShikimoriManga
+import org.koitharu.kotatsu.shikimori.data.model.ShikimoriMangaInfo
 import org.koitharu.kotatsu.shikimori.data.model.ShikimoriUser
 
 private const val CLIENT_ID = "Mw6F0tPEOgyV7F9U9Twg50Q8SndMY7hzIOfXg0AX_XU"
@@ -48,5 +51,42 @@ class ShikimoriRepository(
 			.url("https://shikimori.one/api/users/whoami")
 		val response = okHttp.newCall(request.build()).await().parseJson()
 		return ShikimoriUser(response)
+	}
+
+	suspend fun findMangaInfo(manga: Manga): ShikimoriMangaInfo? {
+		val q = manga.title.urlEncoded()
+		val request = Request.Builder()
+			.get()
+			.url("https://shikimori.one/api/mangas?limit=20&search=$q&censored=false")
+		val response = okHttp.newCall(request.build()).await().parseJsonArray()
+		val candidates = response.mapJSON { ShikimoriManga(it) }
+		val bestCandidate = candidates.minByOrNull {
+			it.name.levenshteinDistance(manga.title)
+		} ?: return null
+		return getMangaInfo(bestCandidate.id)
+	}
+
+	suspend fun getRelatedManga(id: Long): List<ShikimoriManga> {
+		val request = Request.Builder()
+			.get()
+			.url("https://shikimori.one/api/mangas/$id/related")
+		val response = okHttp.newCall(request.build()).await().parseJsonArray()
+		return response.mapJSON { jo -> ShikimoriManga(jo) }
+	}
+
+	suspend fun getSimilarManga(id: Long): List<ShikimoriManga> {
+		val request = Request.Builder()
+			.get()
+			.url("https://shikimori.one/api/mangas/$id/similar")
+		val response = okHttp.newCall(request.build()).await().parseJsonArray()
+		return response.mapJSON { jo -> ShikimoriManga(jo) }
+	}
+
+	suspend fun getMangaInfo(id: Long): ShikimoriMangaInfo {
+		val request = Request.Builder()
+			.get()
+			.url("https://shikimori.one/api/mangas/$id")
+		val response = okHttp.newCall(request.build()).await().parseJson()
+		return ShikimoriMangaInfo(response)
 	}
 }
