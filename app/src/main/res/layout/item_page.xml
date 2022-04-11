@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
@@ -11,14 +10,6 @@
 		android:id="@+id/ssiv"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
-
-	<com.google.android.material.progressindicator.CircularProgressIndicator
-		android:id="@+id/progressBar"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:indeterminate="true"
-		android:max="100" />
 
 	<TextView
 		android:id="@+id/textView_number"
@@ -31,35 +22,6 @@
 		android:textColor="?android:textColorTertiary"
 		tools:text="5" />
 
-	<LinearLayout
-		android:id="@+id/layout_error"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:layout_marginStart="60dp"
-		android:layout_marginEnd="60dp"
-		android:gravity="center_horizontal"
-		android:orientation="vertical"
-		android:visibility="gone">
-
-		<TextView
-			android:id="@+id/textView_error"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:drawablePadding="12dp"
-			android:gravity="center_horizontal"
-			android:textAppearance="?attr/textAppearanceBodySmall"
-			app:drawableTopCompat="@drawable/ic_error_large"
-			tools:text="@tools:sample/lorem[6]" />
-
-		<Button
-			android:id="@+id/button_retry"
-			style="@style/Widget.Material3.Button.TonalButton"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
-			android:text="@string/try_again" />
-
-	</LinearLayout>
+	<include layout="@layout/layout_page_info" />
 
 </FrameLayout>

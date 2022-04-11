@@ -4,7 +4,7 @@ import android.content.res.Resources
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.parsers.model.SortOrder
 
 class DatabasePrePopulateCallback(private val resources: Resources) : RoomDatabase.Callback() {
 

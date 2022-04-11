@@ -1,66 +1,92 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toFile
+import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
-import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
-import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
+import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.buildAlertDialog
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
-	TabLayoutMediator.TabConfigurationStrategy {
+class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediator.TabConfigurationStrategy,
+	AdapterView.OnItemSelectedListener {
 
 	private val viewModel by viewModel<DetailsViewModel> {
 		parametersOf(MangaIntent(intent))
 	}
 
+	private val downloadReceiver = object : BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) {
+			val downloadedManga = DownloadService.getDownloadedManga(intent) ?: return
+			viewModel.onDownloadComplete(downloadedManga)
+		}
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDetailsBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		binding.pager.adapter = MangaDetailsAdapter(this)
-		TabLayoutMediator(binding.tabs, binding.pager, this).attach()
+		supportActionBar?.run {
+			setDisplayHomeAsUpEnabled(true)
+			setDisplayShowTitleEnabled(false)
+		}
+		val pager = binding.pager
+		if (pager != null) {
+			pager.adapter = MangaDetailsAdapter(this)
+			TabLayoutMediator(checkNotNull(binding.tabs), pager, this).attach()
+		}
+		gcFragments()
+		binding.spinnerBranches?.let(::initSpinner)
 
 		viewModel.manga.observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
+
+		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
+	}
+
+	override fun onDestroy() {
+		unregisterReceiver(downloadReceiver)
+		super.onDestroy()
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
@@ -78,9 +104,8 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 
 	private fun onError(e: Throwable) {
 		when {
-			e is CloudFlareProtectedException -> {
-				CloudFlareDialog.newInstance(e.url)
-					.show(supportFragmentManager, CloudFlareDialog.TAG)
+			ExceptionResolver.canResolve(e) -> {
+				resolveError(e)
 			}
 			viewModel.manga.value == null -> {
 				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
@@ -96,25 +121,17 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		binding.snackbar.updatePadding(
 			bottom = insets.bottom
 		)
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right
-			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
+		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = insets.top
 		}
-		if (binding.tabs.parent !is Toolbar) {
-			binding.tabs.updatePadding(
-				left = insets.left,
-				right = insets.right
-			)
-		}
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	private fun onNewChaptersChanged(newChapters: Int) {
-		val tab = binding.tabs.getTabAt(1) ?: return
+		val tab = binding.tabs?.getTabAt(1) ?: return
 		if (newChapters == 0) {
 			tab.removeBadge()
 		} else {
@@ -146,7 +163,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		R.id.action_share -> {
 			viewModel.manga.value?.let {
 				if (it.source == MangaSource.LOCAL) {
-					ShareHelper(this).shareCbz(Uri.parse(it.url).toFile())
+					ShareHelper(this).shareCbz(listOf(it.url.toUri().toFile()))
 				} else {
 					ShareHelper(this).shareMangaLink(it)
 				}
@@ -208,11 +225,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 			viewModel.manga.value?.let {
 				lifecycleScope.launch {
 					if (!get<ShortcutsRepository>().requestPinShortcut(it)) {
-						Snackbar.make(
-							binding.pager,
-							R.string.operation_not_supported,
-							Snackbar.LENGTH_SHORT
-						).show()
+						binding.snackbar.show(getString(R.string.operation_not_supported))
 					}
 				}
 			}
@@ -231,31 +244,37 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
-		binding.pager.isUserInputEnabled = false
+		binding.pager?.isUserInputEnabled = false
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
-		binding.pager.isUserInputEnabled = true
+		binding.pager?.isUserInputEnabled = true
 	}
+
+	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+		val spinner = binding.spinnerBranches ?: return
+		viewModel.setSelectedBranch(spinner.selectedItem as String?)
+	}
+
+	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
 
 	fun showChapterMissingDialog(chapterId: Long) {
 		val remoteManga = viewModel.getRemoteManga()
 		if (remoteManga == null) {
-			Snackbar.make(binding.pager, R.string.chapter_is_missing, Snackbar.LENGTH_LONG)
-				.show()
+			binding.snackbar.show(getString( R.string.chapter_is_missing))
 			return
 		}
-		buildAlertDialog(this) {
+		MaterialAlertDialogBuilder(this).apply {
 			setMessage(R.string.chapter_is_missing_text)
 			setTitle(R.string.chapter_is_missing)
 			setNegativeButton(android.R.string.cancel, null)
 			setPositiveButton(R.string.read) { _, _ ->
 				startActivity(
 					ReaderActivity.newIntent(
-						this@DetailsActivity,
-						remoteManga,
-						ReaderState(chapterId, 0, 0)
+						context = this@DetailsActivity,
+						manga = remoteManga,
+						state = ReaderState(chapterId, 0, 0)
 					)
 				)
 			}
@@ -266,13 +285,54 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(),
 		}.show()
 	}
 
-	companion object {
+	private fun initSpinner(spinner: Spinner) {
+		val branchesAdapter = BranchesAdapter()
+		spinner.adapter = branchesAdapter
+		spinner.onItemSelectedListener = this
+		viewModel.branches.observe(this) {
+			branchesAdapter.setItems(it)
+			spinner.isVisible = it.size > 1
+		}
+		viewModel.selectedBranchIndex.observe(this) {
+			if (it != -1 && it != spinner.selectedItemPosition) {
+				spinner.setSelection(it)
+			}
+		}
+	}
 
-		const val ACTION_MANGA_VIEW = "${BuildConfig.APPLICATION_ID}.action.VIEW_MANGA"
+	private fun resolveError(e: Throwable) {
+		lifecycleScope.launch {
+			if (exceptionResolver.resolve(e)) {
+				viewModel.reload()
+			} else if (viewModel.manga.value == null) {
+				Toast.makeText(this@DetailsActivity, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
+				finishAfterTransition()
+			}
+		}
+	}
+
+	private fun gcFragments() {
+		val mustHaveId = binding.pager == null
+		val fm = supportFragmentManager
+		val fragmentsToRemove = fm.fragments.filter { f ->
+			(f.id == 0) == mustHaveId
+		}
+		if (fragmentsToRemove.isEmpty()) {
+			return
+		}
+		fm.commit {
+			setReorderingAllowed(true)
+			for (f in fragmentsToRemove) {
+				remove(f)
+			}
+		}
+	}
+
+	companion object {
 
 		fun newIntent(context: Context, manga: Manga): Intent {
 			return Intent(context, DetailsActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, manga)
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 		}
 
 		fun newIntent(context: Context, mangaId: Long): Intent {

@@ -2,33 +2,36 @@ package org.koitharu.kotatsu.favourites.ui
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
+import androidx.core.view.children
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import java.util.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.base.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.FragmentFavouritesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
-import org.koitharu.kotatsu.utils.RecycledViewPoolHolder
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.showPopupMenu
-import java.util.*
 
-class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
-	FavouritesTabLongClickListener, CategoriesEditDelegate.CategoriesEditCallback,
-	RecycledViewPoolHolder {
-
-	override val recycledViewPool = RecyclerView.RecycledViewPool()
+class FavouritesContainerFragment :
+	BaseFragment<FragmentFavouritesBinding>(),
+	FavouritesTabLongClickListener,
+	CategoriesEditDelegate.CategoriesEditCallback,
+	ActionModeListener {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {
@@ -55,6 +58,7 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 		binding.pager.adapter = adapter
 		pagerAdapter = adapter
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
+		actionModeDelegate.addListener(this, viewLifecycleOwner)
 
 		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
@@ -63,6 +67,16 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	override fun onDestroyView() {
 		pagerAdapter = null
 		super.onDestroyView()
+	}
+
+	override fun onActionModeStarted(mode: ActionMode) {
+		binding.pager.isUserInputEnabled = false
+		binding.tabs.setTabsEnabled(false)
+	}
+
+	override fun onActionModeFinished(mode: ActionMode) {
+		binding.pager.isUserInputEnabled = true
+		binding.tabs.setTabsEnabled(true)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -101,10 +115,6 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
-	}
-
-	override fun getTitle(): CharSequence? {
-		return context?.getString(R.string.favourites)
 	}
 
 	private fun onError(e: Throwable) {
@@ -154,16 +164,18 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesBinding>(),
 	private fun createOrderSubmenu(menu: Menu, category: FavouriteCategory) {
 		val submenu = menu.findItem(R.id.action_order)?.subMenu ?: return
 		for ((i, item) in CategoriesActivity.SORT_ORDERS.withIndex()) {
-			val menuItem = submenu.add(
-				R.id.group_order,
-				Menu.NONE,
-				i,
-				item.titleRes
-			)
+			val menuItem = submenu.add(R.id.group_order, Menu.NONE, i, item.titleRes)
 			menuItem.isCheckable = true
 			menuItem.isChecked = item == category.order
 		}
 		submenu.setGroupCheckable(R.id.group_order, true, true)
+	}
+
+	private fun TabLayout.setTabsEnabled(enabled: Boolean) {
+		val tabStrip = getChildAt(0) as? ViewGroup ?: return
+		for (tab in tabStrip.children) {
+			tab.isEnabled = enabled
+		}
 	}
 
 	companion object {

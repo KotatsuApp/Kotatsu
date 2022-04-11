@@ -1,84 +1,51 @@
 package org.koitharu.kotatsu.core.parser
 
-import org.koitharu.kotatsu.base.domain.MangaLoaderContext
-import org.koitharu.kotatsu.core.exceptions.ParseException
-import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.prefs.SourceSettings
+import org.koitharu.kotatsu.parsers.MangaLoaderContext
+import org.koitharu.kotatsu.parsers.MangaParser
+import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
+import org.koitharu.kotatsu.parsers.config.ConfigKey
+import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.newParser
 
-abstract class RemoteMangaRepository(
-	protected val loaderContext: MangaLoaderContext
+class RemoteMangaRepository(
+	override val source: MangaSource,
+	loaderContext: MangaLoaderContext,
 ) : MangaRepository {
 
-	protected abstract val defaultDomain: String
+	private val parser: MangaParser = source.newParser(loaderContext)
 
-	private val conf by lazy {
-		loaderContext.getSettings(source)
-	}
+	override val sortOrders: Set<SortOrder>
+		get() = parser.sortOrders
 
-	val title: String
-		get() = source.title
-
-	override suspend fun getPageUrl(page: MangaPage): String = page.url.withDomain()
-
-	override suspend fun getTags(): Set<MangaTag> = emptySet()
-
-	open fun getFaviconUrl() = "https://${getDomain()}/favicon.ico"
-
-	open fun onCreatePreferences(map: MutableMap<String, Any>) {
-		map[SourceSettings.KEY_DOMAIN] = defaultDomain
-	}
-
-	protected fun getDomain() = conf.getDomain(defaultDomain)
-
-	protected fun String.withDomain(subdomain: String? = null) = when {
-		this.startsWith("//") -> buildString {
-			append("http")
-			if (conf.isUseSsl(true)) {
-				append('s')
-			}
-			append(":")
-			append(this@withDomain)
+	var defaultSortOrder: SortOrder?
+		get() = getConfig().defaultSortOrder ?: sortOrders.firstOrNull()
+		set(value) {
+			getConfig().defaultSortOrder = value
 		}
-		this.startsWith("/") -> buildString {
-			append("http")
-			if (conf.isUseSsl(true)) {
-				append('s')
-			}
-			append("://")
-			if (subdomain != null) {
-				append(subdomain)
-				append('.')
-				append(conf.getDomain(defaultDomain).removePrefix("www."))
-			} else {
-				append(conf.getDomain(defaultDomain))
-			}
-			append(this@withDomain)
-		}
-		else -> this
+
+	override suspend fun getList(
+		offset: Int,
+		query: String?,
+		tags: Set<MangaTag>?,
+		sortOrder: SortOrder?
+	): List<Manga> = parser.getList(offset, query, tags, sortOrder)
+
+	override suspend fun getDetails(manga: Manga): Manga = parser.getDetails(manga)
+
+	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> = parser.getPages(chapter)
+
+	override suspend fun getPageUrl(page: MangaPage): String = parser.getPageUrl(page)
+
+	override suspend fun getTags(): Set<MangaTag> = parser.getTags()
+
+	fun getFaviconUrl(): String = parser.getFaviconUrl()
+
+	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider
+
+	fun getConfigKeys(): List<ConfigKey<*>> = ArrayList<ConfigKey<*>>().also {
+		parser.onCreateConfig(it)
 	}
 
-	protected fun generateUid(url: String): Long {
-		var h = 1125899906842597L
-		source.name.forEach { c ->
-			h = 31 * h + c.code
-		}
-		url.forEach { c ->
-			h = 31 * h + c.code
-		}
-		return h
-	}
-
-	protected fun generateUid(id: Long): Long {
-		var h = 1125899906842597L
-		source.name.forEach { c ->
-			h = 31 * h + c.code
-		}
-		h = 31 * h + id
-		return h
-	}
-
-	protected fun parseFailed(message: String? = null): Nothing {
-		throw ParseException(message)
-	}
+	private fun getConfig() = parser.config as SourceSettings
 }

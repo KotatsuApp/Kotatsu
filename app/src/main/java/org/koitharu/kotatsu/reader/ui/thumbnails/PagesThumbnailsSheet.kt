@@ -6,20 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
+import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
-import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -28,20 +29,21 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 
 	private lateinit var thumbnails: List<PageThumbnail>
 	private val spanResolver = MangaListSpanResolver()
+	private var currentPageIndex = -1
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		val pages = arguments?.getParcelableArrayList<MangaPage>(ARG_PAGES)
+		val pages = arguments?.getParcelable<ParcelableMangaPages>(ARG_PAGES)?.pages
 		if (pages.isNullOrEmpty()) {
 			dismissAllowingStateLoss()
 			return
 		}
-		val current = arguments?.getInt(ARG_CURRENT, -1) ?: -1
-		val repository = mangaRepositoryOf(pages.first().source)
+		currentPageIndex = requireArguments().getInt(ARG_CURRENT, currentPageIndex)
+		val repository = MangaRepository(pages.first().source)
 		thumbnails = pages.mapIndexed { i, x ->
 			PageThumbnail(
 				number = i + 1,
-				isCurrent = i == current,
+				isCurrent = i == currentPageIndex,
 				repository = repository,
 				page = x
 			)
@@ -68,11 +70,9 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 				resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
 		}
 
-		val initialTopPosition = binding.recyclerView.top
-
 		with(binding.recyclerView) {
 			addItemDecoration(
-				SpacingItemDecoration(view.resources.getDimensionPixelOffset(R.dimen.grid_spacing))
+				SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
 			)
 			adapter = PageThumbnailAdapter(
 				thumbnails,
@@ -81,16 +81,12 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 				get(),
 				this@PagesThumbnailsSheet
 			)
-			addOnScrollListener(object : RecyclerView.OnScrollListener() {
-				override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) = Unit
-
-				override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-					super.onScrolled(recyclerView, dx, dy)
-					binding.appbar.isLifted = getChildAt(0).top < initialTopPosition
-				}
-			})
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver.setGridSize(get<AppSettings>().gridSize / 100f, this)
+			if (currentPageIndex > 0) {
+				val offset = resources.getDimensionPixelOffset(R.dimen.preferred_grid_width)
+				(layoutManager as GridLayoutManager).scrollToPositionWithOffset(currentPageIndex, offset)
+			}
 		}
 	}
 
@@ -127,7 +123,7 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 
 		fun show(fm: FragmentManager, pages: List<MangaPage>, title: String, currentPage: Int) =
 			PagesThumbnailsSheet().withArgs(3) {
-				putParcelableArrayList(ARG_PAGES, ArrayList<MangaPage>(pages))
+				putParcelable(ARG_PAGES, ParcelableMangaPages(pages))
 				putString(ARG_TITLE, title)
 				putInt(ARG_CURRENT, currentPage)
 			}.show(fm, TAG)

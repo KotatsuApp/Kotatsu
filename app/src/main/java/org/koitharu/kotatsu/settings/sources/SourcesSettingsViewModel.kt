@@ -4,12 +4,12 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.move
-import org.koitharu.kotatsu.utils.ext.toTitleCase
 import java.util.*
 
 private const val KEY_ENABLED = "!"
@@ -79,6 +79,7 @@ class SourcesSettingsViewModel(
 				}
 				SourceConfigItem.SourceItem(
 					source = it,
+					summary = null,
 					isEnabled = it.name !in hiddenSources,
 					isDraggable = false,
 				)
@@ -101,6 +102,7 @@ class SourcesSettingsViewModel(
 			enabledSources.mapTo(result) {
 				SourceConfigItem.SourceItem(
 					source = it,
+					summary = getLocaleTitle(it.locale),
 					isEnabled = true,
 					isDraggable = true,
 				)
@@ -116,13 +118,14 @@ class SourcesSettingsViewModel(
 				val isExpanded = key in expandedGroups
 				result += SourceConfigItem.LocaleGroup(
 					localeId = key,
-					title = locale?.getDisplayLanguage(locale)?.toTitleCase(locale),
+					title = getLocaleTitle(key),
 					isExpanded = isExpanded,
 				)
 				if (isExpanded) {
 					list.mapTo(result) {
 						SourceConfigItem.SourceItem(
 							source = it,
+							summary = null,
 							isEnabled = false,
 							isDraggable = false,
 						)
@@ -131,6 +134,11 @@ class SourcesSettingsViewModel(
 			}
 		}
 		items.value = result
+	}
+
+	private fun getLocaleTitle(localeKey: String?): String? {
+		val locale = Locale(localeKey ?: return null)
+		return locale.getDisplayLanguage(locale).toTitleCase(locale)
 	}
 
 	private class LocaleKeyComparator : Comparator<String?> {

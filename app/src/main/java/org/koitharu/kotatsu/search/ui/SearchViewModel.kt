@@ -6,11 +6,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class SearchViewModel(
@@ -78,7 +78,7 @@ class SearchViewModel(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			try {
 				listError.value = null
-				val list = repository.getList2(
+				val list = repository.getList(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
 					query = query,
 				)

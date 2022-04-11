@@ -13,8 +13,8 @@ import androidx.fragment.app.commit
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.utils.ext.showKeyboard
 
@@ -26,7 +26,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchBinding.inflate(layoutInflater))
-		source = intent.getParcelableExtra(EXTRA_SOURCE) ?: run {
+		source = intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: run {
 			finishAfterTransition()
 			return
 		}
@@ -83,7 +83,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 
 		fun newIntent(context: Context, source: MangaSource, query: String?) =
 			Intent(context, SearchActivity::class.java)
-				.putExtra(EXTRA_SOURCE, source as Parcelable)
+				.putExtra(EXTRA_SOURCE, source)
 				.putExtra(EXTRA_QUERY, query)
 	}
 }

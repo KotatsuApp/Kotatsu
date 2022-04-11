@@ -80,6 +80,7 @@ class ChipsView @JvmOverloads constructor(
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)
 		chip.setOnClickListener(chipOnClickListener)
+		chip.isCheckable = false
 		addView(chip)
 		return chip
 	}

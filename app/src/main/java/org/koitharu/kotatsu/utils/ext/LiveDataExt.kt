@@ -17,16 +17,6 @@ fun <T> LiveData<T?>.observeNotNull(owner: LifecycleOwner, observer: Observer<T>
 	}
 }
 
-fun <T> LiveData<T>.observeDistinct(owner: LifecycleOwner, observer: Observer<T>) {
-	var previousValue: T? = null
-	this.observe(owner) {
-		if (it != previousValue) {
-			observer.onChanged(it)
-			previousValue = it
-		}
-	}
-}
-
 fun <T> LiveData<T>.observeWithPrevious(owner: LifecycleOwner, observer: BufferedObserver<T>) {
 	var previous: T? = null
 	this.observe(owner) {

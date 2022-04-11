@@ -71,7 +71,6 @@
     <string name="other">Altro</string>
     <string name="text_clear_search_history_prompt">Vuoi davvero rimuovere tutte le ricerche recenti\?</string>
     <string name="search_only_on_s">Cerca solo su %s</string>
-    <string name="hide_toolbar">Nascondi la barra degli strumenti quando si scorre</string>
     <string name="password_length_hint">La password deve essere di almeno 4 caratteri</string>
     <string name="confirm">Conferma</string>
     <string name="protect_application_subtitle">Inserisci la password che sarà richiesta all\'avvio dell\'applicazione</string>
@@ -130,7 +129,6 @@
     <string name="favourites_category_empty">Questa categoria è vuota</string>
     <string name="all_favourites">Tutti i preferiti</string>
     <string name="done">Finito</string>
-    <string name="use_ssl">Usa una connessione sicura (HTTPS)</string>
     <string name="other_storage">Altro spazio di archiviazione</string>
     <string name="cannot_find_available_storage">Impossibile trovare uno spazio di archiviazione disponibile</string>
     <string name="not_available">Non disponibile</string>
@@ -219,13 +217,7 @@
     <string name="chapter_is_missing_text">Questo capitolo manca sul tuo dispositivo. Scaricalo o leggilo in linea.</string>
     <string name="text_downloads_holder">Attualmente non ci sono scaricamenti attivi</string>
     <string name="queued">In coda</string>
-    <string name="about_license">Licenza</string>
-    <string name="about_copyright_and_licenses">Diritti d\'autore e licenze</string>
-    <string name="about_gratitudes_summary">Queste persone rendono Kotatsu migliore</string>
-    <string name="about_gratitudes">Ringraziamenti</string>
-    <string name="about_support_developer_summary">Se ti piace questa applicazione, puoi aiutare finanziariamente via Yoomoney (Yandex.Money)</string>
-    <string name="about_support_developer">Sostieni lo sviluppatore</string>
-    <string name="about_feedback_4pda">Argomento su 4PDA</string>
+	<string name="about_feedback_4pda">Argomento su 4PDA</string>
     <string name="about_feedback">Commenti</string>
     <string name="about_app_translation">Traduzione</string>
     <string name="about_app_translation_summary">Traduci questa applicazione</string>
@@ -266,4 +258,10 @@
     <string name="preload_pages">Precarica le pagine</string>
     <string name="only_using_wifi">Solo usando il Wi-Fi</string>
     <string name="always">Sempre</string>
+    <string name="logged_in_as">Registrato come %s</string>
+    <string name="nsfw">18+</string>
+    <string name="various_languages">Varie lingue</string>
+    <string name="search_chapters">Trova un capitolo</string>
+    <string name="chapters_empty">Nessun capitolo in questo manga</string>
+    <string name="percent_string_pattern">%1$s%%</string>
 </resources>

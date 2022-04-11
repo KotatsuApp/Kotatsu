@@ -4,10 +4,8 @@ import android.app.ActivityOptions
 import android.os.Bundle
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
+import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
@@ -16,30 +14,41 @@ import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.util.CoilUtils
+import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.core.model.MangaHistory
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.MangaState
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
 import org.koitharu.kotatsu.image.ui.ImageActivity
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaState
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.*
 
-class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickListener,
-	View.OnLongClickListener {
+class DetailsFragment :
+	BaseFragment<FragmentDetailsBinding>(),
+	View.OnClickListener,
+	View.OnLongClickListener,
+	ChipsView.OnChipClickListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setHasOptionsMenu(true)
+	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -52,12 +61,18 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		binding.buttonFavorite.setOnClickListener(this)
 		binding.buttonRead.setOnClickListener(this)
 		binding.buttonRead.setOnLongClickListener(this)
-		binding.coverCard.setOnClickListener(this)
+		binding.imageViewCover.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
+		binding.chipsTags.onChipClickListener = this
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
 		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		super.onCreateOptionsMenu(menu, inflater)
+		inflater.inflate(R.menu.opt_details_info, menu)
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
@@ -67,60 +82,61 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
 			textViewAuthor.textAndVisible = manga.author
-			sourceContainer.isVisible = manga.source != MangaSource.LOCAL
-			textViewSource.text = manga.source.title
-			textViewDescription.text =
-				manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
-					?: getString(R.string.no_description)
+			textViewDescription.text = manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
+				?: getString(R.string.no_description)
 			when (manga.state) {
 				MangaState.FINISHED -> {
 					textViewState.apply {
 						textAndVisible = resources.getString(R.string.state_finished)
-						drawableStart = ResourcesCompat.getDrawable(resources,
-							R.drawable.ic_state_finished,
-							context.theme)
+						drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_state_finished)
 					}
 				}
 				MangaState.ONGOING -> {
 					textViewState.apply {
 						textAndVisible = resources.getString(R.string.state_ongoing)
-						drawableStart = ResourcesCompat.getDrawable(resources,
-							R.drawable.ic_state_ongoing,
-							context.theme)
+						drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_state_ongoing)
 					}
 				}
 				else -> textViewState.isVisible = false
 			}
 
 			// Info containers
-			if (manga.chapters?.isNotEmpty() == true) {
-				chaptersContainer.isVisible = true
-				textViewChapters.text = manga.chapters.let {
-					resources.getQuantityString(
-						R.plurals.chapters,
-						it.size,
-						manga.chapters.size
-					)
+			val chapters = manga.chapters
+			if (chapters.isNullOrEmpty()) {
+				infoLayout.textViewChapters.isVisible = false
+			} else {
+				infoLayout.textViewChapters.isVisible = true
+				infoLayout.textViewChapters.text = resources.getQuantityString(
+					R.plurals.chapters,
+					chapters.size,
+					chapters.size,
+				)
+			}
+			if (manga.hasRating) {
+				infoLayout.textViewRating.text = String.format("%.1f", manga.rating * 5)
+				infoLayout.ratingContainer.isVisible = true
+			} else {
+				infoLayout.ratingContainer.isVisible = false
+			}
+			if (manga.source == MangaSource.LOCAL) {
+				infoLayout.textViewSource.isVisible = false
+				val file = manga.url.toUri().toFileOrNull()
+				if (file != null) {
+					viewLifecycleScope.launch {
+						val size = file.computeSize()
+						infoLayout.textViewSize.text = FileSize.BYTES.format(requireContext(), size)
+						infoLayout.textViewSize.isVisible = true
+					}
+				} else {
+					infoLayout.textViewSize.isVisible = false
 				}
 			} else {
-				chaptersContainer.isVisible = false
+				infoLayout.textViewSource.text = manga.source.title
+				infoLayout.textViewSource.isVisible = true
+				infoLayout.textViewSize.isVisible = false
 			}
-			if (manga.rating == Manga.NO_RATING) {
-				ratingContainer.isVisible = false
-			} else {
-				textViewRating.text = String.format("%.1f", manga.rating * 5)
-				ratingContainer.isVisible = true
-			}
-			val file = manga.url.toUri().toFileOrNull()
-			if (file != null) {
-				viewLifecycleScope.launch {
-					val size = file.computeSize()
-					textViewSize.text = FileSize.BYTES.format(requireContext(), size)
-				}
-				sizeContainer.isVisible = true
-			} else {
-				sizeContainer.isVisible = false
-			}
+
+			infoLayout.textViewNsfw.isVisible = manga.isNsfw
 
 			// Buttons
 			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
@@ -143,13 +159,12 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 	}
 
 	private fun onFavouriteChanged(isFavourite: Boolean) {
-		with(binding.buttonFavorite) {
-			if (isFavourite) {
-				this.setIconResource(R.drawable.ic_heart)
-			} else {
-				this.setIconResource(R.drawable.ic_heart_outline)
-			}
+		val iconRes = if (isFavourite) {
+			R.drawable.ic_heart
+		} else {
+			R.drawable.ic_heart_outline
 		}
+		binding.buttonFavorite.setIconResource(iconRes)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -173,9 +188,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				} else {
 					startActivity(
 						ReaderActivity.newIntent(
-							context ?: return,
-							manga,
-							null
+							context = context ?: return,
+							manga = manga,
+							branch = viewModel.selectedBranchValue,
 						)
 					)
 				}
@@ -189,7 +204,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 					)
 				)
 			}
-			R.id.cover_card -> {
+			R.id.imageView_cover -> {
 				val options = ActivityOptions.makeSceneTransitionAnimation(
 					requireActivity(),
 					binding.imageViewCover,
@@ -212,11 +227,14 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 				v.showPopupMenu(R.menu.popup_read) {
 					when (it.itemId) {
 						R.id.action_read -> {
+							val branch = viewModel.selectedBranchValue
 							startActivity(
 								ReaderActivity.newIntent(
-									context ?: return@showPopupMenu false,
-									viewModel.manga.value ?: return@showPopupMenu false,
-									viewModel.chapters.value?.firstOrNull()?.let { c ->
+									context = context ?: return@showPopupMenu false,
+									manga = viewModel.manga.value ?: return@showPopupMenu false,
+									state = viewModel.chapters.value?.firstOrNull { c ->
+										c.chapter.branch == branch
+									}?.let { c ->
 										ReaderState(c.chapter.id, 0, 0)
 									}
 								)
@@ -232,11 +250,14 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 		}
 	}
 
+	override fun onChipClick(chip: Chip, data: Any?) {
+		val tag = data as? MangaTag ?: return
+		startActivity(MangaListActivity.newIntent(requireContext(), setOf(tag)))
+	}
+
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			bottom = insets.bottom
+			bottom = insets.bottom,
 		)
 	}
 
@@ -245,7 +266,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(), View.OnClickList
 			manga.tags.map { tag ->
 				ChipsView.ChipModel(
 					title = tag.title,
-					icon = 0
+					icon = 0,
+					data = tag,
 				)
 			}
 		)

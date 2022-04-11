@@ -15,8 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 
@@ -24,7 +24,7 @@ class ShortcutsRepository(
 	private val context: Context,
 	private val coil: ImageLoader,
 	private val historyRepository: HistoryRepository,
-	private val mangaRepository: MangaDataRepository
+	private val mangaRepository: MangaDataRepository,
 ) {
 
 	private val iconSize by lazy {
@@ -69,7 +69,7 @@ class ShortcutsRepository(
 			.setLongLabel(manga.title)
 			.setIcon(icon)
 			.setIntent(
-				ReaderActivity.newIntent(context, manga.id, null)
+				ReaderActivity.newIntent(context, manga.id)
 					.setAction(ReaderActivity.ACTION_MANGA_READ)
 			)
 	}

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager.standard
 
+import android.annotation.SuppressLint
 import android.graphics.PointF
 import android.net.Uri
 import android.view.View
@@ -8,14 +9,13 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.*
 
 open class PageHolder(
 	binding: ItemPageBinding,
@@ -27,10 +27,12 @@ open class PageHolder(
 
 	init {
 		binding.ssiv.setOnImageEventListener(delegate)
-		binding.buttonRetry.setOnClickListener(this)
+		@Suppress("LeakingThis")
+		bindingInfo.buttonRetry.setOnClickListener(this)
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
+	@SuppressLint("SetTextI18n")
 	override fun onBind(data: ReaderPage) {
 		delegate.onBind(data.toMangaPage())
 		binding.textViewNumber.text = (data.index + 1).toString()
@@ -42,17 +44,17 @@ open class PageHolder(
 	}
 
 	override fun onLoadingStarted() {
-		binding.layoutError.isVisible = false
-		binding.progressBar.isVisible = true
+		bindingInfo.layoutError.isVisible = false
+		bindingInfo.progressBar.showCompat()
 		binding.ssiv.recycle()
 	}
 
 	override fun onProgressChanged(progress: Int) {
 		if (progress in 0..100) {
-			binding.progressBar.isIndeterminate = false
-			binding.progressBar.setProgressCompat(progress, true)
+			bindingInfo.progressBar.isIndeterminate = false
+			bindingInfo.progressBar.setProgressCompat(progress, true)
 		} else {
-			binding.progressBar.isIndeterminate = true
+			bindingInfo.progressBar.isIndeterminate = true
 		}
 	}
 
@@ -97,7 +99,7 @@ open class PageHolder(
 	}
 
 	override fun onImageShown() {
-		binding.progressBar.isVisible = false
+		bindingInfo.progressBar.hideCompat()
 	}
 
 	override fun onClick(v: View) {
@@ -107,11 +109,11 @@ open class PageHolder(
 	}
 
 	override fun onError(e: Throwable) {
-		binding.textViewError.text = e.getDisplayMessage(context.resources)
-		binding.buttonRetry.setText(
-			(e as? ResolvableException)?.resolveTextId ?: R.string.try_again
+		bindingInfo.textViewError.text = e.getDisplayMessage(context.resources)
+		bindingInfo.buttonRetry.setText(
+			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again }
 		)
-		binding.layoutError.isVisible = true
-		binding.progressBar.isVisible = false
+		bindingInfo.layoutError.isVisible = true
+		bindingInfo.progressBar.hideCompat()
 	}
 }

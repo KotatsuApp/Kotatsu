@@ -9,10 +9,6 @@ import java.util.concurrent.TimeUnit
 @SuppressLint("SimpleDateFormat")
 fun Date.format(pattern: String): String = SimpleDateFormat(pattern).format(this)
 
-fun Date.calendar(): Calendar = Calendar.getInstance().also {
-	it.time = this
-}
-
 fun Date.formatRelative(minResolution: Long): CharSequence = DateUtils.getRelativeTimeSpanString(
 	time, System.currentTimeMillis(), minResolution
 )

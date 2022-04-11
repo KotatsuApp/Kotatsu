@@ -2,8 +2,8 @@ package org.koitharu.kotatsu.core.github
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.koitharu.kotatsu.utils.ext.await
-import org.koitharu.kotatsu.utils.ext.parseJson
+import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.parsers.util.parseJson
 
 class GithubRepository(private val okHttp: OkHttpClient) {
 

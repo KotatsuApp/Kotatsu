@@ -2,10 +2,10 @@ package org.koitharu.kotatsu.local.data
 
 import androidx.annotation.CheckResult
 import androidx.annotation.WorkerThread
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.utils.ext.takeIfReadable
-import org.koitharu.kotatsu.utils.ext.toFileNameSafe
 import java.io.File
 
 @WorkerThread

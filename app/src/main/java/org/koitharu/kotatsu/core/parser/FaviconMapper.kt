@@ -4,7 +4,7 @@ import android.net.Uri
 import coil.map.Mapper
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaSource
 
 class FaviconMapper() : Mapper<Uri, HttpUrl> {
 

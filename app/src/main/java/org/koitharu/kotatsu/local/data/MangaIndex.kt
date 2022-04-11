@@ -3,11 +3,12 @@ package org.koitharu.kotatsu.local.data
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.MangaTag
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.util.json.getBooleanOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
+import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
+import org.koitharu.kotatsu.parsers.util.toTitleCase
 
 class MangaIndex(source: String?) {
 
@@ -24,6 +25,7 @@ class MangaIndex(source: String?) {
 		json.put("description", manga.description)
 		json.put("rating", manga.rating)
 		json.put("nsfw", manga.isNsfw)
+		json.put("state", manga.state?.name)
 		json.put("source", manga.source.name)
 		json.put("cover_large", manga.largeCoverUrl)
 		json.put("tags", JSONArray().also { a ->
@@ -55,8 +57,11 @@ class MangaIndex(source: String?) {
 			rating = json.getDouble("rating").toFloat(),
 			isNsfw = json.getBooleanOrDefault("nsfw", false),
 			coverUrl = json.getString("cover"),
+			state = json.getStringOrNull("state")?.let { stateString ->
+				MangaState.values().find { it.name == stateString }
+			},
 			description = json.getStringOrNull("description"),
-			tags = json.getJSONArray("tags").mapToSet { x ->
+			tags = json.getJSONArray("tags").mapJSONToSet { x ->
 				MangaTag(
 					title = x.getString("title").toTitleCase(),
 					key = x.getString("key"),

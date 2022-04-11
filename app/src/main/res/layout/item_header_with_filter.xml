@@ -28,7 +28,7 @@
 		android:paddingStart="6dp"
 		android:singleLine="true"
 		android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
-		app:drawableEndCompat="@drawable/ic_drop_down"
+		app:drawableEndCompat="@drawable/ic_expand_more"
 		app:drawableTint="?android:attr/textColorSecondary"
 		tools:ignore="RtlSymmetry"
 		tools:text="@string/popular" />

@@ -7,11 +7,9 @@ import androidx.fragment.app.strictmode.FragmentStrictMode
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.koitharu.kotatsu.base.domain.MangaLoaderContext
 import org.koitharu.kotatsu.core.db.databaseModule
 import org.koitharu.kotatsu.core.github.githubModule
 import org.koitharu.kotatsu.core.network.networkModule
-import org.koitharu.kotatsu.core.parser.parserModule
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.AppCrashHandler
 import org.koitharu.kotatsu.core.ui.uiModule
@@ -23,6 +21,7 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.local.localModule
 import org.koitharu.kotatsu.main.mainModule
 import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
+import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.readerModule
 import org.koitharu.kotatsu.remotelist.remoteListModule
 import org.koitharu.kotatsu.search.searchModule
@@ -57,7 +56,6 @@ class KotatsuApp : Application() {
 				databaseModule,
 				githubModule,
 				uiModule,
-				parserModule,
 				mainModule,
 				searchModule,
 				localModule,
@@ -97,6 +95,7 @@ class KotatsuApp : Application() {
 			.detectWrongFragmentContainer()
 			.detectRetainInstanceUsage()
 			.detectSetUserVisibleHint()
+			.detectFragmentTagUsage()
 			.build()
 	}
 }

@@ -19,5 +19,5 @@ data class SuggestionWithManga(
 		entityColumn = "tag_id",
 		associateBy = Junction(MangaTagsEntity::class)
 	)
-	val tags: List<TagEntity>
+	val tags: List<TagEntity>,
 )

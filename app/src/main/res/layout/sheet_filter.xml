@@ -27,7 +27,6 @@
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		app:fastScrollEnabled="true"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		tools:listitem="@layout/item_category_checkable" />
+		tools:listitem="@layout/item_checkable_new" />
 </LinearLayout>

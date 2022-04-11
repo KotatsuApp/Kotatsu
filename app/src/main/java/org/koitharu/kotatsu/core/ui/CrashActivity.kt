@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.ui
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.View
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ActivityCrashBinding
 import org.koitharu.kotatsu.main.ui.MainActivity
+import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.utils.ShareHelper
 
 class CrashActivity : Activity(), View.OnClickListener {
@@ -61,6 +63,21 @@ class CrashActivity : Activity(), View.OnClickListener {
 				} catch (_: ActivityNotFoundException) {
 				}
 			}
+		}
+	}
+
+	companion object {
+
+		private const val MAX_TRACE_SIZE = 131071
+
+		fun newIntent(context: Context, error: Throwable): Intent {
+			val crashInfo = error
+				.stackTraceToString()
+				.trimIndent()
+				.ellipsize(MAX_TRACE_SIZE)
+			val intent = Intent(context, CrashActivity::class.java)
+			intent.putExtra(Intent.EXTRA_TEXT, crashInfo)
+			return intent
 		}
 	}
 }

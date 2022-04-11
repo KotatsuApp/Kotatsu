@@ -6,56 +6,40 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
-import org.koitharu.kotatsu.core.db.entity.TagEntity
+import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.SortOrder
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
+import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.mapItems
-import org.koitharu.kotatsu.utils.ext.mapToSet
 
 class FavouritesRepository(private val db: MangaDatabase) {
 
 	suspend fun getAllManga(): List<Manga> {
 		val entities = db.favouritesDao.findAll()
-		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
+		return entities.map { it.manga.toManga(it.tags.toMangaTags()) }
 	}
 
 	fun observeAll(order: SortOrder): Flow<List<Manga>> {
 		return db.favouritesDao.observeAll(order)
-			.mapItems { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
+			.mapItems { it.manga.toManga(it.tags.toMangaTags()) }
 	}
 
 	suspend fun getManga(categoryId: Long): List<Manga> {
 		val entities = db.favouritesDao.findAll(categoryId)
-		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
+		return entities.map { it.manga.toManga(it.tags.toMangaTags()) }
 	}
 
 	fun observeAll(categoryId: Long, order: SortOrder): Flow<List<Manga>> {
 		return db.favouritesDao.observeAll(categoryId, order)
-			.mapItems { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
+			.mapItems { it.manga.toManga(it.tags.toMangaTags()) }
 	}
 
 	fun observeAll(categoryId: Long): Flow<List<Manga>> {
 		return observeOrder(categoryId)
 			.flatMapLatest { order -> observeAll(categoryId, order) }
-	}
-
-	suspend fun getManga(categoryId: Long, offset: Int): List<Manga> {
-		val entities = db.favouritesDao.findAll(categoryId, offset, 20)
-		return entities.map { it.manga.toManga(it.tags.mapToSet(TagEntity::toMangaTag)) }
-	}
-
-	suspend fun getAllCategories(): List<FavouriteCategory> {
-		val entities = db.favouriteCategoriesDao.findAll()
-		return entities.map { it.toFavouriteCategory() }
-	}
-
-	suspend fun getCategories(mangaId: Long): List<FavouriteCategory> {
-		val entities = db.favouritesDao.find(mangaId)?.categories
-		return entities?.map { it.toFavouriteCategory() }.orEmpty()
 	}
 
 	fun observeCategories(): Flow<List<FavouriteCategory>> {
@@ -70,8 +54,8 @@ class FavouritesRepository(private val db: MangaDatabase) {
 		}.distinctUntilChanged()
 	}
 
-	fun observeCategoriesIds(mangaId: Long): Flow<List<Long>> {
-		return db.favouritesDao.observeIds(mangaId)
+	fun observeCategoriesIds(mangaId: Long): Flow<Set<Long>> {
+		return db.favouritesDao.observeIds(mangaId).map { it.toSet() }
 	}
 
 	suspend fun addCategory(title: String): FavouriteCategory {
@@ -107,27 +91,37 @@ class FavouritesRepository(private val db: MangaDatabase) {
 		}
 	}
 
-	suspend fun addToCategory(manga: Manga, categoryId: Long) {
-		val tags = manga.tags.map(TagEntity.Companion::fromMangaTag)
+	suspend fun addToCategory(categoryId: Long, mangas: Collection<Manga>) {
 		db.withTransaction {
-			db.tagsDao.upsert(tags)
-			db.mangaDao.upsert(MangaEntity.from(manga), tags)
-			val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
-			db.favouritesDao.insert(entity)
+			for (manga in mangas) {
+				val tags = manga.tags.toEntities()
+				db.tagsDao.upsert(tags)
+				db.mangaDao.upsert(manga.toEntity(), tags)
+				val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
+				db.favouritesDao.insert(entity)
+			}
 		}
 	}
 
-	suspend fun removeFromCategory(manga: Manga, categoryId: Long) {
-		db.favouritesDao.delete(categoryId, manga.id)
+	suspend fun removeFromFavourites(ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				db.favouritesDao.delete(id)
+			}
+		}
 	}
 
-	suspend fun removeFromFavourites(manga: Manga) {
-		db.favouritesDao.delete(manga.id)
+	suspend fun removeFromCategory(categoryId: Long, ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				db.favouritesDao.delete(categoryId, id)
+			}
+		}
 	}
 
 	private fun observeOrder(categoryId: Long): Flow<SortOrder> {
 		return db.favouriteCategoriesDao.observe(categoryId)
-			.map { x -> SortOrder.values().find { it.name == x.order } ?: SortOrder.NEWEST }
+			.map { x -> SortOrder(x.order, SortOrder.NEWEST) }
 			.distinctUntilChanged()
 	}
 }

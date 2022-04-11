@@ -9,15 +9,17 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.view.ActionMode
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.utils.ext.ellipsize
+import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.progress.Progress
 
 class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmSuppressWildcards Uri>> {
@@ -46,7 +48,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		viewModel.onMangaRemoved.observe(viewLifecycleOwner, ::onItemRemoved)
+		viewModel.onMangaRemoved.observe(viewLifecycleOwner) { onItemRemoved() }
 		viewModel.importProgress.observe(viewLifecycleOwner, ::onImportProgressChanged)
 	}
 
@@ -92,44 +94,46 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 		}
 	}
 
-	override fun getTitle(): CharSequence? {
-		return context?.getString(R.string.local_storage)
-	}
-
 	override fun onActivityResult(result: List<@JvmSuppressWildcards Uri>) {
 		if (result.isEmpty()) return
 		viewModel.importFiles(result)
 	}
 
-	override fun onCreatePopupMenu(inflater: MenuInflater, menu: Menu, data: Manga) {
-		super.onCreatePopupMenu(inflater, menu, data)
-		inflater.inflate(R.menu.popup_local, menu)
+	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+		mode.menuInflater.inflate(R.menu.mode_local, menu)
+		return super.onCreateActionMode(mode, menu)
 	}
 
-	override fun onPopupMenuItemSelected(item: MenuItem, data: Manga): Boolean {
+	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
-			R.id.action_delete -> {
-				MaterialAlertDialogBuilder(context ?: return false)
-					.setTitle(R.string.delete_manga)
-					.setMessage(getString(R.string.text_delete_local_manga, data.title))
-					.setPositiveButton(R.string.delete) { _, _ ->
-						viewModel.delete(data)
-					}
-					.setNegativeButton(android.R.string.cancel, null)
-					.show()
+			R.id.action_remove -> {
+				showDeletionConfirm(selectedItemsIds, mode)
 				true
 			}
-			else -> super.onPopupMenuItemSelected(item, data)
+			R.id.action_share -> {
+				val files = selectedItems.map { it.url.toUri().toFile() }
+				ShareHelper(requireContext()).shareCbz(files)
+				mode.finish()
+				true
+			}
+			else -> super.onActionItemClicked(mode, item)
 		}
 	}
 
-	private fun onItemRemoved(item: Manga) {
-		Snackbar.make(
-			binding.recyclerView, getString(
-				R.string._s_deleted_from_local_storage,
-				item.title.ellipsize(16)
-			), Snackbar.LENGTH_SHORT
-		).show()
+	private fun showDeletionConfirm(ids: Set<Long>, mode: ActionMode) {
+		MaterialAlertDialogBuilder(context ?: return)
+			.setTitle(R.string.delete_manga)
+			.setMessage(getString(R.string.text_delete_local_manga_batch))
+			.setPositiveButton(R.string.delete) { _, _ ->
+				viewModel.delete(ids)
+				mode.finish()
+			}
+			.setNegativeButton(android.R.string.cancel, null)
+			.show()
+	}
+
+	private fun onItemRemoved() {
+		Snackbar.make(binding.recyclerView, R.string.removal_completed, Snackbar.LENGTH_SHORT).show()
 	}
 
 	private fun onImportProgressChanged(progress: Progress?) {

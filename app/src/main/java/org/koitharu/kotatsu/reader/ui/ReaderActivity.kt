@@ -1,22 +1,16 @@
 package org.koitharu.kotatsu.reader.ui
 
-import android.Manifest
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
-import androidx.core.view.updatePadding
+import androidx.core.net.toUri
+import androidx.core.view.*
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.Slide
@@ -36,12 +30,13 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
-import org.koitharu.kotatsu.core.exceptions.resolve.ResolvableException
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaPage
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
@@ -49,6 +44,7 @@ import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonReaderFragment
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
+import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
@@ -56,22 +52,28 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
 import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 
-class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
+class ReaderActivity :
+	BaseFullscreenActivity<ActivityReaderBinding>(),
 	ChaptersBottomSheet.OnChapterChangeListener,
-	GridTouchHelper.OnGridTouchListener, OnPageSelectListener, ReaderConfigDialog.Callback,
-	ActivityResultCallback<Boolean>, ReaderControlDelegate.OnInteractionListener {
+	GridTouchHelper.OnGridTouchListener,
+	OnPageSelectListener,
+	ReaderConfigDialog.Callback,
+	ActivityResultCallback<Uri?>,
+	ReaderControlDelegate.OnInteractionListener,
+	OnApplyWindowInsetsListener {
 
 	private val viewModel by viewModel<ReaderViewModel> {
-		parametersOf(MangaIntent(intent), intent?.getParcelableExtra<ReaderState>(EXTRA_STATE))
+		parametersOf(
+			MangaIntent(intent),
+			intent?.getParcelableExtra<ReaderState>(EXTRA_STATE),
+			intent?.getStringExtra(EXTRA_BRANCH),
+		)
 	}
 
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var orientationHelper: ScreenOrientationHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
-	private val permissionsRequest = registerForActivityResult(
-		ActivityResultContracts.RequestPermission(),
-		this
-	)
+	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
 	private var gestureInsets: Insets = Insets.NONE
 
 	private val reader
@@ -86,6 +88,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		controlDelegate = ReaderControlDelegate(lifecycleScope, get(), this)
 		binding.toolbarBottom.inflateMenu(R.menu.opt_reader_bottom)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
+		insetsDelegate.interceptingWindowInsetsListener = this
 
 		orientationHelper.observeAutoOrientation()
 			.onEach {
@@ -143,7 +146,8 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		when (item.itemId) {
 			R.id.action_reader_mode -> {
 				ReaderConfigDialog.show(
-					supportFragmentManager, when (reader) {
+					supportFragmentManager,
+					when (reader) {
 						is PagerReaderFragment -> ReaderMode.STANDARD
 						is WebtoonReaderFragment -> ReaderMode.WEBTOON
 						is ReversedReaderFragment -> ReaderMode.REVERSED
@@ -155,7 +159,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 				)
 			}
 			R.id.action_settings -> {
-				startActivity(SimpleSettingsActivity.newReaderSettingsIntent(this))
+				startActivity(SettingsActivity.newReaderSettingsIntent(this))
 			}
 			R.id.action_chapters -> {
 				ChaptersBottomSheet.show(
@@ -181,29 +185,22 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 				}
 			}
 			R.id.action_save_page -> {
-				if (!viewModel.content.value?.pages.isNullOrEmpty()) {
-					if (ContextCompat.checkSelfPermission(
-							this,
-							Manifest.permission.WRITE_EXTERNAL_STORAGE
-						) == PackageManager.PERMISSION_GRANTED
-					) {
-						onActivityResult(true)
-					} else {
-						permissionsRequest.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+				viewModel.getCurrentPage()?.also { page ->
+					viewModel.saveCurrentState(reader?.getCurrentState())
+					val name = page.url.toUri().run {
+						fragment ?: lastPathSegment ?: ""
 					}
-				} else {
-					showWaitWhileLoading()
-				}
+					savePageRequest.launch(name)
+				} ?: showWaitWhileLoading()
 			}
 			else -> return super.onOptionsItemSelected(item)
 		}
 		return true
 	}
 
-	override fun onActivityResult(result: Boolean) {
-		if (result) {
-			viewModel.saveCurrentState(reader?.getCurrentState())
-			viewModel.saveCurrentPage()
+	override fun onActivityResult(uri: Uri?) {
+		if (uri != null) {
+			viewModel.saveCurrentPage(uri)
 		}
 	}
 
@@ -224,8 +221,9 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			.setMessage(e.getDisplayMessage(resources))
 			.setNegativeButton(R.string.close, listener)
 			.setOnCancelListener(listener)
-		if (e is ResolvableException) {
-			dialog.setPositiveButton(e.resolveTextId, listener)
+		val resolveTextId = ExceptionResolver.getResolveStringId(e)
+		if (resolveTextId != 0) {
+			dialog.setPositiveButton(resolveTextId, listener)
 		}
 		dialog.show()
 	}
@@ -241,7 +239,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			rawX >= binding.root.width - gestureInsets.right ||
 			rawY >= binding.root.height - gestureInsets.bottom ||
 			binding.appbarTop.hasGlobalPoint(rawX, rawY) ||
-			binding.appbarBottom.hasGlobalPoint(rawX, rawY)
+			binding.appbarBottom?.hasGlobalPoint(rawX, rawY) == true
 		) {
 			false
 		} else {
@@ -284,11 +282,9 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		viewModel.switchMode(mode)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
-
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
-			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_INDEFINITE)
+			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
 				.setAnchorView(binding.appbarBottom)
 				.setAction(R.string.share) {
 					ShareHelper(this).shareImage(uri)
@@ -318,11 +314,13 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 		if (binding.appbarTop.isVisible != isUiVisible) {
 			val transition = TransitionSet()
 				.setOrdering(TransitionSet.ORDERING_TOGETHER)
-				.addTransition(Slide(Gravity.BOTTOM).addTarget(binding.appbarBottom))
 				.addTransition(Slide(Gravity.TOP).addTarget(binding.appbarTop))
+			binding.appbarBottom?.let { botomBar ->
+				transition.addTransition(Slide(Gravity.BOTTOM).addTarget(botomBar))
+			}
 			TransitionManager.beginDelayedTransition(binding.root, transition)
 			binding.appbarTop.isVisible = isUiVisible
-			binding.appbarBottom.isVisible = isUiVisible
+			binding.appbarBottom?.isVisible = isUiVisible
 			if (isUiVisible) {
 				showSystemUI()
 			} else {
@@ -339,7 +337,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			right = systemBars.right,
 			left = systemBars.left
 		)
-		binding.appbarBottom.updatePadding(
+		binding.appbarBottom?.updatePadding(
 			bottom = systemBars.bottom,
 			right = systemBars.right,
 			left = systemBars.left
@@ -348,6 +346,8 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
 			.build()
 	}
+
+	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun switchPageBy(delta: Int) {
 		reader?.switchPageBy(delta)
@@ -376,7 +376,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 	) : DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
 
 		override fun onClick(dialog: DialogInterface?, which: Int) {
-			if (which == DialogInterface.BUTTON_POSITIVE && exception is ResolvableException) {
+			if (which == DialogInterface.BUTTON_POSITIVE) {
 				dialog?.dismiss()
 				tryResolve(exception)
 			} else {
@@ -390,7 +390,7 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 			}
 		}
 
-		private fun tryResolve(e: ResolvableException) {
+		private fun tryResolve(e: Throwable) {
 			lifecycleScope.launch {
 				if (exceptionResolver.resolve(e)) {
 					viewModel.reload()
@@ -405,18 +405,29 @@ class ReaderActivity : BaseFullscreenActivity<ActivityReaderBinding>(),
 
 		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
 		private const val EXTRA_STATE = "state"
+		private const val EXTRA_BRANCH = "branch"
 		private const val TOAST_DURATION = 1500L
+
+		fun newIntent(context: Context, manga: Manga): Intent {
+			return Intent(context, ReaderActivity::class.java)
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+		}
+
+		fun newIntent(context: Context, manga: Manga, branch: String?): Intent {
+			return Intent(context, ReaderActivity::class.java)
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+				.putExtra(EXTRA_BRANCH, branch)
+		}
 
 		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {
 			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, manga)
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 				.putExtra(EXTRA_STATE, state)
 		}
 
-		fun newIntent(context: Context, mangaId: Long, state: ReaderState?): Intent {
+		fun newIntent(context: Context, mangaId: Long): Intent {
 			return Intent(context, ReaderActivity::class.java)
 				.putExtra(MangaIntent.KEY_ID, mangaId)
-				.putExtra(EXTRA_STATE, state)
 		}
 	}
 }

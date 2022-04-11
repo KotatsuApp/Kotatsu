@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.settings.backup
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
+import java.io.File
+import java.io.FileNotFoundException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.runInterruptible
@@ -14,13 +16,11 @@ import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.core.backup.RestoreRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.io.File
-import java.io.FileNotFoundException
 
 class RestoreViewModel(
 	uri: Uri?,
 	private val repository: RestoreRepository,
-	private val context: Context
+	context: Context
 ) : BaseViewModel() {
 
 	val progress = MutableLiveData<Progress?>(null)
@@ -35,8 +35,7 @@ class RestoreViewModel(
 
 			val backup = runInterruptible(Dispatchers.IO) {
 				val tempFile = File.createTempFile("backup_", ".tmp")
-				(contentResolver.openInputStream(uri)
-					?: throw FileNotFoundException()).use { input ->
+				(contentResolver.openInputStream(uri) ?: throw FileNotFoundException()).use { input ->
 					tempFile.outputStream().use { output ->
 						input.copyTo(output)
 					}

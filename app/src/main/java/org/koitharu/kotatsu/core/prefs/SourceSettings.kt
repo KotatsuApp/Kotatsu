@@ -1,32 +1,29 @@
 package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
-import org.koitharu.kotatsu.core.model.MangaSource
+import androidx.core.content.edit
+import org.koitharu.kotatsu.parsers.config.ConfigKey
+import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.utils.ext.getEnumValue
+import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.utils.ext.putEnumValue
 
-interface SourceSettings {
+private const val KEY_SORT_ORDER = "sort_order"
 
-	fun getDomain(defaultValue: String): String
+class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig {
 
-	fun isUseSsl(defaultValue: Boolean): Boolean
+	private val prefs = context.getSharedPreferences(source.name, Context.MODE_PRIVATE)
 
-	private class PrefSourceSettings(context: Context, source: MangaSource) : SourceSettings {
+	var defaultSortOrder: SortOrder?
+		get() = prefs.getEnumValue(KEY_SORT_ORDER, SortOrder::class.java)
+		set(value) = prefs.edit { putEnumValue(KEY_SORT_ORDER, value) }
 
-		private val prefs = context.getSharedPreferences(source.name, Context.MODE_PRIVATE)
-
-		override fun getDomain(defaultValue: String) = prefs.getString(KEY_DOMAIN, defaultValue)
-			?.takeUnless(String::isBlank)
-			?: defaultValue
-
-		override fun isUseSsl(defaultValue: Boolean) = prefs.getBoolean(KEY_USE_SSL, defaultValue)
-	}
-
-	companion object {
-
-		operator fun invoke(context: Context, source: MangaSource): SourceSettings =
-			PrefSourceSettings(context, source)
-
-		const val KEY_DOMAIN = "domain"
-		const val KEY_USE_SSL = "ssl"
-		const val KEY_AUTH = "auth"
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> get(key: ConfigKey<T>): T {
+		return when (key) {
+			is ConfigKey.Domain -> prefs.getString(key.key, key.defaultValue).ifNullOrEmpty { key.defaultValue }
+		} as T
 	}
 }

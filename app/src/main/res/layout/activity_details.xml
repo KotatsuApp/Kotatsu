@@ -3,7 +3,6 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/coordinator"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	tools:context=".details.ui.DetailsActivity">
@@ -12,24 +11,28 @@
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		app:liftOnScroll="false"
-		app:elevation="0dp">
+		app:elevation="0dp"
+		app:liftOnScroll="false">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
+			android:background="@drawable/m3_tabs_background"
 			android:theme="?attr/actionBarTheme"
-			app:layout_scrollFlags="scroll|enterAlways"/>
+			app:layout_scrollFlags="scroll|enterAlways"
+			tools:ignore="PrivateResource">
 
-		<com.google.android.material.tabs.TabLayout
-			android:id="@+id/tabs"
-			style="@style/Widget.Kotatsu.Tabs"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			app:tabGravity="fill"
-			app:tabMaxWidth="0dp"
-			app:tabMode="fixed" />
+			<com.google.android.material.tabs.TabLayout
+				android:id="@+id/tabs"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_gravity="center_horizontal"
+				android:background="@null"
+				app:tabGravity="center"
+				app:tabMode="scrollable" />
+
+		</com.google.android.material.appbar.MaterialToolbar>
 
 	</com.google.android.material.appbar.AppBarLayout>
 

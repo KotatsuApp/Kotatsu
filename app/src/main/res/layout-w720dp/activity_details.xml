@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	tools:context=".details.ui.DetailsActivity">
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appbar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		app:elevation="0dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:liftOnScroll="false">
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:theme="?attr/actionBarTheme">
+
+			<Spinner
+				android:id="@+id/spinner_branches"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="end"
+				android:layout_marginEnd="8dp"
+				android:visibility="gone"
+				tools:listitem="@layout/item_branch"
+				tools:visibility="visible" />
+
+		</com.google.android.material.appbar.MaterialToolbar>
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/container_details"
+		android:name="org.koitharu.kotatsu.details.ui.DetailsFragment"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/guideline"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		tools:layout="@layout/fragment_details" />
+
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/container_chapters"
+		android:name="org.koitharu.kotatsu.details.ui.ChaptersFragment"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/guideline"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		tools:layout="@layout/fragment_chapters" />
+
+	<org.koitharu.kotatsu.base.ui.widgets.FadingSnackbar
+		android:id="@+id/snackbar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent" />
+
+	<View
+		android:id="@+id/guideline"
+		android:layout_width="1dp"
+		android:layout_height="0dp"
+		android:layout_marginBottom="6dp"
+		android:background="?colorOutline"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.6"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.tracker.ui.model
 
-import org.koitharu.kotatsu.core.model.Manga
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.model.Manga
 
 data class FeedItem(
 	val id: Long,

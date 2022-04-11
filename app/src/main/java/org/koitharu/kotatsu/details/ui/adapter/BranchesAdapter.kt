@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.replaceWith
+import org.koitharu.kotatsu.parsers.util.replaceWith
 
 class BranchesAdapter : BaseAdapter() {
 

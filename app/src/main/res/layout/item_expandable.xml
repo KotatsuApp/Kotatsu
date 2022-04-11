@@ -12,5 +12,5 @@
 	android:paddingEnd="?android:listPreferredItemPaddingEnd"
 	android:textAppearance="?attr/textAppearanceBodyMedium"
 	app:drawableEndCompat="@drawable/ic_expand_collapse"
-	app:drawableTint="?android:textColorPrimary"
+	app:drawableTint="?android:colorControlNormal"
 	tools:text="@tools:sample/full_names" />

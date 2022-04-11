@@ -10,14 +10,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
-import org.koitharu.kotatsu.core.model.*
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.MangaZip
+import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.util.longHashCode
+import org.koitharu.kotatsu.parsers.util.toCamelCase
 import org.koitharu.kotatsu.utils.AlphanumComparator
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.deleteAwait
+import org.koitharu.kotatsu.utils.ext.readText
+import org.koitharu.kotatsu.utils.ext.resolveName
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -29,7 +33,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 	override val source = MangaSource.LOCAL
 	private val filenameFilter = CbzFilter()
 
-	override suspend fun getList2(
+	override suspend fun getList(
 		offset: Int,
 		query: String?,
 		tags: Set<MangaTag>?,
@@ -42,9 +46,13 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		return files.mapNotNull { x -> runCatching { getFromFile(x) }.getOrNull() }
 	}
 
-	override suspend fun getDetails(manga: Manga) = if (manga.chapters == null) {
-		getFromFile(Uri.parse(manga.url).toFile())
-	} else manga
+	override suspend fun getDetails(manga: Manga) = when {
+		manga.source != MangaSource.LOCAL -> requireNotNull(findSavedManga(manga)) {
+			"Manga is not local or saved"
+		}
+		manga.chapters == null -> getFromFile(Uri.parse(manga.url).toFile())
+		else -> manga
+	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		return runInterruptible(Dispatchers.IO){
@@ -93,17 +101,15 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		val index = entry?.let(zip::readText)?.let(::MangaIndex)
 		val info = index?.getMangaInfo()
 		if (index != null && info != null) {
-			return info.copy(
+			return info.copy2(
 				source = MangaSource.LOCAL,
 				url = fileUri,
 				coverUrl = zipUri(
 					file,
-					entryName = index.getCoverEntry()
-						?: findFirstEntry(zip.entries(), isImage = true)?.name.orEmpty()
+					entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty()
 				),
 				chapters = info.chapters?.map { c ->
-					c.copy(url = fileUri,
-						source = MangaSource.LOCAL)
+					c.copy(url = fileUri, source = MangaSource.LOCAL)
 				}
 			)
 		}
@@ -122,7 +128,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 			url = fileUri,
 			publicUrl = fileUri,
 			source = MangaSource.LOCAL,
-			coverUrl = zipUri(file, findFirstEntry(zip.entries(), isImage = true)?.name.orEmpty()),
+			coverUrl = zipUri(file, findFirstImageEntry(zip.entries())?.name.orEmpty()),
 			chapters = chapters.sortedWith(AlphanumComparator()).mapIndexed { i, s ->
 				MangaChapter(
 					id = "$i$s".longHashCode(),
@@ -134,7 +140,15 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 					scanlator = null,
 					branch = null,
 				)
-			}
+			},
+			altTitle = null,
+			rating = -1f,
+			isNsfw = false,
+			tags = setOf(),
+			state = null,
+			author = null,
+			largeCoverUrl = null,
+			description = null,
 		)
 	}
 
@@ -162,7 +176,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				val info = index.getMangaInfo() ?: continue
 				if (info.id == remoteManga.id) {
 					val fileUri = file.toUri().toString()
-					return@runInterruptible info.copy(
+					return@runInterruptible info.copy2(
 						source = MangaSource.LOCAL,
 						url = fileUri,
 						chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
@@ -173,21 +187,16 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		}
 	}
 
-	private fun zipUri(file: File, entryName: String) =
-		Uri.fromParts("cbz", file.path, entryName).toString()
+	private fun zipUri(file: File, entryName: String) = "cbz://${file.path}#$entryName"
 
-	private fun findFirstEntry(entries: Enumeration<out ZipEntry>, isImage: Boolean): ZipEntry? {
+	private fun findFirstImageEntry(entries: Enumeration<out ZipEntry>): ZipEntry? {
 		val list = entries.toList()
 			.filterNot { it.isDirectory }
 			.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
-		return if (isImage) {
-			val map = MimeTypeMap.getSingleton()
-			list.firstOrNull {
-				map.getMimeTypeFromExtension(it.name.substringAfterLast('.'))
-					?.startsWith("image/") == true
-			}
-		} else {
-			list.firstOrNull()
+		val map = MimeTypeMap.getSingleton()
+		return list.firstOrNull {
+			map.getMimeTypeFromExtension(it.name.substringAfterLast('.'))
+				?.startsWith("image/") == true
 		}
 	}
 
@@ -231,4 +240,41 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 	private suspend fun getAllFiles() = storageManager.getReadableDirs().flatMap { dir ->
 		dir.listFiles(filenameFilter)?.toList().orEmpty()
 	}
+
+	private fun Manga.copy2(
+		url: String = this.url,
+		coverUrl: String = this.coverUrl,
+		chapters: List<MangaChapter>? = this.chapters,
+		source: MangaSource = this.source,
+	) = Manga(
+		id = id,
+		title = title,
+		altTitle = altTitle,
+		url = url,
+		publicUrl = publicUrl,
+		rating = rating,
+		isNsfw = isNsfw,
+		coverUrl = coverUrl,
+		tags = tags,
+		state = state,
+		author = author,
+		largeCoverUrl = largeCoverUrl,
+		description = description,
+		chapters = chapters,
+		source = source,
+	)
+
+	private fun MangaChapter.copy(
+		url: String = this.url,
+		source: MangaSource = this.source,
+	) = MangaChapter(
+		id = id,
+		name = name,
+		number = number,
+		url = url,
+		scanlator = scanlator,
+		uploadDate = uploadDate,
+		branch = branch,
+		source = source,
+	)
 }

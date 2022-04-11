@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.core.backup
 
 import android.content.Context
+import java.io.File
+import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
@@ -8,8 +10,6 @@ import org.json.JSONArray
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.MutableZipFile
 import org.koitharu.kotatsu.utils.ext.format
-import java.io.File
-import java.util.*
 
 class BackupArchive(file: File) : MutableZipFile(file) {
 
@@ -40,7 +40,7 @@ class BackupArchive(file: File) : MutableZipFile(file) {
 			}
 			dir.mkdirs()
 			val filename = buildString {
-				append(context.getString(R.string.app_name).toLowerCase(Locale.ROOT))
+				append(context.getString(R.string.app_name).lowercase(Locale.ROOT))
 				append('_')
 				append(Date().format("ddMMyyyy"))
 				append(".bak")

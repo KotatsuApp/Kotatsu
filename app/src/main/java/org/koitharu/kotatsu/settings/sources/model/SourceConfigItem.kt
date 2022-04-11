@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.settings.sources.model
 
 import android.net.Uri
 import androidx.annotation.StringRes
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaSource
 
 sealed interface SourceConfigItem {
 
@@ -50,6 +50,7 @@ sealed interface SourceConfigItem {
 	class SourceItem(
 		val source: MangaSource,
 		val isEnabled: Boolean,
+		val summary: String?,
 		val isDraggable: Boolean,
 	) : SourceConfigItem {
 
@@ -63,6 +64,7 @@ sealed interface SourceConfigItem {
 			other as SourceItem
 
 			if (source != other.source) return false
+			if (summary != other.summary) return false
 			if (isEnabled != other.isEnabled) return false
 			if (isDraggable != other.isDraggable) return false
 
@@ -71,6 +73,7 @@ sealed interface SourceConfigItem {
 
 		override fun hashCode(): Int {
 			var result = source.hashCode()
+			result = 31 * result + summary.hashCode()
 			result = 31 * result + isEnabled.hashCode()
 			result = 31 * result + isDraggable.hashCode()
 			return result

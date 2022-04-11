@@ -5,7 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
-	tableName = "manga_tags", primaryKeys = ["manga_id", "tag_id"], foreignKeys = [
+	tableName = "manga_tags", primaryKeys = ["manga_id", "tag_id"],
+	foreignKeys = [
 		ForeignKey(
 			entity = MangaEntity::class,
 			parentColumns = ["manga_id"],

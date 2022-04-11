@@ -1,19 +1,18 @@
 package org.koitharu.kotatsu.base.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
+import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 
-abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsListener {
+abstract class BaseFragment<B : ViewBinding> :
+	Fragment(),
+	WindowInsetsDelegate.WindowInsetsListener {
 
 	private var viewBinding: B? = null
 
@@ -23,7 +22,11 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 	@Suppress("LeakingThis")
 	protected val exceptionResolver = ExceptionResolver(this)
 
-	private var lastInsets: Insets = Insets.NONE
+	@Suppress("LeakingThis")
+	protected val insetsDelegate = WindowInsetsDelegate(this)
+
+	protected val actionModeDelegate: ActionModeDelegate
+		get() = (requireActivity() as BaseActivity<*>).actionModeDelegate
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -37,36 +40,16 @@ abstract class BaseFragment<B : ViewBinding> : Fragment(), OnApplyWindowInsetsLi
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		lastInsets = Insets.NONE
-		ViewCompat.setOnApplyWindowInsetsListener(view, this)
+		insetsDelegate.onViewCreated(view)
 	}
 
 	override fun onDestroyView() {
 		viewBinding = null
+		insetsDelegate.onDestroyView()
 		super.onDestroyView()
-	}
-
-	open fun getTitle(): CharSequence? = null
-
-	override fun onAttach(context: Context) {
-		super.onAttach(context)
-		getTitle()?.let {
-			activity?.title = it
-		}
-	}
-
-	override fun onApplyWindowInsets(v: View?, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val newInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-		if (newInsets != lastInsets) {
-			onWindowInsetsChanged(newInsets)
-			lastInsets = newInsets
-		}
-		return insets
 	}
 
 	protected fun bindingOrNull() = viewBinding
 
 	protected abstract fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): B
-
-	protected abstract fun onWindowInsetsChanged(insets: Insets)
 }

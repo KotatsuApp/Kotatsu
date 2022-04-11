@@ -1,29 +1,28 @@
 package org.koitharu.kotatsu.core.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.mapToSet
 
-@Parcelize
-data class Manga(
-	val id: Long,
-	val title: String,
-	val altTitle: String? = null,
-	val url: String, // relative url for internal use
-	val publicUrl: String,
-	val rating: Float = NO_RATING, //normalized value [0..1] or -1
-	val isNsfw: Boolean = false,
-	val coverUrl: String,
-	val largeCoverUrl: String? = null,
-	val description: String? = null, //HTML
-	val tags: Set<MangaTag> = emptySet(),
-	val state: MangaState? = null,
-	val author: String? = null,
-	val chapters: List<MangaChapter>? = null,
-	val source: MangaSource
-) : Parcelable {
-
-	companion object {
-
-		const val NO_RATING = -1f
-	}
+fun Manga.withoutChapters() = if (chapters.isNullOrEmpty()) {
+	this
+} else {
+	Manga(
+		id = id,
+		title = title,
+		altTitle = altTitle,
+		url = url,
+		publicUrl = publicUrl,
+		rating = rating,
+		isNsfw = isNsfw,
+		coverUrl = coverUrl,
+		tags = tags,
+		state = state,
+		author = author,
+		largeCoverUrl = largeCoverUrl,
+		description = description,
+		chapters = null,
+		source = source,
+	)
 }
+
+fun Collection<Manga>.ids() = mapToSet { it.id }

@@ -1,84 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	app:initialExpandedChildrenCount="5">
+	xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<PreferenceCategory
-		app:iconSpaceReserved="false"
-		app:title="@string/app_name">
+	<PreferenceCategory android:title="@string/app_name">
 
 		<Preference
-			app:iconSpaceReserved="false"
-			app:key="app_version"
-			app:persistent="false"
-			app:summary="@string/check_for_updates" />
+			android:key="app_version"
+			android:persistent="false"
+			android:summary="@string/check_for_updates" />
 
-		<SwitchPreference
-			app:defaultValue="true"
-			app:iconSpaceReserved="false"
-			app:isPreferenceVisible="false"
-			app:key="app_update_auto"
-			app:summary="@string/show_notification_app_update"
-			app:title="@string/application_update"
-			tools:isPreferenceVisible="true" />
-
-		<Preference
-			app:iconSpaceReserved="false"
-			app:key="about_app_translation"
-			app:summary="@string/about_app_translation_summary"
-			app:title="@string/about_app_translation" />
-
-		<Preference
-			app:iconSpaceReserved="false"
-			app:key="about_support_developer"
-			app:summary="@string/about_support_developer_summary"
-			app:title="@string/about_support_developer" />
-
-		<Preference
-			app:iconSpaceReserved="false"
-			app:key="about_gratitudes"
-			app:summary="@string/about_gratitudes_summary"
-			app:title="@string/about_gratitudes" />
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
+			android:key="app_update_auto"
+			android:summary="@string/show_notification_app_update"
+			android:title="@string/application_update" />
 
 	</PreferenceCategory>
 
-	<PreferenceCategory
-		app:iconSpaceReserved="false"
-		app:title="@string/about_feedback">
+	<PreferenceCategory android:title="@string/about_feedback">
 
 		<Preference
-			app:iconSpaceReserved="false"
-			app:key="about_feedback_4pda"
-			app:summary="https://4pda.to/forum/index.php?showtopic=697669"
-			app:title="@string/about_feedback_4pda" />
+			android:key="about_feedback_github"
+			android:persistent="false"
+			android:summary="@string/url_github_issues"
+			android:title="@string/github" />
 
 		<Preference
-			app:iconSpaceReserved="false"
-			app:key="about_feedback_discord"
-			app:summary="https://discord.gg/NNJ5RgVBC5"
-			app:title="Discord" />
+			android:key="about_feedback_4pda"
+			android:summary="@string/url_forpda"
+			android:title="@string/about_feedback_4pda" />
 
 		<Preference
-			app:iconSpaceReserved="false"
-			app:key="about_feedback_github"
-			app:summary="https://github.com/nv95/Kotatsu/issues"
-			app:title="GitHub" />
-
-	</PreferenceCategory>
-
-	<PreferenceCategory
-		app:iconSpaceReserved="false"
-		app:key="copyright"
-		app:title="@string/about_copyright_and_licenses">
+			android:key="about_feedback_discord"
+			android:summary="@string/url_discord"
+			android:title="@string/discord" />
 
 		<Preference
-			android:fragment="org.koitharu.kotatsu.settings.about.LicenseFragment"
-			app:icon="@drawable/ic_copyleft"
-			app:iconSpaceReserved="false"
-			app:key="about_license"
-			app:title="@string/about_license" />
+			android:key="about_app_translation"
+			android:summary="@string/about_app_translation_summary"
+			android:title="@string/about_app_translation" />
 
 	</PreferenceCategory>
 

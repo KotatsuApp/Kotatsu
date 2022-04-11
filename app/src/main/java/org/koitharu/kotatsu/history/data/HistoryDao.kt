@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 
-
 @Dao
 abstract class HistoryDao {
 
@@ -23,14 +22,24 @@ abstract class HistoryDao {
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM history)")
 	abstract suspend fun findAllManga(): List<MangaEntity>
 
-	@Query("SELECT * FROM tags WHERE tag_id IN (SELECT tag_id FROM manga_tags WHERE manga_id IN (SELECT manga_id FROM history))")
-	abstract suspend fun findAllTags(): List<TagEntity>
+	@Query(
+		"""SELECT tags.* FROM tags
+		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id
+		INNER JOIN history ON history.manga_id = manga_tags.manga_id
+		GROUP BY manga_tags.tag_id 
+		ORDER BY COUNT(manga_tags.manga_id) DESC 
+		LIMIT :limit"""
+	)
+	abstract suspend fun findPopularTags(limit: Int): List<TagEntity>
 
 	@Query("SELECT * FROM history WHERE manga_id = :id")
 	abstract suspend fun find(id: Long): HistoryEntity?
 
 	@Query("SELECT * FROM history WHERE manga_id = :id")
 	abstract fun observe(id: Long): Flow<HistoryEntity?>
+
+	@Query("SELECT COUNT(*) FROM history")
+	abstract fun observeCount(): Flow<Int>
 
 	@Query("DELETE FROM history")
 	abstract suspend fun clear()
@@ -60,5 +69,4 @@ abstract class HistoryDao {
 			true
 		} else false
 	}
-
 }

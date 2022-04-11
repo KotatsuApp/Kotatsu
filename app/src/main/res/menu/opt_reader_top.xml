@@ -5,7 +5,7 @@
 
 	<item
 		android:id="@+id/action_chapters"
-		android:icon="@drawable/ic_drop_down"
+		android:icon="@drawable/ic_expand_more"
 		android:title="@string/chapters"
 		android:orderInCategory="0"
 		app:showAsAction="always" />

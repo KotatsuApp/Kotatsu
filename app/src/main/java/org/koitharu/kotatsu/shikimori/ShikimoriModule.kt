@@ -4,8 +4,6 @@ import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.core.network.CurlLoggingInterceptor
 import org.koitharu.kotatsu.shikimori.data.ShikimoriAuthenticator
 import org.koitharu.kotatsu.shikimori.data.ShikimoriInterceptor
 import org.koitharu.kotatsu.shikimori.data.ShikimoriRepository
@@ -19,9 +17,6 @@ val shikimoriModule
 			val okHttp = OkHttpClient.Builder().apply {
 				authenticator(ShikimoriAuthenticator(get(), ::get))
 				addInterceptor(ShikimoriInterceptor(get()))
-				if (BuildConfig.DEBUG) {
-					addNetworkInterceptor(CurlLoggingInterceptor())
-				}
 			}.build()
 			ShikimoriRepository(okHttp, get())
 		}

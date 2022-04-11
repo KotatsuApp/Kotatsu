@@ -6,6 +6,10 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
+import java.io.File
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.zip.ZipFile
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,22 +20,17 @@ import okhttp3.Request
 import okio.Closeable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.await
 import org.koitharu.kotatsu.utils.ext.connectivityManager
-import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
-import java.io.File
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.zip.ZipFile
 
 private const val PROGRESS_UNDEFINED = -1f
 private const val PREFETCH_LIMIT_DEFAULT = 10
@@ -78,7 +77,7 @@ class PageLoader : KoinComponent, Closeable {
 		}
 	}
 
-	fun loadPageAsync(page: MangaPage, force: Boolean) : ProgressDeferred<File, Float> {
+	fun loadPageAsync(page: MangaPage, force: Boolean): ProgressDeferred<File, Float> {
 		if (!force) {
 			cache[page.url]?.let {
 				return getCompletedTask(it)
@@ -142,7 +141,7 @@ class PageLoader : KoinComponent, Closeable {
 		return if (result != null && result.source == source) {
 			result
 		} else {
-			mangaRepositoryOf(source).also { repository = it }
+			MangaRepository(source).also { repository = it }
 		}
 	}
 

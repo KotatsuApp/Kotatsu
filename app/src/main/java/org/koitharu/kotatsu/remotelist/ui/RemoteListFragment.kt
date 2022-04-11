@@ -3,14 +3,15 @@ package org.koitharu.kotatsu.remotelist.ui
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.view.ActionMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.filter.FilterBottomSheet
-import org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity
-import org.koitharu.kotatsu.utils.ext.parcelableArgument
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.utils.ext.serializableArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class RemoteListFragment : MangaListFragment() {
@@ -19,14 +20,10 @@ class RemoteListFragment : MangaListFragment() {
 		parametersOf(source)
 	}
 
-	private val source by parcelableArgument<MangaSource>(ARG_SOURCE)
+	private val source by serializableArgument<MangaSource>(ARG_SOURCE)
 
 	override fun onScrolledToEnd() {
 		viewModel.loadNextPage()
-	}
-
-	override fun getTitle(): CharSequence {
-		return source.title
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -38,10 +35,7 @@ class RemoteListFragment : MangaListFragment() {
 		return when (item.itemId) {
 			R.id.action_source_settings -> {
 				startActivity(
-					SimpleSettingsActivity.newSourceSettingsIntent(
-						context ?: return false,
-						source,
-					)
+					SettingsActivity.newSourceSettingsIntent(context ?: return false, source)
 				)
 				true
 			}
@@ -51,6 +45,11 @@ class RemoteListFragment : MangaListFragment() {
 			}
 			else -> super.onOptionsItemSelected(item)
 		}
+	}
+
+	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+		mode.menuInflater.inflate(R.menu.mode_remote, menu)
+		return super.onCreateActionMode(mode, menu)
 	}
 
 	override fun onFilterClick() {
@@ -66,7 +65,7 @@ class RemoteListFragment : MangaListFragment() {
 		private const val ARG_SOURCE = "provider"
 
 		fun newInstance(provider: MangaSource) = RemoteListFragment().withArgs(1) {
-			putParcelable(ARG_SOURCE, provider)
+			putSerializable(ARG_SOURCE, provider)
 		}
 	}
 }

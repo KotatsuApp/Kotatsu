@@ -1,12 +1,12 @@
 package org.koitharu.kotatsu.utils.ext
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.coroutineScope
-import org.koitharu.kotatsu.utils.LifecycleAwareServiceConnection
+import java.io.Serializable
 
 inline fun <T : Fragment> T.withArgs(size: Int, block: Bundle.() -> Unit): T {
 	val b = Bundle(size)
@@ -18,8 +18,7 @@ inline fun <T : Fragment> T.withArgs(size: Int, block: Bundle.() -> Unit): T {
 val Fragment.viewLifecycleScope
 	inline get() = viewLifecycleOwner.lifecycle.coroutineScope
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T : Parcelable> Fragment.parcelableArgument(name: String): Lazy<T> {
+fun <T : Parcelable> Fragment.parcelableArgument(name: String): Lazy<T> {
 	return lazy(LazyThreadSafetyMode.NONE) {
 		requireNotNull(arguments?.getParcelable(name)) {
 			"No argument $name passed into ${javaClass.simpleName}"
@@ -27,13 +26,20 @@ inline fun <T : Parcelable> Fragment.parcelableArgument(name: String): Lazy<T> {
 	}
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun Fragment.stringArgument(name: String) = lazy(LazyThreadSafetyMode.NONE) {
+inline fun <reified T : Serializable> Fragment.serializableArgument(name: String): Lazy<T> {
+	return lazy(LazyThreadSafetyMode.NONE) {
+		requireNotNull(arguments?.getSerializable(name) as? T) {
+			"No argument $name passed into ${javaClass.simpleName}"
+		}
+	}
+}
+
+fun Fragment.stringArgument(name: String) = lazy(LazyThreadSafetyMode.NONE) {
 	arguments?.getString(name)
 }
 
-fun Fragment.bindService(
-	lifecycleOwner: LifecycleOwner,
-	service: Intent,
-	flags: Int,
-) = LifecycleAwareServiceConnection.bindService(requireActivity(), lifecycleOwner, service, flags)
+fun DialogFragment.showAllowStateLoss(manager: FragmentManager, tag: String?) {
+	if (!manager.isStateSaved) {
+		show(manager, tag)
+	}
+}

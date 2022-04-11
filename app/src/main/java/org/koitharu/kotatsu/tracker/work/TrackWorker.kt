@@ -18,15 +18,16 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.PendingIntentCompat
-import org.koitharu.kotatsu.utils.ext.mangaRepositoryOf
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
+import org.koitharu.kotatsu.utils.ext.trySetForeground
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.util.concurrent.TimeUnit
 
@@ -53,19 +54,21 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		if (tracks.isEmpty()) {
 			return Result.success()
 		}
-		setForeground(createForegroundInfo())
+		if (TAG in tags) { // not expedited
+			trySetForeground()
+		}
 		var success = 0
 		val workData = Data.Builder()
 			.putInt(DATA_TOTAL, tracks.size)
 		for ((index, track) in tracks.withIndex()) {
 			val details = runCatching {
-				mangaRepositoryOf(track.manga.source).getDetails(track.manga)
+				MangaRepository(track.manga.source).getDetails(track.manga)
 			}.getOrNull()
 			workData.putInt(DATA_PROGRESS, index)
 			setProgress(workData.build())
 			val chapters = details?.chapters ?: continue
 			when {
-				track.knownChaptersCount == -1 -> { //first check
+				track.knownChaptersCount == -1 -> { // first check
 					repository.storeTrackResult(
 						mangaId = track.manga.id,
 						knownChaptersCount = chapters.size,
@@ -74,7 +77,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						newChapters = emptyList()
 					)
 				}
-				track.knownChaptersCount == 0 && track.lastChapterId == 0L -> { //manga was empty on last check
+				track.knownChaptersCount == 0 && track.lastChapterId == 0L -> { // manga was empty on last check
 					repository.storeTrackResult(
 						mangaId = track.manga.id,
 						knownChaptersCount = track.knownChaptersCount,
@@ -82,7 +85,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						previousTrackChapterId = track.lastNotifiedChapterId,
 						newChapters = chapters
 					)
-					showNotification(track.manga, chapters)
+					showNotification(details, chapters)
 				}
 				chapters.size == track.knownChaptersCount -> {
 					if (chapters.lastOrNull()?.id == track.lastChapterId) {
@@ -110,7 +113,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 								newChapters = newChapters
 							)
 							showNotification(
-								track.manga,
+								details,
 								newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId }
 							)
 						}
@@ -201,7 +204,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		}
 	}
 
-	private fun createForegroundInfo(): ForegroundInfo {
+	override suspend fun getForegroundInfo(): ForegroundInfo {
 		val title = applicationContext.getString(R.string.check_for_new_chapters)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			val channel = NotificationChannel(
@@ -224,6 +227,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)
+			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
 			.setOngoing(true)
 			.build()
 
@@ -280,6 +284,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			val request = OneTimeWorkRequestBuilder<TrackWorker>()
 				.setConstraints(constraints)
 				.addTag(TAG_ONESHOT)
+				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
 			WorkManager.getInstance(context)
 				.enqueue(request)

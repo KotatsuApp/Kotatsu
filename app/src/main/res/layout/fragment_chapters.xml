@@ -37,8 +37,25 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_centerInParent="true"
-		android:indeterminate="true"
 		android:layout_gravity="center"
+		android:indeterminate="true"
+		android:visibility="gone"
+		tools:visibility="visible" />
+
+	<TextView
+		android:id="@+id/textView_holder"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignWithParentIfMissing="true"
+		android:layout_below="@id/spinner_branches"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentBottom="true"
+		android:layout_margin="@dimen/margin_normal"
+		android:gravity="center"
+		android:text="@string/chapters_empty"
+		android:textAlignment="center"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
 		android:visibility="gone"
 		tools:visibility="visible" />
 

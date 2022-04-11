@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.view.ActionMode
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity
+import org.koitharu.kotatsu.settings.SettingsActivity
 
 class SuggestionsFragment : MangaListFragment() {
 
@@ -37,7 +38,7 @@ class SuggestionsFragment : MangaListFragment() {
 				true
 			}
 			R.id.action_settings -> {
-				startActivity(SimpleSettingsActivity.newSuggestionsSettingsIntent(requireContext()))
+				startActivity(SettingsActivity.newSuggestionsSettingsIntent(requireContext()))
 				true
 			}
 			else -> super.onOptionsItemSelected(item)
@@ -46,8 +47,9 @@ class SuggestionsFragment : MangaListFragment() {
 
 	override fun onScrolledToEnd() = Unit
 
-	override fun getTitle(): CharSequence? {
-		return context?.getString(R.string.suggestions)
+	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+		mode.menuInflater.inflate(R.menu.mode_remote, menu)
+		return super.onCreateActionMode(mode, menu)
 	}
 
 	companion object {

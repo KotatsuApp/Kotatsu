@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.list.ui.model
 
-import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.parsers.model.Manga
 
 data class MangaGridModel(
-	val id: Long,
+	override val id: Long,
 	val title: String,
 	val coverUrl: String,
-	val manga: Manga,
+	override val manga: Manga,
 	val counter: Int,
-) : ListModel
+) : MangaItemModel

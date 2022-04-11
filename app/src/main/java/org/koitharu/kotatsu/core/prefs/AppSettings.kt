@@ -14,8 +14,10 @@ import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.utils.ext.getEnumValue
+import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.io.File
 import java.text.DateFormat
@@ -27,12 +29,12 @@ class AppSettings(context: Context) {
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
 	var listMode: ListMode
-		get() = prefs.getString(KEY_LIST_MODE, null)?.findEnumValue(ListMode.values()) ?: ListMode.DETAILED_LIST
-		set(value) = prefs.edit { putString(KEY_LIST_MODE, value.name) }
+		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.DETAILED_LIST)
+		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE, value) }
 
 	var defaultSection: AppSection
-		get() = prefs.getString(KEY_APP_SECTION, null)?.findEnumValue(AppSection.values()) ?: AppSection.HISTORY
-		set(value) = prefs.edit { putString(KEY_APP_SECTION, value.name) }
+		get() = prefs.getEnumValue(KEY_APP_SECTION, AppSection.HISTORY)
+		set(value) = prefs.edit { putEnumValue(KEY_APP_SECTION, value) }
 
 	val theme: Int
 		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -42,9 +44,6 @@ class AppSettings(context: Context) {
 
 	val isAmoledTheme: Boolean
 		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
-
-	val isToolbarHideWhenScrolling: Boolean
-		get() = prefs.getBoolean(KEY_HIDE_TOOLBAR, true)
 
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
@@ -96,7 +95,7 @@ class AppSettings(context: Context) {
 		set(value) = prefs.edit { putBoolean(KEY_REVERSE_CHAPTERS, value) }
 
 	val zoomMode: ZoomMode
-		get() = prefs.getString(KEY_ZOOM_MODE, null)?.findEnumValue(ZoomMode.values()) ?: ZoomMode.FIT_CENTER
+		get() = prefs.getEnumValue(KEY_ZOOM_MODE, ZoomMode.FIT_CENTER)
 
 	val trackSources: Set<String>
 		get() = prefs.getStringSet(KEY_TRACK_SOURCES, null) ?: arraySetOf(TRACK_FAVOURITES, TRACK_HISTORY)
@@ -148,6 +147,10 @@ class AppSettings(context: Context) {
 	val isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
 
+	var isSearchSingleSource: Boolean
+		get() = prefs.getBoolean(KEY_SEARCH_SINGLE_SOURCE, false)
+		set(value) = prefs.edit { putBoolean(KEY_SEARCH_SINGLE_SOURCE, value) }
+
 	fun isPagesPreloadAllowed(cm: ConnectivityManager): Boolean {
 		return when (prefs.getString(KEY_PAGES_PRELOAD, null)?.toIntOrNull()) {
 			NETWORK_ALWAYS -> true
@@ -161,6 +164,18 @@ class AppSettings(context: Context) {
 			"" -> DateFormat.getDateInstance(DateFormat.SHORT)
 			else -> SimpleDateFormat(format, Locale.getDefault())
 		}
+
+	fun getSuggestionsTagsBlacklistRegex(): Regex? {
+		val string = prefs.getString(KEY_SUGGESTIONS_EXCLUDE_TAGS, null)?.trimEnd(' ', ',')
+		if (string.isNullOrEmpty()) {
+			return null
+		}
+		val tags = string.split(',')
+		val regex = tags.joinToString(prefix = "(", separator = "|", postfix = ")") { tag ->
+			Regex.escape(tag.trim())
+		}
+		return Regex(regex, RegexOption.IGNORE_CASE)
+	}
 
 	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
 		val list = MangaSource.values().toMutableList()
@@ -195,10 +210,6 @@ class AppSettings(context: Context) {
 		}
 	}
 
-	private fun <E : Enum<E>> String.findEnumValue(values: Array<E>): E? {
-		return values.find { it.name == this }
-	}
-
 	companion object {
 
 		const val PAGE_SWITCH_TAPS = "taps"
@@ -213,7 +224,6 @@ class AppSettings(context: Context) {
 		const val KEY_DYNAMIC_THEME = "dynamic_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
 		const val KEY_DATE_FORMAT = "date_format"
-		const val KEY_HIDE_TOOLBAR = "hide_toolbar"
 		const val KEY_SOURCES_ORDER = "sources_order"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"
@@ -249,17 +259,17 @@ class AppSettings(context: Context) {
 		const val KEY_PAGES_PRELOAD = "pages_preload"
 		const val KEY_SUGGESTIONS = "suggestions"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
+		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
+		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
 		const val KEY_SHIKIMORI = "shikimori"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
-		const val KEY_APP_GRATITUDES = "about_gratitudes"
 		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
 		const val KEY_FEEDBACK_DISCORD = "about_feedback_discord"
 		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
-		const val KEY_SUPPORT_DEVELOPER = "about_support_developer"
 
 		private const val NETWORK_NEVER = 0
 		private const val NETWORK_ALWAYS = 1

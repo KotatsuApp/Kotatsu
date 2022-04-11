@@ -10,13 +10,16 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.SortOrder
+import org.koitharu.kotatsu.core.db.entity.toManga
+import org.koitharu.kotatsu.core.db.entity.toMangaTag
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
-import org.koitharu.kotatsu.utils.ext.levenshteinDistance
 
 class MangaSearchRepository(
 	private val settings: AppSettings,
@@ -29,7 +32,7 @@ class MangaSearchRepository(
 		settings.getMangaSources(includeHidden = false).asFlow()
 			.flatMapMerge(concurrency) { source ->
 				runCatching {
-					MangaRepository(source).getList2(
+					MangaRepository(source).getList(
 						offset = 0,
 						query = query,
 						sortOrder = SortOrder.POPULARITY
@@ -77,6 +80,17 @@ class MangaSearchRepository(
 			}
 			result
 		}.orEmpty()
+	}
+
+	suspend fun getTagsSuggestion(query: String, limit: Int, source: MangaSource?): List<MangaTag> {
+		return when {
+			query.isNotEmpty() && source != null -> db.tagsDao.findTags(source.name, "%$query%", limit)
+			query.isNotEmpty() -> db.tagsDao.findTags("%$query%", limit)
+			source != null -> db.tagsDao.findPopularTags(source.name, limit)
+			else -> db.tagsDao.findPopularTags(limit)
+		}.map {
+			it.toMangaTag()
+		}
 	}
 
 	fun saveSearchQuery(query: String) {

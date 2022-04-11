@@ -1,13 +1,19 @@
 package org.koitharu.kotatsu.search.ui.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import com.google.android.material.R
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
+import org.koitharu.kotatsu.utils.ext.drawableStart
+
+private const val DRAWABLE_END = 2
 
 class SearchEditText @JvmOverloads constructor(
 	context: Context,
@@ -16,6 +22,7 @@ class SearchEditText @JvmOverloads constructor(
 ) : AppCompatEditText(context, attrs, defStyleAttr) {
 
 	var searchSuggestionListener: SearchSuggestionListener? = null
+	private val clearIcon = ContextCompat.getDrawable(context, R.drawable.abc_ic_clear_material)
 
 	var query: String
 		get() = text?.trim()?.toString().orEmpty()
@@ -50,11 +57,34 @@ class SearchEditText @JvmOverloads constructor(
 		lengthAfter: Int,
 	) {
 		super.onTextChanged(text, start, lengthBefore, lengthAfter)
+		setCompoundDrawablesRelativeWithIntrinsicBounds(
+			drawableStart,
+			null,
+			if (text.isNullOrEmpty()) null else clearIcon,
+			null,
+		)
 		searchSuggestionListener?.onQueryChanged(query)
+	}
+
+	@SuppressLint("ClickableViewAccessibility")
+	override fun onTouchEvent(event: MotionEvent): Boolean {
+		if (event.action == MotionEvent.ACTION_UP) {
+			val drawable = compoundDrawablesRelative[DRAWABLE_END] ?: return super.onTouchEvent(event)
+			val isOnDrawable = drawable.isVisible && if (layoutDirection == LAYOUT_DIRECTION_RTL) {
+				event.x.toInt() in paddingLeft..(drawable.bounds.width() + paddingLeft)
+			} else {
+				event.x.toInt() in (width - drawable.bounds.width() - paddingRight)..(width - paddingRight)
+			}
+			if (isOnDrawable) {
+				text?.clear()
+				return true
+			}
+		}
+		return super.onTouchEvent(event)
 	}
 
 	override fun clearFocus() {
 		super.clearFocus()
 		text?.clear()
 	}
-} 
+}

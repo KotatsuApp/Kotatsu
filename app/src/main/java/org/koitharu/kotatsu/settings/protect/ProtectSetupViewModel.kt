@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.parsers.util.md5
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import org.koitharu.kotatsu.utils.ext.md5
 
 class ProtectSetupViewModel(
 	private val settings: AppSettings

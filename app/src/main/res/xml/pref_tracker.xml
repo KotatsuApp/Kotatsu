@@ -8,25 +8,23 @@
 		android:entries="@array/track_sources"
 		android:entryValues="@array/values_track_sources"
 		android:key="track_sources"
-		android:title="@string/track_sources"
-		app:iconSpaceReserved="false" />
+		android:title="@string/track_sources" />
 
-	<SwitchPreference
+	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="tracker_notifications"
 		android:summary="@string/show_notification_new_chapters"
-		android:title="@string/notifications"
-		app:iconSpaceReserved="false" />
+		android:title="@string/notifications" />
 
 	<Preference
 		android:dependency="tracker_notifications"
+		android:fragment="org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment"
 		android:key="notifications_settings"
-		android:title="@string/notifications_settings"
-		app:iconSpaceReserved="false" />
+		android:title="@string/notifications_settings" />
 
 	<org.koitharu.kotatsu.settings.utils.LinksPreference
-		android:key="track_warning"
 		android:icon="@drawable/ic_info_outline"
+		android:key="track_warning"
 		android:persistent="false"
 		android:selectable="false"
 		android:summary="@string/tracker_warning"

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	xmlns:tools="http://schemas.android.com/tools"
-	tools:context=".core.ui.CrashActivity"
-	android:orientation="vertical">
+	android:orientation="vertical"
+	tools:context=".core.ui.CrashActivity">
 
 	<ScrollView
 		android:layout_width="match_parent"
@@ -31,6 +31,7 @@
 		android:text="@string/report_github" />
 
 	<LinearLayout
+		style="?buttonBarStyle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
@@ -38,6 +39,7 @@
 
 		<Button
 			android:id="@+id/button_close"
+			style="?buttonBarButtonStyle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="4dp"
@@ -48,6 +50,7 @@
 
 		<Button
 			android:id="@+id/button_restart"
+			style="?buttonBarButtonStyle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="2dp"

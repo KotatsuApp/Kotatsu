@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.databinding.LayoutPageInfoBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 
 abstract class BasePageHolder<B : ViewBinding>(
@@ -16,6 +17,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 ) : RecyclerView.ViewHolder(binding.root), PageHolderDelegate.Callback {
 
 	protected val delegate = PageHolderDelegate(loader, settings, this, exceptionResolver)
+	protected val bindingInfo = LayoutPageInfoBinding.bind(binding.root)
 
 	val context: Context
 		get() = itemView.context

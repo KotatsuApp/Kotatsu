@@ -44,21 +44,22 @@
 
 		<!-- Themes -->
 		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/light_status_bar</item>
-		<item name="android:statusBarColor">@color/surface_amoled</item>
+		<item name="android:statusBarColor">@color/dim</item>
 		<item name="android:navigationBarColor">@color/surface_amoled</item>
 		<item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@null</item>
 		<item name="android:enforceNavigationBarContrast" tools:targetApi="Q">false</item>
 		<item name="android:enforceStatusBarContrast" tools:targetApi="Q">false</item>
 		<item name="android:itemTextAppearance">@style/TextAppearance.Widget.Menu</item>
 		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.MaterialAlertDialog</item>
+		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
 		<item name="materialAlertDialogTheme">@style/ThemeOverlay.Kotatsu.MaterialAlertDialog</item>
 		<item name="textAppearanceButton">@style/TextAppearance.Kotatsu.Button</item>
 		<item name="android:buttonStyle">?attr/borderlessButtonStyle</item>
 		<item name="android:backgroundDimAmount">0.32</item>
 		<item name="windowActionModeOverlay">true</item>
-		<item name="actionOverflowButtonStyle">@style/Theme.Kotatsu.ActionButton.Overflow</item>
-		<item name="actionModeCloseButtonStyle">@style/Theme.Kotatsu.ActionMode.CloseButton</item>
-		<item name="actionModeCloseDrawable">@drawable/ic_close</item>
+		<item name="actionModeStyle">@style/Widget.Kotatsu.ActionMode</item>
+		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
+		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
 		<item name="chipStyle">@style/Widget.Kotatsu.Chip</item>
 		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
@@ -68,6 +69,7 @@
 		<item name="switchStyle">@style/Widget.Kotatsu.Switch</item>
 		<item name="materialCardViewStyle">@style/Widget.Material3.CardView.Filled</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
+		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
 
 		<!-- Preference text appearance -->
 		<item name="android:textAppearanceListItem">?attr/textAppearanceBodyLarge</item>
@@ -84,5 +86,13 @@
 	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Light" />
 
 	<style name="ThemeOverlay.Kotatsu.AMOLED" parent="" />
+
+	<style name="Theme.Kotatsu.Dialog" parent="">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowIsFloating">true</item>
+		<item name="windowMinWidthMajor">@dimen/abc_dialog_min_width_major</item>
+		<item name="windowMinWidthMinor">@dimen/abc_dialog_min_width_minor</item>
+		<item name="toolbarNavigationButtonStyle">@style/Theme.Kotatsu.ActionMode.CloseButton</item>
+	</style>
 
 </resources>

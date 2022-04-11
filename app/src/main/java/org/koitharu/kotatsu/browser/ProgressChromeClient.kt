@@ -4,7 +4,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.core.view.isVisible
 import com.google.android.material.progressindicator.BaseProgressIndicator
-import org.koitharu.kotatsu.utils.ext.setIndeterminateCompat
 
 private const val PROGRESS_MAX = 100
 
@@ -22,10 +21,10 @@ class ProgressChromeClient(
 			return
 		}
 		if (newProgress in 1 until PROGRESS_MAX) {
-			progressIndicator.setIndeterminateCompat(false)
+			progressIndicator.isIndeterminate = false
 			progressIndicator.setProgressCompat(newProgress.coerceAtMost(PROGRESS_MAX), true)
 		} else {
-			progressIndicator.setIndeterminateCompat(true)
+			progressIndicator.setIndeterminate(true)
 		}
 	}
 }

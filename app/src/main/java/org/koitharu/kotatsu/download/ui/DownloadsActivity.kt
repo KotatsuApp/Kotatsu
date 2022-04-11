@@ -47,15 +47,10 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 			right = insets.right,
 			bottom = insets.bottom
 		)
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right
-			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
-		}
+		binding.toolbar.updatePadding(
+			left = insets.left,
+			right = insets.right
+		)
 	}
 
 	companion object {

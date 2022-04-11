@@ -17,15 +17,14 @@ class SearchBehavior(context: Context?, attrs: AttributeSet?) :
 		child: SearchToolbar,
 		dependency: View,
 	): Boolean {
-		return if (dependency is AppBarLayout) {
-			true
-		} else
-			if (dependency is LinearLayout || dependency is BottomNavigationView) {
+		return when (dependency) {
+			is AppBarLayout -> true
+			is LinearLayout, is BottomNavigationView -> {
 				dependency.z = child.z + 1
 				true
-			} else {
-				super.layoutDependsOn(parent, child, dependency)
 			}
+			else -> super.layoutDependsOn(parent, child, dependency)
+		}
 	}
 
 	override fun onDependentViewChanged(

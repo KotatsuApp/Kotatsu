@@ -5,19 +5,15 @@ import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
-import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
-import androidx.core.view.isVisible
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.slider.Slider
 import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateViewBindingViewHolder
 import kotlin.math.roundToInt
@@ -65,23 +61,6 @@ inline fun View.showPopupMenu(
 	menu.show()
 }
 
-fun ViewGroup.hitTest(x: Int, y: Int): Set<View> {
-	val result = HashSet<View>(4)
-	val rect = Rect()
-	for (child in children) {
-		if (child.isVisible && child.getGlobalVisibleRect(rect)) {
-			if (rect.contains(x, y)) {
-				if (child is ViewGroup) {
-					result += child.hitTest(x, y)
-				} else {
-					result += child
-				}
-			}
-		}
-	}
-	return result
-}
-
 fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	if (visibility != View.VISIBLE) {
 		return false
@@ -89,14 +68,6 @@ fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	val rect = Rect()
 	getGlobalVisibleRect(rect)
 	return rect.contains(x, y)
-}
-
-fun DrawerLayout.toggleDrawer(gravity: Int) {
-	if (isDrawerOpen(gravity)) {
-		closeDrawer(gravity)
-	} else {
-		openDrawer(gravity)
-	}
 }
 
 fun View.measureHeight(): Int {
@@ -166,46 +137,16 @@ inline fun <reified T> RecyclerView.ViewHolder.getItem(): T? {
 	return ((this as? AdapterDelegateViewBindingViewHolder<*, *>)?.item as? T)
 }
 
-@Deprecated("Useless")
-fun BaseProgressIndicator<*>.setIndeterminateCompat(indeterminate: Boolean) {
-	if (isIndeterminate != indeterminate) {
-		if (indeterminate && visibility == View.VISIBLE) {
-			visibility = View.INVISIBLE
-			isIndeterminate = indeterminate
-			visibility = View.VISIBLE
-		} else {
-			isIndeterminate = indeterminate
-		}
-	}
-}
-
-fun resolveAdjustedSize(
-	desiredSize: Int,
-	maxSize: Int,
-	measureSpec: Int,
-): Int {
-	val specMode = MeasureSpec.getMode(measureSpec)
-	val specSize = MeasureSpec.getSize(measureSpec)
-	return when (specMode) {
-		MeasureSpec.UNSPECIFIED ->
-			// Parent says we can be as big as we want. Just don't be larger
-			// than max size imposed on ourselves.
-			desiredSize.coerceAtMost(maxSize)
-		MeasureSpec.AT_MOST ->
-			// Parent says we can be as big as we want, up to specSize.
-			// Don't be larger than specSize, and don't be larger than
-			// the max size imposed on ourselves.
-			desiredSize.coerceAtMost(specSize).coerceAtMost(maxSize)
-		MeasureSpec.EXACTLY ->
-			// No choice. Do what we are told.
-			specSize
-		else ->
-			// This should not happen
-			desiredSize
-	}
-}
-
 fun Slider.setValueRounded(newValue: Float) {
 	val step = stepSize
 	value = (newValue / step).roundToInt() * step
 }
+
+val RecyclerView.isScrolledToTop: Boolean
+	get() {
+		if (childCount == 0) {
+			return true
+		}
+		val holder = findViewHolderForAdapterPosition(0)
+		return holder != null && holder.itemView.top >= 0
+	}

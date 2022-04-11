@@ -1,12 +1,13 @@
 Kotatsu is a free and open source manga reader for Android.<br>
-Main Features:
-<ul>
-<li>Online manga catalogues</li>
-<li>Search manga by name and genre</li>
-<li>Reading history</li>
-<li>Favourites organized by user-defined categories</li>
-<li>Downloading manga and reading it offline. Third-party CBZ archives also supported</li>
-<li>Tablet-optimized material design UI</li>
-<li>Standard and Webtoon-optimized reader</li>
-<li>Notifications about new chapters with updates feed</li>
- </ul>
+**Main Features:**
+
+- Online manga catalogues
+- Search manga by name and genre
+- Reading history
+- Favourites organized by user-defined categories
+- Downloading manga and reading it offline. Third-party CBZ archives also supported
+- Tablet-optimized material design UI
+- Standard and Webtoon-optimized reader
+- Notifications about new chapters with updates feed
+- Available in multiple languages
+- Password protect access to the app

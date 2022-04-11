@@ -13,6 +13,15 @@ val readerModule
 		single { PagesCache(get()) }
 
 		viewModel { params ->
-			ReaderViewModel(params[0], params[1], get(), get(), get(), get(), get())
+			ReaderViewModel(
+				intent = params[0],
+				initialState = params[1],
+				preselectedBranch = params[2],
+				dataRepository = get(),
+				historyRepository = get(),
+				shortcutsRepository = get(),
+				settings = get(),
+				externalStorageHelper = get(),
+			)
 		}
 	}

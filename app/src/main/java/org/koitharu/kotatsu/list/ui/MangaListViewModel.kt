@@ -6,10 +6,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.MangaGridModel
+import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 abstract class MangaListViewModel(

@@ -4,31 +4,37 @@ import android.app.ActivityOptions
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.divider.MaterialDividerItemDecoration
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
+import kotlin.math.roundToInt
 
-class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
+class ChaptersFragment :
+	BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem>,
 	ActionMode.Callback,
-	AdapterView.OnItemSelectedListener {
+	AdapterView.OnItemSelectedListener,
+	MenuItem.OnActionExpandListener,
+	SearchView.OnQueryTextListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 
@@ -51,27 +57,18 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		chaptersAdapter = ChaptersAdapter(this)
 		selectionDecoration = ChaptersSelectionDecoration(view.context)
 		with(binding.recyclerViewChapters) {
-			addItemDecoration(MaterialDividerItemDecoration(view.context, RecyclerView.VERTICAL))
 			addItemDecoration(selectionDecoration!!)
 			setHasFixedSize(true)
 			adapter = chaptersAdapter
 		}
-		val branchesAdapter = BranchesAdapter()
-		binding.spinnerBranches.adapter = branchesAdapter
-		binding.spinnerBranches.onItemSelectedListener = this
-
+		binding.spinnerBranches?.let(::initSpinner)
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, this::onChaptersChanged)
-		viewModel.branches.observe(viewLifecycleOwner) {
-			branchesAdapter.setItems(it)
-			binding.spinnerBranches.isVisible = it.size > 1
-		}
-		viewModel.selectedBranchIndex.observe(viewLifecycleOwner) {
-			if (it != -1 && it != binding.spinnerBranches.selectedItemPosition) {
-				binding.spinnerBranches.setSelection(it)
-			}
-		}
 		viewModel.isChaptersReversed.observe(viewLifecycleOwner) {
+			activity?.invalidateOptionsMenu()
+		}
+		viewModel.hasChapters.observe(viewLifecycleOwner) {
+			binding.textViewHolder.isGone = it
 			activity?.invalidateOptionsMenu()
 		}
 	}
@@ -79,18 +76,25 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	override fun onDestroyView() {
 		chaptersAdapter = null
 		selectionDecoration = null
-		binding.spinnerBranches.adapter = null
+		binding.spinnerBranches?.adapter = null
 		super.onDestroyView()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
 		inflater.inflate(R.menu.opt_chapters, menu)
+		val searchMenuItem = menu.findItem(R.id.action_search)
+		searchMenuItem.setOnActionExpandListener(this)
+		val searchView = searchMenuItem.actionView as SearchView
+		searchView.setOnQueryTextListener(this)
+		searchView.setIconifiedByDefault(false)
+		searchView.queryHint = searchMenuItem.title
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		super.onPrepareOptionsMenu(menu)
 		menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
+		menu.findItem(R.id.action_search).isVisible = viewModel.hasChapters.value == true
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -125,10 +129,11 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		)
 		startActivity(
 			ReaderActivity.newIntent(
-				view.context,
-				viewModel.manga.value ?: return,
-				ReaderState(item.chapter.id, 0, 0)
-			), options.toBundle()
+				context = view.context,
+				manga = viewModel.manga.value ?: return,
+				state = ReaderState(item.chapter.id, 0, 0),
+			),
+			options.toBundle()
 		)
 	}
 
@@ -166,15 +171,14 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-		viewModel.setSelectedBranch(binding.spinnerBranches.selectedItem as String?)
+		val spinner = binding.spinnerBranches ?: return
+		viewModel.setSelectedBranch(spinner.selectedItem as String?)
 	}
 
 	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
 
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-		val manga = viewModel.manga.value
 		mode.menuInflater.inflate(R.menu.mode_chapters, menu)
-		mode.title = manga?.title
 		return true
 	}
 
@@ -184,12 +188,7 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		menu.findItem(R.id.action_save).isVisible = items.none { x ->
 			x.chapter.source == MangaSource.LOCAL
 		}
-		mode.subtitle = resources.getQuantityString(
-			R.plurals.chapters_from_x,
-			items.size,
-			items.size,
-			chaptersAdapter?.itemCount ?: 0
-		)
+		mode.title = items.size.toString()
 		return true
 	}
 
@@ -199,16 +198,55 @@ class ChaptersFragment : BaseFragment<FragmentChaptersBinding>(),
 		actionMode = null
 	}
 
+	override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+
+	override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+		(item?.actionView as? SearchView)?.setQuery("", false)
+		viewModel.performChapterSearch(null)
+		return true
+	}
+
+	override fun onQueryTextSubmit(query: String?): Boolean = false
+
+	override fun onQueryTextChange(newText: String?): Boolean {
+		viewModel.performChapterSearch(newText)
+		return true
+	}
+
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.recyclerViewChapters.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			bottom = insets.bottom + binding.spinnerBranches.height
+			bottom = insets.bottom + (binding.spinnerBranches?.height ?: 0),
 		)
 	}
 
+	private fun initSpinner(spinner: Spinner) {
+		val branchesAdapter = BranchesAdapter()
+		spinner.adapter = branchesAdapter
+		spinner.onItemSelectedListener = this
+		viewModel.branches.observe(viewLifecycleOwner) {
+			branchesAdapter.setItems(it)
+			spinner.isVisible = it.size > 1
+		}
+		viewModel.selectedBranchIndex.observe(viewLifecycleOwner) {
+			if (it != -1 && it != spinner.selectedItemPosition) {
+				spinner.setSelection(it)
+			}
+		}
+	}
+
 	private fun onChaptersChanged(list: List<ChapterListItem>) {
-		chaptersAdapter?.items = list
+		val adapter = chaptersAdapter ?: return
+		if (adapter.itemCount == 0) {
+			val position = list.indexOfFirst { it.hasFlag(ChapterListItem.FLAG_CURRENT) } - 1
+			if (position > 0) {
+				val offset = (resources.getDimensionPixelSize(R.dimen.chapter_list_item_height) * 0.6).roundToInt()
+				adapter.setItems(list, RecyclerViewScrollCallback(binding.recyclerViewChapters, position, offset))
+			} else {
+				adapter.items = list
+			}
+		} else {
+			adapter.items = list
+		}
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {

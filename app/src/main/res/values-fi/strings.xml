@@ -4,13 +4,7 @@
     <string name="genres">Tyylilajit</string>
     <string name="auth_not_supported_by">%s -valtuutusta ei tueta</string>
     <string name="auth_complete">Valtuutus valmis</string>
-    <string name="about_license">Lisenssi</string>
-    <string name="about_copyright_and_licenses">Tekijänoikeudet ja lisenssit</string>
-    <string name="about_gratitudes_summary">Nämä ihmiset tekevät Kotatsusta paremman</string>
-    <string name="about_gratitudes">Kiitokset</string>
-    <string name="about_support_developer_summary">Jos pidät tästä sovelluksesta, voit auttaa taloudellisesti Yoomoneyn (ent. Yandex.Money) kautta</string>
-    <string name="about_support_developer">Tue kehittäjää</string>
-    <string name="about_feedback_4pda">Aihe 4PDA: ssa</string>
+	<string name="about_feedback_4pda">Aihe 4PDA: ssa</string>
     <string name="about_feedback">Palaute</string>
     <string name="about_app_translation">Käännös</string>
     <string name="about_app_translation_summary">Käännä tämä sovellus</string>
@@ -25,7 +19,6 @@
     <string name="other">Muut</string>
     <string name="text_clear_search_history_prompt">Haluatko todella poistaa kaikki viimeaikaiset hakukyselyt\?</string>
     <string name="search_only_on_s">Hae vain kohteesta %s</string>
-    <string name="hide_toolbar">Piilota työkalupalkki selattaessa</string>
     <string name="password_length_hint">Salasanan on oltava vähintään 4 merkkiä</string>
     <string name="confirm">Vahvista</string>
     <string name="protect_application_subtitle">Syötä salasana, joka vaaditaan, kun sovellus käynnistyy</string>
@@ -98,7 +91,6 @@
     <string name="favourites_category_empty">Tämä luokka on tyhjä</string>
     <string name="all_favourites">Kaikki suosikit</string>
     <string name="done">Valmis</string>
-    <string name="use_ssl">Käytä suojattua yhteyttä (HTTPS)</string>
     <string name="other_storage">Muu tallennustila</string>
     <string name="cannot_find_available_storage">Ei löydy vapaata tallennustilaa</string>
     <string name="not_available">Ei saatavilla</string>
@@ -266,4 +258,10 @@
     <string name="reset_filter">Nollaa suodatin</string>
     <string name="find_genre">Etsi genre</string>
     <string name="onboard_text">Valitse kielet, joilla haluat lukea mangaa. Voit muuttaa sitä myöhemmin asetuksissa.</string>
+    <string name="logged_in_as">Kirjautunut sisään nimellä %s</string>
+    <string name="nsfw">18+</string>
+    <string name="search_chapters">Etsi luku</string>
+    <string name="percent_string_pattern">%1$s%%</string>
+    <string name="various_languages">Eri kieliä</string>
+    <string name="chapters_empty">Ei lukuja tässä mangassa</string>
 </resources>

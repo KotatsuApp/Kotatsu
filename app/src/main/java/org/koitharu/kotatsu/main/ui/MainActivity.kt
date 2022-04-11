@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.*
@@ -16,8 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
@@ -29,8 +28,6 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSection
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
@@ -39,8 +36,12 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.ui.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
@@ -53,23 +54,26 @@ import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hideKeyboard
-import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.*
+import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
 
-class MainActivity : BaseActivity<ActivityMainBinding>(),
-	NavigationView.OnNavigationItemSelectedListener, AppBarOwner,
-	View.OnClickListener, View.OnFocusChangeListener, SearchSuggestionListener {
+class MainActivity :
+	BaseActivity<ActivityMainBinding>(),
+	NavigationView.OnNavigationItemSelectedListener,
+	AppBarOwner,
+	View.OnClickListener,
+	View.OnFocusChangeListener,
+	SearchSuggestionListener {
 
 	private val viewModel by viewModel<MainViewModel>()
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
 
 	private lateinit var navHeaderBinding: NavigationHeaderBinding
-	private lateinit var drawerToggle: ActionBarDrawerToggle
+	private var drawerToggle: ActionBarDrawerToggle? = null
+	private var drawer: DrawerLayout? = null
 
 	override val appBar: AppBarLayout
 		get() = binding.appbar
@@ -78,36 +82,37 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 		navHeaderBinding = NavigationHeaderBinding.inflate(layoutInflater)
-		drawerToggle = ActionBarDrawerToggle(
-			this,
-			binding.drawer,
-			binding.toolbar,
-			R.string.open_menu,
-			R.string.close_menu
-		)
-		drawerToggle.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_arrow_back))
-		drawerToggle.setToolbarNavigationClickListener {
-			binding.searchView.hideKeyboard()
-			onBackPressed()
+		drawer = binding.root as? DrawerLayout
+		drawerToggle = drawer?.let {
+			ActionBarDrawerToggle(
+				this,
+				it,
+				binding.toolbar,
+				R.string.open_menu,
+				R.string.close_menu
+			).apply {
+				setHomeAsUpIndicator(
+					ContextCompat.getDrawable(this@MainActivity, materialR.drawable.abc_ic_ab_back_material)
+				)
+				setToolbarNavigationClickListener {
+					binding.searchView.hideKeyboard()
+					onBackPressed()
+				}
+				it.addDrawerListener(this)
+				supportActionBar?.setDisplayHomeAsUpEnabled(true)
+			}
 		}
-		binding.drawer.addDrawerListener(drawerToggle)
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		with(binding.searchView) {
 			onFocusChangeListener = this@MainActivity
 			searchSuggestionListener = this@MainActivity
+			if (drawer == null) {
+				drawableStart = context.getThemeDrawable(materialR.attr.actionModeWebSearchDrawable)
+			}
 		}
 
 		with(binding.navigationView) {
-			val menuView =
-				findViewById<RecyclerView>(com.google.android.material.R.id.design_navigation_view)
-			ViewCompat.setOnApplyWindowInsetsListener(navHeaderBinding.root) { v, insets ->
-				val systemWindowInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-				v.updatePadding(top = systemWindowInsets.top)
-				// NavigationView doesn't dispatch insets to the menu view, so pad the bottom here.
-				menuView.updatePadding(bottom = systemWindowInsets.bottom)
-				insets
-			}
+			ViewCompat.setOnApplyWindowInsetsListener(this, NavigationViewInsetsListener())
 			addHeaderView(navHeaderBinding.root)
 			setNavigationItemSelectedListener(this@MainActivity)
 		}
@@ -126,32 +131,34 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		viewModel.onOpenReader.observe(this, this::onOpenReader)
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
+		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.remoteSources.observe(this, this::updateSideMenu)
 		viewModel.isSuggestionsEnabled.observe(this, this::setSuggestionsEnabled)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		drawerToggle.isDrawerIndicatorEnabled =
-			binding.drawer.getDrawerLockMode(GravityCompat.START) == DrawerLayout.LOCK_MODE_UNLOCKED
+		drawerToggle?.isDrawerIndicatorEnabled =
+			drawer?.getDrawerLockMode(GravityCompat.START) == DrawerLayout.LOCK_MODE_UNLOCKED
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
-		drawerToggle.syncState()
+		drawerToggle?.syncState()
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) {
 		super.onConfigurationChanged(newConfig)
-		drawerToggle.onConfigurationChanged(newConfig)
+		drawerToggle?.onConfigurationChanged(newConfig)
 	}
 
 	override fun onBackPressed() {
 		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
 		binding.searchView.clearFocus()
 		when {
-			binding.drawer.isDrawerOpen(binding.navigationView) -> binding.drawer.closeDrawer(
-				binding.navigationView)
+			drawer?.isDrawerOpen(binding.navigationView) == true -> {
+				drawer?.closeDrawer(binding.navigationView)
+			}
 			fragment != null -> supportFragmentManager.commit {
 				remove(fragment)
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -162,7 +169,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return drawerToggle.onOptionsItemSelected(item) || when (item.itemId) {
+		return drawerToggle?.onOptionsItemSelected(item) == true || when (item.itemId) {
 			else -> super.onOptionsItemSelected(item)
 		}
 	}
@@ -208,19 +215,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				else -> return false
 			}
 		}
-		binding.drawer.closeDrawers()
+		drawer?.closeDrawers()
+		appBar.setExpanded(true)
 		return true
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
-			topMargin = insets.top + resources.resolveDp(8)
-		}
 		binding.fab.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = insets.bottom + topMargin
-			leftMargin = insets.left + topMargin
-			rightMargin = insets.right + topMargin
 		}
+		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
+			topMargin = insets.top + bottomMargin
+		}
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 		binding.container.updateLayoutParams<MarginLayoutParams> {
 			topMargin = -(binding.appbar.measureHeight())
 		}
@@ -258,6 +268,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		}
 	}
 
+	override fun onTagClick(tag: MangaTag) {
+		startActivity(MangaListActivity.newIntent(this, setOf(tag)))
+	}
+
 	override fun onQueryChanged(query: String) {
 		searchSuggestionViewModel.onQueryChanged(query)
 	}
@@ -272,6 +286,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 			}.show()
 	}
 
+	override fun onSupportActionModeStarted(mode: ActionMode) {
+		super.onSupportActionModeStarted(mode)
+		adjustDrawerLock()
+	}
+
+	override fun onSupportActionModeFinished(mode: ActionMode) {
+		super.onSupportActionModeFinished(mode)
+		adjustDrawerLock()
+	}
+
 	private fun onOpenReader(manga: Manga) {
 		val options = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			ActivityOptions.makeClipRevealAnimation(
@@ -282,25 +306,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
 			)
 		}
-		startActivity(ReaderActivity.newIntent(this, manga, null), options?.toBundle())
+		startActivity(ReaderActivity.newIntent(this, manga), options?.toBundle())
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT)
-			.show()
+		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.fab.isEnabled = !isLoading
-		if (isLoading) {
-			binding.fab.setImageDrawable(CircularProgressDrawable(this).also {
-				it.setColorSchemeColors(R.color.kotatsu_onPrimaryContainer)
-				it.strokeWidth = resources.resolveDp(3.5f)
-				it.start()
-			})
-		} else {
-			binding.fab.setImageResource(R.drawable.ic_read_fill)
-		}
+	}
+
+	private fun onResumeEnabledChanged(isEnabled: Boolean) {
+		adjustFabVisibility(isResumeEnabled = isEnabled)
 	}
 
 	private fun updateSideMenu(remoteSources: List<MangaSource>) {
@@ -350,17 +368,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.commit()
-		if (fragment is HistoryListFragment) binding.fab.show() else binding.fab.hide()
+		adjustFabVisibility(topFragment = fragment)
 	}
 
 	private fun onSearchOpened() {
-		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-		drawerToggle.isDrawerIndicatorEnabled = false
+		drawerToggle?.isDrawerIndicatorEnabled = false
+		adjustDrawerLock()
+		adjustFabVisibility(isSearchOpened = true)
 	}
 
 	private fun onSearchClosed() {
-		binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-		drawerToggle.isDrawerIndicatorEnabled = true
+		drawerToggle?.isDrawerIndicatorEnabled = true
+		adjustDrawerLock()
+		adjustFabVisibility(isSearchOpened = false)
 	}
 
 	private fun onFirstStart() {
@@ -374,5 +394,30 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),
 				}
 			}
 		}
+	}
+
+	private fun adjustFabVisibility(
+		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value == true,
+		topFragment: Fragment? = supportFragmentManager.findFragmentByTag(TAG_PRIMARY),
+		isSearchOpened: Boolean = supportFragmentManager.findFragmentByTag(TAG_SEARCH)?.isVisible == true,
+	) {
+		val fab = binding.fab
+		if (isResumeEnabled && !isSearchOpened && topFragment is HistoryListFragment) {
+			if (!fab.isVisible) {
+				fab.show()
+			}
+		} else {
+			if (fab.isVisible) {
+				fab.hide()
+			}
+		}
+	}
+
+	private fun adjustDrawerLock() {
+		val drawer = drawer ?: return
+		val isLocked = actionModeDelegate.isActionModeStarted || (drawerToggle?.isDrawerIndicatorEnabled == false)
+		drawer.setDrawerLockMode(
+			if (isLocked) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED
+		)
 	}
 }

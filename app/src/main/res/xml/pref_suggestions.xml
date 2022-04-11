@@ -7,14 +7,18 @@
 		android:defaultValue="false"
 		android:key="suggestions"
 		android:summary="@string/suggestions_summary"
-		android:title="@string/suggestions_enable"
-		app:iconSpaceReserved="false" />
+		android:title="@string/suggestions_enable" />
+
+	<org.koitharu.kotatsu.settings.utils.MultiAutoCompleteTextViewPreference
+		android:dependency="suggestions"
+		android:key="suggestions_exclude_tags"
+		android:summary="@string/suggestions_excluded_genres_summary"
+		android:title="@string/suggestions_excluded_genres" />
 
 	<SwitchPreferenceCompat
 		android:dependency="suggestions"
 		android:key="suggestions_exclude_nsfw"
-		android:title="@string/exclude_nsfw_from_suggestions"
-		app:iconSpaceReserved="false" />
+		android:title="@string/exclude_nsfw_from_suggestions" />
 
 	<Preference
 		android:icon="@drawable/ic_info_outline"

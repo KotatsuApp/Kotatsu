@@ -131,8 +131,7 @@
     <string name="restore_backup">Yedekten geri yükle</string>
     <string name="update">Güncelle</string>
     <string name="sign_in">Oturum aç</string>
-    <string name="about_license">Lisans</string>
-    <string name="state_finished">Bitti</string>
+	<string name="state_finished">Bitti</string>
     <string name="about">Hakkında</string>
     <string name="auth_required">Bu içeriği görüntülemek için oturum açın</string>
     <string name="confirm">Onayla</string>
@@ -150,7 +149,6 @@
     <string name="text_local_holder_secondary">Çevrim içi kaynaklardan kaydedin veya dosyaları içe aktarın.</string>
     <string name="manga_shelf">Raf</string>
     <string name="recent_manga">Son</string>
-    <string name="use_ssl">Güvenli (HTTPS) bağlantı kullan</string>
     <string name="size_s">Boyut: %s</string>
     <string name="related">İlgili</string>
     <string name="updates_feed_cleared">Temizlendi</string>
@@ -186,9 +184,7 @@
     <string name="about_app_translation">Çeviri</string>
     <string name="search_only_on_s">Yalnızca %s içinde ara</string>
     <string name="about_feedback_4pda">4PDA\'daki konu</string>
-    <string name="about_gratitudes">Teşekkürler</string>
-    <string name="about_gratitudes_summary">Tüm bu insanlar Kotatsu\'yu daha iyi hale getirdi</string>
-    <string name="state_ongoing">Devam ediyor</string>
+	<string name="state_ongoing">Devam ediyor</string>
     <string name="text_clear_cookies_prompt">Tüm kaynaklardaki oturumunuz kapatılacak</string>
     <string name="enabled_sources">Kullanılan kaynaklar</string>
     <string name="available_sources">Kullanılabilir kaynaklar</string>
@@ -223,21 +219,17 @@
     <string name="data_restored_with_errors">Veriler geri yüklendi, ancak hatalar var</string>
     <string name="tap_to_try_again">Tekrar denemek için dokunun</string>
     <string name="next">İleri</string>
-    <string name="hide_toolbar">Kaydırırken araç çubuğunu gizle</string>
     <string name="other">Diğer</string>
     <string name="captcha_required">CAPTCHA gerekli</string>
     <string name="cookies_cleared">Tüm çerezler kaldırıldı</string>
     <string name="reader_mode_hint">Seçilen yapılandırma bu manga için hatırlanacak</string>
-    <string name="about_support_developer_summary">Bu uygulamayı beğendiyseniz Yoomoney (eski Yandex.Money) üzerinden para gönderebilirsiniz</string>
-    <string name="text_clear_updates_feed_prompt">Tüm güncelleme geçmişi kalıcı olarak silinsin mi\?</string>
+	<string name="text_clear_updates_feed_prompt">Tüm güncelleme geçmişi kalıcı olarak silinsin mi\?</string>
     <string name="_and_x_more">…ve %1$d daha fazlası</string>
     <string name="protect_application_subtitle">Uygulamayı başlatmak için bir parola girin</string>
     <string name="text_clear_search_history_prompt">Tüm son arama sorguları kalıcı olarak kaldırılsın mı\?</string>
     <string name="about_feedback">Geri bildirim</string>
     <string name="backup_saved">Yedek kaydedildi</string>
-    <string name="about_support_developer">Geliştiriciyi destekleyin</string>
-    <string name="about_copyright_and_licenses">Telif Hakkı ve Lisanslar</string>
-    <string name="genres">Türler</string>
+	<string name="genres">Türler</string>
     <string name="date_format">Tarih biçimi</string>
     <string name="system_default">Öntanımlı</string>
     <string name="error_empty_name">Bir ad girmelisiniz</string>
@@ -264,6 +256,12 @@
     <string name="onboard_text">Manga okumak istediğiniz dilleri seçin. Daha sonra ayarlardan değiştirebilirsiniz.</string>
     <string name="always">Her zaman</string>
     <string name="never">Hiçbir zaman</string>
-    <string name="only_using_wifi">Yalnızca Wi-Fi kullanarak</string>
+    <string name="only_using_wifi">Yalnızca Wi-Fi\'de</string>
     <string name="preload_pages">Sayfaları önceden yükle</string>
+    <string name="logged_in_as">%s olarak oturum açıldı</string>
+    <string name="nsfw">18+</string>
+    <string name="various_languages">Çeşitli diller</string>
+    <string name="search_chapters">Bölüm bul</string>
+    <string name="chapters_empty">Bu mangada bölüm yok</string>
+    <string name="percent_string_pattern">%%%1$s</string>
 </resources>

@@ -6,7 +6,6 @@
     <string name="text_local_holder_secondary">Lagre fra nettbaserte kilder, eller importer filer.</string>
     <string name="tracker_warning">Noen enheter endrer systemoppførselen, noe som kan ødelegge for bakgrunnsoppgaver.</string>
     <string name="text_clear_search_history_prompt">Fjern alle nylige søkespørringer for godt\?</string>
-    <string name="hide_toolbar">Skjul verktøylinje under rulling</string>
     <string name="password_length_hint">Passordet må være minst fire tegn</string>
     <string name="protect_application_subtitle">Skriv inn passord å kreve for å starte programmet</string>
     <string name="_and_x_more">… og %1$d til</string>
@@ -44,7 +43,6 @@
     <string name="new_version_s">Ny versjon: %s</string>
     <string name="text_feed_holder">Nye kapitler av det du leser vises her</string>
     <string name="updates">Oppdatering</string>
-    <string name="use_ssl">Bruk sikker (HTTPS)-tilkobling</string>
     <string name="other_storage">Annen lagring</string>
     <string name="manga_shelf">Hylle</string>
     <string name="text_local_holder_primary">Lagre noe først</string>
@@ -84,8 +82,8 @@
     <string name="remote_sources">Kilder annensteds hen</string>
     <string name="read_more">Les mer</string>
     <string name="backup_saved">Sikkerhetskopi lagret</string>
-	<string name="welcome">Velkommen</string>
-	<string name="other">Annet</string>
+    <string name="welcome">Velkommen</string>
+    <string name="other">Annet</string>
     <string name="search_only_on_s">Kun søk på %s</string>
     <string name="confirm">Bekreft</string>
     <string name="next">Neste</string>
@@ -175,8 +173,8 @@
     <string name="by_name">Navn</string>
     <string name="theme">Drakt</string>
     <string name="filter">Filter</string>
-	<string name="sort_order">Sorteringsrekkefølge</string>
-	<string name="by_rating">Vurdering</string>
+    <string name="sort_order">Sorteringsrekkefølge</string>
+    <string name="by_rating">Vurdering</string>
     <string name="newest">Nyeste</string>
     <string name="updated">Oppdatert</string>
     <string name="popular">Popularitet</string>
@@ -195,7 +193,7 @@
     <string name="add_new_category">Ny kategori</string>
     <string name="add_to_favourites">Favorittmerk dette</string>
     <string name="you_have_not_favourites_yet">Ingen favoritter enda</string>
-	<string name="history_is_empty">Ingen historikk enda</string>
+    <string name="history_is_empty">Ingen historikk enda</string>
     <string name="clear_history">Tøm historikk</string>
     <string name="try_again">Prøv igjen</string>
     <string name="close">Lukk</string>
@@ -223,15 +221,9 @@
     <string name="state_ongoing">Pågående</string>
     <string name="about_app_translation_summary">Oversett dette programmet</string>
     <string name="about_app_translation">Oversettelse</string>
-	<string name="about_feedback">Tilbakemelding</string>
+    <string name="about_feedback">Tilbakemelding</string>
     <string name="about_feedback_4pda">Emne på 4PDA</string>
-    <string name="about_support_developer">Støtt utvikleren</string>
-    <string name="about_support_developer_summary">Hvis du liker programmet kan du kronerulle det på Yoomoney (tidligere Yandex.Money)</string>
-    <string name="about_gratitudes">Takk rettes til</string>
-    <string name="about_gratitudes_summary">Folk som gjorde Kotatsu enda bedre</string>
-    <string name="about_copyright_and_licenses">Opphavsrett og lisenser</string>
-    <string name="about_license">Lisens</string>
-    <string name="auth_complete">Identitetsbekreftet</string>
+	<string name="auth_complete">Identitetsbekreftet</string>
     <string name="auth_not_supported_by">Innlogging på %s støttes ikke</string>
     <string name="text_clear_cookies_prompt">Du vil bli utlogget fra alle kilder</string>
     <string name="genres">Sjangere</string>
@@ -259,4 +251,17 @@
     <string name="suggestions_summary">Foreslå manga basert på vaner</string>
     <string name="enabled">Påskrudd</string>
     <string name="disabled">Avskrudd</string>
+    <string name="always">Alltid</string>
+    <string name="preload_pages">Forhåndsinnlast bilder</string>
+    <string name="reset_filter">Tilbakestill filter</string>
+    <string name="find_genre">Finn sjanger</string>
+    <string name="never">Aldri</string>
+    <string name="only_using_wifi">Kun på Wi-Fi</string>
+    <string name="onboard_text">Velg språkene du ønsker å lese manga. Du kan endre dette senere i innstillingene.</string>
+    <string name="logged_in_as">Innlogget som %s</string>
+    <string name="nsfw">18+</string>
+    <string name="search_chapters">Finn kapittel</string>
+    <string name="percent_string_pattern">%1$s%%</string>
+    <string name="various_languages">Forskjellige språk</string>
+    <string name="chapters_empty">Ingen kapitler i denne mangaen</string>
 </resources>

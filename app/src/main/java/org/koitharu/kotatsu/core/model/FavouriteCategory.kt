@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.*
 
 @Parcelize

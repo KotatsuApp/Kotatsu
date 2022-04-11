@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.utils.ext
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.AttrRes
 import androidx.annotation.StringRes
+import androidx.core.content.res.use
 import androidx.core.view.isGone
 
 var TextView.textAndVisible: CharSequence?
@@ -35,4 +37,11 @@ fun TextView.setTextAndVisible(@StringRes textResId: Int) {
 		setText(textResId)
 		isGone = text.isNullOrEmpty()
 	}
+}
+
+fun TextView.setTextColorAttr(@AttrRes attrResId: Int) {
+	val colors = context.obtainStyledAttributes(intArrayOf(attrResId)).use {
+		it.getColorStateList(0)
+	}
+	setTextColor(colors)
 }

@@ -11,18 +11,27 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
+import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.SettingsHeadersFragment
+import org.koitharu.kotatsu.settings.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
-import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigItemDecoration
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
 class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
-	SourceConfigListener, SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
+	SourceConfigListener,
+	SearchView.OnQueryTextListener,
+	MenuItem.OnActionExpandListener,
+	RecyclerViewOwner {
 
 	private var reorderHelper: ItemTouchHelper? = null
 	private val viewModel by viewModel<SourcesSettingsViewModel>()
+
+	override val recyclerView: RecyclerView
+		get() = binding.recyclerView
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -44,7 +53,7 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		val sourcesAdapter = SourceConfigAdapter(this, get(), viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
-			addItemDecoration(SourceConfigItemDecoration(view.context))
+			// addItemDecoration(SourceConfigItemDecoration(view.context))
 			adapter = sourcesAdapter
 			reorderHelper = ItemTouchHelper(SourcesReorderCallback()).also {
 				it.attachToRecyclerView(this)
@@ -80,7 +89,9 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 	}
 
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {
-		(activity as? SettingsActivity)?.openMangaSourceSettings(item.source)
+		val fragment = SourceSettingsFragment.newInstance(item.source)
+		(parentFragment as? SettingsHeadersFragment)?.openFragment(fragment)
+			?: (activity as? SettingsActivity)?.openFragment(fragment)
 	}
 
 	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
@@ -102,7 +113,10 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		return true
 	}
 
-	override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+	override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+		(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
+		return true
+	}
 
 	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
 		(item.actionView as SearchView).setQuery("", false)

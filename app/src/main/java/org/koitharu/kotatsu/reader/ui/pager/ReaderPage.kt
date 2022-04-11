@@ -2,8 +2,8 @@ package org.koitharu.kotatsu.reader.ui.pager
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import org.koitharu.kotatsu.core.model.MangaPage
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.model.MangaSource
 
 @Parcelize
 data class ReaderPage(

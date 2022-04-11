@@ -17,8 +17,8 @@ import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.github.GithubRepository
 import org.koitharu.kotatsu.core.github.VersionId
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.parsers.util.byte2HexFormatted
 import org.koitharu.kotatsu.utils.FileSize
-import org.koitharu.kotatsu.utils.ext.byte2HexFormatted
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.security.MessageDigest

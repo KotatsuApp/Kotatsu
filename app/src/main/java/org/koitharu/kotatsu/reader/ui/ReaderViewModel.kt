@@ -8,24 +8,25 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.domain.MangaUtils
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
-import org.koitharu.kotatsu.core.model.Manga
-import org.koitharu.kotatsu.core.model.MangaChapter
-import org.koitharu.kotatsu.core.model.MangaPage
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
-import org.koitharu.kotatsu.utils.DownloadManagerHelper
+import org.koitharu.kotatsu.utils.ExternalStorageHelper
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
@@ -34,11 +35,12 @@ import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 class ReaderViewModel(
 	private val intent: MangaIntent,
 	initialState: ReaderState?,
+	private val preselectedBranch: String?,
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val shortcutsRepository: ShortcutsRepository,
 	private val settings: AppSettings,
-	private val downloadManagerHelper: DownloadManagerHelper,
+	private val externalStorageHelper: ExternalStorageHelper,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job? = null
@@ -135,23 +137,27 @@ class ReaderViewModel(
 		return pages.filter { it.chapterId == chapterId }.map { it.toMangaPage() }
 	}
 
-	fun saveCurrentPage() {
+	fun saveCurrentPage(destination: Uri) {
 		launchJob(Dispatchers.Default) {
 			try {
-				val state = currentState.value ?: error("Undefined state")
-				val page = content.value?.pages?.find {
-					it.chapterId == state.chapterId && it.index == state.page
-				}?.toMangaPage() ?: error("Page not found")
-				val repo = MangaRepository(page.source)
-				val pageUrl = repo.getPageUrl(page)
-				val downloadId = downloadManagerHelper.downloadPage(page, pageUrl)
-				val uri = downloadManagerHelper.awaitDownload(downloadId)
-				onPageSaved.postCall(uri)
+				val page = getCurrentPage() ?: error("Page not found")
+				externalStorageHelper.savePage(page, destination)
+				onPageSaved.postCall(destination)
 			} catch (_: CancellationException) {
 			} catch (e: Exception) {
+				if (BuildConfig.DEBUG) {
+					e.printStackTrace()
+				}
 				onPageSaved.postCall(null)
 			}
 		}
+	}
+
+	fun getCurrentPage(): MangaPage? {
+		val state = currentState.value ?: return null
+		return content.value?.pages?.find {
+			it.chapterId == state.chapterId && it.index == state.page
+		}?.toMangaPage()
 	}
 
 	fun switchChapter(id: Long) {
@@ -188,8 +194,7 @@ class ReaderViewModel(
 
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			var manga = dataRepository.resolveIntent(intent)
-				?: throw MangaNotFoundException("Cannot find manga")
+			var manga = dataRepository.resolveIntent(intent) ?: throw MangaNotFoundException("Cannot find manga")
 			mangaData.value = manga
 			val repo = MangaRepository(manga.source)
 			manga = repo.getDetails(manga)
@@ -197,21 +202,20 @@ class ReaderViewModel(
 				chapters.put(it.id, it)
 			}
 			// determine mode
-			val mode =
-				dataRepository.getReaderMode(manga.id) ?: manga.chapters?.randomOrNull()?.let {
-					val pages = repo.getPages(it)
-					val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
-					val newMode = getReaderMode(isWebtoon)
-					if (isWebtoon != null) {
-						dataRepository.savePreferences(manga, newMode)
-					}
-					newMode
-				} ?: error("There are no chapters in this manga")
+			val mode = dataRepository.getReaderMode(manga.id) ?: manga.chapters?.randomOrNull()?.let {
+				val pages = repo.getPages(it)
+				val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
+				val newMode = getReaderMode(isWebtoon)
+				if (isWebtoon != null) {
+					dataRepository.savePreferences(manga, newMode)
+				}
+				newMode
+			} ?: error("There are no chapters in this manga")
 			// obtain state
 			if (currentState.value == null) {
 				currentState.value = historyRepository.getOne(manga)?.let {
 					ReaderState.from(it)
-				} ?: ReaderState.initial(manga)
+				} ?: ReaderState.initial(manga, preselectedBranch)
 			}
 
 			val branch = chapters[currentState.value?.chapterId ?: 0L].branch
@@ -293,6 +297,24 @@ class ReaderViewModel(
 		}
 	}
 
+	private fun Manga.copy(chapters: List<MangaChapter>?) = Manga(
+		id = id,
+		title = title,
+		altTitle = altTitle,
+		url = url,
+		publicUrl = publicUrl,
+		rating = rating,
+		isNsfw = isNsfw,
+		coverUrl = coverUrl,
+		tags = tags,
+		state = state,
+		author = author,
+		largeCoverUrl = largeCoverUrl,
+		description = description,
+		chapters = chapters,
+		source = source,
+	)
+
 	private companion object : KoinComponent {
 
 		const val BOUNDS_PAGE_OFFSET = 2
@@ -309,6 +331,5 @@ class ReaderViewModel(
 				)
 			}
 		}
-
 	}
 }

@@ -8,20 +8,23 @@
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.VIBRATE" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
 	<application
 		android:name="org.koitharu.kotatsu.KotatsuApp"
 		android:allowBackup="true"
-		android:fullBackupContent="@xml/backup_descriptor"
+		android:backupAgent="org.koitharu.kotatsu.settings.backup.AppBackupAgent"
+		android:dataExtractionRules="@xml/backup_rules"
+		android:fullBackupContent="@xml/backup_content"
+		android:fullBackupOnly="true"
 		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name"
+		android:networkSecurityConfig="@xml/network_security_config"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.Kotatsu"
-		android:networkSecurityConfig="@xml/network_security_config"
 		tools:ignore="UnusedAttribute">
+
 		<activity
 			android:name="org.koitharu.kotatsu.main.ui.MainActivity"
 			android:exported="true">
@@ -50,17 +53,12 @@
 		<activity
 			android:name="org.koitharu.kotatsu.search.ui.SearchActivity"
 			android:label="@string/search" />
+		<activity android:name="org.koitharu.kotatsu.search.ui.MangaListActivity"
+			android:label="@string/search_manga" />
 		<activity
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
-			android:label="@string/settings" />
-		<activity
-			android:name="org.koitharu.kotatsu.reader.ui.SimpleSettingsActivity"
 			android:exported="true"
 			android:label="@string/settings">
-			<intent-filter>
-				<action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -105,6 +103,7 @@
 			android:windowSoftInputMode="adjustResize" />
 		<activity
 			android:name="org.koitharu.kotatsu.download.ui.DownloadsActivity"
+			android:launchMode="singleTop"
 			android:label="@string/downloads" />
 		<activity android:name="org.koitharu.kotatsu.image.ui.ImageActivity"/>
 

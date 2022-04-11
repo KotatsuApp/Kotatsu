@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
-import org.koitharu.kotatsu.core.model.MangaTag
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import java.util.*
 
@@ -20,7 +20,7 @@ class FilterCoordinator(
 	private val coroutineScope: CoroutineScope,
 ) : OnFilterChangedListener {
 
-	private val currentState = MutableStateFlow(FilterState(repository.sortOrders.firstOrNull(), emptySet()))
+	private val currentState = MutableStateFlow(FilterState(repository.defaultSortOrder, emptySet()))
 	private var searchQuery = MutableStateFlow("")
 	private val localTagsDeferred = coroutineScope.async(Dispatchers.Default, CoroutineStart.LAZY) {
 		dataRepository.findTags(repository.source)
@@ -38,6 +38,7 @@ class FilterCoordinator(
 		currentState.update { oldValue ->
 			FilterState(item.order, oldValue.tags)
 		}
+		repository.defaultSortOrder = item.order
 	}
 
 	override fun onTagItemClick(item: FilterItem.Tag) {
@@ -56,6 +57,12 @@ class FilterCoordinator(
 	fun removeTag(tag: MangaTag) {
 		currentState.update { oldValue ->
 			FilterState(oldValue.sortOrder, oldValue.tags - tag)
+		}
+	}
+
+	fun setTags(tags: Set<MangaTag>) {
+		currentState.update { oldValue ->
+			FilterState(oldValue.sortOrder, tags)
 		}
 	}
 

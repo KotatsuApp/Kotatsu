@@ -4,22 +4,22 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
-import android.os.Bundle
-import android.os.Parcelable
-import androidx.appcompat.app.AlertDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.suspendCancellableCoroutine
+import android.net.Uri
+import androidx.work.CoroutineWorker
 import kotlin.coroutines.resume
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 val Context.connectivityManager: ConnectivityManager
 	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 suspend fun ConnectivityManager.waitForNetwork(): Network {
 	val request = NetworkRequest.Builder().build()
-	return suspendCancellableCoroutine<Network> { cont ->
+	return suspendCancellableCoroutine { cont ->
 		val callback = object : ConnectivityManager.NetworkCallback() {
 			override fun onAvailable(network: Network) {
-				cont.resume(network)
+				if (cont.isActive) {
+					cont.resume(network)
+				}
 			}
 		}
 		registerNetworkCallback(request, callback)
@@ -29,12 +29,9 @@ suspend fun ConnectivityManager.waitForNetwork(): Network {
 	}
 }
 
-inline fun buildAlertDialog(context: Context, block: MaterialAlertDialogBuilder.() -> Unit): AlertDialog {
-	return MaterialAlertDialogBuilder(context).apply(block).create()
-}
+fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 
-fun <T : Parcelable> Bundle.requireParcelable(key: String): T {
-	return checkNotNull(getParcelable(key)) {
-		"Value for key $key not found"
-	}
-}
+suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatching {
+	val info = getForegroundInfo()
+	setForeground(info)
+}.isSuccess

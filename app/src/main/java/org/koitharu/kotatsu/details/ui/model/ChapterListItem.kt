@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.details.ui.model
 
-import org.koitharu.kotatsu.core.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 
 class ChapterListItem(
 	val chapter: MangaChapter,

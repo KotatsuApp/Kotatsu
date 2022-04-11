@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.suggestions.domain
 
 import androidx.annotation.FloatRange
-import org.koitharu.kotatsu.core.model.Manga
+import org.koitharu.kotatsu.parsers.model.Manga
 
 data class MangaSuggestion(
 	val manga: Manga,
