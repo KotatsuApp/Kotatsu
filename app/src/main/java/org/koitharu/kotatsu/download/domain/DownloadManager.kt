@@ -141,8 +141,9 @@ class DownloadManager(
 			}
 			val localManga = localMangaRepository.getFromFile(output.file)
 			outState.value = DownloadState.Done(startId, data, cover, localManga)
-		} catch (_: CancellationException) {
+		} catch (e: CancellationException) {
 			outState.value = DownloadState.Cancelled(startId, manga, cover)
+			throw e
 		} catch (e: Throwable) {
 			if (BuildConfig.DEBUG) {
 				e.printStackTrace()

@@ -143,7 +143,8 @@ class ReaderViewModel(
 				val page = getCurrentPage() ?: error("Page not found")
 				externalStorageHelper.savePage(page, destination)
 				onPageSaved.postCall(destination)
-			} catch (_: CancellationException) {
+			} catch (e: CancellationException) {
+				throw e
 			} catch (e: Exception) {
 				if (BuildConfig.DEBUG) {
 					e.printStackTrace()
