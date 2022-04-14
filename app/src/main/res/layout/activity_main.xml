@@ -75,8 +75,6 @@
 			android:text="@string/_continue"
 			android:visibility="gone"
 			app:backgroundTint="?attr/colorContainer"
-			app:behavior_autoHide="true"
-			app:behavior_autoShrink="true"
 			app:icon="@drawable/ic_read"
 			app:layout_anchor="@id/container"
 			app:layout_anchorGravity="bottom|end"

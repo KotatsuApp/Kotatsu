@@ -32,6 +32,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:paddingLeft="16dp"
+			android:background="@null"
 			android:paddingRight="16dp"
 			app:elevation="0dp"
 			app:liftOnScroll="false">
@@ -81,8 +82,6 @@
 			android:text="@string/_continue"
 			android:visibility="gone"
 			app:backgroundTint="?attr/colorContainer"
-			app:behavior_autoHide="true"
-			app:behavior_autoShrink="true"
 			app:icon="@drawable/ic_read"
 			app:layout_anchor="@id/container"
 			app:layout_anchorGravity="bottom|end"
