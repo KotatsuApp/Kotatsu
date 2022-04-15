@@ -217,7 +217,7 @@
     <string name="chapter_is_missing_text">Téléchargez ou lisez ce chapitre manquant en ligne.</string>
     <string name="text_downloads_holder">Aucun téléchargement actif</string>
     <string name="queued">En file d\'attente</string>
-	<string name="about_feedback_4pda">Sujet sur 4PDA</string>
+    <string name="about_feedback_4pda">Sujet sur 4PDA</string>
     <string name="about_feedback">Remarques</string>
     <string name="about_app_translation">Traduction</string>
     <string name="about_app_translation_summary">Traduire cette application</string>
@@ -264,4 +264,12 @@
     <string name="search_chapters">Trouver un chapitre</string>
     <string name="chapters_empty">Pas de chapitres dans ce manga</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="appearance">Apparence</string>
+    <string name="content">Contenu</string>
+    <string name="suggestions_updating">Mise à jour des suggestions</string>
+    <string name="suggestions_excluded_genres">Exclure des genres</string>
+    <string name="suggestions_excluded_genres_summary">Spécifiez les genres que vous ne voulez pas voir apparaître dans les suggestions</string>
+    <string name="text_delete_local_manga_batch">Supprimer définitivement les éléments sélectionnés de l\'appareil \?</string>
+    <string name="removal_completed">Suppression terminée</string>
+    <string name="batch_manga_save_confirm">Voulez-vous vraiment télécharger tous les mangas sélectionnés avec tous leurs chapitres \? Cette action peut consommer beaucoup de trafic et de stockage</string>
 </resources>

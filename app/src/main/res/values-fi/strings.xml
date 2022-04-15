@@ -4,7 +4,7 @@
     <string name="genres">Tyylilajit</string>
     <string name="auth_not_supported_by">%s -valtuutusta ei tueta</string>
     <string name="auth_complete">Valtuutus valmis</string>
-	<string name="about_feedback_4pda">Aihe 4PDA: ssa</string>
+    <string name="about_feedback_4pda">Aihe 4PDA: ssa</string>
     <string name="about_feedback">Palaute</string>
     <string name="about_app_translation">Käännös</string>
     <string name="about_app_translation_summary">Käännä tämä sovellus</string>
@@ -264,4 +264,11 @@
     <string name="percent_string_pattern">%1$s%%</string>
     <string name="various_languages">Eri kieliä</string>
     <string name="chapters_empty">Ei lukuja tässä mangassa</string>
+    <string name="appearance">Ulkonäkö</string>
+    <string name="content">Sisältö</string>
+    <string name="suggestions_updating">Ehdotukset päivitetään</string>
+    <string name="suggestions_excluded_genres_summary">Määritä genret, joita et halua nähdä ehdotuksissa</string>
+    <string name="suggestions_excluded_genres">Sulje pois genrejä</string>
+    <string name="text_delete_local_manga_batch">Poista valitut kohteet laitteesta pysyvästi\?</string>
+    <string name="removal_completed">Poisto valmis</string>
 </resources>

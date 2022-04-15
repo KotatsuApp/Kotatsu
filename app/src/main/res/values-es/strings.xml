@@ -205,8 +205,8 @@
     <string name="text_history_holder_secondary">Encuentra qué leer en el menú lateral.</string>
     <string name="text_history_holder_primary">Lo que leas se mostrará aquí</string>
     <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
-	<string name="search_only_on_s">Buscar sólo en %s</string>
-	<string name="chapter_is_missing">Falta un capítulo</string>
+    <string name="search_only_on_s">Buscar sólo en %s</string>
+    <string name="chapter_is_missing">Falta un capítulo</string>
     <string name="about_app_translation_summary">Traducir esta aplicación</string>
     <string name="about_feedback">Comentarios</string>
     <string name="about_app_translation">Traducción</string>
@@ -253,7 +253,7 @@
     <string name="screenshots_block_nsfw">Bloqueo en NSFW</string>
     <string name="logged_in_as">Conectado como %s</string>
     <string name="find_genre">Encontrar el género</string>
-    <string name="onboard_text">Selecciona los idiomas en los que quieres leer el manga. Puedes cambiarlo más tarde en los ajustes.</string>
+    <string name="onboard_text">Selecciona los idiomas en los que quieres leer mangas. Puedes cambiarlo más tarde en los ajustes.</string>
     <string name="reset_filter">Reiniciar el filtro</string>
     <string name="never">Nunca</string>
     <string name="nsfw">18+</string>
@@ -264,4 +264,9 @@
     <string name="search_chapters">Buscar capítulo</string>
     <string name="chapters_empty">No hay capítulos en este manga</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="appearance">Aspecto</string>
+    <string name="content">Contenido</string>
+    <string name="suggestions_updating">Actualización de las sugerencias</string>
+    <string name="suggestions_excluded_genres">Excluir géneros</string>
+    <string name="suggestions_excluded_genres_summary">Especifica los géneros que no quieres ver en las sugerencias</string>
 </resources>

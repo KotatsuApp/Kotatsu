@@ -42,8 +42,8 @@
     <string name="clear">クリア</string>
     <string name="text_clear_history_prompt">すべての履歴を永久にクリアしますか？</string>
     <string name="remove">削除</string>
-    <string name="_s_removed_from_history">\"%s\"が履歴から削除されました</string>
-    <string name="_s_deleted_from_local_storage">\"%s \"がローカルストレージから削除されました</string>
+    <string name="_s_removed_from_history">「%s」が履歴から削除されました</string>
+    <string name="_s_deleted_from_local_storage">「%s 」がローカルストレージから削除されました</string>
     <string name="wait_for_loading_finish">読み込みが完了するまでお待ちください…</string>
     <string name="save_page">ページを保存</string>
     <string name="page_saved">保存しました</string>
