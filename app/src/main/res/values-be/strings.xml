@@ -263,4 +263,5 @@
     <string name="various_languages">Розныя мовы</string>
     <string name="search_chapters">Знайсці главу</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="chapters_empty">У гэтай манзе няма глаў</string>
 </resources>
