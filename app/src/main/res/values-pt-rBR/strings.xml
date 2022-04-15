@@ -267,4 +267,9 @@
     <string name="suggestions_updating">Atualização de sugestões</string>
     <string name="appearance">Aparência</string>
     <string name="content">Conteúdo</string>
+    <string name="suggestions_excluded_genres">Excluir gêneros</string>
+    <string name="suggestions_excluded_genres_summary">Especifique os gêneros que você não deseja ver nas sugestões</string>
+    <string name="removal_completed">Remoção concluída</string>
+    <string name="text_delete_local_manga_batch">Excluir itens selecionados do dispositivo permanentemente\?</string>
+    <string name="batch_manga_save_confirm">Tem certeza de que deseja baixar todos os mangás selecionados com todos os seus capítulos\? Essa ação pode consumir muito tráfego e armazenamento</string>
 </resources>
