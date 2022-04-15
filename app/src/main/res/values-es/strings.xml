@@ -269,4 +269,7 @@
     <string name="suggestions_updating">Actualización de las sugerencias</string>
     <string name="suggestions_excluded_genres">Excluir géneros</string>
     <string name="suggestions_excluded_genres_summary">Especifica los géneros que no quieres ver en las sugerencias</string>
+    <string name="removal_completed">Remoción completada</string>
+    <string name="batch_manga_save_confirm">¿Estás seguro de que quieres descargar todos los manga seleccionados con todos sus capítulos\? Esta acción puede consumir mucho tráfico y almacenamiento</string>
+    <string name="text_delete_local_manga_batch">¿Eliminar elementos seleccionados del dispositivo de forma permanente\?</string>
 </resources>
