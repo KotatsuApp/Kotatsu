@@ -45,8 +45,8 @@
     <string name="clear">Temizle</string>
     <string name="text_clear_history_prompt">Tüm okuma geçmişi kalıcı olarak silinsin mi\?</string>
     <string name="remove">Kaldır</string>
-    <string name="_s_removed_from_history">\"%s\" geçmişinden kaldırıldı</string>
-    <string name="_s_deleted_from_local_storage">\"%s\" yerel depolama alanından sil</string>
+    <string name="_s_removed_from_history">“%s” geçmişinden kaldırıldı</string>
+    <string name="_s_deleted_from_local_storage">“%s” yerel depolama alanından sil</string>
     <string name="wait_for_loading_finish">Lütfen bitmesini bekleyin…</string>
     <string name="save_page">Sayfayı kaydet</string>
     <string name="share_image">Resmi paylaş</string>
@@ -117,7 +117,7 @@
     <string name="pages_animation">Sayfa animasyonu</string>
     <string name="cannot_find_available_storage">Kullanılabilir depolama alanı yok</string>
     <string name="rename">Yeniden adlandır</string>
-    <string name="text_delete_local_manga">\"%s\" cihazdan kalıcı olarak silinsin mi\?</string>
+    <string name="text_delete_local_manga">“%s” cihazdan kalıcı olarak silinsin mi\?</string>
     <string name="clear_search_history">Arama geçmişini temizle</string>
     <string name="text_empty_holder_primary">Burası biraz boş…</string>
     <string name="rotate_screen">Ekranı döndür</string>
@@ -140,7 +140,7 @@
     <string name="taps_on_edges">Kenar dokunuşları</string>
     <string name="large_manga_save_confirm">Bu mangada %s var. Hepsi kaydedilsin mi\?</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d / %2$d açık</string>
-    <string name="category_delete_confirm">\"%s\" kategorisi favorilerinizden kaldırılsın mı\?
+    <string name="category_delete_confirm">“%s” kategorisi favorilerinizden kaldırılsın mı\?
 \nİçindeki tüm mangalar kaybolacak.</string>
     <string name="text_search_holder_secondary">Sorguyu yeniden biçimlendirmeyi deneyin.</string>
     <string name="text_history_holder_primary">Okuduklarınız burada görüntülenecek</string>

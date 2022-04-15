@@ -41,8 +41,8 @@
     <string name="clear">Limpar</string>
     <string name="text_clear_history_prompt">Limpar todo o histórico de leitura permanentemente\?</string>
     <string name="remove">Remover</string>
-    <string name="_s_removed_from_history">\"%s\" removido do histórico</string>
-    <string name="_s_deleted_from_local_storage">\"%s\" deletado do armazenamento local</string>
+    <string name="_s_removed_from_history">«%s» removido do histórico</string>
+    <string name="_s_deleted_from_local_storage">«%s» deletado do armazenamento local</string>
     <string name="wait_for_loading_finish">Aguarde o carregamento terminar…</string>
     <string name="save_page">Salvar página</string>
     <string name="page_saved">Salvou</string>
@@ -103,7 +103,7 @@
     <string name="chapters">Capítulos</string>
     <string name="add_new_category">Nova categoria</string>
     <string name="warning">Aviso</string>
-    <string name="text_delete_local_manga">Excluir \"%s\" do dispositivo permanentemente\?</string>
+    <string name="text_delete_local_manga">Excluir «%s» do dispositivo permanentemente\?</string>
     <string name="text_file_not_supported">Escolha um arquivo ZIP ou CBZ.</string>
     <string name="clear_search_history">Limpar histórico de pesquisa</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Ativado %1$d de %2$d</string>
@@ -185,7 +185,7 @@
     <string name="about_app_translation_summary">Traduzir esta aplicação</string>
     <string name="about_feedback">Comentar</string>
     <string name="about_feedback_4pda">Tópico no 4PDA</string>
-	<string name="chapter_is_missing_text">Baixe ou leia este capítulo perdido online.</string>
+    <string name="chapter_is_missing_text">Baixe ou leia este capítulo perdido online.</string>
     <string name="chapter_is_missing">O capítulo está em falta</string>
     <string name="auth_complete">Autorizado</string>
     <string name="auth_not_supported_by">O login em %s não é suportado</string>
@@ -195,8 +195,8 @@
     <string name="vibration">Vibração</string>
     <string name="cannot_find_available_storage">Sem armazenamento disponível</string>
     <string name="favourites_categories">Categorias favoritas</string>
-    <string name="category_delete_confirm">Remover a categoria \"%s\" dos seus favoritos\?
-\nTodos os mangás nela serão perdidos..</string>
+    <string name="category_delete_confirm">Remover a categoria «%s» dos seus favoritos\?
+\nTodos os mangás nela serão perdidos.</string>
     <string name="text_history_holder_secondary">Encontre o que ler no menu lateral.</string>
     <string name="text_local_holder_secondary">Salve-o de fontes online ou importe arquivos.</string>
     <string name="recent_manga">Recente</string>
@@ -261,4 +261,10 @@
     <string name="logged_in_as">Conectado como %s</string>
     <string name="nsfw">18+</string>
     <string name="various_languages">Vários idiomas</string>
+    <string name="suggestions_updating">Atualização das sugestões</string>
+    <string name="appearance">Aparência</string>
+    <string name="search_chapters">Encontrar capítulo</string>
+    <string name="content">Conteúdo</string>
+    <string name="chapters_empty">Não há capítulos nesta manga</string>
+    <string name="percent_string_pattern">%1$s%%</string>
 </resources>
