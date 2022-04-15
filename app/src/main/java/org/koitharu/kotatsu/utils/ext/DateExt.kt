@@ -15,6 +15,6 @@ fun Date.formatRelative(minResolution: Long): CharSequence = DateUtils.getRelati
 
 fun Date.daysDiff(other: Long): Int {
 	val thisDay = time / TimeUnit.DAYS.toMillis(1L)
-	val otherDay = other/ TimeUnit.DAYS.toMillis(1L)
+	val otherDay = other / TimeUnit.DAYS.toMillis(1L)
 	return (thisDay - otherDay).toInt()
 }

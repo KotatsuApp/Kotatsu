@@ -40,7 +40,7 @@ class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDecorati
 
 	override fun getItemId(parent: RecyclerView, child: View): Long {
 		val holder = parent.getChildViewHolder(child) ?: return NO_ID
-		val item = holder.getItem<MangaItemModel>() ?: return NO_ID
+		val item = holder.getItem(MangaItemModel::class.java) ?: return NO_ID
 		return item.id
 	}
 

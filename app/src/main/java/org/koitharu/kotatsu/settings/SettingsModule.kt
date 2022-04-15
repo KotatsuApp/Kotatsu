@@ -18,7 +18,7 @@ val settingsModule
 
 		single { BackupRepository(get()) }
 		single { RestoreRepository(get()) }
-		single { AppSettings(androidContext()) }
+		single(createdAtStart = true) { AppSettings(androidContext()) }
 
 		viewModel { BackupViewModel(get(), androidContext()) }
 		viewModel { params ->

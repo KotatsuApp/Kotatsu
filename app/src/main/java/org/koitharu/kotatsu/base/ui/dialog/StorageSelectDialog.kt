@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.base.ui.dialog
 
 import android.content.Context
 import android.content.DialogInterface
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -12,7 +13,6 @@ import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemStorageBinding
 import org.koitharu.kotatsu.local.data.LocalStorageManager
-import org.koitharu.kotatsu.utils.ext.inflate
 import java.io.File
 
 class StorageSelectDialog private constructor(private val delegate: AlertDialog) :
@@ -66,7 +66,7 @@ class StorageSelectDialog private constructor(private val delegate: AlertDialog)
 		val volumes = getAvailableVolumes(storageManager)
 
 		override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-			val view = convertView ?: parent.inflate(R.layout.item_storage)
+			val view = convertView ?: LayoutInflater.from(parent.context).inflate(R.layout.item_storage, parent, false)
 			val binding = (view.tag as? ItemStorageBinding) ?: ItemStorageBinding.bind(view).also {
 				view.tag = it
 			}

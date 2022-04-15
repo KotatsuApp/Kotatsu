@@ -13,12 +13,12 @@ import android.graphics.drawable.shapes.RectShape
 import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatCheckedTextView
-import androidx.core.content.res.use
 import androidx.core.content.withStyledAttributes
 import com.google.android.material.ripple.RippleUtils
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.utils.ext.getThemeColorStateList
 
 @SuppressLint("RestrictedApi")
 class ListItemTextView @JvmOverloads constructor(
@@ -119,8 +119,7 @@ class ListItemTextView @JvmOverloads constructor(
 	}
 
 	private fun getRippleColorFallback(context: Context): ColorStateList {
-		return context.obtainStyledAttributes(intArrayOf(android.R.attr.colorControlHighlight)).use {
-			it.getColorStateList(0)
-		} ?: ColorStateList.valueOf(Color.TRANSPARENT)
+		return context.getThemeColorStateList(android.R.attr.colorControlHighlight)
+			?: ColorStateList.valueOf(Color.TRANSPARENT)
 	}
 }

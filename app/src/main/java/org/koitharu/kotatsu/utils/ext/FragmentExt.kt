@@ -26,11 +26,12 @@ fun <T : Parcelable> Fragment.parcelableArgument(name: String): Lazy<T> {
 	}
 }
 
-inline fun <reified T : Serializable> Fragment.serializableArgument(name: String): Lazy<T> {
+fun <T : Serializable> Fragment.serializableArgument(name: String): Lazy<T> {
 	return lazy(LazyThreadSafetyMode.NONE) {
-		requireNotNull(arguments?.getSerializable(name) as? T) {
+		@Suppress("UNCHECKED_CAST")
+		requireNotNull(arguments?.getSerializable(name)) {
 			"No argument $name passed into ${javaClass.simpleName}"
-		}
+		} as T
 	}
 }
 

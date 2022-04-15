@@ -2,8 +2,8 @@ package org.koitharu.kotatsu.utils
 
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.R as materialR
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 open class BottomSheetToolbarController(
 	protected val toolbar: Toolbar,
@@ -17,7 +17,5 @@ open class BottomSheetToolbarController(
 		}
 	}
 
-	override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
-	}
+	override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
 }

@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.favourites.ui
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.children
 import androidx.core.view.updateLayoutParams
@@ -10,7 +11,6 @@ import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import java.util.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -25,7 +25,7 @@ import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.showPopupMenu
+import java.util.*
 
 class FavouritesContainerFragment :
 	BaseFragment<FragmentFavouritesBinding>(),
@@ -123,22 +123,24 @@ class FavouritesContainerFragment :
 
 	override fun onTabLongClick(tabView: View, category: FavouriteCategory): Boolean {
 		val menuRes = if (category.id == 0L) R.menu.popup_category_empty else R.menu.popup_category
-		tabView.showPopupMenu(menuRes, { menu ->
-			createOrderSubmenu(menu, category)
-		}) {
+		val menu = PopupMenu(tabView.context, tabView)
+		menu.inflate(menuRes)
+		createOrderSubmenu(menu.menu, category)
+		menu.setOnMenuItemClickListener {
 			when (it.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(category)
 				R.id.action_rename -> editDelegate.renameCategory(category)
 				R.id.action_create -> editDelegate.createCategory()
-				R.id.action_order -> return@showPopupMenu false
+				R.id.action_order -> return@setOnMenuItemClickListener false
 				else -> {
 					val order = CategoriesActivity.SORT_ORDERS.getOrNull(it.order)
-						?: return@showPopupMenu false
+						?: return@setOnMenuItemClickListener false
 					viewModel.setCategoryOrder(category.id, order)
 				}
 			}
 			true
 		}
+		menu.show()
 		return true
 	}
 

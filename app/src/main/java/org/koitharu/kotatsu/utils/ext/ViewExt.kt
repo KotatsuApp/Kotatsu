@@ -2,20 +2,15 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.app.Activity
 import android.graphics.Rect
-import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.LayoutRes
-import androidx.annotation.MenuRes
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.slider.Slider
 import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateViewBindingViewHolder
+import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateViewHolder
 import kotlin.math.roundToInt
 
 fun View.hideKeyboard() {
@@ -28,19 +23,15 @@ fun View.showKeyboard() {
 	imm.showSoftInput(this, 0)
 }
 
-inline fun <reified T : View> ViewGroup.inflate(@LayoutRes resId: Int) =
-	LayoutInflater.from(context).inflate(resId, this, false) as T
-
-val RecyclerView.hasItems: Boolean
-	get() = (adapter?.itemCount ?: 0) > 0
-
 fun RecyclerView.clearItemDecorations() {
+	suppressLayout(true)
 	while (itemDecorationCount > 0) {
 		removeItemDecorationAt(0)
 	}
+	suppressLayout(false)
 }
 
-var RecyclerView.firstItem: Int
+var RecyclerView.firstVisibleItemPosition: Int
 	get() = (layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
 		?: RecyclerView.NO_POSITION
 	set(value) {
@@ -48,18 +39,6 @@ var RecyclerView.firstItem: Int
 			(layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(value, 0)
 		}
 	}
-
-inline fun View.showPopupMenu(
-	@MenuRes menuRes: Int,
-	onPrepare: (Menu) -> Unit = {},
-	onItemClick: PopupMenu.OnMenuItemClickListener,
-) {
-	val menu = PopupMenu(context, this)
-	menu.inflate(menuRes)
-	menu.setOnMenuItemClickListener(onItemClick)
-	onPrepare(menu.menu)
-	menu.show()
-}
 
 fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	if (visibility != View.VISIBLE) {
@@ -97,7 +76,7 @@ inline fun ViewPager2.doOnPageChanged(crossinline callback: (Int) -> Unit) {
 }
 
 val ViewPager2.recyclerView: RecyclerView?
-	inline get() = children.find { it is RecyclerView } as? RecyclerView
+	get() = children.firstNotNullOfOrNull { it as? RecyclerView }
 
 fun View.resetTransformations() {
 	alpha = 1f
@@ -106,6 +85,7 @@ fun View.resetTransformations() {
 	translationZ = 0f
 	scaleX = 1f
 	scaleY = 1f
+	rotation = 0f
 	rotationX = 0f
 	rotationY = 0f
 }
@@ -133,8 +113,17 @@ fun RecyclerView.findCenterViewPosition(): Int {
 	return getChildAdapterPosition(view)
 }
 
-inline fun <reified T> RecyclerView.ViewHolder.getItem(): T? {
-	return ((this as? AdapterDelegateViewBindingViewHolder<*, *>)?.item as? T)
+fun <T> RecyclerView.ViewHolder.getItem(clazz: Class<T>): T? {
+	val rawItem = when (this) {
+		is AdapterDelegateViewBindingViewHolder<*, *> -> item
+		is AdapterDelegateViewHolder<*> -> item
+		else -> null
+	} ?: return null
+	return if (clazz.isAssignableFrom(rawItem.javaClass)) {
+		clazz.cast(rawItem)
+	} else {
+		null
+	}
 }
 
 fun Slider.setValueRounded(newValue: Float) {

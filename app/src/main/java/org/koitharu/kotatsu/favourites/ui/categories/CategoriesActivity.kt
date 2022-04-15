@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -23,11 +24,12 @@ import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.showPopupMenu
 
-class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
+class CategoriesActivity :
+	BaseActivity<ActivityCategoriesBinding>(),
 	OnListItemClickListener<FavouriteCategory>,
-	View.OnClickListener, CategoriesEditDelegate.CategoriesEditCallback {
+	View.OnClickListener,
+	CategoriesEditDelegate.CategoriesEditCallback {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
@@ -58,26 +60,27 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 	}
 
 	override fun onItemClick(item: FavouriteCategory, view: View) {
-		view.showPopupMenu(R.menu.popup_category, { menu ->
-			createOrderSubmenu(menu, item)
-		}) {
-			when (it.itemId) {
+		val menu = PopupMenu(view.context, view)
+		menu.inflate(R.menu.popup_category)
+		createOrderSubmenu(menu.menu, item)
+		menu.setOnMenuItemClickListener { menuItem ->
+			when (menuItem.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(item)
 				R.id.action_rename -> editDelegate.renameCategory(item)
-				R.id.action_order -> return@showPopupMenu false
+				R.id.action_order -> return@setOnMenuItemClickListener false
 				else -> {
-					val order = SORT_ORDERS.getOrNull(it.order) ?: return@showPopupMenu false
+					val order = SORT_ORDERS.getOrNull(menuItem.order) ?: return@setOnMenuItemClickListener false
 					viewModel.setCategoryOrder(item.id, order)
 				}
 			}
 			true
 		}
+		menu.show()
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {
-		reorderHelper.startDrag(
-			binding.recyclerView.findContainingViewHolder(view) ?: return false
-		)
+		val viewHolder = binding.recyclerView.findContainingViewHolder(view) ?: return false
+		reorderHelper.startDrag(viewHolder)
 		return true
 	}
 
@@ -90,7 +93,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		binding.recyclerView.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			bottom = 2 * insets.bottom + binding.fabAdd.measureHeight()
+			bottom = 2 * insets.bottom + binding.fabAdd.measureHeight(),
 		)
 	}
 

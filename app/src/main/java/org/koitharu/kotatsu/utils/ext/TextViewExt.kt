@@ -5,12 +5,11 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.StringRes
-import androidx.core.content.res.use
 import androidx.core.view.isGone
 
 var TextView.textAndVisible: CharSequence?
-	inline get() = text?.takeIf { visibility == View.VISIBLE }
-	inline set(value) {
+	get() = text?.takeIf { visibility == View.VISIBLE }
+	set(value) {
 		text = value
 		isGone = value.isNullOrEmpty()
 	}
@@ -40,8 +39,5 @@ fun TextView.setTextAndVisible(@StringRes textResId: Int) {
 }
 
 fun TextView.setTextColorAttr(@AttrRes attrResId: Int) {
-	val colors = context.obtainStyledAttributes(intArrayOf(attrResId)).use {
-		it.getColorStateList(0)
-	}
-	setTextColor(colors)
+	setTextColor(context.getThemeColorStateList(attrResId))
 }
