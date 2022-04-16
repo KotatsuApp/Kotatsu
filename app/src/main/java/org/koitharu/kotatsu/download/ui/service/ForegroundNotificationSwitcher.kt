@@ -24,7 +24,7 @@ class ForegroundNotificationSwitcher(
 	@Synchronized
 	fun notify(startId: Int, notification: Notification) {
 		if (notifications.isEmpty()) {
-			StartForegroundRunnable(startId, notification)
+			service.startForeground(startId, notification)
 		} else {
 			notificationManager.notify(startId, notification)
 		}
@@ -44,16 +44,6 @@ class ForegroundNotificationSwitcher(
 			service.startForeground(nextStartId, nextNotification)
 		}
 		handler.postDelayed(NotifyRunnable(startId, notification), DEFAULT_DELAY)
-	}
-
-	private inner class StartForegroundRunnable(
-		private val startId: Int,
-		private val notification: Notification,
-	) : Runnable {
-
-		override fun run() {
-			service.startForeground(startId, notification)
-		}
 	}
 
 	private inner class NotifyRunnable(
