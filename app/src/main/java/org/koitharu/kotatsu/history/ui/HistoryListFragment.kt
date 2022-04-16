@@ -10,6 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.list.ui.MangaListFragment
+import org.koitharu.kotatsu.parsers.model.MangaSource
 
 class HistoryListFragment : MangaListFragment() {
 
@@ -59,6 +60,13 @@ class HistoryListFragment : MangaListFragment() {
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_history, menu)
 		return super.onCreateActionMode(mode, menu)
+	}
+
+	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+		menu.findItem(R.id.action_save)?.isVisible = selectedItems.none {
+			it.source == MangaSource.LOCAL
+		}
+		return super.onPrepareActionMode(mode, menu)
 	}
 
 	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {

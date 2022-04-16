@@ -16,6 +16,12 @@
 		app:showAsAction="ifRoom|withText" />
 
 	<item
+		android:id="@+id/action_save"
+		android:icon="@drawable/ic_save"
+		android:title="@string/save"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
 		android:id="@+id/action_select_all"
 		android:icon="?actionModeSelectAllDrawable"
 		android:title="@android:string/selectAll"
