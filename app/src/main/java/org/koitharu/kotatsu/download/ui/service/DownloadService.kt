@@ -24,7 +24,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseService
 import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.model.withoutChapters
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.download.domain.DownloadState
@@ -32,7 +31,6 @@ import org.koitharu.kotatsu.download.domain.WakeLockNode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.throttle
-import org.koitharu.kotatsu.utils.ext.toArraySet
 import org.koitharu.kotatsu.utils.progress.ProgressJob
 import java.util.concurrent.TimeUnit
 
@@ -66,7 +64,7 @@ class DownloadService : BaseService() {
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		super.onStartCommand(intent, flags, startId)
 		val manga = intent?.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga
-		val chapters = intent?.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toArraySet()
+		val chapters = intent?.getLongArrayExtra(EXTRA_CHAPTERS_IDS)
 		return if (manga != null) {
 			jobs[startId] = downloadManga(startId, manga, chapters)
 			jobCount.value = jobs.size
@@ -96,7 +94,7 @@ class DownloadService : BaseService() {
 	private fun downloadManga(
 		startId: Int,
 		manga: Manga,
-		chaptersIds: Set<Long>?,
+		chaptersIds: LongArray?,
 	): ProgressJob<DownloadState> {
 		val job = downloadManager.downloadManga(manga, chaptersIds, startId)
 		listenJob(job)
@@ -118,7 +116,7 @@ class DownloadService : BaseService() {
 			(job.progressValue as? DownloadState.Done)?.let {
 				sendBroadcast(
 					Intent(ACTION_DOWNLOAD_COMPLETE)
-						.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga.withoutChapters()))
+						.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga, withChapters = false))
 				)
 			}
 			notificationSwitcher.detach(
@@ -178,7 +176,7 @@ class DownloadService : BaseService() {
 			}
 			confirmDataTransfer(context) {
 				val intent = Intent(context, DownloadService::class.java)
-				intent.putExtra(EXTRA_MANGA, ParcelableManga(manga))
+				intent.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
 				if (chaptersIds != null) {
 					intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
 				}
@@ -194,7 +192,7 @@ class DownloadService : BaseService() {
 			confirmDataTransfer(context) {
 				for (item in manga) {
 					val intent = Intent(context, DownloadService::class.java)
-					intent.putExtra(EXTRA_MANGA, ParcelableManga(item))
+					intent.putExtra(EXTRA_MANGA, ParcelableManga(item, withChapters = false))
 					ContextCompat.startForegroundService(context, intent)
 				}
 			}

@@ -15,7 +15,6 @@ import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.model.withoutChapters
 import org.koitharu.kotatsu.databinding.DialogFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
@@ -99,7 +98,7 @@ class FavouriteCategoriesDialog :
 		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavouriteCategoriesDialog().withArgs(1) {
 			putParcelableArrayList(
 				KEY_MANGA_LIST,
-				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it.withoutChapters()) }
+				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withChapters = false) }
 			)
 		}.show(fm, TAG)
 	}

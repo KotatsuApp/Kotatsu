@@ -332,7 +332,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 
 		fun newIntent(context: Context, manga: Manga): Intent {
 			return Intent(context, DetailsActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 		}
 
 		fun newIntent(context: Context, mangaId: Long): Intent {

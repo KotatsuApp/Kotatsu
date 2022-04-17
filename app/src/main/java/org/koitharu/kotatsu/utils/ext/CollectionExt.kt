@@ -3,8 +3,6 @@ package org.koitharu.kotatsu.utils.ext
 import androidx.collection.ArraySet
 import java.util.*
 
-fun LongArray.toArraySet(): Set<Long> = createSet(size) { i -> this[i] }
-
 fun <T : Enum<T>> Array<T>.names() = Array(size) { i ->
 	this[i].name
 }

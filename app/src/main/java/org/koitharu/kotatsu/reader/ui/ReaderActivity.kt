@@ -410,18 +410,18 @@ class ReaderActivity :
 
 		fun newIntent(context: Context, manga: Manga): Intent {
 			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 		}
 
 		fun newIntent(context: Context, manga: Manga, branch: String?): Intent {
 			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 				.putExtra(EXTRA_BRANCH, branch)
 		}
 
 		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {
 			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 				.putExtra(EXTRA_STATE, state)
 		}
 

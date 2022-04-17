@@ -7,6 +7,7 @@ import android.webkit.MimeTypeMap
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
+import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Semaphore
@@ -21,12 +22,12 @@ import org.koitharu.kotatsu.local.data.MangaZip
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.waitForNetwork
 import org.koitharu.kotatsu.utils.progress.ProgressJob
-import java.io.File
 
 private const val MAX_DOWNLOAD_ATTEMPTS = 3
 private const val MAX_PARALLEL_DOWNLOADS = 2
@@ -55,22 +56,24 @@ class DownloadManager(
 
 	fun downloadManga(
 		manga: Manga,
-		chaptersIds: Set<Long>?,
+		chaptersIds: LongArray?,
 		startId: Int,
 	): ProgressJob<DownloadState> {
 		val stateFlow = MutableStateFlow<DownloadState>(
 			DownloadState.Queued(startId = startId, manga = manga, cover = null)
 		)
-		val job = downloadMangaImpl(manga, chaptersIds, stateFlow, startId)
+		val job = downloadMangaImpl(manga, chaptersIds?.takeUnless { it.isEmpty() }, stateFlow, startId)
 		return ProgressJob(job, stateFlow)
 	}
 
 	private fun downloadMangaImpl(
 		manga: Manga,
-		chaptersIds: Set<Long>?,
+		chaptersIds: LongArray?,
 		outState: MutableStateFlow<DownloadState>,
 		startId: Int,
 	): Job = coroutineScope.launch(Dispatchers.Default + errorStateHandler(outState)) {
+		@Suppress("NAME_SHADOWING") var manga = manga
+		val chaptersIdsSet = chaptersIds?.toMutableSet()
 		semaphore.acquire()
 		coroutineContext[WakeLockNode]?.acquire()
 		outState.value = DownloadState.Preparing(startId, manga, null)
@@ -79,6 +82,9 @@ class DownloadManager(
 		checkNotNull(destination) { context.getString(R.string.cannot_find_available_storage) }
 		var output: MangaZip? = null
 		try {
+			if (manga.source == MangaSource.LOCAL) {
+				manga = localMangaRepository.getRemoteManga(manga) ?: error("Cannot obtain remote manga instance")
+			}
 			val repo = MangaRepository(manga.source)
 			cover = runCatching {
 				imageLoader.execute(
@@ -91,48 +97,51 @@ class DownloadManager(
 				).drawable
 			}.getOrNull()
 			outState.value = DownloadState.Preparing(startId, manga, cover)
-			val data = if (manga.chapters == null) repo.getDetails(manga) else manga
+			val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
 			output = MangaZip.findInDir(destination, data)
 			output.prepare(data)
 			val coverUrl = data.largeCoverUrl ?: data.coverUrl
 			downloadFile(coverUrl, data.publicUrl, destination).let { file ->
 				output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
 			}
-			val chapters = if (chaptersIds == null) {
-				data.chapters.orEmpty()
-			} else {
-				data.chapters.orEmpty().filter { x -> x.id in chaptersIds }
+			val chapters = checkNotNull(
+				if (chaptersIdsSet == null) {
+					data.chapters
+				} else {
+					data.chapters?.filter { x -> chaptersIdsSet.remove(x.id) }
+				}
+			) { "Chapters list must not be null" }
+			check(chapters.isNotEmpty()) { "Chapters list must not be empty" }
+			check(chaptersIdsSet.isNullOrEmpty()) {
+				"${chaptersIdsSet?.size} of ${chaptersIds?.size} requested chapters not found in manga"
 			}
 			for ((chapterIndex, chapter) in chapters.withIndex()) {
-				if (chaptersIds == null || chapter.id in chaptersIds) {
-					val pages = repo.getPages(chapter)
-					for ((pageIndex, page) in pages.withIndex()) {
-						failsafe@ do {
-							try {
-								val url = repo.getPageUrl(page)
-								val file =
-									cache[url] ?: downloadFile(url, page.referer, destination)
-								output.addPage(
-									chapter,
-									file,
-									pageIndex,
-									MimeTypeMap.getFileExtensionFromUrl(url)
-								)
-							} catch (e: IOException) {
-								outState.value = DownloadState.WaitingForNetwork(startId, data, cover)
-								connectivityManager.waitForNetwork()
-								continue@failsafe
-							}
-						} while (false)
+				val pages = repo.getPages(chapter)
+				for ((pageIndex, page) in pages.withIndex()) {
+					failsafe@ do {
+						try {
+							val url = repo.getPageUrl(page)
+							val file = cache[url] ?: downloadFile(url, page.referer, destination)
+							output.addPage(
+								chapter = chapter,
+								file = file,
+								pageNumber = pageIndex,
+								ext = MimeTypeMap.getFileExtensionFromUrl(url),
+							)
+						} catch (e: IOException) {
+							outState.value = DownloadState.WaitingForNetwork(startId, data, cover)
+							connectivityManager.waitForNetwork()
+							continue@failsafe
+						}
+					} while (false)
 
-						outState.value = DownloadState.Progress(
-							startId, data, cover,
-							totalChapters = chapters.size,
-							currentChapter = chapterIndex,
-							totalPages = pages.size,
-							currentPage = pageIndex,
-						)
-					}
+					outState.value = DownloadState.Progress(
+						startId, data, cover,
+						totalChapters = chapters.size,
+						currentChapter = chapterIndex,
+						totalPages = pages.size,
+						currentPage = pageIndex,
+					)
 				}
 			}
 			outState.value = DownloadState.PostProcessing(startId, data, cover)
@@ -189,13 +198,14 @@ class DownloadManager(
 		}
 	}
 
-	private fun errorStateHandler(outState: MutableStateFlow<DownloadState>) = CoroutineExceptionHandler { _, throwable ->
-		val prevValue = outState.value
-		outState.value = DownloadState.Error(
-			startId = prevValue.startId,
-			manga = prevValue.manga,
-			cover = prevValue.cover,
-			error = throwable,
-		)
-	}
+	private fun errorStateHandler(outState: MutableStateFlow<DownloadState>) =
+		CoroutineExceptionHandler { _, throwable ->
+			val prevValue = outState.value
+			outState.value = DownloadState.Error(
+				startId = prevValue.startId,
+				manga = prevValue.manga,
+				cover = prevValue.cover,
+				error = throwable,
+			)
+		}
 }
