@@ -191,7 +191,8 @@ class DetailsViewModel(
 		// find default branch
 		val hist = historyRepository.getOne(manga)
 		selectedBranch.value = if (hist != null) {
-			manga.chapters?.find { it.id == hist.chapterId }?.branch
+			val currentChapter = manga.chapters?.find { it.id == hist.chapterId }
+			if (currentChapter != null) currentChapter.branch else predictBranch(manga.chapters)
 		} else {
 			predictBranch(manga.chapters)
 		}
@@ -203,6 +204,8 @@ class DetailsViewModel(
 			} else {
 				localMangaRepository.findSavedManga(manga)
 			}
+		}.onFailure { error ->
+			if (BuildConfig.DEBUG) error.printStackTrace()
 		}.getOrNull()
 	}
 
