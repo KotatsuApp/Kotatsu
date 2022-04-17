@@ -13,15 +13,16 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+		<com.google.android.material.imageview.ShapeableImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="0dp"
-			android:layout_height="wrap_content"
+			android:layout_height="0dp"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="16dp"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			android:transitionName="cover"
+			app:layout_constraintDimensionRatio="H,13:18"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0"
 			app:layout_constraintStart_toStartOf="parent"
@@ -107,10 +108,11 @@
 
 				<com.google.android.material.button.MaterialButton
 					android:id="@+id/button_favorite"
-					style="@style/Widget.Material3.Button.OutlinedButton"
+					style="@style/Widget.Material3.Button.OutlinedButton.Icon"
 					android:layout_width="0dp"
 					android:layout_height="0dp"
 					android:layout_marginStart="16dp"
+					android:contentDescription="@string/add_to_favourites"
 					android:paddingStart="0dp"
 					android:paddingEnd="0dp"
 					app:icon="@drawable/ic_heart_outline"
