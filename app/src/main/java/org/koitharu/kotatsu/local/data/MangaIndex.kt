@@ -92,6 +92,10 @@ class MangaIndex(source: String?) {
 		}
 	}
 
+	fun removeChapter(id: Long): Boolean {
+		return json.getJSONObject("chapters").remove(id.toString()) != null
+	}
+
 	fun setCoverEntry(name: String) {
 		json.put("cover_entry", name)
 	}

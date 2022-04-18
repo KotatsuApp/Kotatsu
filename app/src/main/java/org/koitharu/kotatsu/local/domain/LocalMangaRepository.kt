@@ -49,12 +49,11 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		manga.source != MangaSource.LOCAL -> requireNotNull(findSavedManga(manga)) {
 			"Manga is not local or saved"
 		}
-		manga.chapters == null -> getFromFile(Uri.parse(manga.url).toFile())
-		else -> manga
+		else -> getFromFile(Uri.parse(manga.url).toFile())
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		return runInterruptible(Dispatchers.IO){
+		return runInterruptible(Dispatchers.IO) {
 			val uri = Uri.parse(chapter.url)
 			val file = uri.toFile()
 			val zip = ZipFile(file)
@@ -91,6 +90,13 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 	suspend fun delete(manga: Manga): Boolean {
 		val file = Uri.parse(manga.url).toFile()
 		return file.deleteAwait()
+	}
+
+	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) = runInterruptible(Dispatchers.IO) {
+		val uri = Uri.parse(manga.url)
+		val file = uri.toFile()
+		val cbz = CbzMangaOutput(file, manga)
+		CbzMangaOutput.filterChapters(cbz, ids)
 	}
 
 	@SuppressLint("DefaultLocale")

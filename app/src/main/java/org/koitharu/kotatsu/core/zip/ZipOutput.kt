@@ -2,8 +2,6 @@ package org.koitharu.kotatsu.core.zip
 
 import androidx.annotation.WorkerThread
 import androidx.collection.ArraySet
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runInterruptible
 import okio.Closeable
 import java.io.File
 import java.util.zip.Deflater
@@ -22,14 +20,24 @@ class ZipOutput(
 		setLevel(compressionLevel)
 	}
 
-	suspend fun put(name: String, file: File): Unit = runInterruptible(Dispatchers.IO) {
+	fun put(name: String, file: File) {
 		entryNames.add(name)
 		output.appendFile(file, name)
 	}
 
-	suspend fun put(name: String, content: String): Unit = runInterruptible(Dispatchers.IO) {
+	fun put(name: String, content: String) {
 		entryNames.add(name)
 		output.appendText(content, name)
+	}
+
+	fun addDirectory(name: String) {
+		entryNames.add(name)
+		val entry = if (name.endsWith("/")) {
+			ZipEntry(name)
+		} else {
+			ZipEntry("$name/")
+		}
+		output.putNextEntry(entry)
 	}
 
 	@WorkerThread
@@ -47,7 +55,7 @@ class ZipOutput(
 		}
 	}
 
-	suspend fun finish() = runInterruptible(Dispatchers.IO) {
+	fun finish() {
 		output.finish()
 		output.flush()
 	}

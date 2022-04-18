@@ -98,7 +98,7 @@ class DownloadManager(
 			}.getOrNull()
 			outState.value = DownloadState.Preparing(startId, manga, cover)
 			val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
-			output = CbzMangaOutput.createNew(destination, data)
+			output = CbzMangaOutput.get(destination, data)
 			val coverUrl = data.largeCoverUrl ?: data.coverUrl
 			downloadFile(coverUrl, data.publicUrl, destination, tempFileName).let { file ->
 				output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))

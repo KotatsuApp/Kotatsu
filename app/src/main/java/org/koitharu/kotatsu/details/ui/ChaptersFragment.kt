@@ -154,8 +154,16 @@ class ChaptersFragment :
 				DownloadService.start(
 					context ?: return false,
 					viewModel.getRemoteManga() ?: viewModel.manga.value ?: return false,
-					selectionDecoration?.checkedItemsIds
+					selectionDecoration?.checkedItemsIds?.toSet()
 				)
+				mode.finish()
+				true
+			}
+			R.id.action_delete -> {
+				val ids = selectionDecoration?.checkedItemsIds
+				if (!ids.isNullOrEmpty()) {
+					viewModel.deleteChapters(ids.toSet())
+				}
 				mode.finish()
 				true
 			}
@@ -186,6 +194,9 @@ class ChaptersFragment :
 		val selectedIds = selectionDecoration?.checkedItemsIds ?: return false
 		val items = chaptersAdapter?.items?.filter { x -> x.chapter.id in selectedIds }.orEmpty()
 		menu.findItem(R.id.action_save).isVisible = items.none { x ->
+			x.chapter.source == MangaSource.LOCAL
+		}
+		menu.findItem(R.id.action_delete).isVisible = items.all { x ->
 			x.chapter.source == MangaSource.LOCAL
 		}
 		mode.title = items.size.toString()

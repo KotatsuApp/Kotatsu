@@ -47,7 +47,9 @@ import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediator.TabConfigurationStrategy,
+class DetailsActivity :
+	BaseActivity<ActivityDetailsBinding>(),
+	TabLayoutMediator.TabConfigurationStrategy,
 	AdapterView.OnItemSelectedListener {
 
 	private val viewModel by viewModel<DetailsViewModel> {
@@ -79,6 +81,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 		viewModel.manga.observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
+		viewModel.onChaptersRemoved.observe(this, ::onChaptersRemoved)
 		viewModel.onError.observe(this, ::onError)
 
 		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
@@ -100,6 +103,10 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 			Toast.LENGTH_SHORT
 		).show()
 		finishAfterTransition()
+	}
+
+	private fun onChaptersRemoved(count: Int) {
+		binding.snackbar.show(getString(R.string.removal_completed))
 	}
 
 	private fun onError(e: Throwable) {
@@ -262,7 +269,7 @@ class DetailsActivity : BaseActivity<ActivityDetailsBinding>(), TabLayoutMediato
 	fun showChapterMissingDialog(chapterId: Long) {
 		val remoteManga = viewModel.getRemoteManga()
 		if (remoteManga == null) {
-			binding.snackbar.show(getString( R.string.chapter_is_missing))
+			binding.snackbar.show(getString(R.string.chapter_is_missing))
 			return
 		}
 		MaterialAlertDialogBuilder(this).apply {

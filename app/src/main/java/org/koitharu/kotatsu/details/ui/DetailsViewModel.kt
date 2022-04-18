@@ -85,6 +85,7 @@ class DetailsViewModel(
 		.asLiveData(viewModelScope.coroutineContext)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
+	val onChaptersRemoved = SingleLiveEvent<Int>()
 
 	val branches = mangaData.map {
 		it?.chapters?.mapToSet { x -> x.branch }?.sortedBy { x -> x }.orEmpty()
@@ -180,6 +181,15 @@ class DetailsViewModel(
 					}
 				}
 			}
+		}
+	}
+
+	fun deleteChapters(ids: Set<Long>) {
+		launchLoadingJob {
+			val manga = checkNotNull(mangaData.value)
+			localMangaRepository.deleteChapters(manga, ids)
+			reload()
+			onChaptersRemoved.call(ids.size)
 		}
 	}
 

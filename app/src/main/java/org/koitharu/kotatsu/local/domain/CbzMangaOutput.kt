@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.utils.ext.deleteAwait
+import org.koitharu.kotatsu.utils.ext.readText
 import java.io.File
 import java.util.zip.ZipFile
 
@@ -41,7 +42,9 @@ class CbzMangaOutput(
 				append(ext)
 			}
 		}
-		output.put(name, file)
+		runInterruptible(Dispatchers.IO) {
+			output.put(name, file)
+		}
 		index.setCoverEntry(name)
 	}
 
@@ -53,14 +56,18 @@ class CbzMangaOutput(
 				append(ext)
 			}
 		}
-		output.put(name, file)
+		runInterruptible(Dispatchers.IO) {
+			output.put(name, file)
+		}
 		index.addChapter(chapter)
 	}
 
 	suspend fun finalize() {
-		output.put(ENTRY_NAME_INDEX, index.toString())
-		output.finish()
-		output.close()
+		runInterruptible(Dispatchers.IO) {
+			output.put(ENTRY_NAME_INDEX, index.toString())
+			output.finish()
+			output.close()
+		}
 		file.deleteAwait()
 		output.file.renameTo(file)
 	}
@@ -102,10 +109,45 @@ class CbzMangaOutput(
 
 		const val ENTRY_NAME_INDEX = "index.json"
 
-		fun createNew(root: File, manga: Manga): CbzMangaOutput {
+		fun get(root: File, manga: Manga): CbzMangaOutput {
 			val name = manga.title.toFileNameSafe() + ".cbz"
 			val file = File(root, name)
 			return CbzMangaOutput(file, manga)
+		}
+
+		@WorkerThread
+		fun filterChapters(subject: CbzMangaOutput, idsToRemove: Set<Long>) {
+			ZipFile(subject.file).use { zip ->
+				val index = MangaIndex(zip.readText(zip.getEntry(ENTRY_NAME_INDEX)))
+				idsToRemove.forEach { id -> index.removeChapter(id) }
+				val patterns = requireNotNull(index.getMangaInfo()?.chapters).map {
+					index.getChapterNamesPattern(it)
+				}
+				val coverEntryName = index.getCoverEntry()
+				for (entry in zip.entries()) {
+					when {
+						entry.name == ENTRY_NAME_INDEX -> {
+							subject.output.put(ENTRY_NAME_INDEX, index.toString())
+						}
+						entry.isDirectory -> {
+							subject.output.addDirectory(entry.name)
+						}
+						entry.name == coverEntryName -> {
+							subject.output.copyEntryFrom(zip, entry)
+						}
+						else -> {
+							val name = entry.name.substringBefore('.')
+							if (patterns.any { it.matches(name) }) {
+								subject.output.copyEntryFrom(zip, entry)
+							}
+						}
+					}
+				}
+				subject.output.finish()
+				subject.output.close()
+				subject.file.delete()
+				subject.output.file.renameTo(subject.file)
+			}
 		}
 	}
 }
