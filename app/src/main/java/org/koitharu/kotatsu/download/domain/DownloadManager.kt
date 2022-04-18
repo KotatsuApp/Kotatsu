@@ -7,7 +7,6 @@ import android.webkit.MimeTypeMap
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
-import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Semaphore
@@ -18,8 +17,8 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.local.data.MangaZip
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.local.domain.CbzMangaOutput
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -28,6 +27,7 @@ import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.waitForNetwork
 import org.koitharu.kotatsu.utils.progress.ProgressJob
+import java.io.File
 
 private const val MAX_DOWNLOAD_ATTEMPTS = 3
 private const val MAX_PARALLEL_DOWNLOADS = 2
@@ -80,7 +80,7 @@ class DownloadManager(
 		var cover: Drawable? = null
 		val destination = localMangaRepository.getOutputDir()
 		checkNotNull(destination) { context.getString(R.string.cannot_find_available_storage) }
-		var output: MangaZip? = null
+		var output: CbzMangaOutput? = null
 		try {
 			if (manga.source == MangaSource.LOCAL) {
 				manga = localMangaRepository.getRemoteManga(manga) ?: error("Cannot obtain remote manga instance")
@@ -98,8 +98,7 @@ class DownloadManager(
 			}.getOrNull()
 			outState.value = DownloadState.Preparing(startId, manga, cover)
 			val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
-			output = MangaZip.findInDir(destination, data)
-			output.prepare(data)
+			output = CbzMangaOutput.createNew(destination, data)
 			val coverUrl = data.largeCoverUrl ?: data.coverUrl
 			downloadFile(coverUrl, data.publicUrl, destination).let { file ->
 				output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
@@ -145,9 +144,8 @@ class DownloadManager(
 				}
 			}
 			outState.value = DownloadState.PostProcessing(startId, data, cover)
-			if (!output.compress()) {
-				throw RuntimeException("Cannot create target file")
-			}
+			output.mergeWithExisting()
+			output.finalize()
 			val localManga = localMangaRepository.getFromFile(output.file)
 			outState.value = DownloadState.Done(startId, data, cover, localManga)
 		} catch (e: CancellationException) {

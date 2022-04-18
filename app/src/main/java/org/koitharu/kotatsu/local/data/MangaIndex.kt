@@ -28,14 +28,17 @@ class MangaIndex(source: String?) {
 		json.put("state", manga.state?.name)
 		json.put("source", manga.source.name)
 		json.put("cover_large", manga.largeCoverUrl)
-		json.put("tags", JSONArray().also { a ->
-			for (tag in manga.tags) {
-				val jo = JSONObject()
-				jo.put("key", tag.key)
-				jo.put("title", tag.title)
-				a.put(jo)
+		json.put(
+			"tags",
+			JSONArray().also { a ->
+				for (tag in manga.tags) {
+					val jo = JSONObject()
+					jo.put("key", tag.key)
+					jo.put("title", tag.title)
+					a.put(jo)
+				}
 			}
-		})
+		)
 		if (!append || !json.has("chapters")) {
 			json.put("chapters", JSONObject())
 		}

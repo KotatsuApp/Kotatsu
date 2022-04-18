@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.MangaIndex
-import org.koitharu.kotatsu.local.data.MangaZip
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.parsers.util.toCamelCase
@@ -59,7 +58,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 			val uri = Uri.parse(chapter.url)
 			val file = uri.toFile()
 			val zip = ZipFile(file)
-			val index = zip.getEntry(MangaZip.INDEX_ENTRY)?.let(zip::readText)?.let(::MangaIndex)
+			val index = zip.getEntry(CbzMangaOutput.ENTRY_NAME_INDEX)?.let(zip::readText)?.let(::MangaIndex)
 			var entries = zip.entries().asSequence()
 			entries = if (index != null) {
 				val pattern = index.getChapterNamesPattern(chapter)
@@ -97,7 +96,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 	@SuppressLint("DefaultLocale")
 	fun getFromFile(file: File): Manga = ZipFile(file).use { zip ->
 		val fileUri = file.toUri().toString()
-		val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+		val entry = zip.getEntry(CbzMangaOutput.ENTRY_NAME_INDEX)
 		val index = entry?.let(zip::readText)?.let(::MangaIndex)
 		val info = index?.getMangaInfo()
 		if (index != null && info != null) {
@@ -158,7 +157,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		}.getOrNull() ?: return null
 		return runInterruptible(Dispatchers.IO) {
 			ZipFile(file).use { zip ->
-				val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+				val entry = zip.getEntry(CbzMangaOutput.ENTRY_NAME_INDEX)
 				val index = entry?.let(zip::readText)?.let(::MangaIndex)
 				index?.getMangaInfo()
 			}
@@ -170,7 +169,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		return runInterruptible(Dispatchers.IO) {
 			for (file in files) {
 				val index = ZipFile(file).use { zip ->
-					val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+					val entry = zip.getEntry(CbzMangaOutput.ENTRY_NAME_INDEX)
 					entry?.let(zip::readText)?.let(::MangaIndex)
 				} ?: continue
 				val info = index.getMangaInfo() ?: continue
