@@ -387,7 +387,9 @@ class MainActivity :
 		lifecycleScope.launch(Dispatchers.Default) {
 			TrackWorker.setup(applicationContext)
 			SuggestionsWorker.setup(applicationContext)
-			AppUpdateChecker(this@MainActivity).checkIfNeeded()
+			if (AppUpdateChecker.isUpdateSupported(this@MainActivity)) {
+				AppUpdateChecker(this@MainActivity).checkIfNeeded()
+			}
 			if (!get<AppSettings>().isSourcesSelected) {
 				withContext(Dispatchers.Main) {
 					OnboardDialogFragment.showWelcome(supportFragmentManager)
