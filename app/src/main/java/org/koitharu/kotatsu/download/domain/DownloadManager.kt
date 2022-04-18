@@ -32,7 +32,6 @@ import java.io.File
 private const val MAX_DOWNLOAD_ATTEMPTS = 3
 private const val MAX_PARALLEL_DOWNLOADS = 2
 private const val DOWNLOAD_ERROR_DELAY = 500L
-private const val TEMP_PAGE_FILE = "page.tmp"
 
 class DownloadManager(
 	private val coroutineScope: CoroutineScope,
@@ -80,6 +79,7 @@ class DownloadManager(
 		var cover: Drawable? = null
 		val destination = localMangaRepository.getOutputDir()
 		checkNotNull(destination) { context.getString(R.string.cannot_find_available_storage) }
+		val tempFileName = "${manga.id}_$startId.tmp"
 		var output: CbzMangaOutput? = null
 		try {
 			if (manga.source == MangaSource.LOCAL) {
@@ -100,7 +100,7 @@ class DownloadManager(
 			val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
 			output = CbzMangaOutput.createNew(destination, data)
 			val coverUrl = data.largeCoverUrl ?: data.coverUrl
-			downloadFile(coverUrl, data.publicUrl, destination).let { file ->
+			downloadFile(coverUrl, data.publicUrl, destination, tempFileName).let { file ->
 				output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
 			}
 			val chapters = checkNotNull(
@@ -120,7 +120,7 @@ class DownloadManager(
 					failsafe@ do {
 						try {
 							val url = repo.getPageUrl(page)
-							val file = cache[url] ?: downloadFile(url, page.referer, destination)
+							val file = cache[url] ?: downloadFile(url, page.referer, destination, tempFileName)
 							output.addPage(
 								chapter = chapter,
 								file = file,
@@ -159,14 +159,14 @@ class DownloadManager(
 		} finally {
 			withContext(NonCancellable) {
 				output?.cleanup()
-				File(destination, TEMP_PAGE_FILE).deleteAwait()
+				File(destination, tempFileName).deleteAwait()
 			}
 			coroutineContext[WakeLockNode]?.release()
 			semaphore.release()
 		}
 	}
 
-	private suspend fun downloadFile(url: String, referer: String, destination: File): File {
+	private suspend fun downloadFile(url: String, referer: String, destination: File, tempFileName: String): File {
 		val request = Request.Builder()
 			.url(url)
 			.header(CommonHeaders.REFERER, referer)
@@ -175,7 +175,7 @@ class DownloadManager(
 			.build()
 		val call = okHttp.newCall(request)
 		var attempts = MAX_DOWNLOAD_ATTEMPTS
-		val file = File(destination, TEMP_PAGE_FILE)
+		val file = File(destination, tempFileName)
 		while (true) {
 			try {
 				val response = call.clone().await()
