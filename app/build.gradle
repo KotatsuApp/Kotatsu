@@ -65,7 +65,7 @@ android {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation('com.github.nv95:kotatsu-parsers:8e23a7fcd4') {
+	implementation('com.github.nv95:kotatsu-parsers:dd9ace35d1') {
 		exclude group: 'org.json', module: 'json'
 	}
 
