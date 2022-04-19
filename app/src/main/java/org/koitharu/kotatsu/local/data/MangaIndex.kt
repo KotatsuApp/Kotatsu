@@ -87,7 +87,7 @@ class MangaIndex(source: String?) {
 			jo.put("uploadDate", chapter.uploadDate)
 			jo.put("scanlator", chapter.scanlator)
 			jo.put("branch", chapter.branch)
-			jo.put("entries", "%03d\\d{3}".format(chapter.number))
+			jo.put("entries", "%08d_%03d\\d{3}".format(chapter.branch.hashCode(), chapter.number))
 			chapters.put(chapter.id.toString(), jo)
 		}
 	}

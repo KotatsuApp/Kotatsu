@@ -267,10 +267,10 @@ class DetailsViewModel(
 		val dateFormat = settings.getDateFormat()
 		for (i in sourceChapters.indices) {
 			val chapter = sourceChapters[i]
+			val localChapter = chaptersMap.remove(chapter.id)
 			if (chapter.branch != branch) {
 				continue
 			}
-			val localChapter = chaptersMap.remove(chapter.id)
 			result += localChapter?.toListItem(
 				isCurrent = i == currentIndex,
 				isUnread = i > currentIndex,
@@ -289,15 +289,19 @@ class DetailsViewModel(
 		}
 		if (chaptersMap.isNotEmpty()) { // some chapters on device but not online source
 			result.ensureCapacity(result.size + chaptersMap.size)
-			chaptersMap.values.mapTo(result) {
-				it.toListItem(
-					isCurrent = false,
-					isUnread = true,
-					isNew = false,
-					isMissing = false,
-					isDownloaded = false,
-					dateFormat = dateFormat,
-				)
+			chaptersMap.values.mapNotNullTo(result) {
+				if (it.branch == branch) {
+					it.toListItem(
+						isCurrent = false,
+						isUnread = true,
+						isNew = false,
+						isMissing = false,
+						isDownloaded = false,
+						dateFormat = dateFormat,
+					)
+				} else {
+					null
+				}
 			}
 			result.sortBy { it.chapter.number }
 		}

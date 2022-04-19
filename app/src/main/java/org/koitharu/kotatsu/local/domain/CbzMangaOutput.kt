@@ -36,7 +36,7 @@ class CbzMangaOutput(
 
 	suspend fun addCover(file: File, ext: String) {
 		val name = buildString {
-			append(FILENAME_PATTERN.format(0, 0))
+			append(FILENAME_PATTERN.format(0, 0, 0))
 			if (ext.isNotEmpty() && ext.length <= 4) {
 				append('.')
 				append(ext)
@@ -50,7 +50,7 @@ class CbzMangaOutput(
 
 	suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) {
 		val name = buildString {
-			append(FILENAME_PATTERN.format(chapter.number, pageNumber))
+			append(FILENAME_PATTERN.format(chapter.branch.hashCode(), chapter.number, pageNumber))
 			if (ext.isNotEmpty() && ext.length <= 4) {
 				append('.')
 				append(ext)
@@ -105,7 +105,7 @@ class CbzMangaOutput(
 
 	companion object {
 
-		private const val FILENAME_PATTERN = "%03d%03d"
+		private const val FILENAME_PATTERN = "%08d_%03d%03d"
 
 		const val ENTRY_NAME_INDEX = "index.json"
 

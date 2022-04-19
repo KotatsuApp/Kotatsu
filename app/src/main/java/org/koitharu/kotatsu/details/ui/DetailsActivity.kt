@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
@@ -193,23 +194,9 @@ class DetailsActivity :
 		R.id.action_save -> {
 			viewModel.manga.value?.let {
 				val chaptersCount = it.chapters?.size ?: 0
-				if (chaptersCount > 5) {
-					MaterialAlertDialogBuilder(this)
-						.setTitle(R.string.save_manga)
-						.setMessage(
-							getString(
-								R.string.large_manga_save_confirm,
-								resources.getQuantityString(
-									R.plurals.chapters,
-									chaptersCount,
-									chaptersCount
-								)
-							)
-						)
-						.setNegativeButton(android.R.string.cancel, null)
-						.setPositiveButton(R.string.save) { _, _ ->
-							DownloadService.start(this, it)
-						}.show()
+				val branches = viewModel.branches.value.orEmpty()
+				if (chaptersCount > 5 || branches.size > 1) {
+					showSaveConfirmation(it, chaptersCount, branches)
 				} else {
 					DownloadService.start(this, it)
 				}
@@ -333,6 +320,36 @@ class DetailsActivity :
 				remove(f)
 			}
 		}
+	}
+
+	private fun showSaveConfirmation(manga: Manga, chaptersCount: Int, branches: List<String?>) {
+		val dialogBuilder = MaterialAlertDialogBuilder(this)
+			.setTitle(R.string.save_manga)
+			.setNegativeButton(android.R.string.cancel, null)
+		if (branches.size > 1) {
+			val items = Array(branches.size) { i -> branches[i].orEmpty() }
+			val currentBranch = viewModel.selectedBranchIndex.value ?: -1
+			val checkedIndices = BooleanArray(branches.size) { i -> i == currentBranch }
+			dialogBuilder.setMultiChoiceItems(items, checkedIndices) { _, i, checked ->
+				checkedIndices[i] = checked
+			}.setPositiveButton(R.string.save) { _, _ ->
+				val selectedBranches = branches.filterIndexedTo(HashSet()) { i, _ -> checkedIndices[i] }
+				val chaptersIds = manga.chapters?.mapNotNullToSet { c ->
+					if (c.branch in selectedBranches) c.id else null
+				}
+				DownloadService.start(this, manga, chaptersIds)
+			}
+		} else {
+			dialogBuilder.setMessage(
+				getString(
+					R.string.large_manga_save_confirm,
+					resources.getQuantityString(R.plurals.chapters, chaptersCount, chaptersCount)
+				)
+			).setPositiveButton(R.string.save) { _, _ ->
+				DownloadService.start(this, manga)
+			}
+		}
+		dialogBuilder.show()
 	}
 
 	companion object {
