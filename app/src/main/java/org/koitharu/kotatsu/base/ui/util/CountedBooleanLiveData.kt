@@ -13,8 +13,8 @@ class CountedBooleanLiveData : MutableLiveData<Boolean>(false) {
 			counter--
 		}
 		val newValue = counter > 0
-		if (newValue != value) {
-			super.setValue(value)
+		if (newValue != this.value) {
+			super.setValue(newValue)
 		}
 	}
 }
