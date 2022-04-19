@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import androidx.collection.ArraySet
 import okio.Closeable
 import java.io.File
+import java.io.FileInputStream
 import java.util.zip.Deflater
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
@@ -20,24 +21,30 @@ class ZipOutput(
 		setLevel(compressionLevel)
 	}
 
-	fun put(name: String, file: File) {
-		entryNames.add(name)
-		output.appendFile(file, name)
+	@WorkerThread
+	fun put(name: String, file: File): Boolean {
+		return output.appendFile(file, name)
 	}
 
-	fun put(name: String, content: String) {
-		entryNames.add(name)
-		output.appendText(content, name)
+	@WorkerThread
+	fun put(name: String, content: String): Boolean {
+		return output.appendText(content, name)
 	}
 
-	fun addDirectory(name: String) {
-		entryNames.add(name)
+	@WorkerThread
+	fun addDirectory(name: String): Boolean {
 		val entry = if (name.endsWith("/")) {
 			ZipEntry(name)
 		} else {
 			ZipEntry("$name/")
 		}
-		output.putNextEntry(entry)
+		return if (entryNames.add(entry.name)) {
+			output.putNextEntry(entry)
+			output.closeEntry()
+			true
+		} else {
+			false
+		}
 	}
 
 	@WorkerThread
@@ -65,5 +72,47 @@ class ZipOutput(
 			output.close()
 			isClosed = true
 		}
+	}
+
+	@WorkerThread
+	private fun ZipOutputStream.appendFile(fileToZip: File, name: String): Boolean {
+		if (fileToZip.isDirectory) {
+			val entry = if (name.endsWith("/")) {
+				ZipEntry(name)
+			} else {
+				ZipEntry("$name/")
+			}
+			if (!entryNames.add(entry.name)) {
+				return false
+			}
+			putNextEntry(entry)
+			closeEntry()
+			fileToZip.listFiles()?.forEach { childFile ->
+				appendFile(childFile, "$name/${childFile.name}")
+			}
+		} else {
+			FileInputStream(fileToZip).use { fis ->
+				if (!entryNames.add(name)) {
+					return false
+				}
+				val zipEntry = ZipEntry(name)
+				putNextEntry(zipEntry)
+				fis.copyTo(this)
+				closeEntry()
+			}
+		}
+		return true
+	}
+
+	@WorkerThread
+	private fun ZipOutputStream.appendText(content: String, name: String): Boolean {
+		if (!entryNames.add(name)) {
+			return false
+		}
+		val zipEntry = ZipEntry(name)
+		putNextEntry(zipEntry)
+		content.byteInputStream().copyTo(this)
+		closeEntry()
+		return true
 	}
 }
