@@ -119,7 +119,8 @@ class DownloadManager(
 			for ((chapterIndex, chapter) in chapters.withIndex()) {
 				val pages = repo.getPages(chapter)
 				for ((pageIndex, page) in pages.withIndex()) {
-					failsafe@ do {
+					var retryCounter = 0
+					failsafe@ while (true) {
 						try {
 							val url = repo.getPageUrl(page)
 							val file = cache[url] ?: downloadFile(url, page.referer, destination, tempFileName)
@@ -129,12 +130,18 @@ class DownloadManager(
 								pageNumber = pageIndex,
 								ext = MimeTypeMap.getFileExtensionFromUrl(url),
 							)
+							break@failsafe
 						} catch (e: IOException) {
-							outState.value = DownloadState.WaitingForNetwork(startId, data, cover)
-							connectivityManager.waitForNetwork()
-							continue@failsafe
+							if (retryCounter < MAX_DOWNLOAD_ATTEMPTS) {
+								outState.value = DownloadState.WaitingForNetwork(startId, data, cover)
+								delay(DOWNLOAD_ERROR_DELAY)
+								connectivityManager.waitForNetwork()
+								retryCounter++
+							} else {
+								throw e
+							}
 						}
-					} while (false)
+					}
 
 					outState.value = DownloadState.Progress(
 						startId, data, cover,
@@ -180,26 +187,14 @@ class DownloadManager(
 			.get()
 			.build()
 		val call = okHttp.newCall(request)
-		var attempts = MAX_DOWNLOAD_ATTEMPTS
 		val file = File(destination, tempFileName)
-		while (true) {
-			try {
-				val response = call.clone().await()
-				runInterruptible(Dispatchers.IO) {
-					file.outputStream().use { out ->
-						checkNotNull(response.body).byteStream().copyTo(out)
-					}
-				}
-				return file
-			} catch (e: IOException) {
-				attempts--
-				if (attempts <= 0) {
-					throw e
-				} else {
-					delay(DOWNLOAD_ERROR_DELAY)
-				}
+		val response = call.clone().await()
+		runInterruptible(Dispatchers.IO) {
+			file.outputStream().use { out ->
+				checkNotNull(response.body).byteStream().copyTo(out)
 			}
 		}
+		return file
 	}
 
 	private fun errorStateHandler(outState: MutableStateFlow<DownloadState>) =
