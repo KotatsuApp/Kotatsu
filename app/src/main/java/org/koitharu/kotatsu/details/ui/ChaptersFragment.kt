@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -67,8 +66,8 @@ class ChaptersFragment :
 		viewModel.isChaptersReversed.observe(viewLifecycleOwner) {
 			activity?.invalidateOptionsMenu()
 		}
-		viewModel.hasChapters.observe(viewLifecycleOwner) {
-			binding.textViewHolder.isGone = it
+		viewModel.isChaptersEmpty.observe(viewLifecycleOwner) {
+			binding.textViewHolder.isVisible = it
 			activity?.invalidateOptionsMenu()
 		}
 	}
@@ -94,7 +93,7 @@ class ChaptersFragment :
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		super.onPrepareOptionsMenu(menu)
 		menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
-		menu.findItem(R.id.action_search).isVisible = viewModel.hasChapters.value == true
+		menu.findItem(R.id.action_search).isVisible = viewModel.isChaptersEmpty.value == false
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

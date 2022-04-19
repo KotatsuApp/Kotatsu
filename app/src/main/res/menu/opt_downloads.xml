@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:icon="@drawable/ic_pause"
+		android:id="@+id/action_pause"
+		android:title="Pause"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
+		android:icon="@drawable/ic_resume"
+		android:id="@+id/action_resume"
+		android:title="Resume"
+		app:showAsAction="ifRoom|withText" />
+
+</menu>

@@ -4,7 +4,6 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -29,7 +28,9 @@ import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.iterator
+import java.io.IOException
 
 class DetailsViewModel(
 	private val intent: MangaIntent,
@@ -89,18 +90,18 @@ class DetailsViewModel(
 
 	val branches = mangaData.map {
 		it?.chapters?.mapToSet { x -> x.branch }?.sortedBy { x -> x }.orEmpty()
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val selectedBranchIndex = combine(
 		branches.asFlow(),
 		selectedBranch
 	) { branches, selected ->
 		branches.indexOf(selected)
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
-	val hasChapters = mangaData.map {
-		!(it?.chapters.isNullOrEmpty())
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	val isChaptersEmpty = mangaData.mapNotNull { m ->
+		m?.run { chapters.isNullOrEmpty() }
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	val chapters = combine(
 		combine(
