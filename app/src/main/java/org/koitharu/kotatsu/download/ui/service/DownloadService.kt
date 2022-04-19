@@ -49,13 +49,8 @@ class DownloadService : BaseService() {
 		notificationSwitcher = ForegroundNotificationSwitcher(this)
 		val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
-		downloadManager = DownloadManager(
+		downloadManager = get<DownloadManager.Factory>().create(
 			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1)),
-			context = this,
-			imageLoader = get(),
-			okHttp = get(),
-			cache = get(),
-			localMangaRepository = get(),
 		)
 		DownloadNotification.createChannel(this)
 		registerReceiver(controlReceiver, IntentFilter(ACTION_DOWNLOAD_CANCEL))

@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.CbzMangaOutput
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
@@ -30,8 +31,8 @@ import org.koitharu.kotatsu.utils.progress.ProgressJob
 import java.io.File
 
 private const val MAX_DOWNLOAD_ATTEMPTS = 3
-private const val MAX_PARALLEL_DOWNLOADS = 2
 private const val DOWNLOAD_ERROR_DELAY = 500L
+private const val SLOWDOWN_DELAY = 200L
 
 class DownloadManager(
 	private val coroutineScope: CoroutineScope,
@@ -40,9 +41,10 @@ class DownloadManager(
 	private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
 	private val localMangaRepository: LocalMangaRepository,
+	private val settings: AppSettings,
 ) {
 
-	private val connectivityManager = context.applicationContext.getSystemService(
+	private val connectivityManager = context.getSystemService(
 		Context.CONNECTIVITY_SERVICE
 	) as ConnectivityManager
 	private val coverWidth = context.resources.getDimensionPixelSize(
@@ -51,7 +53,7 @@ class DownloadManager(
 	private val coverHeight = context.resources.getDimensionPixelSize(
 		androidx.core.R.dimen.compat_notification_large_icon_max_height
 	)
-	private val semaphore = Semaphore(MAX_PARALLEL_DOWNLOADS)
+	private val semaphore = Semaphore(settings.downloadsParallelism)
 
 	fun downloadManga(
 		manga: Manga,
@@ -141,6 +143,10 @@ class DownloadManager(
 						totalPages = pages.size,
 						currentPage = pageIndex,
 					)
+
+					if (settings.isDownloadsSlowdownEnabled) {
+						delay(SLOWDOWN_DELAY)
+					}
 				}
 			}
 			outState.value = DownloadState.PostProcessing(startId, data, cover)
@@ -206,4 +212,24 @@ class DownloadManager(
 				error = throwable,
 			)
 		}
+
+	class Factory(
+		private val context: Context,
+		private val imageLoader: ImageLoader,
+		private val okHttp: OkHttpClient,
+		private val cache: PagesCache,
+		private val localMangaRepository: LocalMangaRepository,
+		private val settings: AppSettings,
+	) {
+
+		fun create(coroutineScope: CoroutineScope) = DownloadManager(
+			coroutineScope = coroutineScope,
+			context = context,
+			imageLoader = imageLoader,
+			okHttp = okHttp,
+			cache = cache,
+			localMangaRepository = localMangaRepository,
+			settings = settings,
+		)
+	}
 }

@@ -271,4 +271,7 @@
 	<string name="text_delete_local_manga_batch">Удалить выбранную мангу с накопителя?</string>
 	<string name="removal_completed">Удаление завершено</string>
 	<string name="batch_manga_save_confirm">Загрузить выбранную мангу со всеми главами? Это может привести к большому расходу трафика и места на накопителе</string>
+	<string name="parallel_downloads">Загружать параллельно</string>
+	<string name="download_slowdown">Замедление загрузки</string>
+	<string name="download_slowdown_summary">Помогает избежать блокировки IP-адреса</string>
 </resources>

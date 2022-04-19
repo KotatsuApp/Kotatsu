@@ -274,4 +274,7 @@
 	<string name="text_delete_local_manga_batch">Delete selected items from device permanently?</string>
 	<string name="removal_completed">Removal completed</string>
 	<string name="batch_manga_save_confirm">Are you sure you want to download all selected manga with all its chapters? This action can consume a lot of traffic and storage</string>
+	<string name="parallel_downloads">Parallel downloads</string>
+	<string name="download_slowdown">Download slowdown</string>
+	<string name="download_slowdown_summary">Helps avoid blocking your IP address</string>
 </resources>

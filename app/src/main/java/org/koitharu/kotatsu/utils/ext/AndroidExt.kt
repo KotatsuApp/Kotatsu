@@ -17,6 +17,7 @@ suspend fun ConnectivityManager.waitForNetwork(): Network {
 	return suspendCancellableCoroutine { cont ->
 		val callback = object : ConnectivityManager.NetworkCallback() {
 			override fun onAvailable(network: Network) {
+				unregisterNetworkCallback(this)
 				if (cont.isActive) {
 					cont.resume(network)
 				}

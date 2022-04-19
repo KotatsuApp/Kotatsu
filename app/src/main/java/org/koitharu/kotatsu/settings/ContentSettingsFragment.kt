@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.preference.Preference
-import java.io.File
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
@@ -13,8 +12,10 @@ import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import java.io.File
 
 class ContentSettingsFragment :
 	BasePreferenceFragment(R.string.content),
@@ -29,6 +30,13 @@ class ContentSettingsFragment :
 		findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
 			if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled
 		)
+		findPreference<SliderPreference>(AppSettings.KEY_DOWNLOADS_PARALLELISM)?.run {
+			summary = value.toString()
+			setOnPreferenceChangeListener { preference, newValue ->
+				preference.summary = newValue.toString()
+				true
+			}
+		}
 		bindRemoteSourcesSummary()
 	}
 

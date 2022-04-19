@@ -141,6 +141,12 @@ class AppSettings(context: Context) {
 			}
 		}
 
+	val isDownloadsSlowdownEnabled: Boolean
+		get() = prefs.getBoolean(KEY_DOWNLOADS_SLOWDOWN, false)
+
+	val downloadsParallelism: Int
+		get() = prefs.getInt(KEY_DOWNLOADS_PARALLELISM, 2)
+
 	val isSuggestionsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS, false)
 
@@ -261,6 +267,8 @@ class AppSettings(context: Context) {
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
 		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
+		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
+		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
