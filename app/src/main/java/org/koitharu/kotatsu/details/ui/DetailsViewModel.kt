@@ -4,6 +4,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -29,7 +30,6 @@ import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.iterator
-import java.io.IOException
 
 class DetailsViewModel(
 	private val intent: MangaIntent,
@@ -185,9 +185,13 @@ class DetailsViewModel(
 	}
 
 	fun deleteChapters(ids: Set<Long>) {
+		val m = mangaData.value ?: return
+		if (m.chapters?.size == ids.size) {
+			deleteLocal(m)
+			return
+		}
 		launchLoadingJob {
-			val manga = checkNotNull(mangaData.value)
-			localMangaRepository.deleteChapters(manga, ids)
+			localMangaRepository.deleteChapters(m, ids)
 			reload()
 			onChaptersRemoved.call(ids.size)
 		}
