@@ -82,7 +82,6 @@ class DetailsActivity :
 		viewModel.manga.observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
-		viewModel.onChaptersRemoved.observe(this, ::onChaptersRemoved)
 		viewModel.onError.observe(this, ::onError)
 
 		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
@@ -104,10 +103,6 @@ class DetailsActivity :
 			Toast.LENGTH_SHORT
 		).show()
 		finishAfterTransition()
-	}
-
-	private fun onChaptersRemoved(count: Int) {
-		binding.snackbar.show(getString(R.string.removal_completed))
 	}
 
 	private fun onError(e: Throwable) {
@@ -179,16 +174,15 @@ class DetailsActivity :
 			true
 		}
 		R.id.action_delete -> {
-			viewModel.manga.value?.let { m ->
-				MaterialAlertDialogBuilder(this)
-					.setTitle(R.string.delete_manga)
-					.setMessage(getString(R.string.text_delete_local_manga, m.title))
-					.setPositiveButton(R.string.delete) { _, _ ->
-						viewModel.deleteLocal(m)
-					}
-					.setNegativeButton(android.R.string.cancel, null)
-					.show()
-			}
+			val title = viewModel.manga.value?.title.orEmpty()
+			MaterialAlertDialogBuilder(this)
+				.setTitle(R.string.delete_manga)
+				.setMessage(getString(R.string.text_delete_local_manga, title))
+				.setPositiveButton(R.string.delete) { _, _ ->
+					viewModel.deleteLocal()
+				}
+				.setNegativeButton(android.R.string.cancel, null)
+				.show()
 			true
 		}
 		R.id.action_save -> {

@@ -86,7 +86,6 @@ class DetailsViewModel(
 		.asLiveData(viewModelScope.coroutineContext)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
-	val onChaptersRemoved = SingleLiveEvent<Int>()
 
 	val branches = mangaData.map {
 		it?.chapters?.mapToSet { x -> x.branch }?.sortedBy { x -> x }.orEmpty()
@@ -136,8 +135,11 @@ class DetailsViewModel(
 		loadingJob = doLoad()
 	}
 
-	fun deleteLocal(manga: Manga) {
+	fun deleteLocal() {
+		val m = mangaData.value ?: return
 		launchLoadingJob(Dispatchers.Default) {
+			val manga = if (m.source == MangaSource.LOCAL) m else localMangaRepository.findSavedManga(m)
+			checkNotNull(manga) { "Cannot find saved manga for ${m.title}" }
 			val original = localMangaRepository.getRemoteManga(manga)
 			localMangaRepository.delete(manga) || throw IOException("Unable to delete file")
 			runCatching {
@@ -182,19 +184,6 @@ class DetailsViewModel(
 					}
 				}
 			}
-		}
-	}
-
-	fun deleteChapters(ids: Set<Long>) {
-		val m = mangaData.value ?: return
-		if (m.chapters?.size == ids.size) {
-			deleteLocal(m)
-			return
-		}
-		launchLoadingJob {
-			localMangaRepository.deleteChapters(m, ids)
-			reload()
-			onChaptersRemoved.call(ids.size)
 		}
 	}
 

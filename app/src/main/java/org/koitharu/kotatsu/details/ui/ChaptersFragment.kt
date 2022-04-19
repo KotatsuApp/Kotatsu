@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -21,6 +22,7 @@ import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -160,8 +162,18 @@ class ChaptersFragment :
 			}
 			R.id.action_delete -> {
 				val ids = selectionDecoration?.checkedItemsIds
-				if (!ids.isNullOrEmpty()) {
-					viewModel.deleteChapters(ids.toSet())
+				val manga = viewModel.manga.value
+				when {
+					ids.isNullOrEmpty() || manga == null -> Unit
+					ids.size == manga.chapters?.size -> viewModel.deleteLocal()
+					else -> {
+						LocalChaptersRemoveService.start(requireContext(), manga, ids)
+						Snackbar.make(
+							binding.recyclerViewChapters,
+							R.string.chapters_will_removed_background,
+							Snackbar.LENGTH_LONG
+						).show()
+					}
 				}
 				mode.finish()
 				true

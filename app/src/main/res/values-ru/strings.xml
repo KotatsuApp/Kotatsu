@@ -274,4 +274,6 @@
 	<string name="parallel_downloads">Загружать параллельно</string>
 	<string name="download_slowdown">Замедление загрузки</string>
 	<string name="download_slowdown_summary">Помогает избежать блокировки IP-адреса</string>
+	<string name="local_manga_processing">Обработка сохранённой манги</string>
+	<string name="chapters_will_removed_background">Главы будут удалены в фоновом режиме. Это может занять какое-то время</string>
 </resources>
