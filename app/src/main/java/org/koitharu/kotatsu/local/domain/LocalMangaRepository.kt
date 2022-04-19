@@ -3,12 +3,17 @@ package org.koitharu.kotatsu.local.domain
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.webkit.MimeTypeMap
+import androidx.annotation.WorkerThread
 import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.IOException
+import java.util.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.*
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
@@ -21,11 +26,8 @@ import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.resolveName
-import java.io.File
-import java.io.IOException
-import java.util.*
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
+
+private const val MAX_PARALLELISM = 4
 
 class LocalMangaRepository(private val storageManager: LocalStorageManager) : MangaRepository {
 
@@ -38,11 +40,28 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		tags: Set<MangaTag>?,
 		sortOrder: SortOrder?
 	): List<Manga> {
-		require(offset == 0) {
-			"LocalMangaRepository does not support pagination"
+		if (offset > 0) {
+			return emptyList()
 		}
 		val files = getAllFiles()
-		return files.mapNotNull { x -> runCatching { getFromFile(x) }.getOrNull() }
+		val list = coroutineScope {
+			val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
+			files.map { file ->
+				getFromFileAsync(file, dispatcher)
+			}.awaitAll()
+		}.filterNotNullTo(ArrayList(files.size))
+		if (!query.isNullOrEmpty()) {
+			list.retainAll { x ->
+				x.title.contains(query, ignoreCase = true) ||
+					x.altTitle?.contains(query, ignoreCase = true) == true
+			}
+		}
+		if (!tags.isNullOrEmpty()) {
+			list.retainAll { x ->
+				x.tags.containsAll(tags)
+			}
+		}
+		return list
 	}
 
 	override suspend fun getDetails(manga: Manga) = when {
@@ -99,6 +118,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		CbzMangaOutput.filterChapters(cbz, ids)
 	}
 
+	@WorkerThread
 	@SuppressLint("DefaultLocale")
 	fun getFromFile(file: File): Manga = ZipFile(file).use { zip ->
 		val fileUri = file.toUri().toString()
@@ -189,6 +209,15 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				}
 			}
 			null
+		}
+	}
+
+	private fun CoroutineScope.getFromFileAsync(
+		file: File,
+		context: CoroutineContext,
+	): Deferred<Manga?> = async(context) {
+		runInterruptible {
+			runCatching { getFromFile(file) }.getOrNull()
 		}
 	}
 
