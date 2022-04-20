@@ -6,7 +6,7 @@ import coil.request.Disposable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.databinding.ItemTracklogBinding
+import org.koitharu.kotatsu.databinding.ItemFeedBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.ui.model.FeedItem
@@ -17,8 +17,8 @@ fun feedItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>
-) = adapterDelegateViewBinding<FeedItem, ListModel, ItemTracklogBinding>(
-	{ inflater, parent -> ItemTracklogBinding.inflate(inflater, parent, false) }
+) = adapterDelegateViewBinding<FeedItem, ListModel, ItemFeedBinding>(
+	{ inflater, parent -> ItemFeedBinding.inflate(inflater, parent, false) }
 ) {
 
 	var imageRequest: Disposable? = null
