@@ -3,16 +3,18 @@ package org.koitharu.kotatsu.local.ui
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
@@ -21,6 +23,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.progress.Progress
+import java.io.IOException
 
 class LocalListViewModel(
 	private val repository: LocalMangaRepository,
@@ -64,6 +67,7 @@ class LocalListViewModel(
 
 	init {
 		onRefresh()
+		cleanup()
 	}
 
 	override fun onRefresh() {
@@ -114,6 +118,20 @@ class LocalListViewModel(
 			mangaList.value = repository.getList(0)
 		} catch (e: Throwable) {
 			listError.value = e
+		}
+	}
+
+	private fun cleanup() {
+		if (!DownloadService.isRunning) {
+			viewModelScope.launch {
+				runCatching {
+					repository.cleanup()
+				}.onFailure { error ->
+					if (BuildConfig.DEBUG) {
+						error.printStackTrace()
+					}
+				}
+			}
 		}
 	}
 }

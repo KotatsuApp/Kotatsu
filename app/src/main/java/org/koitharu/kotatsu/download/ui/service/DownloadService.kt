@@ -44,6 +44,7 @@ class DownloadService : BaseService() {
 
 	override fun onCreate() {
 		super.onCreate()
+		isRunning = true
 		notificationSwitcher = ForegroundNotificationSwitcher(this)
 		val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
@@ -81,6 +82,7 @@ class DownloadService : BaseService() {
 	override fun onDestroy() {
 		unregisterReceiver(controlReceiver)
 		binder = null
+		isRunning = false
 		super.onDestroy()
 	}
 
@@ -162,11 +164,12 @@ class DownloadService : BaseService() {
 
 	companion object {
 
-		const val ACTION_DOWNLOAD_COMPLETE =
-			"${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_COMPLETE"
+		var isRunning: Boolean = false
+			private set
 
-		private const val ACTION_DOWNLOAD_CANCEL =
-			"${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"
+		const val ACTION_DOWNLOAD_COMPLETE = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_COMPLETE"
+
+		private const val ACTION_DOWNLOAD_CANCEL = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"
 
 		private const val EXTRA_MANGA = "manga"
 		private const val EXTRA_CHAPTERS_IDS = "chapters_ids"
