@@ -4,10 +4,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import kotlin.jvm.internal.Intrinsics
+import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.adapter.*
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.tracker.ui.model.FeedItem
+import kotlin.jvm.internal.Intrinsics
 
 class FeedAdapter(
 	coil: ImageLoader,
@@ -24,6 +25,7 @@ class FeedAdapter(
 			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(listener))
 			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(listener))
 			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
+			.addDelegate(ITEM_TYPE_DATE_HEADER, relatedDateItemAD())
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {
@@ -31,6 +33,9 @@ class FeedAdapter(
 		override fun areItemsTheSame(oldItem: ListModel, newItem: ListModel) = when {
 			oldItem is FeedItem && newItem is FeedItem -> {
 				oldItem.id == newItem.id
+			}
+			oldItem is DateTimeAgo && newItem is DateTimeAgo -> {
+				oldItem == newItem
 			}
 			else -> oldItem.javaClass == newItem.javaClass
 		}
@@ -49,5 +54,6 @@ class FeedAdapter(
 		const val ITEM_TYPE_ERROR_FOOTER = 4
 		const val ITEM_TYPE_EMPTY = 5
 		const val ITEM_TYPE_HEADER = 6
+		const val ITEM_TYPE_DATE_HEADER = 7
 	}
 }

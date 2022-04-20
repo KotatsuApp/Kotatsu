@@ -12,7 +12,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.ui.model.FeedItem
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.textAndVisible
 
 fun feedItemAD(
 	coil: ImageLoader,
@@ -38,13 +37,11 @@ fun feedItemAD(
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 		binding.textViewTitle.text = item.title
-		binding.badge.text = item.subtitle
-		binding.textViewChapters.text = item.chapters
-		binding.textViewTruncated.textAndVisible = if (item.truncated > 0) {
-			getString(R.string._and_x_more, item.truncated)
-		} else {
-			null
-		}
+		binding.textViewSummary.text = context.resources.getQuantityString(
+			R.plurals.new_chapters,
+			item.count,
+			item.count,
+		)
 	}
 
 	onViewRecycled {

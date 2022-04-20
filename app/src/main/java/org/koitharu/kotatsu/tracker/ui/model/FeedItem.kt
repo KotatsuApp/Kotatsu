@@ -7,8 +7,6 @@ data class FeedItem(
 	val id: Long,
 	val imageUrl: String,
 	val title: String,
-	val subtitle: String,
-	val chapters: CharSequence,
 	val manga: Manga,
-	val truncated: Int,
+	val count: Int,
 ) : ListModel

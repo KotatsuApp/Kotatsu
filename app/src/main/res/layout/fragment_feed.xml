@@ -14,4 +14,4 @@
 	android:paddingBottom="@dimen/grid_spacing_outer"
 	app:fastScrollEnabled="true"
 	app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-	tools:listitem="@layout/item_tracklog" />
+	tools:listitem="@layout/item_feed" />
