@@ -19,17 +19,20 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
+class PagesThumbnailsSheet :
+	BaseBottomSheet<SheetPagesBinding>(),
 	OnListItemClickListener<MangaPage> {
 
 	private lateinit var thumbnails: List<PageThumbnail>
 	private val spanResolver = MangaListSpanResolver()
 	private var currentPageIndex = -1
+	private var pageLoader: PageLoader? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -75,11 +78,11 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 				SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
 			)
 			adapter = PageThumbnailAdapter(
-				thumbnails,
-				get(),
-				viewLifecycleScope,
-				get(),
-				this@PagesThumbnailsSheet
+				dataSet = thumbnails,
+				coil = get(),
+				scope = viewLifecycleScope,
+				loader = PageLoader().also { pageLoader = it },
+				clickListener = this@PagesThumbnailsSheet
 			)
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver.setGridSize(get<AppSettings>().gridSize / 100f, this)
@@ -90,9 +93,17 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 		}
 	}
 
+	override fun onDestroyView() {
+		super.onDestroyView()
+		pageLoader?.close()
+		pageLoader = null
+	}
+
 	override fun onItemClick(item: MangaPage, view: View) {
-		((parentFragment as? OnPageSelectListener)
-			?: (activity as? OnPageSelectListener))?.run {
+		(
+			(parentFragment as? OnPageSelectListener)
+				?: (activity as? OnPageSelectListener)
+			)?.run {
 			onPageSelected(item)
 			dismiss()
 		}
@@ -127,6 +138,5 @@ class PagesThumbnailsSheet : BaseBottomSheet<SheetPagesBinding>(),
 				putString(ARG_TITLE, title)
 				putInt(ARG_CURRENT, currentPage)
 			}.show(fm, TAG)
-
 	}
 }
