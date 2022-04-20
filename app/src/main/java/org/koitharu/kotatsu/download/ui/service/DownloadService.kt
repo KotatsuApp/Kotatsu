@@ -11,10 +11,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.transformWhile
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koin.android.ext.android.get
@@ -32,6 +29,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.throttle
 import org.koitharu.kotatsu.utils.progress.ProgressJob
+import org.koitharu.kotatsu.utils.progress.TimeLeftEstimator
 import java.util.concurrent.TimeUnit
 
 class DownloadService : BaseService() {
@@ -99,13 +97,22 @@ class DownloadService : BaseService() {
 	private fun listenJob(job: ProgressJob<DownloadState>) {
 		lifecycleScope.launch {
 			val startId = job.progressValue.startId
+			val timeLeftEstimator = TimeLeftEstimator()
 			val notification = DownloadNotification(this@DownloadService, startId)
-			notificationSwitcher.notify(startId, notification.create(job.progressValue))
+			notificationSwitcher.notify(startId, notification.create(job.progressValue, -1L))
 			job.progressAsFlow()
+				.onEach { state ->
+					if (state is DownloadState.Progress) {
+						timeLeftEstimator.tick(value = state.progress, total = state.max)
+					} else {
+						timeLeftEstimator.emptyTick()
+					}
+				}
 				.throttle { state -> if (state is DownloadState.Progress) 400L else 0L }
 				.whileActive()
 				.collect { state ->
-					notificationSwitcher.notify(startId, notification.create(state))
+					val timeLeft = timeLeftEstimator.getEstimatedTimeLeft()
+					notificationSwitcher.notify(startId, notification.create(state, timeLeft))
 				}
 			job.join()
 			(job.progressValue as? DownloadState.Done)?.let {
@@ -119,7 +126,7 @@ class DownloadService : BaseService() {
 				if (job.isCancelled) {
 					null
 				} else {
-					notification.create(job.progressValue)
+					notification.create(job.progressValue, -1L)
 				}
 			)
 			stopSelf(startId)
