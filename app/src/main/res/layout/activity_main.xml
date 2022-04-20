@@ -54,9 +54,8 @@
 						android:background="@null"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
-						android:imeOptions="actionSearch|flagNoFullscreen"
+						android:imeOptions="actionSearch"
 						android:importantForAutofill="no"
-						android:inputType="textShortMessage"
 						android:paddingBottom="1dp"
 						android:singleLine="true"
 						tools:drawableEnd="@drawable/abc_ic_clear_material" />
