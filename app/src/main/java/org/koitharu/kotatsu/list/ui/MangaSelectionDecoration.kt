@@ -51,7 +51,7 @@ class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDecorati
 		bounds: RectF,
 		state: RecyclerView.State,
 	) {
-		val radius = (child as? CardView)?.radius ?: 0f
+		val radius = (child as? CardView)?.radius ?: 32f
 		paint.color = fillColor
 		paint.style = Paint.Style.FILL
 		canvas.drawRoundRect(bounds, radius, radius, paint)

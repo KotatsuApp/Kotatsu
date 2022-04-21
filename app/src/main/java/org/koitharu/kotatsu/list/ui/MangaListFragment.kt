@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.base.ui.list.FitHeightGridLayoutManager
 import org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
@@ -243,8 +244,11 @@ abstract class MangaListFragment :
 				ListMode.LIST -> {
 					layoutManager = FitHeightLinearLayoutManager(context)
 					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-					addItemDecoration(SpacingItemDecoration(spacing))
-					updatePadding(left = spacing, right = spacing)
+					val decoration = TypedSpacingItemDecoration(
+						MangaListAdapter.ITEM_TYPE_MANGA_LIST to 0,
+						fallbackSpacing = spacing
+					)
+					addItemDecoration(decoration)
 				}
 				ListMode.DETAILED_LIST -> {
 					layoutManager = FitHeightLinearLayoutManager(context)
