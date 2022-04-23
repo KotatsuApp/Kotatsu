@@ -1,55 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="@dimen/manga_list_item_height"
-	app:cardCornerRadius="12dp">
+	android:layout_height="wrap_content"
+	android:background="@drawable/list_selector"
+	android:clipChildren="false"
+	android:padding="@dimen/list_spacing">
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="horizontal">
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/imageView_cover"
+		android:layout_width="42dp"
+		android:layout_height="0dp"
+		android:scaleType="centerCrop"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintDimensionRatio="h,1:1"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		tools:src="@tools:sample/backgrounds/scenic" />
 
-		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
-			android:id="@+id/imageView_cover"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:orientation="vertical"
-			android:scaleType="centerCrop"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-			tools:src="@tools:sample/backgrounds/scenic" />
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:ellipsize="end"
+		android:maxLines="1"
+		android:textAppearance="?attr/textAppearanceBodyMedium"
+		app:layout_constraintBottom_toTopOf="@+id/textView_subtitle"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+		app:layout_constraintTop_toTopOf="@+id/imageView_cover"
+		tools:text="Title" />
 
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_vertical"
-			android:orientation="vertical"
-			android:paddingStart="20dp"
-			android:paddingEnd="16dp">
+	<TextView
+		android:id="@+id/textView_subtitle"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:ellipsize="end"
+		android:maxLines="1"
+		android:textAppearance="?attr/textAppearanceBodySmall"
+		app:layout_constraintBottom_toBottomOf="@+id/imageView_cover"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+		app:layout_constraintTop_toBottomOf="@+id/textView_title"
+		tools:text="Description" />
 
-			<TextView
-				android:id="@+id/textView_title"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:ellipsize="end"
-				android:maxLines="2"
-				android:textAppearance="?attr/textAppearanceBodyLarge"
-				tools:text="@tools:sample/lorem/random" />
-
-			<TextView
-				android:id="@+id/textView_subtitle"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:ellipsize="end"
-				android:maxLines="1"
-				android:textAppearance="?attr/textAppearanceBodyMedium"
-				android:textColor="?android:textColorSecondary"
-				tools:text="@tools:sample/lorem/random" />
-
-		</LinearLayout>
-
-	</LinearLayout>
-
-</com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

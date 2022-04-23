@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
+import org.koitharu.kotatsu.utils.ext.resolveDp
 import java.util.*
 
 class FavouritesContainerFragment :
@@ -85,7 +86,7 @@ class FavouritesContainerFragment :
 			top = headerHeight - insets.top
 		)
 		binding.pager.updatePadding(
-			top = -headerHeight
+			top = -headerHeight + resources.resolveDp(8) // 8 dp is needed so that the top of the list is not attached to tabs (visible when ActionMode is active)
 		)
 		binding.tabs.apply {
 			updatePadding(

@@ -7,6 +7,10 @@ import java.util.*
 class CbzFilter : FilenameFilter {
 
 	override fun accept(dir: File, name: String): Boolean {
+		return isFileSupported(name)
+	}
+
+	fun isFileSupported(name: String): Boolean {
 		val ext = name.substringAfterLast('.', "").lowercase(Locale.ROOT)
 		return ext == "cbz" || ext == "zip"
 	}

@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
+import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -49,7 +50,7 @@ class DownloadNotification(private val context: Context, startId: Int) {
 		builder.setSilent(true)
 	}
 
-	fun create(state: DownloadState): Notification {
+	fun create(state: DownloadState, timeLeft: Long): Notification {
 		builder.setContentTitle(state.manga.title)
 		builder.setContentText(context.getString(R.string.manga_downloading_))
 		builder.setProgress(1, 0, true)
@@ -117,7 +118,13 @@ class DownloadNotification(private val context: Context, startId: Int) {
 			}
 			is DownloadState.Progress -> {
 				builder.setProgress(state.max, state.progress, false)
-				builder.setContentText((state.percent * 100).format() + "%")
+				if (timeLeft > 0L) {
+					val eta = DateUtils.getRelativeTimeSpanString(timeLeft, 0L, DateUtils.SECOND_IN_MILLIS)
+					builder.setContentText(eta)
+				} else {
+					val percent = (state.percent * 100).format()
+					builder.setContentText(context.getString(R.string.percent_string_pattern, percent))
+				}
 				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 				builder.setStyle(null)
 				builder.setOngoing(true)

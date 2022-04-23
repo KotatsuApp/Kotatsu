@@ -34,7 +34,7 @@ class AppProtectHelper(private val settings: AppSettings) : Application.Activity
 	override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
 
 	override fun onActivityDestroyed(activity: Activity) {
-		if (activity !is ProtectActivity && activity.isTaskRoot) {
+		if (activity !is ProtectActivity && activity.isFinishing && activity.isTaskRoot) {
 			restoreLock()
 		}
 	}

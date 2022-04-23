@@ -102,6 +102,7 @@
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
 			android:foregroundServiceType="dataSync" />
+		<service android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService" />
 		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />

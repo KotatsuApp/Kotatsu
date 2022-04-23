@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.iterator
 import java.io.IOException
 
@@ -88,18 +89,18 @@ class DetailsViewModel(
 
 	val branches = mangaData.map {
 		it?.chapters?.mapToSet { x -> x.branch }?.sortedBy { x -> x }.orEmpty()
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val selectedBranchIndex = combine(
 		branches.asFlow(),
 		selectedBranch
 	) { branches, selected ->
 		branches.indexOf(selected)
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
-	val hasChapters = mangaData.map {
-		!(it?.chapters.isNullOrEmpty())
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	val isChaptersEmpty = mangaData.mapNotNull { m ->
+		m?.run { chapters.isNullOrEmpty() }
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	val chapters = combine(
 		combine(
@@ -134,8 +135,11 @@ class DetailsViewModel(
 		loadingJob = doLoad()
 	}
 
-	fun deleteLocal(manga: Manga) {
+	fun deleteLocal() {
+		val m = mangaData.value ?: return
 		launchLoadingJob(Dispatchers.Default) {
+			val manga = if (m.source == MangaSource.LOCAL) m else localMangaRepository.findSavedManga(m)
+			checkNotNull(manga) { "Cannot find saved manga for ${m.title}" }
 			val original = localMangaRepository.getRemoteManga(manga)
 			localMangaRepository.delete(manga) || throw IOException("Unable to delete file")
 			runCatching {
@@ -252,10 +256,10 @@ class DetailsViewModel(
 		val dateFormat = settings.getDateFormat()
 		for (i in sourceChapters.indices) {
 			val chapter = sourceChapters[i]
+			val localChapter = chaptersMap.remove(chapter.id)
 			if (chapter.branch != branch) {
 				continue
 			}
-			val localChapter = chaptersMap.remove(chapter.id)
 			result += localChapter?.toListItem(
 				isCurrent = i == currentIndex,
 				isUnread = i > currentIndex,
@@ -274,15 +278,19 @@ class DetailsViewModel(
 		}
 		if (chaptersMap.isNotEmpty()) { // some chapters on device but not online source
 			result.ensureCapacity(result.size + chaptersMap.size)
-			chaptersMap.values.mapTo(result) {
-				it.toListItem(
-					isCurrent = false,
-					isUnread = true,
-					isNew = false,
-					isMissing = false,
-					isDownloaded = false,
-					dateFormat = dateFormat,
-				)
+			chaptersMap.values.mapNotNullTo(result) {
+				if (it.branch == branch) {
+					it.toListItem(
+						isCurrent = false,
+						isUnread = true,
+						isNew = false,
+						isMissing = false,
+						isDownloaded = false,
+						dateFormat = dateFormat,
+					)
+				} else {
+					null
+				}
 			}
 			result.sortBy { it.chapter.number }
 		}

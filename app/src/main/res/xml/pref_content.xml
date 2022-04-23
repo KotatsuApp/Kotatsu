@@ -8,16 +8,31 @@
 		android:key="remote_sources"
 		android:title="@string/remote_sources" />
 
-	<Preference
-		android:key="local_storage"
-		android:persistent="false"
-		android:title="@string/manga_save_location" />
-
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.SuggestionsSettingsFragment"
 		android:key="suggestions"
 		android:persistent="false"
 		android:title="@string/suggestions" />
+
+	<Preference
+		android:key="local_storage"
+		android:persistent="false"
+		android:title="@string/manga_save_location"
+		app:allowDividerAbove="true" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="downloads_slowdown"
+		android:summary="@string/download_slowdown_summary"
+		android:title="@string/download_slowdown" />
+
+	<org.koitharu.kotatsu.settings.utils.SliderPreference
+		android:key="downloads_parallelism"
+		android:stepSize="1"
+		android:title="@string/parallel_downloads"
+		android:valueFrom="1"
+		android:valueTo="5"
+		app:defaultValue="2" />
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"

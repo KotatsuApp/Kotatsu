@@ -13,7 +13,10 @@
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		android:padding="@dimen/grid_spacing_outer"
+		android:paddingLeft="@dimen/list_spacing"
+		android:paddingRight="@dimen/list_spacing"
+		android:paddingTop="@dimen/grid_spacing_outer"
+		android:paddingBottom="@dimen/grid_spacing_outer"
 		app:fastScrollEnabled="true"
 		tools:layoutManager="org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager"
 		tools:listitem="@layout/item_manga_list" />
