@@ -11,10 +11,11 @@ import android.view.MenuItem
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import com.google.android.material.R as materialR
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
-import com.google.android.material.R as materialR
 
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
@@ -28,6 +29,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		}
 		with(binding.webView.settings) {
 			javaScriptEnabled = true
+			userAgentString = UserAgentInterceptor.userAgent
 		}
 		binding.webView.webViewClient = BrowserClient(this)
 		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)
