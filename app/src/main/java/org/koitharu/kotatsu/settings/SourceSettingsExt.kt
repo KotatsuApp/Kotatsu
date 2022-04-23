@@ -1,15 +1,15 @@
 package org.koitharu.kotatsu.settings
 
 import android.view.inputmethod.EditorInfo
-import androidx.preference.*
+import androidx.preference.EditTextPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.config.ConfigKey
+import org.koitharu.kotatsu.settings.utils.AutoCompleteTextViewPreference
 import org.koitharu.kotatsu.settings.utils.EditTextBindListener
 import org.koitharu.kotatsu.settings.utils.EditTextDefaultSummaryProvider
-import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
-
-private const val KEY_DOMAIN = "domain"
 
 fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMangaRepository) {
 	val configKeys = repository.getConfigKeys()
@@ -19,23 +19,17 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 			is ConfigKey.Domain -> {
 				val presetValues = key.presetValues
 				if (presetValues.isNullOrEmpty()) {
-					EditTextPreference(requireContext()).apply {
-						summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
-						setOnBindEditTextListener(
-							EditTextBindListener(
-								inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_URI,
-								hint = key.defaultValue,
-							)
-						)
-					}
+					EditTextPreference(requireContext())
 				} else {
-					DropDownPreference(requireContext()).apply {
-						entries = presetValues
-						entryValues = entries
-						summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
-						setDefaultValueCompat(key.defaultValue)
-					}
+					AutoCompleteTextViewPreference(requireContext()).apply { entries = presetValues }
 				}.apply {
+					summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
+					setOnBindEditTextListener(
+						EditTextBindListener(
+							inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_URI,
+							hint = key.defaultValue,
+						)
+					)
 					setTitle(R.string.domain)
 					setDialogTitle(R.string.domain)
 				}

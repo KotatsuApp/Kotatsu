@@ -156,4 +156,8 @@
 		<item name="android:dialogLayout">@layout/preference_dialog_multiautocompletetextview</item>
 	</style>
 
+	<style name="Preference.AutoCompleteTextView" parent="Preference.DialogPreference.EditTextPreference.Material">
+		<item name="android:dialogLayout">@layout/preference_dialog_autocompletetextview</item>
+	</style>
+
 </resources>

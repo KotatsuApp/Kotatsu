@@ -3,6 +3,7 @@
 
 	<attr name="sliderPreferenceStyle" />
 	<attr name="multiAutoCompleteTextViewPreferenceStyle" />
+	<attr name="autoCompleteTextViewPreferenceStyle" />
 	<attr name="listItemTextViewStyle" />
 
 	<declare-styleable name="Theme">
