@@ -28,6 +28,7 @@ class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDecorati
 		ColorUtils.blendARGB(strokeColor, context.getThemeColor(materialR.attr.colorSurface), 0.8f),
 		0x74
 	)
+	private val defaultRadius = context.resources.getDimension(R.dimen.list_selector_corner)
 
 	init {
 		hasBackground = false
@@ -51,21 +52,24 @@ class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDecorati
 		bounds: RectF,
 		state: RecyclerView.State,
 	) {
-		val radius = (child as? CardView)?.radius ?: 32f
+		val isCard = child is CardView
+		val radius = (child as? CardView)?.radius ?: defaultRadius
 		paint.color = fillColor
 		paint.style = Paint.Style.FILL
 		canvas.drawRoundRect(bounds, radius, radius, paint)
 		paint.color = strokeColor
 		paint.style = Paint.Style.STROKE
 		canvas.drawRoundRect(bounds, radius, radius, paint)
-		checkIcon?.run {
-			setBounds(
-				(bounds.left + iconOffset).toInt(),
-				(bounds.top + iconOffset).toInt(),
-				(bounds.left + iconOffset + intrinsicWidth).toInt(),
-				(bounds.top + iconOffset + intrinsicHeight).toInt(),
-			)
-			draw(canvas)
+		if (isCard) {
+			checkIcon?.run {
+				setBounds(
+					(bounds.left + iconOffset).toInt(),
+					(bounds.top + iconOffset).toInt(),
+					(bounds.left + iconOffset + intrinsicWidth).toInt(),
+					(bounds.top + iconOffset + intrinsicHeight).toInt(),
+				)
+				draw(canvas)
+			}
 		}
 	}
 }
