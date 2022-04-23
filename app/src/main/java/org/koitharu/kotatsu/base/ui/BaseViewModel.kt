@@ -1,18 +1,18 @@
 package org.koitharu.kotatsu.base.ui
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.base.ui.util.CountedBooleanLiveData
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 
 abstract class BaseViewModel : ViewModel() {
 
 	val onError = SingleLiveEvent<Throwable>()
-	val isLoading = MutableLiveData(false)
+	val isLoading = CountedBooleanLiveData()
 
 	protected fun launchJob(
 		context: CoroutineContext = EmptyCoroutineContext,

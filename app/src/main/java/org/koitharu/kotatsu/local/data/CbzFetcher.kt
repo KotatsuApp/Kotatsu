@@ -9,11 +9,11 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.size.Size
+import java.util.zip.ZipFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okio.buffer
 import okio.source
-import java.util.zip.ZipFile
 
 class CbzFetcher : Fetcher<Uri> {
 

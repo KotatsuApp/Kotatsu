@@ -5,12 +5,8 @@ import android.app.backup.BackupDataInput
 import android.app.backup.BackupDataOutput
 import android.app.backup.FullBackupDataOutput
 import android.os.ParcelFileDescriptor
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.runBlocking
-import org.koitharu.kotatsu.core.backup.BackupArchive
-import org.koitharu.kotatsu.core.backup.BackupEntry
-import org.koitharu.kotatsu.core.backup.BackupRepository
-import org.koitharu.kotatsu.core.backup.RestoreRepository
+import org.koitharu.kotatsu.core.backup.*
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import java.io.*
 
@@ -46,7 +42,7 @@ class AppBackupAgent : BackupAgent() {
 		mode: Long,
 		mtime: Long
 	) {
-		if (destination?.name?.endsWith(".bak") == true) {
+		if (destination?.name?.endsWith(".bk.zip") == true) {
 			restoreBackupFile(data.fileDescriptor, size)
 			destination.delete()
 		} else {
@@ -56,14 +52,14 @@ class AppBackupAgent : BackupAgent() {
 
 	private fun createBackupFile() = runBlocking {
 		val repository = BackupRepository(MangaDatabase.create(applicationContext))
-		val backup = BackupArchive.createNew(this@AppBackupAgent)
-		backup.put(repository.createIndex())
-		backup.put(repository.dumpHistory())
-		backup.put(repository.dumpCategories())
-		backup.put(repository.dumpFavourites())
-		backup.flush()
-		backup.cleanup()
-		backup.file
+		BackupZipOutput(this@AppBackupAgent).use { backup ->
+			backup.put(repository.createIndex())
+			backup.put(repository.dumpHistory())
+			backup.put(repository.dumpCategories())
+			backup.put(repository.dumpFavourites())
+			backup.finish()
+			backup.file
+		}
 	}
 
 	private fun restoreBackupFile(fd: FileDescriptor, size: Long) {
@@ -74,18 +70,15 @@ class AppBackupAgent : BackupAgent() {
 				input.copyLimitedTo(output, size)
 			}
 		}
-		val backup = BackupArchive(tempFile)
+		val backup = BackupZipInput(tempFile)
 		try {
 			runBlocking {
-				backup.unpack()
 				repository.upsertHistory(backup.getEntry(BackupEntry.HISTORY))
 				repository.upsertCategories(backup.getEntry(BackupEntry.CATEGORIES))
 				repository.upsertFavourites(backup.getEntry(BackupEntry.FAVOURITES))
 			}
 		} finally {
-			runBlocking(NonCancellable) {
-				backup.cleanup()
-			}
+			backup.close()
 			tempFile.delete()
 		}
 	}

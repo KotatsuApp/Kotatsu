@@ -137,6 +137,9 @@ class RemoteListViewModel(
 					e.printStackTrace()
 				}
 				listError.value = e
+				if (!mangaList.value.isNullOrEmpty()) {
+					onError.postCall(e)
+				}
 			}
 		}
 	}

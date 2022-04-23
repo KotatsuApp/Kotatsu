@@ -28,14 +28,17 @@ class MangaIndex(source: String?) {
 		json.put("state", manga.state?.name)
 		json.put("source", manga.source.name)
 		json.put("cover_large", manga.largeCoverUrl)
-		json.put("tags", JSONArray().also { a ->
-			for (tag in manga.tags) {
-				val jo = JSONObject()
-				jo.put("key", tag.key)
-				jo.put("title", tag.title)
-				a.put(jo)
+		json.put(
+			"tags",
+			JSONArray().also { a ->
+				for (tag in manga.tags) {
+					val jo = JSONObject()
+					jo.put("key", tag.key)
+					jo.put("title", tag.title)
+					a.put(jo)
+				}
 			}
-		})
+		)
 		if (!append || !json.has("chapters")) {
 			json.put("chapters", JSONObject())
 		}
@@ -84,9 +87,13 @@ class MangaIndex(source: String?) {
 			jo.put("uploadDate", chapter.uploadDate)
 			jo.put("scanlator", chapter.scanlator)
 			jo.put("branch", chapter.branch)
-			jo.put("entries", "%03d\\d{3}".format(chapter.number))
+			jo.put("entries", "%08d_%03d\\d{3}".format(chapter.branch.hashCode(), chapter.number))
 			chapters.put(chapter.id.toString(), jo)
 		}
+	}
+
+	fun removeChapter(id: Long): Boolean {
+		return json.getJSONObject("chapters").remove(id.toString()) != null
 	}
 
 	fun setCoverEntry(name: String) {

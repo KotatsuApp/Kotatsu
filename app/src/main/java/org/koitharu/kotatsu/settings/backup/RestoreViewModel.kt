@@ -3,19 +3,17 @@ package org.koitharu.kotatsu.settings.backup
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
-import java.io.File
-import java.io.FileNotFoundException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.core.backup.BackupArchive
 import org.koitharu.kotatsu.core.backup.BackupEntry
+import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.core.backup.RestoreRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.progress.Progress
+import java.io.File
+import java.io.FileNotFoundException
 
 class RestoreViewModel(
 	uri: Uri?,
@@ -40,10 +38,9 @@ class RestoreViewModel(
 						input.copyTo(output)
 					}
 				}
-				BackupArchive(tempFile)
+				BackupZipInput(tempFile)
 			}
 			try {
-				backup.unpack()
 				val result = CompositeResult()
 
 				progress.value = Progress(0, 3)
@@ -58,10 +55,8 @@ class RestoreViewModel(
 				progress.value = Progress(3, 3)
 				onRestoreDone.call(result)
 			} finally {
-				withContext(NonCancellable) {
-					backup.cleanup()
-					backup.file.delete()
-				}
+				backup.close()
+				backup.file.delete()
 			}
 		}
 	}

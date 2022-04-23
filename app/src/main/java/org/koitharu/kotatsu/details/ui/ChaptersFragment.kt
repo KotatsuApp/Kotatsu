@@ -9,9 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -67,8 +68,8 @@ class ChaptersFragment :
 		viewModel.isChaptersReversed.observe(viewLifecycleOwner) {
 			activity?.invalidateOptionsMenu()
 		}
-		viewModel.hasChapters.observe(viewLifecycleOwner) {
-			binding.textViewHolder.isGone = it
+		viewModel.isChaptersEmpty.observe(viewLifecycleOwner) {
+			binding.textViewHolder.isVisible = it
 			activity?.invalidateOptionsMenu()
 		}
 	}
@@ -94,7 +95,7 @@ class ChaptersFragment :
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		super.onPrepareOptionsMenu(menu)
 		menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
-		menu.findItem(R.id.action_search).isVisible = viewModel.hasChapters.value == true
+		menu.findItem(R.id.action_search).isVisible = viewModel.isChaptersEmpty.value == false
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -154,8 +155,26 @@ class ChaptersFragment :
 				DownloadService.start(
 					context ?: return false,
 					viewModel.getRemoteManga() ?: viewModel.manga.value ?: return false,
-					selectionDecoration?.checkedItemsIds
+					selectionDecoration?.checkedItemsIds?.toSet()
 				)
+				mode.finish()
+				true
+			}
+			R.id.action_delete -> {
+				val ids = selectionDecoration?.checkedItemsIds
+				val manga = viewModel.manga.value
+				when {
+					ids.isNullOrEmpty() || manga == null -> Unit
+					ids.size == manga.chapters?.size -> viewModel.deleteLocal()
+					else -> {
+						LocalChaptersRemoveService.start(requireContext(), manga, ids)
+						Snackbar.make(
+							binding.recyclerViewChapters,
+							R.string.chapters_will_removed_background,
+							Snackbar.LENGTH_LONG
+						).show()
+					}
+				}
 				mode.finish()
 				true
 			}
@@ -186,6 +205,9 @@ class ChaptersFragment :
 		val selectedIds = selectionDecoration?.checkedItemsIds ?: return false
 		val items = chaptersAdapter?.items?.filter { x -> x.chapter.id in selectedIds }.orEmpty()
 		menu.findItem(R.id.action_save).isVisible = items.none { x ->
+			x.chapter.source == MangaSource.LOCAL
+		}
+		menu.findItem(R.id.action_delete).isVisible = items.all { x ->
 			x.chapter.source == MangaSource.LOCAL
 		}
 		mode.title = items.size.toString()

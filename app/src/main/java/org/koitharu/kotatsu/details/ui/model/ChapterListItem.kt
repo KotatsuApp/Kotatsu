@@ -40,10 +40,9 @@ class ChapterListItem(
 	override fun hashCode(): Int {
 		var result = chapter.hashCode()
 		result = 31 * result + flags
-		result = 31 * result + uploadDate.hashCode()
+		result = 31 * result + (uploadDate?.hashCode() ?: 0)
 		return result
 	}
-
 
 	companion object {
 
