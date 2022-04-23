@@ -18,6 +18,7 @@ import java.util.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getEnumValue
@@ -27,6 +28,16 @@ import org.koitharu.kotatsu.utils.ext.toUriOrNull
 class AppSettings(context: Context) {
 
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+
+	private val remoteSources = EnumSet.allOf(MangaSource::class.java).apply {
+		remove(MangaSource.LOCAL)
+		if (!BuildConfig.DEBUG) {
+			remove(MangaSource.DUMMY)
+		}
+	}
+
+	val remoteMangaSources: Set<MangaSource>
+		get() = Collections.unmodifiableSet(remoteSources)
 
 	var listMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.DETAILED_LIST)
@@ -104,10 +115,9 @@ class AppSettings(context: Context) {
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit { if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD) }
 
-	var sourcesOrder: List<Int>
+	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
 			?.split('|')
-			?.mapNotNull(String::toIntOrNull)
 			.orEmpty()
 		set(value) = prefs.edit {
 			putString(KEY_SOURCES_ORDER, value.joinToString("|"))
@@ -178,11 +188,10 @@ class AppSettings(context: Context) {
 	}
 
 	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
-		val list = MangaSource.values().toMutableList()
-		list.remove(MangaSource.LOCAL)
+		val list = remoteSources.toMutableList()
 		val order = sourcesOrder
 		list.sortBy { x ->
-			val e = order.indexOf(x.ordinal)
+			val e = order.indexOf(x.name)
 			if (e == -1) order.size + x.ordinal else e
 		}
 		if (!includeHidden) {
@@ -224,7 +233,7 @@ class AppSettings(context: Context) {
 		const val KEY_DYNAMIC_THEME = "dynamic_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
 		const val KEY_DATE_FORMAT = "date_format"
-		const val KEY_SOURCES_ORDER = "sources_order"
+		const val KEY_SOURCES_ORDER = "sources_order_2"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"
 		const val KEY_PAGES_CACHE_CLEAR = "pages_cache_clear"

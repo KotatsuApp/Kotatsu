@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.settings.onboard
 import androidx.collection.ArraySet
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
+import java.util.*
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -11,17 +12,14 @@ import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.mapToSet
-import java.util.*
 
 class OnboardViewModel(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
-	private val allSources = MangaSource.values().filterNot { x -> x == MangaSource.LOCAL }
+	private val allSources = settings.remoteMangaSources
 
-	private val locales = allSources.mapTo(ArraySet()) {
-			it.locale
-		}
+	private val locales = allSources.mapTo(ArraySet()) { it.locale }
 
 	private val selectedLocales = locales.toMutableSet()
 

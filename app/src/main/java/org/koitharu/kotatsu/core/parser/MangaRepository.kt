@@ -32,7 +32,7 @@ interface MangaRepository {
 			return if (source == MangaSource.LOCAL) {
 				get<LocalMangaRepository>()
 			} else {
-				RemoteMangaRepository(source, get())
+				RemoteMangaRepository(MangaParser(source, get()))
 			}
 		}
 	}

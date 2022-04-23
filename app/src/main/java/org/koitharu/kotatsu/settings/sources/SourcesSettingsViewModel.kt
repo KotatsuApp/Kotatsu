@@ -32,7 +32,7 @@ class SourcesSettingsViewModel(
 		if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isEnabled != true) return false
 		snapshot.move(oldPos, newPos)
 		settings.sourcesOrder = snapshot.mapNotNull {
-			(it as? SourceConfigItem.SourceItem)?.source?.ordinal
+			(it as? SourceConfigItem.SourceItem)?.source?.name
 		}
 		buildList()
 		return true
@@ -111,9 +111,6 @@ class SourcesSettingsViewModel(
 		if (enabledSources?.size != sources.size) {
 			result += SourceConfigItem.Header(R.string.available_sources)
 			for ((key, list) in map) {
-				val locale = if (key != null) {
-					Locale(key)
-				} else null
 				list.sortBy { it.ordinal }
 				val isExpanded = key in expandedGroups
 				result += SourceConfigItem.LocaleGroup(
