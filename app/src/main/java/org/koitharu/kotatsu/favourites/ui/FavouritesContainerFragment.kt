@@ -21,12 +21,11 @@ import org.koitharu.kotatsu.databinding.FragmentFavouritesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
+import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.resolveDp
-import java.util.*
 
 class FavouritesContainerFragment :
 	BaseFragment<FragmentFavouritesBinding>(),
@@ -53,15 +52,15 @@ class FavouritesContainerFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = FavouritesPagerAdapter(this, this)
-		viewModel.categories.value?.let {
-			adapter.replaceData(wrapCategories(it))
+		viewModel.visibleCategories.value?.let {
+			adapter.replaceData(it)
 		}
 		binding.pager.adapter = adapter
 		pagerAdapter = adapter
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
 		actionModeDelegate.addListener(this, viewLifecycleOwner)
 
-		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
+		viewModel.visibleCategories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 	}
 
@@ -86,7 +85,8 @@ class FavouritesContainerFragment :
 			top = headerHeight - insets.top
 		)
 		binding.pager.updatePadding(
-			top = -headerHeight + resources.resolveDp(8) // 8 dp is needed so that the top of the list is not attached to tabs (visible when ActionMode is active)
+			// 8 dp is needed so that the top of the list is not attached to tabs (visible when ActionMode is active)
+			top = -headerHeight + resources.resolveDp(8)
 		)
 		binding.tabs.apply {
 			updatePadding(
@@ -99,8 +99,8 @@ class FavouritesContainerFragment :
 		}
 	}
 
-	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
-		pagerAdapter?.replaceData(wrapCategories(categories))
+	private fun onCategoriesChanged(categories: List<CategoryListModel>) {
+		pagerAdapter?.replaceData(categories)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -122,26 +122,11 @@ class FavouritesContainerFragment :
 		Snackbar.make(binding.pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
 	}
 
-	override fun onTabLongClick(tabView: View, category: FavouriteCategory): Boolean {
-		val menuRes = if (category.id == 0L) R.menu.popup_category_empty else R.menu.popup_category
-		val menu = PopupMenu(tabView.context, tabView)
-		menu.inflate(menuRes)
-		createOrderSubmenu(menu.menu, category)
-		menu.setOnMenuItemClickListener {
-			when (it.itemId) {
-				R.id.action_remove -> editDelegate.deleteCategory(category)
-				R.id.action_rename -> editDelegate.renameCategory(category)
-				R.id.action_create -> editDelegate.createCategory()
-				R.id.action_order -> return@setOnMenuItemClickListener false
-				else -> {
-					val order = CategoriesActivity.SORT_ORDERS.getOrNull(it.order)
-						?: return@setOnMenuItemClickListener false
-					viewModel.setCategoryOrder(category.id, order)
-				}
-			}
-			true
+	override fun onTabLongClick(tabView: View, item: CategoryListModel): Boolean {
+		when (item) {
+			is CategoryListModel.All -> showAllCategoriesMenu(tabView)
+			is CategoryListModel.CategoryItem -> showCategoryMenu(tabView, item.category)
 		}
-		menu.show()
 		return true
 	}
 
@@ -155,13 +140,6 @@ class FavouritesContainerFragment :
 
 	override fun onCreateCategory(name: String) {
 		viewModel.createCategory(name)
-	}
-
-	private fun wrapCategories(categories: List<FavouriteCategory>): List<FavouriteCategory> {
-		val data = ArrayList<FavouriteCategory>(categories.size + 1)
-		data += FavouriteCategory(0L, getString(R.string.all_favourites), -1, SortOrder.NEWEST, Date())
-		data += categories
-		return data
 	}
 
 	private fun createOrderSubmenu(menu: Menu, category: FavouriteCategory) {
@@ -179,6 +157,40 @@ class FavouritesContainerFragment :
 		for (tab in tabStrip.children) {
 			tab.isEnabled = enabled
 		}
+	}
+
+	private fun showCategoryMenu(tabView: View, category: FavouriteCategory) {
+		val menu = PopupMenu(tabView.context, tabView)
+		menu.inflate(R.menu.popup_category)
+		createOrderSubmenu(menu.menu, category)
+		menu.setOnMenuItemClickListener {
+			when (it.itemId) {
+				R.id.action_remove -> editDelegate.deleteCategory(category)
+				R.id.action_rename -> editDelegate.renameCategory(category)
+				R.id.action_create -> editDelegate.createCategory()
+				R.id.action_order -> return@setOnMenuItemClickListener false
+				else -> {
+					val order = CategoriesActivity.SORT_ORDERS.getOrNull(it.order)
+						?: return@setOnMenuItemClickListener false
+					viewModel.setCategoryOrder(category.id, order)
+				}
+			}
+			true
+		}
+		menu.show()
+	}
+
+	private fun showAllCategoriesMenu(tabView: View) {
+		val menu = PopupMenu(tabView.context, tabView)
+		menu.inflate(R.menu.popup_category_all)
+		menu.setOnMenuItemClickListener {
+			when (it.itemId) {
+				R.id.action_create -> editDelegate.createCategory()
+				R.id.action_hide -> viewModel.setAllCategoriesVisible(false)
+			}
+			true
+		}
+		menu.show()
 	}
 
 	companion object {

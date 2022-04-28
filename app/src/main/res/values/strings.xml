@@ -279,4 +279,5 @@
 	<string name="download_slowdown_summary">Helps avoid blocking your IP address</string>
 	<string name="local_manga_processing">Saved manga processing</string>
 	<string name="chapters_will_removed_background">Chapters will be removed in the background. It can take some time</string>
+	<string name="hide">Hide</string>
 </resources>

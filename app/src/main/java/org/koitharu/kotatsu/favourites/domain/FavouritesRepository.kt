@@ -64,7 +64,7 @@ class FavouritesRepository(private val db: MangaDatabase) {
 			createdAt = System.currentTimeMillis(),
 			sortKey = db.favouriteCategoriesDao.getNextSortKey(),
 			categoryId = 0,
-			order = SortOrder.UPDATED.name,
+			order = SortOrder.NEWEST.name,
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
 		return entity.toFavouriteCategory(id)

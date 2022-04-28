@@ -15,7 +15,7 @@ val favouritesModule
 		viewModel { categoryId ->
 			FavouritesListViewModel(categoryId.get(), get(), get(), get())
 		}
-		viewModel { FavouritesCategoriesViewModel(get()) }
+		viewModel { FavouritesCategoriesViewModel(get(), get()) }
 		viewModel { manga ->
 			MangaCategoriesViewModel(manga.get(), get())
 		}

@@ -7,14 +7,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment
 
 class FavouritesPagerAdapter(
 	fragment: Fragment,
 	private val longClickListener: FavouritesTabLongClickListener
 ) : FragmentStateAdapter(fragment.childFragmentManager, fragment.viewLifecycleOwner.lifecycle),
-	TabLayoutMediator.TabConfigurationStrategy, View.OnLongClickListener {
+	TabLayoutMediator.TabConfigurationStrategy,
+	View.OnLongClickListener {
 
 	private val differ = AsyncListDiffer(this, DiffCallback())
 
@@ -35,12 +37,15 @@ class FavouritesPagerAdapter(
 
 	override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
 		val item = differ.currentList[position]
-		tab.text = item.title
+		tab.text = when (item) {
+			is CategoryListModel.All -> tab.view.context.getString(R.string.all_favourites)
+			is CategoryListModel.CategoryItem -> item.category.title
+		}
 		tab.view.tag = item.id
 		tab.view.setOnLongClickListener(this)
 	}
 
-	fun replaceData(data: List<FavouriteCategory>) {
+	fun replaceData(data: List<CategoryListModel>) {
 		differ.submitList(data)
 	}
 
@@ -50,16 +55,22 @@ class FavouritesPagerAdapter(
 		return longClickListener.onTabLongClick(v, item)
 	}
 
-	private class DiffCallback : DiffUtil.ItemCallback<FavouriteCategory>() {
+	private class DiffCallback : DiffUtil.ItemCallback<CategoryListModel>() {
 
 		override fun areItemsTheSame(
-			oldItem: FavouriteCategory,
-			newItem: FavouriteCategory
-		): Boolean = oldItem.id == newItem.id
+			oldItem: CategoryListModel,
+			newItem: CategoryListModel
+		): Boolean = when {
+			oldItem is CategoryListModel.All && newItem is CategoryListModel.All -> true
+			oldItem is CategoryListModel.CategoryItem && newItem is CategoryListModel.CategoryItem -> {
+				oldItem.category.id == newItem.category.id
+			}
+			else -> false
+		}
 
 		override fun areContentsTheSame(
-			oldItem: FavouriteCategory,
-			newItem: FavouriteCategory
-		): Boolean = oldItem.id == newItem.id && oldItem.title == newItem.title
+			oldItem: CategoryListModel,
+			newItem: CategoryListModel
+		): Boolean = oldItem == newItem
 	}
 }

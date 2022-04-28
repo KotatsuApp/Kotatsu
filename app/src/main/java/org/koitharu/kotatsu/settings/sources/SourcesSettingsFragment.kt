@@ -141,10 +141,7 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 			recyclerView: RecyclerView,
 			current: RecyclerView.ViewHolder,
 			target: RecyclerView.ViewHolder,
-		): Boolean = current.itemViewType == target.itemViewType && viewModel.canReorder(
-			current.bindingAdapterPosition,
-			target.bindingAdapterPosition,
-		)
+		): Boolean = current.itemViewType == target.itemViewType
 
 		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
 
