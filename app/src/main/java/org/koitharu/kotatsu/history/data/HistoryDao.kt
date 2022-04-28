@@ -8,9 +8,6 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 @Dao
 abstract class HistoryDao {
 
-	/**
-	 * @hide
-	 */
 	@Transaction
 	@Query("SELECT * FROM history ORDER BY updated_at DESC LIMIT :limit OFFSET :offset")
 	abstract suspend fun findAll(offset: Int, limit: Int): List<HistoryWithManga>

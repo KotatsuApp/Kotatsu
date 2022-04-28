@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="url_github_issues">https://github.com/nv95/Kotatsu/issues</string>
-	<string name="url_discord">https://discord.gg/NNJ5RgVBC5</string>
-	<string name="url_forpda">https://4pda.to/forum/index.php?showtopic=697669</string>
-	<string name="url_weblate">https://hosted.weblate.org/engage/kotatsu</string>
+	<string name="url_github_issues" translatable="false">https://github.com/nv95/Kotatsu/issues</string>
+	<string name="url_discord" translatable="false">https://discord.gg/NNJ5RgVBC5</string>
+	<string name="url_forpda" translatable="false">https://4pda.to/forum/index.php?showtopic=697669</string>
+	<string name="url_weblate" translatable="false">https://hosted.weblate.org/engage/kotatsu</string>
+	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
+	<string name="url_sync_server" translatable="false">http://192.168.0.113:8080</string>
 	<string-array name="values_theme" translatable="false">
 		<item>-1</item>
 		<item>1</item>

@@ -1,14 +1,20 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.content.Context
+import android.content.OperationApplicationException
+import android.content.SyncResult
+import android.database.SQLException
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Build
 import androidx.work.CoroutineWorker
-import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
+import okio.IOException
+import org.json.JSONException
+import org.koitharu.kotatsu.BuildConfig
+import kotlin.coroutines.resume
 
 val Context.connectivityManager: ConnectivityManager
 	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -41,3 +47,13 @@ suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatching {
 	val info = getForegroundInfo()
 	setForeground(info)
 }.isSuccess
+
+fun SyncResult.onError(error: Throwable) {
+	when (error) {
+		is IOException -> stats.numIoExceptions++
+		is OperationApplicationException,
+		is SQLException -> databaseError = true
+		is JSONException -> stats.numParseExceptions++
+		else -> if (BuildConfig.DEBUG) throw error
+	}
+}

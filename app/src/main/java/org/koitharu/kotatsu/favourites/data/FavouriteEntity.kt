@@ -3,10 +3,12 @@ package org.koitharu.kotatsu.favourites.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_FAVOURITES
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 
 @Entity(
-	tableName = "favourites", primaryKeys = ["manga_id", "category_id"], foreignKeys = [
+	tableName = TABLE_FAVOURITES, primaryKeys = ["manga_id", "category_id"],
+	foreignKeys = [
 		ForeignKey(
 			entity = MangaEntity::class,
 			parentColumns = ["manga_id"],

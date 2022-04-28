@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<Preference
+		android:persistent="false"
+		android:summary="Preference stub"
+		android:title="TODO" />
+
+</PreferenceScreen>

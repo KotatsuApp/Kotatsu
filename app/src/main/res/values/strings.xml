@@ -279,4 +279,10 @@
 	<string name="download_slowdown_summary">Helps avoid blocking your IP address</string>
 	<string name="local_manga_processing">Saved manga processing</string>
 	<string name="chapters_will_removed_background">Chapters will be removed in the background. It can take some time</string>
+	<string name="canceled">Canceled</string>
+	<string name="account_already_exists">Account already exists</string>
+	<string name="back">Back</string>
+	<string name="sync">Synchronization</string>
+	<string name="sync_title">Sync your data</string>
+	<string name="email_enter_hint">Enter your email to continue</string>
 </resources>

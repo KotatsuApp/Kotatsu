@@ -3,8 +3,9 @@ package org.koitharu.kotatsu.core.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_MANGA
 
-@Entity(tableName = "manga")
+@Entity(tableName = TABLE_MANGA)
 class MangaEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val id: Long,
