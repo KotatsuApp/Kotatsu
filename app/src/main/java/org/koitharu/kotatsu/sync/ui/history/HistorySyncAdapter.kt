@@ -6,7 +6,7 @@ import android.content.ContentProviderClient
 import android.content.Context
 import android.content.SyncResult
 import android.os.Bundle
-import org.koitharu.kotatsu.sync.domain.SyncRepository
+import org.koitharu.kotatsu.sync.domain.SyncHelper
 import org.koitharu.kotatsu.utils.ext.onError
 
 class HistorySyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context, true) {
@@ -18,10 +18,9 @@ class HistorySyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context
 		provider: ContentProviderClient,
 		syncResult: SyncResult,
 	) {
-		// Debug.waitForDebugger()
-		val repository = SyncRepository(context, account, provider)
+		val syncHelper = SyncHelper(context, account, provider)
 		runCatching {
-			repository.syncHistory(syncResult)
+			syncHelper.syncHistory(syncResult)
 		}.onFailure(syncResult::onError)
 	}
 }

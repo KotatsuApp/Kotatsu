@@ -6,7 +6,7 @@ import android.content.ContentProviderClient
 import android.content.Context
 import android.content.SyncResult
 import android.os.Bundle
-import org.koitharu.kotatsu.sync.domain.SyncRepository
+import org.koitharu.kotatsu.sync.domain.SyncHelper
 import org.koitharu.kotatsu.utils.ext.onError
 
 class FavouritesSyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context, true) {
@@ -18,11 +18,9 @@ class FavouritesSyncAdapter(context: Context) : AbstractThreadedSyncAdapter(cont
 		provider: ContentProviderClient,
 		syncResult: SyncResult,
 	) {
-		// Debug.waitForDebugger()
-		val repository = SyncRepository(context, account, provider)
+		val syncHelper = SyncHelper(context, account, provider)
 		runCatching {
-			repository.syncFavouriteCategories(syncResult)
-			repository.syncFavourites(syncResult)
+			syncHelper.syncFavourites(syncResult)
 		}.onFailure(syncResult::onError)
 	}
 }
