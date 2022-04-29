@@ -55,7 +55,7 @@ class ReaderViewModel(
 	val onPageSaved = SingleLiveEvent<Uri?>()
 	val uiState = combine(
 		mangaData,
-		currentState
+		currentState,
 	) { manga, state ->
 		val chapter = state?.chapterId?.let(chapters::get)
 		ReaderUiState(

@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -20,6 +21,8 @@ import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -81,7 +84,7 @@ class PagesThumbnailsSheet :
 				dataSet = thumbnails,
 				coil = get(),
 				scope = viewLifecycleScope,
-				loader = PageLoader().also { pageLoader = it },
+				loader = getPageLoader(),
 				clickListener = this@PagesThumbnailsSheet
 			)
 			addOnLayoutChangeListener(spanResolver)
@@ -107,6 +110,11 @@ class PagesThumbnailsSheet :
 			onPageSelected(item)
 			dismiss()
 		}
+	}
+
+	private fun getPageLoader(): PageLoader {
+		val viewModel = (activity as? ReaderActivity)?.getViewModel<ReaderViewModel>()
+		return viewModel?.pageLoader ?: PageLoader().also { pageLoader = it }
 	}
 
 	private inner class ToolbarController(toolbar: Toolbar) : BottomSheetToolbarController(toolbar) {
