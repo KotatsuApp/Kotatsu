@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.parsers.util.toCamelCase
 import org.koitharu.kotatsu.utils.AlphanumComparator
+import org.koitharu.kotatsu.utils.CompositeMutex
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.resolveName
@@ -34,6 +35,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 
 	override val source = MangaSource.LOCAL
 	private val filenameFilter = CbzFilter()
+	private val locks = CompositeMutex<Long>()
 
 	override suspend fun getList(
 		offset: Int,
@@ -112,11 +114,18 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		return file.deleteAwait()
 	}
 
-	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) = runInterruptible(Dispatchers.IO) {
-		val uri = Uri.parse(manga.url)
-		val file = uri.toFile()
-		val cbz = CbzMangaOutput(file, manga)
-		CbzMangaOutput.filterChapters(cbz, ids)
+	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) {
+		lockManga(manga.id)
+		try {
+			runInterruptible(Dispatchers.IO) {
+				val uri = Uri.parse(manga.url)
+				val file = uri.toFile()
+				val cbz = CbzMangaOutput(file, manga)
+				CbzMangaOutput.filterChapters(cbz, ids)
+			}
+		} finally {
+			unlockManga(manga.id)
+		}
 	}
 
 	@WorkerThread
@@ -276,6 +285,14 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				file.delete()
 			}
 		}
+	}
+
+	suspend fun lockManga(id: Long) {
+		locks.lock(id)
+	}
+
+	suspend fun unlockManga(id: Long) {
+		locks.unlock(id)
 	}
 
 	private suspend fun getAllFiles() = storageManager.getReadableDirs().flatMap { dir ->

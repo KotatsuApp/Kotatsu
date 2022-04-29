@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.download.domain
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.webkit.MimeTypeMap
 import coil.ImageLoader
@@ -75,10 +74,12 @@ class DownloadManager(
 	): Job = coroutineScope.launch(Dispatchers.Default + errorStateHandler(outState)) {
 		@Suppress("NAME_SHADOWING") var manga = manga
 		val chaptersIdsSet = chaptersIds?.toMutableSet()
+		val cover = loadCover(manga)
+		outState.value = DownloadState.Queued(startId, manga, cover)
+		localMangaRepository.lockManga(manga.id)
 		semaphore.acquire()
 		coroutineContext[WakeLockNode]?.acquire()
 		outState.value = DownloadState.Preparing(startId, manga, null)
-		var cover: Drawable? = null
 		val destination = localMangaRepository.getOutputDir()
 		checkNotNull(destination) { context.getString(R.string.cannot_find_available_storage) }
 		val tempFileName = "${manga.id}_$startId.tmp"
@@ -88,16 +89,6 @@ class DownloadManager(
 				manga = localMangaRepository.getRemoteManga(manga) ?: error("Cannot obtain remote manga instance")
 			}
 			val repo = MangaRepository(manga.source)
-			cover = runCatching {
-				imageLoader.execute(
-					ImageRequest.Builder(context)
-						.data(manga.coverUrl)
-						.referer(manga.publicUrl)
-						.size(coverWidth, coverHeight)
-						.scale(Scale.FILL)
-						.build()
-				).drawable
-			}.getOrNull()
 			outState.value = DownloadState.Preparing(startId, manga, cover)
 			val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
 			output = CbzMangaOutput.get(destination, data)
@@ -176,6 +167,7 @@ class DownloadManager(
 			}
 			coroutineContext[WakeLockNode]?.release()
 			semaphore.release()
+			localMangaRepository.unlockManga(manga.id)
 		}
 	}
 
@@ -207,6 +199,17 @@ class DownloadManager(
 				error = throwable,
 			)
 		}
+
+	private suspend fun loadCover(manga: Manga) = runCatching {
+		imageLoader.execute(
+			ImageRequest.Builder(context)
+				.data(manga.coverUrl)
+				.referer(manga.publicUrl)
+				.size(coverWidth, coverHeight)
+				.scale(Scale.FILL)
+				.build()
+		).drawable
+	}.getOrNull()
 
 	class Factory(
 		private val context: Context,
