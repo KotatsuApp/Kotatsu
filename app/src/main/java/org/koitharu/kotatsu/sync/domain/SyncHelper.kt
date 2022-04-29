@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_TAGS
 import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.sync.data.AccountInterceptor
+import org.koitharu.kotatsu.utils.GZipInterceptor
 import org.koitharu.kotatsu.utils.ext.toContentValues
 import org.koitharu.kotatsu.utils.ext.toJson
 import org.koitharu.kotatsu.utils.ext.toRequestBody
@@ -40,6 +41,7 @@ class SyncHelper(
 
 	private val httpClient = OkHttpClient.Builder()
 		.addInterceptor(AccountInterceptor(context, account))
+		.addInterceptor(GZipInterceptor())
 		.build()
 	private val baseUrl = context.getString(R.string.url_sync_server)
 

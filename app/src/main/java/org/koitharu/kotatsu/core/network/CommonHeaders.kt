@@ -9,6 +9,7 @@ object CommonHeaders {
 	const val ACCEPT = "Accept"
 	const val CONTENT_DISPOSITION = "Content-Disposition"
 	const val COOKIE = "Cookie"
+	const val CONTENT_ENCODING = "Content-Encoding"
 
 	val CACHE_CONTROL_DISABLED: CacheControl
 		get() = CacheControl.Builder().noStore().build()
