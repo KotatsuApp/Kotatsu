@@ -271,4 +271,11 @@
     <string name="suggestions_excluded_genres">Sulje pois genrejä</string>
     <string name="text_delete_local_manga_batch">Poista valitut kohteet laitteesta pysyvästi\?</string>
     <string name="removal_completed">Poisto valmis</string>
+    <string name="parallel_downloads">Rinnakkaislataukset</string>
+    <string name="download_slowdown">Latauksen hidastuminen</string>
+    <string name="download_slowdown_summary">Auttaa välttämään IP-osoitteesi estämisen</string>
+    <string name="chapters_will_removed_background">Luvut poistetaan taustalla. Se voi kestää jonkin aikaa</string>
+    <string name="batch_manga_save_confirm">Oletko varma, että haluat ladata kaikki valitut mangat kaikkine lukuineen\? Tämä toiminto voi kuluttaa paljon liikennettä ja tallennustilaa</string>
+    <string name="local_manga_processing">Tallennettujen mangojen käsittely</string>
+    <string name="hide">Piilota</string>
 </resources>
