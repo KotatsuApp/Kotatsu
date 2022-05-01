@@ -272,4 +272,10 @@
     <string name="text_delete_local_manga_batch">選択した項目をデバイスから完全に削除しますか？</string>
     <string name="removal_completed">削除が完了しました</string>
     <string name="batch_manga_save_confirm">本当に選択したマンガを全編ダウンロードしますか？この動作は多くのトラフィックとストレージを消費する可能性があります</string>
+    <string name="download_slowdown_summary">IPアドレスのブロックを回避することができます</string>
+    <string name="local_manga_processing">保存されたマンガの処理</string>
+    <string name="download_slowdown">ダウンロードの速度低下</string>
+    <string name="parallel_downloads">並列ダウンロード</string>
+    <string name="chapters_will_removed_background">チャプターはバックグラウンドで削除されます。時間がかかる場合があります</string>
+    <string name="hide">隠す</string>
 </resources>
