@@ -272,4 +272,5 @@
     <string name="text_delete_local_manga_batch">Vill du ta bort markerade objekt från enheten permanent\?</string>
     <string name="percent_string_pattern">%1$s%%</string>
     <string name="batch_manga_save_confirm">Är du säker på att du vill ladda ner alla utvalda manga med alla kapitel\? Den här åtgärden kan kräva mycket nätverkstrafik och lagringsutrymme</string>
+    <string name="parallel_downloads">Parallella nedladdningar</string>
 </resources>
