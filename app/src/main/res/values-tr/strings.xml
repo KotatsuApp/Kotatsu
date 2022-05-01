@@ -272,4 +272,10 @@
     <string name="text_delete_local_manga_batch">Seçilen ögeler aygıttan kalıcı olarak silinsin mi\?</string>
     <string name="batch_manga_save_confirm">Seçilen tüm mangaları tüm bölümleriyle birlikte indirmek istediğinizden emin misiniz\? Bu işlem çok fazla trafik ve depolama alanı tüketebilir</string>
     <string name="removal_completed">Kaldırma tamamlandı</string>
+    <string name="chapters_will_removed_background">Bölümler arka planda kaldırılacaktır. Bu biraz zaman alabilir</string>
+    <string name="parallel_downloads">Paralel indirmeler</string>
+    <string name="download_slowdown">İndirmeyi yavaşlat</string>
+    <string name="download_slowdown_summary">IP adresinizin engellenmesinden kaçınmanıza yardımcı olur</string>
+    <string name="local_manga_processing">Kaydedilen manga işleme</string>
+    <string name="hide">Gizle</string>
 </resources>
