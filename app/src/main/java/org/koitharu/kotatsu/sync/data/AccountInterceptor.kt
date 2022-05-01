@@ -3,9 +3,9 @@ package org.koitharu.kotatsu.sync.data
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
-import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.Response
+import org.koitharu.kotatsu.R
 
 class AccountInterceptor(
 	context: Context,
@@ -13,13 +13,13 @@ class AccountInterceptor(
 ) : Interceptor {
 
 	private val accountManager = AccountManager.get(context)
+	private val tokenType = context.getString(R.string.account_type_sync)
 
 	override fun intercept(chain: Interceptor.Chain): Response {
-		val password = accountManager.getPassword(account)
-		val request = if (password != null) {
-			val credential: String = Credentials.basic(account.name, password)
+		val token = accountManager.peekAuthToken(account, tokenType)
+		val request = if (token != null) {
 			chain.request().newBuilder()
-				.header("Authorization", credential)
+				.header("Authorization", "Bearer $token")
 				.build()
 		} else {
 			chain.request()
