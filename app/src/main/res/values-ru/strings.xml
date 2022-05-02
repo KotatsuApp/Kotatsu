@@ -276,4 +276,6 @@
 	<string name="download_slowdown_summary">Помогает избежать блокировки IP-адреса</string>
 	<string name="local_manga_processing">Обработка сохранённой манги</string>
 	<string name="chapters_will_removed_background">Главы будут удалены в фоновом режиме. Это может занять какое-то время</string>
+	<string name="hide">Скрыть</string>
+	<string name="new_sources_text">Доступны новые источники манги</string>
 </resources>

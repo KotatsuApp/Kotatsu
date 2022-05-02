@@ -134,6 +134,20 @@ class AppSettings(context: Context) {
 	val isSourcesSelected: Boolean
 		get() = KEY_SOURCES_HIDDEN in prefs
 
+	val newSources: Set<MangaSource>
+		get() {
+			val known = sourcesOrder.toSet()
+			val hidden = hiddenSources
+			return remoteMangaSources
+				.filterNotTo(EnumSet.noneOf(MangaSource::class.java)) { x ->
+					x.name in known || x.name in hidden
+				}
+		}
+
+	fun markKnownSources(sources: Collection<MangaSource>) {
+		sourcesOrder = sourcesOrder + sources.map { it.name }
+	}
+
 	val isPagesNumbersEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PAGES_NUMBERS, false)
 

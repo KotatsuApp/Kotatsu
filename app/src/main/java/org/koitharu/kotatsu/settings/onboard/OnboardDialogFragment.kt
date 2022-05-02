@@ -53,6 +53,7 @@ class OnboardDialogFragment : AlertDialogFragment<DialogOnboardBinding>(),
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = SourceLocalesAdapter(this)
 		binding.recyclerView.adapter = adapter
+		binding.textViewTitle.setText(R.string.onboard_text)
 		viewModel.list.observeNotNull(viewLifecycleOwner) {
 			adapter.items = it
 		}

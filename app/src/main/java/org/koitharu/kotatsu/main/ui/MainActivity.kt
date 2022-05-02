@@ -49,6 +49,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
@@ -390,9 +391,13 @@ class MainActivity :
 			if (AppUpdateChecker.isUpdateSupported(this@MainActivity)) {
 				AppUpdateChecker(this@MainActivity).checkIfNeeded()
 			}
-			if (!get<AppSettings>().isSourcesSelected) {
-				withContext(Dispatchers.Main) {
+			val settings = get<AppSettings>()
+			when {
+				!settings.isSourcesSelected -> withContext(Dispatchers.Main) {
 					OnboardDialogFragment.showWelcome(supportFragmentManager)
+				}
+				settings.newSources.isNotEmpty() -> withContext(Dispatchers.Main) {
+					NewSourcesDialogFragment.show(supportFragmentManager)
 				}
 			}
 		}
