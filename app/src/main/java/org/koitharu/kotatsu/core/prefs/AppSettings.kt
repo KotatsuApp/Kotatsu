@@ -11,10 +11,6 @@ import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
-import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
@@ -24,6 +20,10 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
+import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AppSettings(context: Context) {
 
@@ -66,6 +66,10 @@ class AppSettings(context: Context) {
 	var isTrafficWarningEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRAFFIC_WARNING, true)
 		set(value) = prefs.edit { putBoolean(KEY_TRAFFIC_WARNING, value) }
+
+	var isAllFavouritesVisible: Boolean
+		get() = prefs.getBoolean(KEY_ALL_FAVOURITES_VISIBLE, true)
+		set(value) = prefs.edit { putBoolean(KEY_ALL_FAVOURITES_VISIBLE, value) }
 
 	val isUpdateCheckingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_APP_UPDATE_AUTO, true)
@@ -129,6 +133,20 @@ class AppSettings(context: Context) {
 
 	val isSourcesSelected: Boolean
 		get() = KEY_SOURCES_HIDDEN in prefs
+
+	val newSources: Set<MangaSource>
+		get() {
+			val known = sourcesOrder.toSet()
+			val hidden = hiddenSources
+			return remoteMangaSources
+				.filterNotTo(EnumSet.noneOf(MangaSource::class.java)) { x ->
+					x.name in known || x.name in hidden
+				}
+		}
+
+	fun markKnownSources(sources: Collection<MangaSource>) {
+		sourcesOrder = sourcesOrder + sources.map { it.name }
+	}
 
 	val isPagesNumbersEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PAGES_NUMBERS, false)
@@ -278,6 +296,7 @@ class AppSettings(context: Context) {
 		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
 		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
+		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

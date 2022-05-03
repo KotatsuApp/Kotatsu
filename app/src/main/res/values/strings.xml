@@ -285,4 +285,6 @@
 	<string name="sync">Synchronization</string>
 	<string name="sync_title">Sync your data</string>
 	<string name="email_enter_hint">Enter your email to continue</string>
+	<string name="hide">Hide</string>
+	<string name="new_sources_text">New manga sources are available</string>
 </resources>

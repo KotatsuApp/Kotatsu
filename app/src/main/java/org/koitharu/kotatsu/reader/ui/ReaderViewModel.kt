@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.reader.ui
 
 import android.net.Uri
 import android.util.LongSparseArray
+import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
@@ -26,7 +27,6 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
-import org.koitharu.kotatsu.utils.ExternalStorageHelper
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
@@ -40,10 +40,11 @@ class ReaderViewModel(
 	private val historyRepository: HistoryRepository,
 	private val shortcutsRepository: ShortcutsRepository,
 	private val settings: AppSettings,
-	private val externalStorageHelper: ExternalStorageHelper,
+	private val pageSaveHelper: PageSaveHelper,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job? = null
+	private var pageSaveJob: Job? = null
 	private val currentState = MutableStateFlow(initialState)
 	private val mangaData = MutableStateFlow(intent.manga)
 	private val chapters = LongSparseArray<MangaChapter>()
@@ -54,7 +55,7 @@ class ReaderViewModel(
 	val onPageSaved = SingleLiveEvent<Uri?>()
 	val uiState = combine(
 		mangaData,
-		currentState
+		currentState,
 	) { manga, state ->
 		val chapter = state?.chapterId?.let(chapters::get)
 		ReaderUiState(
@@ -137,12 +138,16 @@ class ReaderViewModel(
 		return pages.filter { it.chapterId == chapterId }.map { it.toMangaPage() }
 	}
 
-	fun saveCurrentPage(destination: Uri) {
-		launchJob(Dispatchers.Default) {
+	fun saveCurrentPage(
+		page: MangaPage,
+		saveLauncher: ActivityResultLauncher<String>,
+	) {
+		val prevJob = pageSaveJob
+		pageSaveJob = launchLoadingJob(Dispatchers.Default) {
+			prevJob?.cancelAndJoin()
 			try {
-				val page = getCurrentPage() ?: error("Page not found")
-				externalStorageHelper.savePage(page, destination)
-				onPageSaved.postCall(destination)
+				val dest = pageSaveHelper.savePage(pageLoader, page, saveLauncher)
+				onPageSaved.postCall(dest)
 			} catch (e: CancellationException) {
 				throw e
 			} catch (e: Exception) {
@@ -151,6 +156,15 @@ class ReaderViewModel(
 				}
 				onPageSaved.postCall(null)
 			}
+		}
+	}
+
+	fun onActivityResult(uri: Uri?) {
+		if (uri != null) {
+			pageSaveHelper.onActivityResult(uri)
+		} else {
+			pageSaveJob?.cancel()
+			pageSaveJob = null
 		}
 	}
 

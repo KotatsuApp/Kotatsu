@@ -5,6 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.os.Parcelable.Creator
 import android.util.AttributeSet
+import android.view.View
 import android.widget.Checkable
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -58,6 +59,12 @@ class CheckableImageView @JvmOverloads constructor(
 			isChecked = state.isChecked
 		} else {
 			super.onRestoreInstanceState(state)
+		}
+	}
+
+	class ToggleOnClickListener : OnClickListener {
+		override fun onClick(view: View) {
+			(view as? Checkable)?.toggle()
 		}
 	}
 

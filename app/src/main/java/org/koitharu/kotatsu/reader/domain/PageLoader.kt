@@ -113,6 +113,10 @@ class PageLoader : KoinComponent, Closeable {
 		}
 	}
 
+	suspend fun getPageUrl(page: MangaPage): String {
+		return getRepository(page.source).getPageUrl(page)
+	}
+
 	private fun onIdle() {
 		synchronized(prefetchQueue) {
 			while (prefetchQueue.isNotEmpty()) {
@@ -151,7 +155,7 @@ class PageLoader : KoinComponent, Closeable {
 	}
 
 	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): File {
-		val pageUrl = getRepository(page.source).getPageUrl(page)
+		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
 		val uri = Uri.parse(pageUrl)
 		return if (uri.scheme == "cbz") {

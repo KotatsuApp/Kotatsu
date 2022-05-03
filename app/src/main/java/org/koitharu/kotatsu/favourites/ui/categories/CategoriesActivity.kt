@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
+import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
@@ -29,7 +30,7 @@ class CategoriesActivity :
 	BaseActivity<ActivityCategoriesBinding>(),
 	OnListItemClickListener<FavouriteCategory>,
 	View.OnClickListener,
-	CategoriesEditDelegate.CategoriesEditCallback {
+	CategoriesEditDelegate.CategoriesEditCallback, AllCategoriesToggleListener {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
@@ -41,7 +42,7 @@ class CategoriesActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		adapter = CategoriesAdapter(this)
+		adapter = CategoriesAdapter(this, this)
 		editDelegate = CategoriesEditDelegate(this, this)
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
@@ -49,7 +50,7 @@ class CategoriesActivity :
 		reorderHelper = ItemTouchHelper(ReorderHelperCallback())
 		reorderHelper.attachToRecyclerView(binding.recyclerView)
 
-		viewModel.categories.observe(this, ::onCategoriesChanged)
+		viewModel.allCategories.observe(this, ::onCategoriesChanged)
 		viewModel.onError.observe(this, ::onError)
 	}
 
@@ -84,6 +85,10 @@ class CategoriesActivity :
 		return true
 	}
 
+	override fun onAllCategoriesToggle(isVisible: Boolean) {
+		viewModel.setAllCategoriesVisible(isVisible)
+	}
+
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			rightMargin = topMargin + insets.right
@@ -97,7 +102,7 @@ class CategoriesActivity :
 		)
 	}
 
-	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
+	private fun onCategoriesChanged(categories: List<CategoryListModel>) {
 		adapter.items = categories
 		binding.textViewHolder.isVisible = categories.isEmpty()
 	}
@@ -138,13 +143,19 @@ class CategoriesActivity :
 		ItemTouchHelper.DOWN or ItemTouchHelper.UP, 0
 	) {
 
+		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
+
 		override fun onMove(
 			recyclerView: RecyclerView,
 			viewHolder: RecyclerView.ViewHolder,
 			target: RecyclerView.ViewHolder,
-		): Boolean = true
+		): Boolean = viewHolder.itemViewType == target.itemViewType
 
-		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
+		override fun canDropOver(
+			recyclerView: RecyclerView,
+			current: RecyclerView.ViewHolder,
+			target: RecyclerView.ViewHolder,
+		): Boolean = current.itemViewType == target.itemViewType
 
 		override fun onMoved(
 			recyclerView: RecyclerView,
@@ -158,6 +169,8 @@ class CategoriesActivity :
 			super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
 			viewModel.reorderCategories(fromPos, toPos)
 		}
+
+		override fun isLongPressDragEnabled(): Boolean = false
 	}
 
 	companion object {

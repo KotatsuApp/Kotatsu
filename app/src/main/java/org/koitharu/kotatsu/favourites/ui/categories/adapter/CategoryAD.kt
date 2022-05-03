@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.favourites.ui.categories
+package org.koitharu.kotatsu.favourites.ui.categories.adapter
 
 import android.view.MotionEvent
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -8,23 +8,23 @@ import org.koitharu.kotatsu.databinding.ItemCategoryBinding
 
 fun categoryAD(
 	clickListener: OnListItemClickListener<FavouriteCategory>
-) = adapterDelegateViewBinding<FavouriteCategory, FavouriteCategory, ItemCategoryBinding>(
+) = adapterDelegateViewBinding<CategoryListModel.CategoryItem, CategoryListModel, ItemCategoryBinding>(
 	{ inflater, parent -> ItemCategoryBinding.inflate(inflater, parent, false) }
 ) {
 
 	binding.imageViewMore.setOnClickListener {
-		clickListener.onItemClick(item, it)
+		clickListener.onItemClick(item.category, it)
 	}
 	@Suppress("ClickableViewAccessibility")
 	binding.imageViewHandle.setOnTouchListener { v, event ->
 		if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-			clickListener.onItemLongClick(item, itemView)
+			clickListener.onItemLongClick(item.category, itemView)
 		} else {
 			false
 		}
 	}
 
 	bind {
-		binding.textViewTitle.text = item.title
+		binding.textViewTitle.text = item.category.title
 	}
 }

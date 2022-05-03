@@ -272,4 +272,10 @@
     <string name="text_delete_local_manga_batch">Supprimer définitivement les éléments sélectionnés de l\'appareil \?</string>
     <string name="removal_completed">Suppression terminée</string>
     <string name="batch_manga_save_confirm">Voulez-vous vraiment télécharger tous les mangas sélectionnés avec tous leurs chapitres \? Cette action peut consommer beaucoup de trafic et de stockage</string>
+    <string name="parallel_downloads">Téléchargements parallèles</string>
+    <string name="download_slowdown">Ralentissement du téléchargement</string>
+    <string name="download_slowdown_summary">Permet d\'éviter le blocage de votre adresse IP</string>
+    <string name="chapters_will_removed_background">Les chapitres seront supprimés en arrière-plan. Cela peut prendre un certain temps</string>
+    <string name="local_manga_processing">Traitement des mangas sauvegardés</string>
+    <string name="hide">Masquer</string>
 </resources>

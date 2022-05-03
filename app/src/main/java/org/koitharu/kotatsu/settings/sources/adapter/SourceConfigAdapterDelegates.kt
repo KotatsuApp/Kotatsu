@@ -83,7 +83,9 @@ fun sourceConfigDraggableItemDelegate(
 	on = { item, _, _ -> item is SourceConfigItem.SourceItem && item.isDraggable }
 ) {
 
-	val eventListener = object : View.OnClickListener, View.OnTouchListener,
+	val eventListener = object :
+		View.OnClickListener,
+		View.OnTouchListener,
 		CompoundButton.OnCheckedChangeListener {
 		override fun onClick(v: View?) = listener.onItemSettingsClick(item)
 
