@@ -283,7 +283,7 @@ class DetailsFragment :
 			.target(binding.imageViewCover)
 		if (currentCover != null) {
 			request.data(manga.largeCoverUrl ?: return)
-				.placeholderMemoryCacheKey(CoilUtils.metadata(binding.imageViewCover)?.memoryCacheKey)
+				.placeholderMemoryCacheKey(CoilUtils.result(binding.imageViewCover)?.request?.memoryCacheKey)
 				.fallback(currentCover)
 		} else {
 			request.crossfade(true)

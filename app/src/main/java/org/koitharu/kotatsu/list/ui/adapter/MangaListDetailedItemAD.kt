@@ -57,7 +57,7 @@ fun mangaListDetailedItemAD(
 		badge = null
 		imageRequest?.dispose()
 		imageRequest = null
-		CoilUtils.clear(binding.imageViewCover)
+		CoilUtils.dispose(binding.imageViewCover)
 		binding.imageViewCover.setImageDrawable(null)
 	}
 }

@@ -2,41 +2,52 @@ package org.koitharu.kotatsu.local.data
 
 import android.net.Uri
 import android.webkit.MimeTypeMap
-import coil.bitmap.BitmapPool
+import coil.ImageLoader
 import coil.decode.DataSource
-import coil.decode.Options
-import coil.fetch.FetchResult
+import coil.decode.ImageSource
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
-import coil.size.Size
-import java.util.zip.ZipFile
+import coil.request.Options
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okio.buffer
 import okio.source
+import java.util.zip.ZipFile
 
-class CbzFetcher : Fetcher<Uri> {
+class CbzFetcher(
+	private val uri: Uri,
+	private val options: Options
+) : Fetcher {
 
-	override suspend fun fetch(
-		pool: BitmapPool,
-		data: Uri,
-		size: Size,
-		options: Options,
-	): FetchResult = runInterruptible(Dispatchers.IO) {
-		val zip = ZipFile(data.schemeSpecificPart)
-		val entry = zip.getEntry(data.fragment)
+	override suspend fun fetch() = runInterruptible(Dispatchers.IO) {
+		val zip = ZipFile(uri.schemeSpecificPart)
+		val entry = zip.getEntry(uri.fragment)
 		val ext = MimeTypeMap.getFileExtensionFromUrl(entry.name)
+		val bufferedSource = ExtraCloseableBufferedSource(
+			zip.getInputStream(entry).source().buffer(),
+			zip,
+		)
 		SourceResult(
-			source = ExtraCloseableBufferedSource(
-				zip.getInputStream(entry).source().buffer(),
-				zip,
+			source = ImageSource(
+				source = bufferedSource,
+				context = options.context,
+				metadata = CbzMetadata(uri),
 			),
 			mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext),
-			dataSource = DataSource.DISK
+			dataSource = DataSource.DISK,
 		)
 	}
 
-	override fun key(data: Uri) = data.toString()
+	class Factory : Fetcher.Factory<Uri> {
 
-	override fun handles(data: Uri) = data.scheme == "cbz"
+		override fun create(data: Uri, options: Options, imageLoader: ImageLoader): Fetcher? {
+			return if (data.scheme == "cbz") {
+				CbzFetcher(data, options)
+			} else {
+				null
+			}
+		}
+	}
+
+	class CbzMetadata(val uri: Uri) : ImageSource.Metadata()
 }

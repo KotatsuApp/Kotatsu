@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.reader.ui.thumbnails.adapter
 import android.graphics.drawable.Drawable
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.size.PixelSize
+import coil.size.Size
 import com.google.android.material.R as materialR
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import kotlinx.coroutines.*
@@ -27,7 +27,7 @@ fun pageThumbnailAD(
 
 	var job: Job? = null
 	val gridWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
-	val thumbSize = PixelSize(
+	val thumbSize = Size(
 		width = gridWidth,
 		height = (gridWidth * 13f / 18f).toInt()
 	)

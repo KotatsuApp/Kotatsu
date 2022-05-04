@@ -1,7 +1,8 @@
 package org.koitharu.kotatsu.utils.progress
 
+import coil.request.ErrorResult
 import coil.request.ImageRequest
-import coil.request.ImageResult
+import coil.request.SuccessResult
 import com.google.android.material.progressindicator.BaseProgressIndicator
 
 class ImageRequestIndicatorListener(
@@ -10,9 +11,9 @@ class ImageRequestIndicatorListener(
 
 	override fun onCancel(request: ImageRequest) = indicator.hide()
 
-	override fun onError(request: ImageRequest, throwable: Throwable) = indicator.hide()
+	override fun onError(request: ImageRequest, result: ErrorResult) = indicator.hide()
 
 	override fun onStart(request: ImageRequest) = indicator.show()
 
-	override fun onSuccess(request: ImageRequest, metadata: ImageResult.Metadata) = indicator.hide()
+	override fun onSuccess(request: ImageRequest, result: SuccessResult) = indicator.hide()
 }

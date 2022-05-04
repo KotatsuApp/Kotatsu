@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.pm.ShortcutManager
 import android.media.ThumbnailUtils
 import android.os.Build
+import android.util.Size
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.size.PixelSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
@@ -54,7 +54,7 @@ class ShortcutsRepository(
 				val bmp = coil.execute(
 					ImageRequest.Builder(context)
 						.data(manga.coverUrl)
-						.size(iconSize)
+						.size(iconSize.width, iconSize.height)
 						.build()
 				).requireBitmap()
 				ThumbnailUtils.extractThumbnail(bmp, iconSize.width, iconSize.height, 0)
@@ -74,14 +74,14 @@ class ShortcutsRepository(
 			)
 	}
 
-	private fun getIconSize(context: Context): PixelSize {
+	private fun getIconSize(context: Context): Size {
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
 			(context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager).let {
-				PixelSize(it.iconMaxWidth, it.iconMaxHeight)
+				Size(it.iconMaxWidth, it.iconMaxHeight)
 			}
 		} else {
 			(context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).launcherLargeIconSize.let {
-				PixelSize(it, it)
+				Size(it, it)
 			}
 		}
 	}
