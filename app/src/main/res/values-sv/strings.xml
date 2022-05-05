@@ -105,7 +105,6 @@
     <string name="download">Ladda ned</string>
     <string name="notifications_settings">Aviseringsinställningar</string>
     <string name="light_indicator">LED-indikator</string>
-    <string name="show_notification_new_chapters">Avisera om uppdateringar på manga du läser</string>
     <string name="read_from_start">Läs från början</string>
     <string name="restart">Starta om</string>
     <string name="notification_sound">Aviseringsljud</string>

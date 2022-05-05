@@ -10,7 +10,7 @@ import org.koitharu.kotatsu.favourites.ui.list.FavouritesListViewModel
 val favouritesModule
 	get() = module {
 
-		single { FavouritesRepository(get()) }
+		factory { FavouritesRepository(get(), get()) }
 
 		viewModel { categoryId ->
 			FavouritesListViewModel(categoryId.get(), get(), get(), get())

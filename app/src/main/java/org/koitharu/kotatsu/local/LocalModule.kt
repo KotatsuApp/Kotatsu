@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.local.ui.LocalListViewModel
 val localModule
 	get() = module {
 
-		single { LocalStorageManager(androidContext(), get()) }
+		factory { LocalStorageManager(androidContext(), get()) }
 		single { LocalMangaRepository(get()) }
 
 		factory { DownloadManager.Factory(androidContext(), get(), get(), get(), get(), get()) }

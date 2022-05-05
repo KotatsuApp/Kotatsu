@@ -11,4 +11,5 @@ fun FavouriteCategoryEntity.toFavouriteCategory(id: Long = categoryId.toLong()) 
 	sortKey = sortKey,
 	order = SortOrder(order, SortOrder.NEWEST),
 	createdAt = Date(createdAt),
+	isTrackingEnabled = track,
 )

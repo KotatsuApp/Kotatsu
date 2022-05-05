@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.main.ui.protect.ProtectViewModel
 val mainModule
 	get() = module {
 		single { AppProtectHelper(get()) }
-		single { ShortcutsRepository(androidContext(), get(), get(), get()) }
+		factory { ShortcutsRepository(androidContext(), get(), get(), get()) }
 		viewModel { MainViewModel(get(), get()) }
 		viewModel { ProtectViewModel(get(), get()) }
 	}

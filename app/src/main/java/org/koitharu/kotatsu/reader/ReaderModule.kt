@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 val readerModule
 	get() = module {
 
-		single { MangaDataRepository(get()) }
+		factory { MangaDataRepository(get()) }
 		single { PagesCache(get()) }
 
 		factory { PageSaveHelper(get(), androidContext()) }

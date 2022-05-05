@@ -6,7 +6,7 @@
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="suggestions"
-		android:summary="@string/suggestions_summary"
+		android:layout="@layout/preference_toggle_header"
 		android:title="@string/suggestions_enable" />
 
 	<org.koitharu.kotatsu.settings.utils.MultiAutoCompleteTextViewPreference

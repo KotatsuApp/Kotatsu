@@ -23,4 +23,9 @@
 
 	</item>
 
+	<item
+		android:id="@+id/action_tracking"
+		android:title="@string/check_for_new_chapters"
+		android:checkable="true" />
+
 </menu>

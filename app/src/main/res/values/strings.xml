@@ -103,7 +103,6 @@
     <string name="notifications">Notifications</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d of %2$d on</string>
     <string name="new_chapters">New chapters</string>
-    <string name="show_notification_new_chapters">Notify about updates of manga you are reading</string>
     <string name="download">Download</string>
     <string name="read_from_start">Read from start</string>
     <string name="restart">Restart</string>
@@ -281,4 +280,8 @@
 	<string name="chapters_will_removed_background">Chapters will be removed in the background. It can take some time</string>
 	<string name="hide">Hide</string>
 	<string name="new_sources_text">New manga sources are available</string>
+	<string name="check_new_chapters_title">Check for new chapters and notify about it</string>
+	<string name="show_notification_new_chapters_on">You will receive notifications about updates of manga you are reading</string>
+	<string name="show_notification_new_chapters_off">You will not receive notifications but new chapters will be highlighted in the lists</string>
+	<string name="notifications_enable">Enable notifications</string>
 </resources>

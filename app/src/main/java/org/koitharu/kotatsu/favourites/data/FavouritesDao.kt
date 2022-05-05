@@ -43,6 +43,9 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE category_id = :categoryId GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
 	abstract suspend fun findAll(categoryId: Long, offset: Int, limit: Int): List<FavouriteManga>
 
+	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM favourites WHERE category_id = :categoryId)")
+	abstract suspend fun findAllManga(categoryId: Int): List<MangaEntity>
+
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM favourites)")
 	abstract suspend fun findAllManga(): List<MangaEntity>
 

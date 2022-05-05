@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.settings
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.view.View
@@ -11,7 +12,9 @@ import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.utils.RingtonePickContract
 
-class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notifications) {
+class NotificationSettingsLegacyFragment :
+	BasePreferenceFragment(R.string.notifications),
+	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private val ringtonePickContract = registerForActivityResult(
 		RingtonePickContract(get<Context>().getString(R.string.notification_sound))
@@ -25,14 +28,27 @@ class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notif
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_notifications)
-	}
-
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_NOTIFICATIONS_SOUND)?.run {
 			val uri = settings.notificationSound
 			summary = RingtoneManager.getRingtone(context, uri)?.getTitle(context)
 				?: getString(R.string.silent)
+		}
+		updateInfo()
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		settings.subscribe(this)
+	}
+
+	override fun onDestroyView() {
+		settings.unsubscribe(this)
+		super.onDestroyView()
+	}
+
+	override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
+		when (key) {
+			AppSettings.KEY_TRACKER_NOTIFICATIONS -> updateInfo()
 		}
 	}
 
@@ -44,5 +60,10 @@ class NotificationSettingsLegacyFragment : BasePreferenceFragment(R.string.notif
 			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
+	}
+
+	private fun updateInfo() {
+		findPreference<Preference>(AppSettings.KEY_NOTIFICATIONS_INFO)
+			?.isVisible = !settings.isTrackerNotificationsEnabled
 	}
 }

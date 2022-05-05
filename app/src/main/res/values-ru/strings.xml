@@ -101,7 +101,6 @@
     <string name="notifications">Уведомления</string>
     <string name="enabled_d_of_d">Включено %1$d из %2$d</string>
     <string name="new_chapters">Новые главы</string>
-    <string name="show_notification_new_chapters">Уведомлять об обновлении манги, которую Вы читаете</string>
     <string name="download">Загрузить</string>
     <string name="read_from_start">Читать с начала</string>
     <string name="restart">Перезапустить</string>
@@ -278,4 +277,8 @@
 	<string name="chapters_will_removed_background">Главы будут удалены в фоновом режиме. Это может занять какое-то время</string>
 	<string name="hide">Скрыть</string>
 	<string name="new_sources_text">Доступны новые источники манги</string>
+	<string name="check_new_chapters_title">Проверять новые главы и уведомлять о них</string>
+	<string name="show_notification_new_chapters_on">Вы будете получать уведомления об обновлении манги, которую Вы читаете</string>
+	<string name="show_notification_new_chapters_off">Вы не будете получать уведомления, но новые главы будут отображаться в списке</string>
+	<string name="notifications_enable">Включить уведомления</string>
 </resources>

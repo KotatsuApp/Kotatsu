@@ -17,8 +17,8 @@ import org.koitharu.kotatsu.settings.sources.SourcesSettingsViewModel
 val settingsModule
 	get() = module {
 
-		single { BackupRepository(get()) }
-		single { RestoreRepository(get()) }
+		factory { BackupRepository(get()) }
+		factory { RestoreRepository(get()) }
 		single(createdAtStart = true) { AppSettings(androidContext()) }
 
 		viewModel { BackupViewModel(get(), androidContext()) }

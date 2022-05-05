@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.prefs
 
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -78,7 +79,10 @@ class AppSettings(context: Context) {
 		get() = prefs.getLong(KEY_APP_UPDATE, 0L)
 		set(value) = prefs.edit { putLong(KEY_APP_UPDATE, value) }
 
-	val trackerNotifications: Boolean
+	val isTrackerEnabled: Boolean
+		get() = prefs.getBoolean(KEY_TRACKER_ENABLED, true)
+
+	val isTrackerNotificationsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_NOTIFICATIONS, true)
 
 	var notificationSound: Uri
@@ -269,13 +273,16 @@ class AppSettings(context: Context) {
 		const val KEY_REMOTE_SOURCES = "remote_sources"
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_SWITCHERS = "reader_switchers"
+		const val KEY_TRACKER_ENABLED = "tracker_enabled"
 		const val KEY_TRACK_SOURCES = "track_sources"
+		const val KEY_TRACK_CATEGORIES = "track_categories"
 		const val KEY_TRACK_WARNING = "track_warning"
 		const val KEY_TRACKER_NOTIFICATIONS = "tracker_notifications"
 		const val KEY_NOTIFICATIONS_SETTINGS = "notifications_settings"
 		const val KEY_NOTIFICATIONS_SOUND = "notifications_sound"
 		const val KEY_NOTIFICATIONS_VIBRATE = "notifications_vibrate"
 		const val KEY_NOTIFICATIONS_LIGHT = "notifications_light"
+		const val KEY_NOTIFICATIONS_INFO = "tracker_notifications_info"
 		const val KEY_READER_ANIMATION = "reader_animation"
 		const val KEY_READER_PREFER_RTL = "reader_prefer_rtl"
 		const val KEY_APP_PASSWORD = "app_password"

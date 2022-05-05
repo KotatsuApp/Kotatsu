@@ -101,7 +101,6 @@
     <string name="notifications">Notificaciones</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Activado %1$d de %2$d</string>
     <string name="new_chapters">Nuevos capítulos</string>
-    <string name="show_notification_new_chapters">Notificar sobre las actualizaciones del manga que estás leyendo</string>
     <string name="download">Descargar</string>
     <string name="read_from_start">Leer desde el principio</string>
     <string name="restart">Reiniciar</string>
