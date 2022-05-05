@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.list.ui.adapter
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
+import coil.size.Scale
 import coil.util.CoilUtils
 import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -43,6 +44,7 @@ fun mangaGridItemAD(
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
 			.allowRgb565(true)
+			.scale(Scale.FILL)
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 		badge = itemView.bindBadge(badge, item.counter)
