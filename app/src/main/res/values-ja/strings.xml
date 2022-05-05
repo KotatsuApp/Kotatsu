@@ -278,4 +278,5 @@
     <string name="parallel_downloads">並列ダウンロード</string>
     <string name="chapters_will_removed_background">チャプターはバックグラウンドで削除されます。時間がかかる場合があります</string>
     <string name="hide">隠す</string>
+    <string name="new_sources_text">新しいマンガソースが利用可能になりました</string>
 </resources>
