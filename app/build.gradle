@@ -14,8 +14,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 405
-		versionName '3.2.1'
+		versionCode 406
+		versionName '3.2.2'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -86,7 +86,7 @@ dependencies {
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-beta01'
 	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.work:work-runtime-ktx:2.7.1'
-	implementation 'com.google.android.material:material:1.6.0-rc01'
+	implementation 'com.google.android.material:material:1.6.0'
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.4.1'
 
@@ -105,7 +105,7 @@ dependencies {
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
-	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
+	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1'
