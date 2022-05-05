@@ -278,4 +278,5 @@
     <string name="download_slowdown_summary">IP adresinizin engellenmesinden kaçınmanıza yardımcı olur</string>
     <string name="local_manga_processing">Kaydedilen manga işleme</string>
     <string name="hide">Gizle</string>
+    <string name="new_sources_text">Yeni manga kaynakları var</string>
 </resources>
