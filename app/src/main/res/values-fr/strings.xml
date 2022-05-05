@@ -278,4 +278,5 @@
     <string name="chapters_will_removed_background">Les chapitres seront supprimés en arrière-plan. Cela peut prendre un certain temps</string>
     <string name="local_manga_processing">Traitement des mangas sauvegardés</string>
     <string name="hide">Masquer</string>
+    <string name="new_sources_text">De nouvelles sources de mangas sont disponibles</string>
 </resources>
