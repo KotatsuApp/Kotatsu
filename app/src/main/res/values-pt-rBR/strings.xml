@@ -278,4 +278,5 @@
     <string name="local_manga_processing">Processamento de mangá salvo</string>
     <string name="chapters_will_removed_background">Os capítulos serão removidos em segundo plano. Pode levar algum tempo</string>
     <string name="parallel_downloads">Downloads paralelos</string>
+    <string name="new_sources_text">Novas fontes de mangá estão disponíveis</string>
 </resources>
