@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?android:windowBackground"
-	android:clipToPadding="false"
-	android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-	android:paddingTop="8dp"
-	android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:paddingBottom="8dp">
 
 	<com.google.android.material.card.MaterialCardView
+		style="@style/Widget.Material3.CardView.Filled"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="16dp"
+		android:layout_marginVertical="8dp"
+		app:cardCornerRadius="24dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -22,7 +26,7 @@
 			android:clipToPadding="false"
 			android:gravity="center_vertical"
 			android:minHeight="?android:attr/listPreferredItemHeightSmall"
-			android:padding="8dp">
+			android:padding="16dp">
 
 			<LinearLayout
 				android:layout_width="0dp"
@@ -34,7 +38,9 @@
 					android:id="@android:id/title"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:textAppearance="?android:attr/textAppearanceListItem" />
+					android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+					android:textSize="20sp"
+					tools:text="Title"/>
 
 				<TextView
 					android:id="@android:id/summary"
@@ -43,8 +49,8 @@
 					android:layout_height="wrap_content"
 					android:layout_gravity="start"
 					android:maxLines="10"
-					android:textAlignment="viewStart"
-					android:textColor="?android:attr/textColorSecondary" />
+					android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+					tools:text="Subtitle"/>
 
 			</LinearLayout>
 
@@ -61,4 +67,4 @@
 
 	</com.google.android.material.card.MaterialCardView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
