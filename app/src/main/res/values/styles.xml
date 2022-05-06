@@ -23,6 +23,7 @@
 	<!-- Bottom sheet -->
 
 	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+		<item name="android:navigationBarColor">?colorSurfaceVariant</item>
 	</style>
 
 	<!-- Widget styles -->
