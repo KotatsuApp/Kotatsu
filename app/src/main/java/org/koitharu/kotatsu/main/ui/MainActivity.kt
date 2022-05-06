@@ -7,8 +7,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.view.ActionMode
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.*
@@ -17,7 +19,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import androidx.transition.TransitionManager
+import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -55,8 +60,8 @@ import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
+import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.*
-import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
@@ -75,6 +80,7 @@ class MainActivity :
 	private lateinit var navHeaderBinding: NavigationHeaderBinding
 	private var drawerToggle: ActionBarDrawerToggle? = null
 	private var drawer: DrawerLayout? = null
+	private val voiceInputLauncher = registerForActivityResult(VoiceInputContract(), VoiceInputCallback())
 
 	override val appBar: AppBarLayout
 		get() = binding.appbar
@@ -119,6 +125,7 @@ class MainActivity :
 		}
 
 		binding.fab.setOnClickListener(this@MainActivity)
+		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
 		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
 			if (it is HistoryListFragment) binding.fab.show() else binding.fab.hide()
@@ -277,6 +284,19 @@ class MainActivity :
 		searchSuggestionViewModel.onQueryChanged(query)
 	}
 
+	override fun onVoiceSearchClick() {
+		val options = binding.searchView.drawableEnd?.bounds?.let { bounds ->
+			ActivityOptionsCompat.makeScaleUpAnimation(
+				binding.searchView,
+				bounds.centerX(),
+				bounds.centerY(),
+				bounds.width(),
+				bounds.height(),
+			)
+		}
+		voiceInputLauncher.tryLaunch(binding.searchView.hint?.toString(), options)
+	}
+
 	override fun onClearSearchHistory() {
 		MaterialAlertDialogBuilder(this)
 			.setTitle(R.string.clear_search_history)
@@ -373,13 +393,26 @@ class MainActivity :
 	}
 
 	private fun onSearchOpened() {
+		TransitionManager.beginDelayedTransition(binding.appbar)
 		drawerToggle?.isDrawerIndicatorEnabled = false
+		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
+			scrollFlags = SCROLL_FLAG_NO_SCROLL
+		}
+		binding.appbar.setBackgroundColor(getThemeColor(materialR.attr.colorSurfaceVariant))
+		binding.appbar.updatePadding(left = 0, right = 0)
 		adjustDrawerLock()
 		adjustFabVisibility(isSearchOpened = true)
 	}
 
 	private fun onSearchClosed() {
+		TransitionManager.beginDelayedTransition(binding.appbar)
 		drawerToggle?.isDrawerIndicatorEnabled = true
+		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
+			scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
+		}
+		binding.appbar.background = null
+		val padding = resources.getDimensionPixelOffset(R.dimen.margin_normal)
+		binding.appbar.updatePadding(left = padding, right = padding)
 		adjustDrawerLock()
 		adjustFabVisibility(isSearchOpened = false)
 	}
@@ -426,5 +459,14 @@ class MainActivity :
 		drawer.setDrawerLockMode(
 			if (isLocked) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED
 		)
+	}
+
+	private inner class VoiceInputCallback : ActivityResultCallback<String?> {
+
+		override fun onActivityResult(result: String?) {
+			if (result != null) {
+				binding.searchView.query = result
+			}
+		}
 	}
 }
