@@ -22,8 +22,8 @@
 
 	<!-- Bottom sheet -->
 
-	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
-		<item name="android:navigationBarColor">?colorSurfaceVariant</item>
+	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
+		<item name="android:statusBarColor">@color/dim</item>
 	</style>
 
 	<!-- Widget styles -->
