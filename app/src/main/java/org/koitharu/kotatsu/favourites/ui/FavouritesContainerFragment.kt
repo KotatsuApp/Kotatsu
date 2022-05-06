@@ -150,6 +150,10 @@ class FavouritesContainerFragment :
 			menuItem.isChecked = item == category.order
 		}
 		submenu.setGroupCheckable(R.id.group_order, true, true)
+		menu.findItem(R.id.action_tracking)?.run {
+			isVisible = viewModel.isFavouritesTrackerEnabled
+			isChecked = category.isTrackingEnabled
+		}
 	}
 
 	private fun TabLayout.setTabsEnabled(enabled: Boolean) {
@@ -168,6 +172,7 @@ class FavouritesContainerFragment :
 				R.id.action_remove -> editDelegate.deleteCategory(category)
 				R.id.action_rename -> editDelegate.renameCategory(category)
 				R.id.action_create -> editDelegate.createCategory()
+				R.id.action_tracking -> viewModel.setCategoryTracking(category.id, !category.isTrackingEnabled)
 				R.id.action_order -> return@setOnMenuItemClickListener false
 				else -> {
 					val order = CategoriesActivity.SORT_ORDERS.getOrNull(it.order)
