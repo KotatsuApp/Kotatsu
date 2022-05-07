@@ -278,4 +278,5 @@
     <string name="batch_manga_save_confirm">Oletko varma, että haluat ladata kaikki valitut mangat kaikkine lukuineen\? Tämä toiminto voi kuluttaa paljon liikennettä ja tallennustilaa</string>
     <string name="local_manga_processing">Tallennettujen mangojen käsittely</string>
     <string name="hide">Piilota</string>
+    <string name="new_sources_text">Uusia mangalähteitä on saatavilla</string>
 </resources>
