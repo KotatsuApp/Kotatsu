@@ -45,6 +45,7 @@ sealed interface CategoryListModel : ListModel {
 			if (category.id != other.category.id) return false
 			if (category.title != other.category.title) return false
 			if (category.order != other.category.order) return false
+			if (category.isTrackingEnabled != other.category.isTrackingEnabled) return false
 
 			return true
 		}
@@ -53,6 +54,7 @@ sealed interface CategoryListModel : ListModel {
 			var result = category.id.hashCode()
 			result = 31 * result + category.title.hashCode()
 			result = 31 * result + category.order.hashCode()
+			result = 31 * result + category.isTrackingEnabled.hashCode()
 			return result
 		}
 	}

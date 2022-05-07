@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
 import androidx.lifecycle.viewModelScope
+import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -11,7 +12,6 @@ import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import java.util.*
 
 class FavouritesCategoriesViewModel(
 	private val repository: FavouritesRepository,
@@ -34,6 +34,9 @@ class FavouritesCategoriesViewModel(
 		mapCategories(list, showAll, showAll)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
+	val isFavouritesTrackerEnabled: Boolean
+		get() = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources
+
 	fun createCategory(name: String) {
 		launchJob {
 			repository.addCategory(name)
@@ -55,6 +58,12 @@ class FavouritesCategoriesViewModel(
 	fun setCategoryOrder(id: Long, order: SortOrder) {
 		launchJob {
 			repository.setCategoryOrder(id, order)
+		}
+	}
+
+	fun setCategoryTracking(id: Long, isEnabled: Boolean) {
+		launchJob {
+			repository.setCategoryTracking(id, isEnabled)
 		}
 	}
 

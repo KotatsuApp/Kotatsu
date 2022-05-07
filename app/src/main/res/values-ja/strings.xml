@@ -143,7 +143,6 @@
     <string name="clear_search_history">検索履歴をクリア</string>
     <string name="external_storage">外部ストレージ</string>
     <string name="app_update_available">Kotatsuの新しい更新が利用可能です</string>
-    <string name="show_notification_new_chapters">あなたが読んでいる漫画の更新について通知</string>
     <string name="text_empty_holder_primary">ここは空っぽです…</string>
     <string name="text_categories_holder">カテゴリーを使用してお気に入りを整理できます。 «+»を押してカテゴリーを作成出来ます</string>
     <string name="favourites_category_empty">空のカテゴリー</string>

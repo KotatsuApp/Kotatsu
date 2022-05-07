@@ -3,23 +3,28 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="tracker_enabled"
+		android:layout="@layout/preference_toggle_header"
+		android:title="@string/check_new_chapters_title" />
+
 	<MultiSelectListPreference
 		android:defaultValue="@array/values_track_sources_default"
+		android:dependency="tracker_enabled"
 		android:entries="@array/track_sources"
 		android:entryValues="@array/values_track_sources"
 		android:key="track_sources"
 		android:title="@string/track_sources" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
-		android:key="tracker_notifications"
-		android:summary="@string/show_notification_new_chapters"
-		android:title="@string/notifications" />
+	<Preference
+		android:key="track_categories"
+		android:title="@string/favourites_categories" />
 
 	<Preference
-		android:dependency="tracker_notifications"
 		android:fragment="org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment"
 		android:key="notifications_settings"
+		android:dependency="tracker_enabled"
 		android:title="@string/notifications_settings" />
 
 	<org.koitharu.kotatsu.settings.utils.LinksPreference

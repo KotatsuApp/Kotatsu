@@ -232,7 +232,6 @@
     <string name="clear_thumbs_cache">Limpar cache de miniaturas</string>
     <string name="application_update">Verifique se há novas versões do aplicativo</string>
     <string name="favourites_categories">Categorias favoritas</string>
-    <string name="show_notification_new_chapters">Notificar sobre atualizações de mangá que você está lendo</string>
     <string name="category_delete_confirm">Remover a categoria “%s” dos seus favoritos\?
 \nTodos os mangás nela serão perdidos.</string>
     <string name="no_update_available">Nenhuma atualização disponível</string>

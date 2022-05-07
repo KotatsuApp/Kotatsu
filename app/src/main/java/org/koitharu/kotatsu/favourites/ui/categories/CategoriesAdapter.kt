@@ -40,7 +40,10 @@ class CategoriesAdapter(
 			newItem: CategoryListModel,
 		): Any? = when {
 			oldItem is CategoryListModel.All && newItem is CategoryListModel.All -> Unit
-			else -> super.getChangePayload(oldItem, newItem)
+			oldItem is CategoryListModel.CategoryItem &&
+				newItem is CategoryListModel.CategoryItem &&
+				oldItem.category.title != newItem.category.title -> null
+			else -> Unit
 		}
 	}
 }

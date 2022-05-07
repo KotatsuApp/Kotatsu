@@ -30,7 +30,8 @@ class CategoriesActivity :
 	BaseActivity<ActivityCategoriesBinding>(),
 	OnListItemClickListener<FavouriteCategory>,
 	View.OnClickListener,
-	CategoriesEditDelegate.CategoriesEditCallback, AllCategoriesToggleListener {
+	CategoriesEditDelegate.CategoriesEditCallback,
+	AllCategoriesToggleListener {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
@@ -63,11 +64,12 @@ class CategoriesActivity :
 	override fun onItemClick(item: FavouriteCategory, view: View) {
 		val menu = PopupMenu(view.context, view)
 		menu.inflate(R.menu.popup_category)
-		createOrderSubmenu(menu.menu, item)
+		prepareCategoryMenu(menu.menu, item)
 		menu.setOnMenuItemClickListener { menuItem ->
 			when (menuItem.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(item)
 				R.id.action_rename -> editDelegate.renameCategory(item)
+				R.id.action_tracking -> viewModel.setCategoryTracking(item.id, !item.isTrackingEnabled)
 				R.id.action_order -> return@setOnMenuItemClickListener false
 				else -> {
 					val order = SORT_ORDERS.getOrNull(menuItem.order) ?: return@setOnMenuItemClickListener false
@@ -124,7 +126,7 @@ class CategoriesActivity :
 		viewModel.createCategory(name)
 	}
 
-	private fun createOrderSubmenu(menu: Menu, category: FavouriteCategory) {
+	private fun prepareCategoryMenu(menu: Menu, category: FavouriteCategory) {
 		val submenu = menu.findItem(R.id.action_order)?.subMenu ?: return
 		for ((i, item) in SORT_ORDERS.withIndex()) {
 			val menuItem = submenu.add(
@@ -137,6 +139,10 @@ class CategoriesActivity :
 			menuItem.isChecked = item == category.order
 		}
 		submenu.setGroupCheckable(R.id.group_order, true, true)
+		menu.findItem(R.id.action_tracking)?.run {
+			isVisible = viewModel.isFavouritesTrackerEnabled
+			isChecked = category.isTrackingEnabled
+		}
 	}
 
 	private inner class ReorderHelperCallback : ItemTouchHelper.SimpleCallback(

@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.core.model
 
 import android.os.Parcelable
+import java.util.*
 import kotlinx.parcelize.Parcelize
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import java.util.*
 
 @Parcelize
 data class FavouriteCategory(
@@ -12,4 +12,5 @@ data class FavouriteCategory(
 	val sortKey: Int,
 	val order: SortOrder,
 	val createdAt: Date,
+	val isTrackingEnabled: Boolean,
 ) : Parcelable
