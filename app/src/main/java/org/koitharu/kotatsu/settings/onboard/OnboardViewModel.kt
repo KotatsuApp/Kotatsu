@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.settings.onboard
 import androidx.collection.ArraySet
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
-import java.util.*
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -12,6 +11,7 @@ import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.mapToSet
+import java.util.*
 
 class OnboardViewModel(
 	private val settings: AppSettings,
@@ -55,6 +55,7 @@ class OnboardViewModel(
 		settings.hiddenSources = allSources.filterNot { x ->
 			x.locale in selectedLocales
 		}.mapToSet { x -> x.name }
+		settings.markKnownSources(settings.newSources)
 	}
 
 	private fun rebuildList() {

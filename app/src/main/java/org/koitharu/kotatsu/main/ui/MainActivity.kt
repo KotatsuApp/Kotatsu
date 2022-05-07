@@ -27,7 +27,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -418,20 +417,19 @@ class MainActivity :
 	}
 
 	private fun onFirstStart() {
-		lifecycleScope.launch(Dispatchers.Default) {
-			TrackWorker.setup(applicationContext)
-			SuggestionsWorker.setup(applicationContext)
-			if (AppUpdateChecker.isUpdateSupported(this@MainActivity)) {
+		lifecycleScope.launchWhenResumed {
+			val isUpdateSupported = withContext(Dispatchers.Default) {
+				TrackWorker.setup(applicationContext)
+				SuggestionsWorker.setup(applicationContext)
+				AppUpdateChecker.isUpdateSupported(this@MainActivity)
+			}
+			if (isUpdateSupported) {
 				AppUpdateChecker(this@MainActivity).checkIfNeeded()
 			}
 			val settings = get<AppSettings>()
 			when {
-				!settings.isSourcesSelected -> withContext(Dispatchers.Main) {
-					OnboardDialogFragment.showWelcome(supportFragmentManager)
-				}
-				settings.newSources.isNotEmpty() -> withContext(Dispatchers.Main) {
-					NewSourcesDialogFragment.show(supportFragmentManager)
-				}
+				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
+				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
 			}
 		}
 	}

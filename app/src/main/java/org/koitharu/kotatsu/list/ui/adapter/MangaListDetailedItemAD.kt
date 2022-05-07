@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.list.ui.adapter
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
+import coil.size.Scale
 import coil.util.CoilUtils
 import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -44,6 +45,7 @@ fun mangaListDetailedItemAD(
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
+			.scale(Scale.FILL)
 			.allowRgb565(true)
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
