@@ -9,10 +9,7 @@
 	android:layout_marginHorizontal="16dp"
 	android:layout_marginVertical="8dp"
 	android:paddingBottom="8dp"
-	app:cardCornerRadius="24dp"
-	app:layout_constraintEnd_toEndOf="parent"
-	app:layout_constraintStart_toStartOf="parent"
-	app:layout_constraintTop_toTopOf="parent">
+	app:cardCornerRadius="24dp">
 
 	<LinearLayout
 		android:layout_width="match_parent"
