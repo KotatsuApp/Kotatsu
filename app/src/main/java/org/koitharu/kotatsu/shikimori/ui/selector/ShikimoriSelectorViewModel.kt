@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.shikimori.ui.selector
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +39,10 @@ class ShikimoriSelectorViewModel(
 		}
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
-	val avatar = liveData {
+	val selectedItemId = MutableLiveData(RecyclerView.NO_ID)
+
+	val avatar = liveData(viewModelScope.coroutineContext + Dispatchers.Default) {
+		emit(repository.getCachedUser()?.avatar)
 		emit(runCatching { repository.getUser().avatar }.getOrNull())
 	}
 

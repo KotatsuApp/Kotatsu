@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getEnumValue
+import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 
@@ -236,15 +237,7 @@ class AppSettings(context: Context) {
 		prefs.unregisterOnSharedPreferenceChangeListener(listener)
 	}
 
-	fun observe() = callbackFlow<String> {
-		val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-			trySendBlocking(key)
-		}
-		prefs.registerOnSharedPreferenceChangeListener(listener)
-		awaitClose {
-			prefs.unregisterOnSharedPreferenceChangeListener(listener)
-		}
-	}
+	fun observe() = prefs.observe()
 
 	companion object {
 

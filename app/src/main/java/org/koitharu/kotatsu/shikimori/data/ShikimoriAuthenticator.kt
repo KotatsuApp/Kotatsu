@@ -5,6 +5,7 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.network.CommonHeaders
 
 class ShikimoriAuthenticator(
@@ -38,9 +39,13 @@ class ShikimoriAuthenticator(
 			.build()
 	}
 
-	private fun refreshAccessToken(): String? {
+	private fun refreshAccessToken(): String? = runCatching {
 		val repository = repositoryProvider()
 		runBlocking { repository.authorize(null) }
 		return storage.accessToken
-	}
+	}.onFailure {
+		if (BuildConfig.DEBUG) {
+			it.printStackTrace()
+		}
+	}.getOrNull()
 }

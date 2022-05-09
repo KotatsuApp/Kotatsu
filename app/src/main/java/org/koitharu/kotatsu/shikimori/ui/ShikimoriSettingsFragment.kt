@@ -37,6 +37,10 @@ class ShikimoriSettingsFragment : BasePreferenceFragment(R.string.shikimori) {
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			KEY_USER -> openAuthorization()
+			KEY_LOGOUT -> {
+				viewModel.logout()
+				true
+			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
@@ -50,6 +54,7 @@ class ShikimoriSettingsFragment : BasePreferenceFragment(R.string.shikimori) {
 			.transformations(CircleCropTransformation())
 			.target(PreferenceIconTarget(pref))
 			.enqueueWith(coil)
+		findPreference<Preference>(KEY_LOGOUT)?.isVisible = user != null
 	}
 
 	private fun openAuthorization(): Boolean {
@@ -63,6 +68,7 @@ class ShikimoriSettingsFragment : BasePreferenceFragment(R.string.shikimori) {
 	companion object {
 
 		private const val KEY_USER = "shiki_user"
+		private const val KEY_LOGOUT = "shiki_logout"
 
 		private const val ARG_AUTH_CODE = "auth_code"
 

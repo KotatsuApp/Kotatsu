@@ -10,4 +10,10 @@
 		android:title="@string/loading_"
 		app:iconSpaceReserved="true" />
 
+	<Preference
+		android:key="shiki_logout"
+		android:persistent="false"
+		android:title="@string/logout"
+		app:allowDividerAbove="true" />
+
 </PreferenceScreen>

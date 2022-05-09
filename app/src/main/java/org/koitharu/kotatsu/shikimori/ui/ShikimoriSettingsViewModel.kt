@@ -24,8 +24,16 @@ class ShikimoriSettingsViewModel(
 		}
 	}
 
+	fun logout() {
+		launchJob(Dispatchers.Default) {
+			repository.logout()
+			user.postValue(null)
+		}
+	}
+
 	private fun loadUser() = launchJob(Dispatchers.Default) {
 		val userModel = if (repository.isAuthorized) {
+			repository.getCachedUser()?.let(user::postValue)
 			repository.getUser()
 		} else {
 			null

@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.databinding.SheetShikiSelectorBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.shikimori.data.model.ShikimoriManga
+import org.koitharu.kotatsu.shikimori.ui.selector.adapter.ShikiMangaSelectionDecoration
 import org.koitharu.kotatsu.shikimori.ui.selector.adapter.ShikimoriSelectorAdapter
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.ext.enqueueWith
@@ -30,7 +31,8 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 class ShikimoriSelectorBottomSheet :
 	BaseBottomSheet<SheetShikiSelectorBinding>(),
 	OnListItemClickListener<ShikimoriManga>,
-	PaginationScrollListener.Callback, View.OnClickListener {
+	PaginationScrollListener.Callback,
+	View.OnClickListener {
 
 	private val viewModel by viewModel<ShikimoriSelectorViewModel> {
 		parametersOf(requireNotNull(requireArguments().getParcelable<ParcelableManga>(MangaIntent.KEY_MANGA)).manga)
@@ -46,13 +48,19 @@ class ShikimoriSelectorBottomSheet :
 		binding.toolbar.setNavigationOnClickListener { dismiss() }
 		addBottomSheetCallback(BottomSheetToolbarController(binding.toolbar))
 		val listAdapter = ShikimoriSelectorAdapter(viewLifecycleOwner, get(), this)
+		val decoration = ShikiMangaSelectionDecoration(view.context)
 		with(binding.recyclerView) {
 			adapter = listAdapter
+			addItemDecoration(decoration)
 			addOnScrollListener(PaginationScrollListener(4, this@ShikimoriSelectorBottomSheet))
 		}
 		binding.imageViewUser.setOnClickListener(this)
 
 		viewModel.content.observe(viewLifecycleOwner) { listAdapter.items = it }
+		viewModel.selectedItemId.observe(viewLifecycleOwner) {
+			decoration.checkedItemId = it
+			binding.recyclerView.invalidateItemDecorations()
+		}
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 		viewModel.avatar.observe(viewLifecycleOwner, ::setUserAvatar)
 	}
@@ -64,6 +72,7 @@ class ShikimoriSelectorBottomSheet :
 	}
 
 	override fun onItemClick(item: ShikimoriManga, view: View) {
+		viewModel.selectedItemId.value = item.id
 	}
 
 	override fun onScrolledToEnd() {
