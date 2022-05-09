@@ -1,11 +1,15 @@
 package org.koitharu.kotatsu.shikimori.data
 
 import okhttp3.FormBody
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.util.*
+import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
+import org.koitharu.kotatsu.parsers.util.parseJson
+import org.koitharu.kotatsu.parsers.util.parseJsonArray
+import org.koitharu.kotatsu.parsers.util.urlEncoded
 import org.koitharu.kotatsu.shikimori.data.model.ShikimoriManga
 import org.koitharu.kotatsu.shikimori.data.model.ShikimoriMangaInfo
 import org.koitharu.kotatsu.shikimori.data.model.ShikimoriUser
@@ -13,6 +17,8 @@ import org.koitharu.kotatsu.shikimori.data.model.ShikimoriUser
 private const val CLIENT_ID = "Mw6F0tPEOgyV7F9U9Twg50Q8SndMY7hzIOfXg0AX_XU"
 private const val CLIENT_SECRET = "euBMt1GGRSDpVIFQVPxZrO7Kh6X4gWyv0dABuj4B-M8"
 private const val REDIRECT_URI = "kotatsu://shikimori-auth"
+private const val BASE_URL = "https://shikimori.one/api/"
+private const val MANGA_PAGE_SIZE = 10
 
 class ShikimoriRepository(
 	private val okHttp: OkHttpClient,
@@ -53,16 +59,32 @@ class ShikimoriRepository(
 		return ShikimoriUser(response)
 	}
 
+	suspend fun findManga(query: String, offset: Int): List<ShikimoriManga> {
+		val page = offset / MANGA_PAGE_SIZE
+		val pageOffset = offset % MANGA_PAGE_SIZE
+		val url = BASE_URL.toHttpUrl().newBuilder()
+			.addPathSegment("mangas")
+			.addEncodedQueryParameter("page", (page + 1).toString())
+			.addEncodedQueryParameter("limit", MANGA_PAGE_SIZE.toString())
+			.addEncodedQueryParameter("censored", false.toString())
+			.addQueryParameter("search", query)
+			.build()
+		val request = Request.Builder().url(url).get().build()
+		val response = okHttp.newCall(request).await().parseJsonArray()
+		val list = response.mapJSON { ShikimoriManga(it) }
+		return if (pageOffset != 0) list.drop(pageOffset) else list
+	}
+
 	suspend fun findMangaInfo(manga: Manga): ShikimoriMangaInfo? {
 		val q = manga.title.urlEncoded()
 		val request = Request.Builder()
 			.get()
-			.url("https://shikimori.one/api/mangas?limit=20&search=$q&censored=false")
+			.url("https://shikimori.one/api/mangas?limit=5&search=$q&censored=false")
 		val response = okHttp.newCall(request.build()).await().parseJsonArray()
 		val candidates = response.mapJSON { ShikimoriManga(it) }
-		val bestCandidate = candidates.minByOrNull {
-			it.name.levenshteinDistance(manga.title)
-		} ?: return null
+		val bestCandidate = candidates.filter {
+			it.name.equals(manga.title, ignoreCase = true) || it.name.equals(manga.altTitle, ignoreCase = true)
+		}.singleOrNull() ?: return null
 		return getMangaInfo(bestCandidate.id)
 	}
 

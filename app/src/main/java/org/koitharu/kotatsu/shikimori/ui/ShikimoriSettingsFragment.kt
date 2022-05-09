@@ -18,8 +18,6 @@ import org.koitharu.kotatsu.utils.PreferenceIconTarget
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-private const val KEY_USER = "shiki_user"
-
 class ShikimoriSettingsFragment : BasePreferenceFragment(R.string.shikimori) {
 
 	private val viewModel by viewModel<ShikimoriSettingsViewModel> {
@@ -63,6 +61,8 @@ class ShikimoriSettingsFragment : BasePreferenceFragment(R.string.shikimori) {
 	}
 
 	companion object {
+
+		private const val KEY_USER = "shiki_user"
 
 		private const val ARG_AUTH_CODE = "auth_code"
 

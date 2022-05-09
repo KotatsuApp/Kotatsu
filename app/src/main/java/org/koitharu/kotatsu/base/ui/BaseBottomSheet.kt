@@ -49,6 +49,15 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 		}
 	}
 
+	fun addBottomSheetCallback(callback: BottomSheetBehavior.BottomSheetCallback) {
+		val b = behavior ?: return
+		b.addBottomSheetCallback(callback)
+		val rootView = dialog?.findViewById<View>(materialR.id.design_bottom_sheet)
+		if (rootView != null) {
+			callback.onStateChanged(rootView, b.state)
+		}
+	}
+
 	protected abstract fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): B
 
 	protected fun setExpanded(isExpanded: Boolean, isLocked: Boolean) {

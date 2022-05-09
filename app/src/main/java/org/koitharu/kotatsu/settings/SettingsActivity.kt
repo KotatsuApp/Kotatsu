@@ -121,6 +121,7 @@ class SettingsActivity :
 			Intent.ACTION_VIEW -> handleUri(intent.data) ?: return
 			ACTION_READER -> ReaderSettingsFragment()
 			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
+			ACTION_SHIKIMORI -> ShikimoriSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL
 			)
@@ -146,6 +147,7 @@ class SettingsActivity :
 		private const val ACTION_READER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_READER_SETTINGS"
 		private const val ACTION_SUGGESTIONS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SUGGESTIONS"
 		private const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
+		private const val ACTION_SHIKIMORI = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SHIKIMORI_SETTINGS"
 		private const val EXTRA_SOURCE = "source"
 
 		private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
@@ -155,6 +157,10 @@ class SettingsActivity :
 		fun newReaderSettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_READER)
+
+		fun newShikimoriSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_SHIKIMORI)
 
 		fun newSuggestionsSettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)

@@ -11,8 +11,12 @@
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.SuggestionsSettingsFragment"
 		android:key="suggestions"
-		android:persistent="false"
 		android:title="@string/suggestions" />
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.shikimori.ui.ShikimoriSettingsFragment"
+		android:title="@string/shikimori"
+		android:key="shikimori" />
 
 	<Preference
 		android:key="local_storage"
@@ -33,12 +37,6 @@
 		android:valueFrom="1"
 		android:valueTo="5"
 		app:defaultValue="2" />
-
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.shikimori.ui.ShikimoriSettingsFragment"
-		android:title="@string/shikimori"
-		android:key="shikimori"
-		app:iconSpaceReserved="false" />
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"

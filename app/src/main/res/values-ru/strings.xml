@@ -284,4 +284,5 @@
 	<string name="name">Название</string>
 	<string name="edit">Изменить</string>
 	<string name="edit_category">Изменить категорию</string>
+	<string name="tracking">Отслеживание</string>
 </resources>

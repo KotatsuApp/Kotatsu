@@ -11,7 +11,7 @@ import com.google.android.material.progressindicator.BaseProgressIndicator
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.utils.progress.ImageRequestIndicatorListener
 
-fun ImageView.newImageRequest(url: String) = ImageRequest.Builder(context)
+fun ImageView.newImageRequest(url: String?) = ImageRequest.Builder(context)
 	.data(url)
 	.crossfade(true)
 	.target(this)

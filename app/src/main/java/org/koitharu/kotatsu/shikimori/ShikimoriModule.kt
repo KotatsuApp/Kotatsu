@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.shikimori.data.ShikimoriInterceptor
 import org.koitharu.kotatsu.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.shikimori.data.ShikimoriStorage
 import org.koitharu.kotatsu.shikimori.ui.ShikimoriSettingsViewModel
+import org.koitharu.kotatsu.shikimori.ui.selector.ShikimoriSelectorViewModel
 
 val shikimoriModule
 	get() = module {
@@ -23,4 +24,5 @@ val shikimoriModule
 		viewModel { params ->
 			ShikimoriSettingsViewModel(get(), params.getOrNull())
 		}
+		viewModel { params -> ShikimoriSelectorViewModel(params[0], get()) }
 	}

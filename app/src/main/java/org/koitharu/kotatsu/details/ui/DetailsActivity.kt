@@ -45,6 +45,7 @@ import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
+import org.koitharu.kotatsu.shikimori.ui.selector.ShikimoriSelectorBottomSheet
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
@@ -151,14 +152,11 @@ class DetailsActivity :
 
 	override fun onPrepareOptionsMenu(menu: Menu): Boolean {
 		val manga = viewModel.manga.value
-		menu.findItem(R.id.action_save).isVisible =
-			manga?.source != null && manga.source != MangaSource.LOCAL
-		menu.findItem(R.id.action_delete).isVisible =
-			manga?.source == MangaSource.LOCAL
-		menu.findItem(R.id.action_browser).isVisible =
-			manga?.source != MangaSource.LOCAL
-		menu.findItem(R.id.action_shortcut).isVisible =
-			ShortcutManagerCompat.isRequestPinShortcutSupported(this)
+		menu.findItem(R.id.action_save).isVisible = manga?.source != null && manga.source != MangaSource.LOCAL
+		menu.findItem(R.id.action_delete).isVisible = manga?.source == MangaSource.LOCAL
+		menu.findItem(R.id.action_browser).isVisible = manga?.source != MangaSource.LOCAL
+		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
+		menu.findItem(R.id.action_shiki_track).isVisible = viewModel.isShikimoriAvailable
 		return super.onPrepareOptionsMenu(menu)
 	}
 
@@ -206,6 +204,12 @@ class DetailsActivity :
 		R.id.action_related -> {
 			viewModel.manga.value?.let {
 				startActivity(GlobalSearchActivity.newIntent(this, it.title))
+			}
+			true
+		}
+		R.id.action_shiki_track -> {
+			viewModel.manga.value?.let {
+				ShikimoriSelectorBottomSheet.show(supportFragmentManager, it)
 			}
 			true
 		}

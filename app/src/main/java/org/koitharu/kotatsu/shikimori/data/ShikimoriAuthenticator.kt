@@ -15,15 +15,15 @@ class ShikimoriAuthenticator(
 	override fun authenticate(route: Route?, response: Response): Request? {
 		val accessToken = storage.accessToken ?: return null
 		if (!isRequestWithAccessToken(response)) {
-			return null;
+			return null
 		}
-		synchronized (this) {
+		synchronized(this) {
 			val newAccessToken = storage.accessToken ?: return null
 			if (accessToken != newAccessToken) {
-				return newRequestWithAccessToken(response.request, newAccessToken);
+				return newRequestWithAccessToken(response.request, newAccessToken)
 			}
 			val updatedAccessToken = refreshAccessToken() ?: return null
-			return newRequestWithAccessToken(response.request, updatedAccessToken);
+			return newRequestWithAccessToken(response.request, updatedAccessToken)
 		}
 	}
 

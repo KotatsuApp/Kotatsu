@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.details.ui
 
 import androidx.core.os.LocaleListCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -28,7 +27,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.shikimori.data.ShikimoriRepository
-import org.koitharu.kotatsu.shikimori.data.model.ShikimoriMangaInfo
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
@@ -90,7 +88,8 @@ class DetailsViewModel(
 		.asLiveData(viewModelScope.coroutineContext)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
-	val shikimoriInfo = MutableLiveData<ShikimoriMangaInfo?>()
+	val isShikimoriAvailable: Boolean
+		get() = shikimoriRepository.isAuthorized
 
 	val branches = mangaData.map {
 		it?.chapters?.mapToSet { x -> x.branch }?.sortedBy { x -> x }.orEmpty()
@@ -216,7 +215,6 @@ class DetailsViewModel(
 		}.onFailure { error ->
 			if (BuildConfig.DEBUG) error.printStackTrace()
 		}.getOrNull()
-		findShikimoriManga(manga)
 	}
 
 	private fun mapChapters(
@@ -327,20 +325,6 @@ class DetailsViewModel(
 		}
 		return filter {
 			it.chapter.name.contains(query, ignoreCase = true)
-		}
-	}
-
-	private fun findShikimoriManga(manga: Manga) {
-		if (!shikimoriRepository.isAuthorized) {
-			return
-		}
-		launchJob(Dispatchers.Default) {
-			val data = runCatching {
-				shikimoriRepository.findMangaInfo(manga)
-			}.getOrNull()
-			if (data != null) {
-				shikimoriInfo.postValue(data)
-			}
 		}
 	}
 }

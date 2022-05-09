@@ -289,4 +289,5 @@
 	<string name="name">Name</string>
 	<string name="edit">Edit</string>
 	<string name="edit_category">Edit category</string>
+	<string name="tracking">Tracking</string>
 </resources>
