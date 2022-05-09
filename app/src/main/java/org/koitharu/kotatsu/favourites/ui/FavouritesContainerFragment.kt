@@ -147,7 +147,7 @@ class FavouritesContainerFragment :
 		menu.setOnMenuItemClickListener {
 			when (it.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(category)
-				R.id.action_edit -> FavouritesCategoryEditActivity.newIntent(tabView.context, category.id)
+				R.id.action_edit -> startActivity(FavouritesCategoryEditActivity.newIntent(tabView.context, category.id))
 				else -> return@setOnMenuItemClickListener false
 			}
 			true
@@ -160,7 +160,7 @@ class FavouritesContainerFragment :
 		menu.inflate(R.menu.popup_category_all)
 		menu.setOnMenuItemClickListener {
 			when (it.itemId) {
-				R.id.action_create -> FavouritesCategoryEditActivity.newIntent(requireContext())
+				R.id.action_create -> startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
 				R.id.action_hide -> viewModel.setAllCategoriesVisible(false)
 			}
 			true
