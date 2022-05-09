@@ -281,4 +281,7 @@
 	<string name="show_notification_new_chapters_on">Вы будете получать уведомления об обновлении манги, которую Вы читаете</string>
 	<string name="show_notification_new_chapters_off">Вы не будете получать уведомления, но новые главы будут отображаться в списке</string>
 	<string name="notifications_enable">Включить уведомления</string>
+	<string name="name">Название</string>
+	<string name="edit">Изменить</string>
+	<string name="edit_category">Изменить категорию</string>
 </resources>

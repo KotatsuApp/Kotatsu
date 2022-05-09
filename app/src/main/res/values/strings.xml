@@ -284,4 +284,7 @@
 	<string name="show_notification_new_chapters_on">You will receive notifications about updates of manga you are reading</string>
 	<string name="show_notification_new_chapters_off">You will not receive notifications but new chapters will be highlighted in the lists</string>
 	<string name="notifications_enable">Enable notifications</string>
+	<string name="name">Name</string>
+	<string name="edit">Edit</string>
+	<string name="edit_category">Edit category</string>
 </resources>

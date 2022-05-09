@@ -62,6 +62,7 @@
 						android:layout_height="match_parent"
 						android:background="@null"
 						android:drawablePadding="16dp"
+						android:layout_marginEnd="4dp"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
 						android:imeOptions="actionSearch"

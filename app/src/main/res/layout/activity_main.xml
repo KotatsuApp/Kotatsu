@@ -51,7 +51,7 @@
 						style="@style/Widget.Kotatsu.SearchView"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
-						android:layout_marginEnd="2dp"
+						android:layout_marginEnd="4dp"
 						android:background="@null"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"

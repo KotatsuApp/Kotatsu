@@ -7,25 +7,7 @@
 		android:title="@string/remove" />
 
 	<item
-		android:id="@+id/action_rename"
-		android:title="@string/rename" />
-
-	<item
-		android:id="@+id/action_order"
-		android:title="@string/sort_order">
-
-		<menu>
-
-			<group
-				android:id="@+id/group_order"
-				android:checkableBehavior="single" />
-		</menu>
-
-	</item>
-
-	<item
-		android:id="@+id/action_tracking"
-		android:title="@string/check_for_new_chapters"
-		android:checkable="true" />
+		android:id="@+id/action_edit"
+		android:title="@string/edit" />
 
 </menu>

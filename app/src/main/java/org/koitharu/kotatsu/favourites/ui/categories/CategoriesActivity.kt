@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.favourites.ui.categories
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
@@ -19,9 +18,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
+import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
@@ -57,24 +56,17 @@ class CategoriesActivity :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.fab_add -> editDelegate.createCategory()
+			R.id.fab_add -> startActivity(FavouritesCategoryEditActivity.newIntent(this))
 		}
 	}
 
 	override fun onItemClick(item: FavouriteCategory, view: View) {
 		val menu = PopupMenu(view.context, view)
 		menu.inflate(R.menu.popup_category)
-		prepareCategoryMenu(menu.menu, item)
 		menu.setOnMenuItemClickListener { menuItem ->
 			when (menuItem.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(item)
-				R.id.action_rename -> editDelegate.renameCategory(item)
-				R.id.action_tracking -> viewModel.setCategoryTracking(item.id, !item.isTrackingEnabled)
-				R.id.action_order -> return@setOnMenuItemClickListener false
-				else -> {
-					val order = SORT_ORDERS.getOrNull(menuItem.order) ?: return@setOnMenuItemClickListener false
-					viewModel.setCategoryOrder(item.id, order)
-				}
+				R.id.action_edit -> startActivity(FavouritesCategoryEditActivity.newIntent(this, item.id))
 			}
 			true
 		}
@@ -116,33 +108,6 @@ class CategoriesActivity :
 
 	override fun onDeleteCategory(category: FavouriteCategory) {
 		viewModel.deleteCategory(category.id)
-	}
-
-	override fun onRenameCategory(category: FavouriteCategory, newName: String) {
-		viewModel.renameCategory(category.id, newName)
-	}
-
-	override fun onCreateCategory(name: String) {
-		viewModel.createCategory(name)
-	}
-
-	private fun prepareCategoryMenu(menu: Menu, category: FavouriteCategory) {
-		val submenu = menu.findItem(R.id.action_order)?.subMenu ?: return
-		for ((i, item) in SORT_ORDERS.withIndex()) {
-			val menuItem = submenu.add(
-				R.id.group_order,
-				Menu.NONE,
-				i,
-				item.titleRes
-			)
-			menuItem.isCheckable = true
-			menuItem.isChecked = item == category.order
-		}
-		submenu.setGroupCheckable(R.id.group_order, true, true)
-		menu.findItem(R.id.action_tracking)?.run {
-			isVisible = viewModel.isFavouritesTrackerEnabled
-			isChecked = category.isTrackingEnabled
-		}
 	}
 
 	private inner class ReorderHelperCallback : ItemTouchHelper.SimpleCallback(

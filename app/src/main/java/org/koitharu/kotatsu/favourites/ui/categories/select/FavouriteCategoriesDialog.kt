@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.databinding.DialogFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
+import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -34,9 +35,6 @@ class FavouriteCategoriesDialog :
 	}
 
 	private var adapter: MangaCategoriesAdapter? = null
-	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {
-		CategoriesEditDelegate(requireContext(), this@FavouriteCategoriesDialog)
-	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -61,7 +59,7 @@ class FavouriteCategoriesDialog :
 	override fun onMenuItemClick(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_create -> {
-				editDelegate.createCategory()
+				FavouritesCategoryEditActivity.newIntent(requireContext())
 				true
 			}
 			else -> false
@@ -73,12 +71,6 @@ class FavouriteCategoriesDialog :
 	}
 
 	override fun onDeleteCategory(category: FavouriteCategory) = Unit
-
-	override fun onRenameCategory(category: FavouriteCategory, newName: String) = Unit
-
-	override fun onCreateCategory(name: String) {
-		viewModel.createCategory(name)
-	}
 
 	private fun onContentChanged(categories: List<MangaCategoryItem>) {
 		adapter?.items = categories

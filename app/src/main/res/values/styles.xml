@@ -119,6 +119,8 @@
 
 	<style name="TextAppearance.Kotatsu.Preference.Secondary" parent="TextAppearance.Material3.BodySmall" />
 
+	<style name="TextAppearance.Kotatsu.Menu" parent="TextAppearance.Material3.BodyLarge" />
+
 	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.LabelLarge">
 		<item name="android:textColor">?android:attr/textColorSecondary</item>
 	</style>

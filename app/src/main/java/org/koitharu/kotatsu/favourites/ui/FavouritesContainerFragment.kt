@@ -16,12 +16,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.FragmentFavouritesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
+import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
@@ -134,28 +134,6 @@ class FavouritesContainerFragment :
 		viewModel.deleteCategory(category.id)
 	}
 
-	override fun onRenameCategory(category: FavouriteCategory, newName: String) {
-		viewModel.renameCategory(category.id, newName)
-	}
-
-	override fun onCreateCategory(name: String) {
-		viewModel.createCategory(name)
-	}
-
-	private fun createOrderSubmenu(menu: Menu, category: FavouriteCategory) {
-		val submenu = menu.findItem(R.id.action_order)?.subMenu ?: return
-		for ((i, item) in CategoriesActivity.SORT_ORDERS.withIndex()) {
-			val menuItem = submenu.add(R.id.group_order, Menu.NONE, i, item.titleRes)
-			menuItem.isCheckable = true
-			menuItem.isChecked = item == category.order
-		}
-		submenu.setGroupCheckable(R.id.group_order, true, true)
-		menu.findItem(R.id.action_tracking)?.run {
-			isVisible = viewModel.isFavouritesTrackerEnabled
-			isChecked = category.isTrackingEnabled
-		}
-	}
-
 	private fun TabLayout.setTabsEnabled(enabled: Boolean) {
 		val tabStrip = getChildAt(0) as? ViewGroup ?: return
 		for (tab in tabStrip.children) {
@@ -166,19 +144,11 @@ class FavouritesContainerFragment :
 	private fun showCategoryMenu(tabView: View, category: FavouriteCategory) {
 		val menu = PopupMenu(tabView.context, tabView)
 		menu.inflate(R.menu.popup_category)
-		createOrderSubmenu(menu.menu, category)
 		menu.setOnMenuItemClickListener {
 			when (it.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(category)
-				R.id.action_rename -> editDelegate.renameCategory(category)
-				R.id.action_create -> editDelegate.createCategory()
-				R.id.action_tracking -> viewModel.setCategoryTracking(category.id, !category.isTrackingEnabled)
-				R.id.action_order -> return@setOnMenuItemClickListener false
-				else -> {
-					val order = CategoriesActivity.SORT_ORDERS.getOrNull(it.order)
-						?: return@setOnMenuItemClickListener false
-					viewModel.setCategoryOrder(category.id, order)
-				}
+				R.id.action_edit -> FavouritesCategoryEditActivity.newIntent(tabView.context, category.id)
+				else -> return@setOnMenuItemClickListener false
 			}
 			true
 		}
@@ -190,7 +160,7 @@ class FavouritesContainerFragment :
 		menu.inflate(R.menu.popup_category_all)
 		menu.setOnMenuItemClickListener {
 			when (it.itemId) {
-				R.id.action_create -> editDelegate.createCategory()
+				R.id.action_create -> FavouritesCategoryEditActivity.newIntent(requireContext())
 				R.id.action_hide -> viewModel.setAllCategoriesVisible(false)
 			}
 			true

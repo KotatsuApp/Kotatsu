@@ -52,6 +52,11 @@ class FavouritesRepository(
 		}.distinctUntilChanged()
 	}
 
+	fun observeCategory(id: Long): Flow<FavouriteCategory> {
+		return db.favouriteCategoriesDao.observe(id)
+			.map { it.toFavouriteCategory() }
+	}
+
 	fun observeCategories(mangaId: Long): Flow<List<FavouriteCategory>> {
 		return db.favouritesDao.observe(mangaId).map { entity ->
 			entity?.categories?.map { it.toFavouriteCategory() }.orEmpty()
@@ -60,6 +65,29 @@ class FavouritesRepository(
 
 	fun observeCategoriesIds(mangaId: Long): Flow<Set<Long>> {
 		return db.favouritesDao.observeIds(mangaId).map { it.toSet() }
+	}
+
+	suspend fun getCategory(id: Long): FavouriteCategory {
+		return db.favouriteCategoriesDao.find(id.toInt()).toFavouriteCategory()
+	}
+
+	suspend fun createCategory(title: String, sortOrder: SortOrder, isTrackerEnabled: Boolean): FavouriteCategory {
+		val entity = FavouriteCategoryEntity(
+			title = title,
+			createdAt = System.currentTimeMillis(),
+			sortKey = db.favouriteCategoriesDao.getNextSortKey(),
+			categoryId = 0,
+			order = sortOrder.name,
+			track = isTrackerEnabled,
+		)
+		val id = db.favouriteCategoriesDao.insert(entity)
+		val category = entity.toFavouriteCategory(id)
+		channels.createChannel(category)
+		return category
+	}
+
+	suspend fun updateCategory(id: Long, title: String, sortOrder: SortOrder, isTrackerEnabled: Boolean) {
+		db.favouriteCategoriesDao.update(id, title, sortOrder.name, isTrackerEnabled)
 	}
 
 	suspend fun addCategory(title: String): FavouriteCategory {
