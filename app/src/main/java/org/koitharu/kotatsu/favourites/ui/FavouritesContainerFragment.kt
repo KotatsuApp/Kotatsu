@@ -6,6 +6,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.FragmentFavouritesBinding
+import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
@@ -31,13 +33,15 @@ class FavouritesContainerFragment :
 	BaseFragment<FragmentFavouritesBinding>(),
 	FavouritesTabLongClickListener,
 	CategoriesEditDelegate.CategoriesEditCallback,
-	ActionModeListener {
+	ActionModeListener,
+	View.OnClickListener {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {
 		CategoriesEditDelegate(requireContext(), this)
 	}
 	private var pagerAdapter: FavouritesPagerAdapter? = null
+	private var stubBinding: ItemEmptyStateBinding? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -52,9 +56,7 @@ class FavouritesContainerFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = FavouritesPagerAdapter(this, this)
-		viewModel.visibleCategories.value?.let {
-			adapter.replaceData(it)
-		}
+		viewModel.visibleCategories.value?.let(::onCategoriesChanged)
 		binding.pager.adapter = adapter
 		pagerAdapter = adapter
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
@@ -66,6 +68,7 @@ class FavouritesContainerFragment :
 
 	override fun onDestroyView() {
 		pagerAdapter = null
+		stubBinding = null
 		super.onDestroyView()
 	}
 
@@ -101,6 +104,15 @@ class FavouritesContainerFragment :
 
 	private fun onCategoriesChanged(categories: List<CategoryListModel>) {
 		pagerAdapter?.replaceData(categories)
+		if (categories.isEmpty()) {
+			binding.pager.isVisible = false
+			binding.tabs.isVisible = false
+			showStub()
+		} else {
+			binding.pager.isVisible = true
+			binding.tabs.isVisible = true
+			(stubBinding?.root ?: binding.stubEmptyState).isVisible = false
+		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -130,6 +142,12 @@ class FavouritesContainerFragment :
 		return true
 	}
 
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.button_retry -> startActivity(FavouritesCategoryEditActivity.newIntent(v.context))
+		}
+	}
+
 	override fun onDeleteCategory(category: FavouriteCategory) {
 		viewModel.deleteCategory(category.id)
 	}
@@ -147,7 +165,7 @@ class FavouritesContainerFragment :
 		menu.setOnMenuItemClickListener {
 			when (it.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(category)
-				R.id.action_edit -> FavouritesCategoryEditActivity.newIntent(tabView.context, category.id)
+				R.id.action_edit -> startActivity(FavouritesCategoryEditActivity.newIntent(tabView.context, category.id))
 				else -> return@setOnMenuItemClickListener false
 			}
 			true
@@ -160,12 +178,24 @@ class FavouritesContainerFragment :
 		menu.inflate(R.menu.popup_category_all)
 		menu.setOnMenuItemClickListener {
 			when (it.itemId) {
-				R.id.action_create -> FavouritesCategoryEditActivity.newIntent(requireContext())
+				R.id.action_create -> startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
 				R.id.action_hide -> viewModel.setAllCategoriesVisible(false)
 			}
 			true
 		}
 		menu.show()
+	}
+
+	private fun showStub() {
+		val stub = stubBinding ?: ItemEmptyStateBinding.bind(binding.stubEmptyState.inflate())
+		stub.root.isVisible = true
+		stub.icon.setImageResource(R.drawable.ic_heart_outline)
+		stub.textPrimary.setText(R.string.text_empty_holder_primary)
+		stub.textSecondary.setText(R.string.empty_favourite_categories)
+		stub.buttonRetry.setText(R.string.add)
+		stub.buttonRetry.isVisible = true
+		stub.buttonRetry.setOnClickListener(this)
+		stubBinding = stub
 	}
 
 	companion object {

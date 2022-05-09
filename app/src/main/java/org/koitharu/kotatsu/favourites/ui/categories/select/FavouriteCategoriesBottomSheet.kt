@@ -24,7 +24,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class FavouriteCategoriesDialog :
+class FavouriteCategoriesBottomSheet :
 	BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>,
 	CategoriesEditDelegate.CategoriesEditCallback,
@@ -59,7 +59,7 @@ class FavouriteCategoriesDialog :
 	override fun onMenuItemClick(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_create -> {
-				FavouritesCategoryEditActivity.newIntent(requireContext())
+				startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
 				true
 			}
 			else -> false
@@ -87,7 +87,7 @@ class FavouriteCategoriesDialog :
 
 		fun show(fm: FragmentManager, manga: Manga) = Companion.show(fm, listOf(manga))
 
-		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavouriteCategoriesDialog().withArgs(1) {
+		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavouriteCategoriesBottomSheet().withArgs(1) {
 			putParcelableArrayList(
 				KEY_MANGA_LIST,
 				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withChapters = false) }

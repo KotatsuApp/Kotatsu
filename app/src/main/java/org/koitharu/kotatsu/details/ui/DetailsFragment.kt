@@ -24,7 +24,7 @@ import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesDialog
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -181,7 +181,7 @@ class DetailsFragment :
 		val manga = viewModel.manga.value ?: return
 		when (v.id) {
 			R.id.button_favorite -> {
-				FavouriteCategoriesDialog.show(childFragmentManager, manga)
+				FavouriteCategoriesBottomSheet.show(childFragmentManager, manga)
 			}
 			R.id.button_read -> {
 				val chapterId = viewModel.readingHistory.value?.chapterId

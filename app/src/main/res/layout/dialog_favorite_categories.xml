@@ -20,6 +20,7 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
 		android:overScrollMode="never"
+		android:paddingBottom="@dimen/list_spacing"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_checkable_new" />

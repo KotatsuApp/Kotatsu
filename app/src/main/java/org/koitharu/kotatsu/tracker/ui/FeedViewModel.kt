@@ -65,6 +65,9 @@ class FeedViewModel(
 		if (loadingJob?.isActive == true) {
 			return
 		}
+		if (append && !hasNextPage.value) {
+			return
+		}
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			val offset = if (append) logList.value?.size ?: 0 else 0
 			val list = repository.getTrackingLog(offset, 20)

@@ -290,4 +290,5 @@
 	<string name="edit">Edit</string>
 	<string name="edit_category">Edit category</string>
 	<string name="tracking">Tracking</string>
+	<string name="empty_favourite_categories">No favourite categories</string>
 </resources>

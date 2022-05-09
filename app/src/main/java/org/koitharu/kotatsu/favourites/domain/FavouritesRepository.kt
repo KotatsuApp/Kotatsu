@@ -1,10 +1,7 @@
 package org.koitharu.kotatsu.favourites.domain
 
 import androidx.room.withTransaction
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -52,9 +49,9 @@ class FavouritesRepository(
 		}.distinctUntilChanged()
 	}
 
-	fun observeCategory(id: Long): Flow<FavouriteCategory> {
+	fun observeCategory(id: Long): Flow<FavouriteCategory?> {
 		return db.favouriteCategoriesDao.observe(id)
-			.map { it.toFavouriteCategory() }
+			.map { it?.toFavouriteCategory() }
 	}
 
 	fun observeCategories(mangaId: Long): Flow<List<FavouriteCategory>> {
@@ -162,6 +159,7 @@ class FavouritesRepository(
 
 	private fun observeOrder(categoryId: Long): Flow<SortOrder> {
 		return db.favouriteCategoriesDao.observe(categoryId)
+			.filterNotNull()
 			.map { x -> SortOrder(x.order, SortOrder.NEWEST) }
 			.distinctUntilChanged()
 	}

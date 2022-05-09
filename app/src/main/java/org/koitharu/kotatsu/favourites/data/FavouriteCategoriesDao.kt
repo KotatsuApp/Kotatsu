@@ -16,7 +16,7 @@ abstract class FavouriteCategoriesDao {
 	abstract fun observeAll(): Flow<List<FavouriteCategoryEntity>>
 
 	@Query("SELECT * FROM favourite_categories WHERE category_id = :id")
-	abstract fun observe(id: Long): Flow<FavouriteCategoryEntity>
+	abstract fun observe(id: Long): Flow<FavouriteCategoryEntity?>
 
 	@Insert(onConflict = OnConflictStrategy.ABORT)
 	abstract suspend fun insert(category: FavouriteCategoryEntity): Long

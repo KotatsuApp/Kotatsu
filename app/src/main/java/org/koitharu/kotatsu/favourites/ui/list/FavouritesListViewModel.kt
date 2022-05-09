@@ -28,11 +28,11 @@ class FavouritesListViewModel(
 	settings: AppSettings,
 ) : MangaListViewModel(settings), CountersProvider {
 
-	var sortOrder: LiveData<SortOrder> = if (categoryId == NO_ID) {
+	var sortOrder: LiveData<SortOrder?> = if (categoryId == NO_ID) {
 		MutableLiveData(null)
 	} else {
 		repository.observeCategory(categoryId)
-			.map { it.order }
+			.map { it?.order }
 			.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 	}
 
