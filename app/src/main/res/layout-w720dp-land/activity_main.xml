@@ -31,6 +31,8 @@
 			android:id="@+id/appbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:background="@null"
+			android:clipToPadding="false"
 			android:paddingLeft="16dp"
 			android:paddingRight="16dp"
 			app:elevation="0dp"
@@ -60,11 +62,11 @@
 						android:layout_height="match_parent"
 						android:background="@null"
 						android:drawablePadding="16dp"
+						android:layout_marginEnd="4dp"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
-						android:imeOptions="actionSearch|flagNoFullscreen"
+						android:imeOptions="actionSearch"
 						android:importantForAutofill="no"
-						android:inputType="textShortMessage"
 						android:singleLine="true" />
 
 				</com.google.android.material.appbar.MaterialToolbar>
@@ -81,8 +83,6 @@
 			android:text="@string/_continue"
 			android:visibility="gone"
 			app:backgroundTint="?attr/colorContainer"
-			app:behavior_autoHide="true"
-			app:behavior_autoShrink="true"
 			app:icon="@drawable/ic_read"
 			app:layout_anchor="@id/container"
 			app:layout_anchorGravity="bottom|end"

@@ -1,16 +1,20 @@
 package org.koitharu.kotatsu.reader
 
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.reader.ui.PageSaveHelper
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 
 val readerModule
 	get() = module {
 
-		single { MangaDataRepository(get()) }
+		factory { MangaDataRepository(get()) }
 		single { PagesCache(get()) }
+
+		factory { PageSaveHelper(get(), androidContext()) }
 
 		viewModel { params ->
 			ReaderViewModel(
@@ -21,7 +25,7 @@ val readerModule
 				historyRepository = get(),
 				shortcutsRepository = get(),
 				settings = get(),
-				externalStorageHelper = get(),
+				pageSaveHelper = get(),
 			)
 		}
 	}

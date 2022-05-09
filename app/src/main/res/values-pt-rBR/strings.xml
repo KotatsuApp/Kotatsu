@@ -51,8 +51,8 @@
     <string name="pages">Páginas</string>
     <string name="clear">Limpar</string>
     <string name="remove">Remover</string>
-    <string name="_s_removed_from_history">\"%s\" removido do histórico</string>
-    <string name="_s_deleted_from_local_storage">\"%s\" excluído do armazenamento local</string>
+    <string name="_s_removed_from_history">“%s” removido do histórico</string>
+    <string name="_s_deleted_from_local_storage">“%s” excluído do armazenamento local</string>
     <string name="wait_for_loading_finish">Aguarde o carregamento terminar…</string>
     <string name="save_page">Salvar página</string>
     <string name="page_saved">Salvou</string>
@@ -70,7 +70,7 @@
     <string name="grid_size">Tamanho da grade</string>
     <string name="search_on_s">Pesquisar em %s</string>
     <string name="delete_manga">Excluir mangá</string>
-    <string name="text_delete_local_manga">Excluir \"%s\" do dispositivo permanentemente\?</string>
+    <string name="text_delete_local_manga">Excluir “%s” do dispositivo permanentemente\?</string>
     <string name="reader_settings">Configurações do leitor</string>
     <string name="taps_on_edges">Toques de borda</string>
     <string name="volume_buttons">Botões de volume</string>
@@ -183,7 +183,7 @@
     <string name="about_app_translation">Tradução</string>
     <string name="about_feedback">Comentar</string>
     <string name="about_feedback_4pda">Tópico no 4PDA</string>
-	<string name="auth_complete">Autorizado</string>
+    <string name="auth_complete">Autorizado</string>
     <string name="auth_not_supported_by">O login em %s não é suportado</string>
     <string name="text_clear_cookies_prompt">Você será desconectado de todas as fontes</string>
     <string name="genres">Gêneros</string>
@@ -232,8 +232,7 @@
     <string name="clear_thumbs_cache">Limpar cache de miniaturas</string>
     <string name="application_update">Verifique se há novas versões do aplicativo</string>
     <string name="favourites_categories">Categorias favoritas</string>
-    <string name="show_notification_new_chapters">Notificar sobre atualizações de mangá que você está lendo</string>
-    <string name="category_delete_confirm">Remover a categoria \"%s\" dos seus favoritos\?
+    <string name="category_delete_confirm">Remover a categoria “%s” dos seus favoritos\?
 \nTodos os mangás nela serão perdidos.</string>
     <string name="no_update_available">Nenhuma atualização disponível</string>
     <string name="create_category">Nova categoria</string>
@@ -261,7 +260,22 @@
     <string name="data_restored_with_errors">Os dados foram restaurados, mas há erros</string>
     <string name="report_github">Criar problema no GitHub</string>
     <string name="file_not_found">Arquivo não encontrado</string>
-	<string name="search_chapters">Localizar capítulo</string>
+    <string name="search_chapters">Localizar capítulo</string>
     <string name="chapters_empty">Não há capítulos neste mangá</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="suggestions_updating">Atualização de sugestões</string>
+    <string name="appearance">Aparência</string>
+    <string name="content">Conteúdo</string>
+    <string name="suggestions_excluded_genres">Excluir gêneros</string>
+    <string name="suggestions_excluded_genres_summary">Especifique os gêneros que você não deseja ver nas sugestões</string>
+    <string name="removal_completed">Remoção concluída</string>
+    <string name="text_delete_local_manga_batch">Excluir itens selecionados do dispositivo permanentemente\?</string>
+    <string name="batch_manga_save_confirm">Tem certeza de que deseja baixar todos os mangás selecionados com todos os seus capítulos\? Essa ação pode consumir muito tráfego e armazenamento</string>
+    <string name="hide">Esconder</string>
+    <string name="download_slowdown">Baixar lentidão</string>
+    <string name="download_slowdown_summary">Ajuda a evitar o bloqueio do seu endereço IP</string>
+    <string name="local_manga_processing">Processamento de mangá salvo</string>
+    <string name="chapters_will_removed_background">Os capítulos serão removidos em segundo plano. Pode levar algum tempo</string>
+    <string name="parallel_downloads">Downloads paralelos</string>
+    <string name="new_sources_text">Novas fontes de mangá estão disponíveis</string>
 </resources>

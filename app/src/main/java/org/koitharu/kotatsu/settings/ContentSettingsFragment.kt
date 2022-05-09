@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
-import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -35,6 +35,13 @@ class ContentSettingsFragment :
 		findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
 			if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled
 		)
+		findPreference<SliderPreference>(AppSettings.KEY_DOWNLOADS_PARALLELISM)?.run {
+			summary = value.toString()
+			setOnPreferenceChangeListener { preference, newValue ->
+				preference.summary = newValue.toString()
+				true
+			}
+		}
 		bindRemoteSourcesSummary()
 	}
 
@@ -101,7 +108,7 @@ class ContentSettingsFragment :
 
 	private fun bindRemoteSourcesSummary() {
 		findPreference<Preference>(AppSettings.KEY_REMOTE_SOURCES)?.run {
-			val total = MangaSource.values().size - 1
+			val total = settings.remoteMangaSources.size
 			summary = getString(R.string.enabled_d_of_d, total - settings.hiddenSources.size, total)
 		}
 	}

@@ -10,13 +10,18 @@ private const val MAX_SAFE_CHAPTERS_COUNT = 40 // this is 100% safe
 
 class ParcelableManga(
 	val manga: Manga,
+	private val withChapters: Boolean,
 ) : Parcelable {
 
-	constructor(parcel: Parcel) : this(parcel.readManga())
+	constructor(parcel: Parcel) : this(parcel.readManga(), true)
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		val chapters = manga.chapters
-		if (chapters == null || chapters.size <= MAX_SAFE_CHAPTERS_COUNT) {
+		if (!withChapters || chapters == null) {
+			manga.writeToParcel(parcel, flags, withChapters = false)
+			return
+		}
+		if (chapters.size <= MAX_SAFE_CHAPTERS_COUNT) {
 			// fast path
 			manga.writeToParcel(parcel, flags, withChapters = true)
 			return

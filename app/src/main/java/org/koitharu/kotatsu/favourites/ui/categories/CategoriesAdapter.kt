@@ -4,13 +4,18 @@ import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
+import org.koitharu.kotatsu.favourites.ui.categories.adapter.allCategoriesAD
+import org.koitharu.kotatsu.favourites.ui.categories.adapter.categoryAD
 
 class CategoriesAdapter(
 	onItemClickListener: OnListItemClickListener<FavouriteCategory>,
-) : AsyncListDifferDelegationAdapter<FavouriteCategory>(DiffCallback()) {
+	allCategoriesToggleListener: AllCategoriesToggleListener,
+) : AsyncListDifferDelegationAdapter<CategoryListModel>(DiffCallback()) {
 
 	init {
 		delegatesManager.addDelegate(categoryAD(onItemClickListener))
+			.addDelegate(allCategoriesAD(allCategoriesToggleListener))
 		setHasStableIds(true)
 	}
 
@@ -18,29 +23,27 @@ class CategoriesAdapter(
 		return items[position].id
 	}
 
-	private class DiffCallback : DiffUtil.ItemCallback<FavouriteCategory>() {
+	private class DiffCallback : DiffUtil.ItemCallback<CategoryListModel>() {
 
 		override fun areItemsTheSame(
-			oldItem: FavouriteCategory,
-			newItem: FavouriteCategory,
-		): Boolean {
-			return oldItem.id == newItem.id
-		}
+			oldItem: CategoryListModel,
+			newItem: CategoryListModel,
+		): Boolean = oldItem.id == newItem.id
 
 		override fun areContentsTheSame(
-			oldItem: FavouriteCategory,
-			newItem: FavouriteCategory,
-		): Boolean {
-			return oldItem.id == newItem.id && oldItem.title == newItem.title
-					&& oldItem.order == newItem.order
-		}
+			oldItem: CategoryListModel,
+			newItem: CategoryListModel,
+		): Boolean = oldItem == newItem
 
 		override fun getChangePayload(
-			oldItem: FavouriteCategory,
-			newItem: FavouriteCategory,
+			oldItem: CategoryListModel,
+			newItem: CategoryListModel,
 		): Any? = when {
-			oldItem.title == newItem.title && oldItem.order != newItem.order -> newItem.order
-			else -> super.getChangePayload(oldItem, newItem)
+			oldItem is CategoryListModel.All && newItem is CategoryListModel.All -> Unit
+			oldItem is CategoryListModel.CategoryItem &&
+				newItem is CategoryListModel.CategoryItem &&
+				oldItem.category.title != newItem.category.title -> null
+			else -> Unit
 		}
 	}
 }

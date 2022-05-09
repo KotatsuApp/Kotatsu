@@ -71,7 +71,8 @@
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
 		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
 
-		<!-- Preference text appearance -->
+		<!-- Text appearance -->
+		<item name="actionMenuTextAppearance">@style/TextAppearance.Kotatsu.Menu</item>
 		<item name="android:textAppearanceListItem">?attr/textAppearanceBodyLarge</item>
 		<item name="android:textAppearanceListItemSecondary">@style/TextAppearance.Kotatsu.Preference.Secondary</item>
 
@@ -79,6 +80,8 @@
 
 	<!--== Default Theme ==-->
 	<style name="Theme.Kotatsu" parent="Base.Theme.Kotatsu" />
+
+	<style name="Theme.Kotatsu.DialogWhenLarge" />
 
 	<!-- Monet theme only support S+ -->
 	<style name="Theme.Kotatsu.Monet" />

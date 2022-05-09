@@ -38,12 +38,6 @@ class MangaCategoriesViewModel(
 		}
 	}
 
-	fun createCategory(name: String) {
-		launchJob(Dispatchers.Default) {
-			favouritesRepository.addCategory(name)
-		}
-	}
-
 	private fun observeCategoriesIds() = if (manga.size == 1) {
 		// Fast path
 		favouritesRepository.observeCategoriesIds(manga[0].id)

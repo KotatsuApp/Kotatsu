@@ -31,7 +31,7 @@ class SearchSuggestionItemCallback(
 	): Boolean = false
 
 	override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-		val item = viewHolder.getItem<SearchSuggestionItem.RecentQuery>() ?: return
+		val item = viewHolder.getItem(SearchSuggestionItem.RecentQuery::class.java) ?: return
 		listener.onRemoveQuery(item.query)
 	}
 

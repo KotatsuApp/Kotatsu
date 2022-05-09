@@ -5,8 +5,10 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import kotlin.math.roundToInt
 
-class GridTouchHelper(context: Context, private val listener: OnGridTouchListener) :
-	GestureDetector.SimpleOnGestureListener() {
+class GridTouchHelper(
+	context: Context,
+	private val listener: OnGridTouchListener
+) : GestureDetector.SimpleOnGestureListener() {
 
 	private val detector = GestureDetector(context, this)
 	private val width = context.resources.displayMetrics.widthPixels

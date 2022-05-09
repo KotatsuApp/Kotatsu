@@ -103,7 +103,6 @@
     <string name="notifications">Notifications</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d of %2$d on</string>
     <string name="new_chapters">New chapters</string>
-    <string name="show_notification_new_chapters">Notify about updates of manga you are reading</string>
     <string name="download">Download</string>
     <string name="read_from_start">Read from start</string>
     <string name="restart">Restart</string>
@@ -276,4 +275,18 @@
 	<string name="batch_manga_save_confirm">Are you sure you want to download all selected manga with all its chapters? This action can consume a lot of traffic and storage</string>
 	<string name="shikimori" translatable="false">Shikimori</string>
 	<string name="shikimori_info">Sign in into your Shikimori account to get more features</string>
+	<string name="parallel_downloads">Parallel downloads</string>
+	<string name="download_slowdown">Download slowdown</string>
+	<string name="download_slowdown_summary">Helps avoid blocking your IP address</string>
+	<string name="local_manga_processing">Saved manga processing</string>
+	<string name="chapters_will_removed_background">Chapters will be removed in the background. It can take some time</string>
+	<string name="hide">Hide</string>
+	<string name="new_sources_text">New manga sources are available</string>
+	<string name="check_new_chapters_title">Check for new chapters and notify about it</string>
+	<string name="show_notification_new_chapters_on">You will receive notifications about updates of manga you are reading</string>
+	<string name="show_notification_new_chapters_off">You will not receive notifications but new chapters will be highlighted in the lists</string>
+	<string name="notifications_enable">Enable notifications</string>
+	<string name="name">Name</string>
+	<string name="edit">Edit</string>
+	<string name="edit_category">Edit category</string>
 </resources>

@@ -5,13 +5,12 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?android:attr/selectableItemBackground"
 	android:baselineAligned="false"
 	android:clipChildren="false"
 	android:clipToPadding="false"
-	android:orientation="horizontal"
 	android:gravity="center_vertical"
 	android:minHeight="?android:attr/listPreferredItemHeightSmall"
+	android:orientation="horizontal"
 	android:paddingStart="?android:attr/listPreferredItemPaddingStart"
 	android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
 	tools:ignore="PrivateResource">
@@ -27,17 +26,18 @@
 		android:clipToPadding="false"
 		android:orientation="vertical">
 
-		<RelativeLayout
-			android:layout_width="wrap_content"
-			android:layout_height="0dp"
-			android:layout_weight="1">
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:orientation="horizontal"
+			android:baselineAligned="true"
+			android:baselineAlignedChildIndex="0"
+			android:layout_height="wrap_content">
 
 			<TextView
 				android:id="@android:id/title"
 				android:layout_width="0dp"
+				android:layout_weight="1"
 				android:layout_height="wrap_content"
-				android:layout_alignParentStart="true"
-				android:layout_toStartOf="@android:id/summary"
 				android:ellipsize="marquee"
 				android:labelFor="@id/seekbar"
 				android:singleLine="true"
@@ -49,12 +49,11 @@
 				style="@style/PreferenceSummaryTextStyle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_alignParentEnd="true"
 				android:singleLine="true"
 				android:textAlignment="viewStart"
 				android:textColor="?android:attr/textColorSecondary" />
 
-		</RelativeLayout>
+		</LinearLayout>
 
 		<com.google.android.material.slider.Slider
 			android:id="@+id/slider"

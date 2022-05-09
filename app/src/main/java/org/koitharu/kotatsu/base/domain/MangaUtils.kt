@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.medianOrNull
+import java.io.File
 import java.io.InputStream
 import java.util.zip.ZipFile
 
@@ -57,6 +58,14 @@ object MangaUtils : KoinComponent {
 			}
 			return null
 		}
+	}
+
+	suspend fun getImageMimeType(file: File): String? = runInterruptible(Dispatchers.IO) {
+		val options = BitmapFactory.Options().apply {
+			inJustDecodeBounds = true
+		}
+		BitmapFactory.decodeFile(file.path, options)?.recycle()
+		options.outMimeType
 	}
 
 	private fun getBitmapSize(input: InputStream?): Size {

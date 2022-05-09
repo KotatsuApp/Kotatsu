@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.doOnCurrentItemChanged
 import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
-import org.koitharu.kotatsu.utils.ext.firstItem
+import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
@@ -52,7 +52,7 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 				setItems.await() ?: return@launchWhenCreated
 				if (position != -1) {
 					with(binding.recyclerView) {
-						firstItem = position
+						firstVisibleItemPosition = position
 						post {
 							(findViewHolderForAdapterPosition(position) as? WebtoonHolder)
 								?.restoreScroll(pendingState.scroll)
@@ -91,6 +91,6 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
-		binding.recyclerView.firstItem = position
+		binding.recyclerView.firstVisibleItemPosition = position
 	}
 }

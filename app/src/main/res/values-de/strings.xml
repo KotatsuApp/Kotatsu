@@ -46,7 +46,6 @@
     <string name="updates_feed_cleared">Aktualisierungsfeed gelöscht</string>
     <string name="clear_updates_feed">Aktualisierungsfeed löschen</string>
     <string name="updates">Aktualisierungen</string>
-    <string name="show_notification_new_chapters">Über Aktualisierungen von Manga benachrichtigen, die du liest</string>
     <string name="show_notification_app_update">Benachrichtigung anzeigen, wenn eine Aktualisierung verfügbar ist</string>
     <string name="app_update_available">Anwendungsaktualisierung ist verfügbar</string>
     <string name="application_update">Automatisch nach Aktualisierungen suchen</string>
@@ -217,7 +216,7 @@
     <string name="chapter_is_missing_text">Dieses Kapitel fehlt auf deinem Gerät. Lade ihn herunter oder lese ihn online.</string>
     <string name="text_downloads_holder">Zurzeit sind keine aktiven Datenübertragungen vorhanden</string>
     <string name="queued">In Warteschlange</string>
-	<string name="about_feedback_4pda">Thema auf 4PDA</string>
+    <string name="about_feedback_4pda">Thema auf 4PDA</string>
     <string name="about_feedback">Rückmeldung</string>
     <string name="about_app_translation">Übersetzung</string>
     <string name="about_app_translation_summary">Diese Anwendung übersetzen</string>
@@ -264,4 +263,19 @@
     <string name="search_chapters">Kapitel suchen</string>
     <string name="chapters_empty">Keine Kapitel in diesem Manga</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="appearance">Aussehen</string>
+    <string name="content">Inhalt</string>
+    <string name="suggestions_updating">Vorschläge werden aktualisiert</string>
+    <string name="suggestions_excluded_genres">Genres ausschließen</string>
+    <string name="suggestions_excluded_genres_summary">Geben Sie Genres an, die Sie nicht in den Vorschlägen sehen möchten</string>
+    <string name="text_delete_local_manga_batch">Ausgewählte Elemente dauerhaft vom Gerät löschen\?</string>
+    <string name="batch_manga_save_confirm">Sind Sie sicher, dass Sie alle ausgewählten Mangas mit allen Kapiteln herunterladen möchten\? Diese Aktion kann eine Menge Datenverkehr und Speicherplatz verbrauchen</string>
+    <string name="removal_completed">Entfernung abgeschlossen</string>
+    <string name="download_slowdown">Download-Verzögerung</string>
+    <string name="parallel_downloads">Parallele Downloads</string>
+    <string name="local_manga_processing">Gespeicherte Manga-Verarbeitung</string>
+    <string name="download_slowdown_summary">Hilft, das Blockieren Ihrer IP-Adresse zu vermeiden</string>
+    <string name="chapters_will_removed_background">Die Kapitel werden im Hintergrund entfernt. Das kann einige Zeit dauern</string>
+    <string name="hide">Ausblenden</string>
+    <string name="new_sources_text">Neue Manga-Quellen sind verfügbar</string>
 </resources>

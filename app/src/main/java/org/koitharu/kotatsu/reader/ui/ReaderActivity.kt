@@ -9,7 +9,6 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.core.graphics.Insets
-import androidx.core.net.toUri
 import androidx.core.view.*
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
@@ -187,10 +186,7 @@ class ReaderActivity :
 			R.id.action_save_page -> {
 				viewModel.getCurrentPage()?.also { page ->
 					viewModel.saveCurrentState(reader?.getCurrentState())
-					val name = page.url.toUri().run {
-						fragment ?: lastPathSegment ?: ""
-					}
-					savePageRequest.launch(name)
+					viewModel.saveCurrentPage(page, savePageRequest)
 				} ?: showWaitWhileLoading()
 			}
 			else -> return super.onOptionsItemSelected(item)
@@ -199,9 +195,7 @@ class ReaderActivity :
 	}
 
 	override fun onActivityResult(uri: Uri?) {
-		if (uri != null) {
-			viewModel.saveCurrentPage(uri)
-		}
+		viewModel.onActivityResult(uri)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -410,18 +404,18 @@ class ReaderActivity :
 
 		fun newIntent(context: Context, manga: Manga): Intent {
 			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 		}
 
 		fun newIntent(context: Context, manga: Manga, branch: String?): Intent {
 			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 				.putExtra(EXTRA_BRANCH, branch)
 		}
 
 		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {
 			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
+				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 				.putExtra(EXTRA_STATE, state)
 		}
 

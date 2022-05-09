@@ -13,8 +13,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 val searchModule
 	get() = module {
 
-		single { MangaSearchRepository(get(), get(), androidContext(), get()) }
-
+		factory { MangaSearchRepository(get(), get(), androidContext(), get()) }
 		factory { MangaSuggestionsProvider.createSuggestions(androidContext()) }
 
 		viewModel { params ->

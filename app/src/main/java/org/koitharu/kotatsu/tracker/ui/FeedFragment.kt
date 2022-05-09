@@ -11,7 +11,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -57,7 +57,11 @@ class FeedFragment :
 			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 			paddingHorizontal = spacing
 			paddingVertical = resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
-			addItemDecoration(SpacingItemDecoration(spacing))
+			val decoration = TypedSpacingItemDecoration(
+				FeedAdapter.ITEM_TYPE_FEED to 0,
+				fallbackSpacing = spacing
+			)
+			addItemDecoration(decoration)
 		}
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)

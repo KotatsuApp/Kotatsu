@@ -40,10 +40,11 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="30dp"
-		app:errorIconDrawable="@null"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textView_subtitle">
+		app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
+		app:passwordToggleEnabled="true"
+		app:startIconDrawable="@android:color/transparent">
 
 		<com.google.android.material.textfield.TextInputEditText
 			android:id="@+id/edit_password"

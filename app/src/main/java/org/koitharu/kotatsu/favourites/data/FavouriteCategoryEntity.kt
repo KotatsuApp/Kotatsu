@@ -12,4 +12,5 @@ class FavouriteCategoryEntity(
 	@ColumnInfo(name = "sort_key") val sortKey: Int,
 	@ColumnInfo(name = "title") val title: String,
 	@ColumnInfo(name = "order") val order: String,
+	@ColumnInfo(name = "track") val track: Boolean,
 )

@@ -1,16 +1,14 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.content.res.Resources
-import android.util.Log
-import java.io.FileNotFoundException
-import java.net.SocketTimeoutException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
-import org.koitharu.kotatsu.parsers.util.format
+import java.io.FileNotFoundException
+import java.net.SocketTimeoutException
 
 fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
@@ -22,12 +20,4 @@ fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	is SocketTimeoutException -> resources.getString(R.string.network_error)
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	else -> localizedMessage ?: resources.getString(R.string.error_occurred)
-}
-
-inline fun <T> measured(tag: String, block: () -> T): T {
-	val time = System.currentTimeMillis()
-	val res = block()
-	val spent = System.currentTimeMillis() - time
-	Log.d("measured", "$tag ${spent.format(1)} ms")
-	return res
 }

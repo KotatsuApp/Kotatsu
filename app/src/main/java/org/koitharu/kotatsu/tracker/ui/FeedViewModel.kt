@@ -10,14 +10,15 @@ import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.TrackingLogItem
-import org.koitharu.kotatsu.list.ui.model.EmptyState
-import org.koitharu.kotatsu.list.ui.model.ListHeader
-import org.koitharu.kotatsu.list.ui.model.LoadingFooter
-import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.core.ui.DateTimeAgo
+import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.ui.model.toFeedItem
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.daysDiff
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class FeedViewModel(
 	private val repository: TrackingRepository
@@ -34,8 +35,8 @@ class FeedViewModel(
 		hasNextPage
 	) { list, isHasNextPage ->
 		buildList(list.size + 2) {
-			add(header)
 			if (list.isEmpty()) {
+				add(header)
 				add(
 					EmptyState(
 						icon = R.drawable.ic_feed,
@@ -45,7 +46,7 @@ class FeedViewModel(
 					)
 				)
 			} else {
-				list.mapTo(this) { it.toFeedItem() }
+				list.mapListTo(this)
 				if (isHasNextPage) {
 					add(LoadingFooter)
 				}
@@ -83,6 +84,31 @@ class FeedViewModel(
 			repository.clearLogs()
 			logList.value = emptyList()
 			onFeedCleared.postCall(Unit)
+		}
+	}
+
+	private fun List<TrackingLogItem>.mapListTo(destination: MutableList<ListModel>) {
+		var prevDate: DateTimeAgo? = null
+		for (item in this) {
+			val date = timeAgo(item.createdAt)
+			if (prevDate != date) {
+				destination += date
+			}
+			prevDate = date
+			destination += item.toFeedItem()
+		}
+	}
+
+	private fun timeAgo(date: Date): DateTimeAgo {
+		val diff = (System.currentTimeMillis() - date.time).coerceAtLeast(0L)
+		val diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
+		val diffDays = -date.daysDiff(System.currentTimeMillis())
+		return when {
+			diffMinutes < 3 -> DateTimeAgo.JustNow
+			diffDays < 1 -> DateTimeAgo.Today
+			diffDays == 1 -> DateTimeAgo.Yesterday
+			diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
+			else -> DateTimeAgo.Absolute(date)
 		}
 	}
 }

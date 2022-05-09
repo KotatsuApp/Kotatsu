@@ -9,11 +9,12 @@ import android.view.ViewGroup.LayoutParams
 import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
-import com.google.android.material.R as materialR
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.dialog.AppBottomSheetDialog
+import com.google.android.material.R as materialR
 
 abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 
@@ -43,7 +44,9 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		return if (resources.getBoolean(R.bool.is_tablet)) {
 			AppCompatDialog(context, R.style.Theme_Kotatsu_Dialog)
-		} else super.onCreateDialog(savedInstanceState)
+		} else {
+			AppBottomSheetDialog(requireContext(), theme)
+		}
 	}
 
 	protected abstract fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): B

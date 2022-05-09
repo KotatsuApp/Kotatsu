@@ -1,12 +1,16 @@
 package org.koitharu.kotatsu.favourites.ui.list
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 import org.koitharu.kotatsu.list.domain.CountersProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -24,8 +28,16 @@ class FavouritesListViewModel(
 	settings: AppSettings,
 ) : MangaListViewModel(settings), CountersProvider {
 
+	var sortOrder: LiveData<SortOrder> = if (categoryId == NO_ID) {
+		MutableLiveData(null)
+	} else {
+		repository.observeCategory(categoryId)
+			.map { it.order }
+			.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}
+
 	override val content = combine(
-		if (categoryId == 0L) {
+		if (categoryId == NO_ID) {
 			repository.observeAll(SortOrder.NEWEST)
 		} else {
 			repository.observeAll(categoryId)
@@ -37,7 +49,7 @@ class FavouritesListViewModel(
 				EmptyState(
 					icon = R.drawable.ic_heart_outline,
 					textPrimary = R.string.text_empty_holder_primary,
-					textSecondary = if (categoryId == 0L) {
+					textSecondary = if (categoryId == NO_ID) {
 						R.string.you_have_not_favourites_yet
 					} else {
 						R.string.favourites_category_empty
@@ -60,11 +72,20 @@ class FavouritesListViewModel(
 			return
 		}
 		launchJob {
-			if (categoryId == 0L) {
+			if (categoryId == NO_ID) {
 				repository.removeFromFavourites(ids)
 			} else {
 				repository.removeFromCategory(categoryId, ids)
 			}
+		}
+	}
+
+	fun setSortOrder(order: SortOrder) {
+		if (categoryId == NO_ID) {
+			return
+		}
+		launchJob {
+			repository.setCategoryOrder(categoryId, order)
 		}
 	}
 

@@ -22,8 +22,8 @@
 
 	<!-- Bottom sheet -->
 
-	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
-		<item name="android:navigationBarColor">?colorSurfaceVariant</item>
+	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
+		<item name="android:statusBarColor">@color/dim</item>
 	</style>
 
 	<!-- Widget styles -->
@@ -39,6 +39,7 @@
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
+		<item name="hintTextAppearance">?textAppearanceBodyMedium</item>
 		<item name="queryBackground">@null</item>
 		<item name="android:textColorHint">?attr/colorControlNormal</item>
 		<item name="android:textSize">18sp</item>
@@ -118,6 +119,8 @@
 
 	<style name="TextAppearance.Kotatsu.Preference.Secondary" parent="TextAppearance.Material3.BodySmall" />
 
+	<style name="TextAppearance.Kotatsu.Menu" parent="TextAppearance.Material3.BodyLarge" />
+
 	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.LabelLarge">
 		<item name="android:textColor">?android:attr/textColorSecondary</item>
 	</style>
@@ -154,6 +157,10 @@
 
 	<style name="Preference.MultiAutoCompleteTextView" parent="Preference.DialogPreference.EditTextPreference.Material">
 		<item name="android:dialogLayout">@layout/preference_dialog_multiautocompletetextview</item>
+	</style>
+
+	<style name="Preference.AutoCompleteTextView" parent="Preference.DialogPreference.EditTextPreference.Material">
+		<item name="android:dialogLayout">@layout/preference_dialog_autocompletetextview</item>
 	</style>
 
 </resources>

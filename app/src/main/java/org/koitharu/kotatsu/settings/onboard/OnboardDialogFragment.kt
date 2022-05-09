@@ -18,8 +18,10 @@ import org.koitharu.kotatsu.utils.ext.observeNotNull
 import org.koitharu.kotatsu.utils.ext.showAllowStateLoss
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class OnboardDialogFragment : AlertDialogFragment<DialogOnboardBinding>(),
-	OnListItemClickListener<SourceLocale>, DialogInterface.OnClickListener {
+class OnboardDialogFragment :
+	AlertDialogFragment<DialogOnboardBinding>(),
+	OnListItemClickListener<SourceLocale>,
+	DialogInterface.OnClickListener {
 
 	private val viewModel by viewModel<OnboardViewModel>()
 	private var isWelcome: Boolean = false
@@ -53,6 +55,7 @@ class OnboardDialogFragment : AlertDialogFragment<DialogOnboardBinding>(),
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = SourceLocalesAdapter(this)
 		binding.recyclerView.adapter = adapter
+		binding.textViewTitle.setText(R.string.onboard_text)
 		viewModel.list.observeNotNull(viewLifecycleOwner) {
 			adapter.items = it
 		}

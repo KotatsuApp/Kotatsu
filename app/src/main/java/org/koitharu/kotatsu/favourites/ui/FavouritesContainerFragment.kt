@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.favourites.ui
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.children
 import androidx.core.view.updateLayoutParams
@@ -10,22 +11,21 @@ import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import java.util.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.FragmentFavouritesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
+import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
+import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.main.ui.AppBarOwner
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.showPopupMenu
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class FavouritesContainerFragment :
 	BaseFragment<FragmentFavouritesBinding>(),
@@ -52,15 +52,15 @@ class FavouritesContainerFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = FavouritesPagerAdapter(this, this)
-		viewModel.categories.value?.let {
-			adapter.replaceData(wrapCategories(it))
+		viewModel.visibleCategories.value?.let {
+			adapter.replaceData(it)
 		}
 		binding.pager.adapter = adapter
 		pagerAdapter = adapter
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
 		actionModeDelegate.addListener(this, viewLifecycleOwner)
 
-		viewModel.categories.observe(viewLifecycleOwner, ::onCategoriesChanged)
+		viewModel.visibleCategories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 	}
 
@@ -85,7 +85,8 @@ class FavouritesContainerFragment :
 			top = headerHeight - insets.top
 		)
 		binding.pager.updatePadding(
-			top = -headerHeight
+			// 8 dp is needed so that the top of the list is not attached to tabs (visible when ActionMode is active)
+			top = -headerHeight + resources.resolveDp(8)
 		)
 		binding.tabs.apply {
 			updatePadding(
@@ -98,8 +99,8 @@ class FavouritesContainerFragment :
 		}
 	}
 
-	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
-		pagerAdapter?.replaceData(wrapCategories(categories))
+	private fun onCategoriesChanged(categories: List<CategoryListModel>) {
+		pagerAdapter?.replaceData(categories)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -121,23 +122,10 @@ class FavouritesContainerFragment :
 		Snackbar.make(binding.pager, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
 	}
 
-	override fun onTabLongClick(tabView: View, category: FavouriteCategory): Boolean {
-		val menuRes = if (category.id == 0L) R.menu.popup_category_empty else R.menu.popup_category
-		tabView.showPopupMenu(menuRes, { menu ->
-			createOrderSubmenu(menu, category)
-		}) {
-			when (it.itemId) {
-				R.id.action_remove -> editDelegate.deleteCategory(category)
-				R.id.action_rename -> editDelegate.renameCategory(category)
-				R.id.action_create -> editDelegate.createCategory()
-				R.id.action_order -> return@showPopupMenu false
-				else -> {
-					val order = CategoriesActivity.SORT_ORDERS.getOrNull(it.order)
-						?: return@showPopupMenu false
-					viewModel.setCategoryOrder(category.id, order)
-				}
-			}
-			true
+	override fun onTabLongClick(tabView: View, item: CategoryListModel): Boolean {
+		when (item) {
+			is CategoryListModel.All -> showAllCategoriesMenu(tabView)
+			is CategoryListModel.CategoryItem -> showCategoryMenu(tabView, item.category)
 		}
 		return true
 	}
@@ -146,36 +134,38 @@ class FavouritesContainerFragment :
 		viewModel.deleteCategory(category.id)
 	}
 
-	override fun onRenameCategory(category: FavouriteCategory, newName: String) {
-		viewModel.renameCategory(category.id, newName)
-	}
-
-	override fun onCreateCategory(name: String) {
-		viewModel.createCategory(name)
-	}
-
-	private fun wrapCategories(categories: List<FavouriteCategory>): List<FavouriteCategory> {
-		val data = ArrayList<FavouriteCategory>(categories.size + 1)
-		data += FavouriteCategory(0L, getString(R.string.all_favourites), -1, SortOrder.NEWEST, Date())
-		data += categories
-		return data
-	}
-
-	private fun createOrderSubmenu(menu: Menu, category: FavouriteCategory) {
-		val submenu = menu.findItem(R.id.action_order)?.subMenu ?: return
-		for ((i, item) in CategoriesActivity.SORT_ORDERS.withIndex()) {
-			val menuItem = submenu.add(R.id.group_order, Menu.NONE, i, item.titleRes)
-			menuItem.isCheckable = true
-			menuItem.isChecked = item == category.order
-		}
-		submenu.setGroupCheckable(R.id.group_order, true, true)
-	}
-
 	private fun TabLayout.setTabsEnabled(enabled: Boolean) {
 		val tabStrip = getChildAt(0) as? ViewGroup ?: return
 		for (tab in tabStrip.children) {
 			tab.isEnabled = enabled
 		}
+	}
+
+	private fun showCategoryMenu(tabView: View, category: FavouriteCategory) {
+		val menu = PopupMenu(tabView.context, tabView)
+		menu.inflate(R.menu.popup_category)
+		menu.setOnMenuItemClickListener {
+			when (it.itemId) {
+				R.id.action_remove -> editDelegate.deleteCategory(category)
+				R.id.action_edit -> FavouritesCategoryEditActivity.newIntent(tabView.context, category.id)
+				else -> return@setOnMenuItemClickListener false
+			}
+			true
+		}
+		menu.show()
+	}
+
+	private fun showAllCategoriesMenu(tabView: View) {
+		val menu = PopupMenu(tabView.context, tabView)
+		menu.inflate(R.menu.popup_category_all)
+		menu.setOnMenuItemClickListener {
+			when (it.itemId) {
+				R.id.action_create -> FavouritesCategoryEditActivity.newIntent(requireContext())
+				R.id.action_hide -> viewModel.setAllCategoriesVisible(false)
+			}
+			true
+		}
+		menu.show()
 	}
 
 	companion object {

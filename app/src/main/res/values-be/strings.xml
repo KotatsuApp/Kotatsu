@@ -53,8 +53,8 @@
     <string name="clear">Ачысціць</string>
     <string name="text_clear_history_prompt">Вы ўпэўненыя, што жадаеце ачысціць гісторыю\?</string>
     <string name="remove">Выдаліць</string>
-    <string name="_s_removed_from_history">\"%s\" выдалена з гiсторыi</string>
-    <string name="_s_deleted_from_local_storage">\"%s\" выдалена з прылады</string>
+    <string name="_s_removed_from_history">«%s» выдалена з гiсторыi</string>
+    <string name="_s_deleted_from_local_storage">«%s» выдалена з прылады</string>
     <string name="wait_for_loading_finish">Дачакайцеся заканчэння загрузкі…</string>
     <string name="save_page">Захаваць старонку</string>
     <string name="page_saved">Старонка захавана</string>
@@ -76,7 +76,7 @@
     <string name="delete_manga">Выдаліць мангу</string>
     <string name="reader_settings">Налады чытання</string>
     <string name="switch_pages">Гартанне старонак</string>
-    <string name="text_delete_local_manga">Вы ўпэўненыя, што жадаеце выдаліць \"%s\" з прылады\?</string>
+    <string name="text_delete_local_manga">Вы ўпэўненыя, што жадаеце выдаліць «%s» з прылады\?</string>
     <string name="taps_on_edges">Націск па краях</string>
     <string name="volume_buttons">Кнопкі гучнасці</string>
     <string name="_continue">Працягнцуць</string>
@@ -101,7 +101,6 @@
     <string name="notifications">Паведамленні</string>
     <string name="enabled_d_of_d">Уключана %1$d з %2$d</string>
     <string name="new_chapters">Новыя главы</string>
-    <string name="show_notification_new_chapters">Апавяшчаць пра абнаўленні мангі, якую вы чытаеце</string>
     <string name="download">Спампаваць</string>
     <string name="read_from_start">Чытаць з пачатку</string>
     <string name="restart">Перазапусціць</string>
@@ -112,7 +111,7 @@
     <string name="favourites_categories">Катэгорыі абранага</string>
     <string name="categories_">Катэгорыi…</string>
     <string name="rename">Перайменаваць</string>
-    <string name="category_delete_confirm">Вы ўпэўнены, што хочаце выдаліць катэгорыю \"%s\"\?
+    <string name="category_delete_confirm">Вы ўпэўнены, што хочаце выдаліць катэгорыю «%s»\?
 \nУся манга з дадзенай катэгорыі будзе страчана.</string>
     <string name="remove_category">Выдаліць катэгорыю</string>
     <string name="text_categories_holder">Катэгорыі дапамагаюць упарадкоўваць абраную мангу. Націсніце «+», каб стварыць катэгорыю</string>
@@ -217,7 +216,7 @@
     <string name="chapter_is_missing_text">Гэтая глава адсутнічае на вашай прыладзе. Спампуйце ціпрачытайце яе онлайн.</string>
     <string name="text_downloads_holder">На дадзены момант няма актыўных спамповак</string>
     <string name="queued">У чарзе</string>
-	<string name="about_feedback_4pda">Тэма на 4PDA</string>
+    <string name="about_feedback_4pda">Тэма на 4PDA</string>
     <string name="about_feedback">Зваротная сувязь</string>
     <string name="about_app_translation_summary">Дапамагчы з перакладам праграмы</string>
     <string name="about_app_translation">Пераклад</string>
@@ -263,4 +262,5 @@
     <string name="various_languages">Розныя мовы</string>
     <string name="search_chapters">Знайсці главу</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="chapters_empty">У гэтай манзе няма глаў</string>
 </resources>

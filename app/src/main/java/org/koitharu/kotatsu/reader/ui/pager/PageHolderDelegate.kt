@@ -109,7 +109,7 @@ class PageHolderDelegate(
 			state = State.LOADED
 			callback.onImageReady(file.toUri())
 		} catch (e: CancellationException) {
-			// do nothing
+			throw e
 		} catch (e: Exception) {
 			state = State.ERROR
 			error = e

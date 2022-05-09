@@ -26,7 +26,8 @@ import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
-abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(),
+abstract class BaseActivity<B : ViewBinding> :
+	AppCompatActivity(),
 	WindowInsetsDelegate.WindowInsetsListener {
 
 	protected lateinit var binding: B

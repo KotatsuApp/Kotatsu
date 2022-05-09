@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.core.parser
 
+import java.lang.ref.WeakReference
+import java.util.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
@@ -28,11 +30,18 @@ interface MangaRepository {
 
 	companion object : KoinComponent {
 
+		private val cache = EnumMap<MangaSource, WeakReference<RemoteMangaRepository>>(MangaSource::class.java)
+
 		operator fun invoke(source: MangaSource): MangaRepository {
-			return if (source == MangaSource.LOCAL) {
-				get<LocalMangaRepository>()
-			} else {
-				RemoteMangaRepository(source, get())
+			if (source == MangaSource.LOCAL) {
+				return get<LocalMangaRepository>()
+			}
+			cache[source]?.get()?.let { return it }
+			return synchronized(cache) {
+				cache[source]?.get()?.let { return it }
+				val repository = RemoteMangaRepository(MangaParser(source, get()))
+				cache[source] = WeakReference(repository)
+				repository
 			}
 		}
 	}

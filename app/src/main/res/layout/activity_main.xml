@@ -23,6 +23,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:background="@null"
+			android:clipToPadding="false"
 			android:paddingLeft="16dp"
 			android:paddingRight="16dp"
 			android:stateListAnimator="@null">
@@ -50,14 +51,12 @@
 						style="@style/Widget.Kotatsu.SearchView"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
-						android:layout_marginEnd="2dp"
+						android:layout_marginEnd="4dp"
 						android:background="@null"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
-						android:imeOptions="actionSearch|flagNoFullscreen"
+						android:imeOptions="actionSearch"
 						android:importantForAutofill="no"
-						android:inputType="textShortMessage"
-						android:paddingBottom="1dp"
 						android:singleLine="true"
 						tools:drawableEnd="@drawable/abc_ic_clear_material" />
 
@@ -75,8 +74,6 @@
 			android:text="@string/_continue"
 			android:visibility="gone"
 			app:backgroundTint="?attr/colorContainer"
-			app:behavior_autoHide="true"
-			app:behavior_autoShrink="true"
 			app:icon="@drawable/ic_read"
 			app:layout_anchor="@id/container"
 			app:layout_anchorGravity="bottom|end"

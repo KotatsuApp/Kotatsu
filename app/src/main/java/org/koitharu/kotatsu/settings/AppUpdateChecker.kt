@@ -8,6 +8,15 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.security.cert.CertificateEncodingException
+import java.security.cert.CertificateException
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
@@ -19,15 +28,6 @@ import org.koitharu.kotatsu.core.github.VersionId
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.byte2HexFormatted
 import org.koitharu.kotatsu.utils.FileSize
-import java.io.ByteArrayInputStream
-import java.io.InputStream
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import java.security.cert.CertificateEncodingException
-import java.security.cert.CertificateException
-import java.security.cert.CertificateFactory
-import java.security.cert.X509Certificate
-import java.util.concurrent.TimeUnit
 
 class AppUpdateChecker(private val activity: ComponentActivity) {
 
@@ -61,25 +61,22 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 
 	@MainThread
 	private fun showUpdateDialog(version: AppVersion) {
+		val message = buildString {
+			append(activity.getString(R.string.new_version_s, version.name))
+			appendLine()
+			append(activity.getString(R.string.size_s, FileSize.BYTES.format(activity, version.apkSize)))
+			appendLine()
+			appendLine()
+			append(version.description)
+		}
 		MaterialAlertDialogBuilder(activity)
 			.setTitle(R.string.app_update_available)
-			.setMessage(buildString {
-				append(activity.getString(R.string.new_version_s, version.name))
-				appendLine()
-				append(
-					activity.getString(
-						R.string.size_s,
-						FileSize.BYTES.format(activity, version.apkSize),
-					)
-				)
-				appendLine()
-				appendLine()
-				append(version.description)
-			})
+			.setMessage(message)
 			.setPositiveButton(R.string.download) { _, _ ->
 				activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(version.apkUrl)))
 			}
 			.setNegativeButton(R.string.close, null)
+			.setCancelable(false)
 			.create()
 			.show()
 	}

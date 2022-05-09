@@ -11,10 +11,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.transformWhile
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koin.android.ext.android.get
@@ -24,7 +21,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseService
 import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.model.withoutChapters
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.download.domain.DownloadState
@@ -32,8 +28,8 @@ import org.koitharu.kotatsu.download.domain.WakeLockNode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.throttle
-import org.koitharu.kotatsu.utils.ext.toArraySet
 import org.koitharu.kotatsu.utils.progress.ProgressJob
+import org.koitharu.kotatsu.utils.progress.TimeLeftEstimator
 import java.util.concurrent.TimeUnit
 
 class DownloadService : BaseService() {
@@ -48,16 +44,12 @@ class DownloadService : BaseService() {
 
 	override fun onCreate() {
 		super.onCreate()
+		isRunning = true
 		notificationSwitcher = ForegroundNotificationSwitcher(this)
 		val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
-		downloadManager = DownloadManager(
+		downloadManager = get<DownloadManager.Factory>().create(
 			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1)),
-			context = this,
-			imageLoader = get(),
-			okHttp = get(),
-			cache = get(),
-			localMangaRepository = get(),
 		)
 		DownloadNotification.createChannel(this)
 		registerReceiver(controlReceiver, IntentFilter(ACTION_DOWNLOAD_CANCEL))
@@ -66,7 +58,7 @@ class DownloadService : BaseService() {
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		super.onStartCommand(intent, flags, startId)
 		val manga = intent?.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga
-		val chapters = intent?.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toArraySet()
+		val chapters = intent?.getLongArrayExtra(EXTRA_CHAPTERS_IDS)
 		return if (manga != null) {
 			jobs[startId] = downloadManga(startId, manga, chapters)
 			jobCount.value = jobs.size
@@ -90,13 +82,14 @@ class DownloadService : BaseService() {
 	override fun onDestroy() {
 		unregisterReceiver(controlReceiver)
 		binder = null
+		isRunning = false
 		super.onDestroy()
 	}
 
 	private fun downloadManga(
 		startId: Int,
 		manga: Manga,
-		chaptersIds: Set<Long>?,
+		chaptersIds: LongArray?,
 	): ProgressJob<DownloadState> {
 		val job = downloadManager.downloadManga(manga, chaptersIds, startId)
 		listenJob(job)
@@ -106,19 +99,28 @@ class DownloadService : BaseService() {
 	private fun listenJob(job: ProgressJob<DownloadState>) {
 		lifecycleScope.launch {
 			val startId = job.progressValue.startId
+			val timeLeftEstimator = TimeLeftEstimator()
 			val notification = DownloadNotification(this@DownloadService, startId)
-			notificationSwitcher.notify(startId, notification.create(job.progressValue))
+			notificationSwitcher.notify(startId, notification.create(job.progressValue, -1L))
 			job.progressAsFlow()
+				.onEach { state ->
+					if (state is DownloadState.Progress) {
+						timeLeftEstimator.tick(value = state.progress, total = state.max)
+					} else {
+						timeLeftEstimator.emptyTick()
+					}
+				}
 				.throttle { state -> if (state is DownloadState.Progress) 400L else 0L }
 				.whileActive()
 				.collect { state ->
-					notificationSwitcher.notify(startId, notification.create(state))
+					val timeLeft = timeLeftEstimator.getEstimatedTimeLeft()
+					notificationSwitcher.notify(startId, notification.create(state, timeLeft))
 				}
 			job.join()
 			(job.progressValue as? DownloadState.Done)?.let {
 				sendBroadcast(
 					Intent(ACTION_DOWNLOAD_COMPLETE)
-						.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga.withoutChapters()))
+						.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga, withChapters = false))
 				)
 			}
 			notificationSwitcher.detach(
@@ -126,7 +128,7 @@ class DownloadService : BaseService() {
 				if (job.isCancelled) {
 					null
 				} else {
-					notification.create(job.progressValue)
+					notification.create(job.progressValue, -1L)
 				}
 			)
 			stopSelf(startId)
@@ -162,11 +164,12 @@ class DownloadService : BaseService() {
 
 	companion object {
 
-		const val ACTION_DOWNLOAD_COMPLETE =
-			"${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_COMPLETE"
+		var isRunning: Boolean = false
+			private set
 
-		private const val ACTION_DOWNLOAD_CANCEL =
-			"${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"
+		const val ACTION_DOWNLOAD_COMPLETE = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_COMPLETE"
+
+		private const val ACTION_DOWNLOAD_CANCEL = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"
 
 		private const val EXTRA_MANGA = "manga"
 		private const val EXTRA_CHAPTERS_IDS = "chapters_ids"
@@ -178,7 +181,7 @@ class DownloadService : BaseService() {
 			}
 			confirmDataTransfer(context) {
 				val intent = Intent(context, DownloadService::class.java)
-				intent.putExtra(EXTRA_MANGA, ParcelableManga(manga))
+				intent.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
 				if (chaptersIds != null) {
 					intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
 				}
@@ -194,7 +197,7 @@ class DownloadService : BaseService() {
 			confirmDataTransfer(context) {
 				for (item in manga) {
 					val intent = Intent(context, DownloadService::class.java)
-					intent.putExtra(EXTRA_MANGA, ParcelableManga(item))
+					intent.putExtra(EXTRA_MANGA, ParcelableManga(item, withChapters = false))
 					ContextCompat.startForegroundService(context, intent)
 				}
 			}

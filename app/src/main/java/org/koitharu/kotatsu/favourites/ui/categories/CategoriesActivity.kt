@@ -3,9 +3,9 @@ package org.koitharu.kotatsu.favourites.ui.categories
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -18,16 +18,19 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
+import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
+import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.showPopupMenu
 
-class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
+class CategoriesActivity :
+	BaseActivity<ActivityCategoriesBinding>(),
 	OnListItemClickListener<FavouriteCategory>,
-	View.OnClickListener, CategoriesEditDelegate.CategoriesEditCallback {
+	View.OnClickListener,
+	CategoriesEditDelegate.CategoriesEditCallback,
+	AllCategoriesToggleListener {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
@@ -39,7 +42,7 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		adapter = CategoriesAdapter(this)
+		adapter = CategoriesAdapter(this, this)
 		editDelegate = CategoriesEditDelegate(this, this)
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
@@ -47,38 +50,37 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		reorderHelper = ItemTouchHelper(ReorderHelperCallback())
 		reorderHelper.attachToRecyclerView(binding.recyclerView)
 
-		viewModel.categories.observe(this, ::onCategoriesChanged)
+		viewModel.allCategories.observe(this, ::onCategoriesChanged)
 		viewModel.onError.observe(this, ::onError)
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.fab_add -> editDelegate.createCategory()
+			R.id.fab_add -> startActivity(FavouritesCategoryEditActivity.newIntent(this))
 		}
 	}
 
 	override fun onItemClick(item: FavouriteCategory, view: View) {
-		view.showPopupMenu(R.menu.popup_category, { menu ->
-			createOrderSubmenu(menu, item)
-		}) {
-			when (it.itemId) {
+		val menu = PopupMenu(view.context, view)
+		menu.inflate(R.menu.popup_category)
+		menu.setOnMenuItemClickListener { menuItem ->
+			when (menuItem.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(item)
-				R.id.action_rename -> editDelegate.renameCategory(item)
-				R.id.action_order -> return@showPopupMenu false
-				else -> {
-					val order = SORT_ORDERS.getOrNull(it.order) ?: return@showPopupMenu false
-					viewModel.setCategoryOrder(item.id, order)
-				}
+				R.id.action_edit -> startActivity(FavouritesCategoryEditActivity.newIntent(this, item.id))
 			}
 			true
 		}
+		menu.show()
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {
-		reorderHelper.startDrag(
-			binding.recyclerView.findContainingViewHolder(view) ?: return false
-		)
+		val viewHolder = binding.recyclerView.findContainingViewHolder(view) ?: return false
+		reorderHelper.startDrag(viewHolder)
 		return true
+	}
+
+	override fun onAllCategoriesToggle(isVisible: Boolean) {
+		viewModel.setAllCategoriesVisible(isVisible)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -90,11 +92,11 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		binding.recyclerView.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			bottom = 2 * insets.bottom + binding.fabAdd.measureHeight()
+			bottom = 2 * insets.bottom + binding.fabAdd.measureHeight(),
 		)
 	}
 
-	private fun onCategoriesChanged(categories: List<FavouriteCategory>) {
+	private fun onCategoriesChanged(categories: List<CategoryListModel>) {
 		adapter.items = categories
 		binding.textViewHolder.isVisible = categories.isEmpty()
 	}
@@ -108,40 +110,23 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 		viewModel.deleteCategory(category.id)
 	}
 
-	override fun onRenameCategory(category: FavouriteCategory, newName: String) {
-		viewModel.renameCategory(category.id, newName)
-	}
-
-	override fun onCreateCategory(name: String) {
-		viewModel.createCategory(name)
-	}
-
-	private fun createOrderSubmenu(menu: Menu, category: FavouriteCategory) {
-		val submenu = menu.findItem(R.id.action_order)?.subMenu ?: return
-		for ((i, item) in SORT_ORDERS.withIndex()) {
-			val menuItem = submenu.add(
-				R.id.group_order,
-				Menu.NONE,
-				i,
-				item.titleRes
-			)
-			menuItem.isCheckable = true
-			menuItem.isChecked = item == category.order
-		}
-		submenu.setGroupCheckable(R.id.group_order, true, true)
-	}
-
 	private inner class ReorderHelperCallback : ItemTouchHelper.SimpleCallback(
 		ItemTouchHelper.DOWN or ItemTouchHelper.UP, 0
 	) {
+
+		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
 
 		override fun onMove(
 			recyclerView: RecyclerView,
 			viewHolder: RecyclerView.ViewHolder,
 			target: RecyclerView.ViewHolder,
-		): Boolean = true
+		): Boolean = viewHolder.itemViewType == target.itemViewType
 
-		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
+		override fun canDropOver(
+			recyclerView: RecyclerView,
+			current: RecyclerView.ViewHolder,
+			target: RecyclerView.ViewHolder,
+		): Boolean = current.itemViewType == target.itemViewType
 
 		override fun onMoved(
 			recyclerView: RecyclerView,
@@ -155,6 +140,8 @@ class CategoriesActivity : BaseActivity<ActivityCategoriesBinding>(),
 			super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
 			viewModel.reorderCategories(fromPos, toPos)
 		}
+
+		override fun isLongPressDragEnabled(): Boolean = false
 	}
 
 	companion object {

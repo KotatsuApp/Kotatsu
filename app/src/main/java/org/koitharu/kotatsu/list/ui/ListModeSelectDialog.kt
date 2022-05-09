@@ -43,7 +43,7 @@ class ListModeSelectDialog : AlertDialogFragment<DialogListModeBinding>(),
 		binding.textViewGridTitle.isVisible = mode == ListMode.GRID
 		binding.sliderGrid.isVisible = mode == ListMode.GRID
 
-		binding.sliderGrid.setLabelFormatter(IntPercentLabelFormatter())
+		binding.sliderGrid.setLabelFormatter(IntPercentLabelFormatter(view.context))
 		binding.sliderGrid.setValueRounded(settings.gridSize.toFloat())
 		binding.sliderGrid.addOnSliderTouchListener(this)
 

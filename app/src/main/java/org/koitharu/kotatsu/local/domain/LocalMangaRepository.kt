@@ -3,22 +3,22 @@ package org.koitharu.kotatsu.local.domain
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.webkit.MimeTypeMap
+import androidx.annotation.WorkerThread
 import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.MangaIndex
-import org.koitharu.kotatsu.local.data.MangaZip
+import org.koitharu.kotatsu.local.data.TempFileFilter
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.parsers.util.toCamelCase
 import org.koitharu.kotatsu.utils.AlphanumComparator
+import org.koitharu.kotatsu.utils.CompositeMutex
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.resolveName
@@ -27,11 +27,15 @@ import java.io.IOException
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
+import kotlin.coroutines.CoroutineContext
+
+private const val MAX_PARALLELISM = 4
 
 class LocalMangaRepository(private val storageManager: LocalStorageManager) : MangaRepository {
 
 	override val source = MangaSource.LOCAL
 	private val filenameFilter = CbzFilter()
+	private val locks = CompositeMutex<Long>()
 
 	override suspend fun getList(
 		offset: Int,
@@ -39,27 +43,43 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		tags: Set<MangaTag>?,
 		sortOrder: SortOrder?
 	): List<Manga> {
-		require(offset == 0) {
-			"LocalMangaRepository does not support pagination"
+		if (offset > 0) {
+			return emptyList()
 		}
 		val files = getAllFiles()
-		return files.mapNotNull { x -> runCatching { getFromFile(x) }.getOrNull() }
+		val list = coroutineScope {
+			val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
+			files.map { file ->
+				getFromFileAsync(file, dispatcher)
+			}.awaitAll()
+		}.filterNotNullTo(ArrayList(files.size))
+		if (!query.isNullOrEmpty()) {
+			list.retainAll { x ->
+				x.title.contains(query, ignoreCase = true) ||
+					x.altTitle?.contains(query, ignoreCase = true) == true
+			}
+		}
+		if (!tags.isNullOrEmpty()) {
+			list.retainAll { x ->
+				x.tags.containsAll(tags)
+			}
+		}
+		return list
 	}
 
 	override suspend fun getDetails(manga: Manga) = when {
 		manga.source != MangaSource.LOCAL -> requireNotNull(findSavedManga(manga)) {
 			"Manga is not local or saved"
 		}
-		manga.chapters == null -> getFromFile(Uri.parse(manga.url).toFile())
-		else -> manga
+		else -> getFromFile(Uri.parse(manga.url).toFile())
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		return runInterruptible(Dispatchers.IO){
+		return runInterruptible(Dispatchers.IO) {
 			val uri = Uri.parse(chapter.url)
 			val file = uri.toFile()
 			val zip = ZipFile(file)
-			val index = zip.getEntry(MangaZip.INDEX_ENTRY)?.let(zip::readText)?.let(::MangaIndex)
+			val index = zip.getEntry(CbzMangaOutput.ENTRY_NAME_INDEX)?.let(zip::readText)?.let(::MangaIndex)
 			var entries = zip.entries().asSequence()
 			entries = if (index != null) {
 				val pattern = index.getChapterNamesPattern(chapter)
@@ -94,10 +114,25 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		return file.deleteAwait()
 	}
 
+	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) {
+		lockManga(manga.id)
+		try {
+			runInterruptible(Dispatchers.IO) {
+				val uri = Uri.parse(manga.url)
+				val file = uri.toFile()
+				val cbz = CbzMangaOutput(file, manga)
+				CbzMangaOutput.filterChapters(cbz, ids)
+			}
+		} finally {
+			unlockManga(manga.id)
+		}
+	}
+
+	@WorkerThread
 	@SuppressLint("DefaultLocale")
 	fun getFromFile(file: File): Manga = ZipFile(file).use { zip ->
 		val fileUri = file.toUri().toString()
-		val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+		val entry = zip.getEntry(CbzMangaOutput.ENTRY_NAME_INDEX)
 		val index = entry?.let(zip::readText)?.let(::MangaIndex)
 		val info = index?.getMangaInfo()
 		if (index != null && info != null) {
@@ -158,7 +193,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		}.getOrNull() ?: return null
 		return runInterruptible(Dispatchers.IO) {
 			ZipFile(file).use { zip ->
-				val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+				val entry = zip.getEntry(CbzMangaOutput.ENTRY_NAME_INDEX)
 				val index = entry?.let(zip::readText)?.let(::MangaIndex)
 				index?.getMangaInfo()
 			}
@@ -170,7 +205,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		return runInterruptible(Dispatchers.IO) {
 			for (file in files) {
 				val index = ZipFile(file).use { zip ->
-					val entry = zip.getEntry(MangaZip.INDEX_ENTRY)
+					val entry = zip.getEntry(CbzMangaOutput.ENTRY_NAME_INDEX)
 					entry?.let(zip::readText)?.let(::MangaIndex)
 				} ?: continue
 				val info = index.getMangaInfo() ?: continue
@@ -184,6 +219,15 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				}
 			}
 			null
+		}
+	}
+
+	private fun CoroutineScope.getFromFileAsync(
+		file: File,
+		context: CoroutineContext,
+	): Deferred<Manga?> = async(context) {
+		runInterruptible {
+			runCatching { getFromFile(file) }.getOrNull()
 		}
 	}
 
@@ -211,7 +255,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		withContext(Dispatchers.IO) {
 			val name = contentResolver.resolveName(uri)
 				?: throw IOException("Cannot fetch name from uri: $uri")
-			if (!isFileSupported(name)) {
+			if (!filenameFilter.isFileSupported(name)) {
 				throw UnsupportedFileException("Unsupported file on $uri")
 			}
 			val dest = File(
@@ -228,13 +272,27 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		}
 	}
 
-	fun isFileSupported(name: String): Boolean {
-		val ext = name.substringAfterLast('.').lowercase(Locale.ROOT)
-		return ext == "cbz" || ext == "zip"
-	}
-
 	suspend fun getOutputDir(): File? {
 		return storageManager.getDefaultWriteableDir()
+	}
+
+	suspend fun cleanup() {
+		val dirs = storageManager.getWriteableDirs()
+		runInterruptible(Dispatchers.IO) {
+			dirs.flatMap { dir ->
+				dir.listFiles(TempFileFilter())?.toList().orEmpty()
+			}.forEach { file ->
+				file.delete()
+			}
+		}
+	}
+
+	suspend fun lockManga(id: Long) {
+		locks.lock(id)
+	}
+
+	suspend fun unlockManga(id: Long) {
+		locks.unlock(id)
 	}
 
 	private suspend fun getAllFiles() = storageManager.getReadableDirs().flatMap { dir ->

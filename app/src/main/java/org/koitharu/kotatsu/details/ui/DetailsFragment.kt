@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.*
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toUri
@@ -224,14 +225,16 @@ class DetailsFragment :
 				if (viewModel.readingHistory.value == null) {
 					return false
 				}
-				v.showPopupMenu(R.menu.popup_read) {
-					when (it.itemId) {
+				val menu = PopupMenu(v.context, v)
+				menu.inflate(R.menu.popup_read)
+				menu.setOnMenuItemClickListener { menuItem ->
+					when (menuItem.itemId) {
 						R.id.action_read -> {
 							val branch = viewModel.selectedBranchValue
 							startActivity(
 								ReaderActivity.newIntent(
-									context = context ?: return@showPopupMenu false,
-									manga = viewModel.manga.value ?: return@showPopupMenu false,
+									context = context ?: return@setOnMenuItemClickListener false,
+									manga = viewModel.manga.value ?: return@setOnMenuItemClickListener false,
 									state = viewModel.chapters.value?.firstOrNull { c ->
 										c.chapter.branch == branch
 									}?.let { c ->
@@ -244,6 +247,7 @@ class DetailsFragment :
 						else -> false
 					}
 				}
+				menu.show()
 				return true
 			}
 			else -> return false
@@ -279,7 +283,7 @@ class DetailsFragment :
 			.target(binding.imageViewCover)
 		if (currentCover != null) {
 			request.data(manga.largeCoverUrl ?: return)
-				.placeholderMemoryCacheKey(CoilUtils.metadata(binding.imageViewCover)?.memoryCacheKey)
+				.placeholderMemoryCacheKey(CoilUtils.result(binding.imageViewCover)?.request?.memoryCacheKey)
 				.fallback(currentCover)
 		} else {
 			request.crossfade(true)

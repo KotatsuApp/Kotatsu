@@ -154,7 +154,6 @@
     <string name="restart">Riavvia</string>
     <string name="read_from_start">Leggi dall\'inizio</string>
     <string name="download">Scarica</string>
-    <string name="show_notification_new_chapters">Notifica gli aggiornamenti dei manga che stai leggendo</string>
     <string name="new_chapters">Nuovi capitoli</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Abilitato %1$d di %2$d</string>
     <string name="notifications">Notifiche</string>
@@ -217,7 +216,7 @@
     <string name="chapter_is_missing_text">Questo capitolo manca sul tuo dispositivo. Scaricalo o leggilo in linea.</string>
     <string name="text_downloads_holder">Attualmente non ci sono scaricamenti attivi</string>
     <string name="queued">In coda</string>
-	<string name="about_feedback_4pda">Argomento su 4PDA</string>
+    <string name="about_feedback_4pda">Argomento su 4PDA</string>
     <string name="about_feedback">Commenti</string>
     <string name="about_app_translation">Traduzione</string>
     <string name="about_app_translation_summary">Traduci questa applicazione</string>
@@ -264,4 +263,19 @@
     <string name="search_chapters">Trova un capitolo</string>
     <string name="chapters_empty">Nessun capitolo in questo manga</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="appearance">Aspetto</string>
+    <string name="content">Contenuto</string>
+    <string name="suggestions_updating">Aggiornamento dei suggerimenti</string>
+    <string name="suggestions_excluded_genres_summary">Specifica i generi che non vuoi vedere nei suggerimenti</string>
+    <string name="suggestions_excluded_genres">Escludi generi</string>
+    <string name="removal_completed">Rimozione completata</string>
+    <string name="text_delete_local_manga_batch">Eliminare gli elementi selezionati dal dispositivo in modo permanente\?</string>
+    <string name="batch_manga_save_confirm">Vuoi davvero scaricare tutti i manga selezionati con tutti i loro capitoli\? Questa azione può consumare molto traffico e memoria</string>
+    <string name="parallel_downloads">Scaricamenti paralleli</string>
+    <string name="download_slowdown">Rallentamento dello scaricamento</string>
+    <string name="local_manga_processing">Elaborazione dei manga salvati</string>
+    <string name="chapters_will_removed_background">I capitoli saranno rimossi in sfondo. Può richiedere un po\' di tempo</string>
+    <string name="download_slowdown_summary">Aiuta ad evitare il blocco del tuo indirizzo IP</string>
+    <string name="hide">Nascondi</string>
+    <string name="new_sources_text">Sono disponibili nuove fonti di manga</string>
 </resources>

@@ -11,18 +11,19 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import com.google.android.material.R as materialR
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.browser.ProgressChromeClient
+import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.TaggedActivityResult
-import com.google.android.material.R as materialR
 
 class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
 
@@ -52,6 +53,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		}
 		with(binding.webView.settings) {
 			javaScriptEnabled = true
+			userAgentString = UserAgentInterceptor.userAgentChrome
 		}
 		binding.webView.webViewClient = BrowserClient(this)
 		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)

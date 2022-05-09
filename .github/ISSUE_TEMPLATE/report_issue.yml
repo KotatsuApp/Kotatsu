@@ -1,0 +1,93 @@
+name: 🐞 Issue report
+description: Report an issue in Kotatsu
+labels: [bug]
+body:
+
+    - type: textarea
+      id: reproduce-steps
+      attributes:
+          label: Steps to reproduce
+          description: Provide an example of the issue.
+          placeholder: |
+              Example:
+                1. First step
+                2. Second step
+                3. Issue here
+      validations:
+          required: true
+
+    - type: textarea
+      id: expected-behavior
+      attributes:
+          label: Expected behavior
+          description: Explain what you should expect to happen.
+          placeholder: |
+              Example:
+                "This should happen..."
+      validations:
+          required: true
+
+    - type: textarea
+      id: actual-behavior
+      attributes:
+          label: Actual behavior
+          description: Explain what actually happens.
+          placeholder: |
+              Example:
+                "This happened instead..."
+      validations:
+          required: true
+
+    - type: input
+      id: kotatsu-version
+      attributes:
+          label: Kotatsu version
+          description: You can find your Kotatsu version in **Settings → About**.
+          placeholder: |
+              Example: "3.2.2"
+      validations:
+          required: true
+
+    - type: input
+      id: android-version
+      attributes:
+          label: Android version
+          description: You can find this somewhere in your Android settings.
+          placeholder: |
+              Example: "Android 12"
+      validations:
+          required: true
+
+    - type: input
+      id: device
+      attributes:
+          label: Device
+          description: List your device and model.
+          placeholder: |
+              Example: "LG Nexus 5X"
+      validations:
+          required: true
+
+    - type: textarea
+      id: other-details
+      attributes:
+          label: Other details
+          placeholder: |
+              Additional details and attachments.
+
+    - type: checkboxes
+      id: acknowledgements
+      attributes:
+          label: Acknowledgements
+          description: Read this carefully, we will close and ignore your issue if you skimmed through this.
+          options:
+              - label: I have searched the existing issues and this is a new ticket, **NOT** a duplicate or related to another open issue.
+                required: true
+              - label: I have written a short but informative title.
+                required: true
+              - label: If this is an issue with a source, I should be opening an issue in the [parsers repository](https://github.com/nv95/kotatsu-parsers/issues/new).
+                required: true
+              - label: I have updated the app to version **[3.2.2](https://github.com/nv95/Kotatsu/releases/latest)**.
+                required: true
+              - label: I will fill out all of the requested information in this form.
+                required: true

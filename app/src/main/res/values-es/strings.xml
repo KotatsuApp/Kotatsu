@@ -101,7 +101,6 @@
     <string name="notifications">Notificaciones</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Activado %1$d de %2$d</string>
     <string name="new_chapters">Nuevos capítulos</string>
-    <string name="show_notification_new_chapters">Notificar sobre las actualizaciones del manga que estás leyendo</string>
     <string name="download">Descargar</string>
     <string name="read_from_start">Leer desde el principio</string>
     <string name="restart">Reiniciar</string>
@@ -205,8 +204,8 @@
     <string name="text_history_holder_secondary">Encuentra qué leer en el menú lateral.</string>
     <string name="text_history_holder_primary">Lo que leas se mostrará aquí</string>
     <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
-	<string name="search_only_on_s">Buscar sólo en %s</string>
-	<string name="chapter_is_missing">Falta un capítulo</string>
+    <string name="search_only_on_s">Buscar sólo en %s</string>
+    <string name="chapter_is_missing">Falta un capítulo</string>
     <string name="about_app_translation_summary">Traducir esta aplicación</string>
     <string name="about_feedback">Comentarios</string>
     <string name="about_app_translation">Traducción</string>
@@ -253,7 +252,7 @@
     <string name="screenshots_block_nsfw">Bloqueo en NSFW</string>
     <string name="logged_in_as">Conectado como %s</string>
     <string name="find_genre">Encontrar el género</string>
-    <string name="onboard_text">Selecciona los idiomas en los que quieres leer el manga. Puedes cambiarlo más tarde en los ajustes.</string>
+    <string name="onboard_text">Selecciona los idiomas en los que quieres leer mangas. Puedes cambiarlo más tarde en los ajustes.</string>
     <string name="reset_filter">Reiniciar el filtro</string>
     <string name="never">Nunca</string>
     <string name="nsfw">18+</string>
@@ -264,4 +263,12 @@
     <string name="search_chapters">Buscar capítulo</string>
     <string name="chapters_empty">No hay capítulos en este manga</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="appearance">Aspecto</string>
+    <string name="content">Contenido</string>
+    <string name="suggestions_updating">Actualización de las sugerencias</string>
+    <string name="suggestions_excluded_genres">Excluir géneros</string>
+    <string name="suggestions_excluded_genres_summary">Especifica los géneros que no quieres ver en las sugerencias</string>
+    <string name="removal_completed">Remoción completada</string>
+    <string name="batch_manga_save_confirm">¿Estás seguro de que quieres descargar todos los manga seleccionados con todos sus capítulos\? Esta acción puede consumir mucho tráfico y almacenamiento</string>
+    <string name="text_delete_local_manga_batch">¿Eliminar elementos seleccionados del dispositivo de forma permanente\?</string>
 </resources>

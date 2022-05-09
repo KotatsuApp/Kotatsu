@@ -13,9 +13,13 @@ import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import org.koitharu.kotatsu.utils.ext.mapItems
 
-class FavouritesRepository(private val db: MangaDatabase) {
+class FavouritesRepository(
+	private val db: MangaDatabase,
+	private val channels: TrackerNotificationChannels,
+) {
 
 	suspend fun getAllManga(): List<Manga> {
 		val entities = db.favouritesDao.findAll()
@@ -48,6 +52,11 @@ class FavouritesRepository(private val db: MangaDatabase) {
 		}.distinctUntilChanged()
 	}
 
+	fun observeCategory(id: Long): Flow<FavouriteCategory> {
+		return db.favouriteCategoriesDao.observe(id)
+			.map { it.toFavouriteCategory() }
+	}
+
 	fun observeCategories(mangaId: Long): Flow<List<FavouriteCategory>> {
 		return db.favouritesDao.observe(mangaId).map { entity ->
 			entity?.categories?.map { it.toFavouriteCategory() }.orEmpty()
@@ -58,28 +67,60 @@ class FavouritesRepository(private val db: MangaDatabase) {
 		return db.favouritesDao.observeIds(mangaId).map { it.toSet() }
 	}
 
+	suspend fun getCategory(id: Long): FavouriteCategory {
+		return db.favouriteCategoriesDao.find(id.toInt()).toFavouriteCategory()
+	}
+
+	suspend fun createCategory(title: String, sortOrder: SortOrder, isTrackerEnabled: Boolean): FavouriteCategory {
+		val entity = FavouriteCategoryEntity(
+			title = title,
+			createdAt = System.currentTimeMillis(),
+			sortKey = db.favouriteCategoriesDao.getNextSortKey(),
+			categoryId = 0,
+			order = sortOrder.name,
+			track = isTrackerEnabled,
+		)
+		val id = db.favouriteCategoriesDao.insert(entity)
+		val category = entity.toFavouriteCategory(id)
+		channels.createChannel(category)
+		return category
+	}
+
+	suspend fun updateCategory(id: Long, title: String, sortOrder: SortOrder, isTrackerEnabled: Boolean) {
+		db.favouriteCategoriesDao.update(id, title, sortOrder.name, isTrackerEnabled)
+	}
+
 	suspend fun addCategory(title: String): FavouriteCategory {
 		val entity = FavouriteCategoryEntity(
 			title = title,
 			createdAt = System.currentTimeMillis(),
 			sortKey = db.favouriteCategoriesDao.getNextSortKey(),
 			categoryId = 0,
-			order = SortOrder.UPDATED.name,
+			order = SortOrder.NEWEST.name,
+			track = true,
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
-		return entity.toFavouriteCategory(id)
+		val category = entity.toFavouriteCategory(id)
+		channels.createChannel(category)
+		return category
 	}
 
 	suspend fun renameCategory(id: Long, title: String) {
 		db.favouriteCategoriesDao.updateTitle(id, title)
+		channels.renameChannel(id, title)
 	}
 
 	suspend fun removeCategory(id: Long) {
 		db.favouriteCategoriesDao.delete(id)
+		channels.deleteChannel(id)
 	}
 
 	suspend fun setCategoryOrder(id: Long, order: SortOrder) {
 		db.favouriteCategoriesDao.updateOrder(id, order.name)
+	}
+
+	suspend fun setCategoryTracking(id: Long, isEnabled: Boolean) {
+		db.favouriteCategoriesDao.updateTracking(id, isEnabled)
 	}
 
 	suspend fun reorderCategories(orderedIds: List<Long>) {

@@ -17,11 +17,9 @@ class OnboardViewModel(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
-	private val allSources = MangaSource.values().filterNot { x -> x == MangaSource.LOCAL }
+	private val allSources = settings.remoteMangaSources
 
-	private val locales = allSources.mapTo(ArraySet()) {
-			it.locale
-		}
+	private val locales = allSources.mapTo(ArraySet()) { it.locale }
 
 	private val selectedLocales = locales.toMutableSet()
 
@@ -57,6 +55,7 @@ class OnboardViewModel(
 		settings.hiddenSources = allSources.filterNot { x ->
 			x.locale in selectedLocales
 		}.mapToSet { x -> x.name }
+		settings.markKnownSources(settings.newSources)
 	}
 
 	private fun rebuildList() {

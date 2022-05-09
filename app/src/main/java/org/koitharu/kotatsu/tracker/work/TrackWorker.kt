@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
@@ -41,26 +40,22 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	private val coil by inject<ImageLoader>()
 	private val repository by inject<TrackingRepository>()
 	private val settings by inject<AppSettings>()
+	private val channels by inject<TrackerNotificationChannels>()
 
 	override suspend fun doWork(): Result {
-		val trackSources = settings.trackSources
-		if (trackSources.isEmpty()) {
-			return Result.success()
-		}
-		val tracks = repository.getAllTracks(
-			useFavourites = AppSettings.TRACK_FAVOURITES in trackSources,
-			useHistory = AppSettings.TRACK_HISTORY in trackSources
-		)
-		if (tracks.isEmpty()) {
+		if (!settings.isTrackerEnabled) {
 			return Result.success()
 		}
 		if (TAG in tags) { // not expedited
 			trySetForeground()
 		}
+		val tracks = getAllTracks()
+
 		var success = 0
 		val workData = Data.Builder()
 			.putInt(DATA_TOTAL, tracks.size)
-		for ((index, track) in tracks.withIndex()) {
+		for ((index, item) in tracks.withIndex()) {
+			val (track, channelId) = item
 			val details = runCatching {
 				MangaRepository(track.manga.source).getDetails(track.manga)
 			}.getOrNull()
@@ -80,12 +75,12 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				track.knownChaptersCount == 0 && track.lastChapterId == 0L -> { // manga was empty on last check
 					repository.storeTrackResult(
 						mangaId = track.manga.id,
-						knownChaptersCount = track.knownChaptersCount,
+						knownChaptersCount = 0,
 						lastChapterId = 0L,
 						previousTrackChapterId = track.lastNotifiedChapterId,
 						newChapters = chapters
 					)
-					showNotification(details, chapters)
+					showNotification(details, channelId, chapters)
 				}
 				chapters.size == track.knownChaptersCount -> {
 					if (chapters.lastOrNull()?.id == track.lastChapterId) {
@@ -114,7 +109,8 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 							)
 							showNotification(
 								details,
-								newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId }
+								channelId,
+								newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId },
 							)
 						}
 					}
@@ -126,11 +122,12 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						knownChaptersCount = track.knownChaptersCount,
 						lastChapterId = track.lastChapterId,
 						previousTrackChapterId = track.lastNotifiedChapterId,
-						newChapters = newChapters
+						newChapters = newChapters,
 					)
 					showNotification(
-						track.manga,
-						newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId }
+						manga = track.manga,
+						channelId = channelId,
+						newChapters = newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId },
 					)
 				}
 			}
@@ -144,13 +141,60 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		}
 	}
 
-	private suspend fun showNotification(manga: Manga, newChapters: List<MangaChapter>) {
-		if (newChapters.isEmpty() || !settings.trackerNotifications) {
+	private suspend fun getAllTracks(): List<TrackingItem> {
+		val sources = settings.trackSources
+		if (sources.isEmpty()) {
+			return emptyList()
+		}
+		val knownIds = HashSet<Manga>()
+		val result = ArrayList<TrackingItem>()
+		// Favourites
+		if (AppSettings.TRACK_FAVOURITES in sources) {
+			val favourites = repository.getFavouritesManga()
+			channels.updateChannels(favourites.keys)
+			for ((category, mangaList) in favourites) {
+				if (!category.isTrackingEnabled || mangaList.isEmpty()) {
+					continue
+				}
+				val categoryTracks = repository.getTracks(mangaList)
+				val channelId = if (channels.isFavouriteNotificationsEnabled(category)) {
+					channels.getFavouritesChannelId(category.id)
+				} else {
+					null
+				}
+				for (track in categoryTracks) {
+					if (knownIds.add(track.manga)) {
+						result.add(TrackingItem(track, channelId))
+					}
+				}
+			}
+		}
+		// History
+		if (AppSettings.TRACK_HISTORY in sources) {
+			val history = repository.getHistoryManga()
+			val historyTracks = repository.getTracks(history)
+			val channelId = if (channels.isHistoryNotificationsEnabled()) {
+				channels.getHistoryChannelId()
+			} else {
+				null
+			}
+			for (track in historyTracks) {
+				if (knownIds.add(track.manga)) {
+					result.add(TrackingItem(track, channelId))
+				}
+			}
+		}
+		result.trimToSize()
+		return result
+	}
+
+	private suspend fun showNotification(manga: Manga, channelId: String?, newChapters: List<MangaChapter>) {
+		if (newChapters.isEmpty() || channelId == null) {
 			return
 		}
 		val id = manga.url.hashCode()
 		val colorPrimary = ContextCompat.getColor(applicationContext, R.color.blue_primary)
-		val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+		val builder = NotificationCompat.Builder(applicationContext, channelId)
 		val summary = applicationContext.resources.getQuantityString(
 			R.plurals.new_chapters,
 			newChapters.size, newChapters.size
@@ -236,7 +280,6 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 
 	companion object {
 
-		const val CHANNEL_ID = "tracking"
 		private const val WORKER_CHANNEL_ID = "track_worker"
 		private const val WORKER_NOTIFICATION_ID = 35
 		private const val DATA_PROGRESS = "progress"
@@ -244,27 +287,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		private const val TAG = "tracking"
 		private const val TAG_ONESHOT = "tracking_oneshot"
 
-		@RequiresApi(Build.VERSION_CODES.O)
-		private fun createNotificationChannel(context: Context) {
-			val manager =
-				context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-			if (manager.getNotificationChannel(CHANNEL_ID) == null) {
-				val channel = NotificationChannel(
-					CHANNEL_ID,
-					context.getString(R.string.new_chapters),
-					NotificationManager.IMPORTANCE_DEFAULT
-				)
-				channel.setShowBadge(true)
-				channel.lightColor = ContextCompat.getColor(context, R.color.blue_primary_dark)
-				channel.enableLights(true)
-				manager.createNotificationChannel(channel)
-			}
-		}
-
 		fun setup(context: Context) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				createNotificationChannel(context)
-			}
 			val constraints = Constraints.Builder()
 				.setRequiredNetworkType(NetworkType.CONNECTED)
 				.build()

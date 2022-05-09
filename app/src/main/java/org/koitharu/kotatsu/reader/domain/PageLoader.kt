@@ -6,10 +6,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
-import java.io.File
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.zip.ZipFile
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +27,10 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
+import java.io.File
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.zip.ZipFile
 
 private const val PROGRESS_UNDEFINED = -1f
 private const val PREFETCH_LIMIT_DEFAULT = 10
@@ -113,10 +113,19 @@ class PageLoader : KoinComponent, Closeable {
 		}
 	}
 
+	suspend fun getPageUrl(page: MangaPage): String {
+		return getRepository(page.source).getPageUrl(page)
+	}
+
 	private fun onIdle() {
 		synchronized(prefetchQueue) {
-			val page = prefetchQueue.pollFirst() ?: return
-			tasks[page.id] = loadPageAsyncImpl(page)
+			while (prefetchQueue.isNotEmpty()) {
+				val page = prefetchQueue.pollFirst() ?: return
+				if (cache[page.url] == null) {
+					tasks[page.id] = loadPageAsyncImpl(page)
+					return
+				}
+			}
 		}
 	}
 
@@ -146,7 +155,7 @@ class PageLoader : KoinComponent, Closeable {
 	}
 
 	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): File {
-		val pageUrl = getRepository(page.source).getPageUrl(page)
+		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
 		val uri = Uri.parse(pageUrl)
 		return if (uri.scheme == "cbz") {

@@ -53,7 +53,8 @@
 		<activity
 			android:name="org.koitharu.kotatsu.search.ui.SearchActivity"
 			android:label="@string/search" />
-		<activity android:name="org.koitharu.kotatsu.search.ui.MangaListActivity"
+		<activity
+			android:name="org.koitharu.kotatsu.search.ui.MangaListActivity"
 			android:label="@string/search_manga" />
 		<activity
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
@@ -86,7 +87,8 @@
 		<activity
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfConfigActivity"
 			android:exported="true"
-			android:label="@string/manga_shelf">
+			android:label="@string/manga_shelf"
+			android:theme="@style/Theme.Kotatsu.DialogWhenLarge">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
@@ -103,13 +105,18 @@
 			android:windowSoftInputMode="adjustResize" />
 		<activity
 			android:name="org.koitharu.kotatsu.download.ui.DownloadsActivity"
+			android:label="@string/downloads"
 			android:launchMode="singleTop"
-			android:label="@string/downloads" />
-		<activity android:name="org.koitharu.kotatsu.image.ui.ImageActivity"/>
+			android:theme="@style/Theme.Kotatsu.DialogWhenLarge" />
+		<activity android:name="org.koitharu.kotatsu.image.ui.ImageActivity" />
+		<activity
+			android:name="org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity"
+			android:theme="@style/Theme.Kotatsu.DialogWhenLarge" />
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
 			android:foregroundServiceType="dataSync" />
+		<service android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService" />
 		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />

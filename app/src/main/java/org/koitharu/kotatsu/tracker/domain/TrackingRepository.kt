@@ -2,15 +2,15 @@ package org.koitharu.kotatsu.tracker.domain
 
 import androidx.room.withTransaction
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.TrackEntity
-import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
-import org.koitharu.kotatsu.core.db.entity.toManga
-import org.koitharu.kotatsu.core.db.entity.toTrackingLogItem
+import org.koitharu.kotatsu.core.db.entity.*
+import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.MangaTracking
 import org.koitharu.kotatsu.core.model.TrackingLogItem
+import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.util.*
 
 class TrackingRepository(
@@ -21,16 +21,29 @@ class TrackingRepository(
 		return db.tracksDao.findNewChapters(mangaId) ?: 0
 	}
 
-	suspend fun getAllTracks(useFavourites: Boolean, useHistory: Boolean): List<MangaTracking> {
-		val mangaList = ArrayList<Manga>()
-		if (useFavourites) {
-			db.favouritesDao.findAllManga().mapTo(mangaList) { it.toManga(emptySet()) }
+	suspend fun getHistoryManga(): List<Manga> {
+		return db.historyDao.findAllManga().toMangaList()
+	}
+
+	suspend fun getFavouritesManga(): Map<FavouriteCategory, List<Manga>> {
+		val categories = db.favouriteCategoriesDao.findAll()
+		return categories.associateTo(LinkedHashMap(categories.size)) { categoryEntity ->
+			categoryEntity.toFavouriteCategory() to db.favouritesDao.findAllManga(categoryEntity.categoryId).toMangaList()
 		}
-		if (useHistory) {
-			db.historyDao.findAllManga().mapTo(mangaList) { it.toManga(emptySet()) }
-		}
-		val tracks = db.tracksDao.findAll().groupBy { it.mangaId }
-		return mangaList
+	}
+
+	suspend fun getCategoriesCount(): IntArray {
+		val categories = db.favouriteCategoriesDao.findAll()
+		return intArrayOf(
+			categories.count { it.track },
+			categories.size,
+		)
+	}
+
+	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {
+		val ids = mangaList.mapToSet { it.id }
+		val tracks = db.tracksDao.findAll(ids).groupBy { it.mangaId }
+		return mangaList // TODO optimize
 			.filterNot { it.source == MangaSource.LOCAL }
 			.distinctBy { it.id }
 			.map { manga ->
@@ -103,4 +116,6 @@ class TrackingRepository(
 		)
 		db.tracksDao.upsert(entity)
 	}
+
+	private fun Collection<MangaEntity>.toMangaList() = map { it.toManga(emptySet()) }
 }

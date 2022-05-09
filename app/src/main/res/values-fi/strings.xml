@@ -4,7 +4,7 @@
     <string name="genres">Tyylilajit</string>
     <string name="auth_not_supported_by">%s -valtuutusta ei tueta</string>
     <string name="auth_complete">Valtuutus valmis</string>
-	<string name="about_feedback_4pda">Aihe 4PDA: ssa</string>
+    <string name="about_feedback_4pda">Aihe 4PDA: ssa</string>
     <string name="about_feedback">Palaute</string>
     <string name="about_app_translation">Käännös</string>
     <string name="about_app_translation_summary">Käännä tämä sovellus</string>
@@ -118,7 +118,6 @@
     <string name="restart">Käynnistä uudelleen</string>
     <string name="read_from_start">Lue alusta</string>
     <string name="download">Lataa</string>
-    <string name="show_notification_new_chapters">Ilmoita lukemastasi mangan päivityksistä</string>
     <string name="new_chapters">Uusia lukuja</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Käytössä %1$d / %2$d</string>
     <string name="notifications">Ilmoitukset</string>
@@ -264,4 +263,19 @@
     <string name="percent_string_pattern">%1$s%%</string>
     <string name="various_languages">Eri kieliä</string>
     <string name="chapters_empty">Ei lukuja tässä mangassa</string>
+    <string name="appearance">Ulkonäkö</string>
+    <string name="content">Sisältö</string>
+    <string name="suggestions_updating">Ehdotukset päivitetään</string>
+    <string name="suggestions_excluded_genres_summary">Määritä genret, joita et halua nähdä ehdotuksissa</string>
+    <string name="suggestions_excluded_genres">Sulje pois genrejä</string>
+    <string name="text_delete_local_manga_batch">Poista valitut kohteet laitteesta pysyvästi\?</string>
+    <string name="removal_completed">Poisto valmis</string>
+    <string name="parallel_downloads">Rinnakkaislataukset</string>
+    <string name="download_slowdown">Latauksen hidastuminen</string>
+    <string name="download_slowdown_summary">Auttaa välttämään IP-osoitteesi estämisen</string>
+    <string name="chapters_will_removed_background">Luvut poistetaan taustalla. Se voi kestää jonkin aikaa</string>
+    <string name="batch_manga_save_confirm">Oletko varma, että haluat ladata kaikki valitut mangat kaikkine lukuineen\? Tämä toiminto voi kuluttaa paljon liikennettä ja tallennustilaa</string>
+    <string name="local_manga_processing">Tallennettujen mangojen käsittely</string>
+    <string name="hide">Piilota</string>
+    <string name="new_sources_text">Uusia mangalähteitä on saatavilla</string>
 </resources>

@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Progress(
 	val value: Int,
-	val total: Int
+	val total: Int,
 ) : Parcelable, Comparable<Progress> {
 
 	override fun compareTo(other: Progress): Int {

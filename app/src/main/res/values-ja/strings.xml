@@ -42,8 +42,8 @@
     <string name="clear">クリア</string>
     <string name="text_clear_history_prompt">すべての履歴を永久にクリアしますか？</string>
     <string name="remove">削除</string>
-    <string name="_s_removed_from_history">\"%s\"が履歴から削除されました</string>
-    <string name="_s_deleted_from_local_storage">\"%s \"がローカルストレージから削除されました</string>
+    <string name="_s_removed_from_history">「%s」が履歴から削除されました</string>
+    <string name="_s_deleted_from_local_storage">「%s 」がローカルストレージから削除されました</string>
     <string name="wait_for_loading_finish">読み込みが完了するまでお待ちください…</string>
     <string name="save_page">ページを保存</string>
     <string name="page_saved">保存しました</string>
@@ -143,7 +143,6 @@
     <string name="clear_search_history">検索履歴をクリア</string>
     <string name="external_storage">外部ストレージ</string>
     <string name="app_update_available">Kotatsuの新しい更新が利用可能です</string>
-    <string name="show_notification_new_chapters">あなたが読んでいる漫画の更新について通知</string>
     <string name="text_empty_holder_primary">ここは空っぽです…</string>
     <string name="text_categories_holder">カテゴリーを使用してお気に入りを整理できます。 «+»を押してカテゴリーを作成出来ます</string>
     <string name="favourites_category_empty">空のカテゴリー</string>
@@ -163,7 +162,7 @@
     <string name="prefer_rtl_reader">右から左（←）の読書を好む</string>
     <string name="about_feedback">フィードバック</string>
     <string name="about_feedback_4pda">4PDAに関する話題</string>
-	<string name="auth_complete">承認済み</string>
+    <string name="auth_complete">承認済み</string>
     <string name="auth_not_supported_by">%sへのログインはサポートされていません</string>
     <string name="state_finished">完成</string>
     <string name="state_ongoing">進行中</string>
@@ -209,10 +208,10 @@
     <string name="about_app_translation">このアプリを翻訳</string>
     <string name="data_restored_success">全てのデータが復元されました</string>
     <string name="data_restored">復元</string>
-	<string name="preparing_">準備中…</string>
+    <string name="preparing_">準備中…</string>
     <string name="zoom_mode_keep_start">開始時に維持</string>
     <string name="backup_restore">バックアップと復元</string>
-	<string name="reverse">リバース</string>
+    <string name="reverse">リバース</string>
     <string name="reader_mode_hint">選択した構成はこの漫画のために記憶されます</string>
     <string name="clear_cookies">クッキーを削除</string>
     <string name="report_github">GitHubでissueを作成する(GitHubのアカウントが必要です)</string>
@@ -230,7 +229,7 @@
     <string name="scale_mode">スケールモード</string>
     <string name="error_empty_name">名前を入力する必要があります</string>
     <string name="today">今日</string>
-	<string name="about_app_translation_summary">Kotatsuを翻訳する(Weblateのサイトに移動します)</string>
+    <string name="about_app_translation_summary">Kotatsuを翻訳する(Weblateのサイトに移動します)</string>
     <string name="next">次のページ</string>
     <string name="silent">サイレント</string>
     <string name="sign_in">サインイン</string>
@@ -264,4 +263,19 @@
     <string name="search_chapters">チャプターを検索</string>
     <string name="chapters_empty">この漫画の章はありません</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="content">コンテンツ</string>
+    <string name="suggestions_updating">更新のご提案</string>
+    <string name="appearance">外観</string>
+    <string name="suggestions_excluded_genres">ジャンルを除く</string>
+    <string name="suggestions_excluded_genres_summary">サジェストで表示したくないジャンルを指定</string>
+    <string name="text_delete_local_manga_batch">選択した項目をデバイスから完全に削除しますか？</string>
+    <string name="removal_completed">削除が完了しました</string>
+    <string name="batch_manga_save_confirm">本当に選択したマンガを全編ダウンロードしますか？この動作は多くのトラフィックとストレージを消費する可能性があります</string>
+    <string name="download_slowdown_summary">IPアドレスのブロックを回避することができます</string>
+    <string name="local_manga_processing">保存されたマンガの処理</string>
+    <string name="download_slowdown">ダウンロードの速度低下</string>
+    <string name="parallel_downloads">並列ダウンロード</string>
+    <string name="chapters_will_removed_background">チャプターはバックグラウンドで削除されます。時間がかかる場合があります</string>
+    <string name="hide">隠す</string>
+    <string name="new_sources_text">新しいマンガソースが利用可能になりました</string>
 </resources>

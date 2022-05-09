@@ -11,22 +11,33 @@ import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
+import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
-import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
 
 class AppSettings(context: Context) {
 
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+
+	private val remoteSources = EnumSet.allOf(MangaSource::class.java).apply {
+		remove(MangaSource.LOCAL)
+		if (!BuildConfig.DEBUG) {
+			remove(MangaSource.DUMMY)
+		}
+	}
+
+	val remoteMangaSources: Set<MangaSource>
+		get() = Collections.unmodifiableSet(remoteSources)
 
 	var listMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.DETAILED_LIST)
@@ -56,6 +67,10 @@ class AppSettings(context: Context) {
 		get() = prefs.getBoolean(KEY_TRAFFIC_WARNING, true)
 		set(value) = prefs.edit { putBoolean(KEY_TRAFFIC_WARNING, value) }
 
+	var isAllFavouritesVisible: Boolean
+		get() = prefs.getBoolean(KEY_ALL_FAVOURITES_VISIBLE, true)
+		set(value) = prefs.edit { putBoolean(KEY_ALL_FAVOURITES_VISIBLE, value) }
+
 	val isUpdateCheckingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_APP_UPDATE_AUTO, true)
 
@@ -63,7 +78,10 @@ class AppSettings(context: Context) {
 		get() = prefs.getLong(KEY_APP_UPDATE, 0L)
 		set(value) = prefs.edit { putLong(KEY_APP_UPDATE, value) }
 
-	val trackerNotifications: Boolean
+	val isTrackerEnabled: Boolean
+		get() = prefs.getBoolean(KEY_TRACKER_ENABLED, true)
+
+	val isTrackerNotificationsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_NOTIFICATIONS, true)
 
 	var notificationSound: Uri
@@ -104,10 +122,9 @@ class AppSettings(context: Context) {
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit { if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD) }
 
-	var sourcesOrder: List<Int>
+	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
 			?.split('|')
-			?.mapNotNull(String::toIntOrNull)
 			.orEmpty()
 		set(value) = prefs.edit {
 			putString(KEY_SOURCES_ORDER, value.joinToString("|"))
@@ -119,6 +136,20 @@ class AppSettings(context: Context) {
 
 	val isSourcesSelected: Boolean
 		get() = KEY_SOURCES_HIDDEN in prefs
+
+	val newSources: Set<MangaSource>
+		get() {
+			val known = sourcesOrder.toSet()
+			val hidden = hiddenSources
+			return remoteMangaSources
+				.filterNotTo(EnumSet.noneOf(MangaSource::class.java)) { x ->
+					x.name in known || x.name in hidden
+				}
+		}
+
+	fun markKnownSources(sources: Collection<MangaSource>) {
+		sourcesOrder = sourcesOrder + sources.map { it.name }
+	}
 
 	val isPagesNumbersEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PAGES_NUMBERS, false)
@@ -140,6 +171,12 @@ class AppSettings(context: Context) {
 				putString(KEY_LOCAL_STORAGE, value.path)
 			}
 		}
+
+	val isDownloadsSlowdownEnabled: Boolean
+		get() = prefs.getBoolean(KEY_DOWNLOADS_SLOWDOWN, false)
+
+	val downloadsParallelism: Int
+		get() = prefs.getInt(KEY_DOWNLOADS_PARALLELISM, 2)
 
 	val isSuggestionsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS, false)
@@ -178,11 +215,10 @@ class AppSettings(context: Context) {
 	}
 
 	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
-		val list = MangaSource.values().toMutableList()
-		list.remove(MangaSource.LOCAL)
+		val list = remoteSources.toMutableList()
 		val order = sourcesOrder
 		list.sortBy { x ->
-			val e = order.indexOf(x.ordinal)
+			val e = order.indexOf(x.name)
 			if (e == -1) order.size + x.ordinal else e
 		}
 		if (!includeHidden) {
@@ -224,7 +260,7 @@ class AppSettings(context: Context) {
 		const val KEY_DYNAMIC_THEME = "dynamic_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
 		const val KEY_DATE_FORMAT = "date_format"
-		const val KEY_SOURCES_ORDER = "sources_order"
+		const val KEY_SOURCES_ORDER = "sources_order_2"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"
 		const val KEY_PAGES_CACHE_CLEAR = "pages_cache_clear"
@@ -236,13 +272,16 @@ class AppSettings(context: Context) {
 		const val KEY_REMOTE_SOURCES = "remote_sources"
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_SWITCHERS = "reader_switchers"
+		const val KEY_TRACKER_ENABLED = "tracker_enabled"
 		const val KEY_TRACK_SOURCES = "track_sources"
+		const val KEY_TRACK_CATEGORIES = "track_categories"
 		const val KEY_TRACK_WARNING = "track_warning"
 		const val KEY_TRACKER_NOTIFICATIONS = "tracker_notifications"
 		const val KEY_NOTIFICATIONS_SETTINGS = "notifications_settings"
 		const val KEY_NOTIFICATIONS_SOUND = "notifications_sound"
 		const val KEY_NOTIFICATIONS_VIBRATE = "notifications_vibrate"
 		const val KEY_NOTIFICATIONS_LIGHT = "notifications_light"
+		const val KEY_NOTIFICATIONS_INFO = "tracker_notifications_info"
 		const val KEY_READER_ANIMATION = "reader_animation"
 		const val KEY_READER_PREFER_RTL = "reader_prefer_rtl"
 		const val KEY_APP_PASSWORD = "app_password"
@@ -262,6 +301,9 @@ class AppSettings(context: Context) {
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
 		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
 		const val KEY_SHIKIMORI = "shikimori"
+		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
+		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
+		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

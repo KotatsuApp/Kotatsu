@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.backup.RestoreRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.backup.BackupViewModel
 import org.koitharu.kotatsu.settings.backup.RestoreViewModel
+import org.koitharu.kotatsu.settings.newsources.NewSourcesViewModel
 import org.koitharu.kotatsu.settings.onboard.OnboardViewModel
 import org.koitharu.kotatsu.settings.protect.ProtectSetupViewModel
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsViewModel
@@ -16,9 +17,9 @@ import org.koitharu.kotatsu.settings.sources.SourcesSettingsViewModel
 val settingsModule
 	get() = module {
 
-		single { BackupRepository(get()) }
-		single { RestoreRepository(get()) }
-		single { AppSettings(androidContext()) }
+		factory { BackupRepository(get()) }
+		factory { RestoreRepository(get()) }
+		single(createdAtStart = true) { AppSettings(androidContext()) }
 
 		viewModel { BackupViewModel(get(), androidContext()) }
 		viewModel { params ->
@@ -27,4 +28,5 @@ val settingsModule
 		viewModel { ProtectSetupViewModel(get()) }
 		viewModel { OnboardViewModel(get()) }
 		viewModel { SourcesSettingsViewModel(get()) }
+		viewModel { NewSourcesViewModel(get()) }
 	}

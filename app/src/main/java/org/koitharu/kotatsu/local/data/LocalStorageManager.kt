@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.os.StatFs
 import androidx.annotation.WorkerThread
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
@@ -11,7 +12,6 @@ import okhttp3.Cache
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.ext.computeSize
 import org.koitharu.kotatsu.utils.ext.getStorageName
-import java.io.File
 
 private const val DIR_NAME = "manga"
 private const val CACHE_DISK_PERCENTAGE = 0.02
@@ -71,7 +71,7 @@ class LocalStorageManager(
 	private fun getAvailableStorageDirs(): MutableSet<File> {
 		val result = LinkedHashSet<File>()
 		result += File(context.filesDir, DIR_NAME)
-		result += context.getExternalFilesDirs(DIR_NAME)
+		context.getExternalFilesDirs(DIR_NAME).filterNotNullTo(result)
 		result.retainAll { it.exists() || it.mkdirs() }
 		return result
 	}
@@ -87,8 +87,8 @@ class LocalStorageManager(
 	private fun getCacheDirs(subDir: String): MutableSet<File> {
 		val result = LinkedHashSet<File>()
 		result += File(context.cacheDir, subDir)
-		context.externalCacheDirs.mapTo(result) {
-			File(it, subDir)
+		context.externalCacheDirs.mapNotNullTo(result) {
+			File(it ?: return@mapNotNullTo null, subDir)
 		}
 		return result
 	}

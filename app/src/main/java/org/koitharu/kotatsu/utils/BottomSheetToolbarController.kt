@@ -10,14 +10,13 @@ open class BottomSheetToolbarController(
 ) : BottomSheetBehavior.BottomSheetCallback() {
 
 	override fun onStateChanged(bottomSheet: View, newState: Int) {
-		if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+		val isExpanded = newState == BottomSheetBehavior.STATE_EXPANDED && bottomSheet.top <= 0
+		if (isExpanded) {
 			toolbar.setNavigationIcon(materialR.drawable.abc_ic_clear_material)
 		} else {
 			toolbar.navigationIcon = null
 		}
 	}
 
-	override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
-	}
+	override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
 }

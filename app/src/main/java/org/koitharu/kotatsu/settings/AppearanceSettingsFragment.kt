@@ -25,9 +25,10 @@ class AppearanceSettingsFragment :
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_appearance)
 		findPreference<SliderPreference>(AppSettings.KEY_GRID_SIZE)?.run {
-			summary = "%d%%".format(value)
+			val pattern = context.getString(R.string.percent_string_pattern)
+			summary = pattern.format(value.toString())
 			setOnPreferenceChangeListener { preference, newValue ->
-				preference.summary = "%d%%".format(newValue)
+				preference.summary = pattern.format(newValue.toString())
 				true
 			}
 		}
