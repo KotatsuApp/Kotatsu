@@ -278,4 +278,5 @@
 	<string name="chapters_will_removed_background">Главы будут удалены в фоновом режиме. Это может занять какое-то время</string>
 	<string name="hide">Скрыть</string>
 	<string name="new_sources_text">Доступны новые источники манги</string>
+	<string name="empty_favourite_categories">Нет категорий избранного</string>
 </resources>

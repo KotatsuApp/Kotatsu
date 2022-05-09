@@ -1,9 +1,13 @@
 package org.koitharu.kotatsu.favourites.ui.list
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView.NO_ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
@@ -23,6 +27,14 @@ class FavouritesListViewModel(
 	private val trackingRepository: TrackingRepository,
 	settings: AppSettings,
 ) : MangaListViewModel(settings), CountersProvider {
+
+	var sortOrder: LiveData<SortOrder?> = if (categoryId == NO_ID) {
+		MutableLiveData(null)
+	} else {
+		repository.observeCategory(categoryId)
+			.map { it?.order }
+			.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}
 
 	override val content = combine(
 		if (categoryId == 0L) {

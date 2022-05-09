@@ -281,4 +281,5 @@
 	<string name="chapters_will_removed_background">Chapters will be removed in the background. It can take some time</string>
 	<string name="hide">Hide</string>
 	<string name="new_sources_text">New manga sources are available</string>
+	<string name="empty_favourite_categories">No favourite categories</string>
 </resources>
