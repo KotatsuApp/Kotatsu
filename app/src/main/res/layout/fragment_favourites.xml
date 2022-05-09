@@ -17,4 +17,10 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
 
+	<ViewStub
+		android:id="@+id/stub_empty_state"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout="@layout/item_empty_state" />
+
 </LinearLayout>

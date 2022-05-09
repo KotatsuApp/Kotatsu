@@ -30,7 +30,7 @@ class FavouritesCategoriesViewModel(
 		repository.observeCategories(),
 		observeAllCategoriesVisible(),
 	) { list, showAll ->
-		mapCategories(list, showAll, showAll)
+		mapCategories(list, showAll, showAll && list.isNotEmpty())
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	fun deleteCategory(id: Long) {

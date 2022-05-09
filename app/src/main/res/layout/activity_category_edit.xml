@@ -34,7 +34,9 @@
 					android:id="@+id/edit_name"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:hint="@string/name" />
+					android:hint="@string/name"
+					android:imeOptions="actionDone"
+					android:inputType="textCapSentences" />
 
 			</com.google.android.material.textfield.TextInputLayout>
 
