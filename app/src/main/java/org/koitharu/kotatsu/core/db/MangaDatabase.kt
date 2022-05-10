@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import org.koitharu.kotatsu.bookmarks.data.BookmarkEntity
+import org.koitharu.kotatsu.bookmarks.data.BookmarksDao
 import org.koitharu.kotatsu.core.db.dao.*
 import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.db.migrations.*
@@ -20,9 +22,9 @@ import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 	entities = [
 		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
 		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class,
-		TrackEntity::class, TrackLogEntity::class, SuggestionEntity::class
+		TrackEntity::class, TrackLogEntity::class, SuggestionEntity::class, BookmarkEntity::class,
 	],
-	version = 10
+	version = 11,
 )
 abstract class MangaDatabase : RoomDatabase() {
 
@@ -43,6 +45,8 @@ abstract class MangaDatabase : RoomDatabase() {
 	abstract val trackLogsDao: TrackLogsDao
 
 	abstract val suggestionDao: SuggestionDao
+
+	abstract val bookmarksDao: BookmarksDao
 }
 
 fun MangaDatabase(context: Context): MangaDatabase = Room.databaseBuilder(
@@ -59,6 +63,7 @@ fun MangaDatabase(context: Context): MangaDatabase = Room.databaseBuilder(
 	Migration7To8(),
 	Migration8To9(),
 	Migration9To10(),
+	Migration10To11(),
 ).addCallback(
 	DatabasePrePopulateCallback(context.resources)
 ).build()

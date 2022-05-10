@@ -13,27 +13,24 @@ data class ReaderPage(
 	val preview: String?,
 	val chapterId: Long,
 	val index: Int,
-	val source: MangaSource
+	val source: MangaSource,
 ) : Parcelable {
+
+	constructor(page: MangaPage, index: Int, chapterId: Long) : this(
+		id = page.id,
+		url = page.url,
+		referer = page.referer,
+		preview = page.preview,
+		chapterId = chapterId,
+		index = index,
+		source = page.source,
+	)
 
 	fun toMangaPage() = MangaPage(
 		id = id,
 		url = url,
 		referer = referer,
 		preview = preview,
-		source = source
+		source = source,
 	)
-
-	companion object {
-
-		fun from(page: MangaPage, index: Int, chapterId: Long) = ReaderPage(
-			id = page.id,
-			url = page.url,
-			referer = page.referer,
-			preview = page.preview,
-			chapterId = chapterId,
-			index = index,
-			source = page.source
-		)
-	}
 }

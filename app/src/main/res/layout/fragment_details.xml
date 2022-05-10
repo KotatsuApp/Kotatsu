@@ -162,6 +162,37 @@
 			app:layout_constraintTop_toBottomOf="@+id/button_read" />
 
 		<TextView
+			android:id="@+id/textView_bookmarks"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:gravity="center_vertical|start"
+			android:paddingStart="16dp"
+			android:paddingEnd="16dp"
+			android:singleLine="true"
+			android:text="@string/bookmarks"
+			android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/chips_tags" />
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/recyclerView_bookmarks"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="4dp"
+			android:layout_marginBottom="6dp"
+			android:clipToPadding="false"
+			android:orientation="horizontal"
+			android:paddingStart="12dp"
+			android:paddingEnd="12dp"
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/textView_bookmarks"
+			tools:listitem="@layout/item_bookmark" />
+
+		<TextView
 			android:id="@+id/textView_description"
 			android:layout_width="0dp"
 			android:layout_height="match_parent"
@@ -175,7 +206,7 @@
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/chips_tags"
+			app:layout_constraintTop_toBottomOf="@id/recyclerView_bookmarks"
 			tools:ignore="UnusedAttribute"
 			tools:text="@tools:sample/lorem/random[250]" />
 
@@ -191,6 +222,14 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:showAnimationBehavior="inward"
+			tools:visibility="visible" />
+
+		<androidx.constraintlayout.widget.Group
+			android:id="@+id/group_bookmarks"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			app:constraint_referenced_ids="recyclerView_bookmarks,textView_bookmarks"
 			tools:visibility="visible" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

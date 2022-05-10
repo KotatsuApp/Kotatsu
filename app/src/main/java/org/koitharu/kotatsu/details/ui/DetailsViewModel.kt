@@ -10,9 +10,12 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.bookmarks.domain.Bookmark
+import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -39,12 +42,15 @@ class DetailsViewModel(
 	private val localMangaRepository: LocalMangaRepository,
 	private val trackingRepository: TrackingRepository,
 	private val mangaDataRepository: MangaDataRepository,
+	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job
 	private val mangaData = MutableStateFlow(intent.manga)
 	private val selectedBranch = MutableStateFlow<String?>(null)
+
+	val onShowToast = SingleLiveEvent<Int>()
 
 	private val history = mangaData.mapNotNull { it?.id }
 		.distinctUntilChanged()
@@ -84,6 +90,10 @@ class DetailsViewModel(
 		.asLiveData(viewModelScope.coroutineContext)
 	val isChaptersReversed = chaptersReversed
 		.asLiveData(viewModelScope.coroutineContext)
+
+	val bookmarks = mangaData.flatMapLatest {
+		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 
@@ -146,6 +156,13 @@ class DetailsViewModel(
 				historyRepository.deleteOrSwap(manga, original)
 			}
 			onMangaRemoved.postCall(manga)
+		}
+	}
+
+	fun removeBookmark(bookmark: Bookmark) {
+		launchJob {
+			bookmarksRepository.removeBookmark(bookmark.manga.id, bookmark.pageId)
+			onShowToast.call(R.string.bookmark_removed)
 		}
 	}
 

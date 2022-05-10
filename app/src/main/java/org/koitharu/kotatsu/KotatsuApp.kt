@@ -7,6 +7,7 @@ import androidx.fragment.app.strictmode.FragmentStrictMode
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.koitharu.kotatsu.bookmarks.bookmarksModule
 import org.koitharu.kotatsu.core.db.databaseModule
 import org.koitharu.kotatsu.core.github.githubModule
 import org.koitharu.kotatsu.core.network.networkModule
@@ -67,6 +68,7 @@ class KotatsuApp : Application() {
 				readerModule,
 				appWidgetModule,
 				suggestionsModule,
+				bookmarksModule,
 			)
 		}
 	}

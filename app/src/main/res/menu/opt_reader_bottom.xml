@@ -6,16 +6,22 @@
 	tools:ignore="AlwaysShowAction">
 
 	<item
-		android:id="@+id/action_screen_rotate"
-		android:icon="@drawable/ic_screen_rotation"
-		android:title="@string/rotate_screen"
-		android:visible="false"
+		android:id="@+id/action_bookmark"
+		android:icon="@drawable/ic_bookmark"
+		android:title="@string/bookmark_add"
 		app:showAsAction="always" />
 
 	<item
 		android:id="@+id/action_pages_thumbs"
 		android:icon="@drawable/ic_grid"
 		android:title="@string/pages"
+		app:showAsAction="always" />
+
+	<item
+		android:id="@+id/action_screen_rotate"
+		android:icon="@drawable/ic_screen_rotation"
+		android:title="@string/rotate_screen"
+		android:visible="false"
 		app:showAsAction="always" />
 
 	<item

@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
+import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.ReaderMode
@@ -103,6 +104,12 @@ class ReaderActivity :
 			onLoadingStateChanged(viewModel.isLoading.value == true)
 		}
 		viewModel.isScreenshotsBlockEnabled.observe(this, this::setWindowSecure)
+		viewModel.isBookmarkAdded.observe(this, this::onBookmarkStateChanged)
+		viewModel.onShowToast.observe(this) { msgId ->
+			Snackbar.make(binding.container, msgId, Snackbar.LENGTH_SHORT)
+				.setAnchorView(binding.appbarBottom)
+				.show()
+		}
 	}
 
 	private fun onInitReader(mode: ReaderMode) {
@@ -188,6 +195,13 @@ class ReaderActivity :
 					viewModel.saveCurrentState(reader?.getCurrentState())
 					viewModel.saveCurrentPage(page, savePageRequest)
 				} ?: showWaitWhileLoading()
+			}
+			R.id.action_bookmark -> {
+				if (viewModel.isBookmarkAdded.value == true) {
+					viewModel.removeBookmark()
+				} else {
+					viewModel.addBookmark()
+				}
 			}
 			else -> return super.onOptionsItemSelected(item)
 		}
@@ -309,8 +323,8 @@ class ReaderActivity :
 			val transition = TransitionSet()
 				.setOrdering(TransitionSet.ORDERING_TOGETHER)
 				.addTransition(Slide(Gravity.TOP).addTarget(binding.appbarTop))
-			binding.appbarBottom?.let { botomBar ->
-				transition.addTransition(Slide(Gravity.BOTTOM).addTarget(botomBar))
+			binding.appbarBottom?.let { bottomBar ->
+				transition.addTransition(Slide(Gravity.BOTTOM).addTarget(bottomBar))
 			}
 			TransitionManager.beginDelayedTransition(binding.root, transition)
 			binding.appbarTop.isVisible = isUiVisible
@@ -349,6 +363,12 @@ class ReaderActivity :
 
 	override fun toggleUiVisibility() {
 		setUiIsVisible(!binding.appbarTop.isVisible)
+	}
+
+	private fun onBookmarkStateChanged(isAdded: Boolean) {
+		val menuItem = binding.toolbarBottom.menu.findItem(R.id.action_bookmark) ?: return
+		menuItem.setTitle(if (isAdded) R.string.bookmark_remove else R.string.bookmark_add)
+		menuItem.setIcon(if (isAdded) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
 	}
 
 	private fun onUiStateChanged(uiState: ReaderUiState, previous: ReaderUiState?) {
@@ -417,6 +437,11 @@ class ReaderActivity :
 			return Intent(context, ReaderActivity::class.java)
 				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 				.putExtra(EXTRA_STATE, state)
+		}
+
+		fun newIntent(context: Context, bookmark: Bookmark): Intent {
+			val state = ReaderState(bookmark.chapterId, bookmark.page, bookmark.scroll)
+			return newIntent(context, bookmark.manga, state)
 		}
 
 		fun newIntent(context: Context, mangaId: Long): Intent {

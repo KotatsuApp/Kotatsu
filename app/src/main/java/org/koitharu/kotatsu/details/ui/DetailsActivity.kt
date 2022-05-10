@@ -83,6 +83,9 @@ class DetailsActivity :
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
+		viewModel.onShowToast.observe(this) {
+			binding.snackbar.show(messageText = getString(it), longDuration = false)
+		}
 
 		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
 	}

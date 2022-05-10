@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.ui
 import android.net.Uri
 import android.util.LongSparseArray
 import androidx.activity.result.ActivityResultLauncher
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
@@ -10,10 +11,13 @@ import kotlinx.coroutines.flow.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.domain.MangaUtils
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.bookmarks.domain.Bookmark
+import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -31,6 +35,7 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.IgnoreErrors
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
+import java.util.*
 
 class ReaderViewModel(
 	private val intent: MangaIntent,
@@ -39,12 +44,14 @@ class ReaderViewModel(
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val shortcutsRepository: ShortcutsRepository,
+	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 	private val pageSaveHelper: PageSaveHelper,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job? = null
 	private var pageSaveJob: Job? = null
+	private var bookmarkJob: Job? = null
 	private val currentState = MutableStateFlow(initialState)
 	private val mangaData = MutableStateFlow(intent.manga)
 	private val chapters = LongSparseArray<MangaChapter>()
@@ -53,6 +60,7 @@ class ReaderViewModel(
 
 	val readerMode = MutableLiveData<ReaderMode>()
 	val onPageSaved = SingleLiveEvent<Uri?>()
+	val onShowToast = SingleLiveEvent<Int>()
 	val uiState = combine(
 		mangaData,
 		currentState,
@@ -88,6 +96,16 @@ class ReaderViewModel(
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.IO)
 
 	val onZoomChanged = SingleLiveEvent<Unit>()
+
+	val isBookmarkAdded: LiveData<Boolean> = currentState.flatMapLatest { state ->
+		val manga = mangaData.value
+		if (state == null || manga == null) {
+			flowOf(false)
+		} else {
+			bookmarksRepository.observeBookmark(manga, state.chapterId, state.page)
+				.map { it != null }
+		}
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	init {
 		loadImpl()
@@ -187,10 +205,9 @@ class ReaderViewModel(
 
 	fun onCurrentPageChanged(position: Int) {
 		val pages = content.value?.pages ?: return
-		pages.getOrNull(position)?.let {
-			val currentValue = currentState.value
-			if (currentValue != null && currentValue.chapterId != it.chapterId) {
-				currentState.value = currentValue.copy(chapterId = it.chapterId)
+		pages.getOrNull(position)?.let { page ->
+			currentState.update { cs ->
+				cs?.copy(chapterId = page.chapterId, page = page.index)
 			}
 		}
 		if (pages.isEmpty() || loadingJob?.isActive == true) {
@@ -204,6 +221,41 @@ class ReaderViewModel(
 		}
 		if (pageLoader.isPrefetchApplicable()) {
 			pageLoader.prefetch(pages.trySublist(position + 1, position + PREFETCH_LIMIT))
+		}
+	}
+
+	fun addBookmark() {
+		if (bookmarkJob?.isActive == true) {
+			return
+		}
+		bookmarkJob = launchJob {
+			loadingJob?.join()
+			val state = checkNotNull(currentState.value)
+			val page = checkNotNull(getCurrentPage()) { "Page not found" }
+			val bookmark = Bookmark(
+				manga = checkNotNull(mangaData.value),
+				pageId = page.id,
+				chapterId = state.chapterId,
+				page = state.page,
+				scroll = state.scroll,
+				imageUrl = page.preview ?: pageLoader.getPageUrl(page),
+				createdAt = Date(),
+			)
+			bookmarksRepository.addBookmark(bookmark)
+			onShowToast.call(R.string.bookmark_added)
+		}
+	}
+
+	fun removeBookmark() {
+		if (bookmarkJob?.isActive == true) {
+			return
+		}
+		bookmarkJob = launchJob {
+			loadingJob?.join()
+			val manga = checkNotNull(mangaData.value)
+			val page = checkNotNull(getCurrentPage()) { "Page not found" }
+			bookmarksRepository.removeBookmark(manga.id, page.id)
+			onShowToast.call(R.string.bookmark_removed)
 		}
 	}
 
@@ -229,8 +281,8 @@ class ReaderViewModel(
 			// obtain state
 			if (currentState.value == null) {
 				currentState.value = historyRepository.getOne(manga)?.let {
-					ReaderState.from(it)
-				} ?: ReaderState.initial(manga, preselectedBranch)
+					ReaderState(it)
+				} ?: ReaderState(manga, preselectedBranch)
 			}
 
 			val branch = chapters[currentState.value?.chapterId ?: 0L].branch
@@ -259,7 +311,7 @@ class ReaderViewModel(
 		val chapter = checkNotNull(chapters[chapterId]) { "Requested chapter not found" }
 		val repo = MangaRepository(manga.source)
 		return repo.getPages(chapter).mapIndexed { index, page ->
-			ReaderPage.from(page, index, chapterId)
+			ReaderPage(page, index, chapterId)
 		}
 	}
 
