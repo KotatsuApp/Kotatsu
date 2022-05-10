@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsLiveData
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
@@ -21,11 +22,11 @@ class MainViewModel(
 	val onOpenReader = SingleLiveEvent<Manga>()
 	var defaultSection by settings::defaultSection
 
-	val isSuggestionsEnabled = settings.observe()
-		.filter { it == AppSettings.KEY_SUGGESTIONS }
-		.onStart { emit("") }
-		.map { settings.isSuggestionsEnabled }
-		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	val isSuggestionsEnabled = settings.observeAsLiveData(
+		context = viewModelScope.coroutineContext + Dispatchers.Default,
+		key = AppSettings.KEY_SUGGESTIONS,
+		valueProducer = { isSuggestionsEnabled }
+	)
 
 	val isResumeEnabled = historyRepository
 		.observeHasItems()

@@ -5,14 +5,16 @@ import android.view.SoundEffectConstants
 import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.utils.GridTouchHelper
 
-@Suppress("UNUSED_PARAMETER")
 class ReaderControlDelegate(
-	private val scope: LifecycleCoroutineScope,
-	private val settings: AppSettings,
+	scope: LifecycleCoroutineScope,
+	settings: AppSettings,
 	private val listener: OnInteractionListener
 ) {
 
@@ -20,12 +22,8 @@ class ReaderControlDelegate(
 	private var isVolumeKeysSwitchEnabled: Boolean = false
 
 	init {
-		settings.observe()
-			.filter { it == AppSettings.KEY_READER_SWITCHERS }
-			.map { settings.readerPageSwitch }
-			.onStart { emit(settings.readerPageSwitch) }
-			.distinctUntilChanged()
-			.flowOn(Dispatchers.IO)
+		settings.observeAsFlow(AppSettings.KEY_READER_SWITCHERS) { readerPageSwitch }
+			.flowOn(Dispatchers.Default)
 			.onEach {
 				isTapSwitchEnabled = AppSettings.PAGE_SWITCH_TAPS in it
 				isVolumeKeysSwitchEnabled = AppSettings.PAGE_SWITCH_VOLUME_KEYS in it
@@ -57,7 +55,7 @@ class ReaderControlDelegate(
 		}
 	}
 
-	fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean = when (keyCode) {
+	fun onKeyDown(keyCode: Int, @Suppress("UNUSED_PARAMETER") event: KeyEvent?): Boolean = when (keyCode) {
 		KeyEvent.KEYCODE_VOLUME_UP -> if (isVolumeKeysSwitchEnabled) {
 			listener.switchPageBy(-1)
 			true
@@ -92,9 +90,11 @@ class ReaderControlDelegate(
 		else -> false
 	}
 
-	fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-		return (isVolumeKeysSwitchEnabled &&
-				(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP))
+	fun onKeyUp(keyCode: Int, @Suppress("UNUSED_PARAMETER") event: KeyEvent?): Boolean {
+		return (
+			isVolumeKeysSwitchEnabled &&
+				(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+			)
 	}
 
 	interface OnInteractionListener {

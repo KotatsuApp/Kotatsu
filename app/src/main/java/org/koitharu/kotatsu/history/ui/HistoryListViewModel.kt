@@ -2,14 +2,15 @@ package org.koitharu.kotatsu.history.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
@@ -19,6 +20,8 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
@@ -29,11 +32,7 @@ class HistoryListViewModel(
 
 	val isGroupingEnabled = MutableLiveData<Boolean>()
 
-	private val historyGrouping = settings.observe()
-		.filter { it == AppSettings.KEY_HISTORY_GROUPING }
-		.map { settings.historyGrouping }
-		.onStart { emit(settings.historyGrouping) }
-		.distinctUntilChanged()
+	private val historyGrouping = settings.observeAsFlow(AppSettings.KEY_HISTORY_GROUPING) { historyGrouping }
 		.onEach { isGroupingEnabled.postValue(it) }
 
 	override val content = combine(

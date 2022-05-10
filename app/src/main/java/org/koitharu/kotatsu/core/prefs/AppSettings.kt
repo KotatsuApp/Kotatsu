@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.prefs
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager

@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.*
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
@@ -21,6 +20,7 @@ import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 private const val FILTER_MIN_INTERVAL = 750L
 
@@ -133,9 +133,7 @@ class RemoteListViewModel(
 				}
 				hasNextPage.value = list.isNotEmpty()
 			} catch (e: Throwable) {
-				if (BuildConfig.DEBUG) {
-					e.printStackTrace()
-				}
+				e.printStackTraceDebug()
 				listError.value = e
 				if (!mangaList.value.isNullOrEmpty()) {
 					onError.postCall(e)

@@ -3,21 +3,21 @@ package org.koitharu.kotatsu.base.domain
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Size
+import java.io.File
+import java.io.InputStream
+import java.util.zip.ZipFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.medianOrNull
-import java.io.File
-import java.io.InputStream
-import java.util.zip.ZipFile
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 object MangaUtils : KoinComponent {
 
@@ -53,9 +53,7 @@ object MangaUtils : KoinComponent {
 			}
 			return size.width * 2 < size.height
 		} catch (e: Exception) {
-			if (BuildConfig.DEBUG) {
-				e.printStackTrace()
-			}
+			e.printStackTraceDebug()
 			return null
 		}
 	}

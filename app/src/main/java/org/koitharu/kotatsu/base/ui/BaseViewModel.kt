@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.*
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.base.ui.util.CountedBooleanLiveData
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 abstract class BaseViewModel : ViewModel() {
 
@@ -34,9 +34,7 @@ abstract class BaseViewModel : ViewModel() {
 	}
 
 	private fun createErrorHandler() = CoroutineExceptionHandler { _, throwable ->
-		if (BuildConfig.DEBUG) {
-			throwable.printStackTrace()
-		}
+		throwable.printStackTraceDebug()
 		if (throwable !is CancellationException) {
 			onError.postCall(throwable)
 		}

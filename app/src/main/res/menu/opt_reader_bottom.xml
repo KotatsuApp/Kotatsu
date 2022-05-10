@@ -9,12 +9,14 @@
 		android:id="@+id/action_bookmark"
 		android:icon="@drawable/ic_bookmark"
 		android:title="@string/bookmark_add"
+		android:visible="false"
 		app:showAsAction="always" />
 
 	<item
 		android:id="@+id/action_pages_thumbs"
 		android:icon="@drawable/ic_grid"
 		android:title="@string/pages"
+		android:visible="false"
 		app:showAsAction="always" />
 
 	<item
@@ -28,11 +30,13 @@
 		android:id="@+id/action_reader_mode"
 		android:icon="@drawable/ic_loading"
 		android:title="@string/read_mode"
+		android:visible="false"
 		app:showAsAction="always" />
 
 	<item
 		android:id="@+id/action_save_page"
 		android:title="@string/save_page"
+		android:visible="false"
 		app:showAsAction="never" />
 
 	<item

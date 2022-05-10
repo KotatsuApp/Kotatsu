@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import kotlin.system.exitProcess
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 class AppCrashHandler(private val applicationContext: Context) : Thread.UncaughtExceptionHandler {
 
@@ -13,7 +14,7 @@ class AppCrashHandler(private val applicationContext: Context) : Thread.Uncaught
 		try {
 			applicationContext.startActivity(intent)
 		} catch (t: Throwable) {
-			t.printStackTrace()
+			t.printStackTraceDebug()
 		}
 		Log.e("CRASH", e.message, e)
 		exitProcess(1)

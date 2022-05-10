@@ -9,7 +9,11 @@ import android.net.Uri
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityOptionsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -55,4 +59,11 @@ fun <I> ActivityResultLauncher<I>.tryLaunch(input: I, options: ActivityOptionsCo
 	return runCatching {
 		launch(input, options)
 	}.isSuccess
+}
+
+fun Lifecycle.postDelayed(runnable: Runnable, delay: Long) {
+	coroutineScope.launch {
+		delay(delay)
+		runnable.run()
+	}
 }
