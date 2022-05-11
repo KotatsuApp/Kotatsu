@@ -24,6 +24,7 @@
 
 	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
 		<item name="android:statusBarColor">@color/dim</item>
+		<item name="colorControlHighlight">?colorSecondary</item>
 	</style>
 
 	<!-- Widget styles -->
@@ -86,7 +87,7 @@
 
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">
 		<item name="android:textColor">@color/list_item_text_color</item>
-		<item name="backgroundTint">@color/list_item_background_color</item>
+		<item name="backgroundFillColor">@color/list_item_background_color</item>
 		<item name="checkedDrawableStart">@drawable/ic_check</item>
 		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Material3.NavigationView.Item</item>
 		<item name="android:gravity">center_vertical|start</item>

@@ -28,7 +28,7 @@ class FavouriteCategoriesBottomSheet :
 	BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>,
 	CategoriesEditDelegate.CategoriesEditCallback,
-	Toolbar.OnMenuItemClickListener {
+	Toolbar.OnMenuItemClickListener, View.OnClickListener {
 
 	private val viewModel by viewModel<MangaCategoriesViewModel> {
 		parametersOf(requireNotNull(arguments?.getParcelableArrayList<ParcelableManga>(KEY_MANGA_LIST)).map { it.manga })
@@ -46,6 +46,7 @@ class FavouriteCategoriesBottomSheet :
 		adapter = MangaCategoriesAdapter(this)
 		binding.recyclerViewCategories.adapter = adapter
 		binding.toolbar.setOnMenuItemClickListener(this)
+		binding.itemCreate.setOnClickListener(this)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
@@ -58,11 +59,17 @@ class FavouriteCategoriesBottomSheet :
 
 	override fun onMenuItemClick(item: MenuItem): Boolean {
 		return when (item.itemId) {
-			R.id.action_create -> {
-				startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
+			R.id.action_done -> {
+				dismiss()
 				true
 			}
 			else -> false
+		}
+	}
+
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.item_create -> startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
 		}
 	}
 

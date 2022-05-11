@@ -5,13 +5,14 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="vertical">
+	android:orientation="vertical"
+	android:paddingBottom="@dimen/list_spacing">
 
 	<com.google.android.material.appbar.MaterialToolbar
 		android:id="@+id/toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="?attr/actionBarSize"
-		app:menu="@menu/opt_favourites_bs"
+		app:menu="@menu/opt_config"
 		app:title="@string/add_to_favourites" />
 
 	<androidx.recyclerview.widget.RecyclerView
@@ -20,9 +21,19 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
 		android:overScrollMode="never"
-		android:paddingBottom="@dimen/list_spacing"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_checkable_new" />
+
+	<TextView
+		android:id="@+id/item_create"
+		style="?listItemTextViewStyle"
+		android:layout_width="match_parent"
+		android:layout_height="?android:listPreferredItemHeightSmall"
+		android:background="?selectableItemBackground"
+		android:paddingStart="?android:listPreferredItemPaddingStart"
+		android:paddingEnd="?android:listPreferredItemPaddingEnd"
+		android:text="@string/create_category"
+		android:textAppearance="?attr/textAppearanceButton" />
 
 </LinearLayout>
