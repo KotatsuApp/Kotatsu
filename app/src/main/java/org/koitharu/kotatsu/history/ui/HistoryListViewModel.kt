@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.ReversibleHandle
+import org.koitharu.kotatsu.base.domain.plus
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -17,6 +19,7 @@ import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
@@ -31,6 +34,7 @@ class HistoryListViewModel(
 ) : MangaListViewModel(settings) {
 
 	val isGroupingEnabled = MutableLiveData<Boolean>()
+	val onItemsRemoved = SingleLiveEvent<ReversibleHandle>()
 
 	private val historyGrouping = settings.observeAsFlow(AppSettings.KEY_HISTORY_GROUPING) { historyGrouping }
 		.onEach { isGroupingEnabled.postValue(it) }
@@ -72,9 +76,12 @@ class HistoryListViewModel(
 		if (ids.isEmpty()) {
 			return
 		}
-		launchJob {
-			repository.delete(ids)
+		launchJob(Dispatchers.Default) {
+			val handle = repository.deleteReversible(ids) + ReversibleHandle {
+				shortcutsRepository.updateShortcuts()
+			}
 			shortcutsRepository.updateShortcuts()
+			onItemsRemoved.postCall(handle)
 		}
 	}
 

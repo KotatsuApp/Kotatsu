@@ -102,7 +102,7 @@ dependencies {
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
 
 	implementation 'io.insert-koin:koin-android:3.2.0'
-	implementation 'io.coil-kt:coil-base:2.0.0-rc03'
+	implementation 'io.coil-kt:coil-base:2.0.0'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 

@@ -7,8 +7,11 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.ReversibleHandle
+import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
@@ -22,6 +25,7 @@ class HistoryListFragment : MangaListFragment() {
 		viewModel.isGroupingEnabled.observe(viewLifecycleOwner) {
 			activity?.invalidateOptionsMenu()
 		}
+		viewModel.onItemsRemoved.observe(viewLifecycleOwner, ::onItemsRemoved)
 	}
 
 	override fun onScrolledToEnd() = Unit
@@ -78,6 +82,12 @@ class HistoryListFragment : MangaListFragment() {
 			}
 			else -> super.onActionItemClicked(mode, item)
 		}
+	}
+
+	private fun onItemsRemoved(reversibleHandle: ReversibleHandle) {
+		Snackbar.make(binding.recyclerView, R.string.removed_from_history, Snackbar.LENGTH_LONG)
+			.setAction(R.string.undo) { reversibleHandle.reverseAsync() }
+			.show()
 	}
 
 	companion object {

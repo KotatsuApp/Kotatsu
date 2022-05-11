@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import org.koitharu.kotatsu.base.domain.ReversibleHandle
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.model.MangaHistory
@@ -97,6 +98,19 @@ class HistoryRepository(
 			for (id in ids) {
 				db.historyDao.delete(id)
 			}
+		}
+	}
+
+	suspend fun deleteReversible(ids: Collection<Long>): ReversibleHandle {
+		val entities = db.withTransaction {
+			val entities = db.historyDao.findAll(ids.toList()).filterNotNull()
+			for (id in ids) {
+				db.historyDao.delete(id)
+			}
+			entities
+		}
+		return ReversibleHandle {
+			db.historyDao.upsert(entities)
 		}
 	}
 

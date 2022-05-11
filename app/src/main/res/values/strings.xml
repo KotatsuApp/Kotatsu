@@ -293,4 +293,6 @@
 	<string name="bookmarks">Bookmarks</string>
 	<string name="bookmark_removed">Bookmark removed</string>
 	<string name="bookmark_added">Bookmark added</string>
+	<string name="undo">Undo</string>
+	<string name="removed_from_history">Removed from history</string>
 </resources>
