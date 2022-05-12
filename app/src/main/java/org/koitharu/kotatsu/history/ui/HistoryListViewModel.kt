@@ -2,10 +2,13 @@ package org.koitharu.kotatsu.history.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.ReversibleHandle
 import org.koitharu.kotatsu.base.domain.plus
@@ -23,8 +26,6 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
@@ -55,8 +56,10 @@ class HistoryListViewModel(
 			)
 			else -> mapList(list, grouped, mode)
 		}
+	}.onStart {
+		loadingCounter.increment()
 	}.onFirst {
-		isLoading.postValue(false)
+		loadingCounter.decrement()
 	}.catch {
 		it.toErrorState(canRetry = false)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))

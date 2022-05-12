@@ -136,7 +136,7 @@ class RemoteListViewModel(
 				e.printStackTraceDebug()
 				listError.value = e
 				if (!mangaList.value.isNullOrEmpty()) {
-					onError.postCall(e)
+					errorEvent.postCall(e)
 				}
 			}
 		}

@@ -1,20 +1,31 @@
 package org.koitharu.kotatsu.base.ui.util
 
-import androidx.lifecycle.MutableLiveData
+import androidx.annotation.AnyThread
+import androidx.lifecycle.LiveData
+import java.util.concurrent.atomic.AtomicInteger
 
-class CountedBooleanLiveData : MutableLiveData<Boolean>(false) {
+class CountedBooleanLiveData : LiveData<Boolean>(false) {
 
-	private var counter = 0
+	private val counter = AtomicInteger(0)
 
-	override fun setValue(value: Boolean) {
-		if (value) {
-			counter++
-		} else {
-			counter--
+	@AnyThread
+	fun increment() {
+		if (counter.getAndIncrement() == 0) {
+			postValue(true)
 		}
-		val newValue = counter > 0
-		if (newValue != this.value) {
-			super.setValue(newValue)
+	}
+
+	@AnyThread
+	fun decrement() {
+		if (counter.decrementAndGet() == 0) {
+			postValue(false)
+		}
+	}
+
+	@AnyThread
+	fun reset() {
+		if (counter.getAndSet(0) != 0) {
+			postValue(false)
 		}
 	}
 }
