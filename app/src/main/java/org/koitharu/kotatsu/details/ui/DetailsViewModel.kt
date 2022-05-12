@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.details.ui
 
 import androidx.lifecycle.*
-import java.io.IOException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
@@ -24,6 +23,7 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import java.io.IOException
 
 class DetailsViewModel(
 	intent: MangaIntent,
@@ -87,8 +87,8 @@ class DetailsViewModel(
 		branches.indexOf(selected)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
-	val isChaptersEmpty = delegate.manga.map { m ->
-		m?.chapters?.isEmpty() == true
+	val isChaptersEmpty: LiveData<Boolean> = delegate.manga.map { m ->
+		m != null && m.chapters.isNullOrEmpty()
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	val chapters = combine(
