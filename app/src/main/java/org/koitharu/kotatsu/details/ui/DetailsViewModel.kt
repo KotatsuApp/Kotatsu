@@ -1,11 +1,7 @@
 package org.koitharu.kotatsu.details.ui
 
-import androidx.lifecycle.asFlow
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import java.io.IOException
-import java.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
@@ -16,12 +12,14 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
@@ -77,9 +75,9 @@ class DetailsViewModel(
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 
-	val branches = delegate.manga.map {
-		val chapters = it?.chapters ?: return@map emptySet()
-		chapters.mapTo(TreeSet()) { x -> x.branch }
+	val branches: LiveData<List<String?>> = delegate.manga.map {
+		val chapters = it?.chapters ?: return@map emptyList()
+		chapters.mapToSet { x -> x.branch }.sortedWith(BranchComparator())
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val selectedBranchIndex = combine(

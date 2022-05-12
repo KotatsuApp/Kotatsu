@@ -191,7 +191,7 @@ class DetailsActivity :
 		R.id.action_save -> {
 			viewModel.manga.value?.let {
 				val chaptersCount = it.chapters?.size ?: 0
-				val branches = viewModel.branches.value?.toList().orEmpty()
+				val branches = viewModel.branches.value.orEmpty()
 				if (chaptersCount > 5 || branches.size > 1) {
 					showSaveConfirmation(it, chaptersCount, branches)
 				} else {
