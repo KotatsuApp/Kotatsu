@@ -20,7 +20,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
-import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -61,6 +60,7 @@ import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.*
+import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
@@ -141,6 +141,7 @@ class MainActivity :
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.remoteSources.observe(this, this::updateSideMenu)
 		viewModel.isSuggestionsEnabled.observe(this, this::setSuggestionsEnabled)
+		viewModel.isTrackerEnabled.observe(this, this::setTrackerEnabled)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -353,6 +354,14 @@ class MainActivity :
 
 	private fun setSuggestionsEnabled(isEnabled: Boolean) {
 		val item = binding.navigationView.menu.findItem(R.id.nav_suggestions) ?: return
+		if (!isEnabled && item.isChecked) {
+			binding.navigationView.setCheckedItem(R.id.nav_history)
+		}
+		item.isVisible = isEnabled
+	}
+
+	private fun setTrackerEnabled(isEnabled: Boolean) {
+		val item = binding.navigationView.menu.findItem(R.id.nav_feed) ?: return
 		if (!isEnabled && item.isChecked) {
 			binding.navigationView.setCheckedItem(R.id.nav_history)
 		}
