@@ -13,9 +13,9 @@ import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
+import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.getStorageName
-import org.koitharu.kotatsu.utils.ext.names
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import java.io.File
@@ -41,7 +41,12 @@ class ContentSettingsFragment :
 			}
 		}
 		findPreference<ListPreference>(AppSettings.KEY_DOH)?.run {
-			entryValues = enumValues<DoHProvider>().names()
+			entryValues = arrayOf(
+				DoHProvider.NONE,
+				DoHProvider.GOOGLE,
+				DoHProvider.CLOUDFLARE,
+				DoHProvider.ADGUARD,
+			).names()
 			setDefaultValueCompat(DoHProvider.NONE.name)
 		}
 		bindRemoteSourcesSummary()

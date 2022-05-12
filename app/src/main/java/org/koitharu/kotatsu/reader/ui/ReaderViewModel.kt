@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import java.util.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
@@ -31,7 +32,6 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
-import java.util.*
 
 private const val BOUNDS_PAGE_OFFSET = 2
 private const val PAGES_TRIM_THRESHOLD = 120
@@ -264,15 +264,7 @@ class ReaderViewModel(
 				chapters.put(it.id, it)
 			}
 			// determine mode
-			val mode = dataRepository.getReaderMode(manga.id) ?: manga.chapters?.randomOrNull()?.let {
-				val pages = repo.getPages(it)
-				val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
-				val newMode = getReaderMode(isWebtoon)
-				if (isWebtoon != null) {
-					dataRepository.savePreferences(manga, newMode)
-				}
-				newMode
-			} ?: error("There are no chapters in this manga")
+			val mode = detectReaderMode(manga, repo)
 			// obtain state
 			if (currentState.value == null) {
 				currentState.value = historyRepository.getOne(manga)?.let {
@@ -293,12 +285,6 @@ class ReaderViewModel(
 
 			content.postValue(ReaderContent(pages, currentState.value))
 		}
-	}
-
-	private fun getReaderMode(isWebtoon: Boolean?) = when {
-		isWebtoon == true -> ReaderMode.WEBTOON
-		settings.isPreferRtlReader -> ReaderMode.REVERSED
-		else -> ReaderMode.STANDARD
 	}
 
 	private suspend fun loadChapter(chapterId: Long): List<ReaderPage> {
@@ -357,6 +343,26 @@ class ReaderViewModel(
 		} else {
 			subList(fromIndexBounded, toIndexBounded)
 		}
+	}
+
+	private suspend fun detectReaderMode(manga: Manga, repo: MangaRepository): ReaderMode {
+		dataRepository.getReaderMode(manga.id)?.let { return it }
+		val defaultMode = settings.defaultReaderMode
+		if (!settings.isReaderModeDetectionEnabled || defaultMode == ReaderMode.WEBTOON) {
+			return defaultMode
+		}
+		val chapter = currentState.value?.chapterId?.let(chapters::get)
+			?: manga.chapters?.randomOrNull()
+			?: error("There are no chapters in this manga")
+		val pages = repo.getPages(chapter)
+		return runCatching {
+			val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
+			if (isWebtoon) ReaderMode.WEBTOON else defaultMode
+		}.onSuccess {
+			dataRepository.savePreferences(manga, it)
+		}.onFailure {
+			it.printStackTraceDebug()
+		}.getOrDefault(defaultMode)
 	}
 }
 

@@ -160,8 +160,6 @@
 	<string name="update_check_failed">Could not look for updates</string>
 	<string name="no_update_available">No updates available</string>
 	<string name="right_to_left">Right-to-left (←)</string>
-	<string name="prefer_rtl_reader">Prefer right-to-left (←) reader</string>
-	<string name="prefer_rtl_reader_summary">Reading mode can be set up separately for each series</string>
 	<string name="create_category">New category</string>
 	<string name="scale_mode">Scale mode</string>
 	<string name="zoom_mode_fit_center">Fit center</string>
@@ -296,4 +294,7 @@
 	<string name="undo">Undo</string>
 	<string name="removed_from_history">Removed from history</string>
 	<string name="dns_over_https">DNS over HTTPS</string>
+	<string name="default_mode">Default mode</string>
+	<string name="detect_reader_mode">Autodetect reader mode</string>
+	<string name="detect_reader_mode_summary">Automatically detect if manga is webtoon</string>
 </resources>

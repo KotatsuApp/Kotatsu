@@ -40,4 +40,9 @@
 		<item>CloudFlare</item>
 		<item>AdGuard</item>
 	</string-array>
+	<string-array name="reader_modes">
+		<item>@string/standard</item>
+		<item>@string/right_to_left</item>
+		<item>@string/webtoon</item>
+	</string-array>
 </resources>

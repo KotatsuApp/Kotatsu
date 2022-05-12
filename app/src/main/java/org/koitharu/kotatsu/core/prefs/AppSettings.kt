@@ -99,8 +99,11 @@ class AppSettings(context: Context) {
 	val readerAnimation: Boolean
 		get() = prefs.getBoolean(KEY_READER_ANIMATION, false)
 
-	val isPreferRtlReader: Boolean
-		get() = prefs.getBoolean(KEY_READER_PREFER_RTL, false)
+	val defaultReaderMode: ReaderMode
+		get() = prefs.getEnumValue(KEY_READER_MODE, ReaderMode.STANDARD)
+
+	val isReaderModeDetectionEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READER_MODE_DETECT, true)
 
 	var historyGrouping: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_GROUPING, true)
@@ -287,7 +290,8 @@ class AppSettings(context: Context) {
 		const val KEY_NOTIFICATIONS_LIGHT = "notifications_light"
 		const val KEY_NOTIFICATIONS_INFO = "tracker_notifications_info"
 		const val KEY_READER_ANIMATION = "reader_animation"
-		const val KEY_READER_PREFER_RTL = "reader_prefer_rtl"
+		const val KEY_READER_MODE = "reader_mode"
+		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_APP_PASSWORD = "app_password"
 		const val KEY_PROTECT_APP = "protect_app"
 		const val KEY_APP_VERSION = "app_version"
