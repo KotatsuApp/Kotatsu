@@ -99,39 +99,42 @@ class DownloadService : BaseService() {
 	private fun listenJob(job: ProgressJob<DownloadState>) {
 		lifecycleScope.launch {
 			val startId = job.progressValue.startId
-			val timeLeftEstimator = TimeLeftEstimator()
 			val notification = DownloadNotification(this@DownloadService, startId)
-			notificationSwitcher.notify(startId, notification.create(job.progressValue, -1L))
-			job.progressAsFlow()
-				.onEach { state ->
-					if (state is DownloadState.Progress) {
-						timeLeftEstimator.tick(value = state.progress, total = state.max)
-					} else {
-						timeLeftEstimator.emptyTick()
+			try {
+				val timeLeftEstimator = TimeLeftEstimator()
+				notificationSwitcher.notify(startId, notification.create(job.progressValue, -1L))
+				job.progressAsFlow()
+					.onEach { state ->
+						if (state is DownloadState.Progress) {
+							timeLeftEstimator.tick(value = state.progress, total = state.max)
+						} else {
+							timeLeftEstimator.emptyTick()
+						}
 					}
+					.throttle { state -> if (state is DownloadState.Progress) 400L else 0L }
+					.whileActive()
+					.collect { state ->
+						val timeLeft = timeLeftEstimator.getEstimatedTimeLeft()
+						notificationSwitcher.notify(startId, notification.create(state, timeLeft))
+					}
+				job.join()
+			} finally {
+				(job.progressValue as? DownloadState.Done)?.let {
+					sendBroadcast(
+						Intent(ACTION_DOWNLOAD_COMPLETE)
+							.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga, withChapters = false))
+					)
 				}
-				.throttle { state -> if (state is DownloadState.Progress) 400L else 0L }
-				.whileActive()
-				.collect { state ->
-					val timeLeft = timeLeftEstimator.getEstimatedTimeLeft()
-					notificationSwitcher.notify(startId, notification.create(state, timeLeft))
-				}
-			job.join()
-			(job.progressValue as? DownloadState.Done)?.let {
-				sendBroadcast(
-					Intent(ACTION_DOWNLOAD_COMPLETE)
-						.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga, withChapters = false))
+				notificationSwitcher.detach(
+					startId,
+					if (job.isCancelled) {
+						null
+					} else {
+						notification.create(job.progressValue, -1L)
+					}
 				)
+				stopSelf(startId)
 			}
-			notificationSwitcher.detach(
-				startId,
-				if (job.isCancelled) {
-					null
-				} else {
-					notification.create(job.progressValue, -1L)
-				}
-			)
-			stopSelf(startId)
 		}
 	}
 
