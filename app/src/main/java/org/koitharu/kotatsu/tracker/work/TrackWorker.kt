@@ -6,12 +6,15 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
+import androidx.core.app.NotificationCompat.VISIBILITY_SECRET
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import androidx.work.*
 import coil.ImageLoader
 import coil.request.ImageRequest
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -28,7 +31,6 @@ import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.trySetForeground
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.util.concurrent.TimeUnit
 
 class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	CoroutineWorker(context, workerParams), KoinComponent {
@@ -227,6 +229,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				)
 			)
 			setAutoCancel(true)
+			setVisibility(if (manga.isNsfw) VISIBILITY_SECRET else VISIBILITY_PUBLIC)
 			color = colorPrimary
 			setShortcutId(manga.id.toString())
 			priority = NotificationCompat.PRIORITY_DEFAULT
