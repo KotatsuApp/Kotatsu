@@ -3,18 +3,22 @@ package org.koitharu.kotatsu.settings
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import androidx.preference.ListPreference
 import androidx.preference.Preference
-import java.io.File
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
+import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.getStorageName
+import org.koitharu.kotatsu.utils.ext.names
+import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import java.io.File
 
 class ContentSettingsFragment :
 	BasePreferenceFragment(R.string.content),
@@ -35,6 +39,10 @@ class ContentSettingsFragment :
 				preference.summary = newValue.toString()
 				true
 			}
+		}
+		findPreference<ListPreference>(AppSettings.KEY_DOH)?.run {
+			entryValues = enumValues<DoHProvider>().names()
+			setDefaultValueCompat(DoHProvider.NONE.name)
 		}
 		bindRemoteSourcesSummary()
 	}

@@ -34,4 +34,10 @@
 		<item>@string/only_using_wifi</item>
 		<item>@string/never</item>
 	</string-array>
+	<string-array name="doh_providers">
+		<item>@string/disabled</item>
+		<item>Google</item>
+		<item>CloudFlare</item>
+		<item>AdGuard</item>
+	</string-array>
 </resources>

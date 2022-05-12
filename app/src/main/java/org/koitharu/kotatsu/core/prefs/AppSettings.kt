@@ -16,6 +16,7 @@ import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.putEnumValue
@@ -188,6 +189,9 @@ class AppSettings(context: Context) {
 		get() = prefs.getBoolean(KEY_SEARCH_SINGLE_SOURCE, false)
 		set(value) = prefs.edit { putBoolean(KEY_SEARCH_SINGLE_SOURCE, value) }
 
+	val dnsOverHttps: DoHProvider
+		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
+
 	fun isPagesPreloadAllowed(cm: ConnectivityManager): Boolean {
 		return when (prefs.getString(KEY_PAGES_PRELOAD, null)?.toIntOrNull()) {
 			NETWORK_ALWAYS -> true
@@ -303,6 +307,7 @@ class AppSettings(context: Context) {
 		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
+		const val KEY_DOH = "doh"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

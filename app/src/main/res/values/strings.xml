@@ -295,4 +295,5 @@
 	<string name="bookmark_added">Bookmark added</string>
 	<string name="undo">Undo</string>
 	<string name="removed_from_history">Removed from history</string>
+	<string name="dns_over_https">DNS over HTTPS</string>
 </resources>

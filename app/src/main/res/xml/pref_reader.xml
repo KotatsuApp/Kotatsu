@@ -13,7 +13,6 @@
 		android:entries="@array/zoom_modes"
 		android:key="zoom_mode"
 		android:title="@string/scale_mode"
-
 		app:useSimpleSummaryProvider="true" />
 
 	<MultiSelectListPreference
