@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -37,8 +38,10 @@ class SuggestionsViewModel(
 				list.toUi(this, mode)
 			}
 		}
+	}.onStart {
+		loadingCounter.increment()
 	}.onFirst {
-		isLoading.postValue(false)
+		loadingCounter.decrement()
 	}.catch {
 		it.toErrorState(canRetry = false)
 	}.asLiveDataDistinct(

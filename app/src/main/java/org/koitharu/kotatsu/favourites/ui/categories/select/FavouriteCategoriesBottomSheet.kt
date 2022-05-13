@@ -17,26 +17,24 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.databinding.DialogFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
+import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class FavouriteCategoriesDialog :
+class FavouriteCategoriesBottomSheet :
 	BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>,
 	CategoriesEditDelegate.CategoriesEditCallback,
-	Toolbar.OnMenuItemClickListener {
+	Toolbar.OnMenuItemClickListener, View.OnClickListener {
 
 	private val viewModel by viewModel<MangaCategoriesViewModel> {
 		parametersOf(requireNotNull(arguments?.getParcelableArrayList<ParcelableManga>(KEY_MANGA_LIST)).map { it.manga })
 	}
 
 	private var adapter: MangaCategoriesAdapter? = null
-	private val editDelegate by lazy(LazyThreadSafetyMode.NONE) {
-		CategoriesEditDelegate(requireContext(), this@FavouriteCategoriesDialog)
-	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -48,6 +46,7 @@ class FavouriteCategoriesDialog :
 		adapter = MangaCategoriesAdapter(this)
 		binding.recyclerViewCategories.adapter = adapter
 		binding.toolbar.setOnMenuItemClickListener(this)
+		binding.itemCreate.setOnClickListener(this)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
@@ -60,11 +59,17 @@ class FavouriteCategoriesDialog :
 
 	override fun onMenuItemClick(item: MenuItem): Boolean {
 		return when (item.itemId) {
-			R.id.action_create -> {
-				editDelegate.createCategory()
+			R.id.action_done -> {
+				dismiss()
 				true
 			}
 			else -> false
+		}
+	}
+
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.item_create -> startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
 		}
 	}
 
@@ -73,12 +78,6 @@ class FavouriteCategoriesDialog :
 	}
 
 	override fun onDeleteCategory(category: FavouriteCategory) = Unit
-
-	override fun onRenameCategory(category: FavouriteCategory, newName: String) = Unit
-
-	override fun onCreateCategory(name: String) {
-		viewModel.createCategory(name)
-	}
 
 	private fun onContentChanged(categories: List<MangaCategoryItem>) {
 		adapter?.items = categories
@@ -95,7 +94,7 @@ class FavouriteCategoriesDialog :
 
 		fun show(fm: FragmentManager, manga: Manga) = Companion.show(fm, listOf(manga))
 
-		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavouriteCategoriesDialog().withArgs(1) {
+		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavouriteCategoriesBottomSheet().withArgs(1) {
 			putParcelableArrayList(
 				KEY_MANGA_LIST,
 				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withChapters = false) }

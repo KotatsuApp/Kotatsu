@@ -22,8 +22,9 @@
 
 	<!-- Bottom sheet -->
 
-	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
-		<item name="android:navigationBarColor">?colorSurfaceVariant</item>
+	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
+		<item name="android:statusBarColor">@color/dim</item>
+		<item name="colorControlHighlight">?colorSecondary</item>
 	</style>
 
 	<!-- Widget styles -->
@@ -39,6 +40,7 @@
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
+		<item name="hintTextAppearance">?textAppearanceBodyMedium</item>
 		<item name="queryBackground">@null</item>
 		<item name="android:textColorHint">?attr/colorControlNormal</item>
 		<item name="android:textSize">18sp</item>
@@ -85,7 +87,7 @@
 
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">
 		<item name="android:textColor">@color/list_item_text_color</item>
-		<item name="backgroundTint">@color/list_item_background_color</item>
+		<item name="backgroundFillColor">@color/list_item_background_color</item>
 		<item name="checkedDrawableStart">@drawable/ic_check</item>
 		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Material3.NavigationView.Item</item>
 		<item name="android:gravity">center_vertical|start</item>
@@ -117,6 +119,8 @@
 	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall"/>
 
 	<style name="TextAppearance.Kotatsu.Preference.Secondary" parent="TextAppearance.Material3.BodySmall" />
+
+	<style name="TextAppearance.Kotatsu.Menu" parent="TextAppearance.Material3.BodyLarge" />
 
 	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.LabelLarge">
 		<item name="android:textColor">?android:attr/textColorSecondary</item>

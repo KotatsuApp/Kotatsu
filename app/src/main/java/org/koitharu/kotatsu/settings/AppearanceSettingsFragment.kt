@@ -12,9 +12,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.settings.utils.SliderPreference
-import org.koitharu.kotatsu.utils.ext.names
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import java.util.*
 

@@ -14,4 +14,6 @@ interface SearchSuggestionListener {
 	fun onClearSearchHistory()
 
 	fun onTagClick(tag: MangaTag)
+
+	fun onVoiceSearchClick()
 }

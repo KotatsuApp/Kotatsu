@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import org.koitharu.kotatsu.bookmarks.data.BookmarkEntity
+import org.koitharu.kotatsu.bookmarks.data.BookmarksDao
 import org.koitharu.kotatsu.core.db.dao.*
 import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.db.migrations.*
@@ -20,9 +22,9 @@ import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 	entities = [
 		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
 		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class,
-		TrackEntity::class, TrackLogEntity::class, SuggestionEntity::class
+		TrackEntity::class, TrackLogEntity::class, SuggestionEntity::class, BookmarkEntity::class,
 	],
-	version = 9
+	version = 11,
 )
 abstract class MangaDatabase : RoomDatabase() {
 
@@ -44,30 +46,24 @@ abstract class MangaDatabase : RoomDatabase() {
 
 	abstract val suggestionDao: SuggestionDao
 
-	companion object {
-
-		const val TABLE_FAVOURITES = "favourites"
-		const val TABLE_MANGA = "manga"
-		const val TABLE_TAGS = "tags"
-		const val TABLE_FAVOURITE_CATEGORIES = "favourite_categories"
-		const val TABLE_HISTORY = "history"
-		const val TABLE_MANGA_TAGS = "manga_tags"
-
-		fun create(context: Context): MangaDatabase = Room.databaseBuilder(
-			context,
-			MangaDatabase::class.java,
-			"kotatsu-db"
-		).addMigrations(
-			Migration1To2(),
-			Migration2To3(),
-			Migration3To4(),
-			Migration4To5(),
-			Migration5To6(),
-			Migration6To7(),
-			Migration7To8(),
-			Migration8To9(),
-		).addCallback(
-			DatabasePrePopulateCallback(context.resources)
-		).build()
-	}
+	abstract val bookmarksDao: BookmarksDao
 }
+
+fun MangaDatabase(context: Context): MangaDatabase = Room.databaseBuilder(
+	context,
+	MangaDatabase::class.java,
+	"kotatsu-db"
+).addMigrations(
+	Migration1To2(),
+	Migration2To3(),
+	Migration3To4(),
+	Migration4To5(),
+	Migration5To6(),
+	Migration6To7(),
+	Migration7To8(),
+	Migration8To9(),
+	Migration9To10(),
+	Migration10To11(),
+).addCallback(
+	DatabasePrePopulateCallback(context.resources)
+).build()

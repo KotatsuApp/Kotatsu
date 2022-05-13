@@ -3,18 +3,25 @@ package org.koitharu.kotatsu.utils.ext
 import android.content.Context
 import android.content.OperationApplicationException
 import android.content.SyncResult
+import android.content.pm.ResolveInfo
 import android.database.SQLException
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Build
+import androidx.activity.result.ActivityResultLauncher
+import androidx.core.app.ActivityOptionsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
+import kotlin.coroutines.resume
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.IOException
 import org.json.JSONException
 import org.koitharu.kotatsu.BuildConfig
-import kotlin.coroutines.resume
 
 val Context.connectivityManager: ConnectivityManager
 	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -47,6 +54,25 @@ suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatching {
 	val info = getForegroundInfo()
 	setForeground(info)
 }.isSuccess
+
+fun <I> ActivityResultLauncher<I>.resolve(context: Context, input: I): ResolveInfo? {
+	val pm = context.packageManager
+	val intent = contract.createIntent(context, input)
+	return pm.resolveActivity(intent, 0)
+}
+
+fun <I> ActivityResultLauncher<I>.tryLaunch(input: I, options: ActivityOptionsCompat? = null): Boolean {
+	return runCatching {
+		launch(input, options)
+	}.isSuccess
+}
+
+fun Lifecycle.postDelayed(runnable: Runnable, delay: Long) {
+	coroutineScope.launch {
+		delay(delay)
+		runnable.run()
+	}
+}
 
 fun SyncResult.onError(error: Throwable) {
 	when (error) {

@@ -4,7 +4,5 @@ import org.koin.dsl.module
 
 val githubModule
 	get() = module {
-		single {
-			GithubRepository(get())
-		}
+		factory { GithubRepository(get()) }
 	}

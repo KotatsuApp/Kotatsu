@@ -3,17 +3,22 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
+	<ListPreference
+		android:entries="@array/reader_modes"
+		android:key="reader_mode"
+		android:title="@string/default_mode"
+		app:useSimpleSummaryProvider="true" />
+
 	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="reader_prefer_rtl"
-		android:summary="@string/prefer_rtl_reader_summary"
-		android:title="@string/prefer_rtl_reader" />
+		android:defaultValue="true"
+		android:key="reader_mode_detect"
+		android:summary="@string/detect_reader_mode_summary"
+		android:title="@string/detect_reader_mode" />
 
 	<ListPreference
 		android:entries="@array/zoom_modes"
 		android:key="zoom_mode"
 		android:title="@string/scale_mode"
-
 		app:useSimpleSummaryProvider="true" />
 
 	<MultiSelectListPreference

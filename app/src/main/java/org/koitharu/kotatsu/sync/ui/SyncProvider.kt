@@ -8,15 +8,9 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
-import java.util.concurrent.Callable
 import org.koin.android.ext.android.inject
-import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_FAVOURITES
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_FAVOURITE_CATEGORIES
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_HISTORY
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_MANGA
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_MANGA_TAGS
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_TAGS
+import org.koitharu.kotatsu.core.db.*
+import java.util.concurrent.Callable
 
 abstract class SyncProvider : ContentProvider() {
 

@@ -83,7 +83,8 @@
 		<activity
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfConfigActivity"
 			android:exported="true"
-			android:label="@string/manga_shelf">
+			android:label="@string/manga_shelf"
+			android:theme="@style/Theme.Kotatsu.DialogWhenLarge">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
@@ -101,8 +102,12 @@
 		<activity
 			android:name="org.koitharu.kotatsu.download.ui.DownloadsActivity"
 			android:label="@string/downloads"
-			android:launchMode="singleTop" />
+			android:launchMode="singleTop"
+			android:theme="@style/Theme.Kotatsu.DialogWhenLarge" />
 		<activity android:name="org.koitharu.kotatsu.image.ui.ImageActivity" />
+		<activity
+			android:name="org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity"
+			android:theme="@style/Theme.Kotatsu.DialogWhenLarge" />
 		<activity android:name="org.koitharu.kotatsu.sync.ui.SyncAuthActivity"
 			android:label="@string/sync"/>
 

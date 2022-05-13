@@ -232,7 +232,6 @@
     <string name="clear_thumbs_cache">Limpar cache de miniaturas</string>
     <string name="application_update">Verifique se há novas versões do aplicativo</string>
     <string name="favourites_categories">Categorias favoritas</string>
-    <string name="show_notification_new_chapters">Notificar sobre atualizações de mangá que você está lendo</string>
     <string name="category_delete_confirm">Remover a categoria “%s” dos seus favoritos\?
 \nTodos os mangás nela serão perdidos.</string>
     <string name="no_update_available">Nenhuma atualização disponível</string>
@@ -278,4 +277,5 @@
     <string name="local_manga_processing">Processamento de mangá salvo</string>
     <string name="chapters_will_removed_background">Os capítulos serão removidos em segundo plano. Pode levar algum tempo</string>
     <string name="parallel_downloads">Downloads paralelos</string>
+    <string name="new_sources_text">Novas fontes de mangá estão disponíveis</string>
 </resources>

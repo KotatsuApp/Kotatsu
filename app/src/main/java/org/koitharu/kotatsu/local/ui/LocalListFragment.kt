@@ -15,11 +15,11 @@ import androidx.core.net.toUri
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ShareHelper
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.progress.Progress
 
 class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmSuppressWildcards Uri>> {
@@ -68,9 +68,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 		try {
 			importCall.launch(arrayOf("*/*"))
 		} catch (e: ActivityNotFoundException) {
-			if (BuildConfig.DEBUG) {
-				e.printStackTrace()
-			}
+			e.printStackTraceDebug()
 			Snackbar.make(
 				binding.recyclerView,
 				R.string.operation_not_supported,

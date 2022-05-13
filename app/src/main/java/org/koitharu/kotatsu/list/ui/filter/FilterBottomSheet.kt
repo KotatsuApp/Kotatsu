@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
-import org.koin.androidx.viewmodel.ViewModelOwner.Companion.from
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
@@ -14,11 +13,14 @@ import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 
-class FilterBottomSheet : BaseBottomSheet<SheetFilterBinding>(), MenuItem.OnActionExpandListener,
-	SearchView.OnQueryTextListener, DialogInterface.OnKeyListener {
+class FilterBottomSheet :
+	BaseBottomSheet<SheetFilterBinding>(),
+	MenuItem.OnActionExpandListener,
+	SearchView.OnQueryTextListener,
+	DialogInterface.OnKeyListener {
 
 	private val viewModel by sharedViewModel<RemoteListViewModel>(
-		owner = { from(requireParentFragment(), requireParentFragment()) }
+		owner = { requireParentFragment() }
 	)
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -121,6 +121,7 @@ class BackupRepository(private val db: MangaDatabase) {
 		jo.put("sort_key", sortKey)
 		jo.put("title", title)
 		jo.put("order", order)
+		jo.put("track", track)
 		return jo
 	}
 

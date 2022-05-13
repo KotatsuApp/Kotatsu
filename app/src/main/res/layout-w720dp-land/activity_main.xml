@@ -31,8 +31,9 @@
 			android:id="@+id/appbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingLeft="16dp"
 			android:background="@null"
+			android:clipToPadding="false"
+			android:paddingLeft="16dp"
 			android:paddingRight="16dp"
 			app:elevation="0dp"
 			app:liftOnScroll="false">
@@ -61,6 +62,7 @@
 						android:layout_height="match_parent"
 						android:background="@null"
 						android:drawablePadding="16dp"
+						android:layout_marginEnd="4dp"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
 						android:imeOptions="actionSearch"

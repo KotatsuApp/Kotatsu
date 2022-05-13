@@ -234,7 +234,6 @@
     <string name="system_default">Öntanımlı</string>
     <string name="error_empty_name">Bir ad girmelisiniz</string>
     <string name="auth_not_supported_by">%s üzerinde oturum açma desteklenmiyor</string>
-    <string name="show_notification_new_chapters">Okunan manga güncellemeleri hakkında bildirimde bulun</string>
     <string name="read_more">Daha fazla oku</string>
     <string name="tracker_warning">Bazı aygıtların arka plan görevlerini bozabilecek farklı sistem davranışları vardır.</string>
     <string name="screenshots_policy">Ekran görüntüsü politikası</string>
@@ -278,4 +277,5 @@
     <string name="download_slowdown_summary">IP adresinizin engellenmesinden kaçınmanıza yardımcı olur</string>
     <string name="local_manga_processing">Kaydedilen manga işleme</string>
     <string name="hide">Gizle</string>
+    <string name="new_sources_text">Yeni manga kaynakları var</string>
 </resources>

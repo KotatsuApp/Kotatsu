@@ -6,7 +6,6 @@ import androidx.preference.Preference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -14,6 +13,7 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.serializableArgument
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
@@ -70,9 +70,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 			preference.title = getString(R.string.logged_in_as, username)
 		}.onFailure { error ->
 			preference.isEnabled = error is AuthRequiredException
-			if (BuildConfig.DEBUG) {
-				error.printStackTrace()
-			}
+			error.printStackTraceDebug()
 		}
 	}
 

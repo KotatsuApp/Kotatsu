@@ -18,8 +18,10 @@ import org.koitharu.kotatsu.utils.ext.observeNotNull
 import org.koitharu.kotatsu.utils.ext.showAllowStateLoss
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class OnboardDialogFragment : AlertDialogFragment<DialogOnboardBinding>(),
-	OnListItemClickListener<SourceLocale>, DialogInterface.OnClickListener {
+class OnboardDialogFragment :
+	AlertDialogFragment<DialogOnboardBinding>(),
+	OnListItemClickListener<SourceLocale>,
+	DialogInterface.OnClickListener {
 
 	private val viewModel by viewModel<OnboardViewModel>()
 	private var isWelcome: Boolean = false

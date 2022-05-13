@@ -3,13 +3,13 @@ package org.koitharu.kotatsu.favourites.ui.categories
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import java.util.*
 
@@ -31,30 +31,12 @@ class FavouritesCategoriesViewModel(
 		repository.observeCategories(),
 		observeAllCategoriesVisible(),
 	) { list, showAll ->
-		mapCategories(list, showAll, showAll)
+		mapCategories(list, showAll, showAll && list.isNotEmpty())
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
-
-	fun createCategory(name: String) {
-		launchJob {
-			repository.addCategory(name)
-		}
-	}
-
-	fun renameCategory(id: Long, name: String) {
-		launchJob {
-			repository.renameCategory(id, name)
-		}
-	}
 
 	fun deleteCategory(id: Long) {
 		launchJob {
 			repository.removeCategory(id)
-		}
-	}
-
-	fun setCategoryOrder(id: Long, order: SortOrder) {
-		launchJob {
-			repository.setCategoryOrder(id, order)
 		}
 	}
 
@@ -89,9 +71,7 @@ class FavouritesCategoriesViewModel(
 		return result
 	}
 
-	private fun observeAllCategoriesVisible() = settings.observe()
-		.filter { it == AppSettings.KEY_ALL_FAVOURITES_VISIBLE }
-		.map { settings.isAllFavouritesVisible }
-		.onStart { emit(settings.isAllFavouritesVisible) }
-		.distinctUntilChanged()
+	private fun observeAllCategoriesVisible() = settings.observeAsFlow(AppSettings.KEY_ALL_FAVOURITES_VISIBLE) {
+		isAllFavouritesVisible
+	}
 }

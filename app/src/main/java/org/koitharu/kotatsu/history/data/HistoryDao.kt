@@ -13,6 +13,10 @@ abstract class HistoryDao {
 	abstract suspend fun findAll(offset: Int, limit: Int): List<HistoryWithManga>
 
 	@Transaction
+	@Query("SELECT * FROM history WHERE manga_id IN (:ids)")
+	abstract suspend fun findAll(ids: Collection<Long>): List<HistoryEntity?>
+
+	@Transaction
 	@Query("SELECT * FROM history ORDER BY updated_at DESC")
 	abstract fun observeAll(): Flow<List<HistoryWithManga>>
 
@@ -65,5 +69,14 @@ abstract class HistoryDao {
 			insert(entity)
 			true
 		} else false
+	}
+
+	@Transaction
+	open suspend fun upsert(entities: Iterable<HistoryEntity>) {
+		for (e in entities) {
+			if (update(e) == 0) {
+				insert(e)
+			}
+		}
 	}
 }

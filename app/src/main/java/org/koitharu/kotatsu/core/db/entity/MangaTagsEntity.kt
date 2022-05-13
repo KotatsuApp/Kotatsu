@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.core.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_MANGA_TAGS
+import org.koitharu.kotatsu.core.db.TABLE_MANGA_TAGS
 
 @Entity(
 	tableName = TABLE_MANGA_TAGS,

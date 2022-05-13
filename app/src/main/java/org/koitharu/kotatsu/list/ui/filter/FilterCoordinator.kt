@@ -1,18 +1,18 @@
 package org.koitharu.kotatsu.list.ui.filter
 
 import androidx.annotation.WorkerThread
+import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import java.util.*
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 class FilterCoordinator(
 	private val repository: RemoteMangaRepository,
@@ -113,7 +113,7 @@ class FilterCoordinator(
 					FilterItem.Sort(it, isSelected = it == state.sortOrder)
 				}
 			}
-			if(allTags.isLoading || allTags.isError || tags.isNotEmpty()) {
+			if (allTags.isLoading || allTags.isError || tags.isNotEmpty()) {
 				list.add(FilterItem.Header(R.string.genres, state.tags.size))
 				tags.mapTo(list) {
 					FilterItem.Tag(it, isChecked = it in state.tags)
@@ -153,9 +153,7 @@ class FilterCoordinator(
 		runCatching {
 			repository.getTags()
 		}.onFailure { error ->
-			if (BuildConfig.DEBUG) {
-				error.printStackTrace()
-			}
+			error.printStackTraceDebug()
 		}.getOrNull()
 	}
 

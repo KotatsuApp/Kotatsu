@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.updateLayoutParams
@@ -14,7 +13,7 @@ import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import coil.target.PoolableViewTarget
+import coil.target.ViewTarget
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koin.android.ext.android.inject
@@ -61,15 +60,11 @@ class ImageActivity : BaseActivity<ActivityImageBinding>() {
 
 	private class SsivTarget(
 		override val view: SubsamplingScaleImageView,
-	) : PoolableViewTarget<SubsamplingScaleImageView> {
-
-		override fun onStart(placeholder: Drawable?) = setDrawable(placeholder)
+	) : ViewTarget<SubsamplingScaleImageView> {
 
 		override fun onError(error: Drawable?) = setDrawable(error)
 
 		override fun onSuccess(result: Drawable) = setDrawable(result)
-
-		override fun onClear() = setDrawable(null)
 
 		override fun equals(other: Any?): Boolean {
 			return (this === other) || (other is SsivTarget && view == other.view)

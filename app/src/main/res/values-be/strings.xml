@@ -101,7 +101,6 @@
     <string name="notifications">Паведамленні</string>
     <string name="enabled_d_of_d">Уключана %1$d з %2$d</string>
     <string name="new_chapters">Новыя главы</string>
-    <string name="show_notification_new_chapters">Апавяшчаць пра абнаўленні мангі, якую вы чытаеце</string>
     <string name="download">Спампаваць</string>
     <string name="read_from_start">Чытаць з пачатку</string>
     <string name="restart">Перазапусціць</string>

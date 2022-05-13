@@ -67,19 +67,19 @@ class GlobalSearchViewModel(
 		searchJob = repository.globalSearch(query)
 			.catch { e ->
 				listError.value = e
-				isLoading.postValue(false)
+				loadingCounter.reset()
 			}.onStart {
 				mangaList.value = null
 				listError.value = null
-				isLoading.postValue(true)
+				loadingCounter.increment()
 				hasNextPage.value = true
 			}.onEmpty {
 				mangaList.value = emptyList()
 			}.onCompletion {
-				isLoading.postValue(false)
+				loadingCounter.reset()
 				hasNextPage.value = false
 			}.onFirst {
-				isLoading.postValue(false)
+				loadingCounter.reset()
 			}.onEach {
 				mangaList.value = mangaList.value?.plus(it) ?: listOf(it)
 			}.launchIn(viewModelScope + Dispatchers.Default)

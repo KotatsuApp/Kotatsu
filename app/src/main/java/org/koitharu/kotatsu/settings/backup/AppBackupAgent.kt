@@ -51,7 +51,7 @@ class AppBackupAgent : BackupAgent() {
 	}
 
 	private fun createBackupFile() = runBlocking {
-		val repository = BackupRepository(MangaDatabase.create(applicationContext))
+		val repository = BackupRepository(MangaDatabase(applicationContext))
 		BackupZipOutput(this@AppBackupAgent).use { backup ->
 			backup.put(repository.createIndex())
 			backup.put(repository.dumpHistory())
@@ -63,7 +63,7 @@ class AppBackupAgent : BackupAgent() {
 	}
 
 	private fun restoreBackupFile(fd: FileDescriptor, size: Long) {
-		val repository = RestoreRepository(MangaDatabase.create(applicationContext))
+		val repository = RestoreRepository(MangaDatabase(applicationContext))
 		val tempFile = File.createTempFile("backup_", ".tmp")
 		FileInputStream(fd).use { input ->
 			tempFile.outputStream().use { output ->

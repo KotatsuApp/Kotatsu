@@ -46,7 +46,6 @@
     <string name="updates_feed_cleared">Aktualisierungsfeed gelöscht</string>
     <string name="clear_updates_feed">Aktualisierungsfeed löschen</string>
     <string name="updates">Aktualisierungen</string>
-    <string name="show_notification_new_chapters">Über Aktualisierungen von Manga benachrichtigen, die du liest</string>
     <string name="show_notification_app_update">Benachrichtigung anzeigen, wenn eine Aktualisierung verfügbar ist</string>
     <string name="app_update_available">Anwendungsaktualisierung ist verfügbar</string>
     <string name="application_update">Automatisch nach Aktualisierungen suchen</string>
@@ -278,4 +277,5 @@
     <string name="download_slowdown_summary">Hilft, das Blockieren Ihrer IP-Adresse zu vermeiden</string>
     <string name="chapters_will_removed_background">Die Kapitel werden im Hintergrund entfernt. Das kann einige Zeit dauern</string>
     <string name="hide">Ausblenden</string>
+    <string name="new_sources_text">Neue Manga-Quellen sind verfügbar</string>
 </resources>

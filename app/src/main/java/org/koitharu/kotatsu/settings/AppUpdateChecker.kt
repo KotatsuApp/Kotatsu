@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.github.VersionId
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.byte2HexFormatted
 import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.security.MessageDigest
@@ -45,8 +46,8 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 
 	suspend fun checkNow() = runCatching {
 		val version = repo.getLatestVersion()
-		val newVersionId = VersionId.parse(version.name)
-		val currentVersionId = VersionId.parse(BuildConfig.VERSION_NAME)
+		val newVersionId = VersionId(version.name)
+		val currentVersionId = VersionId(BuildConfig.VERSION_NAME)
 		val result = newVersionId > currentVersionId
 		if (result) {
 			withContext(Dispatchers.Main) {
@@ -56,30 +57,27 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 		settings.lastUpdateCheckTimestamp = System.currentTimeMillis()
 		result
 	}.onFailure {
-		it.printStackTrace()
+		it.printStackTraceDebug()
 	}.getOrNull()
 
 	@MainThread
 	private fun showUpdateDialog(version: AppVersion) {
+		val message = buildString {
+			append(activity.getString(R.string.new_version_s, version.name))
+			appendLine()
+			append(activity.getString(R.string.size_s, FileSize.BYTES.format(activity, version.apkSize)))
+			appendLine()
+			appendLine()
+			append(version.description)
+		}
 		MaterialAlertDialogBuilder(activity)
 			.setTitle(R.string.app_update_available)
-			.setMessage(buildString {
-				append(activity.getString(R.string.new_version_s, version.name))
-				appendLine()
-				append(
-					activity.getString(
-						R.string.size_s,
-						FileSize.BYTES.format(activity, version.apkSize),
-					)
-				)
-				appendLine()
-				appendLine()
-				append(version.description)
-			})
+			.setMessage(message)
 			.setPositiveButton(R.string.download) { _, _ ->
 				activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(version.apkUrl)))
 			}
 			.setNegativeButton(R.string.close, null)
+			.setCancelable(false)
 			.create()
 			.show()
 	}
@@ -102,7 +100,7 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 					PackageManager.GET_SIGNATURES
 				)
 			} catch (e: PackageManager.NameNotFoundException) {
-				e.printStackTrace()
+				e.printStackTraceDebug()
 				return null
 			}
 			val signatures = packageInfo?.signatures
@@ -112,7 +110,7 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 				val cf = CertificateFactory.getInstance("X509")
 				cf.generateCertificate(input) as X509Certificate
 			} catch (e: CertificateException) {
-				e.printStackTrace()
+				e.printStackTraceDebug()
 				return null
 			}
 			return try {
@@ -120,10 +118,10 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 				val publicKey: ByteArray = md.digest(c.encoded)
 				publicKey.byte2HexFormatted()
 			} catch (e: NoSuchAlgorithmException) {
-				e.printStackTrace()
+				e.printStackTraceDebug()
 				null
 			} catch (e: CertificateEncodingException) {
-				e.printStackTrace()
+				e.printStackTraceDebug()
 				null
 			}
 		}

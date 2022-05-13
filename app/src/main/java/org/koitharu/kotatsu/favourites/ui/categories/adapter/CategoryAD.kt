@@ -16,7 +16,7 @@ fun categoryAD(
 		clickListener.onItemClick(item.category, it)
 	}
 	@Suppress("ClickableViewAccessibility")
-	binding.imageViewHandle.setOnTouchListener { v, event ->
+	binding.imageViewHandle.setOnTouchListener { _, event ->
 		if (event.actionMasked == MotionEvent.ACTION_DOWN) {
 			clickListener.onItemLongClick(item.category, itemView)
 		} else {

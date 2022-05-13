@@ -9,6 +9,7 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
 import org.koitharu.kotatsu.main.ui.AppBarOwner
@@ -43,11 +44,10 @@ class SearchSuggestionFragment :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
+		val extraPadding = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 		binding.root.updatePadding(
-			top = headerHeight,
-			// left = insets.left,
-			// right = insets.right,
-			bottom = insets.bottom,
+			top = headerHeight + extraPadding,
+			bottom = insets.bottom + extraPadding,
 		)
 	}
 

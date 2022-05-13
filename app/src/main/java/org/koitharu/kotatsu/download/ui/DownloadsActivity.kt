@@ -3,10 +3,8 @@ package org.koitharu.kotatsu.download.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.flatMapLatest
@@ -17,7 +15,7 @@ import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.download.ui.service.DownloadService
-import org.koitharu.kotatsu.utils.LifecycleAwareServiceConnection
+import org.koitharu.kotatsu.utils.bindServiceWithLifecycle
 
 class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 
@@ -28,11 +26,10 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 		val adapter = DownloadsAdapter(lifecycleScope, get())
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
-		LifecycleAwareServiceConnection.bindService(
-			this,
-			this,
-			Intent(this, DownloadService::class.java),
-			0
+		bindServiceWithLifecycle(
+			owner = this,
+			service = Intent(this, DownloadService::class.java),
+			flags = 0,
 		).service.flatMapLatest { binder ->
 			(binder as? DownloadService.DownloadBinder)?.downloads ?: flowOf(null)
 		}.onEach {

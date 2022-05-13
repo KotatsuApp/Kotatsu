@@ -59,6 +59,13 @@ class DownloadNotification(private val context: Context, startId: Int) {
 		builder.setStyle(null)
 		builder.setLargeIcon(state.cover?.toBitmap())
 		builder.clearActions()
+		builder.setVisibility(
+			if (state.manga.isNsfw) {
+				NotificationCompat.VISIBILITY_PRIVATE
+			} else {
+				NotificationCompat.VISIBILITY_PUBLIC
+			}
+		)
 		when (state) {
 			is DownloadState.Cancelled -> {
 				builder.setProgress(1, 0, true)

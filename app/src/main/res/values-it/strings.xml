@@ -154,7 +154,6 @@
     <string name="restart">Riavvia</string>
     <string name="read_from_start">Leggi dall\'inizio</string>
     <string name="download">Scarica</string>
-    <string name="show_notification_new_chapters">Notifica gli aggiornamenti dei manga che stai leggendo</string>
     <string name="new_chapters">Nuovi capitoli</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Abilitato %1$d di %2$d</string>
     <string name="notifications">Notifiche</string>
@@ -278,4 +277,5 @@
     <string name="chapters_will_removed_background">I capitoli saranno rimossi in sfondo. Può richiedere un po\' di tempo</string>
     <string name="download_slowdown_summary">Aiuta ad evitare il blocco del tuo indirizzo IP</string>
     <string name="hide">Nascondi</string>
+    <string name="new_sources_text">Sono disponibili nuove fonti di manga</string>
 </resources>

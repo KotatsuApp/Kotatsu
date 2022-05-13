@@ -10,12 +10,7 @@ import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_FAVOURITES
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_FAVOURITE_CATEGORIES
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_HISTORY
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_MANGA
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_MANGA_TAGS
-import org.koitharu.kotatsu.core.db.MangaDatabase.Companion.TABLE_TAGS
+import org.koitharu.kotatsu.core.db.*
 import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.sync.data.AccountAuthenticator
