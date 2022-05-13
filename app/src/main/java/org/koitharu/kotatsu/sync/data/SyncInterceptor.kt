@@ -5,9 +5,10 @@ import android.accounts.AccountManager
 import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Response
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 
-class AccountInterceptor(
+class SyncInterceptor(
 	context: Context,
 	private val account: Account,
 ) : Interceptor {
@@ -17,13 +18,11 @@ class AccountInterceptor(
 
 	override fun intercept(chain: Interceptor.Chain): Response {
 		val token = accountManager.peekAuthToken(account, tokenType)
-		val request = if (token != null) {
-			chain.request().newBuilder()
-				.header("Authorization", "Bearer $token")
-				.build()
-		} else {
-			chain.request()
+		val requestBuilder = chain.request().newBuilder()
+		if (token != null) {
+			requestBuilder.header("Authorization", "Bearer $token")
 		}
-		return chain.proceed(request)
+		requestBuilder.header("X-App-Version", BuildConfig.VERSION_CODE.toString())
+		return chain.proceed(requestBuilder.build())
 	}
 }

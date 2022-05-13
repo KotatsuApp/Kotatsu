@@ -13,8 +13,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.*
 import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.parsers.util.parseJson
-import org.koitharu.kotatsu.sync.data.AccountAuthenticator
-import org.koitharu.kotatsu.sync.data.AccountInterceptor
+import org.koitharu.kotatsu.sync.data.SyncAuthenticator
+import org.koitharu.kotatsu.sync.data.SyncInterceptor
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.utils.GZipInterceptor
 import org.koitharu.kotatsu.utils.ext.toContentValues
@@ -37,8 +37,8 @@ class SyncHelper(
 ) {
 
 	private val httpClient = OkHttpClient.Builder()
-		.authenticator(AccountAuthenticator(context, account, SyncAuthApi(context, OkHttpClient())))
-		.addInterceptor(AccountInterceptor(context, account))
+		.authenticator(SyncAuthenticator(context, account, SyncAuthApi(context, OkHttpClient())))
+		.addInterceptor(SyncInterceptor(context, account))
 		.addInterceptor(GZipInterceptor())
 		.build()
 	private val baseUrl = context.getString(R.string.url_sync_server)

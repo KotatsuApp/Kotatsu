@@ -10,7 +10,7 @@ import okhttp3.Response
 import okhttp3.Route
 import org.koitharu.kotatsu.R
 
-class AccountAuthenticator(
+class SyncAuthenticator(
 	context: Context,
 	private val account: Account,
 	private val authApi: SyncAuthApi,
