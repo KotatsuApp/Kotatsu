@@ -40,9 +40,14 @@
 		android:valueTo="5"
 		app:defaultValue="2" />
 
+	<Preference
+		android:key="sync"
+		android:persistent="false"
+		android:summary="@string/sync_title"
+		android:title="@string/sync" />
+
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
-		android:title="@string/backup_restore"
-		app:allowDividerAbove="true" />
+		android:title="@string/backup_restore" />
 
 </PreferenceScreen>

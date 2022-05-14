@@ -5,7 +5,7 @@
 	<string name="url_forpda" translatable="false">https://4pda.to/forum/index.php?showtopic=697669</string>
 	<string name="url_weblate" translatable="false">https://hosted.weblate.org/engage/kotatsu</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
-	<string name="url_sync_server" translatable="false">http://192.168.0.113:8080</string>
+	<string name="url_sync_server" translatable="false">http://95.216.215.49:8080</string>
 	<string-array name="values_theme" translatable="false">
 		<item>-1</item>
 		<item>1</item>

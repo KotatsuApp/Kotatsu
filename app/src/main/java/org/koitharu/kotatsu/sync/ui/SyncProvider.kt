@@ -7,10 +7,11 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
+import java.util.concurrent.Callable
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.core.db.*
-import java.util.concurrent.Callable
 
 abstract class SyncProvider : ContentProvider() {
 
@@ -55,15 +56,14 @@ abstract class SyncProvider : ContentProvider() {
 			return null
 		}
 		val db = database.openHelper.writableDatabase
-		db.insert(table, SQLiteDatabase.CONFLICT_REPLACE, values)
-		return null
+		if (db.insert(table, SQLiteDatabase.CONFLICT_IGNORE, values) < 0) {
+			db.update(table, values)
+		}
+		return uri
 	}
 
 	override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
-		val table = getTableName(uri)
-		if (table == null) {
-			return 0
-		}
+		val table = getTableName(uri) ?: return 0
 		return database.openHelper.writableDatabase.delete(table, selection, selectionArgs)
 	}
 
@@ -77,14 +77,35 @@ abstract class SyncProvider : ContentProvider() {
 	}
 
 	override fun applyBatch(operations: ArrayList<ContentProviderOperation>): Array<ContentProviderResult> {
-		return database.runInTransaction(Callable { super.applyBatch(operations) })
+		return runAtomicTransaction { super.applyBatch(operations) }
 	}
 
 	override fun bulkInsert(uri: Uri, values: Array<out ContentValues>): Int {
-		return database.runInTransaction(Callable { super.bulkInsert(uri, values) })
+		return runAtomicTransaction { super.bulkInsert(uri, values) }
 	}
 
 	private fun getTableName(uri: Uri): String? {
 		return uri.pathSegments.singleOrNull()?.takeIf { it in supportedTables }
+	}
+
+	private fun <R> runAtomicTransaction(callable: Callable<R>): R {
+		return synchronized(database) {
+			database.runInTransaction(callable)
+		}
+	}
+
+	private fun SupportSQLiteDatabase.update(table: String, values: ContentValues) {
+		val keys = when (table) {
+			TABLE_TAGS -> listOf("tag_id")
+			TABLE_MANGA_TAGS -> listOf("tag_id", "manga_id")
+			TABLE_MANGA -> listOf("manga_id")
+			TABLE_FAVOURITES -> listOf("manga_id", "category_id")
+			TABLE_FAVOURITE_CATEGORIES -> listOf("category_id")
+			TABLE_HISTORY -> listOf("manga_id")
+			else -> throw IllegalArgumentException("Update for $table is not supported")
+		}
+		val whereClause = keys.joinToString(" AND ") { "`$it` = ?" }
+		val whereArgs = Array<Any>(keys.size) { i -> values.get("`${keys[i]}`") ?: values.get(keys[i]) }
+		this.update(table, SQLiteDatabase.CONFLICT_IGNORE, values, whereClause, whereArgs)
 	}
 }

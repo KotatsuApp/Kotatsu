@@ -24,7 +24,7 @@ fun JSONObject.toContentValues(): ContentValues {
 	for (key in keys()) {
 		val name = key.escapeName()
 		when (val value = get(key)) {
-			null -> cv.putNull(name)
+			JSONObject.NULL, "null", null -> cv.putNull(name)
 			is String -> cv.put(name, value)
 			is Float -> cv.put(name, value)
 			is Double -> cv.put(name, value)

@@ -5,6 +5,7 @@ import android.content.*
 import android.database.Cursor
 import android.net.Uri
 import androidx.annotation.WorkerThread
+import androidx.core.content.contentValuesOf
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
@@ -13,9 +14,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.*
 import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.parsers.util.parseJson
+import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.data.SyncAuthenticator
 import org.koitharu.kotatsu.sync.data.SyncInterceptor
-import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.utils.GZipInterceptor
 import org.koitharu.kotatsu.utils.ext.toContentValues
 import org.koitharu.kotatsu.utils.ext.toJson
@@ -86,6 +87,7 @@ class SyncHelper(
 			.withSelection("updated_at < ?", arrayOf(timestamp.toString()))
 			.build()
 		json.mapJSONTo(operations) { jo ->
+			operations.addAll(upsertManga(jo.removeJSONObject("manga"), AUTHORITY_HISTORY))
 			ContentProviderOperation.newInsert(uri)
 				.withValues(jo.toContentValues())
 				.build()
@@ -114,11 +116,37 @@ class SyncHelper(
 			.withSelection("created_at < ?", arrayOf(timestamp.toString()))
 			.build()
 		json.mapJSONTo(operations) { jo ->
+			operations.addAll(upsertManga(jo.removeJSONObject("manga"), AUTHORITY_FAVOURITES))
 			ContentProviderOperation.newInsert(uri)
 				.withValues(jo.toContentValues())
 				.build()
 		}
 		return provider.applyBatch(operations)
+	}
+
+	private fun upsertManga(json: JSONObject, authority: String): List<ContentProviderOperation> {
+		val tags = json.removeJSONArray(TABLE_TAGS)
+		val result = ArrayList<ContentProviderOperation>(tags.length() * 2 + 1)
+		for (i in 0 until tags.length()) {
+			val tag = tags.getJSONObject(i)
+			result += ContentProviderOperation.newInsert(uri(authority, TABLE_TAGS))
+				.withValues(tag.toContentValues())
+				.build()
+			result += ContentProviderOperation.newInsert(uri(authority, TABLE_MANGA_TAGS))
+				.withValues(
+					contentValuesOf(
+						"manga_id" to json.getLong("manga_id"),
+						"tag_id" to tag.getLong("tag_id"),
+					)
+				).build()
+		}
+		result.add(
+			0,
+			ContentProviderOperation.newInsert(uri(authority, TABLE_MANGA))
+				.withValues(json.toContentValues())
+				.build()
+		)
+		return result
 	}
 
 	private fun getHistory(): JSONArray {
@@ -217,4 +245,8 @@ class SyncHelper(
 	}
 
 	private fun uri(authority: String, table: String) = Uri.parse("content://$authority/$table")
+
+	private fun JSONObject.removeJSONObject(name: String) = remove(name) as JSONObject
+
+	private fun JSONObject.removeJSONArray(name: String) = remove(name) as JSONArray
 }

@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.settings
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -75,6 +77,10 @@ class ContentSettingsFragment :
 			}
 			AppSettings.KEY_SOURCES_HIDDEN -> {
 				bindRemoteSourcesSummary()
+			}
+			AppSettings.KEY_SYNC -> {
+				val intent = Intent(Settings.ACTION_SYNC_SETTINGS)
+				startActivity(intent)
 			}
 		}
 	}

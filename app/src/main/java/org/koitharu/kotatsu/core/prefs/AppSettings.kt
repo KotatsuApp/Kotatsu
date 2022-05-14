@@ -312,6 +312,7 @@ class AppSettings(context: Context) {
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 		const val KEY_DOH = "doh"
+		const val KEY_SYNC = "sync"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
