@@ -278,4 +278,23 @@
     <string name="download_slowdown_summary">Aiuta ad evitare il blocco del tuo indirizzo IP</string>
     <string name="hide">Nascondi</string>
     <string name="new_sources_text">Sono disponibili nuove fonti di manga</string>
+    <string name="show_notification_new_chapters_on">Riceverai notifiche sugli aggiornamenti del manga che stai leggendo</string>
+    <string name="notifications_enable">Abilita le notifiche</string>
+    <string name="show_notification_new_chapters_off">Non riceverai notifiche ma i nuovi capitoli saranno evidenziati nelle liste</string>
+    <string name="empty_favourite_categories">Nessuna categoria preferita</string>
+    <string name="name">Nome</string>
+    <string name="edit">Modifica</string>
+    <string name="edit_category">Modifica la categoria</string>
+    <string name="check_new_chapters_title">Controlla i nuovi capitoli e notificarli</string>
+    <string name="bookmarks">Segnalibri</string>
+    <string name="removed_from_history">Rimosso dalla cronologia</string>
+    <string name="bookmark_remove">Rimuovi il segnalibro</string>
+    <string name="bookmark_add">Aggiungi un segnalibro</string>
+    <string name="bookmark_removed">Segnalibro rimosso</string>
+    <string name="bookmark_added">Segnalibro aggiunto</string>
+    <string name="undo">Annulla</string>
+    <string name="default_mode">Modalità predefinita</string>
+    <string name="detect_reader_mode">Modalità di lettura a rilevamento automatico</string>
+    <string name="dns_over_https">DNS su HTTPS</string>
+    <string name="detect_reader_mode_summary">Rileva automaticamente se il manga è un webtoon</string>
 </resources>

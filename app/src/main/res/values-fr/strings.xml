@@ -278,4 +278,23 @@
     <string name="local_manga_processing">Traitement des mangas sauvegardés</string>
     <string name="hide">Masquer</string>
     <string name="new_sources_text">De nouvelles sources de mangas sont disponibles</string>
+    <string name="check_new_chapters_title">Vérifier les nouveaux chapitres et les notifier</string>
+    <string name="notifications_enable">Activer les notifications</string>
+    <string name="show_notification_new_chapters_on">Vous recevrez des notifications sur les mises à jour des mangas que vous lisez</string>
+    <string name="show_notification_new_chapters_off">Vous ne recevrez pas de notifications mais les nouveaux chapitres seront mis en évidence dans les listes</string>
+    <string name="empty_favourite_categories">Pas de catégories préférées</string>
+    <string name="name">Nom</string>
+    <string name="edit">Modifier</string>
+    <string name="edit_category">Modifier la catégorie</string>
+    <string name="bookmark_add">Ajouter un marque-page</string>
+    <string name="bookmark_remove">Retirer le marque-page</string>
+    <string name="bookmarks">Marque-pages</string>
+    <string name="bookmark_added">Marque-page ajouté</string>
+    <string name="bookmark_removed">Marque-page retiré</string>
+    <string name="undo">Annuler</string>
+    <string name="removed_from_history">Retiré de l\'historique</string>
+    <string name="dns_over_https">DNS sur HTTPS</string>
+    <string name="default_mode">Mode par défaut</string>
+    <string name="detect_reader_mode">Mode de détection automatique du lecteur</string>
+    <string name="detect_reader_mode_summary">Détecter automatiquement si un manga est un webtoon</string>
 </resources>
