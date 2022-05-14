@@ -279,4 +279,19 @@
     <string name="suggestions_excluded_genres_summary">Укажіть жанри, які ви не хочете бачити в пропозиціях</string>
     <string name="download_slowdown_summary">Допомагає уникнути блокування вашої IP-адреси</string>
     <string name="chapters_will_removed_background">Розділи будуть видалені у фоновому режимі. Це може зайняти деякий час</string>
+    <string name="check_new_chapters_title">Перевіряти наявність нових розділів і повідомляти про них</string>
+    <string name="show_notification_new_chapters_on">Ви будете отримувати повідомлення про оновлення манґи, яку ви читаєте</string>
+    <string name="notifications_enable">Увімкнути сповіщення</string>
+    <string name="show_notification_new_chapters_off">Ви не будете отримувати повідомлення, але нові розділи будуть відображатися у списку</string>
+    <string name="empty_favourite_categories">Немає улюблених категорій</string>
+    <string name="name">Назва</string>
+    <string name="edit">Змінити</string>
+    <string name="edit_category">Змінити категорію</string>
+    <string name="bookmark_add">Додати закладку</string>
+    <string name="bookmark_remove">Видалити закладку</string>
+    <string name="bookmarks">Закладки</string>
+    <string name="bookmark_removed">Закладка видалена</string>
+    <string name="bookmark_added">Додано закладку</string>
+    <string name="undo">Скасувати</string>
+    <string name="removed_from_history">Видалено з історії</string>
 </resources>
