@@ -278,4 +278,23 @@
     <string name="chapters_will_removed_background">Os capítulos serão removidos em segundo plano. Pode levar algum tempo</string>
     <string name="parallel_downloads">Downloads paralelos</string>
     <string name="new_sources_text">Novas fontes de mangá estão disponíveis</string>
+    <string name="check_new_chapters_title">Verifique se há novos capítulos e notifique sobre isso</string>
+    <string name="show_notification_new_chapters_on">Você receberá notificações sobre atualizações do mangá que está lendo</string>
+    <string name="edit_category">Editar categoria</string>
+    <string name="empty_favourite_categories">Nenhuma categoria favorita</string>
+    <string name="bookmark_add">Adicionar marcador</string>
+    <string name="bookmark_remove">Remover marcador</string>
+    <string name="bookmarks">Marcadores</string>
+    <string name="bookmark_added">Marcador adicionado</string>
+    <string name="show_notification_new_chapters_off">Você não receberá notificações, mas novos capítulos serão destacados nas listas</string>
+    <string name="notifications_enable">Ativar notificações</string>
+    <string name="name">Nome</string>
+    <string name="edit">Editar</string>
+    <string name="bookmark_removed">Marcador removido</string>
+    <string name="undo">Desfazer</string>
+    <string name="removed_from_history">Removido do histórico</string>
+    <string name="dns_over_https">DNS sobre HTTPS</string>
+    <string name="default_mode">Modo padrão</string>
+    <string name="detect_reader_mode">Detecção automática do modo de leitura</string>
+    <string name="detect_reader_mode_summary">Detectar automaticamente se o mangá é webtoon</string>
 </resources>
