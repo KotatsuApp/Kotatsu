@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.main.ui
 
 import android.app.ActivityOptions
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -318,15 +317,7 @@ class MainActivity :
 	}
 
 	private fun onOpenReader(manga: Manga) {
-		val options = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			ActivityOptions.makeClipRevealAnimation(
-				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
-			)
-		} else {
-			ActivityOptions.makeScaleUpAnimation(
-				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
-			)
-		}
+		val options = ActivityOptions.makeScaleUpAnimation(binding.fab, 0, 0, binding.fab.width, binding.fab.height)
 		startActivity(ReaderActivity.newIntent(this, manga), options?.toBundle())
 	}
 

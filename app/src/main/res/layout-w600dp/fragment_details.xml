@@ -21,7 +21,6 @@
 			android:layout_marginTop="16dp"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
-			android:transitionName="cover"
 			app:layout_constraintDimensionRatio="H,13:18"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0"

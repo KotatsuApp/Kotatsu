@@ -84,7 +84,7 @@ class DetailsFragment :
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
-		val options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
+		val options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.width, view.height)
 		startActivity(ReaderActivity.newIntent(view.context, item), options.toBundle())
 	}
 
@@ -245,13 +245,9 @@ class DetailsFragment :
 				)
 			}
 			R.id.imageView_cover -> {
-				val options = ActivityOptions.makeSceneTransitionAnimation(
-					requireActivity(),
-					binding.imageViewCover,
-					binding.imageViewCover.transitionName,
-				)
+				val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
 				startActivity(
-					ImageActivity.newIntent(v.context, manga.largeCoverUrl ?: manga.coverUrl),
+					ImageActivity.newIntent(v.context, manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }),
 					options.toBundle()
 				)
 			}
@@ -317,20 +313,20 @@ class DetailsFragment :
 	}
 
 	private fun loadCover(manga: Manga) {
-		val currentCover = binding.imageViewCover.drawable
+		val imageUrl = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }
+		val lastResult = CoilUtils.result(binding.imageViewCover)
+		if (lastResult?.request?.data == imageUrl) {
+			return
+		}
 		val request = ImageRequest.Builder(context ?: return)
 			.target(binding.imageViewCover)
-		if (currentCover != null) {
-			request.data(manga.largeCoverUrl ?: return)
-				.placeholderMemoryCacheKey(CoilUtils.result(binding.imageViewCover)?.request?.memoryCacheKey)
-				.fallback(currentCover)
-		} else {
-			request.crossfade(true)
-				.data(manga.coverUrl)
-				.fallback(R.drawable.ic_placeholder)
-		}
-		request.referer(manga.publicUrl)
+			.data(imageUrl)
+			.crossfade(true)
+			.referer(manga.publicUrl)
 			.lifecycle(viewLifecycleOwner)
-			.enqueueWith(coil)
+		lastResult?.drawable?.let {
+			request.fallback(it)
+		} ?: request.fallback(R.drawable.ic_placeholder)
+		request.enqueueWith(coil)
 	}
 }
