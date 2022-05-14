@@ -278,4 +278,23 @@
     <string name="chapters_will_removed_background">Die Kapitel werden im Hintergrund entfernt. Das kann einige Zeit dauern</string>
     <string name="hide">Ausblenden</string>
     <string name="new_sources_text">Neue Manga-Quellen sind verfügbar</string>
+    <string name="check_new_chapters_title">Nach neuen Kapiteln suchen und darüber informieren</string>
+    <string name="show_notification_new_chapters_on">Sie erhalten Benachrichtigungen über Aktualisierungen der Manga, die Sie lesen</string>
+    <string name="notifications_enable">Benachrichtigungen einschalten</string>
+    <string name="empty_favourite_categories">Keine bevorzugten Kategorien</string>
+    <string name="name">Name</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="show_notification_new_chapters_off">Sie werden keine Benachrichtigungen erhalten, aber neue Kapitel werden in den Listen hervorgehoben</string>
+    <string name="edit_category">Kategorie bearbeiten</string>
+    <string name="bookmark_add">Lesezeichen hinzufügen</string>
+    <string name="bookmarks">Lesezeichen</string>
+    <string name="bookmark_removed">Lesezeichen entfernt</string>
+    <string name="removed_from_history">Aus dem Verlauf entfernt</string>
+    <string name="bookmark_remove">Lesezeichen entfernen</string>
+    <string name="bookmark_added">Lesezeichen hinzugefügt</string>
+    <string name="undo">Rückgängig</string>
+    <string name="dns_over_https">DNS über HTTPS</string>
+    <string name="default_mode">Standard-Modus</string>
+    <string name="detect_reader_mode">Automatische Erkennung des Lesegerätmodus</string>
+    <string name="detect_reader_mode_summary">Automatisch erkennen, ob ein Manga ein Webtoon ist</string>
 </resources>
