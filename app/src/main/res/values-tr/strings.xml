@@ -32,7 +32,7 @@
     <string name="processing_">İşleniyor…</string>
     <string name="download_complete">İndirildi</string>
     <string name="downloads">İndirilenler</string>
-    <string name="by_name">İsim</string>
+    <string name="by_name">Ad</string>
     <string name="updated">Güncellenme</string>
     <string name="newest">Yeniler</string>
     <string name="by_rating">Puanlama</string>
@@ -278,4 +278,23 @@
     <string name="local_manga_processing">Kaydedilen manga işleme</string>
     <string name="hide">Gizle</string>
     <string name="new_sources_text">Yeni manga kaynakları var</string>
+    <string name="show_notification_new_chapters_off">Bildirim almayacaksınız ancak yeni bölümler listelerde vurgulanacak</string>
+    <string name="notifications_enable">Bildirimleri etkinleştir</string>
+    <string name="check_new_chapters_title">Yeni bölümleri denetle ve bildirim gönder</string>
+    <string name="show_notification_new_chapters_on">Okuduğunuz manga güncellemeleri hakkında bildirim alacaksınız</string>
+    <string name="empty_favourite_categories">Favori kategori yok</string>
+    <string name="name">Ad</string>
+    <string name="edit">Düzenle</string>
+    <string name="edit_category">Kategoriyi düzenle</string>
+    <string name="bookmark_add">Yer imi ekle</string>
+    <string name="bookmark_remove">Yer imini kaldır</string>
+    <string name="bookmarks">Yer imleri</string>
+    <string name="bookmark_removed">Yer imi kaldırıldı</string>
+    <string name="bookmark_added">Yer imi eklendi</string>
+    <string name="undo">Geri al</string>
+    <string name="removed_from_history">Geçmişten kaldırıldı</string>
+    <string name="dns_over_https">HTTPS üzerinden DNS</string>
+    <string name="detect_reader_mode">Okuyucu modunu otomatik algıla</string>
+    <string name="detect_reader_mode_summary">Manganın webtoon olup olmadığını otomatik olarak algıla</string>
+    <string name="default_mode">Öntanımlı mod</string>
 </resources>
