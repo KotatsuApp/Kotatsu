@@ -44,7 +44,8 @@
 		android:key="sync"
 		android:persistent="false"
 		android:summary="@string/sync_title"
-		android:title="@string/sync" />
+		android:title="@string/sync"
+		app:allowDividerAbove="true" />
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"

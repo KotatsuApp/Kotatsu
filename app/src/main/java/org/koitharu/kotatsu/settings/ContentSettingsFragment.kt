@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.settings
 
+import android.accounts.AccountManager
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -7,7 +9,10 @@ import android.provider.Settings
 import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
@@ -17,6 +22,8 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.utils.SliderPreference
+import org.koitharu.kotatsu.sync.domain.AUTHORITY_FAVOURITES
+import org.koitharu.kotatsu.sync.domain.AUTHORITY_HISTORY
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -60,6 +67,11 @@ class ContentSettingsFragment :
 		settings.subscribe(this)
 	}
 
+	override fun onResume() {
+		super.onResume()
+		bindSyncSummary()
+	}
+
 	override fun onDestroyView() {
 		settings.unsubscribe(this)
 		super.onDestroyView()
@@ -78,10 +90,6 @@ class ContentSettingsFragment :
 			AppSettings.KEY_SOURCES_HIDDEN -> {
 				bindRemoteSourcesSummary()
 			}
-			AppSettings.KEY_SYNC -> {
-				val intent = Intent(Settings.ACTION_SYNC_SETTINGS)
-				startActivity(intent)
-			}
 		}
 	}
 
@@ -94,6 +102,23 @@ class ContentSettingsFragment :
 					.setNegativeButton(android.R.string.cancel)
 					.create()
 					.show()
+				true
+			}
+			AppSettings.KEY_SYNC -> {
+				val am = AccountManager.get(requireContext())
+				val accountType = getString(R.string.account_type_sync)
+				if (am.getAccountsByType(accountType).firstOrNull() == null) {
+					am.addAccount(accountType, accountType, null, null, requireActivity(), null, null)
+				} else {
+					val intent = Intent(Settings.ACTION_SYNC_SETTINGS)
+					intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf(accountType))
+					intent.putExtra(Settings.EXTRA_AUTHORITIES, arrayOf(AUTHORITY_HISTORY, AUTHORITY_FAVOURITES))
+					try {
+						startActivity(intent)
+					} catch (_: ActivityNotFoundException) {
+						Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+					}
+				}
 				true
 			}
 			else -> super.onPreferenceTreeClick(preference)
@@ -117,6 +142,18 @@ class ContentSettingsFragment :
 			summary = getString(
 				R.string.enabled_d_of_d, total - settings.hiddenSources.size, total
 			)
+		}
+	}
+
+	private fun bindSyncSummary() {
+		viewLifecycleScope.launch {
+			val account = withContext(Dispatchers.Default) {
+				val type = getString(R.string.account_type_sync)
+				AccountManager.get(requireContext()).getAccountsByType(type).firstOrNull()
+			}
+			findPreference<Preference>(AppSettings.KEY_SYNC)?.run {
+				summary = account?.name ?: getString(R.string.sync_title)
+			}
 		}
 	}
 }

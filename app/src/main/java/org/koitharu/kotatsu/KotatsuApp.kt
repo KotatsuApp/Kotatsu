@@ -30,7 +30,6 @@ import org.koitharu.kotatsu.settings.settingsModule
 import org.koitharu.kotatsu.suggestions.suggestionsModule
 import org.koitharu.kotatsu.sync.syncModule
 import org.koitharu.kotatsu.tracker.trackerModule
-import org.koitharu.kotatsu.widget.WidgetUpdater
 import org.koitharu.kotatsu.widget.appWidgetModule
 
 class KotatsuApp : Application() {
@@ -44,9 +43,6 @@ class KotatsuApp : Application() {
 		Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(applicationContext))
 		AppCompatDelegate.setDefaultNightMode(get<AppSettings>().theme)
 		registerActivityLifecycleCallbacks(get<AppProtectHelper>())
-		val widgetUpdater = WidgetUpdater(applicationContext)
-		widgetUpdater.subscribeToFavourites(get())
-		widgetUpdater.subscribeToHistory(get())
 	}
 
 	private fun initKoin() {

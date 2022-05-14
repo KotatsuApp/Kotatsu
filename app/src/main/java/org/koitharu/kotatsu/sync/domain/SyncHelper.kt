@@ -13,17 +13,17 @@ import org.json.JSONObject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.*
 import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
-import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.data.SyncAuthenticator
 import org.koitharu.kotatsu.sync.data.SyncInterceptor
 import org.koitharu.kotatsu.utils.GZipInterceptor
+import org.koitharu.kotatsu.utils.ext.parseJsonOrNull
 import org.koitharu.kotatsu.utils.ext.toContentValues
 import org.koitharu.kotatsu.utils.ext.toJson
 import org.koitharu.kotatsu.utils.ext.toRequestBody
 
-private const val AUTHORITY_HISTORY = "org.koitharu.kotatsu.history"
-private const val AUTHORITY_FAVOURITES = "org.koitharu.kotatsu.favourites"
+const val AUTHORITY_HISTORY = "org.koitharu.kotatsu.history"
+const val AUTHORITY_FAVOURITES = "org.koitharu.kotatsu.favourites"
 
 private const val FIELD_TIMESTAMP = "timestamp"
 
@@ -53,7 +53,7 @@ class SyncHelper(
 			.url("$baseUrl/resource/$TABLE_FAVOURITES")
 			.post(data.toRequestBody())
 			.build()
-		val response = httpClient.newCall(request).execute().parseJson()
+		val response = httpClient.newCall(request).execute().parseJsonOrNull() ?: return
 		val timestamp = response.getLong(FIELD_TIMESTAMP)
 		val categoriesResult = upsertFavouriteCategories(response.getJSONArray(TABLE_FAVOURITE_CATEGORIES), timestamp)
 		syncResult.stats.numDeletes += categoriesResult.first().count?.toLong() ?: 0L
@@ -71,7 +71,7 @@ class SyncHelper(
 			.url("$baseUrl/resource/$TABLE_HISTORY")
 			.post(data.toRequestBody())
 			.build()
-		val response = httpClient.newCall(request).execute().parseJson()
+		val response = httpClient.newCall(request).execute().parseJsonOrNull() ?: return
 		val result = upsertHistory(
 			json = response.getJSONArray(TABLE_HISTORY),
 			timestamp = response.getLong(FIELD_TIMESTAMP),

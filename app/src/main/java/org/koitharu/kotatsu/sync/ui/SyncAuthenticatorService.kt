@@ -6,11 +6,11 @@ import android.os.IBinder
 
 class SyncAuthenticatorService : Service() {
 
-	private lateinit var authenticator: SyncAuthenticator
+	private lateinit var authenticator: SyncAccountAuthenticator
 
 	override fun onCreate() {
 		super.onCreate()
-		authenticator = SyncAuthenticator(this)
+		authenticator = SyncAccountAuthenticator(this)
 	}
 
 	override fun onBind(intent: Intent?): IBinder? {

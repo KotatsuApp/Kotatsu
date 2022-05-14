@@ -303,4 +303,5 @@
 	<string name="default_mode">Default mode</string>
 	<string name="detect_reader_mode">Autodetect reader mode</string>
 	<string name="detect_reader_mode_summary">Automatically detect if manga is webtoon</string>
+	<string name="enter_email_text">Enter your email to continue</string>
 </resources>

@@ -9,7 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 
-class SyncAuthenticator(private val context: Context) : AbstractAccountAuthenticator(context) {
+class SyncAccountAuthenticator(private val context: Context) : AbstractAccountAuthenticator(context) {
 
 	override fun editProperties(response: AccountAuthenticatorResponse?, accountType: String?): Bundle? = null
 
@@ -52,7 +52,6 @@ class SyncAuthenticator(private val context: Context) : AbstractAccountAuthentic
 		} else {
 			val intent = Intent(context, SyncAuthActivity::class.java)
 			intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
-			// intent.putExtra(SyncAuthActivity.EXTRA_TOKEN_TYPE, authTokenType)
 			val bundle = Bundle()
 			if (options != null) {
 				bundle.putAll(options)

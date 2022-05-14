@@ -107,7 +107,7 @@
 				android:layout_alignParentEnd="true"
 				android:layout_marginTop="12dp"
 				android:gravity="center_horizontal"
-				android:text="Enter your email to continue"
+				android:text="@string/enter_email_text"
 				android:textAppearance="?textAppearanceSubtitle1" />
 
 			<com.google.android.material.textfield.TextInputLayout
@@ -119,6 +119,7 @@
 				android:layout_alignParentStart="true"
 				android:layout_alignParentEnd="true"
 				android:layout_marginTop="30dp"
+				app:endIconMode="password_toggle"
 				app:errorIconDrawable="@null"
 				app:helperText="You can sign in into an existing account or create a new one"
 				app:hintEnabled="false">
