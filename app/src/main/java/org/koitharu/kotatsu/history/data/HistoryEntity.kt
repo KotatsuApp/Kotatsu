@@ -21,9 +21,10 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 class HistoryEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val mangaId: Long,
-	@ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis(),
+	@ColumnInfo(name = "created_at") val createdAt: Long,
 	@ColumnInfo(name = "updated_at") val updatedAt: Long,
 	@ColumnInfo(name = "chapter_id") val chapterId: Long,
 	@ColumnInfo(name = "page") val page: Int,
 	@ColumnInfo(name = "scroll") val scroll: Float,
+	@ColumnInfo(name = "deleted_at") val deletedAt: Long,
 )

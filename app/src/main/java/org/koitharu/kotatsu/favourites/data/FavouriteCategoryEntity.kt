@@ -14,4 +14,5 @@ class FavouriteCategoryEntity(
 	@ColumnInfo(name = "title") val title: String,
 	@ColumnInfo(name = "order") val order: String,
 	@ColumnInfo(name = "track") val track: Boolean,
+	@ColumnInfo(name = "deleted_at") val deletedAt: Long,
 )

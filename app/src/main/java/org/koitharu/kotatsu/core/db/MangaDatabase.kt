@@ -18,13 +18,15 @@ import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.suggestions.data.SuggestionDao
 import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 
+const val DATABASE_VERSION = 12
+
 @Database(
 	entities = [
 		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
 		FavouriteCategoryEntity::class, FavouriteEntity::class, MangaPrefsEntity::class,
 		TrackEntity::class, TrackLogEntity::class, SuggestionEntity::class, BookmarkEntity::class,
 	],
-	version = 11,
+	version = DATABASE_VERSION,
 )
 abstract class MangaDatabase : RoomDatabase() {
 
@@ -64,6 +66,7 @@ fun MangaDatabase(context: Context): MangaDatabase = Room.databaseBuilder(
 	Migration8To9(),
 	Migration9To10(),
 	Migration10To11(),
+	Migration11To12(),
 ).addCallback(
 	DatabasePrePopulateCallback(context.resources)
 ).build()

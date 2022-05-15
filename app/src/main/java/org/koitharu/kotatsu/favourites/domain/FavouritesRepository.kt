@@ -54,12 +54,6 @@ class FavouritesRepository(
 			.map { it?.toFavouriteCategory() }
 	}
 
-	fun observeCategories(mangaId: Long): Flow<List<FavouriteCategory>> {
-		return db.favouritesDao.observe(mangaId).map { entity ->
-			entity?.categories?.map { it.toFavouriteCategory() }.orEmpty()
-		}.distinctUntilChanged()
-	}
-
 	fun observeCategoriesIds(mangaId: Long): Flow<Set<Long>> {
 		return db.favouritesDao.observeIds(mangaId).map { it.toSet() }
 	}
@@ -76,6 +70,7 @@ class FavouritesRepository(
 			categoryId = 0,
 			order = sortOrder.name,
 			track = isTrackerEnabled,
+			deletedAt = 0L,
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
 		val category = entity.toFavouriteCategory(id)
@@ -87,26 +82,6 @@ class FavouritesRepository(
 		db.favouriteCategoriesDao.update(id, title, sortOrder.name, isTrackerEnabled)
 	}
 
-	suspend fun addCategory(title: String): FavouriteCategory {
-		val entity = FavouriteCategoryEntity(
-			title = title,
-			createdAt = System.currentTimeMillis(),
-			sortKey = db.favouriteCategoriesDao.getNextSortKey(),
-			categoryId = 0,
-			order = SortOrder.NEWEST.name,
-			track = true,
-		)
-		val id = db.favouriteCategoriesDao.insert(entity)
-		val category = entity.toFavouriteCategory(id)
-		channels.createChannel(category)
-		return category
-	}
-
-	suspend fun renameCategory(id: Long, title: String) {
-		db.favouriteCategoriesDao.updateTitle(id, title)
-		channels.renameChannel(id, title)
-	}
-
 	suspend fun removeCategory(id: Long) {
 		db.favouriteCategoriesDao.delete(id)
 		channels.deleteChannel(id)
@@ -114,10 +89,6 @@ class FavouritesRepository(
 
 	suspend fun setCategoryOrder(id: Long, order: SortOrder) {
 		db.favouriteCategoriesDao.updateOrder(id, order.name)
-	}
-
-	suspend fun setCategoryTracking(id: Long, isEnabled: Boolean) {
-		db.favouriteCategoriesDao.updateTracking(id, isEnabled)
 	}
 
 	suspend fun reorderCategories(orderedIds: List<Long>) {
@@ -135,7 +106,12 @@ class FavouritesRepository(
 				val tags = manga.tags.toEntities()
 				db.tagsDao.upsert(tags)
 				db.mangaDao.upsert(manga.toEntity(), tags)
-				val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
+				val entity = FavouriteEntity(
+					mangaId = manga.id,
+					categoryId = categoryId,
+					createdAt = System.currentTimeMillis(),
+					deletedAt = 0L,
+				)
 				db.favouritesDao.insert(entity)
 			}
 		}

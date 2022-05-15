@@ -75,6 +75,7 @@ class HistoryRepository(
 					chapterId = chapterId,
 					page = page,
 					scroll = scroll.toFloat(), // we migrate to int, but decide to not update database
+					deletedAt = 0L,
 				)
 			)
 			trackingRepository.upsert(manga)

@@ -79,14 +79,14 @@ class RestoreRepository(private val db: MangaDatabase) {
 		largeCoverUrl = json.getStringOrNull("large_cover_url"),
 		state = json.getStringOrNull("state"),
 		author = json.getStringOrNull("author"),
-		source = json.getString("source")
+		source = json.getString("source"),
 	)
 
 	private fun parseTag(json: JSONObject) = TagEntity(
 		id = json.getLong("id"),
 		title = json.getString("title"),
 		key = json.getString("key"),
-		source = json.getString("source")
+		source = json.getString("source"),
 	)
 
 	private fun parseHistory(json: JSONObject) = HistoryEntity(
@@ -95,7 +95,8 @@ class RestoreRepository(private val db: MangaDatabase) {
 		updatedAt = json.getLong("updated_at"),
 		chapterId = json.getLong("chapter_id"),
 		page = json.getInt("page"),
-		scroll = json.getDouble("scroll").toFloat()
+		scroll = json.getDouble("scroll").toFloat(),
+		deletedAt = 0L,
 	)
 
 	private fun parseCategory(json: JSONObject) = FavouriteCategoryEntity(
@@ -105,11 +106,13 @@ class RestoreRepository(private val db: MangaDatabase) {
 		title = json.getString("title"),
 		order = json.getStringOrNull("order") ?: SortOrder.NEWEST.name,
 		track = json.getBooleanOrDefault("track", true),
+		deletedAt = 0L,
 	)
 
 	private fun parseFavourite(json: JSONObject) = FavouriteEntity(
 		mangaId = json.getLong("manga_id"),
 		categoryId = json.getLong("category_id"),
-		createdAt = json.getLong("created_at")
+		createdAt = json.getLong("created_at"),
+		deletedAt = 0L,
 	)
 }
