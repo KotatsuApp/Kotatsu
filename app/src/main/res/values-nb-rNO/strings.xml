@@ -26,9 +26,7 @@
     <string name="zoom_mode_fit_center">Tilpass sentrum</string>
     <string name="scale_mode">Skaleringsmodus</string>
     <string name="report_github">Opprett feilrapport på GitHub</string>
-    <string name="prefer_rtl_reader_summary">Lesemodus kan settes opp for hver serie</string>
     <string name="right_to_left">Høyre-til-venstre (←)</string>
-    <string name="prefer_rtl_reader">Foretrekk høyre-til-venstre (←)-leser</string>
     <string name="no_update_available">Ingen tilgjengelige oppdateringer</string>
     <string name="update_check_failed">Kunne ikke se etter oppdateringer</string>
     <string name="checking_for_updates">Ser etter oppdateringer …</string>

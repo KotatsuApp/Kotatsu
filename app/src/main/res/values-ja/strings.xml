@@ -159,7 +159,6 @@
     <string name="update_check_failed">アップデートを確認する事が出来ませんでした</string>
     <string name="no_update_available">利用可能なアップデートはありません</string>
     <string name="right_to_left">右から左(←)</string>
-    <string name="prefer_rtl_reader">右から左（←）の読書を好む</string>
     <string name="about_feedback">フィードバック</string>
     <string name="about_feedback_4pda">4PDAに関する話題</string>
     <string name="auth_complete">承認済み</string>
@@ -222,7 +221,6 @@
     <string name="exclude_nsfw_from_history">NSFW漫画を履歴から除外する</string>
     <string name="queued">キュー</string>
     <string name="cookies_cleared">全てのCookieが削除されました</string>
-    <string name="prefer_rtl_reader_summary">読み取りモードはシリーズごとに設定できます</string>
     <string name="restart_required">再起動が必要です</string>
     <string name="tracker_warning">一部のデバイスはシステムでの動作が異なり、バックグラウンドタスクが中断される可能性があります。</string>
     <string name="genres">ジャンル</string>
@@ -278,4 +276,23 @@
     <string name="chapters_will_removed_background">チャプターはバックグラウンドで削除されます。時間がかかる場合があります</string>
     <string name="hide">隠す</string>
     <string name="new_sources_text">新しいマンガソースが利用可能になりました</string>
+    <string name="check_new_chapters_title">新着チャプターの確認とお知らせ</string>
+    <string name="show_notification_new_chapters_on">読んでいるマンガの更新情報をお知らせします</string>
+    <string name="notifications_enable">通知を有効にする</string>
+    <string name="show_notification_new_chapters_off">通知はありませんが、新しいチャプターはリストでハイライト表示されます</string>
+    <string name="name">名称</string>
+    <string name="edit">編集</string>
+    <string name="edit_category">カテゴリーを編集する</string>
+    <string name="empty_favourite_categories">お気に入りのカテゴリーはありません</string>
+    <string name="bookmarks">ブックマーク</string>
+    <string name="bookmark_removed">ブックマーク削除</string>
+    <string name="undo">元に戻す</string>
+    <string name="removed_from_history">履歴から削除</string>
+    <string name="bookmark_add">ブックマークの追加</string>
+    <string name="bookmark_remove">ブックマークの削除</string>
+    <string name="bookmark_added">ブックマークを追加</string>
+    <string name="dns_over_https">HTTPS 経由の DNS</string>
+    <string name="detect_reader_mode">リーダーモードの自動検出</string>
+    <string name="default_mode">デフォルトモード</string>
+    <string name="detect_reader_mode_summary">マンガがウェブトゥーンかどうかを自動判定</string>
 </resources>

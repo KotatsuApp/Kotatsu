@@ -159,8 +159,6 @@
     <string name="update_check_failed">Не удалось проверить обновления</string>
     <string name="no_update_available">Нет доступных обновлений</string>
     <string name="right_to_left">Справа налево (←)</string>
-    <string name="prefer_rtl_reader">Предпочитать читать справа налево (←)</string>
-    <string name="prefer_rtl_reader_summary">Режим чтения может быть настроен отдельно для каждой серии</string>
     <string name="create_category">Создать категорию</string>
     <string name="scale_mode">Масштабирование</string>
     <string name="zoom_mode_fit_center">Вписать в экран</string>

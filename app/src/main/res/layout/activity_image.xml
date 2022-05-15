@@ -7,8 +7,7 @@
 	<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 		android:id="@+id/ssiv"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:transitionName="cover" />
+		android:layout_height="match_parent" />
 
 	<com.google.android.material.appbar.MaterialToolbar
 		android:id="@+id/toolbar"

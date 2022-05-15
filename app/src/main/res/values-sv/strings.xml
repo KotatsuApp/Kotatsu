@@ -129,7 +129,7 @@
     <string name="sign_in">Logga in</string>
     <string name="auth_required">Logga in för att visa innehåll</string>
     <string name="default_s">Standard: %s</string>
-    <string name="_and_x_more">...och %1$d till</string>
+    <string name="_and_x_more">…och %1$d till</string>
     <string name="next">Nästa</string>
     <string name="password_length_hint">Lösenordet måste vara minst 4 tecken</string>
     <string name="search_only_on_s">Sök endast på %s</string>
@@ -243,9 +243,7 @@
     <string name="zoom_mode_fit_center">Centrera</string>
     <string name="zoom_mode_fit_height">Anpassa mot höjd</string>
     <string name="zoom_mode_keep_start">Anpassa till start</string>
-    <string name="prefer_rtl_reader">Föredra höger-till-vänster (←) läsare</string>
     <string name="preparing_">Förbereder…</string>
-    <string name="prefer_rtl_reader_summary">Läsläge kan sättas up separat för varje serie</string>
     <string name="zoom_mode_fit_width">Anpassa mot bredd</string>
     <string name="black_dark_theme">Svart</string>
     <string name="black_dark_theme_summary">Använder mindre ström på AMOLED-skärmar</string>

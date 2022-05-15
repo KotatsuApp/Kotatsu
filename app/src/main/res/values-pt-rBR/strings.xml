@@ -140,8 +140,6 @@
     <string name="about">Sobre</string>
     <string name="checking_for_updates">Verificando atualizações…</string>
     <string name="update_check_failed">Não foi possível procurar atualizações</string>
-    <string name="prefer_rtl_reader">Prefira o leitor da direita para a esquerda (←)</string>
-    <string name="prefer_rtl_reader_summary">O modo de leitura pode ser configurado separadamente para cada série</string>
     <string name="backup_information">Você pode criar backup de seu histórico e favoritos e restaurá-lo</string>
     <string name="just_now">Agora mesmo</string>
     <string name="yesterday">Ontem</string>
@@ -278,4 +276,23 @@
     <string name="chapters_will_removed_background">Os capítulos serão removidos em segundo plano. Pode levar algum tempo</string>
     <string name="parallel_downloads">Downloads paralelos</string>
     <string name="new_sources_text">Novas fontes de mangá estão disponíveis</string>
+    <string name="check_new_chapters_title">Verifique se há novos capítulos e notifique sobre isso</string>
+    <string name="show_notification_new_chapters_on">Você receberá notificações sobre atualizações do mangá que está lendo</string>
+    <string name="edit_category">Editar categoria</string>
+    <string name="empty_favourite_categories">Nenhuma categoria favorita</string>
+    <string name="bookmark_add">Adicionar marcador</string>
+    <string name="bookmark_remove">Remover marcador</string>
+    <string name="bookmarks">Marcadores</string>
+    <string name="bookmark_added">Marcador adicionado</string>
+    <string name="show_notification_new_chapters_off">Você não receberá notificações, mas novos capítulos serão destacados nas listas</string>
+    <string name="notifications_enable">Ativar notificações</string>
+    <string name="name">Nome</string>
+    <string name="edit">Editar</string>
+    <string name="bookmark_removed">Marcador removido</string>
+    <string name="undo">Desfazer</string>
+    <string name="removed_from_history">Removido do histórico</string>
+    <string name="dns_over_https">DNS sobre HTTPS</string>
+    <string name="default_mode">Modo padrão</string>
+    <string name="detect_reader_mode">Detecção automática do modo de leitura</string>
+    <string name="detect_reader_mode_summary">Detectar automaticamente se o mangá é webtoon</string>
 </resources>

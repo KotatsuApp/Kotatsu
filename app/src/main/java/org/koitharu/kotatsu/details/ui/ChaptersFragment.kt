@@ -121,13 +121,7 @@ class ChaptersFragment :
 			(activity as? DetailsActivity)?.showChapterMissingDialog(item.chapter.id)
 			return
 		}
-		val options = ActivityOptions.makeScaleUpAnimation(
-			view,
-			0,
-			0,
-			view.measuredWidth,
-			view.measuredHeight
-		)
+		val options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.width, view.height)
 		startActivity(
 			ReaderActivity.newIntent(
 				context = view.context,

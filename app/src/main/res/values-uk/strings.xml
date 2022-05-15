@@ -89,7 +89,6 @@
     <string name="notifications">Сповіщення</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Увімкнено %1$d з %2$d</string>
     <string name="new_chapters">Нові розділи</string>
-    <string name="show_notification_new_chapters">Повідомляти про оновлення манґи, яку Ви читаєте</string>
     <string name="download">Завантажити</string>
     <string name="read_from_start">Читати з початку</string>
     <string name="restart">Перезавантажити</string>
@@ -136,7 +135,6 @@
     <string name="checking_for_updates">Перевірка наявності оновлень…</string>
     <string name="update_check_failed">Не вдалося перевірити оновлення</string>
     <string name="no_update_available">Немає доступних оновлень</string>
-    <string name="prefer_rtl_reader">Віддавати перевагу читанню справа наліво (←)</string>
     <string name="create_category">Нова категорія</string>
     <string name="scale_mode">Режим масштабування</string>
     <string name="zoom_mode_fit_center">Вмістити в екран</string>
@@ -166,7 +164,7 @@
     <string name="sign_in">Увійти</string>
     <string name="auth_required">Увійдіть, щоб переглянути цей вміст</string>
     <string name="default_s">За замовчуванням: %s</string>
-    <string name="_and_x_more">...і ще %1$d</string>
+    <string name="_and_x_more">…і ще %1$d</string>
     <string name="next">Далі</string>
     <string name="protect_application_subtitle">Введіть пароль для запуску програми</string>
     <string name="confirm">Підтвердити</string>
@@ -252,7 +250,6 @@
     <string name="text_categories_holder">Ви можете використовувати категорії для впорядкування своїх уподобань. Натисніть «+», щоб створити категорію</string>
     <string name="yesterday">Учора</string>
     <string name="right_to_left">Справа наліво (←)</string>
-    <string name="prefer_rtl_reader_summary">Режим читання можна налаштувати окремо для кожної серії</string>
     <string name="create_backup">Створити резервну копію</string>
     <string name="restore_backup">Відновити з резервної копії</string>
     <string name="data_restored_success">Всі дані були відновлені</string>
@@ -279,4 +276,19 @@
     <string name="suggestions_excluded_genres_summary">Укажіть жанри, які ви не хочете бачити в пропозиціях</string>
     <string name="download_slowdown_summary">Допомагає уникнути блокування вашої IP-адреси</string>
     <string name="chapters_will_removed_background">Розділи будуть видалені у фоновому режимі. Це може зайняти деякий час</string>
+    <string name="check_new_chapters_title">Перевіряти наявність нових розділів і повідомляти про них</string>
+    <string name="show_notification_new_chapters_on">Ви будете отримувати повідомлення про оновлення манґи, яку ви читаєте</string>
+    <string name="notifications_enable">Увімкнути сповіщення</string>
+    <string name="show_notification_new_chapters_off">Ви не будете отримувати повідомлення, але нові розділи будуть відображатися у списку</string>
+    <string name="empty_favourite_categories">Немає улюблених категорій</string>
+    <string name="name">Назва</string>
+    <string name="edit">Змінити</string>
+    <string name="edit_category">Змінити категорію</string>
+    <string name="bookmark_add">Додати закладку</string>
+    <string name="bookmark_remove">Видалити закладку</string>
+    <string name="bookmarks">Закладки</string>
+    <string name="bookmark_removed">Закладка видалена</string>
+    <string name="bookmark_added">Додано закладку</string>
+    <string name="undo">Скасувати</string>
+    <string name="removed_from_history">Видалено з історії</string>
 </resources>
