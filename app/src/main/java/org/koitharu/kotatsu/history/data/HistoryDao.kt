@@ -64,6 +64,8 @@ abstract class HistoryDao {
 	@Query("UPDATE history SET deleted_at = :now WHERE manga_id = :mangaId")
 	abstract suspend fun delete(mangaId: Long, now: Long = System.currentTimeMillis())
 
+	suspend fun recover(mangaId: Long) = delete(mangaId, 0L)
+
 	@Query("DELETE FROM history WHERE deleted_at != 0")
 	abstract suspend fun gc()
 

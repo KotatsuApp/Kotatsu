@@ -80,7 +80,7 @@ class HistoryListViewModel(
 			return
 		}
 		launchJob(Dispatchers.Default) {
-			val handle = repository.deleteReversible(ids) + ReversibleHandle {
+			val handle = repository.delete(ids) + ReversibleHandle {
 				shortcutsRepository.updateShortcuts()
 			}
 			shortcutsRepository.updateShortcuts()

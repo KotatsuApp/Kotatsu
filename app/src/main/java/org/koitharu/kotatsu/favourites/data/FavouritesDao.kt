@@ -87,6 +87,10 @@ abstract class FavouritesDao {
 	@Query("UPDATE favourites SET deleted_at = :now WHERE manga_id = :mangaId AND category_id = :categoryId")
 	abstract suspend fun delete(categoryId: Long, mangaId: Long, now: Long = System.currentTimeMillis())
 
+	suspend fun recover(mangaId: Long) = delete(mangaId, 0L)
+
+	suspend fun recover(categoryId: Long, mangaId: Long) = delete(categoryId, mangaId, 0L)
+
 	@Query("DELETE FROM favourites WHERE deleted_at != 0")
 	abstract suspend fun gc()
 

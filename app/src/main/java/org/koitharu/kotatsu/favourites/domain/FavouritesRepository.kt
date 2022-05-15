@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.favourites.domain
 
 import androidx.room.withTransaction
 import kotlinx.coroutines.flow.*
+import org.koitharu.kotatsu.base.domain.ReversibleHandle
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -117,20 +118,22 @@ class FavouritesRepository(
 		}
 	}
 
-	suspend fun removeFromFavourites(ids: Collection<Long>) {
+	suspend fun removeFromFavourites(ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
 				db.favouritesDao.delete(id)
 			}
 		}
+		return ReversibleHandle { recoverToFavourites(ids) }
 	}
 
-	suspend fun removeFromCategory(categoryId: Long, ids: Collection<Long>) {
+	suspend fun removeFromCategory(categoryId: Long, ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
 				db.favouritesDao.delete(categoryId, id)
 			}
 		}
+		return ReversibleHandle { recoverToCategory(categoryId, ids) }
 	}
 
 	private fun observeOrder(categoryId: Long): Flow<SortOrder> {
@@ -138,5 +141,21 @@ class FavouritesRepository(
 			.filterNotNull()
 			.map { x -> SortOrder(x.order, SortOrder.NEWEST) }
 			.distinctUntilChanged()
+	}
+
+	private suspend fun recoverToFavourites(ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				db.favouritesDao.recover(id)
+			}
+		}
+	}
+
+	private suspend fun recoverToCategory(categoryId: Long, ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				db.favouritesDao.recover(categoryId, id)
+			}
+		}
 	}
 }
