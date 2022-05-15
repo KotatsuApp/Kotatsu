@@ -121,7 +121,6 @@
     <string name="clear_search_history">Arama geçmişini temizle</string>
     <string name="text_empty_holder_primary">Burası biraz boş…</string>
     <string name="rotate_screen">Ekranı döndür</string>
-    <string name="prefer_rtl_reader_summary">Okuma modu her seri için ayrı bir şekilde ayarlanabilir</string>
     <string name="scale_mode">Ölçek modu</string>
     <string name="zoom_mode_fit_height">Yüksekliğe sığdır</string>
     <string name="black_dark_theme">Siyah</string>

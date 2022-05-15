@@ -52,8 +52,6 @@
     <string name="scale_mode">Mode mise à l\'échelle</string>
     <string name="report_github">Signaler un problème sur GitHub</string>
     <string name="create_category">Nouvelle catégorie</string>
-    <string name="prefer_rtl_reader_summary">Le mode de lecture peut être configuré séparément pour chaque série</string>
-    <string name="prefer_rtl_reader">Préférer le lecteur de droite à gauche (←)</string>
     <string name="right_to_left">De droite à gauche (←)</string>
     <string name="no_update_available">Aucune mise à jour disponible</string>
     <string name="update_check_failed">Échec de la recherche de mise à jour</string>

@@ -96,8 +96,6 @@
     <string name="black_dark_theme">Tema nero scuro</string>
     <string name="report_github">Segnala un problema su GitHub</string>
     <string name="create_category">Nuova categoria</string>
-    <string name="prefer_rtl_reader_summary">Puoi impostare la modalità di lettura per ogni manga separatamente</string>
-    <string name="prefer_rtl_reader">Preferisci la lettura da destra a sinistra</string>
     <string name="right_to_left">Da destra a sinistra</string>
     <string name="no_update_available">Nessun aggiornamento disponibile</string>
     <string name="update_check_failed">Controllo dell\'aggiornamento fallito</string>

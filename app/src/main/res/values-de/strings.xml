@@ -86,9 +86,7 @@
     <string name="black_dark_theme_summary">Nützlich für AMOLED-Bildschirme</string>
     <string name="black_dark_theme">Schwarzer dunkler Modus</string>
     <string name="restart_required">Neustart erforderlich</string>
-    <string name="prefer_rtl_reader_summary">Du kannst den Lesemodus für jeden Manga separat einrichten</string>
     <string name="right_to_left">Von rechts nach links</string>
-    <string name="prefer_rtl_reader">Von rechts nach links-Lesemodus bevorzugen</string>
     <string name="create_category">Neue Kategorie</string>
     <string name="backup_restore">Sicherung und Wiederherstellung</string>
     <string name="data_restored">Daten wiederhergestellt</string>

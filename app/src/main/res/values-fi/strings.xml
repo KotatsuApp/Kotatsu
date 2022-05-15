@@ -63,8 +63,6 @@
     <string name="scale_mode">Skaalaustila</string>
     <string name="report_github">Luo ongelma GitHubissa</string>
     <string name="create_category">Uusi luokka</string>
-    <string name="prefer_rtl_reader_summary">Voit määrittää lukutilan jokaiselle mangalle erikseen</string>
-    <string name="prefer_rtl_reader">Mieluummin oikealta vasemmalle lukutila</string>
     <string name="right_to_left">Oikealta vasemmalle</string>
     <string name="no_update_available">Ei päivityksiä saatavilla</string>
     <string name="update_check_failed">Päivityksen tarkistus epäonnistui</string>

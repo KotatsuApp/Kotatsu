@@ -159,7 +159,6 @@
     <string name="update_check_failed">アップデートを確認する事が出来ませんでした</string>
     <string name="no_update_available">利用可能なアップデートはありません</string>
     <string name="right_to_left">右から左(←)</string>
-    <string name="prefer_rtl_reader">右から左（←）の読書を好む</string>
     <string name="about_feedback">フィードバック</string>
     <string name="about_feedback_4pda">4PDAに関する話題</string>
     <string name="auth_complete">承認済み</string>
@@ -222,7 +221,6 @@
     <string name="exclude_nsfw_from_history">NSFW漫画を履歴から除外する</string>
     <string name="queued">キュー</string>
     <string name="cookies_cleared">全てのCookieが削除されました</string>
-    <string name="prefer_rtl_reader_summary">読み取りモードはシリーズごとに設定できます</string>
     <string name="restart_required">再起動が必要です</string>
     <string name="tracker_warning">一部のデバイスはシステムでの動作が異なり、バックグラウンドタスクが中断される可能性があります。</string>
     <string name="genres">ジャンル</string>

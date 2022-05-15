@@ -153,8 +153,6 @@
     <string name="update_check_failed">Памылка пры праверцы абнаўленняў</string>
     <string name="no_update_available">Няма даступных абнаўленняў</string>
     <string name="right_to_left">Справа налева</string>
-    <string name="prefer_rtl_reader">Аддаваць перавагу рэжыму справа налева</string>
-    <string name="prefer_rtl_reader_summary">Вы можаце наладзіць рэжым чытання для кожнай мангі асобна</string>
     <string name="create_category">Стварыць катэгорыю</string>
     <string name="report_github">Пачаць абмеркаванне праблемы на GitHub</string>
     <string name="scale_mode">Маштабаванне</string>

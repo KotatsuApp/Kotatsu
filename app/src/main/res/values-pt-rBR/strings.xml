@@ -140,8 +140,6 @@
     <string name="about">Sobre</string>
     <string name="checking_for_updates">Verificando atualizações…</string>
     <string name="update_check_failed">Não foi possível procurar atualizações</string>
-    <string name="prefer_rtl_reader">Prefira o leitor da direita para a esquerda (←)</string>
-    <string name="prefer_rtl_reader_summary">O modo de leitura pode ser configurado separadamente para cada série</string>
     <string name="backup_information">Você pode criar backup de seu histórico e favoritos e restaurá-lo</string>
     <string name="just_now">Agora mesmo</string>
     <string name="yesterday">Ontem</string>
