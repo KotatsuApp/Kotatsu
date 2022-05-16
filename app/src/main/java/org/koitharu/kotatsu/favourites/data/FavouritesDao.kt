@@ -91,8 +91,8 @@ abstract class FavouritesDao {
 
 	suspend fun recover(categoryId: Long, mangaId: Long) = delete(categoryId, mangaId, 0L)
 
-	@Query("DELETE FROM favourites WHERE deleted_at != 0")
-	abstract suspend fun gc()
+	@Query("DELETE FROM favourites WHERE deleted_at != 0 AND deleted_at < :maxDeletionTime")
+	abstract suspend fun gc(maxDeletionTime: Long)
 
 	@Transaction
 	open suspend fun upsert(entity: FavouriteEntity) {

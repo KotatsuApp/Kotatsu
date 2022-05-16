@@ -66,8 +66,8 @@ abstract class HistoryDao {
 
 	suspend fun recover(mangaId: Long) = delete(mangaId, 0L)
 
-	@Query("DELETE FROM history WHERE deleted_at != 0")
-	abstract suspend fun gc()
+	@Query("DELETE FROM history WHERE deleted_at != 0 AND deleted_at < :maxDeletionTime")
+	abstract suspend fun gc(maxDeletionTime: Long)
 
 	suspend fun update(entity: HistoryEntity) =
 		update(entity.mangaId, entity.page, entity.chapterId, entity.scroll, entity.updatedAt)

@@ -7,9 +7,13 @@ import android.content.Context
 import android.os.Bundle
 import android.util.ArrayMap
 import androidx.room.InvalidationTracker
+import androidx.room.withTransaction
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITE_CATEGORIES
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
@@ -27,7 +31,10 @@ class SyncController(
 	} else {
 		TimeUnit.MINUTES.toMillis(4)
 	}
+	private val mutex = Mutex()
 	private val jobs = ArrayMap<String, Job>(2)
+	private val defaultGcPeriod: Long // gc period if sync disabled
+		get() = TimeUnit.DAYS.toMillis(2)
 
 	override fun onInvalidated(tables: MutableSet<String>) {
 		requestSync(
@@ -48,36 +55,49 @@ class SyncController(
 	}
 
 	suspend fun requestFullSync() = withContext(Dispatchers.Default) {
-		requestSyncImpl(favourites = true, history = true)
+		requestSyncImpl(favourites = true, history = true, db = null)
+	}
+
+	suspend fun requestFullSyncAndGc(database: MangaDatabase) = withContext(Dispatchers.Default) {
+		requestSyncImpl(favourites = true, history = true, db = database)
 	}
 
 	private fun requestSync(favourites: Boolean, history: Boolean) = processLifecycleScope.launch(Dispatchers.Default) {
-		requestSyncImpl(favourites, history)
+		requestSyncImpl(favourites = favourites, history = history, db = null)
 	}
 
-	@Synchronized
-	private fun requestSyncImpl(favourites: Boolean, history: Boolean) {
+	private suspend fun requestSyncImpl(favourites: Boolean, history: Boolean, db: MangaDatabase?) = mutex.withLock {
 		if (!favourites && !history) {
 			return
 		}
-		val account = peekAccount() ?: return
-		if (!ContentResolver.getMasterSyncAutomatically()) {
+		val account = peekAccount()
+		if (account == null || !ContentResolver.getMasterSyncAutomatically()) {
+			db?.gc(favourites, history)
 			return
 		}
+		var gcHistory = false
+		var gcFavourites = false
 		if (favourites) {
-			scheduleSync(account, AUTHORITY_FAVOURITES)
+			if (ContentResolver.getSyncAutomatically(account, AUTHORITY_FAVOURITES)) {
+				scheduleSync(account, AUTHORITY_FAVOURITES)
+			} else {
+				gcFavourites = true
+			}
 		}
 		if (history) {
-			scheduleSync(account, AUTHORITY_HISTORY)
+			if (ContentResolver.getSyncAutomatically(account, AUTHORITY_HISTORY)) {
+				scheduleSync(account, AUTHORITY_HISTORY)
+			} else {
+				gcHistory = true
+			}
+		}
+		if (db != null && (gcHistory || gcFavourites)) {
+			db.gc(gcFavourites, gcHistory)
 		}
 	}
 
 	private fun scheduleSync(account: Account, authority: String) {
-		if (
-			!ContentResolver.getSyncAutomatically(account, AUTHORITY_FAVOURITES) ||
-			ContentResolver.isSyncActive(account, authority) ||
-			ContentResolver.isSyncPending(account, authority)
-		) {
+		if (ContentResolver.isSyncActive(account, authority) || ContentResolver.isSyncPending(account, authority)) {
 			return
 		}
 		val job = jobs[authority]
@@ -104,5 +124,16 @@ class SyncController(
 
 	private fun peekAccount(): Account? {
 		return am.getAccountsByType(accountType).firstOrNull()
+	}
+
+	private suspend fun MangaDatabase.gc(favourites: Boolean, history: Boolean) = withTransaction {
+		val deletedAt = System.currentTimeMillis() - defaultGcPeriod
+		if (history) {
+			historyDao.gc(deletedAt)
+		}
+		if (favourites) {
+			favouritesDao.gc(deletedAt)
+			favouriteCategoriesDao.gc(deletedAt)
+		}
 	}
 }

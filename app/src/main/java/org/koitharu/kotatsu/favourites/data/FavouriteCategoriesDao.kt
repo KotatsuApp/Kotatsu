@@ -36,8 +36,8 @@ abstract class FavouriteCategoriesDao {
 	@Query("UPDATE favourite_categories SET sort_key = :sortKey WHERE category_id = :id")
 	abstract suspend fun updateSortKey(id: Long, sortKey: Int)
 
-	@Query("DELETE FROM favourite_categories WHERE deleted_at != 0")
-	abstract suspend fun gc()
+	@Query("DELETE FROM favourite_categories WHERE deleted_at != 0 AND deleted_at < :maxDeletionTime")
+	abstract suspend fun gc(maxDeletionTime: Long)
 
 	@Query("SELECT MAX(sort_key) FROM favourite_categories WHERE deleted_at = 0")
 	protected abstract suspend fun getMaxSortKey(): Int?

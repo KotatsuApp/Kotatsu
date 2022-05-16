@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.utils
 
+import android.util.ArrayMap
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
@@ -9,7 +10,7 @@ import kotlin.coroutines.resume
 
 class CompositeMutex<T : Any> : Set<T> {
 
-	private val data = HashMap<T, MutableList<CancellableContinuation<Unit>>>()
+	private val data = ArrayMap<T, MutableList<CancellableContinuation<Unit>>>()
 	private val mutex = Mutex()
 
 	override val size: Int

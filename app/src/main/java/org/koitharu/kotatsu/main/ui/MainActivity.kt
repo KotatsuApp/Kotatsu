@@ -434,7 +434,7 @@ class MainActivity :
 				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
 			}
 			yield()
-			get<SyncController>().requestFullSync()
+			get<SyncController>().requestFullSyncAndGc(get())
 		}
 	}
 

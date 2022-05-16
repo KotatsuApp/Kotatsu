@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.utils.ext.parseJsonOrNull
 import org.koitharu.kotatsu.utils.ext.toContentValues
 import org.koitharu.kotatsu.utils.ext.toJson
 import org.koitharu.kotatsu.utils.ext.toRequestBody
+import java.util.concurrent.TimeUnit
 
 const val AUTHORITY_HISTORY = "org.koitharu.kotatsu.history"
 const val AUTHORITY_FAVOURITES = "org.koitharu.kotatsu.favourites"
@@ -43,6 +44,8 @@ class SyncHelper(
 		.addInterceptor(GZipInterceptor())
 		.build()
 	private val baseUrl = context.getString(R.string.url_sync_server)
+	private val defaultGcPeriod: Long // gc period if sync enabled
+		get() = TimeUnit.DAYS.toMillis(4)
 
 	fun syncFavourites(syncResult: SyncResult) {
 		val data = JSONObject()
@@ -61,6 +64,7 @@ class SyncHelper(
 		val favouritesResult = upsertFavourites(response.getJSONArray(TABLE_FAVOURITES), timestamp)
 		syncResult.stats.numDeletes += favouritesResult.first().count?.toLong() ?: 0L
 		syncResult.stats.numInserts += favouritesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
+		gcFavourites()
 	}
 
 	fun syncHistory(syncResult: SyncResult) {
@@ -78,6 +82,7 @@ class SyncHelper(
 		)
 		syncResult.stats.numDeletes += result.first().count?.toLong() ?: 0L
 		syncResult.stats.numInserts += result.drop(1).sumOf { it.count?.toLong() ?: 0L }
+		gcHistory()
 	}
 
 	private fun upsertHistory(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
@@ -236,6 +241,21 @@ class SyncHelper(
 			}
 		}
 		return requireNotNull(tag)
+	}
+
+	private fun gcFavourites() {
+		val deletedAt = System.currentTimeMillis() - defaultGcPeriod
+		val selection = "deleted_at != 0 AND deleted_at < ?"
+		val args = arrayOf(deletedAt.toString())
+		provider.delete(uri(AUTHORITY_FAVOURITES, TABLE_FAVOURITES), selection, args)
+		provider.delete(uri(AUTHORITY_FAVOURITES, TABLE_FAVOURITE_CATEGORIES), selection, args)
+	}
+
+	private fun gcHistory() {
+		val deletedAt = System.currentTimeMillis() - defaultGcPeriod
+		val selection = "deleted_at != 0 AND deleted_at < ?"
+		val args = arrayOf(deletedAt.toString())
+		provider.delete(uri(AUTHORITY_HISTORY, TABLE_HISTORY), selection, args)
 	}
 
 	private fun ContentProviderClient.query(authority: String, table: String): Cursor {
