@@ -6,6 +6,7 @@ import android.content.ContentProviderClient
 import android.content.Context
 import android.content.SyncResult
 import android.os.Bundle
+import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.sync.domain.SyncHelper
 import org.koitharu.kotatsu.utils.ext.onError
 
@@ -21,6 +22,7 @@ class HistorySyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context
 		val syncHelper = SyncHelper(context, account, provider)
 		runCatching {
 			syncHelper.syncHistory(syncResult)
+			SyncController(context).setLastSync(account, authority, System.currentTimeMillis())
 		}.onFailure(syncResult::onError)
 	}
 }

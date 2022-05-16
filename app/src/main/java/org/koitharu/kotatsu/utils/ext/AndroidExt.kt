@@ -15,13 +15,13 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
-import kotlin.coroutines.resume
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.IOException
 import org.json.JSONException
 import org.koitharu.kotatsu.BuildConfig
+import kotlin.coroutines.resume
 
 val Context.connectivityManager: ConnectivityManager
 	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -82,4 +82,5 @@ fun SyncResult.onError(error: Throwable) {
 		is JSONException -> stats.numParseExceptions++
 		else -> if (BuildConfig.DEBUG) throw error
 	}
+	error.printStackTraceDebug()
 }
