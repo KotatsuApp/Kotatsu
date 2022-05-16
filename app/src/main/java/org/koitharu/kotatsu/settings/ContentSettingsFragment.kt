@@ -1,11 +1,12 @@
 package org.koitharu.kotatsu.settings
 
+import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.provider.Settings
+import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS
 import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -22,8 +23,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.utils.SliderPreference
-import org.koitharu.kotatsu.sync.domain.AUTHORITY_FAVOURITES
-import org.koitharu.kotatsu.sync.domain.AUTHORITY_HISTORY
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -107,14 +106,12 @@ class ContentSettingsFragment :
 			AppSettings.KEY_SYNC -> {
 				val am = AccountManager.get(requireContext())
 				val accountType = getString(R.string.account_type_sync)
-				if (am.getAccountsByType(accountType).firstOrNull() == null) {
+				val account = am.getAccountsByType(accountType).firstOrNull()
+				if (account == null) {
 					am.addAccount(accountType, accountType, null, null, requireActivity(), null, null)
 				} else {
-					val intent = Intent(Settings.ACTION_SYNC_SETTINGS)
-					intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf(accountType))
-					intent.putExtra(Settings.EXTRA_AUTHORITIES, arrayOf(AUTHORITY_HISTORY, AUTHORITY_FAVOURITES))
 					try {
-						startActivity(intent)
+						startActivity(getSyncSettingsIntent(account))
 					} catch (_: ActivityNotFoundException) {
 						Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
 					}
@@ -155,5 +152,17 @@ class ContentSettingsFragment :
 				summary = account?.name ?: getString(R.string.sync_title)
 			}
 		}
+	}
+
+	/**
+	 * Some magic
+	 */
+	private fun getSyncSettingsIntent(account: Account): Intent {
+		val args = Bundle(1)
+		args.putParcelable("account", account)
+		val intent = Intent("android.settings.ACCOUNT_SYNC_SETTINGS")
+		@Suppress("DEPRECATION")
+		intent.putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, args)
+		return intent
 	}
 }
