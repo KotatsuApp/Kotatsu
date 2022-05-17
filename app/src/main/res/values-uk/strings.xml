@@ -64,7 +64,7 @@
     <string name="cache">Кеш</string>
     <string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
     <string name="standard">Стандартний</string>
-    <string name="webtoon">Манхва</string>
+    <string name="webtoon">Вебтун</string>
     <string name="read_mode">Режим читання</string>
     <string name="grid_size">Розмір сітки</string>
     <string name="search_on_s">Пошук по %s</string>
@@ -290,4 +290,8 @@
     <string name="bookmark_added">Додано закладку</string>
     <string name="undo">Скасувати</string>
     <string name="removed_from_history">Видалено з історії</string>
+    <string name="dns_over_https">DNS через HTTPS</string>
+    <string name="default_mode">Типовий режим</string>
+    <string name="detect_reader_mode_summary">Автоматично визначати, чи є манга вебтуном</string>
+    <string name="detect_reader_mode">Автовизначення режиму читання</string>
 </resources>
