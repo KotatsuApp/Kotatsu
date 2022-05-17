@@ -21,7 +21,8 @@ import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
-class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
+class SourcesSettingsFragment :
+	BaseFragment<FragmentSettingsSourcesBinding>(),
 	SourceConfigListener,
 	SearchView.OnQueryTextListener,
 	MenuItem.OnActionExpandListener,
@@ -53,7 +54,6 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		val sourcesAdapter = SourceConfigAdapter(this, get(), viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
-			// addItemDecoration(SourceConfigItemDecoration(view.context))
 			adapter = sourcesAdapter
 			reorderHelper = ItemTouchHelper(SourcesReorderCallback()).also {
 				it.attachToRecyclerView(this)

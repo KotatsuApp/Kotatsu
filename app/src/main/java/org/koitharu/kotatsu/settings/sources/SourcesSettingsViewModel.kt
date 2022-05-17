@@ -51,6 +51,9 @@ class SourcesSettingsViewModel(
 		} else {
 			settings.hiddenSources + source.name
 		}
+		if (isEnabled) {
+			settings.markKnownSources(setOf(source))
+		}
 		buildList()
 	}
 

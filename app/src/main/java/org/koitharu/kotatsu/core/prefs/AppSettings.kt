@@ -152,7 +152,7 @@ class AppSettings(context: Context) {
 		}
 
 	fun markKnownSources(sources: Collection<MangaSource>) {
-		sourcesOrder = sourcesOrder + sources.map { it.name }
+		sourcesOrder = (sourcesOrder + sources.map { it.name }).distinct()
 	}
 
 	val isPagesNumbersEnabled: Boolean
