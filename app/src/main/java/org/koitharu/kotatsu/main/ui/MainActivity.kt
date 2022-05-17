@@ -45,7 +45,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
-import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
+import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
@@ -268,7 +268,7 @@ class MainActivity :
 				if (source != null) {
 					startActivity(SearchActivity.newIntent(this, source, query))
 				} else {
-					startActivity(GlobalSearchActivity.newIntent(this, query))
+					startActivity(MultiSearchActivity.newIntent(this, query))
 				}
 				searchSuggestionViewModel.saveQuery(query)
 			}

@@ -14,16 +14,16 @@ import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
-import org.koitharu.kotatsu.databinding.ActivitySearchGlobalBinding
+import org.koitharu.kotatsu.databinding.ActivityContainerBinding
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 
-class MangaListActivity : BaseActivity<ActivitySearchGlobalBinding>() {
+class MangaListActivity : BaseActivity<ActivityContainerBinding>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(ActivitySearchGlobalBinding.inflate(layoutInflater))
+		setContentView(ActivityContainerBinding.inflate(layoutInflater))
 		val tags = intent.getParcelableExtra<ParcelableMangaTags>(EXTRA_TAGS)?.tags ?: run {
 			finishAfterTransition()
 			return

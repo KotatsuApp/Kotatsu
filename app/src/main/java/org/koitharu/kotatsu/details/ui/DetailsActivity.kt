@@ -44,7 +44,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
+import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
@@ -208,7 +208,7 @@ class DetailsActivity :
 		}
 		R.id.action_related -> {
 			viewModel.manga.value?.let {
-				startActivity(GlobalSearchActivity.newIntent(this, it.title))
+				startActivity(MultiSearchActivity.newIntent(this, it.title))
 			}
 			true
 		}

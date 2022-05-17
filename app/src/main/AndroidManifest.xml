@@ -89,6 +89,9 @@
 			android:name="org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity"
 			android:label="@string/search" />
 		<activity
+			android:name="org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity"
+			android:label="@string/search" />
+		<activity
 			android:name="org.koitharu.kotatsu.main.ui.protect.ProtectActivity"
 			android:noHistory="true"
 			android:windowSoftInputMode="adjustResize" />

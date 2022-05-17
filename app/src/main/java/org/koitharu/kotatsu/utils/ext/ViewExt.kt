@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils.ext
 import android.app.Activity
 import android.graphics.Rect
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -139,3 +140,18 @@ val RecyclerView.isScrolledToTop: Boolean
 		val holder = findViewHolderForAdapterPosition(0)
 		return holder != null && holder.itemView.top >= 0
 	}
+
+fun <T : View> ViewGroup.findViewsByType(clazz: Class<T>): Sequence<T> {
+	if (childCount == 0) {
+		return emptySequence()
+	}
+	return sequence {
+		for (view in children) {
+			if (clazz.isInstance(view)) {
+				yield(clazz.cast(view)!!)
+			} else if (view is ViewGroup && view.childCount != 0) {
+				yieldAll(view.findViewsByType(clazz))
+			}
+		}
+	}
+}
