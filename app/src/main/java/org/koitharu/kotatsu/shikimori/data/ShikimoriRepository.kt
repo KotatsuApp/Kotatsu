@@ -4,6 +4,7 @@ import okhttp3.FormBody
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
@@ -14,8 +15,6 @@ import org.koitharu.kotatsu.shikimori.data.model.ShikimoriManga
 import org.koitharu.kotatsu.shikimori.data.model.ShikimoriMangaInfo
 import org.koitharu.kotatsu.shikimori.data.model.ShikimoriUser
 
-private const val CLIENT_ID = "Mw6F0tPEOgyV7F9U9Twg50Q8SndMY7hzIOfXg0AX_XU"
-private const val CLIENT_SECRET = "euBMt1GGRSDpVIFQVPxZrO7Kh6X4gWyv0dABuj4B-M8"
 private const val REDIRECT_URI = "kotatsu://shikimori-auth"
 private const val BASE_URL = "https://shikimori.one/api/"
 private const val MANGA_PAGE_SIZE = 10
@@ -26,7 +25,7 @@ class ShikimoriRepository(
 ) {
 
 	val oauthUrl: String
-		get() = "https://shikimori.one/oauth/authorize?client_id=$CLIENT_ID&" +
+		get() = "https://shikimori.one/oauth/authorize?client_id=${BuildConfig.SHIKIMORI_CLIENT_ID}&" +
 			"redirect_uri=$REDIRECT_URI&response_type=code&scope="
 
 	val isAuthorized: Boolean
@@ -35,8 +34,8 @@ class ShikimoriRepository(
 	suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
 		body.add("grant_type", "authorization_code")
-		body.add("client_id", CLIENT_ID)
-		body.add("client_secret", CLIENT_SECRET)
+		body.add("client_id", BuildConfig.SHIKIMORI_CLIENT_ID)
+		body.add("client_secret", BuildConfig.SHIKIMORI_CLIENT_SECRET)
 		if (code != null) {
 			body.add("redirect_uri", REDIRECT_URI)
 			body.add("code", code)
