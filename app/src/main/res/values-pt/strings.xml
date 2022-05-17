@@ -139,7 +139,6 @@
     <string name="scale_mode">Modo de escala</string>
     <string name="zoom_mode_fit_center">Centro de ajuste</string>
     <string name="zoom_mode_fit_width">Ajustar à largura</string>
-    <string name="restart_required">É necessário reiniciar</string>
     <string name="backup_restore">Backup e restauração</string>
     <string name="create_backup">Criar backup de dados</string>
     <string name="restore_backup">Restaurar do backup</string>

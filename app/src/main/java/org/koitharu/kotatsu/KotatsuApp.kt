@@ -7,6 +7,7 @@ import androidx.fragment.app.strictmode.FragmentStrictMode
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.koitharu.kotatsu.base.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.bookmarks.bookmarksModule
 import org.koitharu.kotatsu.core.db.databaseModule
 import org.koitharu.kotatsu.core.github.githubModule
@@ -43,6 +44,7 @@ class KotatsuApp : Application() {
 		Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(applicationContext))
 		AppCompatDelegate.setDefaultNightMode(get<AppSettings>().theme)
 		registerActivityLifecycleCallbacks(get<AppProtectHelper>())
+		registerActivityLifecycleCallbacks(get<ActivityRecreationHandle>())
 		val widgetUpdater = WidgetUpdater(applicationContext)
 		widgetUpdater.subscribeToFavourites(get())
 		widgetUpdater.subscribeToHistory(get())

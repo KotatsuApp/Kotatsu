@@ -85,7 +85,6 @@
     <string name="zoom_mode_fit_height">An Höhe anpassen</string>
     <string name="black_dark_theme_summary">Nützlich für AMOLED-Bildschirme</string>
     <string name="black_dark_theme">Schwarzer dunkler Modus</string>
-    <string name="restart_required">Neustart erforderlich</string>
     <string name="right_to_left">Von rechts nach links</string>
     <string name="create_category">Neue Kategorie</string>
     <string name="backup_restore">Sicherung und Wiederherstellung</string>

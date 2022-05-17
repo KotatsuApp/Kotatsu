@@ -8,15 +8,17 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
+import java.util.*
+import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.base.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
-import java.util.*
 
 class AppearanceSettingsFragment :
 	BasePreferenceFragment(R.string.appearance),
@@ -71,10 +73,10 @@ class AppearanceSettingsFragment :
 				AppCompatDelegate.setDefaultNightMode(settings.theme)
 			}
 			AppSettings.KEY_DYNAMIC_THEME -> {
-				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
+				get<ActivityRecreationHandle>().recreateAll()
 			}
 			AppSettings.KEY_THEME_AMOLED -> {
-				findPreference<Preference>(key)?.setSummary(R.string.restart_required)
+				get<ActivityRecreationHandle>().recreateAll()
 			}
 			AppSettings.KEY_APP_PASSWORD -> {
 				findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)

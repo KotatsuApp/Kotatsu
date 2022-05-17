@@ -247,7 +247,6 @@
     <string name="zoom_mode_fit_width">Anpassa mot bredd</string>
     <string name="black_dark_theme">Svart</string>
     <string name="black_dark_theme_summary">Använder mindre ström på AMOLED-skärmar</string>
-    <string name="restart_required">Omstart krävs</string>
     <string name="backup_restore">Säkerhetskopiering och återställning</string>
     <string name="create_backup">Skapa säkerhetskopia</string>
     <string name="data_restored">Återställd</string>

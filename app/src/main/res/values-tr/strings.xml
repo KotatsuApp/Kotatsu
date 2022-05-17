@@ -202,7 +202,6 @@
     <string name="long_ago">Uzun zaman önce</string>
     <string name="today">Bugün</string>
     <string name="no_update_available">Güncelleme yok</string>
-    <string name="restart_required">Yeniden başlatma gerekli</string>
     <string name="chapters_checking_progress">Yeni bölümler denetleniyor: %1$d / %2$d</string>
     <string name="dynamic_theme">Dinamik tema</string>
     <string name="text_categories_holder">Favorilerinizi düzenlemek için kategorileri kullanabilirsiniz. Kategori oluşturmak için «+» düğmesine basın</string>

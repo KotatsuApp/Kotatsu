@@ -221,7 +221,6 @@
     <string name="exclude_nsfw_from_history">NSFW漫画を履歴から除外する</string>
     <string name="queued">キュー</string>
     <string name="cookies_cleared">全てのCookieが削除されました</string>
-    <string name="restart_required">再起動が必要です</string>
     <string name="tracker_warning">一部のデバイスはシステムでの動作が異なり、バックグラウンドタスクが中断される可能性があります。</string>
     <string name="genres">ジャンル</string>
     <string name="scale_mode">スケールモード</string>

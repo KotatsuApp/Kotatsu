@@ -53,7 +53,6 @@
     <string name="restore_backup">Palauta varmuuskopiosta</string>
     <string name="create_backup">Luo tietojen varmuuskopio</string>
     <string name="backup_restore">Varmuuskopiointi ja palautus</string>
-    <string name="restart_required">Uudelleenkäynnistys vaaditaan</string>
     <string name="black_dark_theme_summary">Hyödyllinen AMOLED-näytöille</string>
     <string name="black_dark_theme">Musta tumma teema</string>
     <string name="zoom_mode_keep_start">Pidä alussa</string>

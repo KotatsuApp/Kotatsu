@@ -102,7 +102,6 @@
     <string name="data_restored">Data gjenopprettet</string>
     <string name="restore_backup">Gjenopprett fra sikkerhetskopi</string>
     <string name="create_backup">Opprett sikkerhetskopi</string>
-    <string name="restart_required">Omstart kreves</string>
     <string name="black_dark_theme_summary">Bruker mindre strøm på AMOLED-skjermer</string>
     <string name="black_dark_theme">Svart</string>
     <string name="create_category">Ny kategori</string>

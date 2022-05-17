@@ -42,7 +42,6 @@
     <string name="restore_backup">Restaurer à partir d\'une sauvegarde</string>
     <string name="create_backup">Créer une sauvegarde des données</string>
     <string name="backup_restore">Sauvegarde et restauration</string>
-    <string name="restart_required">Redémarrage nécessaire</string>
     <string name="black_dark_theme_summary">Utilise moins d\'énergie pour les écrans AMOLED</string>
     <string name="black_dark_theme">Noir</string>
     <string name="zoom_mode_keep_start">Garder au début</string>

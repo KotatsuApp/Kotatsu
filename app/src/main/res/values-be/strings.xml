@@ -162,7 +162,6 @@
     <string name="zoom_mode_keep_start">Зыходны памер</string>
     <string name="black_dark_theme">Чорная цёмная тэма</string>
     <string name="black_dark_theme_summary">Карысна для AMOLED экранаў</string>
-    <string name="restart_required">Патрэбны перазапуск</string>
     <string name="backup_restore">Рэзервовае капіяванне і аднаўленне</string>
     <string name="create_backup">Стварыць рэзервовую копію</string>
     <string name="restore_backup">Аднавіць данныя</string>

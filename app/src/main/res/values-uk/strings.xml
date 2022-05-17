@@ -143,7 +143,6 @@
     <string name="zoom_mode_keep_start">Вихідний розмір</string>
     <string name="black_dark_theme">Чорна</string>
     <string name="black_dark_theme_summary">Споживає менше енергії на екранах AMOLED</string>
-    <string name="restart_required">Потрібен перезапуск</string>
     <string name="backup_restore">Резервне копіювання та відновлення</string>
     <string name="data_restored">Відновлено</string>
     <string name="preparing_">Підготовка…</string>

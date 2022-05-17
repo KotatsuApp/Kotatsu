@@ -162,7 +162,6 @@
     <string name="zoom_mode_keep_start">Mantener al iniciar</string>
     <string name="black_dark_theme">Tema oscuro auténtico</string>
     <string name="black_dark_theme_summary">Útil para pantallas AMOLED</string>
-    <string name="restart_required">Se requiere reinicio</string>
     <string name="backup_restore">Respaldo y restauración</string>
     <string name="create_backup">Crear copia de seguridad de datos</string>
     <string name="restore_backup">Restaurar desde la copia de seguridad</string>
