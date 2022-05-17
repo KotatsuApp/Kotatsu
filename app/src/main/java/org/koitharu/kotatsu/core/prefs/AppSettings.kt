@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
@@ -52,7 +51,7 @@ class AppSettings(context: Context) {
 		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
 	val isDynamicTheme: Boolean
-		get() = prefs.getBoolean(KEY_DYNAMIC_THEME, false)
+		get() = DynamicColors.isDynamicColorAvailable() && prefs.getBoolean(KEY_DYNAMIC_THEME, false)
 
 	val isAmoledTheme: Boolean
 		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
@@ -324,12 +323,5 @@ class AppSettings(context: Context) {
 		private const val NETWORK_NEVER = 0
 		private const val NETWORK_ALWAYS = 1
 		private const val NETWORK_NON_METERED = 2
-
-		val isDynamicColorAvailable: Boolean
-			get() = DynamicColors.isDynamicColorAvailable() ||
-				(isSamsung && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-
-		private val isSamsung
-			get() = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
 	}
 }

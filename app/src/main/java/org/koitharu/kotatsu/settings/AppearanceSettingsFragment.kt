@@ -5,10 +5,11 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.postDelayed
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
-import java.util.*
+import com.google.android.material.color.DynamicColors
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
@@ -19,6 +20,7 @@ import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
+import java.util.*
 
 class AppearanceSettingsFragment :
 	BasePreferenceFragment(R.string.appearance),
@@ -38,7 +40,7 @@ class AppearanceSettingsFragment :
 			entryValues = ListMode.values().names()
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
-		findPreference<Preference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible = AppSettings.isDynamicColorAvailable
+		findPreference<Preference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible = DynamicColors.isDynamicColorAvailable()
 		findPreference<ListPreference>(AppSettings.KEY_DATE_FORMAT)?.run {
 			entryValues = resources.getStringArray(R.array.date_formats)
 			val now = Date().time
@@ -73,10 +75,10 @@ class AppearanceSettingsFragment :
 				AppCompatDelegate.setDefaultNightMode(settings.theme)
 			}
 			AppSettings.KEY_DYNAMIC_THEME -> {
-				get<ActivityRecreationHandle>().recreateAll()
+				postRestart()
 			}
 			AppSettings.KEY_THEME_AMOLED -> {
-				get<ActivityRecreationHandle>().recreateAll()
+				postRestart()
 			}
 			AppSettings.KEY_APP_PASSWORD -> {
 				findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)
@@ -98,6 +100,12 @@ class AppearanceSettingsFragment :
 				true
 			}
 			else -> super.onPreferenceTreeClick(preference)
+		}
+	}
+
+	private fun postRestart() {
+		view?.postDelayed(400) {
+			get<ActivityRecreationHandle>().recreateAll()
 		}
 	}
 }

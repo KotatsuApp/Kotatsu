@@ -43,9 +43,13 @@ abstract class BaseActivity<B : ViewBinding> :
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		val settings = get<AppSettings>()
+		val isAmoled = settings.isAmoledTheme
+		val isDynamic = settings.isDynamicTheme
+		// TODO support DialogWhenLarge theme
 		when {
-			settings.isAmoledTheme -> setTheme(R.style.ThemeOverlay_Kotatsu_AMOLED)
-			settings.isDynamicTheme -> setTheme(R.style.Theme_Kotatsu_Monet)
+			isAmoled && isDynamic -> setTheme(R.style.Theme_Kotatsu_Monet_Amoled)
+			isAmoled -> setTheme(R.style.Theme_Kotatsu_Amoled)
+			isDynamic -> setTheme(R.style.Theme_Kotatsu_Monet)
 		}
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)
