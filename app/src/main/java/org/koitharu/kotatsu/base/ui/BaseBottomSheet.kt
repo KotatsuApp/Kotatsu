@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.base.ui
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.dialog.AppBottomSheetDialog
 import org.koitharu.kotatsu.utils.ext.displayCompat
 import com.google.android.material.R as materialR
 
@@ -52,6 +54,10 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 	override fun onDestroyView() {
 		viewBinding = null
 		super.onDestroyView()
+	}
+
+	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+		return AppBottomSheetDialog(requireContext(), theme)
 	}
 
 	protected abstract fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): B
