@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.list.ui.filter
 
 import androidx.annotation.WorkerThread
-import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +12,8 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import java.text.Collator
+import java.util.*
 
 class FilterCoordinator(
 	private val repository: RemoteMangaRepository,
@@ -158,7 +159,7 @@ class FilterCoordinator(
 	}
 
 	private fun mergeTags(primary: Set<MangaTag>, secondary: Set<MangaTag>): Set<MangaTag> {
-		val result = TreeSet(TagTitleComparator())
+		val result = TreeSet(TagTitleComparator(repository.source.locale))
 		result.addAll(secondary)
 		result.addAll(primary)
 		return result
@@ -191,11 +192,14 @@ class FilterCoordinator(
 		}
 	}
 
-	private class TagTitleComparator : Comparator<MangaTag> {
+	private class TagTitleComparator(lc: String?) : Comparator<MangaTag> {
 
-		override fun compare(o1: MangaTag, o2: MangaTag) = compareValues(
-			o1.title.lowercase(),
-			o2.title.lowercase(),
-		)
+		private val collator = lc?.let { Collator.getInstance(Locale(it)) }
+
+		override fun compare(o1: MangaTag, o2: MangaTag): Int {
+			val t1 = o1.title.lowercase()
+			val t2 = o2.title.lowercase()
+			return collator?.compare(t1, t2) ?: compareValues(t1, t2)
+		}
 	}
 }
