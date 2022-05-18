@@ -35,6 +35,8 @@
 		<item name="colorErrorContainer">@color/errorContainer</item>
 		<item name="colorOnErrorContainer">@color/onErrorContainer</item>
 
+		<item name="android:divider">@color/divider_default</item>
+
 		<!-- Ripples -->
 		<item name="colorControlHighlight">?attr/colorSurfaceVariant</item>
 
@@ -80,8 +82,6 @@
 
 	<!--== Default Theme ==-->
 	<style name="Theme.Kotatsu" parent="Base.Theme.Kotatsu" />
-
-	<style name="Theme.Kotatsu.DialogWhenLarge" />
 
 	<!-- Monet theme only support S+ -->
 	<style name="Theme.Kotatsu.Monet" />

@@ -22,9 +22,26 @@
 
 	<!-- Bottom sheet -->
 
-	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
-		<item name="android:statusBarColor">@color/dim</item>
-		<item name="colorControlHighlight">?colorSecondary</item>
+	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+		<item name="bottomSheetStyle">@style/Widget.Kotatsu.BottomSheet.Modal</item>
+		<item name="android:windowAnimationStyle">@style/Animation.Kotatsu.BottomSheetDialog</item>
+	</style>
+
+	<style name="Widget.Kotatsu.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
+		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet</item>
+	</style>
+
+	<style name="ShapeAppearanceOverlay.Kotatsu.BottomSheet" parent="">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSizeTopRight">@dimen/dialog_radius</item>
+		<item name="cornerSizeTopLeft">@dimen/dialog_radius</item>
+		<item name="cornerSizeBottomRight">0dp</item>
+		<item name="cornerSizeBottomLeft">0dp</item>
+	</style>
+
+	<style name="Animation.Kotatsu.BottomSheetDialog" parent="Animation.AppCompat.Dialog">
+		<item name="android:windowEnterAnimation">@anim/bottom_sheet_slide_in</item>
+		<item name="android:windowExitAnimation">@anim/bottom_sheet_slide_out</item>
 	</style>
 
 	<!-- Widget styles -->

@@ -233,6 +233,8 @@ class MainActivity :
 		}
 		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
 			topMargin = insets.top + bottomMargin
+			leftMargin = insets.left
+			rightMargin = insets.right
 		}
 		binding.root.updatePadding(
 			left = insets.left,

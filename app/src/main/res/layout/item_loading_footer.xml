@@ -9,6 +9,7 @@
 		android:layout_width="@dimen/list_footer_height_inner"
 		android:layout_height="@dimen/list_footer_height_inner"
 		android:layout_gravity="center"
-		android:indeterminate="true" />
+		android:indeterminate="true"
+		android:padding="8dp"/>
 
 </FrameLayout>
