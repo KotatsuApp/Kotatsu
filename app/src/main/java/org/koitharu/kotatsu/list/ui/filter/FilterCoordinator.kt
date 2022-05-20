@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.list.ui.filter
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +29,7 @@ class FilterCoordinator(
 	}
 	private var availableTagsDeferred = loadTagsAsync()
 
-	val items = getItemsFlow()
+	val items: LiveData<List<FilterItem>> = getItemsFlow()
 		.asLiveDataDistinct(coroutineScope.coroutineContext + Dispatchers.Default)
 
 	init {
@@ -105,7 +106,7 @@ class FilterCoordinator(
 		query: String,
 	): List<FilterItem> {
 		val sortOrders = repository.sortOrders.sortedBy { it.ordinal }
-		val tags = mergeTags(state.tags, allTags.tags).sortedBy { it.title }
+		val tags = mergeTags(state.tags, allTags.tags).toList()
 		val list = ArrayList<FilterItem>(tags.size + sortOrders.size + 3)
 		if (query.isEmpty()) {
 			if (sortOrders.isNotEmpty()) {
