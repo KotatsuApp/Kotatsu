@@ -35,6 +35,8 @@
 		<item name="colorErrorContainer">@color/errorContainer</item>
 		<item name="colorOnErrorContainer">@color/onErrorContainer</item>
 
+		<item name="android:divider">@color/divider_default</item>
+
 		<!-- Ripples -->
 		<item name="colorControlHighlight">?attr/colorSurfaceVariant</item>
 

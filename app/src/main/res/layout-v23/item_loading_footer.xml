@@ -11,6 +11,6 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:indeterminate="true"
-		app:indicatorSize="@dimen/list_footer_height_inner" />
+		app:indicatorSize="24dp"/>
 
 </FrameLayout>
