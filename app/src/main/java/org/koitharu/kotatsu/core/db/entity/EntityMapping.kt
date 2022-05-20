@@ -3,9 +3,9 @@ package org.koitharu.kotatsu.core.db.entity
 import java.util.*
 import org.koitharu.kotatsu.core.model.TrackingLogItem
 import org.koitharu.kotatsu.parsers.model.*
-import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
+import org.koitharu.kotatsu.utils.ext.longHashCode
 
 // Entity to model
 

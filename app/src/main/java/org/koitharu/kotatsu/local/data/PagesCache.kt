@@ -2,13 +2,13 @@ package org.koitharu.kotatsu.local.data
 
 import android.content.Context
 import com.tomclaw.cache.DiskLruCache
-import java.io.File
-import java.io.InputStream
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.subdir
 import org.koitharu.kotatsu.utils.ext.takeIfReadable
+import java.io.File
+import java.io.InputStream
 
 class PagesCache(context: Context) {
 
