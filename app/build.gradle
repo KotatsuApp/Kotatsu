@@ -64,9 +64,16 @@ android {
 		unitTests.returnDefaultValues = false
 	}
 }
+afterEvaluate {
+	compileDebugKotlin {
+		kotlinOptions {
+			freeCompilerArgs += ['-opt-in=kotlin.RequiresOptIn']
+		}
+	}
+}
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation('com.github.nv95:kotatsu-parsers:f46c5add46') {
+	implementation('com.github.nv95:kotatsu-parsers:ab87a50e9b') {
 		exclude group: 'org.json', module: 'json'
 	}
 

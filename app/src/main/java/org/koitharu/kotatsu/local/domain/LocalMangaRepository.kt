@@ -37,28 +37,25 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 	private val filenameFilter = CbzFilter()
 	private val locks = CompositeMutex<Long>()
 
-	override suspend fun getList(
-		offset: Int,
-		query: String?,
-		tags: Set<MangaTag>?,
-		sortOrder: SortOrder?
-	): List<Manga> {
+	override suspend fun getList(offset: Int, query: String?): List<Manga> {
 		if (offset > 0) {
 			return emptyList()
 		}
-		val files = getAllFiles()
-		val list = coroutineScope {
-			val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
-			files.map { file ->
-				getFromFileAsync(file, dispatcher)
-			}.awaitAll()
-		}.filterNotNullTo(ArrayList(files.size))
+		val list = getRawList()
 		if (!query.isNullOrEmpty()) {
 			list.retainAll { x ->
 				x.title.contains(query, ignoreCase = true) ||
 					x.altTitle?.contains(query, ignoreCase = true) == true
 			}
 		}
+		return list
+	}
+
+	override suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga> {
+		if (offset > 0) {
+			return emptyList()
+		}
+		val list = getRawList()
 		if (!tags.isNullOrEmpty()) {
 			list.retainAll { x ->
 				x.tags.containsAll(tags)
@@ -244,7 +241,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		}
 	}
 
-	override val sortOrders = emptySet<SortOrder>()
+	override val sortOrders = setOf(SortOrder.ALPHABETICAL)
 
 	override suspend fun getPageUrl(page: MangaPage) = page.url
 
@@ -293,6 +290,16 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 
 	suspend fun unlockManga(id: Long) {
 		locks.unlock(id)
+	}
+
+	private suspend fun getRawList(): ArrayList<Manga> {
+		val files = getAllFiles()
+		return coroutineScope {
+			val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
+			files.map { file ->
+				getFromFileAsync(file, dispatcher)
+			}.awaitAll()
+		}.filterNotNullTo(ArrayList(files.size))
 	}
 
 	private suspend fun getAllFiles() = storageManager.getReadableDirs().flatMap { dir ->

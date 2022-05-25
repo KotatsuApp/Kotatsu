@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.settings.newsources
 
 import androidx.lifecycle.MutableLiveData
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
@@ -33,7 +34,7 @@ class NewSourcesViewModel(
 		sources.value = initialList.map {
 			SourceConfigItem.SourceItem(
 				source = it,
-				summary = null,
+				summary = it.getLocaleTitle(),
 				isEnabled = it.name !in hidden,
 				isDraggable = false,
 			)

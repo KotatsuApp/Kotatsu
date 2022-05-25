@@ -4,6 +4,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
@@ -82,7 +83,7 @@ class SourcesSettingsViewModel(
 				}
 				SourceConfigItem.SourceItem(
 					source = it,
-					summary = null,
+					summary = it.getLocaleTitle(),
 					isEnabled = it.name !in hiddenSources,
 					isDraggable = false,
 				)
@@ -105,7 +106,7 @@ class SourcesSettingsViewModel(
 			enabledSources.mapTo(result) {
 				SourceConfigItem.SourceItem(
 					source = it,
-					summary = getLocaleTitle(it.locale),
+					summary = it.getLocaleTitle(),
 					isEnabled = true,
 					isDraggable = true,
 				)

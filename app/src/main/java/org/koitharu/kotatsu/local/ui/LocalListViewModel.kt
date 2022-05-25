@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.local.ui
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +23,7 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.progress.Progress
+import java.io.IOException
 
 class LocalListViewModel(
 	private val repository: LocalMangaRepository,
@@ -115,7 +115,7 @@ class LocalListViewModel(
 	private suspend fun doRefresh() {
 		try {
 			listError.value = null
-			mangaList.value = repository.getList(0)
+			mangaList.value = repository.getList(0, null, null)
 		} catch (e: Throwable) {
 			listError.value = e
 		}
