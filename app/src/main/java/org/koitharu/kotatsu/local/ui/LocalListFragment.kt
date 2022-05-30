@@ -4,7 +4,6 @@ import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResultCallback
@@ -19,6 +18,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ShareHelper
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.progress.Progress
 
@@ -48,6 +48,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		addMenuProvider(LocalListMenuProvider(this::onEmptyActionClick))
 		viewModel.onMangaRemoved.observe(viewLifecycleOwner) { onItemRemoved() }
 		viewModel.importProgress.observe(viewLifecycleOwner, ::onImportProgressChanged)
 	}
@@ -74,21 +75,6 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 				R.string.operation_not_supported,
 				Snackbar.LENGTH_SHORT
 			).show()
-		}
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		inflater.inflate(R.menu.opt_local, menu)
-		super.onCreateOptionsMenu(menu, inflater)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return when (item.itemId) {
-			R.id.action_import -> {
-				onEmptyActionClick()
-				true
-			}
-			else -> super.onOptionsItemSelected(item)
 		}
 	}
 

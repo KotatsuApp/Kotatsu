@@ -3,12 +3,14 @@ package org.koitharu.kotatsu.utils.ext
 import androidx.core.os.LocaleListCompat
 import java.util.*
 
-fun LocaleListCompat.toList(): List<Locale> = createList(size()) { i -> get(i) }
+fun LocaleListCompat.getOrThrow(index: Int) = get(index) ?: throw kotlin.NoSuchElementException()
+
+fun LocaleListCompat.toList(): List<Locale> = createList(size()) { i -> getOrThrow(i) }
 
 operator fun LocaleListCompat.iterator() = object : Iterator<Locale> {
 	private var index = 0
 	override fun hasNext(): Boolean = index < size()
-	override fun next(): Locale = get(index++)
+	override fun next(): Locale = getOrThrow(index++)
 }
 
 inline fun <R, C : MutableCollection<in R>> LocaleListCompat.mapTo(
@@ -17,7 +19,7 @@ inline fun <R, C : MutableCollection<in R>> LocaleListCompat.mapTo(
 ): C {
 	val len = size()
 	for (i in 0 until len) {
-		val item = get(i)
+		val item = get(i) ?: continue
 		destination.add(block(item))
 	}
 	return destination

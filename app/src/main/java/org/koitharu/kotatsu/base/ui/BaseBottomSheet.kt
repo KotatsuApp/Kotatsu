@@ -45,7 +45,7 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 		requireContext().displayCompat?.let {
 			val metrics = DisplayMetrics()
 			it.getRealMetrics(metrics)
-			behavior?.peekHeight = metrics.heightPixels / 2
+			behavior?.peekHeight = (metrics.heightPixels * 0.4).toInt()
 		}
 
 		return binding.root

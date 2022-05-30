@@ -8,8 +8,10 @@ import android.view.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
+import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -40,6 +42,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
 
 class DetailsFragment :
@@ -51,11 +54,6 @@ class DetailsFragment :
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setHasOptionsMenu(true)
-	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -76,11 +74,7 @@ class DetailsFragment :
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
 		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		super.onCreateOptionsMenu(menu, inflater)
-		inflater.inflate(R.menu.opt_details_info, menu)
+		addMenuProvider(DetailsMenuProvider())
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
@@ -328,5 +322,27 @@ class DetailsFragment :
 			request.fallback(it)
 		} ?: request.fallback(R.drawable.ic_placeholder)
 		request.enqueueWith(coil)
+	}
+
+	private inner class DetailsMenuProvider : MenuProvider {
+
+		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+			menuInflater.inflate(R.menu.opt_details_info, menu)
+		}
+
+		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+			R.id.action_share -> {
+				viewModel.manga.value?.let {
+					val context = requireContext()
+					if (it.source == MangaSource.LOCAL) {
+						ShareHelper(context).shareCbz(listOf(it.url.toUri().toFile()))
+					} else {
+						ShareHelper(context).shareMangaLink(it)
+					}
+				}
+				true
+			}
+			else -> false
+		}
 	}
 }
