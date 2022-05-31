@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.exceptions.CompositeException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -78,8 +79,7 @@ class MultiSearchViewModel(
 				listData.value = emptyList()
 				loadingData.value = true
 				query.postValue(q)
-				val errors = searchImpl(q)
-				listError.value = errors.firstOrNull()
+				searchImpl(q)
 			} catch (e: Throwable) {
 				listError.value = e
 			} finally {
@@ -88,25 +88,44 @@ class MultiSearchViewModel(
 		}
 	}
 
-	private suspend fun searchImpl(q: String): List<Throwable> {
+	private suspend fun searchImpl(q: String) {
 		val sources = settings.getMangaSources(includeHidden = false)
 		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
-		return coroutineScope {
+		val deferredList = coroutineScope {
 			sources.map { source ->
 				async(dispatcher) {
 					runCatching {
 						val list = MangaRepository(source).getList(offset = 0, query = q)
-							// .sortedBy { x -> x.title.levenshteinDistance(q) }
 							.toUi(ListMode.GRID)
 						if (list.isNotEmpty()) {
-							val item = MultiSearchListModel(source, list)
-							listData.update { x -> x + item }
+							MultiSearchListModel(source, list)
+						} else {
+							null
 						}
 					}.onFailure {
 						it.printStackTraceDebug()
-					}.exceptionOrNull()
+					}
 				}
 			}
-		}.awaitAll().filterNotNull()
+		}
+		val errors = ArrayList<Throwable>()
+		for (deferred in deferredList) {
+			deferred.await()
+				.onSuccess { item ->
+					if (item != null) {
+						listData.update { x -> x + item }
+					}
+				}.onFailure {
+					errors.add(it)
+				}
+		}
+		if (listData.value.isNotEmpty()) {
+			return
+		}
+		when (errors.size) {
+			0 -> Unit
+			1 -> throw errors[0]
+			else -> throw CompositeException(errors)
+		}
 	}
 }
