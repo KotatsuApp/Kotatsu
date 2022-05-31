@@ -14,7 +14,6 @@ import androidx.lifecycle.map
 import androidx.work.*
 import coil.ImageLoader
 import coil.request.ImageRequest
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -31,6 +30,7 @@ import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.trySetForeground
 import org.koitharu.kotatsu.utils.progress.Progress
+import java.util.concurrent.TimeUnit
 
 class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	CoroutineWorker(context, workerParams), KoinComponent {
@@ -65,25 +65,18 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			setProgress(workData.build())
 			val chapters = details?.chapters ?: continue
 			when {
-				track.knownChaptersCount == -1 -> { // first check
+				// first check or manga was empty on last check
+				track.knownChaptersCount <= 0 || track.lastChapterId == 0L -> {
 					repository.storeTrackResult(
 						mangaId = track.manga.id,
 						knownChaptersCount = chapters.size,
 						lastChapterId = chapters.lastOrNull()?.id ?: 0L,
 						previousTrackChapterId = 0L,
-						newChapters = emptyList()
+						newChapters = emptyList(),
+						saveTrackLog = false,
 					)
 				}
-				track.knownChaptersCount == 0 && track.lastChapterId == 0L -> { // manga was empty on last check
-					repository.storeTrackResult(
-						mangaId = track.manga.id,
-						knownChaptersCount = 0,
-						lastChapterId = 0L,
-						previousTrackChapterId = track.lastNotifiedChapterId,
-						newChapters = chapters
-					)
-					showNotification(details, channelId, chapters)
-				}
+				// the same chapters count
 				chapters.size == track.knownChaptersCount -> {
 					if (chapters.lastOrNull()?.id == track.lastChapterId) {
 						// manga was not updated. skip
@@ -97,8 +90,9 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 								mangaId = track.manga.id,
 								knownChaptersCount = chapters.size,
 								lastChapterId = chapters.lastOrNull()?.id ?: 0L,
-								previousTrackChapterId = track.lastNotifiedChapterId,
-								newChapters = emptyList()
+								previousTrackChapterId = 0L,
+								newChapters = emptyList(),
+								saveTrackLog = false,
 							)
 						} else {
 							val newChapters = chapters.takeLast(chapters.size - knownChapter + 1)
@@ -107,7 +101,8 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 								knownChaptersCount = knownChapter + 1,
 								lastChapterId = track.lastChapterId,
 								previousTrackChapterId = track.lastNotifiedChapterId,
-								newChapters = newChapters
+								newChapters = newChapters,
+								saveTrackLog = true,
 							)
 							showNotification(
 								details,
@@ -125,6 +120,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 						lastChapterId = track.lastChapterId,
 						previousTrackChapterId = track.lastNotifiedChapterId,
 						newChapters = newChapters,
+						saveTrackLog = true,
 					)
 					showNotification(
 						manga = track.manga,

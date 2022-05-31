@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.core.model
 
 import android.os.Parcelable
+import java.util.*
 import kotlinx.parcelize.Parcelize
 import org.koitharu.kotatsu.parsers.model.Manga
-import java.util.*
 
 data class MangaTracking(
 	val manga: Manga,

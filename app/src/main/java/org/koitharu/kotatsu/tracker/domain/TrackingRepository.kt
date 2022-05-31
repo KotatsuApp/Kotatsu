@@ -77,10 +77,11 @@ class TrackingRepository(
 
 	suspend fun storeTrackResult(
 		mangaId: Long,
-		knownChaptersCount: Int,
-		lastChapterId: Long,
+		knownChaptersCount: Int, // how many chapters user already seen
+		lastChapterId: Long, // in upstream manga
 		newChapters: List<MangaChapter>,
-		previousTrackChapterId: Long
+		previousTrackChapterId: Long, // from previous check
+		saveTrackLog: Boolean,
 	) {
 		db.withTransaction {
 			val entity = TrackEntity(
@@ -92,14 +93,16 @@ class TrackingRepository(
 				lastNotifiedChapterId = newChapters.lastOrNull()?.id ?: previousTrackChapterId
 			)
 			db.tracksDao.upsert(entity)
-			val foundChapters = newChapters.takeLastWhile { x -> x.id != previousTrackChapterId }
-			if (foundChapters.isNotEmpty()) {
-				val logEntity = TrackLogEntity(
-					mangaId = mangaId,
-					chapters = foundChapters.joinToString("\n") { x -> x.name },
-					createdAt = System.currentTimeMillis()
-				)
-				db.trackLogsDao.insert(logEntity)
+			if (saveTrackLog && previousTrackChapterId != 0L) {
+				val foundChapters = newChapters.takeLastWhile { x -> x.id != previousTrackChapterId }
+				if (foundChapters.isNotEmpty()) {
+					val logEntity = TrackLogEntity(
+						mangaId = mangaId,
+						chapters = foundChapters.joinToString("\n") { x -> x.name },
+						createdAt = System.currentTimeMillis()
+					)
+					db.trackLogsDao.insert(logEntity)
+				}
 			}
 		}
 	}
