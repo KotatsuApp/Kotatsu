@@ -67,19 +67,19 @@ android {
 afterEvaluate {
 	compileDebugKotlin {
 		kotlinOptions {
-			freeCompilerArgs += ['-opt-in=kotlin.RequiresOptIn']
+			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
 		}
 	}
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation('com.github.nv95:kotatsu-parsers:ab87a50e9b') {
+	implementation('com.github.nv95:kotatsu-parsers:0ed35a4b21') {
 		exclude group: 'org.json', module: 'json'
 	}
 
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2'
 
-	implementation 'androidx.core:core-ktx:1.8.0-rc02'
+	implementation 'androidx.core:core-ktx:1.8.0'
 	implementation 'androidx.activity:activity-ktx:1.5.0-rc01'
 	implementation 'androidx.fragment:fragment-ktx:1.5.0-rc01'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-rc01'

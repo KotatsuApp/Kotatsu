@@ -1,14 +1,41 @@
 package org.koitharu.kotatsu.core.model
 
-import android.os.Parcelable
 import java.util.*
-import kotlinx.parcelize.Parcelize
 import org.koitharu.kotatsu.parsers.model.Manga
 
-data class MangaTracking(
+class MangaTracking(
 	val manga: Manga,
 	val knownChaptersCount: Int,
 	val lastChapterId: Long,
 	val lastNotifiedChapterId: Long,
-	val lastCheck: Date?
-)
+	val lastCheck: Date?,
+) {
+
+	fun isEmpty(): Boolean {
+		return knownChaptersCount <= 0 || lastChapterId == 0L
+	}
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as MangaTracking
+
+		if (manga != other.manga) return false
+		if (knownChaptersCount != other.knownChaptersCount) return false
+		if (lastChapterId != other.lastChapterId) return false
+		if (lastNotifiedChapterId != other.lastNotifiedChapterId) return false
+		if (lastCheck != other.lastCheck) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		var result = manga.hashCode()
+		result = 31 * result + knownChaptersCount
+		result = 31 * result + lastChapterId.hashCode()
+		result = 31 * result + lastNotifiedChapterId.hashCode()
+		result = 31 * result + (lastCheck?.hashCode() ?: 0)
+		return result
+	}
+}

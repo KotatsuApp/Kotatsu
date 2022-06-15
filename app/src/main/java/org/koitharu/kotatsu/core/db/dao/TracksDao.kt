@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.core.db.dao
 import androidx.room.*
 import org.koitharu.kotatsu.core.db.entity.TrackEntity
 
-
 @Dao
 abstract class TracksDao {
 
@@ -32,7 +31,7 @@ abstract class TracksDao {
 	abstract suspend fun delete(mangaId: Long)
 
 	@Query("DELETE FROM tracks WHERE manga_id NOT IN (SELECT manga_id FROM history UNION SELECT manga_id FROM favourites)")
-	abstract suspend fun cleanup()
+	abstract suspend fun gc()
 
 	@Transaction
 	open suspend fun upsert(entity: TrackEntity) {

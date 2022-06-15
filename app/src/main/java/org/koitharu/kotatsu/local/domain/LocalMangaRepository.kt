@@ -7,6 +7,12 @@ import androidx.annotation.WorkerThread
 import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import java.io.File
+import java.io.IOException
+import java.util.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -22,12 +28,6 @@ import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.readText
 import org.koitharu.kotatsu.utils.ext.resolveName
-import java.io.File
-import java.io.IOException
-import java.util.*
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-import kotlin.coroutines.CoroutineContext
 
 private const val MAX_PARALLELISM = 4
 
@@ -37,12 +37,12 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 	private val filenameFilter = CbzFilter()
 	private val locks = CompositeMutex<Long>()
 
-	override suspend fun getList(offset: Int, query: String?): List<Manga> {
+	override suspend fun getList(offset: Int, query: String): List<Manga> {
 		if (offset > 0) {
 			return emptyList()
 		}
 		val list = getRawList()
-		if (!query.isNullOrEmpty()) {
+		if (query.isNotEmpty()) {
 			list.retainAll { x ->
 				x.title.contains(query, ignoreCase = true) ||
 					x.altTitle?.contains(query, ignoreCase = true) == true

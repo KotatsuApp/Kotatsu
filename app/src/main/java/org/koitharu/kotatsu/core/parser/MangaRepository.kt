@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.core.parser
 
+import java.lang.ref.WeakReference
+import java.util.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.*
-import java.lang.ref.WeakReference
-import java.util.*
 
 interface MangaRepository {
 
@@ -13,7 +13,7 @@ interface MangaRepository {
 
 	val sortOrders: Set<SortOrder>
 
-	suspend fun getList(offset: Int, query: String?): List<Manga>
+	suspend fun getList(offset: Int, query: String): List<Manga>
 
 	suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga>
 

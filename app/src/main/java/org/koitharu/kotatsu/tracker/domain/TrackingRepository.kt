@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.tracker.domain
 
 import androidx.room.withTransaction
+import java.util.*
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -11,7 +12,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import java.util.*
 
 class TrackingRepository(
 	private val db: MangaDatabase,
@@ -28,7 +28,8 @@ class TrackingRepository(
 	suspend fun getFavouritesManga(): Map<FavouriteCategory, List<Manga>> {
 		val categories = db.favouriteCategoriesDao.findAll()
 		return categories.associateTo(LinkedHashMap(categories.size)) { categoryEntity ->
-			categoryEntity.toFavouriteCategory() to db.favouritesDao.findAllManga(categoryEntity.categoryId).toMangaList()
+			categoryEntity.toFavouriteCategory() to db.favouritesDao.findAllManga(categoryEntity.categoryId)
+				.toMangaList()
 		}
 	}
 
@@ -68,10 +69,10 @@ class TrackingRepository(
 
 	suspend fun clearLogs() = db.trackLogsDao.clear()
 
-	suspend fun cleanup() {
+	suspend fun gc() {
 		db.withTransaction {
-			db.tracksDao.cleanup()
-			db.trackLogsDao.cleanup()
+			db.tracksDao.gc()
+			db.trackLogsDao.gc()
 		}
 	}
 

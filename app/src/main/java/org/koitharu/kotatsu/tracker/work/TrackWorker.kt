@@ -14,35 +14,38 @@ import androidx.lifecycle.map
 import androidx.work.*
 import coil.ImageLoader
 import coil.request.ImageRequest
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.trySetForeground
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.util.concurrent.TimeUnit
 
 class TrackWorker(context: Context, workerParams: WorkerParameters) :
-	CoroutineWorker(context, workerParams), KoinComponent {
+	CoroutineWorker(context, workerParams),
+	KoinComponent {
 
 	private val notificationManager by lazy {
 		applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 	}
 
 	private val coil by inject<ImageLoader>()
+
 	private val repository by inject<TrackingRepository>()
 	private val settings by inject<AppSettings>()
 	private val channels by inject<TrackerNotificationChannels>()
+	private val tracker by inject<Tracker>()
 
 	override suspend fun doWork(): Result {
 		if (!settings.isTrackerEnabled) {
@@ -54,84 +57,25 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		val tracks = getAllTracks()
 
 		var success = 0
-		val workData = Data.Builder()
-			.putInt(DATA_TOTAL, tracks.size)
+		val workData = Data.Builder().putInt(DATA_TOTAL, tracks.size)
 		for ((index, item) in tracks.withIndex()) {
 			val (track, channelId) = item
-			val details = runCatching {
-				MangaRepository(track.manga.source).getDetails(track.manga)
+			val updates = runCatching {
+				tracker.fetchUpdates(track, commit = true)
+			}.onSuccess {
+				success++
 			}.getOrNull()
 			workData.putInt(DATA_PROGRESS, index)
 			setProgress(workData.build())
-			val chapters = details?.chapters ?: continue
-			when {
-				// first check or manga was empty on last check
-				track.knownChaptersCount <= 0 || track.lastChapterId == 0L -> {
-					repository.storeTrackResult(
-						mangaId = track.manga.id,
-						knownChaptersCount = chapters.size,
-						lastChapterId = chapters.lastOrNull()?.id ?: 0L,
-						previousTrackChapterId = 0L,
-						newChapters = emptyList(),
-						saveTrackLog = false,
-					)
-				}
-				// the same chapters count
-				chapters.size == track.knownChaptersCount -> {
-					if (chapters.lastOrNull()?.id == track.lastChapterId) {
-						// manga was not updated. skip
-					} else {
-						// number of chapters still the same, bu last chapter changed.
-						// maybe some chapters are removed. we need to find last known chapter
-						val knownChapter = chapters.indexOfLast { it.id == track.lastChapterId }
-						if (knownChapter == -1) {
-							// confuse. reset anything
-							repository.storeTrackResult(
-								mangaId = track.manga.id,
-								knownChaptersCount = chapters.size,
-								lastChapterId = chapters.lastOrNull()?.id ?: 0L,
-								previousTrackChapterId = 0L,
-								newChapters = emptyList(),
-								saveTrackLog = false,
-							)
-						} else {
-							val newChapters = chapters.takeLast(chapters.size - knownChapter + 1)
-							repository.storeTrackResult(
-								mangaId = track.manga.id,
-								knownChaptersCount = knownChapter + 1,
-								lastChapterId = track.lastChapterId,
-								previousTrackChapterId = track.lastNotifiedChapterId,
-								newChapters = newChapters,
-								saveTrackLog = true,
-							)
-							showNotification(
-								details,
-								channelId,
-								newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId },
-							)
-						}
-					}
-				}
-				else -> {
-					val newChapters = chapters.takeLast(chapters.size - track.knownChaptersCount)
-					repository.storeTrackResult(
-						mangaId = track.manga.id,
-						knownChaptersCount = track.knownChaptersCount,
-						lastChapterId = track.lastChapterId,
-						previousTrackChapterId = track.lastNotifiedChapterId,
-						newChapters = newChapters,
-						saveTrackLog = true,
-					)
-					showNotification(
-						manga = track.manga,
-						channelId = channelId,
-						newChapters = newChapters.takeLastWhile { x -> x.id != track.lastNotifiedChapterId },
-					)
-				}
+			if (updates != null && updates.newChapters.isNotEmpty()) {
+				showNotification(
+					manga = updates.manga,
+					channelId = channelId,
+					newChapters = updates.newChapters,
+				)
 			}
-			success++
 		}
-		repository.cleanup()
+		repository.gc()
 		return if (success == 0) {
 			Result.retry()
 		} else {
@@ -194,8 +138,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		val colorPrimary = ContextCompat.getColor(applicationContext, R.color.blue_primary)
 		val builder = NotificationCompat.Builder(applicationContext, channelId)
 		val summary = applicationContext.resources.getQuantityString(
-			R.plurals.new_chapters,
-			newChapters.size, newChapters.size
+			R.plurals.new_chapters, newChapters.size, newChapters.size
 		)
 		with(builder) {
 			setContentText(summary)
@@ -203,10 +146,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			setNumber(newChapters.size)
 			setLargeIcon(
 				coil.execute(
-					ImageRequest.Builder(applicationContext)
-						.data(manga.coverUrl)
-						.referer(manga.publicUrl)
-						.build()
+					ImageRequest.Builder(applicationContext).data(manga.coverUrl).referer(manga.publicUrl).build()
 				).toBitmapOrNull()
 			)
 			setSmallIcon(R.drawable.ic_stat_book_plus)
@@ -220,8 +160,10 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			val intent = DetailsActivity.newIntent(applicationContext, manga)
 			setContentIntent(
 				PendingIntent.getActivity(
-					applicationContext, id,
-					intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
+					applicationContext,
+					id,
+					intent,
+					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
 				)
 			)
 			setAutoCancel(true)
@@ -251,9 +193,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		val title = applicationContext.getString(R.string.check_for_new_chapters)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			val channel = NotificationChannel(
-				WORKER_CHANNEL_ID,
-				title,
-				NotificationManager.IMPORTANCE_LOW
+				WORKER_CHANNEL_ID, title, NotificationManager.IMPORTANCE_LOW
 			)
 			channel.setShowBadge(false)
 			channel.enableVibration(false)
@@ -262,17 +202,11 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			notificationManager.createNotificationChannel(channel)
 		}
 
-		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
-			.setContentTitle(title)
-			.setPriority(NotificationCompat.PRIORITY_MIN)
-			.setDefaults(0)
-			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
-			.setSilent(true)
-			.setProgress(0, 0, true)
-			.setSmallIcon(android.R.drawable.stat_notify_sync)
-			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
-			.setOngoing(true)
-			.build()
+		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID).setContentTitle(title)
+			.setPriority(NotificationCompat.PRIORITY_MIN).setDefaults(0)
+			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark)).setSilent(true)
+			.setProgress(0, 0, true).setSmallIcon(android.R.drawable.stat_notify_sync)
+			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED).setOngoing(true).build()
 
 		return ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
 	}
@@ -287,44 +221,31 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		private const val TAG_ONESHOT = "tracking_oneshot"
 
 		fun setup(context: Context) {
-			val constraints = Constraints.Builder()
-				.setRequiredNetworkType(NetworkType.CONNECTED)
-				.build()
-			val request = PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS)
-				.setConstraints(constraints)
-				.addTag(TAG)
-				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
-				.build()
-			WorkManager.getInstance(context)
-				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
+			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+			val request =
+				PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS).setConstraints(constraints).addTag(TAG)
+					.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES).build()
+			WorkManager.getInstance(context).enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
 		}
 
 		fun startNow(context: Context) {
-			val constraints = Constraints.Builder()
-				.setRequiredNetworkType(NetworkType.CONNECTED)
-				.build()
-			val request = OneTimeWorkRequestBuilder<TrackWorker>()
-				.setConstraints(constraints)
-				.addTag(TAG_ONESHOT)
-				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-				.build()
-			WorkManager.getInstance(context)
-				.enqueue(request)
+			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+			val request = OneTimeWorkRequestBuilder<TrackWorker>().setConstraints(constraints).addTag(TAG_ONESHOT)
+				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST).build()
+			WorkManager.getInstance(context).enqueue(request)
 		}
 
 		fun getProgressLiveData(context: Context): LiveData<Progress?> {
-			return WorkManager.getInstance(context)
-				.getWorkInfosByTagLiveData(TAG)
-				.map { list ->
-					list.find { work ->
-						work.state == WorkInfo.State.RUNNING
-					}?.let { workInfo ->
-						Progress(
-							value = workInfo.progress.getInt(DATA_PROGRESS, 0),
-							total = workInfo.progress.getInt(DATA_TOTAL, -1)
-						).takeUnless { it.isIndeterminate }
-					}
+			return WorkManager.getInstance(context).getWorkInfosByTagLiveData(TAG).map { list ->
+				list.find { work ->
+					work.state == WorkInfo.State.RUNNING
+				}?.let { workInfo ->
+					Progress(
+						value = workInfo.progress.getInt(DATA_PROGRESS, 0),
+						total = workInfo.progress.getInt(DATA_TOTAL, -1)
+					).takeUnless { it.isIndeterminate }
 				}
+			}
 		}
 	}
 }

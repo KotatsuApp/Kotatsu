@@ -20,7 +20,7 @@ class RemoteMangaRepository(private val parser: MangaParser) : MangaRepository {
 			getConfig().defaultSortOrder = value
 		}
 
-	override suspend fun getList(offset: Int, query: String?): List<Manga> {
+	override suspend fun getList(offset: Int, query: String): List<Manga> {
 		return parser.getList(offset, query)
 	}
 
