@@ -1,132 +1,115 @@
 package org.koitharu.kotatsu.tracker.domain
 
-import org.koitharu.kotatsu.core.model.MangaTracking
+import androidx.annotation.VisibleForTesting
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
+import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
+import org.koitharu.kotatsu.tracker.work.TrackingItem
 
 class Tracker(
+	private val settings: AppSettings,
 	private val repository: TrackingRepository,
+	private val channels: TrackerNotificationChannels,
 ) {
 
-	suspend fun fetchUpdates(track: MangaTracking, commit: Boolean): MangaUpdates {
-		val repo = MangaRepository(track.manga.source)
-		val details = repo.getDetails(track.manga)
-		val chapters = details.chapters.orEmpty()
-		if (track.isEmpty()) {
-			// first check or manga was empty on last check
-			if (commit) {
-				repository.storeTrackResult(
-					mangaId = track.manga.id,
-					knownChaptersCount = chapters.size,
-					lastChapterId = chapters.lastOrNull()?.id ?: 0L,
-					previousTrackChapterId = 0L,
-					newChapters = emptyList(),
-					saveTrackLog = false,
-				)
-			}
-			return MangaUpdates(
-				manga = details,
-				newChapters = emptyList(),
-			)
+	suspend fun getAllTracks(): List<TrackingItem> {
+		val sources = settings.trackSources
+		if (sources.isEmpty()) {
+			return emptyList()
 		}
-		val newChapters = details.getNewChapters(track.lastChapterId)
-		if (newChapters.isEmpty()) {
-			if (commit) {
-				repository.storeTrackResult(
-					mangaId = track.manga.id,
-					knownChaptersCount = chapters.size,
-					lastChapterId = chapters.lastOrNull()?.id ?: 0L,
-					previousTrackChapterId = 0L,
-					newChapters = emptyList(),
-					saveTrackLog = false,
-				)
-			}
-			return MangaUpdates(
-				manga = details,
-				newChapters = emptyList(),
-			)
-		}
-		return when {
-
-			// the same chapters count
-			chapters.size == track.knownChaptersCount -> {
-				if (chapters.lastOrNull()?.id == track.lastChapterId) {
-					// manga was not updated. skip
-					MangaUpdates(
-						manga = details,
-						newChapters = emptyList(),
-					)
+		val knownIds = HashSet<Manga>()
+		val result = ArrayList<TrackingItem>()
+		// Favourites
+		if (AppSettings.TRACK_FAVOURITES in sources) {
+			val favourites = repository.getAllFavouritesManga()
+			channels.updateChannels(favourites.keys)
+			for ((category, mangaList) in favourites) {
+				if (!category.isTrackingEnabled || mangaList.isEmpty()) {
+					continue
+				}
+				val categoryTracks = repository.getTracks(mangaList)
+				val channelId = if (channels.isFavouriteNotificationsEnabled(category)) {
+					channels.getFavouritesChannelId(category.id)
 				} else {
-					// number of chapters still the same, bu last chapter changed.
-					// maybe some chapters are removed. we need to find last known chapter
-					val knownChapter = chapters.indexOfLast { it.id == track.lastChapterId }
-					if (knownChapter == -1) {
-						// confuse. reset anything
-						if (commit) {
-							repository.storeTrackResult(
-								mangaId = track.manga.id,
-								knownChaptersCount = chapters.size,
-								lastChapterId = chapters.lastOrNull()?.id ?: 0L,
-								previousTrackChapterId = 0L,
-								newChapters = emptyList(),
-								saveTrackLog = false,
-							)
-						}
-						MangaUpdates(
-							manga = details,
-							newChapters = emptyList(),
-						)
-					} else {
-						val newChapters = chapters.takeLast(chapters.size - knownChapter + 1)
-						if (commit) {
-							repository.storeTrackResult(
-								mangaId = track.manga.id,
-								knownChaptersCount = knownChapter + 1,
-								lastChapterId = track.lastChapterId,
-								previousTrackChapterId = track.lastNotifiedChapterId,
-								newChapters = newChapters,
-								saveTrackLog = true,
-							)
-						}
-						MangaUpdates(
-							manga = details,
-							newChapters = details.getNewChapters(track.lastNotifiedChapterId),
-						)
+					null
+				}
+				for (track in categoryTracks) {
+					if (knownIds.add(track.manga)) {
+						result.add(TrackingItem(track, channelId))
 					}
 				}
 			}
-			else -> {
-				val newChapters = chapters.takeLast(chapters.size - track.knownChaptersCount)
-				if (commit) {
-					repository.storeTrackResult(
-						mangaId = track.manga.id,
-						knownChaptersCount = track.knownChaptersCount,
-						lastChapterId = track.lastChapterId,
-						previousTrackChapterId = track.lastNotifiedChapterId,
-						newChapters = newChapters,
-						saveTrackLog = true,
-					)
+		}
+		// History
+		if (AppSettings.TRACK_HISTORY in sources) {
+			val history = repository.getAllHistoryManga()
+			val historyTracks = repository.getTracks(history)
+			val channelId = if (channels.isHistoryNotificationsEnabled()) {
+				channels.getHistoryChannelId()
+			} else {
+				null
+			}
+			for (track in historyTracks) {
+				if (knownIds.add(track.manga)) {
+					result.add(TrackingItem(track, channelId))
 				}
-				MangaUpdates(
-					manga = details,
-					newChapters = details.getNewChapters(track.lastNotifiedChapterId),
-				)
 			}
 		}
+		result.trimToSize()
+		return result
 	}
 
-	private fun Manga.getNewChapters(lastChapterId: Long): List<MangaChapter> {
-		val chapters = chapters ?: return emptyList()
-		if (lastChapterId == 0L) {
-			return emptyList()
+	suspend fun gc() {
+		repository.gc()
+	}
+
+	suspend fun fetchUpdates(track: MangaTracking, commit: Boolean): MangaUpdates {
+		val manga = MangaRepository(track.manga.source).getDetails(track.manga)
+		val updates = compare(track, manga)
+		if (commit) {
+			repository.saveUpdates(updates)
 		}
-		val raw = chapters.takeLastWhile { x -> x.id != lastChapterId }
-		return if (raw.isEmpty() || raw.size == chapters.size) {
-			emptyList()
-		} else {
-			raw
+		return updates
+	}
+
+	@VisibleForTesting
+	suspend fun checkUpdates(manga: Manga, commit: Boolean): MangaUpdates {
+		val track = repository.getTrack(manga)
+		val updates = compare(track, manga)
+		if (commit) {
+			repository.saveUpdates(updates)
+		}
+		return updates
+	}
+
+	@VisibleForTesting
+	suspend fun deleteTrack(mangaId: Long) {
+		repository.deleteTrack(mangaId)
+	}
+
+	/**
+	 * The main functionality of tracker: check new chapters in [manga] comparing to the [track]
+	 */
+	private fun compare(track: MangaTracking, manga: Manga): MangaUpdates {
+		if (track.isEmpty()) {
+			// first check or manga was empty on last check
+			return MangaUpdates(manga, emptyList(), isValid = false)
+		}
+		val chapters = requireNotNull(manga.chapters)
+		val newChapters = chapters.takeLastWhile { x -> x.id != track.lastChapterId }
+		return when {
+			newChapters.isEmpty() -> {
+				return MangaUpdates(manga, emptyList(), isValid = chapters.lastOrNull()?.id == track.lastChapterId)
+			}
+			newChapters.size == chapters.size -> {
+				return MangaUpdates(manga, emptyList(), isValid = false)
+			}
+			else -> {
+				return MangaUpdates(manga, newChapters, isValid = true)
+			}
 		}
 	}
 }

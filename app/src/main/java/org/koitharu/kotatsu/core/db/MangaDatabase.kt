@@ -17,6 +17,9 @@ import org.koitharu.kotatsu.history.data.HistoryDao
 import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.suggestions.data.SuggestionDao
 import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
+import org.koitharu.kotatsu.tracker.data.TrackEntity
+import org.koitharu.kotatsu.tracker.data.TrackLogEntity
+import org.koitharu.kotatsu.tracker.data.TracksDao
 
 @Database(
 	entities = [

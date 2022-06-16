@@ -77,7 +77,7 @@ class HistoryRepository(
 					scroll = scroll.toFloat(), // we migrate to int, but decide to not update database
 				)
 			)
-			trackingRepository.upsert(manga)
+			trackingRepository.syncWithHistory(manga, chapterId)
 		}
 	}
 

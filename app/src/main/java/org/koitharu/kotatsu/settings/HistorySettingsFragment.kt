@@ -43,7 +43,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 		}
 		findPreference<Preference>(AppSettings.KEY_UPDATES_FEED_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
-				val items = trackerRepo.count()
+				val items = trackerRepo.getLogsCount()
 				pref.summary =
 					pref.context.resources.getQuantityString(R.plurals.items, items, items)
 			}

@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.core.db.dao
 
 import androidx.room.*
-import org.koitharu.kotatsu.core.db.entity.TrackLogEntity
-import org.koitharu.kotatsu.core.db.entity.TrackLogWithManga
+import org.koitharu.kotatsu.tracker.data.TrackLogEntity
+import org.koitharu.kotatsu.tracker.data.TrackLogWithManga
 
 @Dao
 interface TrackLogsDao {

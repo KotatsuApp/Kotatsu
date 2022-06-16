@@ -1,7 +1,6 @@
-package org.koitharu.kotatsu.core.db.dao
+package org.koitharu.kotatsu.tracker.data
 
 import androidx.room.*
-import org.koitharu.kotatsu.core.db.entity.TrackEntity
 
 @Dao
 abstract class TracksDao {

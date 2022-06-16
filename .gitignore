@@ -12,6 +12,7 @@
 /.idea/assetWizardSettings.xml
 /.idea/kotlinScripting.xml
 /.idea/deploymentTargetDropDown.xml
+/.idea/androidTestResultsUserPreferences.xml
 .DS_Store
 /build
 /captures

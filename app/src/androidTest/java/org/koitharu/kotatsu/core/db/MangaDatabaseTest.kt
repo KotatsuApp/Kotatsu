@@ -1,14 +1,13 @@
 package org.koitharu.kotatsu.core.db
 
 import androidx.room.testing.MigrationTestHelper
-import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import java.io.IOException
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koitharu.kotatsu.core.db.migrations.*
-import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class MangaDatabaseTest {
@@ -16,8 +15,7 @@ class MangaDatabaseTest {
 	@get:Rule
 	val helper: MigrationTestHelper = MigrationTestHelper(
 		InstrumentationRegistry.getInstrumentation(),
-		MangaDatabase::class.java.canonicalName,
-		FrameworkSQLiteOpenHelperFactory()
+		MangaDatabase::class.java,
 	)
 
 	@Test
@@ -37,7 +35,6 @@ class MangaDatabaseTest {
 		}
 	}
 
-
 	private companion object {
 
 		const val TEST_DB = "test-db"
@@ -50,6 +47,9 @@ class MangaDatabaseTest {
 			Migration5To6(),
 			Migration6To7(),
 			Migration7To8(),
+			Migration8To9(),
+			Migration9To10(),
+			Migration10To11(),
 		)
 	}
 }

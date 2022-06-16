@@ -25,7 +25,6 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.tracker.domain.Tracker
-import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
@@ -41,10 +40,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	}
 
 	private val coil by inject<ImageLoader>()
-
-	private val repository by inject<TrackingRepository>()
 	private val settings by inject<AppSettings>()
-	private val channels by inject<TrackerNotificationChannels>()
 	private val tracker by inject<Tracker>()
 
 	override suspend fun doWork(): Result {
@@ -54,7 +50,7 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		if (TAG in tags) { // not expedited
 			trySetForeground()
 		}
-		val tracks = getAllTracks()
+		val tracks = tracker.getAllTracks()
 
 		var success = 0
 		val workData = Data.Builder().putInt(DATA_TOTAL, tracks.size)
@@ -75,59 +71,12 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				)
 			}
 		}
-		repository.gc()
+		tracker.gc()
 		return if (success == 0) {
 			Result.retry()
 		} else {
 			Result.success()
 		}
-	}
-
-	private suspend fun getAllTracks(): List<TrackingItem> {
-		val sources = settings.trackSources
-		if (sources.isEmpty()) {
-			return emptyList()
-		}
-		val knownIds = HashSet<Manga>()
-		val result = ArrayList<TrackingItem>()
-		// Favourites
-		if (AppSettings.TRACK_FAVOURITES in sources) {
-			val favourites = repository.getFavouritesManga()
-			channels.updateChannels(favourites.keys)
-			for ((category, mangaList) in favourites) {
-				if (!category.isTrackingEnabled || mangaList.isEmpty()) {
-					continue
-				}
-				val categoryTracks = repository.getTracks(mangaList)
-				val channelId = if (channels.isFavouriteNotificationsEnabled(category)) {
-					channels.getFavouritesChannelId(category.id)
-				} else {
-					null
-				}
-				for (track in categoryTracks) {
-					if (knownIds.add(track.manga)) {
-						result.add(TrackingItem(track, channelId))
-					}
-				}
-			}
-		}
-		// History
-		if (AppSettings.TRACK_HISTORY in sources) {
-			val history = repository.getHistoryManga()
-			val historyTracks = repository.getTracks(history)
-			val channelId = if (channels.isHistoryNotificationsEnabled()) {
-				channels.getHistoryChannelId()
-			} else {
-				null
-			}
-			for (track in historyTracks) {
-				if (knownIds.add(track.manga)) {
-					result.add(TrackingItem(track, channelId))
-				}
-			}
-		}
-		result.trimToSize()
-		return result
 	}
 
 	private suspend fun showNotification(manga: Manga, channelId: String?, newChapters: List<MangaChapter>) {

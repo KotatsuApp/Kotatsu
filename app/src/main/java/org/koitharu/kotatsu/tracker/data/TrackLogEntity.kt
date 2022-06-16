@@ -1,9 +1,10 @@
-package org.koitharu.kotatsu.core.db.entity
+package org.koitharu.kotatsu.tracker.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import org.koitharu.kotatsu.core.db.entity.MangaEntity
 
 @Entity(
 	tableName = "track_logs",

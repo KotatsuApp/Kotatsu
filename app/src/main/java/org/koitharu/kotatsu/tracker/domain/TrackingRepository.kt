@@ -1,17 +1,24 @@
 package org.koitharu.kotatsu.tracker.domain
 
+import androidx.annotation.VisibleForTesting
 import androidx.room.withTransaction
 import java.util.*
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.*
+import org.koitharu.kotatsu.core.db.entity.MangaEntity
+import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.model.MangaTracking
-import org.koitharu.kotatsu.core.model.TrackingLogItem
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.tracker.data.TrackEntity
+import org.koitharu.kotatsu.tracker.data.TrackLogEntity
+import org.koitharu.kotatsu.tracker.data.toTrackingLogItem
+import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
+import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
+import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
+
+private const val NO_ID = 0L
 
 class TrackingRepository(
 	private val db: MangaDatabase,
@@ -21,42 +28,38 @@ class TrackingRepository(
 		return db.tracksDao.findNewChapters(mangaId) ?: 0
 	}
 
-	suspend fun getHistoryManga(): List<Manga> {
-		return db.historyDao.findAllManga().toMangaList()
-	}
-
-	suspend fun getFavouritesManga(): Map<FavouriteCategory, List<Manga>> {
-		val categories = db.favouriteCategoriesDao.findAll()
-		return categories.associateTo(LinkedHashMap(categories.size)) { categoryEntity ->
-			categoryEntity.toFavouriteCategory() to db.favouritesDao.findAllManga(categoryEntity.categoryId)
-				.toMangaList()
-		}
-	}
-
-	suspend fun getCategoriesCount(): IntArray {
-		val categories = db.favouriteCategoriesDao.findAll()
-		return intArrayOf(
-			categories.count { it.track },
-			categories.size,
-		)
-	}
-
 	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {
 		val ids = mangaList.mapToSet { it.id }
 		val tracks = db.tracksDao.findAll(ids).groupBy { it.mangaId }
-		return mangaList // TODO optimize
-			.filterNot { it.source == MangaSource.LOCAL }
-			.distinctBy { it.id }
-			.map { manga ->
-				val track = tracks[manga.id]?.singleOrNull()
-				MangaTracking(
-					manga = manga,
-					knownChaptersCount = track?.totalChapters ?: -1,
-					lastChapterId = track?.lastChapterId ?: 0L,
-					lastNotifiedChapterId = track?.lastNotifiedChapterId ?: 0L,
-					lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date)
-				)
+		val idSet = HashSet<Long>()
+		val result = ArrayList<MangaTracking>(mangaList.size)
+		for (item in mangaList) {
+			if (item.source == MangaSource.LOCAL || !idSet.add(item.id)) {
+				continue
 			}
+			val track = tracks[item.id]?.lastOrNull()
+			result += MangaTracking(
+				manga = item,
+				lastChapterId = track?.lastChapterId ?: NO_ID,
+				lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date)
+			)
+		}
+		return result
+	}
+
+	@VisibleForTesting
+	suspend fun getTrack(manga: Manga): MangaTracking {
+		val track = db.tracksDao.find(manga.id)
+		return MangaTracking(
+			manga = manga,
+			lastChapterId = track?.lastChapterId ?: NO_ID,
+			lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date)
+		)
+	}
+
+	@VisibleForTesting
+	suspend fun deleteTrack(mangaId: Long) {
+		db.tracksDao.delete(mangaId)
 	}
 
 	suspend fun getTrackingLog(offset: Int, limit: Int): List<TrackingLogItem> {
@@ -65,7 +68,7 @@ class TrackingRepository(
 		}
 	}
 
-	suspend fun count() = db.trackLogsDao.count()
+	suspend fun getLogsCount() = db.trackLogsDao.count()
 
 	suspend fun clearLogs() = db.trackLogsDao.clear()
 
@@ -76,49 +79,84 @@ class TrackingRepository(
 		}
 	}
 
-	suspend fun storeTrackResult(
-		mangaId: Long,
-		knownChaptersCount: Int, // how many chapters user already seen
-		lastChapterId: Long, // in upstream manga
-		newChapters: List<MangaChapter>,
-		previousTrackChapterId: Long, // from previous check
-		saveTrackLog: Boolean,
-	) {
+	suspend fun saveUpdates(updates: MangaUpdates) {
 		db.withTransaction {
-			val entity = TrackEntity(
-				mangaId = mangaId,
-				newChapters = newChapters.size,
-				lastCheck = System.currentTimeMillis(),
-				lastChapterId = lastChapterId,
-				totalChapters = knownChaptersCount,
-				lastNotifiedChapterId = newChapters.lastOrNull()?.id ?: previousTrackChapterId
-			)
-			db.tracksDao.upsert(entity)
-			if (saveTrackLog && previousTrackChapterId != 0L) {
-				val foundChapters = newChapters.takeLastWhile { x -> x.id != previousTrackChapterId }
-				if (foundChapters.isNotEmpty()) {
-					val logEntity = TrackLogEntity(
-						mangaId = mangaId,
-						chapters = foundChapters.joinToString("\n") { x -> x.name },
-						createdAt = System.currentTimeMillis()
-					)
-					db.trackLogsDao.insert(logEntity)
-				}
+			val track = getOrCreateTrack(updates.manga.id).mergeWith(updates)
+			db.tracksDao.upsert(track)
+			if (updates.isValid && updates.newChapters.isNotEmpty()) {
+				val logEntity = TrackLogEntity(
+					mangaId = updates.manga.id,
+					chapters = updates.newChapters.joinToString("\n") { x -> x.name },
+					createdAt = System.currentTimeMillis(),
+				)
+				db.trackLogsDao.insert(logEntity)
 			}
 		}
 	}
 
-	suspend fun upsert(manga: Manga) {
+	suspend fun syncWithHistory(manga: Manga, chapterId: Long) {
 		val chapters = manga.chapters ?: return
+		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }
+		val track = getOrCreateTrack(manga.id)
+		val lastNewChapterIndex = chapters.size - track.newChapters
+		val lastChapterId = chapters.lastOrNull()?.id ?: NO_ID
 		val entity = TrackEntity(
 			mangaId = manga.id,
 			totalChapters = chapters.size,
-			lastChapterId = chapters.lastOrNull()?.id ?: 0L,
-			newChapters = 0,
+			lastChapterId = lastChapterId,
+			newChapters = when {
+				track.newChapters == 0 -> 0
+				chapterIndex < 0 -> track.newChapters
+				chapterIndex > lastNewChapterIndex -> chapters.lastIndex - chapterIndex
+				else -> track.newChapters
+			},
 			lastCheck = System.currentTimeMillis(),
-			lastNotifiedChapterId = 0L
+			lastNotifiedChapterId = lastChapterId,
 		)
 		db.tracksDao.upsert(entity)
+	}
+
+	suspend fun getCategoriesCount(): IntArray {
+		val categories = db.favouriteCategoriesDao.findAll()
+		return intArrayOf(
+			categories.count { it.track },
+			categories.size,
+		)
+	}
+
+	suspend fun getAllFavouritesManga(): Map<FavouriteCategory, List<Manga>> {
+		val categories = db.favouriteCategoriesDao.findAll()
+		return categories.associateTo(LinkedHashMap(categories.size)) { categoryEntity ->
+			categoryEntity.toFavouriteCategory() to
+				db.favouritesDao.findAllManga(categoryEntity.categoryId).toMangaList()
+		}
+	}
+
+	suspend fun getAllHistoryManga(): List<Manga> {
+		return db.historyDao.findAllManga().toMangaList()
+	}
+
+	private suspend fun getOrCreateTrack(mangaId: Long): TrackEntity {
+		return db.tracksDao.find(mangaId) ?: TrackEntity(
+			mangaId = mangaId,
+			totalChapters = 0,
+			lastChapterId = 0L,
+			newChapters = 0,
+			lastCheck = 0L,
+			lastNotifiedChapterId = 0L,
+		)
+	}
+
+	private fun TrackEntity.mergeWith(updates: MangaUpdates): TrackEntity {
+		val chapters = updates.manga.chapters.orEmpty()
+		return TrackEntity(
+			mangaId = mangaId,
+			totalChapters = chapters.size,
+			lastChapterId = chapters.lastOrNull()?.id ?: NO_ID,
+			newChapters = if (updates.isValid) newChapters + updates.newChapters.size else 0,
+			lastCheck = System.currentTimeMillis(),
+			lastNotifiedChapterId = NO_ID,
+		)
 	}
 
 	private fun Collection<MangaEntity>.toMangaList() = map { it.toManga(emptySet()) }

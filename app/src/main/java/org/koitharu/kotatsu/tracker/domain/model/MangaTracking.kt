@@ -1,18 +1,16 @@
-package org.koitharu.kotatsu.core.model
+package org.koitharu.kotatsu.tracker.domain.model
 
 import java.util.*
 import org.koitharu.kotatsu.parsers.model.Manga
 
 class MangaTracking(
 	val manga: Manga,
-	val knownChaptersCount: Int,
 	val lastChapterId: Long,
-	val lastNotifiedChapterId: Long,
 	val lastCheck: Date?,
 ) {
 
 	fun isEmpty(): Boolean {
-		return knownChaptersCount <= 0 || lastChapterId == 0L
+		return lastChapterId == 0L
 	}
 
 	override fun equals(other: Any?): Boolean {
@@ -22,9 +20,7 @@ class MangaTracking(
 		other as MangaTracking
 
 		if (manga != other.manga) return false
-		if (knownChaptersCount != other.knownChaptersCount) return false
 		if (lastChapterId != other.lastChapterId) return false
-		if (lastNotifiedChapterId != other.lastNotifiedChapterId) return false
 		if (lastCheck != other.lastCheck) return false
 
 		return true
@@ -32,9 +28,7 @@ class MangaTracking(
 
 	override fun hashCode(): Int {
 		var result = manga.hashCode()
-		result = 31 * result + knownChaptersCount
 		result = 31 * result + lastChapterId.hashCode()
-		result = 31 * result + lastNotifiedChapterId.hashCode()
 		result = 31 * result + (lastCheck?.hashCode() ?: 0)
 		return result
 	}
