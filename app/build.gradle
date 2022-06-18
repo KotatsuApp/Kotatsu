@@ -14,8 +14,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 409
-		versionName '3.3'
+		versionCode 410
+		versionName '3.3.1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -73,7 +73,7 @@ afterEvaluate {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation('com.github.nv95:kotatsu-parsers:0ed35a4b21') {
+	implementation('com.github.nv95:kotatsu-parsers:dc0129c76c') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -100,7 +100,7 @@ dependencies {
 	implementation 'androidx.room:room-ktx:2.4.2'
 	kapt 'androidx.room:room-compiler:2.4.2'
 
-	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
 	implementation 'com.squareup.okio:okio:3.1.0'
 
@@ -112,6 +112,7 @@ dependencies {
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
+	debugImplementation 'org.jsoup:jsoup:1.15.1'
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
 	testImplementation 'junit:junit:4.13.2'

@@ -1,10 +1,10 @@
 package org.koitharu.kotatsu.core.parser
 
+import java.util.*
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.*
-import java.util.*
 
 /**
  * This parser is just for parser development, it should not be used in releases
