@@ -41,7 +41,7 @@ class AboutLinksPreference @JvmOverloads constructor(context: Context, attrs: At
 			setTooltip(contentDescription.toString())
 			setOnClickListener {
 				openLink(
-					resources.getString(R.string.url_github_issues),
+					resources.getString(R.string.url_github),
 					contentDescription.toString()
 				)
 			}
