@@ -5,6 +5,8 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.StringRes
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -154,4 +156,12 @@ fun <T : View> ViewGroup.findViewsByType(clazz: Class<T>): Sequence<T> {
 			}
 		}
 	}
+}
+
+inline fun View.setTooltip(@StringRes stringRes: Int) {
+	setTooltip(context.getString(stringRes))
+}
+
+inline fun View.setTooltip(text: String) {
+	TooltipCompat.setTooltipText(this, text)
 }
