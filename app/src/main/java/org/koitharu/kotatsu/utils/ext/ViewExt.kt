@@ -157,11 +157,3 @@ fun <T : View> ViewGroup.findViewsByType(clazz: Class<T>): Sequence<T> {
 		}
 	}
 }
-
-inline fun View.setTooltip(@StringRes stringRes: Int) {
-	setTooltip(context.getString(stringRes))
-}
-
-inline fun View.setTooltip(text: String) {
-	TooltipCompat.setTooltipText(this, text)
-}
