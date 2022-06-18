@@ -296,4 +296,6 @@
 	<string name="default_mode">Default mode</string>
 	<string name="detect_reader_mode">Autodetect reader mode</string>
 	<string name="detect_reader_mode_summary">Automatically detect if manga is webtoon</string>
+	<string name="disable_battery_optimization">Disable battery optimization</string>
+	<string name="disable_battery_optimization_summary">Helps with background updates checks</string>
 </resources>
