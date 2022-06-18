@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.tracker.domain
 import androidx.annotation.VisibleForTesting
 import androidx.room.withTransaction
 import java.util.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
@@ -26,6 +28,10 @@ class TrackingRepository(
 
 	suspend fun getNewChaptersCount(mangaId: Long): Int {
 		return db.tracksDao.findNewChapters(mangaId) ?: 0
+	}
+
+	fun observeNewChaptersCount(mangaId: Long): Flow<Int> {
+		return db.tracksDao.observeNewChapters(mangaId).map { it ?: 0 }
 	}
 
 	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {

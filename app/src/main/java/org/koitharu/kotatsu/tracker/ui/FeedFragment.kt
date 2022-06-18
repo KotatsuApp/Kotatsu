@@ -25,7 +25,6 @@ import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.progress.Progress
 
 class FeedFragment :
 	BaseFragment<FragmentFeedBinding>(),
@@ -35,7 +34,6 @@ class FeedFragment :
 	private val viewModel by viewModel<FeedViewModel>()
 
 	private var feedAdapter: FeedAdapter? = null
-	private var updateStatusSnackbar: Snackbar? = null
 	private var paddingVertical = 0
 	private var paddingHorizontal = 0
 
@@ -60,6 +58,7 @@ class FeedFragment :
 			)
 			addItemDecoration(decoration)
 		}
+		binding.swipeRefreshLayout.isEnabled = false
 		addMenuProvider(FeedMenuProvider(binding.recyclerView, viewModel))
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
@@ -67,13 +66,12 @@ class FeedFragment :
 		viewModel.onFeedCleared.observe(viewLifecycleOwner) {
 			onFeedCleared()
 		}
-		TrackWorker.getProgressLiveData(view.context.applicationContext)
-			.observe(viewLifecycleOwner, this::onUpdateProgressChanged)
+		TrackWorker.getIsRunningLiveData(view.context.applicationContext)
+			.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
 	}
 
 	override fun onDestroyView() {
 		feedAdapter = null
-		updateStatusSnackbar = null
 		super.onDestroyView()
 	}
 
@@ -115,23 +113,8 @@ class FeedFragment :
 		).show()
 	}
 
-	private fun onUpdateProgressChanged(progress: Progress?) {
-		if (progress == null) {
-			updateStatusSnackbar?.dismiss()
-			updateStatusSnackbar = null
-			return
-		}
-		val summaryText = getString(
-			R.string.chapters_checking_progress,
-			progress.value + 1,
-			progress.total
-		)
-		updateStatusSnackbar?.setText(summaryText) ?: run {
-			val snackbar =
-				Snackbar.make(binding.recyclerView, summaryText, Snackbar.LENGTH_INDEFINITE)
-			updateStatusSnackbar = snackbar
-			snackbar.show()
-		}
+	private fun onIsTrackerRunningChanged(isRunning: Boolean) {
+		binding.swipeRefreshLayout.isRefreshing = isRunning
 	}
 
 	override fun onScrolledToEnd() {

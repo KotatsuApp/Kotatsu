@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.tracker.data
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class TracksDao {
@@ -16,6 +17,9 @@ abstract class TracksDao {
 
 	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun findNewChapters(mangaId: Long): Int?
+
+	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
+	abstract fun observeNewChapters(mangaId: Long): Flow<Int?>
 
 	@Query("DELETE FROM tracks")
 	abstract suspend fun clear()

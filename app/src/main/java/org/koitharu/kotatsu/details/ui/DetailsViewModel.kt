@@ -1,8 +1,15 @@
 package org.koitharu.kotatsu.details.ui
 
-import androidx.lifecycle.*
-import kotlinx.coroutines.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import java.io.IOException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -23,14 +30,13 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import java.io.IOException
 
 class DetailsViewModel(
 	intent: MangaIntent,
 	private val historyRepository: HistoryRepository,
 	favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
-	private val trackingRepository: TrackingRepository,
+	trackingRepository: TrackingRepository,
 	mangaDataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
@@ -54,9 +60,8 @@ class DetailsViewModel(
 	private val favourite = favouritesRepository.observeCategoriesIds(delegate.mangaId).map { it.isNotEmpty() }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	private val newChapters = viewModelScope.async(Dispatchers.Default) {
-		trackingRepository.getNewChaptersCount(delegate.mangaId)
-	}
+	private val newChapters = trackingRepository.observeNewChaptersCount(delegate.mangaId)
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	private val chaptersQuery = MutableStateFlow("")
 
@@ -65,7 +70,7 @@ class DetailsViewModel(
 
 	val manga = delegate.manga.filterNotNull().asLiveData(viewModelScope.coroutineContext)
 	val favouriteCategories = favourite.asLiveData(viewModelScope.coroutineContext)
-	val newChaptersCount = liveData(viewModelScope.coroutineContext) { emit(newChapters.await()) }
+	val newChaptersCount = newChapters.asLiveData(viewModelScope.coroutineContext)
 	val readingHistory = history.asLiveData(viewModelScope.coroutineContext)
 	val isChaptersReversed = chaptersReversed.asLiveData(viewModelScope.coroutineContext)
 
@@ -97,8 +102,9 @@ class DetailsViewModel(
 			delegate.relatedManga,
 			history,
 			delegate.selectedBranch,
-		) { manga, related, history, branch ->
-			delegate.mapChapters(manga, related, history, newChapters.await(), branch)
+			newChapters,
+		) { manga, related, history, branch, news ->
+			delegate.mapChapters(manga, related, history, news, branch)
 		},
 		chaptersReversed,
 		chaptersQuery,

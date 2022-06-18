@@ -7,4 +7,7 @@ class MangaUpdates(
 	val manga: Manga,
 	val newChapters: List<MangaChapter>,
 	val isValid: Boolean,
-)
+) {
+
+	fun isNotEmpty() = newChapters.isNotEmpty()
+}

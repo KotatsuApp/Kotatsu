@@ -149,6 +149,34 @@ class TrackerTest : KoinTest {
 		assertEquals(0, repository.getNewChaptersCount(mangaFull.id))
 	}
 
+	@Test
+	fun syncWithHistory() = runTest {
+		val mangaFull = loadManga("full.json")
+		val mangaFirst = loadManga("first_chapters.json")
+		tracker.deleteTrack(mangaFull.id)
+
+		tracker.checkUpdates(mangaFirst, commit = true).apply {
+			assertFalse(isValid)
+			assert(newChapters.isEmpty())
+		}
+		assertEquals(0, repository.getNewChaptersCount(mangaFirst.id))
+		tracker.checkUpdates(mangaFull, commit = true).apply {
+			assertTrue(isValid)
+			assertEquals(3, newChapters.size)
+		}
+		assertEquals(3, repository.getNewChaptersCount(mangaFirst.id))
+
+		val chapter = requireNotNull(mangaFull.chapters).run { get(lastIndex - 1) }
+		repository.syncWithHistory(mangaFull, chapter.id)
+
+		assertEquals(1, repository.getNewChaptersCount(mangaFirst.id))
+		tracker.checkUpdates(mangaFull, commit = true).apply {
+			assertTrue(isValid)
+			assert(newChapters.isEmpty())
+		}
+		assertEquals(1, repository.getNewChaptersCount(mangaFirst.id))
+	}
+
 	private suspend fun loadManga(name: String): Manga {
 		val assets = InstrumentationRegistry.getInstrumentation().context.assets
 		val manga = assets.open("manga/$name").use {

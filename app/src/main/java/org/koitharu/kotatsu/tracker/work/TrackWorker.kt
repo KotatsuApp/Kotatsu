@@ -15,8 +15,7 @@ import androidx.work.*
 import coil.ImageLoader
 import coil.request.ImageRequest
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
@@ -25,11 +24,11 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.tracker.domain.Tracker
+import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.trySetForeground
-import org.koitharu.kotatsu.utils.progress.Progress
 
 class TrackWorker(context: Context, workerParams: WorkerParameters) :
 	CoroutineWorker(context, workerParams),
@@ -45,38 +44,57 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 
 	override suspend fun doWork(): Result {
 		if (!settings.isTrackerEnabled) {
-			return Result.success()
+			return Result.success(workDataOf(0, 0))
 		}
 		if (TAG in tags) { // not expedited
 			trySetForeground()
 		}
 		val tracks = tracker.getAllTracks()
+		if (tracks.isEmpty()) {
+			return Result.success(workDataOf(0, 0))
+		}
+
+		val updates = checkUpdatesAsync(tracks)
+		val results = updates.awaitAll()
+		tracker.gc()
 
 		var success = 0
-		val workData = Data.Builder().putInt(DATA_TOTAL, tracks.size)
-		for ((index, item) in tracks.withIndex()) {
-			val (track, channelId) = item
-			val updates = runCatching {
-				tracker.fetchUpdates(track, commit = true)
-			}.onSuccess {
+		var failed = 0
+		results.forEach { x ->
+			if (x == null) {
+				failed++
+			} else {
 				success++
-			}.getOrNull()
-			workData.putInt(DATA_PROGRESS, index)
-			setProgress(workData.build())
-			if (updates != null && updates.newChapters.isNotEmpty()) {
-				showNotification(
-					manga = updates.manga,
-					channelId = channelId,
-					newChapters = updates.newChapters,
-				)
 			}
 		}
-		tracker.gc()
-		return if (success == 0) {
-			Result.retry()
+		val resultData = workDataOf(success, failed)
+		return if (success == 0 && failed != 0) {
+			Result.failure(resultData)
 		} else {
-			Result.success()
+			Result.success(resultData)
 		}
+	}
+
+	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<Deferred<MangaUpdates?>> {
+		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
+		val deferredList = coroutineScope {
+			tracks.map { (track, channelId) ->
+				async(dispatcher) {
+					runCatching {
+						tracker.fetchUpdates(track, commit = true)
+					}.onSuccess { updates ->
+						if (updates.isValid && updates.isNotEmpty()) {
+							showNotification(
+								manga = updates.manga,
+								channelId = channelId,
+								newChapters = updates.newChapters,
+							)
+						}
+					}.getOrNull()
+				}
+			}
+		}
+		return deferredList
 	}
 
 	private suspend fun showNotification(manga: Manga, channelId: String?, newChapters: List<MangaChapter>) {
@@ -160,14 +178,22 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		return ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
 	}
 
+	private fun workDataOf(success: Int, failed: Int): Data {
+		return Data.Builder()
+			.putInt(DATA_KEY_SUCCESS, success)
+			.putInt(DATA_KEY_FAILED, failed)
+			.build()
+	}
+
 	companion object {
 
 		private const val WORKER_CHANNEL_ID = "track_worker"
 		private const val WORKER_NOTIFICATION_ID = 35
-		private const val DATA_PROGRESS = "progress"
-		private const val DATA_TOTAL = "total"
 		private const val TAG = "tracking"
 		private const val TAG_ONESHOT = "tracking_oneshot"
+		private const val MAX_PARALLELISM = 4
+		private const val DATA_KEY_SUCCESS = "success"
+		private const val DATA_KEY_FAILED = "failed"
 
 		fun setup(context: Context) {
 			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
@@ -184,17 +210,16 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			WorkManager.getInstance(context).enqueue(request)
 		}
 
-		fun getProgressLiveData(context: Context): LiveData<Progress?> {
-			return WorkManager.getInstance(context).getWorkInfosByTagLiveData(TAG).map { list ->
-				list.find { work ->
-					work.state == WorkInfo.State.RUNNING
-				}?.let { workInfo ->
-					Progress(
-						value = workInfo.progress.getInt(DATA_PROGRESS, 0),
-						total = workInfo.progress.getInt(DATA_TOTAL, -1)
-					).takeUnless { it.isIndeterminate }
-				}
+		fun getIsRunningLiveData(context: Context): LiveData<Boolean> {
+			val query = WorkQuery.Builder.fromTags(listOf(TAG, TAG_ONESHOT)).build()
+			return WorkManager.getInstance(context).getWorkInfosLiveData(query).map { works ->
+				works.any { x -> x.state == WorkInfo.State.RUNNING }
 			}
+		}
+
+		suspend fun getInfo(context: Context): List<WorkInfo> {
+			val query = WorkQuery.Builder.fromTags(listOf(TAG, TAG_ONESHOT)).build()
+			return WorkManager.getInstance(context).getWorkInfos(query).await().orEmpty()
 		}
 	}
 }
