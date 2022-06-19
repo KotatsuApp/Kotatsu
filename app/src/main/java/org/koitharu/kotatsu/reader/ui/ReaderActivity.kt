@@ -19,6 +19,8 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -79,6 +81,21 @@ class ReaderActivity :
 	private val hideUiRunnable = Runnable { setUiIsVisible(false) }
 
 	override fun onCreate(savedInstanceState: Bundle?) {
+
+		// Setup shared element transitions
+		if (intent.extras?.getBoolean(EXTRA_IS_TRANSITION) == true) {
+			window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+			findViewById<View>(android.R.id.content)?.let { contentView ->
+				contentView.transitionName = SHARED_ELEMENT_NAME
+				setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+				window.sharedElementEnterTransition = buildContainerTransform(true)
+				window.sharedElementReturnTransition = buildContainerTransform(false)
+
+				// Postpone custom transition until manga ready
+				postponeEnterTransition()
+			}
+		}
+
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderBinding.inflate(layoutInflater))
 		readerManager = ReaderManager(supportFragmentManager, R.id.container)
@@ -113,6 +130,12 @@ class ReaderActivity :
 		}
 	}
 
+	private fun buildContainerTransform(entering: Boolean): MaterialContainerTransform {
+		return MaterialContainerTransform(this, entering).apply {
+			addTarget(android.R.id.content)
+		}
+	}
+
 	private fun onInitReader(mode: ReaderMode) {
 		if (readerManager.currentMode != mode) {
 			readerManager.replace(mode)
@@ -129,6 +152,7 @@ class ReaderActivity :
 		if (binding.appbarTop.isVisible) {
 			lifecycle.postDelayed(hideUiRunnable, TimeUnit.SECONDS.toMillis(1))
 		}
+		startPostponedEnterTransition()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -393,6 +417,8 @@ class ReaderActivity :
 
 	companion object {
 
+		const val SHARED_ELEMENT_NAME = "reader_shared_element_root"
+		const val EXTRA_IS_TRANSITION = "${BuildConfig.APPLICATION_ID}.READER_IS_TRANSITION"
 		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
 		private const val EXTRA_STATE = "state"
 		private const val EXTRA_BRANCH = "branch"

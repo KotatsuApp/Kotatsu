@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.Window
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.view.ActionMode
@@ -24,6 +25,7 @@ import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
@@ -84,6 +86,11 @@ class MainActivity :
 		get() = binding.appbar
 
 	override fun onCreate(savedInstanceState: Bundle?) {
+
+		window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+		setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+		window.sharedElementsUseOverlay = false
+
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 		navHeaderBinding = NavigationHeaderBinding.inflate(layoutInflater)
@@ -319,8 +326,20 @@ class MainActivity :
 	}
 
 	private fun onOpenReader(manga: Manga) {
-		val options = ActivityOptions.makeScaleUpAnimation(binding.fab, 0, 0, binding.fab.width, binding.fab.height)
-		startActivity(ReaderActivity.newIntent(this, manga), options?.toBundle())
+		apply {
+			val intent = ReaderActivity.newIntent(this, manga)
+			val options = ActivityOptions.makeSceneTransitionAnimation(
+				this,
+				binding.fab,
+				ReaderActivity.SHARED_ELEMENT_NAME
+			)
+			startActivity(
+				intent.apply {
+					putExtra(ReaderActivity.EXTRA_IS_TRANSITION, true)
+				},
+				options.toBundle()
+			)
+		}
 	}
 
 	private fun onError(e: Throwable) {
@@ -388,6 +407,7 @@ class MainActivity :
 
 	private fun setPrimaryFragment(fragment: Fragment) {
 		supportFragmentManager.beginTransaction()
+			.setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
 			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.commit()
 		adjustFabVisibility(topFragment = fragment)
