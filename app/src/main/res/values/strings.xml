@@ -298,4 +298,6 @@
 	<string name="detect_reader_mode_summary">Automatically detect if manga is webtoon</string>
 	<string name="disable_battery_optimization">Disable battery optimization</string>
 	<string name="disable_battery_optimization_summary">Helps with background updates checks</string>
+	<string name="crash_text">Something went wrong. Please submit a bug report to the developers to help us fix it.</string>
+	<string name="send">Send</string>
 </resources>

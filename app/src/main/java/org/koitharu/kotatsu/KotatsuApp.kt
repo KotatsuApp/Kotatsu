@@ -1,9 +1,15 @@
 package org.koitharu.kotatsu
 
 import android.app.Application
+import android.content.Context
 import android.os.StrictMode
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.strictmode.FragmentStrictMode
+import org.acra.ReportField
+import org.acra.config.dialog
+import org.acra.config.mailSender
+import org.acra.data.StringFormat
+import org.acra.ktx.initAcra
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -13,7 +19,6 @@ import org.koitharu.kotatsu.core.db.databaseModule
 import org.koitharu.kotatsu.core.github.githubModule
 import org.koitharu.kotatsu.core.network.networkModule
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.ui.AppCrashHandler
 import org.koitharu.kotatsu.core.ui.uiModule
 import org.koitharu.kotatsu.details.detailsModule
 import org.koitharu.kotatsu.favourites.favouritesModule
@@ -41,7 +46,6 @@ class KotatsuApp : Application() {
 			enableStrictMode()
 		}
 		initKoin()
-		Thread.setDefaultUncaughtExceptionHandler(AppCrashHandler(applicationContext))
 		AppCompatDelegate.setDefaultNightMode(get<AppSettings>().theme)
 		registerActivityLifecycleCallbacks(get<AppProtectHelper>())
 		registerActivityLifecycleCallbacks(get<ActivityRecreationHandle>())
@@ -72,6 +76,36 @@ class KotatsuApp : Application() {
 				suggestionsModule,
 				bookmarksModule,
 			)
+		}
+	}
+
+	override fun attachBaseContext(base: Context?) {
+		super.attachBaseContext(base)
+		initAcra {
+			buildConfigClass = BuildConfig::class.java
+			reportFormat = StringFormat.KEY_VALUE_LIST
+			reportContent = listOf(
+				ReportField.PACKAGE_NAME,
+				ReportField.APP_VERSION_CODE,
+				ReportField.APP_VERSION_NAME,
+				ReportField.ANDROID_VERSION,
+				ReportField.PHONE_MODEL,
+				ReportField.CRASH_CONFIGURATION,
+				ReportField.STACK_TRACE,
+				ReportField.SHARED_PREFERENCES,
+			)
+			dialog {
+				text = getString(R.string.crash_text)
+				title = getString(R.string.error_occurred)
+				positiveButtonText = getString(R.string.send)
+				resIcon = R.drawable.ic_alert_outline
+				resTheme = android.R.style.Theme_Material_Light_Dialog_Alert
+			}
+			mailSender {
+				mailTo = getString(R.string.email_error_report)
+				reportAsFile = true
+				reportFileName = "stacktrace.txt"
+			}
 		}
 	}
 

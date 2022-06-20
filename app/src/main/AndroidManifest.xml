@@ -69,11 +69,6 @@
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
 		<activity
-			android:name="org.koitharu.kotatsu.core.ui.CrashActivity"
-			android:label="@string/error_occurred"
-			android:theme="@android:style/Theme.DeviceDefault"
-			android:windowSoftInputMode="stateAlwaysHidden" />
-		<activity
 			android:name="org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity"
 			android:label="@string/favourites_categories"
 			android:windowSoftInputMode="stateAlwaysHidden" />
@@ -86,9 +81,6 @@
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
 		</activity>
-		<activity
-			android:name="org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity"
-			android:label="@string/search" />
 		<activity
 			android:name="org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity"
 			android:label="@string/search" />

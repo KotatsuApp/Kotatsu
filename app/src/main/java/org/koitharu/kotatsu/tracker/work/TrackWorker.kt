@@ -216,10 +216,5 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 				works.any { x -> x.state == WorkInfo.State.RUNNING }
 			}
 		}
-
-		suspend fun getInfo(context: Context): List<WorkInfo> {
-			val query = WorkQuery.Builder.fromTags(listOf(TAG, TAG_ONESHOT)).build()
-			return WorkManager.getInstance(context).getWorkInfos(query).await().orEmpty()
-		}
 	}
 }
