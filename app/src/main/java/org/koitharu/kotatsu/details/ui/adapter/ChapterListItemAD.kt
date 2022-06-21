@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.details.ui.adapter
 
-import android.view.View
 import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ItemChapterBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -21,11 +21,7 @@ fun chapterListItemAD(
 	{ inflater, parent -> ItemChapterBinding.inflate(inflater, parent, false) }
 ) {
 
-	val eventListener = object : View.OnClickListener, View.OnLongClickListener {
-		override fun onClick(v: View) = clickListener.onItemClick(item, v)
-		override fun onLongClick(v: View) = clickListener.onItemLongClick(item, v)
-	}
-
+	val eventListener = AdapterDelegateClickListenerAdapter(this, clickListener)
 	itemView.setOnClickListener(eventListener)
 	itemView.setOnLongClickListener(eventListener)
 

@@ -21,7 +21,7 @@ class AppBottomSheetDialog(context: Context, theme: Int) : BottomSheetDialog(con
 			if (drawEdgeToEdge) {
 				// Copied from super.onAttachedToWindow:
 				val edgeToEdgeFlags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-				// Fix super-class's window flag bug by respecting the intial system UI visibility:
+				// Fix super-class's window flag bug by respecting the initial system UI visibility:
 				window.decorView.systemUiVisibility = edgeToEdgeFlags or initialSystemUiVisibility
 			}
 		}

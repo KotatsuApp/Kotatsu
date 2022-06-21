@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">设置</string>
+    <string name="local_storage">本地存储</string>
+    <string name="favourites">喜欢</string>
+    <string name="history">浏览历史</string>
+    <string name="error_occurred">发生了一个错误</string>
+    <string name="network_error">未能连接到互联网</string>
+    <string name="chapters">章节</string>
+    <string name="list">列表</string>
+</resources>

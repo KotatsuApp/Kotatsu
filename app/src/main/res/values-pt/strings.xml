@@ -139,7 +139,6 @@
     <string name="scale_mode">Modo de escala</string>
     <string name="zoom_mode_fit_center">Centro de ajuste</string>
     <string name="zoom_mode_fit_width">Ajustar à largura</string>
-    <string name="restart_required">É necessário reiniciar</string>
     <string name="backup_restore">Backup e restauração</string>
     <string name="create_backup">Criar backup de dados</string>
     <string name="restore_backup">Restaurar do backup</string>
@@ -201,7 +200,6 @@
     <string name="recent_manga">Recente</string>
     <string name="other_storage">Outro armazenamento</string>
     <string name="text_search_holder_secondary">Tente reformular a consulta.</string>
-    <string name="prefer_rtl_reader">Prefira o leitor da direita para a esquerda (←)</string>
     <string name="not_available">Não disponível</string>
     <string name="size_s">Tamanho: %s</string>
     <string name="text_history_holder_primary">O que você ler será exibido aqui</string>
@@ -228,7 +226,6 @@
     <string name="text_clear_search_history_prompt">Remover todas as consultas de pesquisa recentes permanentemente\?</string>
     <string name="auth_required">Faça login para ver este conteúdo</string>
     <string name="text_categories_holder">Você pode usar categorias para organizar seus favoritos. Pressione «+» para criar uma categoria</string>
-    <string name="prefer_rtl_reader_summary">O modo de leitura pode ser configurado separadamente para cada série</string>
     <string name="manga_save_location">Pasta para downloads</string>
     <string name="exclude_nsfw_from_history">Excluir mangá NSFW do histórico</string>
     <string name="date_format">Formato da data</string>

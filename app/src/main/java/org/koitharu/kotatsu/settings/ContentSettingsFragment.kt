@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -14,11 +15,14 @@ import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
+import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
+import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.utils.ext.getStorageName
+import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 class ContentSettingsFragment :
@@ -41,6 +45,15 @@ class ContentSettingsFragment :
 				preference.summary = newValue.toString()
 				true
 			}
+		}
+		findPreference<ListPreference>(AppSettings.KEY_DOH)?.run {
+			entryValues = arrayOf(
+				DoHProvider.NONE,
+				DoHProvider.GOOGLE,
+				DoHProvider.CLOUDFLARE,
+				DoHProvider.ADGUARD,
+			).names()
+			setDefaultValueCompat(DoHProvider.NONE.name)
 		}
 		bindRemoteSourcesSummary()
 	}

@@ -3,10 +3,6 @@ package org.koitharu.kotatsu.utils.ext
 import androidx.collection.ArraySet
 import java.util.*
 
-fun <T : Enum<T>> Array<T>.names() = Array(size) { i ->
-	this[i].name
-}
-
 fun <T> MutableList<T>.move(sourceIndex: Int, targetIndex: Int) {
 	if (sourceIndex <= targetIndex) {
 		Collections.rotate(subList(sourceIndex, targetIndex + 1), -1)

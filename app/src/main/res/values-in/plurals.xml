@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="chapters_from_x">
+        <item quantity="other">%1$d bab dari %2$d</item>
+    </plurals>
+    <plurals name="pages">
+        <item quantity="other">Total %1$d halaman</item>
+    </plurals>
+    <plurals name="items">
+        <item quantity="other">%1$d item</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="other">%1$d bab baru</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="other">%1$d bab</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="other">%1$d menit yang lalu</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="other">%1$d jam yang lalu</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="other">%1$d hari yang lalu</item>
+    </plurals>
+</resources>

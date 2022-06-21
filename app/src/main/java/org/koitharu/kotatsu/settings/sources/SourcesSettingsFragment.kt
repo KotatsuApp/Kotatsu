@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
+import androidx.core.view.MenuProvider
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -20,11 +21,11 @@ import org.koitharu.kotatsu.settings.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
 
-class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
+class SourcesSettingsFragment :
+	BaseFragment<FragmentSettingsSourcesBinding>(),
 	SourceConfigListener,
-	SearchView.OnQueryTextListener,
-	MenuItem.OnActionExpandListener,
 	RecyclerViewOwner {
 
 	private var reorderHelper: ItemTouchHelper? = null
@@ -32,11 +33,6 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 
 	override val recyclerView: RecyclerView
 		get() = binding.recyclerView
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setHasOptionsMenu(true)
-	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -53,7 +49,6 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		val sourcesAdapter = SourceConfigAdapter(this, get(), viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
-			// addItemDecoration(SourceConfigItemDecoration(view.context))
 			adapter = sourcesAdapter
 			reorderHelper = ItemTouchHelper(SourcesReorderCallback()).also {
 				it.attachToRecyclerView(this)
@@ -62,22 +57,12 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		viewModel.items.observe(viewLifecycleOwner) {
 			sourcesAdapter.items = it
 		}
+		addMenuProvider(SourcesMenuProvider())
 	}
 
 	override fun onDestroyView() {
 		reorderHelper = null
 		super.onDestroyView()
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		super.onCreateOptionsMenu(menu, inflater)
-		inflater.inflate(R.menu.opt_sources, menu)
-		val searchMenuItem = menu.findItem(R.id.action_search)
-		searchMenuItem.setOnActionExpandListener(this)
-		val searchView = searchMenuItem.actionView as SearchView
-		searchView.setOnQueryTextListener(this)
-		searchView.setIconifiedByDefault(false)
-		searchView.queryHint = searchMenuItem.title
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -106,21 +91,39 @@ class SourcesSettingsFragment : BaseFragment<FragmentSettingsSourcesBinding>(),
 		viewModel.expandOrCollapse(header.localeId)
 	}
 
-	override fun onQueryTextSubmit(query: String?): Boolean = false
+	private inner class SourcesMenuProvider :
+		MenuProvider,
+		MenuItem.OnActionExpandListener,
+		SearchView.OnQueryTextListener {
 
-	override fun onQueryTextChange(newText: String?): Boolean {
-		viewModel.performSearch(newText)
-		return true
-	}
+		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+			menuInflater.inflate(R.menu.opt_sources, menu)
+			val searchMenuItem = menu.findItem(R.id.action_search)
+			searchMenuItem.setOnActionExpandListener(this)
+			val searchView = searchMenuItem.actionView as SearchView
+			searchView.setOnQueryTextListener(this)
+			searchView.setIconifiedByDefault(false)
+			searchView.queryHint = searchMenuItem.title
+		}
 
-	override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-		(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
-		return true
-	}
+		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
 
-	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-		(item.actionView as SearchView).setQuery("", false)
-		return true
+		override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+			(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
+			return true
+		}
+
+		override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+			(item.actionView as SearchView).setQuery("", false)
+			return true
+		}
+
+		override fun onQueryTextSubmit(query: String?): Boolean = false
+
+		override fun onQueryTextChange(newText: String?): Boolean {
+			viewModel.performSearch(newText)
+			return true
+		}
 	}
 
 	private inner class SourcesReorderCallback : ItemTouchHelper.SimpleCallback(

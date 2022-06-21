@@ -15,8 +15,6 @@ import android.widget.Toast
 import androidx.appcompat.view.ActionMode
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -44,9 +42,8 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
+import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.shikimori.ui.selector.ShikimoriSelectorBottomSheet
-import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class DetailsActivity :
@@ -84,6 +81,9 @@ class DetailsActivity :
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
+		viewModel.onShowToast.observe(this) {
+			binding.snackbar.show(messageText = getString(it), longDuration = false)
+		}
 
 		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
 	}
@@ -161,16 +161,6 @@ class DetailsActivity :
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_share -> {
-			viewModel.manga.value?.let {
-				if (it.source == MangaSource.LOCAL) {
-					ShareHelper(this).shareCbz(listOf(it.url.toUri().toFile()))
-				} else {
-					ShareHelper(this).shareMangaLink(it)
-				}
-			}
-			true
-		}
 		R.id.action_delete -> {
 			val title = viewModel.manga.value?.title.orEmpty()
 			MaterialAlertDialogBuilder(this)
@@ -203,7 +193,7 @@ class DetailsActivity :
 		}
 		R.id.action_related -> {
 			viewModel.manga.value?.let {
-				startActivity(GlobalSearchActivity.newIntent(this, it.title))
+				startActivity(MultiSearchActivity.newIntent(this, it.title))
 			}
 			true
 		}

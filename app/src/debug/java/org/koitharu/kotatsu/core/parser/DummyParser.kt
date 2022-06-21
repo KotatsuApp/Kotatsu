@@ -25,7 +25,7 @@ class DummyParser(override val context: MangaLoaderContext) : MangaParser(MangaS
 		offset: Int,
 		query: String?,
 		tags: Set<MangaTag>?,
-		sortOrder: SortOrder?
+		sortOrder: SortOrder,
 	): List<Manga> {
 		TODO("Not yet implemented")
 	}

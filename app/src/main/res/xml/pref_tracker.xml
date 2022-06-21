@@ -22,10 +22,19 @@
 		android:title="@string/favourites_categories" />
 
 	<Preference
+		android:dependency="tracker_enabled"
 		android:fragment="org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment"
 		android:key="notifications_settings"
-		android:dependency="tracker_enabled"
 		android:title="@string/notifications_settings" />
+
+	<Preference
+		android:dependency="tracker_enabled"
+		android:key="ignore_dose"
+		android:persistent="false"
+		android:summary="@string/disable_battery_optimization_summary"
+		android:title="@string/disable_battery_optimization"
+		app:allowDividerAbove="true"
+		app:isPreferenceVisible="false" />
 
 	<org.koitharu.kotatsu.settings.utils.LinksPreference
 		android:icon="@drawable/ic_info_outline"

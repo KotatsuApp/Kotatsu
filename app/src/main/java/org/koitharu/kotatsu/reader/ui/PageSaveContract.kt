@@ -9,7 +9,7 @@ import android.webkit.MimeTypeMap
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 
-class PageSaveContract : ActivityResultContracts.CreateDocument() {
+class PageSaveContract : ActivityResultContracts.CreateDocument("image/*") {
 
 	override fun createIntent(context: Context, input: String): Intent {
 		val intent = super.createIntent(context, input)

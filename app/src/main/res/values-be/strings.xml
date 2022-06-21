@@ -153,8 +153,6 @@
     <string name="update_check_failed">Памылка пры праверцы абнаўленняў</string>
     <string name="no_update_available">Няма даступных абнаўленняў</string>
     <string name="right_to_left">Справа налева</string>
-    <string name="prefer_rtl_reader">Аддаваць перавагу рэжыму справа налева</string>
-    <string name="prefer_rtl_reader_summary">Вы можаце наладзіць рэжым чытання для кожнай мангі асобна</string>
     <string name="create_category">Стварыць катэгорыю</string>
     <string name="report_github">Пачаць абмеркаванне праблемы на GitHub</string>
     <string name="scale_mode">Маштабаванне</string>
@@ -164,7 +162,6 @@
     <string name="zoom_mode_keep_start">Зыходны памер</string>
     <string name="black_dark_theme">Чорная цёмная тэма</string>
     <string name="black_dark_theme_summary">Карысна для AMOLED экранаў</string>
-    <string name="restart_required">Патрэбны перазапуск</string>
     <string name="backup_restore">Рэзервовае капіяванне і аднаўленне</string>
     <string name="create_backup">Стварыць рэзервовую копію</string>
     <string name="restore_backup">Аднавіць данныя</string>

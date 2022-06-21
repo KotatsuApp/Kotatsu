@@ -2,9 +2,11 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import java.io.Serializable
 
@@ -43,4 +45,8 @@ fun DialogFragment.showAllowStateLoss(manager: FragmentManager, tag: String?) {
 	if (!manager.isStateSaved) {
 		show(manager, tag)
 	}
+}
+
+fun Fragment.addMenuProvider(provider: MenuProvider) {
+	requireActivity().addMenuProvider(provider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }

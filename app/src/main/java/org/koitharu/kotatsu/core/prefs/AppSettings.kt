@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
@@ -20,6 +19,7 @@ import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.observe
@@ -52,7 +52,7 @@ class AppSettings(context: Context) {
 		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
 	val isDynamicTheme: Boolean
-		get() = prefs.getBoolean(KEY_DYNAMIC_THEME, false)
+		get() = DynamicColors.isDynamicColorAvailable() && prefs.getBoolean(KEY_DYNAMIC_THEME, false)
 
 	val isAmoledTheme: Boolean
 		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
@@ -99,8 +99,11 @@ class AppSettings(context: Context) {
 	val readerAnimation: Boolean
 		get() = prefs.getBoolean(KEY_READER_ANIMATION, false)
 
-	val isPreferRtlReader: Boolean
-		get() = prefs.getBoolean(KEY_READER_PREFER_RTL, false)
+	val defaultReaderMode: ReaderMode
+		get() = prefs.getEnumValue(KEY_READER_MODE, ReaderMode.STANDARD)
+
+	val isReaderModeDetectionEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READER_MODE_DETECT, true)
 
 	var historyGrouping: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_GROUPING, true)
@@ -149,7 +152,7 @@ class AppSettings(context: Context) {
 		}
 
 	fun markKnownSources(sources: Collection<MangaSource>) {
-		sourcesOrder = sourcesOrder + sources.map { it.name }
+		sourcesOrder = (sourcesOrder + sources.map { it.name }).distinct()
 	}
 
 	val isPagesNumbersEnabled: Boolean
@@ -188,6 +191,9 @@ class AppSettings(context: Context) {
 	var isSearchSingleSource: Boolean
 		get() = prefs.getBoolean(KEY_SEARCH_SINGLE_SOURCE, false)
 		set(value) = prefs.edit { putBoolean(KEY_SEARCH_SINGLE_SOURCE, value) }
+
+	val dnsOverHttps: DoHProvider
+		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
 
 	fun isPagesPreloadAllowed(cm: ConnectivityManager): Boolean {
 		return when (prefs.getString(KEY_PAGES_PRELOAD, null)?.toIntOrNull()) {
@@ -276,7 +282,8 @@ class AppSettings(context: Context) {
 		const val KEY_NOTIFICATIONS_LIGHT = "notifications_light"
 		const val KEY_NOTIFICATIONS_INFO = "tracker_notifications_info"
 		const val KEY_READER_ANIMATION = "reader_animation"
-		const val KEY_READER_PREFER_RTL = "reader_prefer_rtl"
+		const val KEY_READER_MODE = "reader_mode"
+		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_APP_PASSWORD = "app_password"
 		const val KEY_PROTECT_APP = "protect_app"
 		const val KEY_APP_VERSION = "app_version"
@@ -297,6 +304,7 @@ class AppSettings(context: Context) {
 		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
+		const val KEY_DOH = "doh"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
@@ -309,12 +317,5 @@ class AppSettings(context: Context) {
 		private const val NETWORK_NEVER = 0
 		private const val NETWORK_ALWAYS = 1
 		private const val NETWORK_NON_METERED = 2
-
-		val isDynamicColorAvailable: Boolean
-			get() = DynamicColors.isDynamicColorAvailable() ||
-				(isSamsung && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-
-		private val isSamsung
-			get() = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
 	}
 }

@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.tracker.work
 
-import org.koitharu.kotatsu.core.model.MangaTracking
+import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 
 class TrackingItem(
 	val tracking: MangaTracking,

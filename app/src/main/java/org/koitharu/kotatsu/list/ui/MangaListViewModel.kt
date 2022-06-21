@@ -4,16 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.core.prefs.observeAsLiveData
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaGridModel
-import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
-import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 abstract class MangaListViewModel(
 	private val settings: AppSettings,
@@ -21,20 +19,15 @@ abstract class MangaListViewModel(
 
 	abstract val content: LiveData<List<ListModel>>
 	val listMode = MutableLiveData<ListMode>()
-	val gridScale = settings.observe()
-		.filter { it == AppSettings.KEY_GRID_SIZE }
-		.map { settings.gridSize / 100f }
-		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.IO) {
-			settings.gridSize / 100f
-		}
+	val gridScale = settings.observeAsLiveData(
+		context = viewModelScope.coroutineContext + Dispatchers.Default,
+		key = AppSettings.KEY_GRID_SIZE,
+		valueProducer = { gridSize / 100f },
+	)
 
 	open fun onRemoveFilterTag(tag: MangaTag) = Unit
 
-	protected fun createListModeFlow() = settings.observe()
-		.filter { it == AppSettings.KEY_LIST_MODE }
-		.map { settings.listMode }
-		.onStart { emit(settings.listMode) }
-		.distinctUntilChanged()
+	protected fun createListModeFlow() = settings.observeAsFlow(AppSettings.KEY_LIST_MODE) { listMode }
 		.onEach {
 			if (listMode.value != it) {
 				listMode.postValue(it)

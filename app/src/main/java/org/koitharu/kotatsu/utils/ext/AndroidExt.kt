@@ -10,14 +10,18 @@ import android.net.Uri
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityOptionsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
 import kotlin.coroutines.resume
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 val Context.connectivityManager: ConnectivityManager
@@ -82,3 +86,10 @@ fun <T> SharedPreferences.observe(key: String, valueProducer: suspend () -> T): 
 		}
 	}
 }.distinctUntilChanged()
+
+fun Lifecycle.postDelayed(runnable: Runnable, delay: Long) {
+	coroutineScope.launch {
+		delay(delay)
+		runnable.run()
+	}
+}

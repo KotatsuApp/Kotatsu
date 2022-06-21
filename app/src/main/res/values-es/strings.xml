@@ -153,8 +153,6 @@
     <string name="update_check_failed">Fallo en la comprobación de actualizaciones</string>
     <string name="no_update_available">No hay actualizaciones disponibles</string>
     <string name="right_to_left">Derecha a izquierda (←)</string>
-    <string name="prefer_rtl_reader">Preferir lector de derecha a izquierda (←)</string>
-    <string name="prefer_rtl_reader_summary">Puedes configurar el modo de lectura para cada manga por separado</string>
     <string name="create_category">Nueva categoría</string>
     <string name="report_github">Crear incidencia en GitHub</string>
     <string name="scale_mode">Modo de escala</string>
@@ -164,7 +162,6 @@
     <string name="zoom_mode_keep_start">Mantener al iniciar</string>
     <string name="black_dark_theme">Tema oscuro auténtico</string>
     <string name="black_dark_theme_summary">Útil para pantallas AMOLED</string>
-    <string name="restart_required">Se requiere reinicio</string>
     <string name="backup_restore">Respaldo y restauración</string>
     <string name="create_backup">Crear copia de seguridad de datos</string>
     <string name="restore_backup">Restaurar desde la copia de seguridad</string>
@@ -271,4 +268,30 @@
     <string name="removal_completed">Remoción completada</string>
     <string name="batch_manga_save_confirm">¿Estás seguro de que quieres descargar todos los manga seleccionados con todos sus capítulos\? Esta acción puede consumir mucho tráfico y almacenamiento</string>
     <string name="text_delete_local_manga_batch">¿Eliminar elementos seleccionados del dispositivo de forma permanente\?</string>
+    <string name="hide">Ocultar</string>
+    <string name="download_slowdown">Ralentización de la descarga</string>
+    <string name="new_sources_text">Nuevas fuentes de manga disponibles</string>
+    <string name="parallel_downloads">Descargas en paralelo</string>
+    <string name="download_slowdown_summary">Ayuda a evitar el bloqueo de tu dirección IP</string>
+    <string name="local_manga_processing">Procesamiento de manga guardado</string>
+    <string name="check_new_chapters_title">Comprueba si hay nuevos capítulos y notifica sobre ellos</string>
+    <string name="show_notification_new_chapters_on">Recibirás notificaciones sobre las actualizaciones del manga que estés leyendo</string>
+    <string name="bookmark_add">Añadir marcador</string>
+    <string name="bookmarks">Marcadores</string>
+    <string name="undo">Deshacer</string>
+    <string name="bookmark_removed">Marcador eliminado</string>
+    <string name="removed_from_history">Eliminado del historial</string>
+    <string name="bookmark_remove">Eliminar marcador</string>
+    <string name="bookmark_added">Añadido a favoritos</string>
+    <string name="dns_over_https">DNS mediante HTTPS</string>
+    <string name="default_mode">Modo predeterminado</string>
+    <string name="detect_reader_mode">Autodetectar modo de lectura</string>
+    <string name="detect_reader_mode_summary">Detecta automáticamente si el manga es un webtoon</string>
+    <string name="chapters_will_removed_background">Los capítulos se eliminarán en segundo plano. Puede llevar algún tiempo</string>
+    <string name="show_notification_new_chapters_off">No recibirás notificaciones, pero los nuevos capítulos aparecerán destacados en las listas</string>
+    <string name="notifications_enable">Activar las notificaciones</string>
+    <string name="empty_favourite_categories">No hay categorías favoritas</string>
+    <string name="name">Nombre</string>
+    <string name="edit">Editar</string>
+    <string name="edit_category">Editar categoría</string>
 </resources>

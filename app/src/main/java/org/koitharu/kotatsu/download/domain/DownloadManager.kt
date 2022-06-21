@@ -12,7 +12,6 @@ import kotlinx.coroutines.sync.Semaphore
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -24,6 +23,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.utils.ext.deleteAwait
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.waitForNetwork
 import org.koitharu.kotatsu.utils.progress.ProgressJob
@@ -156,9 +156,7 @@ class DownloadManager(
 			outState.value = DownloadState.Cancelled(startId, manga, cover)
 			throw e
 		} catch (e: Throwable) {
-			if (BuildConfig.DEBUG) {
-				e.printStackTrace()
-			}
+			e.printStackTraceDebug()
 			outState.value = DownloadState.Error(startId, manga, cover, e)
 		} finally {
 			withContext(NonCancellable) {

@@ -17,15 +17,17 @@ import org.koitharu.kotatsu.databinding.ItemSourceConfigBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigDraggableBinding
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.textAndVisible
 
-fun sourceConfigHeaderDelegate() = adapterDelegateViewBinding<SourceConfigItem.Header, SourceConfigItem, ItemFilterHeaderBinding>(
-	{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) }
-) {
+fun sourceConfigHeaderDelegate() =
+	adapterDelegateViewBinding<SourceConfigItem.Header, SourceConfigItem, ItemFilterHeaderBinding>(
+		{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) }
+	) {
 
-	bind {
-		binding.textViewTitle.setText(item.titleResId)
+		bind {
+			binding.textViewTitle.setText(item.titleResId)
+		}
 	}
-}
 
 fun sourceConfigGroupDelegate(
 	listener: SourceConfigListener,
@@ -61,6 +63,7 @@ fun sourceConfigItemDelegate(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		binding.switchToggle.isChecked = item.isEnabled
+		binding.textViewDescription.textAndVisible = item.summary
 		imageRequest = ImageRequest.Builder(context)
 			.data(item.faviconUrl)
 			.error(R.drawable.ic_favicon_fallback)

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
@@ -27,6 +28,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import kotlin.math.roundToInt
 
 class ChaptersFragment :
@@ -42,11 +44,6 @@ class ChaptersFragment :
 	private var chaptersAdapter: ChaptersAdapter? = null
 	private var actionMode: ActionMode? = null
 	private var selectionDecoration: ChaptersSelectionDecoration? = null
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setHasOptionsMenu(true)
-	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -72,6 +69,7 @@ class ChaptersFragment :
 			binding.textViewHolder.isVisible = it
 			activity?.invalidateOptionsMenu()
 		}
+		addMenuProvider(ChaptersMenuProvider())
 	}
 
 	override fun onDestroyView() {
@@ -79,31 +77,6 @@ class ChaptersFragment :
 		selectionDecoration = null
 		binding.spinnerBranches?.adapter = null
 		super.onDestroyView()
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		super.onCreateOptionsMenu(menu, inflater)
-		inflater.inflate(R.menu.opt_chapters, menu)
-		val searchMenuItem = menu.findItem(R.id.action_search)
-		searchMenuItem.setOnActionExpandListener(this)
-		val searchView = searchMenuItem.actionView as SearchView
-		searchView.setOnQueryTextListener(this)
-		searchView.setIconifiedByDefault(false)
-		searchView.queryHint = searchMenuItem.title
-	}
-
-	override fun onPrepareOptionsMenu(menu: Menu) {
-		super.onPrepareOptionsMenu(menu)
-		menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
-		menu.findItem(R.id.action_search).isVisible = viewModel.isChaptersEmpty.value == false
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_reversed -> {
-			viewModel.setChaptersReversed(!item.isChecked)
-			true
-		}
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onItemClick(item: ChapterListItem, view: View) {
@@ -121,13 +94,7 @@ class ChaptersFragment :
 			(activity as? DetailsActivity)?.showChapterMissingDialog(item.chapter.id)
 			return
 		}
-		val options = ActivityOptions.makeScaleUpAnimation(
-			view,
-			0,
-			0,
-			view.measuredWidth,
-			view.measuredHeight
-		)
+		val options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.width, view.height)
 		startActivity(
 			ReaderActivity.newIntent(
 				context = view.context,
@@ -273,5 +240,31 @@ class ChaptersFragment :
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.progressBar.isVisible = isLoading
+	}
+
+	private inner class ChaptersMenuProvider : MenuProvider {
+
+		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+			menuInflater.inflate(R.menu.opt_chapters, menu)
+			val searchMenuItem = menu.findItem(R.id.action_search)
+			searchMenuItem.setOnActionExpandListener(this@ChaptersFragment)
+			val searchView = searchMenuItem.actionView as SearchView
+			searchView.setOnQueryTextListener(this@ChaptersFragment)
+			searchView.setIconifiedByDefault(false)
+			searchView.queryHint = searchMenuItem.title
+		}
+
+		override fun onPrepareMenu(menu: Menu) {
+			menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
+			menu.findItem(R.id.action_search).isVisible = viewModel.isChaptersEmpty.value == false
+		}
+
+		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+			R.id.action_reversed -> {
+				viewModel.setChaptersReversed(!menuItem.isChecked)
+				true
+			}
+			else -> false
+		}
 	}
 }

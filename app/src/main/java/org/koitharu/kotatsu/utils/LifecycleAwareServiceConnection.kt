@@ -10,7 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class LifecycleAwareServiceConnection private constructor(
+class LifecycleAwareServiceConnection(
 	private val host: Activity,
 ) : ServiceConnection, DefaultLifecycleObserver {
 
@@ -31,19 +31,15 @@ class LifecycleAwareServiceConnection private constructor(
 		super.onDestroy(owner)
 		host.unbindService(this)
 	}
+}
 
-	companion object {
-
-		fun bindService(
-			host: Activity,
-			lifecycleOwner: LifecycleOwner,
-			service: Intent,
-			flags: Int,
-		): LifecycleAwareServiceConnection {
-			val connection = LifecycleAwareServiceConnection(host)
-			host.bindService(service, connection, flags)
-			lifecycleOwner.lifecycle.addObserver(connection)
-			return connection
-		}
-	}
+fun Activity.bindServiceWithLifecycle(
+	owner: LifecycleOwner,
+	service: Intent,
+	flags: Int
+): LifecycleAwareServiceConnection {
+	val connection = LifecycleAwareServiceConnection(this)
+	bindService(service, connection, flags)
+	owner.lifecycle.addObserver(connection)
+	return connection
 }

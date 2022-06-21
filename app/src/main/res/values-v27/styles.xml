@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
-		<item name="android:navigationBarColor">@color/navigation_bar_scrim</item>
-		<item name="android:windowLightNavigationBar">@bool/light_navigation_bar</item>
-	</style>
-</resources>

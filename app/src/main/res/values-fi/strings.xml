@@ -53,7 +53,6 @@
     <string name="restore_backup">Palauta varmuuskopiosta</string>
     <string name="create_backup">Luo tietojen varmuuskopio</string>
     <string name="backup_restore">Varmuuskopiointi ja palautus</string>
-    <string name="restart_required">Uudelleenkäynnistys vaaditaan</string>
     <string name="black_dark_theme_summary">Hyödyllinen AMOLED-näytöille</string>
     <string name="black_dark_theme">Musta tumma teema</string>
     <string name="zoom_mode_keep_start">Pidä alussa</string>
@@ -63,8 +62,6 @@
     <string name="scale_mode">Skaalaustila</string>
     <string name="report_github">Luo ongelma GitHubissa</string>
     <string name="create_category">Uusi luokka</string>
-    <string name="prefer_rtl_reader_summary">Voit määrittää lukutilan jokaiselle mangalle erikseen</string>
-    <string name="prefer_rtl_reader">Mieluummin oikealta vasemmalle lukutila</string>
     <string name="right_to_left">Oikealta vasemmalle</string>
     <string name="no_update_available">Ei päivityksiä saatavilla</string>
     <string name="update_check_failed">Päivityksen tarkistus epäonnistui</string>
@@ -278,4 +275,26 @@
     <string name="local_manga_processing">Tallennettujen mangojen käsittely</string>
     <string name="hide">Piilota</string>
     <string name="new_sources_text">Uusia mangalähteitä on saatavilla</string>
+    <string name="check_new_chapters_title">Tarkista uudet luvut ja ilmoita siitä</string>
+    <string name="notifications_enable">Ota ilmoitukset käyttöön</string>
+    <string name="empty_favourite_categories">Ei suosikkiluokkia</string>
+    <string name="name">Nimi</string>
+    <string name="edit">Muokkaa</string>
+    <string name="edit_category">Muokkaa luokkaa</string>
+    <string name="show_notification_new_chapters_off">Et saa ilmoituksia, mutta uudet luvut korostetaan luetteloissa</string>
+    <string name="show_notification_new_chapters_on">Saat ilmoituksia lukemasi mangan päivityksistä</string>
+    <string name="bookmark_add">Lisää kirjanmerkki</string>
+    <string name="bookmark_remove">Poista kirjanmerkki</string>
+    <string name="bookmarks">Kirjanmerkit</string>
+    <string name="bookmark_removed">Kirjanmerkki poistettu</string>
+    <string name="bookmark_added">Kirjanmerkki lisätty</string>
+    <string name="undo">Kumoa</string>
+    <string name="removed_from_history">Poistettu historiasta</string>
+    <string name="dns_over_https">DNS HTTPS:n kautta</string>
+    <string name="detect_reader_mode">Lukijan automaattinen tunnistaminen</string>
+    <string name="detect_reader_mode_summary">Tunnista automaattisesti, onko manga webtoon</string>
+    <string name="default_mode">Oletustila</string>
+    <string name="disable_battery_optimization">Poista akun optimoinnin käytöstä</string>
+    <string name="disable_battery_optimization_summary">Auttaa taustapäivitystarkastuksissa</string>
+    <string name="crash_text">Jokin meni pieleen. Lähetä vikailmoitus kehittäjille, jotta voimme korjata sen.</string>
 </resources>

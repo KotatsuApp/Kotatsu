@@ -1,125 +1,117 @@
 package org.koitharu.kotatsu.details.ui
 
-import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
-import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.bookmarks.domain.Bookmark
+import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
-import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import org.koitharu.kotatsu.utils.ext.iterator
-import java.io.IOException
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 class DetailsViewModel(
-	private val intent: MangaIntent,
+	intent: MangaIntent,
 	private val historyRepository: HistoryRepository,
-	private val favouritesRepository: FavouritesRepository,
+	favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
-	private val trackingRepository: TrackingRepository,
-	private val mangaDataRepository: MangaDataRepository,
+	trackingRepository: TrackingRepository,
+	mangaDataRepository: MangaDataRepository,
+	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 	private val shikimoriRepository: ShikimoriRepository,
 ) : BaseViewModel() {
 
+	private val delegate = MangaDetailsDelegate(
+		intent = intent,
+		settings = settings,
+		mangaDataRepository = mangaDataRepository,
+		historyRepository = historyRepository,
+		localMangaRepository = localMangaRepository,
+	)
+
 	private var loadingJob: Job
-	private val mangaData = MutableStateFlow(intent.manga)
-	private val selectedBranch = MutableStateFlow<String?>(null)
 
-	private val history = mangaData.mapNotNull { it?.id }
-		.distinctUntilChanged()
-		.flatMapLatest { mangaId ->
-			historyRepository.observeOne(mangaId)
-		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
+	val onShowToast = SingleLiveEvent<Int>()
 
-	private val favourite = mangaData.mapNotNull { it?.id }
-		.distinctUntilChanged()
-		.flatMapLatest { mangaId ->
-			favouritesRepository.observeCategoriesIds(mangaId).map { it.isNotEmpty() }
-		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
+	private val history = historyRepository.observeOne(delegate.mangaId)
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
-	private val newChapters = mangaData.mapNotNull { it?.id }
-		.distinctUntilChanged()
-		.mapLatest { mangaId ->
-			trackingRepository.getNewChaptersCount(mangaId)
-		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
-
-	// Remote manga for saved and saved for remote
-	private val relatedManga = MutableStateFlow<Manga?>(null)
-	private val chaptersQuery = MutableStateFlow("")
-
-	private val chaptersReversed = settings.observe()
-		.filter { it == AppSettings.KEY_REVERSE_CHAPTERS }
-		.map { settings.chaptersReverse }
-		.onStart { emit(settings.chaptersReverse) }
+	private val favourite = favouritesRepository.observeCategoriesIds(delegate.mangaId).map { it.isNotEmpty() }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	val manga = mangaData.filterNotNull()
-		.asLiveData(viewModelScope.coroutineContext)
-	val favouriteCategories = favourite
-		.asLiveData(viewModelScope.coroutineContext)
-	val newChaptersCount = newChapters
-		.asLiveData(viewModelScope.coroutineContext)
-	val readingHistory = history
-		.asLiveData(viewModelScope.coroutineContext)
-	val isChaptersReversed = chaptersReversed
-		.asLiveData(viewModelScope.coroutineContext)
+	private val newChapters = trackingRepository.observeNewChaptersCount(delegate.mangaId)
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
+
+	private val chaptersQuery = MutableStateFlow("")
+
+	private val chaptersReversed = settings.observeAsFlow(AppSettings.KEY_REVERSE_CHAPTERS) { chaptersReverse }
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
+
+	val manga = delegate.manga.filterNotNull().asLiveData(viewModelScope.coroutineContext)
+	val favouriteCategories = favourite.asLiveData(viewModelScope.coroutineContext)
+	val newChaptersCount = newChapters.asLiveData(viewModelScope.coroutineContext)
+	val readingHistory = history.asLiveData(viewModelScope.coroutineContext)
+	val isChaptersReversed = chaptersReversed.asLiveData(viewModelScope.coroutineContext)
+
+	val bookmarks = delegate.manga.flatMapLatest {
+		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 	val isShikimoriAvailable: Boolean
 		get() = shikimoriRepository.isAuthorized
 
-	val branches = mangaData.map {
-		it?.chapters?.mapToSet { x -> x.branch }?.sortedBy { x -> x }.orEmpty()
+	val branches: LiveData<List<String?>> = delegate.manga.map {
+		val chapters = it?.chapters ?: return@map emptyList()
+		chapters.mapToSet { x -> x.branch }.sortedWith(BranchComparator())
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val selectedBranchIndex = combine(
 		branches.asFlow(),
-		selectedBranch
+		delegate.selectedBranch
 	) { branches, selected ->
 		branches.indexOf(selected)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
-	val isChaptersEmpty = mangaData.mapNotNull { m ->
-		m?.run { chapters.isNullOrEmpty() }
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	val isChaptersEmpty: LiveData<Boolean> = combine(
+		delegate.manga,
+		isLoading.asFlow(),
+	) { m, loading ->
+		m != null && m.chapters.isNullOrEmpty() && !loading
+	}.asLiveDataDistinct(viewModelScope.coroutineContext, false)
 
 	val chapters = combine(
 		combine(
-			mangaData.map { it?.chapters.orEmpty() },
-			relatedManga,
-			history.map { it?.chapterId },
+			delegate.manga,
+			delegate.relatedManga,
+			history,
+			delegate.selectedBranch,
 			newChapters,
-			selectedBranch
-		) { chapters, related, currentId, newCount, branch ->
-			val relatedChapters = related?.chapters
-			if (related?.source != MangaSource.LOCAL && !relatedChapters.isNullOrEmpty()) {
-				mapChaptersWithSource(chapters, relatedChapters, currentId, newCount, branch)
-			} else {
-				mapChapters(chapters, relatedChapters, currentId, newCount, branch)
-			}
+		) { manga, related, history, branch, news ->
+			delegate.mapChapters(manga, related, history, news, branch)
 		},
 		chaptersReversed,
 		chaptersQuery,
@@ -128,7 +120,7 @@ class DetailsViewModel(
 	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val selectedBranchValue: String?
-		get() = selectedBranch.value
+		get() = delegate.selectedBranch.value
 
 	init {
 		loadingJob = doLoad()
@@ -140,7 +132,11 @@ class DetailsViewModel(
 	}
 
 	fun deleteLocal() {
-		val m = mangaData.value ?: return
+		val m = delegate.manga.value
+		if (m == null) {
+			onShowToast.call(R.string.file_not_found)
+			return
+		}
 		launchLoadingJob(Dispatchers.Default) {
 			val manga = if (m.source == MangaSource.LOCAL) m else localMangaRepository.findSavedManga(m)
 			checkNotNull(manga) { "Cannot find saved manga for ${m.title}" }
@@ -153,16 +149,23 @@ class DetailsViewModel(
 		}
 	}
 
+	fun removeBookmark(bookmark: Bookmark) {
+		launchJob {
+			bookmarksRepository.removeBookmark(bookmark.manga.id, bookmark.pageId)
+			onShowToast.call(R.string.bookmark_removed)
+		}
+	}
+
 	fun setChaptersReversed(newValue: Boolean) {
 		settings.chaptersReverse = newValue
 	}
 
 	fun setSelectedBranch(branch: String?) {
-		selectedBranch.value = branch
+		delegate.selectedBranch.value = branch
 	}
 
 	fun getRemoteManga(): Manga? {
-		return relatedManga.value?.takeUnless { it.source == MangaSource.LOCAL }
+		return delegate.relatedManga.value?.takeUnless { it.source == MangaSource.LOCAL }
 	}
 
 	fun performChapterSearch(query: String?) {
@@ -170,7 +173,7 @@ class DetailsViewModel(
 	}
 
 	fun onDownloadComplete(downloadedManga: Manga) {
-		val currentManga = mangaData.value ?: return
+		val currentManga = delegate.manga.value ?: return
 		if (currentManga.id != downloadedManga.id) {
 			return
 		}
@@ -181,142 +184,16 @@ class DetailsViewModel(
 				runCatching {
 					localMangaRepository.getDetails(downloadedManga)
 				}.onSuccess {
-					relatedManga.value = it
+					delegate.relatedManga.value = it
 				}.onFailure {
-					if (BuildConfig.DEBUG) {
-						it.printStackTrace()
-					}
+					it.printStackTraceDebug()
 				}
 			}
 		}
 	}
 
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
-		var manga = mangaDataRepository.resolveIntent(intent)
-			?: throw MangaNotFoundException("Cannot find manga")
-		mangaData.value = manga
-		manga = MangaRepository(manga.source).getDetails(manga)
-		// find default branch
-		val hist = historyRepository.getOne(manga)
-		selectedBranch.value = if (hist != null) {
-			val currentChapter = manga.chapters?.find { it.id == hist.chapterId }
-			if (currentChapter != null) currentChapter.branch else predictBranch(manga.chapters)
-		} else {
-			predictBranch(manga.chapters)
-		}
-		mangaData.value = manga
-		relatedManga.value = runCatching {
-			if (manga.source == MangaSource.LOCAL) {
-				val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatching null
-				MangaRepository(m.source).getDetails(m)
-			} else {
-				localMangaRepository.findSavedManga(manga)
-			}
-		}.onFailure { error ->
-			if (BuildConfig.DEBUG) error.printStackTrace()
-		}.getOrNull()
-	}
-
-	private fun mapChapters(
-		chapters: List<MangaChapter>,
-		downloadedChapters: List<MangaChapter>?,
-		currentId: Long?,
-		newCount: Int,
-		branch: String?,
-	): List<ChapterListItem> {
-		val result = ArrayList<ChapterListItem>(chapters.size)
-		val dateFormat = settings.getDateFormat()
-		val currentIndex = chapters.indexOfFirst { it.id == currentId }
-		val firstNewIndex = chapters.size - newCount
-		val downloadedIds = downloadedChapters?.mapToSet { it.id }
-		for (i in chapters.indices) {
-			val chapter = chapters[i]
-			if (chapter.branch != branch) {
-				continue
-			}
-			result += chapter.toListItem(
-				isCurrent = i == currentIndex,
-				isUnread = i > currentIndex,
-				isNew = i >= firstNewIndex,
-				isMissing = false,
-				isDownloaded = downloadedIds?.contains(chapter.id) == true,
-				dateFormat = dateFormat,
-			)
-		}
-		return result
-	}
-
-	private fun mapChaptersWithSource(
-		chapters: List<MangaChapter>,
-		sourceChapters: List<MangaChapter>,
-		currentId: Long?,
-		newCount: Int,
-		branch: String?,
-	): List<ChapterListItem> {
-		val chaptersMap = chapters.associateByTo(HashMap(chapters.size)) { it.id }
-		val result = ArrayList<ChapterListItem>(sourceChapters.size)
-		val currentIndex = sourceChapters.indexOfFirst { it.id == currentId }
-		val firstNewIndex = sourceChapters.size - newCount
-		val dateFormat = settings.getDateFormat()
-		for (i in sourceChapters.indices) {
-			val chapter = sourceChapters[i]
-			val localChapter = chaptersMap.remove(chapter.id)
-			if (chapter.branch != branch) {
-				continue
-			}
-			result += localChapter?.toListItem(
-				isCurrent = i == currentIndex,
-				isUnread = i > currentIndex,
-				isNew = i >= firstNewIndex,
-				isMissing = false,
-				isDownloaded = false,
-				dateFormat = dateFormat,
-			) ?: chapter.toListItem(
-				isCurrent = i == currentIndex,
-				isUnread = i > currentIndex,
-				isNew = i >= firstNewIndex,
-				isMissing = true,
-				isDownloaded = false,
-				dateFormat = dateFormat,
-			)
-		}
-		if (chaptersMap.isNotEmpty()) { // some chapters on device but not online source
-			result.ensureCapacity(result.size + chaptersMap.size)
-			chaptersMap.values.mapNotNullTo(result) {
-				if (it.branch == branch) {
-					it.toListItem(
-						isCurrent = false,
-						isUnread = true,
-						isNew = false,
-						isMissing = false,
-						isDownloaded = false,
-						dateFormat = dateFormat,
-					)
-				} else {
-					null
-				}
-			}
-			result.sortBy { it.chapter.number }
-		}
-		return result
-	}
-
-	private fun predictBranch(chapters: List<MangaChapter>?): String? {
-		if (chapters.isNullOrEmpty()) {
-			return null
-		}
-		val groups = chapters.groupBy { it.branch }
-		for (locale in LocaleListCompat.getAdjustedDefault()) {
-			var language = locale.getDisplayLanguage(locale).toTitleCase(locale)
-			if (groups.containsKey(language)) {
-				return language
-			}
-			language = locale.getDisplayName(locale).toTitleCase(locale)
-			if (groups.containsKey(language)) {
-				return language
-			}
-		}
-		return groups.maxByOrNull { it.value.size }?.key
+		delegate.doLoad()
 	}
 
 	private fun List<ChapterListItem>.filterSearch(query: String): List<ChapterListItem> {

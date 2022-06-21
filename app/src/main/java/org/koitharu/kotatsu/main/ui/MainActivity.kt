@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.main.ui
 
 import android.app.ActivityOptions
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -20,7 +19,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
-import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -47,7 +45,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
-import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
+import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
@@ -61,6 +59,7 @@ import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.*
+import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
@@ -141,6 +140,7 @@ class MainActivity :
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.remoteSources.observe(this, this::updateSideMenu)
 		viewModel.isSuggestionsEnabled.observe(this, this::setSuggestionsEnabled)
+		viewModel.isTrackerEnabled.observe(this, this::setTrackerEnabled)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -233,6 +233,8 @@ class MainActivity :
 		}
 		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
 			topMargin = insets.top + bottomMargin
+			leftMargin = insets.left
+			rightMargin = insets.right
 		}
 		binding.root.updatePadding(
 			left = insets.left,
@@ -268,7 +270,7 @@ class MainActivity :
 				if (source != null) {
 					startActivity(SearchActivity.newIntent(this, source, query))
 				} else {
-					startActivity(GlobalSearchActivity.newIntent(this, query))
+					startActivity(MultiSearchActivity.newIntent(this, query))
 				}
 				searchSuggestionViewModel.saveQuery(query)
 			}
@@ -317,15 +319,7 @@ class MainActivity :
 	}
 
 	private fun onOpenReader(manga: Manga) {
-		val options = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			ActivityOptions.makeClipRevealAnimation(
-				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
-			)
-		} else {
-			ActivityOptions.makeScaleUpAnimation(
-				binding.fab, 0, 0, binding.fab.measuredWidth, binding.fab.measuredHeight
-			)
-		}
+		val options = ActivityOptions.makeScaleUpAnimation(binding.fab, 0, 0, binding.fab.width, binding.fab.height)
 		startActivity(ReaderActivity.newIntent(this, manga), options?.toBundle())
 	}
 
@@ -353,6 +347,14 @@ class MainActivity :
 
 	private fun setSuggestionsEnabled(isEnabled: Boolean) {
 		val item = binding.navigationView.menu.findItem(R.id.nav_suggestions) ?: return
+		if (!isEnabled && item.isChecked) {
+			binding.navigationView.setCheckedItem(R.id.nav_history)
+		}
+		item.isVisible = isEnabled
+	}
+
+	private fun setTrackerEnabled(isEnabled: Boolean) {
+		val item = binding.navigationView.menu.findItem(R.id.nav_feed) ?: return
 		if (!isEnabled && item.isChecked) {
 			binding.navigationView.setCheckedItem(R.id.nav_history)
 		}

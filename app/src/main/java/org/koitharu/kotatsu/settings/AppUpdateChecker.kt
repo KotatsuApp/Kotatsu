@@ -8,15 +8,6 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.io.ByteArrayInputStream
-import java.io.InputStream
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import java.security.cert.CertificateEncodingException
-import java.security.cert.CertificateException
-import java.security.cert.CertificateFactory
-import java.security.cert.X509Certificate
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
@@ -28,6 +19,16 @@ import org.koitharu.kotatsu.core.github.VersionId
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.byte2HexFormatted
 import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.security.cert.CertificateEncodingException
+import java.security.cert.CertificateException
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
+import java.util.concurrent.TimeUnit
 
 class AppUpdateChecker(private val activity: ComponentActivity) {
 
@@ -45,8 +46,8 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 
 	suspend fun checkNow() = runCatching {
 		val version = repo.getLatestVersion()
-		val newVersionId = VersionId.parse(version.name)
-		val currentVersionId = VersionId.parse(BuildConfig.VERSION_NAME)
+		val newVersionId = VersionId(version.name)
+		val currentVersionId = VersionId(BuildConfig.VERSION_NAME)
 		val result = newVersionId > currentVersionId
 		if (result) {
 			withContext(Dispatchers.Main) {
@@ -56,7 +57,7 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 		settings.lastUpdateCheckTimestamp = System.currentTimeMillis()
 		result
 	}.onFailure {
-		it.printStackTrace()
+		it.printStackTraceDebug()
 	}.getOrNull()
 
 	@MainThread
@@ -99,7 +100,7 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 					PackageManager.GET_SIGNATURES
 				)
 			} catch (e: PackageManager.NameNotFoundException) {
-				e.printStackTrace()
+				e.printStackTraceDebug()
 				return null
 			}
 			val signatures = packageInfo?.signatures
@@ -109,7 +110,7 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 				val cf = CertificateFactory.getInstance("X509")
 				cf.generateCertificate(input) as X509Certificate
 			} catch (e: CertificateException) {
-				e.printStackTrace()
+				e.printStackTraceDebug()
 				return null
 			}
 			return try {
@@ -117,10 +118,10 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 				val publicKey: ByteArray = md.digest(c.encoded)
 				publicKey.byte2HexFormatted()
 			} catch (e: NoSuchAlgorithmException) {
-				e.printStackTrace()
+				e.printStackTraceDebug()
 				null
 			} catch (e: CertificateEncodingException) {
-				e.printStackTrace()
+				e.printStackTraceDebug()
 				null
 			}
 		}

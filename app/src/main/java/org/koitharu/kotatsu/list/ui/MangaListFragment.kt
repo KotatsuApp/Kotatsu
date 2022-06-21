@@ -9,6 +9,7 @@ import androidx.collection.ArraySet
 import androidx.core.graphics.Insets
 import androidx.core.view.isNotEmpty
 import androidx.core.view.updatePadding
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
@@ -67,11 +68,6 @@ abstract class MangaListFragment :
 	protected val selectedItems: Set<Manga>
 		get() = collectSelectedItems()
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setHasOptionsMenu(true)
-	}
-
 	override fun onInflateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?
@@ -98,6 +94,7 @@ abstract class MangaListFragment :
 			setOnRefreshListener(this@MangaListFragment)
 			isEnabled = isSwipeRefreshEnabled
 		}
+		addMenuProvider(MangaListMenuProvider(childFragmentManager))
 
 		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
@@ -112,19 +109,6 @@ abstract class MangaListFragment :
 		selectionDecoration = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		inflater.inflate(R.menu.opt_list, menu)
-		super.onCreateOptionsMenu(menu, inflater)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_list_mode -> {
-			ListModeSelectDialog.show(childFragmentManager)
-			true
-		}
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onItemClick(item: Manga, view: View) {

@@ -7,12 +7,13 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
-class BackupSettingsFragment : BasePreferenceFragment(R.string.backup_restore),
+class BackupSettingsFragment :
+	BasePreferenceFragment(R.string.backup_restore),
 	ActivityResultCallback<Uri?> {
 
 	private val backupSelectCall = registerForActivityResult(
@@ -34,9 +35,7 @@ class BackupSettingsFragment : BasePreferenceFragment(R.string.backup_restore),
 				try {
 					backupSelectCall.launch(arrayOf("*/*"))
 				} catch (e: ActivityNotFoundException) {
-					if (BuildConfig.DEBUG) {
-						e.printStackTrace()
-					}
+					e.printStackTraceDebug()
 					Snackbar.make(
 						listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT
 					).show()

@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -84,9 +86,9 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 			right = insets.right,
 			bottom = insets.bottom,
 		)
-		binding.toolbar.updatePadding(
-			top = insets.top,
-		)
+		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = insets.top
+		}
 	}
 
 	override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

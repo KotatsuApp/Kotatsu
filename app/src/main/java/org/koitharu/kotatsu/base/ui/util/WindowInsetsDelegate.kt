@@ -16,10 +16,7 @@ class WindowInsetsDelegate(
 
 	private var lastInsets: Insets? = null
 
-	override fun onApplyWindowInsets(v: View?, insets: WindowInsetsCompat?): WindowInsetsCompat? {
-		if (insets == null) {
-			return null
-		}
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		val handledInsets = interceptingWindowInsetsListener?.onApplyWindowInsets(v, insets) ?: insets
 		val newInsets = if (handleImeInsets) {
 			Insets.max(
@@ -49,7 +46,7 @@ class WindowInsetsDelegate(
 	) {
 		view.removeOnLayoutChangeListener(this)
 		if (lastInsets == null) { // Listener may not be called
-			onApplyWindowInsets(view, ViewCompat.getRootWindowInsets(view))
+			onApplyWindowInsets(view, ViewCompat.getRootWindowInsets(view) ?: return)
 		}
 	}
 

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.databinding.ItemMangaGridBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.search.ui.multi.adapter.ItemSizeResolver
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.referer
@@ -21,6 +23,7 @@ fun mangaGridItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>,
+	sizeResolver: ItemSizeResolver?,
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
 	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) }
 ) {
@@ -33,6 +36,11 @@ fun mangaGridItemAD(
 	}
 	itemView.setOnLongClickListener {
 		clickListener.onItemLongClick(item.manga, it)
+	}
+	if (sizeResolver != null) {
+		itemView.updateLayoutParams {
+			width = sizeResolver.cellWidth
+		}
 	}
 
 	bind {

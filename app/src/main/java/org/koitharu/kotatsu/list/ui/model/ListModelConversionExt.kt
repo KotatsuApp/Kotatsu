@@ -40,7 +40,7 @@ fun Manga.toGridModel(counter: Int) = MangaGridModel(
 suspend fun List<Manga>.toUi(
 	mode: ListMode,
 	countersProvider: CountersProvider,
-): List<ListModel> = when (mode) {
+): List<MangaItemModel> = when (mode) {
 	ListMode.LIST -> map { it.toListModel(countersProvider.getCounter(it.id)) }
 	ListMode.DETAILED_LIST -> map { it.toListDetailedModel(countersProvider.getCounter(it.id)) }
 	ListMode.GRID -> map { it.toGridModel(countersProvider.getCounter(it.id)) }
@@ -58,7 +58,7 @@ suspend fun <C : MutableCollection<ListModel>> List<Manga>.toUi(
 
 fun List<Manga>.toUi(
 	mode: ListMode,
-): List<ListModel> = when (mode) {
+): List<MangaItemModel> = when (mode) {
 	ListMode.LIST -> map { it.toListModel(0) }
 	ListMode.DETAILED_LIST -> map { it.toListDetailedModel(0) }
 	ListMode.GRID -> map { it.toGridModel(0) }

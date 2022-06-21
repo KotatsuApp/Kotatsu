@@ -36,8 +36,7 @@ class ListItemTextView @JvmOverloads constructor(
 
 	init {
 		context.withStyledAttributes(attrs, R.styleable.ListItemTextView, defStyleAttr) {
-			val itemRippleColor = getColorStateList(R.styleable.ListItemTextView_rippleColor)
-				?: getRippleColorFallback(context)
+			val itemRippleColor = getRippleColor(context)
 			val shape = createShapeDrawable(this)
 			background = RippleDrawable(
 				RippleUtils.sanitizeRippleDrawableColor(itemRippleColor),
@@ -108,7 +107,7 @@ class ListItemTextView @JvmOverloads constructor(
 			ta.getResourceId(R.styleable.ListItemTextView_shapeAppearanceOverlay, 0),
 		).build()
 		val shapeDrawable = MaterialShapeDrawable(shapeAppearance)
-		shapeDrawable.fillColor = ta.getColorStateList(R.styleable.ListItemTextView_backgroundTint)
+		shapeDrawable.fillColor = ta.getColorStateList(R.styleable.ListItemTextView_backgroundFillColor)
 		return InsetDrawable(
 			shapeDrawable,
 			ta.getDimensionPixelOffset(R.styleable.ListItemTextView_android_insetLeft, 0),
@@ -118,7 +117,7 @@ class ListItemTextView @JvmOverloads constructor(
 		)
 	}
 
-	private fun getRippleColorFallback(context: Context): ColorStateList {
+	private fun getRippleColor(context: Context): ColorStateList {
 		return context.getThemeColorStateList(android.R.attr.colorControlHighlight)
 			?: ColorStateList.valueOf(Color.TRANSPARENT)
 	}

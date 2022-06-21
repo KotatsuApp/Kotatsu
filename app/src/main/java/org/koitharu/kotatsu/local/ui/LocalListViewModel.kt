@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -22,6 +21,7 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.io.IOException
 
@@ -115,7 +115,7 @@ class LocalListViewModel(
 	private suspend fun doRefresh() {
 		try {
 			listError.value = null
-			mangaList.value = repository.getList(0)
+			mangaList.value = repository.getList(0, null, null)
 		} catch (e: Throwable) {
 			listError.value = e
 		}
@@ -127,9 +127,7 @@ class LocalListViewModel(
 				runCatching {
 					repository.cleanup()
 				}.onFailure { error ->
-					if (BuildConfig.DEBUG) {
-						error.printStackTrace()
-					}
+					error.printStackTraceDebug()
 				}
 			}
 		}

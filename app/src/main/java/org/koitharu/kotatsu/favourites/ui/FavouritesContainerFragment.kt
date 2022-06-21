@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.favourites.ui
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
@@ -19,12 +21,12 @@ import org.koitharu.kotatsu.base.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.FragmentFavouritesBinding
 import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
-import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.FavouritesCategoriesViewModel
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.main.ui.AppBarOwner
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.resolveDp
@@ -43,11 +45,6 @@ class FavouritesContainerFragment :
 	private var pagerAdapter: FavouritesPagerAdapter? = null
 	private var stubBinding: ItemEmptyStateBinding? = null
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setHasOptionsMenu(true)
-	}
-
 	override fun onInflateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?
@@ -61,6 +58,7 @@ class FavouritesContainerFragment :
 		pagerAdapter = adapter
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
 		actionModeDelegate.addListener(this, viewLifecycleOwner)
+		addMenuProvider(FavouritesContainerMenuProvider(view.context))
 
 		viewModel.visibleCategories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
@@ -113,21 +111,6 @@ class FavouritesContainerFragment :
 			binding.tabs.isVisible = true
 			(stubBinding?.root ?: binding.stubEmptyState).isVisible = false
 		}
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		inflater.inflate(R.menu.opt_favourites, menu)
-		super.onCreateOptionsMenu(menu, inflater)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_categories -> {
-			context?.let {
-				startActivity(CategoriesActivity.newIntent(it))
-			}
-			true
-		}
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	private fun onError(e: Throwable) {

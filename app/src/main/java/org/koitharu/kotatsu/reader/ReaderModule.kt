@@ -26,6 +26,7 @@ val readerModule
 				shortcutsRepository = get(),
 				settings = get(),
 				pageSaveHelper = get(),
+				bookmarksRepository = get(),
 			)
 		}
 	}

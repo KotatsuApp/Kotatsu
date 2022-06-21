@@ -23,15 +23,16 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 	private val viewModel by viewModel<BackupViewModel>()
 
 	private var backup: File? = null
-	private val saveFileContract =
-		registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
-			val file = backup
-			if (uri != null && file != null) {
-				saveBackup(file, uri)
-			} else {
-				dismiss()
-			}
+	private val saveFileContract = registerForActivityResult(
+		ActivityResultContracts.CreateDocument("*/*")
+	) { uri ->
+		val file = backup
+		if (uri != null && file != null) {
+			saveBackup(file, uri)
+		} else {
+			dismiss()
 		}
+	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,

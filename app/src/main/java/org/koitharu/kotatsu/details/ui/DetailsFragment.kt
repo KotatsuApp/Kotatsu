@@ -8,8 +8,11 @@ import android.view.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.text.parseAsHtml
+import androidx.core.view.MenuProvider
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
@@ -21,7 +24,11 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
+import org.koitharu.kotatsu.bookmarks.domain.Bookmark
+import org.koitharu.kotatsu.bookmarks.ui.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
@@ -36,21 +43,18 @@ import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.shikimori.data.model.ShikimoriMangaInfo
 import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
 
 class DetailsFragment :
 	BaseFragment<FragmentDetailsBinding>(),
 	View.OnClickListener,
 	View.OnLongClickListener,
-	ChipsView.OnChipClickListener {
+	ChipsView.OnChipClickListener,
+	OnListItemClickListener<Bookmark> {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setHasOptionsMenu(true)
-	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -70,11 +74,26 @@ class DetailsFragment :
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
 		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
+		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
+		addMenuProvider(DetailsMenuProvider())
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		super.onCreateOptionsMenu(menu, inflater)
-		inflater.inflate(R.menu.opt_details_info, menu)
+	override fun onItemClick(item: Bookmark, view: View) {
+		val options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.width, view.height)
+		startActivity(ReaderActivity.newIntent(view.context, item), options.toBundle())
+	}
+
+	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
+		val menu = PopupMenu(view.context, view)
+		menu.inflate(R.menu.popup_bookmark)
+		menu.setOnMenuItemClickListener { menuItem ->
+			when (menuItem.itemId) {
+				R.id.action_remove -> viewModel.removeBookmark(item)
+			}
+			true
+		}
+		menu.show()
+		return true
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
@@ -177,6 +196,20 @@ class DetailsFragment :
 		}
 	}
 
+	private fun onBookmarksChanged(bookmarks: List<Bookmark>) {
+		var adapter = binding.recyclerViewBookmarks.adapter as? BookmarksAdapter
+		binding.groupBookmarks.isGone = bookmarks.isEmpty()
+		if (adapter != null) {
+			adapter.items = bookmarks
+		} else {
+			adapter = BookmarksAdapter(coil, viewLifecycleOwner, this)
+			adapter.items = bookmarks
+			binding.recyclerViewBookmarks.adapter = adapter
+			val spacing = resources.getDimensionPixelOffset(R.dimen.bookmark_list_spacing)
+			binding.recyclerViewBookmarks.addItemDecoration(SpacingItemDecoration(spacing))
+		}
+	}
+
 	override fun onClick(v: View) {
 		val manga = viewModel.manga.value ?: return
 		when (v.id) {
@@ -207,13 +240,9 @@ class DetailsFragment :
 				)
 			}
 			R.id.imageView_cover -> {
-				val options = ActivityOptions.makeSceneTransitionAnimation(
-					requireActivity(),
-					binding.imageViewCover,
-					binding.imageViewCover.transitionName,
-				)
+				val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
 				startActivity(
-					ImageActivity.newIntent(v.context, manga.largeCoverUrl ?: manga.coverUrl),
+					ImageActivity.newIntent(v.context, manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }),
 					options.toBundle()
 				)
 			}
@@ -279,20 +308,42 @@ class DetailsFragment :
 	}
 
 	private fun loadCover(manga: Manga) {
-		val currentCover = binding.imageViewCover.drawable
+		val imageUrl = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }
+		val lastResult = CoilUtils.result(binding.imageViewCover)
+		if (lastResult?.request?.data == imageUrl) {
+			return
+		}
 		val request = ImageRequest.Builder(context ?: return)
 			.target(binding.imageViewCover)
-		if (currentCover != null) {
-			request.data(manga.largeCoverUrl ?: return)
-				.placeholderMemoryCacheKey(CoilUtils.result(binding.imageViewCover)?.request?.memoryCacheKey)
-				.fallback(currentCover)
-		} else {
-			request.crossfade(true)
-				.data(manga.coverUrl)
-				.fallback(R.drawable.ic_placeholder)
-		}
-		request.referer(manga.publicUrl)
+			.data(imageUrl)
+			.crossfade(true)
+			.referer(manga.publicUrl)
 			.lifecycle(viewLifecycleOwner)
-			.enqueueWith(coil)
+		lastResult?.drawable?.let {
+			request.fallback(it)
+		} ?: request.fallback(R.drawable.ic_placeholder)
+		request.enqueueWith(coil)
+	}
+
+	private inner class DetailsMenuProvider : MenuProvider {
+
+		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+			menuInflater.inflate(R.menu.opt_details_info, menu)
+		}
+
+		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+			R.id.action_share -> {
+				viewModel.manga.value?.let {
+					val context = requireContext()
+					if (it.source == MangaSource.LOCAL) {
+						ShareHelper(context).shareCbz(listOf(it.url.toUri().toFile()))
+					} else {
+						ShareHelper(context).shareMangaLink(it)
+					}
+				}
+				true
+			}
+			else -> false
+		}
 	}
 }

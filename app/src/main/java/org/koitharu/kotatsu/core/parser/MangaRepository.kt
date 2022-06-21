@@ -13,12 +13,9 @@ interface MangaRepository {
 
 	val sortOrders: Set<SortOrder>
 
-	suspend fun getList(
-		offset: Int,
-		query: String? = null,
-		tags: Set<MangaTag>? = null,
-		sortOrder: SortOrder? = null,
-	): List<Manga>
+	suspend fun getList(offset: Int, query: String): List<Manga>
+
+	suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga>
 
 	suspend fun getDetails(manga: Manga): Manga
 

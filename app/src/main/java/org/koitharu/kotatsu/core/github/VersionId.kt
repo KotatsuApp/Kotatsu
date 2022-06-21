@@ -54,27 +54,23 @@ class VersionId(
 		return result
 	}
 
-	companion object {
-
-		private fun variantWeight(variantType: String) =
-			when (variantType.lowercase(Locale.ROOT)) {
-				"a", "alpha" -> 1
-				"b", "beta" -> 2
-				"rc" -> 4
-				"" -> 8
-				else -> 0
-			}
-
-		fun parse(versionName: String): VersionId {
-			val parts = versionName.substringBeforeLast('-').split('.')
-			val variant = versionName.substringAfterLast('-', "")
-			return VersionId(
-				major = parts.getOrNull(0)?.toIntOrNull() ?: 0,
-				minor = parts.getOrNull(1)?.toIntOrNull() ?: 0,
-				build = parts.getOrNull(2)?.toIntOrNull() ?: 0,
-				variantType = variant.filter(Char::isLetter),
-				variantNumber = variant.filter(Char::isDigit).toIntOrNull() ?: 0
-			)
-		}
+	private fun variantWeight(variantType: String) = when (variantType.lowercase(Locale.ROOT)) {
+		"a", "alpha" -> 1
+		"b", "beta" -> 2
+		"rc" -> 4
+		"" -> 8
+		else -> 0
 	}
+}
+
+fun VersionId(versionName: String): VersionId {
+	val parts = versionName.substringBeforeLast('-').split('.')
+	val variant = versionName.substringAfterLast('-', "")
+	return VersionId(
+		major = parts.getOrNull(0)?.toIntOrNull() ?: 0,
+		minor = parts.getOrNull(1)?.toIntOrNull() ?: 0,
+		build = parts.getOrNull(2)?.toIntOrNull() ?: 0,
+		variantType = variant.filter(Char::isLetter),
+		variantNumber = variant.filter(Char::isDigit).toIntOrNull() ?: 0,
+	)
 }

@@ -18,6 +18,12 @@
 		android:title="@string/shikimori"
 		android:key="shikimori" />
 
+	<ListPreference
+		android:entries="@array/doh_providers"
+		android:key="doh"
+		android:title="@string/dns_over_https"
+		app:useSimpleSummaryProvider="true" />
+
 	<Preference
 		android:key="local_storage"
 		android:persistent="false"

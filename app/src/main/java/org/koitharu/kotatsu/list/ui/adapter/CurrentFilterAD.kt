@@ -13,7 +13,7 @@ fun currentFilterAD(
 
 	val chipGroup = itemView as ChipsView
 
-	chipGroup.onChipCloseClickListener = ChipsView.OnChipCloseClickListener { chip, data ->
+	chipGroup.onChipCloseClickListener = ChipsView.OnChipCloseClickListener { _, data ->
 		listener.onTagRemoveClick(data as? MangaTag ?: return@OnChipCloseClickListener)
 	}
 

@@ -1,17 +1,19 @@
 package org.koitharu.kotatsu.list.ui.filter
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import java.text.Collator
 import java.util.*
 
 class FilterCoordinator(
@@ -27,7 +29,7 @@ class FilterCoordinator(
 	}
 	private var availableTagsDeferred = loadTagsAsync()
 
-	val items = getItemsFlow()
+	val items: LiveData<List<FilterItem>> = getItemsFlow()
 		.asLiveDataDistinct(coroutineScope.coroutineContext + Dispatchers.Default)
 
 	init {
@@ -104,7 +106,7 @@ class FilterCoordinator(
 		query: String,
 	): List<FilterItem> {
 		val sortOrders = repository.sortOrders.sortedBy { it.ordinal }
-		val tags = mergeTags(state.tags, allTags.tags).sortedBy { it.title }
+		val tags = mergeTags(state.tags, allTags.tags).toList()
 		val list = ArrayList<FilterItem>(tags.size + sortOrders.size + 3)
 		if (query.isEmpty()) {
 			if (sortOrders.isNotEmpty()) {
@@ -113,7 +115,7 @@ class FilterCoordinator(
 					FilterItem.Sort(it, isSelected = it == state.sortOrder)
 				}
 			}
-			if(allTags.isLoading || allTags.isError || tags.isNotEmpty()) {
+			if (allTags.isLoading || allTags.isError || tags.isNotEmpty()) {
 				list.add(FilterItem.Header(R.string.genres, state.tags.size))
 				tags.mapTo(list) {
 					FilterItem.Tag(it, isChecked = it in state.tags)
@@ -153,14 +155,12 @@ class FilterCoordinator(
 		runCatching {
 			repository.getTags()
 		}.onFailure { error ->
-			if (BuildConfig.DEBUG) {
-				error.printStackTrace()
-			}
+			error.printStackTraceDebug()
 		}.getOrNull()
 	}
 
 	private fun mergeTags(primary: Set<MangaTag>, secondary: Set<MangaTag>): Set<MangaTag> {
-		val result = TreeSet(TagTitleComparator())
+		val result = TreeSet(TagTitleComparator(repository.source.locale))
 		result.addAll(secondary)
 		result.addAll(primary)
 		return result
@@ -193,11 +193,14 @@ class FilterCoordinator(
 		}
 	}
 
-	private class TagTitleComparator : Comparator<MangaTag> {
+	private class TagTitleComparator(lc: String?) : Comparator<MangaTag> {
 
-		override fun compare(o1: MangaTag, o2: MangaTag) = compareValues(
-			o1.title.lowercase(),
-			o2.title.lowercase(),
-		)
+		private val collator = lc?.let { Collator.getInstance(Locale(it)) }
+
+		override fun compare(o1: MangaTag, o2: MangaTag): Int {
+			val t1 = o1.title.lowercase()
+			val t2 = o2.title.lowercase()
+			return collator?.compare(t1, t2) ?: compareValues(t1, t2)
+		}
 	}
 }
