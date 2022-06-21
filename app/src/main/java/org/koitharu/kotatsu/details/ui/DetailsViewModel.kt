@@ -92,9 +92,12 @@ class DetailsViewModel(
 		branches.indexOf(selected)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
-	val isChaptersEmpty: LiveData<Boolean> = delegate.manga.map { m ->
-		m != null && m.chapters.isNullOrEmpty()
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	val isChaptersEmpty: LiveData<Boolean> = combine(
+		delegate.manga,
+		isLoading.asFlow(),
+	) { m, loading ->
+		m != null && m.chapters.isNullOrEmpty() && !loading
+	}.asLiveDataDistinct(viewModelScope.coroutineContext, false)
 
 	val chapters = combine(
 		combine(
