@@ -73,7 +73,7 @@ afterEvaluate {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation('com.github.nv95:kotatsu-parsers:dc0129c76c') {
+	implementation('com.github.nv95:kotatsu-parsers:8a3b6df91d') {
 		exclude group: 'org.json', module: 'json'
 	}
 
