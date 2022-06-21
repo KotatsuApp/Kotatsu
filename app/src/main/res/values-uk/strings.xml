@@ -139,7 +139,7 @@
     <string name="scale_mode">Режим масштабування</string>
     <string name="zoom_mode_fit_center">Вмістити в екран</string>
     <string name="zoom_mode_fit_height">Підігнати по висоті</string>
-    <string name="zoom_mode_fit_width">підігнати по ширині</string>
+    <string name="zoom_mode_fit_width">Підігнати по ширині</string>
     <string name="zoom_mode_keep_start">Вихідний розмір</string>
     <string name="black_dark_theme">Чорна</string>
     <string name="black_dark_theme_summary">Споживає менше енергії на екранах AMOLED</string>
