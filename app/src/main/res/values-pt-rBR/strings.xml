@@ -294,4 +294,6 @@
     <string name="default_mode">Modo padrão</string>
     <string name="detect_reader_mode">Detecção automática do modo de leitura</string>
     <string name="detect_reader_mode_summary">Detectar automaticamente se o mangá é webtoon</string>
+    <string name="disable_battery_optimization">Desative a otimização da bateria</string>
+    <string name="disable_battery_optimization_summary">Ajuda com verificações de atualizações em segundo plano</string>
 </resources>
