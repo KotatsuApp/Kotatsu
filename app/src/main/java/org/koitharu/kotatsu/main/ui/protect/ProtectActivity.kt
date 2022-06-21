@@ -10,6 +10,11 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
+import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
+import androidx.biometric.BiometricPrompt
+import androidx.biometric.BiometricPrompt.AuthenticationCallback
 import androidx.core.graphics.Insets
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -17,8 +22,11 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityProtectBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEditorActionListener,
-	TextWatcher, View.OnClickListener {
+class ProtectActivity :
+	BaseActivity<ActivityProtectBinding>(),
+	TextView.OnEditorActionListener,
+	TextWatcher,
+	View.OnClickListener {
 
 	private val viewModel by viewModel<ProtectViewModel>()
 
@@ -39,7 +47,9 @@ class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEdito
 			finishAfterTransition()
 		}
 
-		binding.editPassword.requestFocus()
+		if (!useFingerprint()) {
+			binding.editPassword.requestFocus()
+		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -83,6 +93,28 @@ class ProtectActivity : BaseActivity<ActivityProtectBinding>(), TextView.OnEdito
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.layoutPassword.isEnabled = !isLoading
+	}
+
+	private fun useFingerprint(): Boolean {
+		if (BiometricManager.from(this).canAuthenticate(BIOMETRIC_WEAK) != BIOMETRIC_SUCCESS) {
+			return false
+		}
+		val prompt = BiometricPrompt(this, BiometricCallback())
+		val promptInfo = BiometricPrompt.PromptInfo.Builder()
+			.setAllowedAuthenticators(BIOMETRIC_WEAK)
+			.setTitle(getString(R.string.app_name))
+			.setConfirmationRequired(false)
+			.setNegativeButtonText(getString(android.R.string.cancel))
+			.build()
+		prompt.authenticate(promptInfo)
+		return true
+	}
+
+	private inner class BiometricCallback : AuthenticationCallback() {
+		override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+			super.onAuthenticationSucceeded(result)
+			viewModel.unlock()
+		}
 	}
 
 	companion object {

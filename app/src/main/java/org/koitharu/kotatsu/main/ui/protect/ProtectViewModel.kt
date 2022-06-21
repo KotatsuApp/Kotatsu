@@ -27,12 +27,16 @@ class ProtectViewModel(
 			val passwordHash = password.md5()
 			val appPasswordHash = settings.appPassword
 			if (passwordHash == appPasswordHash) {
-				protectHelper.unlock()
-				onUnlockSuccess.call(Unit)
+				unlock()
 			} else {
 				delay(PASSWORD_COMPARE_DELAY)
 				throw WrongPasswordException()
 			}
 		}
+	}
+
+	fun unlock() {
+		protectHelper.unlock()
+		onUnlockSuccess.call(Unit)
 	}
 }
