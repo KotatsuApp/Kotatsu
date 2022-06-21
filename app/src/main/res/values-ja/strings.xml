@@ -294,4 +294,8 @@
     <string name="detect_reader_mode">リーダーモードの自動検出</string>
     <string name="default_mode">デフォルトモード</string>
     <string name="detect_reader_mode_summary">マンガがウェブトゥーンかどうかを自動判定</string>
+    <string name="disable_battery_optimization">バッテリー最適化の無効化</string>
+    <string name="disable_battery_optimization_summary">バックグラウンドの更新チェックを支援</string>
+    <string name="crash_text">何か問題が発生しました。開発者にバグレポートを提出し、解決にご協力ください。</string>
+    <string name="send">送信</string>
 </resources>
