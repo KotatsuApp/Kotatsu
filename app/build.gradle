@@ -24,6 +24,10 @@ android {
 				arg 'room.schemaLocation', "$projectDir/schemas".toString()
 			}
 		}
+
+		// define this values in your local.properties file
+		buildConfigField 'String', 'SHIKIMORI_CLIENT_ID', "\"${localProperty('shikimori.clientId')}\""
+		buildConfigField 'String', 'SHIKIMORI_CLIENT_SECRET', "\"${localProperty('shikimori.clientSecret')}\""
 	}
 	buildTypes {
 		debug {
