@@ -271,7 +271,6 @@
 	<string name="removal_completed">Removal completed</string>
 	<string name="batch_manga_save_confirm">Are you sure you want to download all selected manga with all its chapters? This action can consume a lot of traffic and storage</string>
 	<string name="shikimori" translatable="false">Shikimori</string>
-	<string name="shikimori_info">Sign in into your Shikimori account to get more features</string>
 	<string name="parallel_downloads">Parallel downloads</string>
 	<string name="download_slowdown">Download slowdown</string>
 	<string name="download_slowdown_summary">Helps avoid blocking your IP address</string>
@@ -304,4 +303,10 @@
 	<string name="disable_battery_optimization_summary">Helps with background updates checks</string>
 	<string name="crash_text">Something went wrong. Please submit a bug report to the developers to help us fix it.</string>
 	<string name="send">Send</string>
+	<string name="status_planned">Planned</string>
+	<string name="status_reading">Reading</string>
+	<string name="status_re_reading">Re-reading</string>
+	<string name="status_completed">Completed</string>
+	<string name="status_on_hold">On hold</string>
+	<string name="status_dropped">Dropped</string>
 </resources>

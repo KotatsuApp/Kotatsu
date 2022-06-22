@@ -31,9 +31,9 @@ import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.readerModule
 import org.koitharu.kotatsu.remotelist.remoteListModule
+import org.koitharu.kotatsu.scrobbling.shikimori.shikimoriModule
 import org.koitharu.kotatsu.search.searchModule
 import org.koitharu.kotatsu.settings.settingsModule
-import org.koitharu.kotatsu.shikimori.shikimoriModule
 import org.koitharu.kotatsu.suggestions.suggestionsModule
 import org.koitharu.kotatsu.tracker.trackerModule
 import org.koitharu.kotatsu.widget.WidgetUpdater

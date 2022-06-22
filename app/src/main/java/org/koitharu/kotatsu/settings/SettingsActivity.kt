@@ -23,7 +23,7 @@ import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.shikimori.ui.ShikimoriSettingsFragment
+import org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
 class SettingsActivity :

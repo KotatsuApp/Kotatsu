@@ -26,7 +26,8 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.shikimori.data.ShikimoriRepository
+import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
@@ -41,7 +42,7 @@ class DetailsViewModel(
 	mangaDataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
-	private val shikimoriRepository: ShikimoriRepository,
+	private val scrobbler: Scrobbler,
 ) : BaseViewModel() {
 
 	private val delegate = MangaDetailsDelegate(
@@ -81,8 +82,11 @@ class DetailsViewModel(
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
-	val isShikimoriAvailable: Boolean
-		get() = shikimoriRepository.isAuthorized
+	val isScrobblingAvailable: Boolean
+		get() = scrobbler.isAvailable
+
+	val scrobblingInfo = scrobbler.observeScrobblingInfo(delegate.mangaId)
+		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
 	val branches: LiveData<List<String?>> = delegate.manga.map {
 		val chapters = it?.chapters ?: return@map emptyList()
@@ -189,6 +193,17 @@ class DetailsViewModel(
 					it.printStackTraceDebug()
 				}
 			}
+		}
+	}
+
+	fun updateScrobbling(rating: Float, status: ScrobblingStatus?) {
+		launchJob(Dispatchers.Default) {
+			scrobbler.updateScrobblingInfo(
+				mangaId = delegate.mangaId,
+				rating = rating,
+				status = status,
+				comment = null,
+			)
 		}
 	}
 

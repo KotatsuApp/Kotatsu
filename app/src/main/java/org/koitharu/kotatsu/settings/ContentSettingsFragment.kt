@@ -1,14 +1,10 @@
 package org.koitharu.kotatsu.settings
 
-import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -20,7 +16,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.utils.SliderPreference
-import org.koitharu.kotatsu.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -31,7 +26,6 @@ class ContentSettingsFragment :
 	StorageSelectDialog.OnStorageSelectListener {
 
 	private val storageManager by inject<LocalStorageManager>()
-	private val shikimoriRepository by inject<ShikimoriRepository>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_content)
@@ -55,12 +49,12 @@ class ContentSettingsFragment :
 			).names()
 			setDefaultValueCompat(DoHProvider.NONE.name)
 		}
-		bindRemoteSourcesSummary()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.bindStorageName()
+		bindRemoteSourcesSummary()
 		settings.subscribe(this)
 	}
 
@@ -96,14 +90,6 @@ class ContentSettingsFragment :
 					.show()
 				true
 			}
-			AppSettings.KEY_SHIKIMORI -> {
-				if (!shikimoriRepository.isAuthorized) {
-					showShikimoriDialog()
-					true
-				} else {
-					super.onPreferenceTreeClick(preference)
-				}
-			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
@@ -124,21 +110,5 @@ class ContentSettingsFragment :
 			val total = settings.remoteMangaSources.size
 			summary = getString(R.string.enabled_d_of_d, total - settings.hiddenSources.size, total)
 		}
-	}
-
-	private fun showShikimoriDialog() {
-		MaterialAlertDialogBuilder(context ?: return)
-			.setTitle(R.string.shikimori)
-			.setMessage(R.string.shikimori_info)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setPositiveButton(R.string.sign_in) { _, _ ->
-				runCatching {
-					val intent = Intent(Intent.ACTION_VIEW)
-					intent.data = Uri.parse(shikimoriRepository.oauthUrl)
-					startActivity(intent)
-				}.onFailure {
-					Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_LONG).show()
-				}
-			}.show()
 	}
 }

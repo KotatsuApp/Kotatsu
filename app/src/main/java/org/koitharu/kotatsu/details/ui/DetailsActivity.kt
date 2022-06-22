@@ -42,8 +42,8 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
-import org.koitharu.kotatsu.shikimori.ui.selector.ShikimoriSelectorBottomSheet
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class DetailsActivity :
@@ -156,7 +156,7 @@ class DetailsActivity :
 		menu.findItem(R.id.action_delete).isVisible = manga?.source == MangaSource.LOCAL
 		menu.findItem(R.id.action_browser).isVisible = manga?.source != MangaSource.LOCAL
 		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
-		menu.findItem(R.id.action_shiki_track).isVisible = viewModel.isShikimoriAvailable
+		menu.findItem(R.id.action_shiki_track).isVisible = viewModel.isScrobblingAvailable
 		return super.onPrepareOptionsMenu(menu)
 	}
 
@@ -199,7 +199,7 @@ class DetailsActivity :
 		}
 		R.id.action_shiki_track -> {
 			viewModel.manga.value?.let {
-				ShikimoriSelectorBottomSheet.show(supportFragmentManager, it)
+				ScrobblingSelectorBottomSheet.show(supportFragmentManager, it)
 			}
 			true
 		}

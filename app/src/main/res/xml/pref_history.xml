@@ -39,4 +39,13 @@
 		android:persistent="false"
 		android:title="@string/clear_cookies" />
 
+	<PreferenceCategory android:title="@string/tracking">
+		
+		<PreferenceScreen
+			android:fragment="org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment"
+			android:key="shikimori"
+			android:title="@string/shikimori" />
+
+	</PreferenceCategory>
+
 </PreferenceScreen>

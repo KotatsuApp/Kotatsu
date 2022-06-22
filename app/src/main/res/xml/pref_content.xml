@@ -13,11 +13,6 @@
 		android:key="suggestions"
 		android:title="@string/suggestions" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.shikimori.ui.ShikimoriSettingsFragment"
-		android:title="@string/shikimori"
-		android:key="shikimori" />
-
 	<ListPreference
 		android:entries="@array/doh_providers"
 		android:key="doh"

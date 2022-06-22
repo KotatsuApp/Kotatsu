@@ -13,6 +13,8 @@ import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.history.data.toMangaHistory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.domain.tryScrobble
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
 
@@ -20,6 +22,7 @@ class HistoryRepository(
 	private val db: MangaDatabase,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
+	private val scrobblers: List<Scrobbler>,
 ) {
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
@@ -78,6 +81,10 @@ class HistoryRepository(
 				)
 			)
 			trackingRepository.syncWithHistory(manga, chapterId)
+			val chapter = manga.chapters?.find { x -> x.id == chapterId }
+			if (chapter != null) {
+				scrobblers.forEach { it.tryScrobble(manga.id, chapter) }
+			}
 		}
 	}
 

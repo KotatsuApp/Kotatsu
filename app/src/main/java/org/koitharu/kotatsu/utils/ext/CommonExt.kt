@@ -1,18 +1,20 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.content.ActivityNotFoundException
 import android.content.res.Resources
+import java.io.FileNotFoundException
+import java.net.SocketTimeoutException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
-import java.io.FileNotFoundException
-import java.net.SocketTimeoutException
 
 fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
 	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required)
+	is ActivityNotFoundException,
 	is UnsupportedOperationException -> resources.getString(R.string.operation_not_supported)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
