@@ -106,7 +106,7 @@
     <string name="manga_shelf">Полиця</string>
     <string name="recent_manga">Недавні</string>
     <string name="pages_animation">Анімація перегортання</string>
-    <string name="manga_save_location">Папка для завантажень</string>
+    <string name="manga_save_location">Тека для завантажень</string>
     <string name="other_storage">Інше сховище</string>
     <string name="done">Готово</string>
     <string name="all_favourites">Усі улюблені</string>
@@ -296,4 +296,6 @@
     <string name="detect_reader_mode">Автовизначення режиму читання</string>
     <string name="disable_battery_optimization">Вимкнути оптимізацію акумулятора</string>
     <string name="disable_battery_optimization_summary">Допомагає з перевірками фонових оновлень</string>
+    <string name="crash_text">Щось пішло не так. Будь ласка, надішліть звіт про помилку розробникам, щоб допомогти нам її виправити.</string>
+    <string name="send">Надіслати</string>
 </resources>
