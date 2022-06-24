@@ -299,4 +299,5 @@
     <string name="disable_battery_optimization_summary">Arka planda güncelleme denetimlerine yardımcı olur</string>
     <string name="crash_text">Bir şeyler yanlış gitti. Düzeltmemize yardımcı olması için lütfen geliştiricilere bir hata bildirimi gönderin.</string>
     <string name="send">Gönder</string>
+    <string name="disable_all">Tümünü devre dışı bırak</string>
 </resources>
