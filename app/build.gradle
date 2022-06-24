@@ -73,7 +73,7 @@ afterEvaluate {
 }
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-	implementation('com.github.nv95:kotatsu-parsers:8a3b6df91d') {
+	implementation('com.github.nv95:kotatsu-parsers:c92f89f307') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -82,10 +82,10 @@ dependencies {
 	implementation 'androidx.core:core-ktx:1.8.0'
 	implementation 'androidx.activity:activity-ktx:1.5.0-rc01'
 	implementation 'androidx.fragment:fragment-ktx:1.5.0-rc01'
-	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-rc01'
-	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.0-rc01'
-	implementation 'androidx.lifecycle:lifecycle-service:2.5.0-rc01'
-	implementation 'androidx.lifecycle:lifecycle-process:2.5.0-rc01'
+	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-rc02'
+	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.0-rc02'
+	implementation 'androidx.lifecycle:lifecycle-service:2.5.0-rc02'
+	implementation 'androidx.lifecycle:lifecycle-process:2.5.0-rc02'
 	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 	implementation 'androidx.recyclerview:recyclerview:1.2.1'
@@ -95,7 +95,7 @@ dependencies {
 	implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha04'
 	implementation 'com.google.android.material:material:1.7.0-alpha02'
 	//noinspection LifecycleAnnotationProcessorWithJava8
-	kapt 'androidx.lifecycle:lifecycle-compiler:2.5.0-rc01'
+	kapt 'androidx.lifecycle:lifecycle-compiler:2.5.0-rc02'
 
 	implementation 'androidx.room:room-runtime:2.4.2'
 	implementation 'androidx.room:room-ktx:2.4.2'

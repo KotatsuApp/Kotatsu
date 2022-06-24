@@ -133,7 +133,7 @@
 		<item name="android:textColor">?attr/colorOnBackground</item>
 	</style>
 
-	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall"/>
+	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall" />
 
 	<style name="TextAppearance.Kotatsu.Preference.Secondary" parent="TextAppearance.Material3.BodySmall" />
 
