@@ -3,8 +3,6 @@ package org.koitharu.kotatsu.favourites.ui.categories.edit
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -24,7 +22,8 @@ import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>(), AdapterView.OnItemClickListener {
+class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>(), AdapterView.OnItemClickListener,
+	View.OnClickListener {
 
 	private val viewModel by viewModel<FavouritesCategoryEditViewModel> {
 		parametersOf(intent.getLongExtra(EXTRA_ID, NO_ID))
@@ -39,6 +38,7 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 			setHomeAsUpIndicator(com.google.android.material.R.drawable.abc_ic_clear_material)
 		}
 		initSortSpinner()
+		binding.buttonDone.setOnClickListener(this)
 
 		viewModel.onSaved.observe(this) { finishAfterTransition() }
 		viewModel.category.observe(this, ::onCategoryChanged)
@@ -62,22 +62,14 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 		}
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		menuInflater.inflate(R.menu.opt_config, menu)
-		menu.findItem(R.id.action_done)?.setTitle(R.string.save)
-		return super.onCreateOptionsMenu(menu)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_done -> {
-			viewModel.save(
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.button_done -> viewModel.save(
 				title = binding.editName.text?.toString().orEmpty(),
 				sortOrder = getSelectedSortOrder(),
 				isTrackerEnabled = binding.switchTracker.isChecked,
 			)
-			true
 		}
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
