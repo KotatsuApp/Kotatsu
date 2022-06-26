@@ -15,7 +15,7 @@
 	<dimen name="manga_list_details_item_height">120dp</dimen>
 	<dimen name="bookmark_item_height">120dp</dimen>
 	<dimen name="bookmark_list_spacing">4dp</dimen>
-	<dimen name="chapter_list_item_height">62dp</dimen>
+	<dimen name="chapter_list_item_height">48dp</dimen>
 	<dimen name="preferred_grid_width">120dp</dimen>
 	<dimen name="header_height">48dp</dimen>
 	<dimen name="list_footer_height_inner">36dp</dimen>
