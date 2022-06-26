@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
 	<integer name="manga_badge_max_character_count">3</integer>
+	<integer name="fade_in_duration">210</integer>
+	<integer name="fade_out_duration">90</integer>
 </resources>
