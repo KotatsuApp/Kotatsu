@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="hours_ago">
+        <item quantity="one">%1$d tunti sitten</item>
+        <item quantity="other">%1$d tuntia sitten</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="one">%1$d luku</item>
+        <item quantity="other">%1$d lukua</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="one">%1$d minuutti sitten</item>
+        <item quantity="other">%1$d minuuttia sitten</item>
+    </plurals>
+    <plurals name="items">
+        <item quantity="one">%1$d kohde</item>
+        <item quantity="other">%1$d kohdetta</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$d uusi luku</item>
+        <item quantity="other">%1$d uutta lukua</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%1$d päivä sitten</item>
+        <item quantity="other">%1$d päivää sitten</item>
+    </plurals>
+</resources>

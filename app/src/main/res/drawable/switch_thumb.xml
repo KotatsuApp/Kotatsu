@@ -7,7 +7,7 @@
 		android:right="4dp"
 		android:top="4dp">
 		<shape android:shape="oval">
-			<solid android:color="#000000" />
+			<solid android:color="@color/selector_switch_thumb" />
 			<size
 				android:width="20dp"
 				android:height="20dp" />

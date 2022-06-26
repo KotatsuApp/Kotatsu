@@ -41,7 +41,7 @@ class AppSettings(context: Context) {
 		get() = Collections.unmodifiableSet(remoteSources)
 
 	var listMode: ListMode
-		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.DETAILED_LIST)
+		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)
 		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE, value) }
 
 	var defaultSection: AppSection

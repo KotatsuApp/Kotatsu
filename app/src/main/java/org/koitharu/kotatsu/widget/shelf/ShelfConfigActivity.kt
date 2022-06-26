@@ -4,11 +4,10 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +25,7 @@ import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 import com.google.android.material.R as materialR
 
 class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
-	OnListItemClickListener<CategoryItem> {
+	OnListItemClickListener<CategoryItem>, View.OnClickListener {
 
 	private val viewModel by viewModel<ShelfConfigViewModel>()
 
@@ -45,6 +44,8 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 			MaterialDividerItemDecoration(this, RecyclerView.VERTICAL)
 		)
 		binding.recyclerView.adapter = adapter
+		binding.buttonDone.isVisible = true
+		binding.buttonDone.setOnClickListener(this)
 		binding.fabAdd.hide()
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -61,23 +62,18 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 		viewModel.onError.observe(this, this::onError)
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		menuInflater.inflate(R.menu.opt_config, menu)
-		return super.onCreateOptionsMenu(menu)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_done -> {
-			config.categoryId = viewModel.checkedId
-			updateWidget()
-			setResult(
-				Activity.RESULT_OK,
-				Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.widgetId)
-			)
-			finish()
-			true
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.button_done -> {
+				config.categoryId = viewModel.checkedId
+				updateWidget()
+				setResult(
+					Activity.RESULT_OK,
+					Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.widgetId)
+				)
+				finish()
+			}
 		}
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onItemClick(item: CategoryItem, view: View) {

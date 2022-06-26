@@ -106,7 +106,13 @@ class SourcesSettingsFragment :
 			searchView.queryHint = searchMenuItem.title
 		}
 
-		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
+		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+			R.id.action_disable_all -> {
+				viewModel.disableAll()
+				true
+			}
+			else -> false
+		}
 
 		override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
 			(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)

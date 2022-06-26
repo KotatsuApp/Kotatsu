@@ -298,4 +298,5 @@
     <string name="disable_battery_optimization_summary">Hilft bei der Überprüfung von Hintergrundaktualisierungen</string>
     <string name="send">Senden</string>
     <string name="crash_text">Etwas ist schief gelaufen. Bitte senden Sie einen Fehlerbericht an die Entwickler, damit wir das Problem beheben können.</string>
+    <string name="disable_all">Alle deaktivieren</string>
 </resources>

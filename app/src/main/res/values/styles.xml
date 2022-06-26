@@ -88,9 +88,8 @@
 
 	<style name="Widget.Kotatsu.Switch" parent="Widget.Material3.CompoundButton.Switch">
 		<item name="android:thumb">@drawable/switch_thumb</item>
-		<item name="thumbTint">@color/selector_switch_thumb</item>
 		<item name="track">@drawable/switch_track</item>
-		<item name="trackTint">@color/selector_switch_track</item>
+		<item name="useMaterialThemeColors">false</item>
 		<item name="materialThemeOverlay">@style/ThemeOverlay.Kotatsu.Switch</item>
 	</style>
 
@@ -133,7 +132,7 @@
 		<item name="android:textColor">?attr/colorOnBackground</item>
 	</style>
 
-	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall"/>
+	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall" />
 
 	<style name="TextAppearance.Kotatsu.Preference.Secondary" parent="TextAppearance.Material3.BodySmall" />
 

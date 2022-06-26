@@ -309,4 +309,5 @@
 	<string name="status_completed">Completed</string>
 	<string name="status_on_hold">On hold</string>
 	<string name="status_dropped">Dropped</string>
+	<string name="disable_all">Disable all</string>
 </resources>

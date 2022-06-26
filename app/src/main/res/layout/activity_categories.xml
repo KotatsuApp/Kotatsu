@@ -8,9 +8,9 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
-		android:fitsSystemWindows="true"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:fitsSystemWindows="true">
 
 		<com.google.android.material.appbar.CollapsingToolbarLayout
 			android:id="@+id/collapsingToolbarLayout"
@@ -23,7 +23,19 @@
 				android:id="@id/toolbar"
 				android:layout_width="match_parent"
 				android:layout_height="?attr/actionBarSize"
-				app:layout_collapseMode="pin" />
+				app:layout_collapseMode="pin">
+
+				<Button
+					android:id="@+id/button_done"
+					style="@style/Widget.Material3.Button.UnelevatedButton"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="end"
+					android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+					android:text="@string/done"
+					android:visibility="gone" />
+
+			</com.google.android.material.appbar.MaterialToolbar>
 
 		</com.google.android.material.appbar.CollapsingToolbarLayout>
 

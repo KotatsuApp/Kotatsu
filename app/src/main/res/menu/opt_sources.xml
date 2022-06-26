@@ -10,4 +10,9 @@
 		app:actionViewClass="androidx.appcompat.widget.SearchView"
 		app:showAsAction="ifRoom|collapseActionView" />
 
+	<item
+		android:id="@+id/action_disable_all"
+		android:title="@string/disable_all"
+		app:showAsAction="never" />
+
 </menu>
