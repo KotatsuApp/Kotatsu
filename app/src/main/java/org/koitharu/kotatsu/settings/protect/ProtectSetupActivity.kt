@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.settings.protect
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,9 +9,11 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.core.graphics.Insets
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -18,7 +22,7 @@ import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
 private const val MIN_PASSWORD_LENGTH = 4
 
 class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWatcher,
-	View.OnClickListener, TextView.OnEditorActionListener {
+	View.OnClickListener, TextView.OnEditorActionListener, CompoundButton.OnCheckedChangeListener {
 
 	private val viewModel by viewModel<ProtectSetupViewModel>()
 
@@ -30,6 +34,9 @@ class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWa
 		binding.editPassword.setOnEditorActionListener(this)
 		binding.buttonNext.setOnClickListener(this)
 		binding.buttonCancel.setOnClickListener(this)
+
+		binding.switchBiometric.isChecked = viewModel.isBiometricEnabled
+		binding.switchBiometric.setOnCheckedChangeListener(this)
 
 		viewModel.isSecondStep.observe(this, this::onStepChanged)
 		viewModel.onPasswordSet.observe(this) {
@@ -62,6 +69,10 @@ class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWa
 		}
 	}
 
+	override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+		viewModel.setBiometricEnabled(isChecked)
+	}
+
 	override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
 		return if (actionId == EditorInfo.IME_ACTION_DONE && binding.buttonNext.isEnabled) {
 			binding.buttonNext.performClick()
@@ -85,6 +96,7 @@ class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWa
 
 	private fun onStepChanged(isSecondStep: Boolean) {
 		binding.buttonCancel.isGone = isSecondStep
+		binding.switchBiometric.isVisible = isSecondStep && isBiometricAvailable()
 		if (isSecondStep) {
 			binding.layoutPassword.helperText = getString(R.string.repeat_password)
 			binding.buttonNext.setText(R.string.confirm)
@@ -92,5 +104,10 @@ class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWa
 			binding.layoutPassword.helperText = getString(R.string.password_length_hint)
 			binding.buttonNext.setText(R.string.next)
 		}
+	}
+
+	private fun isBiometricAvailable(): Boolean {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+			packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)
 	}
 }

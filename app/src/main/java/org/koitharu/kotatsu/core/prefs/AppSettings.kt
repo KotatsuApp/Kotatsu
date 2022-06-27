@@ -125,6 +125,10 @@ class AppSettings(context: Context) {
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit { if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD) }
 
+	var isBiometricProtectionEnabled: Boolean
+		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
+		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
+
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
 			?.split('|')
@@ -293,6 +297,7 @@ class AppSettings(context: Context) {
 		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_APP_PASSWORD = "app_password"
 		const val KEY_PROTECT_APP = "protect_app"
+		const val KEY_PROTECT_APP_BIOMETRIC = "protect_app_bio"
 		const val KEY_APP_VERSION = "app_version"
 		const val KEY_ZOOM_MODE = "zoom_mode"
 		const val KEY_BACKUP = "backup"

@@ -72,6 +72,7 @@
 		<item name="materialCardViewStyle">@style/Widget.Material3.CardView.Filled</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
 		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
+		<item name="materialSwitchStyle">@style/Widget.Material3.CompoundButton.MaterialSwitch</item>
 
 		<!-- Text appearance -->
 		<item name="actionMenuTextAppearance">@style/TextAppearance.Kotatsu.Menu</item>
