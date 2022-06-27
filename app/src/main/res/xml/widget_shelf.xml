@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:configure="org.koitharu.kotatsu.widget.shelf.ShelfConfigActivity"
+	android:description="@string/appwidget_shelf_description"
 	android:initialLayout="@layout/widget_shelf"
 	android:minWidth="110dp"
 	android:minHeight="110dp"
@@ -10,4 +12,6 @@
 	android:previewImage="@drawable/ic_appwidget_shelf"
 	android:resizeMode="horizontal|vertical"
 	android:updatePeriodMillis="0"
-	android:widgetCategory="home_screen" />
+	android:widgetCategory="home_screen"
+	android:widgetFeatures="reconfigurable"
+	tools:ignore="UnusedAttribute" />

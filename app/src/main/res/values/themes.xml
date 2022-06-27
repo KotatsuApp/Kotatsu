@@ -103,4 +103,8 @@
 		<item name="toolbarNavigationButtonStyle">@style/Theme.Kotatsu.ActionMode.CloseButton</item>
 	</style>
 
+	<style name="Theme.Kotatsu.AppWidgetContainer" parent="@style/Theme.MaterialComponents.Light">
+		<item name="android:colorBackground">@color/kotatsu_background</item>
+		<item name="android:panelColorBackground">@color/kotatsu_primaryContainer</item>
+	</style>
 </resources>
