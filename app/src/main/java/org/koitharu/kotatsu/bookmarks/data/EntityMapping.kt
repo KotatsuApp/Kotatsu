@@ -18,6 +18,7 @@ fun BookmarkEntity.toBookmark(manga: Manga) = Bookmark(
 	scroll = scroll,
 	imageUrl = imageUrl,
 	createdAt = Date(createdAt),
+	percent = percent,
 )
 
 fun Bookmark.toEntity() = BookmarkEntity(
@@ -28,4 +29,5 @@ fun Bookmark.toEntity() = BookmarkEntity(
 	scroll = scroll,
 	imageUrl = imageUrl,
 	createdAt = createdAt.time,
+	percent = percent,
 )

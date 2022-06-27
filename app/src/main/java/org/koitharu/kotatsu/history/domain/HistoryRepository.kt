@@ -59,7 +59,7 @@ class HistoryRepository(
 			.distinctUntilChanged()
 	}
 
-	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int) {
+	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int, percent: Float) {
 		if (manga.isNsfw && settings.isHistoryExcludeNsfw) {
 			return
 		}
@@ -75,6 +75,7 @@ class HistoryRepository(
 					chapterId = chapterId,
 					page = page,
 					scroll = scroll.toFloat(), // we migrate to int, but decide to not update database
+					percent = percent,
 				)
 			)
 			trackingRepository.syncWithHistory(manga, chapterId)
