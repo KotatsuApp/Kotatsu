@@ -3,5 +3,4 @@
 	<bool name="is_tablet">false</bool>
 	<bool name="light_status_bar">true</bool>
 	<bool name="light_navigation_bar">false</bool>
-	<bool name="elevation_overlay_enabled">false</bool>
 </resources>
