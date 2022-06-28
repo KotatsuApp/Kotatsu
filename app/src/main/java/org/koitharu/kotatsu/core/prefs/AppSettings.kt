@@ -104,9 +104,12 @@ class AppSettings(context: Context) {
 	val isReaderModeDetectionEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_MODE_DETECT, true)
 
-	var historyGrouping: Boolean
+	var isHistoryGroupingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_GROUPING, true)
 		set(value) = prefs.edit { putBoolean(KEY_HISTORY_GROUPING, value) }
+
+	val isReadingIndicatorsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READING_INDICATORS, true)
 
 	val isHistoryExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_EXCLUDE_NSFW, false)
@@ -303,6 +306,7 @@ class AppSettings(context: Context) {
 		const val KEY_BACKUP = "backup"
 		const val KEY_RESTORE = "restore"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
+		const val KEY_READING_INDICATORS = "reading_indicators"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
 		const val KEY_PAGES_NUMBERS = "pages_numbers"

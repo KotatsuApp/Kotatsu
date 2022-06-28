@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -27,7 +28,7 @@ class FavouritesListViewModel(
 	private val repository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val historyRepository: HistoryRepository,
-	settings: AppSettings,
+	private val settings: AppSettings,
 ) : MangaListViewModel(settings), ListExtraProvider {
 
 	var sortOrder: LiveData<SortOrder?> = if (categoryId == NO_ID) {
@@ -96,6 +97,10 @@ class FavouritesListViewModel(
 	}
 
 	override suspend fun getProgress(mangaId: Long): Float {
-		return historyRepository.getProgress(mangaId)
+		return if (settings.isReadingIndicatorsEnabled) {
+			historyRepository.getProgress(mangaId)
+		} else {
+			PROGRESS_NONE
+		}
 	}
 }

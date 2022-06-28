@@ -1,30 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<Preference
-		android:key="search_history_clear"
-		android:persistent="false"
-		android:summary="@string/loading_"
-		android:title="@string/clear_search_history" />
-
-	<Preference
-		android:key="updates_feed_clear"
-		android:persistent="false"
-		android:summary="@string/loading_"
-		android:title="@string/clear_updates_feed" />
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="reading_indicators"
+		android:summary="@string/show_reading_indicators_summary"
+		android:title="@string/show_reading_indicators" />
 
 	<SwitchPreferenceCompat
 		android:key="history_exclude_nsfw"
+		android:summary="@string/exclude_nsfw_from_history_summary"
 		android:title="@string/exclude_nsfw_from_history" />
 
-	<PreferenceCategory android:title="@string/cache">
+	<PreferenceCategory android:title="@string/data_deletion">
+
+		<Preference
+			android:key="search_history_clear"
+			android:persistent="false"
+			android:summary="@string/loading_"
+			android:title="@string/clear_search_history" />
+
+		<Preference
+			android:key="updates_feed_clear"
+			android:persistent="false"
+			android:summary="@string/loading_"
+			android:title="@string/clear_updates_feed" />
 
 		<Preference
 			android:key="thumbs_cache_clear"
 			android:persistent="false"
 			android:summary="@string/computing_"
-			android:title="@string/clear_thumbs_cache" />
+			android:title="@string/clear_thumbs_cache"
+			app:allowDividerAbove="true" />
 
 		<Preference
 			android:key="pages_cache_clear"
@@ -32,11 +41,13 @@
 			android:summary="@string/computing_"
 			android:title="@string/clear_pages_cache" />
 
-	</PreferenceCategory>
+		<Preference
+			android:key="cookies_clear"
+			android:persistent="false"
+			android:summary="@string/clear_cookies_summary"
+			android:title="@string/clear_cookies"
+			app:allowDividerAbove="true" />
 
-	<Preference
-		android:key="cookies_clear"
-		android:persistent="false"
-		android:title="@string/clear_cookies" />
+	</PreferenceCategory>
 
 </PreferenceScreen>
