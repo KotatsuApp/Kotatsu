@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.bookmarks.ui.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
+import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -176,6 +177,7 @@ class DetailsFragment :
 				setIconResource(R.drawable.ic_play)
 			}
 		}
+		binding.progressView.setPercent(history?.percent ?: PROGRESS_NONE, animate = true)
 	}
 
 	private fun onFavouriteChanged(isFavourite: Boolean) {

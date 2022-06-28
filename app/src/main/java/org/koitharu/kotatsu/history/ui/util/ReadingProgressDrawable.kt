@@ -7,7 +7,6 @@ import androidx.annotation.StyleRes
 import androidx.core.graphics.ColorUtils
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
-import kotlin.math.roundToInt
 
 class ReadingProgressDrawable(
 	context: Context,
@@ -31,7 +30,7 @@ class ReadingProgressDrawable(
 	var progress: Float = PROGRESS_NONE
 		set(value) {
 			field = value
-			text = textPattern.format((value * 100f).roundToInt().toString())
+			text = textPattern.format((value * 100f).toInt().toString())
 			paint.getTextBounds(text, 0, text.length, textBounds)
 			invalidateSelf()
 		}

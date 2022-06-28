@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.*
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
@@ -144,7 +145,7 @@ class ReaderViewModel(
 		historyRepository.saveStateAsync(
 			manga = mangaData.value ?: return,
 			state = readerState,
-			percent = computePercent(readerState.chapterId, readerState.page)
+			percent = computePercent(readerState.chapterId, readerState.page),
 		)
 	}
 
@@ -371,17 +372,17 @@ class ReaderViewModel(
 	}
 
 	private fun computePercent(chapterId: Long, pageIndex: Int): Float {
-		val chapters = manga?.chapters ?: return -1f
+		val chapters = manga?.chapters ?: return PROGRESS_NONE
 		val chaptersCount = chapters.size
 		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }
-		val pages = content.value?.pages ?: return -1f
+		val pages = content.value?.pages ?: return PROGRESS_NONE
 		val pagesCount = pages.count { x -> x.chapterId == chapterId }
 		if (chaptersCount == 0 || pagesCount == 0) {
-			return -1f
+			return PROGRESS_NONE
 		}
-		val chapterPercent = (chapterIndex + 1) / chaptersCount.toFloat()
 		val pagePercent = (pageIndex + 1) / pagesCount.toFloat()
-		return pagePercent * chapterPercent // FIXME
+		val ppc = 1f / chaptersCount
+		return ppc * chapterIndex + ppc * pagePercent
 	}
 }
 
