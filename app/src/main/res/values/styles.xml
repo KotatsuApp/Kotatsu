@@ -182,6 +182,7 @@
 		<item name="android:textColor">?android:textColorPrimary</item>
 		<item name="strokeWidth">3dp</item>
 		<item name="android:textSize">9sp</item>
+		<item name="autoFitTextSize">true</item>
 	</style>
-	
+
 </resources>

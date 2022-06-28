@@ -32,8 +32,7 @@
 			android:key="thumbs_cache_clear"
 			android:persistent="false"
 			android:summary="@string/computing_"
-			android:title="@string/clear_thumbs_cache"
-			app:allowDividerAbove="true" />
+			android:title="@string/clear_thumbs_cache" />
 
 		<Preference
 			android:key="pages_cache_clear"
@@ -45,8 +44,7 @@
 			android:key="cookies_clear"
 			android:persistent="false"
 			android:summary="@string/clear_cookies_summary"
-			android:title="@string/clear_cookies"
-			app:allowDividerAbove="true" />
+			android:title="@string/clear_cookies" />
 
 	</PreferenceCategory>
 

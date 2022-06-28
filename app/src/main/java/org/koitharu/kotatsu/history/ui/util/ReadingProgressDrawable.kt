@@ -20,6 +20,7 @@ class ReadingProgressDrawable(
 	private val textColor: Int
 	private val textPattern = context.getString(R.string.percent_string_pattern)
 	private val textBounds = Rect()
+	private val tempRect = Rect()
 	private val hasBackground: Boolean
 	private val hasOutline: Boolean
 	private val hasText: Boolean
@@ -63,6 +64,8 @@ class ReadingProgressDrawable(
 		if (autoFitTextSize) {
 			val innerWidth = bounds.width() - (paint.strokeWidth * 2f)
 			paint.textSize = getTextSizeForWidth(innerWidth, "100%")
+			paint.getTextBounds(text, 0, text.length, textBounds)
+			invalidateSelf()
 		}
 	}
 
@@ -122,7 +125,7 @@ class ReadingProgressDrawable(
 	private fun getTextSizeForWidth(width: Float, text: String): Float {
 		val testTextSize = 48f
 		paint.textSize = testTextSize
-		paint.getTextBounds(text, 0, text.length, textBounds)
-		return testTextSize * width / textBounds.width()
+		paint.getTextBounds(text, 0, text.length, tempRect)
+		return testTextSize * width / tempRect.width()
 	}
 }
