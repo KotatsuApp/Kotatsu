@@ -2,8 +2,6 @@ package org.koitharu.kotatsu.history.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -26,6 +24,8 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
@@ -112,9 +112,9 @@ class HistoryListViewModel(
 			}
 			val counter = trackingRepository.getNewChaptersCount(manga.id)
 			result += when (mode) {
-				ListMode.LIST -> manga.toListModel(counter)
-				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter)
-				ListMode.GRID -> manga.toGridModel(counter)
+				ListMode.LIST -> manga.toListModel(counter, history.percent)
+				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter, history.percent)
+				ListMode.GRID -> manga.toGridModel(counter, history.percent)
 			}
 		}
 		return result

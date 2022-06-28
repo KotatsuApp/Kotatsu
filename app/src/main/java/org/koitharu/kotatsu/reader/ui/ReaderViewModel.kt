@@ -376,6 +376,9 @@ class ReaderViewModel(
 		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }
 		val pages = content.value?.pages ?: return -1f
 		val pagesCount = pages.count { x -> x.chapterId == chapterId }
+		if (chaptersCount == 0 || pagesCount == 0) {
+			return -1f
+		}
 		val chapterPercent = (chapterIndex + 1) / chaptersCount.toFloat()
 		val pagePercent = (pageIndex + 1) / pagesCount.toFloat()
 		return pagePercent * chapterPercent // FIXME

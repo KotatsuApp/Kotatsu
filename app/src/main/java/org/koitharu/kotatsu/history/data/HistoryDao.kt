@@ -45,26 +45,36 @@ abstract class HistoryDao {
 	@Query("SELECT COUNT(*) FROM history")
 	abstract fun observeCount(): Flow<Int>
 
+	@Query("SELECT percent FROM history WHERE manga_id = :id")
+	abstract fun findProgress(id: Long): Float?
+
 	@Query("DELETE FROM history")
 	abstract suspend fun clear()
 
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(entity: HistoryEntity): Long
 
-	@Query("UPDATE history SET page = :page, chapter_id = :chapterId, scroll = :scroll, updated_at = :updatedAt WHERE manga_id = :mangaId")
+	@Query("UPDATE history SET page = :page, chapter_id = :chapterId, scroll = :scroll, percent = :percent, updated_at = :updatedAt WHERE manga_id = :mangaId")
 	abstract suspend fun update(
 		mangaId: Long,
 		page: Int,
 		chapterId: Long,
 		scroll: Float,
-		updatedAt: Long
+		percent: Float,
+		updatedAt: Long,
 	): Int
 
 	@Query("DELETE FROM history WHERE manga_id = :mangaId")
 	abstract suspend fun delete(mangaId: Long)
 
-	suspend fun update(entity: HistoryEntity) =
-		update(entity.mangaId, entity.page, entity.chapterId, entity.scroll, entity.updatedAt)
+	suspend fun update(entity: HistoryEntity) = update(
+		mangaId = entity.mangaId,
+		page = entity.page,
+		chapterId = entity.chapterId,
+		scroll = entity.scroll,
+		percent = entity.percent,
+		updatedAt = entity.updatedAt
+	)
 
 	@Transaction
 	open suspend fun upsert(entity: HistoryEntity): Boolean {

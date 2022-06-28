@@ -16,6 +16,8 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
 
+const val PROGRESS_NONE = -1f
+
 class HistoryRepository(
 	private val db: MangaDatabase,
 	private val trackingRepository: TrackingRepository,
@@ -84,6 +86,10 @@ class HistoryRepository(
 
 	suspend fun getOne(manga: Manga): MangaHistory? {
 		return db.historyDao.find(manga.id)?.toMangaHistory()
+	}
+
+	suspend fun getProgress(mangaId: Long): Float {
+		return db.historyDao.findProgress(mangaId) ?: PROGRESS_NONE
 	}
 
 	suspend fun clear() {

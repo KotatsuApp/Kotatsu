@@ -11,7 +11,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
-import org.koitharu.kotatsu.list.domain.CountersProvider
+import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
@@ -25,8 +26,9 @@ class FavouritesListViewModel(
 	private val categoryId: Long,
 	private val repository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
+	private val historyRepository: HistoryRepository,
 	settings: AppSettings,
-) : MangaListViewModel(settings), CountersProvider {
+) : MangaListViewModel(settings), ListExtraProvider {
 
 	var sortOrder: LiveData<SortOrder?> = if (categoryId == NO_ID) {
 		MutableLiveData(null)
@@ -91,5 +93,9 @@ class FavouritesListViewModel(
 
 	override suspend fun getCounter(mangaId: Long): Int {
 		return trackingRepository.getNewChaptersCount(mangaId)
+	}
+
+	override suspend fun getProgress(mangaId: Long): Float {
+		return historyRepository.getProgress(mangaId)
 	}
 }
