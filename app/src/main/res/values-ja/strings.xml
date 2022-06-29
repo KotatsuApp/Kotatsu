@@ -299,4 +299,7 @@
     <string name="crash_text">何か問題が発生しました。開発者にバグレポートを提出し、解決にご協力ください。</string>
     <string name="send">送信</string>
     <string name="disable_all">すべて無効にする</string>
+    <string name="appwidget_recent_description">最近読んだ漫画</string>
+    <string name="use_fingerprint">指紋がある場合は、指紋を使用する</string>
+    <string name="appwidget_shelf_description">お気に入りの漫画</string>
 </resources>
