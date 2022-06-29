@@ -298,4 +298,5 @@
     <string name="disable_battery_optimization_summary">Допомагає з перевірками фонових оновлень</string>
     <string name="crash_text">Щось пішло не так. Будь ласка, надішліть звіт про помилку розробникам, щоб допомогти нам її виправити.</string>
     <string name="send">Надіслати</string>
+    <string name="disable_all">Вимкнути все</string>
 </resources>
