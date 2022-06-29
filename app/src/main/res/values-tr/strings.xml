@@ -300,4 +300,7 @@
     <string name="crash_text">Bir şeyler yanlış gitti. Düzeltmemize yardımcı olması için lütfen geliştiricilere bir hata bildirimi gönderin.</string>
     <string name="send">Gönder</string>
     <string name="disable_all">Tümünü devre dışı bırak</string>
+    <string name="use_fingerprint">Varsa parmak izi kullan</string>
+    <string name="appwidget_shelf_description">Favorilerinizden mangalar</string>
+    <string name="appwidget_recent_description">Son okuduğunuz mangalar</string>
 </resources>
