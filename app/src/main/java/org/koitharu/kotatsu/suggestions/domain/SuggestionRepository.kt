@@ -32,14 +32,14 @@ class SuggestionRepository(
 	suspend fun replace(suggestions: Iterable<MangaSuggestion>) {
 		db.withTransaction {
 			db.suggestionDao.deleteAll()
-			suggestions.forEach { x ->
-				val tags = x.manga.tags.toEntities()
+			suggestions.forEach { (manga, relevance) ->
+				val tags = manga.tags.toEntities()
 				db.tagsDao.upsert(tags)
-				db.mangaDao.upsert(x.manga.toEntity(), tags)
+				db.mangaDao.upsert(manga.toEntity(), tags)
 				db.suggestionDao.upsert(
 					SuggestionEntity(
-						mangaId = x.manga.id,
-						relevance = x.relevance,
+						mangaId = manga.id,
+						relevance = relevance,
 						createdAt = System.currentTimeMillis(),
 					)
 				)

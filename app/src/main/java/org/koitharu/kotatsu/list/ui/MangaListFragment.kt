@@ -9,7 +9,6 @@ import androidx.collection.ArraySet
 import androidx.core.graphics.Insets
 import androidx.core.view.isNotEmpty
 import androidx.core.view.updatePadding
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar

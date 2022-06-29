@@ -10,7 +10,7 @@ Kotatsu is a free and open source manga reader for Android.
 alt="Get it on F-Droid"
 height="80">](https://f-droid.org/packages/org.koitharu.kotatsu)
 
-Download APK from Github Releases:
+Download APK from GitHub Releases:
 
 - [Latest release](https://github.com/KotatsuApp/Kotatsu/releases/latest)
 
