@@ -11,10 +11,11 @@ import org.koitharu.kotatsu.utils.ext.resetTransformations
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+@Suppress("LeakingThis")
 abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	private val loader: PageLoader,
 	private val settings: AppSettings,
-	private val exceptionResolver: ExceptionResolver
+	private val exceptionResolver: ExceptionResolver,
 ) : RecyclerView.Adapter<H>() {
 
 	private val differ = AsyncListDiffer(this, DiffCallback())

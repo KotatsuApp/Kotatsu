@@ -62,6 +62,19 @@
 
 	</com.google.android.material.textfield.TextInputLayout>
 
+	<com.google.android.material.materialswitch.MaterialSwitch
+		android:id="@+id/switch_biometric"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="16dp"
+		android:checked="true"
+		android:text="@string/use_fingerprint"
+		android:visibility="gone"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/layout_password"
+		tools:visibility="visible" />
+
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_cancel"
 		style="@style/Widget.Material3.Button.OutlinedButton"

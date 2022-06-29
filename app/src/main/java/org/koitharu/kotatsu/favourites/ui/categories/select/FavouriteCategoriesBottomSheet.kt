@@ -2,11 +2,9 @@ package org.koitharu.kotatsu.favourites.ui.categories.select
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -28,7 +26,7 @@ class FavouriteCategoriesBottomSheet :
 	BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>,
 	CategoriesEditDelegate.CategoriesEditCallback,
-	Toolbar.OnMenuItemClickListener, View.OnClickListener {
+	View.OnClickListener {
 
 	private val viewModel by viewModel<MangaCategoriesViewModel> {
 		parametersOf(requireNotNull(arguments?.getParcelableArrayList<ParcelableManga>(KEY_MANGA_LIST)).map { it.manga })
@@ -45,7 +43,7 @@ class FavouriteCategoriesBottomSheet :
 		super.onViewCreated(view, savedInstanceState)
 		adapter = MangaCategoriesAdapter(this)
 		binding.recyclerViewCategories.adapter = adapter
-		binding.toolbar.setOnMenuItemClickListener(this)
+		binding.buttonDone.setOnClickListener(this)
 		binding.itemCreate.setOnClickListener(this)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
@@ -57,19 +55,10 @@ class FavouriteCategoriesBottomSheet :
 		super.onDestroyView()
 	}
 
-	override fun onMenuItemClick(item: MenuItem): Boolean {
-		return when (item.itemId) {
-			R.id.action_done -> {
-				dismiss()
-				true
-			}
-			else -> false
-		}
-	}
-
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.item_create -> startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
+			R.id.button_done -> dismiss()
 		}
 	}
 

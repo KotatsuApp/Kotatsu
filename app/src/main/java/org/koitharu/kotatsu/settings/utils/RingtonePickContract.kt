@@ -29,6 +29,6 @@ class RingtonePickContract(private val title: String?) : ActivityResultContract<
 	}
 
 	override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-		return intent?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+		return intent?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
 	}
 }

@@ -7,6 +7,9 @@ import android.widget.RemoteViewsService
 import coil.ImageLoader
 import coil.executeBlocking
 import coil.request.ImageRequest
+import coil.size.Scale
+import coil.size.Size
+import coil.transform.RoundedCornersTransformation
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -22,9 +25,15 @@ class RecentListFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
+	private val transformation = RoundedCornersTransformation(
+		context.resources.getDimension(R.dimen.appwidget_corner_radius_inner)
+	)
+	private val coverSize = Size(
+		context.resources.getDimensionPixelSize(R.dimen.widget_cover_width),
+		context.resources.getDimensionPixelSize(R.dimen.widget_cover_height),
+	)
 
-	override fun onCreate() {
-	}
+	override fun onCreate() = Unit
 
 	override fun getLoadingView() = null
 
@@ -45,6 +54,9 @@ class RecentListFactory(
 			val cover = coil.executeBlocking(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
+					.size(coverSize)
+					.scale(Scale.FILL)
+					.transformations(transformation)
 					.build()
 			).requireBitmap()
 			views.setImageViewBitmap(R.id.imageView_cover, cover)
@@ -61,6 +73,5 @@ class RecentListFactory(
 
 	override fun getViewTypeCount() = 1
 
-	override fun onDestroy() {
-	}
+	override fun onDestroy() = Unit
 }
