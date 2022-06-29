@@ -299,4 +299,7 @@
     <string name="crash_text">Jokin meni pieleen. Lähetä vikailmoitus kehittäjille, jotta voimme korjata sen.</string>
     <string name="disable_all">Poista kaikki käytöstä</string>
     <string name="send">Lähetä</string>
+    <string name="use_fingerprint">Käytä sormenjälkeä, jos käytettävissä</string>
+    <string name="appwidget_shelf_description">Manga suosikeistasi</string>
+    <string name="appwidget_recent_description">Äskettäin lukemasi manga</string>
 </resources>
