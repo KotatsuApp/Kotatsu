@@ -48,7 +48,7 @@ class HistoryListViewModel(
 		when {
 			list.isEmpty() -> listOf(
 				EmptyState(
-					icon = R.drawable.ic_history,
+					icon = R.drawable.ic_empty_history,
 					textPrimary = R.string.text_history_holder_primary,
 					textSecondary = R.string.text_history_holder_secondary,
 					actionStringRes = 0,

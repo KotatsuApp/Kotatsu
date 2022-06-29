@@ -12,10 +12,11 @@
 
 	<ImageView
 		android:id="@+id/icon"
-		android:layout_width="98dp"
-		android:layout_height="98dp"
-		android:src="@drawable/ic_alert_outline"
-		app:tint="?attr/colorOnSecondaryContainer" />
+		android:layout_width="192dp"
+		android:layout_height="192dp"
+		android:contentDescription="@null"
+		android:scaleType="fitCenter"
+		tools:src="@drawable/ic_empty_favourites" />
 
 	<TextView
 		android:id="@+id/textPrimary"
