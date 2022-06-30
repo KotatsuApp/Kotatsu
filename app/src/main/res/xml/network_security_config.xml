@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<network-security-config xmlns:tools="http://schemas.android.com/tools">
+<network-security-config
+	xmlns:tools="http://schemas.android.com/tools">
 	<!-- Need to allow cleartext traffic for some sources -->
 	<base-config
 		cleartextTrafficPermitted="true"
@@ -8,7 +9,7 @@
 			<!-- Trust preinstalled CAs -->
 			<certificates src="system" />
 
-			<!-- Additionally trust user added CAs -->
+			<!-- Additionally, trust user added CAs -->
 			<certificates
 				src="user"
 				tools:ignore="AcceptsUserCertificates" />

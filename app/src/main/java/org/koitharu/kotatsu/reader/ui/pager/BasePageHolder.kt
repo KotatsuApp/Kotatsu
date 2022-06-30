@@ -16,6 +16,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	exceptionResolver: ExceptionResolver
 ) : RecyclerView.ViewHolder(binding.root), PageHolderDelegate.Callback {
 
+	@Suppress("LeakingThis")
 	protected val delegate = PageHolderDelegate(loader, settings, this, exceptionResolver)
 	protected val bindingInfo = LayoutPageInfoBinding.bind(binding.root)
 

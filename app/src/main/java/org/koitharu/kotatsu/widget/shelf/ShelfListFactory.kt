@@ -7,6 +7,7 @@ import android.widget.RemoteViewsService
 import coil.ImageLoader
 import coil.executeBlocking
 import coil.request.ImageRequest
+import coil.size.Scale
 import coil.size.Size
 import coil.transform.RoundedCornersTransformation
 import kotlinx.coroutines.runBlocking
@@ -65,6 +66,7 @@ class ShelfListFactory(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
 					.size(coverSize)
+					.scale(Scale.FILL)
 					.transformations(transformation)
 					.build()
 			).requireBitmap()

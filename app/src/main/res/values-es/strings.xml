@@ -298,4 +298,7 @@
     <string name="disable_battery_optimization">Desactivar la optimización de la batería</string>
     <string name="send">Enviar</string>
     <string name="crash_text">Algo ha ido mal. Por favor, envía un informe de errores a los desarrolladores para ayudarnos a solucionarlo.</string>
+    <string name="use_fingerprint">Utilizar la huella dactilar si está disponible</string>
+    <string name="appwidget_shelf_description">Mangas de tus favoritos</string>
+    <string name="appwidget_recent_description">Sus mangas recientemente leídos</string>
 </resources>
