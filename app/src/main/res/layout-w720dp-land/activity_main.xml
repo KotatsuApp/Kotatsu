@@ -60,14 +60,15 @@
 						style="@style/Widget.Kotatsu.SearchView"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
+						android:layout_marginEnd="4dp"
 						android:background="@null"
 						android:drawablePadding="16dp"
-						android:layout_marginEnd="4dp"
 						android:gravity="center_vertical"
 						android:hint="@string/search_manga"
 						android:imeOptions="actionSearch"
 						android:importantForAutofill="no"
-						android:singleLine="true" />
+						android:singleLine="true"
+						tools:ignore="TouchTargetSizeCheck" />
 
 				</com.google.android.material.appbar.MaterialToolbar>
 
@@ -91,4 +92,5 @@
 			tools:visibility="visible" />
 
 	</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </LinearLayout>
