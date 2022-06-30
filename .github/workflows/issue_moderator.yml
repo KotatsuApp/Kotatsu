@@ -1,0 +1,29 @@
+name: Issue moderator
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  moderate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Moderate issues
+        uses: tachiyomiorg/issue-moderator-action@v1
+        with:
+           repo-token: ${{ secrets.GITHUB_TOKEN }}
+           auto-close-rules: |
+             [
+               {
+                 "type": "body",
+                 "regex": ".*DELETE THIS SECTION IF YOU HAVE READ AND ACKNOWLEDGED IT.*",
+                 "message": "The acknowledgment section was not removed."
+               },
+               {
+                 "type": "body",
+                 "regex": ".*\\* (Kotatsu version|Android version|Device): \\?.*",
+                 "message": "Requested information in the template was not filled out."
+               }
+             ]
