@@ -41,6 +41,8 @@ abstract class Scrobbler(
 			.map { it?.toScrobblingInfo(mangaId) }
 	}
 
+	abstract suspend fun unregisterScrobbling(mangaId: Long)
+
 	protected abstract suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo
 
 	private suspend fun ScrobblingEntity.toScrobblingInfo(mangaId: Long): ScrobblingInfo? {

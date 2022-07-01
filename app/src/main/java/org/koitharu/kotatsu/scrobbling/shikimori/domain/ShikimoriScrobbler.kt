@@ -58,6 +58,10 @@ class ShikimoriScrobbler(
 		)
 	}
 
+	override suspend fun unregisterScrobbling(mangaId: Long) {
+		repository.unregister(mangaId)
+	}
+
 	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
 		return repository.getMangaInfo(id)
 	}

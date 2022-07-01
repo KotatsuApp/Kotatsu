@@ -69,6 +69,10 @@ class ShikimoriRepository(
 		return storage.user
 	}
 
+	suspend fun unregister(mangaId: Long) {
+		return db.scrobblingDao.delete(ScrobblerService.SHIKIMORI.id, mangaId)
+	}
+
 	fun logout() {
 		storage.clear()
 	}

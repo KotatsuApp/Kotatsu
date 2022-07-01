@@ -5,11 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.RatingBar
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import coil.ImageLoader
@@ -31,7 +33,8 @@ class ScrobblingInfoBottomSheet :
 	BaseBottomSheet<SheetScrobblingBinding>(),
 	AdapterView.OnItemSelectedListener,
 	RatingBar.OnRatingBarChangeListener,
-	View.OnClickListener {
+	View.OnClickListener,
+	PopupMenu.OnMenuItemClickListener {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
@@ -52,6 +55,12 @@ class ScrobblingInfoBottomSheet :
 		binding.buttonOpen.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
+
+		val popupMenu = PopupMenu(view.context, binding.buttonOpen)
+		popupMenu.inflate(R.menu.opt_scrobbling)
+		popupMenu.setOnMenuItemClickListener(this)
+
+		binding.buttonOpen.setOnClickListener { popupMenu.show() }
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -74,13 +83,6 @@ class ScrobblingInfoBottomSheet :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_open -> {
-				val url = viewModel.scrobblingInfo.value?.externalUrl ?: return
-				val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-				startActivity(
-					Intent.createChooser(intent, getString(R.string.open_in_browser))
-				)
-			}
 			R.id.imageView_cover -> {
 				val coverUrl = viewModel.scrobblingInfo.value?.coverUrl ?: return
 				val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
@@ -115,5 +117,22 @@ class ScrobblingInfoBottomSheet :
 		private const val TAG = "ScrobblingInfoBottomSheet"
 
 		fun show(fm: FragmentManager) = ScrobblingInfoBottomSheet().show(fm, TAG)
+	}
+
+	override fun onMenuItemClick(item: MenuItem?): Boolean {
+		when (item?.itemId) {
+			R.id.action_browser -> {
+				val url = viewModel.scrobblingInfo.value?.externalUrl ?: return false
+				val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+				startActivity(
+					Intent.createChooser(intent, getString(R.string.open_in_browser))
+				)
+			}
+			R.id.action_unregister -> {
+				dismiss()
+				viewModel.unregisterScrobbling()
+			}
+		}
+		return true
 	}
 }

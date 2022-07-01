@@ -207,6 +207,14 @@ class DetailsViewModel(
 		}
 	}
 
+	fun unregisterScrobbling() {
+		launchJob(Dispatchers.Default) {
+			scrobbler.unregisterScrobbling(
+				mangaId = delegate.mangaId
+			)
+		}
+	}
+
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
 		delegate.doLoad()
 	}

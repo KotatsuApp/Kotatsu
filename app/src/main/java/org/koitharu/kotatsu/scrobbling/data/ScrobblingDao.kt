@@ -17,4 +17,7 @@ abstract class ScrobblingDao {
 
 	@Update
 	abstract suspend fun update(entity: ScrobblingEntity)
+
+	@Query("DELETE FROM scrobblings WHERE scrobbler = :scrobbler AND manga_id = :mangaId")
+	abstract suspend fun delete(scrobbler: Int, mangaId: Long)
 }
