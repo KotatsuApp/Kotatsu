@@ -16,7 +16,6 @@ import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.requireBitmap
-import java.io.IOException
 
 class RecentListFactory(
 	private val context: Context,
@@ -50,8 +49,8 @@ class RecentListFactory(
 	override fun getViewAt(position: Int): RemoteViews {
 		val views = RemoteViews(context.packageName, R.layout.item_recent)
 		val item = dataSet[position]
-		try {
-			val cover = coil.executeBlocking(
+		runCatching {
+			coil.executeBlocking(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
 					.size(coverSize)
@@ -59,8 +58,9 @@ class RecentListFactory(
 					.transformations(transformation)
 					.build()
 			).requireBitmap()
+		}.onSuccess { cover ->
 			views.setImageViewBitmap(R.id.imageView_cover, cover)
-		} catch (e: IOException) {
+		}.onFailure {
 			views.setImageViewResource(R.id.imageView_cover, R.drawable.ic_placeholder)
 		}
 		val intent = Intent()
