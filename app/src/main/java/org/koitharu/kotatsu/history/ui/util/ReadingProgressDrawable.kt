@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import androidx.annotation.StyleRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.ColorUtils
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import kotlin.math.roundToInt
 
 class ReadingProgressDrawable(
 	context: Context,
@@ -14,6 +16,7 @@ class ReadingProgressDrawable(
 ) : Drawable() {
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+	private val checkDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_check)
 	private val lineColor: Int
 	private val outlineColor: Int
 	private val backgroundColor: Int
@@ -53,10 +56,11 @@ class ReadingProgressDrawable(
 		paint.textAlign = Paint.Align.CENTER
 		paint.textSize = ta.getDimension(R.styleable.ProgressDrawable_android_textSize, paint.textSize)
 		paint.strokeWidth = ta.getDimension(R.styleable.ProgressDrawable_strokeWidth, 1f)
+		ta.recycle()
 		hasBackground = Color.alpha(backgroundColor) != 0
 		hasOutline = Color.alpha(outlineColor) != 0
 		hasText = Color.alpha(textColor) != 0 && paint.textSize > 0
-		ta.recycle()
+		checkDrawable?.setTint(textColor)
 	}
 
 	override fun onBoundsChange(bounds: Rect) {
@@ -99,10 +103,17 @@ class ReadingProgressDrawable(
 			paint,
 		)
 		if (hasText) {
-			paint.style = Paint.Style.FILL
-			paint.color = textColor
-			val ty = bounds.height() / 2f + textBounds.height() / 2f - textBounds.bottom
-			canvas.drawText(text, cx, ty, paint)
+			if (checkDrawable != null && progress >= 1f - Math.ulp(progress)) {
+				tempRect.set(bounds)
+				tempRect *= 0.6
+				checkDrawable.bounds = tempRect
+				checkDrawable.draw(canvas)
+			} else {
+				paint.style = Paint.Style.FILL
+				paint.color = textColor
+				val ty = bounds.height() / 2f + textBounds.height() / 2f - textBounds.bottom
+				canvas.drawText(text, cx, ty, paint)
+			}
 		}
 	}
 
@@ -127,5 +138,14 @@ class ReadingProgressDrawable(
 		paint.textSize = testTextSize
 		paint.getTextBounds(text, 0, text.length, tempRect)
 		return testTextSize * width / tempRect.width()
+	}
+
+	private operator fun Rect.timesAssign(factor: Double) {
+		val newWidth = (width() * factor).roundToInt()
+		val newHeight = (height() * factor).roundToInt()
+		inset(
+			(width() - newWidth) / 2,
+			(height() - newHeight) / 2,
+		)
 	}
 }
