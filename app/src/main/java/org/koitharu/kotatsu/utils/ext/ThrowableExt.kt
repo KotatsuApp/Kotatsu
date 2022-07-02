@@ -2,14 +2,16 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
-import java.io.FileNotFoundException
-import java.net.SocketTimeoutException
+import okio.FileNotFoundException
+import org.acra.ACRA
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
+import org.koitharu.kotatsu.parsers.model.Manga
+import java.net.SocketTimeoutException
 
 fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
@@ -23,3 +25,5 @@ fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	else -> localizedMessage ?: resources.getString(R.string.error_occurred)
 }
+
+fun ACRA.setCurrentManga(manga: Manga?) = errorReporter.putCustomData("manga", manga?.publicUrl.toString())

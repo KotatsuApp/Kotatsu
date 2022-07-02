@@ -29,7 +29,6 @@ import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.requireValue
 
 class ScrobblingInfoBottomSheet :
 	BaseBottomSheet<SheetScrobblingBinding>(),

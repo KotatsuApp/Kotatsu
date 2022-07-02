@@ -44,7 +44,7 @@ body:
           label: Kotatsu version
           description: You can find your Kotatsu version in **Settings → About**.
           placeholder: |
-              Example: "3.3.1"
+              Example: "3.3"
       validations:
           required: true
 
@@ -86,8 +86,6 @@ body:
               - label: I have written a short but informative title.
                 required: true
               - label: If this is an issue with a source, I should be opening an issue in the [parsers repository](https://github.com/KotatsuApp/kotatsu-parsers/issues/new).
-                required: true
-              - label: I have updated the app to version **[3.3.1](https://github.com/KotatsuApp/Kotatsu/releases/latest)**.
                 required: true
               - label: I will fill out all of the requested information in this form.
                 required: true

@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.acra.ktx.sendWithAcra
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -214,6 +215,8 @@ class ReaderActivity :
 		val resolveTextId = ExceptionResolver.getResolveStringId(e)
 		if (resolveTextId != 0) {
 			dialog.setPositiveButton(resolveTextId, listener)
+		} else {
+			dialog.setPositiveButton(R.string.report, listener)
 		}
 		dialog.show()
 	}
@@ -368,7 +371,11 @@ class ReaderActivity :
 		override fun onClick(dialog: DialogInterface?, which: Int) {
 			if (which == DialogInterface.BUTTON_POSITIVE) {
 				dialog?.dismiss()
-				tryResolve(exception)
+				if (ExceptionResolver.canResolve(exception)) {
+					tryResolve(exception)
+				} else {
+					exception.sendWithAcra()
+				}
 			} else {
 				onCancel(dialog)
 			}

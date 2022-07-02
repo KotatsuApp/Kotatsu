@@ -9,7 +9,7 @@
 	android:paddingStart="?listPreferredItemPaddingStart"
 	android:paddingEnd="?listPreferredItemPaddingEnd">
 
-	<com.google.android.material.switchmaterial.SwitchMaterial
+	<com.google.android.material.materialswitch.MaterialSwitch
 		android:id="@+id/switch_local"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"

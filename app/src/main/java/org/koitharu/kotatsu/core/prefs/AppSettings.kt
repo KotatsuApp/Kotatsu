@@ -126,6 +126,10 @@ class AppSettings(context: Context) {
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit { if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD) }
 
+	var isBiometricProtectionEnabled: Boolean
+		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
+		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
+
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
 			?.split('|')
@@ -286,6 +290,7 @@ class AppSettings(context: Context) {
 		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_APP_PASSWORD = "app_password"
 		const val KEY_PROTECT_APP = "protect_app"
+		const val KEY_PROTECT_APP_BIOMETRIC = "protect_app_bio"
 		const val KEY_APP_VERSION = "app_version"
 		const val KEY_ZOOM_MODE = "zoom_mode"
 		const val KEY_BACKUP = "backup"
@@ -310,9 +315,6 @@ class AppSettings(context: Context) {
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
-		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
-		const val KEY_FEEDBACK_DISCORD = "about_feedback_discord"
-		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
 
 		private const val NETWORK_NEVER = 0
 		private const val NETWORK_ALWAYS = 1

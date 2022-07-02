@@ -38,7 +38,7 @@
 			android:ellipsize="end"
 			android:maxLines="2"
 			android:textAppearance="?attr/textAppearanceHeadlineSmall"
-			app:layout_constraintEnd_toStartOf="@id/button_open"
+			app:layout_constraintEnd_toStartOf="@id/button_menu"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
 			tools:text="@tools:sample/lorem[15]" />

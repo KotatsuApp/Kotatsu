@@ -94,6 +94,7 @@ class KotatsuApp : Application() {
 				ReportField.PHONE_MODEL,
 				ReportField.CRASH_CONFIGURATION,
 				ReportField.STACK_TRACE,
+				ReportField.CUSTOM_DATA,
 				ReportField.SHARED_PREFERENCES,
 			)
 			dialog {

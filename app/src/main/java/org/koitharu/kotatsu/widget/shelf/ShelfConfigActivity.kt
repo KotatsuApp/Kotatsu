@@ -10,8 +10,6 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -40,9 +38,6 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		adapter = CategorySelectAdapter(this)
-		binding.recyclerView.addItemDecoration(
-			MaterialDividerItemDecoration(this, RecyclerView.VERTICAL)
-		)
 		binding.recyclerView.adapter = adapter
 		binding.buttonDone.isVisible = true
 		binding.buttonDone.setOnClickListener(this)

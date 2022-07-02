@@ -4,10 +4,11 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="@dimen/chapter_list_item_height"
+	android:layout_height="wrap_content"
 	android:background="?selectableItemBackground"
 	android:baselineAligned="false"
 	android:gravity="center_vertical"
+	android:minHeight="@dimen/chapter_list_item_height"
 	android:orientation="horizontal">
 
 	<TextView
@@ -44,9 +45,9 @@
 			android:id="@+id/textView_description"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="2dp"
 			android:ellipsize="end"
 			android:singleLine="true"
-			android:layout_marginTop="2dp"
 			android:textAppearance="?attr/textAppearanceBodySmall"
 			tools:text="05.10.2021 • Scanlator" />
 	</LinearLayout>
