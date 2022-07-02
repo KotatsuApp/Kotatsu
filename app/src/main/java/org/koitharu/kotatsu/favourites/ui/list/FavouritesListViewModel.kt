@@ -47,7 +47,7 @@ class FavouritesListViewModel(
 		when {
 			list.isEmpty() -> listOf(
 				EmptyState(
-					icon = R.drawable.ic_heart_outline,
+					icon = R.drawable.ic_empty_favourites,
 					textPrimary = R.string.text_empty_holder_primary,
 					textSecondary = if (categoryId == NO_ID) {
 						R.string.you_have_not_favourites_yet

@@ -27,7 +27,7 @@ class SuggestionsViewModel(
 		when {
 			list.isEmpty() -> listOf(
 				EmptyState(
-					icon = R.drawable.ic_book_cross,
+					icon = R.drawable.ic_empty_suggestions,
 					textPrimary = R.string.nothing_found,
 					textSecondary = R.string.text_suggestion_holder,
 					actionStringRes = 0,
