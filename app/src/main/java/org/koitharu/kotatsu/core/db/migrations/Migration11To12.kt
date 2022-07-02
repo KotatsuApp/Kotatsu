@@ -21,5 +21,7 @@ class Migration11To12 : Migration(11, 12) {
 			)
 			""".trimIndent()
 		)
+		database.execSQL("ALTER TABLE history ADD COLUMN `percent` REAL NOT NULL DEFAULT -1")
+		database.execSQL("ALTER TABLE bookmarks ADD COLUMN `percent` REAL NOT NULL DEFAULT -1")
 	}
 }

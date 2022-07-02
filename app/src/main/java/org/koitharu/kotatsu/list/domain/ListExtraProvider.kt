@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.list.domain
 
-fun interface CountersProvider {
+interface ListExtraProvider {
 
 	suspend fun getCounter(mangaId: Long): Int
+
+	suspend fun getProgress(mangaId: Long): Float
 }

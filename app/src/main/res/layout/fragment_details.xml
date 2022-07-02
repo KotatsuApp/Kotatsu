@@ -31,6 +31,14 @@
 			tools:background="@tools:sample/backgrounds/scenic"
 			tools:ignore="ContentDescription,UnusedAttribute" />
 
+		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+			android:id="@+id/progressView"
+			android:layout_width="32dp"
+			android:layout_height="32dp"
+			android:layout_margin="4dp"
+			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
+			app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
+
 		<TextView
 			android:id="@+id/textView_title"
 			android:layout_width="0dp"

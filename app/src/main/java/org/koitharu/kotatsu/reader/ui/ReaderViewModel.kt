@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.*
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
@@ -137,13 +138,16 @@ class ReaderViewModel(
 		}
 	}
 
+	// TODO check performance
 	fun saveCurrentState(state: ReaderState? = null) {
 		if (state != null) {
 			currentState.value = state
 		}
+		val readerState = state ?: currentState.value ?: return
 		historyRepository.saveStateAsync(
-			mangaData.value ?: return,
-			state ?: currentState.value ?: return
+			manga = mangaData.value ?: return,
+			state = readerState,
+			percent = computePercent(readerState.chapterId, readerState.page),
 		)
 	}
 
@@ -225,7 +229,7 @@ class ReaderViewModel(
 		if (bookmarkJob?.isActive == true) {
 			return
 		}
-		bookmarkJob = launchJob {
+		bookmarkJob = launchJob(Dispatchers.Default) {
 			loadingJob?.join()
 			val state = checkNotNull(currentState.value)
 			val page = checkNotNull(getCurrentPage()) { "Page not found" }
@@ -237,9 +241,10 @@ class ReaderViewModel(
 				scroll = state.scroll,
 				imageUrl = page.preview ?: pageLoader.getPageUrl(page),
 				createdAt = Date(),
+				percent = computePercent(state.chapterId, state.page),
 			)
 			bookmarksRepository.addBookmark(bookmark)
-			onShowToast.call(R.string.bookmark_added)
+			onShowToast.postCall(R.string.bookmark_added)
 		}
 	}
 
@@ -282,7 +287,8 @@ class ReaderViewModel(
 			val pages = loadChapter(requireNotNull(currentState.value).chapterId)
 			// save state
 			currentState.value?.let {
-				historyRepository.addOrUpdate(manga, it.chapterId, it.page, it.scroll)
+				val percent = computePercent(it.chapterId, it.page)
+				historyRepository.addOrUpdate(manga, it.chapterId, it.page, it.scroll, percent)
 				shortcutsRepository.updateShortcuts()
 			}
 
@@ -367,20 +373,35 @@ class ReaderViewModel(
 			it.printStackTraceDebug()
 		}.getOrDefault(defaultMode)
 	}
+
+	private fun computePercent(chapterId: Long, pageIndex: Int): Float {
+		val chapters = manga?.chapters ?: return PROGRESS_NONE
+		val chaptersCount = chapters.size
+		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }
+		val pages = content.value?.pages ?: return PROGRESS_NONE
+		val pagesCount = pages.count { x -> x.chapterId == chapterId }
+		if (chaptersCount == 0 || pagesCount == 0) {
+			return PROGRESS_NONE
+		}
+		val pagePercent = (pageIndex + 1) / pagesCount.toFloat()
+		val ppc = 1f / chaptersCount
+		return ppc * chapterIndex + ppc * pagePercent
+	}
 }
 
 /**
  * This function is not a member of the ReaderViewModel
  * because it should work independently of the ViewModel's lifecycle.
  */
-private fun HistoryRepository.saveStateAsync(manga: Manga, state: ReaderState): Job {
+private fun HistoryRepository.saveStateAsync(manga: Manga, state: ReaderState, percent: Float): Job {
 	return processLifecycleScope.launch(Dispatchers.Default) {
 		runCatching {
 			addOrUpdate(
 				manga = manga,
 				chapterId = state.chapterId,
 				page = state.page,
-				scroll = state.scroll
+				scroll = state.scroll,
+				percent = percent,
 			)
 		}.onFailure {
 			it.printStackTraceDebug()

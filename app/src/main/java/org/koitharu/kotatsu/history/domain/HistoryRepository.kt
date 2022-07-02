@@ -18,6 +18,8 @@ import org.koitharu.kotatsu.scrobbling.domain.tryScrobble
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
 
+const val PROGRESS_NONE = -1f
+
 class HistoryRepository(
 	private val db: MangaDatabase,
 	private val trackingRepository: TrackingRepository,
@@ -62,7 +64,7 @@ class HistoryRepository(
 			.distinctUntilChanged()
 	}
 
-	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int) {
+	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int, percent: Float) {
 		if (manga.isNsfw && settings.isHistoryExcludeNsfw) {
 			return
 		}
@@ -78,6 +80,7 @@ class HistoryRepository(
 					chapterId = chapterId,
 					page = page,
 					scroll = scroll.toFloat(), // we migrate to int, but decide to not update database
+					percent = percent,
 				)
 			)
 			trackingRepository.syncWithHistory(manga, chapterId)
@@ -90,6 +93,10 @@ class HistoryRepository(
 
 	suspend fun getOne(manga: Manga): MangaHistory? {
 		return db.historyDao.find(manga.id)?.toMangaHistory()
+	}
+
+	suspend fun getProgress(mangaId: Long): Float {
+		return db.historyDao.findProgress(mangaId) ?: PROGRESS_NONE
 	}
 
 	suspend fun clear() {

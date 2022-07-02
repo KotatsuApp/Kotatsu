@@ -26,6 +26,8 @@
 	<dimen name="toolbar_button_margin">10dp</dimen>
 	<dimen name="widget_cover_height">116dp</dimen>
 	<dimen name="widget_cover_width">84dp</dimen>
+	<dimen name="reading_progress_stroke">4dp</dimen>
+	<dimen name="reading_progress_text_size">10dp</dimen>
 
 	<dimen name="search_suggestions_manga_height">124dp</dimen>
 	<dimen name="search_suggestions_manga_spacing">4dp</dimen>
