@@ -302,4 +302,5 @@
     <string name="appwidget_recent_description">最近読んだ漫画</string>
     <string name="use_fingerprint">指紋がある場合は、指紋を使用する</string>
     <string name="appwidget_shelf_description">お気に入りの漫画</string>
+    <string name="report">報告</string>
 </resources>
