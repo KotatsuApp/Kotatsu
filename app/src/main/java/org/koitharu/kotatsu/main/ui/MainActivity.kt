@@ -306,8 +306,9 @@ class MainActivity :
 	}
 
 	override fun onClearSearchHistory() {
-		MaterialAlertDialogBuilder(this)
+		MaterialAlertDialogBuilder(this, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
 			.setTitle(R.string.clear_search_history)
+			.setIcon(R.drawable.ic_clear_all)
 			.setMessage(R.string.text_clear_search_history_prompt)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.clear) { _, _ ->

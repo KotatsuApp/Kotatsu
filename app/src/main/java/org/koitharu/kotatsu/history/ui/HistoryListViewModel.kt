@@ -2,8 +2,6 @@ package org.koitharu.kotatsu.history.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -19,6 +17,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
+import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
@@ -26,6 +25,8 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
@@ -37,7 +38,7 @@ class HistoryListViewModel(
 	val isGroupingEnabled = MutableLiveData<Boolean>()
 	val onItemsRemoved = SingleLiveEvent<ReversibleHandle>()
 
-	private val historyGrouping = settings.observeAsFlow(AppSettings.KEY_HISTORY_GROUPING) { historyGrouping }
+	private val historyGrouping = settings.observeAsFlow(AppSettings.KEY_HISTORY_GROUPING) { isHistoryGroupingEnabled }
 		.onEach { isGroupingEnabled.postValue(it) }
 
 	override val content = combine(
@@ -48,7 +49,7 @@ class HistoryListViewModel(
 		when {
 			list.isEmpty() -> listOf(
 				EmptyState(
-					icon = R.drawable.ic_history,
+					icon = R.drawable.ic_empty_history,
 					textPrimary = R.string.text_history_holder_primary,
 					textSecondary = R.string.text_history_holder_secondary,
 					actionStringRes = 0,
@@ -89,7 +90,7 @@ class HistoryListViewModel(
 	}
 
 	fun setGrouping(isGroupingEnabled: Boolean) {
-		settings.historyGrouping = isGroupingEnabled
+		settings.isHistoryGroupingEnabled = isGroupingEnabled
 	}
 
 	private suspend fun mapList(
@@ -98,6 +99,7 @@ class HistoryListViewModel(
 		mode: ListMode
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
+		val showPercent = settings.isReadingIndicatorsEnabled
 		var prevDate: DateTimeAgo? = null
 		if (!grouped) {
 			result += ListHeader(null, R.string.history, null)
@@ -111,10 +113,11 @@ class HistoryListViewModel(
 				prevDate = date
 			}
 			val counter = trackingRepository.getNewChaptersCount(manga.id)
+			val percent = if (showPercent) history.percent else PROGRESS_NONE
 			result += when (mode) {
-				ListMode.LIST -> manga.toListModel(counter)
-				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter)
-				ListMode.GRID -> manga.toGridModel(counter)
+				ListMode.LIST -> manga.toListModel(counter, percent)
+				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter, percent)
+				ListMode.GRID -> manga.toGridModel(counter, percent)
 			}
 		}
 		return result

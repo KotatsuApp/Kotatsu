@@ -4,11 +4,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.liveData
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import org.koitharu.kotatsu.utils.BufferedObserver
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlinx.coroutines.flow.Flow
-import org.koitharu.kotatsu.utils.BufferedObserver
 
 fun <T> LiveData<T?>.observeNotNull(owner: LifecycleOwner, observer: Observer<T>) {
 	this.observe(owner) {
@@ -16,6 +16,10 @@ fun <T> LiveData<T?>.observeNotNull(owner: LifecycleOwner, observer: Observer<T>
 			observer.onChanged(it)
 		}
 	}
+}
+
+fun <T> LiveData<T>.requireValue(): T = checkNotNull(value) {
+	"LiveData value is null"
 }
 
 fun <T> LiveData<T>.observeWithPrevious(owner: LifecycleOwner, observer: BufferedObserver<T>) {
@@ -26,6 +30,7 @@ fun <T> LiveData<T>.observeWithPrevious(owner: LifecycleOwner, observer: Buffere
 	}
 }
 
+@Deprecated("Use variant with default value")
 fun <T> Flow<T>.asLiveDataDistinct(
 	context: CoroutineContext = EmptyCoroutineContext
 ): LiveData<T> = liveData(context) {
@@ -35,6 +40,10 @@ fun <T> Flow<T>.asLiveDataDistinct(
 		}
 	}
 }
+
+fun <T> StateFlow<T>.asLiveDataDistinct(
+	context: CoroutineContext = EmptyCoroutineContext
+): LiveData<T> = asLiveDataDistinct(context, value)
 
 fun <T> Flow<T>.asLiveDataDistinct(
 	context: CoroutineContext = EmptyCoroutineContext,

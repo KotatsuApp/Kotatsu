@@ -8,6 +8,6 @@ val detailsModule
 	get() = module {
 
 		viewModel { intent ->
-			DetailsViewModel(intent.get(), get(), get(), get(), get(), get(), get(), get())
+			DetailsViewModel(intent.get(), get(), get(), get(), get(), get(), get(), get(), get())
 		}
 	}

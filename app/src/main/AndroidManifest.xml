@@ -59,7 +59,15 @@
 			android:label="@string/search_manga" />
 		<activity
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
-			android:label="@string/settings" />
+			android:exported="true"
+			android:label="@string/settings">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="kotatsu" />
+			</intent-filter>
+		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.browser.BrowserActivity"
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
@@ -68,11 +76,6 @@
 			android:name="org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity"
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
-		<activity
-			android:name="org.koitharu.kotatsu.core.ui.CrashActivity"
-			android:label="@string/error_occurred"
-			android:theme="@android:style/Theme.DeviceDefault"
-			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity
 			android:name="org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity"
 			android:label="@string/favourites_categories"
@@ -86,9 +89,6 @@
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>
 		</activity>
-		<activity
-			android:name="org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity"
-			android:label="@string/search" />
 		<activity
 			android:name="org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity"
 			android:label="@string/search" />

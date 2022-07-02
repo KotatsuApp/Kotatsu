@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -26,10 +25,13 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import java.io.IOException
 
 class DetailsViewModel(
 	intent: MangaIntent,
@@ -40,6 +42,7 @@ class DetailsViewModel(
 	mangaDataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
+	private val scrobbler: Scrobbler,
 ) : BaseViewModel() {
 
 	private val delegate = MangaDetailsDelegate(
@@ -79,6 +82,11 @@ class DetailsViewModel(
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
+	val isScrobblingAvailable: Boolean
+		get() = scrobbler.isAvailable
+
+	val scrobblingInfo = scrobbler.observeScrobblingInfo(delegate.mangaId)
+		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
 	val branches: LiveData<List<String?>> = delegate.manga.map {
 		val chapters = it?.chapters ?: return@map emptyList()
@@ -92,9 +100,12 @@ class DetailsViewModel(
 		branches.indexOf(selected)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
 
-	val isChaptersEmpty: LiveData<Boolean> = delegate.manga.map { m ->
-		m != null && m.chapters.isNullOrEmpty()
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	val isChaptersEmpty: LiveData<Boolean> = combine(
+		delegate.manga,
+		isLoading.asFlow(),
+	) { m, loading ->
+		m != null && m.chapters.isNullOrEmpty() && !loading
+	}.asLiveDataDistinct(viewModelScope.coroutineContext, false)
 
 	val chapters = combine(
 		combine(
@@ -182,6 +193,25 @@ class DetailsViewModel(
 					it.printStackTraceDebug()
 				}
 			}
+		}
+	}
+
+	fun updateScrobbling(rating: Float, status: ScrobblingStatus?) {
+		launchJob(Dispatchers.Default) {
+			scrobbler.updateScrobblingInfo(
+				mangaId = delegate.mangaId,
+				rating = rating,
+				status = status,
+				comment = null,
+			)
+		}
+	}
+
+	fun unregisterScrobbling() {
+		launchJob(Dispatchers.Default) {
+			scrobbler.unregisterScrobbling(
+				mangaId = delegate.mangaId
+			)
 		}
 	}
 

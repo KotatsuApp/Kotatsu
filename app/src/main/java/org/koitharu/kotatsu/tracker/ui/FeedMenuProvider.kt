@@ -9,6 +9,7 @@ import androidx.core.view.MenuProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 
 class FeedMenuProvider(
@@ -41,6 +42,11 @@ class FeedMenuProvider(
 				.setPositiveButton(R.string.clear) { _, _ ->
 					viewModel.clearFeed()
 				}.show()
+			true
+		}
+		R.id.action_settings -> {
+			val intent = SettingsActivity.newTrackerSettingsIntent(context)
+			context.startActivity(intent)
 			true
 		}
 		else -> false

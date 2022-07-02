@@ -13,13 +13,18 @@ import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.history.data.toMangaHistory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.domain.tryScrobble
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
+
+const val PROGRESS_NONE = -1f
 
 class HistoryRepository(
 	private val db: MangaDatabase,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
+	private val scrobblers: List<Scrobbler>,
 ) {
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
@@ -59,7 +64,7 @@ class HistoryRepository(
 			.distinctUntilChanged()
 	}
 
-	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int) {
+	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int, percent: Float) {
 		if (manga.isNsfw && settings.isHistoryExcludeNsfw) {
 			return
 		}
@@ -75,14 +80,23 @@ class HistoryRepository(
 					chapterId = chapterId,
 					page = page,
 					scroll = scroll.toFloat(), // we migrate to int, but decide to not update database
+					percent = percent,
 				)
 			)
 			trackingRepository.syncWithHistory(manga, chapterId)
+			val chapter = manga.chapters?.find { x -> x.id == chapterId }
+			if (chapter != null) {
+				scrobblers.forEach { it.tryScrobble(manga.id, chapter) }
+			}
 		}
 	}
 
 	suspend fun getOne(manga: Manga): MangaHistory? {
 		return db.historyDao.find(manga.id)?.toMangaHistory()
+	}
+
+	suspend fun getProgress(mangaId: Long): Float {
+		return db.historyDao.findProgress(mangaId) ?: PROGRESS_NONE
 	}
 
 	suspend fun clear() {

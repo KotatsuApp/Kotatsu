@@ -6,6 +6,7 @@
 	<string name="url_twitter">https://twitter.com/kotatsuapp</string>
 	<string name="url_reddit">https://reddit.com/user/kotatsuapp</string>
 	<string name="url_weblate">https://hosted.weblate.org/engage/kotatsu</string>
+	<string name="email_error_report">kotatsu@waifu.club</string>
 	<string-array name="values_theme" translatable="false">
 		<item>-1</item>
 		<item>1</item>

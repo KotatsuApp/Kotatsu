@@ -294,4 +294,12 @@
     <string name="detect_reader_mode">Lukijan automaattinen tunnistaminen</string>
     <string name="detect_reader_mode_summary">Tunnista automaattisesti, onko manga webtoon</string>
     <string name="default_mode">Oletustila</string>
+    <string name="disable_battery_optimization">Poista akun optimoinnin käytöstä</string>
+    <string name="disable_battery_optimization_summary">Auttaa taustapäivitystarkastuksissa</string>
+    <string name="crash_text">Jokin meni pieleen. Lähetä vikailmoitus kehittäjille, jotta voimme korjata sen.</string>
+    <string name="disable_all">Poista kaikki käytöstä</string>
+    <string name="send">Lähetä</string>
+    <string name="use_fingerprint">Käytä sormenjälkeä, jos käytettävissä</string>
+    <string name="appwidget_shelf_description">Manga suosikeistasi</string>
+    <string name="appwidget_recent_description">Äskettäin lukemasi manga</string>
 </resources>

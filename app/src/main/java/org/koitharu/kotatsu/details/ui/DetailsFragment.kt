@@ -17,6 +17,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.request.ImageRequest
+import coil.size.Scale
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
@@ -31,7 +32,9 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
+import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingInfoBottomSheet
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
+import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -39,6 +42,7 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
@@ -67,6 +71,7 @@ class DetailsFragment :
 		binding.buttonRead.setOnClickListener(this)
 		binding.buttonRead.setOnLongClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
+		binding.scrobblingLayout.root.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
@@ -74,6 +79,7 @@ class DetailsFragment :
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
 		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
+		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
 		addMenuProvider(DetailsMenuProvider())
 	}
 
@@ -176,6 +182,7 @@ class DetailsFragment :
 				setIconResource(R.drawable.ic_play)
 			}
 		}
+		binding.progressView.setPercent(history?.percent ?: PROGRESS_NONE, animate = true)
 	}
 
 	private fun onFavouriteChanged(isFavourite: Boolean) {
@@ -209,11 +216,38 @@ class DetailsFragment :
 		}
 	}
 
+	private fun onScrobblingInfoChanged(scrobbling: ScrobblingInfo?) {
+		with(binding.scrobblingLayout) {
+			root.isVisible = scrobbling != null
+			if (scrobbling == null) {
+				CoilUtils.dispose(imageViewCover)
+				return
+			}
+			imageViewCover.newImageRequest(scrobbling.coverUrl)
+				.crossfade(true)
+				.placeholder(R.drawable.ic_placeholder)
+				.fallback(R.drawable.ic_placeholder)
+				.error(R.drawable.ic_placeholder)
+				.scale(Scale.FILL)
+				.lifecycle(viewLifecycleOwner)
+				.enqueueWith(coil)
+			textViewTitle.text = scrobbling.title
+			textViewTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, scrobbling.scrobbler.iconResId, 0)
+			ratingBar.rating = scrobbling.rating * ratingBar.numStars
+			textViewStatus.text = scrobbling.status?.let {
+				resources.getStringArray(R.array.scrobbling_statuses).getOrNull(it.ordinal)
+			}
+		}
+	}
+
 	override fun onClick(v: View) {
 		val manga = viewModel.manga.value ?: return
 		when (v.id) {
 			R.id.button_favorite -> {
 				FavouriteCategoriesBottomSheet.show(childFragmentManager, manga)
+			}
+			R.id.scrobbling_layout -> {
+				ScrobblingInfoBottomSheet.show(childFragmentManager)
 			}
 			R.id.button_read -> {
 				val chapterId = viewModel.readingHistory.value?.chapterId

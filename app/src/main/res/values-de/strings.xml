@@ -294,4 +294,12 @@
     <string name="default_mode">Standard-Modus</string>
     <string name="detect_reader_mode">Automatische Erkennung des Lesegerätmodus</string>
     <string name="detect_reader_mode_summary">Automatisch erkennen, ob ein Manga ein Webtoon ist</string>
+    <string name="disable_battery_optimization">Batterieoptimierung deaktivieren</string>
+    <string name="disable_battery_optimization_summary">Hilft bei der Überprüfung von Hintergrundaktualisierungen</string>
+    <string name="send">Senden</string>
+    <string name="crash_text">Etwas ist schief gelaufen. Bitte senden Sie einen Fehlerbericht an die Entwickler, damit wir das Problem beheben können.</string>
+    <string name="disable_all">Alle deaktivieren</string>
+    <string name="use_fingerprint">Fingerabdruck verwenden, falls vorhanden</string>
+    <string name="appwidget_shelf_description">Manga aus Ihren Favoriten</string>
+    <string name="appwidget_recent_description">Ihr kürzlich gelesener Manga</string>
 </resources>

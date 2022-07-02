@@ -111,6 +111,7 @@ class BackupRepository(private val db: MangaDatabase) {
 		jo.put("chapter_id", chapterId)
 		jo.put("page", page)
 		jo.put("scroll", scroll)
+		jo.put("percent", percent)
 		return jo
 	}
 

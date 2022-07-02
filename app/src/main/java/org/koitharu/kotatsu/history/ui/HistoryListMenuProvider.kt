@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
+import com.google.android.material.R as materialR
 
 class HistoryListMenuProvider(
 	private val context: Context,
@@ -19,9 +20,10 @@ class HistoryListMenuProvider(
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 		R.id.action_clear_history -> {
-			MaterialAlertDialogBuilder(context)
+			MaterialAlertDialogBuilder(context, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
 				.setTitle(R.string.clear_history)
 				.setMessage(R.string.text_clear_history_prompt)
+				.setIcon(R.drawable.ic_delete)
 				.setNegativeButton(android.R.string.cancel, null)
 				.setPositiveButton(R.string.clear) { _, _ ->
 					viewModel.clearHistory()

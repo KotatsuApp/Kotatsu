@@ -35,4 +35,21 @@
 		<attr name="android:insetRight" />
 	</declare-styleable>
 
+	<declare-styleable name="ProgressDrawable">
+		<attr name="strokeWidth" />
+		<attr name="android:strokeColor" />
+		<attr name="android:textSize" />
+		<attr name="android:textColor" />
+		<attr name="android:fillColor" />
+		<attr name="android:fillAlpha" />
+		<attr name="android:width" />
+		<attr name="android:height" />
+		<attr name="outlineColor" format="color" />
+		<attr name="autoFitTextSize" format="boolean" />
+	</declare-styleable>
+
+	<declare-styleable name="ReadingProgressView">
+		<attr name="progressStyle" format="reference" />
+	</declare-styleable>
+
 </resources>

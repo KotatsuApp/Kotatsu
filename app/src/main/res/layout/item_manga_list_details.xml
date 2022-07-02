@@ -12,14 +12,27 @@
 		android:layout_height="match_parent"
 		android:orientation="horizontal">
 
-		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
-			android:id="@+id/imageView_cover"
+		<FrameLayout
 			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:orientation="vertical"
-			android:scaleType="centerCrop"
-			tools:src="@tools:sample/backgrounds/scenic"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"/>
+			android:layout_height="match_parent">
+
+			<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+				android:id="@+id/imageView_cover"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:orientation="vertical"
+				android:scaleType="centerCrop"
+				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+				tools:src="@tools:sample/backgrounds/scenic" />
+
+			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+				android:id="@+id/progressView"
+				android:layout_width="32dp"
+				android:layout_height="32dp"
+				android:layout_gravity="bottom|end"
+				android:layout_margin="4dp" />
+
+		</FrameLayout>
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -53,8 +66,9 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:gravity="center">
+				android:baselineAligned="false"
+				android:clipChildren="false"
+				android:orientation="horizontal">
 
 				<TextView
 					android:id="@+id/textView_tags"
@@ -72,9 +86,12 @@
 					android:id="@+id/textView_rating"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_gravity="bottom"
 					android:drawablePadding="4dp"
+					android:elegantTextHeight="false"
+					android:gravity="center_vertical"
 					android:paddingStart="6dp"
+					android:singleLine="true"
+					android:textAppearance="?attr/textAppearanceBodySmall"
 					app:drawableEndCompat="@drawable/ic_star"
 					tools:ignore="RtlSymmetry"
 					tools:text="9.6" />

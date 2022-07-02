@@ -15,11 +15,11 @@ class BackupZipOutput(val file: File) : Closeable {
 
 	private val output = ZipOutput(file, Deflater.BEST_COMPRESSION)
 
-	suspend fun put(entry: BackupEntry) {
+	suspend fun put(entry: BackupEntry) = runInterruptible(Dispatchers.IO) {
 		output.put(entry.name, entry.data.toString(2))
 	}
 
-	suspend fun finish() {
+	suspend fun finish() = runInterruptible(Dispatchers.IO) {
 		output.finish()
 	}
 

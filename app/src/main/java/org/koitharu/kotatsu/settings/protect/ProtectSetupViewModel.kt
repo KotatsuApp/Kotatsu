@@ -22,6 +22,9 @@ class ProtectSetupViewModel(
 	val onPasswordMismatch = SingleLiveEvent<Unit>()
 	val onClearText = SingleLiveEvent<Unit>()
 
+	val isBiometricEnabled
+		get() = settings.isBiometricProtectionEnabled
+
 	fun onNextClick(password: String) {
 		if (firstPassword.value == null) {
 			firstPassword.value = password
@@ -34,5 +37,9 @@ class ProtectSetupViewModel(
 				onPasswordMismatch.call(Unit)
 			}
 		}
+	}
+
+	fun setBiometricEnabled(isEnabled: Boolean) {
+		settings.isBiometricProtectionEnabled = isEnabled
 	}
 }

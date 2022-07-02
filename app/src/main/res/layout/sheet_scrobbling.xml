@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.imageview.ShapeableImageView
+			android:id="@+id/imageView_cover"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="16dp"
+			android:foreground="?selectableItemBackground"
+			android:scaleType="centerCrop"
+			app:layout_constraintDimensionRatio="H,13:18"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintWidth_percent="0.3"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+			tools:background="@tools:sample/backgrounds/scenic"
+			tools:ignore="ContentDescription,UnusedAttribute" />
+
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginEnd="6dp"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:textAppearance="?attr/textAppearanceHeadlineSmall"
+			app:layout_constraintEnd_toStartOf="@id/button_menu"
+			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="@tools:sample/lorem[15]" />
+
+		<ImageButton
+			android:id="@+id/button_menu"
+			style="?android:attr/actionOverflowButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:contentDescription="@string/open_in_browser"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:tint="?android:colorControlNormal" />
+
+		<RatingBar
+			android:id="@+id/ratingBar"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="6dp"
+			android:layout_marginEnd="16dp"
+			android:numStars="5"
+			android:stepSize="0.5"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@id/textView_title"
+			tools:rating="3.5"
+			tools:text="@tools:sample/lorem[12]" />
+
+		<Spinner
+			android:id="@+id/spinner_status"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="6dp"
+			android:layout_marginEnd="16dp"
+			android:entries="@array/scrobbling_statuses"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@id/ratingBar" />
+
+		<androidx.constraintlayout.widget.Barrier
+			android:id="@+id/barrier_header"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			app:barrierDirection="bottom"
+			app:barrierMargin="8dp"
+			app:constraint_referenced_ids="imageView_cover,spinner_status" />
+
+		<TextView
+			android:id="@+id/textView_description"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="12dp"
+			android:layout_marginEnd="16dp"
+			android:layout_marginBottom="16dp"
+			android:lineSpacingMultiplier="1.2"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			android:textIsSelectable="true"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/barrier_header"
+			tools:ignore="UnusedAttribute"
+			tools:text="@tools:sample/lorem/random[250]" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
