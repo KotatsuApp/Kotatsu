@@ -22,6 +22,7 @@ import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +67,6 @@ private const val TAG_SEARCH = "search"
 
 class MainActivity :
 	BaseActivity<ActivityMainBinding>(),
-	NavigationView.OnNavigationItemSelectedListener,
 	AppBarOwner,
 	View.OnClickListener,
 	View.OnFocusChangeListener,
@@ -74,6 +74,8 @@ class MainActivity :
 
 	private val viewModel by viewModel<MainViewModel>()
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
+
+	private lateinit var nav: NavigationBarView
 
 	private lateinit var navHeaderBinding: NavigationHeaderBinding
 	private var drawerToggle: ActionBarDrawerToggle? = null
@@ -87,6 +89,7 @@ class MainActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 		navHeaderBinding = NavigationHeaderBinding.inflate(layoutInflater)
+		nav = binding.bottomNav
 		drawer = binding.root as? DrawerLayout
 		drawerToggle = drawer?.let {
 			ActionBarDrawerToggle(
@@ -108,18 +111,33 @@ class MainActivity :
 			}
 		}
 
+		ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+			if (insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom > 0) {
+				val elevation = binding.bottomNav.elevation
+				window.setNavigationBarTransparentCompat(this@MainActivity, elevation)
+			}
+			insets
+		}
+		ViewCompat.requestApplyInsets(binding.root)
+
 		with(binding.searchView) {
 			onFocusChangeListener = this@MainActivity
 			searchSuggestionListener = this@MainActivity
-			if (drawer == null) {
-				drawableStart = context.getThemeDrawable(materialR.attr.actionModeWebSearchDrawable)
-			}
 		}
 
-		with(binding.navigationView) {
-			ViewCompat.setOnApplyWindowInsetsListener(this, NavigationViewInsetsListener())
-			addHeaderView(navHeaderBinding.root)
-			setNavigationItemSelectedListener(this@MainActivity)
+		nav.setOnItemSelectedListener { item ->
+			when (item.itemId) {
+				R.id.nav_local_storage -> {
+					viewModel.defaultSection = AppSection.HISTORY
+					setPrimaryFragment(HistoryListFragment.newInstance())
+				}
+				R.id.nav_favourites -> {
+					viewModel.defaultSection = AppSection.FAVOURITES
+					setPrimaryFragment(FavouritesContainerFragment.newInstance())
+				}
+			}
+			appBar.setExpanded(true)
+			true
 		}
 
 		binding.fab.setOnClickListener(this@MainActivity)
@@ -127,8 +145,6 @@ class MainActivity :
 
 		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
 			if (it is HistoryListFragment) binding.fab.show() else binding.fab.hide()
-		} ?: run {
-			openDefaultSection()
 		}
 		if (savedInstanceState == null) {
 			onFirstStart()
@@ -138,9 +154,6 @@ class MainActivity :
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
-		viewModel.remoteSources.observe(this, this::updateSideMenu)
-		viewModel.isSuggestionsEnabled.observe(this, this::setSuggestionsEnabled)
-		viewModel.isTrackerEnabled.observe(this, this::setTrackerEnabled)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -163,9 +176,6 @@ class MainActivity :
 		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
 		binding.searchView.clearFocus()
 		when {
-			drawer?.isDrawerOpen(binding.navigationView) == true -> {
-				drawer?.closeDrawer(binding.navigationView)
-			}
 			fragment != null -> supportFragmentManager.commit {
 				remove(fragment)
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -185,46 +195,6 @@ class MainActivity :
 		when (v.id) {
 			R.id.fab -> viewModel.openLastReader()
 		}
-	}
-
-	override fun onNavigationItemSelected(item: MenuItem): Boolean {
-		if (item.groupId == R.id.group_remote_sources) {
-			val source = MangaSource.values().getOrNull(item.itemId) ?: return false
-			setPrimaryFragment(RemoteListFragment.newInstance(source))
-			searchSuggestionViewModel.onSourceChanged(source)
-		} else {
-			searchSuggestionViewModel.onSourceChanged(null)
-			when (item.itemId) {
-				R.id.nav_history -> {
-					viewModel.defaultSection = AppSection.HISTORY
-					setPrimaryFragment(HistoryListFragment.newInstance())
-				}
-				R.id.nav_favourites -> {
-					viewModel.defaultSection = AppSection.FAVOURITES
-					setPrimaryFragment(FavouritesContainerFragment.newInstance())
-				}
-				R.id.nav_local_storage -> {
-					viewModel.defaultSection = AppSection.LOCAL
-					setPrimaryFragment(LocalListFragment.newInstance())
-				}
-				R.id.nav_suggestions -> {
-					viewModel.defaultSection = AppSection.SUGGESTIONS
-					setPrimaryFragment(SuggestionsFragment.newInstance())
-				}
-				R.id.nav_feed -> {
-					viewModel.defaultSection = AppSection.FEED
-					setPrimaryFragment(FeedFragment.newInstance())
-				}
-				R.id.nav_action_settings -> {
-					startActivity(SettingsActivity.newIntent(this))
-					return true
-				}
-				else -> return false
-			}
-		}
-		drawer?.closeDrawers()
-		appBar.setExpanded(true)
-		return true
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -333,57 +303,6 @@ class MainActivity :
 
 	private fun onResumeEnabledChanged(isEnabled: Boolean) {
 		adjustFabVisibility(isResumeEnabled = isEnabled)
-	}
-
-	private fun updateSideMenu(remoteSources: List<MangaSource>) {
-		val submenu = binding.navigationView.menu.findItem(R.id.nav_remote_sources).subMenu
-		submenu.removeGroup(R.id.group_remote_sources)
-		remoteSources.forEachIndexed { index, source ->
-			submenu.add(R.id.group_remote_sources, source.ordinal, index, source.title)
-				.setIcon(R.drawable.ic_manga_source)
-		}
-		submenu.setGroupCheckable(R.id.group_remote_sources, true, true)
-	}
-
-	private fun setSuggestionsEnabled(isEnabled: Boolean) {
-		val item = binding.navigationView.menu.findItem(R.id.nav_suggestions) ?: return
-		if (!isEnabled && item.isChecked) {
-			binding.navigationView.setCheckedItem(R.id.nav_history)
-		}
-		item.isVisible = isEnabled
-	}
-
-	private fun setTrackerEnabled(isEnabled: Boolean) {
-		val item = binding.navigationView.menu.findItem(R.id.nav_feed) ?: return
-		if (!isEnabled && item.isChecked) {
-			binding.navigationView.setCheckedItem(R.id.nav_history)
-		}
-		item.isVisible = isEnabled
-	}
-
-	private fun openDefaultSection() {
-		when (viewModel.defaultSection) {
-			AppSection.LOCAL -> {
-				binding.navigationView.setCheckedItem(R.id.nav_local_storage)
-				setPrimaryFragment(LocalListFragment.newInstance())
-			}
-			AppSection.FAVOURITES -> {
-				binding.navigationView.setCheckedItem(R.id.nav_favourites)
-				setPrimaryFragment(FavouritesContainerFragment.newInstance())
-			}
-			AppSection.HISTORY -> {
-				binding.navigationView.setCheckedItem(R.id.nav_history)
-				setPrimaryFragment(HistoryListFragment.newInstance())
-			}
-			AppSection.FEED -> {
-				binding.navigationView.setCheckedItem(R.id.nav_feed)
-				setPrimaryFragment(FeedFragment.newInstance())
-			}
-			AppSection.SUGGESTIONS -> {
-				binding.navigationView.setCheckedItem(R.id.nav_suggestions)
-				setPrimaryFragment(SuggestionsFragment.newInstance())
-			}
-		}
 	}
 
 	private fun setPrimaryFragment(fragment: Fragment) {
