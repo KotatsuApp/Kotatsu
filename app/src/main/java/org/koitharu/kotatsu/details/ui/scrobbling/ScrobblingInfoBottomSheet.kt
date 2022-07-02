@@ -26,8 +26,10 @@ import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
+import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.requireValue
 
 class ScrobblingInfoBottomSheet :
 	BaseBottomSheet<SheetScrobblingBinding>(),
@@ -38,6 +40,7 @@ class ScrobblingInfoBottomSheet :
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
+	private var menu: PopupMenu? = null
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingBinding {
 		return SheetScrobblingBinding.inflate(inflater, container, false)
@@ -52,15 +55,19 @@ class ScrobblingInfoBottomSheet :
 
 		binding.spinnerStatus.onItemSelectedListener = this
 		binding.ratingBar.onRatingBarChangeListener = this
-		binding.buttonOpen.setOnClickListener(this)
+		binding.buttonMenu.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 
-		val popupMenu = PopupMenu(view.context, binding.buttonOpen)
-		popupMenu.inflate(R.menu.opt_scrobbling)
-		popupMenu.setOnMenuItemClickListener(this)
+		menu = PopupMenu(view.context, binding.buttonMenu).apply {
+			inflate(R.menu.opt_scrobbling)
+			setOnMenuItemClickListener(this@ScrobblingInfoBottomSheet)
+		}
+	}
 
-		binding.buttonOpen.setOnClickListener { popupMenu.show() }
+	override fun onDestroyView() {
+		super.onDestroyView()
+		menu = null
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -83,6 +90,7 @@ class ScrobblingInfoBottomSheet :
 
 	override fun onClick(v: View) {
 		when (v.id) {
+			R.id.button_menu -> menu?.show()
 			R.id.imageView_cover -> {
 				val coverUrl = viewModel.scrobblingInfo.value?.coverUrl ?: return
 				val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
@@ -119,8 +127,8 @@ class ScrobblingInfoBottomSheet :
 		fun show(fm: FragmentManager) = ScrobblingInfoBottomSheet().show(fm, TAG)
 	}
 
-	override fun onMenuItemClick(item: MenuItem?): Boolean {
-		when (item?.itemId) {
+	override fun onMenuItemClick(item: MenuItem): Boolean {
+		when (item.itemId) {
 			R.id.action_browser -> {
 				val url = viewModel.scrobblingInfo.value?.externalUrl ?: return false
 				val intent = Intent(Intent.ACTION_VIEW, url.toUri())
@@ -129,8 +137,13 @@ class ScrobblingInfoBottomSheet :
 				)
 			}
 			R.id.action_unregister -> {
-				dismiss()
 				viewModel.unregisterScrobbling()
+				dismiss()
+			}
+			R.id.action_edit -> {
+				val manga = viewModel.manga.value ?: return false
+				ScrobblingSelectorBottomSheet.show(parentFragmentManager, manga)
+				dismiss()
 			}
 		}
 		return true

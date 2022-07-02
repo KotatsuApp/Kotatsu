@@ -7,6 +7,10 @@
 		android:title="@string/open_in_browser" />
 
 	<item
+		android:id="@+id/action_edit"
+		android:title="@string/edit" />
+
+	<item
 		android:id="@+id/action_unregister"
 		android:title="@string/remove" />
 
