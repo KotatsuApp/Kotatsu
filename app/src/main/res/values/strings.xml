@@ -304,4 +304,5 @@
 	<string name="use_fingerprint">Use fingerprint if available</string>
 	<string name="appwidget_shelf_description">Manga from your favourites</string>
 	<string name="appwidget_recent_description">Your recently read manga</string>
+	<string name="report">Report</string>
 </resources>

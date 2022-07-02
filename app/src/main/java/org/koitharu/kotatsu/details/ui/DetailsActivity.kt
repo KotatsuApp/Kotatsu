@@ -21,9 +21,11 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
+import org.acra.ktx.sendWithAcra
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -37,6 +39,7 @@ import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
@@ -81,7 +84,7 @@ class DetailsActivity :
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
 		viewModel.onShowToast.observe(this) {
-			binding.snackbar.show(messageText = getString(it), longDuration = false)
+			binding.snackbar.show(messageText = getString(it))
 		}
 
 		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
@@ -113,6 +116,21 @@ class DetailsActivity :
 			viewModel.manga.value == null -> {
 				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 				finishAfterTransition()
+			}
+			e is ParseException || e is IllegalArgumentException || e is IllegalStateException -> {
+				binding.snackbar.show(
+					messageText = e.getDisplayMessage(resources),
+					actionId = R.string.report,
+					duration = if (viewModel.manga.value?.chapters == null) {
+						Snackbar.LENGTH_INDEFINITE
+					} else {
+						Snackbar.LENGTH_LONG
+					},
+					onActionClick = {
+						e.sendWithAcra()
+						dismiss()
+					}
+				)
 			}
 			else -> {
 				binding.snackbar.show(e.getDisplayMessage(resources))
