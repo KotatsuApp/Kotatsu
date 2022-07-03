@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.search.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets

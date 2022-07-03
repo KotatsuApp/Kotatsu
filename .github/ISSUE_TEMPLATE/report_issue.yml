@@ -85,9 +85,7 @@ body:
                 required: true
               - label: I have written a short but informative title.
                 required: true
-              - label: If this is an issue with a source, I should be opening an issue in the [parsers repository](https://github.com/nv95/kotatsu-parsers/issues/new).
-                required: true
-              - label: I have updated the app to version **[3.3](https://github.com/nv95/Kotatsu/releases/latest)**.
+              - label: If this is an issue with a source, I should be opening an issue in the [parsers repository](https://github.com/KotatsuApp/kotatsu-parsers/issues/new).
                 required: true
               - label: I will fill out all of the requested information in this form.
                 required: true

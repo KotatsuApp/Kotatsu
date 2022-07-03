@@ -13,6 +13,7 @@
 /.idea/kotlinScripting.xml
 /.idea/deploymentTargetDropDown.xml
 /.idea/androidTestResultsUserPreferences.xml
+/.idea/render.experimental.xml
 .DS_Store
 /build
 /captures

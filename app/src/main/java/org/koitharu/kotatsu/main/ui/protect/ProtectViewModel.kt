@@ -19,6 +19,9 @@ class ProtectViewModel(
 
 	val onUnlockSuccess = SingleLiveEvent<Unit>()
 
+	val isBiometricEnabled
+		get() = settings.isBiometricProtectionEnabled
+
 	fun tryUnlock(password: String) {
 		if (job?.isActive == true) {
 			return

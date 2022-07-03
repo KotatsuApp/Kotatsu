@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.ResolveInfo
 import android.graphics.Color
 import android.net.ConnectivityManager
@@ -15,7 +16,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
 import com.google.android.material.elevation.ElevationOverlayProvider
+import kotlin.coroutines.resume
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koitharu.kotatsu.utils.InternalResourceHelper
@@ -64,6 +72,25 @@ fun <I> ActivityResultLauncher<I>.tryLaunch(input: I, options: ActivityOptionsCo
 		launch(input, options)
 	}.isSuccess
 }
+
+fun SharedPreferences.observe() = callbackFlow<String> {
+	val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+		trySendBlocking(key)
+	}
+	registerOnSharedPreferenceChangeListener(listener)
+	awaitClose {
+		unregisterOnSharedPreferenceChangeListener(listener)
+	}
+}
+
+fun <T> SharedPreferences.observe(key: String, valueProducer: suspend () -> T): Flow<T> = flow {
+	emit(valueProducer())
+	observe().collect { upstreamKey ->
+		if (upstreamKey == key) {
+			emit(valueProducer())
+		}
+	}
+}.distinctUntilChanged()
 
 fun Lifecycle.postDelayed(runnable: Runnable, delay: Long) {
 	coroutineScope.launch {

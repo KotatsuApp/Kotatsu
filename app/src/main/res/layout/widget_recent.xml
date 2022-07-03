@@ -2,14 +2,17 @@
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:background="?android:attr/colorBackground"
+	android:padding="4dp"
+	android:theme="@style/Theme.Kotatsu.AppWidgetContainer">
 
 	<StackView
 		xmlns:tools="http://schemas.android.com/tools"
 		android:id="@+id/stackView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		tools:listitem="@layout/item_shelf" />
+		tools:listitem="@layout/item_recent" />
 
 	<TextView
 		android:id="@+id/textView_holder"

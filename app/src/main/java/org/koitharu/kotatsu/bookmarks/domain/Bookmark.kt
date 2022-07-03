@@ -11,6 +11,7 @@ class Bookmark(
 	val scroll: Int,
 	val imageUrl: String,
 	val createdAt: Date,
+	val percent: Float,
 ) {
 
 	override fun equals(other: Any?): Boolean {
@@ -26,6 +27,7 @@ class Bookmark(
 		if (scroll != other.scroll) return false
 		if (imageUrl != other.imageUrl) return false
 		if (createdAt != other.createdAt) return false
+		if (percent != other.percent) return false
 
 		return true
 	}
@@ -38,6 +40,7 @@ class Bookmark(
 		result = 31 * result + scroll
 		result = 31 * result + imageUrl.hashCode()
 		result = 31 * result + createdAt.hashCode()
+		result = 31 * result + percent.hashCode()
 		return result
 	}
 }

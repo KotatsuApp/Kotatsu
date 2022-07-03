@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:color="?colorPrimary" android:state_checked="true" android:state_enabled="true" />
-	<item android:alpha="@dimen/material_emphasis_disabled" android:color="?colorPrimary" android:state_checked="true" android:state_enabled="false" />
-	<item android:color="?colorOnSurfaceVariant" android:state_checked="false" android:state_enabled="true" />
-	<item android:alpha="@dimen/material_emphasis_disabled" android:color="?colorOnSurfaceVariant" android:state_checked="false" android:state_enabled="false" />
-</selector>

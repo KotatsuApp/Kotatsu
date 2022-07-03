@@ -59,7 +59,15 @@
 			android:label="@string/search_manga" />
 		<activity
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
-			android:label="@string/settings" />
+			android:exported="true"
+			android:label="@string/settings">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="kotatsu" />
+			</intent-filter>
+		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.browser.BrowserActivity"
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"

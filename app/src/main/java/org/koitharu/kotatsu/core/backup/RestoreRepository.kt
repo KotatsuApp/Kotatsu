@@ -9,10 +9,7 @@ import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.json.JSONIterator
-import org.koitharu.kotatsu.parsers.util.json.getBooleanOrDefault
-import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
-import org.koitharu.kotatsu.parsers.util.json.mapJSON
+import org.koitharu.kotatsu.parsers.util.json.*
 
 class RestoreRepository(private val db: MangaDatabase) {
 
@@ -95,7 +92,8 @@ class RestoreRepository(private val db: MangaDatabase) {
 		updatedAt = json.getLong("updated_at"),
 		chapterId = json.getLong("chapter_id"),
 		page = json.getInt("page"),
-		scroll = json.getDouble("scroll").toFloat()
+		scroll = json.getDouble("scroll").toFloat(),
+		percent = json.getFloatOrDefault("percent", -1f),
 	)
 
 	private fun parseCategory(json: JSONObject) = FavouriteCategoryEntity(

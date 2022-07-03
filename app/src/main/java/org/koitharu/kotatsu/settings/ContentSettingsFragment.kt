@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import java.io.File
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
@@ -18,7 +19,6 @@ import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
-import java.io.File
 
 class ContentSettingsFragment :
 	BasePreferenceFragment(R.string.content),
@@ -49,12 +49,12 @@ class ContentSettingsFragment :
 			).names()
 			setDefaultValueCompat(DoHProvider.NONE.name)
 		}
-		bindRemoteSourcesSummary()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.bindStorageName()
+		bindRemoteSourcesSummary()
 		settings.subscribe(this)
 	}
 
@@ -108,9 +108,7 @@ class ContentSettingsFragment :
 	private fun bindRemoteSourcesSummary() {
 		findPreference<Preference>(AppSettings.KEY_REMOTE_SOURCES)?.run {
 			val total = settings.remoteMangaSources.size
-			summary = getString(
-				R.string.enabled_d_of_d, total - settings.hiddenSources.size, total
-			)
+			summary = getString(R.string.enabled_d_of_d, total - settings.hiddenSources.size, total)
 		}
 	}
 }

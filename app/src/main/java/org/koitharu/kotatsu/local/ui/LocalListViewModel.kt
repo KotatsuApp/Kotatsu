@@ -49,7 +49,7 @@ class LocalListViewModel(
 			list == null -> listOf(LoadingState)
 			list.isEmpty() -> listOf(
 				EmptyState(
-					icon = R.drawable.ic_storage,
+					icon = R.drawable.ic_empty_local,
 					textPrimary = R.string.text_local_holder_primary,
 					textSecondary = R.string.text_local_holder_secondary,
 					actionStringRes = R.string._import,

@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.readerModule
 import org.koitharu.kotatsu.remotelist.remoteListModule
+import org.koitharu.kotatsu.scrobbling.shikimori.shikimoriModule
 import org.koitharu.kotatsu.search.searchModule
 import org.koitharu.kotatsu.settings.settingsModule
 import org.koitharu.kotatsu.suggestions.suggestionsModule
@@ -74,6 +75,7 @@ class KotatsuApp : Application() {
 				readerModule,
 				appWidgetModule,
 				suggestionsModule,
+				shikimoriModule,
 				bookmarksModule,
 			)
 		}
@@ -92,6 +94,7 @@ class KotatsuApp : Application() {
 				ReportField.PHONE_MODEL,
 				ReportField.CRASH_CONFIGURATION,
 				ReportField.STACK_TRACE,
+				ReportField.CUSTOM_DATA,
 				ReportField.SHARED_PREFERENCES,
 			)
 			dialog {

@@ -23,6 +23,15 @@ allprojects {
 	}
 }
 
+Object localProperty(String name, Object defaultValue = 'null') {
+	Properties localProperties = new Properties()
+	project.rootProject.file('local.properties').withInputStream { localProperties.load(it) }
+
+	def value = localProperties[name]
+
+	return value != null ? value : defaultValue
+}
+
 task clean(type: Delete) {
 	delete rootProject.buildDir
 }

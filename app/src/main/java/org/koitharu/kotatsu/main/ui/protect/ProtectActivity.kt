@@ -96,6 +96,9 @@ class ProtectActivity :
 	}
 
 	private fun useFingerprint(): Boolean {
+		if (!viewModel.isBiometricEnabled) {
+			return false
+		}
 		if (BiometricManager.from(this).canAuthenticate(BIOMETRIC_WEAK) != BIOMETRIC_SUCCESS) {
 			return false
 		}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/scrobbling_layout"
+	style="@style/Widget.Material3.CardView.Filled"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	app:contentPadding="8dp">
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingBottom="2dp">
+
+		<com.google.android.material.imageview.ShapeableImageView
+			android:id="@+id/imageView_cover"
+			android:layout_width="46dp"
+			android:layout_height="46dp"
+			android:layout_alignParentStart="true"
+			android:layout_alignParentTop="true"
+			android:contentDescription="@null"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+			tools:src="@tools:sample/avatars" />
+
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_alignParentTop="true"
+			android:layout_alignParentEnd="true"
+			android:layout_marginStart="8dp"
+			android:layout_toEndOf="@id/imageView_cover"
+			android:drawablePadding="8dp"
+			android:gravity="center_vertical"
+			android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+			app:drawableTint="?colorControlNormal"
+			tools:drawableEndCompat="@drawable/ic_shikimori"
+			tools:text="@string/tracking" />
+
+		<RatingBar
+			android:id="@+id/ratingBar"
+			style="@style/Widget.AppCompat.RatingBar.Small"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/textView_title"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="4dp"
+			android:layout_toEndOf="@id/imageView_cover"
+			android:isIndicator="true"
+			android:max="1"
+			android:numStars="5" />
+
+		<TextView
+			android:id="@+id/textView_status"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignBottom="@id/ratingBar"
+			android:layout_marginStart="4dp"
+			android:layout_marginBottom="-2dp"
+			android:layout_toEndOf="@id/ratingBar"
+			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+			tools:text="Reading" />
+
+	</RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

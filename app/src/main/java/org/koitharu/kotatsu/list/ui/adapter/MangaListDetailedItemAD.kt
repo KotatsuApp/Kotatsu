@@ -10,6 +10,7 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ItemMangaListDetailsBinding
+import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -36,10 +37,11 @@ fun mangaListDetailedItemAD(
 		clickListener.onItemLongClick(item.manga, it)
 	}
 
-	bind {
+	bind { payloads ->
 		imageRequest?.dispose()
 		binding.textViewTitle.text = item.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle
+		binding.progressView.setPercent(item.progress, MangaListAdapter.PAYLOAD_PROGRESS in payloads)
 		imageRequest = binding.imageViewCover.newImageRequest(item.coverUrl)
 			.referer(item.manga.publicUrl)
 			.placeholder(R.drawable.ic_placeholder)
@@ -56,6 +58,7 @@ fun mangaListDetailedItemAD(
 
 	onViewRecycled {
 		itemView.clearBadge(badge)
+		binding.progressView.percent = PROGRESS_NONE
 		badge = null
 		imageRequest?.dispose()
 		imageRequest = null

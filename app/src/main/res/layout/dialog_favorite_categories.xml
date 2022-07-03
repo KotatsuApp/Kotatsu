@@ -12,8 +12,18 @@
 		android:id="@+id/toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="?attr/actionBarSize"
-		app:menu="@menu/opt_config"
-		app:title="@string/add_to_favourites" />
+		app:title="@string/add_to_favourites">
+
+		<Button
+			android:id="@+id/button_done"
+			style="@style/Widget.Material3.Button.UnelevatedButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+			android:text="@string/done" />
+
+	</com.google.android.material.appbar.MaterialToolbar>
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_categories"

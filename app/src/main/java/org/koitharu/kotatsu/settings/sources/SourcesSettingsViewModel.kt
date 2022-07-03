@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import org.koitharu.kotatsu.utils.ext.map
@@ -54,6 +55,13 @@ class SourcesSettingsViewModel(
 		}
 		if (isEnabled) {
 			settings.markKnownSources(setOf(source))
+		}
+		buildList()
+	}
+
+	fun disableAll() {
+		settings.hiddenSources = settings.getMangaSources(includeHidden = true).mapToSet {
+			it.name
 		}
 		buildList()
 	}

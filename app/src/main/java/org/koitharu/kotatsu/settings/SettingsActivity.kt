@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.settings
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +23,7 @@ import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
 class SettingsActivity :
@@ -89,7 +91,7 @@ class SettingsActivity :
 		val fm = supportFragmentManager
 		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment ?: return false)
 		fragment.arguments = pref.extras
-		// fragment.setTargetFragment(caller, 0)
+		fragment.setTargetFragment(caller, 0)
 		openFragment(fragment)
 		return true
 	}
@@ -116,8 +118,11 @@ class SettingsActivity :
 
 	private fun openDefaultFragment() {
 		val fragment = when (intent?.action) {
+			Intent.ACTION_VIEW -> handleUri(intent.data) ?: return
 			ACTION_READER -> ReaderSettingsFragment()
 			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
+			ACTION_SHIKIMORI -> ShikimoriSettingsFragment()
+			ACTION_TRACKER -> TrackerSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL
 			)
@@ -129,12 +134,25 @@ class SettingsActivity :
 		}
 	}
 
+	private fun handleUri(uri: Uri?): Fragment? {
+		when (uri?.host) {
+			HOST_SHIKIMORI_AUTH ->
+				return ShikimoriSettingsFragment.newInstance(authCode = uri.getQueryParameter("code"))
+		}
+		finishAfterTransition()
+		return null
+	}
+
 	companion object {
 
 		private const val ACTION_READER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_READER_SETTINGS"
 		private const val ACTION_SUGGESTIONS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SUGGESTIONS"
+		private const val ACTION_TRACKER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_TRACKER"
 		private const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
+		private const val ACTION_SHIKIMORI = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SHIKIMORI_SETTINGS"
 		private const val EXTRA_SOURCE = "source"
+
+		private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
 
 		fun newIntent(context: Context) = Intent(context, SettingsActivity::class.java)
 
@@ -142,9 +160,17 @@ class SettingsActivity :
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_READER)
 
+		fun newShikimoriSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_SHIKIMORI)
+
 		fun newSuggestionsSettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_SUGGESTIONS)
+
+		fun newTrackerSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_TRACKER)
 
 		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
 			Intent(context, SettingsActivity::class.java)

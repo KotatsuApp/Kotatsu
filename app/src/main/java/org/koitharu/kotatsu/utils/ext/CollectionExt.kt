@@ -35,3 +35,12 @@ fun <T> List<T>.asArrayList(): ArrayList<T> = if (this is ArrayList<*>) {
 } else {
 	ArrayList(this)
 }
+
+fun <K, V> Map<K, V>.findKey(value: V): K? {
+	for ((k, v) in entries) {
+		if (v == value) {
+			return k
+		}
+	}
+	return null
+}

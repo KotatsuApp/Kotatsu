@@ -15,7 +15,7 @@
 	<dimen name="manga_list_details_item_height">120dp</dimen>
 	<dimen name="bookmark_item_height">120dp</dimen>
 	<dimen name="bookmark_list_spacing">4dp</dimen>
-	<dimen name="chapter_list_item_height">62dp</dimen>
+	<dimen name="chapter_list_item_height">48dp</dimen>
 	<dimen name="preferred_grid_width">120dp</dimen>
 	<dimen name="header_height">48dp</dimen>
 	<dimen name="list_footer_height_inner">36dp</dimen>
@@ -23,10 +23,17 @@
 	<dimen name="screen_padding">16dp</dimen>
 	<dimen name="selection_stroke_width">2dp</dimen>
 	<dimen name="list_selector_corner">12dp</dimen>
+	<dimen name="toolbar_button_margin">10dp</dimen>
+	<dimen name="widget_cover_height">116dp</dimen>
+	<dimen name="widget_cover_width">84dp</dimen>
+	<dimen name="reading_progress_stroke">4dp</dimen>
+	<dimen name="reading_progress_text_size">10dp</dimen>
 
 	<dimen name="search_suggestions_manga_height">124dp</dimen>
 	<dimen name="search_suggestions_manga_spacing">4dp</dimen>
 
 	<dimen name="bottom_sheet_width">0dp</dimen>
 	<dimen name="dialog_radius">8dp</dimen>
+
+	<dimen name="appwidget_corner_radius_inner">8dp</dimen>
 </resources>

@@ -45,4 +45,12 @@
 		<item>@string/right_to_left</item>
 		<item>@string/webtoon</item>
 	</string-array>
+	<string-array name="scrobbling_statuses">
+		<item>@string/status_planned</item>
+		<item>@string/status_reading</item>
+		<item>@string/status_re_reading</item>
+		<item>@string/status_completed</item>
+		<item>@string/status_on_hold</item>
+		<item>@string/status_dropped</item>
+	</string-array>
 </resources>

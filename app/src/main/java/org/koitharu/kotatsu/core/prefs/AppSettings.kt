@@ -10,6 +10,10 @@ import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
+import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
@@ -18,12 +22,9 @@ import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getEnumValue
+import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
-import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
 
 class AppSettings(context: Context) {
 
@@ -40,7 +41,7 @@ class AppSettings(context: Context) {
 		get() = Collections.unmodifiableSet(remoteSources)
 
 	var listMode: ListMode
-		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.DETAILED_LIST)
+		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)
 		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE, value) }
 
 	var defaultSection: AppSection
@@ -104,9 +105,12 @@ class AppSettings(context: Context) {
 	val isReaderModeDetectionEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_MODE_DETECT, true)
 
-	var historyGrouping: Boolean
+	var isHistoryGroupingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_GROUPING, true)
 		set(value) = prefs.edit { putBoolean(KEY_HISTORY_GROUPING, value) }
+
+	val isReadingIndicatorsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READING_INDICATORS, true)
 
 	val isHistoryExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_EXCLUDE_NSFW, false)
@@ -124,6 +128,10 @@ class AppSettings(context: Context) {
 	var appPassword: String?
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit { if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD) }
+
+	var isBiometricProtectionEnabled: Boolean
+		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
+		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
 
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
@@ -242,15 +250,7 @@ class AppSettings(context: Context) {
 		prefs.unregisterOnSharedPreferenceChangeListener(listener)
 	}
 
-	fun observe() = callbackFlow<String> {
-		val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-			trySendBlocking(key)
-		}
-		prefs.registerOnSharedPreferenceChangeListener(listener)
-		awaitClose {
-			prefs.unregisterOnSharedPreferenceChangeListener(listener)
-		}
-	}
+	fun observe() = prefs.observe()
 
 	companion object {
 
@@ -293,11 +293,13 @@ class AppSettings(context: Context) {
 		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_APP_PASSWORD = "app_password"
 		const val KEY_PROTECT_APP = "protect_app"
+		const val KEY_PROTECT_APP_BIOMETRIC = "protect_app_bio"
 		const val KEY_APP_VERSION = "app_version"
 		const val KEY_ZOOM_MODE = "zoom_mode"
 		const val KEY_BACKUP = "backup"
 		const val KEY_RESTORE = "restore"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
+		const val KEY_READING_INDICATORS = "reading_indicators"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
 		const val KEY_PAGES_NUMBERS = "pages_numbers"
@@ -307,6 +309,7 @@ class AppSettings(context: Context) {
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
 		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
+		const val KEY_SHIKIMORI = "shikimori"
 		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
@@ -316,9 +319,6 @@ class AppSettings(context: Context) {
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
-		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
-		const val KEY_FEEDBACK_DISCORD = "about_feedback_discord"
-		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
 
 		private const val NETWORK_NEVER = 0
 		private const val NETWORK_ALWAYS = 1

@@ -13,15 +13,28 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical">
 
-		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
-			android:id="@+id/imageView_cover"
+		<FrameLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:scaleType="centerCrop"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-			tools:ignore="ContentDescription"
-			tools:src="@tools:sample/backgrounds/scenic[3]" />
+			android:layout_height="wrap_content">
+
+			<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+				android:id="@+id/imageView_cover"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:scaleType="centerCrop"
+				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+				tools:ignore="ContentDescription"
+				tools:src="@tools:sample/backgrounds/scenic[3]" />
+
+			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+				android:id="@+id/progressView"
+				android:layout_width="32dp"
+				android:layout_height="32dp"
+				android:layout_gravity="bottom|end"
+				android:layout_margin="4dp" />
+
+		</FrameLayout>
 
 		<TextView
 			android:id="@+id/textView_title"

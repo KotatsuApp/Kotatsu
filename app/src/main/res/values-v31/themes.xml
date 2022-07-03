@@ -41,4 +41,10 @@
 		<item name="android:textColorHighlightInverse">@color/m3_dynamic_dark_highlighted_text</item>
 		<item name="android:textColorAlertDialogListItem">@color/m3_dynamic_default_color_primary_text</item>
 	</style>
+
+	<style name="Theme.Kotatsu.AppWidgetContainer" parent="@android:style/Theme.DeviceDefault.DayNight">
+		<item name="android:colorBackground">@android:color/system_accent1_50</item>
+		<item name="android:panelColorBackground">@android:color/system_accent1_100</item>
+	</style>
+
 </resources>

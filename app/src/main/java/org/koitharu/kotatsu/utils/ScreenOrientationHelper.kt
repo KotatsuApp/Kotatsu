@@ -35,7 +35,7 @@ class ScreenOrientationHelper(private val activity: Activity) {
 		isLandscape = !isLandscape
 	}
 
-	fun observeAutoOrientation() = callbackFlow<Boolean> {
+	fun observeAutoOrientation() = callbackFlow {
 		val observer = object : ContentObserver(Handler(activity.mainLooper)) {
 			override fun onChange(selfChange: Boolean) {
 				trySendBlocking(isAutoRotationEnabled)

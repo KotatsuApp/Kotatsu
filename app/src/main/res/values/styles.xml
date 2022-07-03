@@ -86,14 +86,6 @@
 		<item name="iconPadding">16dp</item>
 	</style>
 
-	<style name="Widget.Kotatsu.Switch" parent="Widget.Material3.CompoundButton.Switch">
-		<item name="android:thumb">@drawable/switch_thumb</item>
-		<item name="thumbTint">@color/selector_switch_thumb</item>
-		<item name="track">@drawable/switch_track</item>
-		<item name="trackTint">@color/selector_switch_track</item>
-		<item name="materialThemeOverlay">@style/ThemeOverlay.Kotatsu.Switch</item>
-	</style>
-
 	<style name="Widget.Kotatsu.RecyclerView" parent="">
 		<item name="fastScrollHorizontalThumbDrawable">@drawable/list_thumb</item>
 		<item name="fastScrollVerticalThumbDrawable">@drawable/list_thumb</item>
@@ -114,10 +106,6 @@
 		<item name="android:insetBottom">2dp</item>
 	</style>
 
-	<style name="ThemeOverlay.Kotatsu.Switch" parent="">
-		<item name="elevationOverlayEnabled">@bool/elevation_overlay_enabled</item>
-	</style>
-
 	<style name="ThemeOverlay.Kotatsu.MainToolbar" parent="">
 		<item name="colorControlHighlight">@color/selector_overlay</item>
 	</style>
@@ -133,7 +121,7 @@
 		<item name="android:textColor">?attr/colorOnBackground</item>
 	</style>
 
-	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall"/>
+	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall" />
 
 	<style name="TextAppearance.Kotatsu.Preference.Secondary" parent="TextAppearance.Material3.BodySmall" />
 
@@ -179,6 +167,22 @@
 
 	<style name="Preference.AutoCompleteTextView" parent="Preference.DialogPreference.EditTextPreference.Material">
 		<item name="android:dialogLayout">@layout/preference_dialog_autocompletetextview</item>
+	</style>
+
+	<style name="Preference.SwitchPreferenceCompat.M3" parent="Preference.SwitchPreferenceCompat.Material">
+		<item name="android:widgetLayout">@layout/preference_widget_material_switch</item>
+	</style>
+
+	<!-- Progress drawable -->
+
+	<style name="ProgressDrawable">
+		<item name="android:fillAlpha">0.8</item>
+		<item name="android:fillColor">?android:colorBackground</item>
+		<item name="android:strokeColor">?colorPrimaryDark</item>
+		<item name="android:textColor">?android:textColorPrimary</item>
+		<item name="strokeWidth">3dp</item>
+		<item name="android:textSize">9sp</item>
+		<item name="autoFitTextSize">true</item>
 	</style>
 
 </resources>

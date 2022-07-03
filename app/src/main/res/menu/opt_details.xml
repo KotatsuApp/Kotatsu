@@ -18,6 +18,12 @@
 		app:showAsAction="never" />
 
 	<item
+		android:id="@+id/action_shiki_track"
+		android:orderInCategory="50"
+		android:title="@string/tracking"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_related"
 		android:orderInCategory="50"
 		android:title="@string/related"

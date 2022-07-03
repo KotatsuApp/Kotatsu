@@ -194,7 +194,6 @@
     <string name="search_results">Arama sonuçları</string>
     <string name="waiting_for_network">Ağ bekleniyor…</string>
     <string name="repeat_password">Parolayı tekrarla</string>
-    <string name="prefer_rtl_reader">Sağdan sola (←) okuyucuyu tercih et</string>
     <string name="dont_check">Denetleme</string>
     <string name="wrong_password">Yanlış parola</string>
     <string name="report_github">GitHub\'da sorun oluştur</string>
@@ -299,4 +298,9 @@
     <string name="disable_battery_optimization_summary">Arka planda güncelleme denetimlerine yardımcı olur</string>
     <string name="crash_text">Bir şeyler yanlış gitti. Düzeltmemize yardımcı olması için lütfen geliştiricilere bir hata bildirimi gönderin.</string>
     <string name="send">Gönder</string>
+    <string name="disable_all">Tümünü devre dışı bırak</string>
+    <string name="use_fingerprint">Varsa parmak izi kullan</string>
+    <string name="appwidget_shelf_description">Favorilerinizden mangalar</string>
+    <string name="appwidget_recent_description">Son okuduğunuz mangalar</string>
+    <string name="report">Bildir</string>
 </resources>

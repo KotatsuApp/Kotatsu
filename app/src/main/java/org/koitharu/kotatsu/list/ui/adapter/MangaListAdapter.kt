@@ -54,9 +54,14 @@ class MangaListAdapter(
 
 		override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
 			return when (newItem) {
-				is MangaListModel,
-				is MangaGridModel,
-				is MangaListDetailedModel,
+				is MangaItemModel -> {
+					oldItem as MangaItemModel
+					if (oldItem.progress != newItem.progress) {
+						PAYLOAD_PROGRESS
+					} else {
+						Unit
+					}
+				}
 				is CurrentFilterModel -> Unit
 				else -> super.getChangePayload(oldItem, newItem)
 			}
@@ -77,5 +82,7 @@ class MangaListAdapter(
 		const val ITEM_TYPE_HEADER = 9
 		const val ITEM_TYPE_FILTER = 10
 		const val ITEM_TYPE_HEADER_FILTER = 11
+
+		val PAYLOAD_PROGRESS = Any()
 	}
 }

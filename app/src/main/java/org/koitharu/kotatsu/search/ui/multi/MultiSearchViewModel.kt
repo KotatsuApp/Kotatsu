@@ -42,7 +42,7 @@ class MultiSearchViewModel(
 					loading -> LoadingState
 					error != null -> error.toErrorState(canRetry = true)
 					else -> EmptyState(
-						icon = R.drawable.ic_book_search,
+						icon = R.drawable.ic_empty_search,
 						textPrimary = R.string.nothing_found,
 						textSecondary = R.string.text_search_holder_secondary,
 						actionStringRes = 0,

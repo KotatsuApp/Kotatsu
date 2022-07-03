@@ -151,7 +151,7 @@ class RemoteListViewModel(
 	}
 
 	private fun createEmptyState(filterState: FilterState) = EmptyState(
-		icon = R.drawable.ic_book_cross,
+		icon = R.drawable.ic_empty_search,
 		textPrimary = R.string.nothing_found,
 		textSecondary = 0,
 		actionStringRes = if (filterState.tags.isEmpty()) 0 else R.string.reset_filter,
