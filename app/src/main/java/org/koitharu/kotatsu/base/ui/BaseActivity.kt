@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.settings.SettingsActivity
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
@@ -83,7 +84,8 @@ abstract class BaseActivity<B : ViewBinding> :
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
 		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_UP) { // TODO remove
 			// ActivityCompat.recreate(this)
-			throw RuntimeException("Test crash")
+			// throw RuntimeException("Test crash")
+			startActivity(SettingsActivity.newIntent(this)) // TODO Xtimms REMOVE
 			// return true
 		}
 		return super.onKeyDown(keyCode, event)
