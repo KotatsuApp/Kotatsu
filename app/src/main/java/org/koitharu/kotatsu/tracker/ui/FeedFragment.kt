@@ -76,12 +76,9 @@ class FeedFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		binding.recyclerView.updatePadding(
-			top = headerHeight + paddingVertical,
 			left = insets.left + paddingHorizontal,
 			right = insets.right + paddingHorizontal,
-			bottom = insets.bottom + paddingVertical,
 		)
 	}
 

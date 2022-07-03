@@ -81,22 +81,11 @@ class FavouritesContainerFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
-		binding.root.updatePadding(
-			top = headerHeight - insets.top
-		)
-		binding.pager.updatePadding(
-			// 8 dp is needed so that the top of the list is not attached to tabs (visible when ActionMode is active)
-			top = -headerHeight + resources.resolveDp(8)
-		)
 		binding.tabs.apply {
 			updatePadding(
 				left = insets.left,
 				right = insets.right
 			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
 		}
 	}
 

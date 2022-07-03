@@ -185,10 +185,6 @@ abstract class MangaListFragment :
 			right = insets.right,
 		)
 		if (activity is MainActivity) {
-			binding.recyclerView.updatePadding(
-				top = headerHeight,
-				bottom = insets.bottom,
-			)
 			binding.swipeRefreshLayout.setProgressViewOffset(
 				true,
 				headerHeight + resources.resolveDp(-72),

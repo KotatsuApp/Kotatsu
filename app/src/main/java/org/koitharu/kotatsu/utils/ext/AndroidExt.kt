@@ -9,14 +9,19 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
+import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import android.view.Window
+import android.view.animation.Animation
 import androidx.activity.result.ActivityResultLauncher
+import androidx.constraintlayout.motion.widget.MotionScene
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
 import com.google.android.material.elevation.ElevationOverlayProvider
-import kotlin.coroutines.resume
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
@@ -111,4 +116,15 @@ fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float 
 			elevation,
 		)
 	}
+}
+
+val Context.animatorDurationScale: Float
+	get() = Settings.Global.getFloat(this.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
+
+fun ViewPropertyAnimator.applySystemAnimatorScale(context: Context): ViewPropertyAnimator = apply {
+	this.duration = (this.duration * context.animatorDurationScale).toLong()
+}
+
+inline fun <reified T> ViewGroup.findChild(): T? {
+	return children.find { it is T } as? T
 }
