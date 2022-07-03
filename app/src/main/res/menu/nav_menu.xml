@@ -4,12 +4,22 @@
 
 	<item
 		android:id="@+id/nav_local_storage"
-		android:icon="@drawable/ic_storage"
+		android:icon="@drawable/ic_bookshelf_selector"
 		android:title="Library" />
 
 	<item
 		android:id="@+id/nav_favourites"
-		android:icon="@drawable/ic_local_library"
+		android:icon="@drawable/ic_explore_selector"
 		android:title="Explore" />
+
+	<item
+		android:id="@+id/nav_feed"
+		android:icon="@drawable/ic_feed"
+		android:title="@string/updates" />
+
+	<item
+		android:id="@+id/nav_tools"
+		android:icon="@drawable/ic_tools"
+		android:title="Tools" />
 
 </menu>

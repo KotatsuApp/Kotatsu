@@ -135,6 +135,10 @@ class MainActivity :
 					viewModel.defaultSection = AppSection.FAVOURITES
 					setPrimaryFragment(FavouritesContainerFragment.newInstance())
 				}
+				R.id.nav_feed -> {
+					viewModel.defaultSection = AppSection.FEED
+					setPrimaryFragment(FeedFragment.newInstance())
+				}
 			}
 			appBar.setExpanded(true)
 			true
@@ -181,7 +185,7 @@ class MainActivity :
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 				runOnCommit { onSearchClosed() }
 			}
-			else -> super.onBackPressed()
+			else -> binding.searchView.requestFocus()
 		}
 	}
 
@@ -198,11 +202,7 @@ class MainActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.fab.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = insets.bottom + topMargin
-		}
 		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
-			topMargin = insets.top + bottomMargin
 			leftMargin = insets.left
 			rightMargin = insets.right
 		}
@@ -210,9 +210,6 @@ class MainActivity :
 			left = insets.left,
 			right = insets.right,
 		)
-		binding.container.updateLayoutParams<MarginLayoutParams> {
-			topMargin = -(binding.appbar.measureHeight())
-		}
 	}
 
 	override fun onFocusChange(v: View?, hasFocus: Boolean) {

@@ -6,6 +6,12 @@
 		<item name="android:tint">?colorControlNormal</item>
 	</style>
 
+	<!--Navigation Views-->
+
+	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+		<item name="labelVisibilityMode">labeled</item>
+	</style>
+
 	<style name="Widget.Kotatsu.ActionMode" parent="Base.Widget.Material3.ActionMode">
 		<!--<item name="titleTextStyle">@style/TextAppearance.Kotatsu.ActionBar.Title</item>-->
 		<item name="theme">@style/ThemeOverlay.Kotatsu.ActionMode</item>

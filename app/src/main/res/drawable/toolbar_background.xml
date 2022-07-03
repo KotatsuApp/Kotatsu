@@ -2,6 +2,6 @@
 <shape
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:shape="rectangle">
-	<solid android:color="?attr/colorSecondaryContainer" />
+	<solid android:color="@color/toolbar_background_scrim" />
 	<corners android:radius="100dp" />
 </shape>
