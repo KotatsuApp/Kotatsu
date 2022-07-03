@@ -320,6 +320,7 @@ class MainActivity :
 		binding.appbar.updatePadding(left = 0, right = 0)
 		adjustDrawerLock()
 		adjustFabVisibility(isSearchOpened = true)
+		showBottomNav(false)
 	}
 
 	private fun onSearchClosed() {
@@ -333,6 +334,15 @@ class MainActivity :
 		binding.appbar.updatePadding(left = padding, right = padding)
 		adjustDrawerLock()
 		adjustFabVisibility(isSearchOpened = false)
+		showBottomNav(true)
+	}
+
+	private fun showBottomNav(visible: Boolean) {
+		if (visible) {
+			binding.bottomNav.slideUp()
+		} else {
+			binding.bottomNav.slideDown()
+		}
 	}
 
 	private fun onFirstStart() {
