@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	style="@style/Widget.Material3.CardView.Outlined"
 	android:layout_width="wrap_content"
 	android:layout_height="match_parent"
 	app:contentPadding="4dp"
+	app:shapeAppearance="?shapeAppearanceCornerSmall"
 	tools:layout_height="@dimen/search_suggestions_manga_height">
 
 	<LinearLayout
@@ -19,9 +20,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="0dp"
 			android:layout_weight="1"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
 			android:orientation="vertical"
 			android:scaleType="centerCrop"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
 			tools:src="@tools:sample/backgrounds/scenic" />
 
 		<TextView

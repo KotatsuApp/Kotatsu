@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import android.widget.Spinner
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
@@ -16,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
@@ -34,16 +34,15 @@ import kotlin.math.roundToInt
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem>,
-	ActionMode.Callback,
 	AdapterView.OnItemSelectedListener,
 	MenuItem.OnActionExpandListener,
-	SearchView.OnQueryTextListener {
+	SearchView.OnQueryTextListener,
+	ListSelectionController.Callback {
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 
 	private var chaptersAdapter: ChaptersAdapter? = null
-	private var actionMode: ActionMode? = null
-	private var selectionDecoration: ChaptersSelectionDecoration? = null
+	private var selectionController: ListSelectionController? = null
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -53,9 +52,14 @@ class ChaptersFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		chaptersAdapter = ChaptersAdapter(this)
-		selectionDecoration = ChaptersSelectionDecoration(view.context)
+		selectionController = ListSelectionController(
+			activity = requireActivity(),
+			decoration = ChaptersSelectionDecoration(view.context),
+			registryOwner = this,
+			callback = this,
+		)
 		with(binding.recyclerViewChapters) {
-			addItemDecoration(selectionDecoration!!)
+			checkNotNull(selectionController).attachToRecyclerView(this)
 			setHasFixedSize(true)
 			adapter = chaptersAdapter
 		}
@@ -74,20 +78,13 @@ class ChaptersFragment :
 
 	override fun onDestroyView() {
 		chaptersAdapter = null
-		selectionDecoration = null
+		selectionController = null
 		binding.spinnerBranches?.adapter = null
 		super.onDestroyView()
 	}
 
 	override fun onItemClick(item: ChapterListItem, view: View) {
-		if (selectionDecoration?.checkedItemsCount != 0) {
-			selectionDecoration?.toggleItemChecked(item.chapter.id)
-			if (selectionDecoration?.checkedItemsCount == 0) {
-				actionMode?.finish()
-			} else {
-				actionMode?.invalidate()
-				binding.recyclerViewChapters.invalidateItemDecorations()
-			}
+		if (selectionController?.onItemClick(item.chapter.id) == true) {
 			return
 		}
 		if (item.hasFlag(ChapterListItem.FLAG_MISSING)) {
@@ -106,14 +103,7 @@ class ChaptersFragment :
 	}
 
 	override fun onItemLongClick(item: ChapterListItem, view: View): Boolean {
-		if (actionMode == null) {
-			actionMode = (activity as? AppCompatActivity)?.startSupportActionMode(this)
-		}
-		return actionMode?.also {
-			selectionDecoration?.setItemIsChecked(item.chapter.id, true)
-			binding.recyclerViewChapters.invalidateItemDecorations()
-			it.invalidate()
-		} != null
+		return selectionController?.onItemLongClick(item.chapter.id) ?: false
 	}
 
 	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
@@ -122,13 +112,13 @@ class ChaptersFragment :
 				DownloadService.start(
 					context ?: return false,
 					viewModel.getRemoteManga() ?: viewModel.manga.value ?: return false,
-					selectionDecoration?.checkedItemsIds?.toSet()
+					selectionController?.snapshot(),
 				)
 				mode.finish()
 				true
 			}
 			R.id.action_delete -> {
-				val ids = selectionDecoration?.checkedItemsIds
+				val ids = selectionController?.peekCheckedIds()
 				val manga = viewModel.manga.value
 				when {
 					ids.isNullOrEmpty() || manga == null -> Unit
@@ -147,9 +137,7 @@ class ChaptersFragment :
 			}
 			R.id.action_select_all -> {
 				val ids = chaptersAdapter?.items?.map { it.chapter.id } ?: return false
-				selectionDecoration?.checkAll(ids)
-				binding.recyclerViewChapters.invalidateItemDecorations()
-				mode.invalidate()
+				selectionController?.addAll(ids)
 				true
 			}
 			else -> false
@@ -169,7 +157,7 @@ class ChaptersFragment :
 	}
 
 	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		val selectedIds = selectionDecoration?.checkedItemsIds ?: return false
+		val selectedIds = selectionController?.peekCheckedIds() ?: return false
 		val items = chaptersAdapter?.items?.filter { x -> x.chapter.id in selectedIds }.orEmpty()
 		menu.findItem(R.id.action_save).isVisible = items.none { x ->
 			x.chapter.source == MangaSource.LOCAL
@@ -181,10 +169,8 @@ class ChaptersFragment :
 		return true
 	}
 
-	override fun onDestroyActionMode(mode: ActionMode?) {
-		selectionDecoration?.clearSelection()
+	override fun onSelectionChanged(count: Int) {
 		binding.recyclerViewChapters.invalidateItemDecorations()
-		actionMode = null
 	}
 
 	override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true

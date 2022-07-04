@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -24,7 +25,6 @@ import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.settings.SettingsActivity
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
@@ -83,10 +83,8 @@ abstract class BaseActivity<B : ViewBinding> :
 
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
 		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_UP) { // TODO remove
-			// ActivityCompat.recreate(this)
-			// throw RuntimeException("Test crash")
-			startActivity(SettingsActivity.newIntent(this)) // TODO Xtimms REMOVE
-			// return true
+			ActivityCompat.recreate(this)
+			return true
 		}
 		return super.onKeyDown(keyCode, event)
 	}

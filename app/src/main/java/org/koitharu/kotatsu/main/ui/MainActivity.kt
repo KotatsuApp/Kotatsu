@@ -107,6 +107,17 @@ class MainActivity :
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 	}
 
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		super.onRestoreInstanceState(savedInstanceState)
+		if (isSearchOpened()) {
+			binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
+				scrollFlags = SCROLL_FLAG_NO_SCROLL
+			}
+			binding.appbar.setBackgroundColor(getThemeColor(materialR.attr.colorSurfaceVariant))
+			binding.appbar.updatePadding(left = 0, right = 0)
+		}
+	}
+
 	override fun onBackPressed() {
 		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
 		binding.searchView.clearFocus()
@@ -291,6 +302,10 @@ class MainActivity :
 		binding.navRail?.isVisible = visible
 	}
 
+	private fun isSearchOpened(): Boolean {
+		return supportFragmentManager.findFragmentByTag(TAG_SEARCH)?.isVisible == true
+	}
+
 	private fun onFirstStart() {
 		lifecycleScope.launchWhenResumed {
 			val isUpdateSupported = withContext(Dispatchers.Default) {
@@ -312,7 +327,7 @@ class MainActivity :
 	private fun adjustFabVisibility(
 		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value == true,
 		topFragment: Fragment? = supportFragmentManager.findFragmentByTag(TAG_PRIMARY),
-		isSearchOpened: Boolean = supportFragmentManager.findFragmentByTag(TAG_SEARCH)?.isVisible == true,
+		isSearchOpened: Boolean = isSearchOpened(),
 	) {
 		val fab = binding.fab
 		if (isResumeEnabled && !isSearchOpened && topFragment is LibraryFragment) {
