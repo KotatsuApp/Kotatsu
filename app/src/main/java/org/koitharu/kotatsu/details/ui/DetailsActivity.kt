@@ -143,9 +143,6 @@ class DetailsActivity :
 		binding.snackbar.updatePadding(
 			bottom = insets.bottom
 		)
-		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top
-		}
 		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right

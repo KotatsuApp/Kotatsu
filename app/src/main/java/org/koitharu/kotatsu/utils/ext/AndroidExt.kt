@@ -18,6 +18,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.constraintlayout.motion.widget.MotionScene
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.children
+import androidx.core.view.descendants
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
@@ -127,4 +128,8 @@ fun ViewPropertyAnimator.applySystemAnimatorScale(context: Context): ViewPropert
 
 inline fun <reified T> ViewGroup.findChild(): T? {
 	return children.find { it is T } as? T
+}
+
+inline fun <reified T> ViewGroup.findDescendant(): T? {
+	return descendants.find { it is T } as? T
 }

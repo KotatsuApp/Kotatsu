@@ -80,15 +80,10 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right,
-			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
-		}
+		binding.toolbar.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 			left = insets.left,

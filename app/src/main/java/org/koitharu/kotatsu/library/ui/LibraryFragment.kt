@@ -96,7 +96,6 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 		binding.recyclerView.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			top = insets.top,
 			bottom = insets.bottom,
 		)
 	}

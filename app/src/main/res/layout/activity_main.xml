@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -18,8 +18,6 @@
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="@null"
-		android:clipToPadding="false"
 		android:fitsSystemWindows="true"
 		android:paddingLeft="16dp"
 		android:paddingRight="16dp"
@@ -89,4 +87,4 @@
 		app:menu="@menu/nav_bottom"
 		tools:ignore="KeyboardInaccessibleWidget" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout>

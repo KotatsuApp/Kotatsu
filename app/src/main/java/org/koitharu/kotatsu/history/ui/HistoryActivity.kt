@@ -28,15 +28,10 @@ class HistoryActivity : BaseActivity<ActivityContainerBinding>() {
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right
-			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
-		}
+		binding.toolbar.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 		binding.container.updatePadding(
 			bottom = insets.bottom
 		)

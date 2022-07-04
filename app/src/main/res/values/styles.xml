@@ -60,6 +60,20 @@
 		<item name="tabRippleColor">@color/ripple_toolbar</item>
 	</style>
 
+	<style name="Widget.Kotatsu.SuperTabs" parent="Widget.Material3.TabLayout">
+		<item name="tabGravity">center</item>
+		<item name="tabIndicator">@drawable/tab_selector_drawable</item>
+		<item name="tabIndicatorColor">@color/tab_indicator_foreground</item>
+		<item name="tabIndicatorFullWidth">true</item>
+		<item name="tabIndicatorGravity">center</item>
+		<item name="tabMinWidth">75dp</item>
+		<item name="tabMode">scrollable</item>
+		<item name="tabRippleColor">@color/ripple_toolbar</item>
+		<item name="tabPaddingStart">8dp</item>
+		<item name="tabPaddingEnd">8dp</item>
+		<item name="dividerThickness">0dp</item>
+	</style>
+
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
@@ -195,7 +209,7 @@
 	<style name="ProgressDrawable">
 		<item name="android:fillAlpha">0.8</item>
 		<item name="android:fillColor">?android:colorBackground</item>
-		<item name="android:strokeColor">?colorPrimaryDark</item>
+		<item name="android:strokeColor">?colorTertiary</item>
 		<item name="android:textColor">?android:textColorPrimary</item>
 		<item name="strokeWidth">3dp</item>
 		<item name="android:textSize">9sp</item>

@@ -256,6 +256,7 @@ class MainActivity :
 			else -> return false
 		}
 		appBar.setExpanded(true)
+		appBar.isLifted = false
 		return true
 	}
 
