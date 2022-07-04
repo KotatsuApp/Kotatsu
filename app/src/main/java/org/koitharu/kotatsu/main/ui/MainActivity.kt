@@ -2,9 +2,11 @@ package org.koitharu.kotatsu.main.ui
 
 import android.app.ActivityOptions
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.result.ActivityResultCallback
+import androidx.annotation.IdRes
 import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.graphics.Insets
@@ -17,6 +19,7 @@ import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,7 +31,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.ui.FavouritesContainerFragment
-import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.library.ui.LibraryFragment
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -57,11 +59,12 @@ class MainActivity :
 	AppBarOwner,
 	View.OnClickListener,
 	View.OnFocusChangeListener,
-	SearchSuggestionListener {
+	SearchSuggestionListener, NavigationBarView.OnItemSelectedListener {
 
 	private val viewModel by viewModel<MainViewModel>()
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
 	private val voiceInputLauncher = registerForActivityResult(VoiceInputContract(), VoiceInputCallback())
+	private lateinit var navBar: NavigationBarView
 
 	override val appBar: AppBarLayout
 		get() = binding.appbar
@@ -70,42 +73,30 @@ class MainActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 
-		ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
-			if (insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom > 0) {
-				val elevation = binding.bottomNav.elevation
-				window.setNavigationBarTransparentCompat(this@MainActivity, elevation)
+		navBar = checkNotNull(binding.bottomNav ?: binding.navRail)
+		if (binding.bottomNav != null) {
+			ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+				if (insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom > 0) {
+					val elevation = binding.bottomNav?.elevation ?: 0f
+					window.setNavigationBarTransparentCompat(this@MainActivity, elevation)
+				}
+				insets
 			}
-			insets
+			ViewCompat.requestApplyInsets(binding.root)
 		}
-		ViewCompat.requestApplyInsets(binding.root)
 
 		with(binding.searchView) {
 			onFocusChangeListener = this@MainActivity
 			searchSuggestionListener = this@MainActivity
 		}
 
-		binding.bottomNav.setOnItemSelectedListener { item ->
-			when (item.itemId) {
-				R.id.nav_library -> {
-					setPrimaryFragment(LibraryFragment.newInstance())
-				}
-				R.id.nav_explore -> {
-					setPrimaryFragment(FavouritesContainerFragment.newInstance())
-				}
-				R.id.nav_feed -> {
-					setPrimaryFragment(FeedFragment.newInstance())
-				}
-			}
-			appBar.setExpanded(true)
-			true
-		}
-
-		binding.fab.setOnClickListener(this@MainActivity)
+		navBar.setOnItemSelectedListener(this)
+		binding.fab.setOnClickListener(this)
 		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
 		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
-			if (it is HistoryListFragment) binding.fab.show() else binding.fab.hide()
-		}
+			if (it is LibraryFragment) binding.fab.show() else binding.fab.hide()
+		} ?: onNavigationItemSelected(navBar.selectedItemId)
 		if (savedInstanceState == null) {
 			onFirstStart()
 		}
@@ -127,6 +118,10 @@ class MainActivity :
 			}
 			else -> binding.searchView.requestFocus()
 		}
+	}
+
+	override fun onNavigationItemSelected(item: MenuItem): Boolean {
+		return onNavigationItemSelected(item.itemId)
 	}
 
 	override fun onClick(v: View) {
@@ -220,6 +215,23 @@ class MainActivity :
 		showBottomNav(true)
 	}
 
+	private fun onNavigationItemSelected(@IdRes itemId: Int): Boolean {
+		when (itemId) {
+			R.id.nav_library -> {
+				setPrimaryFragment(LibraryFragment.newInstance())
+			}
+			R.id.nav_explore -> {
+				setPrimaryFragment(FavouritesContainerFragment.newInstance())
+			}
+			R.id.nav_feed -> {
+				setPrimaryFragment(FeedFragment.newInstance())
+			}
+			else -> return false
+		}
+		appBar.setExpanded(true)
+		return true
+	}
+
 	private fun onOpenReader(manga: Manga) {
 		val options = ActivityOptions.makeScaleUpAnimation(binding.fab, 0, 0, binding.fab.width, binding.fab.height)
 		startActivity(ReaderActivity.newIntent(this, manga), options?.toBundle())
@@ -240,6 +252,7 @@ class MainActivity :
 	private fun setPrimaryFragment(fragment: Fragment) {
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.container, fragment, TAG_PRIMARY)
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 			.commit()
 		adjustFabVisibility(topFragment = fragment)
 	}
@@ -268,11 +281,14 @@ class MainActivity :
 	}
 
 	private fun showBottomNav(visible: Boolean) {
-		if (visible) {
-			binding.bottomNav.slideUp()
-		} else {
-			binding.bottomNav.slideDown()
+		binding.bottomNav?.run {
+			if (visible) {
+				slideUp()
+			} else {
+				slideDown()
+			}
 		}
+		binding.navRail?.isVisible = visible
 	}
 
 	private fun onFirstStart() {
