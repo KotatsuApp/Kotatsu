@@ -12,7 +12,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
+import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
+import kotlin.coroutines.EmptyCoroutineContext
 
 private const val KEY_SELECTION = "selection"
 private const val PROVIDER_NAME = "selection_decoration"
@@ -148,7 +150,11 @@ class ListSelectionController(
 				registry.registerSavedStateProvider(PROVIDER_NAME, this@ListSelectionController)
 				val state = registry.consumeRestoredStateForKey(PROVIDER_NAME)
 				if (state != null) {
-					restoreState(state.getLongArray(KEY_SELECTION)?.toList().orEmpty())
+					Dispatchers.Main.dispatch(EmptyCoroutineContext) { // == Handler.post
+						if (source.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+							restoreState(state.getLongArray(KEY_SELECTION)?.toList().orEmpty())
+						}
+					}
 				}
 			}
 		}
