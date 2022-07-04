@@ -145,8 +145,15 @@ class MainActivity :
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		drawerToggle?.isDrawerIndicatorEnabled =
-			drawer?.getDrawerLockMode(GravityCompat.START) == DrawerLayout.LOCK_MODE_UNLOCKED
+		val isSearchOpened = isSearchOpened()
+		adjustDrawerLock(isSearchOpened)
+		if (isSearchOpened) {
+			binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
+				scrollFlags = SCROLL_FLAG_NO_SCROLL
+			}
+			binding.appbar.setBackgroundColor(getThemeColor(materialR.attr.colorSurfaceVariant))
+			binding.appbar.updatePadding(left = 0, right = 0)
+		}
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -396,27 +403,29 @@ class MainActivity :
 
 	private fun onSearchOpened() {
 		TransitionManager.beginDelayedTransition(binding.appbar)
-		drawerToggle?.isDrawerIndicatorEnabled = false
 		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
 			scrollFlags = SCROLL_FLAG_NO_SCROLL
 		}
 		binding.appbar.setBackgroundColor(getThemeColor(materialR.attr.colorSurfaceVariant))
 		binding.appbar.updatePadding(left = 0, right = 0)
-		adjustDrawerLock()
+		adjustDrawerLock(isSearchOpened = true)
 		adjustFabVisibility(isSearchOpened = true)
 	}
 
 	private fun onSearchClosed() {
 		TransitionManager.beginDelayedTransition(binding.appbar)
-		drawerToggle?.isDrawerIndicatorEnabled = true
 		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
 			scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
 		}
 		binding.appbar.background = null
 		val padding = resources.getDimensionPixelOffset(R.dimen.margin_normal)
 		binding.appbar.updatePadding(left = padding, right = padding)
-		adjustDrawerLock()
+		adjustDrawerLock(isSearchOpened = false)
 		adjustFabVisibility(isSearchOpened = false)
+	}
+
+	private fun isSearchOpened(): Boolean {
+		return supportFragmentManager.findFragmentByTag(TAG_SEARCH)?.isVisible == true
 	}
 
 	private fun onFirstStart() {
@@ -440,7 +449,7 @@ class MainActivity :
 	private fun adjustFabVisibility(
 		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value == true,
 		topFragment: Fragment? = supportFragmentManager.findFragmentByTag(TAG_PRIMARY),
-		isSearchOpened: Boolean = supportFragmentManager.findFragmentByTag(TAG_SEARCH)?.isVisible == true,
+		isSearchOpened: Boolean = isSearchOpened(),
 	) {
 		val fab = binding.fab
 		if (isResumeEnabled && !isSearchOpened && topFragment is HistoryListFragment) {
@@ -454,12 +463,15 @@ class MainActivity :
 		}
 	}
 
-	private fun adjustDrawerLock() {
+	private fun adjustDrawerLock(
+		isSearchOpened: Boolean = isSearchOpened(),
+	) {
 		val drawer = drawer ?: return
-		val isLocked = actionModeDelegate.isActionModeStarted || (drawerToggle?.isDrawerIndicatorEnabled == false)
+		val isLocked = actionModeDelegate.isActionModeStarted || isSearchOpened
 		drawer.setDrawerLockMode(
 			if (isLocked) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED
 		)
+		drawerToggle?.isDrawerIndicatorEnabled = !isLocked
 	}
 
 	private inner class VoiceInputCallback : ActivityResultCallback<String?> {

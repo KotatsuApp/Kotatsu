@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.list.ui
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.CallSuper
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
 import androidx.core.graphics.Insets
@@ -18,6 +17,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.FitHeightGridLayoutManager
 import org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager
+import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
@@ -46,12 +46,11 @@ abstract class MangaListFragment :
 	PaginationScrollListener.Callback,
 	MangaListListener,
 	SwipeRefreshLayout.OnRefreshListener,
-	ActionMode.Callback {
+	ListSelectionController.Callback {
 
 	private var listAdapter: MangaListAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
-	private var selectionDecoration: MangaSelectionDecoration? = null
-	private var actionMode: ActionMode? = null
+	private var selectionController: ListSelectionController? = null
 	private val spanResolver = MangaListSpanResolver()
 	private val spanSizeLookup = SpanSizeLookup()
 	private val listCommitCallback = Runnable {
@@ -62,7 +61,7 @@ abstract class MangaListFragment :
 	protected abstract val viewModel: MangaListViewModel
 
 	protected val selectedItemsIds: Set<Long>
-		get() = selectionDecoration?.checkedItemsIds?.toSet().orEmpty()
+		get() = selectionController?.snapshot().orEmpty()
 
 	protected val selectedItems: Set<Manga>
 		get() = collectSelectedItems()
@@ -79,12 +78,17 @@ abstract class MangaListFragment :
 			lifecycleOwner = viewLifecycleOwner,
 			listener = this,
 		)
-		selectionDecoration = MangaSelectionDecoration(view.context)
+		selectionController = ListSelectionController(
+			activity = requireActivity(),
+			decoration = MangaSelectionDecoration(view.context),
+			registryOwner = this,
+			callback = this,
+		)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = listAdapter
-			addItemDecoration(selectionDecoration!!)
+			checkNotNull(selectionController).attachToRecyclerView(binding.recyclerView)
 			addOnScrollListener(paginationListener!!)
 		}
 		with(binding.swipeRefreshLayout) {
@@ -105,34 +109,19 @@ abstract class MangaListFragment :
 	override fun onDestroyView() {
 		listAdapter = null
 		paginationListener = null
-		selectionDecoration = null
+		selectionController = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
 	}
 
 	override fun onItemClick(item: Manga, view: View) {
-		if (selectionDecoration?.checkedItemsCount != 0) {
-			selectionDecoration?.toggleItemChecked(item.id)
-			if (selectionDecoration?.checkedItemsCount == 0) {
-				actionMode?.finish()
-			} else {
-				actionMode?.invalidate()
-				binding.recyclerView.invalidateItemDecorations()
-			}
-			return
+		if (selectionController?.onItemClick(item.id) != true) {
+			startActivity(DetailsActivity.newIntent(context ?: return, item))
 		}
-		startActivity(DetailsActivity.newIntent(context ?: return, item))
 	}
 
 	override fun onItemLongClick(item: Manga, view: View): Boolean {
-		if (actionMode == null) {
-			actionMode = (activity as? AppCompatActivity)?.startSupportActionMode(this)
-		}
-		return actionMode?.also {
-			selectionDecoration?.setItemIsChecked(item.id, true)
-			binding.recyclerView.invalidateItemDecorations()
-			it.invalidate()
-		} != null
+		return selectionController?.onItemLongClick(item.id) ?: false
 	}
 
 	@CallSuper
@@ -249,7 +238,7 @@ abstract class MangaListFragment :
 					addOnLayoutChangeListener(spanResolver)
 				}
 			}
-			selectionDecoration?.let { addItemDecoration(it) }
+			selectionController?.attachToRecyclerView(binding.recyclerView)
 		}
 	}
 
@@ -259,7 +248,7 @@ abstract class MangaListFragment :
 
 	@CallSuper
 	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		mode.title = selectionDecoration?.checkedItemsCount?.toString()
+		mode.title = selectionController?.count?.toString()
 		return true
 	}
 
@@ -269,9 +258,7 @@ abstract class MangaListFragment :
 				val ids = listAdapter?.items?.mapNotNull {
 					(it as? MangaItemModel)?.id
 				} ?: return false
-				selectionDecoration?.checkAll(ids)
-				binding.recyclerView.invalidateItemDecorations()
-				mode.invalidate()
+				selectionController?.addAll(ids)
 				true
 			}
 			R.id.action_share -> {
@@ -293,14 +280,12 @@ abstract class MangaListFragment :
 		}
 	}
 
-	override fun onDestroyActionMode(mode: ActionMode) {
-		selectionDecoration?.clearSelection()
+	override fun onSelectionChanged(count: Int) {
 		binding.recyclerView.invalidateItemDecorations()
-		actionMode = null
 	}
 
 	private fun collectSelectedItems(): Set<Manga> {
-		val checkedIds = selectionDecoration?.checkedItemsIds ?: return emptySet()
+		val checkedIds = selectionController?.peekCheckedIds() ?: return emptySet()
 		val items = listAdapter?.items ?: return emptySet()
 		val result = ArraySet<Manga>(checkedIds.size)
 		for (item in items) {

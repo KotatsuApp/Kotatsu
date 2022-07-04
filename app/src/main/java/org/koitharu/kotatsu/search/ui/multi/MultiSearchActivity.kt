@@ -17,6 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -32,14 +33,14 @@ import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.findViewsByType
 
-class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaListListener, ActionMode.Callback {
+class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaListListener,
+	ListSelectionController.Callback {
 
 	private val viewModel by viewModel<MultiSearchViewModel> {
 		parametersOf(intent.getStringExtra(EXTRA_QUERY).orEmpty())
 	}
 	private lateinit var adapter: MultiSearchAdapter
-	private lateinit var selectionDecoration: MangaSelectionDecoration
-	private var actionMode: ActionMode? = null
+	private lateinit var selectionController: ListSelectionController
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -51,7 +52,13 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 			}
 		}
 		val sizeResolver = ItemSizeResolver(resources, get())
-		selectionDecoration = MangaSelectionDecoration(this)
+		val selectionDecoration = MangaSelectionDecoration(this)
+		selectionController = ListSelectionController(
+			activity = this,
+			decoration = selectionDecoration,
+			registryOwner = this,
+			callback = this,
+		)
 		adapter = MultiSearchAdapter(
 			lifecycleOwner = this,
 			coil = get(),
@@ -90,29 +97,14 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 	}
 
 	override fun onItemClick(item: Manga, view: View) {
-		if (selectionDecoration.checkedItemsCount != 0) {
-			selectionDecoration.toggleItemChecked(item.id)
-			if (selectionDecoration.checkedItemsCount == 0) {
-				actionMode?.finish()
-			} else {
-				actionMode?.invalidate()
-				invalidateItemDecorations()
-			}
-			return
+		if (!selectionController.onItemClick(item.id)) {
+			val intent = DetailsActivity.newIntent(this, item)
+			startActivity(intent)
 		}
-		val intent = DetailsActivity.newIntent(this, item)
-		startActivity(intent)
 	}
 
 	override fun onItemLongClick(item: Manga, view: View): Boolean {
-		if (actionMode == null) {
-			actionMode = startSupportActionMode(this)
-		}
-		return actionMode?.also {
-			selectionDecoration.setItemIsChecked(item.id, true)
-			invalidateItemDecorations()
-			it.invalidate()
-		} != null
+		return selectionController.onItemLongClick(item.id)
 	}
 
 	override fun onRetryClick(error: Throwable) {
@@ -131,7 +123,7 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 	}
 
 	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		mode.title = selectionDecoration.checkedItemsCount.toString()
+		mode.title = selectionController.count.toString()
 		return true
 	}
 
@@ -156,20 +148,14 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 		}
 	}
 
-	override fun onDestroyActionMode(mode: ActionMode) {
-		selectionDecoration.clearSelection()
-		invalidateItemDecorations()
-		actionMode = null
-	}
-
-	private fun collectSelectedItems(): Set<Manga> {
-		return viewModel.getItems(selectionDecoration.checkedItemsIds)
-	}
-
-	private fun invalidateItemDecorations() {
+	override fun onSelectionChanged(count: Int) {
 		binding.recyclerView.findViewsByType(RecyclerView::class.java).forEach {
 			it.invalidateItemDecorations()
 		}
+	}
+
+	private fun collectSelectedItems(): Set<Manga> {
+		return viewModel.getItems(selectionController.peekCheckedIds())
 	}
 
 	companion object {
