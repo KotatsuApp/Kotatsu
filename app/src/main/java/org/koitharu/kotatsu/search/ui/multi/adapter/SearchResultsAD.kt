@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.search.ui.multi.adapter
 
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import coil.ImageLoader
@@ -37,11 +38,12 @@ fun searchResultsAD(
 	val spacing = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing)
 	binding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing))
 	val eventListener = AdapterDelegateClickListenerAdapter(this, itemClickListener)
-	itemView.setOnClickListener(eventListener)
+	binding.buttonMore.setOnClickListener(eventListener)
 
 	bind {
 		binding.textViewTitle.text = item.source.title
-		adapter.items = item.list
+		binding.buttonMore.isVisible = item.hasMore
 		adapter.notifyDataSetChanged()
+		adapter.items = item.list
 	}
 }

@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 private const val MAX_PARALLELISM = 4
+private const val MIN_HAS_MORE_ITEMS = 8
 
 class MultiSearchViewModel(
 	initialQuery: String,
@@ -98,7 +99,7 @@ class MultiSearchViewModel(
 						val list = MangaRepository(source).getList(offset = 0, query = q)
 							.toUi(ListMode.GRID)
 						if (list.isNotEmpty()) {
-							MultiSearchListModel(source, list)
+							MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list)
 						} else {
 							null
 						}
