@@ -29,6 +29,9 @@ val uiModule
 			ImageLoader.Builder(androidContext())
 				.okHttpClient(httpClientFactory)
 				.interceptorDispatcher(Dispatchers.Default)
+				.fetcherDispatcher(Dispatchers.IO)
+				.decoderDispatcher(Dispatchers.Default)
+				.transformationDispatcher(Dispatchers.Default)
 				.diskCache(diskCacheFactory)
 				.components(
 					ComponentRegistry.Builder()
