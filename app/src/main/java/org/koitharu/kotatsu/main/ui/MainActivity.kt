@@ -92,6 +92,7 @@ class MainActivity :
 
 		navBar.setOnItemSelectedListener(this)
 		binding.fab.setOnClickListener(this)
+		binding.navRail?.headerView?.setOnClickListener(this)
 		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
 		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
@@ -150,6 +151,7 @@ class MainActivity :
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.fab -> viewModel.openLastReader()
+			R.id.railFab -> viewModel.openLastReader()
 		}
 	}
 
@@ -258,8 +260,8 @@ class MainActivity :
 	}
 
 	private fun onOpenReader(manga: Manga) {
-		val options = ActivityOptions.makeScaleUpAnimation(binding.fab, 0, 0, binding.fab.width, binding.fab.height)
-		startActivity(ReaderActivity.newIntent(this, manga), options?.toBundle())
+		// val options = ActivityOptions.makeScaleUpAnimation(binding.fab, 0, 0, binding.fab.width, binding.fab.height)
+		startActivity(ReaderActivity.newIntent(this, manga))
 	}
 
 	private fun onError(e: Throwable) {

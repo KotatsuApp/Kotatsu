@@ -43,11 +43,12 @@ class SearchSuggestionFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		val extraPadding = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 		binding.root.updatePadding(
-			top = headerHeight + extraPadding,
-			bottom = insets.bottom + extraPadding,
+			top = extraPadding,
+			right = insets.right,
+			left = insets.left,
+			bottom = insets.bottom
 		)
 	}
 
