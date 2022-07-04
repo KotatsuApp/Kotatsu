@@ -114,8 +114,10 @@ class MainActivity :
 			binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
 				scrollFlags = SCROLL_FLAG_NO_SCROLL
 			}
+			binding.toolbarCard.background = null
 			binding.appbar.setBackgroundColor(getThemeColor(materialR.attr.colorSurfaceVariant))
 			binding.appbar.updatePadding(left = 0, right = 0)
+			supportActionBar?.setHomeAsUpIndicator(materialR.drawable.abc_ic_ab_back_material)
 		}
 		adjustFabVisibility(isSearchOpened = isSearchOpened)
 	}
@@ -135,6 +137,14 @@ class MainActivity :
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean {
 		return onNavigationItemSelected(item.itemId)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		if (item.itemId == android.R.id.home && !isSearchOpened()) {
+			binding.searchView.requestFocus()
+			return true
+		}
+		return super.onOptionsItemSelected(item)
 	}
 
 	override fun onClick(v: View) {
@@ -277,9 +287,11 @@ class MainActivity :
 		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
 			scrollFlags = SCROLL_FLAG_NO_SCROLL
 		}
+		binding.toolbarCard.background = null
 		binding.appbar.setBackgroundColor(getThemeColor(materialR.attr.colorSurfaceVariant))
 		binding.appbar.updatePadding(left = 0, right = 0)
 		adjustFabVisibility(isSearchOpened = true)
+		supportActionBar?.setHomeAsUpIndicator(materialR.drawable.abc_ic_ab_back_material)
 		showBottomNav(false)
 	}
 
@@ -288,10 +300,12 @@ class MainActivity :
 		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
 			scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
 		}
+		binding.toolbarCard.setBackgroundResource(R.drawable.toolbar_background)
 		binding.appbar.background = null
 		val padding = resources.getDimensionPixelOffset(R.dimen.margin_normal)
 		binding.appbar.updatePadding(left = padding, right = padding)
 		adjustFabVisibility(isSearchOpened = false)
+		supportActionBar?.setHomeAsUpIndicator(materialR.drawable.abc_ic_search_api_material)
 		showBottomNav(true)
 	}
 
