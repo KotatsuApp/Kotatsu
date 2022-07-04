@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.base.ui.list
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.ArrayMap
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -16,63 +17,71 @@ import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
 import kotlin.coroutines.EmptyCoroutineContext
 
-private const val KEY_SELECTION = "selection"
-private const val PROVIDER_NAME = "selection_decoration"
+private const val PROVIDER_NAME = "selection_decoration_sectioned"
 
-class ListSelectionController(
+class SectionedSelectionController<T : Any>(
 	private val activity: Activity,
-	private val decoration: AbstractSelectionItemDecoration,
 	private val registryOwner: SavedStateRegistryOwner,
-	private val callback: Callback,
+	private val callback: Callback<T>,
 ) : ActionMode.Callback, SavedStateRegistry.SavedStateProvider {
 
 	private var actionMode: ActionMode? = null
 
+	private var pendingData: MutableMap<String, Collection<Long>>? = null
+	private val decorations = ArrayMap<T, AbstractSelectionItemDecoration>()
+
 	val count: Int
-		get() = decoration.checkedItemsCount
+		get() = decorations.values.sumOf { it.checkedItemsCount }
 
 	init {
 		registryOwner.lifecycle.addObserver(StateEventObserver())
 	}
 
-	fun snapshot(): Set<Long> {
-		return peekCheckedIds().toSet()
+	fun snapshot(): Map<T, Set<Long>> {
+		return decorations.mapValues { it.value.checkedItemsIds.toSet() }
 	}
 
-	fun peekCheckedIds(): Set<Long> {
-		return decoration.checkedItemsIds
+	fun peekCheckedIds(): Map<T, Set<Long>> {
+		return decorations.mapValues { it.value.checkedItemsIds }
 	}
 
 	fun clear() {
-		decoration.clearSelection()
-		notifySelectionChanged()
-	}
-
-	fun addAll(ids: Collection<Long>) {
-		if (ids.isEmpty()) {
-			return
+		decorations.values.forEach {
+			it.clearSelection()
 		}
-		decoration.checkAll(ids)
 		notifySelectionChanged()
 	}
 
-	fun attachToRecyclerView(recyclerView: RecyclerView) {
+	fun attachToRecyclerView(section: T, recyclerView: RecyclerView) {
+		val decoration = getDecoration(section)
+		val pendingIds = pendingData?.remove(section.toString())
+		if (!pendingIds.isNullOrEmpty()) {
+			decoration.checkAll(pendingIds)
+			startActionMode()
+			notifySelectionChanged()
+		}
 		recyclerView.addItemDecoration(decoration)
+		if (pendingData?.isEmpty() == true) {
+			pendingData = null
+		}
 	}
 
 	override fun saveState(): Bundle {
-		val bundle = Bundle(1)
-		bundle.putLongArray(KEY_SELECTION, peekCheckedIds().toLongArray())
+		val bundle = Bundle(decorations.size)
+		for ((k, v) in decorations) {
+			bundle.putLongArray(k.toString(), v.checkedItemsIds.toLongArray())
+		}
 		return bundle
 	}
 
-	fun onItemClick(id: Long): Boolean {
-		if (decoration.checkedItemsCount != 0) {
+	fun onItemClick(section: T, id: Long): Boolean {
+		val decoration = getDecoration(section)
+		if (isInSelectionMode()) {
 			decoration.toggleItemChecked(id)
-			if (decoration.checkedItemsCount == 0) {
-				actionMode?.finish()
-			} else {
+			if (isInSelectionMode()) {
 				actionMode?.invalidate()
+			} else {
+				actionMode?.finish()
 			}
 			notifySelectionChanged()
 			return true
@@ -80,7 +89,8 @@ class ListSelectionController(
 		return false
 	}
 
-	fun onItemLongClick(id: Long): Boolean {
+	fun onItemLongClick(section: T, id: Long): Boolean {
+		val decoration = getDecoration(section)
 		startActionMode()
 		return actionMode?.also {
 			decoration.setItemIsChecked(id, true)
@@ -112,8 +122,12 @@ class ListSelectionController(
 		}
 	}
 
+	private fun isInSelectionMode(): Boolean {
+		return decorations.values.any { x -> x.checkedItemsCount > 0 }
+	}
+
 	private fun notifySelectionChanged() {
-		val count = decoration.checkedItemsCount
+		val count = this.count
 		callback.onSelectionChanged(count)
 		if (count == 0) {
 			actionMode?.finish()
@@ -122,26 +136,32 @@ class ListSelectionController(
 		}
 	}
 
-	private fun restoreState(ids: Collection<Long>) {
-		if (ids.isEmpty() || decoration.checkedItemsCount != 0) {
+	private fun restoreState(ids: MutableMap<String, Collection<Long>>) {
+		if (ids.isEmpty() || isInSelectionMode()) {
 			return
 		}
-		decoration.checkAll(ids)
-		startActionMode()
-		notifySelectionChanged()
+		for ((k, v) in decorations) {
+			val items = ids.remove(k.toString())
+			if (!items.isNullOrEmpty()) {
+				v.checkAll(items)
+			}
+		}
+		pendingData = ids
+		if (isInSelectionMode()) {
+			startActionMode()
+			notifySelectionChanged()
+		}
 	}
 
-	interface Callback : ActionMode.Callback {
+	private fun getDecoration(section: T): AbstractSelectionItemDecoration {
+		return decorations.getOrPut(section) {
+			callback.onCreateItemDecoration(section)
+		}
+	}
 
-		fun onSelectionChanged(count: Int)
+	interface Callback<T> : ListSelectionController.Callback {
 
-		override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean
-
-		override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean
-
-		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean
-
-		override fun onDestroyActionMode(mode: ActionMode) = Unit
+		fun onCreateItemDecoration(section: T): AbstractSelectionItemDecoration
 	}
 
 	private inner class StateEventObserver : LifecycleEventObserver {
@@ -149,12 +169,14 @@ class ListSelectionController(
 		override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
 			if (event == Lifecycle.Event.ON_CREATE) {
 				val registry = registryOwner.savedStateRegistry
-				registry.registerSavedStateProvider(PROVIDER_NAME, this@ListSelectionController)
+				registry.registerSavedStateProvider(PROVIDER_NAME, this@SectionedSelectionController)
 				val state = registry.consumeRestoredStateForKey(PROVIDER_NAME)
 				if (state != null) {
 					Dispatchers.Main.dispatch(EmptyCoroutineContext) { // == Handler.post
 						if (source.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
-							restoreState(state.getLongArray(KEY_SELECTION)?.toList().orEmpty())
+							restoreState(
+								state.keySet().associateWithTo(HashMap()) { state.getLongArray(it)?.toList().orEmpty() }
+							)
 						}
 					}
 				}

@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.library.ui
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
@@ -12,30 +11,31 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
+import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.databinding.FragmentLibraryBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.history.ui.HistoryActivity
 import org.koitharu.kotatsu.library.ui.adapter.LibraryAdapter
-import org.koitharu.kotatsu.library.ui.model.LibraryGroupModel
+import org.koitharu.kotatsu.library.ui.adapter.LibraryListEventListener
+import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
-import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.flattenTo
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.findViewsByType
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), MangaListListener, ActionMode.Callback {
+class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEventListener,
+	SectionedSelectionController.Callback<LibrarySectionModel> {
 
 	private val viewModel by viewModel<LibraryViewModel>()
 	private var adapter: LibraryAdapter? = null
-	private var selectionDecoration: MangaSelectionDecoration? = null
-	private var actionMode: ActionMode? = null
+	private var selectionController: SectionedSelectionController<LibrarySectionModel>? = null
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentLibraryBinding {
 		return FragmentLibraryBinding.inflate(inflater, container, false)
@@ -44,19 +44,17 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), MangaListListene
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val sizeResolver = ItemSizeResolver(resources, get())
-		val itemCLickListener = object : OnListItemClickListener<LibraryGroupModel> {
-			override fun onItemClick(item: LibraryGroupModel, view: View) {
-				onGroupClick(item, view)
-			}
-		}
-		selectionDecoration = MangaSelectionDecoration(view.context)
+		selectionController = SectionedSelectionController(
+			activity = requireActivity(),
+			registryOwner = this,
+			callback = this,
+		)
 		adapter = LibraryAdapter(
 			lifecycleOwner = viewLifecycleOwner,
 			coil = get(),
 			listener = this,
-			itemClickListener = itemCLickListener,
 			sizeResolver = sizeResolver,
-			selectionDecoration = checkNotNull(selectionDecoration),
+			selectionController = checkNotNull(selectionController),
 		)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.setHasFixedSize(true)
@@ -68,41 +66,29 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), MangaListListene
 	override fun onDestroyView() {
 		super.onDestroyView()
 		adapter = null
-		selectionDecoration = null
-		actionMode = null
+		selectionController = null
 	}
 
-	override fun onItemClick(item: Manga, view: View) {
-		if (selectionDecoration?.checkedItemsCount != 0) {
-			selectionDecoration?.toggleItemChecked(item.id)
-			if (selectionDecoration?.checkedItemsCount == 0) {
-				actionMode?.finish()
-			} else {
-				actionMode?.invalidate()
-				invalidateItemDecorations()
-			}
-			return
+	override fun onItemClick(item: Manga, section: LibrarySectionModel, view: View) {
+		if (selectionController?.onItemClick(section, item.id) != true) {
+			val intent = DetailsActivity.newIntent(view.context, item)
+			startActivity(intent)
 		}
-		val intent = DetailsActivity.newIntent(view.context, item)
+	}
+
+	override fun onItemLongClick(item: Manga, section: LibrarySectionModel, view: View): Boolean {
+		return selectionController?.onItemLongClick(section, item.id) ?: false
+	}
+
+	override fun onSectionClick(section: LibrarySectionModel, view: View) {
+		val intent = when (section) {
+			is LibrarySectionModel.History -> HistoryActivity.newIntent(view.context)
+			is LibrarySectionModel.Favourites -> TODO()
+		}
 		startActivity(intent)
 	}
 
-	override fun onItemLongClick(item: Manga, view: View): Boolean {
-		if (actionMode == null) {
-			actionMode = (activity as? AppCompatActivity)?.startSupportActionMode(this)
-		}
-		return actionMode?.also {
-			selectionDecoration?.setItemIsChecked(item.id, true)
-			invalidateItemDecorations()
-			it.invalidate()
-		} != null
-	}
-
 	override fun onRetryClick(error: Throwable) = Unit
-
-	override fun onTagRemoveClick(tag: MangaTag) = Unit
-
-	override fun onFilterClick() = Unit
 
 	override fun onEmptyActionClick() = Unit
 
@@ -121,7 +107,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), MangaListListene
 	}
 
 	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		mode.title = selectionDecoration?.checkedItemsCount?.toString()
+		mode.title = selectionController?.count?.toString()
 		return true
 	}
 
@@ -147,26 +133,28 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), MangaListListene
 		}
 	}
 
-	override fun onDestroyActionMode(mode: ActionMode) {
-		selectionDecoration?.clearSelection()
+	override fun onSelectionChanged(count: Int) {
 		invalidateItemDecorations()
-		actionMode = null
 	}
 
-	private fun onGroupClick(item: LibraryGroupModel, view: View) {
-		val intent = when (item) {
-			is LibraryGroupModel.History -> HistoryActivity.newIntent(view.context)
-			is LibraryGroupModel.Favourites -> TODO()
+	override fun onCreateItemDecoration(section: LibrarySectionModel): AbstractSelectionItemDecoration {
+		return MangaSelectionDecoration(requireContext())
+	}
+
+	private fun collectSelectedItemsMap(): Map<LibrarySectionModel, Set<Manga>> {
+		val snapshot = selectionController?.snapshot()
+		if (snapshot.isNullOrEmpty()) {
+			return emptyMap()
 		}
-		startActivity(intent)
+		return snapshot.mapValues { (_, ids) -> viewModel.getManga(ids) }
 	}
 
 	private fun collectSelectedItems(): Set<Manga> {
-		val ids = selectionDecoration?.checkedItemsIds
-		if (ids.isNullOrEmpty()) {
+		val snapshot = selectionController?.snapshot()
+		if (snapshot.isNullOrEmpty()) {
 			return emptySet()
 		}
-		return emptySet()//viewModel.getItems(ids)
+		return viewModel.getManga(snapshot.values.flattenTo(HashSet()))
 	}
 
 	private fun invalidateItemDecorations() {

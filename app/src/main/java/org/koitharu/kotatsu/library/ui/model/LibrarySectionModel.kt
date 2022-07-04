@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 
-sealed class LibraryGroupModel(
+sealed class LibrarySectionModel(
 	val items: List<MangaItemModel>,
 	@StringRes val showAllButtonText: Int,
 ) : ListModel {
@@ -20,7 +20,7 @@ sealed class LibraryGroupModel(
 		items: List<MangaItemModel>,
 		val timeAgo: DateTimeAgo?,
 		showAllButtonText: Int,
-	) : LibraryGroupModel(items, showAllButtonText) {
+	) : LibrarySectionModel(items, showAllButtonText) {
 
 		override val key: Any
 			get() = timeAgo?.javaClass ?: this::class.java
@@ -48,13 +48,17 @@ sealed class LibraryGroupModel(
 			result = 31 * result + showAllButtonText.hashCode()
 			return result
 		}
+
+		override fun toString(): String {
+			return "hist_$timeAgo"
+		}
 	}
 
 	class Favourites(
 		items: List<MangaItemModel>,
 		val category: FavouriteCategory,
 		showAllButtonText: Int,
-	) : LibraryGroupModel(items, showAllButtonText) {
+	) : LibrarySectionModel(items, showAllButtonText) {
 
 		override val key: Any
 			get() = category.id
@@ -81,6 +85,10 @@ sealed class LibraryGroupModel(
 			result = 31 * result + category.hashCode()
 			result = 31 * result + showAllButtonText.hashCode()
 			return result
+		}
+
+		override fun toString(): String {
+			return "fav_${category.id}"
 		}
 	}
 }

@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 fun errorStateListAD(
-	listener: MangaListListener,
+	listener: ListStateHolderListener,
 ) = adapterDelegateViewBinding<ErrorState, ListModel, ItemErrorStateBinding>(
 	{ inflater, parent -> ItemErrorStateBinding.inflate(inflater, parent, false) }
 ) {
