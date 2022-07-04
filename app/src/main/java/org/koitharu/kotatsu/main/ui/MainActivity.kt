@@ -109,13 +109,15 @@ class MainActivity :
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		if (isSearchOpened()) {
+		val isSearchOpened = isSearchOpened()
+		if (isSearchOpened) {
 			binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
 				scrollFlags = SCROLL_FLAG_NO_SCROLL
 			}
 			binding.appbar.setBackgroundColor(getThemeColor(materialR.attr.colorSurfaceVariant))
 			binding.appbar.updatePadding(left = 0, right = 0)
 		}
+		adjustFabVisibility(isSearchOpened = isSearchOpened)
 	}
 
 	override fun onBackPressed() {
@@ -127,7 +129,7 @@ class MainActivity :
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 				runOnCommit { onSearchClosed() }
 			}
-			else -> binding.searchView.requestFocus()
+			else -> super.onBackPressed()
 		}
 	}
 
@@ -218,11 +220,13 @@ class MainActivity :
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
+		adjustFabVisibility()
 		showBottomNav(false)
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
+		adjustFabVisibility()
 		showBottomNav(true)
 	}
 
@@ -330,7 +334,12 @@ class MainActivity :
 		isSearchOpened: Boolean = isSearchOpened(),
 	) {
 		val fab = binding.fab
-		if (isResumeEnabled && !isSearchOpened && topFragment is LibraryFragment) {
+		if (
+			isResumeEnabled &&
+			!actionModeDelegate.isActionModeStarted &&
+			!isSearchOpened &&
+			topFragment is LibraryFragment
+		) {
 			if (!fab.isVisible) {
 				fab.show()
 			}

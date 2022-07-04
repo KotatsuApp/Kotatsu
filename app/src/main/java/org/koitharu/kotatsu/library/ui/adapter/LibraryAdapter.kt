@@ -56,5 +56,12 @@ class LibraryAdapter(
 		override fun areContentsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
 			return Intrinsics.areEqual(oldItem, newItem)
 		}
+
+		override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
+			return when {
+				oldItem is LibraryGroupModel && newItem is LibraryGroupModel -> Unit
+				else -> super.getChangePayload(oldItem, newItem)
+			}
+		}
 	}
 }

@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.databinding.FragmentLibraryBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
-import org.koitharu.kotatsu.history.ui.HistoryListFragment
+import org.koitharu.kotatsu.history.ui.HistoryActivity
 import org.koitharu.kotatsu.library.ui.adapter.LibraryAdapter
 import org.koitharu.kotatsu.library.ui.model.LibraryGroupModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
@@ -46,7 +46,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), MangaListListene
 		val sizeResolver = ItemSizeResolver(resources, get())
 		val itemCLickListener = object : OnListItemClickListener<LibraryGroupModel> {
 			override fun onItemClick(item: LibraryGroupModel, view: View) {
-
+				onGroupClick(item, view)
 			}
 		}
 		selectionDecoration = MangaSelectionDecoration(view.context)
@@ -151,6 +151,14 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), MangaListListene
 		selectionDecoration?.clearSelection()
 		invalidateItemDecorations()
 		actionMode = null
+	}
+
+	private fun onGroupClick(item: LibraryGroupModel, view: View) {
+		val intent = when (item) {
+			is LibraryGroupModel.History -> HistoryActivity.newIntent(view.context)
+			is LibraryGroupModel.Favourites -> TODO()
+		}
+		startActivity(intent)
 	}
 
 	private fun collectSelectedItems(): Set<Manga> {

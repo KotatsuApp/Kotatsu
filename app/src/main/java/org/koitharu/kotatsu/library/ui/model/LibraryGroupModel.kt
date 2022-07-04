@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.library.ui.model
 
 import android.content.res.Resources
+import androidx.annotation.StringRes
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
@@ -8,7 +9,8 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 
 sealed class LibraryGroupModel(
-	val items: List<MangaItemModel>
+	val items: List<MangaItemModel>,
+	@StringRes val showAllButtonText: Int,
 ) : ListModel {
 
 	abstract val key: Any
@@ -17,7 +19,8 @@ sealed class LibraryGroupModel(
 	class History(
 		items: List<MangaItemModel>,
 		val timeAgo: DateTimeAgo?,
-	) : LibraryGroupModel(items) {
+		showAllButtonText: Int,
+	) : LibraryGroupModel(items, showAllButtonText) {
 
 		override val key: Any
 			get() = timeAgo?.javaClass ?: this::class.java
@@ -32,8 +35,9 @@ sealed class LibraryGroupModel(
 
 			other as History
 
-			if (items != other.items) return false
 			if (timeAgo != other.timeAgo) return false
+			if (showAllButtonText != other.showAllButtonText) return false
+			if (items != other.items) return false
 
 			return true
 		}
@@ -41,6 +45,7 @@ sealed class LibraryGroupModel(
 		override fun hashCode(): Int {
 			var result = items.hashCode()
 			result = 31 * result + (timeAgo?.hashCode() ?: 0)
+			result = 31 * result + showAllButtonText.hashCode()
 			return result
 		}
 	}
@@ -48,7 +53,8 @@ sealed class LibraryGroupModel(
 	class Favourites(
 		items: List<MangaItemModel>,
 		val category: FavouriteCategory,
-	) : LibraryGroupModel(items) {
+		showAllButtonText: Int,
+	) : LibraryGroupModel(items, showAllButtonText) {
 
 		override val key: Any
 			get() = category.id
@@ -63,8 +69,9 @@ sealed class LibraryGroupModel(
 
 			other as Favourites
 
-			if (items != other.items) return false
 			if (category != other.category) return false
+			if (showAllButtonText != other.showAllButtonText) return false
+			if (items != other.items) return false
 
 			return true
 		}
@@ -72,6 +79,7 @@ sealed class LibraryGroupModel(
 		override fun hashCode(): Int {
 			var result = items.hashCode()
 			result = 31 * result + category.hashCode()
+			result = 31 * result + showAllButtonText.hashCode()
 			return result
 		}
 	}
