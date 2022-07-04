@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.search.ui.multi.adapter.ItemSizeResolver
+import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.referer

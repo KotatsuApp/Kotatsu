@@ -1,32 +1,32 @@
-package org.koitharu.kotatsu.search.ui.multi.adapter
+package org.koitharu.kotatsu.library.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
+import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.library.ui.model.LibraryGroupModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.*
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.search.ui.multi.MultiSearchListModel
 import kotlin.jvm.internal.Intrinsics
 
-class MultiSearchAdapter(
+class LibraryAdapter(
 	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
 	listener: MangaListListener,
-	itemClickListener: OnListItemClickListener<MultiSearchListModel>,
 	sizeResolver: ItemSizeResolver,
 	selectionDecoration: MangaSelectionDecoration,
+	itemClickListener: OnListItemClickListener<LibraryGroupModel>,
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
 	init {
-		val pool = RecycledViewPool()
+		val pool = RecyclerView.RecycledViewPool()
 		delegatesManager
 			.addDelegate(
-				searchResultsAD(
+				libraryGroupAD(
 					sharedPool = pool,
 					lifecycleOwner = lifecycleOwner,
 					coil = coil,
@@ -46,8 +46,8 @@ class MultiSearchAdapter(
 
 		override fun areItemsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
 			return when {
-				oldItem is MultiSearchListModel && newItem is MultiSearchListModel -> {
-					oldItem.source == newItem.source
+				oldItem is LibraryGroupModel && newItem is LibraryGroupModel -> {
+					oldItem.key == newItem.key
 				}
 				else -> oldItem.javaClass == newItem.javaClass
 			}

@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
+import org.koitharu.kotatsu.favourites.data.FavouriteManga
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -26,6 +27,11 @@ class FavouritesRepository(
 	fun observeAll(order: SortOrder): Flow<List<Manga>> {
 		return db.favouritesDao.observeAll(order)
 			.mapItems { it.manga.toManga(it.tags.toMangaTags()) }
+	}
+
+	fun observeAllGrouped(order: SortOrder): Flow<Map<FavouriteCategory, List<Manga>>> {
+		return db.favouritesDao.observeAll(order)
+			.map { list -> groupByCategory(list) }
 	}
 
 	suspend fun getManga(categoryId: Long): List<Manga> {
@@ -162,5 +168,17 @@ class FavouritesRepository(
 			.filterNotNull()
 			.map { x -> SortOrder(x.order, SortOrder.NEWEST) }
 			.distinctUntilChanged()
+	}
+
+	private fun groupByCategory(list: List<FavouriteManga>): Map<FavouriteCategory, List<Manga>> {
+		val map = HashMap<FavouriteCategory, MutableList<Manga>>()
+		for (item in list) {
+			val manga = item.manga.toManga(item.tags.toMangaTags())
+			for (category in item.categories) {
+				map.getOrPut(category.toFavouriteCategory()) { ArrayList() }
+					.add(manga)
+			}
+		}
+		return map
 	}
 }

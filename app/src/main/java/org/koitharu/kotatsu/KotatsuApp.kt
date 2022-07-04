@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.core.ui.uiModule
 import org.koitharu.kotatsu.details.detailsModule
 import org.koitharu.kotatsu.favourites.favouritesModule
 import org.koitharu.kotatsu.history.historyModule
+import org.koitharu.kotatsu.library.libraryModule
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.local.localModule
@@ -77,6 +78,7 @@ class KotatsuApp : Application() {
 				suggestionsModule,
 				shikimoriModule,
 				bookmarksModule,
+				libraryModule,
 			)
 		}
 	}

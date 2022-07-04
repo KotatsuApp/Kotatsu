@@ -1,9 +1,9 @@
-package org.koitharu.kotatsu.search.ui.multi.adapter
+package org.koitharu.kotatsu.list.ui
 
 import android.content.res.Resources
-import kotlin.math.roundToInt
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import kotlin.math.roundToInt
 
 class ItemSizeResolver(resources: Resources, settings: AppSettings) {
 
