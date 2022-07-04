@@ -293,7 +293,7 @@ class MainActivity :
 			scrollFlags = SCROLL_FLAG_NO_SCROLL
 		}
 		binding.toolbarCard.background = null
-		binding.appbar.setBackgroundColor(getThemeColor(materialR.attr.colorSurfaceVariant))
+		binding.appbar.isLifted = true
 		binding.appbar.updatePadding(left = 0, right = 0)
 		adjustFabVisibility(isSearchOpened = true)
 		supportActionBar?.setHomeAsUpIndicator(materialR.drawable.abc_ic_ab_back_material)
@@ -306,7 +306,7 @@ class MainActivity :
 			scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
 		}
 		binding.toolbarCard.setBackgroundResource(R.drawable.toolbar_background)
-		binding.appbar.background = null
+		binding.appbar.isLifted = false
 		val padding = resources.getDimensionPixelOffset(R.dimen.margin_normal)
 		binding.appbar.updatePadding(left = padding, right = padding)
 		adjustFabVisibility(isSearchOpened = false)
