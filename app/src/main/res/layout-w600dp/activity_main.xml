@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -7,36 +7,22 @@
 	android:layout_height="match_parent"
 	tools:context=".main.ui.MainActivity">
 
-	<com.google.android.material.navigationrail.NavigationRailView
-		android:id="@+id/navRail"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		app:elevation="1dp"
-		app:headerLayout="@layout/navigation_rail_fab"
-		app:labelVisibilityMode="labeled"
-		app:menu="@menu/nav_bottom" />
-
-	<androidx.coordinatorlayout.widget.CoordinatorLayout
+	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<androidx.fragment.app.FragmentContainerView
-			android:id="@id/container"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-			tools:layout="@layout/fragment_list" />
-
 		<com.google.android.material.appbar.KotatsuAppBarLayout
 			android:id="@+id/appbar"
-			android:layout_width="match_parent"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:background="@null"
-			android:clipToPadding="false"
 			android:fitsSystemWindows="true"
 			android:paddingLeft="16dp"
 			android:paddingRight="16dp"
-			android:stateListAnimator="@null">
+			android:clipToPadding="false"
+			android:stateListAnimator="@null"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/navRail"
+			app:layout_constraintTop_toTopOf="parent">
 
 			<FrameLayout
 				android:id="@+id/toolbar_card"
@@ -44,8 +30,7 @@
 				android:layout_height="48dp"
 				android:layout_marginVertical="8dp"
 				android:background="@drawable/toolbar_background"
-				android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
-				app:layout_scrollFlags="scroll|enterAlways|snap">
+				android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar">
 
 				<com.google.android.material.appbar.MaterialToolbar
 					android:id="@id/toolbar"
@@ -77,20 +62,26 @@
 
 		</com.google.android.material.appbar.KotatsuAppBarLayout>
 
-		<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-			android:id="@+id/fab"
+		<com.google.android.material.navigationrail.NavigationRailView
+			android:id="@+id/navRail"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_margin="16dp"
-			android:text="@string/_continue"
-			android:visibility="gone"
-			app:backgroundTint="?attr/colorContainer"
-			app:icon="@drawable/ic_read"
-			app:layout_anchor="@id/container"
-			app:layout_anchorGravity="bottom|end"
-			app:layout_behavior="org.koitharu.kotatsu.base.ui.util.ShrinkOnScrollBehavior"
-			app:layout_dodgeInsetEdges="bottom"
-			tools:visibility="visible" />
+			android:layout_height="match_parent"
+			app:elevation="1dp"
+			app:headerLayout="@layout/navigation_rail_fab"
+			app:labelVisibilityMode="labeled"
+			app:layout_constraintStart_toStartOf="parent"
+			app:menu="@menu/nav_bottom" />
 
-	</androidx.coordinatorlayout.widget.CoordinatorLayout>
-</LinearLayout>
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@id/container"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/navRail"
+			app:layout_constraintTop_toBottomOf="@id/appbar"
+			tools:layout="@layout/fragment_list" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout>

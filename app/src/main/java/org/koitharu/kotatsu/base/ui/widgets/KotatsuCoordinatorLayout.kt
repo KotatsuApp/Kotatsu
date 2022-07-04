@@ -23,7 +23,6 @@ class KotatsuCoordinatorLayout @JvmOverloads constructor(
 ) : CoordinatorLayout(context, attrs, defStyleAttr) {
 
 	private var appBarLayout: AppBarLayout? = null
-	private var tabLayout: TabLayout? = null
 
 	/**
 	 * If true, [AppBarLayout] child will be lifted on nested scroll.
@@ -46,22 +45,19 @@ class KotatsuCoordinatorLayout @JvmOverloads constructor(
 		consumed: IntArray
 	) {
 		super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed)
-		// Disable elevation overlay when tabs are visible
 		if (canLiftAppBarOnScroll) {
-			appBarLayout?.isLifted = dyConsumed != 0 || dyUnconsumed > 0 && tabLayout?.isVisible == false
+			appBarLayout?.isLifted = dyConsumed != 0 || dyUnconsumed >= 0
 		}
 	}
 
 	override fun onAttachedToWindow() {
 		super.onAttachedToWindow()
 		appBarLayout = findChild()
-		tabLayout = appBarLayout?.findChild()
 	}
 
 	override fun onDetachedFromWindow() {
 		super.onDetachedFromWindow()
 		appBarLayout = null
-		tabLayout = null
 	}
 
 	override fun onSaveInstanceState(): Parcelable? {

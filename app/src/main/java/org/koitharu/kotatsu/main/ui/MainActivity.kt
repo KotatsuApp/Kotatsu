@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.main.ui
 
-import android.app.ActivityOptions
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -91,12 +90,12 @@ class MainActivity :
 		}
 
 		navBar.setOnItemSelectedListener(this)
-		binding.fab.setOnClickListener(this)
+		binding.fab?.setOnClickListener(this)
 		binding.navRail?.headerView?.setOnClickListener(this)
 		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
 		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
-			if (it is LibraryFragment) binding.fab.show() else binding.fab.hide()
+			if (it is LibraryFragment) binding.fab?.show() else binding.fab?.hide()
 		} ?: onNavigationItemSelected(navBar.selectedItemId)
 		if (savedInstanceState == null) {
 			onFirstStart()
@@ -233,25 +232,28 @@ class MainActivity :
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
 		adjustFabVisibility()
-		showBottomNav(false)
+		showNav(false)
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		adjustFabVisibility()
-		showBottomNav(true)
+		showNav(true)
 	}
 
 	private fun onNavigationItemSelected(@IdRes itemId: Int): Boolean {
 		when (itemId) {
 			R.id.nav_library -> {
 				setPrimaryFragment(LibraryFragment.newInstance())
+				binding.root.isLiftAppBarOnScroll = true // придумать лучше
 			}
 			R.id.nav_explore -> {
 				setPrimaryFragment(FavouritesContainerFragment.newInstance())
+				binding.root.isLiftAppBarOnScroll = false // --//--
 			}
 			R.id.nav_feed -> {
 				setPrimaryFragment(FeedFragment.newInstance())
+				binding.root.isLiftAppBarOnScroll = true // --//--
 			}
 			else -> return false
 		}
@@ -270,7 +272,7 @@ class MainActivity :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.fab.isEnabled = !isLoading
+		binding.fab?.isEnabled = !isLoading
 	}
 
 	private fun onResumeEnabledChanged(isEnabled: Boolean) {
@@ -295,13 +297,13 @@ class MainActivity :
 		binding.appbar.updatePadding(left = 0, right = 0)
 		adjustFabVisibility(isSearchOpened = true)
 		supportActionBar?.setHomeAsUpIndicator(materialR.drawable.abc_ic_ab_back_material)
-		showBottomNav(false)
+		showNav(false)
 	}
 
 	private fun onSearchClosed() {
 		TransitionManager.beginDelayedTransition(binding.appbar)
 		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
-			scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS
+			scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
 		}
 		binding.toolbarCard.setBackgroundResource(R.drawable.toolbar_background)
 		binding.appbar.background = null
@@ -309,10 +311,10 @@ class MainActivity :
 		binding.appbar.updatePadding(left = padding, right = padding)
 		adjustFabVisibility(isSearchOpened = false)
 		supportActionBar?.setHomeAsUpIndicator(materialR.drawable.abc_ic_search_api_material)
-		showBottomNav(true)
+		showNav(true)
 	}
 
-	private fun showBottomNav(visible: Boolean) {
+	private fun showNav(visible: Boolean) {
 		binding.bottomNav?.run {
 			if (visible) {
 				slideUp()
@@ -357,11 +359,11 @@ class MainActivity :
 			!isSearchOpened &&
 			topFragment is LibraryFragment
 		) {
-			if (!fab.isVisible) {
+			if (fab?.isVisible == false) {
 				fab.show()
 			}
 		} else {
-			if (fab.isVisible) {
+			if (fab?.isVisible == true) {
 				fab.hide()
 			}
 		}
