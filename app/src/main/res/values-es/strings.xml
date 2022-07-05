@@ -301,4 +301,5 @@
     <string name="use_fingerprint">Utilizar la huella dactilar si está disponible</string>
     <string name="appwidget_shelf_description">Mangas de tus favoritos</string>
     <string name="appwidget_recent_description">Sus mangas recientemente leídos</string>
+    <string name="logout">Cerrar sesión</string>
 </resources>
