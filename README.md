@@ -1,20 +1,23 @@
 # Kotatsu
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/KotatsuApp/Kotatsu/devel/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" width="auto" height="auto" alt="kotatsu">
+</div>
+
 Kotatsu is a free and open source manga reader for Android.
 
 ![Android 5.0](https://img.shields.io/badge/android-5.0+-brightgreen) ![Kotlin](https://img.shields.io/github/languages/top/KotatsuApp/Kotatsu) ![License](https://img.shields.io/github/license/KotatsuApp/Kotatsu) [![weblate](https://hosted.weblate.org/widgets/kotatsu/-/strings/svg-badge.svg)](https://hosted.weblate.org/engage/kotatsu/) [![4pda](https://img.shields.io/badge/discuss-4pda-2982CC)](http://4pda.ru/forum/index.php?showtopic=697669) [![Discord](https://img.shields.io/discord/898363402467045416?color=5865f2&label=discord)](https://discord.gg/NNJ5RgVBC5)
 
-### Download
+### 📥 Download
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-alt="Get it on F-Droid"
-height="80">](https://f-droid.org/packages/org.koitharu.kotatsu)
+<div align="center" style="width:100%; display:flex; justify-content:space-between;">
 
-Download APK from GitHub Releases:
+[<img src="https://i.ibb.co/xSmqBMT/fdrload.png" alt="Get it on F-Droid" width="30%">](https://f-droid.org/en/packages/com.github.libretube/)
+[<img src="https://i.ibb.co/H73HtzL/ghload.png" alt="Get it on GitHub" width="30%">](https://github.com/libre-tube/LibreTube/releases/latest)
 
-- [Latest release](https://github.com/KotatsuApp/Kotatsu/releases/latest)
+</div>
 
-### Main Features
+### ⭐ Main Features
 
 * Online manga catalogues
 * Search manga by name and genres
@@ -27,7 +30,7 @@ Download APK from GitHub Releases:
 * Available in multiple languages
 * Password protect access to the app
 
-### Screenshots
+### 📱 Screenshots
 
 | ![Screenshot_20200226-210337](https://github.com/KotatsuApp/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/1.png) | ![](https://github.com/KotatsuApp/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/2.png)                           | ![Screenshot_20200226-210232](https://github.com/KotatsuApp/Kotatsu/raw/devel/metadata/en-US/images/phoneScreenshots/3.png) |
 |-----------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
@@ -36,7 +39,7 @@ Download APK from GitHub Releases:
 | ![](https://github.com/KotatsuApp/Kotatsu/raw/devel/metadata/en-US/images/tenInchScreenshots/1.png) | ![](https://github.com/KotatsuApp/Kotatsu/raw/devel/metadata/en-US/images/tenInchScreenshots/2.png) |
 |-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
 
-### Localization
+### 📝 Localization
 
 <a href="https://hosted.weblate.org/engage/kotatsu/">
 <img src="https://hosted.weblate.org/widgets/kotatsu/-/287x66-white.png" alt="Translation status" />
@@ -44,6 +47,14 @@ Download APK from GitHub Releases:
 
 Kotatsu is localized in a number of different languages, if you would like to help improve these or add new languages,
 please head over to the Weblate <a href="https://hosted.weblate.org/engage/kotatsu/">project page</a>
+
+## 😇 Contributing
+
+Whether you have ideas, translations, design changes, code cleaning, or real heavy code changes, help is always welcome.The more is done the better it gets!
+
+If creating a pull request, please make sure to format your code.
+
+If opening an issue without following the issue template, we will ignore the issue and force close it.
 
 ### License
 
@@ -58,3 +69,7 @@ published by the Free Software Foundation, either version 3 of the License, or
 ### Disclaimer
 
 The developers of this application does not have any affiliation with the content providers available.
+
+Kotatsu does not host any content on the app, and has no control over what media is put up or taken down.
+
+It merely scrapes 3rd-party websites that are publicly accessable via any regular web browser.
