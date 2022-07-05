@@ -1,5 +1,3 @@
-# Kotatsu
-
 <div align="center">
   <img src="https://raw.githubusercontent.com/KotatsuApp/Kotatsu/devel/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" width="auto" height="auto" alt="kotatsu">
 </div>
