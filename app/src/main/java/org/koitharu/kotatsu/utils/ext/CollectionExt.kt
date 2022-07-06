@@ -18,16 +18,11 @@ inline fun <T> MutableSet(size: Int, init: (index: Int) -> T): MutableSet<T> {
 	return set
 }
 
-inline fun <T> createSet(size: Int, init: (index: Int) -> T): Set<T> = when (size) {
+@Suppress("FunctionName")
+inline fun <T> Set(size: Int, init: (index: Int) -> T): Set<T> = when (size) {
 	0 -> emptySet()
 	1 -> Collections.singleton(init(0))
 	else -> MutableSet(size, init)
-}
-
-inline fun <T> createList(size: Int, init: (index: Int) -> T): List<T> = when (size) {
-	0 -> emptyList()
-	1 -> Collections.singletonList(init(0))
-	else -> MutableList(size, init)
 }
 
 fun <T> List<T>.asArrayList(): ArrayList<T> = if (this is ArrayList<*>) {
@@ -36,7 +31,7 @@ fun <T> List<T>.asArrayList(): ArrayList<T> = if (this is ArrayList<*>) {
 	ArrayList(this)
 }
 
-fun <K, V> Map<K, V>.findKey(value: V): K? {
+fun <K, V> Map<K, V>.findKeyByValue(value: V): K? {
 	for ((k, v) in entries) {
 		if (v == value) {
 			return k
