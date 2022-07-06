@@ -26,4 +26,16 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 			is ConfigKey.Domain -> prefs.getString(key.key, key.defaultValue).ifNullOrEmpty { key.defaultValue }
 		} as T
 	}
+
+	operator fun <T : Any> set(key: ConfigKey<T>, value: T?) {
+		val editor = prefs.edit()
+		when (key) {
+			is ConfigKey.Domain -> if (value == null) {
+				editor.remove(key.key)
+			} else {
+				editor.putString(key.key, value as String)
+			}
+		}
+		editor.apply()
+	}
 }

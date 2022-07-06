@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.network
 
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeUnit
 val networkModule
 	get() = module {
 		single { AndroidCookieJar() } bind CookieJar::class
+		single { MirrorsInterceptor(androidContext()) }
 		single {
 			val cache = get<LocalStorageManager>().createHttpCache()
 			OkHttpClient.Builder().apply {
@@ -23,6 +25,7 @@ val networkModule
 				cache(cache)
 				addInterceptor(UserAgentInterceptor())
 				addInterceptor(CloudFlareInterceptor())
+				addInterceptor(get<MirrorsInterceptor>())
 			}.build()
 		}
 		single<MangaLoaderContext> { MangaLoaderContextImpl(get(), get(), get()) }
