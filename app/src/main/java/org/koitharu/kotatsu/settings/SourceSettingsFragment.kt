@@ -3,25 +3,25 @@ package org.koitharu.kotatsu.settings
 import android.os.Bundle
 import android.view.View
 import androidx.preference.Preference
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.serializableArgument
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
-import org.koitharu.kotatsu.utils.ext.withArgs
+import org.koitharu.kotatsu.utils.ext.*
 
 class SourceSettingsFragment : BasePreferenceFragment(0) {
 
 	private val source by serializableArgument<MangaSource>(EXTRA_SOURCE)
 	private var repository: RemoteMangaRepository? = null
+	private val exceptionResolver = ExceptionResolver(this)
 
 	override fun onResume() {
 		super.onResume()
@@ -63,6 +63,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 
 	private fun loadUsername(preference: Preference) = viewLifecycleScope.launch {
 		runCatching {
+			preference.summary = null
 			withContext(Dispatchers.Default) {
 				requireNotNull(repository?.getAuthProvider()?.getUsername())
 			}
@@ -70,7 +71,25 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 			preference.title = getString(R.string.logged_in_as, username)
 		}.onFailure { error ->
 			preference.isEnabled = error is AuthRequiredException
+			when {
+				error is AuthRequiredException -> Unit
+				ExceptionResolver.canResolve(error) -> {
+					Snackbar.make(listView, error.getDisplayMessage(resources), Snackbar.LENGTH_INDEFINITE)
+						.setAction(ExceptionResolver.getResolveStringId(error)) { resolveError(error) }
+						.show()
+				}
+				else -> preference.summary = error.getDisplayMessage(resources)
+			}
 			error.printStackTraceDebug()
+		}
+	}
+
+	private fun resolveError(error: Throwable): Unit {
+		viewLifecycleScope.launch {
+			if (exceptionResolver.resolve(error)) {
+				val pref = findPreference<Preference>(KEY_AUTH) ?: return@launch
+				loadUsername(pref)
+			}
 		}
 	}
 
