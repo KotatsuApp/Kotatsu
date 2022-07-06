@@ -21,6 +21,7 @@ import coil.size.Scale
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
@@ -80,6 +81,7 @@ class DetailsFragment :
 		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
 		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
+		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
 		addMenuProvider(DetailsMenuProvider())
 	}
 
@@ -108,8 +110,6 @@ class DetailsFragment :
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
 			textViewAuthor.textAndVisible = manga.author
-			textViewDescription.text = manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
-				?: getString(R.string.no_description)
 			when (manga.state) {
 				MangaState.FINISHED -> {
 					textViewState.apply {
@@ -169,6 +169,14 @@ class DetailsFragment :
 
 			// Chips
 			bindTags(manga)
+		}
+	}
+
+	private fun onDescriptionChanged(description: CharSequence?) {
+		if (description.isNullOrBlank()) {
+			binding.textViewDescription.setText(R.string.no_description)
+		} else {
+			binding.textViewDescription.text = description
 		}
 	}
 
