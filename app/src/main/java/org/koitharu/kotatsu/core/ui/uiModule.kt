@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.ui
 
+import android.text.Html
 import coil.ComponentRegistry
 import coil.ImageLoader
 import coil.disk.DiskCache
@@ -10,6 +11,7 @@ import org.koin.dsl.module
 import org.koitharu.kotatsu.core.parser.FaviconMapper
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
+import org.koitharu.kotatsu.utils.image.CoilImageGetter
 
 val uiModule
 	get() = module {
@@ -40,4 +42,5 @@ val uiModule
 						.build()
 				).build()
 		}
+		factory<Html.ImageGetter> { CoilImageGetter(androidContext(), get()) }
 	}

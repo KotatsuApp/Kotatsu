@@ -10,7 +10,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.scrobbling.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.domain.model.*
-import org.koitharu.kotatsu.utils.ext.findKey
+import org.koitharu.kotatsu.utils.ext.findKeyByValue
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 abstract class Scrobbler(
@@ -59,7 +59,7 @@ abstract class Scrobbler(
 			scrobbler = scrobblerService,
 			mangaId = mangaId,
 			targetId = targetId,
-			status = statuses.findKey(status),
+			status = statuses.findKeyByValue(status),
 			chapter = chapter,
 			comment = comment,
 			rating = rating,

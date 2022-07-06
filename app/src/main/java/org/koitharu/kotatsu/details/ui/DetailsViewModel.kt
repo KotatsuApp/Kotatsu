@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.text.Html
+import androidx.core.text.parseAsHtml
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
@@ -43,6 +45,7 @@ class DetailsViewModel(
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 	private val scrobbler: Scrobbler,
+	private val imageGetter: Html.ImageGetter,
 ) : BaseViewModel() {
 
 	private val delegate = MangaDetailsDelegate(
@@ -79,7 +82,19 @@ class DetailsViewModel(
 
 	val bookmarks = delegate.manga.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+
+	val description = delegate.manga
+		.distinctUntilChangedBy { it?.description.orEmpty() }
+		.transformLatest {
+			val description = it?.description
+			if (description.isNullOrEmpty()) {
+				emit(null)
+			} else {
+				emit(description.parseAsHtml())
+				emit(description.parseAsHtml(imageGetter = imageGetter))
+			}
+		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 	val isScrobblingAvailable: Boolean
