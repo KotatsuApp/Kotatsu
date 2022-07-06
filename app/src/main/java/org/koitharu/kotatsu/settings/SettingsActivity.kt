@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment
+import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
 class SettingsActivity :
@@ -126,6 +127,7 @@ class SettingsActivity :
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL
 			)
+			ACTION_MANAGE_SOURCES -> SourcesSettingsFragment()
 			else -> SettingsHeadersFragment()
 		}
 		supportFragmentManager.commit {
@@ -150,6 +152,7 @@ class SettingsActivity :
 		private const val ACTION_TRACKER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_TRACKER"
 		private const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
 		private const val ACTION_SHIKIMORI = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SHIKIMORI_SETTINGS"
+		private const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
 		private const val EXTRA_SOURCE = "source"
 
 		private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
@@ -171,6 +174,10 @@ class SettingsActivity :
 		fun newTrackerSettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_TRACKER)
+
+		fun newManageSourcesIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_MANAGE_SOURCES)
 
 		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
 			Intent(context, SettingsActivity::class.java)

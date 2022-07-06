@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:paddingHorizontal="8dp"
+	android:paddingVertical="4dp">
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/favourites"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="16dp"
+		android:text="@string/history"
+		app:icon="@drawable/ic_history"
+		app:layout_constraintEnd_toStartOf="@+id/local_storage"
+		app:layout_constraintHorizontal_bias="0.5"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/local_storage"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/local_storage"
+		app:icon="@drawable/ic_storage"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.5"
+		app:layout_constraintStart_toEndOf="@+id/favourites"
+		app:layout_constraintTop_toTopOf="@+id/favourites" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/suggestions"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:layout_marginEnd="16dp"
+		android:text="@string/suggestions"
+		app:icon="@drawable/ic_suggestion"
+		app:layout_constraintEnd_toStartOf="@+id/downloads"
+		app:layout_constraintHorizontal_bias="0.5"
+		app:layout_constraintStart_toStartOf="@+id/favourites"
+		app:layout_constraintTop_toBottomOf="@+id/favourites" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/downloads"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:text="@string/bookmarks"
+		app:icon="@drawable/ic_bookmark"
+		app:layout_constraintEnd_toEndOf="@+id/local_storage"
+		app:layout_constraintHorizontal_bias="0.5"
+		app:layout_constraintStart_toEndOf="@+id/suggestions"
+		app:layout_constraintTop_toBottomOf="@+id/local_storage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

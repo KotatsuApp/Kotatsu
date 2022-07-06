@@ -332,7 +332,8 @@ class DetailsFragment :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
-			bottom = insets.bottom,
+			left = insets.left,
+			right = insets.right,
 		)
 	}
 

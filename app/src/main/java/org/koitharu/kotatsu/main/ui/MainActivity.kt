@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.explore.ui.ExploreFragment
 import org.koitharu.kotatsu.favourites.ui.FavouritesContainerFragment
 import org.koitharu.kotatsu.library.ui.LibraryFragment
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -248,8 +249,8 @@ class MainActivity :
 				binding.root.isLiftAppBarOnScroll = true // придумать лучше
 			}
 			R.id.nav_explore -> {
-				setPrimaryFragment(FavouritesContainerFragment.newInstance())
-				binding.root.isLiftAppBarOnScroll = false // --//--
+				setPrimaryFragment(ExploreFragment.newInstance())
+				binding.root.isLiftAppBarOnScroll = true // --//--
 			}
 			R.id.nav_feed -> {
 				setPrimaryFragment(FeedFragment.newInstance())

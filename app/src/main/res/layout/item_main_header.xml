@@ -2,12 +2,13 @@
 <TextView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/textView"
+	android:padding="8dp"
 	android:textAppearance="@style/TextAppearance.AppCompat"
-	android:textSize="24sp"
-	tools:text="History"
-	android:padding="12dp"
+	android:textSize="20sp"
 	app:drawableEndCompat="@drawable/ic_arrow_forward"
-	app:drawableTint="?attr/colorPrimary" />
+	app:drawableTint="?attr/colorPrimary"
+	tools:text="History" />

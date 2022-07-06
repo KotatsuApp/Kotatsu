@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.network.networkModule
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.uiModule
 import org.koitharu.kotatsu.details.detailsModule
+import org.koitharu.kotatsu.explore.exploreModule
 import org.koitharu.kotatsu.favourites.favouritesModule
 import org.koitharu.kotatsu.history.historyModule
 import org.koitharu.kotatsu.library.libraryModule
@@ -79,6 +80,7 @@ class KotatsuApp : Application() {
 				shikimoriModule,
 				bookmarksModule,
 				libraryModule,
+				exploreModule,
 			)
 		}
 	}

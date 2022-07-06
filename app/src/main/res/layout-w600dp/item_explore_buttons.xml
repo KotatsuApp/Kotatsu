@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal"
+	android:paddingHorizontal="8dp"
+	android:paddingVertical="4dp">
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/favourites"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="16dp"
+		android:layout_weight="1"
+		android:text="@string/history"
+		app:icon="@drawable/ic_history" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/local_storage"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="8dp"
+		android:layout_weight="1"
+		android:text="@string/local_storage"
+		app:icon="@drawable/ic_storage" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/suggestions"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="8dp"
+		android:layout_weight="1"
+		android:text="@string/suggestions"
+		app:icon="@drawable/ic_suggestion" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/downloads"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="8dp"
+		android:layout_weight="1"
+		android:text="@string/bookmarks"
+		app:icon="@drawable/ic_bookmark" />
+
+</LinearLayout>

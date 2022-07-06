@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.settings.SettingsActivity
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),

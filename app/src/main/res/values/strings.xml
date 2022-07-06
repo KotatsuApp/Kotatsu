@@ -323,4 +323,5 @@
 	<string name="clear_all_history">Clear all history</string>
 	<string name="last_2_hours">Last 2 hours</string>
 	<string name="history_cleared">History cleared</string>
+	<string name="manage">Manage</string>
 </resources>

@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.history.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.core.graphics.Insets
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import org.koitharu.kotatsu.R
@@ -26,7 +28,11 @@ class HistoryActivity : BaseActivity<ActivityContainerBinding>() {
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
+		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			leftMargin = insets.left
+			rightMargin = insets.right
+		}
+		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
