@@ -4,7 +4,7 @@
 
 	<corners android:radius="6dp" />
 	<solid
-		android:color="@color/kotatsu_secondary" />
+		android:color="?attr/colorAccent" />
 	<size android:height="32dp" />
 
 </shape>

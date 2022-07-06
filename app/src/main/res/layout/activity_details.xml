@@ -29,9 +29,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:layout_gravity="center_horizontal"
-				android:background="@null"
-				app:tabGravity="center"
-				app:tabMode="scrollable" />
+				android:background="@null" />
 
 		</com.google.android.material.appbar.MaterialToolbar>
 

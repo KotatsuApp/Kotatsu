@@ -61,6 +61,9 @@
 			android:name=".history.ui.HistoryActivity"
 			android:label="@string/history" />
 		<activity
+			android:name=".favourites.ui.FavouritesActivity"
+			android:label="@string/favourites" />
+		<activity
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
 			android:exported="true"
 			android:label="@string/settings">

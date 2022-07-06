@@ -67,6 +67,9 @@ abstract class HistoryDao {
 	@Query("DELETE FROM history WHERE manga_id = :mangaId")
 	abstract suspend fun delete(mangaId: Long)
 
+	@Query("DELETE FROM history WHERE created_at >= :minDate")
+	abstract suspend fun deleteAfter(minDate: Long)
+
 	suspend fun update(entity: HistoryEntity) = update(
 		mangaId = entity.mangaId,
 		page = entity.page,

@@ -72,6 +72,7 @@
 		<item name="tabPaddingStart">8dp</item>
 		<item name="tabPaddingEnd">8dp</item>
 		<item name="dividerThickness">0dp</item>
+		<item name="android:clipChildren">false</item>
 	</style>
 
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">

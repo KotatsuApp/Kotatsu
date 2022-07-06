@@ -3,9 +3,7 @@ package org.koitharu.kotatsu.history.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import org.koitharu.kotatsu.R
@@ -31,9 +29,6 @@ class HistoryActivity : BaseActivity<ActivityContainerBinding>() {
 		binding.toolbar.updatePadding(
 			left = insets.left,
 			right = insets.right,
-		)
-		binding.container.updatePadding(
-			bottom = insets.bottom
 		)
 	}
 

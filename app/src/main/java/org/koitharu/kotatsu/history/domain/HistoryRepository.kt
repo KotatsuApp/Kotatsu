@@ -115,6 +115,10 @@ class HistoryRepository(
 		}
 	}
 
+	suspend fun deleteAfter(minDate: Long) {
+		db.historyDao.delete(minDate)
+	}
+
 	suspend fun deleteReversible(ids: Collection<Long>): ReversibleHandle {
 		val entities = db.withTransaction {
 			val entities = db.historyDao.findAll(ids.toList()).filterNotNull()

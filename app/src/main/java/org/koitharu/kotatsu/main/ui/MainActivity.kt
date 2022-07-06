@@ -301,6 +301,7 @@ class MainActivity :
 	}
 
 	private fun onSearchClosed() {
+		binding.searchView.hideKeyboard()
 		TransitionManager.beginDelayedTransition(binding.appbar)
 		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
 			scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP

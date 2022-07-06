@@ -320,4 +320,7 @@
 	<string name="exclude_nsfw_from_history_summary">Manga marked as NSFW will never added to the history and your progress will not be saved</string>
 	<string name="clear_cookies_summary">Can help in case of some issues. All authorizations will be invalidated</string>
 	<string name="show_all">Show all</string>
+	<string name="clear_all_history">Clear all history</string>
+	<string name="last_2_hours">Last 2 hours</string>
+	<string name="history_cleared">History cleared</string>
 </resources>

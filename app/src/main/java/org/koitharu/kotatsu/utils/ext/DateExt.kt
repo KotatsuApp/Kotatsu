@@ -18,3 +18,13 @@ fun Date.daysDiff(other: Long): Int {
 	val otherDay = other / TimeUnit.DAYS.toMillis(1L)
 	return (thisDay - otherDay).toInt()
 }
+
+fun Date.startOfDay(): Long {
+	val calendar = Calendar.getInstance()
+	calendar.time = this
+	calendar[Calendar.HOUR_OF_DAY] = 0
+	calendar[Calendar.MINUTE] = 0
+	calendar[Calendar.SECOND] = 0
+	calendar[Calendar.MILLISECOND] = 0
+	return calendar.timeInMillis
+}

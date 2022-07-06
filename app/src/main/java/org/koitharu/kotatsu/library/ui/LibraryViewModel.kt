@@ -7,7 +7,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.ReversibleHandle
+import org.koitharu.kotatsu.base.domain.plus
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -23,6 +26,7 @@ import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import java.util.*
@@ -36,6 +40,8 @@ class LibraryViewModel(
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel(), ListExtraProvider {
+
+	val onActionDone = SingleLiveEvent<ReversibleAction>()
 
 	val content: LiveData<List<ListModel>> = combine(
 		historyRepository.observeAllWithHistory(),
@@ -75,6 +81,33 @@ class LibraryViewModel(
 			}
 		}
 		return result
+	}
+
+	fun removeFromHistory(ids: Set<Long>) {
+		if (ids.isEmpty()) {
+			return
+		}
+		launchJob(Dispatchers.Default) {
+			val handle = historyRepository.deleteReversible(ids) + ReversibleHandle {
+				shortcutsRepository.updateShortcuts()
+			}
+			shortcutsRepository.updateShortcuts()
+			onActionDone.postCall(ReversibleAction(R.string.removed_from_history, handle))
+		}
+	}
+
+	fun clearHistory(minDate: Long) {
+		launchJob(Dispatchers.Default) {
+			val stringRes = if (minDate <= 0) {
+				historyRepository.clear()
+				R.string.history_cleared
+			} else {
+				historyRepository.deleteAfter(minDate)
+				R.string.removed_from_history
+			}
+			shortcutsRepository.updateShortcuts()
+			onActionDone.postCall(ReversibleAction(stringRes, null))
+		}
 	}
 
 	private suspend fun mapList(

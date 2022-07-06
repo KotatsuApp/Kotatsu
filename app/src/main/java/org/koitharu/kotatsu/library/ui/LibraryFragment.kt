@@ -10,12 +10,15 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.databinding.FragmentLibraryBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.history.ui.HistoryActivity
 import org.koitharu.kotatsu.library.ui.adapter.LibraryAdapter
@@ -27,6 +30,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.flattenTo
 import org.koitharu.kotatsu.utils.ShareHelper
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.findViewsByType
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
@@ -58,9 +62,11 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 		)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.setHasFixedSize(true)
+		addMenuProvider(LibraryMenuProvider(view.context, viewModel))
 
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
 	}
 
 	override fun onDestroyView() {
@@ -83,7 +89,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 	override fun onSectionClick(section: LibrarySectionModel, view: View) {
 		val intent = when (section) {
 			is LibrarySectionModel.History -> HistoryActivity.newIntent(view.context)
-			is LibrarySectionModel.Favourites -> TODO()
+			is LibrarySectionModel.Favourites -> FavouritesActivity.newIntent(view.context, section.category)
 		}
 		startActivity(intent)
 	}
@@ -172,6 +178,16 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 			e.getDisplayMessage(resources),
 			Snackbar.LENGTH_SHORT
 		).show()
+	}
+
+	private fun onActionDone(action: ReversibleAction) {
+		val handle = action.handle
+		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
+		val snackbar = Snackbar.make(binding.recyclerView, action.stringResId, length)
+		if (handle != null) {
+			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
+		}
+		snackbar.show()
 	}
 
 	companion object {
