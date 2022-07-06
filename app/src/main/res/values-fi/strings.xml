@@ -302,4 +302,10 @@
     <string name="use_fingerprint">Käytä sormenjälkeä, jos käytettävissä</string>
     <string name="appwidget_shelf_description">Manga suosikeistasi</string>
     <string name="appwidget_recent_description">Äskettäin lukemasi manga</string>
+    <string name="tracking">Seuranta</string>
+    <string name="logout">Kirjaudu ulos</string>
+    <string name="status_reading">Lukemassa</string>
+    <string name="status_re_reading">Lukemassa uudelleen</string>
+    <string name="data_deletion">Tietojen poistaminen</string>
+    <string name="show_all">Näytä kaikki</string>
 </resources>
