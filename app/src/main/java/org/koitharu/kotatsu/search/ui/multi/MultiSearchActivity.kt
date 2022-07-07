@@ -6,12 +6,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.RecyclerView
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -31,7 +28,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.findViewsByType
+import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 
 class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaListListener,
 	ListSelectionController.Callback {
@@ -144,9 +141,7 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 	}
 
 	override fun onSelectionChanged(count: Int) {
-		binding.recyclerView.findViewsByType(RecyclerView::class.java).forEach {
-			it.invalidateItemDecorations()
-		}
+		binding.recyclerView.invalidateNestedItemDecorations()
 	}
 
 	private fun collectSelectedItems(): Set<Manga> {

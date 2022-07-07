@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
+import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
@@ -35,7 +36,11 @@ class MangaListActivity : BaseActivity<ActivityContainerBinding>() {
 				return
 			}
 			fm.commit {
-				val fragment = RemoteListFragment.newInstance(source)
+				val fragment = if (source == MangaSource.LOCAL) {
+					LocalListFragment.newInstance()
+				} else {
+					RemoteListFragment.newInstance(source)
+				}
 				replace(R.id.container, fragment)
 				if (!tags.isNullOrEmpty()) {
 					runOnCommit(ApplyFilterRunnable(fragment, tags))

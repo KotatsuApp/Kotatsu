@@ -139,3 +139,9 @@ fun <T : View> ViewGroup.findViewsByType(clazz: Class<T>): Sequence<T> {
 		}
 	}
 }
+
+fun RecyclerView.invalidateNestedItemDecorations() {
+	findViewsByType(RecyclerView::class.java).forEach {
+		it.invalidateItemDecorations()
+	}
+}

@@ -58,11 +58,14 @@
 			android:name="org.koitharu.kotatsu.search.ui.MangaListActivity"
 			android:label="@string/search_manga" />
 		<activity
-			android:name=".history.ui.HistoryActivity"
+			android:name="org.koitharu.kotatsu.history.ui.HistoryActivity"
 			android:label="@string/history" />
 		<activity
-			android:name=".favourites.ui.FavouritesActivity"
+			android:name="org.koitharu.kotatsu.favourites.ui.FavouritesActivity"
 			android:label="@string/favourites" />
+		<activity
+			android:name="org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity"
+			android:label="@string/bookmarks" />
 		<activity
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
 			android:exported="true"

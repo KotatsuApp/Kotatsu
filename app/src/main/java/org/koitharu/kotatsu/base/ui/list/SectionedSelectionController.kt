@@ -98,6 +98,24 @@ class SectionedSelectionController<T : Any>(
 		} != null
 	}
 
+	fun getSectionCount(section: T): Int {
+		return decorations[section]?.checkedItemsCount ?: 0
+	}
+
+	fun addToSelection(section: T, ids: Collection<Long>): Boolean {
+		val decoration = getDecoration(section)
+		startActionMode()
+		return actionMode?.also {
+			decoration.checkAll(ids)
+			notifySelectionChanged()
+		} != null
+	}
+
+	fun clearSelection(section: T) {
+		decorations[section]?.clearSelection() ?: return
+		notifySelectionChanged()
+	}
+
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
 		return callback.onCreateActionMode(mode, menu)
 	}

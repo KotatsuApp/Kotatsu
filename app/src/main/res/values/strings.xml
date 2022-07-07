@@ -324,4 +324,7 @@
 	<string name="last_2_hours">Last 2 hours</string>
 	<string name="history_cleared">History cleared</string>
 	<string name="manage">Manage</string>
+	<string name="no_bookmarks_yet">No bookmarks yet</string>
+	<string name="no_bookmarks_summary">You can create bookmark while reading manga</string>
+	<string name="bookmarks_removed">Bookmarks removed</string>
 </resources>

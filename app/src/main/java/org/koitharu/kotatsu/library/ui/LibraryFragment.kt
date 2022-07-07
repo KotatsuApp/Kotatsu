@@ -5,7 +5,6 @@ import android.view.*
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,8 +30,8 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.flattenTo
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.findViewsByType
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 
 class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEventListener,
 	SectionedSelectionController.Callback<LibrarySectionModel> {
@@ -141,7 +140,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 	}
 
 	override fun onSelectionChanged(count: Int) {
-		invalidateItemDecorations()
+		binding.recyclerView.invalidateNestedItemDecorations()
 	}
 
 	override fun onCreateItemDecoration(section: LibrarySectionModel): AbstractSelectionItemDecoration {
@@ -162,12 +161,6 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 			return emptySet()
 		}
 		return viewModel.getManga(snapshot.values.flattenTo(HashSet()))
-	}
-
-	private fun invalidateItemDecorations() {
-		binding.recyclerView.findViewsByType(RecyclerView::class.java).forEach {
-			it.invalidateItemDecorations()
-		}
 	}
 
 	private fun onListChanged(list: List<ListModel>) {

@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.details.ui
 
 import android.app.ActivityOptions
 import android.os.Bundle
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.*
 import androidx.appcompat.widget.PopupMenu
@@ -10,7 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.core.text.parseAsHtml
 import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -21,7 +19,6 @@ import coil.size.Scale
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
@@ -30,7 +27,7 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
-import org.koitharu.kotatsu.bookmarks.ui.BookmarksAdapter
+import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingInfoBottomSheet

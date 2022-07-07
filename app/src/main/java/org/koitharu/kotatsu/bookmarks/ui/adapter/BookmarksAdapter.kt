@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.bookmarks.ui
+package org.koitharu.kotatsu.bookmarks.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
@@ -19,7 +19,7 @@ class BookmarksAdapter(
 	private class DiffCallback : DiffUtil.ItemCallback<Bookmark>() {
 
 		override fun areItemsTheSame(oldItem: Bookmark, newItem: Bookmark): Boolean {
-			return oldItem.manga.id == newItem.manga.id && oldItem.chapterId == newItem.chapterId
+			return oldItem.manga.id == newItem.manga.id && oldItem.pageId == newItem.pageId
 		}
 
 		override fun areContentsTheSame(oldItem: Bookmark, newItem: Bookmark): Boolean {

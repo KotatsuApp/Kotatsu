@@ -13,11 +13,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
 import org.koitharu.kotatsu.history.ui.HistoryActivity
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 
@@ -74,6 +76,8 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 	override fun onClick(v: View) {
 		val intent = when (v.id) {
 			R.id.button_history -> HistoryActivity.newIntent(v.context)
+			R.id.button_local -> MangaListActivity.newIntent(v.context, MangaSource.LOCAL)
+			R.id.button_bookmarks -> BookmarksActivity.newIntent(v.context)
 			else -> return
 		}
 		startActivity(intent)
