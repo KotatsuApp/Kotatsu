@@ -42,9 +42,8 @@
 		<LinearLayout
 			android:id="@+id/layout_titles"
 			android:layout_width="0dp"
-			android:layout_height="0dp"
+			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
@@ -151,6 +150,14 @@
 
 		</LinearLayout>
 
+		<androidx.constraintlayout.widget.Barrier
+			android:id="@+id/barrier_header"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			app:barrierDirection="bottom"
+			app:barrierMargin="8dp"
+			app:constraint_referenced_ids="layout_titles,imageView_cover" />
+
 		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"
 			android:layout_width="0dp"
@@ -162,7 +169,7 @@
 			app:chipSpacingVertical="6dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/layout_titles" />
+			app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
 
 		<TextView
 			android:id="@+id/textView_bookmarks"
@@ -223,7 +230,7 @@
 			android:textIsSelectable="true"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/recyclerView_bookmarks"
+			app:layout_constraintTop_toBottomOf="@id/scrobbling_layout"
 			tools:ignore="UnusedAttribute"
 			tools:text="@tools:sample/lorem/random[250]" />
 
