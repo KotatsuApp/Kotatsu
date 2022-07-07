@@ -19,7 +19,11 @@ class ExploreViewModel(
 ) : BaseViewModel() {
 
 	val content: LiveData<List<ExploreItem>> = settings.observe()
-		.filter { it == AppSettings.KEY_SOURCES_HIDDEN || it == AppSettings.KEY_SOURCES_ORDER }
+		.filter {
+			it == AppSettings.KEY_SOURCES_HIDDEN ||
+				it == AppSettings.KEY_SOURCES_ORDER ||
+				it == AppSettings.KEY_SUGGESTIONS
+		}
 		.onStart { emit("") }
 		.map { settings.getMangaSources(includeHidden = false) }
 		.distinctUntilChanged()
@@ -27,13 +31,20 @@ class ExploreViewModel(
 		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	private fun buildList(sources: List<MangaSource>): List<ExploreItem> {
-		val result = ArrayList<ExploreItem>(sources.size + 2)
-		result += ExploreItem.Buttons
+		val result = ArrayList<ExploreItem>(sources.size + 3)
+		result += ExploreItem.Buttons(
+			isSuggestionsEnabled = settings.isSuggestionsEnabled,
+		)
+		result += ExploreItem.Header(R.string.remote_sources, sources.isNotEmpty())
 		if (sources.isNotEmpty()) {
-			result += ExploreItem.Header(R.string.enabled_sources)
 			sources.mapTo(result) { ExploreItem.Source(it) }
 		} else {
-			// TODO
+			result += ExploreItem.EmptyHint(
+				icon = R.drawable.ic_empty_search,
+				textPrimary = R.string.no_manga_sources,
+				textSecondary = R.string.no_manga_sources_text,
+				actionStringRes = R.string.manage,
+			)
 		}
 		return result
 	}

@@ -1,19 +1,22 @@
 package org.koitharu.kotatsu.explore.ui.adapter
 
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.databinding.ItemEmptyCardBinding
 import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
 import org.koitharu.kotatsu.databinding.ItemExploreHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceBinding
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
+import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 
 fun exploreButtonsAD(
@@ -26,6 +29,10 @@ fun exploreButtonsAD(
 	binding.buttonHistory.setOnClickListener(clickListener)
 	binding.buttonLocal.setOnClickListener(clickListener)
 	binding.buttonSuggestions.setOnClickListener(clickListener)
+
+	bind {
+		binding.buttonSuggestions.isVisible = item.isSuggestionsEnabled
+	}
 }
 
 fun exploreSourcesHeaderAD(
@@ -41,7 +48,8 @@ fun exploreSourcesHeaderAD(
 	binding.buttonMore.setOnClickListener(listenerAdapter)
 
 	bind {
-		binding.textViewTitle.setText(R.string.remote_sources)
+		binding.textViewTitle.setText(item.titleResId)
+		binding.buttonMore.isVisible = item.isButtonVisible
 	}
 }
 
@@ -76,5 +84,21 @@ fun exploreSourceItemAD(
 	onViewRecycled {
 		imageRequest?.dispose()
 		imageRequest = null
+	}
+}
+
+fun exploreEmptyHintListAD(
+	listener: ListStateHolderListener,
+) = adapterDelegateViewBinding<ExploreItem.EmptyHint, ExploreItem, ItemEmptyCardBinding>(
+	{ inflater, parent -> ItemEmptyCardBinding.inflate(inflater, parent, false) }
+) {
+
+	binding.buttonRetry.setOnClickListener { listener.onEmptyActionClick() }
+
+	bind {
+		binding.icon.setImageResource(item.icon)
+		binding.textPrimary.setText(item.textPrimary)
+		binding.textSecondary.setTextAndVisible(item.textSecondary)
+		binding.buttonRetry.setTextAndVisible(item.actionStringRes)
 	}
 }

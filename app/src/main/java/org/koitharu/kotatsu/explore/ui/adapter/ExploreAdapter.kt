@@ -16,4 +16,5 @@ class ExploreAdapter(
 	exploreButtonsAD(listener),
 	exploreSourcesHeaderAD(listener),
 	exploreSourceItemAD(coil, clickListener, lifecycleOwner),
+	exploreEmptyHintListAD(listener),
 )

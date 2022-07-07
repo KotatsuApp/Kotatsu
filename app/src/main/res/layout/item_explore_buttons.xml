@@ -1,63 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:columnCount="2"
-	android:orientation="vertical"
-	android:rowCount="2">
+	android:paddingHorizontal="8dp"
+	android:paddingVertical="4dp">
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_history"
 		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_columnWeight="0.5"
-		android:layout_gravity="fill_horizontal"
-		android:layout_marginStart="8dp"
-		android:layout_marginTop="4dp"
-		android:layout_marginEnd="8dp"
-		android:layout_marginBottom="4dp"
 		android:text="@string/history"
 		app:icon="@drawable/ic_history" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_suggestions"
 		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_columnWeight="0.5"
-		android:layout_gravity="fill_horizontal"
-		android:layout_marginStart="8dp"
-		android:layout_marginTop="4dp"
-		android:layout_marginEnd="8dp"
-		android:layout_marginBottom="4dp"
 		android:text="@string/suggestions"
 		app:icon="@drawable/ic_suggestion" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_local"
 		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_columnWeight="0.5"
-		android:layout_gravity="fill_horizontal"
-		android:layout_marginStart="8dp"
-		android:layout_marginTop="4dp"
-		android:layout_marginEnd="8dp"
-		android:layout_marginBottom="4dp"
 		android:text="@string/local_storage"
 		app:icon="@drawable/ic_storage" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_bookmarks"
 		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_columnWeight="0.5"
-		android:layout_gravity="fill_horizontal"
-		android:layout_marginStart="8dp"
-		android:layout_marginTop="4dp"
-		android:layout_marginEnd="8dp"
-		android:layout_marginBottom="4dp"
 		android:text="@string/bookmarks"
 		app:icon="@drawable/ic_bookmark" />
 
-</GridLayout>
+	<androidx.constraintlayout.helper.widget.Flow
+		android:id="@+id/flow"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		app:constraint_referenced_ids="button_history,button_local,button_suggestions,button_bookmarks"
+		app:flow_horizontalGap="8dp"
+		app:flow_maxElementsWrap="2"
+		app:flow_verticalGap="4dp"
+		app:flow_wrapMode="aligned"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,7 +38,7 @@ class LibraryMenuProvider(
 	}
 
 	private fun showClearHistoryDialog() {
-		val selectionListener = RememberSelectionDialogListener(-1)
+		val selectionListener = RememberSelectionDialogListener(2)
 		MaterialAlertDialogBuilder(context, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
 			.setTitle(R.string.clear_history)
 			.setSingleChoiceItems(

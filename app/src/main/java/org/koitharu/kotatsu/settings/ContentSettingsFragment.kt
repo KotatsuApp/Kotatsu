@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import java.io.File
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
@@ -19,6 +18,7 @@ import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import java.io.File
 
 class ContentSettingsFragment :
 	BasePreferenceFragment(R.string.content),
@@ -30,9 +30,6 @@ class ContentSettingsFragment :
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_content)
 
-		findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
-			if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled
-		)
 		findPreference<SliderPreference>(AppSettings.KEY_DOWNLOADS_PARALLELISM)?.run {
 			summary = value.toString()
 			setOnPreferenceChangeListener { preference, newValue ->
@@ -54,6 +51,9 @@ class ContentSettingsFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.bindStorageName()
+		findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
+			if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled
+		)
 		bindRemoteSourcesSummary()
 		settings.subscribe(this)
 	}

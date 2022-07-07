@@ -168,20 +168,19 @@ abstract class MangaListFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
+		binding.recyclerView.updatePadding(
+			bottom = insets.bottom,
+		)
 		if (activity is MainActivity) {
+			val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 			binding.swipeRefreshLayout.setProgressViewOffset(
 				true,
 				headerHeight + resources.resolveDp(-72),
 				headerHeight + resources.resolveDp(10),
-			)
-		} else {
-			binding.recyclerView.updatePadding(
-				bottom = insets.bottom,
 			)
 		}
 	}

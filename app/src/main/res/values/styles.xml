@@ -130,7 +130,7 @@
 	<style name="Widget.Kotatsu.ExploreButton" parent="Widget.Material3.Button.TonalButton.Icon">
 		<item name="android:minHeight">58dp</item>
 		<item name="android:textColor">?attr/colorOnSurface</item>
-		<item name="singleLine">true</item>
+		<item name="android:singleLine">true</item>
 		<item name="shapeAppearance">?shapeAppearanceCornerLarge</item>
 		<item name="iconPadding">16dp</item>
 		<item name="iconGravity">start</item>

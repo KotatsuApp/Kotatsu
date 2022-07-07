@@ -30,7 +30,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
-import org.koitharu.kotatsu.favourites.ui.FavouritesContainerFragment
 import org.koitharu.kotatsu.library.ui.LibraryFragment
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -42,6 +41,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.AppUpdateChecker
+import org.koitharu.kotatsu.settings.SettingsHeadersFragment
 import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
@@ -254,6 +254,10 @@ class MainActivity :
 			}
 			R.id.nav_feed -> {
 				setPrimaryFragment(FeedFragment.newInstance())
+				binding.root.isLiftAppBarOnScroll = true // --//--
+			}
+			R.id.nav_tools -> {
+				setPrimaryFragment(SettingsHeadersFragment())
 				binding.root.isLiftAppBarOnScroll = true // --//--
 			}
 			else -> return false

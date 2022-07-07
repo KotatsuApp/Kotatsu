@@ -22,10 +22,12 @@ import org.koitharu.kotatsu.history.ui.HistoryActivity
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 
 class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 	RecyclerViewOwner,
-	ExploreListEventListener, OnListItemClickListener<ExploreItem.Source> {
+	ExploreListEventListener,
+	OnListItemClickListener<ExploreItem.Source> {
 
 	private val viewModel by viewModel<ExploreViewModel>()
 	private var exploreAdapter: ExploreAdapter? = null
@@ -78,6 +80,7 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 			R.id.button_history -> HistoryActivity.newIntent(v.context)
 			R.id.button_local -> MangaListActivity.newIntent(v.context, MangaSource.LOCAL)
 			R.id.button_bookmarks -> BookmarksActivity.newIntent(v.context)
+			R.id.button_suggestions -> SuggestionsActivity.newIntent(v.context)
 			else -> return
 		}
 		startActivity(intent)
@@ -90,7 +93,7 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 
 	override fun onRetryClick(error: Throwable) = Unit
 
-	override fun onEmptyActionClick() = Unit
+	override fun onEmptyActionClick() = onManageClick(requireView())
 
 	companion object {
 
