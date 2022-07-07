@@ -1,4 +1,6 @@
-Kotatsu is a free and open source manga reader for Android.<br>
+Kotatsu is a free and open source manga reader for Android.
+
+
 **Main Features:**
 
 - Online manga catalogues
@@ -9,5 +11,5 @@ Kotatsu is a free and open source manga reader for Android.<br>
 - Tablet-optimized material design UI
 - Standard and Webtoon-optimized reader
 - Notifications about new chapters with updates feed
-- Available in multiple languages
-- Password protect access to the app
+- Shikimori integration (manga tracking)
+- Password/fingerprint protect access to the app
