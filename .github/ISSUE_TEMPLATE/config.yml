@@ -2,4 +2,4 @@ blank_issues_enabled: false
 contact_links:
     - name: ⚠️ Source issue
       url: https://github.com/KotatsuApp/kotatsu-parsers/issues/new
-      about: Issues and requests for sources should be opened in the kotatsu-parsers repository instead
+      about: If you have troubles with a manga parser or want to propose new manga source, please open an issue in the kotatsu-parsers repository instead
