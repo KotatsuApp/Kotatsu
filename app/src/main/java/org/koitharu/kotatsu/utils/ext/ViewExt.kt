@@ -91,22 +91,6 @@ fun View.resetTransformations() {
 	rotationY = 0f
 }
 
-inline fun RecyclerView.doOnCurrentItemChanged(crossinline callback: (Int) -> Unit) {
-	addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-		private var lastItem = -1
-
-		override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-			super.onScrolled(recyclerView, dx, dy)
-			val item = recyclerView.findCenterViewPosition()
-			if (item != RecyclerView.NO_POSITION && item != lastItem) {
-				lastItem = item
-				callback(item)
-			}
-		}
-	})
-}
-
 fun RecyclerView.findCenterViewPosition(): Int {
 	val centerX = width / 2f
 	val centerY = height / 2f

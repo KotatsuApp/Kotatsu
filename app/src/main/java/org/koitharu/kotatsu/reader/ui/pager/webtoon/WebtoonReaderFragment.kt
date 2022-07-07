@@ -12,7 +12,6 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.doOnCurrentItemChanged
 import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
 import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -33,7 +32,7 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = webtoonAdapter
-			doOnCurrentItemChanged(::notifyPageChanged)
+			addOnPageScrollListener(PageScrollListener())
 		}
 	}
 
@@ -92,5 +91,13 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
 		binding.recyclerView.firstVisibleItemPosition = position
+	}
+
+	private inner class PageScrollListener : WebtoonRecyclerView.OnPageScrollListener() {
+
+		override fun onPageChanged(recyclerView: WebtoonRecyclerView, index: Int) {
+			super.onPageChanged(recyclerView, index)
+			notifyPageChanged(index)
+		}
 	}
 }

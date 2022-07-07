@@ -6,4 +6,4 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
-	app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+	app:layoutManager="org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonLayoutManager" />

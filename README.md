@@ -10,9 +10,9 @@ Kotatsu is a free and open source manga reader for Android.
 alt="Get it on F-Droid"
 height="80">](https://f-droid.org/packages/org.koitharu.kotatsu)
 
-Download APK from GitHub Releases:
+Download APK directly from GitHub:
 
-- [Latest release](https://github.com/KotatsuApp/Kotatsu/releases/latest)
+- **[Latest release](https://github.com/KotatsuApp/Kotatsu/releases/latest)**
 
 ### Main Features
 
@@ -24,8 +24,8 @@ Download APK from GitHub Releases:
 * Tablet-optimized material design UI
 * Standard and Webtoon-optimized reader
 * Notifications about new chapters with updates feed
-* Available in multiple languages
-* Password protect access to the app
+* Shikimori integration (manga tracking)
+* Password/fingerprint protect access to the app
 
 ### Screenshots
 
@@ -38,23 +38,20 @@ Download APK from GitHub Releases:
 
 ### Localization
 
-<a href="https://hosted.weblate.org/engage/kotatsu/">
-<img src="https://hosted.weblate.org/widgets/kotatsu/-/287x66-white.png" alt="Translation status" />
-</a>
+[<img src="https://hosted.weblate.org/widgets/kotatsu/-/287x66-white.png" alt="Translation status">](https://hosted.weblate.org/engage/kotatsu/)
 
 Kotatsu is localized in a number of different languages, if you would like to help improve these or add new languages,
-please head over to the Weblate <a href="https://hosted.weblate.org/engage/kotatsu/">project page</a>
+please head over to the [Weblate project page](https://hosted.weblate.org/engage/kotatsu/)
 
 ### License
 
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)
 
-Kotatsu is Free Software: You can use, study share and improve it at your
-will. Specifically you can redistribute and/or modify it under the terms of the
-[GNU General Public License](https://www.gnu.org/licenses/gpl.html) as
-published by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+You may copy, distribute and modify the software as long as you track changes/dates in source files. Any modifications
+to or software including (via compiler) GPL-licensed code must also be made available under the GPL along with build &
+install instructions.
 
-### Disclaimer
+### DMCA disclaimer
 
-The developers of this application does not have any affiliation with the content providers available.
+The developers of this application does not have any affiliation with the content available in the app.
+It is collecting from the sources freely available through any web browser.
