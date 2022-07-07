@@ -8,9 +8,7 @@ class ExploreDiffCallback : DiffUtil.ItemCallback<ExploreItem>() {
 	override fun areItemsTheSame(oldItem: ExploreItem, newItem: ExploreItem): Boolean {
 		return when {
 			oldItem.javaClass != newItem.javaClass -> false
-			oldItem is ExploreItem.Buttons && newItem is ExploreItem.Buttons -> {
-				oldItem == newItem
-			}
+			oldItem is ExploreItem.Buttons && newItem is ExploreItem.Buttons -> true
 			oldItem is ExploreItem.Source && newItem is ExploreItem.Source -> {
 				oldItem.source == newItem.source
 			}

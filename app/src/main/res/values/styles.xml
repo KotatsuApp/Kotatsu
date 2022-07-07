@@ -128,15 +128,17 @@
 	</style>
 
 	<style name="Widget.Kotatsu.ExploreButton" parent="Widget.Material3.Button.TonalButton.Icon">
-		<item name="android:paddingTop">16dp</item>
-		<item name="android:paddingBottom">16dp</item>
+		<item name="android:minHeight">58dp</item>
 		<item name="android:textColor">?attr/colorOnSurface</item>
-		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Material3.FloatingActionButton</item>
+		<item name="singleLine">true</item>
+		<item name="shapeAppearance">?shapeAppearanceCornerLarge</item>
 		<item name="iconPadding">16dp</item>
 		<item name="iconGravity">start</item>
+		<item name="android:insetTop">2dp</item>
+		<item name="android:insetBottom">2dp</item>
 		<item name="iconTint">?attr/colorPrimary</item>
 		<item name="android:gravity">start|center_vertical</item>
-		<item name="android:textAppearance">@style/TextAppearance.Material3.BodyMedium</item>
+		<item name="android:textAppearance">?textAppearanceButton</item>
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.MainToolbar" parent="">

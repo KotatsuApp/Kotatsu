@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
@@ -24,17 +25,21 @@ class MangaListActivity : BaseActivity<ActivityContainerBinding>() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityContainerBinding.inflate(layoutInflater))
-		val tags = intent.getParcelableExtra<ParcelableMangaTags>(EXTRA_TAGS)?.tags ?: run {
-			finishAfterTransition()
-			return
-		}
+		val tags = intent.getParcelableExtra<ParcelableMangaTags>(EXTRA_TAGS)?.tags
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val fm = supportFragmentManager
 		if (fm.findFragmentById(R.id.container) == null) {
+			val source = intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: tags?.firstOrNull()?.source
+			if (source == null) {
+				finishAfterTransition()
+				return
+			}
 			fm.commit {
-				val fragment = RemoteListFragment.newInstance(tags.first().source)
+				val fragment = RemoteListFragment.newInstance(source)
 				replace(R.id.container, fragment)
-				runOnCommit(ApplyFilterRunnable(fragment, tags))
+				if (!tags.isNullOrEmpty()) {
+					runOnCommit(ApplyFilterRunnable(fragment, tags))
+				}
 			}
 		}
 	}
@@ -70,9 +75,12 @@ class MangaListActivity : BaseActivity<ActivityContainerBinding>() {
 	companion object {
 
 		private const val EXTRA_TAGS = "tags"
+		private const val EXTRA_SOURCE = "source"
 
-		fun newIntent(context: Context, tags: Set<MangaTag>) =
-			Intent(context, MangaListActivity::class.java)
-				.putExtra(EXTRA_TAGS, ParcelableMangaTags(tags))
+		fun newIntent(context: Context, tags: Set<MangaTag>) = Intent(context, MangaListActivity::class.java)
+			.putExtra(EXTRA_TAGS, ParcelableMangaTags(tags))
+
+		fun newIntent(context: Context, source: MangaSource) = Intent(context, MangaListActivity::class.java)
+			.putExtra(EXTRA_SOURCE, source)
 	}
 }

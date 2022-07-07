@@ -2,9 +2,10 @@ package org.koitharu.kotatsu.explore.ui.model
 
 import android.net.Uri
 import androidx.annotation.StringRes
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
-sealed interface ExploreItem {
+sealed interface ExploreItem : ListModel {
 
 	object Buttons : ExploreItem
 
@@ -24,7 +25,6 @@ sealed interface ExploreItem {
 
 	class Source(
 		val source: MangaSource,
-		val summary: String?,
 	) : ExploreItem {
 
 		val faviconUrl: Uri
@@ -37,15 +37,12 @@ sealed interface ExploreItem {
 			other as Source
 
 			if (source != other.source) return false
-			if (summary != other.summary) return false
 
 			return true
 		}
 
 		override fun hashCode(): Int {
-			var result = source.hashCode()
-			result = 31 * result + summary.hashCode()
-			return result
+			return source.hashCode()
 		}
 	}
 

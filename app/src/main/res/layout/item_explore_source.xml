@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -7,32 +7,26 @@
 	android:layout_height="?attr/listPreferredItemHeightSmall"
 	android:background="?selectableItemBackground"
 	android:clipChildren="false"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
 	android:padding="@dimen/list_spacing">
 
 	<com.google.android.material.imageview.ShapeableImageView
 		android:id="@+id/imageView_cover"
-		android:layout_width="0dp"
-		android:layout_height="0dp"
+		android:layout_width="32dp"
+		android:layout_height="32dp"
 		android:scaleType="centerCrop"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintDimensionRatio="h,1:1"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:shapeAppearance="?shapeAppearanceCornerSmall"
 		tools:src="@tools:sample/backgrounds/scenic" />
 
 	<TextView
 		android:id="@+id/textView_title"
-		android:layout_width="0dp"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="16dp"
 		android:ellipsize="end"
-		android:maxLines="1"
+		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodyMedium"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toEndOf="@+id/imageView_cover"
-		app:layout_constraintTop_toTopOf="@+id/imageView_cover"
-		tools:text="Title" />
+		tools:text="@tools:sample/lorem[2]" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
