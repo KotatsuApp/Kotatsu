@@ -6,7 +6,9 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ItemEmptyCardBinding
@@ -29,6 +31,8 @@ fun exploreButtonsAD(
 	binding.buttonHistory.setOnClickListener(clickListener)
 	binding.buttonLocal.setOnClickListener(clickListener)
 	binding.buttonSuggestions.setOnClickListener(clickListener)
+	binding.buttonFavourites.setOnClickListener(clickListener)
+	binding.buttonRandom.setOnClickListener(clickListener)
 
 	bind {
 		binding.buttonSuggestions.isVisible = item.isSuggestionsEnabled
@@ -102,3 +106,5 @@ fun exploreEmptyHintListAD(
 		binding.buttonRetry.setTextAndVisible(item.actionStringRes)
 	}
 }
+
+fun exploreLoadingAD() = adapterDelegate<ExploreItem.Loading, ExploreItem>(R.layout.item_loading_state) {}

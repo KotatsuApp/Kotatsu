@@ -329,4 +329,5 @@
 	<string name="bookmarks_removed">Bookmarks removed</string>
 	<string name="no_manga_sources">No manga sources</string>
 	<string name="no_manga_sources_text">Enable manga sources to read manga online</string>
+	<string name="random">Random</string>
 </resources>

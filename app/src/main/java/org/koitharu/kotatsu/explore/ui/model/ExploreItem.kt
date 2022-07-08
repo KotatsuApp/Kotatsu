@@ -82,4 +82,6 @@ sealed interface ExploreItem : ListModel {
 		@StringRes textSecondary: Int,
 		@StringRes actionStringRes: Int,
 	) : EmptyState(icon, textPrimary, textSecondary, actionStringRes), ExploreItem
+
+	object Loading : ExploreItem
 }

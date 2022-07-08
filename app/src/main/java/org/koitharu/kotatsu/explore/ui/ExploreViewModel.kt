@@ -1,24 +1,43 @@
 package org.koitharu.kotatsu.explore.ui
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class ExploreViewModel(
 	private val settings: AppSettings,
+	private val exploreRepository: ExploreRepository,
 ) : BaseViewModel() {
 
-	val content: LiveData<List<ExploreItem>> = settings.observe()
+	val onOpenManga = SingleLiveEvent<Manga>()
+
+	val content: LiveData<List<ExploreItem>> = isLoading.asFlow().flatMapLatest { loading ->
+		if (loading) {
+			flowOf(listOf(ExploreItem.Loading))
+		} else {
+			createContentFlow()
+		}
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(ExploreItem.Loading))
+
+	fun openRandom() {
+		launchLoadingJob(Dispatchers.Default) {
+			val manga = exploreRepository.findRandomManga(tagsLimit = 8)
+			onOpenManga.postCall(manga)
+		}
+	}
+
+	private fun createContentFlow() = settings.observe()
 		.filter {
 			it == AppSettings.KEY_SOURCES_HIDDEN ||
 				it == AppSettings.KEY_SOURCES_ORDER ||
@@ -28,7 +47,6 @@ class ExploreViewModel(
 		.map { settings.getMangaSources(includeHidden = false) }
 		.distinctUntilChanged()
 		.map { buildList(it) }
-		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	private fun buildList(sources: List<MangaSource>): List<ExploreItem> {
 		val result = ArrayList<ExploreItem>(sources.size + 3)

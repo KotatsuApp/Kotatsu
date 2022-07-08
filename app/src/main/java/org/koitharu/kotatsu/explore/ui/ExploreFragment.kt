@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -15,14 +16,18 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
+import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
+import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
 import org.koitharu.kotatsu.history.ui.HistoryActivity
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 	RecyclerViewOwner,
@@ -52,6 +57,8 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 		viewModel.content.observe(viewLifecycleOwner) {
 			exploreAdapter?.items = it
 		}
+		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+		viewModel.onOpenManga.observe(viewLifecycleOwner, ::onOpenManga)
 	}
 
 	override fun onDestroyView() {
@@ -81,6 +88,11 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 			R.id.button_local -> MangaListActivity.newIntent(v.context, MangaSource.LOCAL)
 			R.id.button_bookmarks -> BookmarksActivity.newIntent(v.context)
 			R.id.button_suggestions -> SuggestionsActivity.newIntent(v.context)
+			R.id.button_favourites -> CategoriesActivity.newIntent(v.context)
+			R.id.button_random -> {
+				viewModel.openRandom()
+				return
+			}
 			else -> return
 		}
 		startActivity(intent)
@@ -94,6 +106,19 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 	override fun onRetryClick(error: Throwable) = Unit
 
 	override fun onEmptyActionClick() = onManageClick(requireView())
+
+	private fun onError(e: Throwable) {
+		Snackbar.make(
+			binding.recyclerView,
+			e.getDisplayMessage(resources),
+			Snackbar.LENGTH_SHORT
+		).show()
+	}
+
+	private fun onOpenManga(manga: Manga) {
+		val intent = DetailsActivity.newIntent(context ?: return, manga)
+		startActivity(intent)
+	}
 
 	companion object {
 

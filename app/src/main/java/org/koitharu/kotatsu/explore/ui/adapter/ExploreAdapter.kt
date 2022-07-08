@@ -17,4 +17,5 @@ class ExploreAdapter(
 	exploreSourcesHeaderAD(listener),
 	exploreSourceItemAD(coil, clickListener, lifecycleOwner),
 	exploreEmptyHintListAD(listener),
+	exploreLoadingAD(),
 )
