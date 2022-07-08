@@ -5,6 +5,7 @@ import android.view.View
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
@@ -74,11 +75,15 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 			when {
 				error is AuthRequiredException -> Unit
 				ExceptionResolver.canResolve(error) -> {
-					Snackbar.make(listView, error.getDisplayMessage(resources), Snackbar.LENGTH_INDEFINITE)
-						.setAction(ExceptionResolver.getResolveStringId(error)) { resolveError(error) }
+					ensureActive()
+					Snackbar.make(
+						listView ?: return@onFailure,
+						error.getDisplayMessage(preference.context.resources),
+						Snackbar.LENGTH_INDEFINITE,
+					).setAction(ExceptionResolver.getResolveStringId(error)) { resolveError(error) }
 						.show()
 				}
-				else -> preference.summary = error.getDisplayMessage(resources)
+				else -> preference.summary = error.getDisplayMessage(preference.context.resources)
 			}
 			error.printStackTraceDebug()
 		}
