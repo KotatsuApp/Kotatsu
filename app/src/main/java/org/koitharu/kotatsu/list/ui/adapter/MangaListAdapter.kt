@@ -26,7 +26,7 @@ class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(listener))
 			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(listener))
 			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
-			.addDelegate(ITEM_TYPE_FILTER, currentFilterAD(listener))
+			.addDelegate(ITEM_TYPE_HEADER_2, listHeader2AD(listener))
 			.addDelegate(ITEM_TYPE_HEADER_FILTER, listHeaderWithFilterAD(listener))
 	}
 
@@ -62,7 +62,7 @@ class MangaListAdapter(
 						Unit
 					}
 				}
-				is CurrentFilterModel -> Unit
+				is ListHeader2 -> Unit
 				else -> super.getChangePayload(oldItem, newItem)
 			}
 		}
@@ -80,7 +80,7 @@ class MangaListAdapter(
 		const val ITEM_TYPE_ERROR_FOOTER = 7
 		const val ITEM_TYPE_EMPTY = 8
 		const val ITEM_TYPE_HEADER = 9
-		const val ITEM_TYPE_FILTER = 10
+		const val ITEM_TYPE_HEADER_2 = 10
 		const val ITEM_TYPE_HEADER_FILTER = 11
 
 		val PAYLOAD_PROGRESS = Any()

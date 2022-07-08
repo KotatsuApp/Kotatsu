@@ -19,13 +19,16 @@ import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import java.util.*
 
-private const val FILTER_MIN_INTERVAL = 750L
+private const val FILTER_MIN_INTERVAL = 250L
 
 class RemoteListViewModel(
 	private val repository: RemoteMangaRepository,
+	private val searchRepository: MangaSearchRepository,
 	settings: AppSettings,
 	dataRepository: MangaDataRepository,
 ) : MangaListViewModel(settings), OnFilterChangedListener {
@@ -46,9 +49,8 @@ class RemoteListViewModel(
 		listError,
 		hasNextPage,
 	) { list, mode, filterState, error, hasNext ->
-		buildList(list?.size?.plus(3) ?: 3) {
-			add(ListHeader(repository.source.title, 0, filterState.sortOrder))
-			createFilterModel(filterState)?.let { add(it) }
+		buildList(list?.size?.plus(2) ?: 2) {
+			add(ListHeader2(createChipsList(filterState), filterState.sortOrder))
 			when {
 				list.isNullOrEmpty() && error != null -> add(error.toErrorState(canRetry = true))
 				list == null -> add(LoadingState)
@@ -88,10 +90,6 @@ class RemoteListViewModel(
 		loadList(filter.snapshot(), append = !mangaList.value.isNullOrEmpty())
 	}
 
-	override fun onRemoveFilterTag(tag: MangaTag) {
-		filter.removeTag(tag)
-	}
-
 	override fun onSortItemClick(item: FilterItem.Sort) {
 		filter.onSortItemClick(item)
 	}
@@ -109,6 +107,10 @@ class RemoteListViewModel(
 	fun filterSearch(query: String) = filter.performSearch(query)
 
 	fun resetFilter() = filter.reset()
+
+	override fun onUpdateFilter(tags: Set<MangaTag>) {
+		applyFilter(tags)
+	}
 
 	fun applyFilter(tags: Set<MangaTag>) {
 		filter.setTags(tags)
@@ -142,18 +144,41 @@ class RemoteListViewModel(
 		}
 	}
 
-	private fun createFilterModel(filterState: FilterState): CurrentFilterModel? {
-		return if (filterState.tags.isEmpty()) {
-			null
-		} else {
-			CurrentFilterModel(filterState.tags.map { ChipsView.ChipModel(0, it.title, it) })
-		}
-	}
-
 	private fun createEmptyState(filterState: FilterState) = EmptyState(
 		icon = R.drawable.ic_empty_search,
 		textPrimary = R.string.nothing_found,
 		textSecondary = 0,
 		actionStringRes = if (filterState.tags.isEmpty()) 0 else R.string.reset_filter,
 	)
+
+	private suspend fun createChipsList(filterState: FilterState): List<ChipsView.ChipModel> {
+		val selectedTags = filterState.tags.toMutableSet()
+		val tags = searchRepository.getTagsSuggestion("", 6, repository.source)
+		val result = LinkedList<ChipsView.ChipModel>()
+		for (tag in tags) {
+			val model = ChipsView.ChipModel(
+				icon = 0,
+				title = tag.title,
+				isCheckable = true,
+				isChecked = selectedTags.remove(tag),
+				data = tag,
+			)
+			if (model.isChecked) {
+				result.addFirst(model)
+			} else {
+				result.addLast(model)
+			}
+		}
+		for (tag in selectedTags) {
+			val model = ChipsView.ChipModel(
+				icon = 0,
+				title = tag.title,
+				isCheckable = true,
+				isChecked = true,
+				data = tag,
+			)
+			result.addFirst(model)
+		}
+		return result
+	}
 }

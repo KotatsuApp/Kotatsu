@@ -6,7 +6,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 
 interface MangaListListener : OnListItemClickListener<Manga>, ListStateHolderListener {
 
-	fun onTagRemoveClick(tag: MangaTag)
-	
+	fun onUpdateFilter(tags: Set<MangaTag>)
+
 	fun onFilterClick()
 }

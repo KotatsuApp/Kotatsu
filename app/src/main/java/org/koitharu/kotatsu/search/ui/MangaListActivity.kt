@@ -3,9 +3,7 @@ package org.koitharu.kotatsu.search.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -28,13 +26,14 @@ class MangaListActivity : BaseActivity<ActivityContainerBinding>() {
 		setContentView(ActivityContainerBinding.inflate(layoutInflater))
 		val tags = intent.getParcelableExtra<ParcelableMangaTags>(EXTRA_TAGS)?.tags
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		val source = intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: tags?.firstOrNull()?.source
+		if (source == null) {
+			finishAfterTransition()
+			return
+		}
+		title = source.title
 		val fm = supportFragmentManager
 		if (fm.findFragmentById(R.id.container) == null) {
-			val source = intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: tags?.firstOrNull()?.source
-			if (source == null) {
-				finishAfterTransition()
-				return
-			}
 			fm.commit {
 				val fragment = if (source == MangaSource.LOCAL) {
 					LocalListFragment.newInstance()

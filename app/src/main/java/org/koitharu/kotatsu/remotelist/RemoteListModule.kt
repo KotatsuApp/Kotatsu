@@ -14,6 +14,7 @@ val remoteListModule
 				repository = MangaRepository(params[0]) as RemoteMangaRepository,
 				settings = get(),
 				dataRepository = get(),
+				searchRepository = get(),
 			)
 		}
 	}

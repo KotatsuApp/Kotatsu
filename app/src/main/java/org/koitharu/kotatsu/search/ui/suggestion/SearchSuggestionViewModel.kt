@@ -47,7 +47,7 @@ class SearchSuggestionViewModel(
 			setupSuggestion()
 		}
 	}
-	
+
 	fun onSourceToggle(source: MangaSource, isEnabled: Boolean) {
 		settings.hiddenSources = if (isEnabled) {
 			settings.hiddenSources - source.name
@@ -113,6 +113,8 @@ class SearchSuggestionViewModel(
 			icon = 0,
 			title = tag.title,
 			data = tag,
+			isCheckable = false,
+			isChecked = false,
 		)
 	}
 }

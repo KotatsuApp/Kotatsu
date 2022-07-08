@@ -17,14 +17,12 @@ import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.measureHeight
 
 class FeedFragment :
 	BaseFragment<FragmentFeedBinding>(),
@@ -84,7 +82,7 @@ class FeedFragment :
 
 	override fun onRetryClick(error: Throwable) = Unit
 
-	override fun onTagRemoveClick(tag: MangaTag) = Unit
+	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 
 	override fun onFilterClick() = Unit
 

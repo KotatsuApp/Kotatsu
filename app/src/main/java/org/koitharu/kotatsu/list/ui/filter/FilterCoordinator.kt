@@ -56,12 +56,6 @@ class FilterCoordinator(
 
 	fun observeState() = currentState.asStateFlow()
 
-	fun removeTag(tag: MangaTag) {
-		currentState.update { oldValue ->
-			FilterState(oldValue.sortOrder, oldValue.tags - tag)
-		}
-	}
-
 	fun setTags(tags: Set<MangaTag>) {
 		currentState.update { oldValue ->
 			FilterState(oldValue.sortOrder, tags)

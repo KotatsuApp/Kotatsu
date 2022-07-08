@@ -193,8 +193,8 @@ abstract class MangaListFragment :
 		resolveException(error)
 	}
 
-	override fun onTagRemoveClick(tag: MangaTag) {
-		viewModel.onRemoveFilterTag(tag)
+	override fun onUpdateFilter(tags: Set<MangaTag>) {
+		viewModel.onUpdateFilter(tags)
 	}
 
 	private fun onGridScaleChanged(scale: Float) {

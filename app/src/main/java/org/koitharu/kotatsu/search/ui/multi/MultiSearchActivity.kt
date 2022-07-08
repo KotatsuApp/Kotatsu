@@ -103,7 +103,7 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 		viewModel.doSearch(viewModel.query.value.orEmpty())
 	}
 
-	override fun onTagRemoveClick(tag: MangaTag) = Unit
+	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 
 	override fun onFilterClick() = Unit
 

@@ -341,6 +341,8 @@ class DetailsFragment :
 					title = tag.title,
 					icon = 0,
 					data = tag,
+					isCheckable = false,
+					isChecked = false,
 				)
 			}
 		)
