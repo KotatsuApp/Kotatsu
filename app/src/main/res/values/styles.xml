@@ -132,6 +132,7 @@
 		<item name="android:textColor">?attr/colorOnSurface</item>
 		<item name="android:singleLine">true</item>
 		<item name="shapeAppearance">?shapeAppearanceCornerLarge</item>
+		<item name="iconSize">22dp</item>
 		<item name="iconPadding">16dp</item>
 		<item name="iconGravity">start</item>
 		<item name="android:insetTop">2dp</item>
