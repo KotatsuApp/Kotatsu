@@ -8,7 +8,7 @@ import androidx.core.view.MenuProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.RememberSelectionDialogListener
-import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
+import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.utils.ext.startOfDay
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -30,7 +30,7 @@ class LibraryMenuProvider(
 				true
 			}
 			R.id.action_categories -> {
-				context.startActivity(CategoriesActivity.newIntent(context))
+				context.startActivity(FavouriteCategoriesActivity.newIntent(context))
 				true
 			}
 			else -> false

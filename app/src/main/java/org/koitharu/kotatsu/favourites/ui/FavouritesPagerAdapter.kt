@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -7,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment
 
@@ -24,24 +24,21 @@ class FavouritesPagerAdapter(
 
 	override fun createFragment(position: Int): Fragment {
 		val item = differ.currentList[position]
-		return FavouritesListFragment.newInstance(item.id)
+		return FavouritesListFragment.newInstance(item.category.id)
 	}
 
 	override fun getItemId(position: Int): Long {
-		return differ.currentList[position].id
+		return differ.currentList[position].category.id
 	}
 
 	override fun containsItem(itemId: Long): Boolean {
-		return differ.currentList.any { it.id == itemId }
+		return differ.currentList.any { it.category.id == itemId }
 	}
 
 	override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
 		val item = differ.currentList[position]
-		tab.text = when (item) {
-			is CategoryListModel.All -> tab.view.context.getString(R.string.all_favourites)
-			is CategoryListModel.CategoryItem -> item.category.title
-		}
-		tab.view.tag = item.id
+		tab.text = item.category.title
+		tab.view.tag = item.category.id
 		tab.view.setOnLongClickListener(this)
 	}
 
@@ -51,7 +48,7 @@ class FavouritesPagerAdapter(
 
 	override fun onLongClick(v: View): Boolean {
 		val itemId = v.tag as? Long ?: return false
-		val item = differ.currentList.find { x -> x.id == itemId } ?: return false
+		val item = differ.currentList.find { x -> x.category.id == itemId } ?: return false
 		return longClickListener.onTabLongClick(v, item)
 	}
 
@@ -60,14 +57,11 @@ class FavouritesPagerAdapter(
 		override fun areItemsTheSame(
 			oldItem: CategoryListModel,
 			newItem: CategoryListModel
-		): Boolean = when {
-			oldItem is CategoryListModel.All && newItem is CategoryListModel.All -> true
-			oldItem is CategoryListModel.CategoryItem && newItem is CategoryListModel.CategoryItem -> {
-				oldItem.category.id == newItem.category.id
-			}
-			else -> false
+		): Boolean {
+			return oldItem.category.id == newItem.category.id
 		}
 
+		@SuppressLint("DiffUtilEquals")
 		override fun areContentsTheSame(
 			oldItem: CategoryListModel,
 			newItem: CategoryListModel

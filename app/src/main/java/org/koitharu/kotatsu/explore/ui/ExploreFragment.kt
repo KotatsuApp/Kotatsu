@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
-import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
+import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.history.ui.HistoryActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -88,7 +88,7 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 			R.id.button_local -> MangaListActivity.newIntent(v.context, MangaSource.LOCAL)
 			R.id.button_bookmarks -> BookmarksActivity.newIntent(v.context)
 			R.id.button_suggestions -> SuggestionsActivity.newIntent(v.context)
-			R.id.button_favourites -> CategoriesActivity.newIntent(v.context)
+			R.id.button_favourites -> FavouriteCategoriesActivity.newIntent(v.context)
 			R.id.button_random -> {
 				viewModel.openRandom()
 				return

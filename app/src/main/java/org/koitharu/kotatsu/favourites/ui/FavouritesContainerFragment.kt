@@ -49,14 +49,14 @@ class FavouritesContainerFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = FavouritesPagerAdapter(this, this)
-		viewModel.visibleCategories.value?.let(::onCategoriesChanged)
+		viewModel.allCategories.value?.let(::onCategoriesChanged)
 		binding.pager.adapter = adapter
 		pagerAdapter = adapter
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
 		actionModeDelegate.addListener(this, viewLifecycleOwner)
 		addMenuProvider(FavouritesContainerMenuProvider(view.context))
 
-		viewModel.visibleCategories.observe(viewLifecycleOwner, ::onCategoriesChanged)
+		viewModel.allCategories.observe(viewLifecycleOwner, ::onCategoriesChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 	}
 
@@ -103,10 +103,10 @@ class FavouritesContainerFragment :
 	}
 
 	override fun onTabLongClick(tabView: View, item: CategoryListModel): Boolean {
-		when (item) {
+		/*when (item) {
 			is CategoryListModel.All -> showAllCategoriesMenu(tabView)
 			is CategoryListModel.CategoryItem -> showCategoryMenu(tabView, item.category)
-		}
+		}*/
 		return true
 	}
 
@@ -133,7 +133,12 @@ class FavouritesContainerFragment :
 		menu.setOnMenuItemClickListener {
 			when (it.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(category)
-				R.id.action_edit -> startActivity(FavouritesCategoryEditActivity.newIntent(tabView.context, category.id))
+				R.id.action_edit -> startActivity(
+					FavouritesCategoryEditActivity.newIntent(
+						tabView.context,
+						category.id
+					)
+				)
 				else -> return@setOnMenuItemClickListener false
 			}
 			true

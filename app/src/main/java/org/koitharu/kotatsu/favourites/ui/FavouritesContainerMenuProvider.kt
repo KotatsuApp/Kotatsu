@@ -6,7 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
+import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 
 class FavouritesContainerMenuProvider(
 	private val context: Context,
@@ -19,7 +19,7 @@ class FavouritesContainerMenuProvider(
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		return when (menuItem.itemId) {
 			R.id.action_categories -> {
-				context.startActivity(CategoriesActivity.newIntent(context))
+				context.startActivity(FavouriteCategoriesActivity.newIntent(context))
 				true
 			}
 			else -> false

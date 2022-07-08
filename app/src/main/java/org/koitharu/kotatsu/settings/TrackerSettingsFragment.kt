@@ -23,7 +23,7 @@ import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
+import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
@@ -103,7 +103,7 @@ class TrackerSettingsFragment :
 				}
 			}
 			AppSettings.KEY_TRACK_CATEGORIES -> {
-				startActivity(CategoriesActivity.newIntent(preference.context))
+				startActivity(FavouriteCategoriesActivity.newIntent(preference.context))
 				true
 			}
 			KEY_IGNORE_DOZE -> {

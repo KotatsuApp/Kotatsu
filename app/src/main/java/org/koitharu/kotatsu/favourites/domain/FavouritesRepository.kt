@@ -5,10 +5,7 @@ import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
-import org.koitharu.kotatsu.favourites.data.FavouriteEntity
-import org.koitharu.kotatsu.favourites.data.FavouriteManga
-import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
+import org.koitharu.kotatsu.favourites.data.*
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
@@ -53,6 +50,13 @@ class FavouritesRepository(
 		return db.favouriteCategoriesDao.observeAll().mapItems {
 			it.toFavouriteCategory()
 		}.distinctUntilChanged()
+	}
+
+	fun observeCategoriesWithDetails(): Flow<Map<FavouriteCategory, List<String>>> {
+		return db.favouriteCategoriesDao.observeAllWithDetails()
+			.map {
+				it.mapKeys { (k, _) -> k.toFavouriteCategory() }
+			}
 	}
 
 	fun observeCategory(id: Long): Flow<FavouriteCategory?> {

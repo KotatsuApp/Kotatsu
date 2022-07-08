@@ -1,49 +1,49 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
+import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
-import org.koitharu.kotatsu.favourites.ui.categories.adapter.allCategoriesAD
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.categoryAD
+import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
+import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
+import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import kotlin.jvm.internal.Intrinsics
 
 class CategoriesAdapter(
+	coil: ImageLoader,
+	lifecycleOwner: LifecycleOwner,
 	onItemClickListener: OnListItemClickListener<FavouriteCategory>,
-	allCategoriesToggleListener: AllCategoriesToggleListener,
-) : AsyncListDifferDelegationAdapter<CategoryListModel>(DiffCallback()) {
+	listListener: ListStateHolderListener,
+) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
 	init {
-		delegatesManager.addDelegate(categoryAD(onItemClickListener))
-			.addDelegate(allCategoriesAD(allCategoriesToggleListener))
-		setHasStableIds(true)
+		delegatesManager.addDelegate(categoryAD(coil, lifecycleOwner, onItemClickListener))
+			.addDelegate(emptyStateListAD(listListener))
+			.addDelegate(loadingStateAD())
 	}
 
-	override fun getItemId(position: Int): Long {
-		return items[position].id
-	}
+	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {
 
-	private class DiffCallback : DiffUtil.ItemCallback<CategoryListModel>() {
+		override fun areItemsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
+			return when {
+				oldItem is CategoryListModel && newItem is CategoryListModel -> {
+					oldItem.category.id == newItem.category.id
+				}
+				else -> oldItem.javaClass == newItem.javaClass
+			}
+		}
 
-		override fun areItemsTheSame(
-			oldItem: CategoryListModel,
-			newItem: CategoryListModel,
-		): Boolean = oldItem.id == newItem.id
+		override fun areContentsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
+			return Intrinsics.areEqual(oldItem, newItem)
+		}
 
-		override fun areContentsTheSame(
-			oldItem: CategoryListModel,
-			newItem: CategoryListModel,
-		): Boolean = oldItem == newItem
-
-		override fun getChangePayload(
-			oldItem: CategoryListModel,
-			newItem: CategoryListModel,
-		): Any? = when {
-			oldItem is CategoryListModel.All && newItem is CategoryListModel.All -> Unit
-			oldItem is CategoryListModel.CategoryItem &&
-				newItem is CategoryListModel.CategoryItem &&
-				oldItem.category.title != newItem.category.title -> null
-			else -> Unit
+		override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
+			return super.getChangePayload(oldItem, newItem)
 		}
 	}
 }

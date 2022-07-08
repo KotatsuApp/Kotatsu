@@ -18,7 +18,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.ActivityCategoryEditBinding
-import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
+import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
@@ -84,7 +84,7 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 	}
 
 	override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-		selectedSortOrder = CategoriesActivity.SORT_ORDERS.getOrNull(position)
+		selectedSortOrder = FavouriteCategoriesActivity.SORT_ORDERS.getOrNull(position)
 	}
 
 	private fun onCategoryChanged(category: FavouriteCategory?) {
@@ -114,7 +114,7 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 	}
 
 	private fun initSortSpinner() {
-		val entries = CategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
+		val entries = FavouriteCategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
 		val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, entries)
 		binding.editSort.setAdapter(adapter)
 		binding.editSort.onItemClickListener = this
@@ -122,9 +122,9 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 
 	private fun getSelectedSortOrder(): SortOrder {
 		selectedSortOrder?.let { return it }
-		val entries = CategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
+		val entries = FavouriteCategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
 		val index = entries.indexOf(binding.editSort.text.toString())
-		return CategoriesActivity.SORT_ORDERS.getOrNull(index) ?: SortOrder.NEWEST
+		return FavouriteCategoriesActivity.SORT_ORDERS.getOrNull(index) ?: SortOrder.NEWEST
 	}
 
 	companion object {

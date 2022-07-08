@@ -15,6 +15,17 @@ abstract class FavouriteCategoriesDao {
 	@Query("SELECT * FROM favourite_categories ORDER BY sort_key")
 	abstract fun observeAll(): Flow<List<FavouriteCategoryEntity>>
 
+	@MapInfo(valueColumn = "cover")
+	@Query(
+		"""
+			SELECT favourite_categories.*, manga.cover_url AS cover 
+			FROM favourite_categories JOIN manga ON manga.manga_id IN 
+				(SELECT manga_id FROM favourites WHERE favourites.category_id == favourite_categories.category_id)
+			ORDER BY favourite_categories.sort_key
+		"""
+	)
+	abstract fun observeAllWithDetails(): Flow<Map<FavouriteCategoryEntity, List<String>>>
+
 	@Query("SELECT * FROM favourite_categories WHERE category_id = :id")
 	abstract fun observe(id: Long): Flow<FavouriteCategoryEntity?>
 

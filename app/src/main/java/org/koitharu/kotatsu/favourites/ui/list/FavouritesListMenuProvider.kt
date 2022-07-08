@@ -7,7 +7,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.iterator
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.titleRes
-import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
+import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 
 class FavouritesListMenuProvider(
 	private val viewModel: FavouritesListViewModel,
@@ -16,7 +16,7 @@ class FavouritesListMenuProvider(
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 		menuInflater.inflate(R.menu.opt_favourites_list, menu)
 		menu.findItem(R.id.action_order)?.subMenu?.let { submenu ->
-			for ((i, item) in CategoriesActivity.SORT_ORDERS.withIndex()) {
+			for ((i, item) in FavouriteCategoriesActivity.SORT_ORDERS.withIndex()) {
 				val menuItem = submenu.add(R.id.group_order, Menu.NONE, i, item.titleRes)
 				menuItem.isCheckable = true
 			}
@@ -28,7 +28,7 @@ class FavouritesListMenuProvider(
 		menu.findItem(R.id.action_order)?.subMenu?.let { submenu ->
 			val selectedOrder = viewModel.sortOrder.value
 			for (item in submenu) {
-				val order = CategoriesActivity.SORT_ORDERS.getOrNull(item.order)
+				val order = FavouriteCategoriesActivity.SORT_ORDERS.getOrNull(item.order)
 				item.isChecked = order == selectedOrder
 			}
 		}
@@ -38,7 +38,7 @@ class FavouritesListMenuProvider(
 		return when {
 			menuItem.itemId == R.id.action_order -> false
 			menuItem.groupId == R.id.group_order -> {
-				val order = CategoriesActivity.SORT_ORDERS.getOrNull(menuItem.order) ?: return false
+				val order = FavouriteCategoriesActivity.SORT_ORDERS.getOrNull(menuItem.order) ?: return false
 				viewModel.setSortOrder(order)
 				true
 			}

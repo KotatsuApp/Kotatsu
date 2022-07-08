@@ -1,36 +1,38 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
-import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
+import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
+import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
 
-class CategoriesActivity :
+class FavouriteCategoriesActivity :
 	BaseActivity<ActivityCategoriesBinding>(),
 	OnListItemClickListener<FavouriteCategory>,
 	View.OnClickListener,
 	CategoriesEditDelegate.CategoriesEditCallback,
-	AllCategoriesToggleListener {
+	ListStateHolderListener {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
@@ -42,7 +44,7 @@ class CategoriesActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		adapter = CategoriesAdapter(this, this)
+		adapter = CategoriesAdapter(get(), this, this, this)
 		editDelegate = CategoriesEditDelegate(this, this)
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
@@ -50,7 +52,7 @@ class CategoriesActivity :
 		reorderHelper = ItemTouchHelper(ReorderHelperCallback())
 		reorderHelper.attachToRecyclerView(binding.recyclerView)
 
-		viewModel.allCategories.observe(this, ::onCategoriesChanged)
+		viewModel.detalizedCategories.observe(this, ::onCategoriesChanged)
 		viewModel.onError.observe(this, ::onError)
 	}
 
@@ -61,7 +63,7 @@ class CategoriesActivity :
 	}
 
 	override fun onItemClick(item: FavouriteCategory, view: View) {
-		val menu = PopupMenu(view.context, view)
+		/*val menu = PopupMenu(view.context, view)
 		menu.inflate(R.menu.popup_category)
 		menu.setOnMenuItemClickListener { menuItem ->
 			when (menuItem.itemId) {
@@ -70,7 +72,11 @@ class CategoriesActivity :
 			}
 			true
 		}
-		menu.show()
+		menu.show()*/
+		val intent = FavouritesActivity.newIntent(this, item)
+		val options =
+			ActivityOptions.makeScaleUpAnimation(view, view.width / 2, view.height / 2, view.width, view.height)
+		startActivity(intent, options.toBundle())
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {
@@ -79,9 +85,9 @@ class CategoriesActivity :
 		return true
 	}
 
-	override fun onAllCategoriesToggle(isVisible: Boolean) {
-		viewModel.setAllCategoriesVisible(isVisible)
-	}
+	override fun onRetryClick(error: Throwable) = Unit
+
+	override fun onEmptyActionClick() = Unit
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -96,9 +102,8 @@ class CategoriesActivity :
 		)
 	}
 
-	private fun onCategoriesChanged(categories: List<CategoryListModel>) {
+	private fun onCategoriesChanged(categories: List<ListModel>) {
 		adapter.items = categories
-		binding.textViewHolder.isVisible = categories.isEmpty()
 	}
 
 	private fun onError(e: Throwable) {
@@ -152,6 +157,6 @@ class CategoriesActivity :
 			SortOrder.RATING,
 		)
 
-		fun newIntent(context: Context) = Intent(context, CategoriesActivity::class.java)
+		fun newIntent(context: Context) = Intent(context, FavouriteCategoriesActivity::class.java)
 	}
 }
