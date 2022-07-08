@@ -25,7 +25,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
-import org.acra.ktx.sendWithAcra
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -39,7 +38,6 @@ import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.download.ui.service.DownloadService
-import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
@@ -48,6 +46,8 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.isReportable
+import org.koitharu.kotatsu.utils.ext.report
 
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
@@ -118,7 +118,7 @@ class DetailsActivity :
 				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 				finishAfterTransition()
 			}
-			e is ParseException || e is IllegalArgumentException || e is IllegalStateException -> {
+			e.isReportable() -> {
 				binding.snackbar.show(
 					messageText = e.getDisplayMessage(resources),
 					actionId = R.string.report,
@@ -128,7 +128,7 @@ class DetailsActivity :
 						Snackbar.LENGTH_LONG
 					},
 					onActionClick = {
-						e.sendWithAcra()
+						e.report("DetailsActivity::onError")
 						dismiss()
 					}
 				)

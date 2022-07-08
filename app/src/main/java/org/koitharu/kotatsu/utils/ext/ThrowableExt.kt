@@ -4,12 +4,14 @@ import android.content.ActivityNotFoundException
 import android.content.res.Resources
 import okio.FileNotFoundException
 import org.acra.ACRA
+import org.acra.ktx.sendWithAcra
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
+import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.net.SocketTimeoutException
 
@@ -26,4 +28,17 @@ fun Throwable.getDisplayMessage(resources: Resources) = when (this) {
 	else -> localizedMessage ?: resources.getString(R.string.error_occurred)
 }
 
+fun Throwable.isReportable(): Boolean {
+	if (this !is Exception) {
+		return true
+	}
+	return this is ParseException || this is IllegalArgumentException || this is IllegalStateException
+}
+
+fun Throwable.report(message: String?) {
+	CaughtException(this, message).sendWithAcra()
+}
+
 fun ACRA.setCurrentManga(manga: Manga?) = errorReporter.putCustomData("manga", manga?.publicUrl.toString())
+
+private class CaughtException(cause: Throwable, override val message: String?) : RuntimeException(cause)
