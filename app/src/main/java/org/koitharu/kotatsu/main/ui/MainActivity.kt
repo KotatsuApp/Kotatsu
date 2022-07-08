@@ -17,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +31,10 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
 import org.koitharu.kotatsu.library.ui.LibraryFragment
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
@@ -187,12 +186,7 @@ class MainActivity :
 		binding.searchView.query = query
 		if (submit) {
 			if (query.isNotEmpty()) {
-				val source = searchSuggestionViewModel.getLocalSearchSource()
-				if (source != null) {
-					startActivity(SearchActivity.newIntent(this, source, query))
-				} else {
-					startActivity(MultiSearchActivity.newIntent(this, query))
-				}
+				startActivity(MultiSearchActivity.newIntent(this, query))
 				searchSuggestionViewModel.saveQuery(query)
 			}
 		}
@@ -219,15 +213,13 @@ class MainActivity :
 		voiceInputLauncher.tryLaunch(binding.searchView.hint?.toString(), options)
 	}
 
-	override fun onClearSearchHistory() {
-		MaterialAlertDialogBuilder(this, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
-			.setTitle(R.string.clear_search_history)
-			.setIcon(R.drawable.ic_clear_all)
-			.setMessage(R.string.text_clear_search_history_prompt)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setPositiveButton(R.string.clear) { _, _ ->
-				searchSuggestionViewModel.clearSearchHistory()
-			}.show()
+	override fun onSourceToggle(source: MangaSource, isEnabled: Boolean) {
+		searchSuggestionViewModel.onSourceToggle(source, isEnabled)
+	}
+
+	override fun onSourceClick(source: MangaSource) {
+		val intent = MangaListActivity.newIntent(this, source)
+		startActivity(intent)
 	}
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {

@@ -10,13 +10,6 @@ import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
-import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
@@ -25,6 +18,10 @@ import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
+import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AppSettings(context: Context) {
 
@@ -195,10 +192,6 @@ class AppSettings(context: Context) {
 	val isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
 
-	var isSearchSingleSource: Boolean
-		get() = prefs.getBoolean(KEY_SEARCH_SINGLE_SOURCE, false)
-		set(value) = prefs.edit { putBoolean(KEY_SEARCH_SINGLE_SOURCE, value) }
-
 	val dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
 
@@ -308,7 +301,6 @@ class AppSettings(context: Context) {
 		const val KEY_SUGGESTIONS = "suggestions"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
-		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
 		const val KEY_SHIKIMORI = "shikimori"
 		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"

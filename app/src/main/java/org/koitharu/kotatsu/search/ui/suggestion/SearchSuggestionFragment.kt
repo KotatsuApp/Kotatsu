@@ -12,9 +12,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
-import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
-import org.koitharu.kotatsu.utils.ext.measureHeight
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
 
 class SearchSuggestionFragment :
 	BaseFragment<FragmentSearchSuggestionBinding>(),
@@ -34,7 +33,9 @@ class SearchSuggestionFragment :
 			lifecycleOwner = viewLifecycleOwner,
 			listener = requireActivity() as SearchSuggestionListener,
 		)
+		addMenuProvider(SearchSuggestionMenuProvider(view.context, viewModel))
 		binding.root.adapter = adapter
+		binding.root.setHasFixedSize(true)
 		viewModel.suggestion.observe(viewLifecycleOwner) {
 			adapter.items = it
 		}

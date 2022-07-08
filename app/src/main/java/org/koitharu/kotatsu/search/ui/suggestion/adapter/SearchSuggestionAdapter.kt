@@ -19,7 +19,7 @@ class SearchSuggestionAdapter(
 	init {
 		delegatesManager
 			.addDelegate(SEARCH_SUGGESTION_ITEM_TYPE_QUERY, searchSuggestionQueryAD(listener))
-			.addDelegate(searchSuggestionHeaderAD(listener))
+			.addDelegate(searchSuggestionSourceAD(coil, lifecycleOwner, listener))
 			.addDelegate(searchSuggestionTagsAD(listener))
 			.addDelegate(searchSuggestionMangaListAD(coil, lifecycleOwner, listener))
 	}
@@ -33,6 +33,9 @@ class SearchSuggestionAdapter(
 			oldItem is SearchSuggestionItem.RecentQuery && newItem is SearchSuggestionItem.RecentQuery -> {
 				oldItem.query == newItem.query
 			}
+			oldItem is SearchSuggestionItem.Source && newItem is SearchSuggestionItem.Source -> {
+				oldItem.source == newItem.source
+			}
 			else -> oldItem.javaClass == newItem.javaClass
 		}
 
@@ -40,5 +43,15 @@ class SearchSuggestionAdapter(
 			oldItem: SearchSuggestionItem,
 			newItem: SearchSuggestionItem,
 		): Boolean = Intrinsics.areEqual(oldItem, newItem)
+
+		override fun getChangePayload(oldItem: SearchSuggestionItem, newItem: SearchSuggestionItem): Any? {
+			return when {
+				oldItem is SearchSuggestionItem.MangaList && newItem is SearchSuggestionItem.MangaList -> Unit
+				oldItem is SearchSuggestionItem.Source && newItem is SearchSuggestionItem.Source -> {
+					if (oldItem.isEnabled != newItem.isEnabled) Unit else super.getChangePayload(oldItem, newItem)
+				}
+				else -> super.getChangePayload(oldItem, newItem)
+			}
+		}
 	}
 }

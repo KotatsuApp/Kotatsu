@@ -91,6 +91,19 @@ class MangaSearchRepository(
 		}
 	}
 
+	fun getSourcesSuggestion(query: String, limit: Int): List<MangaSource> {
+		if (query.length < 3) {
+			return emptyList()
+		}
+		val sources = settings.remoteMangaSources
+			.filter { x -> x.title.contains(query, ignoreCase = true) }
+		return if (limit == 0) {
+			sources
+		} else {
+			sources.take(limit)
+		}
+	}
+
 	fun saveSearchQuery(query: String) {
 		recentSuggestions.saveRecentQuery(query, null)
 	}
