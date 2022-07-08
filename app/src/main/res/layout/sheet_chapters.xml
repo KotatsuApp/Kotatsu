@@ -22,13 +22,13 @@
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<androidx.recyclerview.widget.RecyclerView
+	<org.koitharu.kotatsu.base.ui.widgets.FastScrollRecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		app:fastScrollEnabled="true"
+		app:handleColor="?attr/colorOutline"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_chapter" />
 

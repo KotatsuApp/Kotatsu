@@ -7,18 +7,24 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/recyclerView"
+	<FrameLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:clipToPadding="false"
-		android:orientation="vertical"
-		android:paddingLeft="@dimen/list_spacing"
-		android:paddingRight="@dimen/list_spacing"
-		android:paddingTop="@dimen/grid_spacing_outer"
-		android:paddingBottom="@dimen/grid_spacing_outer"
-		app:fastScrollEnabled="true"
-		tools:layoutManager="org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager"
-		tools:listitem="@layout/item_manga_list" />
+		android:layout_height="match_parent">
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/recyclerView"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:clipToPadding="false"
+			android:orientation="vertical"
+			android:paddingLeft="@dimen/list_spacing"
+			android:paddingRight="@dimen/list_spacing"
+			android:paddingTop="@dimen/grid_spacing_outer"
+			android:paddingBottom="@dimen/grid_spacing_outer"
+			app:handleColor="?attr/colorTertiary"
+			tools:layoutManager="org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager"
+			tools:listitem="@layout/item_manga_list" />
+
+	</FrameLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

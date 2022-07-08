@@ -17,7 +17,7 @@
 		tools:listitem="@layout/item_branch"
 		tools:visibility="visible" />
 
-	<androidx.recyclerview.widget.RecyclerView
+	<org.koitharu.kotatsu.base.ui.widgets.FastScrollRecyclerView
 		android:id="@+id/recyclerView_chapters"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
@@ -28,8 +28,11 @@
 		android:layout_alignParentBottom="true"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		app:fastScrollEnabled="true"
+		app:bubbleColor="?attr/colorTertiary"
+		app:bubbleTextColor="?attr/colorOnTertiary"
+		app:handleColor="?attr/colorTertiary"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:showBubble="true"
 		tools:listitem="@layout/item_chapter" />
 
 	<com.google.android.material.progressindicator.CircularProgressIndicator

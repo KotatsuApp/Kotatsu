@@ -52,4 +52,20 @@
 		<attr name="progressStyle" format="reference" />
 	</declare-styleable>
 
+	<declare-styleable name="FastScroller">
+		<attr format="boolean" name="hideScrollbar" />
+		<attr format="boolean" name="showBubble" />
+		<attr format="boolean" name="showBubbleAlways" />
+		<attr format="boolean" name="showTrack" />
+		<attr format="color" name="bubbleColor" />
+		<attr format="color" name="bubbleTextColor" />
+		<attr format="color" name="handleColor" />
+		<attr format="color" name="trackColor" />
+		<attr format="dimension" name="bubbleTextSize" />
+		<attr format="enum" name="bubbleSize">
+			<enum name="normal" value="0" />
+			<enum name="small" value="1" />
+		</attr>
+	</declare-styleable>
+
 </resources>

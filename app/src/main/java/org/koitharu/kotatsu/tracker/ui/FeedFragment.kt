@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class FeedFragment :
 	BaseFragment<FragmentFeedBinding>(),
@@ -56,7 +57,11 @@ class FeedFragment :
 			)
 			addItemDecoration(decoration)
 		}
-		binding.swipeRefreshLayout.isEnabled = false
+		with(binding.swipeRefreshLayout) {
+			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
+			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
+			isEnabled = false
+		}
 		addMenuProvider(FeedMenuProvider(binding.recyclerView, viewModel))
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)

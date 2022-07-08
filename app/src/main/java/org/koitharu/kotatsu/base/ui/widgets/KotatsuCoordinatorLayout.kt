@@ -7,14 +7,9 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.doOnLayout
-import androidx.core.view.isVisible
 import androidx.customview.view.AbsSavedState
-import androidx.fragment.app.FragmentContainerView
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 import org.koitharu.kotatsu.utils.ext.findChild
-import org.koitharu.kotatsu.utils.ext.findDescendant
 
 class KotatsuCoordinatorLayout @JvmOverloads constructor(
 	context: Context,

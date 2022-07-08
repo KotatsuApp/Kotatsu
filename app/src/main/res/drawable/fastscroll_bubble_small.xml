@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:shape="rectangle">
+
+	<tools:solid android:color="#777777" />
+
+	<corners
+		android:topLeftRadius="@dimen/fastscroll_bubble_radius_small"
+		android:topRightRadius="@dimen/fastscroll_bubble_radius_small"
+		android:bottomLeftRadius="@dimen/fastscroll_bubble_radius_small"
+		android:bottomRightRadius="8dp" />
+
+	<size
+		android:height="@dimen/fastscroll_bubble_size_small"
+		android:width="@dimen/fastscroll_bubble_size_small" />
+
+	<padding
+		android:left="@dimen/fastscroll_bubble_padding_small"
+		android:right="@dimen/fastscroll_bubble_padding_small" />
+
+</shape>

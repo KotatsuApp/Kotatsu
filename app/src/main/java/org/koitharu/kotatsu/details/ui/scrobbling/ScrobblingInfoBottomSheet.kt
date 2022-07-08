@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
+import org.koitharu.kotatsu.utils.ext.animatorDurationScale
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
@@ -110,7 +111,7 @@ class ScrobblingInfoBottomSheet :
 		ImageRequest.Builder(context ?: return)
 			.target(binding.imageViewCover)
 			.data(scrobbling.coverUrl)
-			.crossfade(true)
+			.crossfade((300 * context?.animatorDurationScale!!).toInt())
 			.lifecycle(viewLifecycleOwner)
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)

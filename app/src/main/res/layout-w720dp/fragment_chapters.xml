@@ -6,13 +6,13 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<androidx.recyclerview.widget.RecyclerView
+	<org.koitharu.kotatsu.base.ui.widgets.FastScrollRecyclerView
 		android:id="@+id/recyclerView_chapters"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		app:fastScrollEnabled="true"
+		app:handleColor="?attr/colorTertiary"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_chapter" />
 

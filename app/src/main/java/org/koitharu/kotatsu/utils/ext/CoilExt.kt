@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.utils.progress.ImageRequestIndicatorListener
 
 fun ImageView.newImageRequest(url: String?) = ImageRequest.Builder(context)
 	.data(url)
-	.crossfade(true)
+	.crossfade((300 * context.animatorDurationScale).toInt())
 	.target(this)
 
 fun ImageRequest.Builder.enqueueWith(loader: ImageLoader) = loader.enqueue(build())

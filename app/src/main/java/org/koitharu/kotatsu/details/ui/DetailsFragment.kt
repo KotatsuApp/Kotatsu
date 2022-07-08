@@ -229,7 +229,7 @@ class DetailsFragment :
 				return
 			}
 			imageViewCover.newImageRequest(scrobbling.coverUrl)
-				.crossfade(true)
+				.crossfade((300 * context?.animatorDurationScale!!).toInt())
 				.placeholder(R.drawable.ic_placeholder)
 				.fallback(R.drawable.ic_placeholder)
 				.error(R.drawable.ic_placeholder)
@@ -331,6 +331,7 @@ class DetailsFragment :
 		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
+			bottom = insets.bottom
 		)
 	}
 
@@ -357,7 +358,7 @@ class DetailsFragment :
 		val request = ImageRequest.Builder(context ?: return)
 			.target(binding.imageViewCover)
 			.data(imageUrl)
-			.crossfade(true)
+			.crossfade((300 * context?.animatorDurationScale!!).toInt())
 			.referer(manga.publicUrl)
 			.lifecycle(viewLifecycleOwner)
 		lastResult?.drawable?.let {
