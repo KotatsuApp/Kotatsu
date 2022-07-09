@@ -13,12 +13,8 @@ import android.provider.Settings
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.Window
-import android.view.animation.Animation
 import androidx.activity.result.ActivityResultLauncher
-import androidx.annotation.DrawableRes
-import androidx.constraintlayout.motion.widget.MotionScene
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.lifecycle.Lifecycle
@@ -123,8 +119,6 @@ fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float 
 
 val Context.animatorDurationScale: Float
 	get() = Settings.Global.getFloat(this.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
-
-internal fun Context.getCompatDrawable(@DrawableRes drawableId: Int) = ContextCompat.getDrawable(this, drawableId)
 
 fun ViewPropertyAnimator.applySystemAnimatorScale(context: Context): ViewPropertyAnimator = apply {
 	this.duration = (this.duration * context.animatorDurationScale).toLong()

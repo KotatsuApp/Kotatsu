@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.content.Context
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toBitmap
 import coil.ImageLoader
@@ -13,7 +14,7 @@ import org.koitharu.kotatsu.utils.progress.ImageRequestIndicatorListener
 
 fun ImageView.newImageRequest(url: String?) = ImageRequest.Builder(context)
 	.data(url)
-	.crossfade((300 * context.animatorDurationScale).toInt())
+	.crossfade(context)
 	.target(this)
 
 fun ImageRequest.Builder.enqueueWith(loader: ImageLoader) = loader.enqueue(build())
@@ -38,4 +39,9 @@ fun ImageRequest.Builder.referer(referer: String): ImageRequest.Builder {
 
 fun ImageRequest.Builder.indicator(indicator: BaseProgressIndicator<*>): ImageRequest.Builder {
 	return listener(ImageRequestIndicatorListener(indicator))
+}
+
+fun ImageRequest.Builder.crossfade(context: Context?): ImageRequest.Builder {
+	val scale = context?.animatorDurationScale ?: 1f
+	return crossfade((300 * scale).toInt())
 }

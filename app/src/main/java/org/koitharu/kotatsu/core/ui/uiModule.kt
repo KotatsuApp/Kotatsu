@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.core.ui
 
 import android.app.ActivityManager
+import android.content.Context
 import android.text.Html
-import androidx.core.content.getSystemService
 import coil.ComponentRegistry
 import coil.ImageLoader
 import coil.disk.DiskCache
@@ -13,7 +13,6 @@ import org.koin.dsl.module
 import org.koitharu.kotatsu.core.parser.FaviconMapper
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
-import org.koitharu.kotatsu.utils.ext.animatorDurationScale
 import org.koitharu.kotatsu.utils.image.CoilImageGetter
 
 val uiModule
@@ -31,6 +30,7 @@ val uiModule
 					.directory(rootDir.resolve(CacheDir.THUMBS.dir))
 					.build()
 			}
+			val activityManager = androidContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 			ImageLoader.Builder(androidContext())
 				.okHttpClient(httpClientFactory)
 				.interceptorDispatcher(Dispatchers.Default)
@@ -38,8 +38,7 @@ val uiModule
 				.decoderDispatcher(Dispatchers.Default)
 				.transformationDispatcher(Dispatchers.Default)
 				.diskCache(diskCacheFactory)
-				.crossfade((300 * androidContext().animatorDurationScale).toInt())
-				.allowRgb565(androidContext().getSystemService<ActivityManager>()!!.isLowRamDevice)
+				.allowRgb565(activityManager.isLowRamDevice)
 				.components(
 					ComponentRegistry.Builder()
 						.add(CbzFetcher.Factory())

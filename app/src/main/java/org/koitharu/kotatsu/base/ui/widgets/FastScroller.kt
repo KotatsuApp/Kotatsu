@@ -38,6 +38,7 @@ import androidx.annotation.StyleableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
@@ -45,10 +46,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.ext.*
-import org.koitharu.kotatsu.utils.ext.getCompatDrawable
-import org.koitharu.kotatsu.utils.ext.isLayoutReversed
-import org.koitharu.kotatsu.utils.ext.setCompatTint
-import org.koitharu.kotatsu.utils.ext.wrap
 import kotlin.math.roundToInt
 
 private const val BUBBLE_ANIM_DURATION = 100L
@@ -77,6 +74,7 @@ class FastScroller : LinearLayout {
 
 	@ColorInt
 	private var bubbleColor = 0
+
 	@ColorInt
 	private var handleColor = 0
 
@@ -385,11 +383,11 @@ class FastScroller : LinearLayout {
 	 */
 	fun setTrackColor(@ColorInt color: Int) {
 		if (trackImage == null) {
-			context.getCompatDrawable(R.drawable.fastscroll_track)?.let { trackImage = it.wrap().mutate() }
+			trackImage = ContextCompat.getDrawable(context, R.drawable.fastscroll_track)
 		}
 
 		trackImage?.let {
-			it.setCompatTint(color)
+			it.setTint(color)
 			trackView.setImageDrawable(it)
 		}
 	}
@@ -403,11 +401,11 @@ class FastScroller : LinearLayout {
 		handleColor = color
 
 		if (handleImage == null) {
-			context.getCompatDrawable(R.drawable.fastscroll_handle)?.let { handleImage = it.wrap().mutate() }
+			handleImage = ContextCompat.getDrawable(context, R.drawable.fastscroll_handle)
 		}
 
 		handleImage?.let {
-			it.setCompatTint(handleColor)
+			it.setTint(handleColor)
 			handleView.setImageDrawable(it)
 		}
 	}
@@ -433,11 +431,11 @@ class FastScroller : LinearLayout {
 		bubbleColor = color
 
 		if (bubbleImage == null) {
-			context.getCompatDrawable(bubbleSize.drawableId)?.let { bubbleImage = it.wrap().mutate() }
+			bubbleImage = ContextCompat.getDrawable(context, bubbleSize.drawableId)
 		}
 
 		bubbleImage?.let {
-			it.setCompatTint(bubbleColor)
+			it.setTint(bubbleColor)
 			bubbleView.background = it
 		}
 	}
@@ -566,7 +564,7 @@ class FastScroller : LinearLayout {
 
 	private fun setHandleSelected(selected: Boolean) {
 		handleView.isSelected = selected
-		handleImage?.setCompatTint(if (selected) bubbleColor else handleColor)
+		handleImage?.setTint(if (selected) bubbleColor else handleColor)
 	}
 
 	private fun TypedArray.getSize(@StyleableRes index: Int, defValue: Int) = getInt(index, defValue).let { ordinal ->
