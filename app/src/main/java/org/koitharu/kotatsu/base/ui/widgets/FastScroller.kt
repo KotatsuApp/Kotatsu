@@ -49,7 +49,6 @@ import org.koitharu.kotatsu.utils.ext.*
 import kotlin.math.roundToInt
 
 private const val BUBBLE_ANIM_DURATION = 100L
-private const val SCROLLBAR_ANIM_DURATION = 300L
 private const val SCROLLBAR_HIDE_DELAY = 1000L
 private const val TRACK_SNAP_RANGE = 5
 
@@ -62,6 +61,9 @@ class FastScroller : LinearLayout {
 	}
 
 	private val Size.textSize get() = resources.getDimension(textSizeId)
+
+	private val animationDuration = (context.resources.getInteger(R.integer.config_defaultAnimTime) *
+		context.animatorDurationScale).toLong()
 
 	private val bubbleView: TextView by lazy { findViewById(R.id.fastscroll_bubble) }
 	private val handleView: ImageView by lazy { findViewById(R.id.fastscroll_handle) }
@@ -539,14 +541,14 @@ class FastScroller : LinearLayout {
 			scrollbar.translationX = scrollbarPaddingEnd
 			scrollbar.isVisible = true
 			scrollbarAnimator = scrollbar.animate().translationX(0f).alpha(1f)
-				.setDuration(SCROLLBAR_ANIM_DURATION)
+				.setDuration(animationDuration)
 				.setListener(alphaAnimatorListener)
 		}
 	}
 
 	private fun hideScrollbar() {
 		scrollbarAnimator = scrollbar.animate().translationX(scrollbarPaddingEnd).alpha(0f)
-			.setDuration(SCROLLBAR_ANIM_DURATION)
+			.setDuration(animationDuration)
 			.setListener(object : AnimatorListenerAdapter() {
 				override fun onAnimationEnd(animation: Animator) {
 					super.onAnimationEnd(animation)

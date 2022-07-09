@@ -30,12 +30,11 @@ import com.google.android.material.color.MaterialColors
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.snackbar.Snackbar
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.FadingSnackbarLayoutBinding
 import org.koitharu.kotatsu.utils.ext.getThemeColorStateList
 import com.google.android.material.R as materialR
 
-private const val ENTER_DURATION = 300L
-private const val EXIT_DURATION = 200L
 private const val SHORT_DURATION_MS = 1_500L
 private const val LONG_DURATION_MS = 2_750L
 
@@ -53,6 +52,8 @@ class FadingSnackbar @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
 	private val binding = FadingSnackbarLayoutBinding.inflate(LayoutInflater.from(context), this)
+	private val enterDuration = context.resources.getInteger(R.integer.config_defaultAnimTime).toLong()
+	private val exitDuration = context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
 	init {
 		binding.snackbarLayout.background = createThemedBackground()
@@ -63,7 +64,7 @@ class FadingSnackbar @JvmOverloads constructor(
 			animate()
 				.alpha(0f)
 				.withEndAction { visibility = GONE }
-				.duration = EXIT_DURATION
+				.duration = exitDuration
 		}
 	}
 
@@ -90,11 +91,11 @@ class FadingSnackbar @JvmOverloads constructor(
 		visibility = VISIBLE
 		animate()
 			.alpha(1f)
-			.duration = ENTER_DURATION
+			.duration = enterDuration
 		if (duration == Snackbar.LENGTH_INDEFINITE) {
 			return
 		}
-		val durationMs = ENTER_DURATION + if (duration == Snackbar.LENGTH_LONG) LONG_DURATION_MS else SHORT_DURATION_MS
+		val durationMs = enterDuration + if (duration == Snackbar.LENGTH_LONG) LONG_DURATION_MS else SHORT_DURATION_MS
 		postDelayed(durationMs) {
 			dismiss()
 			onDismiss?.invoke()

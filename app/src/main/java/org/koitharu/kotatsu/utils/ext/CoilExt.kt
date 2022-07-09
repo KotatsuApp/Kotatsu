@@ -9,6 +9,7 @@ import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.request.SuccessResult
 import com.google.android.material.progressindicator.BaseProgressIndicator
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.utils.progress.ImageRequestIndicatorListener
 
@@ -41,7 +42,12 @@ fun ImageRequest.Builder.indicator(indicator: BaseProgressIndicator<*>): ImageRe
 	return listener(ImageRequestIndicatorListener(indicator))
 }
 
+@Suppress("SpellCheckingInspection")
 fun ImageRequest.Builder.crossfade(context: Context?): ImageRequest.Builder {
-	val scale = context?.animatorDurationScale ?: 1f
-	return crossfade((300 * scale).toInt())
+	if (context == null) {
+		crossfade(true)
+		return this
+	}
+	val duration = context.resources.getInteger(R.integer.config_defaultAnimTime) * context.animatorDurationScale
+	return crossfade(duration.toInt())
 }
