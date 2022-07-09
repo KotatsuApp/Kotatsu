@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
+import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
@@ -48,7 +49,7 @@ abstract class MangaListFragment :
 	PaginationScrollListener.Callback,
 	MangaListListener,
 	SwipeRefreshLayout.OnRefreshListener,
-	ListSelectionController.Callback {
+	ListSelectionController.Callback, FastScroller.FastScrollListener {
 
 	private var listAdapter: MangaListAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
@@ -88,6 +89,7 @@ abstract class MangaListFragment :
 			adapter = listAdapter
 			checkNotNull(selectionController).attachToRecyclerView(binding.recyclerView)
 			addOnScrollListener(paginationListener!!)
+			fastScroller.setFastScrollListener(this@MangaListFragment)
 		}
 		with(binding.swipeRefreshLayout) {
 			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
@@ -287,6 +289,14 @@ abstract class MangaListFragment :
 
 	override fun onSelectionChanged(count: Int) {
 		binding.recyclerView.invalidateItemDecorations()
+	}
+
+	override fun onFastScrollStart(fastScroller: FastScroller) {
+		binding.swipeRefreshLayout.isEnabled = false
+	}
+
+	override fun onFastScrollStop(fastScroller: FastScroller) {
+		binding.swipeRefreshLayout.isEnabled = isSwipeRefreshEnabled
 	}
 
 	private fun collectSelectedItems(): Set<Manga> {

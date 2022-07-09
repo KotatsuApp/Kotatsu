@@ -19,7 +19,6 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.FastScrollerBinding
 import org.koitharu.kotatsu.utils.ext.*
@@ -62,7 +61,6 @@ class FastScroller @JvmOverloads constructor(
 	private var handleImage: Drawable? = null
 	private var trackImage: Drawable? = null
 	private var recyclerView: RecyclerView? = null
-	private var swipeRefreshLayout: SwipeRefreshLayout? = null
 	private val scrollbarAnimator = ScrollbarAnimator(binding.scrollbar, scrollbarPaddingEnd)
 	private val bubbleAnimator = BubbleAnimator(binding.bubble)
 
@@ -84,12 +82,6 @@ class FastScroller @JvmOverloads constructor(
 					val targetPos = getRecyclerViewTargetPosition(y)
 					sectionIndexer?.let { binding.bubble.text = it.getSectionText(recyclerView.context, targetPos) }
 				}
-			}
-
-			swipeRefreshLayout?.let {
-				val firstVisibleItem = recyclerView.layoutManager.firstVisibleItemPosition
-				val topPosition = if (recyclerView.childCount == 0) 0 else recyclerView.getChildAt(0).top
-				it.isEnabled = firstVisibleItem == 0 && topPosition >= 0
 			}
 		}
 
@@ -330,18 +322,6 @@ class FastScroller @JvmOverloads constructor(
 	 */
 	fun setSectionIndexer(sectionIndexer: SectionIndexer?) {
 		this.sectionIndexer = sectionIndexer
-	}
-
-	/**
-	 * Set a [SwipeRefreshLayout] to disable when the [RecyclerView] is scrolled away from the top.
-	 *
-	 * Required when SDK target precedes [VERSION_CODES.LOLLIPOP], otherwise use
-	 * [setNestedScrollingEnabled(true)][View.setNestedScrollingEnabled].
-	 *
-	 * @param swipeRefreshLayout The [SwipeRefreshLayout] to set, or null to set none
-	 */
-	fun setSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout?) {
-		this.swipeRefreshLayout = swipeRefreshLayout
 	}
 
 	/**
