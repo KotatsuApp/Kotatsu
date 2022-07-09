@@ -26,6 +26,7 @@ import java.security.MessageDigest
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+import com.google.android.material.R as materialR
 
 class AppUpdateChecker(private val activity: ComponentActivity) {
 
@@ -67,9 +68,10 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 			appendLine()
 			append(version.description)
 		}
-		MaterialAlertDialogBuilder(activity)
+		MaterialAlertDialogBuilder(activity, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
 			.setTitle(R.string.app_update_available)
 			.setMessage(message)
+			.setIcon(R.drawable.ic_app_update)
 			.setPositiveButton(R.string.download) { _, _ ->
 				val intent = Intent(Intent.ACTION_VIEW, version.apkUrl.toUri())
 				activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.open_in_browser)))

@@ -40,9 +40,9 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.AppUpdateChecker
-import org.koitharu.kotatsu.settings.SettingsHeadersFragment
 import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
+import org.koitharu.kotatsu.settings.tools.ToolsFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
@@ -249,7 +249,7 @@ class MainActivity :
 				binding.root.isLiftAppBarOnScroll = true // --//--
 			}
 			R.id.nav_tools -> {
-				setPrimaryFragment(SettingsHeadersFragment())
+				setPrimaryFragment(ToolsFragment.newInstance())
 				binding.root.isLiftAppBarOnScroll = true // --//--
 			}
 			else -> return false

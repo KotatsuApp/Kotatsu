@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/card_update"
+	style="@style/Widget.Material3.CardView.Filled"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	app:contentPadding="@dimen/margin_normal">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<ImageView
+			android:id="@+id/icon"
+			android:layout_width="86dp"
+			android:layout_height="86dp"
+			android:background="@drawable/bg_circle"
+			android:contentDescription="@null"
+			android:padding="16dp"
+			android:scaleType="fitCenter"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:srcCompat="@drawable/ic_totoro" />
+
+		<TextView
+			android:id="@+id/textPrimary"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/margin_normal"
+			android:text="@string/app_update_available"
+			android:textAppearance="?attr/textAppearanceTitleLarge"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/icon"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<TextView
+			android:id="@+id/textSecondary"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/margin_normal"
+			android:layout_marginTop="@dimen/margin_small"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/icon"
+			app:layout_constraintTop_toBottomOf="@id/textPrimary"
+			tools:text="@string/new_version_s" />
+
+		<Button
+			android:id="@+id/button_download"
+			style="@style/Widget.Material3.Button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/margin_small"
+			android:text="@string/download"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/textSecondary" />
+
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
