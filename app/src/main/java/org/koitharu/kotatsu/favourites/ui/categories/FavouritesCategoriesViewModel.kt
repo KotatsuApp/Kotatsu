@@ -1,9 +1,11 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
@@ -20,6 +22,9 @@ class FavouritesCategoriesViewModel(
 ) : BaseViewModel() {
 
 	private var reorderJob: Job? = null
+	private val isReorder = MutableStateFlow(false)
+
+	val isInReorderMode = isReorder.asLiveData(viewModelScope.coroutineContext)
 
 	val allCategories = repository.observeCategories()
 		.mapItems {
@@ -27,19 +32,23 @@ class FavouritesCategoriesViewModel(
 				mangaCount = 0,
 				covers = listOf(),
 				category = it,
+				isReorderMode = false,
 			)
 		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
-	val detalizedCategories = repository.observeCategoriesWithDetails()
-		.map {
-			it.map { (category, covers) ->
-				CategoryListModel(
-					mangaCount = covers.size,
-					covers = covers.take(3),
-					category = category,
-				)
-			}
-		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	val detalizedCategories = combine(
+		repository.observeCategoriesWithDetails(),
+		isReorder,
+	) { list, reordering ->
+		list.map { (category, covers) ->
+			CategoryListModel(
+				mangaCount = covers.size,
+				covers = covers.take(3),
+				category = category,
+				isReorderMode = reordering,
+			)
+		}
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	fun deleteCategory(id: Long) {
 		launchJob {
@@ -47,8 +56,20 @@ class FavouritesCategoriesViewModel(
 		}
 	}
 
+	fun deleteCategories(ids: Set<Long>) {
+		launchJob {
+			repository.removeCategories(ids)
+		}
+	}
+
 	fun setAllCategoriesVisible(isVisible: Boolean) {
 		settings.isAllFavouritesVisible = isVisible
+	}
+
+	fun isInReorderMode(): Boolean = isReorder.value
+
+	fun setReorderMode(isReorderMode: Boolean) {
+		isReorder.value = isReorderMode
 	}
 
 	fun reorderCategories(oldPos: Int, newPos: Int) {

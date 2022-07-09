@@ -6,9 +6,9 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:background="@drawable/list_selector"
-	android:paddingVertical="12dp"
+	android:minHeight="98dp"
 	android:paddingStart="?android:listPreferredItemPaddingStart"
-	android:paddingEnd="?listPreferredItemPaddingEnd">
+	tools:ignore="RtlSymmetry">
 
 	<com.google.android.material.imageview.ShapeableImageView
 		android:id="@+id/imageView_cover3"
@@ -22,28 +22,30 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
-		tools:src="@tools:sample/backgrounds/scenic" />
+		app:tintMode="src_atop"
+		tools:src="@tools:sample/backgrounds/scenic"
+		tools:tint="#99FFFFFF" />
 
 	<com.google.android.material.imageview.ShapeableImageView
 		android:id="@+id/imageView_cover2"
 		android:layout_width="0dp"
 		android:layout_height="64dp"
 		android:layout_marginStart="12dp"
-		android:alpha="50"
 		android:scaleType="centerCrop"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintDimensionRatio="W,13:18"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
-		tools:src="@tools:sample/backgrounds/scenic" />
+		app:tintMode="src_atop"
+		tools:src="@tools:sample/backgrounds/scenic"
+		tools:tint="#4DFFFFFF" />
 
 	<com.google.android.material.imageview.ShapeableImageView
 		android:id="@+id/imageView_cover1"
 		android:layout_width="0dp"
 		android:layout_height="64dp"
 		android:layout_marginTop="12dp"
-		android:alpha="120"
 		android:scaleType="centerCrop"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintDimensionRatio="W,13:18"
@@ -57,6 +59,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginEnd="?listPreferredItemPaddingEnd"
 		android:ellipsize="end"
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodyLarge"
@@ -73,6 +76,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/margin_normal"
 		android:layout_marginTop="4dp"
+		android:layout_marginEnd="?listPreferredItemPaddingEnd"
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodySmall"
 		app:layout_constraintBottom_toBottomOf="parent"
@@ -81,5 +85,18 @@
 		app:layout_constraintTop_toBottomOf="@id/textView_title"
 		app:layout_constraintVertical_chainStyle="packed"
 		tools:text="@tools:sample/lorem[1]" />
+
+	<ImageView
+		android:id="@+id/imageView_handle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/reorder"
+		android:padding="@dimen/margin_normal"
+		android:src="@drawable/ic_reorder_handle"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

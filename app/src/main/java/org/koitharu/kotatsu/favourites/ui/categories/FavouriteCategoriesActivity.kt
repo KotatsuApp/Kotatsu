@@ -4,9 +4,12 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -16,7 +19,7 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
@@ -29,50 +32,78 @@ import org.koitharu.kotatsu.utils.ext.measureHeight
 
 class FavouriteCategoriesActivity :
 	BaseActivity<ActivityCategoriesBinding>(),
-	OnListItemClickListener<FavouriteCategory>,
+	FavouriteCategoriesListListener,
 	View.OnClickListener,
-	CategoriesEditDelegate.CategoriesEditCallback,
 	ListStateHolderListener {
 
 	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
 
 	private lateinit var adapter: CategoriesAdapter
-	private lateinit var reorderHelper: ItemTouchHelper
-	private lateinit var editDelegate: CategoriesEditDelegate
+	private lateinit var selectionController: ListSelectionController
+	private var reorderHelper: ItemTouchHelper? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		adapter = CategoriesAdapter(get(), this, this, this)
-		editDelegate = CategoriesEditDelegate(this, this)
+		selectionController = ListSelectionController(
+			activity = this,
+			decoration = CategoriesSelectionDecoration(this),
+			registryOwner = this,
+			callback = CategoriesSelectionCallback(binding.recyclerView, viewModel),
+		)
+		binding.buttonDone.setOnClickListener(this)
+		selectionController.attachToRecyclerView(binding.recyclerView)
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		binding.fabAdd.setOnClickListener(this)
-		reorderHelper = ItemTouchHelper(ReorderHelperCallback())
-		reorderHelper.attachToRecyclerView(binding.recyclerView)
 
 		viewModel.detalizedCategories.observe(this, ::onCategoriesChanged)
 		viewModel.onError.observe(this, ::onError)
+		viewModel.isInReorderMode.observe(this, ::onReorderModeChanged)
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		super.onCreateOptionsMenu(menu)
+		menuInflater.inflate(R.menu.opt_categories, menu)
+		return true
+	}
+
+	override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+		menu.findItem(R.id.action_reorder)?.isVisible = !viewModel.isInReorderMode()
+		return super.onPrepareOptionsMenu(menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.action_reorder -> {
+				viewModel.setReorderMode(true)
+				true
+			}
+			else -> super.onOptionsItemSelected(item)
+		}
+	}
+
+	override fun onBackPressed() {
+		if (viewModel.isInReorderMode()) {
+			viewModel.setReorderMode(false)
+		} else {
+			super.onBackPressed()
+		}
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
+			R.id.button_done -> viewModel.setReorderMode(false)
 			R.id.fab_add -> startActivity(FavouritesCategoryEditActivity.newIntent(this))
 		}
 	}
 
 	override fun onItemClick(item: FavouriteCategory, view: View) {
-		/*val menu = PopupMenu(view.context, view)
-		menu.inflate(R.menu.popup_category)
-		menu.setOnMenuItemClickListener { menuItem ->
-			when (menuItem.itemId) {
-				R.id.action_remove -> editDelegate.deleteCategory(item)
-				R.id.action_edit -> startActivity(FavouritesCategoryEditActivity.newIntent(this, item.id))
-			}
-			true
+		if (viewModel.isInReorderMode() || selectionController.onItemClick(item.id)) {
+			return
 		}
-		menu.show()*/
 		val intent = FavouritesActivity.newIntent(this, item)
 		val options =
 			ActivityOptions.makeScaleUpAnimation(view, view.width / 2, view.height / 2, view.width, view.height)
@@ -80,9 +111,11 @@ class FavouriteCategoriesActivity :
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {
-		val viewHolder = binding.recyclerView.findContainingViewHolder(view) ?: return false
-		reorderHelper.startDrag(viewHolder)
-		return true
+		return !viewModel.isInReorderMode() && selectionController.onItemLongClick(item.id)
+	}
+
+	override fun onDragHandleTouch(holder: RecyclerView.ViewHolder): Boolean {
+		return reorderHelper?.startDrag(holder) != null
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit
@@ -111,8 +144,21 @@ class FavouriteCategoriesActivity :
 			.show()
 	}
 
-	override fun onDeleteCategory(category: FavouriteCategory) {
-		viewModel.deleteCategory(category.id)
+	private fun onReorderModeChanged(isReorderMode: Boolean) {
+		reorderHelper?.attachToRecyclerView(null)
+		reorderHelper = if (isReorderMode) {
+			selectionController.clear()
+			binding.fabAdd.hide()
+			ItemTouchHelper(ReorderHelperCallback()).apply {
+				attachToRecyclerView(binding.recyclerView)
+			}
+		} else {
+			binding.fabAdd.show()
+			null
+		}
+		binding.recyclerView.isNestedScrollingEnabled = !isReorderMode
+		invalidateOptionsMenu()
+		binding.buttonDone.isVisible = isReorderMode
 	}
 
 	private inner class ReorderHelperCallback : ItemTouchHelper.SimpleCallback(

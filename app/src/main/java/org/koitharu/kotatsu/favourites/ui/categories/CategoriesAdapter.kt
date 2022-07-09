@@ -4,8 +4,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.categoryAD
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -17,7 +15,7 @@ import kotlin.jvm.internal.Intrinsics
 class CategoriesAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-	onItemClickListener: OnListItemClickListener<FavouriteCategory>,
+	onItemClickListener: FavouriteCategoriesListListener,
 	listListener: ListStateHolderListener,
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
@@ -43,7 +41,16 @@ class CategoriesAdapter(
 		}
 
 		override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
-			return super.getChangePayload(oldItem, newItem)
+			return when {
+				oldItem is CategoryListModel && newItem is CategoryListModel -> {
+					if (oldItem.isReorderMode != newItem.isReorderMode) {
+						Unit
+					} else {
+						super.getChangePayload(oldItem, newItem)
+					}
+				}
+				else -> super.getChangePayload(oldItem, newItem)
+			}
 		}
 	}
 }

@@ -7,6 +7,7 @@ class CategoryListModel(
 	val mangaCount: Int,
 	val covers: List<String>,
 	val category: FavouriteCategory,
+	val isReorderMode: Boolean,
 ) : ListModel {
 
 	override fun equals(other: Any?): Boolean {
@@ -16,6 +17,7 @@ class CategoryListModel(
 		other as CategoryListModel
 
 		if (mangaCount != other.mangaCount) return false
+		if (isReorderMode != other.isReorderMode) return false
 		if (covers != other.covers) return false
 		if (category.id != other.category.id) return false
 		if (category.title != other.category.title) return false
@@ -26,6 +28,7 @@ class CategoryListModel(
 
 	override fun hashCode(): Int {
 		var result = mangaCount
+		result = 31 * result + isReorderMode.hashCode()
 		result = 31 * result + covers.hashCode()
 		result = 31 * result + category.id.hashCode()
 		result = 31 * result + category.title.hashCode()

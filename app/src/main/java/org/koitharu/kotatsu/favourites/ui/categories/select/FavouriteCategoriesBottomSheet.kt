@@ -11,10 +11,8 @@ import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.databinding.DialogFavoriteCategoriesBinding
-import org.koitharu.kotatsu.favourites.ui.categories.CategoriesEditDelegate
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
@@ -25,7 +23,6 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 class FavouriteCategoriesBottomSheet :
 	BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>,
-	CategoriesEditDelegate.CategoriesEditCallback,
 	View.OnClickListener {
 
 	private val viewModel by viewModel<MangaCategoriesViewModel> {
@@ -65,8 +62,6 @@ class FavouriteCategoriesBottomSheet :
 	override fun onItemClick(item: MangaCategoryItem, view: View) {
 		viewModel.setChecked(item.id, !item.isChecked)
 	}
-
-	override fun onDeleteCategory(category: FavouriteCategory) = Unit
 
 	private fun onContentChanged(categories: List<MangaCategoryItem>) {
 		adapter?.items = categories

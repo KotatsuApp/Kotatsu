@@ -133,8 +133,9 @@ class ReaderActivity :
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		super.onCreateOptionsMenu(menu)
 		menuInflater.inflate(R.menu.opt_reader_top, menu)
-		return super.onCreateOptionsMenu(menu)
+		return true
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {

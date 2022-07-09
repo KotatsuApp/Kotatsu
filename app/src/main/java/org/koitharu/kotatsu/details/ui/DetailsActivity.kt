@@ -161,8 +161,9 @@ class DetailsActivity :
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		super.onCreateOptionsMenu(menu)
 		menuInflater.inflate(R.menu.opt_details, menu)
-		return super.onCreateOptionsMenu(menu)
+		return true
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu): Boolean {

@@ -5,7 +5,10 @@ import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.favourites.data.*
+import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
+import org.koitharu.kotatsu.favourites.data.FavouriteEntity
+import org.koitharu.kotatsu.favourites.data.FavouriteManga
+import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
@@ -120,6 +123,14 @@ class FavouritesRepository(
 	suspend fun removeCategory(id: Long) {
 		db.favouriteCategoriesDao.delete(id)
 		channels.deleteChannel(id)
+	}
+
+	suspend fun removeCategories(ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				removeCategory(id)
+			}
+		}
 	}
 
 	suspend fun setCategoryOrder(id: Long, order: SortOrder) {
