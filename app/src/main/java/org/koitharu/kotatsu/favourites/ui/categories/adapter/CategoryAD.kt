@@ -48,8 +48,10 @@ fun categoryAD(
 		binding.imageViewCover2,
 		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 76))
 	)
-	binding.imageViewCover2.backgroundTintList = ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 76))
-	binding.imageViewCover3.backgroundTintList = ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 153))
+	binding.imageViewCover2.backgroundTintList =
+		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 76))
+	binding.imageViewCover3.backgroundTintList =
+		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 153))
 	val fallback = ColorDrawable(Color.TRANSPARENT)
 	val coverViews = arrayOf(binding.imageViewCover1, binding.imageViewCover2, binding.imageViewCover3)
 	val imageRequests = arrayOfNulls<Disposable?>(coverViews.size)
@@ -63,11 +65,15 @@ fun categoryAD(
 		imageRequests.forEach { it?.dispose() }
 		binding.imageViewHandle.isVisible = item.isReorderMode
 		binding.textViewTitle.text = item.category.title
-		binding.textViewSubtitle.text = context.resources.getQuantityString(
-			R.plurals.items,
-			item.mangaCount,
-			item.mangaCount,
-		)
+		binding.textViewSubtitle.text = if (item.mangaCount == 0) {
+			getString(R.string.empty)
+		} else {
+			context.resources.getQuantityString(
+				R.plurals.items,
+				item.mangaCount,
+				item.mangaCount,
+			)
+		}
 		repeat(coverViews.size) { i ->
 			imageRequests[i] = coverViews[i].newImageRequest(item.covers.getOrNull(i))
 				.placeholder(R.drawable.ic_placeholder)

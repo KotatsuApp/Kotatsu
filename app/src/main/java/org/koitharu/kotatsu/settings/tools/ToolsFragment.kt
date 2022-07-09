@@ -9,6 +9,7 @@ import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.databinding.FragmentToolsBinding
+import org.koitharu.kotatsu.download.ui.DownloadsActivity
 import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.SettingsActivity
 
@@ -23,6 +24,7 @@ class ToolsFragment : BaseFragment<FragmentToolsBinding>(), View.OnClickListener
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		binding.buttonSettings.setOnClickListener(this)
+		binding.buttonDownloads.setOnClickListener(this)
 		binding.cardUpdate.root.setOnClickListener(this)
 		binding.cardUpdate.buttonDownload.setOnClickListener(this)
 	}
@@ -30,6 +32,7 @@ class ToolsFragment : BaseFragment<FragmentToolsBinding>(), View.OnClickListener
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_settings -> startActivity(SettingsActivity.newIntent(v.context))
+			R.id.button_downloads -> startActivity(DownloadsActivity.newIntent(v.context))
 		}
 	}
 

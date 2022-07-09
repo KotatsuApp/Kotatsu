@@ -42,11 +42,11 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/margin_normal"
 			android:layout_marginTop="@dimen/margin_small"
+			android:text="@string/new_version_s"
 			android:textAppearance="?attr/textAppearanceBodyMedium"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/icon"
-			app:layout_constraintTop_toBottomOf="@id/textPrimary"
-			tools:text="@string/new_version_s" />
+			app:layout_constraintTop_toBottomOf="@id/textPrimary" />
 
 		<Button
 			android:id="@+id/button_download"

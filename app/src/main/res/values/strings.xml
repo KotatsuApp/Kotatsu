@@ -332,4 +332,5 @@
 	<string name="random">Random</string>
 	<string name="categories_delete_confirm">Are you sure you want to delete the selected favorite categories?\nAll manga in it will be lost and this cannot be undone.</string>
 	<string name="reorder">Reorder</string>
+	<string name="empty">Empty</string>
 </resources>
