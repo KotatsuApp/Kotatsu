@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Filter
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -114,8 +115,13 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 	}
 
 	private fun initSortSpinner() {
+<<<<<<< Updated upstream
 		val entries = CategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
 		val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, entries)
+=======
+		val entries = FavouriteCategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
+		val adapter = SortAdapter(this, entries)
+>>>>>>> Stashed changes
 		binding.editSort.setAdapter(adapter)
 		binding.editSort.onItemClickListener = this
 	}
@@ -125,6 +131,19 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 		val entries = CategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
 		val index = entries.indexOf(binding.editSort.text.toString())
 		return CategoriesActivity.SORT_ORDERS.getOrNull(index) ?: SortOrder.NEWEST
+	}
+
+	private class SortAdapter(
+		context: Context,
+		entries: List<String>,
+	) : ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, entries) {
+
+		override fun getFilter(): Filter = EmptyFilter
+
+		private object EmptyFilter : Filter() {
+			override fun performFiltering(constraint: CharSequence?) = FilterResults()
+			override fun publishResults(constraint: CharSequence?, results: FilterResults?) = Unit
+		}
 	}
 
 	companion object {
