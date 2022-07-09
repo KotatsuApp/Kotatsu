@@ -16,6 +16,8 @@
 		android:layout_height="64dp"
 		android:layout_marginStart="24dp"
 		android:layout_marginBottom="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
 		android:scaleType="centerCrop"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintDimensionRatio="W,13:18"
@@ -23,6 +25,7 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
 		app:tintMode="src_atop"
+		tools:backgroundTint="#99FFFFFF"
 		tools:src="@tools:sample/backgrounds/scenic"
 		tools:tint="#99FFFFFF" />
 
@@ -31,6 +34,8 @@
 		android:layout_width="0dp"
 		android:layout_height="64dp"
 		android:layout_marginStart="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
 		android:scaleType="centerCrop"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintDimensionRatio="W,13:18"
@@ -38,6 +43,7 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
 		app:tintMode="src_atop"
+		tools:backgroundTint="#4DFFFFFF"
 		tools:src="@tools:sample/backgrounds/scenic"
 		tools:tint="#4DFFFFFF" />
 
@@ -46,6 +52,8 @@
 		android:layout_width="0dp"
 		android:layout_height="64dp"
 		android:layout_marginTop="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
 		android:scaleType="centerCrop"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintDimensionRatio="W,13:18"
