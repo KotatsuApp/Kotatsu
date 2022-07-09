@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 
 class BookmarksFragment : BaseFragment<FragmentListSimpleBinding>(), ListStateHolderListener,
 	OnListItemClickListener<Bookmark>, SectionedSelectionController.Callback<Manga> {
@@ -74,7 +75,7 @@ class BookmarksFragment : BaseFragment<FragmentListSimpleBinding>(), ListStateHo
 	override fun onItemClick(item: Bookmark, view: View) {
 		if (selectionController?.onItemClick(item.manga, item.pageId) != true) {
 			val intent = ReaderActivity.newIntent(view.context, item)
-			startActivity(intent)
+			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
 		}
 	}
 

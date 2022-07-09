@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.details.ui
 
-import android.app.ActivityOptions
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
@@ -30,7 +29,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.end
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import kotlin.math.roundToInt
 
 class ChaptersFragment :
@@ -93,14 +92,13 @@ class ChaptersFragment :
 			(activity as? DetailsActivity)?.showChapterMissingDialog(item.chapter.id)
 			return
 		}
-		val options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.width, view.height)
 		startActivity(
 			ReaderActivity.newIntent(
 				context = view.context,
 				manga = viewModel.manga.value ?: return,
 				state = ReaderState(item.chapter.id, 0, 0),
 			),
-			options.toBundle()
+			scaleUpActivityOptionsOf(view).toBundle()
 		)
 	}
 

@@ -16,7 +16,10 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
@@ -36,7 +39,6 @@ class LocalListViewModel(
 	val importProgress = MutableLiveData<Progress?>(null)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
-	private val headerModel = ListHeader(null, R.string.local_storage, null)
 	private var importJob: Job? = null
 
 	override val content = combine(
@@ -55,15 +57,9 @@ class LocalListViewModel(
 					actionStringRes = R.string._import,
 				)
 			)
-			else -> ArrayList<ListModel>(list.size + 1).apply {
-				add(headerModel)
-				list.toUi(this, mode)
-			}
+			else -> list.toUi(mode)
 		}
-	}.asLiveDataDistinct(
-		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(LoadingState)
-	)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
 		onRefresh()

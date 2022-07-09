@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.details.ui
 
-import android.app.ActivityOptions
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.*
@@ -83,8 +82,10 @@ class DetailsFragment :
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
-		val options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.width, view.height)
-		startActivity(ReaderActivity.newIntent(view.context, item), options.toBundle())
+		startActivity(
+			ReaderActivity.newIntent(view.context, item),
+			scaleUpActivityOptionsOf(view).toBundle(),
+		)
 	}
 
 	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
@@ -277,10 +278,9 @@ class DetailsFragment :
 				)
 			}
 			R.id.imageView_cover -> {
-				val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
 				startActivity(
 					ImageActivity.newIntent(v.context, manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }),
-					options.toBundle()
+					scaleUpActivityOptionsOf(v).toBundle()
 				)
 			}
 		}

@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -29,6 +28,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 
 class FavouriteCategoriesActivity :
 	BaseActivity<ActivityCategoriesBinding>(),
@@ -105,8 +105,7 @@ class FavouriteCategoriesActivity :
 			return
 		}
 		val intent = FavouritesActivity.newIntent(this, item)
-		val options =
-			ActivityOptions.makeScaleUpAnimation(view, view.width / 2, view.height / 2, view.width, view.height)
+		val options = scaleUpActivityOptionsOf(view)
 		startActivity(intent, options.toBundle())
 	}
 

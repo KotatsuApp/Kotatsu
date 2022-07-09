@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.details.ui.scrobbling
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -30,6 +29,7 @@ import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
 import org.koitharu.kotatsu.utils.ext.crossfade
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 
 class ScrobblingInfoBottomSheet :
 	BaseBottomSheet<SheetScrobblingBinding>(),
@@ -93,7 +93,7 @@ class ScrobblingInfoBottomSheet :
 			R.id.button_menu -> menu?.show()
 			R.id.imageView_cover -> {
 				val coverUrl = viewModel.scrobblingInfo.value?.coverUrl ?: return
-				val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
+				val options = scaleUpActivityOptionsOf(v)
 				startActivity(ImageActivity.newIntent(v.context, coverUrl), options.toBundle())
 			}
 		}

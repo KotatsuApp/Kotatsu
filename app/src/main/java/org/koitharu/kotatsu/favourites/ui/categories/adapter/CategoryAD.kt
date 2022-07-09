@@ -33,8 +33,8 @@ fun categoryAD(
 ) {
 
 	val eventListener = object : OnClickListener, OnLongClickListener, OnTouchListener {
-		override fun onClick(v: View) = clickListener.onItemClick(item.category, v)
-		override fun onLongClick(v: View) = clickListener.onItemLongClick(item.category, v)
+		override fun onClick(v: View) = clickListener.onItemClick(item.category, binding.imageViewCover1)
+		override fun onLongClick(v: View) = clickListener.onItemLongClick(item.category, binding.imageViewCover1)
 		override fun onTouch(v: View?, event: MotionEvent): Boolean = item.isReorderMode &&
 			event.actionMasked == MotionEvent.ACTION_DOWN &&
 			clickListener.onDragHandleTouch(this@adapterDelegateViewBinding)

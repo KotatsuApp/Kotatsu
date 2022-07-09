@@ -31,7 +31,7 @@ class MangaListActivity : BaseActivity<ActivityContainerBinding>() {
 			finishAfterTransition()
 			return
 		}
-		title = source.title
+		title = if (source == MangaSource.LOCAL) getString(R.string.local_storage) else source.title
 		val fm = supportFragmentManager
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {

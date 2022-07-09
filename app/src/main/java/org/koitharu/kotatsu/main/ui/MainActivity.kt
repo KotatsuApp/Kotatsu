@@ -260,8 +260,10 @@ class MainActivity :
 	}
 
 	private fun onOpenReader(manga: Manga) {
-		// val options = ActivityOptions.makeScaleUpAnimation(binding.fab, 0, 0, binding.fab.width, binding.fab.height)
-		startActivity(ReaderActivity.newIntent(this, manga))
+		val options = binding.fab?.let {
+			scaleUpActivityOptionsOf(it).toBundle()
+		}
+		startActivity(ReaderActivity.newIntent(this, manga), options)
 	}
 
 	private fun onError(e: Throwable) {

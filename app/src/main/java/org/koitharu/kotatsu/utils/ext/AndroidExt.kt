@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ResolveInfo
@@ -10,6 +11,7 @@ import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.Window
@@ -131,3 +133,11 @@ inline fun <reified T> ViewGroup.findChild(): T? {
 inline fun <reified T> ViewGroup.findDescendant(): T? {
 	return descendants.find { it is T } as? T
 }
+
+fun scaleUpActivityOptionsOf(view: View): ActivityOptions = ActivityOptions.makeScaleUpAnimation(
+	view,
+	0,
+	0,
+	view.width,
+	view.height,
+)
