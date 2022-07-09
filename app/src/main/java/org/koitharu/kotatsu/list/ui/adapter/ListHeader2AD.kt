@@ -29,7 +29,7 @@ fun listHeader2AD(
 			binding.scrollView.smoothScrollTo(0, 0)
 		}
 		ignoreChecking = true
-		binding.chipsTags.setChips(item.chips)
+		binding.chipsTags.setChips(item.chips) // TODO use recyclerview
 		ignoreChecking = false
 		binding.textViewFilter.setTextAndVisible(item.sortOrder?.titleRes ?: 0)
 	}

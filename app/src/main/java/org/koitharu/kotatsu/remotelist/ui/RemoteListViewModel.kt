@@ -45,16 +45,16 @@ class RemoteListViewModel(
 	override val content = combine(
 		mangaList,
 		createListModeFlow(),
-		filter.observeState(),
+		createHeaderFlow(),
 		listError,
 		hasNextPage,
-	) { list, mode, filterState, error, hasNext ->
+	) { list, mode, header, error, hasNext ->
 		buildList(list?.size?.plus(2) ?: 2) {
-			add(ListHeader2(createChipsList(filterState), filterState.sortOrder))
+			add(header)
 			when {
 				list.isNullOrEmpty() && error != null -> add(error.toErrorState(canRetry = true))
 				list == null -> add(LoadingState)
-				list.isEmpty() -> add(createEmptyState(filterState))
+				list.isEmpty() -> add(createEmptyState(header.hasSelectedTags))
 				else -> {
 					list.toUi(this, mode)
 					when {
@@ -64,10 +64,7 @@ class RemoteListViewModel(
 				}
 			}
 		}
-	}.asLiveDataDistinct(
-		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(ListHeader(repository.source.title, 0, null), LoadingState),
-	)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
 		filter.observeState()
@@ -144,16 +141,33 @@ class RemoteListViewModel(
 		}
 	}
 
-	private fun createEmptyState(filterState: FilterState) = EmptyState(
+	private fun createEmptyState(canResetFilter: Boolean) = EmptyState(
 		icon = R.drawable.ic_empty_search,
 		textPrimary = R.string.nothing_found,
 		textSecondary = 0,
-		actionStringRes = if (filterState.tags.isEmpty()) 0 else R.string.reset_filter,
+		actionStringRes = if (canResetFilter) R.string.reset_filter else 0,
 	)
 
-	private suspend fun createChipsList(filterState: FilterState): List<ChipsView.ChipModel> {
+	private fun createHeaderFlow() = combine(
+		filter.observeState(),
+		filter.observeAvailableTags(),
+	) { state, available ->
+		val chips = createChipsList(state, available.orEmpty())
+		ListHeader2(chips, state.sortOrder, state.tags.isNotEmpty())
+	}
+
+	private suspend fun createChipsList(
+		filterState: FilterState,
+		availableTags: Set<MangaTag>
+	): List<ChipsView.ChipModel> {
 		val selectedTags = filterState.tags.toMutableSet()
-		val tags = searchRepository.getTagsSuggestion("", 6, repository.source)
+		var tags = searchRepository.getTagsSuggestion("", 6, repository.source)
+		if (tags.isEmpty()) {
+			tags = availableTags.take(6)
+		}
+		if (tags.isEmpty() && selectedTags.isEmpty()) {
+			return emptyList()
+		}
 		val result = LinkedList<ChipsView.ChipModel>()
 		for (tag in tags) {
 			val model = ChipsView.ChipModel(

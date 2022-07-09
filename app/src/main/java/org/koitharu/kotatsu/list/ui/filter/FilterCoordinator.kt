@@ -30,7 +30,7 @@ class FilterCoordinator(
 	private var availableTagsDeferred = loadTagsAsync()
 
 	val items: LiveData<List<FilterItem>> = getItemsFlow()
-		.asLiveDataDistinct(coroutineScope.coroutineContext + Dispatchers.Default)
+		.asLiveDataDistinct(coroutineScope.coroutineContext + Dispatchers.Default, listOf(FilterItem.Loading))
 
 	init {
 		observeState()
@@ -52,6 +52,13 @@ class FilterCoordinator(
 			}
 			FilterState(oldValue.sortOrder, newTags)
 		}
+	}
+
+	fun observeAvailableTags(): Flow<Set<MangaTag>?> = flow {
+		if (!availableTagsDeferred.isCompleted) {
+			emit(emptySet())
+		}
+		emit(availableTagsDeferred.await())
 	}
 
 	fun observeState() = currentState.asStateFlow()
