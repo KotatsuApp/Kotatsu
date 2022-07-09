@@ -7,7 +7,9 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +23,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.FastScrollerBinding
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.getThemeColor
+import org.koitharu.kotatsu.utils.ext.isLayoutReversed
 import kotlin.math.roundToInt
 import com.google.android.material.R as materialR
 
@@ -482,7 +485,7 @@ class FastScroller @JvmOverloads constructor(
 	}
 
 	private fun showScrollbar() {
-		if ((recyclerView?.computeVerticalScrollRange() ?: (0 - viewHeight)) > 0) {
+		if (recyclerView?.run { canScrollVertically(1) || canScrollVertically(-1) } == true) {
 			scrollbarAnimator.show()
 		}
 	}
