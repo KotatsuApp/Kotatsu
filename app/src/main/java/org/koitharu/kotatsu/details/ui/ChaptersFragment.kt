@@ -10,6 +10,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -29,6 +30,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
+import org.koitharu.kotatsu.utils.ext.end
 import kotlin.math.roundToInt
 
 class ChaptersFragment :
@@ -192,6 +194,9 @@ class ChaptersFragment :
 		binding.recyclerViewChapters.updatePadding(
 			bottom = insets.bottom + (binding.spinnerBranches?.height ?: 0),
 		)
+		binding.recyclerViewChapters.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			bottomMargin = insets.bottom
+		}
 	}
 
 	private fun initSpinner(spinner: Spinner) {

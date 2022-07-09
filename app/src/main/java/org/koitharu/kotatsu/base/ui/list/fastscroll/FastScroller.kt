@@ -1,23 +1,5 @@
-/*
- * Copyright 2022 Randy Webster. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package org.koitharu.kotatsu.base.ui.list.fastscroll
 
-package org.koitharu.kotatsu.base.ui.widgets
-
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
@@ -25,54 +7,43 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewPropertyAnimator
+import android.view.*
 import android.widget.*
-import android.widget.RelativeLayout.*
-import androidx.annotation.ColorInt
-import androidx.annotation.DimenRes
-import androidx.annotation.DrawableRes
-import androidx.annotation.StyleableRes
+import androidx.annotation.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.GravityCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.databinding.FastScrollerBinding
 import org.koitharu.kotatsu.utils.ext.*
 import kotlin.math.roundToInt
+import com.google.android.material.R as materialR
 
-private const val BUBBLE_ANIM_DURATION = 100L
 private const val SCROLLBAR_HIDE_DELAY = 1000L
 private const val TRACK_SNAP_RANGE = 5
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class FastScroller : LinearLayout {
+class FastScroller @JvmOverloads constructor(
+	context: Context,
+	attrs: AttributeSet? = null,
+	@AttrRes defStyleAttr: Int = R.attr.fastScrollerStyle,
+) : LinearLayout(context, attrs, defStyleAttr) {
 
-	enum class Size(@DrawableRes val drawableId: Int, @DimenRes val textSizeId: Int) {
+	enum class BubbleSize(@DrawableRes val drawableId: Int, @DimenRes val textSizeId: Int) {
 		NORMAL(R.drawable.fastscroll_bubble, R.dimen.fastscroll_bubble_text_size),
 		SMALL(R.drawable.fastscroll_bubble_small, R.dimen.fastscroll_bubble_text_size_small)
 	}
 
-	private val Size.textSize get() = resources.getDimension(textSizeId)
+	private val binding = FastScrollerBinding.inflate(LayoutInflater.from(context), this)
 
-	private val animationDuration = (context.resources.getInteger(R.integer.config_defaultAnimTime) *
-		context.animatorDurationScale).toLong()
-
-	private val bubbleView: TextView by lazy { findViewById(R.id.fastscroll_bubble) }
-	private val handleView: ImageView by lazy { findViewById(R.id.fastscroll_handle) }
-	private val trackView: ImageView by lazy { findViewById(R.id.fastscroll_track) }
-	private val scrollbar: View by lazy { findViewById(R.id.fastscroll_scrollbar) }
-
-	private val scrollbarPaddingEnd by lazy {
-		resources.getDimensionPixelSize(R.dimen.fastscroll_scrollbar_padding_end).toFloat()
-	}
+	private val scrollbarPaddingEnd = context.resources.getDimension(R.dimen.fastscroll_scrollbar_padding_end)
 
 	@ColorInt
 	private var bubbleColor = 0
@@ -86,14 +57,14 @@ class FastScroller : LinearLayout {
 	private var hideScrollbar = true
 	private var showBubble = true
 	private var showBubbleAlways = false
-	private var bubbleSize = Size.NORMAL
+	private var bubbleSize = BubbleSize.NORMAL
 	private var bubbleImage: Drawable? = null
 	private var handleImage: Drawable? = null
 	private var trackImage: Drawable? = null
 	private var recyclerView: RecyclerView? = null
 	private var swipeRefreshLayout: SwipeRefreshLayout? = null
-	private var scrollbarAnimator: ViewPropertyAnimator? = null
-	private var bubbleAnimator: ViewPropertyAnimator? = null
+	private val scrollbarAnimator = ScrollbarAnimator(binding.scrollbar, scrollbarPaddingEnd)
+	private val bubbleAnimator = BubbleAnimator(binding.bubble)
 
 	private var fastScrollListener: FastScrollListener? = null
 	private var sectionIndexer: SectionIndexer? = null
@@ -103,19 +74,15 @@ class FastScroller : LinearLayout {
 		hideScrollbar()
 	}
 
-	private val alphaAnimatorListener = object : AnimatorListenerAdapter() {
-		/* adapter required for new alpha value to stick */
-	}
-
 	private val scrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
 		override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-			if (!handleView.isSelected && isEnabled) {
+			if (!binding.thumb.isSelected && isEnabled) {
 				val y = recyclerView.scrollProportion
 				setViewPositions(y)
 
 				if (showBubbleAlways) {
 					val targetPos = getRecyclerViewTargetPosition(y)
-					sectionIndexer?.let { bubbleView.text = it.getSectionText(targetPos) }
+					sectionIndexer?.let { binding.bubble.text = it.getSectionText(recyclerView.context, targetPos) }
 				}
 			}
 
@@ -133,12 +100,10 @@ class FastScroller : LinearLayout {
 				when (newState) {
 					RecyclerView.SCROLL_STATE_DRAGGING -> {
 						handler.removeCallbacks(scrollbarHider)
-						scrollbarAnimator?.cancel()
-
-						if (!scrollbar.isVisible) showScrollbar()
+						showScrollbar()
 						if (showBubbleAlways && sectionIndexer != null) showBubble()
 					}
-					RecyclerView.SCROLL_STATE_IDLE -> if (hideScrollbar && !handleView.isSelected) {
+					RecyclerView.SCROLL_STATE_IDLE -> if (hideScrollbar && !binding.thumb.isSelected) {
 						handler.postDelayed(scrollbarHider, SCROLLBAR_HIDE_DELAY)
 					}
 				}
@@ -153,22 +118,42 @@ class FastScroller : LinearLayout {
 			return viewHeight * proportion
 		}
 
-	@JvmOverloads
-	constructor(context: Context, size: Size = Size.NORMAL) : super(context) {
-		context.layout(size = size)
-		layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+	init {
+		clipChildren = false
+		orientation = HORIZONTAL
+
+		@ColorInt var bubbleColor = context.getThemeColor(materialR.attr.colorControlNormal, Color.DKGRAY)
+		@ColorInt var handleColor = bubbleColor
+		@ColorInt var trackColor = context.getThemeColor(materialR.attr.colorOutline, Color.LTGRAY)
+		@ColorInt var textColor = context.getThemeColor(android.R.attr.textColorPrimaryInverse, Color.WHITE)
+
+		var showTrack = false
+
+		context.withStyledAttributes(attrs, R.styleable.FastScroller, defStyleAttr) {
+			bubbleColor = getColor(R.styleable.FastScroller_bubbleColor, bubbleColor)
+			handleColor = getColor(R.styleable.FastScroller_thumbColor, handleColor)
+			trackColor = getColor(R.styleable.FastScroller_trackColor, trackColor)
+			textColor = getColor(R.styleable.FastScroller_bubbleTextColor, textColor)
+			hideScrollbar = getBoolean(R.styleable.FastScroller_hideScrollbar, hideScrollbar)
+			showBubble = getBoolean(R.styleable.FastScroller_showBubble, showBubble)
+			showBubbleAlways = getBoolean(R.styleable.FastScroller_showBubbleAlways, showBubbleAlways)
+			showTrack = getBoolean(R.styleable.FastScroller_showTrack, showTrack)
+			bubbleSize = getBubbleSize(R.styleable.FastScroller_bubbleSize, BubbleSize.NORMAL)
+			val textSize = getDimension(R.styleable.FastScroller_bubbleTextSize, bubbleSize.textSize)
+			binding.bubble.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+		}
+
+		setTrackColor(trackColor)
+		setHandleColor(handleColor)
+		setBubbleColor(bubbleColor)
+		setBubbleTextColor(textColor)
+		setHideScrollbar(hideScrollbar)
+		setBubbleVisible(showBubble, showBubbleAlways)
+		setTrackVisible(showTrack)
 	}
 
-	@JvmOverloads
-	constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int = 0) : super(context, attrs, defStyleAttr) {
-		context.layout(attrs)
-		layoutParams = attrs?.let { generateLayoutParams(it) } ?: LayoutParams(
-			LayoutParams.WRAP_CONTENT,
-			LayoutParams.MATCH_PARENT
-		)
-	}
-
-	override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) = super.onSizeChanged(w, h, oldW, oldH).also {
+	override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
+		super.onSizeChanged(w, h, oldW, oldH)
 		viewHeight = h
 	}
 
@@ -180,18 +165,15 @@ class FastScroller : LinearLayout {
 			setRecyclerViewPosition(y)
 		}
 
-		when (event.action) {
+		when (event.actionMasked) {
 			MotionEvent.ACTION_DOWN -> {
-				if (event.x < handleView.x - scrollbar.compatPaddingStart) return false
+				if (event.x.toInt() !in binding.scrollbar.left..binding.scrollbar.right) return false
 
 				requestDisallowInterceptTouchEvent(true)
 				setHandleSelected(true)
 
 				handler.removeCallbacks(scrollbarHider)
-				scrollbarAnimator?.cancel()
-				bubbleAnimator?.cancel()
-
-				if (!scrollbar.isVisible) showScrollbar()
+				showScrollbar()
 				if (showBubble && sectionIndexer != null) showBubble()
 
 				fastScrollListener?.onFastScrollStart(this)
@@ -224,7 +206,8 @@ class FastScroller : LinearLayout {
 	 *
 	 * @param enabled True if this view is enabled, false otherwise
 	 */
-	override fun setEnabled(enabled: Boolean) = super.setEnabled(enabled).also {
+	override fun setEnabled(enabled: Boolean) {
+		super.setEnabled(enabled)
 		isVisible = enabled
 	}
 
@@ -283,9 +266,9 @@ class FastScroller : LinearLayout {
 			}
 			is RelativeLayout -> layoutParams = (layoutParams as RelativeLayout.LayoutParams).apply {
 				height = 0
-				addRule(ALIGN_TOP, recyclerViewId)
-				addRule(ALIGN_BOTTOM, recyclerViewId)
-				addRule(ALIGN_END, recyclerViewId)
+				addRule(RelativeLayout.ALIGN_TOP, recyclerViewId)
+				addRule(RelativeLayout.ALIGN_BOTTOM, recyclerViewId)
+				addRule(RelativeLayout.ALIGN_END, recyclerViewId)
 				setMargins(0, marginTop, 0, marginBottom)
 			}
 			else -> throw IllegalArgumentException("Parent ViewGroup must be a ConstraintLayout, CoordinatorLayout, FrameLayout, or RelativeLayout")
@@ -302,6 +285,9 @@ class FastScroller : LinearLayout {
 	 * @see detachRecyclerView
 	 */
 	fun attachRecyclerView(recyclerView: RecyclerView) {
+		if (this.recyclerView != null) {
+			detachRecyclerView()
+		}
 		this.recyclerView = recyclerView
 
 		if (parent is ViewGroup) {
@@ -314,7 +300,7 @@ class FastScroller : LinearLayout {
 
 		recyclerView.addOnScrollListener(scrollListener)
 
-		// set initial positions for bubble and handle
+		// set initial positions for bubble and thumb
 		post { setViewPositions(this.recyclerView?.scrollProportion ?: 0f) }
 	}
 
@@ -365,7 +351,8 @@ class FastScroller : LinearLayout {
 	 */
 	fun setHideScrollbar(hideScrollbar: Boolean) {
 		if (this.hideScrollbar != hideScrollbar) {
-			scrollbar.isVisible = !hideScrollbar.also { this.hideScrollbar = it }
+			this.hideScrollbar = hideScrollbar
+			binding.scrollbar.isGone = hideScrollbar
 		}
 	}
 
@@ -375,7 +362,7 @@ class FastScroller : LinearLayout {
 	 * @param visible True to show scroll track, false to hide
 	 */
 	fun setTrackVisible(visible: Boolean) {
-		trackView.isVisible = visible
+		binding.track.isVisible = visible
 	}
 
 	/**
@@ -390,14 +377,14 @@ class FastScroller : LinearLayout {
 
 		trackImage?.let {
 			it.setTint(color)
-			trackView.setImageDrawable(it)
+			binding.track.setImageDrawable(it)
 		}
 	}
 
 	/**
-	 * Set the color of the scroll handle.
+	 * Set the color of the scroll thumb.
 	 *
-	 * @param color The color for the scroll handle
+	 * @param color The color for the scroll thumb
 	 */
 	fun setHandleColor(@ColorInt color: Int) {
 		handleColor = color
@@ -408,7 +395,7 @@ class FastScroller : LinearLayout {
 
 		handleImage?.let {
 			it.setTint(handleColor)
-			handleView.setImageDrawable(it)
+			binding.thumb.setImageDrawable(it)
 		}
 	}
 
@@ -416,7 +403,7 @@ class FastScroller : LinearLayout {
 	 * Show the section bubble while scrolling.
 	 *
 	 * @param visible True to show the bubble, false to hide
-	 * @param always  True to always show the bubble, false to only show on handle touch
+	 * @param always  True to always show the bubble, false to only show on thumb touch
 	 */
 	@JvmOverloads
 	fun setBubbleVisible(visible: Boolean, always: Boolean = false) {
@@ -438,7 +425,7 @@ class FastScroller : LinearLayout {
 
 		bubbleImage?.let {
 			it.setTint(bubbleColor)
-			bubbleView.background = it
+			binding.bubble.background = it
 		}
 	}
 
@@ -447,7 +434,7 @@ class FastScroller : LinearLayout {
 	 *
 	 * @param color The text color for the section bubble
 	 */
-	fun setBubbleTextColor(@ColorInt color: Int) = bubbleView.setTextColor(color)
+	fun setBubbleTextColor(@ColorInt color: Int) = binding.bubble.setTextColor(color)
 
 	/**
 	 * Set the scaled pixel text size of the section bubble.
@@ -455,15 +442,15 @@ class FastScroller : LinearLayout {
 	 * @param size The scaled pixel text size for the section bubble
 	 */
 	fun setBubbleTextSize(size: Int) {
-		bubbleView.textSize = size.toFloat()
+		binding.bubble.textSize = size.toFloat()
 	}
 
 	private fun getRecyclerViewTargetPosition(y: Float) = recyclerView?.let { recyclerView ->
 		val itemCount = recyclerView.adapter?.itemCount ?: 0
 
 		val proportion = when {
-			handleView.y == 0f -> 0f
-			handleView.y + handleHeight >= viewHeight - TRACK_SNAP_RANGE -> 1f
+			binding.thumb.y == 0f -> 0f
+			binding.thumb.y + handleHeight >= viewHeight - TRACK_SNAP_RANGE -> 1f
 			else -> y / viewHeight.toFloat()
 		}
 
@@ -477,139 +464,65 @@ class FastScroller : LinearLayout {
 	} ?: 0
 
 	private fun setRecyclerViewPosition(y: Float) {
-		recyclerView?.layoutManager?.let { layoutManager ->
-			val targetPos = getRecyclerViewTargetPosition(y)
-			layoutManager.scrollToPosition(targetPos)
-			if (showBubble) sectionIndexer?.let { bubbleView.text = it.getSectionText(targetPos) }
-		}
+		val layoutManager = recyclerView?.layoutManager ?: return
+		val targetPos = getRecyclerViewTargetPosition(y)
+		layoutManager.scrollToPosition(targetPos)
+		if (showBubble) sectionIndexer?.let { binding.bubble.text = it.getSectionText(context, targetPos) }
 	}
 
 	private fun setViewPositions(y: Float) {
-		bubbleHeight = bubbleView.measuredHeight
-		handleHeight = handleView.measuredHeight
+		bubbleHeight = binding.bubble.measuredHeight
+		handleHeight = binding.thumb.measuredHeight
 
 		val bubbleHandleHeight = bubbleHeight + handleHeight / 2f
 
 		if (showBubble && viewHeight >= bubbleHandleHeight) {
-			bubbleView.y = (y - bubbleHeight).coerceIn(0f, viewHeight - bubbleHandleHeight)
+			binding.bubble.y = (y - bubbleHeight).coerceIn(0f, viewHeight - bubbleHandleHeight)
 		}
 
 		if (viewHeight >= handleHeight) {
-			handleView.y = (y - handleHeight / 2).coerceIn(0f, viewHeight - handleHeight.toFloat())
+			binding.thumb.y = (y - handleHeight / 2).coerceIn(0f, viewHeight - handleHeight.toFloat())
 		}
 	}
 
 	private fun updateViewHeights() {
 		val measureSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-		bubbleView.measure(measureSpec, measureSpec)
-		bubbleHeight = bubbleView.measuredHeight
-		handleView.measure(measureSpec, measureSpec)
-		handleHeight = handleView.measuredHeight
+		binding.bubble.measure(measureSpec, measureSpec)
+		bubbleHeight = binding.bubble.measuredHeight
+		binding.thumb.measure(measureSpec, measureSpec)
+		handleHeight = binding.thumb.measuredHeight
 	}
 
 	private fun showBubble() {
-		if (!bubbleView.isVisible) {
-			bubbleView.isVisible = true
-			bubbleAnimator = bubbleView.animate().alpha(1f)
-				.setDuration(BUBBLE_ANIM_DURATION)
-				.setListener(alphaAnimatorListener)
-		}
+		bubbleAnimator.show()
 	}
 
 	private fun hideBubble() {
-		if (bubbleView.isVisible) {
-			bubbleAnimator = bubbleView.animate().alpha(0f)
-				.setDuration(BUBBLE_ANIM_DURATION)
-				.setListener(object : AnimatorListenerAdapter() {
-					override fun onAnimationEnd(animation: Animator) {
-						super.onAnimationEnd(animation)
-						bubbleView.isVisible = false
-						bubbleAnimator = null
-					}
-
-					override fun onAnimationCancel(animation: Animator) {
-						super.onAnimationCancel(animation)
-						bubbleView.isVisible = false
-						bubbleAnimator = null
-					}
-				})
-		}
+		bubbleAnimator.hide()
 	}
 
 	private fun showScrollbar() {
 		if ((recyclerView?.computeVerticalScrollRange() ?: (0 - viewHeight)) > 0) {
-			scrollbar.translationX = scrollbarPaddingEnd
-			scrollbar.isVisible = true
-			scrollbarAnimator = scrollbar.animate().translationX(0f).alpha(1f)
-				.setDuration(animationDuration)
-				.setListener(alphaAnimatorListener)
+			scrollbarAnimator.show()
 		}
 	}
 
 	private fun hideScrollbar() {
-		scrollbarAnimator = scrollbar.animate().translationX(scrollbarPaddingEnd).alpha(0f)
-			.setDuration(animationDuration)
-			.setListener(object : AnimatorListenerAdapter() {
-				override fun onAnimationEnd(animation: Animator) {
-					super.onAnimationEnd(animation)
-					scrollbar.isVisible = false
-					scrollbarAnimator = null
-				}
-
-				override fun onAnimationCancel(animation: Animator) {
-					super.onAnimationCancel(animation)
-					scrollbar.isVisible = false
-					scrollbarAnimator = null
-				}
-			})
+		scrollbarAnimator.hide()
 	}
 
 	private fun setHandleSelected(selected: Boolean) {
-		handleView.isSelected = selected
+		binding.thumb.isSelected = selected
 		handleImage?.setTint(if (selected) bubbleColor else handleColor)
 	}
 
-	private fun TypedArray.getSize(@StyleableRes index: Int, defValue: Int) = getInt(index, defValue).let { ordinal ->
-		Size.values().find { it.ordinal == ordinal } ?: Size.NORMAL
+	private fun TypedArray.getBubbleSize(@StyleableRes index: Int, defaultValue: BubbleSize): BubbleSize {
+		val ordinal = getInt(index, -1)
+		return BubbleSize.values().getOrNull(ordinal) ?: defaultValue
 	}
 
-	private fun Context.layout(attrs: AttributeSet? = null, size: Size = Size.NORMAL) {
-		inflate(this, R.layout.fast_scroller, this@FastScroller)
-
-		clipChildren = false
-		orientation = HORIZONTAL
-
-		@ColorInt var bubbleColor = Color.GRAY
-		@ColorInt var handleColor = Color.DKGRAY
-		@ColorInt var trackColor = Color.LTGRAY
-		@ColorInt var textColor = Color.WHITE
-
-		var showTrack = false
-		var textSize = size.textSize
-
-		withStyledAttributes(attrs, R.styleable.FastScroller) {
-			bubbleColor = getColor(R.styleable.FastScroller_bubbleColor, bubbleColor)
-			handleColor = getColor(R.styleable.FastScroller_handleColor, handleColor)
-			trackColor = getColor(R.styleable.FastScroller_trackColor, trackColor)
-			textColor = getColor(R.styleable.FastScroller_bubbleTextColor, textColor)
-			hideScrollbar = getBoolean(R.styleable.FastScroller_hideScrollbar, hideScrollbar)
-			showBubble = getBoolean(R.styleable.FastScroller_showBubble, showBubble)
-			showBubbleAlways = getBoolean(R.styleable.FastScroller_showBubbleAlways, showBubbleAlways)
-			showTrack = getBoolean(R.styleable.FastScroller_showTrack, showTrack)
-			bubbleSize = getSize(R.styleable.FastScroller_bubbleSize, size.ordinal)
-			textSize = getDimension(R.styleable.FastScroller_bubbleTextSize, bubbleSize.textSize)
-		}
-
-		setTrackColor(trackColor)
-		setHandleColor(handleColor)
-		setBubbleColor(bubbleColor)
-		setBubbleTextColor(textColor)
-		setHideScrollbar(hideScrollbar)
-		setBubbleVisible(showBubble, showBubbleAlways)
-		setTrackVisible(showTrack)
-
-		bubbleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-	}
+	private val BubbleSize.textSize
+		@Px get() = resources.getDimension(textSizeId)
 
 	interface FastScrollListener {
 
@@ -620,6 +533,6 @@ class FastScroller : LinearLayout {
 
 	interface SectionIndexer {
 
-		fun getSectionText(position: Int): CharSequence
+		fun getSectionText(context: Context, position: Int): CharSequence
 	}
 }

@@ -2,11 +2,13 @@ package org.koitharu.kotatsu.list.ui
 
 import android.os.Bundle
 import android.view.*
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.annotation.CallSuper
 import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
 import androidx.core.graphics.Insets
 import androidx.core.view.isNotEmpty
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -73,11 +75,7 @@ abstract class MangaListFragment :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		listAdapter = MangaListAdapter(
-			coil = get(),
-			lifecycleOwner = viewLifecycleOwner,
-			listener = this,
-		)
+		listAdapter = onCreateAdapter()
 		selectionController = ListSelectionController(
 			activity = requireActivity(),
 			decoration = MangaSelectionDecoration(view.context),
@@ -167,6 +165,14 @@ abstract class MangaListFragment :
 		}
 	}
 
+	protected open fun onCreateAdapter(): MangaListAdapter {
+		return MangaListAdapter(
+			coil = get(),
+			lifecycleOwner = viewLifecycleOwner,
+			listener = this,
+		)
+	}
+
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
 			left = insets.left,
@@ -175,6 +181,10 @@ abstract class MangaListFragment :
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
+		binding.recyclerView.fastScroller.updateLayoutParams<MarginLayoutParams> {
+			bottomMargin = insets.bottom
+			marginEnd = insets.end(binding.recyclerView)
+		}
 		if (activity is MainActivity) {
 			val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 			binding.swipeRefreshLayout.setProgressViewOffset(

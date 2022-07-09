@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
@@ -148,3 +149,12 @@ fun RecyclerView.invalidateNestedItemDecorations() {
 }
 
 internal val View.compatPaddingStart get() = ViewCompat.getPaddingStart(this)
+
+val View.parents: Sequence<ViewParent>
+	get() = sequence {
+		var p: ViewParent? = parent
+		while (p != null) {
+			yield(p)
+			p = p.parent
+		}
+	}

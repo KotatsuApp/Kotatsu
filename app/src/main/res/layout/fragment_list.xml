@@ -11,17 +11,17 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<androidx.recyclerview.widget.RecyclerView
+		<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
 			android:id="@+id/recyclerView"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:clipToPadding="false"
 			android:orientation="vertical"
 			android:paddingLeft="@dimen/list_spacing"
-			android:paddingRight="@dimen/list_spacing"
 			android:paddingTop="@dimen/grid_spacing_outer"
+			android:paddingRight="@dimen/list_spacing"
 			android:paddingBottom="@dimen/grid_spacing_outer"
-			app:handleColor="?attr/colorTertiary"
+			app:bubbleSize="small"
 			tools:layoutManager="org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager"
 			tools:listitem="@layout/item_manga_list" />
 

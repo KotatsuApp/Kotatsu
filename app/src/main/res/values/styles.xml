@@ -115,6 +115,14 @@
 		<item name="android:scrollbarStyle">outsideOverlay</item>
 	</style>
 
+	<style name="Widget.Kotatsu.FastScroller" parent="">
+		<item name="thumbColor">?colorTertiary</item>
+		<item name="bubbleColor">?colorTertiary</item>
+		<item name="bubbleTextColor">?colorOnTertiary</item>
+		<item name="trackColor">?colorOutline</item>
+		<item name="bubbleSize">normal</item>
+	</style>
+
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">
 		<item name="android:textColor">@color/list_item_text_color</item>
 		<item name="backgroundFillColor">@color/list_item_background_color</item>

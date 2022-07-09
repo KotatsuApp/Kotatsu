@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
 import com.google.android.material.snackbar.Snackbar
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.ReversibleHandle
@@ -52,6 +53,8 @@ class HistoryListFragment : MangaListFragment() {
 			else -> super.onActionItemClicked(mode, item)
 		}
 	}
+
+	override fun onCreateAdapter() = HistoryListAdapter(get(), viewLifecycleOwner, this)
 
 	private fun onItemsRemoved(reversibleHandle: ReversibleHandle) {
 		Snackbar.make(binding.recyclerView, R.string.removed_from_history, Snackbar.LENGTH_LONG)

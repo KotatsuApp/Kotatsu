@@ -44,8 +44,8 @@
 	<dimen name="fastscroll_bubble_padding">16dp</dimen>
 
 	<dimen name="fastscroll_bubble_radius_small">32dp</dimen>
-	<dimen name="fastscroll_bubble_size_small">64dp</dimen>
-	<dimen name="fastscroll_bubble_text_size_small">36sp</dimen>
+	<dimen name="fastscroll_bubble_size_small">36dp</dimen>
+	<dimen name="fastscroll_bubble_text_size_small">24sp</dimen>
 	<dimen name="fastscroll_bubble_padding_small">12dp</dimen>
 
 	<dimen name="fastscroll_handle_height">58dp</dimen>

@@ -11,7 +11,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<org.koitharu.kotatsu.base.ui.widgets.FastScrollRecyclerView
+		<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
 			android:id="@+id/recyclerView"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
@@ -21,8 +21,8 @@
 			android:paddingTop="@dimen/grid_spacing_outer"
 			android:paddingRight="@dimen/list_spacing"
 			android:paddingBottom="@dimen/grid_spacing_outer"
-			app:trackColor="?attr/colorOutline"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+			app:trackColor="?attr/colorOutline"
 			tools:listitem="@layout/item_feed" />
 
 	</FrameLayout>

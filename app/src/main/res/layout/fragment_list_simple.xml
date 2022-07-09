@@ -12,13 +12,12 @@
 	android:paddingRight="@dimen/list_spacing"
 	android:paddingBottom="@dimen/grid_spacing_outer">
 
-	<org.koitharu.kotatsu.base.ui.widgets.FastScrollRecyclerView
+	<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		app:handleColor="?attr/colorTertiary"
 		tools:listitem="@layout/item_feed" />
 
 </FrameLayout>

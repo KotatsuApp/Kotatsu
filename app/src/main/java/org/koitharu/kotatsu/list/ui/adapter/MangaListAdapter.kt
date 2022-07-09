@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.*
 import kotlin.jvm.internal.Intrinsics
 
-class MangaListAdapter(
+open class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
