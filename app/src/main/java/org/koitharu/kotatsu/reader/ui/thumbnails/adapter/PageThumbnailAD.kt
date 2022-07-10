@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
+import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.setTextColorAttr
 
@@ -39,7 +40,7 @@ fun pageThumbnailAD(
 					.data(url)
 					.referer(item.page.referer)
 					.size(thumbSize)
-					.allowRgb565(true)
+					.allowRgb565(isLowRamDevice(context))
 					.build()
 			).drawable
 		}?.let { drawable ->
@@ -50,7 +51,7 @@ fun pageThumbnailAD(
 			ImageRequest.Builder(context)
 				.data(file)
 				.size(thumbSize)
-				.allowRgb565(true)
+				.allowRgb565(isLowRamDevice(context))
 				.build()
 		).drawable
 	}

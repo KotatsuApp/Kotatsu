@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.list.ui.adapter
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
-import coil.size.Scale
 import coil.util.CoilUtils
 import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -14,10 +13,7 @@ import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.referer
-import org.koitharu.kotatsu.utils.ext.textAndVisible
+import org.koitharu.kotatsu.utils.ext.*
 
 fun mangaListDetailedItemAD(
 	coil: ImageLoader,
@@ -47,8 +43,7 @@ fun mangaListDetailedItemAD(
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
-			.scale(Scale.FILL)
-			.allowRgb565(true)
+			.allowRgb565(isLowRamDevice(context))
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 		binding.textViewRating.textAndVisible = item.rating

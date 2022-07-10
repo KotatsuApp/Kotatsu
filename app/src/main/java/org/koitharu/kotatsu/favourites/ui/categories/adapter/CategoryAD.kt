@@ -12,17 +12,13 @@ import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
-import coil.size.Scale
 import coil.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemCategoryBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.utils.ext.animatorDurationScale
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.getThemeColor
-import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.*
 
 fun categoryAD(
 	coil: ImageLoader,
@@ -80,8 +76,7 @@ fun categoryAD(
 				.crossfade(crossFadeDuration * (i + 1))
 				.fallback(fallback)
 				.error(R.drawable.ic_placeholder)
-				.scale(Scale.FILL)
-				.allowRgb565(true)
+				.allowRgb565(isLowRamDevice(context))
 				.lifecycle(lifecycleOwner)
 				.enqueueWith(coil)
 		}

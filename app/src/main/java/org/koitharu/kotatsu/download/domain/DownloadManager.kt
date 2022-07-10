@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.webkit.MimeTypeMap
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.size.Scale
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Semaphore
@@ -204,7 +203,6 @@ class DownloadManager(
 				.data(manga.coverUrl)
 				.referer(manga.publicUrl)
 				.size(coverWidth, coverHeight)
-				.scale(Scale.FILL)
 				.build()
 		).drawable
 	}.getOrNull()

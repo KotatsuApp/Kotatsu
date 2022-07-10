@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.app.ActivityManager
 import android.app.ActivityOptions
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.SharedPreferences
 import android.content.pm.ResolveInfo
 import android.graphics.Color
@@ -17,6 +19,7 @@ import android.view.ViewPropertyAnimator
 import android.view.Window
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.lifecycle.Lifecycle
@@ -34,6 +37,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koitharu.kotatsu.utils.InternalResourceHelper
 import kotlin.coroutines.resume
+
+val Context.activityManager: ActivityManager?
+	get() = getSystemService(ACTIVITY_SERVICE) as? ActivityManager
 
 val Context.connectivityManager: ConnectivityManager
 	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -132,6 +138,10 @@ inline fun <reified T> ViewGroup.findChild(): T? {
 
 inline fun <reified T> ViewGroup.findDescendant(): T? {
 	return descendants.find { it is T } as? T
+}
+
+fun isLowRamDevice(context: Context): Boolean {
+	return context.activityManager?.isLowRamDevice ?: false
 }
 
 fun scaleUpActivityOptionsOf(view: View): ActivityOptions = ActivityOptions.makeScaleUpAnimation(

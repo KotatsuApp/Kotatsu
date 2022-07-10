@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.tracker.ui.adapter
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
-import coil.size.Scale
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -12,6 +11,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.ui.model.FeedItem
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 
 fun feedItemAD(
@@ -34,8 +34,7 @@ fun feedItemAD(
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
-			.allowRgb565(true)
-			.scale(Scale.FILL)
+			.allowRgb565(isLowRamDevice(context))
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 		binding.textViewTitle.text = item.title

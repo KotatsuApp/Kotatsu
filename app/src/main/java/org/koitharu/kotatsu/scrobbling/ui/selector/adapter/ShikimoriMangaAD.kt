@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.scrobbling.ui.selector.adapter
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.Disposable
-import coil.size.Scale
 import coil.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
@@ -12,6 +11,7 @@ import org.koitharu.kotatsu.databinding.ItemMangaListBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 
@@ -37,8 +37,7 @@ fun shikimoriMangaAD(
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
-			.scale(Scale.FILL)
-			.allowRgb565(true)
+			.allowRgb565(isLowRamDevice(context))
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 	}

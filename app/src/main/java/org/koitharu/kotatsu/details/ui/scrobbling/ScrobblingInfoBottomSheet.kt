@@ -15,7 +15,6 @@ import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.size.Scale
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
@@ -116,7 +115,6 @@ class ScrobblingInfoBottomSheet :
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
-			.scale(Scale.FILL)
 			.enqueueWith(coil)
 	}
 

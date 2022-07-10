@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.size.Scale
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
@@ -233,7 +232,6 @@ class DetailsFragment :
 				.placeholder(R.drawable.ic_placeholder)
 				.fallback(R.drawable.ic_placeholder)
 				.error(R.drawable.ic_placeholder)
-				.scale(Scale.FILL)
 				.lifecycle(viewLifecycleOwner)
 				.enqueueWith(coil)
 			textViewTitle.text = scrobbling.title

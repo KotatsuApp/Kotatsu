@@ -6,6 +6,7 @@
 	style="@style/Widget.Material3.CardView.Filled"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	android:layout_margin="8dp"
 	app:contentPadding="@dimen/margin_normal">
 
 	<androidx.constraintlayout.widget.ConstraintLayout

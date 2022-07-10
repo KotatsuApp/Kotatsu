@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import coil.request.Disposable
-import coil.size.Scale
 import coil.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
@@ -17,10 +16,7 @@ import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
 import org.koitharu.kotatsu.databinding.ItemBookmarksGroupBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.utils.ext.clearItemDecorations
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.*
 
 fun bookmarksGroupAD(
 	coil: ImageLoader,
@@ -57,8 +53,7 @@ fun bookmarksGroupAD(
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
-			.scale(Scale.FILL)
-			.allowRgb565(true)
+			.allowRgb565(isLowRamDevice(context))
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 		binding.textViewTitle.text = item.manga.title

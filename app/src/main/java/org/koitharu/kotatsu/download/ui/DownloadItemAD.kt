@@ -32,7 +32,7 @@ fun downloadItemAD(
 				.placeholder(state.cover)
 				.fallback(R.drawable.ic_placeholder)
 				.error(R.drawable.ic_placeholder)
-				.allowRgb565(true)
+				.allowRgb565(isLowRamDevice(context))
 				.enqueueWith(coil)
 		}.onEach { state ->
 			binding.textViewTitle.text = state.manga.title

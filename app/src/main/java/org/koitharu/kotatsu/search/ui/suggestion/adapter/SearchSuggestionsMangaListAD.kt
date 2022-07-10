@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 
 fun searchSuggestionMangaListAD(
@@ -64,7 +65,7 @@ private fun searchSuggestionMangaGridAD(
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
 			.error(R.drawable.ic_placeholder)
-			.allowRgb565(true)
+			.allowRgb565(isLowRamDevice(context))
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 		binding.textViewTitle.text = item.title
