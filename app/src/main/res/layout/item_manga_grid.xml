@@ -3,15 +3,17 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	style="@style/Widget.Material3.CardView.Filled"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:clipChildren="false"
-	app:cardCornerRadius="12dp">
+	app:cardCornerRadius="16dp">
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="vertical">
+		android:orientation="vertical"
+		android:padding="4dp">
 
 		<FrameLayout
 			android:layout_width="match_parent"
@@ -27,13 +29,6 @@
 				tools:ignore="ContentDescription"
 				tools:src="@tools:sample/backgrounds/scenic[3]" />
 
-			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
-				android:id="@+id/progressView"
-				android:layout_width="32dp"
-				android:layout_height="32dp"
-				android:layout_gravity="bottom|end"
-				android:layout_margin="4dp" />
-
 		</FrameLayout>
 
 		<TextView
@@ -43,7 +38,8 @@
 			android:elegantTextHeight="false"
 			android:ellipsize="end"
 			android:lines="2"
-			android:padding="8dp"
+			android:paddingHorizontal="8dp"
+			android:paddingVertical="4dp"
 			android:textAppearance="?attr/textAppearanceTitleSmall"
 			android:textColor="?android:attr/textColorPrimary"
 			app:layout_constraintStart_toStartOf="parent"
@@ -51,5 +47,11 @@
 			tools:text="Sample name" />
 
 	</LinearLayout>
+
+	<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+		android:id="@+id/progressView"
+		android:layout_width="32dp"
+		android:layout_height="32dp"
+		android:layout_gravity="top|start" />
 
 </com.google.android.material.card.MaterialCardView>

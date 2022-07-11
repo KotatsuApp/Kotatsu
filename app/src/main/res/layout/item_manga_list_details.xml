@@ -5,101 +5,107 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="@dimen/manga_list_details_item_height"
-	app:cardCornerRadius="12dp">
+	app:cardCornerRadius="16dp">
 
-	<LinearLayout
+	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:padding="4dp">
 
-		<FrameLayout
+		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+			android:id="@+id/imageView_cover"
 			android:layout_width="wrap_content"
-			android:layout_height="match_parent">
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:scaleType="centerCrop"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+			tools:src="@tools:sample/backgrounds/scenic" />
 
-			<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
-				android:id="@+id/imageView_cover"
-				android:layout_width="wrap_content"
-				android:layout_height="match_parent"
-				android:orientation="vertical"
-				android:scaleType="centerCrop"
-				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-				tools:src="@tools:sample/backgrounds/scenic" />
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="8dp"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:textAppearance="?attr/textAppearanceTitleMedium"
+			app:layout_constraintBottom_toTopOf="@+id/textView_subtitle"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="@tools:sample/lorem/random" />
 
-			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
-				android:id="@+id/progressView"
-				android:layout_width="32dp"
-				android:layout_height="32dp"
-				android:layout_gravity="bottom|end"
-				android:layout_margin="4dp" />
-
-		</FrameLayout>
+		<TextView
+			android:id="@+id/textView_subtitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginEnd="8dp"
+			android:ellipsize="none"
+			android:gravity="center_vertical"
+			android:maxLines="2"
+			android:requiresFadingEdge="horizontal"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@+id/textView_title"
+			tools:text="@tools:sample/lorem/random" />
 
 		<LinearLayout
-			android:layout_width="match_parent"
+			android:id="@+id/linearLayout"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_gravity="center_vertical"
-			android:layout_margin="16dp"
-			android:orientation="vertical">
+			android:layout_marginStart="16dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
+			android:baselineAligned="false"
+			android:clipChildren="false"
+			android:orientation="horizontal"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@+id/textView_subtitle">
 
 			<TextView
-				android:id="@+id/textView_title"
-				android:layout_width="match_parent"
+				android:id="@+id/textView_tags"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginBottom="4dp"
-				android:ellipsize="end"
-				android:maxLines="2"
-				android:textAppearance="?attr/textAppearanceTitleMedium"
-				tools:text="@tools:sample/lorem/random" />
-
-			<TextView
-				android:id="@+id/textView_subtitle"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginBottom="4dp"
+				android:layout_weight="1"
 				android:ellipsize="none"
 				android:gravity="center_vertical"
 				android:requiresFadingEdge="horizontal"
 				android:singleLine="true"
-				android:textAppearance="?attr/textAppearanceBodyMedium"
+				android:textAppearance="?attr/textAppearanceBodySmall"
 				tools:text="@tools:sample/lorem/random" />
 
-			<LinearLayout
-				android:layout_width="match_parent"
+			<TextView
+				android:id="@+id/textView_rating"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:baselineAligned="false"
-				android:clipChildren="false"
-				android:orientation="horizontal">
-
-				<TextView
-					android:id="@+id/textView_tags"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:ellipsize="none"
-					android:gravity="center_vertical"
-					android:requiresFadingEdge="horizontal"
-					android:singleLine="true"
-					android:textAppearance="?attr/textAppearanceBodySmall"
-					tools:text="@tools:sample/lorem/random" />
-
-				<TextView
-					android:id="@+id/textView_rating"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:drawablePadding="4dp"
-					android:elegantTextHeight="false"
-					android:gravity="center_vertical"
-					android:paddingStart="6dp"
-					android:singleLine="true"
-					android:textAppearance="?attr/textAppearanceBodySmall"
-					app:drawableEndCompat="@drawable/ic_star"
-					tools:ignore="RtlSymmetry"
-					tools:text="9.6" />
-
-			</LinearLayout>
+				android:drawablePadding="4dp"
+				android:elegantTextHeight="false"
+				android:gravity="center_vertical"
+				android:paddingStart="6dp"
+				android:singleLine="true"
+				android:textAppearance="?attr/textAppearanceBodySmall"
+				app:drawableEndCompat="@drawable/ic_star"
+				tools:ignore="RtlSymmetry"
+				tools:text="9.6" />
 
 		</LinearLayout>
 
-	</LinearLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+		android:id="@+id/progressView"
+		android:layout_width="32dp"
+		android:layout_height="32dp"
+		android:layout_gravity="top|start" />
 
 </com.google.android.material.card.MaterialCardView>

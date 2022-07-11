@@ -187,7 +187,7 @@
 	<!-- Shapes -->
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover" parent="">
-		<item name="cornerSize">12dp</item>
+		<item name="cornerSize">16dp</item>
 	</style>
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Small" parent="">
@@ -220,11 +220,11 @@
 	<!-- Progress drawable -->
 
 	<style name="ProgressDrawable">
-		<item name="android:fillAlpha">0.8</item>
-		<item name="android:fillColor">?android:colorBackground</item>
-		<item name="android:strokeColor">?colorTertiary</item>
-		<item name="android:textColor">?android:textColorPrimary</item>
-		<item name="strokeWidth">3dp</item>
+		<item name="android:fillAlpha">1</item>
+		<item name="android:fillColor">?attr/colorPrimary</item>
+		<item name="android:strokeColor">?attr/colorSurfaceVariant</item>
+		<item name="android:textColor">?attr/colorOnPrimary</item>
+		<item name="strokeWidth">4dp</item>
 		<item name="android:textSize">9sp</item>
 		<item name="autoFitTextSize">true</item>
 	</style>
