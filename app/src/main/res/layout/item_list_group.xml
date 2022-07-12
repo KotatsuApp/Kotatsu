@@ -42,6 +42,7 @@
 		android:layout_below="@id/textView_title"
 		android:layout_alignParentStart="true"
 		android:clipToPadding="false"
+		android:nestedScrollingEnabled="false"
 		android:orientation="horizontal"
 		android:paddingHorizontal="@dimen/grid_spacing"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
