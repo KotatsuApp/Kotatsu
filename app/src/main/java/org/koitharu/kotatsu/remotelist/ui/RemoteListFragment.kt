@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.filter.FilterBottomSheet
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.serializableArgument
@@ -48,10 +50,17 @@ class RemoteListFragment : MangaListFragment() {
 		viewModel.resetFilter()
 	}
 
-	private inner class RemoteListMenuProvider: MenuProvider {
+	private inner class RemoteListMenuProvider : MenuProvider, SearchView.OnQueryTextListener,
+		MenuItem.OnActionExpandListener {
 
 		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 			menuInflater.inflate(R.menu.opt_list_remote, menu)
+			val searchMenuItem = menu.findItem(R.id.action_search)
+			searchMenuItem.setOnActionExpandListener(this)
+			val searchView = searchMenuItem.actionView as SearchView
+			searchView.setOnQueryTextListener(this)
+			searchView.setIconifiedByDefault(false)
+			searchView.queryHint = searchMenuItem.title
 		}
 
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
@@ -64,6 +73,31 @@ class RemoteListFragment : MangaListFragment() {
 				true
 			}
 			else -> false
+		}
+
+		override fun onQueryTextSubmit(query: String?): Boolean {
+			if (query.isNullOrEmpty()) {
+				return false
+			}
+			val intent = SearchActivity.newIntent(
+				context = this@RemoteListFragment.context ?: return false,
+				source = source,
+				query = query,
+			)
+			startActivity(intent)
+			return true
+		}
+
+		override fun onQueryTextChange(newText: String?): Boolean = false
+
+		override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+			return true
+		}
+
+		override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+			val searchView = (item.actionView as? SearchView) ?: return false
+			searchView.setQuery("", false)
+			return true
 		}
 	}
 
