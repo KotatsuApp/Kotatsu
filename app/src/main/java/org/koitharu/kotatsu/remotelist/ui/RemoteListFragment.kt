@@ -42,7 +42,7 @@ class RemoteListFragment : MangaListFragment() {
 		return super.onCreateActionMode(mode, menu)
 	}
 
-	override fun onFilterClick() {
+	override fun onFilterClick(view: View?) {
 		FilterBottomSheet.show(childFragmentManager)
 	}
 
@@ -69,7 +69,7 @@ class RemoteListFragment : MangaListFragment() {
 				true
 			}
 			R.id.action_filter -> {
-				onFilterClick()
+				onFilterClick(null)
 				true
 			}
 			else -> false

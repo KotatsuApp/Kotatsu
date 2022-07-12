@@ -44,33 +44,35 @@ fun Manga.toGridModel(counter: Int, progress: Float) = MangaGridModel(
 suspend fun List<Manga>.toUi(
 	mode: ListMode,
 	extraProvider: ListExtraProvider,
-): List<MangaItemModel> = when (mode) {
-	ListMode.LIST -> map {
-		it.toListModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
-	}
-	ListMode.DETAILED_LIST -> map {
-		it.toListDetailedModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
-	}
-	ListMode.GRID -> map {
-		it.toGridModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
-	}
-}
+): List<MangaItemModel> = toUi(ArrayList(size), mode, extraProvider)
 
 fun List<Manga>.toUi(
 	mode: ListMode,
-): List<MangaItemModel> = when (mode) {
-	ListMode.LIST -> map { it.toListModel(0, PROGRESS_NONE) }
-	ListMode.DETAILED_LIST -> map { it.toListDetailedModel(0, PROGRESS_NONE) }
-	ListMode.GRID -> map { it.toGridModel(0, PROGRESS_NONE) }
-}
+): List<MangaItemModel> = toUi(ArrayList(size), mode)
 
-fun <C : MutableCollection<ListModel>> List<Manga>.toUi(
+fun <C : MutableCollection<in MangaItemModel>> List<Manga>.toUi(
 	destination: C,
 	mode: ListMode,
 ): C = when (mode) {
 	ListMode.LIST -> mapTo(destination) { it.toListModel(0, PROGRESS_NONE) }
 	ListMode.DETAILED_LIST -> mapTo(destination) { it.toListDetailedModel(0, PROGRESS_NONE) }
 	ListMode.GRID -> mapTo(destination) { it.toGridModel(0, PROGRESS_NONE) }
+}
+
+suspend fun <C : MutableCollection<in MangaItemModel>> List<Manga>.toUi(
+	destination: C,
+	mode: ListMode,
+	extraProvider: ListExtraProvider,
+): C = when (mode) {
+	ListMode.LIST -> mapTo(destination) {
+		it.toListModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
+	}
+	ListMode.DETAILED_LIST -> mapTo(destination) {
+		it.toListDetailedModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
+	}
+	ListMode.GRID -> mapTo(destination) {
+		it.toGridModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
+	}
 }
 
 fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(

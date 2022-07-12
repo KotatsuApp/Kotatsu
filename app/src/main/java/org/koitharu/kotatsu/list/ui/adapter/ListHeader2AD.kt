@@ -16,7 +16,7 @@ fun listHeader2AD(
 
 	var ignoreChecking = false
 	binding.textViewFilter.setOnClickListener {
-		listener.onFilterClick()
+		listener.onFilterClick(it)
 	}
 	binding.chipsTags.setOnCheckedStateChangeListener { _, _ ->
 		if (!ignoreChecking) {

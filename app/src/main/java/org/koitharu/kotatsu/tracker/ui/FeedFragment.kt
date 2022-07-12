@@ -89,7 +89,7 @@ class FeedFragment :
 
 	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 
-	override fun onFilterClick() = Unit
+	override fun onFilterClick(view: View?) = Unit
 
 	override fun onEmptyActionClick() = Unit
 

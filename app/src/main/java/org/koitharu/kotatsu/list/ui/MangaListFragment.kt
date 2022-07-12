@@ -197,7 +197,7 @@ abstract class MangaListFragment :
 		}
 	}
 
-	override fun onFilterClick() = Unit
+	override fun onFilterClick(view: View?) = Unit
 
 	override fun onEmptyActionClick() = Unit
 
