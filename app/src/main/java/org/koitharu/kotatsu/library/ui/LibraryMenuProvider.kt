@@ -5,10 +5,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.RememberSelectionDialogListener
-import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
+import org.koitharu.kotatsu.library.ui.config.LibraryCategoriesConfigSheet
 import org.koitharu.kotatsu.utils.ext.startOfDay
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -16,6 +17,7 @@ import com.google.android.material.R as materialR
 
 class LibraryMenuProvider(
 	private val context: Context,
+	private val fragmentManager: FragmentManager,
 	private val viewModel: LibraryViewModel,
 ) : MenuProvider {
 
@@ -30,7 +32,7 @@ class LibraryMenuProvider(
 				true
 			}
 			R.id.action_categories -> {
-				context.startActivity(FavouriteCategoriesActivity.newIntent(context))
+				LibraryCategoriesConfigSheet.show(fragmentManager)
 				true
 			}
 			else -> false

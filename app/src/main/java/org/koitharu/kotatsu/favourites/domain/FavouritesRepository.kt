@@ -29,11 +29,6 @@ class FavouritesRepository(
 			.mapItems { it.manga.toManga(it.tags.toMangaTags()) }
 	}
 
-	fun observeAllGrouped(order: SortOrder): Flow<Map<FavouriteCategory, List<Manga>>> {
-		return db.favouritesDao.observeAll(order)
-			.map { list -> groupByCategory(list) }
-	}
-
 	suspend fun getManga(categoryId: Long): List<Manga> {
 		val entities = db.favouritesDao.findAll(categoryId)
 		return entities.map { it.manga.toManga(it.tags.toMangaTags()) }
@@ -89,6 +84,7 @@ class FavouritesRepository(
 			categoryId = 0,
 			order = sortOrder.name,
 			track = isTrackerEnabled,
+			isVisibleInLibrary = true,
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
 		val category = entity.toFavouriteCategory(id)
@@ -100,6 +96,10 @@ class FavouritesRepository(
 		db.favouriteCategoriesDao.update(id, title, sortOrder.name, isTrackerEnabled)
 	}
 
+	suspend fun updateCategory(id: Long, isVisibleInLibrary: Boolean) {
+		db.favouriteCategoriesDao.updateLibVisibility(id, isVisibleInLibrary)
+	}
+
 	suspend fun addCategory(title: String): FavouriteCategory {
 		val entity = FavouriteCategoryEntity(
 			title = title,
@@ -108,6 +108,7 @@ class FavouritesRepository(
 			categoryId = 0,
 			order = SortOrder.NEWEST.name,
 			track = true,
+			isVisibleInLibrary = true,
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
 		val category = entity.toFavouriteCategory(id)
@@ -156,7 +157,12 @@ class FavouritesRepository(
 				val tags = manga.tags.toEntities()
 				db.tagsDao.upsert(tags)
 				db.mangaDao.upsert(manga.toEntity(), tags)
-				val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
+				val entity = FavouriteEntity(
+					mangaId = manga.id,
+					categoryId = categoryId,
+					createdAt = System.currentTimeMillis(),
+					sortKey = 0,
+				)
 				db.favouritesDao.insert(entity)
 			}
 		}
@@ -183,17 +189,5 @@ class FavouritesRepository(
 			.filterNotNull()
 			.map { x -> SortOrder(x.order, SortOrder.NEWEST) }
 			.distinctUntilChanged()
-	}
-
-	private fun groupByCategory(list: List<FavouriteManga>): Map<FavouriteCategory, List<Manga>> {
-		val map = HashMap<FavouriteCategory, MutableList<Manga>>()
-		for (item in list) {
-			val manga = item.manga.toManga(item.tags.toMangaTags())
-			for (category in item.categories) {
-				map.getOrPut(category.toFavouriteCategory()) { ArrayList() }
-					.add(manga)
-			}
-		}
-		return map
 	}
 }

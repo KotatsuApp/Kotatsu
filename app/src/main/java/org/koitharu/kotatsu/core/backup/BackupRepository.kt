@@ -123,6 +123,7 @@ class BackupRepository(private val db: MangaDatabase) {
 		jo.put("title", title)
 		jo.put("order", order)
 		jo.put("track", track)
+		jo.put("show_in_lib", isVisibleInLibrary)
 		return jo
 	}
 
@@ -131,6 +132,7 @@ class BackupRepository(private val db: MangaDatabase) {
 		jo.put("manga_id", mangaId)
 		jo.put("category_id", categoryId)
 		jo.put("created_at", createdAt)
+		jo.put("sort_key", sortKey)
 		return jo
 	}
 }

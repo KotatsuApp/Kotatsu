@@ -16,10 +16,10 @@ import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
-import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.library.domain.LibraryRepository
 import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.*
@@ -34,8 +34,8 @@ import java.util.*
 private const val HISTORY_MAX_SEGMENTS = 2
 
 class LibraryViewModel(
+	private val repository: LibraryRepository,
 	private val historyRepository: HistoryRepository,
-	private val favouritesRepository: FavouritesRepository,
 	private val shortcutsRepository: ShortcutsRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
@@ -45,7 +45,7 @@ class LibraryViewModel(
 
 	val content: LiveData<List<ListModel>> = combine(
 		historyRepository.observeAllWithHistory(),
-		favouritesRepository.observeAllGrouped(SortOrder.NEWEST),
+		repository.observeFavourites(SortOrder.NEWEST),
 	) { history, favourites ->
 		mapList(history, favourites)
 	}.catch { e ->

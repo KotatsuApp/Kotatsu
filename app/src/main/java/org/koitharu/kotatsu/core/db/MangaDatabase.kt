@@ -36,7 +36,7 @@ import org.koitharu.kotatsu.tracker.data.TracksDao
 		TrackEntity::class, TrackLogEntity::class, SuggestionEntity::class, BookmarkEntity::class,
 		ScrobblingEntity::class,
 	],
-	version = 12,
+	version = 13,
 )
 abstract class MangaDatabase : RoomDatabase() {
 
@@ -79,6 +79,7 @@ fun MangaDatabase(context: Context): MangaDatabase = Room.databaseBuilder(
 	Migration9To10(),
 	Migration10To11(),
 	Migration11To12(),
+	Migration12To13(),
 ).addCallback(
 	DatabasePrePopulateCallback(context.resources)
 ).build()

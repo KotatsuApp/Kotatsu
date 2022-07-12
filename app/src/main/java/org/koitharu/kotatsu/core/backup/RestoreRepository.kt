@@ -103,11 +103,13 @@ class RestoreRepository(private val db: MangaDatabase) {
 		title = json.getString("title"),
 		order = json.getStringOrNull("order") ?: SortOrder.NEWEST.name,
 		track = json.getBooleanOrDefault("track", true),
+		isVisibleInLibrary = json.getBooleanOrDefault("show_in_lib", true),
 	)
 
 	private fun parseFavourite(json: JSONObject) = FavouriteEntity(
 		mangaId = json.getLong("manga_id"),
 		categoryId = json.getLong("category_id"),
-		createdAt = json.getLong("created_at")
+		createdAt = json.getLong("created_at"),
+		sortKey = json.getIntOrDefault("sort_key", 0),
 	)
 }

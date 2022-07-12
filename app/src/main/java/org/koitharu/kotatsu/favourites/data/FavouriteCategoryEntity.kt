@@ -13,6 +13,7 @@ class FavouriteCategoryEntity(
 	@ColumnInfo(name = "title") val title: String,
 	@ColumnInfo(name = "order") val order: String,
 	@ColumnInfo(name = "track") val track: Boolean,
+	@ColumnInfo(name = "show_in_lib") val isVisibleInLibrary: Boolean,
 ) {
 
 	override fun equals(other: Any?): Boolean {
@@ -27,6 +28,7 @@ class FavouriteCategoryEntity(
 		if (title != other.title) return false
 		if (order != other.order) return false
 		if (track != other.track) return false
+		if (isVisibleInLibrary != other.isVisibleInLibrary) return false
 
 		return true
 	}
@@ -38,6 +40,7 @@ class FavouriteCategoryEntity(
 		result = 31 * result + title.hashCode()
 		result = 31 * result + order.hashCode()
 		result = 31 * result + track.hashCode()
+		result = 31 * result + isVisibleInLibrary.hashCode()
 		return result
 	}
 }

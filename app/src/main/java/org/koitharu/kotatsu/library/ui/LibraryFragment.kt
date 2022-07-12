@@ -61,7 +61,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 		)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.setHasFixedSize(true)
-		addMenuProvider(LibraryMenuProvider(view.context, viewModel))
+		addMenuProvider(LibraryMenuProvider(view.context, childFragmentManager, viewModel))
 
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
