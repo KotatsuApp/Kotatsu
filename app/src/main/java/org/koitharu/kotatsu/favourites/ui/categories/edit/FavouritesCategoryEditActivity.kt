@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.favourites.ui.categories.edit
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -24,7 +26,7 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>(), AdapterView.OnItemClickListener,
-	View.OnClickListener {
+	View.OnClickListener, TextWatcher {
 
 	private val viewModel by viewModel<FavouritesCategoryEditViewModel> {
 		parametersOf(intent.getLongExtra(EXTRA_ID, NO_ID))
@@ -40,6 +42,8 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 		}
 		initSortSpinner()
 		binding.buttonDone.setOnClickListener(this)
+		binding.editName.addTextChangedListener(this)
+		afterTextChanged(binding.editName.text)
 
 		viewModel.onSaved.observe(this) { finishAfterTransition() }
 		viewModel.category.observe(this, ::onCategoryChanged)
@@ -66,11 +70,19 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_done -> viewModel.save(
-				title = binding.editName.text?.toString().orEmpty(),
+				title = binding.editName.text?.toString()?.trim().orEmpty(),
 				sortOrder = getSelectedSortOrder(),
 				isTrackerEnabled = binding.switchTracker.isChecked,
 			)
 		}
+	}
+
+	override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+
+	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+
+	override fun afterTextChanged(s: Editable?) {
+		binding.buttonDone.isEnabled = !s.isNullOrBlank()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
