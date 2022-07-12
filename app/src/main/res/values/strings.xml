@@ -337,4 +337,5 @@
 	<string name="changelog">Changelog</string>
 	<string name="explore">Explore</string>
 	<string name="tools">Tools</string>
+	<string name="confirm_exit">Press back again to exit</string>
 </resources>
