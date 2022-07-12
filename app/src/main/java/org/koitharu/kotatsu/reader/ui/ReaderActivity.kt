@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.acra.ktx.sendWithAcra
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -47,10 +46,7 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
-import org.koitharu.kotatsu.utils.ext.observeWithPrevious
-import org.koitharu.kotatsu.utils.ext.postDelayed
+import org.koitharu.kotatsu.utils.ext.*
 import java.util.concurrent.TimeUnit
 
 class ReaderActivity :
@@ -374,7 +370,7 @@ class ReaderActivity :
 				if (ExceptionResolver.canResolve(exception)) {
 					tryResolve(exception)
 				} else {
-					exception.sendWithAcra()
+					exception.report("ReaderActivity::onError")
 				}
 			} else {
 				onCancel(dialog)
