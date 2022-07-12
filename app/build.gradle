@@ -76,7 +76,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.nv95:kotatsu-parsers:26d951bc20') {
+	implementation('com.github.nv95:kotatsu-parsers:330495556a') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -113,6 +113,7 @@ dependencies {
 
 	implementation 'io.insert-koin:koin-android:3.2.0'
 	implementation 'io.coil-kt:coil-base:2.1.0'
+	implementation 'io.coil-kt:coil-svg:2.1.0'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 

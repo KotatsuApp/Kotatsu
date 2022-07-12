@@ -36,7 +36,10 @@ class RemoteMangaRepository(private val parser: MangaParser) : MangaRepository {
 
 	override suspend fun getTags(): Set<MangaTag> = parser.getTags()
 
+	@Deprecated("")
 	fun getFaviconUrl(): String = parser.getFaviconUrl()
+
+	suspend fun getFavicons(): Favicons = parser.parseFavicons()
 
 	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider
 

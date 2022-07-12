@@ -12,10 +12,11 @@
 	android:padding="@dimen/list_spacing">
 
 	<com.google.android.material.imageview.ShapeableImageView
-		android:id="@+id/imageView_cover"
+		android:id="@+id/imageView_icon"
 		android:layout_width="32dp"
 		android:layout_height="32dp"
-		android:scaleType="centerCrop"
+		android:labelFor="@id/textView_title"
+		android:scaleType="fitCenter"
 		app:shapeAppearance="?shapeAppearanceCornerSmall"
 		tools:src="@tools:sample/backgrounds/scenic" />
 

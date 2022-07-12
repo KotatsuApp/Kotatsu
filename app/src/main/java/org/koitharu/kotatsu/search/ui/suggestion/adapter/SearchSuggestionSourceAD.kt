@@ -5,6 +5,7 @@ import coil.ImageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.databinding.ItemSearchSuggestionSourceBinding
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
@@ -33,7 +34,7 @@ fun searchSuggestionSourceAD(
 		binding.switchLocal.isChecked = item.isEnabled
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
 		imageRequest = ImageRequest.Builder(context)
-			.data(item.faviconUrl)
+			.data(item.source.faviconUri())
 			.fallback(fallbackIcon)
 			.placeholder(fallbackIcon)
 			.error(fallbackIcon)

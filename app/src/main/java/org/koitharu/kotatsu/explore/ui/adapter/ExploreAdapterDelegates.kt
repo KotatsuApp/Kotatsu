@@ -11,12 +11,14 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.databinding.ItemEmptyCardBinding
 import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
 import org.koitharu.kotatsu.databinding.ItemExploreHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceBinding
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
+import org.koitharu.kotatsu.utils.ext.crossfade
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
@@ -76,11 +78,12 @@ fun exploreSourceItemAD(
 		binding.textViewTitle.text = item.source.title
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
 		imageRequest = ImageRequest.Builder(context)
-			.data(item.faviconUrl)
+			.data(item.source.faviconUri())
+			.target(binding.imageViewIcon)
+			.crossfade(context)
 			.fallback(fallbackIcon)
 			.placeholder(fallbackIcon)
 			.error(fallbackIcon)
-			.target(binding.imageViewCover)
 			.lifecycle(lifecycleOwner)
 			.enqueueWith(coil)
 	}

@@ -57,9 +57,6 @@ sealed interface ExploreItem : ListModel {
 		val source: MangaSource,
 	) : ExploreItem {
 
-		val faviconUrl: Uri
-			get() = Uri.fromParts("favicon", source.name, null)
-
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
 			if (javaClass != other?.javaClass) return false
