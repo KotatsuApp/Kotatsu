@@ -115,13 +115,8 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 	}
 
 	private fun initSortSpinner() {
-<<<<<<< Updated upstream
 		val entries = CategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
-		val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, entries)
-=======
-		val entries = FavouriteCategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
 		val adapter = SortAdapter(this, entries)
->>>>>>> Stashed changes
 		binding.editSort.setAdapter(adapter)
 		binding.editSort.onItemClickListener = this
 	}
