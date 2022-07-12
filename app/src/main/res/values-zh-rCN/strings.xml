@@ -31,7 +31,7 @@
     <string name="clear_cookies">清除cookies</string>
     <string name="chapters_checking_progress">检查新的章节: %1$d/%2$d</string>
     <string name="error_empty_name">你必须输入一个名称</string>
-    <string name="new_sources_text">有了新的漫画来源</string>
+    <string name="new_sources_text">新的漫画来源</string>
     <string name="suggestions_summary">根据你的喜好推荐漫画</string>
     <string name="suggestions_info">所有的数据都在这个设备上进行本地分析. 您的个人数据不会被转移到任何服务机构</string>
     <string name="never">从不</string>
@@ -284,7 +284,7 @@
     <string name="bookmark_remove">删除书签</string>
     <string name="bookmarks">书签</string>
     <string name="bookmark_removed">删除书签</string>
-    <string name="bookmark_added">加入书签</string>
+    <string name="bookmark_added">添加书签</string>
     <string name="undo">撤销</string>
     <string name="removed_from_history">从历史中删除</string>
     <string name="dns_over_https">DNS over HTTPS</string>
@@ -295,4 +295,22 @@
     <string name="disable_battery_optimization_summary">帮助进行背景更新检查</string>
     <string name="crash_text">出了点问题. 请向开发人员提交一份错误报告以帮助我们修复它.</string>
     <string name="send">发送</string>
+    <string name="disable_all">全部禁用</string>
+    <string name="status_planned">计划</string>
+    <string name="status_on_hold">暂停</string>
+    <string name="report">报告</string>
+    <string name="tracking">追踪</string>
+    <string name="logout">注销</string>
+    <string name="status_reading">阅读</string>
+    <string name="status_re_reading">重读</string>
+    <string name="status_completed">完成</string>
+    <string name="use_fingerprint">使用指纹</string>
+    <string name="appwidget_shelf_description">你喜欢的漫画</string>
+    <string name="appwidget_recent_description">您最近阅读的漫画</string>
+    <string name="show_reading_indicators_summary">在历史和收藏夹中显示阅读百分比</string>
+    <string name="show_reading_indicators">显示阅读进度指标</string>
+    <string name="data_deletion">数据删除</string>
+    <string name="exclude_nsfw_from_history_summary">标记为NSFW的漫画将永远不会被添加到历史中你的进度也不会被保存</string>
+    <string name="clear_cookies_summary">可以在出现一些问题时提供帮助. 所有授权将被视为无效</string>
+    <string name="show_all">显示全部</string>
 </resources>
