@@ -6,8 +6,6 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import coil.request.Disposable
-import coil.request.ImageRequest
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
@@ -16,7 +14,9 @@ import org.koitharu.kotatsu.databinding.ItemFilterHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigDraggableBinding
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
+import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 
 fun sourceConfigHeaderDelegate() =
@@ -54,8 +54,6 @@ fun sourceConfigItemDelegate(
 	on = { item, _, _ -> item is SourceConfigItem.SourceItem && !item.isDraggable }
 ) {
 
-	var imageRequest: Disposable? = null
-
 	binding.switchToggle.setOnCheckedChangeListener { _, isChecked ->
 		listener.onItemEnabledChanged(item, isChecked)
 	}
@@ -64,17 +62,15 @@ fun sourceConfigItemDelegate(
 		binding.textViewTitle.text = item.source.title
 		binding.switchToggle.isChecked = item.isEnabled
 		binding.textViewDescription.textAndVisible = item.summary
-		imageRequest = ImageRequest.Builder(context)
-			.data(item.faviconUrl)
-			.error(R.drawable.ic_favicon_fallback)
-			.target(binding.imageViewIcon)
-			.lifecycle(lifecycleOwner)
-			.enqueueWith(coil)
+		binding.imageViewIcon.newImageRequest(item.faviconUrl)?.run {
+			error(R.drawable.ic_favicon_fallback)
+			lifecycle(lifecycleOwner)
+			enqueueWith(coil)
+		}
 	}
 
 	onViewRecycled {
-		imageRequest?.dispose()
-		imageRequest = null
+		binding.imageViewIcon.disposeImageRequest()
 	}
 }
 

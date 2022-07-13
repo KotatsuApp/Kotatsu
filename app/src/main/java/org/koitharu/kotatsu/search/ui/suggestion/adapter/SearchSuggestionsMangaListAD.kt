@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
-import coil.request.Disposable
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -16,6 +15,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 
@@ -52,27 +52,24 @@ private fun searchSuggestionMangaGridAD(
 	{ layoutInflater, parent -> ItemSearchSuggestionMangaGridBinding.inflate(layoutInflater, parent, false) }
 ) {
 
-	var imageRequest: Disposable? = null
-
 	itemView.setOnClickListener {
 		listener.onMangaClick(item)
 	}
 
 	bind {
-		imageRequest?.dispose()
-		imageRequest = binding.imageViewCover.newImageRequest(item.coverUrl)
-			.placeholder(R.drawable.ic_placeholder)
-			.fallback(R.drawable.ic_placeholder)
-			.error(R.drawable.ic_placeholder)
-			.allowRgb565(true)
-			.lifecycle(lifecycleOwner)
-			.enqueueWith(coil)
+		binding.imageViewCover.newImageRequest(item.coverUrl)?.run {
+			placeholder(R.drawable.ic_placeholder)
+			fallback(R.drawable.ic_placeholder)
+			error(R.drawable.ic_placeholder)
+			allowRgb565(true)
+			lifecycle(lifecycleOwner)
+			enqueueWith(coil)
+		}
 		binding.textViewTitle.text = item.title
 	}
 
 	onViewRecycled {
-		imageRequest?.dispose()
-		binding.imageViewCover.setImageDrawable(null)
+		binding.imageViewCover.disposeImageRequest()
 	}
 }
 
