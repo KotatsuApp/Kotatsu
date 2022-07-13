@@ -150,6 +150,12 @@
 		<item name="android:textAppearance">?textAppearanceButton</item>
 	</style>
 
+	<style name="Widget.Kotatsu.TextView.Indicator" parent="Widget.MaterialComponents.TextView">
+		<item name="android:drawablePadding">12dp</item>
+		<item name="android:gravity">center_vertical</item>
+		<item name="android:textAppearance">?textAppearanceLabelMedium</item>
+	</style>
+
 	<style name="ThemeOverlay.Kotatsu.MainToolbar" parent="">
 		<item name="colorControlHighlight">@color/selector_overlay</item>
 	</style>

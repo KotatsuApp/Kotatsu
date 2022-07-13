@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:padding="@dimen/screen_padding">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/storage_usage"
+		android:textAppearance="?textAppearanceTitleMedium" />
+
+	<org.koitharu.kotatsu.base.ui.widgets.SegmentedBarView
+		android:id="@+id/bar"
+		android:layout_width="match_parent"
+		android:layout_height="8dp"
+		android:layout_marginVertical="@dimen/margin_normal"
+		android:background="?colorSecondaryContainer" />
+
+	<TextView
+		android:id="@+id/label_storage"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/saved_manga"
+		android:visibility="gone"
+		app:drawableStartCompat="@drawable/bg_circle"
+		tools:drawableTint="?colorPrimary"
+		tools:visibility="visible" />
+
+	<TextView
+		android:id="@+id/label_pages_cache"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_small"
+		android:text="@string/pages_cache"
+		android:visibility="gone"
+		app:drawableStartCompat="@drawable/bg_circle"
+		tools:drawableTint="?colorSecondary"
+		tools:visibility="visible" />
+
+	<TextView
+		android:id="@+id/label_other_cache"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_small"
+		android:text="@string/other_cache"
+		android:visibility="gone"
+		app:drawableStartCompat="@drawable/bg_circle"
+		tools:drawableTint="?colorTertiary"
+		tools:visibility="visible" />
+
+	<TextView
+		android:id="@+id/label_available"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_small"
+		android:text="@string/computing_"
+		app:drawableStartCompat="@drawable/bg_circle"
+		app:drawableTint="?colorSecondaryContainer" />
+
+</LinearLayout>

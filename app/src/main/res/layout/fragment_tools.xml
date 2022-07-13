@@ -16,6 +16,17 @@
 			android:layout_height="wrap_content"
 			android:layout_margin="@dimen/margin_normal" />
 
+		<include
+			android:id="@+id/layout_storage"
+			layout="@layout/layout_memory_usage"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" />
+
+		<com.google.android.material.divider.MaterialDivider
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginVertical="@dimen/margin_small" />
+
 		<org.koitharu.kotatsu.base.ui.widgets.ListItemTextView
 			android:id="@+id/button_downloads"
 			android:layout_width="match_parent"

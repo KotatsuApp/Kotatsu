@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.settings.newsources.NewSourcesViewModel
 import org.koitharu.kotatsu.settings.onboard.OnboardViewModel
 import org.koitharu.kotatsu.settings.protect.ProtectSetupViewModel
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsViewModel
+import org.koitharu.kotatsu.settings.tools.ToolsViewModel
 
 val settingsModule
 	get() = module {
@@ -29,4 +30,5 @@ val settingsModule
 		viewModel { OnboardViewModel(get()) }
 		viewModel { SourcesSettingsViewModel(get()) }
 		viewModel { NewSourcesViewModel(get()) }
+		viewModel { ToolsViewModel(get()) }
 	}

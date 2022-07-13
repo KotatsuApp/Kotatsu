@@ -340,4 +340,10 @@
 	<string name="confirm_exit">Press "Back" again to exit</string>
 	<string name="exit_confirmation_summary">Press "Back" twice to exit the app</string>
 	<string name="exit_confirmation">Exit confirmation</string>
+	<string name="saved_manga">Saved manga</string>
+	<string name="pages_cache">Pages cache</string>
+	<string name="other_cache">Other cache</string>
+	<string name="storage_usage">Storage usage</string>
+	<string name="available">Available</string>
+	<string name="memory_usage_pattern">%s - %s</string>
 </resources>

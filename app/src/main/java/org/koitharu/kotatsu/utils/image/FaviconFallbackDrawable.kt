@@ -5,8 +5,6 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.ColorUtils
 import com.google.android.material.color.MaterialColors
-import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 import kotlin.math.absoluteValue
 
 class FaviconFallbackDrawable(
@@ -16,7 +14,7 @@ class FaviconFallbackDrawable(
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val letter = name.take(1).uppercase()
-	private val color = MaterialColors.harmonize(colorOfString(name), context.getThemeColor(android.R.attr.colorPrimary))
+	private val color = MaterialColors.harmonizeWithPrimary(context, colorOfString(name))
 	private val textBounds = Rect()
 	private val tempRect = Rect()
 
