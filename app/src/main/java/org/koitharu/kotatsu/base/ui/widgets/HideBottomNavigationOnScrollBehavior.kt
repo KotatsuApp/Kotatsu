@@ -13,6 +13,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koitharu.kotatsu.utils.ext.animatorDurationScale
 import org.koitharu.kotatsu.utils.ext.findChild
+import org.koitharu.kotatsu.utils.ext.measureHeight
 import kotlin.math.roundToLong
 
 class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
@@ -36,9 +37,9 @@ class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
 		child: BottomNavigationView,
 		dependency: View,
 	): Boolean {
-		val toolbarSize = (dependency as ViewGroup).findChild<Toolbar>()?.height ?: 0
-		dyRatio = if (toolbarSize > 0) {
-			child.height.toFloat() / toolbarSize
+		val appBarSize = dependency.measureHeight()
+		dyRatio = if (appBarSize > 0) {
+			child.measureHeight().toFloat() / appBarSize
 		} else {
 			1F
 		}
