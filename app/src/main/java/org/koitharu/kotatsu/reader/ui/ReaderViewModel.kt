@@ -64,7 +64,7 @@ class ReaderViewModel(
 	val readerMode = MutableLiveData<ReaderMode>()
 	val onPageSaved = SingleLiveEvent<Uri?>()
 	val onShowToast = SingleLiveEvent<Int>()
-	val uiState = combine(
+	val uiState: LiveData<ReaderUiState?> = combine(
 		mangaData,
 		currentState,
 	) { manga, state ->
@@ -75,7 +75,7 @@ class ReaderViewModel(
 			chapterNumber = chapter?.number ?: 0,
 			chaptersTotal = chapters.size()
 		)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
 	val content = MutableLiveData(ReaderContent(emptyList(), null))
 	val manga: Manga?
@@ -93,7 +93,7 @@ class ReaderViewModel(
 	) { manga, policy ->
 		policy == ScreenshotsPolicy.BLOCK_ALL ||
 			(policy == ScreenshotsPolicy.BLOCK_NSFW && manga != null && manga.isNsfw)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	val onZoomChanged = SingleLiveEvent<Unit>()
 
@@ -105,7 +105,7 @@ class ReaderViewModel(
 			bookmarksRepository.observeBookmark(manga, state.chapterId, state.page)
 				.map { it != null }
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	init {
 		loadImpl()

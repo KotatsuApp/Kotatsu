@@ -17,7 +17,7 @@ class ProtectSetupViewModel(
 
 	val isSecondStep = firstPassword.map {
 		it != null
-	}.asLiveDataDistinct(viewModelScope.coroutineContext)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext, false)
 	val onPasswordSet = SingleLiveEvent<Unit>()
 	val onPasswordMismatch = SingleLiveEvent<Unit>()
 	val onClearText = SingleLiveEvent<Unit>()

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.widget.shelf
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,7 +9,6 @@ import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
-import java.util.*
 
 class ShelfConfigViewModel(
 	favouritesRepository: FavouritesRepository
@@ -16,7 +16,7 @@ class ShelfConfigViewModel(
 
 	private val selectedCategoryId = MutableStateFlow(0L)
 
-	val content = combine(
+	val content: LiveData<List<CategoryItem>> = combine(
 		favouritesRepository.observeCategories(),
 		selectedCategoryId
 	) { categories, selectedId ->
@@ -26,7 +26,7 @@ class ShelfConfigViewModel(
 			CategoryItem(it.id, it.title, selectedId == it.id)
 		}
 		list
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	var checkedId: Long by selectedCategoryId::value
 }

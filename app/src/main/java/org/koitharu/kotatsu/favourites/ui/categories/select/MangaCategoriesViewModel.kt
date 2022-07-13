@@ -26,7 +26,7 @@ class MangaCategoriesViewModel(
 				isChecked = it.id in checked
 			)
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	fun setChecked(categoryId: Long, isChecked: Boolean) {
 		launchJob(Dispatchers.Default) {

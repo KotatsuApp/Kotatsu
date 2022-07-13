@@ -106,14 +106,14 @@ class DetailsViewModel(
 	val branches: LiveData<List<String?>> = delegate.manga.map {
 		val chapters = it?.chapters ?: return@map emptyList()
 		chapters.mapToSet { x -> x.branch }.sortedWith(BranchComparator())
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val selectedBranchIndex = combine(
 		branches.asFlow(),
 		delegate.selectedBranch
 	) { branches, selected ->
 		branches.indexOf(selected)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, -1)
 
 	val isChaptersEmpty: LiveData<Boolean> = combine(
 		delegate.manga,
