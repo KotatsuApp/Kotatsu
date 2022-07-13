@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.view.ActionMode
@@ -21,8 +20,6 @@ import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -63,8 +60,6 @@ class MainActivity :
 	View.OnFocusChangeListener,
 	SearchSuggestionListener, NavigationBarView.OnItemSelectedListener {
 
-	private var isConfirmingExit: Boolean = false
-
 	private val viewModel by viewModel<MainViewModel>()
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
 	private val voiceInputLauncher = registerForActivityResult(VoiceInputContract(), VoiceInputCallback())
@@ -99,6 +94,7 @@ class MainActivity :
 		binding.navRail?.headerView?.setOnClickListener(this)
 		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
+		onBackPressedDispatcher.addCallback(ExitCallback(this, binding.container))
 		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
 			if (it is LibraryFragment) binding.fab?.show() else binding.fab?.hide()
 		} ?: onNavigationItemSelected(navBar.selectedItemId)
@@ -136,7 +132,6 @@ class MainActivity :
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 				runOnCommit { onSearchClosed() }
 			}
-			shouldHandleExitConfirmation() -> lifecycleScope.launch { resetExitConfirmation() }
 			else -> super.onBackPressed()
 		}
 	}
@@ -151,19 +146,6 @@ class MainActivity :
 			return true
 		}
 		return super.onOptionsItemSelected(item)
-	}
-
-	private suspend fun resetExitConfirmation() {
-		isConfirmingExit = true
-		val toast = Toast.makeText(this, R.string.confirm_exit, Toast.LENGTH_LONG)
-		toast.show()
-		delay(2000)
-		toast.cancel()
-		isConfirmingExit = false
-	}
-
-	private fun shouldHandleExitConfirmation(): Boolean {
-		return !isConfirmingExit
 	}
 
 	override fun onClick(v: View) {

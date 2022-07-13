@@ -130,6 +130,9 @@ class AppSettings(context: Context) {
 		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
 		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
 
+	val isExitConfirmationEnabled: Boolean
+		get() = prefs.getBoolean(KEY_EXIT_CONFIRM, false)
+
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
 			?.split('|')
@@ -306,6 +309,7 @@ class AppSettings(context: Context) {
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 		const val KEY_DOH = "doh"
+		const val KEY_EXIT_CONFIRM = "exit_confirm"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

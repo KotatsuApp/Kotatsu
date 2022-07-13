@@ -44,10 +44,16 @@
 		app:defaultValue="100" />
 
 	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="exit_confirm"
+		android:summary="@string/exit_confirmation_summary"
+		android:title="@string/exit_confirmation"
+		app:allowDividerAbove="true" />
+
+	<SwitchPreferenceCompat
 		android:key="protect_app"
 		android:persistent="false"
 		android:summary="@string/protect_application_summary"
-		android:title="@string/protect_application"
-		app:allowDividerAbove="true" />
+		android:title="@string/protect_application" />
 
 </PreferenceScreen>

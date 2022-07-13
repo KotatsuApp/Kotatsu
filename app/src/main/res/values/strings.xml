@@ -337,5 +337,7 @@
 	<string name="changelog">Changelog</string>
 	<string name="explore">Explore</string>
 	<string name="tools">Tools</string>
-	<string name="confirm_exit">Press back again to exit</string>
+	<string name="confirm_exit">Press "Back" again to exit</string>
+	<string name="exit_confirmation_summary">Press "Back" twice to exit the app</string>
+	<string name="exit_confirmation">Exit confirmation</string>
 </resources>
