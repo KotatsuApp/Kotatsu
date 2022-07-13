@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.favourites.ui.categories
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.TransitionManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,6 +24,7 @@ import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
+import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -144,6 +147,10 @@ class FavouriteCategoriesActivity :
 	}
 
 	private fun onReorderModeChanged(isReorderMode: Boolean) {
+		val transition = Fade().apply {
+			duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+		}
+		TransitionManager.beginDelayedTransition(binding.toolbar, transition)
 		reorderHelper?.attachToRecyclerView(null)
 		reorderHelper = if (isReorderMode) {
 			selectionController.clear()

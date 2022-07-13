@@ -57,9 +57,12 @@ fun categoryAD(
 	itemView.setOnLongClickListener(eventListener)
 	itemView.setOnTouchListener(eventListener)
 
-	bind {
-		imageRequests.forEach { it?.dispose() }
+	bind { payloads ->
 		binding.imageViewHandle.isVisible = item.isReorderMode
+		if (payloads.isNotEmpty()) {
+			return@bind
+		}
+		imageRequests.forEach { it?.dispose() }
 		binding.textViewTitle.text = item.category.title
 		binding.textViewSubtitle.text = if (item.mangaCount == 0) {
 			getString(R.string.empty)
@@ -73,7 +76,6 @@ fun categoryAD(
 		repeat(coverViews.size) { i ->
 			imageRequests[i] = coverViews[i].newImageRequest(item.covers.getOrNull(i))
 				.placeholder(R.drawable.ic_placeholder)
-				.crossfade(crossFadeDuration * (i + 1))
 				.fallback(fallback)
 				.error(R.drawable.ic_placeholder)
 				.allowRgb565(isLowRamDevice(context))

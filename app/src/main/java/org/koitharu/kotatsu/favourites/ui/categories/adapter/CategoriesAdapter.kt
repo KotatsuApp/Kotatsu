@@ -1,11 +1,10 @@
-package org.koitharu.kotatsu.favourites.ui.categories
+package org.koitharu.kotatsu.favourites.ui.categories.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
-import org.koitharu.kotatsu.favourites.ui.categories.adapter.categoryAD
+import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
@@ -43,7 +42,11 @@ class CategoriesAdapter(
 		override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
 			return when {
 				oldItem is CategoryListModel && newItem is CategoryListModel -> {
-					if (oldItem.isReorderMode != newItem.isReorderMode) {
+					if (oldItem.category == newItem.category &&
+						oldItem.mangaCount == newItem.mangaCount &&
+						oldItem.covers == newItem.covers &&
+						oldItem.isReorderMode != newItem.isReorderMode
+					) {
 						Unit
 					} else {
 						super.getChangePayload(oldItem, newItem)
