@@ -29,6 +29,13 @@
 				tools:ignore="ContentDescription"
 				tools:src="@tools:sample/backgrounds/scenic[3]" />
 
+			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+				android:id="@+id/progressView"
+				android:layout_width="32dp"
+				android:layout_height="32dp"
+				android:layout_gravity="bottom|end"
+				android:layout_margin="4dp" />
+
 		</FrameLayout>
 
 		<TextView
@@ -47,11 +54,5 @@
 			tools:text="Sample name" />
 
 	</LinearLayout>
-
-	<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
-		android:id="@+id/progressView"
-		android:layout_width="32dp"
-		android:layout_height="32dp"
-		android:layout_gravity="top|start" />
 
 </com.google.android.material.card.MaterialCardView>

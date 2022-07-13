@@ -23,6 +23,14 @@
 			app:layout_constraintTop_toTopOf="parent"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 			tools:src="@tools:sample/backgrounds/scenic" />
+	
+		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+			android:id="@+id/progressView"
+			android:layout_width="32dp"
+			android:layout_height="32dp"
+			android:layout_margin="4dp"
+			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
+			app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
 
 		<TextView
 			android:id="@+id/textView_title"
@@ -101,11 +109,5 @@
 		</LinearLayout>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
-
-	<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
-		android:id="@+id/progressView"
-		android:layout_width="32dp"
-		android:layout_height="32dp"
-		android:layout_gravity="top|start" />
 
 </com.google.android.material.card.MaterialCardView>
