@@ -31,7 +31,7 @@ fun feedItemAD(
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_placeholder)
-			allowRgb565(isLowRamDevice(context))
+			allowRgb565(true)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)
 		}
