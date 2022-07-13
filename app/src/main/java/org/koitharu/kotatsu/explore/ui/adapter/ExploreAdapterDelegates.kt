@@ -4,8 +4,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import coil.request.Disposable
-import coil.request.ImageRequest
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
@@ -18,8 +16,9 @@ import org.koitharu.kotatsu.databinding.ItemExploreHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceBinding
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
-import org.koitharu.kotatsu.utils.ext.crossfade
+import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 
@@ -68,7 +67,6 @@ fun exploreSourceItemAD(
 	on = { item, _, _ -> item is ExploreItem.Source }
 ) {
 
-	var imageRequest: Disposable? = null
 	val eventListener = AdapterDelegateClickListenerAdapter(this, listener)
 
 	binding.root.setOnClickListener(eventListener)
@@ -77,20 +75,17 @@ fun exploreSourceItemAD(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
-		imageRequest = ImageRequest.Builder(context)
-			.data(item.source.faviconUri())
-			.target(binding.imageViewIcon)
-			.crossfade(context)
-			.fallback(fallbackIcon)
-			.placeholder(fallbackIcon)
-			.error(fallbackIcon)
-			.lifecycle(lifecycleOwner)
-			.enqueueWith(coil)
+		binding.imageViewIcon.newImageRequest(item.source.faviconUri())?.run {
+			fallback(fallbackIcon)
+			placeholder(fallbackIcon)
+			error(fallbackIcon)
+			lifecycle(lifecycleOwner)
+			enqueueWith(coil)
+		}
 	}
 
 	onViewRecycled {
-		imageRequest?.dispose()
-		imageRequest = null
+		binding.imageViewIcon.disposeImageRequest()
 	}
 }
 

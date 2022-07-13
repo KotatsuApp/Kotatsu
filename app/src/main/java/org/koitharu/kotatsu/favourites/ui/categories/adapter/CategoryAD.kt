@@ -11,8 +11,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import coil.request.Disposable
-import coil.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemCategoryBinding
@@ -50,7 +48,6 @@ fun categoryAD(
 		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 153))
 	val fallback = ColorDrawable(Color.TRANSPARENT)
 	val coverViews = arrayOf(binding.imageViewCover1, binding.imageViewCover2, binding.imageViewCover3)
-	val imageRequests = arrayOfNulls<Disposable?>(coverViews.size)
 	val crossFadeDuration = (context.resources.getInteger(R.integer.config_defaultAnimTime) *
 		context.animatorDurationScale).toInt()
 	itemView.setOnClickListener(eventListener)
@@ -62,7 +59,6 @@ fun categoryAD(
 		if (payloads.isNotEmpty()) {
 			return@bind
 		}
-		imageRequests.forEach { it?.dispose() }
 		binding.textViewTitle.text = item.category.title
 		binding.textViewSubtitle.text = if (item.mangaCount == 0) {
 			getString(R.string.empty)
@@ -74,22 +70,21 @@ fun categoryAD(
 			)
 		}
 		repeat(coverViews.size) { i ->
-			imageRequests[i] = coverViews[i].newImageRequest(item.covers.getOrNull(i))
-				.placeholder(R.drawable.ic_placeholder)
-				.fallback(fallback)
-				.error(R.drawable.ic_placeholder)
-				.allowRgb565(isLowRamDevice(context))
-				.lifecycle(lifecycleOwner)
-				.enqueueWith(coil)
+			coverViews[i].newImageRequest(item.covers.getOrNull(i))?.run {
+				placeholder(R.drawable.ic_placeholder)
+				fallback(fallback)
+				crossfade(crossFadeDuration * (i + 1))
+				error(R.drawable.ic_placeholder)
+				allowRgb565(true)
+				lifecycle(lifecycleOwner)
+				enqueueWith(coil)
+			}
 		}
 	}
 
 	onViewRecycled {
-		repeat(coverViews.size) { i ->
-			imageRequests[i]?.dispose()
-			imageRequests[i] = null
-			CoilUtils.dispose(coverViews[i])
-			coverViews[i].setImageDrawable(null)
+		coverViews.forEach {
+			it.disposeImageRequest()
 		}
 	}
 }

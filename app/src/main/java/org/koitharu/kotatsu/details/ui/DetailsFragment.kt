@@ -228,12 +228,13 @@ class DetailsFragment :
 				CoilUtils.dispose(imageViewCover)
 				return
 			}
-			imageViewCover.newImageRequest(scrobbling.coverUrl)
-				.placeholder(R.drawable.ic_placeholder)
-				.fallback(R.drawable.ic_placeholder)
-				.error(R.drawable.ic_placeholder)
-				.lifecycle(viewLifecycleOwner)
-				.enqueueWith(coil)
+			imageViewCover.newImageRequest(scrobbling.coverUrl)?.run {
+				placeholder(R.drawable.ic_placeholder)
+				fallback(R.drawable.ic_placeholder)
+				error(R.drawable.ic_placeholder)
+				lifecycle(viewLifecycleOwner)
+				enqueueWith(coil)
+			}
 			textViewTitle.text = scrobbling.title
 			textViewTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, scrobbling.scrobbler.iconResId, 0)
 			ratingBar.rating = scrobbling.rating * ratingBar.numStars

@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.tracker.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import coil.request.Disposable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -10,6 +9,7 @@ import org.koitharu.kotatsu.databinding.ItemFeedBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.ui.model.FeedItem
+import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.newImageRequest
@@ -22,21 +22,19 @@ fun feedItemAD(
 	{ inflater, parent -> ItemFeedBinding.inflate(inflater, parent, false) }
 ) {
 
-	var imageRequest: Disposable? = null
-
 	itemView.setOnClickListener {
 		clickListener.onItemClick(item.manga, it)
 	}
 
 	bind {
-		imageRequest?.dispose()
-		imageRequest = binding.imageViewCover.newImageRequest(item.imageUrl)
-			.placeholder(R.drawable.ic_placeholder)
-			.fallback(R.drawable.ic_placeholder)
-			.error(R.drawable.ic_placeholder)
-			.allowRgb565(isLowRamDevice(context))
-			.lifecycle(lifecycleOwner)
-			.enqueueWith(coil)
+		binding.imageViewCover.newImageRequest(item.imageUrl)?.run {
+			placeholder(R.drawable.ic_placeholder)
+			fallback(R.drawable.ic_placeholder)
+			error(R.drawable.ic_placeholder)
+			allowRgb565(isLowRamDevice(context))
+			lifecycle(lifecycleOwner)
+			enqueueWith(coil)
+		}
 		binding.textViewTitle.text = item.title
 		binding.textViewSummary.text = context.resources.getQuantityString(
 			R.plurals.new_chapters,
@@ -46,7 +44,6 @@ fun feedItemAD(
 	}
 
 	onViewRecycled {
-		imageRequest?.dispose()
-		binding.imageViewCover.setImageDrawable(null)
+		binding.imageViewCover.disposeImageRequest()
 	}
 }

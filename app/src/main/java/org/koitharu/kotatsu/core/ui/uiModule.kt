@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.parser.favicon.FaviconFetcher
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
@@ -38,7 +39,7 @@ val uiModule
 				.decoderDispatcher(Dispatchers.Default)
 				.transformationDispatcher(Dispatchers.Default)
 				.diskCache(diskCacheFactory)
-				.logger(DebugLogger())
+				.logger(if (BuildConfig.DEBUG) DebugLogger() else null)
 				.allowRgb565(isLowRamDevice(androidContext()))
 				.components(
 					ComponentRegistry.Builder()
