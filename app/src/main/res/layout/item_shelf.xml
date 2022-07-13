@@ -9,17 +9,18 @@
 
 	<LinearLayout
 		android:id="@+id/rootLayout"
-		android:layout_width="@dimen/widget_cover_width"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal"
 		android:background="@drawable/bg_appwidget_card"
 		android:foreground="?android:selectableItemBackground"
 		android:orientation="vertical"
+		android:padding="4dp"
 		tools:ignore="UnusedAttribute,UselessParent">
 
 		<ImageView
 			android:id="@+id/imageView_cover"
-			android:layout_width="match_parent"
+			android:layout_width="@dimen/widget_cover_width"
 			android:layout_height="@dimen/widget_cover_height"
 			android:scaleType="centerCrop"
 			tools:ignore="ContentDescription" />
@@ -31,8 +32,6 @@
 			android:elegantTextHeight="false"
 			android:ellipsize="end"
 			android:lines="2"
-			android:paddingHorizontal="4dp"
-			android:paddingBottom="4dp"
 			android:textColor="?android:attr/textColorPrimary" />
 
 	</LinearLayout>
