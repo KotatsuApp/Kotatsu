@@ -112,6 +112,10 @@ class AppSettings(context: Context) {
 	val isHistoryExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_EXCLUDE_NSFW, false)
 
+	var isIncognitoModeEnabled: Boolean
+		get() = prefs.getBoolean(KEY_INCOGNITO_MODE, false)
+		set(value) = prefs.edit { putBoolean(KEY_INCOGNITO_MODE, value) }
+
 	var chaptersReverse: Boolean
 		get() = prefs.getBoolean(KEY_REVERSE_CHAPTERS, false)
 		set(value) = prefs.edit { putBoolean(KEY_REVERSE_CHAPTERS, value) }
@@ -310,6 +314,7 @@ class AppSettings(context: Context) {
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 		const val KEY_DOH = "doh"
 		const val KEY_EXIT_CONFIRM = "exit_confirm"
+		const val KEY_INCOGNITO_MODE = "incognito"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

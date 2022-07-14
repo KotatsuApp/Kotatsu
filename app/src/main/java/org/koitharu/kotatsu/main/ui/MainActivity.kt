@@ -239,19 +239,15 @@ class MainActivity :
 		when (itemId) {
 			R.id.nav_library -> {
 				setPrimaryFragment(LibraryFragment.newInstance())
-				binding.root.isLiftAppBarOnScroll = true // придумать лучше
 			}
 			R.id.nav_explore -> {
 				setPrimaryFragment(ExploreFragment.newInstance())
-				binding.root.isLiftAppBarOnScroll = true // --//--
 			}
 			R.id.nav_feed -> {
 				setPrimaryFragment(FeedFragment.newInstance())
-				binding.root.isLiftAppBarOnScroll = true // --//--
 			}
 			R.id.nav_tools -> {
 				setPrimaryFragment(ToolsFragment.newInstance())
-				binding.root.isLiftAppBarOnScroll = true // --//--
 			}
 			else -> return false
 		}

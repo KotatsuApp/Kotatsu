@@ -65,7 +65,7 @@ class HistoryRepository(
 	}
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int, percent: Float) {
-		if (manga.isNsfw && settings.isHistoryExcludeNsfw) {
+		if (manga.isNsfw && settings.isHistoryExcludeNsfw || settings.isIncognitoModeEnabled) {
 			return
 		}
 		val tags = manga.tags.toEntities()

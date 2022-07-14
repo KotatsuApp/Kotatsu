@@ -6,6 +6,7 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.Insets
@@ -26,7 +27,8 @@ import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 import com.google.android.material.R as materialR
 
-class ToolsFragment : BaseFragment<FragmentToolsBinding>(), View.OnClickListener {
+
+class ToolsFragment : BaseFragment<FragmentToolsBinding>(), CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
 	private var updateChecker: AppUpdateChecker? = null
 	private val viewModel by viewModel<ToolsViewModel>()
@@ -41,6 +43,7 @@ class ToolsFragment : BaseFragment<FragmentToolsBinding>(), View.OnClickListener
 		binding.buttonDownloads.setOnClickListener(this)
 		binding.cardUpdate.root.setOnClickListener(this)
 		binding.cardUpdate.buttonDownload.setOnClickListener(this)
+		binding.incognito.setOnCheckedChangeListener(this)
 
 		viewModel.storageUsage.observe(viewLifecycleOwner, ::onStorageUsageChanged)
 	}
@@ -50,6 +53,10 @@ class ToolsFragment : BaseFragment<FragmentToolsBinding>(), View.OnClickListener
 			R.id.button_settings -> startActivity(SettingsActivity.newIntent(v.context))
 			R.id.button_downloads -> startActivity(DownloadsActivity.newIntent(v.context))
 		}
+	}
+
+	override fun onCheckedChanged(button: CompoundButton?, isChecked: Boolean) {
+		// TODO Incognito enabling logic
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

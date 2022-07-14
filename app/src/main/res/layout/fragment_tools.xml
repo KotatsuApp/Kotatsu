@@ -27,6 +27,18 @@
 			android:layout_height="wrap_content"
 			android:layout_marginVertical="@dimen/margin_small" />
 
+		<com.google.android.material.materialswitch.MaterialSwitch
+			android:id="@+id/incognito"
+			android:layout_width="match_parent"
+			android:layout_height="?android:listPreferredItemHeightSmall"
+			android:drawableStart="@drawable/ic_incognito"
+			android:drawablePadding="?android:listPreferredItemPaddingStart"
+			android:paddingStart="?android:listPreferredItemPaddingStart"
+			android:paddingEnd="?android:listPreferredItemPaddingEnd"
+			android:text="Incognito mode"
+			android:textAppearance="?attr/textAppearanceButton"
+			android:textColor="?attr/colorControlNormal"/>
+
 		<org.koitharu.kotatsu.base.ui.widgets.ListItemTextView
 			android:id="@+id/button_downloads"
 			android:layout_width="match_parent"
