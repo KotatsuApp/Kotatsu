@@ -89,26 +89,25 @@ class MultiSearchViewModel(
 		}
 	}
 
-	private suspend fun searchImpl(q: String) {
+	private suspend fun searchImpl(q: String) = coroutineScope {
 		val sources = settings.getMangaSources(includeHidden = false)
 		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
-		val deferredList = coroutineScope {
-			sources.map { source ->
-				async(dispatcher) {
-					runCatching {
-						val list = MangaRepository(source).getList(offset = 0, query = q)
-							.toUi(ListMode.GRID)
-						if (list.isNotEmpty()) {
-							MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list)
-						} else {
-							null
-						}
-					}.onFailure {
-						it.printStackTraceDebug()
+		val deferredList = sources.map { source ->
+			async(dispatcher) {
+				runCatching {
+					val list = MangaRepository(source).getList(offset = 0, query = q)
+						.toUi(ListMode.GRID)
+					if (list.isNotEmpty()) {
+						MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list)
+					} else {
+						null
 					}
+				}.onFailure {
+					it.printStackTraceDebug()
 				}
 			}
 		}
+
 		val errors = ArrayList<Throwable>()
 		for (deferred in deferredList) {
 			deferred.await()
@@ -120,13 +119,12 @@ class MultiSearchViewModel(
 					errors.add(it)
 				}
 		}
-		if (listData.value.isNotEmpty()) {
-			return
-		}
-		when (errors.size) {
-			0 -> Unit
-			1 -> throw errors[0]
-			else -> throw CompositeException(errors)
+		if (listData.value.isEmpty()) {
+			when (errors.size) {
+				0 -> Unit
+				1 -> throw errors[0]
+				else -> throw CompositeException(errors)
+			}
 		}
 	}
 }
