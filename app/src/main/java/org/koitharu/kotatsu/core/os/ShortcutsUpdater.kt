@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 
@@ -56,12 +57,14 @@ class ShortcutsUpdater(
 		return shortcutsUpdateJob?.join() != null
 	}
 
-	private suspend fun updateShortcutsImpl() {
+	private suspend fun updateShortcutsImpl() = runCatching {
 		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
 		val shortcuts = historyRepository.getList(0, manager.maxShortcutCountPerActivity)
 			.filter { x -> x.title.isNotEmpty() }
 			.map { buildShortcutInfo(it).build().toShortcutInfo() }
 		manager.dynamicShortcuts = shortcuts
+	}.onFailure {
+		it.printStackTraceDebug()
 	}
 
 	private suspend fun buildShortcutInfo(manga: Manga): ShortcutInfoCompat.Builder {

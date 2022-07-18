@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.os
 
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
+import android.os.Build
 import androidx.core.content.getSystemService
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -32,6 +33,9 @@ class ShortcutsUpdaterTest : KoinTest {
 
 	@Test
 	fun testUpdateShortcuts() = runTest {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+			return@runTest
+		}
 		awaitUpdate()
 		assertTrue(getShortcuts().isEmpty())
 		historyRepository.addOrUpdate(
@@ -55,11 +59,7 @@ class ShortcutsUpdaterTest : KoinTest {
 
 	private suspend fun awaitUpdate() {
 		val instrumentation = InstrumentationRegistry.getInstrumentation()
-		while (true) {
-			instrumentation.awaitForIdle()
-			if (shortcutsUpdater.await()) {
-				return
-			}
-		}
+		instrumentation.awaitForIdle()
+		shortcutsUpdater.await()
 	}
 }
