@@ -5,16 +5,18 @@ import android.content.Context
 import android.os.StrictMode
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.strictmode.FragmentStrictMode
+import androidx.room.InvalidationTracker
 import org.acra.ReportField
 import org.acra.config.dialog
 import org.acra.config.mailSender
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.koitharu.kotatsu.base.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.bookmarks.bookmarksModule
+import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.databaseModule
 import org.koitharu.kotatsu.core.github.githubModule
 import org.koitharu.kotatsu.core.network.networkModule
@@ -27,7 +29,6 @@ import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.local.localModule
 import org.koitharu.kotatsu.main.mainModule
-import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.readerModule
 import org.koitharu.kotatsu.remotelist.remoteListModule
@@ -36,7 +37,6 @@ import org.koitharu.kotatsu.search.searchModule
 import org.koitharu.kotatsu.settings.settingsModule
 import org.koitharu.kotatsu.suggestions.suggestionsModule
 import org.koitharu.kotatsu.tracker.trackerModule
-import org.koitharu.kotatsu.widget.WidgetUpdater
 import org.koitharu.kotatsu.widget.appWidgetModule
 
 class KotatsuApp : Application() {
@@ -48,11 +48,8 @@ class KotatsuApp : Application() {
 		}
 		initKoin()
 		AppCompatDelegate.setDefaultNightMode(get<AppSettings>().theme)
-		registerActivityLifecycleCallbacks(get<AppProtectHelper>())
-		registerActivityLifecycleCallbacks(get<ActivityRecreationHandle>())
-		val widgetUpdater = WidgetUpdater(applicationContext)
-		widgetUpdater.subscribeToFavourites(get())
-		widgetUpdater.subscribeToHistory(get())
+		setupActivityLifecycleCallbacks()
+		setupDatabaseObservers()
 	}
 
 	private fun initKoin() {
@@ -109,6 +106,22 @@ class KotatsuApp : Application() {
 				reportAsFile = true
 				reportFileName = "stacktrace.txt"
 			}
+		}
+	}
+
+	private fun setupDatabaseObservers() {
+		val observers = getKoin().getAll<InvalidationTracker.Observer>()
+		val database = get<MangaDatabase>()
+		val tracker = database.invalidationTracker
+		observers.forEach {
+			tracker.addObserver(it)
+		}
+	}
+
+	private fun setupActivityLifecycleCallbacks() {
+		val callbacks = getKoin().getAll<ActivityLifecycleCallbacks>()
+		callbacks.forEach {
+			registerActivityLifecycleCallbacks(it)
 		}
 	}
 
