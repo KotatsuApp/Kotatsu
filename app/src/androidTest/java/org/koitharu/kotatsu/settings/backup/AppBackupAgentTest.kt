@@ -44,7 +44,7 @@ class AppBackupAgentTest : KoinTest {
 			scroll = 40,
 			percent = 0.2f,
 		)
-		val history = checkNotNull(historyRepository.getOne(SampleData.mangaDetails))
+		val history = checkNotNull(historyRepository.getOne(SampleData.manga))
 
 		val agent = AppBackupAgent()
 		val backup = agent.createBackupFile(get(), backupRepository)

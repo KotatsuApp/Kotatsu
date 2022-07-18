@@ -17,18 +17,15 @@ object SampleData {
 		.add(KotlinJsonAdapterFactory())
 		.build()
 
-	val manga: Manga
-		get() = loadAsset("manga/header.json", Manga::class)
+	val manga: Manga = loadAsset("manga/header.json", Manga::class)
 
-	val mangaDetails: Manga
-		get() = loadAsset("manga/full.json", Manga::class)
+	val mangaDetails: Manga = loadAsset("manga/full.json", Manga::class)
 
 	val tag = mangaDetails.tags.elementAt(2)
 
 	val chapter = checkNotNull(mangaDetails.chapters)[2]
 
-	val favouriteCategory: FavouriteCategory
-		get() = loadAsset("categories/simple.json", FavouriteCategory::class)
+	val favouriteCategory: FavouriteCategory = loadAsset("categories/simple.json", FavouriteCategory::class)
 
 	fun <T : Any> loadAsset(name: String, cls: KClass<T>): T {
 		val assets = InstrumentationRegistry.getInstrumentation().context.assets

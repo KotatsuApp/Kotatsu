@@ -5,7 +5,6 @@ import android.content.pm.ShortcutManager
 import androidx.core.content.getSystemService
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -13,6 +12,7 @@ import org.junit.runner.RunWith
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.koitharu.kotatsu.SampleData
+import org.koitharu.kotatsu.awaitForIdle
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import kotlin.test.assertEquals
@@ -32,7 +32,7 @@ class ShortcutsUpdaterTest : KoinTest {
 
 	@Test
 	fun testUpdateShortcuts() = runTest {
-		shortcutsUpdater.await()
+		awaitUpdate()
 		assertTrue(getShortcuts().isEmpty())
 		historyRepository.addOrUpdate(
 			manga = SampleData.manga,
@@ -41,8 +41,7 @@ class ShortcutsUpdaterTest : KoinTest {
 			scroll = 2,
 			percent = 0.3f
 		)
-		delay(1000)
-		shortcutsUpdater.await()
+		awaitUpdate()
 
 		val shortcuts = getShortcuts()
 		assertEquals(1, shortcuts.size)
@@ -52,5 +51,15 @@ class ShortcutsUpdaterTest : KoinTest {
 		val context = InstrumentationRegistry.getInstrumentation().targetContext
 		val manager = checkNotNull(context.getSystemService<ShortcutManager>())
 		return manager.dynamicShortcuts.filterNot { it.id == "com.squareup.leakcanary.dynamic_shortcut" }
+	}
+
+	private suspend fun awaitUpdate() {
+		val instrumentation = InstrumentationRegistry.getInstrumentation()
+		while (true) {
+			instrumentation.awaitForIdle()
+			if (shortcutsUpdater.await()) {
+				return
+			}
+		}
 	}
 }

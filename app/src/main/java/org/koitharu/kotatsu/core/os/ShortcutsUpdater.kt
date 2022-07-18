@@ -52,8 +52,8 @@ class ShortcutsUpdater(
 	}
 
 	@VisibleForTesting
-	suspend fun await() {
-		shortcutsUpdateJob?.join()
+	suspend fun await(): Boolean {
+		return shortcutsUpdateJob?.join() != null
 	}
 
 	private suspend fun updateShortcutsImpl() {
