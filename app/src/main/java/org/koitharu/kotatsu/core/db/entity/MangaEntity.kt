@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "manga")
-class MangaEntity(
+data class MangaEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val id: Long,
 	@ColumnInfo(name = "title") val title: String,

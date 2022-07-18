@@ -21,7 +21,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 		)
 	]
 )
-class FavouriteEntity(
+data class FavouriteEntity(
 	@ColumnInfo(name = "manga_id", index = true) val mangaId: Long,
 	@ColumnInfo(name = "category_id", index = true) val categoryId: Long,
 	@ColumnInfo(name = "created_at") val createdAt: Long

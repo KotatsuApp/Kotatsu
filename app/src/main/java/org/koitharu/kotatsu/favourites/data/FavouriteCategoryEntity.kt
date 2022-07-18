@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "favourite_categories")
-class FavouriteCategoryEntity(
+data class FavouriteCategoryEntity(
 	@PrimaryKey(autoGenerate = true)
 	@ColumnInfo(name = "category_id") val categoryId: Int,
 	@ColumnInfo(name = "created_at") val createdAt: Long,

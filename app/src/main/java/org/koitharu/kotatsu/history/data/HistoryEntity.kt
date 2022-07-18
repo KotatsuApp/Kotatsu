@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 		)
 	]
 )
-class HistoryEntity(
+data class HistoryEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val mangaId: Long,
 	@ColumnInfo(name = "created_at") val createdAt: Long,

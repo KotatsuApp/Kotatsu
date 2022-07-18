@@ -6,7 +6,10 @@ import android.app.backup.BackupDataOutput
 import android.app.backup.FullBackupDataOutput
 import android.os.ParcelFileDescriptor
 import kotlinx.coroutines.runBlocking
-import org.koitharu.kotatsu.core.backup.*
+import org.koitharu.kotatsu.core.backup.BackupEntry
+import org.koitharu.kotatsu.core.backup.BackupRepository
+import org.koitharu.kotatsu.core.backup.BackupZipInput
+import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import java.io.*
 
@@ -63,7 +66,7 @@ class AppBackupAgent : BackupAgent() {
 	}
 
 	private fun restoreBackupFile(fd: FileDescriptor, size: Long) {
-		val repository = RestoreRepository(MangaDatabase(applicationContext))
+		val repository = BackupRepository(MangaDatabase(applicationContext))
 		val tempFile = File.createTempFile("backup_", ".tmp")
 		FileInputStream(fd).use { input ->
 			tempFile.outputStream().use { output ->
@@ -73,9 +76,9 @@ class AppBackupAgent : BackupAgent() {
 		val backup = BackupZipInput(tempFile)
 		try {
 			runBlocking {
-				repository.upsertHistory(backup.getEntry(BackupEntry.HISTORY))
-				repository.upsertCategories(backup.getEntry(BackupEntry.CATEGORIES))
-				repository.upsertFavourites(backup.getEntry(BackupEntry.FAVOURITES))
+				repository.restoreHistory(backup.getEntry(BackupEntry.HISTORY))
+				repository.restoreCategories(backup.getEntry(BackupEntry.CATEGORIES))
+				repository.restoreFavourites(backup.getEntry(BackupEntry.FAVOURITES))
 			}
 		} finally {
 			backup.close()
