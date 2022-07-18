@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.preference.Preference
@@ -14,6 +16,7 @@ import org.koitharu.kotatsu.core.network.AndroidCookieJar
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.LocalStorageManager
+import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.FileSize
@@ -25,6 +28,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	private val trackerRepo by inject<TrackingRepository>(mode = LazyThreadSafetyMode.NONE)
 	private val searchRepository by inject<MangaSearchRepository>(mode = LazyThreadSafetyMode.NONE)
 	private val storageManager by inject<LocalStorageManager>(mode = LazyThreadSafetyMode.NONE)
+	private val shikimoriRepository by inject<ShikimoriRepository>(mode = LazyThreadSafetyMode.NONE)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)
@@ -43,11 +47,16 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 		}
 		findPreference<Preference>(AppSettings.KEY_UPDATES_FEED_CLEAR)?.let { pref ->
 			viewLifecycleScope.launchWhenResumed {
-				val items = trackerRepo.count()
+				val items = trackerRepo.getLogsCount()
 				pref.summary =
 					pref.context.resources.getQuantityString(R.plurals.items, items, items)
 			}
 		}
+	}
+
+	override fun onResume() {
+		super.onResume()
+		bindShikimoriSummary()
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -80,6 +89,14 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					).show()
 				}
 				true
+			}
+			AppSettings.KEY_SHIKIMORI -> {
+				if (!shikimoriRepository.isAuthorized) {
+					launchShikimoriAuth()
+					true
+				} else {
+					super.onPreferenceTreeClick(preference)
+				}
 			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
@@ -141,5 +158,23 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					).show()
 				}
 			}.show()
+	}
+
+	private fun bindShikimoriSummary() {
+		findPreference<Preference>(AppSettings.KEY_SHIKIMORI)?.summary = if (shikimoriRepository.isAuthorized) {
+			getString(R.string.logged_in_as, shikimoriRepository.getCachedUser()?.nickname)
+		} else {
+			getString(R.string.disabled)
+		}
+	}
+
+	private fun launchShikimoriAuth() {
+		runCatching {
+			val intent = Intent(Intent.ACTION_VIEW)
+			intent.data = Uri.parse(shikimoriRepository.oauthUrl)
+			startActivity(intent)
+		}.onFailure {
+			Snackbar.make(listView, it.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+		}
 	}
 }

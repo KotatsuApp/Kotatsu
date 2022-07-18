@@ -240,7 +240,6 @@
     <string name="create_backup">Criar backup de dados</string>
     <string name="text_local_holder_secondary">Salve-o de fontes online ou importe arquivos.</string>
     <string name="check_for_updates">Verifique se há atualizações</string>
-    <string name="restart_required">É necessário reiniciar</string>
     <string name="text_feed_holder">Novos capítulos do que você está lendo são mostrados aqui</string>
     <string name="app_version">Versão %s</string>
     <string name="zoom_mode_fit_width">Ajustar à largura</string>
@@ -295,4 +294,6 @@
     <string name="default_mode">Modo padrão</string>
     <string name="detect_reader_mode">Detecção automática do modo de leitura</string>
     <string name="detect_reader_mode_summary">Detectar automaticamente se o mangá é webtoon</string>
+    <string name="disable_battery_optimization">Desative a otimização da bateria</string>
+    <string name="disable_battery_optimization_summary">Ajuda com verificações de atualizações em segundo plano</string>
 </resources>

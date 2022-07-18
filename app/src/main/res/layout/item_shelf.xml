@@ -3,21 +3,25 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
+	android:layout_height="wrap_content"
+	android:padding="4dp"
+	android:theme="@style/Theme.Kotatsu.AppWidgetContainer">
 
 	<LinearLayout
 		android:id="@+id/rootLayout"
-		android:layout_width="92dp"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal"
+		android:background="@drawable/bg_appwidget_card"
+		android:foreground="?android:selectableItemBackground"
 		android:orientation="vertical"
-		android:paddingBottom="4dp"
-		tools:ignore="UselessParent">
+		android:padding="4dp"
+		tools:ignore="UnusedAttribute,UselessParent">
 
 		<ImageView
 			android:id="@+id/imageView_cover"
-			android:layout_width="match_parent"
-			android:layout_height="128dp"
+			android:layout_width="@dimen/widget_cover_width"
+			android:layout_height="@dimen/widget_cover_height"
 			android:scaleType="centerCrop"
 			tools:ignore="ContentDescription" />
 
@@ -25,12 +29,10 @@
 			android:id="@+id/textView_title"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:elegantTextHeight="false"
 			android:ellipsize="end"
-			android:gravity="center"
 			android:lines="2"
-			android:shadowColor="@android:color/black"
-			android:shadowRadius="1"
-			android:textColor="@android:color/white" />
+			android:textColor="?android:attr/textColorPrimary" />
 
 	</LinearLayout>
 

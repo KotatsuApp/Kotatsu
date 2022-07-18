@@ -1,15 +1,14 @@
 package org.koitharu.kotatsu.details.ui
 
-import android.app.ActivityOptions
 import android.os.Bundle
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
+import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.core.text.parseAsHtml
+import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -26,10 +25,12 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
-import org.koitharu.kotatsu.bookmarks.ui.BookmarksAdapter
+import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
+import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingInfoBottomSheet
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
+import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -37,9 +38,11 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
 
 class DetailsFragment :
@@ -51,11 +54,6 @@ class DetailsFragment :
 
 	private val viewModel by sharedViewModel<DetailsViewModel>()
 	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setHasOptionsMenu(true)
-	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -69,6 +67,7 @@ class DetailsFragment :
 		binding.buttonRead.setOnClickListener(this)
 		binding.buttonRead.setOnLongClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
+		binding.scrobblingLayout.root.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
@@ -76,16 +75,16 @@ class DetailsFragment :
 		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
 		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		super.onCreateOptionsMenu(menu, inflater)
-		inflater.inflate(R.menu.opt_details_info, menu)
+		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
+		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
+		addMenuProvider(DetailsMenuProvider())
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
-		val options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.width, view.height)
-		startActivity(ReaderActivity.newIntent(view.context, item), options.toBundle())
+		startActivity(
+			ReaderActivity.newIntent(view.context, item),
+			scaleUpActivityOptionsOf(view).toBundle(),
+		)
 	}
 
 	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
@@ -108,8 +107,6 @@ class DetailsFragment :
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
 			textViewAuthor.textAndVisible = manga.author
-			textViewDescription.text = manga.description?.parseAsHtml()?.takeUnless(Spanned::isBlank)
-				?: getString(R.string.no_description)
 			when (manga.state) {
 				MangaState.FINISHED -> {
 					textViewState.apply {
@@ -172,6 +169,14 @@ class DetailsFragment :
 		}
 	}
 
+	private fun onDescriptionChanged(description: CharSequence?) {
+		if (description.isNullOrBlank()) {
+			binding.textViewDescription.setText(R.string.no_description)
+		} else {
+			binding.textViewDescription.text = description
+		}
+	}
+
 	private fun onHistoryChanged(history: MangaHistory?) {
 		with(binding.buttonRead) {
 			if (history == null) {
@@ -182,6 +187,7 @@ class DetailsFragment :
 				setIconResource(R.drawable.ic_play)
 			}
 		}
+		binding.progressView.setPercent(history?.percent ?: PROGRESS_NONE, animate = true)
 	}
 
 	private fun onFavouriteChanged(isFavourite: Boolean) {
@@ -215,11 +221,37 @@ class DetailsFragment :
 		}
 	}
 
+	private fun onScrobblingInfoChanged(scrobbling: ScrobblingInfo?) {
+		with(binding.scrobblingLayout) {
+			root.isVisible = scrobbling != null
+			if (scrobbling == null) {
+				CoilUtils.dispose(imageViewCover)
+				return
+			}
+			imageViewCover.newImageRequest(scrobbling.coverUrl)?.run {
+				placeholder(R.drawable.ic_placeholder)
+				fallback(R.drawable.ic_placeholder)
+				error(R.drawable.ic_placeholder)
+				lifecycle(viewLifecycleOwner)
+				enqueueWith(coil)
+			}
+			textViewTitle.text = scrobbling.title
+			textViewTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, scrobbling.scrobbler.iconResId, 0)
+			ratingBar.rating = scrobbling.rating * ratingBar.numStars
+			textViewStatus.text = scrobbling.status?.let {
+				resources.getStringArray(R.array.scrobbling_statuses).getOrNull(it.ordinal)
+			}
+		}
+	}
+
 	override fun onClick(v: View) {
 		val manga = viewModel.manga.value ?: return
 		when (v.id) {
 			R.id.button_favorite -> {
 				FavouriteCategoriesBottomSheet.show(childFragmentManager, manga)
+			}
+			R.id.scrobbling_layout -> {
+				ScrobblingInfoBottomSheet.show(childFragmentManager)
 			}
 			R.id.button_read -> {
 				val chapterId = viewModel.readingHistory.value?.chapterId
@@ -245,10 +277,9 @@ class DetailsFragment :
 				)
 			}
 			R.id.imageView_cover -> {
-				val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
 				startActivity(
 					ImageActivity.newIntent(v.context, manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }),
-					options.toBundle()
+					scaleUpActivityOptionsOf(v).toBundle()
 				)
 			}
 		}
@@ -296,7 +327,9 @@ class DetailsFragment :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
-			bottom = insets.bottom,
+			left = insets.left,
+			right = insets.right,
+			bottom = insets.bottom
 		)
 	}
 
@@ -307,6 +340,8 @@ class DetailsFragment :
 					title = tag.title,
 					icon = 0,
 					data = tag,
+					isCheckable = false,
+					isChecked = false,
 				)
 			}
 		)
@@ -321,12 +356,34 @@ class DetailsFragment :
 		val request = ImageRequest.Builder(context ?: return)
 			.target(binding.imageViewCover)
 			.data(imageUrl)
-			.crossfade(true)
+			.crossfade(context)
 			.referer(manga.publicUrl)
 			.lifecycle(viewLifecycleOwner)
 		lastResult?.drawable?.let {
 			request.fallback(it)
 		} ?: request.fallback(R.drawable.ic_placeholder)
 		request.enqueueWith(coil)
+	}
+
+	private inner class DetailsMenuProvider : MenuProvider {
+
+		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+			menuInflater.inflate(R.menu.opt_details_info, menu)
+		}
+
+		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+			R.id.action_share -> {
+				viewModel.manga.value?.let {
+					val context = requireContext()
+					if (it.source == MangaSource.LOCAL) {
+						ShareHelper(context).shareCbz(listOf(it.url.toUri().toFile()))
+					} else {
+						ShareHelper(context).shareMangaLink(it)
+					}
+				}
+				true
+			}
+			else -> false
+		}
 	}
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+		android:id="@+id/nav_library"
+		android:icon="@drawable/ic_bookshelf_selector"
+		android:title="@string/manga_shelf" />
+
+	<item
+		android:id="@+id/nav_explore"
+		android:icon="@drawable/ic_explore_selector"
+		android:title="@string/explore" />
+
+	<item
+		android:id="@+id/nav_feed"
+		android:icon="@drawable/ic_feed"
+		android:title="@string/updates" />
+
+	<item
+		android:id="@+id/nav_tools"
+		android:icon="@drawable/ic_tools"
+		android:title="@string/tools" />
+
+</menu>

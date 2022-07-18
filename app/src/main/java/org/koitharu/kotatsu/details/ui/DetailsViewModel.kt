@@ -1,8 +1,16 @@
 package org.koitharu.kotatsu.details.ui
 
-import androidx.lifecycle.*
-import kotlinx.coroutines.*
+import android.text.Html
+import androidx.core.text.parseAsHtml
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -19,6 +27,8 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
@@ -30,10 +40,12 @@ class DetailsViewModel(
 	private val historyRepository: HistoryRepository,
 	favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
-	private val trackingRepository: TrackingRepository,
+	trackingRepository: TrackingRepository,
 	mangaDataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
+	private val scrobbler: Scrobbler,
+	private val imageGetter: Html.ImageGetter,
 ) : BaseViewModel() {
 
 	private val delegate = MangaDetailsDelegate(
@@ -54,9 +66,8 @@ class DetailsViewModel(
 	private val favourite = favouritesRepository.observeCategoriesIds(delegate.mangaId).map { it.isNotEmpty() }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	private val newChapters = viewModelScope.async(Dispatchers.Default) {
-		trackingRepository.getNewChaptersCount(delegate.mangaId)
-	}
+	private val newChapters = trackingRepository.observeNewChaptersCount(delegate.mangaId)
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	private val chaptersQuery = MutableStateFlow("")
 
@@ -65,31 +76,51 @@ class DetailsViewModel(
 
 	val manga = delegate.manga.filterNotNull().asLiveData(viewModelScope.coroutineContext)
 	val favouriteCategories = favourite.asLiveData(viewModelScope.coroutineContext)
-	val newChaptersCount = liveData(viewModelScope.coroutineContext) { emit(newChapters.await()) }
+	val newChaptersCount = newChapters.asLiveData(viewModelScope.coroutineContext)
 	val readingHistory = history.asLiveData(viewModelScope.coroutineContext)
 	val isChaptersReversed = chaptersReversed.asLiveData(viewModelScope.coroutineContext)
 
 	val bookmarks = delegate.manga.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+
+	val description = delegate.manga
+		.distinctUntilChangedBy { it?.description.orEmpty() }
+		.transformLatest {
+			val description = it?.description
+			if (description.isNullOrEmpty()) {
+				emit(null)
+			} else {
+				emit(description.parseAsHtml())
+				emit(description.parseAsHtml(imageGetter = imageGetter))
+			}
+		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
+	val isScrobblingAvailable: Boolean
+		get() = scrobbler.isAvailable
+
+	val scrobblingInfo = scrobbler.observeScrobblingInfo(delegate.mangaId)
+		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
 	val branches: LiveData<List<String?>> = delegate.manga.map {
 		val chapters = it?.chapters ?: return@map emptyList()
 		chapters.mapToSet { x -> x.branch }.sortedWith(BranchComparator())
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val selectedBranchIndex = combine(
 		branches.asFlow(),
 		delegate.selectedBranch
 	) { branches, selected ->
 		branches.indexOf(selected)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, -1)
 
-	val isChaptersEmpty: LiveData<Boolean> = delegate.manga.map { m ->
-		m != null && m.chapters.isNullOrEmpty()
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	val isChaptersEmpty: LiveData<Boolean> = combine(
+		delegate.manga,
+		isLoading.asFlow(),
+	) { m, loading ->
+		m != null && m.chapters.isNullOrEmpty() && !loading
+	}.asLiveDataDistinct(viewModelScope.coroutineContext, false)
 
 	val chapters = combine(
 		combine(
@@ -97,8 +128,9 @@ class DetailsViewModel(
 			delegate.relatedManga,
 			history,
 			delegate.selectedBranch,
-		) { manga, related, history, branch ->
-			delegate.mapChapters(manga, related, history, newChapters.await(), branch)
+			newChapters,
+		) { manga, related, history, branch, news ->
+			delegate.mapChapters(manga, related, history, news, branch)
 		},
 		chaptersReversed,
 		chaptersQuery,
@@ -176,6 +208,25 @@ class DetailsViewModel(
 					it.printStackTraceDebug()
 				}
 			}
+		}
+	}
+
+	fun updateScrobbling(rating: Float, status: ScrobblingStatus?) {
+		launchJob(Dispatchers.Default) {
+			scrobbler.updateScrobblingInfo(
+				mangaId = delegate.mangaId,
+				rating = rating,
+				status = status,
+				comment = null,
+			)
+		}
+	}
+
+	fun unregisterScrobbling() {
+		launchJob(Dispatchers.Default) {
+			scrobbler.unregisterScrobbling(
+				mangaId = delegate.mangaId
+			)
 		}
 	}
 

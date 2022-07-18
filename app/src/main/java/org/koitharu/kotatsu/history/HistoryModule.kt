@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.history.ui.HistoryListViewModel
 val historyModule
 	get() = module {
 
-		factory { HistoryRepository(get(), get(), get()) }
-		viewModel { HistoryListViewModel(get(), get(), get(), get()) }
+		single { HistoryRepository(get(), get(), get(), getAll()) }
+
+		viewModel { HistoryListViewModel(get(), get(), get()) }
 	}

@@ -32,7 +32,7 @@ fun listHeaderWithFilterAD(
 ) {
 
 	binding.textViewFilter.setOnClickListener {
-		listener.onFilterClick()
+		listener.onFilterClick(it)
 	}
 
 	bind {

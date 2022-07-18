@@ -46,19 +46,20 @@ abstract class HistoryDao {
 	@Query("UPDATE history SET deleted_at = :now WHERE deleted_at = 0")
 	abstract suspend fun clear(now: Long = System.currentTimeMillis())
 
+	@Query("SELECT percent FROM history WHERE manga_id = :id AND deleted_at = 0")
+	abstract suspend fun findProgress(id: Long): Float?
+
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(entity: HistoryEntity): Long
 
-	@Query(
-		"UPDATE history SET page = :page, chapter_id = :chapterId, scroll = :scroll, updated_at = :updatedAt " +
-			"WHERE manga_id = :mangaId"
-	)
+	@Query("UPDATE history SET page = :page, chapter_id = :chapterId, scroll = :scroll, percent = :percent, updated_at = :updatedAt WHERE manga_id = :mangaId")
 	abstract suspend fun update(
 		mangaId: Long,
 		page: Int,
 		chapterId: Long,
 		scroll: Float,
-		updatedAt: Long
+		percent: Float,
+		updatedAt: Long,
 	): Int
 
 	@Query("UPDATE history SET deleted_at = :now WHERE manga_id = :mangaId")
@@ -69,8 +70,17 @@ abstract class HistoryDao {
 	@Query("DELETE FROM history WHERE deleted_at != 0 AND deleted_at < :maxDeletionTime")
 	abstract suspend fun gc(maxDeletionTime: Long)
 
-	suspend fun update(entity: HistoryEntity) =
-		update(entity.mangaId, entity.page, entity.chapterId, entity.scroll, entity.updatedAt)
+	@Query("DELETE FROM history WHERE created_at >= :minDate")
+	abstract suspend fun deleteAfter(minDate: Long)
+
+	suspend fun update(entity: HistoryEntity) = update(
+		mangaId = entity.mangaId,
+		page = entity.page,
+		chapterId = entity.chapterId,
+		scroll = entity.scroll,
+		percent = entity.percent,
+		updatedAt = entity.updatedAt
+	)
 
 	@Transaction
 	open suspend fun upsert(entity: HistoryEntity): Boolean {

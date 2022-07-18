@@ -1,14 +1,8 @@
 package org.koitharu.kotatsu.bookmarks.data
 
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
-import org.koitharu.kotatsu.core.db.entity.toManga
-import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.util.*
-
-fun BookmarkWithManga.toBookmark() = bookmark.toBookmark(
-	manga.toManga(tags.toMangaTags())
-)
 
 fun BookmarkEntity.toBookmark(manga: Manga) = Bookmark(
 	manga = manga,
@@ -18,6 +12,7 @@ fun BookmarkEntity.toBookmark(manga: Manga) = Bookmark(
 	scroll = scroll,
 	imageUrl = imageUrl,
 	createdAt = Date(createdAt),
+	percent = percent,
 )
 
 fun Bookmark.toEntity() = BookmarkEntity(
@@ -28,4 +23,11 @@ fun Bookmark.toEntity() = BookmarkEntity(
 	scroll = scroll,
 	imageUrl = imageUrl,
 	createdAt = createdAt.time,
+	percent = percent,
 )
+
+fun Collection<BookmarkEntity>.toBookmarks(manga: Manga) = map {
+	it.toBookmark(manga)
+}
+
+fun Collection<Bookmark>.ids() = map { it.pageId }

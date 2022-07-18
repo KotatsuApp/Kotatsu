@@ -2,20 +2,20 @@ package org.koitharu.kotatsu.local.data
 
 import android.content.Context
 import com.tomclaw.cache.DiskLruCache
-import java.io.File
-import java.io.InputStream
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.subdir
 import org.koitharu.kotatsu.utils.ext.takeIfReadable
+import java.io.File
+import java.io.InputStream
 
 class PagesCache(context: Context) {
 
 	private val cacheDir = context.externalCacheDir ?: context.cacheDir
-	private val lruCache = DiskLruCache.create(
-		cacheDir.subdir(CacheDir.PAGES.dir),
-		FileSize.MEGABYTES.convert(200, FileSize.BYTES),
+	private val lruCache = createDiskLruCacheSafe(
+		dir = cacheDir.subdir(CacheDir.PAGES.dir),
+		size = FileSize.MEGABYTES.convert(200, FileSize.BYTES),
 	)
 
 	operator fun get(url: String): File? {
@@ -59,5 +59,15 @@ class PagesCache(context: Context) {
 		if (contentLength > 0) {
 			progress.value = (bytesCopied.toDouble() / contentLength.toDouble()).toFloat()
 		}
+	}
+}
+
+private fun createDiskLruCacheSafe(dir: File, size: Long): DiskLruCache {
+	return try {
+		DiskLruCache.create(dir, size)
+	} catch (e: Exception) {
+		dir.deleteRecursively()
+		dir.mkdir()
+		DiskLruCache.create(dir, size)
 	}
 }

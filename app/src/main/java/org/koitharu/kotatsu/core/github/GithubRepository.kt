@@ -10,7 +10,7 @@ class GithubRepository(private val okHttp: OkHttpClient) {
 	suspend fun getLatestVersion(): AppVersion {
 		val request = Request.Builder()
 			.get()
-			.url("https://api.github.com/repos/nv95/Kotatsu/releases/latest")
+			.url("https://api.github.com/repos/KotatsuApp/Kotatsu/releases/latest")
 		val json = okHttp.newCall(request.build()).await().parseJson()
 		val asset = json.getJSONArray("assets").getJSONObject(0)
 		return AppVersion(

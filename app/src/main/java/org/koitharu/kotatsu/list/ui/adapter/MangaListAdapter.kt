@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.*
 import kotlin.jvm.internal.Intrinsics
 
-class MangaListAdapter(
+open class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
@@ -18,7 +18,7 @@ class MangaListAdapter(
 		delegatesManager
 			.addDelegate(ITEM_TYPE_MANGA_LIST, mangaListItemAD(coil, lifecycleOwner, listener))
 			.addDelegate(ITEM_TYPE_MANGA_LIST_DETAILED, mangaListDetailedItemAD(coil, lifecycleOwner, listener))
-			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, listener))
+			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, listener, null))
 			.addDelegate(ITEM_TYPE_LOADING_FOOTER, loadingFooterAD())
 			.addDelegate(ITEM_TYPE_LOADING_STATE, loadingStateAD())
 			.addDelegate(ITEM_TYPE_DATE, relatedDateItemAD())
@@ -26,7 +26,7 @@ class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(listener))
 			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(listener))
 			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
-			.addDelegate(ITEM_TYPE_FILTER, currentFilterAD(listener))
+			.addDelegate(ITEM_TYPE_HEADER_2, listHeader2AD(listener))
 			.addDelegate(ITEM_TYPE_HEADER_FILTER, listHeaderWithFilterAD(listener))
 	}
 
@@ -54,10 +54,15 @@ class MangaListAdapter(
 
 		override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
 			return when (newItem) {
-				is MangaListModel,
-				is MangaGridModel,
-				is MangaListDetailedModel,
-				is CurrentFilterModel -> Unit
+				is MangaItemModel -> {
+					oldItem as MangaItemModel
+					if (oldItem.progress != newItem.progress) {
+						PAYLOAD_PROGRESS
+					} else {
+						Unit
+					}
+				}
+				is ListHeader2 -> Unit
 				else -> super.getChangePayload(oldItem, newItem)
 			}
 		}
@@ -75,7 +80,9 @@ class MangaListAdapter(
 		const val ITEM_TYPE_ERROR_FOOTER = 7
 		const val ITEM_TYPE_EMPTY = 8
 		const val ITEM_TYPE_HEADER = 9
-		const val ITEM_TYPE_FILTER = 10
+		const val ITEM_TYPE_HEADER_2 = 10
 		const val ITEM_TYPE_HEADER_FILTER = 11
+
+		val PAYLOAD_PROGRESS = Any()
 	}
 }

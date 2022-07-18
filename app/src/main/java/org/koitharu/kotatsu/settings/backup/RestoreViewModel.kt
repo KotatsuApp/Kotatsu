@@ -7,9 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.backup.BackupEntry
+import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.CompositeResult
-import org.koitharu.kotatsu.core.backup.RestoreRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.progress.Progress
 import java.io.File
@@ -17,7 +17,7 @@ import java.io.FileNotFoundException
 
 class RestoreViewModel(
 	uri: Uri?,
-	private val repository: RestoreRepository,
+	private val repository: BackupRepository,
 	context: Context
 ) : BaseViewModel() {
 
@@ -44,13 +44,13 @@ class RestoreViewModel(
 				val result = CompositeResult()
 
 				progress.value = Progress(0, 3)
-				result += repository.upsertHistory(backup.getEntry(BackupEntry.HISTORY))
+				result += repository.restoreHistory(backup.getEntry(BackupEntry.HISTORY))
 
 				progress.value = Progress(1, 3)
-				result += repository.upsertCategories(backup.getEntry(BackupEntry.CATEGORIES))
+				result += repository.restoreCategories(backup.getEntry(BackupEntry.CATEGORIES))
 
 				progress.value = Progress(2, 3)
-				result += repository.upsertFavourites(backup.getEntry(BackupEntry.FAVOURITES))
+				result += repository.restoreFavourites(backup.getEntry(BackupEntry.FAVOURITES))
 
 				progress.value = Progress(3, 3)
 				onRestoreDone.call(result)

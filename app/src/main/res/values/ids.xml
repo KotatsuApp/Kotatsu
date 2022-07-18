@@ -3,4 +3,5 @@
     <item name="toolbar" type="id" />
     <item name="container" type="id" />
     <item name="action_leaks" type="id" />
+	<item name="fast_scroller" type="id" />
 </resources>

@@ -50,6 +50,13 @@ class FavouritesRepository(
 		}.distinctUntilChanged()
 	}
 
+	fun observeCategoriesWithDetails(): Flow<Map<FavouriteCategory, List<String>>> {
+		return db.favouriteCategoriesDao.observeAllWithDetails()
+			.map {
+				it.mapKeys { (k, _) -> k.toFavouriteCategory() }
+			}
+	}
+
 	fun observeCategory(id: Long): Flow<FavouriteCategory?> {
 		return db.favouriteCategoriesDao.observe(id)
 			.map { it?.toFavouriteCategory() }
@@ -72,6 +79,7 @@ class FavouritesRepository(
 			order = sortOrder.name,
 			track = isTrackerEnabled,
 			deletedAt = 0L,
+			isVisibleInLibrary = true,
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
 		val category = entity.toFavouriteCategory(id)
@@ -83,9 +91,21 @@ class FavouritesRepository(
 		db.favouriteCategoriesDao.update(id, title, sortOrder.name, isTrackerEnabled)
 	}
 
+	suspend fun updateCategory(id: Long, isVisibleInLibrary: Boolean) {
+		db.favouriteCategoriesDao.updateLibVisibility(id, isVisibleInLibrary)
+	}
+
 	suspend fun removeCategory(id: Long) {
 		db.favouriteCategoriesDao.delete(id)
 		channels.deleteChannel(id)
+	}
+
+	suspend fun removeCategories(ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				removeCategory(id)
+			}
+		}
 	}
 
 	suspend fun setCategoryOrder(id: Long, order: SortOrder) {
@@ -111,6 +131,7 @@ class FavouritesRepository(
 					mangaId = manga.id,
 					categoryId = categoryId,
 					createdAt = System.currentTimeMillis(),
+					sortKey = 0,
 					deletedAt = 0L,
 				)
 				db.favouritesDao.insert(entity)

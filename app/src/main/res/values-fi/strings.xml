@@ -53,7 +53,6 @@
     <string name="restore_backup">Palauta varmuuskopiosta</string>
     <string name="create_backup">Luo tietojen varmuuskopio</string>
     <string name="backup_restore">Varmuuskopiointi ja palautus</string>
-    <string name="restart_required">Uudelleenkäynnistys vaaditaan</string>
     <string name="black_dark_theme_summary">Hyödyllinen AMOLED-näytöille</string>
     <string name="black_dark_theme">Musta tumma teema</string>
     <string name="zoom_mode_keep_start">Pidä alussa</string>
@@ -295,4 +294,18 @@
     <string name="detect_reader_mode">Lukijan automaattinen tunnistaminen</string>
     <string name="detect_reader_mode_summary">Tunnista automaattisesti, onko manga webtoon</string>
     <string name="default_mode">Oletustila</string>
+    <string name="disable_battery_optimization">Poista akun optimoinnin käytöstä</string>
+    <string name="disable_battery_optimization_summary">Auttaa taustapäivitystarkastuksissa</string>
+    <string name="crash_text">Jokin meni pieleen. Lähetä vikailmoitus kehittäjille, jotta voimme korjata sen.</string>
+    <string name="disable_all">Poista kaikki käytöstä</string>
+    <string name="send">Lähetä</string>
+    <string name="use_fingerprint">Käytä sormenjälkeä, jos käytettävissä</string>
+    <string name="appwidget_shelf_description">Manga suosikeistasi</string>
+    <string name="appwidget_recent_description">Äskettäin lukemasi manga</string>
+    <string name="tracking">Seuranta</string>
+    <string name="logout">Kirjaudu ulos</string>
+    <string name="status_reading">Lukemassa</string>
+    <string name="status_re_reading">Lukemassa uudelleen</string>
+    <string name="data_deletion">Tietojen poistaminen</string>
+    <string name="show_all">Näytä kaikki</string>
 </resources>

@@ -17,7 +17,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 
@@ -35,7 +34,6 @@ class MangaSearchRepository(
 					MangaRepository(source).getList(
 						offset = 0,
 						query = query,
-						sortOrder = SortOrder.POPULARITY
 					)
 				}.getOrElse {
 					emptyList()
@@ -90,6 +88,19 @@ class MangaSearchRepository(
 			else -> db.tagsDao.findPopularTags(limit)
 		}.map {
 			it.toMangaTag()
+		}
+	}
+
+	fun getSourcesSuggestion(query: String, limit: Int): List<MangaSource> {
+		if (query.length < 3) {
+			return emptyList()
+		}
+		val sources = settings.remoteMangaSources
+			.filter { x -> x.title.contains(query, ignoreCase = true) }
+		return if (limit == 0) {
+			sources
+		} else {
+			sources.take(limit)
 		}
 	}
 

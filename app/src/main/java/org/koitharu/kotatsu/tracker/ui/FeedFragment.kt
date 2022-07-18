@@ -1,10 +1,11 @@
 package org.koitharu.kotatsu.tracker.ui
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -16,14 +17,13 @@ import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.progress.Progress
+import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class FeedFragment :
 	BaseFragment<FragmentFeedBinding>(),
@@ -33,14 +33,8 @@ class FeedFragment :
 	private val viewModel by viewModel<FeedViewModel>()
 
 	private var feedAdapter: FeedAdapter? = null
-	private var updateStatusSnackbar: Snackbar? = null
 	private var paddingVertical = 0
 	private var paddingHorizontal = 0
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setHasOptionsMenu(true)
-	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -63,67 +57,39 @@ class FeedFragment :
 			)
 			addItemDecoration(decoration)
 		}
+		with(binding.swipeRefreshLayout) {
+			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
+			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
+			isEnabled = false
+		}
+		addMenuProvider(FeedMenuProvider(binding.recyclerView, viewModel))
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
 		viewModel.onFeedCleared.observe(viewLifecycleOwner) {
 			onFeedCleared()
 		}
-		TrackWorker.getProgressLiveData(view.context.applicationContext)
-			.observe(viewLifecycleOwner, this::onUpdateProgressChanged)
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		super.onCreateOptionsMenu(menu, inflater)
-		inflater.inflate(R.menu.opt_feed, menu)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return when (item.itemId) {
-			R.id.action_update -> {
-				TrackWorker.startNow(requireContext())
-				Snackbar.make(
-					binding.recyclerView,
-					R.string.feed_will_update_soon,
-					Snackbar.LENGTH_LONG,
-				).show()
-				true
-			}
-			R.id.action_clear_feed -> {
-				MaterialAlertDialogBuilder(context ?: return false)
-					.setTitle(R.string.clear_updates_feed)
-					.setMessage(R.string.text_clear_updates_feed_prompt)
-					.setNegativeButton(android.R.string.cancel, null)
-					.setPositiveButton(R.string.clear) { _, _ ->
-						viewModel.clearFeed()
-					}.show()
-				true
-			}
-			else -> super.onOptionsItemSelected(item)
-		}
+		TrackWorker.getIsRunningLiveData(view.context.applicationContext)
+			.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
 	}
 
 	override fun onDestroyView() {
 		feedAdapter = null
-		updateStatusSnackbar = null
 		super.onDestroyView()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		binding.recyclerView.updatePadding(
-			top = headerHeight + paddingVertical,
 			left = insets.left + paddingHorizontal,
 			right = insets.right + paddingHorizontal,
-			bottom = insets.bottom + paddingVertical,
 		)
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit
 
-	override fun onTagRemoveClick(tag: MangaTag) = Unit
+	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 
-	override fun onFilterClick() = Unit
+	override fun onFilterClick(view: View?) = Unit
 
 	override fun onEmptyActionClick() = Unit
 
@@ -147,23 +113,8 @@ class FeedFragment :
 		).show()
 	}
 
-	private fun onUpdateProgressChanged(progress: Progress?) {
-		if (progress == null) {
-			updateStatusSnackbar?.dismiss()
-			updateStatusSnackbar = null
-			return
-		}
-		val summaryText = getString(
-			R.string.chapters_checking_progress,
-			progress.value + 1,
-			progress.total
-		)
-		updateStatusSnackbar?.setText(summaryText) ?: run {
-			val snackbar =
-				Snackbar.make(binding.recyclerView, summaryText, Snackbar.LENGTH_INDEFINITE)
-			updateStatusSnackbar = snackbar
-			snackbar.show()
-		}
+	private fun onIsTrackerRunningChanged(isRunning: Boolean) {
+		binding.swipeRefreshLayout.isRefreshing = isRunning
 	}
 
 	override fun onScrolledToEnd() {

@@ -23,7 +23,6 @@ val readerModule
 				preselectedBranch = params[2],
 				dataRepository = get(),
 				historyRepository = get(),
-				shortcutsRepository = get(),
 				settings = get(),
 				pageSaveHelper = get(),
 				bookmarksRepository = get(),

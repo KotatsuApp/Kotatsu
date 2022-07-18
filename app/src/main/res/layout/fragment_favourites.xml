@@ -15,7 +15,8 @@
 	<androidx.viewpager2.widget.ViewPager2
 		android:id="@+id/pager"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+		android:layout_height="match_parent"
+		android:paddingVertical="8dp"/>
 
 	<ViewStub
 		android:id="@+id/stub_empty_state"

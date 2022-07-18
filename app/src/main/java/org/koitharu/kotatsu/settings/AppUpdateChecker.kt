@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
+import androidx.core.net.toUri
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,12 +23,10 @@ import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import java.security.cert.CertificateEncodingException
-import java.security.cert.CertificateException
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+import com.google.android.material.R as materialR
 
 class AppUpdateChecker(private val activity: ComponentActivity) {
 
@@ -70,11 +68,13 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 			appendLine()
 			append(version.description)
 		}
-		MaterialAlertDialogBuilder(activity)
+		MaterialAlertDialogBuilder(activity, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
 			.setTitle(R.string.app_update_available)
 			.setMessage(message)
+			.setIcon(R.drawable.ic_app_update)
 			.setPositiveButton(R.string.download) { _, _ ->
-				activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(version.apkUrl)))
+				val intent = Intent(Intent.ACTION_VIEW, version.apkUrl.toUri())
+				activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.open_in_browser)))
 			}
 			.setNegativeButton(R.string.close, null)
 			.setCancelable(false)
@@ -88,42 +88,23 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 		private val PERIOD = TimeUnit.HOURS.toMillis(6)
 
 		fun isUpdateSupported(context: Context): Boolean {
-			return getCertificateSHA1Fingerprint(context) == CERT_SHA1
+			return BuildConfig.DEBUG || getCertificateSHA1Fingerprint(context) == CERT_SHA1
 		}
 
 		@Suppress("DEPRECATION")
 		@SuppressLint("PackageManagerGetSignatures")
-		private fun getCertificateSHA1Fingerprint(context: Context): String? {
-			val packageInfo = try {
-				context.packageManager.getPackageInfo(
-					context.packageName,
-					PackageManager.GET_SIGNATURES
-				)
-			} catch (e: PackageManager.NameNotFoundException) {
-				e.printStackTraceDebug()
-				return null
-			}
-			val signatures = packageInfo?.signatures
-			val cert: ByteArray = signatures?.firstOrNull()?.toByteArray() ?: return null
+		private fun getCertificateSHA1Fingerprint(context: Context): String? = runCatching {
+			val packageInfo = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES)
+			val signatures = requireNotNull(packageInfo?.signatures)
+			val cert: ByteArray = signatures.first().toByteArray()
 			val input: InputStream = ByteArrayInputStream(cert)
-			val c = try {
-				val cf = CertificateFactory.getInstance("X509")
-				cf.generateCertificate(input) as X509Certificate
-			} catch (e: CertificateException) {
-				e.printStackTraceDebug()
-				return null
-			}
-			return try {
-				val md: MessageDigest = MessageDigest.getInstance("SHA1")
-				val publicKey: ByteArray = md.digest(c.encoded)
-				publicKey.byte2HexFormatted()
-			} catch (e: NoSuchAlgorithmException) {
-				e.printStackTraceDebug()
-				null
-			} catch (e: CertificateEncodingException) {
-				e.printStackTraceDebug()
-				null
-			}
-		}
+			val cf = CertificateFactory.getInstance("X509")
+			val c = cf.generateCertificate(input) as X509Certificate
+			val md: MessageDigest = MessageDigest.getInstance("SHA1")
+			val publicKey: ByteArray = md.digest(c.encoded)
+			return publicKey.byte2HexFormatted()
+		}.onFailure { error ->
+			error.printStackTraceDebug()
+		}.getOrNull()
 	}
 }

@@ -42,7 +42,6 @@
     <string name="restore_backup">Restaurer à partir d\'une sauvegarde</string>
     <string name="create_backup">Créer une sauvegarde des données</string>
     <string name="backup_restore">Sauvegarde et restauration</string>
-    <string name="restart_required">Redémarrage nécessaire</string>
     <string name="black_dark_theme_summary">Utilise moins d\'énergie pour les écrans AMOLED</string>
     <string name="black_dark_theme">Noir</string>
     <string name="zoom_mode_keep_start">Garder au début</string>
@@ -295,4 +294,27 @@
     <string name="default_mode">Mode par défaut</string>
     <string name="detect_reader_mode">Mode de détection automatique du lecteur</string>
     <string name="detect_reader_mode_summary">Détecter automatiquement si un manga est un webtoon</string>
+    <string name="disable_battery_optimization">Désactiver l\'optimisation de la batterie</string>
+    <string name="disable_battery_optimization_summary">Aide à la vérification des mises à jour des antécédents</string>
+    <string name="crash_text">Un problème est survenu. Veuillez soumettre un rapport de bogue aux développeurs pour nous aider à le corriger.</string>
+    <string name="send">Envoyer</string>
+    <string name="disable_all">Tout désactiver</string>
+    <string name="use_fingerprint">Utiliser l\'empreinte digitale si elle est disponible</string>
+    <string name="appwidget_recent_description">Vos mangas récemment lus</string>
+    <string name="appwidget_shelf_description">Les mangas de vos favoris</string>
+    <string name="report">Signaler</string>
+    <string name="tracking">Suivi</string>
+    <string name="status_planned">Planifié</string>
+    <string name="status_reading">Lecture</string>
+    <string name="show_reading_indicators">Afficher les indicateurs de progression de lecture</string>
+    <string name="show_reading_indicators_summary">Afficher le pourcentage de lecture dans l\'historique et les favoris</string>
+    <string name="exclude_nsfw_from_history_summary">Les mangas marqués comme étant pour adultes ne seront jamais ajoutés à l\'historique et votre progression ne sera pas sauvegardée</string>
+    <string name="clear_cookies_summary">Peut aider en cas de problème. Toutes les autorisations seront invalidées</string>
+    <string name="show_all">Tout afficher</string>
+    <string name="status_on_hold">En attente</string>
+    <string name="status_dropped">Abandonné</string>
+    <string name="data_deletion">Suppression des données</string>
+    <string name="logout">Se déconnecter</string>
+    <string name="status_completed">Terminé</string>
+    <string name="status_re_reading">Relecture</string>
 </resources>

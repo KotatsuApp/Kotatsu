@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import org.koitharu.kotatsu.core.db.TABLE_MANGA
 
 @Entity(tableName = TABLE_MANGA)
-class MangaEntity(
+data class MangaEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val id: Long,
 	@ColumnInfo(name = "title") val title: String,
@@ -19,5 +19,5 @@ class MangaEntity(
 	@ColumnInfo(name = "large_cover_url") val largeCoverUrl: String?,
 	@ColumnInfo(name = "state") val state: String?,
 	@ColumnInfo(name = "author") val author: String?,
-	@ColumnInfo(name = "source") val source: String
+	@ColumnInfo(name = "source") val source: String,
 )

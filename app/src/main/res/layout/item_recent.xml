@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/imageView_cover"
-	android:layout_width="92dp"
-	android:layout_height="128dp"
+	android:layout_width="@dimen/widget_cover_width"
+	android:layout_height="@dimen/widget_cover_height"
 	android:scaleType="centerCrop"
 	tools:ignore="ContentDescription" />

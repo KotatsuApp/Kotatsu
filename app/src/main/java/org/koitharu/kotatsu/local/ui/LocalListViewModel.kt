@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.local.ui
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,31 +11,32 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.progress.Progress
+import java.io.IOException
 
 class LocalListViewModel(
 	private val repository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
 	settings: AppSettings,
-	private val shortcutsRepository: ShortcutsRepository,
 ) : MangaListViewModel(settings) {
 
 	val onMangaRemoved = SingleLiveEvent<Unit>()
 	val importProgress = MutableLiveData<Progress?>(null)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
-	private val headerModel = ListHeader(null, R.string.local_storage, null)
 	private var importJob: Job? = null
 
 	override val content = combine(
@@ -49,21 +49,15 @@ class LocalListViewModel(
 			list == null -> listOf(LoadingState)
 			list.isEmpty() -> listOf(
 				EmptyState(
-					icon = R.drawable.ic_storage,
+					icon = R.drawable.ic_empty_local,
 					textPrimary = R.string.text_local_holder_primary,
 					textSecondary = R.string.text_local_holder_secondary,
 					actionStringRes = R.string._import,
 				)
 			)
-			else -> ArrayList<ListModel>(list.size + 1).apply {
-				add(headerModel)
-				list.toUi(this, mode)
-			}
+			else -> list.toUi(mode)
 		}
-	}.asLiveDataDistinct(
-		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(LoadingState)
-	)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
 		onRefresh()
@@ -107,7 +101,6 @@ class LocalListViewModel(
 					}
 				}
 			}
-			shortcutsRepository.updateShortcuts()
 			onMangaRemoved.call(Unit)
 		}
 	}
@@ -115,7 +108,7 @@ class LocalListViewModel(
 	private suspend fun doRefresh() {
 		try {
 			listError.value = null
-			mangaList.value = repository.getList(0)
+			mangaList.value = repository.getList(0, null, null)
 		} catch (e: Throwable) {
 			listError.value = e
 		}

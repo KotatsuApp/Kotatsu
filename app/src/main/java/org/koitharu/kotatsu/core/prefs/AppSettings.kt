@@ -4,21 +4,18 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getEnumValue
+import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.io.File
@@ -41,7 +38,7 @@ class AppSettings(context: Context) {
 		get() = Collections.unmodifiableSet(remoteSources)
 
 	var listMode: ListMode
-		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.DETAILED_LIST)
+		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)
 		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE, value) }
 
 	var defaultSection: AppSection
@@ -52,7 +49,7 @@ class AppSettings(context: Context) {
 		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
 	val isDynamicTheme: Boolean
-		get() = prefs.getBoolean(KEY_DYNAMIC_THEME, false)
+		get() = DynamicColors.isDynamicColorAvailable() && prefs.getBoolean(KEY_DYNAMIC_THEME, false)
 
 	val isAmoledTheme: Boolean
 		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
@@ -105,12 +102,19 @@ class AppSettings(context: Context) {
 	val isReaderModeDetectionEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_MODE_DETECT, true)
 
-	var historyGrouping: Boolean
+	var isHistoryGroupingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_GROUPING, true)
 		set(value) = prefs.edit { putBoolean(KEY_HISTORY_GROUPING, value) }
 
+	val isReadingIndicatorsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READING_INDICATORS, true)
+
 	val isHistoryExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_EXCLUDE_NSFW, false)
+
+	var isIncognitoModeEnabled: Boolean
+		get() = prefs.getBoolean(KEY_INCOGNITO_MODE, false)
+		set(value) = prefs.edit { putBoolean(KEY_INCOGNITO_MODE, value) }
 
 	var chaptersReverse: Boolean
 		get() = prefs.getBoolean(KEY_REVERSE_CHAPTERS, false)
@@ -125,6 +129,13 @@ class AppSettings(context: Context) {
 	var appPassword: String?
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit { if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD) }
+
+	var isBiometricProtectionEnabled: Boolean
+		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
+		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
+
+	val isExitConfirmationEnabled: Boolean
+		get() = prefs.getBoolean(KEY_EXIT_CONFIRM, false)
 
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
@@ -152,7 +163,7 @@ class AppSettings(context: Context) {
 		}
 
 	fun markKnownSources(sources: Collection<MangaSource>) {
-		sourcesOrder = sourcesOrder + sources.map { it.name }
+		sourcesOrder = (sourcesOrder + sources.map { it.name }).distinct()
 	}
 
 	val isPagesNumbersEnabled: Boolean
@@ -187,10 +198,6 @@ class AppSettings(context: Context) {
 
 	val isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
-
-	var isSearchSingleSource: Boolean
-		get() = prefs.getBoolean(KEY_SEARCH_SINGLE_SOURCE, false)
-		set(value) = prefs.edit { putBoolean(KEY_SEARCH_SINGLE_SOURCE, value) }
 
 	val dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
@@ -243,15 +250,7 @@ class AppSettings(context: Context) {
 		prefs.unregisterOnSharedPreferenceChangeListener(listener)
 	}
 
-	fun observe() = callbackFlow<String> {
-		val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-			trySendBlocking(key)
-		}
-		prefs.registerOnSharedPreferenceChangeListener(listener)
-		awaitClose {
-			prefs.unregisterOnSharedPreferenceChangeListener(listener)
-		}
-	}
+	fun observe() = prefs.observe()
 
 	companion object {
 
@@ -294,11 +293,13 @@ class AppSettings(context: Context) {
 		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_APP_PASSWORD = "app_password"
 		const val KEY_PROTECT_APP = "protect_app"
+		const val KEY_PROTECT_APP_BIOMETRIC = "protect_app_bio"
 		const val KEY_APP_VERSION = "app_version"
 		const val KEY_ZOOM_MODE = "zoom_mode"
 		const val KEY_BACKUP = "backup"
 		const val KEY_RESTORE = "restore"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
+		const val KEY_READING_INDICATORS = "reading_indicators"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
 		const val KEY_PAGES_NUMBERS = "pages_numbers"
@@ -307,30 +308,22 @@ class AppSettings(context: Context) {
 		const val KEY_SUGGESTIONS = "suggestions"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
-		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
+		const val KEY_SHIKIMORI = "shikimori"
 		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 		const val KEY_DOH = "doh"
+		const val KEY_EXIT_CONFIRM = "exit_confirm"
+		const val KEY_INCOGNITO_MODE = "incognito"
 		const val KEY_SYNC = "sync"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
-		const val KEY_FEEDBACK_4PDA = "about_feedback_4pda"
-		const val KEY_FEEDBACK_DISCORD = "about_feedback_discord"
-		const val KEY_FEEDBACK_GITHUB = "about_feedback_github"
 
 		private const val NETWORK_NEVER = 0
 		private const val NETWORK_ALWAYS = 1
 		private const val NETWORK_NON_METERED = 2
-
-		val isDynamicColorAvailable: Boolean
-			get() = DynamicColors.isDynamicColorAvailable() ||
-				(isSamsung && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-
-		private val isSamsung
-			get() = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
 	}
 }

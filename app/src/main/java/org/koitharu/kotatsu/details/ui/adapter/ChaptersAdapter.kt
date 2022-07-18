@@ -1,14 +1,16 @@
 package org.koitharu.kotatsu.details.ui.adapter
 
+import android.content.Context
 import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import kotlin.jvm.internal.Intrinsics
 
 class ChaptersAdapter(
 	onItemClickListener: OnListItemClickListener<ChapterListItem>,
-) :	AsyncListDifferDelegationAdapter<ChapterListItem>(DiffCallback()) {
+) : AsyncListDifferDelegationAdapter<ChapterListItem>(DiffCallback()), FastScroller.SectionIndexer {
 
 	init {
 		setHasStableIds(true)
@@ -38,5 +40,9 @@ class ChaptersAdapter(
 			}
 			return null
 		}
+	}
+
+	override fun getSectionText(context: Context, position: Int): CharSequence {
+		return items[position].chapter.number.toString()
 	}
 }

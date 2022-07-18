@@ -7,13 +7,14 @@ import android.widget.RemoteViewsService
 import coil.ImageLoader
 import coil.executeBlocking
 import coil.request.ImageRequest
+import coil.size.Size
+import coil.transform.RoundedCornersTransformation
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.requireBitmap
-import java.io.IOException
 
 class RecentListFactory(
 	private val context: Context,
@@ -22,9 +23,15 @@ class RecentListFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
+	private val transformation = RoundedCornersTransformation(
+		context.resources.getDimension(R.dimen.appwidget_corner_radius_inner)
+	)
+	private val coverSize = Size(
+		context.resources.getDimensionPixelSize(R.dimen.widget_cover_width),
+		context.resources.getDimensionPixelSize(R.dimen.widget_cover_height),
+	)
 
-	override fun onCreate() {
-	}
+	override fun onCreate() = Unit
 
 	override fun getLoadingView() = null
 
@@ -41,14 +48,17 @@ class RecentListFactory(
 	override fun getViewAt(position: Int): RemoteViews {
 		val views = RemoteViews(context.packageName, R.layout.item_recent)
 		val item = dataSet[position]
-		try {
-			val cover = coil.executeBlocking(
+		runCatching {
+			coil.executeBlocking(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
+					.size(coverSize)
+					.transformations(transformation)
 					.build()
 			).requireBitmap()
+		}.onSuccess { cover ->
 			views.setImageViewBitmap(R.id.imageView_cover, cover)
-		} catch (e: IOException) {
+		}.onFailure {
 			views.setImageViewResource(R.id.imageView_cover, R.drawable.ic_placeholder)
 		}
 		val intent = Intent()
@@ -61,6 +71,5 @@ class RecentListFactory(
 
 	override fun getViewTypeCount() = 1
 
-	override fun onDestroy() {
-	}
+	override fun onDestroy() = Unit
 }

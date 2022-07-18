@@ -17,7 +17,7 @@
 		tools:listitem="@layout/item_branch"
 		tools:visibility="visible" />
 
-	<androidx.recyclerview.widget.RecyclerView
+	<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
 		android:id="@+id/recyclerView_chapters"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
@@ -28,7 +28,6 @@
 		android:layout_alignParentBottom="true"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		app:fastScrollEnabled="true"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_chapter" />
 

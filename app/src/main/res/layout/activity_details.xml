@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -7,12 +7,12 @@
 	android:layout_height="match_parent"
 	tools:context=".details.ui.DetailsActivity">
 
-	<com.google.android.material.appbar.AppBarLayout
+	<com.google.android.material.appbar.KotatsuAppBarLayout
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		app:elevation="0dp"
-		app:liftOnScroll="false">
+		android:fitsSystemWindows="true"
+		app:elevation="0dp">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
@@ -20,21 +20,20 @@
 			android:layout_height="?attr/actionBarSize"
 			android:background="@drawable/m3_tabs_background"
 			android:theme="?attr/actionBarTheme"
-			app:layout_scrollFlags="scroll|enterAlways"
+			app:layout_scrollFlags="scroll|enterAlways|snap"
 			tools:ignore="PrivateResource">
 
 			<com.google.android.material.tabs.TabLayout
 				android:id="@+id/tabs"
+				style="@style/Widget.Kotatsu.SuperTabs"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:layout_gravity="center_horizontal"
-				android:background="@null"
-				app:tabGravity="center"
-				app:tabMode="scrollable" />
+				android:background="@null" />
 
 		</com.google.android.material.appbar.MaterialToolbar>
 
-	</com.google.android.material.appbar.AppBarLayout>
+	</com.google.android.material.appbar.KotatsuAppBarLayout>
 
 	<androidx.viewpager2.widget.ViewPager2
 		android:id="@+id/pager"
@@ -49,4 +48,4 @@
 		android:layout_gravity="bottom"
 		android:visibility="gone" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout>

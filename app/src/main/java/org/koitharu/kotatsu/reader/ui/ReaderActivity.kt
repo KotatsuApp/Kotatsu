@@ -46,10 +46,7 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
-import org.koitharu.kotatsu.utils.ext.observeWithPrevious
-import org.koitharu.kotatsu.utils.ext.postDelayed
+import org.koitharu.kotatsu.utils.ext.*
 import java.util.concurrent.TimeUnit
 
 class ReaderActivity :
@@ -132,8 +129,9 @@ class ReaderActivity :
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		super.onCreateOptionsMenu(menu)
 		menuInflater.inflate(R.menu.opt_reader_top, menu)
-		return super.onCreateOptionsMenu(menu)
+		return true
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -214,6 +212,8 @@ class ReaderActivity :
 		val resolveTextId = ExceptionResolver.getResolveStringId(e)
 		if (resolveTextId != 0) {
 			dialog.setPositiveButton(resolveTextId, listener)
+		} else {
+			dialog.setPositiveButton(R.string.report, listener)
 		}
 		dialog.show()
 	}
@@ -347,8 +347,12 @@ class ReaderActivity :
 		menuItem.setIcon(if (isAdded) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
 	}
 
-	private fun onUiStateChanged(uiState: ReaderUiState, previous: ReaderUiState?) {
-		title = uiState.chapterName ?: uiState.mangaName ?: getString(R.string.loading_)
+	private fun onUiStateChanged(uiState: ReaderUiState?, previous: ReaderUiState?) {
+		title = uiState?.chapterName ?: uiState?.mangaName ?: getString(R.string.loading_)
+		if (uiState == null) {
+			supportActionBar?.subtitle = null
+			return
+		}
 		supportActionBar?.subtitle = if (uiState.chapterNumber in 1..uiState.chaptersTotal) {
 			getString(R.string.chapter_d_of_d, uiState.chapterNumber, uiState.chaptersTotal)
 		} else {
@@ -368,7 +372,11 @@ class ReaderActivity :
 		override fun onClick(dialog: DialogInterface?, which: Int) {
 			if (which == DialogInterface.BUTTON_POSITIVE) {
 				dialog?.dismiss()
-				tryResolve(exception)
+				if (ExceptionResolver.canResolve(exception)) {
+					tryResolve(exception)
+				} else {
+					exception.report("ReaderActivity::onError")
+				}
 			} else {
 				onCancel(dialog)
 			}

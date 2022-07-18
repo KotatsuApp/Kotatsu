@@ -2,25 +2,27 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.core.view.ViewCompat
+import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.recyclerview.widget.RecyclerView
+import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
+import java.util.*
 
 class WebtoonRecyclerView @JvmOverloads constructor(
 	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
-	override fun startNestedScroll(axes: Int) = startNestedScroll(axes, ViewCompat.TYPE_TOUCH)
+	private var onPageScrollListeners: MutableList<OnPageScrollListener>? = null
 
-	override fun startNestedScroll(axes: Int, type: Int): Boolean {
-		return true
-	}
+	override fun startNestedScroll(axes: Int) = startNestedScroll(axes, TYPE_TOUCH)
+
+	override fun startNestedScroll(axes: Int, type: Int): Boolean = true
 
 	override fun dispatchNestedPreScroll(
 		dx: Int,
 		dy: Int,
 		consumed: IntArray?,
 		offsetInWindow: IntArray?
-	) = dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, ViewCompat.TYPE_TOUCH)
+	) = dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, TYPE_TOUCH)
 
 	override fun dispatchNestedPreScroll(
 		dx: Int,
@@ -34,6 +36,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 			consumed[0] = 0
 			consumed[1] = consumedY
 		}
+		notifyScrollChanged(dy)
 		return consumedY != 0 || dy == 0
 	}
 
@@ -74,5 +77,40 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 			}
 		}
 		return 0
+	}
+
+	fun addOnPageScrollListener(listener: OnPageScrollListener) {
+		val list = onPageScrollListeners ?: LinkedList<OnPageScrollListener>().also { onPageScrollListeners = it }
+		list.add(listener)
+	}
+
+	fun removeOnPageScrollListener(listener: OnPageScrollListener) {
+		onPageScrollListeners?.remove(listener)
+	}
+
+	private fun notifyScrollChanged(dy: Int) {
+		val listeners = onPageScrollListeners
+		if (listeners.isNullOrEmpty()) {
+			return
+		}
+		val centerPosition = findCenterViewPosition()
+		listeners.forEach { it.dispatchScroll(this, dy, centerPosition) }
+	}
+
+	abstract class OnPageScrollListener {
+
+		private var lastPosition = NO_POSITION
+
+		fun dispatchScroll(recyclerView: WebtoonRecyclerView, dy: Int, centerPosition: Int) {
+			onScroll(recyclerView, dy)
+			if (centerPosition != NO_POSITION && centerPosition != lastPosition) {
+				lastPosition = centerPosition
+				onPageChanged(recyclerView, centerPosition)
+			}
+		}
+
+		open fun onScroll(recyclerView: WebtoonRecyclerView, dy: Int) = Unit
+
+		open fun onPageChanged(recyclerView: WebtoonRecyclerView, index: Int) = Unit
 	}
 }

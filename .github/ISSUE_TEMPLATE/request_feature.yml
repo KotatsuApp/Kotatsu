@@ -1,5 +1,5 @@
 name: ⭐ Feature request
-description: Suggest a feature to improve Kotatsu
+description: Suggest a new idea how to improve Kotatsu
 labels: [feature request]
 body:
 
@@ -14,13 +14,6 @@ body:
       validations:
           required: true
 
-    - type: textarea
-      id: other-details
-      attributes:
-          label: Other details
-          placeholder: |
-              Additional details and attachments.
-
     - type: checkboxes
       id: acknowledgements
       attributes:
@@ -28,12 +21,4 @@ body:
           description: Read this carefully, we will close and ignore your issue if you skimmed through this.
           options:
               - label: I have searched the existing issues and this is a new ticket, **NOT** a duplicate or related to another open issue.
-                required: true
-              - label: I have written a short but informative title.
-                required: true
-              - label: If this is an issue with a source, I should be opening an issue in the [parsers repository](https://github.com/nv95/kotatsu-parsers/issues/new).
-                required: true
-              - label: I have updated the app to version **[3.2.3](https://github.com/nv95/Kotatsu/releases/latest)**.
-                required: true
-              - label: I will fill out all of the requested information in this form.
                 required: true

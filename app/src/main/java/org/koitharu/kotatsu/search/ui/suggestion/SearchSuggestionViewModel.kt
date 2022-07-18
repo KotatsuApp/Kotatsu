@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
@@ -16,6 +17,7 @@ private const val DEBOUNCE_TIMEOUT = 500L
 private const val MAX_MANGA_ITEMS = 6
 private const val MAX_QUERY_ITEMS = 16
 private const val MAX_TAGS_ITEMS = 8
+private const val MAX_SOURCES_ITEMS = 6
 
 class SearchSuggestionViewModel(
 	private val repository: MangaSearchRepository,
@@ -23,39 +25,34 @@ class SearchSuggestionViewModel(
 ) : BaseViewModel() {
 
 	private val query = MutableStateFlow("")
-	private val source = MutableStateFlow<MangaSource?>(null)
-	private val isLocalSearch = MutableStateFlow(settings.isSearchSingleSource)
 	private var suggestionJob: Job? = null
 
 	val suggestion = MutableLiveData<List<SearchSuggestionItem>>()
 
 	init {
 		setupSuggestion()
-		isLocalSearch.onEach {
-			settings.isSearchSingleSource = it
-		}.launchIn(viewModelScope)
 	}
 
 	fun onQueryChanged(newQuery: String) {
 		query.value = newQuery
 	}
 
-	fun onSourceChanged(newSource: MangaSource?) {
-		source.value = newSource
-	}
-
 	fun saveQuery(query: String) {
 		repository.saveSearchQuery(query)
-	}
-
-	fun getLocalSearchSource(): MangaSource? {
-		return source.value?.takeIf { isLocalSearch.value }
 	}
 
 	fun clearSearchHistory() {
 		launchJob {
 			repository.clearSearchHistory()
 			setupSuggestion()
+		}
+	}
+
+	fun onSourceToggle(source: MangaSource, isEnabled: Boolean) {
+		settings.hiddenSources = if (isEnabled) {
+			settings.hiddenSources - source.name
+		} else {
+			settings.hiddenSources + source.name
 		}
 	}
 
@@ -70,11 +67,10 @@ class SearchSuggestionViewModel(
 		suggestionJob?.cancel()
 		suggestionJob = combine(
 			query.debounce(DEBOUNCE_TIMEOUT),
-			source,
-			isLocalSearch,
-			::Triple,
-		).mapLatest { (searchQuery, src, srcOnly) ->
-			buildSearchSuggestion(searchQuery, src, srcOnly)
+			settings.observeAsFlow(AppSettings.KEY_SOURCES_HIDDEN) { hiddenSources },
+			::Pair,
+		).mapLatest { (searchQuery, hiddenSources) ->
+			buildSearchSuggestion(searchQuery, hiddenSources)
 		}.distinctUntilChanged()
 			.onEach {
 				suggestion.postValue(it)
@@ -83,27 +79,24 @@ class SearchSuggestionViewModel(
 
 	private suspend fun buildSearchSuggestion(
 		searchQuery: String,
-		src: MangaSource?,
-		srcOnly: Boolean,
+		hiddenSources: Set<String>,
 	): List<SearchSuggestionItem> = coroutineScope {
 		val queriesDeferred = async {
 			repository.getQuerySuggestion(searchQuery, MAX_QUERY_ITEMS)
 		}
 		val tagsDeferred = async {
-			repository.getTagsSuggestion(searchQuery, MAX_TAGS_ITEMS, src.takeIf { srcOnly })
+			repository.getTagsSuggestion(searchQuery, MAX_TAGS_ITEMS, null)
 		}
 		val mangaDeferred = async {
-			repository.getMangaSuggestion(searchQuery, MAX_MANGA_ITEMS, src.takeIf { srcOnly })
+			repository.getMangaSuggestion(searchQuery, MAX_MANGA_ITEMS, null)
 		}
+		val sources = repository.getSourcesSuggestion(searchQuery, MAX_SOURCES_ITEMS)
 
 		val tags = tagsDeferred.await()
 		val mangaList = mangaDeferred.await()
 		val queries = queriesDeferred.await()
 
-		buildList(queries.size + 3) {
-			if (src != null) {
-				add(SearchSuggestionItem.Header(src, isLocalSearch))
-			}
+		buildList(queries.size + sources.size + 2) {
 			if (tags.isNotEmpty()) {
 				add(SearchSuggestionItem.Tags(mapTags(tags)))
 			}
@@ -111,6 +104,7 @@ class SearchSuggestionViewModel(
 				add(SearchSuggestionItem.MangaList(mangaList))
 			}
 			queries.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
+			sources.mapTo(this) { SearchSuggestionItem.Source(it, it.name !in hiddenSources) }
 		}
 	}
 
@@ -119,6 +113,8 @@ class SearchSuggestionViewModel(
 			icon = 0,
 			title = tag.title,
 			data = tag,
+			isCheckable = false,
+			isChecked = false,
 		)
 	}
 }

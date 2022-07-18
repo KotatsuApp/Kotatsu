@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.DialogOnboardBinding
 import org.koitharu.kotatsu.settings.onboard.adapter.SourceLocalesAdapter
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
-import org.koitharu.kotatsu.utils.ext.observeNotNull
 import org.koitharu.kotatsu.utils.ext.showAllowStateLoss
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -56,8 +55,8 @@ class OnboardDialogFragment :
 		val adapter = SourceLocalesAdapter(this)
 		binding.recyclerView.adapter = adapter
 		binding.textViewTitle.setText(R.string.onboard_text)
-		viewModel.list.observeNotNull(viewLifecycleOwner) {
-			adapter.items = it
+		viewModel.list.observe(viewLifecycleOwner) {
+			adapter.items = it.orEmpty()
 		}
 	}
 

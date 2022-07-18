@@ -20,12 +20,13 @@ class RemoteMangaRepository(private val parser: MangaParser) : MangaRepository {
 			getConfig().defaultSortOrder = value
 		}
 
-	override suspend fun getList(
-		offset: Int,
-		query: String?,
-		tags: Set<MangaTag>?,
-		sortOrder: SortOrder?,
-	): List<Manga> = parser.getList(offset, query, tags, sortOrder)
+	override suspend fun getList(offset: Int, query: String): List<Manga> {
+		return parser.getList(offset, query)
+	}
+
+	override suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga> {
+		return parser.getList(offset, tags, sortOrder)
+	}
 
 	override suspend fun getDetails(manga: Manga): Manga = parser.getDetails(manga)
 
@@ -35,7 +36,7 @@ class RemoteMangaRepository(private val parser: MangaParser) : MangaRepository {
 
 	override suspend fun getTags(): Set<MangaTag> = parser.getTags()
 
-	fun getFaviconUrl(): String = parser.getFaviconUrl()
+	suspend fun getFavicons(): Favicons = parser.getFavicons()
 
 	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider
 

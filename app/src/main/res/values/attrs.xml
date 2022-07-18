@@ -5,6 +5,7 @@
 	<attr name="multiAutoCompleteTextViewPreferenceStyle" />
 	<attr name="autoCompleteTextViewPreferenceStyle" />
 	<attr name="listItemTextViewStyle" />
+	<attr name="fastScrollerStyle" />
 
 	<declare-styleable name="Theme">
 		<attr name="navigationBarDividerColor" format="color" />
@@ -33,6 +34,39 @@
 		<attr name="android:insetBottom" />
 		<attr name="android:insetLeft" />
 		<attr name="android:insetRight" />
+	</declare-styleable>
+
+	<declare-styleable name="ProgressDrawable">
+		<attr name="strokeWidth" />
+		<attr name="android:strokeColor" />
+		<attr name="android:textSize" />
+		<attr name="android:textColor" />
+		<attr name="android:fillColor" />
+		<attr name="android:fillAlpha" />
+		<attr name="android:width" />
+		<attr name="android:height" />
+		<attr name="outlineColor" format="color" />
+		<attr name="autoFitTextSize" format="boolean" />
+	</declare-styleable>
+
+	<declare-styleable name="ReadingProgressView">
+		<attr name="progressStyle" format="reference" />
+	</declare-styleable>
+
+	<declare-styleable name="FastScroller">
+		<attr name="hideScrollbar" format="boolean" />
+		<attr name="showBubble" format="boolean" />
+		<attr name="showBubbleAlways" format="boolean" />
+		<attr name="showTrack" format="boolean" />
+		<attr name="bubbleColor" format="color" />
+		<attr name="bubbleTextColor" format="color" />
+		<attr name="thumbColor" format="color" />
+		<attr name="trackColor" format="color" />
+		<attr name="bubbleTextSize" format="dimension" />
+		<attr name="bubbleSize" format="enum">
+			<enum name="normal" value="0" />
+			<enum name="small" value="1" />
+		</attr>
 	</declare-styleable>
 
 </resources>

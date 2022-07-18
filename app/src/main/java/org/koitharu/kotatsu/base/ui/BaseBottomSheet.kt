@@ -2,11 +2,11 @@ package org.koitharu.kotatsu.base.ui
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
-import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.AppBottomSheetDialog
+import org.koitharu.kotatsu.utils.ext.displayCompat
 import com.google.android.material.R as materialR
 
 abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
@@ -33,6 +34,20 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 	): View {
 		val binding = onInflateView(inflater, container)
 		viewBinding = binding
+
+		// Enforce max width for tablets
+		val width = resources.getDimensionPixelSize(R.dimen.bottom_sheet_width)
+		if (width > 0) {
+			behavior?.maxWidth = width
+		}
+
+		// Set peek height to 50% display height
+		requireContext().displayCompat?.let {
+			val metrics = DisplayMetrics()
+			it.getRealMetrics(metrics)
+			behavior?.peekHeight = (metrics.heightPixels * 0.4).toInt()
+		}
+
 		return binding.root
 	}
 
@@ -42,10 +57,15 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 	}
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		return if (resources.getBoolean(R.bool.is_tablet)) {
-			AppCompatDialog(context, R.style.Theme_Kotatsu_Dialog)
-		} else {
-			AppBottomSheetDialog(requireContext(), theme)
+		return AppBottomSheetDialog(requireContext(), theme)
+	}
+
+	fun addBottomSheetCallback(callback: BottomSheetBehavior.BottomSheetCallback) {
+		val b = behavior ?: return
+		b.addBottomSheetCallback(callback)
+		val rootView = dialog?.findViewById<View>(materialR.id.design_bottom_sheet)
+		if (rootView != null) {
+			callback.onStateChanged(rootView, b.state)
 		}
 	}
 

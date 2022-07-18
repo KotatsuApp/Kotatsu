@@ -18,17 +18,17 @@ import org.koitharu.kotatsu.utils.ext.getItem
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 import com.google.android.material.R as materialR
 
-class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
+open class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
 
-	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-	private val checkIcon = ContextCompat.getDrawable(context, materialR.drawable.ic_mtrl_checked_circle)
-	private val iconOffset = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
-	private val strokeColor = context.getThemeColor(materialR.attr.colorPrimary, Color.RED)
-	private val fillColor = ColorUtils.setAlphaComponent(
+	protected val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+	protected val checkIcon = ContextCompat.getDrawable(context, materialR.drawable.ic_mtrl_checked_circle)
+	protected val iconOffset = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
+	protected val strokeColor = context.getThemeColor(materialR.attr.colorPrimary, Color.RED)
+	protected val fillColor = ColorUtils.setAlphaComponent(
 		ColorUtils.blendARGB(strokeColor, context.getThemeColor(materialR.attr.colorSurface), 0.8f),
 		0x74
 	)
-	private val defaultRadius = context.resources.getDimension(R.dimen.list_selector_corner)
+	protected val defaultRadius = context.resources.getDimension(R.dimen.list_selector_corner)
 
 	init {
 		hasBackground = false

@@ -11,11 +11,11 @@ import android.view.MenuItem
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import com.google.android.material.R as materialR
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import com.google.android.material.R as materialR
 
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
@@ -59,8 +59,9 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		super.onCreateOptionsMenu(menu)
 		menuInflater.inflate(R.menu.opt_browser, menu)
-		return super.onCreateOptionsMenu(menu)
+		return true
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

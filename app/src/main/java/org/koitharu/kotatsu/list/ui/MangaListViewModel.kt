@@ -25,7 +25,7 @@ abstract class MangaListViewModel(
 		valueProducer = { gridSize / 100f },
 	)
 
-	open fun onRemoveFilterTag(tag: MangaTag) = Unit
+	open fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 
 	protected fun createListModeFlow() = settings.observeAsFlow(AppSettings.KEY_LIST_MODE) { listMode }
 		.onEach {

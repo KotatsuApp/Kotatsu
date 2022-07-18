@@ -27,13 +27,14 @@ fun downloadItemAD(
 	bind {
 		job?.cancel()
 		job = item.progressAsFlow().onFirst { state ->
-			binding.imageViewCover.newImageRequest(state.manga.coverUrl)
-				.referer(state.manga.publicUrl)
-				.placeholder(state.cover)
-				.fallback(R.drawable.ic_placeholder)
-				.error(R.drawable.ic_placeholder)
-				.allowRgb565(true)
-				.enqueueWith(coil)
+			binding.imageViewCover.newImageRequest(state.manga.coverUrl)?.run {
+				referer(state.manga.publicUrl)
+				placeholder(state.cover)
+				fallback(R.drawable.ic_placeholder)
+				error(R.drawable.ic_placeholder)
+				allowRgb565(true)
+				enqueueWith(coil)
+			}
 		}.onEach { state ->
 			binding.textViewTitle.text = state.manga.title
 			when (state) {

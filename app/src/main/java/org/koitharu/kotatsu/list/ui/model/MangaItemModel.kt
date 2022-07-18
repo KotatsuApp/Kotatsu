@@ -6,4 +6,8 @@ sealed interface MangaItemModel : ListModel {
 
 	val id: Long
 	val manga: Manga
+	val title: String
+	val coverUrl: String
+	val counter: Int
+	val progress: Float
 }

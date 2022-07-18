@@ -17,7 +17,7 @@ class CloudFlareInterceptor : Interceptor {
 		if (response.code == HTTP_FORBIDDEN || response.code == HTTP_UNAVAILABLE) {
 			if (response.header(HEADER_SERVER)?.startsWith(SERVER_CLOUDFLARE) == true) {
 				response.closeQuietly()
-				throw CloudFlareProtectedException(chain.request().url.toString())
+				throw CloudFlareProtectedException(response.request.url.toString())
 			}
 		}
 		return response

@@ -91,7 +91,6 @@
     <string name="restore_backup">Ripristina da un backup</string>
     <string name="create_backup">Crea un backup dei dati</string>
     <string name="backup_restore">Backup e ripristino</string>
-    <string name="restart_required">Riavvio richiesto</string>
     <string name="black_dark_theme_summary">Utile per gli schermi AMOLED</string>
     <string name="black_dark_theme">Tema nero scuro</string>
     <string name="report_github">Segnala un problema su GitHub</string>
@@ -295,4 +294,27 @@
     <string name="detect_reader_mode">Modalità di lettura a rilevamento automatico</string>
     <string name="dns_over_https">DNS su HTTPS</string>
     <string name="detect_reader_mode_summary">Rileva automaticamente se il manga è un webtoon</string>
+    <string name="disable_battery_optimization">Disattiva l\'ottimizzazione della batteria</string>
+    <string name="disable_battery_optimization_summary">Contribuisce ai controlli di aggiornamento in sfondo</string>
+    <string name="crash_text">Qualcosa è andato storto. Si prega di inviare una segnalazione di bug agli sviluppatori per aiutarci a risolvere il problema.</string>
+    <string name="send">Invia</string>
+    <string name="disable_all">Disabilita tutto</string>
+    <string name="use_fingerprint">Usa le impronte digitali se disponibili</string>
+    <string name="appwidget_shelf_description">Manga dai preferiti</string>
+    <string name="appwidget_recent_description">I manga letti di recente</string>
+    <string name="report">Segnala</string>
+    <string name="tracking">Tracciamento</string>
+    <string name="status_reading">Lettura</string>
+    <string name="status_re_reading">Rilettura</string>
+    <string name="status_on_hold">In attesa</string>
+    <string name="show_reading_indicators">Mostrare gli indicatori di progresso della lettura</string>
+    <string name="data_deletion">Eliminazione dei dati</string>
+    <string name="show_reading_indicators_summary">Mostra la percentuale di lettura nella cronologia e nei preferiti</string>
+    <string name="exclude_nsfw_from_history_summary">I manga contrassegnati come per adulti non verranno mai aggiunti alla cronologia e i vostri progressi non verranno salvati</string>
+    <string name="clear_cookies_summary">Può aiutare in caso di problemi. Tutte le autorizzazioni saranno invalidate</string>
+    <string name="show_all">Mostra tutto</string>
+    <string name="logout">Esci</string>
+    <string name="status_planned">Pianificato</string>
+    <string name="status_completed">Finito</string>
+    <string name="status_dropped">Abbandonato</string>
 </resources>

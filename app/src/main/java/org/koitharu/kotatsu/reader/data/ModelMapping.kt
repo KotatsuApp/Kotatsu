@@ -5,10 +5,10 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 
 fun Manga.filterChapters(branch: String?): Manga {
 	if (chapters.isNullOrEmpty()) return this
-	return copy(chapters = chapters?.filter { it.branch == branch })
+	return withChapters(chapters = chapters?.filter { it.branch == branch })
 }
 
-private fun Manga.copy(chapters: List<MangaChapter>?) = Manga(
+private fun Manga.withChapters(chapters: List<MangaChapter>?) = Manga(
 	id = id,
 	title = title,
 	altTitle = altTitle,

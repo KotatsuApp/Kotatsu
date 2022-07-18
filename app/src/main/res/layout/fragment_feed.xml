@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/recyclerView"
+	android:id="@+id/swipeRefreshLayout"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:clipToPadding="false"
-	android:orientation="vertical"
-	android:paddingLeft="@dimen/list_spacing"
-	android:paddingRight="@dimen/list_spacing"
-	android:paddingTop="@dimen/grid_spacing_outer"
-	android:paddingBottom="@dimen/grid_spacing_outer"
-	app:fastScrollEnabled="true"
-	app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-	tools:listitem="@layout/item_feed" />
+	android:layout_height="match_parent">
+
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
+			android:id="@+id/recyclerView"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:clipToPadding="false"
+			android:orientation="vertical"
+			android:paddingLeft="@dimen/list_spacing"
+			android:paddingTop="@dimen/grid_spacing_outer"
+			android:paddingRight="@dimen/list_spacing"
+			android:paddingBottom="@dimen/grid_spacing_outer"
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+			app:trackColor="?attr/colorOutline"
+			tools:listitem="@layout/item_feed" />
+
+	</FrameLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

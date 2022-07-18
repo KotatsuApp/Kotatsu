@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="url_github_issues" translatable="false">https://github.com/nv95/Kotatsu/issues</string>
+	<string name="url_github" translatable="false">https://github.com/KotatsuApp/Kotatsu</string>
 	<string name="url_discord" translatable="false">https://discord.gg/NNJ5RgVBC5</string>
 	<string name="url_forpda" translatable="false">https://4pda.to/forum/index.php?showtopic=697669</string>
+	<string name="url_twitter" translatable="false">https://twitter.com/kotatsuapp</string>
+	<string name="url_reddit" translatable="false">https://reddit.com/user/kotatsuapp</string>
 	<string name="url_weblate" translatable="false">https://hosted.weblate.org/engage/kotatsu</string>
+	<string name="email_error_report" translatable="false">kotatsu@waifu.club</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
 	<string name="url_sync_server" translatable="false">http://95.216.215.49:8055</string>
 	<string-array name="values_theme" translatable="false">

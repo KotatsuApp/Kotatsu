@@ -1,16 +1,19 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.mapItems
+import org.koitharu.kotatsu.utils.ext.requireValue
 import java.util.*
 
 class FavouritesCategoriesViewModel(
@@ -19,20 +22,33 @@ class FavouritesCategoriesViewModel(
 ) : BaseViewModel() {
 
 	private var reorderJob: Job? = null
+	private val isReorder = MutableStateFlow(false)
 
-	val allCategories = combine(
-		repository.observeCategories(),
-		observeAllCategoriesVisible(),
-	) { list, showAll ->
-		mapCategories(list, showAll, true)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
-	
-	val visibleCategories = combine(
-		repository.observeCategories(),
-		observeAllCategoriesVisible(),
-	) { list, showAll ->
-		mapCategories(list, showAll, showAll && list.isNotEmpty())
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	val isInReorderMode = isReorder.asLiveData(viewModelScope.coroutineContext)
+
+	val allCategories = repository.observeCategories()
+		.mapItems {
+			CategoryListModel(
+				mangaCount = 0,
+				covers = listOf(),
+				category = it,
+				isReorderMode = false,
+			)
+		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+
+	val detalizedCategories = combine(
+		repository.observeCategoriesWithDetails(),
+		isReorder,
+	) { list, reordering ->
+		list.map { (category, covers) ->
+			CategoryListModel(
+				mangaCount = covers.size,
+				covers = covers.take(3),
+				category = category,
+				isReorderMode = reordering,
+			)
+		}
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	fun deleteCategory(id: Long) {
 		launchJob {
@@ -40,38 +56,33 @@ class FavouritesCategoriesViewModel(
 		}
 	}
 
+	fun deleteCategories(ids: Set<Long>) {
+		launchJob {
+			repository.removeCategories(ids)
+		}
+	}
+
 	fun setAllCategoriesVisible(isVisible: Boolean) {
 		settings.isAllFavouritesVisible = isVisible
+	}
+
+	fun isInReorderMode(): Boolean = isReorder.value
+
+	fun setReorderMode(isReorderMode: Boolean) {
+		isReorder.value = isReorderMode
 	}
 
 	fun reorderCategories(oldPos: Int, newPos: Int) {
 		val prevJob = reorderJob
 		reorderJob = launchJob(Dispatchers.Default) {
 			prevJob?.join()
-			val items = allCategories.value ?: error("This should not happen")
-			val ids = items.mapTo(ArrayList(items.size)) { it.id }
+			val items = detalizedCategories.requireValue()
+			val ids = items.mapNotNullTo(ArrayList(items.size)) {
+				(it as? CategoryListModel)?.category?.id
+			}
 			Collections.swap(ids, oldPos, newPos)
 			ids.remove(0L)
 			repository.reorderCategories(ids)
 		}
-	}
-
-	private fun mapCategories(
-		categories: List<FavouriteCategory>,
-		isAllCategoriesVisible: Boolean,
-		withAllCategoriesItem: Boolean,
-	): List<CategoryListModel> {
-		val result = ArrayList<CategoryListModel>(categories.size + 1)
-		if (withAllCategoriesItem) {
-			result.add(CategoryListModel.All(isAllCategoriesVisible))
-		}
-		categories.mapTo(result) {
-			CategoryListModel.CategoryItem(it)
-		}
-		return result
-	}
-
-	private fun observeAllCategoriesVisible() = settings.observeAsFlow(AppSettings.KEY_ALL_FAVOURITES_VISIBLE) {
-		isAllFavouritesVisible
 	}
 }

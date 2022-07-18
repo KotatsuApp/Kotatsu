@@ -15,7 +15,7 @@
 	<dimen name="manga_list_details_item_height">120dp</dimen>
 	<dimen name="bookmark_item_height">120dp</dimen>
 	<dimen name="bookmark_list_spacing">4dp</dimen>
-	<dimen name="chapter_list_item_height">62dp</dimen>
+	<dimen name="chapter_list_item_height">48dp</dimen>
 	<dimen name="preferred_grid_width">120dp</dimen>
 	<dimen name="header_height">48dp</dimen>
 	<dimen name="list_footer_height_inner">36dp</dimen>
@@ -23,7 +23,40 @@
 	<dimen name="screen_padding">16dp</dimen>
 	<dimen name="selection_stroke_width">2dp</dimen>
 	<dimen name="list_selector_corner">12dp</dimen>
+	<dimen name="toolbar_button_margin">10dp</dimen>
+	<dimen name="widget_cover_height">116dp</dimen>
+	<dimen name="widget_cover_width">84dp</dimen>
+	<dimen name="reading_progress_stroke">4dp</dimen>
+	<dimen name="reading_progress_text_size">10dp</dimen>
 
 	<dimen name="search_suggestions_manga_height">124dp</dimen>
 	<dimen name="search_suggestions_manga_spacing">4dp</dimen>
+
+	<dimen name="bottom_sheet_width">0dp</dimen>
+	<dimen name="dialog_radius">8dp</dimen>
+
+	<dimen name="appwidget_corner_radius_inner">8dp</dimen>
+
+	<!-- FastScroller -->
+	<dimen name="fastscroll_bubble_radius">44dp</dimen>
+	<dimen name="fastscroll_bubble_size">88dp</dimen>
+	<dimen name="fastscroll_bubble_text_size">48sp</dimen>
+	<dimen name="fastscroll_bubble_padding">16dp</dimen>
+
+	<dimen name="fastscroll_bubble_radius_small">32dp</dimen>
+	<dimen name="fastscroll_bubble_size_small">36dp</dimen>
+	<dimen name="fastscroll_bubble_text_size_small">24sp</dimen>
+	<dimen name="fastscroll_bubble_padding_small">12dp</dimen>
+
+	<dimen name="fastscroll_handle_height">58dp</dimen>
+	<dimen name="fastscroll_handle_width">6dp</dimen>
+	<dimen name="fastscroll_handle_radius">4dp</dimen>
+
+	<dimen name="fastscroll_track_width">1dp</dimen>
+
+	<dimen name="fastscroll_scrollbar_margin_top">8dp</dimen>
+	<dimen name="fastscroll_scrollbar_margin_bottom">8dp</dimen>
+	<dimen name="fastscroll_scrollbar_padding_start">6dp</dimen>
+	<dimen name="fastscroll_scrollbar_padding_end">6dp</dimen>
+
 </resources>

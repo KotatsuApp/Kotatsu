@@ -42,6 +42,7 @@ class FavouritesCategoryEditViewModel(
 		isTrackerEnabled: Boolean,
 	) {
 		launchLoadingJob {
+			check(title.isNotEmpty())
 			if (categoryId == NO_ID) {
 				repository.createCategory(title, sortOrder, isTrackerEnabled)
 			} else {

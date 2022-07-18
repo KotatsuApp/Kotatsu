@@ -2,7 +2,10 @@
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:background="?android:attr/colorBackground"
+	android:padding="4dp"
+	android:theme="@style/Theme.Kotatsu.AppWidgetContainer">
 
 	<GridView
 		xmlns:tools="http://schemas.android.com/tools"
@@ -21,9 +24,7 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:gravity="center"
-		android:shadowColor="@android:color/black"
-		android:shadowRadius="1"
 		android:text="@string/you_have_not_favourites_yet"
-		android:textColor="@android:color/white" />
+		android:textColor="?android:attr/textColorPrimary" />
 
 </FrameLayout>

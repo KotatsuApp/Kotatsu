@@ -3,9 +3,7 @@ package org.koitharu.kotatsu.search.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -14,27 +12,38 @@ import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
-import org.koitharu.kotatsu.databinding.ActivitySearchGlobalBinding
+import org.koitharu.kotatsu.databinding.ActivityContainerBinding
+import org.koitharu.kotatsu.local.ui.LocalListFragment
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 
-class MangaListActivity : BaseActivity<ActivitySearchGlobalBinding>() {
+class MangaListActivity : BaseActivity<ActivityContainerBinding>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(ActivitySearchGlobalBinding.inflate(layoutInflater))
-		val tags = intent.getParcelableExtra<ParcelableMangaTags>(EXTRA_TAGS)?.tags ?: run {
+		setContentView(ActivityContainerBinding.inflate(layoutInflater))
+		val tags = intent.getParcelableExtra<ParcelableMangaTags>(EXTRA_TAGS)?.tags
+		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		val source = intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: tags?.firstOrNull()?.source
+		if (source == null) {
 			finishAfterTransition()
 			return
 		}
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		title = if (source == MangaSource.LOCAL) getString(R.string.local_storage) else source.title
 		val fm = supportFragmentManager
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {
-				val fragment = RemoteListFragment.newInstance(tags.first().source)
+				val fragment = if (source == MangaSource.LOCAL) {
+					LocalListFragment.newInstance()
+				} else {
+					RemoteListFragment.newInstance(source)
+				}
 				replace(R.id.container, fragment)
-				runOnCommit(ApplyFilterRunnable(fragment, tags))
+				if (!tags.isNullOrEmpty()) {
+					runOnCommit(ApplyFilterRunnable(fragment, tags))
+				}
 			}
 		}
 	}
@@ -45,13 +54,7 @@ class MangaListActivity : BaseActivity<ActivitySearchGlobalBinding>() {
 				left = insets.left,
 				right = insets.right
 			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
 		}
-		binding.container.updatePadding(
-			bottom = insets.bottom
-		)
 	}
 
 	private class ApplyFilterRunnable(
@@ -70,9 +73,12 @@ class MangaListActivity : BaseActivity<ActivitySearchGlobalBinding>() {
 	companion object {
 
 		private const val EXTRA_TAGS = "tags"
+		private const val EXTRA_SOURCE = "source"
 
-		fun newIntent(context: Context, tags: Set<MangaTag>) =
-			Intent(context, MangaListActivity::class.java)
-				.putExtra(EXTRA_TAGS, ParcelableMangaTags(tags))
+		fun newIntent(context: Context, tags: Set<MangaTag>) = Intent(context, MangaListActivity::class.java)
+			.putExtra(EXTRA_TAGS, ParcelableMangaTags(tags))
+
+		fun newIntent(context: Context, source: MangaSource) = Intent(context, MangaListActivity::class.java)
+			.putExtra(EXTRA_SOURCE, source)
 	}
 }

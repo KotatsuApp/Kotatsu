@@ -3,14 +3,13 @@ package org.koitharu.kotatsu.core.model.parcelable
 import android.os.Parcel
 import android.os.Parcelable
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.utils.ext.createList
 
 class ParcelableMangaPages(
 	val pages: List<MangaPage>,
 ) : Parcelable {
 
 	constructor(parcel: Parcel) : this(
-		createList(parcel.readInt()) { parcel.readMangaPage() }
+		List(parcel.readInt()) { parcel.readMangaPage() }
 	)
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {

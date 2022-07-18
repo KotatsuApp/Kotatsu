@@ -36,18 +36,6 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 				openLink(getString(R.string.url_weblate), preference.title)
 				true
 			}
-			AppSettings.KEY_FEEDBACK_4PDA -> {
-				openLink(getString(R.string.url_forpda), preference.title)
-				true
-			}
-			AppSettings.KEY_FEEDBACK_DISCORD -> {
-				openLink(getString(R.string.url_discord), preference.title)
-				true
-			}
-			AppSettings.KEY_FEEDBACK_GITHUB -> {
-				openLink(getString(R.string.url_github_issues), preference.title)
-				true
-			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}

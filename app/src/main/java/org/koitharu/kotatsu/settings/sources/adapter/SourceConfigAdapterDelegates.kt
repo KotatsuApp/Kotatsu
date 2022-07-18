@@ -6,26 +6,27 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import coil.request.Disposable
-import coil.request.ImageRequest
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.databinding.ItemExpandableBinding
 import org.koitharu.kotatsu.databinding.ItemFilterHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigDraggableBinding
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
-import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 
-fun sourceConfigHeaderDelegate() = adapterDelegateViewBinding<SourceConfigItem.Header, SourceConfigItem, ItemFilterHeaderBinding>(
-	{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) }
-) {
+fun sourceConfigHeaderDelegate() =
+	adapterDelegateViewBinding<SourceConfigItem.Header, SourceConfigItem, ItemFilterHeaderBinding>(
+		{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) }
+	) {
 
-	bind {
-		binding.textViewTitle.setText(item.titleResId)
+		bind {
+			binding.textViewTitle.setText(item.titleResId)
+		}
 	}
-}
 
 fun sourceConfigGroupDelegate(
 	listener: SourceConfigListener,
@@ -52,8 +53,6 @@ fun sourceConfigItemDelegate(
 	on = { item, _, _ -> item is SourceConfigItem.SourceItem && !item.isDraggable }
 ) {
 
-	var imageRequest: Disposable? = null
-
 	binding.switchToggle.setOnCheckedChangeListener { _, isChecked ->
 		listener.onItemEnabledChanged(item, isChecked)
 	}
@@ -61,17 +60,20 @@ fun sourceConfigItemDelegate(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		binding.switchToggle.isChecked = item.isEnabled
-		imageRequest = ImageRequest.Builder(context)
-			.data(item.faviconUrl)
-			.error(R.drawable.ic_favicon_fallback)
-			.target(binding.imageViewIcon)
-			.lifecycle(lifecycleOwner)
-			.enqueueWith(coil)
+		binding.textViewDescription.textAndVisible = item.summary
+		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		binding.imageViewIcon.newImageRequest(item.source.faviconUri())?.run {
+			crossfade(context)
+			error(fallbackIcon)
+			placeholder(fallbackIcon)
+			fallback(fallbackIcon)
+			lifecycle(lifecycleOwner)
+			enqueueWith(coil)
+		}
 	}
 
 	onViewRecycled {
-		imageRequest?.dispose()
-		imageRequest = null
+		binding.imageViewIcon.disposeImageRequest()
 	}
 }
 

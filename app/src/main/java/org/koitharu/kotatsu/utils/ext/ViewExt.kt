@@ -3,7 +3,10 @@ package org.koitharu.kotatsu.utils.ext
 import android.app.Activity
 import android.graphics.Rect
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewParent
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -90,22 +93,6 @@ fun View.resetTransformations() {
 	rotationY = 0f
 }
 
-inline fun RecyclerView.doOnCurrentItemChanged(crossinline callback: (Int) -> Unit) {
-	addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-		private var lastItem = -1
-
-		override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-			super.onScrolled(recyclerView, dx, dy)
-			val item = recyclerView.findCenterViewPosition()
-			if (item != RecyclerView.NO_POSITION && item != lastItem) {
-				lastItem = item
-				callback(item)
-			}
-		}
-	})
-}
-
 fun RecyclerView.findCenterViewPosition(): Int {
 	val centerX = width / 2f
 	val centerY = height / 2f
@@ -138,4 +125,36 @@ val RecyclerView.isScrolledToTop: Boolean
 		}
 		val holder = findViewHolderForAdapterPosition(0)
 		return holder != null && holder.itemView.top >= 0
+	}
+
+fun <T : View> ViewGroup.findViewsByType(clazz: Class<T>): Sequence<T> {
+	if (childCount == 0) {
+		return emptySequence()
+	}
+	return sequence {
+		for (view in children) {
+			if (clazz.isInstance(view)) {
+				yield(clazz.cast(view)!!)
+			} else if (view is ViewGroup && view.childCount != 0) {
+				yieldAll(view.findViewsByType(clazz))
+			}
+		}
+	}
+}
+
+fun RecyclerView.invalidateNestedItemDecorations() {
+	findViewsByType(RecyclerView::class.java).forEach {
+		it.invalidateItemDecorations()
+	}
+}
+
+internal val View.compatPaddingStart get() = ViewCompat.getPaddingStart(this)
+
+val View.parents: Sequence<ViewParent>
+	get() = sequence {
+		var p: ViewParent? = parent
+		while (p != null) {
+			yield(p)
+			p = p.parent
+		}
 	}

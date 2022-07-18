@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:clipChildren="false"
+	android:orientation="vertical"
+	android:paddingBottom="@dimen/grid_spacing_outer">
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_alignWithParentIfMissing="true"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_marginHorizontal="@dimen/grid_spacing"
+		android:layout_marginTop="@dimen/grid_spacing_outer"
+		android:layout_toStartOf="@id/button_more"
+		android:gravity="center_vertical|start"
+		android:padding="@dimen/grid_spacing"
+		android:singleLine="true"
+		android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
+		tools:text="@tools:sample/lorem[2]" />
+
+	<Button
+		android:id="@+id/button_more"
+		style="@style/Widget.Material3.Button.TextButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/textView_title"
+		android:layout_alignParentEnd="true"
+		android:layout_marginEnd="@dimen/grid_spacing"
+		android:text="@string/show_all" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recyclerView"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/textView_title"
+		android:layout_alignParentStart="true"
+		android:clipToPadding="false"
+		android:nestedScrollingEnabled="false"
+		android:orientation="horizontal"
+		android:paddingHorizontal="@dimen/grid_spacing"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+</RelativeLayout>

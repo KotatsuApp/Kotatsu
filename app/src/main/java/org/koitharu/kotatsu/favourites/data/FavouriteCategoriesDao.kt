@@ -15,6 +15,17 @@ abstract class FavouriteCategoriesDao {
 	@Query("SELECT * FROM favourite_categories WHERE deleted_at = 0 ORDER BY sort_key")
 	abstract fun observeAll(): Flow<List<FavouriteCategoryEntity>>
 
+	@MapInfo(valueColumn = "cover")
+	@Query(
+		"""
+			SELECT favourite_categories.*, manga.cover_url AS cover 
+			FROM favourite_categories JOIN manga ON manga.manga_id IN 
+				(SELECT manga_id FROM favourites WHERE favourites.category_id == favourite_categories.category_id)
+			ORDER BY favourite_categories.sort_key
+		"""
+	)
+	abstract fun observeAllWithDetails(): Flow<Map<FavouriteCategoryEntity, List<String>>>
+
 	@Query("SELECT * FROM favourite_categories WHERE category_id = :id AND deleted_at = 0")
 	abstract fun observe(id: Long): Flow<FavouriteCategoryEntity?>
 
@@ -32,6 +43,12 @@ abstract class FavouriteCategoriesDao {
 
 	@Query("UPDATE favourite_categories SET `order` = :order WHERE category_id = :id")
 	abstract suspend fun updateOrder(id: Long, order: String)
+
+	@Query("UPDATE favourite_categories SET `track` = :isEnabled WHERE category_id = :id")
+	abstract suspend fun updateTracking(id: Long, isEnabled: Boolean)
+
+	@Query("UPDATE favourite_categories SET `show_in_lib` = :isEnabled WHERE category_id = :id")
+	abstract suspend fun updateLibVisibility(id: Long, isEnabled: Boolean)
 
 	@Query("UPDATE favourite_categories SET sort_key = :sortKey WHERE category_id = :id")
 	abstract suspend fun updateSortKey(id: Long, sortKey: Int)

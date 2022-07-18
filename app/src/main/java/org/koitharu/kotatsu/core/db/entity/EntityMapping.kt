@@ -1,11 +1,9 @@
 package org.koitharu.kotatsu.core.db.entity
 
-import java.util.*
-import org.koitharu.kotatsu.core.model.TrackingLogItem
 import org.koitharu.kotatsu.parsers.model.*
-import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
+import org.koitharu.kotatsu.utils.ext.longHashCode
 
 // Entity to model
 
@@ -34,13 +32,6 @@ fun MangaEntity.toManga(tags: Set<MangaTag>) = Manga(
 )
 
 fun MangaWithTags.toManga() = manga.toManga(tags.toMangaTags())
-
-fun TrackLogWithManga.toTrackingLogItem() = TrackingLogItem(
-	id = trackLog.id,
-	chapters = trackLog.chapters.split('\n').filterNot { x -> x.isEmpty() },
-	manga = manga.toManga(tags.toMangaTags()),
-	createdAt = Date(trackLog.createdAt)
-)
 
 // Model to entity
 

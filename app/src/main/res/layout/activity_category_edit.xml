@@ -10,7 +10,18 @@
 	<com.google.android.material.appbar.MaterialToolbar
 		android:id="@+id/toolbar"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content" />
+		android:layout_height="?attr/actionBarSize">
+
+		<Button
+			android:id="@+id/button_done"
+			style="@style/Widget.Material3.Button.UnelevatedButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+			android:text="@string/save" />
+
+	</com.google.android.material.appbar.MaterialToolbar>
 
 	<ScrollView
 		android:id="@+id/scrollView"
@@ -57,7 +68,7 @@
 
 			</com.google.android.material.textfield.TextInputLayout>
 
-			<com.google.android.material.switchmaterial.SwitchMaterial
+			<com.google.android.material.materialswitch.MaterialSwitch
 				android:id="@+id/switch_tracker"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

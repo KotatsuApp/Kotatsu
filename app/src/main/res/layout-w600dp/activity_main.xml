@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".main.ui.MainActivity">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<com.google.android.material.appbar.KotatsuAppBarLayout
+			android:id="@+id/appbar"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:fitsSystemWindows="true"
+			android:paddingLeft="16dp"
+			android:paddingRight="16dp"
+			android:clipToPadding="false"
+			android:stateListAnimator="@null"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/navRail"
+			app:layout_constraintTop_toTopOf="parent">
+
+			<FrameLayout
+				android:id="@+id/toolbar_card"
+				android:layout_width="match_parent"
+				android:layout_height="48dp"
+				android:layout_marginVertical="8dp"
+				android:background="@drawable/toolbar_background"
+				android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar">
+
+				<com.google.android.material.appbar.MaterialToolbar
+					android:id="@id/toolbar"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="6dp"
+					android:focusable="true"
+					android:focusableInTouchMode="true"
+					app:contentInsetStartWithNavigation="0dp"
+					app:navigationIcon="?attr/actionModeWebSearchDrawable">
+
+					<org.koitharu.kotatsu.search.ui.widget.SearchEditText
+						android:id="@+id/searchView"
+						style="@style/Widget.Kotatsu.SearchView"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:layout_marginEnd="8dp"
+						android:background="@null"
+						android:gravity="center_vertical"
+						android:hint="@string/search_manga"
+						android:imeOptions="actionSearch"
+						android:importantForAutofill="no"
+						android:singleLine="true"
+						tools:drawableEnd="@drawable/abc_ic_clear_material" />
+
+				</com.google.android.material.appbar.MaterialToolbar>
+
+			</FrameLayout>
+
+		</com.google.android.material.appbar.KotatsuAppBarLayout>
+
+		<com.google.android.material.navigationrail.NavigationRailView
+			android:id="@+id/navRail"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			app:elevation="1dp"
+			app:headerLayout="@layout/navigation_rail_fab"
+			app:labelVisibilityMode="labeled"
+			app:layout_constraintStart_toStartOf="parent"
+			app:menu="@menu/nav_bottom" />
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@id/container"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/navRail"
+			app:layout_constraintTop_toBottomOf="@id/appbar"
+			tools:layout="@layout/fragment_list" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout>

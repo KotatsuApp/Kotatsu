@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.utils
 
 import android.util.ArrayMap
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -33,11 +35,13 @@ class CompositeMutex<T : Any> : Set<T> {
 	}
 
 	suspend fun lock(element: T) {
-		waitForRemoval(element)
-		mutex.withLock {
-			val lastValue = data.put(element, LinkedList<CancellableContinuation<Unit>>())
-			check(lastValue == null) {
-				"CompositeMutex is double-locked for $element"
+		while (currentCoroutineContext().isActive) {
+			waitForRemoval(element)
+			mutex.withLock {
+				if (data[element] == null) {
+					data[element] = LinkedList<CancellableContinuation<Unit>>()
+					return
+				}
 			}
 		}
 	}

@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 
 fun emptyStateListAD(
-	listener: MangaListListener,
+	listener: ListStateHolderListener,
 ) = adapterDelegateViewBinding<EmptyState, ListModel, ItemEmptyStateBinding>(
 	{ inflater, parent -> ItemEmptyStateBinding.inflate(inflater, parent, false) }
 ) {

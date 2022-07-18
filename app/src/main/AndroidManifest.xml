@@ -9,6 +9,7 @@
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
@@ -64,8 +65,30 @@
 			android:name="org.koitharu.kotatsu.search.ui.MangaListActivity"
 			android:label="@string/search_manga" />
 		<activity
+			android:name="org.koitharu.kotatsu.history.ui.HistoryActivity"
+			android:label="@string/history" />
+		<activity
+			android:name="org.koitharu.kotatsu.favourites.ui.FavouritesActivity"
+			android:label="@string/favourites" />
+		<activity
+			android:name="org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity"
+			android:label="@string/bookmarks" />
+		<activity
+			android:name="org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity"
+			android:label="@string/suggestions" />
+		<activity
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
-			android:label="@string/settings" />
+			android:exported="true"
+			android:label="@string/settings">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:scheme="kotatsu" />
+			</intent-filter>
+		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.browser.BrowserActivity"
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
@@ -75,13 +98,8 @@
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
 		<activity
-			android:name="org.koitharu.kotatsu.core.ui.CrashActivity"
-			android:label="@string/error_occurred"
-			android:theme="@android:style/Theme.DeviceDefault"
-			android:windowSoftInputMode="stateAlwaysHidden" />
-		<activity
-			android:name="org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity"
-			android:label="@string/favourites_categories"
+			android:name="org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity"
+			android:label="@string/favourites"
 			android:windowSoftInputMode="stateAlwaysHidden" />
 		<activity
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfConfigActivity"
@@ -93,7 +111,7 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name="org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity"
+			android:name="org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity"
 			android:label="@string/search" />
 		<activity
 			android:name="org.koitharu.kotatsu.main.ui.protect.ProtectActivity"
@@ -111,8 +129,9 @@
 		<activity
 			android:name="org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity"
 			android:theme="@style/Theme.Kotatsu.DialogWhenLarge" />
-		<activity android:name="org.koitharu.kotatsu.sync.ui.SyncAuthActivity"
-			android:label="@string/sync"/>
+		<activity
+			android:name="org.koitharu.kotatsu.sync.ui.SyncAuthActivity"
+			android:label="@string/sync" />
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"

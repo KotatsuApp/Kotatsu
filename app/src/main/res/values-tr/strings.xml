@@ -194,7 +194,6 @@
     <string name="search_results">Arama sonuçları</string>
     <string name="waiting_for_network">Ağ bekleniyor…</string>
     <string name="repeat_password">Parolayı tekrarla</string>
-    <string name="prefer_rtl_reader">Sağdan sola (←) okuyucuyu tercih et</string>
     <string name="dont_check">Denetleme</string>
     <string name="wrong_password">Yanlış parola</string>
     <string name="report_github">GitHub\'da sorun oluştur</string>
@@ -202,7 +201,6 @@
     <string name="long_ago">Uzun zaman önce</string>
     <string name="today">Bugün</string>
     <string name="no_update_available">Güncelleme yok</string>
-    <string name="restart_required">Yeniden başlatma gerekli</string>
     <string name="chapters_checking_progress">Yeni bölümler denetleniyor: %1$d / %2$d</string>
     <string name="dynamic_theme">Dinamik tema</string>
     <string name="text_categories_holder">Favorilerinizi düzenlemek için kategorileri kullanabilirsiniz. Kategori oluşturmak için «+» düğmesine basın</string>
@@ -296,4 +294,27 @@
     <string name="detect_reader_mode">Okuyucu modunu otomatik algıla</string>
     <string name="detect_reader_mode_summary">Manganın webtoon olup olmadığını otomatik olarak algıla</string>
     <string name="default_mode">Öntanımlı mod</string>
+    <string name="disable_battery_optimization">Pil iyileştirmesini devre dışı bırak</string>
+    <string name="disable_battery_optimization_summary">Arka planda güncelleme denetimlerine yardımcı olur</string>
+    <string name="crash_text">Bir şeyler yanlış gitti. Düzeltmemize yardımcı olması için lütfen geliştiricilere bir hata bildirimi gönderin.</string>
+    <string name="send">Gönder</string>
+    <string name="disable_all">Tümünü devre dışı bırak</string>
+    <string name="use_fingerprint">Varsa parmak izi kullan</string>
+    <string name="appwidget_shelf_description">Favorilerinizden mangalar</string>
+    <string name="appwidget_recent_description">Son okuduğunuz mangalar</string>
+    <string name="report">Bildir</string>
+    <string name="tracking">İzleme</string>
+    <string name="logout">Oturumu kapat</string>
+    <string name="status_reading">Okunuyor</string>
+    <string name="status_completed">Tamamlandı</string>
+    <string name="show_reading_indicators">Okuma ilerleme göstergelerini göster</string>
+    <string name="data_deletion">Verileri sil</string>
+    <string name="show_reading_indicators_summary">Geçmişte ve favorilerde okunma yüzdesini göster</string>
+    <string name="exclude_nsfw_from_history_summary">Uygunsuz olarak işaretlenen mangalar asla geçmişe eklenmeyecek ve ilerlemeniz kaydedilmeyecektir</string>
+    <string name="clear_cookies_summary">Bazı sorunlarda yardımcı olabilir. Tüm yetkilendirmeler geçersiz kılınacaktır</string>
+    <string name="status_on_hold">Beklemede</string>
+    <string name="status_dropped">Bırakıldı</string>
+    <string name="status_planned">Planlandı</string>
+    <string name="status_re_reading">Yeniden okunuyor</string>
+    <string name="show_all">Tümünü göster</string>
 </resources>

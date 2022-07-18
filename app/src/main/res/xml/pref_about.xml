@@ -15,30 +15,12 @@
 			android:summary="@string/show_notification_app_update"
 			android:title="@string/application_update" />
 
-	</PreferenceCategory>
-
-	<PreferenceCategory android:title="@string/about_feedback">
-
-		<Preference
-			android:key="about_feedback_github"
-			android:persistent="false"
-			android:summary="@string/url_github_issues"
-			android:title="@string/github" />
-
-		<Preference
-			android:key="about_feedback_4pda"
-			android:summary="@string/url_forpda"
-			android:title="@string/about_feedback_4pda" />
-
-		<Preference
-			android:key="about_feedback_discord"
-			android:summary="@string/url_discord"
-			android:title="@string/discord" />
-
 		<Preference
 			android:key="about_app_translation"
 			android:summary="@string/about_app_translation_summary"
 			android:title="@string/about_app_translation" />
+
+		<org.koitharu.kotatsu.settings.utils.AboutLinksPreference />
 
 	</PreferenceCategory>
 

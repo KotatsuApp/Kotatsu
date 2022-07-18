@@ -1,14 +1,12 @@
 package org.koitharu.kotatsu.core.backup
 
+import androidx.room.withTransaction
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
-import org.koitharu.kotatsu.core.db.entity.TagEntity
-import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
-import org.koitharu.kotatsu.favourites.data.FavouriteEntity
-import org.koitharu.kotatsu.history.data.HistoryEntity
+import org.koitharu.kotatsu.parsers.util.json.JSONIterator
+import org.koitharu.kotatsu.parsers.util.json.mapJSON
 
 private const val PAGE_SIZE = 10
 
@@ -24,11 +22,11 @@ class BackupRepository(private val db: MangaDatabase) {
 			}
 			offset += history.size
 			for (item in history) {
-				val manga = item.manga.toJson()
+				val manga = JsonSerializer(item.manga).toJson()
 				val tags = JSONArray()
-				item.tags.forEach { tags.put(it.toJson()) }
+				item.tags.forEach { tags.put(JsonSerializer(it).toJson()) }
 				manga.put("tags", tags)
-				val json = item.history.toJson()
+				val json = JsonSerializer(item.history).toJson()
 				json.put("manga", manga)
 				entry.data.put(json)
 			}
@@ -40,7 +38,7 @@ class BackupRepository(private val db: MangaDatabase) {
 		val entry = BackupEntry(BackupEntry.CATEGORIES, JSONArray())
 		val categories = db.favouriteCategoriesDao.findAll()
 		for (item in categories) {
-			entry.data.put(item.toJson())
+			entry.data.put(JsonSerializer(item).toJson())
 		}
 		return entry
 	}
@@ -55,11 +53,11 @@ class BackupRepository(private val db: MangaDatabase) {
 			}
 			offset += favourites.size
 			for (item in favourites) {
-				val manga = item.manga.toJson()
+				val manga = JsonSerializer(item.manga).toJson()
 				val tags = JSONArray()
-				item.tags.forEach { tags.put(it.toJson()) }
+				item.tags.forEach { tags.put(JsonSerializer(it).toJson()) }
 				manga.put("tags", tags)
-				val json = item.favourite.toJson()
+				val json = JsonSerializer(item.favourite).toJson()
 				json.put("manga", manga)
 				entry.data.put(json)
 			}
@@ -77,59 +75,54 @@ class BackupRepository(private val db: MangaDatabase) {
 		return entry
 	}
 
-	private fun MangaEntity.toJson(): JSONObject {
-		val jo = JSONObject()
-		jo.put("id", id)
-		jo.put("title", title)
-		jo.put("alt_title", altTitle)
-		jo.put("url", url)
-		jo.put("public_url", publicUrl)
-		jo.put("rating", rating)
-		jo.put("nsfw", isNsfw)
-		jo.put("cover_url", coverUrl)
-		jo.put("large_cover_url", largeCoverUrl)
-		jo.put("state", state)
-		jo.put("author", author)
-		jo.put("source", source)
-		return jo
+	suspend fun restoreHistory(entry: BackupEntry): CompositeResult {
+		val result = CompositeResult()
+		for (item in entry.data.JSONIterator()) {
+			val mangaJson = item.getJSONObject("manga")
+			val manga = JsonDeserializer(mangaJson).toMangaEntity()
+			val tags = mangaJson.getJSONArray("tags").mapJSON {
+				JsonDeserializer(it).toTagEntity()
+			}
+			val history = JsonDeserializer(item).toHistoryEntity()
+			result += runCatching {
+				db.withTransaction {
+					db.tagsDao.upsert(tags)
+					db.mangaDao.upsert(manga, tags)
+					db.historyDao.upsert(history)
+				}
+			}
+		}
+		return result
 	}
 
-	private fun TagEntity.toJson(): JSONObject {
-		val jo = JSONObject()
-		jo.put("id", id)
-		jo.put("title", title)
-		jo.put("key", key)
-		jo.put("source", source)
-		return jo
+	suspend fun restoreCategories(entry: BackupEntry): CompositeResult {
+		val result = CompositeResult()
+		for (item in entry.data.JSONIterator()) {
+			val category = JsonDeserializer(item).toFavouriteCategoryEntity()
+			result += runCatching {
+				db.favouriteCategoriesDao.upsert(category)
+			}
+		}
+		return result
 	}
 
-	private fun HistoryEntity.toJson(): JSONObject {
-		val jo = JSONObject()
-		jo.put("manga_id", mangaId)
-		jo.put("created_at", createdAt)
-		jo.put("updated_at", updatedAt)
-		jo.put("chapter_id", chapterId)
-		jo.put("page", page)
-		jo.put("scroll", scroll)
-		return jo
-	}
-
-	private fun FavouriteCategoryEntity.toJson(): JSONObject {
-		val jo = JSONObject()
-		jo.put("category_id", categoryId)
-		jo.put("created_at", createdAt)
-		jo.put("sort_key", sortKey)
-		jo.put("title", title)
-		jo.put("order", order)
-		jo.put("track", track)
-		return jo
-	}
-
-	private fun FavouriteEntity.toJson(): JSONObject {
-		val jo = JSONObject()
-		jo.put("manga_id", mangaId)
-		jo.put("category_id", categoryId)
-		jo.put("created_at", createdAt)
-		return jo
+	suspend fun restoreFavourites(entry: BackupEntry): CompositeResult {
+		val result = CompositeResult()
+		for (item in entry.data.JSONIterator()) {
+			val mangaJson = item.getJSONObject("manga")
+			val manga = JsonDeserializer(mangaJson).toMangaEntity()
+			val tags = mangaJson.getJSONArray("tags").mapJSON {
+				JsonDeserializer(it).toTagEntity()
+			}
+			val favourite = JsonDeserializer(item).toFavouriteEntity()
+			result += runCatching {
+				db.withTransaction {
+					db.tagsDao.upsert(tags)
+					db.mangaDao.upsert(manga, tags)
+					db.favouritesDao.upsert(favourite)
+				}
+			}
+		}
+		return result
 	}
 }

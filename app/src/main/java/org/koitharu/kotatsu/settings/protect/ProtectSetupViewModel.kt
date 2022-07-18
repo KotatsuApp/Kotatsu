@@ -17,10 +17,13 @@ class ProtectSetupViewModel(
 
 	val isSecondStep = firstPassword.map {
 		it != null
-	}.asLiveDataDistinct(viewModelScope.coroutineContext)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext, false)
 	val onPasswordSet = SingleLiveEvent<Unit>()
 	val onPasswordMismatch = SingleLiveEvent<Unit>()
 	val onClearText = SingleLiveEvent<Unit>()
+
+	val isBiometricEnabled
+		get() = settings.isBiometricProtectionEnabled
 
 	fun onNextClick(password: String) {
 		if (firstPassword.value == null) {
@@ -34,5 +37,9 @@ class ProtectSetupViewModel(
 				onPasswordMismatch.call(Unit)
 			}
 		}
+	}
+
+	fun setBiometricEnabled(isEnabled: Boolean) {
+		settings.isBiometricProtectionEnabled = isEnabled
 	}
 }

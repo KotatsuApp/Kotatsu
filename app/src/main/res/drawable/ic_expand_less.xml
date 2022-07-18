@@ -1,7 +1,11 @@
-<rotate
+<vector
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:drawable="@drawable/abc_ic_arrow_drop_right_black_24dp"
-	android:fromDegrees="-90"
-	android:pivotX="50%"
-	android:pivotY="50%"
-	android:toDegrees="-90" />
+	android:width="24dp"
+	android:height="24dp"
+	android:tint="?attr/colorControlNormal"
+	android:viewportWidth="24"
+	android:viewportHeight="24">
+	<path
+		android:fillColor="@android:color/white"
+		android:pathData="M7,14l5,-5 5,5z" />
+</vector>

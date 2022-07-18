@@ -6,11 +6,14 @@
 /.idea/dictionaries
 /.idea/modules.xml
 /.idea/misc.xml
+/.idea/discord.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 /.idea/kotlinScripting.xml
 /.idea/deploymentTargetDropDown.xml
+/.idea/androidTestResultsUserPreferences.xml
+/.idea/render.experimental.xml
 .DS_Store
 /build
 /captures

@@ -15,14 +15,13 @@ import android.widget.Toast
 import androidx.appcompat.view.ActionMode
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
@@ -35,7 +34,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.os.ShortcutsRepository
+import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.download.ui.service.DownloadService
@@ -44,9 +43,11 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.search.ui.global.GlobalSearchActivity
-import org.koitharu.kotatsu.utils.ShareHelper
+import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
+import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.isReportable
+import org.koitharu.kotatsu.utils.ext.report
 
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
@@ -84,7 +85,7 @@ class DetailsActivity :
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
 		viewModel.onShowToast.observe(this) {
-			binding.snackbar.show(messageText = getString(it), longDuration = false)
+			binding.snackbar.show(messageText = getString(it))
 		}
 
 		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
@@ -117,6 +118,21 @@ class DetailsActivity :
 				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 				finishAfterTransition()
 			}
+			e.isReportable() -> {
+				binding.snackbar.show(
+					messageText = e.getDisplayMessage(resources),
+					actionId = R.string.report,
+					duration = if (viewModel.manga.value?.chapters == null) {
+						Snackbar.LENGTH_INDEFINITE
+					} else {
+						Snackbar.LENGTH_LONG
+					},
+					onActionClick = {
+						e.report("DetailsActivity::onError")
+						dismiss()
+					}
+				)
+			}
 			else -> {
 				binding.snackbar.show(e.getDisplayMessage(resources))
 			}
@@ -127,9 +143,6 @@ class DetailsActivity :
 		binding.snackbar.updatePadding(
 			bottom = insets.bottom
 		)
-		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top
-		}
 		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right
@@ -148,34 +161,22 @@ class DetailsActivity :
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		super.onCreateOptionsMenu(menu)
 		menuInflater.inflate(R.menu.opt_details, menu)
-		return super.onCreateOptionsMenu(menu)
+		return true
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu): Boolean {
 		val manga = viewModel.manga.value
-		menu.findItem(R.id.action_save).isVisible =
-			manga?.source != null && manga.source != MangaSource.LOCAL
-		menu.findItem(R.id.action_delete).isVisible =
-			manga?.source == MangaSource.LOCAL
-		menu.findItem(R.id.action_browser).isVisible =
-			manga?.source != MangaSource.LOCAL
-		menu.findItem(R.id.action_shortcut).isVisible =
-			ShortcutManagerCompat.isRequestPinShortcutSupported(this)
+		menu.findItem(R.id.action_save).isVisible = manga?.source != null && manga.source != MangaSource.LOCAL
+		menu.findItem(R.id.action_delete).isVisible = manga?.source == MangaSource.LOCAL
+		menu.findItem(R.id.action_browser).isVisible = manga?.source != MangaSource.LOCAL
+		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
+		menu.findItem(R.id.action_shiki_track).isVisible = viewModel.isScrobblingAvailable
 		return super.onPrepareOptionsMenu(menu)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_share -> {
-			viewModel.manga.value?.let {
-				if (it.source == MangaSource.LOCAL) {
-					ShareHelper(this).shareCbz(listOf(it.url.toUri().toFile()))
-				} else {
-					ShareHelper(this).shareMangaLink(it)
-				}
-			}
-			true
-		}
 		R.id.action_delete -> {
 			val title = viewModel.manga.value?.title.orEmpty()
 			MaterialAlertDialogBuilder(this)
@@ -208,14 +209,20 @@ class DetailsActivity :
 		}
 		R.id.action_related -> {
 			viewModel.manga.value?.let {
-				startActivity(GlobalSearchActivity.newIntent(this, it.title))
+				startActivity(MultiSearchActivity.newIntent(this, it.title))
+			}
+			true
+		}
+		R.id.action_shiki_track -> {
+			viewModel.manga.value?.let {
+				ScrobblingSelectorBottomSheet.show(supportFragmentManager, it)
 			}
 			true
 		}
 		R.id.action_shortcut -> {
 			viewModel.manga.value?.let {
 				lifecycleScope.launch {
-					if (!get<ShortcutsRepository>().requestPinShortcut(it)) {
+					if (!get<ShortcutsUpdater>().requestPinShortcut(it)) {
 						binding.snackbar.show(getString(R.string.operation_not_supported))
 					}
 				}
