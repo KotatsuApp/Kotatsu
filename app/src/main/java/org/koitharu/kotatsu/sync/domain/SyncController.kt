@@ -34,7 +34,7 @@ class SyncController(
 	private val mutex = Mutex()
 	private val jobs = ArrayMap<String, Job>(2)
 	private val defaultGcPeriod: Long // gc period if sync disabled
-		get() = TimeUnit.DAYS.toMillis(2)
+		get() = TimeUnit.HOURS.toMillis(2)
 
 	override fun onInvalidated(tables: MutableSet<String>) {
 		requestSync(
