@@ -17,7 +17,6 @@ import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
-import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.*
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -46,7 +45,6 @@ class ReaderViewModel(
 	private val preselectedBranch: String?,
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
-	private val shortcutsRepository: ShortcutsRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 	private val pageSaveHelper: PageSaveHelper,
@@ -289,7 +287,6 @@ class ReaderViewModel(
 			currentState.value?.let {
 				val percent = computePercent(it.chapterId, it.page)
 				historyRepository.addOrUpdate(manga, it.chapterId, it.page, it.scroll, percent)
-				shortcutsRepository.updateShortcuts()
 			}
 
 			content.postValue(ReaderContent(pages, currentState.value))

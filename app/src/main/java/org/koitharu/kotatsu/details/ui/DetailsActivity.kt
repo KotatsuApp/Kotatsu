@@ -34,7 +34,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.os.ShortcutsRepository
+import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.download.ui.service.DownloadService
@@ -224,7 +224,7 @@ class DetailsActivity :
 		R.id.action_shortcut -> {
 			viewModel.manga.value?.let {
 				lifecycleScope.launch {
-					if (!get<ShortcutsRepository>().requestPinShortcut(it)) {
+					if (!get<ShortcutsUpdater>().requestPinShortcut(it)) {
 						binding.snackbar.show(getString(R.string.operation_not_supported))
 					}
 				}

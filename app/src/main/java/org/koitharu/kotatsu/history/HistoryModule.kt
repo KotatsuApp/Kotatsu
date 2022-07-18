@@ -10,5 +10,5 @@ val historyModule
 
 		single { HistoryRepository(get(), get(), get(), getAll()) }
 
-		viewModel { HistoryListViewModel(get(), get(), get(), get()) }
+		viewModel { HistoryListViewModel(get(), get(), get()) }
 	}

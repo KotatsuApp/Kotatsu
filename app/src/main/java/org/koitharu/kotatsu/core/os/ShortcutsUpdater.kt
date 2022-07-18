@@ -6,38 +6,41 @@ import android.content.pm.ShortcutManager
 import android.media.ThumbnailUtils
 import android.os.Build
 import android.util.Size
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.room.InvalidationTracker
 import coil.ImageLoader
 import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
+import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 
-class ShortcutsRepository(
+class ShortcutsUpdater(
 	private val context: Context,
 	private val coil: ImageLoader,
 	private val historyRepository: HistoryRepository,
 	private val mangaRepository: MangaDataRepository,
-) {
+) : InvalidationTracker.Observer(TABLE_HISTORY) {
 
-	private val iconSize by lazy {
-		getIconSize(context)
-	}
+	private val iconSize by lazy { getIconSize(context) }
+	private var shortcutsUpdateJob: Job? = null
 
-	suspend fun updateShortcuts() {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return
-		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
-		val shortcuts = historyRepository.getList(0, manager.maxShortcutCountPerActivity)
-			.filter { x -> x.title.isNotEmpty() }
-			.map { buildShortcutInfo(it).build().toShortcutInfo() }
-		manager.dynamicShortcuts = shortcuts
+	override fun onInvalidated(tables: MutableSet<String>) {
+		val prevJob = shortcutsUpdateJob
+		shortcutsUpdateJob = processLifecycleScope.launch(Dispatchers.Default) {
+			prevJob?.join()
+			updateShortcutsImpl()
+		}
 	}
 
 	suspend fun requestPinShortcut(manga: Manga): Boolean {
@@ -48,17 +51,28 @@ class ShortcutsRepository(
 		)
 	}
 
+	@VisibleForTesting
+	suspend fun await() {
+		shortcutsUpdateJob?.join()
+	}
+
+	private suspend fun updateShortcutsImpl() {
+		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
+		val shortcuts = historyRepository.getList(0, manager.maxShortcutCountPerActivity)
+			.filter { x -> x.title.isNotEmpty() }
+			.map { buildShortcutInfo(it).build().toShortcutInfo() }
+		manager.dynamicShortcuts = shortcuts
+	}
+
 	private suspend fun buildShortcutInfo(manga: Manga): ShortcutInfoCompat.Builder {
 		val icon = runCatching {
-			withContext(Dispatchers.IO) {
-				val bmp = coil.execute(
-					ImageRequest.Builder(context)
-						.data(manga.coverUrl)
-						.size(iconSize.width, iconSize.height)
-						.build()
-				).requireBitmap()
-				ThumbnailUtils.extractThumbnail(bmp, iconSize.width, iconSize.height, 0)
-			}
+			val bmp = coil.execute(
+				ImageRequest.Builder(context)
+					.data(manga.coverUrl)
+					.size(iconSize.width, iconSize.height)
+					.build()
+			).requireBitmap()
+			ThumbnailUtils.extractThumbnail(bmp, iconSize.width, iconSize.height, 0)
 		}.fold(
 			onSuccess = { IconCompat.createWithAdaptiveBitmap(it) },
 			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) }
