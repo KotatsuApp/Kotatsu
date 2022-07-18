@@ -4,36 +4,24 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.retry
-import kotlinx.coroutines.plus
-import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.utils.ext.processLifecycleScope
+import androidx.room.InvalidationTracker
+import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
+import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.widget.recent.RecentWidgetProvider
 import org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider
 
-class WidgetUpdater(private val context: Context) {
+class WidgetUpdater(private val context: Context) : InvalidationTracker.Observer(TABLE_HISTORY, TABLE_FAVOURITES) {
 
-	fun subscribeToFavourites(repository: FavouritesRepository) {
-		repository.observeAll(SortOrder.NEWEST)
-			.onEach { updateWidget(ShelfWidgetProvider::class.java) }
-			.retry { error -> error !is CancellationException }
-			.launchIn(processLifecycleScope + Dispatchers.Default)
+	override fun onInvalidated(tables: MutableSet<String>) {
+		if (TABLE_HISTORY in tables) {
+			updateWidgets(RecentWidgetProvider::class.java)
+		}
+		if (TABLE_FAVOURITES in tables) {
+			updateWidgets(ShelfWidgetProvider::class.java)
+		}
 	}
 
-	fun subscribeToHistory(repository: HistoryRepository) {
-		repository.observeAll()
-			.onEach { updateWidget(RecentWidgetProvider::class.java) }
-			.retry { error -> error !is CancellationException }
-			.launchIn(processLifecycleScope + Dispatchers.Default)
-	}
-
-	private fun updateWidget(cls: Class<*>) {
+	private fun updateWidgets(cls: Class<*>) {
 		val intent = Intent(context, cls)
 		intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
 		val ids = AppWidgetManager.getInstance(context)

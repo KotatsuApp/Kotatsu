@@ -7,12 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.ReversibleHandle
-import org.koitharu.kotatsu.base.domain.plus
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
@@ -36,7 +33,6 @@ private const val HISTORY_MAX_SEGMENTS = 2
 class LibraryViewModel(
 	private val repository: LibraryRepository,
 	private val historyRepository: HistoryRepository,
-	private val shortcutsRepository: ShortcutsRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel(), ListExtraProvider {
@@ -88,10 +84,7 @@ class LibraryViewModel(
 			return
 		}
 		launchJob(Dispatchers.Default) {
-			val handle = historyRepository.deleteReversible(ids) + ReversibleHandle {
-				shortcutsRepository.updateShortcuts()
-			}
-			shortcutsRepository.updateShortcuts()
+			val handle = historyRepository.deleteReversible(ids)
 			onActionDone.postCall(ReversibleAction(R.string.removed_from_history, handle))
 		}
 	}
@@ -105,7 +98,6 @@ class LibraryViewModel(
 				historyRepository.deleteAfter(minDate)
 				R.string.removed_from_history
 			}
-			shortcutsRepository.updateShortcuts()
 			onActionDone.postCall(ReversibleAction(stringRes, null))
 		}
 	}

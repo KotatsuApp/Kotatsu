@@ -4,9 +4,14 @@ import android.app.backup.BackupAgent
 import android.app.backup.BackupDataInput
 import android.app.backup.BackupDataOutput
 import android.app.backup.FullBackupDataOutput
+import android.content.Context
 import android.os.ParcelFileDescriptor
+import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.runBlocking
-import org.koitharu.kotatsu.core.backup.*
+import org.koitharu.kotatsu.core.backup.BackupEntry
+import org.koitharu.kotatsu.core.backup.BackupRepository
+import org.koitharu.kotatsu.core.backup.BackupZipInput
+import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import java.io.*
 
@@ -26,7 +31,7 @@ class AppBackupAgent : BackupAgent() {
 
 	override fun onFullBackup(data: FullBackupDataOutput) {
 		super.onFullBackup(data)
-		val file = createBackupFile()
+		val file = createBackupFile(this, BackupRepository(MangaDatabase(applicationContext)))
 		try {
 			fullBackupFile(file, data)
 		} finally {
@@ -43,16 +48,16 @@ class AppBackupAgent : BackupAgent() {
 		mtime: Long
 	) {
 		if (destination?.name?.endsWith(".bk.zip") == true) {
-			restoreBackupFile(data.fileDescriptor, size)
+			restoreBackupFile(data.fileDescriptor, size, BackupRepository(MangaDatabase(applicationContext)))
 			destination.delete()
 		} else {
 			super.onRestoreFile(data, size, destination, type, mode, mtime)
 		}
 	}
 
-	private fun createBackupFile() = runBlocking {
-		val repository = BackupRepository(MangaDatabase(applicationContext))
-		BackupZipOutput(this@AppBackupAgent).use { backup ->
+	@VisibleForTesting
+	fun createBackupFile(context: Context, repository: BackupRepository) = runBlocking {
+		BackupZipOutput(context).use { backup ->
 			backup.put(repository.createIndex())
 			backup.put(repository.dumpHistory())
 			backup.put(repository.dumpCategories())
@@ -62,8 +67,8 @@ class AppBackupAgent : BackupAgent() {
 		}
 	}
 
-	private fun restoreBackupFile(fd: FileDescriptor, size: Long) {
-		val repository = RestoreRepository(MangaDatabase(applicationContext))
+	@VisibleForTesting
+	fun restoreBackupFile(fd: FileDescriptor, size: Long, repository: BackupRepository) {
 		val tempFile = File.createTempFile("backup_", ".tmp")
 		FileInputStream(fd).use { input ->
 			tempFile.outputStream().use { output ->
@@ -73,9 +78,9 @@ class AppBackupAgent : BackupAgent() {
 		val backup = BackupZipInput(tempFile)
 		try {
 			runBlocking {
-				repository.upsertHistory(backup.getEntry(BackupEntry.HISTORY))
-				repository.upsertCategories(backup.getEntry(BackupEntry.CATEGORIES))
-				repository.upsertFavourites(backup.getEntry(BackupEntry.FAVOURITES))
+				repository.restoreHistory(backup.getEntry(BackupEntry.HISTORY))
+				repository.restoreCategories(backup.getEntry(BackupEntry.CATEGORIES))
+				repository.restoreFavourites(backup.getEntry(BackupEntry.FAVOURITES))
 			}
 		} finally {
 			backup.close()

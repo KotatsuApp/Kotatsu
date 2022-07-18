@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -32,7 +31,6 @@ class LocalListViewModel(
 	private val repository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
 	settings: AppSettings,
-	private val shortcutsRepository: ShortcutsRepository,
 ) : MangaListViewModel(settings) {
 
 	val onMangaRemoved = SingleLiveEvent<Unit>()
@@ -103,7 +101,6 @@ class LocalListViewModel(
 					}
 				}
 			}
-			shortcutsRepository.updateShortcuts()
 			onMangaRemoved.call(Unit)
 		}
 	}

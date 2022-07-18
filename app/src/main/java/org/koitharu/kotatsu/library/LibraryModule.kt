@@ -11,6 +11,6 @@ val libraryModule
 
 		factory { LibraryRepository(get()) }
 
-		viewModel { LibraryViewModel(get(), get(), get(), get(), get()) }
+		viewModel { LibraryViewModel(get(), get(), get(), get()) }
 		viewModel { LibraryCategoriesConfigViewModel(get()) }
 	}

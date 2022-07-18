@@ -4,10 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 
 @Entity(
-	tableName = "history",
+	tableName = TABLE_HISTORY,
 	foreignKeys = [
 		ForeignKey(
 			entity = MangaEntity::class,
@@ -17,7 +18,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 		)
 	]
 )
-class HistoryEntity(
+data class HistoryEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val mangaId: Long,
 	@ColumnInfo(name = "created_at") val createdAt: Long,

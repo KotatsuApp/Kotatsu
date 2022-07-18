@@ -9,8 +9,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.ReversibleHandle
-import org.koitharu.kotatsu.base.domain.plus
-import org.koitharu.kotatsu.core.os.ShortcutsRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -31,7 +29,6 @@ import java.util.concurrent.TimeUnit
 class HistoryListViewModel(
 	private val repository: HistoryRepository,
 	private val settings: AppSettings,
-	private val shortcutsRepository: ShortcutsRepository,
 	private val trackingRepository: TrackingRepository,
 ) : MangaListViewModel(settings) {
 
@@ -72,7 +69,6 @@ class HistoryListViewModel(
 	fun clearHistory() {
 		launchLoadingJob {
 			repository.clear()
-			shortcutsRepository.updateShortcuts()
 		}
 	}
 
@@ -81,10 +77,7 @@ class HistoryListViewModel(
 			return
 		}
 		launchJob(Dispatchers.Default) {
-			val handle = repository.deleteReversible(ids) + ReversibleHandle {
-				shortcutsRepository.updateShortcuts()
-			}
-			shortcutsRepository.updateShortcuts()
+			val handle = repository.deleteReversible(ids)
 			onItemsRemoved.postCall(handle)
 		}
 	}

@@ -29,6 +29,8 @@ import org.koitharu.kotatsu.tracker.data.TrackEntity
 import org.koitharu.kotatsu.tracker.data.TrackLogEntity
 import org.koitharu.kotatsu.tracker.data.TracksDao
 
+const val DATABASE_VERSION = 13
+
 @Database(
 	entities = [
 		MangaEntity::class, TagEntity::class, HistoryEntity::class, MangaTagsEntity::class,
@@ -36,7 +38,7 @@ import org.koitharu.kotatsu.tracker.data.TracksDao
 		TrackEntity::class, TrackLogEntity::class, SuggestionEntity::class, BookmarkEntity::class,
 		ScrobblingEntity::class,
 	],
-	version = 13,
+	version = DATABASE_VERSION,
 )
 abstract class MangaDatabase : RoomDatabase() {
 

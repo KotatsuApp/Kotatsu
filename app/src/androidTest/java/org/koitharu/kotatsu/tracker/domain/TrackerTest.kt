@@ -1,29 +1,21 @@
 package org.koitharu.kotatsu.tracker.domain
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
-import okio.buffer
-import okio.source
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.test.KoinTest
 import org.koin.test.inject
+import org.koitharu.kotatsu.SampleData
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
-import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class TrackerTest : KoinTest {
 
-	private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-	private val mangaAdapter = moshi.adapter(Manga::class.java)
-	private val historyRegistry by inject<HistoryRepository>()
 	private val repository by inject<TrackingRepository>()
 	private val dataRepository by inject<MangaDataRepository>()
 	private val tracker by inject<Tracker>()
@@ -178,10 +170,7 @@ class TrackerTest : KoinTest {
 	}
 
 	private suspend fun loadManga(name: String): Manga {
-		val assets = InstrumentationRegistry.getInstrumentation().context.assets
-		val manga = assets.open("manga/$name").use {
-			mangaAdapter.fromJson(it.source().buffer())
-		} ?: throw RuntimeException("Cannot read manga from json \"$name\"")
+		val manga = SampleData.loadAsset("manga/$name", Manga::class)
 		dataRepository.storeManga(manga)
 		return manga
 	}

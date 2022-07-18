@@ -16,5 +16,5 @@ val localModule
 
 		factory { DownloadManager.Factory(androidContext(), get(), get(), get(), get(), get()) }
 
-		viewModel { LocalListViewModel(get(), get(), get(), get()) }
+		viewModel { LocalListViewModel(get(), get(), get()) }
 	}

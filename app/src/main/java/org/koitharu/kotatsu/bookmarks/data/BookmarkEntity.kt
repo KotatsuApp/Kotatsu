@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 		),
 	]
 )
-class BookmarkEntity(
+data class BookmarkEntity(
 	@ColumnInfo(name = "manga_id", index = true) val mangaId: Long,
 	@ColumnInfo(name = "page_id", index = true) val pageId: Long,
 	@ColumnInfo(name = "chapter_id") val chapterId: Long,

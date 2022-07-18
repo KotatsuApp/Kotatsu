@@ -68,8 +68,11 @@ android {
 		disable 'MissingTranslation', 'PrivateResource', 'NotifyDataSetChanged'
 	}
 	testOptions {
-		unitTests.includeAndroidResources = true
-		unitTests.returnDefaultValues = false
+		unitTests.includeAndroidResources true
+		unitTests.returnDefaultValues false
+		kotlinOptions {
+			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
+		}
 	}
 }
 afterEvaluate {
@@ -128,6 +131,7 @@ dependencies {
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
 	testImplementation 'junit:junit:4.13.2'
+	testImplementation 'org.json:json:20220320'
 	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
 	androidTestImplementation 'androidx.test:runner:1.4.0'
