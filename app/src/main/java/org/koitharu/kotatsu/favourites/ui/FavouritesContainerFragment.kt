@@ -148,7 +148,12 @@ class FavouritesContainerFragment :
 		menu.setOnMenuItemClickListener {
 			when (it.itemId) {
 				R.id.action_remove -> editDelegate.deleteCategory(category)
-				R.id.action_edit -> startActivity(FavouritesCategoryEditActivity.newIntent(tabView.context, category.id))
+				R.id.action_edit -> startActivity(
+					FavouritesCategoryEditActivity.newIntent(
+						tabView.context,
+						category.id
+					)
+				)
 				else -> return@setOnMenuItemClickListener false
 			}
 			true
@@ -172,7 +177,7 @@ class FavouritesContainerFragment :
 	private fun showStub() {
 		val stub = stubBinding ?: ItemEmptyStateBinding.bind(binding.stubEmptyState.inflate())
 		stub.root.isVisible = true
-		stub.icon.setImageResource(R.drawable.ic_heart_outline)
+		stub.icon.setImageResource(R.drawable.ic_empty_favourites)
 		stub.textPrimary.setText(R.string.text_empty_holder_primary)
 		stub.textSecondary.setText(R.string.empty_favourite_categories)
 		stub.buttonRetry.setText(R.string.add)
