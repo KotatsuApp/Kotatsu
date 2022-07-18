@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
 import androidx.room.withTransaction
-import java.util.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -19,6 +18,7 @@ import org.koitharu.kotatsu.tracker.data.toTrackingLogItem
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
+import java.util.*
 
 private const val NO_ID = 0L
 
@@ -113,7 +113,7 @@ class TrackingRepository(
 			newChapters = when {
 				track.newChapters == 0 -> 0
 				chapterIndex < 0 -> track.newChapters
-				chapterIndex > lastNewChapterIndex -> chapters.lastIndex - chapterIndex
+				chapterIndex >= lastNewChapterIndex -> chapters.lastIndex - chapterIndex
 				else -> track.newChapters
 			},
 			lastCheck = System.currentTimeMillis(),

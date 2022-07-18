@@ -158,15 +158,21 @@ class TrackerTest : KoinTest {
 		}
 		assertEquals(3, repository.getNewChaptersCount(mangaFirst.id))
 
-		val chapter = requireNotNull(mangaFull.chapters).run { get(lastIndex - 1) }
+		var chapter = requireNotNull(mangaFull.chapters).run { get(lastIndex - 1) }
 		repository.syncWithHistory(mangaFull, chapter.id)
 
 		assertEquals(1, repository.getNewChaptersCount(mangaFirst.id))
+
+		chapter = requireNotNull(mangaFull.chapters).run { get(lastIndex) }
+		repository.syncWithHistory(mangaFull, chapter.id)
+
+		assertEquals(0, repository.getNewChaptersCount(mangaFirst.id))
+
 		tracker.checkUpdates(mangaFull, commit = true).apply {
 			assertTrue(isValid)
 			assert(newChapters.isEmpty())
 		}
-		assertEquals(1, repository.getNewChaptersCount(mangaFirst.id))
+		assertEquals(0, repository.getNewChaptersCount(mangaFirst.id))
 	}
 
 	private suspend fun loadManga(name: String): Manga {
