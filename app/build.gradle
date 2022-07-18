@@ -64,8 +64,11 @@ android {
 		disable 'MissingTranslation', 'PrivateResource', 'NotifyDataSetChanged'
 	}
 	testOptions {
-		unitTests.includeAndroidResources = true
-		unitTests.returnDefaultValues = false
+		unitTests.includeAndroidResources true
+		unitTests.returnDefaultValues false
+		kotlinOptions {
+			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
+		}
 	}
 }
 afterEvaluate {
