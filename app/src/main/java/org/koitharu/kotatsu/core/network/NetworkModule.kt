@@ -21,6 +21,7 @@ val networkModule
 				cookieJar(get())
 				dns(DoHManager(cache, get()))
 				cache(cache)
+				addInterceptor(GZipInterceptor())
 				addInterceptor(UserAgentInterceptor())
 				addInterceptor(CloudFlareInterceptor())
 			}.build()
