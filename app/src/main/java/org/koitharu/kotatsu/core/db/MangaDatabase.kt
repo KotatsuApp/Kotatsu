@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import org.koitharu.kotatsu.bookmarks.data.BookmarkEntity
 import org.koitharu.kotatsu.bookmarks.data.BookmarksDao
 import org.koitharu.kotatsu.core.db.dao.MangaDao
@@ -65,22 +66,23 @@ abstract class MangaDatabase : RoomDatabase() {
 	abstract val scrobblingDao: ScrobblingDao
 }
 
-fun MangaDatabase(context: Context): MangaDatabase = Room.databaseBuilder(
-	context,
-	MangaDatabase::class.java,
-	"kotatsu-db"
-).addMigrations(
-	Migration1To2(),
-	Migration2To3(),
-	Migration3To4(),
-	Migration4To5(),
-	Migration5To6(),
-	Migration6To7(),
-	Migration7To8(),
-	Migration8To9(),
-	Migration9To10(),
-	Migration10To11(),
-	Migration11To12(),
-).addCallback(
-	DatabasePrePopulateCallback(context.resources)
-).build()
+val databaseMigrations: Array<Migration>
+	get() = arrayOf(
+		Migration1To2(),
+		Migration2To3(),
+		Migration3To4(),
+		Migration4To5(),
+		Migration5To6(),
+		Migration6To7(),
+		Migration7To8(),
+		Migration8To9(),
+		Migration9To10(),
+		Migration10To11(),
+		Migration11To12(),
+	)
+
+fun MangaDatabase(context: Context): MangaDatabase = Room
+	.databaseBuilder(context, MangaDatabase::class.java, "kotatsu-db")
+	.addMigrations(*databaseMigrations)
+	.addCallback(DatabasePrePopulateCallback(context.resources))
+	.build()
