@@ -346,14 +346,14 @@ class ReaderActivity :
 		menuItem.setIcon(if (isAdded) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
 	}
 
-	private fun onUiStateChanged(uiState: ReaderUiState, previous: ReaderUiState?) {
-		title = uiState.chapterName ?: uiState.mangaName ?: getString(R.string.loading_)
-		supportActionBar?.subtitle = if (uiState.chapterNumber in 1..uiState.chaptersTotal) {
+	private fun onUiStateChanged(uiState: ReaderUiState?, previous: ReaderUiState?) {
+		title = uiState?.chapterName ?: uiState?.mangaName ?: getString(R.string.loading_)
+		supportActionBar?.subtitle = if (uiState != null && uiState.chapterNumber in 1..uiState.chaptersTotal) {
 			getString(R.string.chapter_d_of_d, uiState.chapterNumber, uiState.chaptersTotal)
 		} else {
 			null
 		}
-		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
+		if (uiState != null && previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
 			if (!uiState.chapterName.isNullOrEmpty()) {
 				binding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
 			}
