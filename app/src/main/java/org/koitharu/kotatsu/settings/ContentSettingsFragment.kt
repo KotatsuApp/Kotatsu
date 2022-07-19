@@ -1,12 +1,9 @@
 package org.koitharu.kotatsu.settings
 
-import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS
 import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -23,6 +20,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.utils.SliderPreference
+import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -111,7 +109,7 @@ class ContentSettingsFragment :
 					am.addAccount(accountType, accountType, null, null, requireActivity(), null, null)
 				} else {
 					try {
-						startActivity(getSyncSettingsIntent(account))
+						startActivity(SyncSettingsIntent(account))
 					} catch (_: ActivityNotFoundException) {
 						Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
 					}
@@ -150,17 +148,5 @@ class ContentSettingsFragment :
 				summary = account?.name ?: getString(R.string.sync_title)
 			}
 		}
-	}
-
-	/**
-	 * Some magic
-	 */
-	private fun getSyncSettingsIntent(account: Account): Intent {
-		val args = Bundle(1)
-		args.putParcelable("account", account)
-		val intent = Intent("android.settings.ACCOUNT_SYNC_SETTINGS")
-		@Suppress("DEPRECATION")
-		intent.putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, args)
-		return intent
 	}
 }

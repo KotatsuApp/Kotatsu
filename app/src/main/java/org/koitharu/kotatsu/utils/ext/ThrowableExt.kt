@@ -19,6 +19,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
+	is SyncApiException,
 	is ContentUnavailableException -> message
 	is ParseException -> shortMessage
 	is SocketTimeoutException -> resources.getString(R.string.network_error)
