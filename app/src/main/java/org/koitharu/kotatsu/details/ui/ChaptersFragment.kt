@@ -135,6 +135,26 @@ class ChaptersFragment :
 				mode.finish()
 				true
 			}
+			R.id.action_select_range -> {
+				val controller = selectionController ?: return false
+				val items = chaptersAdapter?.items ?: return false
+				val ids = HashSet(controller.peekCheckedIds())
+				val buffer = HashSet<Long>()
+				var isAdding = false
+				for (x in items) {
+					if (x.chapter.id in ids) {
+						isAdding = true
+						if (buffer.isNotEmpty()) {
+							ids.addAll(buffer)
+							buffer.clear()
+						}
+					} else if (isAdding) {
+						buffer.add(x.chapter.id)
+					}
+				}
+				controller.addAll(ids)
+				true
+			}
 			R.id.action_select_all -> {
 				val ids = chaptersAdapter?.items?.map { it.chapter.id } ?: return false
 				selectionController?.addAll(ids)
@@ -158,14 +178,24 @@ class ChaptersFragment :
 
 	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
 		val selectedIds = selectionController?.peekCheckedIds() ?: return false
-		val items = chaptersAdapter?.items?.filter { x -> x.chapter.id in selectedIds }.orEmpty()
-		menu.findItem(R.id.action_save).isVisible = items.none { x ->
+		val allItems = chaptersAdapter?.items.orEmpty()
+		val items = allItems.withIndex().filter { (_, x) -> x.chapter.id in selectedIds }
+		menu.findItem(R.id.action_save).isVisible = items.none { (_, x) ->
 			x.chapter.source == MangaSource.LOCAL
 		}
-		menu.findItem(R.id.action_delete).isVisible = items.all { x ->
+		menu.findItem(R.id.action_delete).isVisible = items.all { (_, x) ->
 			x.chapter.source == MangaSource.LOCAL
 		}
+		menu.findItem(R.id.action_select_all).isVisible = items.size < allItems.size
 		mode.title = items.size.toString()
+		var hasGap = false
+		for (i in 0 until items.size - 1) {
+			if (items[i].index + 1 != items[i + 1].index) {
+				hasGap = true
+				break
+			}
+		}
+		menu.findItem(R.id.action_select_range).isVisible = hasGap
 		return true
 	}
 

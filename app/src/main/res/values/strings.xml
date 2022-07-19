@@ -321,4 +321,5 @@
 	<string name="clear_cookies_summary">Can help in case of some issues. All authorizations will be invalidated</string>
 	<string name="show_all">Show all</string>
 	<string name="invalid_domain_message">Invalid domain</string>
+	<string name="select_range">Select range</string>
 </resources>
