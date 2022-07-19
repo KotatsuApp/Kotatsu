@@ -86,6 +86,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 	}
 
 	override fun onSectionClick(section: LibrarySectionModel, view: View) {
+		selectionController?.clear()
 		val intent = when (section) {
 			is LibrarySectionModel.History -> HistoryActivity.newIntent(view.context)
 			is LibrarySectionModel.Favourites -> FavouritesActivity.newIntent(view.context, section.category)

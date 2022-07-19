@@ -6,10 +6,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
+import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.mapItems
@@ -47,6 +49,15 @@ class FavouritesCategoriesViewModel(
 				category = category,
 				isReorderMode = reordering,
 			)
+		}.ifEmpty {
+			listOf(
+				EmptyState(
+					icon = R.drawable.ic_empty_favourites,
+					textPrimary = R.string.text_empty_holder_primary,
+					textSecondary = R.string.empty_favourite_categories,
+					actionStringRes = 0,
+				)
+			)
 		}
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
@@ -67,6 +78,8 @@ class FavouritesCategoriesViewModel(
 	}
 
 	fun isInReorderMode(): Boolean = isReorder.value
+
+	fun isEmpty(): Boolean = detalizedCategories.value?.none { it is CategoryListModel } ?: true
 
 	fun setReorderMode(isReorderMode: Boolean) {
 		isReorder.value = isReorderMode

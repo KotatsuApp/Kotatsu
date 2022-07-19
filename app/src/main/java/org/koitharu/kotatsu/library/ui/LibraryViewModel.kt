@@ -113,6 +113,14 @@ class LibraryViewModel(
 		for ((category, list) in favourites) {
 			result += LibrarySectionModel.Favourites(list.toUi(ListMode.GRID, this), category, R.string.show_all)
 		}
+		if (result.isEmpty()) {
+			result += EmptyState(
+				icon = R.drawable.ic_empty_history,
+				textPrimary = R.string.text_history_holder_primary,
+				textSecondary = R.string.text_history_holder_secondary,
+				actionStringRes = 0,
+			)
+		}
 		return result
 	}
 

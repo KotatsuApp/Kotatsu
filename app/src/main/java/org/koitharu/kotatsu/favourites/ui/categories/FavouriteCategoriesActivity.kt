@@ -74,7 +74,7 @@ class FavouriteCategoriesActivity :
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-		menu.findItem(R.id.action_reorder)?.isVisible = !viewModel.isInReorderMode()
+		menu.findItem(R.id.action_reorder)?.isVisible = !viewModel.isInReorderMode() && !viewModel.isEmpty()
 		return super.onPrepareOptionsMenu(menu)
 	}
 
@@ -139,6 +139,7 @@ class FavouriteCategoriesActivity :
 
 	private fun onCategoriesChanged(categories: List<ListModel>) {
 		adapter.items = categories
+		invalidateOptionsMenu()
 	}
 
 	private fun onError(e: Throwable) {

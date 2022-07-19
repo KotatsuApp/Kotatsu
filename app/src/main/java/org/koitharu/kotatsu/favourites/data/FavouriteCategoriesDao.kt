@@ -23,7 +23,7 @@ abstract class FavouriteCategoriesDao {
 				(SELECT manga_id FROM favourites WHERE favourites.category_id == favourite_categories.category_id)
 			ORDER BY favourite_categories.sort_key
 		"""
-	)
+	) // FIXME empty categories are ignored
 	abstract fun observeAllWithDetails(): Flow<Map<FavouriteCategoryEntity, List<String>>>
 
 	@Query("SELECT * FROM favourite_categories WHERE category_id = :id AND deleted_at = 0")
