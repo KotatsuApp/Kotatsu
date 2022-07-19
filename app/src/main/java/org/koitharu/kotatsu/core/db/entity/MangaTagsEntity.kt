@@ -13,13 +13,13 @@ import org.koitharu.kotatsu.core.db.TABLE_MANGA_TAGS
 			entity = MangaEntity::class,
 			parentColumns = ["manga_id"],
 			childColumns = ["manga_id"],
-			onDelete = ForeignKey.CASCADE
+			onDelete = ForeignKey.CASCADE,
 		),
 		ForeignKey(
 			entity = TagEntity::class,
 			parentColumns = ["tag_id"],
 			childColumns = ["tag_id"],
-			onDelete = ForeignKey.CASCADE
+			onDelete = ForeignKey.CASCADE,
 		)
 	]
 )

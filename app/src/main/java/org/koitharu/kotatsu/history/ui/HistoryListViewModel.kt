@@ -77,7 +77,7 @@ class HistoryListViewModel(
 			return
 		}
 		launchJob(Dispatchers.Default) {
-			val handle = repository.deleteReversible(ids)
+			val handle = repository.delete(ids)
 			onItemsRemoved.postCall(handle)
 		}
 	}
@@ -94,9 +94,6 @@ class HistoryListViewModel(
 		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
 		val showPercent = settings.isReadingIndicatorsEnabled
 		var prevDate: DateTimeAgo? = null
-		if (!grouped) {
-			result += ListHeader(null, R.string.history, null)
-		}
 		for ((manga, history) in list) {
 			if (grouped) {
 				val date = timeAgo(history.updatedAt)

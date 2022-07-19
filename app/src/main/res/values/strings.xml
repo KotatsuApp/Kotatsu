@@ -276,6 +276,12 @@
 	<string name="download_slowdown_summary">Helps avoid blocking your IP address</string>
 	<string name="local_manga_processing">Saved manga processing</string>
 	<string name="chapters_will_removed_background">Chapters will be removed in the background. It can take some time</string>
+	<string name="canceled">Canceled</string>
+	<string name="account_already_exists">Account already exists</string>
+	<string name="back">Back</string>
+	<string name="sync">Synchronization</string>
+	<string name="sync_title">Sync your data</string>
+	<string name="email_enter_hint">Enter your email to continue</string>
 	<string name="hide">Hide</string>
 	<string name="new_sources_text">New manga sources are available</string>
 	<string name="check_new_chapters_title">Check for new chapters and notify about it</string>
@@ -347,4 +353,7 @@
 	<string name="storage_usage">Storage usage</string>
 	<string name="available">Available</string>
 	<string name="memory_usage_pattern">%s - %s</string>
+	<string name="enter_email_text">Enter your email to continue</string>
+	<string name="removed_from_favourites">Removed from favourites</string>
+	<string name="removed_from_s">Removed from \"%s\"</string>
 </resources>

@@ -21,6 +21,7 @@ import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -44,6 +45,7 @@ import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.settings.tools.ToolsFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
+import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
@@ -341,6 +343,8 @@ class MainActivity :
 				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
 				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
 			}
+			yield()
+			get<SyncController>().requestFullSyncAndGc(get())
 		}
 	}
 

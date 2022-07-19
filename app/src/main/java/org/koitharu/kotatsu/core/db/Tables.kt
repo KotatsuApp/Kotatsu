@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.db
 
-
 const val TABLE_FAVOURITES = "favourites"
 const val TABLE_MANGA = "manga"
 const val TABLE_TAGS = "tags"

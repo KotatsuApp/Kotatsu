@@ -30,7 +30,7 @@ import org.koitharu.kotatsu.tracker.data.TrackEntity
 import org.koitharu.kotatsu.tracker.data.TrackLogEntity
 import org.koitharu.kotatsu.tracker.data.TracksDao
 
-const val DATABASE_VERSION = 13
+const val DATABASE_VERSION = 14
 
 @Database(
 	entities = [
@@ -80,6 +80,7 @@ val databaseMigrations: Array<Migration>
 		Migration10To11(),
 		Migration11To12(),
 		Migration12To13(),
+		Migration13To14(),
 	)
 
 fun MangaDatabase(context: Context): MangaDatabase = Room

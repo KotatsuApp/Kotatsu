@@ -10,7 +10,9 @@ import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.widget.recent.RecentWidgetProvider
 import org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider
 
-class WidgetUpdater(private val context: Context) : InvalidationTracker.Observer(TABLE_HISTORY, TABLE_FAVOURITES) {
+class WidgetUpdater(
+	private val context: Context
+) : InvalidationTracker.Observer(TABLE_HISTORY, TABLE_FAVOURITES) {
 
 	override fun onInvalidated(tables: MutableSet<String>) {
 		if (TABLE_HISTORY in tables) {

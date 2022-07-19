@@ -4,9 +4,13 @@ import android.app.ActivityManager
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
+import android.content.OperationApplicationException
 import android.content.SharedPreferences
+import android.content.SyncResult
 import android.content.pm.ResolveInfo
+import android.database.SQLException
 import android.graphics.Color
+
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -35,6 +39,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import okio.IOException
+import org.json.JSONException
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.utils.InternalResourceHelper
 import kotlin.coroutines.resume
 
@@ -109,6 +116,17 @@ fun Lifecycle.postDelayed(runnable: Runnable, delay: Long) {
 		delay(delay)
 		runnable.run()
 	}
+}
+
+fun SyncResult.onError(error: Throwable) {
+	when (error) {
+		is IOException -> stats.numIoExceptions++
+		is OperationApplicationException,
+		is SQLException -> databaseError = true
+		is JSONException -> stats.numParseExceptions++
+		else -> if (BuildConfig.DEBUG) throw error
+	}
+	error.printStackTraceDebug()
 }
 
 fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float = 0F) {

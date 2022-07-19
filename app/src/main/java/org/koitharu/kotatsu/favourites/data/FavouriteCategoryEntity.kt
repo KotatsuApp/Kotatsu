@@ -15,6 +15,7 @@ data class FavouriteCategoryEntity(
 	@ColumnInfo(name = "order") val order: String,
 	@ColumnInfo(name = "track") val track: Boolean,
 	@ColumnInfo(name = "show_in_lib") val isVisibleInLibrary: Boolean,
+	@ColumnInfo(name = "deleted_at") val deletedAt: Long,
 ) {
 
 	override fun equals(other: Any?): Boolean {

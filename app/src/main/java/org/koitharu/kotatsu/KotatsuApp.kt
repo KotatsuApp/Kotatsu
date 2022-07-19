@@ -38,6 +38,7 @@ import org.koitharu.kotatsu.scrobbling.shikimori.shikimoriModule
 import org.koitharu.kotatsu.search.searchModule
 import org.koitharu.kotatsu.settings.settingsModule
 import org.koitharu.kotatsu.suggestions.suggestionsModule
+import org.koitharu.kotatsu.sync.syncModule
 import org.koitharu.kotatsu.tracker.trackerModule
 import org.koitharu.kotatsu.widget.appWidgetModule
 
@@ -74,6 +75,7 @@ class KotatsuApp : Application() {
 				readerModule,
 				appWidgetModule,
 				suggestionsModule,
+				syncModule,
 				shikimoriModule,
 				bookmarksModule,
 				libraryModule,

@@ -84,7 +84,7 @@ class LibraryViewModel(
 			return
 		}
 		launchJob(Dispatchers.Default) {
-			val handle = historyRepository.deleteReversible(ids)
+			val handle = historyRepository.delete(ids)
 			onActionDone.postCall(ReversibleAction(R.string.removed_from_history, handle))
 		}
 	}

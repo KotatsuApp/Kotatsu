@@ -29,4 +29,5 @@ data class FavouriteEntity(
 	@ColumnInfo(name = "category_id", index = true) val categoryId: Long,
 	@ColumnInfo(name = "sort_key") val sortKey: Int,
 	@ColumnInfo(name = "created_at") val createdAt: Long,
+	@ColumnInfo(name = "deleted_at") val deletedAt: Long,
 )

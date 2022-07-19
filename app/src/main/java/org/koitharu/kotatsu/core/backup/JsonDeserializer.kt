@@ -19,6 +19,7 @@ class JsonDeserializer(private val json: JSONObject) {
 		categoryId = json.getLong("category_id"),
 		sortKey = json.getIntOrDefault("sort_key", 0),
 		createdAt = json.getLong("created_at"),
+		deletedAt = 0L,
 	)
 
 	fun toMangaEntity() = MangaEntity(
@@ -51,6 +52,7 @@ class JsonDeserializer(private val json: JSONObject) {
 		page = json.getInt("page"),
 		scroll = json.getDouble("scroll").toFloat(),
 		percent = json.getFloatOrDefault("percent", -1f),
+		deletedAt = 0L,
 	)
 
 	fun toFavouriteCategoryEntity() = FavouriteCategoryEntity(
@@ -61,5 +63,6 @@ class JsonDeserializer(private val json: JSONObject) {
 		order = json.getStringOrNull("order") ?: SortOrder.NEWEST.name,
 		track = json.getBooleanOrDefault("track", true),
 		isVisibleInLibrary = json.getBooleanOrDefault("show_in_lib", true),
+		deletedAt = 0L,
 	)
 }

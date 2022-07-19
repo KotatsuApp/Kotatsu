@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.core.network
 
 import okhttp3.Interceptor
 import okhttp3.Response
-import org.jsoup.helper.HttpConnection.CONTENT_ENCODING
+import org.koitharu.kotatsu.core.network.CommonHeaders.CONTENT_ENCODING
 
 class GZipInterceptor : Interceptor {
 

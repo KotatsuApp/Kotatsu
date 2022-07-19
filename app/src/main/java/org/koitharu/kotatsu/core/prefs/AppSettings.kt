@@ -315,6 +315,7 @@ class AppSettings(context: Context) {
 		const val KEY_DOH = "doh"
 		const val KEY_EXIT_CONFIRM = "exit_confirm"
 		const val KEY_INCOGNITO_MODE = "incognito"
+		const val KEY_SYNC = "sync"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

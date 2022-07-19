@@ -10,6 +10,6 @@ val appWidgetModule
 	get() = module {
 
 		single<InvalidationTracker.Observer> { WidgetUpdater(androidContext()) }
-	
+
 		viewModel { ShelfConfigViewModel(get()) }
 	}

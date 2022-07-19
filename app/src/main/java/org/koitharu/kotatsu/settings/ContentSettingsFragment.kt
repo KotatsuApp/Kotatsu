@@ -1,11 +1,19 @@
 package org.koitharu.kotatsu.settings
 
+import android.accounts.Account
+import android.accounts.AccountManager
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS
 import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
@@ -58,6 +66,11 @@ class ContentSettingsFragment :
 		settings.subscribe(this)
 	}
 
+	override fun onResume() {
+		super.onResume()
+		bindSyncSummary()
+	}
+
 	override fun onDestroyView() {
 		settings.unsubscribe(this)
 		super.onDestroyView()
@@ -90,6 +103,21 @@ class ContentSettingsFragment :
 					.show()
 				true
 			}
+			AppSettings.KEY_SYNC -> {
+				val am = AccountManager.get(requireContext())
+				val accountType = getString(R.string.account_type_sync)
+				val account = am.getAccountsByType(accountType).firstOrNull()
+				if (account == null) {
+					am.addAccount(accountType, accountType, null, null, requireActivity(), null, null)
+				} else {
+					try {
+						startActivity(getSyncSettingsIntent(account))
+					} catch (_: ActivityNotFoundException) {
+						Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+					}
+				}
+				true
+			}
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
@@ -110,5 +138,29 @@ class ContentSettingsFragment :
 			val total = settings.remoteMangaSources.size
 			summary = getString(R.string.enabled_d_of_d, total - settings.hiddenSources.size, total)
 		}
+	}
+
+	private fun bindSyncSummary() {
+		viewLifecycleScope.launch {
+			val account = withContext(Dispatchers.Default) {
+				val type = getString(R.string.account_type_sync)
+				AccountManager.get(requireContext()).getAccountsByType(type).firstOrNull()
+			}
+			findPreference<Preference>(AppSettings.KEY_SYNC)?.run {
+				summary = account?.name ?: getString(R.string.sync_title)
+			}
+		}
+	}
+
+	/**
+	 * Some magic
+	 */
+	private fun getSyncSettingsIntent(account: Account): Intent {
+		val args = Bundle(1)
+		args.putParcelable("account", account)
+		val intent = Intent("android.settings.ACCOUNT_SYNC_SETTINGS")
+		@Suppress("DEPRECATION")
+		intent.putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, args)
+		return intent
 	}
 }
