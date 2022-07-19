@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import org.acra.ACRA
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -32,7 +31,6 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
-import org.koitharu.kotatsu.utils.ext.setCurrentManga
 import java.util.*
 
 private const val BOUNDS_PAGE_OFFSET = 2
@@ -262,7 +260,6 @@ class ReaderViewModel(
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			var manga = dataRepository.resolveIntent(intent) ?: throw MangaNotFoundException("Cannot find manga")
-			ACRA.setCurrentManga(manga)
 			mangaData.value = manga
 			val repo = MangaRepository(manga.source)
 			manga = repo.getDetails(manga)

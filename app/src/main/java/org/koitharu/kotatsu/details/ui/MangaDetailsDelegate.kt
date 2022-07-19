@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.details.ui
 import androidx.core.os.LocaleListCompat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.acra.ACRA
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
@@ -14,7 +13,6 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
-import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -22,7 +20,6 @@ import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.utils.ext.iterator
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.setCurrentManga
 
 class MangaDetailsDelegate(
 	private val intent: MangaIntent,
@@ -45,7 +42,6 @@ class MangaDetailsDelegate(
 	suspend fun doLoad() {
 		var manga = mangaDataRepository.resolveIntent(intent)
 			?: throw MangaNotFoundException("Cannot find manga")
-		ACRA.setCurrentManga(manga)
 		mangaData.value = manga
 		manga = MangaRepository(manga.source).getDetails(manga)
 		// find default branch
