@@ -73,7 +73,6 @@ class ReaderConfigBottomSheet : BaseBottomSheet<SheetReaderConfigBinding>(),
 			R.id.button_save_page -> {
 				val page = viewModel.getCurrentPage() ?: return
 				viewModel.saveCurrentPage(page, savePageRequest)
-				dismissAllowingStateLoss()
 			}
 			R.id.button_screen_rotate -> {
 				orientationHelper?.toggleOrientation()
@@ -97,6 +96,7 @@ class ReaderConfigBottomSheet : BaseBottomSheet<SheetReaderConfigBinding>(),
 
 	override fun onActivityResult(uri: Uri?) {
 		viewModel.onActivityResult(uri)
+		dismissAllowingStateLoss()
 	}
 
 	private fun observeScreenOrientation() {
