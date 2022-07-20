@@ -317,4 +317,6 @@
     <string name="status_planned">Pianificato</string>
     <string name="status_completed">Finito</string>
     <string name="status_dropped">Abbandonato</string>
+    <string name="invalid_domain_message">Dominio non valido</string>
+    <string name="select_range">Seleziona l\'intervallo</string>
 </resources>

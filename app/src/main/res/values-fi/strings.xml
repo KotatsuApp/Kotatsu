@@ -308,4 +308,5 @@
     <string name="status_re_reading">Lukemassa uudelleen</string>
     <string name="data_deletion">Tietojen poistaminen</string>
     <string name="show_all">Näytä kaikki</string>
+    <string name="select_range">Valitse alue</string>
 </resources>
