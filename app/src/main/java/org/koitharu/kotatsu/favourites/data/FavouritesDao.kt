@@ -85,7 +85,7 @@ abstract class FavouritesDao {
 	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id = :id AND deleted_at = 0")
 	abstract fun observeIds(id: Long): Flow<List<Long>>
 
-	@Insert(onConflict = OnConflictStrategy.IGNORE)
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	abstract suspend fun insert(favourite: FavouriteEntity)
 
 	@Update

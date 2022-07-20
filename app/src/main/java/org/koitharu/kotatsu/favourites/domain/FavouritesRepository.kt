@@ -154,7 +154,7 @@ class FavouritesRepository(
 	suspend fun removeFromFavourites(ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.delete(id)
+				db.favouritesDao.delete(mangaId = id)
 			}
 		}
 		return ReversibleHandle { recoverToFavourites(ids) }
@@ -163,7 +163,7 @@ class FavouritesRepository(
 	suspend fun removeFromCategory(categoryId: Long, ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.delete(categoryId, id)
+				db.favouritesDao.delete(categoryId = categoryId, mangaId = id)
 			}
 		}
 		return ReversibleHandle { recoverToCategory(categoryId, ids) }
