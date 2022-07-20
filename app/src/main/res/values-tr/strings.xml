@@ -317,4 +317,6 @@
     <string name="status_planned">Planlandı</string>
     <string name="status_re_reading">Yeniden okunuyor</string>
     <string name="show_all">Tümünü göster</string>
+    <string name="invalid_domain_message">Geçersiz etki alanı</string>
+    <string name="select_range">Aralık seç</string>
 </resources>
