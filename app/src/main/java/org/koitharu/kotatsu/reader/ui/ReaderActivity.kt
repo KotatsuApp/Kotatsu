@@ -166,10 +166,9 @@ class ReaderActivity :
 				}
 			}
 			R.id.action_save_page -> {
-				viewModel.getCurrentPage()?.also { page ->
-					viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
-					viewModel.saveCurrentPage(page, savePageRequest)
-				} ?: return false
+				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
+				val page = viewModel.getCurrentPage() ?: return false
+				viewModel.saveCurrentPage(page, savePageRequest)
 			}
 			R.id.action_bookmark -> {
 				if (viewModel.isBookmarkAdded.value == true) {
