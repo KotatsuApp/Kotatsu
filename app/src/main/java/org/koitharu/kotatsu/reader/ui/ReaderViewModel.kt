@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.ui
 import android.net.Uri
 import android.util.LongSparseArray
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -24,17 +25,17 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.data.filterChapters
+import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import org.koitharu.kotatsu.reader.domain.PageLoader
-import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
+import org.koitharu.kotatsu.utils.ext.requireValue
 import java.util.*
 
 private const val BOUNDS_PAGE_OFFSET = 2
-private const val PAGES_TRIM_THRESHOLD = 120
 private const val PREFETCH_LIMIT = 10
 
 class ReaderViewModel(
@@ -53,25 +54,16 @@ class ReaderViewModel(
 	private var bookmarkJob: Job? = null
 	private val currentState = MutableStateFlow(initialState)
 	private val mangaData = MutableStateFlow(intent.manga)
-	private val chapters = LongSparseArray<MangaChapter>()
+	private val chapters: LongSparseArray<MangaChapter>
+		get() = chaptersLoader.chapters
 
 	val pageLoader = PageLoader()
+	private val chaptersLoader = ChaptersLoader()
 
 	val readerMode = MutableLiveData<ReaderMode>()
 	val onPageSaved = SingleLiveEvent<Uri?>()
 	val onShowToast = SingleLiveEvent<Int>()
-	val uiState: LiveData<ReaderUiState?> = combine(
-		mangaData,
-		currentState,
-	) { manga, state ->
-		val chapter = state?.chapterId?.let(chapters::get)
-		ReaderUiState(
-			mangaName = manga?.title,
-			chapterName = chapter?.name,
-			chapterNumber = chapter?.number ?: 0,
-			chaptersTotal = chapters.size()
-		)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
+	val uiState = MutableLiveData<ReaderUiState?>(null)
 
 	val content = MutableLiveData(ReaderContent(emptyList(), null))
 	val manga: Manga?
@@ -134,7 +126,6 @@ class ReaderViewModel(
 		}
 	}
 
-	// TODO check performance
 	fun saveCurrentState(state: ReaderState? = null) {
 		if (state != null) {
 			currentState.value = state
@@ -151,8 +142,7 @@ class ReaderViewModel(
 
 	fun getCurrentChapterPages(): List<MangaPage>? {
 		val chapterId = currentState.value?.chapterId ?: return null
-		val pages = content.value?.pages ?: return null
-		return pages.filter { it.chapterId == chapterId }.map { it.toMangaPage() }
+		return chaptersLoader.getPages(chapterId).map { it.toMangaPage() }
 	}
 
 	fun saveCurrentPage(
@@ -195,11 +185,12 @@ class ReaderViewModel(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			content.postValue(ReaderContent(emptyList(), null))
-			val newPages = loadChapter(id)
-			content.postValue(ReaderContent(newPages, ReaderState(id, 0, 0)))
+			chaptersLoader.loadSingleChapter(mangaData.requireValue(), id)
+			content.postValue(ReaderContent(chaptersLoader.snapshot(), ReaderState(id, 0, 0)))
 		}
 	}
 
+	// TODO move to background?
 	fun onCurrentPageChanged(position: Int) {
 		val pages = content.value?.pages ?: return
 		pages.getOrNull(position)?.let { page ->
@@ -207,14 +198,15 @@ class ReaderViewModel(
 				cs?.copy(chapterId = page.chapterId, page = page.index)
 			}
 		}
+		notifyStateChanged()
 		if (pages.isEmpty() || loadingJob?.isActive == true) {
 			return
 		}
 		if (position <= BOUNDS_PAGE_OFFSET) {
-			loadPrevNextChapter(pages.first().chapterId, -1)
+			loadPrevNextChapter(pages.first().chapterId, isNext = false)
 		}
 		if (position >= pages.size - BOUNDS_PAGE_OFFSET) {
-			loadPrevNextChapter(pages.last().chapterId, 1)
+			loadPrevNextChapter(pages.last().chapterId, isNext = true)
 		}
 		if (pageLoader.isPrefetchApplicable()) {
 			pageLoader.prefetch(pages.trySublist(position + 1, position + PREFETCH_LIMIT))
@@ -279,55 +271,21 @@ class ReaderViewModel(
 			mangaData.value = manga.filterChapters(branch)
 			readerMode.postValue(mode)
 
-			val pages = loadChapter(requireNotNull(currentState.value).chapterId)
+			chaptersLoader.loadSingleChapter(manga, requireNotNull(currentState.value).chapterId)
 			// save state
 			currentState.value?.let {
 				val percent = computePercent(it.chapterId, it.page)
 				historyRepository.addOrUpdate(manga, it.chapterId, it.page, it.scroll, percent)
 			}
-
-			content.postValue(ReaderContent(pages, currentState.value))
+			notifyStateChanged()
+			content.postValue(ReaderContent(chaptersLoader.snapshot(), currentState.value))
 		}
 	}
 
-	private suspend fun loadChapter(chapterId: Long): List<ReaderPage> {
-		val manga = checkNotNull(mangaData.value) { "Manga is null" }
-		val chapter = checkNotNull(chapters[chapterId]) { "Requested chapter not found" }
-		val repo = MangaRepository(manga.source)
-		return repo.getPages(chapter).mapIndexed { index, page ->
-			ReaderPage(page, index, chapterId)
-		}
-	}
-
-	private fun loadPrevNextChapter(currentId: Long, delta: Int) {
+	private fun loadPrevNextChapter(currentId: Long, isNext: Boolean) {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			val chapters = mangaData.value?.chapters ?: return@launchLoadingJob
-			val predicate: (MangaChapter) -> Boolean = { it.id == currentId }
-			val index =
-				if (delta < 0) chapters.indexOfLast(predicate) else chapters.indexOfFirst(predicate)
-			if (index == -1) return@launchLoadingJob
-			val newChapter = chapters.getOrNull(index + delta) ?: return@launchLoadingJob
-			val newPages = loadChapter(newChapter.id)
-			var currentPages = content.value?.pages ?: return@launchLoadingJob
-			// trim pages
-			if (currentPages.size > PAGES_TRIM_THRESHOLD) {
-				val firstChapterId = currentPages.first().chapterId
-				val lastChapterId = currentPages.last().chapterId
-				if (firstChapterId != lastChapterId) {
-					currentPages = when (delta) {
-						1 -> currentPages.dropWhile { it.chapterId == firstChapterId }
-						-1 -> currentPages.dropLastWhile { it.chapterId == lastChapterId }
-						else -> currentPages
-					}
-				}
-			}
-			val pages = when (delta) {
-				0 -> newPages
-				-1 -> newPages + currentPages
-				1 -> currentPages + newPages
-				else -> error("Invalid delta $delta")
-			}
-			content.postValue(ReaderContent(pages, null))
+			chaptersLoader.loadPrevNextChapter(mangaData.requireValue(), currentId, isNext)
+			content.postValue(ReaderContent(chaptersLoader.snapshot(), null))
 		}
 	}
 
@@ -368,12 +326,26 @@ class ReaderViewModel(
 		}.getOrDefault(defaultMode)
 	}
 
+	@AnyThread
+	private fun notifyStateChanged() {
+		val state = getCurrentState()
+		val chapter = state?.chapterId?.let(chapters::get)
+		val newState = ReaderUiState(
+			mangaName = manga?.title,
+			chapterName = chapter?.name,
+			chapterNumber = chapter?.number ?: 0,
+			chaptersTotal = chapters.size(),
+			totalPages = if (chapter != null) chaptersLoader.getPagesCount(chapter.id) else 0,
+			currentPage = state?.page ?: 0,
+		)
+		uiState.postValue(newState)
+	}
+
 	private fun computePercent(chapterId: Long, pageIndex: Int): Float {
 		val chapters = manga?.chapters ?: return PROGRESS_NONE
 		val chaptersCount = chapters.size
 		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }
-		val pages = content.value?.pages ?: return PROGRESS_NONE
-		val pagesCount = pages.count { x -> x.chapterId == chapterId }
+		val pagesCount = chaptersLoader.getPagesCount(chapterId)
 		if (chaptersCount == 0 || pagesCount == 0) {
 			return PROGRESS_NONE
 		}

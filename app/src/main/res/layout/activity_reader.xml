@@ -58,7 +58,19 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_gravity="top"
-			app:popupTheme="@style/ThemeOverlay.Kotatsu" />
+			app:menu="@menu/opt_reader_bottom"
+			app:popupTheme="@style/ThemeOverlay.Kotatsu">
+
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:stepSize="1"
+				android:valueFrom="0"
+				app:labelBehavior="floating"
+				app:tickVisible="false" />
+
+		</com.google.android.material.appbar.MaterialToolbar>
 
 	</com.google.android.material.appbar.AppBarLayout>
 

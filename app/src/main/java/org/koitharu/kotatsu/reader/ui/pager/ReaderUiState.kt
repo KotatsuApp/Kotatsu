@@ -4,5 +4,7 @@ data class ReaderUiState(
 	val mangaName: String?,
 	val chapterName: String?,
 	val chapterNumber: Int,
-	val chaptersTotal: Int
+	val chaptersTotal: Int,
+	val currentPage: Int,
+	val totalPages: Int,
 )

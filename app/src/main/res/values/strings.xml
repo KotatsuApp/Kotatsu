@@ -356,4 +356,5 @@
 	<string name="enter_email_text">Enter your email to continue</string>
 	<string name="removed_from_favourites">Removed from favourites</string>
 	<string name="removed_from_s">Removed from \"%s\"</string>
+	<string name="options">Options</string>
 </resources>

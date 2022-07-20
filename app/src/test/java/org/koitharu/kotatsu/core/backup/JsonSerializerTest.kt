@@ -21,6 +21,7 @@ class JsonSerializerTest {
 			categoryId = 20,
 			sortKey = 1,
 			createdAt = System.currentTimeMillis(),
+			deletedAt = 0L,
 		)
 		val json = JsonSerializer(entity).toJson()
 		val result = JsonDeserializer(json).toFavouriteEntity()
@@ -71,6 +72,7 @@ class JsonSerializerTest {
 			page = 35,
 			scroll = 24.0f,
 			percent = 0.6f,
+			deletedAt = 0L,
 		)
 		val json = JsonSerializer(entity).toJson()
 		val result = JsonDeserializer(json).toHistoryEntity()
@@ -87,6 +89,7 @@ class JsonSerializerTest {
 			order = SortOrder.RATING.name,
 			track = false,
 			isVisibleInLibrary = true,
+			deletedAt = 0L,
 		)
 		val json = JsonSerializer(entity).toJson()
 		val result = JsonDeserializer(json).toFavouriteCategoryEntity()
