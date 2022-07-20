@@ -79,7 +79,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.nv95:kotatsu-parsers:6495ddf277') {
+	implementation('com.github.nv95:kotatsu-parsers:c4abb758f3') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -122,7 +122,6 @@ dependencies {
 	implementation 'ch.acra:acra-mail:5.9.5'
 	implementation 'ch.acra:acra-dialog:5.9.5'
 
-	debugImplementation 'org.jsoup:jsoup:1.15.2'
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
 	testImplementation 'junit:junit:4.13.2'
