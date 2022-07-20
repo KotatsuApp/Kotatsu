@@ -34,42 +34,38 @@
 		android:theme="@style/ThemeOverlay.Material3.Dark"
 		app:elevation="0dp">
 
-		<com.google.android.material.appbar.MaterialToolbar
-			android:id="@id/toolbar"
+		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			app:popupTheme="@style/ThemeOverlay.Kotatsu" />
+			android:layout_height="match_parent"
+			android:orientation="horizontal">
 
-	</com.google.android.material.appbar.AppBarLayout>
-
-	<com.google.android.material.appbar.AppBarLayout
-		android:id="@+id/appbar_bottom"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom"
-		android:background="@color/dim"
-		android:elevation="0dp"
-		android:theme="@style/ThemeOverlay.Material3.Dark"
-		app:elevation="0dp"
-		tools:visibility="gone">
-
-		<com.google.android.material.appbar.MaterialToolbar
-			android:id="@+id/toolbar_bottom"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			app:menu="@menu/opt_reader_bottom"
-			app:popupTheme="@style/ThemeOverlay.Kotatsu">
-
-			<com.google.android.material.slider.Slider
-				android:id="@+id/slider"
-				android:layout_width="match_parent"
+			<com.google.android.material.appbar.MaterialToolbar
+				android:id="@id/toolbar"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:stepSize="1"
-				android:valueFrom="0"
-				app:labelBehavior="floating"
-				app:tickVisible="false" />
+				android:layout_weight="1"
+				app:popupTheme="@style/ThemeOverlay.Kotatsu" />
 
-		</com.google.android.material.appbar.MaterialToolbar>
+			<com.google.android.material.appbar.MaterialToolbar
+				android:id="@+id/toolbar_bottom"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				app:menu="@menu/opt_reader_bottom"
+				app:popupTheme="@style/ThemeOverlay.Kotatsu">
+
+				<com.google.android.material.slider.Slider
+					android:id="@+id/slider"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:stepSize="1"
+					android:valueFrom="0"
+					app:labelBehavior="floating"
+					app:tickVisible="false" />
+
+			</com.google.android.material.appbar.MaterialToolbar>
+
+		</LinearLayout>
 
 	</com.google.android.material.appbar.AppBarLayout>
 

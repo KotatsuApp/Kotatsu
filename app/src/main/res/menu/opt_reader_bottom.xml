@@ -20,7 +20,7 @@
 		app:showAsAction="always" />
 
 	<item
-		android:id="@+id/action_menu"
+		android:id="@+id/action_options"
 		android:icon="@drawable/abc_ic_menu_overflow_material"
 		android:title="@string/options"
 		app:showAsAction="always" />

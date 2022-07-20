@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.DialogReaderConfigBinding
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@Deprecated("Not in use")
 class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 	CheckableButtonGroup.OnCheckedChangeListener {
 

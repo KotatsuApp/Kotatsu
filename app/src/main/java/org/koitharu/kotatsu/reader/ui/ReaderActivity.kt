@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import androidx.activity.result.ActivityResultCallback
 import androidx.core.graphics.Insets
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.WindowInsetsCompat
@@ -36,6 +35,7 @@ import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.reader.ui.config.ReaderConfigBottomSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
@@ -50,8 +50,7 @@ class ReaderActivity :
 	ChaptersBottomSheet.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener,
 	OnPageSelectListener,
-	ReaderConfigDialog.Callback,
-	ActivityResultCallback<Uri?>,
+	ReaderConfigBottomSheet.Callback,
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener {
 
@@ -65,7 +64,6 @@ class ReaderActivity :
 
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
-	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
 	private var gestureInsets: Insets = Insets.NONE
 	private lateinit var readerManager: ReaderManager
 	private val hideUiRunnable = Runnable { setUiIsVisible(false) }
@@ -116,10 +114,6 @@ class ReaderActivity :
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
-			R.id.action_menu -> {
-				val currentMode = readerManager.currentMode ?: return false
-				ReaderConfigDialog.show(supportFragmentManager, currentMode)
-			}
 			R.id.action_settings -> {
 				startActivity(SettingsActivity.newReaderSettingsIntent(this))
 			}
@@ -150,13 +144,14 @@ class ReaderActivity :
 					viewModel.addBookmark()
 				}
 			}
+			R.id.action_options -> {
+				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
+				val currentMode = readerManager.currentMode ?: return false
+				ReaderConfigBottomSheet.show(supportFragmentManager, currentMode)
+			}
 			else -> return super.onOptionsItemSelected(item)
 		}
 		return true
-	}
-
-	override fun onActivityResult(uri: Uri?) {
-		viewModel.onActivityResult(uri)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
