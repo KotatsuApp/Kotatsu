@@ -21,7 +21,12 @@ class DoHManager(
 	private var cachedProvider: DoHProvider? = null
 
 	override fun lookup(hostname: String): List<InetAddress> {
-		return getDelegate().lookup(hostname)
+		return try {
+			getDelegate().lookup(hostname)
+		} catch (e: UnknownHostException) {
+			// fallback
+			Dns.SYSTEM.lookup(hostname)
+		}
 	}
 
 	@Synchronized
@@ -40,6 +45,7 @@ class DoHManager(
 		DoHProvider.NONE -> Dns.SYSTEM
 		DoHProvider.GOOGLE -> DnsOverHttps.Builder().client(bootstrapClient)
 			.url("https://dns.google/dns-query".toHttpUrl())
+			.resolvePrivateAddresses(true)
 			.bootstrapDnsHosts(
 				listOfNotNull(
 					tryGetByIp("8.8.4.4"),
@@ -50,6 +56,7 @@ class DoHManager(
 			).build()
 		DoHProvider.CLOUDFLARE -> DnsOverHttps.Builder().client(bootstrapClient)
 			.url("https://cloudflare-dns.com/dns-query".toHttpUrl())
+			.resolvePrivateAddresses(true)
 			.bootstrapDnsHosts(
 				listOfNotNull(
 					tryGetByIp("162.159.36.1"),
@@ -65,6 +72,7 @@ class DoHManager(
 			).build()
 		DoHProvider.ADGUARD -> DnsOverHttps.Builder().client(bootstrapClient)
 			.url("https://dns-unfiltered.adguard.com/dns-query".toHttpUrl())
+			.resolvePrivateAddresses(true)
 			.bootstrapDnsHosts(
 				listOfNotNull(
 					tryGetByIp("94.140.14.140"),
