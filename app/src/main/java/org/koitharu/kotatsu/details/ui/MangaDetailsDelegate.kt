@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
-import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -13,6 +12,7 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -40,8 +40,7 @@ class MangaDetailsDelegate(
 	val mangaId = intent.manga?.id ?: intent.mangaId
 
 	suspend fun doLoad() {
-		var manga = mangaDataRepository.resolveIntent(intent)
-			?: throw MangaNotFoundException("Cannot find manga")
+		var manga = mangaDataRepository.resolveIntent(intent) ?: throw NotFoundException("Cannot find manga", "")
 		mangaData.value = manga
 		manga = MangaRepository(manga.source).getDetails(manga)
 		// find default branch

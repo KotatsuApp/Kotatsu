@@ -15,11 +15,11 @@ import org.koitharu.kotatsu.base.domain.MangaUtils
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
-import org.koitharu.kotatsu.core.exceptions.MangaNotFoundException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.*
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
@@ -259,7 +259,7 @@ class ReaderViewModel(
 
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			var manga = dataRepository.resolveIntent(intent) ?: throw MangaNotFoundException("Cannot find manga")
+			var manga = dataRepository.resolveIntent(intent) ?: throw NotFoundException("Cannot find manga", "")
 			mangaData.value = manga
 			val repo = MangaRepository(manga.source)
 			manga = repo.getDetails(manga)

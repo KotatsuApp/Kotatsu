@@ -322,4 +322,5 @@
 	<string name="show_all">Show all</string>
 	<string name="invalid_domain_message">Invalid domain</string>
 	<string name="select_range">Select range</string>
+	<string name="not_found_404">Content not found or removed</string>
 </resources>
