@@ -6,11 +6,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import androidx.activity.result.ActivityResultCallback
 import androidx.core.graphics.Insets
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
@@ -18,6 +20,8 @@ import androidx.transition.TransitionSet
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
@@ -35,12 +39,12 @@ import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.reader.ui.config.ReaderConfigBottomSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
+import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
 import java.util.concurrent.TimeUnit
@@ -50,7 +54,8 @@ class ReaderActivity :
 	ChaptersBottomSheet.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener,
 	OnPageSelectListener,
-	ReaderConfigBottomSheet.Callback,
+	ReaderConfigDialog.Callback,
+	ActivityResultCallback<Uri?>,
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener {
 
@@ -63,7 +68,9 @@ class ReaderActivity :
 	}
 
 	private lateinit var touchHelper: GridTouchHelper
+	private lateinit var orientationHelper: ScreenOrientationHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
+	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
 	private var gestureInsets: Insets = Insets.NONE
 	private lateinit var readerManager: ReaderManager
 	private val hideUiRunnable = Runnable { setUiIsVisible(false) }
@@ -74,11 +81,17 @@ class ReaderActivity :
 		readerManager = ReaderManager(supportFragmentManager, R.id.container)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
+		orientationHelper = ScreenOrientationHelper(this)
 		controlDelegate = ReaderControlDelegate(lifecycleScope, get(), this)
+		binding.toolbarBottom.inflateMenu(R.menu.opt_reader_bottom)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
-		binding.slider.setLabelFormatter(PageLabelFormatter())
-		ReaderSliderListener(this, viewModel).attachToSlider(binding.slider)
 		insetsDelegate.interceptingWindowInsetsListener = this
+
+		orientationHelper.observeAutoOrientation()
+			.flowWithLifecycle(lifecycle)
+			.onEach {
+				binding.toolbarBottom.menu.findItem(R.id.action_screen_rotate).isVisible = !it
+			}.launchIn(lifecycleScope)
 
 		viewModel.onError.observe(this, this::onError)
 		viewModel.readerMode.observe(this, this::onInitReader)
@@ -101,19 +114,31 @@ class ReaderActivity :
 		if (readerManager.currentMode != mode) {
 			readerManager.replace(mode)
 		}
+		val iconRes = when (mode) {
+			ReaderMode.WEBTOON -> R.drawable.ic_script
+			ReaderMode.REVERSED -> R.drawable.ic_read_reversed
+			ReaderMode.STANDARD -> R.drawable.ic_book_page
+		}
+		binding.toolbarBottom.menu.findItem(R.id.action_reader_mode).run {
+			setIcon(iconRes)
+			setVisible(true)
+		}
 		if (binding.appbarTop.isVisible) {
 			lifecycle.postDelayed(hideUiRunnable, TimeUnit.SECONDS.toMillis(1))
 		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		super.onCreateOptionsMenu(menu)
 		menuInflater.inflate(R.menu.opt_reader_top, menu)
-		return true
+		return super.onCreateOptionsMenu(menu)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
+			R.id.action_reader_mode -> {
+				val currentMode = readerManager.currentMode ?: return false
+				ReaderConfigDialog.show(supportFragmentManager, currentMode)
+			}
 			R.id.action_settings -> {
 				startActivity(SettingsActivity.newReaderSettingsIntent(this))
 			}
@@ -123,6 +148,9 @@ class ReaderActivity :
 					viewModel.manga?.chapters.orEmpty(),
 					viewModel.getCurrentState()?.chapterId ?: 0L
 				)
+			}
+			R.id.action_screen_rotate -> {
+				orientationHelper.toggleOrientation()
 			}
 			R.id.action_pages_thumbs -> {
 				val pages = viewModel.getCurrentChapterPages()
@@ -149,14 +177,13 @@ class ReaderActivity :
 					viewModel.addBookmark()
 				}
 			}
-			R.id.action_options -> {
-				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
-				val currentMode = readerManager.currentMode ?: return false
-				ReaderConfigBottomSheet.show(supportFragmentManager, currentMode)
-			}
 			else -> return super.onOptionsItemSelected(item)
 		}
 		return true
+	}
+
+	override fun onActivityResult(uri: Uri?) {
+		viewModel.onActivityResult(uri)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -170,6 +197,7 @@ class ReaderActivity :
 		val menu = binding.toolbarBottom.menu
 		menu.findItem(R.id.action_bookmark).isVisible = hasPages
 		menu.findItem(R.id.action_pages_thumbs).isVisible = hasPages
+		menu.findItem(R.id.action_save_page).isVisible = hasPages
 	}
 
 	private fun onError(e: Throwable) {
@@ -319,27 +347,15 @@ class ReaderActivity :
 
 	private fun onUiStateChanged(uiState: ReaderUiState?, previous: ReaderUiState?) {
 		title = uiState?.chapterName ?: uiState?.mangaName ?: getString(R.string.loading_)
-		if (uiState == null) {
-			supportActionBar?.subtitle = null
-			binding.slider.isVisible = false
-			return
-		}
-		supportActionBar?.subtitle = if (uiState.chapterNumber in 1..uiState.chaptersTotal) {
+		supportActionBar?.subtitle = if (uiState != null && uiState.chapterNumber in 1..uiState.chaptersTotal) {
 			getString(R.string.chapter_d_of_d, uiState.chapterNumber, uiState.chaptersTotal)
 		} else {
 			null
 		}
-		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
+		if (uiState != null && previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
 			if (!uiState.chapterName.isNullOrEmpty()) {
 				binding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
 			}
-		}
-		if (uiState.totalPages > 0) {
-			binding.slider.value = uiState.currentPage.toFloat()
-			binding.slider.valueTo = uiState.totalPages.toFloat()
-			binding.slider.isVisible = true
-		} else {
-			binding.slider.isVisible = false
 		}
 	}
 

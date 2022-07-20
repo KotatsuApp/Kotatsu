@@ -53,24 +53,5 @@ class MangaDatabaseTest {
 	private companion object {
 
 		const val TEST_DB = "test-db"
-<<<<<<< HEAD
-
-		val migrations = arrayOf(
-			Migration1To2(),
-			Migration2To3(),
-			Migration3To4(),
-			Migration4To5(),
-			Migration5To6(),
-			Migration6To7(),
-			Migration7To8(),
-			Migration8To9(),
-			Migration9To10(),
-			Migration10To11(),
-			Migration11To12(),
-			Migration12To13(),
-			Migration13To14(),
-		)
-=======
->>>>>>> devel
 	}
 }
