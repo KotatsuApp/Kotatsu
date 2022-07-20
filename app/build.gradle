@@ -14,8 +14,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 417
-		versionName '3.4.5'
+		versionCode 418
+		versionName '3.4.6'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -83,7 +83,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.nv95:kotatsu-parsers:30071709af') {
+	implementation('com.github.nv95:kotatsu-parsers:fadb06aabb') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -127,7 +127,6 @@ dependencies {
 	implementation 'ch.acra:acra-mail:5.9.5'
 	implementation 'ch.acra:acra-dialog:5.9.5'
 
-	debugImplementation 'org.jsoup:jsoup:1.15.2'
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
 	testImplementation 'junit:junit:4.13.2'

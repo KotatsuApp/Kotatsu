@@ -317,4 +317,5 @@
     <string name="show_reading_indicators">読書の進行状況インジケーターを表示</string>
     <string name="exclude_nsfw_from_history_summary">NSFWとマークされたマンガは履歴に追加されず、進行状況も保存されない</string>
     <string name="show_all">すべて表示</string>
+    <string name="invalid_domain_message">無効なドメイン</string>
 </resources>

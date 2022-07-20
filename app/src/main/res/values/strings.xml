@@ -357,4 +357,5 @@
 	<string name="removed_from_favourites">Removed from favourites</string>
 	<string name="removed_from_s">Removed from \"%s\"</string>
 	<string name="options">Options</string>
+	<string name="not_found_404">Content not found or removed</string>
 </resources>

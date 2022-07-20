@@ -8,9 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
+import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import org.koitharu.kotatsu.utils.TaggedActivityResult
@@ -43,6 +45,10 @@ class ExceptionResolver private constructor(
 	suspend fun resolve(e: Throwable): Boolean = when (e) {
 		is CloudFlareProtectedException -> resolveCF(e.url)
 		is AuthRequiredException -> resolveAuthException(e.source)
+		is NotFoundException -> {
+			openInBrowser(e.url)
+			false
+		}
 		else -> false
 	}
 
@@ -69,6 +75,11 @@ class ExceptionResolver private constructor(
 		sourceAuthContract.launch(source)
 	}
 
+	private fun openInBrowser(url: String) {
+		val context = activity ?: fragment?.activity ?: return
+		context.startActivity(BrowserActivity.newIntent(context, url, null))
+	}
+
 	private fun getFragmentManager() = checkNotNull(fragment?.childFragmentManager ?: activity?.supportFragmentManager)
 
 	companion object {
@@ -77,6 +88,7 @@ class ExceptionResolver private constructor(
 		fun getResolveStringId(e: Throwable) = when (e) {
 			is CloudFlareProtectedException -> R.string.captcha_solve
 			is AuthRequiredException -> R.string.sign_in
+			is NotFoundException -> if (e.url.isNotEmpty()) R.string.open_in_browser else 0
 			else -> 0
 		}
 

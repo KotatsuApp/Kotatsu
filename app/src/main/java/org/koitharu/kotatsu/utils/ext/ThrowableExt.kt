@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.*
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.ContentUnavailableException
+import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import java.net.SocketTimeoutException
 
@@ -24,6 +25,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is ParseException -> shortMessage
 	is SocketTimeoutException -> resources.getString(R.string.network_error)
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
+	is NotFoundException -> resources.getString(R.string.not_found_404)
 	else -> localizedMessage
 } ?: resources.getString(R.string.error_occurred)
 
@@ -32,7 +34,7 @@ fun Throwable.isReportable(): Boolean {
 		return true
 	}
 	return this is ParseException || this is IllegalArgumentException ||
-		this is IllegalStateException || this is RuntimeException
+		this is IllegalStateException || this.javaClass == RuntimeException::class.java
 }
 
 fun Throwable.report(message: String?) {

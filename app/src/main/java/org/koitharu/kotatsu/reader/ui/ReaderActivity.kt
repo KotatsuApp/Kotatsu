@@ -137,6 +137,11 @@ class ReaderActivity :
 					return false
 				}
 			}
+			R.id.action_save_page -> {
+				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
+				val page = viewModel.getCurrentPage() ?: return false
+				viewModel.saveCurrentPage(page, savePageRequest)
+			}
 			R.id.action_bookmark -> {
 				if (viewModel.isBookmarkAdded.value == true) {
 					viewModel.removeBookmark()
