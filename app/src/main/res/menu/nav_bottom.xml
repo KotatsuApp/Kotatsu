@@ -14,12 +14,12 @@
 
 	<item
 		android:id="@+id/nav_feed"
-		android:icon="@drawable/ic_feed"
+		android:icon="@drawable/ic_feed_selector"
 		android:title="@string/updates" />
 
 	<item
 		android:id="@+id/nav_tools"
-		android:icon="@drawable/ic_tools"
+		android:icon="@drawable/ic_tools_selector"
 		android:title="@string/tools" />
 
 </menu>
