@@ -39,13 +39,13 @@ class FavouritesCategoriesViewModel(
 		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val detalizedCategories = combine(
-		repository.observeCategoriesWithDetails(),
+		repository.observeCategoriesWithCovers(coversLimit = 3),
 		isReorder,
 	) { list, reordering ->
 		list.map { (category, covers) ->
 			CategoryListModel(
 				mangaCount = covers.size,
-				covers = covers.take(3),
+				covers = covers,
 				category = category,
 				isReorderMode = reordering,
 			)

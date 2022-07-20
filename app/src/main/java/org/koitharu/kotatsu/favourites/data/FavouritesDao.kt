@@ -21,7 +21,7 @@ abstract class FavouritesDao {
 			"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
 				"WHERE favourites.deleted_at = 0 GROUP BY favourites.manga_id ORDER BY $orderBy",
 		)
-		return observeAllRaw(query)
+		return observeAllImpl(query)
 	}
 
 	@Transaction
@@ -45,7 +45,7 @@ abstract class FavouritesDao {
 				"WHERE category_id = ? AND deleted_at = 0 GROUP BY favourites.manga_id ORDER BY $orderBy",
 			arrayOf<Any>(categoryId),
 		)
-		return observeAllRaw(query)
+		return observeAllImpl(query)
 	}
 
 	@Transaction
@@ -60,6 +60,16 @@ abstract class FavouritesDao {
 			"(SELECT manga_id FROM favourites WHERE category_id = :categoryId AND deleted_at = 0)"
 	)
 	abstract suspend fun findAllManga(categoryId: Int): List<MangaEntity>
+
+	suspend fun findCovers(categoryId: Long, order: SortOrder, limit: Int): List<String> {
+		val orderBy = getOrderBy(order)
+		@Language("RoomSql") val query = SimpleSQLiteQuery(
+			"SELECT m.cover_url FROM favourites AS f LEFT JOIN manga AS m ON f.manga_id = m.manga_id " +
+				"WHERE f.category_id = ? AND deleted_at = 0 ORDER BY $orderBy LIMIT ?",
+			arrayOf<Any>(categoryId, limit),
+		)
+		return findCoversImpl(query)
+	}
 
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM favourites WHERE deleted_at = 0)")
 	abstract suspend fun findAllManga(): List<MangaEntity>
@@ -103,7 +113,10 @@ abstract class FavouritesDao {
 
 	@Transaction
 	@RawQuery(observedEntities = [FavouriteEntity::class])
-	protected abstract fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<FavouriteManga>>
+	protected abstract fun observeAllImpl(query: SupportSQLiteQuery): Flow<List<FavouriteManga>>
+
+	@RawQuery
+	protected abstract suspend fun findCoversImpl(query: SupportSQLiteQuery): List<String>
 
 	private fun getOrderBy(sortOrder: SortOrder) = when (sortOrder) {
 		SortOrder.RATING -> "rating DESC"
