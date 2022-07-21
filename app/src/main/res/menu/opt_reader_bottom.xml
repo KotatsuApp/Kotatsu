@@ -20,28 +20,9 @@
 		app:showAsAction="always" />
 
 	<item
-		android:id="@+id/action_screen_rotate"
-		android:icon="@drawable/ic_screen_rotation"
-		android:title="@string/rotate_screen"
-		android:visible="false"
+		android:id="@+id/action_menu"
+		android:icon="@drawable/abc_ic_menu_overflow_material"
+		android:title="@string/options"
 		app:showAsAction="always" />
-
-	<item
-		android:id="@+id/action_reader_mode"
-		android:icon="@drawable/ic_loading"
-		android:title="@string/read_mode"
-		android:visible="false"
-		app:showAsAction="always" />
-
-	<item
-		android:id="@+id/action_save_page"
-		android:title="@string/save_page"
-		android:visible="false"
-		app:showAsAction="never" />
-
-	<item
-		android:id="@+id/action_settings"
-		android:title="@string/settings"
-		app:showAsAction="never" />
 
 </menu>
