@@ -35,5 +35,5 @@ val settingsModule
 		viewModel { OnboardViewModel(get()) }
 		viewModel { SourcesSettingsViewModel(get()) }
 		viewModel { NewSourcesViewModel(get()) }
-		viewModel { ToolsViewModel(get()) }
+		viewModel { ToolsViewModel(get(), get()) }
 	}

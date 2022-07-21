@@ -13,6 +13,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
+import com.google.android.material.R as materialR
 import com.google.android.material.color.MaterialColors
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
@@ -25,10 +26,11 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.tools.model.StorageUsage
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getThemeColor
-import com.google.android.material.R as materialR
 
-
-class ToolsFragment : BaseFragment<FragmentToolsBinding>(), CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+class ToolsFragment :
+	BaseFragment<FragmentToolsBinding>(),
+	CompoundButton.OnCheckedChangeListener,
+	View.OnClickListener {
 
 	private var updateChecker: AppUpdateChecker? = null
 	private val viewModel by viewModel<ToolsViewModel>()
@@ -43,8 +45,11 @@ class ToolsFragment : BaseFragment<FragmentToolsBinding>(), CompoundButton.OnChe
 		binding.buttonDownloads.setOnClickListener(this)
 		binding.cardUpdate.root.setOnClickListener(this)
 		binding.cardUpdate.buttonDownload.setOnClickListener(this)
-		binding.incognito.setOnCheckedChangeListener(this)
+		binding.switchIncognito.setOnCheckedChangeListener(this)
 
+		viewModel.isIncognitoModeEnabled.observe(viewLifecycleOwner) {
+			binding.switchIncognito.isChecked = it
+		}
 		viewModel.storageUsage.observe(viewLifecycleOwner, ::onStorageUsageChanged)
 	}
 
@@ -56,7 +61,7 @@ class ToolsFragment : BaseFragment<FragmentToolsBinding>(), CompoundButton.OnChe
 	}
 
 	override fun onCheckedChanged(button: CompoundButton?, isChecked: Boolean) {
-		// TODO Incognito enabling logic
+		viewModel.toggleIncognitoMode(isChecked)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -77,19 +82,19 @@ class ToolsFragment : BaseFragment<FragmentToolsBinding>(), CompoundButton.OnChe
 			val pattern = getString(R.string.memory_usage_pattern)
 			labelStorage.text = pattern.format(
 				FileSize.BYTES.format(root.context, usage.savedManga.bytes),
-				getString(R.string.saved_manga)
+				getString(R.string.saved_manga),
 			)
 			labelPagesCache.text = pattern.format(
 				FileSize.BYTES.format(root.context, usage.pagesCache.bytes),
-				getString(R.string.pages_cache)
+				getString(R.string.pages_cache),
 			)
 			labelOtherCache.text = pattern.format(
 				FileSize.BYTES.format(root.context, usage.otherCache.bytes),
-				getString(R.string.other_cache)
+				getString(R.string.other_cache),
 			)
 			labelAvailable.text = pattern.format(
 				FileSize.BYTES.format(root.context, usage.available.bytes),
-				getString(R.string.available)
+				getString(R.string.available),
 			)
 			TextViewCompat.setCompoundDrawableTintList(labelStorage, ColorStateList.valueOf(storageSegment.color))
 			TextViewCompat.setCompoundDrawableTintList(labelPagesCache, ColorStateList.valueOf(pagesSegment.color))
