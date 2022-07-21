@@ -11,6 +11,8 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 @Dao
 abstract class FavouritesDao {
 
+	/** SELECT **/
+
 	@Transaction
 	@Query("SELECT * FROM favourites WHERE deleted_at = 0 GROUP BY manga_id ORDER BY created_at DESC")
 	abstract suspend fun findAll(): List<FavouriteManga>
@@ -61,12 +63,12 @@ abstract class FavouritesDao {
 	)
 	abstract suspend fun findAllManga(categoryId: Int): List<MangaEntity>
 
-	suspend fun findCovers(categoryId: Long, order: SortOrder, limit: Int): List<String> {
+	suspend fun findCovers(categoryId: Long, order: SortOrder): List<String> {
 		val orderBy = getOrderBy(order)
 		@Language("RoomSql") val query = SimpleSQLiteQuery(
 			"SELECT m.cover_url FROM favourites AS f LEFT JOIN manga AS m ON f.manga_id = m.manga_id " +
-				"WHERE f.category_id = ? AND deleted_at = 0 ORDER BY $orderBy LIMIT ?",
-			arrayOf<Any>(categoryId, limit),
+				"WHERE f.category_id = ? AND deleted_at = 0 ORDER BY $orderBy",
+			arrayOf<Any>(categoryId),
 		)
 		return findCoversImpl(query)
 	}
@@ -85,24 +87,32 @@ abstract class FavouritesDao {
 	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id = :id AND deleted_at = 0")
 	abstract fun observeIds(id: Long): Flow<List<Long>>
 
+	/** INSERT **/
+
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	abstract suspend fun insert(favourite: FavouriteEntity)
+
+	/** UPDATE **/
 
 	@Update
 	abstract suspend fun update(favourite: FavouriteEntity): Int
 
-	@Query("UPDATE favourites SET deleted_at = :now WHERE manga_id = :mangaId")
-	abstract suspend fun delete(mangaId: Long, now: Long = System.currentTimeMillis())
+	/** DELETE **/
 
-	@Query("UPDATE favourites SET deleted_at = :now WHERE manga_id = :mangaId AND category_id = :categoryId")
-	abstract suspend fun delete(categoryId: Long, mangaId: Long, now: Long = System.currentTimeMillis())
+	suspend fun delete(mangaId: Long) = setDeletedAt(mangaId, System.currentTimeMillis())
 
-	suspend fun recover(mangaId: Long) = delete(mangaId, 0L)
+	suspend fun delete(mangaId: Long, categoryId: Long) = setDeletedAt(mangaId, categoryId, System.currentTimeMillis())
 
-	suspend fun recover(categoryId: Long, mangaId: Long) = delete(categoryId, mangaId, 0L)
+	suspend fun deleteAll(categoryId: Long) = setDeletedAtAll(categoryId, System.currentTimeMillis())
+
+	suspend fun recover(mangaId: Long) = setDeletedAt(mangaId, 0L)
+
+	suspend fun recover(mangaId: Long, categoryId: Long) = setDeletedAt(categoryId, mangaId, 0L)
 
 	@Query("DELETE FROM favourites WHERE deleted_at != 0 AND deleted_at < :maxDeletionTime")
 	abstract suspend fun gc(maxDeletionTime: Long)
+
+	/** TOOLS **/
 
 	@Transaction
 	open suspend fun upsert(entity: FavouriteEntity) {
@@ -117,6 +127,15 @@ abstract class FavouritesDao {
 
 	@RawQuery
 	protected abstract suspend fun findCoversImpl(query: SupportSQLiteQuery): List<String>
+
+	@Query("UPDATE favourites SET deleted_at = :deletedAt WHERE manga_id = :mangaId")
+	protected abstract suspend fun setDeletedAt(mangaId: Long, deletedAt: Long)
+
+	@Query("UPDATE favourites SET deleted_at = :deletedAt WHERE manga_id = :mangaId AND category_id = :categoryId")
+	abstract suspend fun setDeletedAt(mangaId: Long, categoryId: Long, deletedAt: Long)
+
+	@Query("UPDATE favourites SET deleted_at = :deletedAt WHERE category_id = :categoryId AND deleted_at = 0")
+	protected abstract suspend fun setDeletedAtAll(categoryId: Long, deletedAt: Long)
 
 	private fun getOrderBy(sortOrder: SortOrder) = when (sortOrder) {
 		SortOrder.RATING -> "rating DESC"

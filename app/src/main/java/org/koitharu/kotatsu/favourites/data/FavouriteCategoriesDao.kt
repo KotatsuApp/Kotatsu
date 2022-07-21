@@ -24,8 +24,7 @@ abstract class FavouriteCategoriesDao {
 	@Update
 	abstract suspend fun update(category: FavouriteCategoryEntity): Int
 
-	@Query("UPDATE favourite_categories SET deleted_at = :now WHERE category_id = :id")
-	abstract suspend fun delete(id: Long, now: Long = System.currentTimeMillis())
+	suspend fun delete(id: Long) = setDeletedAt(id, System.currentTimeMillis())
 
 	@Query("UPDATE favourite_categories SET title = :title, `order` = :order, `track` = :tracker  WHERE category_id = :id")
 	abstract suspend fun update(id: Long, title: String, order: String, tracker: Boolean)
@@ -33,8 +32,8 @@ abstract class FavouriteCategoriesDao {
 	@Query("UPDATE favourite_categories SET `order` = :order WHERE category_id = :id")
 	abstract suspend fun updateOrder(id: Long, order: String)
 
-	@Query("UPDATE favourite_categories SET `track` = :isEnabled WHERE category_id = :id")
-	abstract suspend fun updateTracking(id: Long, isEnabled: Boolean)
+	// @Query("UPDATE favourite_categories SET `track` = :isEnabled WHERE category_id = :id")
+	// abstract suspend fun updateTracking(id: Long, isEnabled: Boolean)
 
 	@Query("UPDATE favourite_categories SET `show_in_lib` = :isEnabled WHERE category_id = :id")
 	abstract suspend fun updateLibVisibility(id: Long, isEnabled: Boolean)
@@ -58,4 +57,7 @@ abstract class FavouriteCategoriesDao {
 			insert(entity)
 		}
 	}
+
+	@Query("UPDATE favourite_categories SET deleted_at = :deletedAt WHERE category_id = :id")
+	protected abstract suspend fun setDeletedAt(id: Long, deletedAt: Long)
 }

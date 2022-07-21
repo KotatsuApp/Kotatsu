@@ -109,7 +109,7 @@ class HistoryRepository(
 	}
 
 	suspend fun deleteAfter(minDate: Long) {
-		db.historyDao.delete(minDate)
+		db.historyDao.deleteAfter(minDate)
 	}
 
 	suspend fun delete(ids: Collection<Long>): ReversibleHandle {

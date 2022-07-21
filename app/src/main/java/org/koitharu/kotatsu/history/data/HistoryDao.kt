@@ -43,9 +43,6 @@ abstract class HistoryDao {
 	@Query("SELECT COUNT(*) FROM history WHERE deleted_at = 0")
 	abstract fun observeCount(): Flow<Int>
 
-	@Query("UPDATE history SET deleted_at = :now WHERE deleted_at = 0")
-	abstract suspend fun clear(now: Long = System.currentTimeMillis())
-
 	@Query("SELECT percent FROM history WHERE manga_id = :id AND deleted_at = 0")
 	abstract suspend fun findProgress(id: Long): Float?
 
@@ -62,16 +59,16 @@ abstract class HistoryDao {
 		updatedAt: Long,
 	): Int
 
-	@Query("UPDATE history SET deleted_at = :now WHERE manga_id = :mangaId")
-	abstract suspend fun delete(mangaId: Long, now: Long = System.currentTimeMillis())
+	suspend fun delete(mangaId: Long) = setDeletedAt(mangaId, System.currentTimeMillis())
 
-	suspend fun recover(mangaId: Long) = delete(mangaId, 0L)
+	suspend fun recover(mangaId: Long) = setDeletedAt(mangaId, 0L)
 
 	@Query("DELETE FROM history WHERE deleted_at != 0 AND deleted_at < :maxDeletionTime")
 	abstract suspend fun gc(maxDeletionTime: Long)
 
-	@Query("DELETE FROM history WHERE created_at >= :minDate")
-	abstract suspend fun deleteAfter(minDate: Long)
+	suspend fun deleteAfter(minDate: Long) = setDeletedAtAfter(minDate, System.currentTimeMillis())
+
+	suspend fun clear() = setDeletedAtAfter(0L, System.currentTimeMillis())
 
 	suspend fun update(entity: HistoryEntity) = update(
 		mangaId = entity.mangaId,
@@ -98,4 +95,10 @@ abstract class HistoryDao {
 			}
 		}
 	}
+
+	@Query("UPDATE history SET deleted_at = :deletedAt WHERE manga_id = :mangaId")
+	protected abstract suspend fun setDeletedAt(mangaId: Long, deletedAt: Long)
+
+	@Query("UPDATE history SET deleted_at = :deletedAt WHERE created_at >= :minDate AND deleted_at = 0")
+	protected abstract suspend fun setDeletedAtAfter(minDate: Long, deletedAt: Long)
 }

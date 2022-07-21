@@ -51,7 +51,7 @@ class FavouritesRepository(
 		}.distinctUntilChanged()
 	}
 
-	fun observeCategoriesWithCovers(coversLimit: Int): Flow<Map<FavouriteCategory, List<String>>> {
+	fun observeCategoriesWithCovers(): Flow<Map<FavouriteCategory, List<String>>> {
 		return db.favouriteCategoriesDao.observeAll()
 			.map {
 				db.withTransaction {
@@ -61,7 +61,6 @@ class FavouritesRepository(
 						res[cat] = db.favouritesDao.findCovers(
 							categoryId = cat.id,
 							order = cat.order,
-							limit = coversLimit,
 						)
 					}
 					res
@@ -108,15 +107,23 @@ class FavouritesRepository(
 	}
 
 	suspend fun removeCategory(id: Long) {
-		db.favouriteCategoriesDao.delete(id)
+		db.withTransaction {
+			db.favouriteCategoriesDao.delete(id)
+			db.favouritesDao.deleteAll(id)
+		}
 		channels.deleteChannel(id)
 	}
 
 	suspend fun removeCategories(ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {
-				removeCategory(id)
+				db.favouriteCategoriesDao.delete(id)
+				db.favouritesDao.deleteAll(id)
 			}
+		}
+		// run after transaction success
+		for (id in ids) {
+			channels.deleteChannel(id)
 		}
 	}
 
@@ -179,7 +186,7 @@ class FavouritesRepository(
 	private suspend fun recoverToFavourites(ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.recover(id)
+				db.favouritesDao.recover(mangaId = id)
 			}
 		}
 	}
@@ -187,7 +194,7 @@ class FavouritesRepository(
 	private suspend fun recoverToCategory(categoryId: Long, ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.recover(categoryId, id)
+				db.favouritesDao.recover(mangaId = id, categoryId = categoryId)
 			}
 		}
 	}
