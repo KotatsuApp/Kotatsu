@@ -1,6 +1,9 @@
 package org.koitharu.kotatsu.settings.backup
 
+import android.content.res.AssetManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -14,6 +17,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import java.io.File
 import kotlin.test.*
 
 @RunWith(AndroidJUnit4::class)
@@ -30,7 +34,7 @@ class AppBackupAgentTest : KoinTest {
 	}
 
 	@Test
-	fun testBackupRestore() = runTest {
+	fun backupAndRestore() = runTest {
 		val category = favouritesRepository.createCategory(
 			title = SampleData.favouriteCategory.title,
 			sortOrder = SampleData.favouriteCategory.order,
@@ -63,5 +67,26 @@ class AppBackupAgentTest : KoinTest {
 
 		val allTags = database.tagsDao.findTags(SampleData.tag.source.name).toMangaTags()
 		assertContains(allTags, SampleData.tag)
+	}
+
+	@Test
+	fun restoreOldBackup() {
+		val agent = AppBackupAgent()
+		val backup = File.createTempFile("backup_", ".tmp")
+		InstrumentationRegistry.getInstrumentation().context.assets
+			.open("kotatsu_test.bak", AssetManager.ACCESS_STREAMING)
+			.use { input ->
+				backup.outputStream().use { output ->
+					input.copyTo(output)
+				}
+			}
+		backup.inputStream().use {
+			agent.restoreBackupFile(it.fd, backup.length(), backupRepository)
+		}
+		runTest {
+			assertEquals(6, historyRepository.observeAll().first().size)
+			assertEquals(2, favouritesRepository.observeCategories().first().size)
+			assertEquals(15, favouritesRepository.getAllManga().size)
+		}
 	}
 }
