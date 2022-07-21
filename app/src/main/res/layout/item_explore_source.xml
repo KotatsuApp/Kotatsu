@@ -15,6 +15,7 @@
 		android:id="@+id/imageView_icon"
 		android:layout_width="32dp"
 		android:layout_height="32dp"
+		android:background="?colorControlHighlight"
 		android:labelFor="@id/textView_title"
 		android:scaleType="fitCenter"
 		app:shapeAppearance="?shapeAppearanceCornerSmall"

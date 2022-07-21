@@ -1,11 +1,14 @@
 package org.koitharu.kotatsu.library.ui.adapter
 
+import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
+import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
@@ -13,7 +16,6 @@ import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import kotlin.jvm.internal.Intrinsics
 
 class LibraryAdapter(
 	lifecycleOwner: LifecycleOwner,
@@ -21,7 +23,7 @@ class LibraryAdapter(
 	listener: LibraryListEventListener,
 	sizeResolver: ItemSizeResolver,
 	selectionController: SectionedSelectionController<LibrarySectionModel>,
-) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
+) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()), FastScroller.SectionIndexer {
 
 	init {
 		val pool = RecyclerView.RecycledViewPool()
@@ -34,12 +36,17 @@ class LibraryAdapter(
 					sizeResolver = sizeResolver,
 					selectionController = selectionController,
 					listener = listener,
-				)
+				),
 			)
 			.addDelegate(loadingStateAD())
 			.addDelegate(loadingFooterAD())
 			.addDelegate(emptyStateListAD(listener))
 			.addDelegate(errorStateListAD(listener))
+	}
+
+	override fun getSectionText(context: Context, position: Int): CharSequence {
+		val item = items.getOrNull(position) as? LibrarySectionModel
+		return item?.getTitle(context.resources) ?: ""
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {

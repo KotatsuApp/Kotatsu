@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -92,6 +93,8 @@ class FeedFragment :
 	override fun onFilterClick(view: View?) = Unit
 
 	override fun onEmptyActionClick() = Unit
+
+	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
 
 	private fun onListChanged(list: List<ListModel>) {
 		feedAdapter?.items = list

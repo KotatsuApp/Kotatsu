@@ -6,12 +6,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.PopupMenu
-import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.ReversibleHandle
-import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.list.ui.MangaListFragment
@@ -32,7 +29,6 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		viewModel.sortOrder.observe(viewLifecycleOwner) { activity?.invalidateOptionsMenu() }
-		viewModel.onItemsRemoved.observe(viewLifecycleOwner, ::onItemsRemoved)
 	}
 
 	override fun onScrolledToEnd() = Unit
@@ -73,15 +69,6 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 			}
 			else -> super.onActionItemClicked(mode, item)
 		}
-	}
-
-	private fun onItemsRemoved(reversibleHandle: ReversibleHandle) {
-		val message = viewModel.categoryName?.let {
-			getString(R.string.removed_from_s, it)
-		} ?: getString(R.string.removed_from_favourites)
-		Snackbar.make(binding.recyclerView, message, Snackbar.LENGTH_LONG)
-			.setAction(R.string.undo) { reversibleHandle.reverseAsync() }
-			.show()
 	}
 
 	companion object {

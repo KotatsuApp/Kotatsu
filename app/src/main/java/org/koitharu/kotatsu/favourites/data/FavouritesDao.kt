@@ -19,7 +19,9 @@ abstract class FavouritesDao {
 
 	fun observeAll(order: SortOrder): Flow<List<FavouriteManga>> {
 		val orderBy = getOrderBy(order)
-		@Language("RoomSql") val query = SimpleSQLiteQuery(
+
+		@Language("RoomSql")
+		val query = SimpleSQLiteQuery(
 			"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
 				"WHERE favourites.deleted_at = 0 GROUP BY favourites.manga_id ORDER BY $orderBy",
 		)
@@ -29,20 +31,22 @@ abstract class FavouritesDao {
 	@Transaction
 	@Query(
 		"SELECT * FROM favourites WHERE deleted_at = 0 " +
-			"GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset"
+			"GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset",
 	)
 	abstract suspend fun findAll(offset: Int, limit: Int): List<FavouriteManga>
 
 	@Transaction
 	@Query(
 		"SELECT * FROM favourites WHERE category_id = :categoryId AND deleted_at = 0 " +
-			"GROUP BY manga_id ORDER BY created_at DESC"
+			"GROUP BY manga_id ORDER BY created_at DESC",
 	)
 	abstract suspend fun findAll(categoryId: Long): List<FavouriteManga>
 
 	fun observeAll(categoryId: Long, order: SortOrder): Flow<List<FavouriteManga>> {
 		val orderBy = getOrderBy(order)
-		@Language("RoomSql") val query = SimpleSQLiteQuery(
+
+		@Language("RoomSql")
+		val query = SimpleSQLiteQuery(
 			"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
 				"WHERE category_id = ? AND deleted_at = 0 GROUP BY favourites.manga_id ORDER BY $orderBy",
 			arrayOf<Any>(categoryId),
@@ -53,19 +57,21 @@ abstract class FavouritesDao {
 	@Transaction
 	@Query(
 		"SELECT * FROM favourites WHERE category_id = :categoryId AND deleted_at = 0 " +
-			"GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset"
+			"GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset",
 	)
 	abstract suspend fun findAll(categoryId: Long, offset: Int, limit: Int): List<FavouriteManga>
 
 	@Query(
 		"SELECT * FROM manga WHERE manga_id IN " +
-			"(SELECT manga_id FROM favourites WHERE category_id = :categoryId AND deleted_at = 0)"
+			"(SELECT manga_id FROM favourites WHERE category_id = :categoryId AND deleted_at = 0)",
 	)
 	abstract suspend fun findAllManga(categoryId: Int): List<MangaEntity>
 
 	suspend fun findCovers(categoryId: Long, order: SortOrder): List<String> {
 		val orderBy = getOrderBy(order)
-		@Language("RoomSql") val query = SimpleSQLiteQuery(
+
+		@Language("RoomSql")
+		val query = SimpleSQLiteQuery(
 			"SELECT m.cover_url FROM favourites AS f LEFT JOIN manga AS m ON f.manga_id = m.manga_id " +
 				"WHERE f.category_id = ? AND deleted_at = 0 ORDER BY $orderBy",
 			arrayOf<Any>(categoryId),
@@ -81,6 +87,7 @@ abstract class FavouritesDao {
 	abstract suspend fun find(id: Long): FavouriteManga?
 
 	@Transaction
+	@Deprecated("Ignores order")
 	@Query("SELECT * FROM favourites WHERE manga_id = :id AND deleted_at = 0 GROUP BY manga_id")
 	abstract fun observe(id: Long): Flow<FavouriteManga?>
 
@@ -140,7 +147,8 @@ abstract class FavouritesDao {
 	private fun getOrderBy(sortOrder: SortOrder) = when (sortOrder) {
 		SortOrder.RATING -> "rating DESC"
 		SortOrder.NEWEST,
-		SortOrder.UPDATED -> "created_at DESC"
+		SortOrder.UPDATED,
+		-> "created_at DESC"
 		SortOrder.ALPHABETICAL -> "title ASC"
 		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
 	}

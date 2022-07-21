@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.tracker.ui
 
 import androidx.lifecycle.viewModelScope
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -12,13 +10,18 @@ import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import org.koitharu.kotatsu.tracker.ui.model.toFeedItem
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class FeedViewModel(
 	private val repository: TrackingRepository
@@ -27,7 +30,6 @@ class FeedViewModel(
 	private val logList = MutableStateFlow<List<TrackingLogItem>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private var loadingJob: Job? = null
-	private val header = ListHeader(null, R.string.updates, null)
 
 	val onFeedCleared = SingleLiveEvent<Unit>()
 	val content = combine(
@@ -36,7 +38,6 @@ class FeedViewModel(
 	) { list, isHasNextPage ->
 		buildList(list.size + 2) {
 			if (list.isEmpty()) {
-				add(header)
 				add(
 					EmptyState(
 						icon = R.drawable.ic_empty_feed,
@@ -52,10 +53,7 @@ class FeedViewModel(
 				}
 			}
 		}
-	}.asLiveDataDistinct(
-		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(header, LoadingState)
-	)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
 		loadList(append = false)

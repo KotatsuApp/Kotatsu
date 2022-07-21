@@ -24,7 +24,6 @@ class FeedAdapter(
 			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(listener))
 			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(listener))
 			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(listener))
-			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
 			.addDelegate(ITEM_TYPE_DATE_HEADER, relatedDateItemAD())
 	}
 

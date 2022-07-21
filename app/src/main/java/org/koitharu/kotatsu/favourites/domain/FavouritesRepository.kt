@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.favourites.domain
 
-import android.util.ArrayMap
 import androidx.room.withTransaction
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.base.domain.ReversibleHandle
@@ -55,7 +54,7 @@ class FavouritesRepository(
 		return db.favouriteCategoriesDao.observeAll()
 			.map {
 				db.withTransaction {
-					val res = ArrayMap<FavouriteCategory, List<String>>()
+					val res = LinkedHashMap<FavouriteCategory, List<String>>()
 					for (entity in it) {
 						val cat = entity.toFavouriteCategory()
 						res[cat] = db.favouritesDao.findCovers(

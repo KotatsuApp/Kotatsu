@@ -33,7 +33,9 @@ import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 
-class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEventListener,
+class LibraryFragment :
+	BaseFragment<FragmentLibraryBinding>(),
+	LibraryListEventListener,
 	SectionedSelectionController.Callback<LibrarySectionModel> {
 
 	private val viewModel by viewModel<LibraryViewModel>()
@@ -109,7 +111,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 	}
 
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_remote, menu)
+		mode.menuInflater.inflate(R.menu.mode_library, menu)
 		return true
 	}
 
@@ -172,7 +174,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>(), LibraryListEvent
 		Snackbar.make(
 			binding.recyclerView,
 			e.getDisplayMessage(resources),
-			Snackbar.LENGTH_SHORT
+			Snackbar.LENGTH_SHORT,
 		).show()
 	}
 

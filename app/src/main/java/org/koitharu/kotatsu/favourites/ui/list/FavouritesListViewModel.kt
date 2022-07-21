@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.ReversibleHandle
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
@@ -23,7 +23,6 @@ import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
-import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class FavouritesListViewModel(
@@ -72,8 +71,6 @@ class FavouritesListViewModel(
 		emit(listOf(it.toErrorState(canRetry = false)))
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
-	val onItemsRemoved = SingleLiveEvent<ReversibleHandle>()
-
 	init {
 		if (categoryId != NO_ID) {
 			launchJob {
@@ -100,7 +97,7 @@ class FavouritesListViewModel(
 			} else {
 				repository.removeFromCategory(categoryId, ids)
 			}
-			onItemsRemoved.postCall(handle)
+			onActionDone.postCall(ReversibleAction(R.string.removed_from_favourites, handle))
 		}
 	}
 

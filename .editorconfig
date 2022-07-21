@@ -9,11 +9,12 @@ insert_final_newline = true
 max_line_length = 120
 tab_width = 4
 # noinspection EditorConfigKeyCorrectness
-disabled_rules=no-wildcard-imports,no-unused-imports
+disabled_rules = no-wildcard-imports, no-unused-imports
 
 [{*.ant,*.fxml,*.jhm,*.jnlp,*.jrxml,*.rng,*.tld,*.wsdl,*.xml,*.xsd,*.xsl,*.xslt,*.xul}]
 ij_continuation_indent_size = 4
 
 [{*.kt,*.kts}]
+ij_kotlin_allow_trailing_comma_on_call_site = true
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL

@@ -12,8 +12,8 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.databinding.ItemEmptyCardBinding
 import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
-import org.koitharu.kotatsu.databinding.ItemExploreHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceBinding
+import org.koitharu.kotatsu.databinding.ItemHeaderButtonBinding
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
@@ -42,8 +42,8 @@ fun exploreButtonsAD(
 
 fun exploreSourcesHeaderAD(
 	listener: ExploreListEventListener,
-) = adapterDelegateViewBinding<ExploreItem.Header, ExploreItem, ItemExploreHeaderBinding>(
-	{ layoutInflater, parent -> ItemExploreHeaderBinding.inflate(layoutInflater, parent, false) }
+) = adapterDelegateViewBinding<ExploreItem.Header, ExploreItem, ItemHeaderButtonBinding>(
+	{ layoutInflater, parent -> ItemHeaderButtonBinding.inflate(layoutInflater, parent, false) }
 ) {
 
 	val listenerAdapter = View.OnClickListener {

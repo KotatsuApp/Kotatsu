@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.library.ui
 import androidx.collection.ArraySet
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -21,17 +22,15 @@ import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
-import java.util.*
 
 private const val HISTORY_MAX_SEGMENTS = 2
 
 class LibraryViewModel(
-	private val repository: LibraryRepository,
+	repository: LibraryRepository,
 	private val historyRepository: HistoryRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
@@ -41,7 +40,7 @@ class LibraryViewModel(
 
 	val content: LiveData<List<ListModel>> = combine(
 		historyRepository.observeAllWithHistory(),
-		repository.observeFavourites(SortOrder.NEWEST),
+		repository.observeFavourites(),
 	) { history, favourites ->
 		mapList(history, favourites)
 	}.catch { e ->
@@ -58,25 +57,6 @@ class LibraryViewModel(
 		} else {
 			PROGRESS_NONE
 		}
-	}
-
-	fun getManga(ids: Set<Long>): Set<Manga> {
-		val snapshot = content.value ?: return emptySet()
-		val result = ArraySet<Manga>(ids.size)
-		for (section in snapshot) {
-			if (section !is LibrarySectionModel) {
-				continue
-			}
-			for (item in section.items) {
-				if (item.id in ids) {
-					result.add(item.manga)
-					if (result.size == ids.size) {
-						return result
-					}
-				}
-			}
-		}
-		return result
 	}
 
 	fun removeFromHistory(ids: Set<Long>) {
@@ -102,16 +82,35 @@ class LibraryViewModel(
 		}
 	}
 
+	fun getManga(ids: Set<Long>): Set<Manga> {
+		val snapshot = content.value ?: return emptySet()
+		val result = ArraySet<Manga>(ids.size)
+		for (section in snapshot) {
+			if (section !is LibrarySectionModel) {
+				continue
+			}
+			for (item in section.items) {
+				if (item.id in ids) {
+					result.add(item.manga)
+					if (result.size == ids.size) {
+						return result
+					}
+				}
+			}
+		}
+		return result
+	}
+
 	private suspend fun mapList(
 		history: List<MangaWithHistory>,
 		favourites: Map<FavouriteCategory, List<Manga>>,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(favourites.keys.size + 1)
 		if (history.isNotEmpty()) {
-			result += mapHistory(history)
+			mapHistory(result, history)
 		}
-		for ((category, list) in favourites) {
-			result += LibrarySectionModel.Favourites(list.toUi(ListMode.GRID, this), category, R.string.show_all)
+		if (favourites.isNotEmpty()) {
+			mapFavourites(result, favourites)
 		}
 		if (result.isEmpty()) {
 			result += EmptyState(
@@ -121,40 +120,45 @@ class LibraryViewModel(
 				actionStringRes = 0,
 			)
 		}
+		result.trimToSize()
 		return result
 	}
 
-	private suspend fun mapHistory(list: List<MangaWithHistory>): List<LibrarySectionModel.History> {
+	private suspend fun mapHistory(
+		destination: MutableList<in LibrarySectionModel.History>,
+		list: List<MangaWithHistory>,
+	) {
 		val showPercent = settings.isReadingIndicatorsEnabled
-		val groups = ArrayList<DateTimeAgo>()
-		val map = HashMap<DateTimeAgo, ArrayList<MangaItemModel>>()
-		for ((manga, history) in list) {
-			val date = timeAgo(history.updatedAt)
-			val counter = trackingRepository.getNewChaptersCount(manga.id)
-			val percent = if (showPercent) history.percent else PROGRESS_NONE
-			if (groups.lastOrNull() != date) {
-				groups.add(date)
-			}
-			map.getOrPut(date) { ArrayList() }.add(manga.toGridModel(counter, percent))
+		val groups = list.groupByTo(LinkedHashMap()) { timeAgo(it.history.updatedAt) }
+		while (groups.size > HISTORY_MAX_SEGMENTS) {
+			val lastKey = groups.keys.last()
+			val subList = groups.remove(lastKey) ?: continue
+			groups[groups.keys.last()]?.addAll(subList)
 		}
-		val result = ArrayList<LibrarySectionModel.History>(HISTORY_MAX_SEGMENTS)
-		repeat(minOf(HISTORY_MAX_SEGMENTS - 1, groups.size - 1)) { i ->
-			val key = groups[i]
-			val values = map.remove(key)
-			if (!values.isNullOrEmpty()) {
-				result.add(LibrarySectionModel.History(values, key, 0))
-			}
+		for ((timeAgo, subList) in groups) {
+			destination += LibrarySectionModel.History(
+				items = subList.map { (manga, history) ->
+					val counter = trackingRepository.getNewChaptersCount(manga.id)
+					val percent = if (showPercent) history.percent else PROGRESS_NONE
+					manga.toGridModel(counter, percent)
+				},
+				timeAgo = timeAgo,
+				showAllButtonText = R.string.show_all,
+			)
 		}
-		val values = map.values.flatten()
-		if (values.isNotEmpty()) {
-			val key = if (result.isEmpty()) {
-				map.keys.singleOrNull()?.takeUnless { it == DateTimeAgo.LongAgo }
-			} else {
-				map.keys.singleOrNull() ?: DateTimeAgo.LongAgo
-			}
-			result.add(LibrarySectionModel.History(values, key, R.string.show_all))
+	}
+
+	private suspend fun mapFavourites(
+		destination: MutableList<in LibrarySectionModel.Favourites>,
+		favourites: Map<FavouriteCategory, List<Manga>>,
+	) {
+		for ((category, list) in favourites) {
+			destination += LibrarySectionModel.Favourites(
+				items = list.toUi(ListMode.GRID, this),
+				category = category,
+				showAllButtonText = R.string.show_all,
+			)
 		}
-		return result
 	}
 
 	private fun timeAgo(date: Date): DateTimeAgo {

@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.FitHeightGridLayoutManager
 import org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager
@@ -24,6 +25,7 @@ import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
@@ -35,6 +37,7 @@ import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesB
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter.Companion.ITEM_TYPE_MANGA_GRID
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
@@ -49,7 +52,8 @@ abstract class MangaListFragment :
 	PaginationScrollListener.Callback,
 	MangaListListener,
 	SwipeRefreshLayout.OnRefreshListener,
-	ListSelectionController.Callback, FastScroller.FastScrollListener {
+	ListSelectionController.Callback,
+	FastScroller.FastScrollListener {
 
 	private var listAdapter: MangaListAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
@@ -71,7 +75,7 @@ abstract class MangaListFragment :
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentListBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,6 +108,7 @@ abstract class MangaListFragment :
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
 	}
 
 	override fun onDestroyView() {
@@ -141,9 +146,19 @@ abstract class MangaListFragment :
 			Snackbar.make(
 				binding.recyclerView,
 				e.getDisplayMessage(resources),
-				Snackbar.LENGTH_SHORT
+				Snackbar.LENGTH_SHORT,
 			).show()
 		}
+	}
+
+	private fun onActionDone(action: ReversibleAction) {
+		val handle = action.handle
+		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
+		val snackbar = Snackbar.make(binding.recyclerView, action.stringResId, length)
+		if (handle != null) {
+			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
+		}
+		snackbar.show()
 	}
 
 	private fun resolveException(e: Throwable) {
@@ -201,6 +216,8 @@ abstract class MangaListFragment :
 
 	override fun onEmptyActionClick() = Unit
 
+	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
+
 	override fun onRetryClick(error: Throwable) {
 		resolveException(error)
 	}
@@ -225,7 +242,7 @@ abstract class MangaListFragment :
 					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 					val decoration = TypedSpacingItemDecoration(
 						MangaListAdapter.ITEM_TYPE_MANGA_LIST to 0,
-						fallbackSpacing = spacing
+						fallbackSpacing = spacing,
 					)
 					addItemDecoration(decoration)
 				}

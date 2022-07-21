@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsLiveData
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.utils.SingleLiveEvent
 
 abstract class MangaListViewModel(
 	private val settings: AppSettings,
@@ -19,6 +21,7 @@ abstract class MangaListViewModel(
 
 	abstract val content: LiveData<List<ListModel>>
 	val listMode = MutableLiveData<ListMode>()
+	val onActionDone = SingleLiveEvent<ReversibleAction>()
 	val gridScale = settings.observeAsLiveData(
 		context = viewModelScope.coroutineContext + Dispatchers.Default,
 		key = AppSettings.KEY_GRID_SIZE,

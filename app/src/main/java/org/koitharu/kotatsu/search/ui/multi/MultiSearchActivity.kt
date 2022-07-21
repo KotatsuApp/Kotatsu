@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesB
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.ui.SearchActivity
@@ -108,6 +109,8 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 	override fun onFilterClick(view: View?) = Unit
 
 	override fun onEmptyActionClick() = Unit
+
+	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
 
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_remote, menu)
