@@ -66,15 +66,18 @@
 		android:id="@+id/fab"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_margin="16dp"
+		android:layout_marginHorizontal="16dp"
+		android:layout_marginBottom="-4dp"
 		android:text="@string/_continue"
 		android:visibility="gone"
 		app:backgroundTint="?attr/colorContainer"
 		app:icon="@drawable/ic_read"
-		app:layout_anchor="@id/container"
-		app:layout_anchorGravity="bottom|end"
+		app:layout_anchor="@id/bottomNav"
+		app:layout_anchorGravity="top|end"
 		app:layout_behavior="org.koitharu.kotatsu.base.ui.util.ShrinkOnScrollBehavior"
+		app:layout_insetEdge="bottom"
 		app:layout_dodgeInsetEdges="bottom"
+		android:paddingBottom="8dp"
 		tools:visibility="visible" />
 
 	<org.koitharu.kotatsu.base.ui.widgets.KotatsuBottomNavigationView

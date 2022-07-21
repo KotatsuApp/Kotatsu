@@ -20,6 +20,7 @@ import androidx.transition.TransitionManager
 import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +30,7 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.base.ui.widgets.KotatsuBottomNavigationView
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -59,6 +61,7 @@ private const val TAG_SEARCH = "search"
 class MainActivity :
 	BaseActivity<ActivityMainBinding>(),
 	AppBarOwner,
+	BottomNavOwner,
 	View.OnClickListener,
 	View.OnFocusChangeListener,
 	SearchSuggestionListener,
@@ -72,15 +75,18 @@ class MainActivity :
 	override val appBar: AppBarLayout
 		get() = binding.appbar
 
+	override val bottomNav: KotatsuBottomNavigationView?
+		get() = binding.bottomNav
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 
-		navBar = checkNotNull(binding.bottomNav ?: binding.navRail)
-		if (binding.bottomNav != null) {
+		navBar = checkNotNull(bottomNav ?: binding.navRail)
+		if (bottomNav != null) {
 			ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
 				if (insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom > 0) {
-					val elevation = binding.bottomNav?.elevation ?: 0f
+					val elevation = bottomNav?.elevation ?: 0f
 					window.setNavigationBarTransparentCompat(this@MainActivity, elevation)
 				}
 				insets
@@ -269,7 +275,7 @@ class MainActivity :
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
+		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).setAnchorView(bottomNav).show()
 	}
 
 	private fun onCountersChanged(counters: SparseIntArray) {
@@ -331,7 +337,7 @@ class MainActivity :
 	}
 
 	private fun showNav(visible: Boolean) {
-		binding.bottomNav?.run {
+		bottomNav?.run {
 			if (visible) {
 				slideUp()
 			} else {

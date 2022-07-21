@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.tracker.work.TrackWorker
 
 class FeedMenuProvider(
 	private val snackbarHost: View,
+	private val anchorView: View,
 	private val viewModel: FeedViewModel,
 ) : MenuProvider {
 
@@ -27,11 +28,13 @@ class FeedMenuProvider(
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 		R.id.action_update -> {
 			TrackWorker.startNow(context)
-			Snackbar.make(
+			val snackbar = Snackbar.make(
 				snackbarHost,
 				R.string.feed_will_update_soon,
 				Snackbar.LENGTH_LONG,
-			).show()
+			)
+			snackbar.anchorView = anchorView
+			snackbar.show()
 			true
 		}
 		R.id.action_clear_feed -> {

@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.main.ui.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.flattenTo
 import org.koitharu.kotatsu.utils.ShareHelper
@@ -171,11 +172,13 @@ class LibraryFragment :
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(
+		val snackbar = Snackbar.make(
 			binding.recyclerView,
 			e.getDisplayMessage(resources),
 			Snackbar.LENGTH_SHORT,
-		).show()
+		)
+		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
+		snackbar.show()
 	}
 
 	private fun onActionDone(action: ReversibleAction) {
@@ -185,6 +188,7 @@ class LibraryFragment :
 		if (handle != null) {
 			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
 		}
+		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
 		snackbar.show()
 	}
 

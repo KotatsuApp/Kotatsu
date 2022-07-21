@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.history.ui.HistoryActivity
+import org.koitharu.kotatsu.main.ui.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
@@ -108,11 +109,13 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 	override fun onEmptyActionClick() = onManageClick(requireView())
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(
+		val snackbar = Snackbar.make(
 			binding.recyclerView,
 			e.getDisplayMessage(resources),
 			Snackbar.LENGTH_SHORT
-		).show()
+		)
+		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
+		snackbar.show()
 	}
 
 	private fun onOpenManga(manga: Manga) {

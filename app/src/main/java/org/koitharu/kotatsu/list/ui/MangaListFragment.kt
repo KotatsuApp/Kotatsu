@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
+import org.koitharu.kotatsu.main.ui.BottomNavOwner
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -155,6 +156,7 @@ abstract class MangaListFragment :
 		val handle = action.handle
 		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
 		val snackbar = Snackbar.make(binding.recyclerView, action.stringResId, length)
+		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
 		if (handle != null) {
 			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
 		}

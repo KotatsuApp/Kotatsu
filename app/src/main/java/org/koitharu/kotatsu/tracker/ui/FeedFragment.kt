@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.main.ui.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
@@ -63,7 +64,7 @@ class FeedFragment :
 			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
 			isEnabled = false
 		}
-		addMenuProvider(FeedMenuProvider(binding.recyclerView, viewModel))
+		addMenuProvider(FeedMenuProvider(binding.recyclerView, (activity as? BottomNavOwner)?.bottomNav ?: binding.recyclerView, viewModel))
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
@@ -101,19 +102,23 @@ class FeedFragment :
 	}
 
 	private fun onFeedCleared() {
-		Snackbar.make(
+		val snackbar = Snackbar.make(
 			binding.recyclerView,
 			R.string.updates_feed_cleared,
 			Snackbar.LENGTH_LONG
-		).show()
+		)
+		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
+		snackbar.show()
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(
+		val snackbar = Snackbar.make(
 			binding.recyclerView,
 			e.getDisplayMessage(resources),
 			Snackbar.LENGTH_SHORT
-		).show()
+		)
+		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
+		snackbar.show()
 	}
 
 	private fun onIsTrackerRunningChanged(isRunning: Boolean) {

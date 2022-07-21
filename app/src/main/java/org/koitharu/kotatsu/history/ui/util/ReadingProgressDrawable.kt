@@ -85,7 +85,7 @@ class ReadingProgressDrawable(
 			paint.color = backgroundColor
 			canvas.drawCircle(cx, cy, radius, paint)
 		}
-		val innerRadius = radius - paint.strokeWidth / 2.5f
+		val innerRadius = radius - paint.strokeWidth / 2f
 		paint.style = Paint.Style.STROKE
 		if (hasOutline) {
 			paint.color = outlineColor
