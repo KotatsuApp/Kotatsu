@@ -9,10 +9,10 @@ import org.junit.Test
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.parsers.util.await
 
-class GithubRepositoryTest {
+class AppUpdateRepositoryTest {
 
 	private val okHttpClient = OkHttpClient()
-	private val repository = GithubRepository(okHttpClient)
+	private val repository = AppUpdateRepository(okHttpClient)
 
 	@Test
 	fun getLatestVersion() = runTest {
@@ -23,7 +23,7 @@ class GithubRepositoryTest {
 			Request.Builder()
 				.url(version.apkUrl)
 				.head()
-				.build()
+				.build(),
 		).await()
 
 		Assert.assertTrue(versionId <= VersionId(BuildConfig.VERSION_NAME))

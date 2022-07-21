@@ -18,6 +18,9 @@ abstract class TracksDao {
 	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun findNewChapters(mangaId: Long): Int?
 
+	@Query("SELECT chapters_new FROM tracks")
+	abstract fun observeNewChapters(): Flow<List<Int>>
+
 	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
 	abstract fun observeNewChapters(mangaId: Long): Flow<Int?>
 

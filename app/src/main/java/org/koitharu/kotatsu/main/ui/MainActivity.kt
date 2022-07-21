@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.main.ui
 
 import android.os.Bundle
+import android.util.SparseIntArray
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -9,12 +10,14 @@ import androidx.annotation.IdRes
 import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.graphics.Insets
+import androidx.core.util.size
 import androidx.core.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
+import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.navigation.NavigationBarView
@@ -40,7 +43,6 @@ import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
-import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.settings.tools.ToolsFragment
@@ -50,7 +52,6 @@ import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.*
-import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
@@ -60,7 +61,8 @@ class MainActivity :
 	AppBarOwner,
 	View.OnClickListener,
 	View.OnFocusChangeListener,
-	SearchSuggestionListener, NavigationBarView.OnItemSelectedListener {
+	SearchSuggestionListener,
+	NavigationBarView.OnItemSelectedListener {
 
 	private val viewModel by viewModel<MainViewModel>()
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
@@ -108,6 +110,7 @@ class MainActivity :
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
+		viewModel.counters.observe(this, ::onCountersChanged)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -269,6 +272,20 @@ class MainActivity :
 		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
 	}
 
+	private fun onCountersChanged(counters: SparseIntArray) {
+		repeat(counters.size) { i ->
+			val id = counters.keyAt(i)
+			val counter = counters.valueAt(i)
+			if (counter == 0) {
+				navBar.getBadge(id)?.isVisible = false
+			} else {
+				val badge = navBar.getOrCreateBadge(id)
+				badge.number = counter
+				badge.isVisible = true
+			}
+		}
+	}
+
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.fab?.isEnabled = !isLoading
 	}
@@ -330,13 +347,9 @@ class MainActivity :
 
 	private fun onFirstStart() {
 		lifecycleScope.launchWhenResumed {
-			val isUpdateSupported = withContext(Dispatchers.Default) {
+			withContext(Dispatchers.Default) {
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
-				AppUpdateChecker.isUpdateSupported(this@MainActivity)
-			}
-			if (isUpdateSupported) {
-				AppUpdateChecker(this@MainActivity).checkIfNeeded()
 			}
 			val settings = get<AppSettings>()
 			when {

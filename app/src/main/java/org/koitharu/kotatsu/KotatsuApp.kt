@@ -18,7 +18,7 @@ import org.koin.core.context.startKoin
 import org.koitharu.kotatsu.bookmarks.bookmarksModule
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.databaseModule
-import org.koitharu.kotatsu.core.github.githubModule
+import org.koitharu.kotatsu.core.github.appUpdateModule
 import org.koitharu.kotatsu.core.network.networkModule
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.uiModule
@@ -61,7 +61,7 @@ class KotatsuApp : Application() {
 			modules(
 				networkModule,
 				databaseModule,
-				githubModule,
+				appUpdateModule,
 				uiModule,
 				mainModule,
 				searchModule,
@@ -136,7 +136,7 @@ class KotatsuApp : Application() {
 			StrictMode.ThreadPolicy.Builder()
 				.detectAll()
 				.penaltyLog()
-				.build()
+				.build(),
 		)
 		StrictMode.setVmPolicy(
 			StrictMode.VmPolicy.Builder()
@@ -145,7 +145,7 @@ class KotatsuApp : Application() {
 				.setClassInstanceLimit(PagesCache::class.java, 1)
 				.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
 				.penaltyLog()
-				.build()
+				.build(),
 		)
 		FragmentStrictMode.defaultPolicy = FragmentStrictMode.Policy.Builder()
 			.penaltyDeath()

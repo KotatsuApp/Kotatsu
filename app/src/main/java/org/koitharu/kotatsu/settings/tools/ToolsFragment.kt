@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.tools
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.transition.TransitionManager
@@ -10,6 +11,7 @@ import android.widget.CompoundButton
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.Insets
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
@@ -19,9 +21,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.SegmentedBarView
+import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.databinding.FragmentToolsBinding
 import org.koitharu.kotatsu.download.ui.DownloadsActivity
-import org.koitharu.kotatsu.settings.AppUpdateChecker
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.tools.model.StorageUsage
 import org.koitharu.kotatsu.utils.FileSize
@@ -32,7 +34,6 @@ class ToolsFragment :
 	CompoundButton.OnCheckedChangeListener,
 	View.OnClickListener {
 
-	private var updateChecker: AppUpdateChecker? = null
 	private val viewModel by viewModel<ToolsViewModel>()
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentToolsBinding {
@@ -51,12 +52,19 @@ class ToolsFragment :
 			binding.switchIncognito.isChecked = it
 		}
 		viewModel.storageUsage.observe(viewLifecycleOwner, ::onStorageUsageChanged)
+		viewModel.appUpdate.observe(viewLifecycleOwner, ::onAppUpdateAvailable)
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_settings -> startActivity(SettingsActivity.newIntent(v.context))
 			R.id.button_downloads -> startActivity(DownloadsActivity.newIntent(v.context))
+			R.id.button_download -> {
+				val url = viewModel.appUpdate.value?.apkUrl ?: return
+				val intent = Intent(Intent.ACTION_VIEW)
+				intent.data = url.toUri()
+				startActivity(Intent.createChooser(intent, getString(R.string.open_in_browser)))
+			}
 		}
 	}
 
@@ -70,6 +78,15 @@ class ToolsFragment :
 			right = insets.right,
 			bottom = insets.bottom,
 		)
+	}
+
+	private fun onAppUpdateAvailable(version: AppVersion?) {
+		if (version == null) {
+			binding.cardUpdate.root.isVisible = false
+			return
+		}
+		binding.cardUpdate.textPrimary.text = getString(R.string.new_version_s, version.name)
+		binding.cardUpdate.root.isVisible = true
 	}
 
 	private fun onStorageUsageChanged(usage: StorageUsage) {

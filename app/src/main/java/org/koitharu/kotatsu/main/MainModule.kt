@@ -24,6 +24,6 @@ val mainModule
 			factory { ShortcutsUpdater(androidContext(), get(), get(), get()) }
 		}
 
-		viewModel { MainViewModel(get(), get()) }
+		viewModel { MainViewModel(get(), get(), get(), get()) }
 		viewModel { ProtectViewModel(get(), get()) }
 	}

@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
 import androidx.room.withTransaction
+import java.util.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -18,7 +19,6 @@ import org.koitharu.kotatsu.tracker.data.toTrackingLogItem
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
-import java.util.*
 
 private const val NO_ID = 0L
 
@@ -34,6 +34,10 @@ class TrackingRepository(
 		return db.tracksDao.observeNewChapters(mangaId).map { it ?: 0 }
 	}
 
+	fun observeUpdatedMangaCount(): Flow<Int> {
+		return db.tracksDao.observeNewChapters().map { list -> list.count { it > 0 } }
+	}
+
 	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {
 		val ids = mangaList.mapToSet { it.id }
 		val tracks = db.tracksDao.findAll(ids).groupBy { it.mangaId }
@@ -47,7 +51,7 @@ class TrackingRepository(
 			result += MangaTracking(
 				manga = item,
 				lastChapterId = track?.lastChapterId ?: NO_ID,
-				lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date)
+				lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date),
 			)
 		}
 		return result
@@ -59,7 +63,7 @@ class TrackingRepository(
 		return MangaTracking(
 			manga = manga,
 			lastChapterId = track?.lastChapterId ?: NO_ID,
-			lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date)
+			lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date),
 		)
 	}
 
