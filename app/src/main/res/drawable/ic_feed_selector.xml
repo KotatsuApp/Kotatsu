@@ -12,13 +12,8 @@
 		android:state_checked="true" />
 
 	<transition
-		android:drawable="@drawable/avd_feed_enter_leave"
+		android:drawable="@drawable/avd_feed_enter"
 		android:fromId="@id/normal"
 		android:toId="@id/checked" />
-
-	<transition
-		android:drawable="@drawable/avd_feed_enter_leave"
-		android:fromId="@id/checked"
-		android:toId="@id/normal" />
 
 </animated-selector>
