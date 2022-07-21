@@ -27,9 +27,8 @@ fun libraryGroupAD(
 	selectionController: SectionedSelectionController<LibrarySectionModel>,
 	listener: LibraryListEventListener,
 ) = adapterDelegateViewBinding<LibrarySectionModel, ListModel, ItemListGroupBinding>(
-	{ layoutInflater, parent -> ItemListGroupBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemListGroupBinding.inflate(layoutInflater, parent, false) },
 ) {
-
 	val listenerAdapter = object : OnListItemClickListener<Manga>, View.OnClickListener {
 		override fun onItemClick(item: Manga, view: View) {
 			listener.onItemClick(item, this@adapterDelegateViewBinding.item, view)
@@ -46,7 +45,7 @@ fun libraryGroupAD(
 
 	val adapter = AsyncListDifferDelegationAdapter(
 		MangaItemDiffCallback(),
-		mangaGridItemAD(coil, lifecycleOwner, listenerAdapter, sizeResolver)
+		mangaGridItemAD(coil, lifecycleOwner, listenerAdapter, sizeResolver),
 	)
 	binding.recyclerView.setRecycledViewPool(sharedPool)
 	binding.recyclerView.adapter = adapter
@@ -63,5 +62,9 @@ fun libraryGroupAD(
 		binding.textViewTitle.text = item.getTitle(context.resources)
 		binding.buttonMore.setTextAndVisible(item.showAllButtonText)
 		adapter.items = item.items
+	}
+
+	onViewRecycled {
+		adapter.items = emptyList()
 	}
 }
