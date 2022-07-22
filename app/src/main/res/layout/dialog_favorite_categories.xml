@@ -12,6 +12,7 @@
 		android:id="@+id/toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="?attr/actionBarSize"
+		app:menu="@menu/opt_categories"
 		app:title="@string/add_to_favourites">
 
 		<Button
@@ -34,16 +35,5 @@
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_checkable_new" />
-
-	<TextView
-		android:id="@+id/item_create"
-		style="?listItemTextViewStyle"
-		android:layout_width="match_parent"
-		android:layout_height="?android:listPreferredItemHeightSmall"
-		android:background="?selectableItemBackground"
-		android:paddingStart="?android:listPreferredItemPaddingStart"
-		android:paddingEnd="?android:listPreferredItemPaddingEnd"
-		android:text="@string/create_category"
-		android:textAppearance="?attr/textAppearanceButton" />
 
 </LinearLayout>
