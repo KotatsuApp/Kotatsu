@@ -7,6 +7,15 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
+	<ImageView
+		android:layout_width="36dp"
+		android:layout_height="3dp"
+		android:layout_gravity="center"
+		android:layout_marginTop="12dp"
+		android:alpha="0.2"
+		android:src="@drawable/tab_rounded_rectangle"
+		app:tint="?attr/colorOnSurfaceVariant" />
+
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"

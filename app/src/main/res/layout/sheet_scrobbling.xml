@@ -10,12 +10,26 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
 
+		<ImageView
+			android:layout_width="36dp"
+			android:layout_height="3dp"
+			android:layout_gravity="center"
+			android:layout_marginTop="12dp"
+			android:layout_marginBottom="12dp"
+			android:alpha="0.2"
+			android:src="@drawable/tab_rounded_rectangle"
+			app:layout_constraintBottom_toTopOf="@+id/textView_title"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:tint="?attr/colorOnSurfaceVariant" />
+
 		<com.google.android.material.imageview.ShapeableImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
 			android:layout_marginStart="16dp"
-			android:layout_marginTop="16dp"
+			android:layout_marginTop="28dp"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="H,13:18"
@@ -33,7 +47,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
-			android:layout_marginTop="16dp"
+			android:layout_marginTop="28dp"
 			android:layout_marginEnd="6dp"
 			android:ellipsize="end"
 			android:maxLines="2"
@@ -48,7 +62,7 @@
 			style="?android:attr/actionOverflowButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
+			android:layout_marginTop="20dp"
 			android:layout_marginEnd="8dp"
 			android:background="?selectableItemBackgroundBorderless"
 			android:contentDescription="@string/open_in_browser"
