@@ -17,10 +17,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
-import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +28,7 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.widgets.KotatsuBottomNavigationView
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
@@ -54,6 +53,7 @@ import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.*
+import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
@@ -65,7 +65,8 @@ class MainActivity :
 	View.OnClickListener,
 	View.OnFocusChangeListener,
 	SearchSuggestionListener,
-	NavigationBarView.OnItemSelectedListener {
+	NavigationBarView.OnItemSelectedListener,
+	NavigationBarView.OnItemReselectedListener {
 
 	private val viewModel by viewModel<MainViewModel>()
 	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
@@ -100,6 +101,7 @@ class MainActivity :
 		}
 
 		navBar.setOnItemSelectedListener(this)
+		navBar.setOnItemReselectedListener(this)
 		binding.fab?.setOnClickListener(this)
 		binding.navRail?.headerView?.setOnClickListener(this)
 		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
@@ -265,6 +267,13 @@ class MainActivity :
 		appBar.setExpanded(true)
 		appBar.isLifted = false
 		return true
+	}
+
+	override fun onNavigationItemReselected(item: MenuItem) {
+		val fragment = supportFragmentManager.findFragmentById(R.id.container) as? RecyclerViewOwner ?: return
+		val recyclerView = fragment.recyclerView
+		recyclerView.smoothScrollToPosition(0)
+		binding.appbar.isLifted = false
 	}
 
 	private fun onOpenReader(manga: Manga) {
