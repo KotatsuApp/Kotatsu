@@ -48,6 +48,7 @@ fun libraryGroupAD(
 		MangaItemDiffCallback(),
 		mangaGridItemAD(coil, lifecycleOwner, listenerAdapter, sizeResolver),
 	)
+	adapter.registerAdapterDataObserver(ScrollKeepObserver(binding.recyclerView))
 	binding.recyclerView.setRecycledViewPool(sharedPool)
 	binding.recyclerView.adapter = adapter
 	val spacingDecoration = SpacingItemDecoration(context.resources.getDimensionPixelOffset(R.dimen.grid_spacing))
