@@ -102,13 +102,13 @@ class Tracker(
 		val newChapters = chapters.takeLastWhile { x -> x.id != track.lastChapterId }
 		return when {
 			newChapters.isEmpty() -> {
-				return MangaUpdates(manga, emptyList(), isValid = chapters.lastOrNull()?.id == track.lastChapterId)
+				MangaUpdates(manga, emptyList(), isValid = chapters.lastOrNull()?.id == track.lastChapterId)
 			}
 			newChapters.size == chapters.size -> {
-				return MangaUpdates(manga, emptyList(), isValid = false)
+				MangaUpdates(manga, emptyList(), isValid = false)
 			}
 			else -> {
-				return MangaUpdates(manga, newChapters, isValid = true)
+				MangaUpdates(manga, newChapters, isValid = true)
 			}
 		}
 	}
