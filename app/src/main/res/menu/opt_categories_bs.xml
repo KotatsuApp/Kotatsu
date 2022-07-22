@@ -4,9 +4,9 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/action_reorder"
-		android:icon="@drawable/ic_reorder"
-		android:title="@string/reorder"
-		app:showAsAction="ifRoom" />
+		android:id="@+id/action_create"
+		android:icon="@drawable/ic_list_create"
+		android:title="@string/create_category"
+		app:showAsAction="always" />
 
 </menu>

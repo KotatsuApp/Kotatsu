@@ -2,9 +2,11 @@ package org.koitharu.kotatsu.favourites.ui.categories.select
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -23,7 +25,8 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 class FavouriteCategoriesBottomSheet :
 	BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>,
-	View.OnClickListener {
+	View.OnClickListener,
+	Toolbar.OnMenuItemClickListener {
 
 	private val viewModel by viewModel<MangaCategoriesViewModel> {
 		parametersOf(requireNotNull(arguments?.getParcelableArrayList<ParcelableManga>(KEY_MANGA_LIST)).map { it.manga })
@@ -41,7 +44,7 @@ class FavouriteCategoriesBottomSheet :
 		adapter = MangaCategoriesAdapter(this)
 		binding.recyclerViewCategories.adapter = adapter
 		binding.buttonDone.setOnClickListener(this)
-		binding.itemCreate.setOnClickListener(this)
+		binding.toolbar.setOnMenuItemClickListener(this)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
@@ -54,9 +57,16 @@ class FavouriteCategoriesBottomSheet :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.item_create -> startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
 			R.id.button_done -> dismiss()
 		}
+	}
+
+	override fun onMenuItemClick(item: MenuItem): Boolean {
+		when (item.itemId) {
+			R.id.action_create -> startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
+			else -> return false
+		}
+		return true
 	}
 
 	override fun onItemClick(item: MangaCategoryItem, view: View) {
@@ -81,7 +91,7 @@ class FavouriteCategoriesBottomSheet :
 		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavouriteCategoriesBottomSheet().withArgs(1) {
 			putParcelableArrayList(
 				KEY_MANGA_LIST,
-				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withChapters = false) }
+				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withChapters = false) },
 			)
 		}.show(fm, TAG)
 	}
