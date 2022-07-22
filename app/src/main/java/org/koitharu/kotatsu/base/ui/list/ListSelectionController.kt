@@ -12,9 +12,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
-import kotlin.coroutines.EmptyCoroutineContext
 
 private const val KEY_SELECTION = "selection"
 private const val PROVIDER_NAME = "selection_decoration"
@@ -159,7 +159,7 @@ class ListSelectionController(
 		override fun onActionItemClicked(
 			controller: ListSelectionController,
 			mode: ActionMode,
-			item: MenuItem
+			item: MenuItem,
 		): Boolean = onActionItemClicked(mode, item)
 
 		override fun onDestroyActionMode(controller: ListSelectionController, mode: ActionMode) {
@@ -173,7 +173,10 @@ class ListSelectionController(
 
 		fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean
 
-		fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean
+		fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
+			mode.title = controller.count.toString()
+			return true
+		}
 
 		fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean
 

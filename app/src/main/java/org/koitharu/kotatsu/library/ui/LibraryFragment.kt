@@ -1,8 +1,9 @@
 package org.koitharu.kotatsu.library.ui
 
 import android.os.Bundle
-import android.view.*
-import androidx.appcompat.view.ActionMode
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
@@ -12,32 +13,24 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
-import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.databinding.FragmentLibraryBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.history.ui.HistoryActivity
 import org.koitharu.kotatsu.library.ui.adapter.LibraryAdapter
 import org.koitharu.kotatsu.library.ui.adapter.LibraryListEventListener
 import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
-import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.util.flattenTo
-import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 
 class LibraryFragment :
 	BaseFragment<FragmentLibraryBinding>(),
-	LibraryListEventListener,
-	SectionedSelectionController.Callback<LibrarySectionModel> {
+	LibraryListEventListener {
 
 	private val viewModel by viewModel<LibraryViewModel>()
 	private var adapter: LibraryAdapter? = null
@@ -52,8 +45,8 @@ class LibraryFragment :
 		val sizeResolver = ItemSizeResolver(resources, get())
 		selectionController = SectionedSelectionController(
 			activity = requireActivity(),
-			registryOwner = this,
-			callback = this,
+			owner = this,
+			callback = LibrarySelectionCallback(binding.recyclerView, childFragmentManager, viewModel),
 		)
 		adapter = LibraryAdapter(
 			lifecycleOwner = viewLifecycleOwner,
@@ -109,62 +102,6 @@ class LibraryFragment :
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
-	}
-
-	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_library, menu)
-		return true
-	}
-
-	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		mode.title = selectionController?.count?.toString()
-		return true
-	}
-
-	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-		val ctx = context ?: return false
-		return when (item.itemId) {
-			R.id.action_share -> {
-				ShareHelper(ctx).shareMangaLinks(collectSelectedItems())
-				mode.finish()
-				true
-			}
-			R.id.action_favourite -> {
-				FavouriteCategoriesBottomSheet.show(childFragmentManager, collectSelectedItems())
-				mode.finish()
-				true
-			}
-			R.id.action_save -> {
-				DownloadService.confirmAndStart(ctx, collectSelectedItems())
-				mode.finish()
-				true
-			}
-			else -> false
-		}
-	}
-
-	override fun onSelectionChanged(count: Int) {
-		binding.recyclerView.invalidateNestedItemDecorations()
-	}
-
-	override fun onCreateItemDecoration(section: LibrarySectionModel): AbstractSelectionItemDecoration {
-		return MangaSelectionDecoration(requireContext())
-	}
-
-	private fun collectSelectedItemsMap(): Map<LibrarySectionModel, Set<Manga>> {
-		val snapshot = selectionController?.snapshot()
-		if (snapshot.isNullOrEmpty()) {
-			return emptyMap()
-		}
-		return snapshot.mapValues { (_, ids) -> viewModel.getManga(ids) }
-	}
-
-	private fun collectSelectedItems(): Set<Manga> {
-		val snapshot = selectionController?.snapshot()
-		if (snapshot.isNullOrEmpty()) {
-			return emptySet()
-		}
-		return viewModel.getManga(snapshot.values.flattenTo(HashSet()))
 	}
 
 	private fun onListChanged(list: List<ListModel>) {

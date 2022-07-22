@@ -30,8 +30,11 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 
-class BookmarksFragment : BaseFragment<FragmentListSimpleBinding>(), ListStateHolderListener,
-	OnListItemClickListener<Bookmark>, SectionedSelectionController.Callback<Manga> {
+class BookmarksFragment :
+	BaseFragment<FragmentListSimpleBinding>(),
+	ListStateHolderListener,
+	OnListItemClickListener<Bookmark>,
+	SectionedSelectionController.Callback<Manga> {
 
 	private val viewModel by viewModel<BookmarksViewModel>()
 	private var adapter: BookmarksGroupAdapter? = null
@@ -45,7 +48,7 @@ class BookmarksFragment : BaseFragment<FragmentListSimpleBinding>(), ListStateHo
 		super.onViewCreated(view, savedInstanceState)
 		selectionController = SectionedSelectionController(
 			activity = requireActivity(),
-			registryOwner = this,
+			owner = this,
 			callback = this,
 		)
 		adapter = BookmarksGroupAdapter(
@@ -87,21 +90,24 @@ class BookmarksFragment : BaseFragment<FragmentListSimpleBinding>(), ListStateHo
 
 	override fun onEmptyActionClick() = Unit
 
-	override fun onSelectionChanged(count: Int) {
+	override fun onSelectionChanged(controller: SectionedSelectionController<Manga>, count: Int) {
 		binding.recyclerView.invalidateNestedItemDecorations()
 	}
 
-	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(
+		controller: SectionedSelectionController<Manga>,
+		mode: ActionMode,
+		menu: Menu,
+	): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_bookmarks, menu)
 		return true
 	}
 
-	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		mode.title = selectionController?.count?.toString()
-		return true
-	}
-
-	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(
+		controller: SectionedSelectionController<Manga>,
+		mode: ActionMode,
+		item: MenuItem,
+	): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				val ids = selectionController?.snapshot() ?: return false
@@ -113,9 +119,10 @@ class BookmarksFragment : BaseFragment<FragmentListSimpleBinding>(), ListStateHo
 		}
 	}
 
-	override fun onCreateItemDecoration(section: Manga): AbstractSelectionItemDecoration {
-		return BookmarksSelectionDecoration(requireContext())
-	}
+	override fun onCreateItemDecoration(
+		controller: SectionedSelectionController<Manga>,
+		section: Manga,
+	): AbstractSelectionItemDecoration = BookmarksSelectionDecoration(requireContext())
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
@@ -135,7 +142,7 @@ class BookmarksFragment : BaseFragment<FragmentListSimpleBinding>(), ListStateHo
 		Snackbar.make(
 			binding.recyclerView,
 			e.getDisplayMessage(resources),
-			Snackbar.LENGTH_SHORT
+			Snackbar.LENGTH_SHORT,
 		).show()
 	}
 

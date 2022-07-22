@@ -13,15 +13,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
-import kotlin.coroutines.EmptyCoroutineContext
 
 private const val PROVIDER_NAME = "selection_decoration_sectioned"
 
 class SectionedSelectionController<T : Any>(
 	private val activity: Activity,
-	private val registryOwner: SavedStateRegistryOwner,
+	private val owner: SavedStateRegistryOwner,
 	private val callback: Callback<T>,
 ) : ActionMode.Callback, SavedStateRegistry.SavedStateProvider {
 
@@ -34,7 +34,7 @@ class SectionedSelectionController<T : Any>(
 		get() = decorations.values.sumOf { it.checkedItemsCount }
 
 	init {
-		registryOwner.lifecycle.addObserver(StateEventObserver())
+		owner.lifecycle.addObserver(StateEventObserver())
 	}
 
 	fun snapshot(): Map<T, Set<Long>> {
@@ -117,19 +117,19 @@ class SectionedSelectionController<T : Any>(
 	}
 
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-		return callback.onCreateActionMode(mode, menu)
+		return callback.onCreateActionMode(this, mode, menu)
 	}
 
 	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		return callback.onPrepareActionMode(mode, menu)
+		return callback.onPrepareActionMode(this, mode, menu)
 	}
 
 	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-		return callback.onActionItemClicked(mode, item)
+		return callback.onActionItemClicked(this, mode, item)
 	}
 
 	override fun onDestroyActionMode(mode: ActionMode) {
-		callback.onDestroyActionMode(mode)
+		callback.onDestroyActionMode(this, mode)
 		clear()
 		actionMode = null
 	}
@@ -146,7 +146,7 @@ class SectionedSelectionController<T : Any>(
 
 	private fun notifySelectionChanged() {
 		val count = this.count
-		callback.onSelectionChanged(count)
+		callback.onSelectionChanged(this, count)
 		if (count == 0) {
 			actionMode?.finish()
 		} else {
@@ -173,27 +173,48 @@ class SectionedSelectionController<T : Any>(
 
 	private fun getDecoration(section: T): AbstractSelectionItemDecoration {
 		return decorations.getOrPut(section) {
-			callback.onCreateItemDecoration(section)
+			callback.onCreateItemDecoration(this, section)
 		}
 	}
 
-	interface Callback<T> : ListSelectionController.Callback {
+	interface Callback<T : Any> {
 
-		fun onCreateItemDecoration(section: T): AbstractSelectionItemDecoration
+		fun onSelectionChanged(controller: SectionedSelectionController<T>, count: Int)
+
+		fun onCreateActionMode(controller: SectionedSelectionController<T>, mode: ActionMode, menu: Menu): Boolean
+
+		fun onPrepareActionMode(controller: SectionedSelectionController<T>, mode: ActionMode, menu: Menu): Boolean {
+			mode.title = controller.count.toString()
+			return true
+		}
+
+		fun onDestroyActionMode(controller: SectionedSelectionController<T>, mode: ActionMode) = Unit
+
+		fun onActionItemClicked(
+			controller: SectionedSelectionController<T>,
+			mode: ActionMode,
+			item: MenuItem,
+		): Boolean
+
+		fun onCreateItemDecoration(
+			controller: SectionedSelectionController<T>,
+			section: T,
+		): AbstractSelectionItemDecoration
 	}
 
 	private inner class StateEventObserver : LifecycleEventObserver {
 
 		override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
 			if (event == Lifecycle.Event.ON_CREATE) {
-				val registry = registryOwner.savedStateRegistry
+				val registry = owner.savedStateRegistry
 				registry.registerSavedStateProvider(PROVIDER_NAME, this@SectionedSelectionController)
 				val state = registry.consumeRestoredStateForKey(PROVIDER_NAME)
 				if (state != null) {
 					Dispatchers.Main.dispatch(EmptyCoroutineContext) { // == Handler.post
 						if (source.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
 							restoreState(
-								state.keySet().associateWithTo(HashMap()) { state.getLongArray(it)?.toList().orEmpty() }
+								state.keySet()
+									.associateWithTo(HashMap()) { state.getLongArray(it)?.toList().orEmpty() },
 							)
 						}
 					}

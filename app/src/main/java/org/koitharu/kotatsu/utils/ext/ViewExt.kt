@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.slider.Slider
 import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateViewBindingViewHolder
@@ -32,6 +33,15 @@ fun RecyclerView.clearItemDecorations() {
 		removeItemDecorationAt(0)
 	}
 	suppressLayout(false)
+}
+
+fun RecyclerView.removeItemDecoration(cls: Class<out ItemDecoration>) {
+	repeat(itemDecorationCount) { i ->
+		if (cls.isInstance(getItemDecorationAt(i))) {
+			removeItemDecorationAt(i)
+			return
+		}
+	}
 }
 
 var RecyclerView.firstVisibleItemPosition: Int
@@ -69,13 +79,15 @@ fun View.measureWidth(): Int {
 }
 
 inline fun ViewPager2.doOnPageChanged(crossinline callback: (Int) -> Unit) {
-	registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+	registerOnPageChangeCallback(
+		object : ViewPager2.OnPageChangeCallback() {
 
-		override fun onPageSelected(position: Int) {
-			super.onPageSelected(position)
-			callback(position)
-		}
-	})
+			override fun onPageSelected(position: Int) {
+				super.onPageSelected(position)
+				callback(position)
+			}
+		},
+	)
 }
 
 val ViewPager2.recyclerView: RecyclerView?

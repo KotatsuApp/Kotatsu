@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
+import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
@@ -32,6 +33,7 @@ private const val HISTORY_MAX_SEGMENTS = 2
 class LibraryViewModel(
 	repository: LibraryRepository,
 	private val historyRepository: HistoryRepository,
+	private val favouritesRepository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel(), ListExtraProvider {
@@ -56,6 +58,16 @@ class LibraryViewModel(
 			historyRepository.getProgress(mangaId)
 		} else {
 			PROGRESS_NONE
+		}
+	}
+
+	fun removeFromFavourites(category: FavouriteCategory, ids: Set<Long>) {
+		if (ids.isEmpty()) {
+			return
+		}
+		launchJob(Dispatchers.Default) {
+			val handle = favouritesRepository.removeFromCategory(category.id, ids)
+			onActionDone.postCall(ReversibleAction(R.string.removed_from_favourites, handle))
 		}
 	}
 
