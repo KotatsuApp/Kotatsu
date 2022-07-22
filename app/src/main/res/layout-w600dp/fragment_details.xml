@@ -56,7 +56,7 @@
 				android:layout_marginHorizontal="16dp"
 				android:layout_marginTop="16dp"
 				android:ellipsize="end"
-				android:maxLines="3"
+				android:maxLines="4"
 				android:textAppearance="?attr/textAppearanceHeadlineSmall"
 				tools:text="@tools:sample/lorem[15]" />
 
