@@ -311,6 +311,7 @@ abstract class MangaListFragment :
 	}
 
 	override fun onFastScrollStart(fastScroller: FastScroller) {
+		(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
 		binding.swipeRefreshLayout.isEnabled = false
 	}
 

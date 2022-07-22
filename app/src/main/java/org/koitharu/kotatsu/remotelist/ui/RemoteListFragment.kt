@@ -13,6 +13,7 @@ import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.filter.FilterBottomSheet
+import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -91,6 +92,7 @@ class RemoteListFragment : MangaListFragment() {
 		override fun onQueryTextChange(newText: String?): Boolean = false
 
 		override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+			(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
 			return true
 		}
 

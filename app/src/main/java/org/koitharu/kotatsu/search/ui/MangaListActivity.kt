@@ -7,6 +7,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import com.google.android.material.appbar.AppBarLayout
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
@@ -14,12 +15,18 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
 import org.koitharu.kotatsu.local.ui.LocalListFragment
+import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 
-class MangaListActivity : BaseActivity<ActivityContainerBinding>() {
+class MangaListActivity :
+	BaseActivity<ActivityContainerBinding>(),
+	AppBarOwner {
+
+	override val appBar: AppBarLayout
+		get() = binding.appbar
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
