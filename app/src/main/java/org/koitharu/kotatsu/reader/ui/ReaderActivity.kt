@@ -331,7 +331,7 @@ class ReaderActivity :
 		}
 		if (uiState.totalPages > 0) {
 			binding.slider.value = uiState.currentPage.toFloat()
-			binding.slider.valueTo = uiState.totalPages.toFloat()
+			binding.slider.valueTo = uiState.totalPages.toFloat() - 1
 			binding.slider.isVisible = true
 		} else {
 			binding.slider.isVisible = false
