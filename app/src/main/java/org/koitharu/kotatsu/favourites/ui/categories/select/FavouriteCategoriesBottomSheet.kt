@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.databinding.DialogFavoriteCategoriesBinding
+import org.koitharu.kotatsu.databinding.SheetFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
@@ -23,7 +23,7 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class FavouriteCategoriesBottomSheet :
-	BaseBottomSheet<DialogFavoriteCategoriesBinding>(),
+	BaseBottomSheet<SheetFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>,
 	View.OnClickListener,
 	Toolbar.OnMenuItemClickListener {
@@ -37,7 +37,7 @@ class FavouriteCategoriesBottomSheet :
 	override fun onInflateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
-	) = DialogFavoriteCategoriesBinding.inflate(inflater, container, false)
+	) = SheetFavoriteCategoriesBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
