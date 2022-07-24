@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -24,13 +23,13 @@ import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
-import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class PagesThumbnailsSheet :
 	BaseBottomSheet<SheetPagesBinding>(),
-	OnListItemClickListener<MangaPage> {
+	OnListItemClickListener<MangaPage>,
+	BottomSheetHeaderBar.OnExpansionChangeListener {
 
 	private lateinit var thumbnails: List<PageThumbnail>
 	private var spanResolver: MangaListSpanResolver? = null
@@ -64,16 +63,10 @@ class PagesThumbnailsSheet :
 		super.onViewCreated(view, savedInstanceState)
 
 		val title = arguments?.getString(ARG_TITLE)
-		binding.toolbar.title = title
-		binding.toolbar.setNavigationOnClickListener { dismiss() }
-		binding.toolbar.subtitle = null
-		behavior?.addBottomSheetCallback(ToolbarController(binding.toolbar))
-
-		if (!resources.getBoolean(R.bool.is_tablet)) {
-			binding.toolbar.navigationIcon = null
-		} else {
-			binding.toolbar.subtitle =
-				resources.getQuantityString(R.plurals.pages, thumbnails.size, thumbnails.size)
+		with(binding.headerBar) {
+			toolbar.title = title
+			toolbar.subtitle = null
+			addOnExpansionChangeListener(this@PagesThumbnailsSheet)
 		}
 
 		with(binding.recyclerView) {
@@ -113,24 +106,21 @@ class PagesThumbnailsSheet :
 		}
 	}
 
+	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
+		if (isExpanded) {
+			headerBar.toolbar.subtitle = resources.getQuantityString(
+				R.plurals.pages,
+				thumbnails.size,
+				thumbnails.size,
+			)
+		} else {
+			headerBar.toolbar.subtitle = null
+		}
+	}
+
 	private fun getPageLoader(): PageLoader {
 		val viewModel = (activity as? ReaderActivity)?.getViewModel<ReaderViewModel>()
 		return viewModel?.pageLoader ?: PageLoader().also { pageLoader = it }
-	}
-
-	private inner class ToolbarController(toolbar: Toolbar) : BottomSheetToolbarController(toolbar) {
-		override fun onStateChanged(bottomSheet: View, newState: Int) {
-			super.onStateChanged(bottomSheet, newState)
-			if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-				toolbar.subtitle = resources.getQuantityString(
-					R.plurals.pages,
-					thumbnails.size,
-					thumbnails.size,
-				)
-			} else {
-				toolbar.subtitle = null
-			}
-		}
 	}
 
 	companion object {

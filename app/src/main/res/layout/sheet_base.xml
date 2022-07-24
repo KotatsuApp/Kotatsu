@@ -7,42 +7,23 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<ImageView
-		android:layout_width="36dp"
-		android:layout_height="3dp"
-		android:layout_gravity="center"
-		android:layout_marginTop="12dp"
-		android:alpha="0.2"
-		android:src="@drawable/tab_rounded_rectangle"
-		app:tint="?attr/colorOnSurfaceVariant"/>
-
-	<com.google.android.material.appbar.AppBarLayout
-		android:id="@+id/appbar"
+	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
-		android:layout_height="?attr/actionBarSize"
-		android:background="@drawable/sheet_toolbar_background">
+		android:layout_height="wrap_content">
 
-		<com.google.android.material.appbar.MaterialToolbar
-			android:id="@+id/toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:navigationIcon="?actionModeCloseDrawable"
-			tools:title="@string/app_name">
+		<Button
+			android:id="@+id/button_done"
+			style="@style/Widget.Material3.Button.UnelevatedButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+			android:text="@string/done"
+			android:visibility="gone"
+			tools:visibility="visible" />
 
-			<Button
-				android:id="@+id/button_done"
-				style="@style/Widget.Material3.Button.UnelevatedButton"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="end"
-				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
-				android:text="@string/done"
-				android:visibility="gone"
-				tools:visibility="visible" />
-
-		</com.google.android.material.appbar.MaterialToolbar>
-
-	</com.google.android.material.appbar.AppBarLayout>
+	</org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar>
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView"

@@ -21,7 +21,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikiMangaSelectionDecoration
 import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikimoriSelectorAdapter
-import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -50,8 +49,6 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		binding.toolbar.setNavigationOnClickListener { dismiss() }
-		addBottomSheetCallback(BottomSheetToolbarController(binding.toolbar))
 		val listAdapter = ShikimoriSelectorAdapter(viewLifecycleOwner, get(), this)
 		val decoration = ShikiMangaSelectionDecoration(view.context)
 		with(binding.recyclerView) {
@@ -72,7 +69,7 @@ class ScrobblingSelectorBottomSheet :
 			dismiss()
 		}
 		viewModel.searchQuery.observe(viewLifecycleOwner) {
-			binding.toolbar.subtitle = it
+			binding.headerBar.toolbar.subtitle = it
 		}
 	}
 
@@ -107,7 +104,7 @@ class ScrobblingSelectorBottomSheet :
 			return false
 		}
 		viewModel.search(query)
-		binding.toolbar.menu.findItem(R.id.action_search)?.collapseActionView()
+		binding.headerBar.toolbar.menu.findItem(R.id.action_search)?.collapseActionView()
 		return true
 	}
 
@@ -115,7 +112,7 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			val menuItem = binding.toolbar.menu.findItem(R.id.action_search) ?: return false
+			val menuItem = binding.headerBar.toolbar.menu.findItem(R.id.action_search) ?: return false
 			if (menuItem.isActionViewExpanded) {
 				if (event?.action == KeyEvent.ACTION_UP) {
 					menuItem.collapseActionView()
@@ -134,8 +131,8 @@ class ScrobblingSelectorBottomSheet :
 	}
 
 	private fun initOptionsMenu() {
-		binding.toolbar.inflateMenu(R.menu.opt_shiki_selector)
-		val searchMenuItem = binding.toolbar.menu.findItem(R.id.action_search)
+		binding.headerBar.toolbar.inflateMenu(R.menu.opt_shiki_selector)
+		val searchMenuItem = binding.headerBar.toolbar.menu.findItem(R.id.action_search)
 		searchMenuItem.setOnActionExpandListener(this)
 		val searchView = searchMenuItem.actionView as SearchView
 		searchView.setOnQueryTextListener(this)

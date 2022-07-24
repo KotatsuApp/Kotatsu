@@ -8,22 +8,12 @@
 	android:orientation="vertical"
 	android:paddingBottom="@dimen/list_spacing">
 
-	<ImageView
-		android:layout_width="36dp"
-		android:layout_height="3dp"
-		android:layout_gravity="center"
-		android:layout_marginTop="12dp"
-		android:alpha="0.2"
-		android:src="@drawable/tab_rounded_rectangle"
-		app:tint="?attr/colorOnSurfaceVariant"/>
-
-	<com.google.android.material.appbar.MaterialToolbar
-		android:id="@+id/toolbar"
+	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
-		android:layout_height="?attr/actionBarSize"
+		android:layout_height="wrap_content"
 		app:menu="@menu/opt_categories_bs"
-		app:title="@string/add_to_favourites"
-		android:background="@drawable/sheet_toolbar_background">
+		app:title="@string/add_to_favourites">
 
 		<Button
 			android:id="@+id/button_done"
@@ -34,7 +24,7 @@
 			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
 			android:text="@string/done" />
 
-	</com.google.android.material.appbar.MaterialToolbar>
+	</org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar>
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_categories"

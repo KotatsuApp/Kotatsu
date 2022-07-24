@@ -20,14 +20,15 @@ import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.ui.PageSaveContract
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
-class ReaderConfigBottomSheet : BaseBottomSheet<SheetReaderConfigBinding>(),
+class ReaderConfigBottomSheet :
+	BaseBottomSheet<SheetReaderConfigBinding>(),
 	CheckableButtonGroup.OnCheckedChangeListener,
-	ActivityResultCallback<Uri?>, View.OnClickListener {
+	ActivityResultCallback<Uri?>,
+	View.OnClickListener {
 
 	private val viewModel by sharedViewModel<ReaderViewModel>()
 	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
@@ -48,11 +49,6 @@ class ReaderConfigBottomSheet : BaseBottomSheet<SheetReaderConfigBinding>(),
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		observeScreenOrientation()
-		binding.toolbar.setNavigationOnClickListener { dismiss() }
-		behavior?.addBottomSheetCallback(BottomSheetToolbarController(binding.toolbar))
-		if (!resources.getBoolean(R.bool.is_tablet)) {
-			binding.toolbar.navigationIcon = null
-		}
 		binding.buttonStandard.isChecked = mode == ReaderMode.STANDARD
 		binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
 		binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
@@ -61,7 +57,6 @@ class ReaderConfigBottomSheet : BaseBottomSheet<SheetReaderConfigBinding>(),
 		binding.buttonSavePage.setOnClickListener(this)
 		binding.buttonScreenRotate.setOnClickListener(this)
 		binding.buttonSettings.setOnClickListener(this)
-
 	}
 
 	override fun onClick(v: View) {

@@ -12,7 +12,6 @@ import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.SheetBaseBinding
-import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 
 class LibraryCategoriesConfigSheet :
 	BaseBottomSheet<SheetBaseBinding>(),
@@ -27,14 +26,9 @@ class LibraryCategoriesConfigSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		binding.toolbar.setNavigationOnClickListener { dismiss() }
-		binding.toolbar.setTitle(R.string.favourites_categories)
+		binding.headerBar.toolbar.setTitle(R.string.favourites_categories)
 		binding.buttonDone.isVisible = true
 		binding.buttonDone.setOnClickListener(this)
-		behavior?.addBottomSheetCallback(BottomSheetToolbarController(binding.toolbar))
-		if (!resources.getBoolean(R.bool.is_tablet)) {
-			binding.toolbar.navigationIcon = null
-		}
 		val adapter = LibraryCategoriesConfigAdapter(this)
 		binding.recyclerView.adapter = adapter
 

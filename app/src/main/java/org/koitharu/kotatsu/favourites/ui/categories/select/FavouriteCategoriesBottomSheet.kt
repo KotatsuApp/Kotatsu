@@ -44,7 +44,7 @@ class FavouriteCategoriesBottomSheet :
 		adapter = MangaCategoriesAdapter(this)
 		binding.recyclerViewCategories.adapter = adapter
 		binding.buttonDone.setOnClickListener(this)
-		binding.toolbar.setOnMenuItemClickListener(this)
+		binding.headerBar.toolbar.setOnMenuItemClickListener(this)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)

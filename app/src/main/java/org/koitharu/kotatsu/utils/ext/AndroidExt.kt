@@ -10,7 +10,6 @@ import android.content.SyncResult
 import android.content.pm.ResolveInfo
 import android.database.SQLException
 import android.graphics.Color
-
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -22,14 +21,16 @@ import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.Window
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
 import com.google.android.material.elevation.ElevationOverlayProvider
+import kotlin.coroutines.resume
+import kotlin.math.roundToLong
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
@@ -43,7 +44,6 @@ import okio.IOException
 import org.json.JSONException
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.utils.InternalResourceHelper
-import kotlin.coroutines.resume
 
 val Context.activityManager: ActivityManager?
 	get() = getSystemService(ACTIVITY_SERVICE) as? ActivityManager
@@ -122,7 +122,8 @@ fun SyncResult.onError(error: Throwable) {
 	when (error) {
 		is IOException -> stats.numIoExceptions++
 		is OperationApplicationException,
-		is SQLException -> databaseError = true
+		is SQLException,
+		-> databaseError = true
 		is JSONException -> stats.numParseExceptions++
 		else -> if (BuildConfig.DEBUG) throw error
 	}
@@ -148,6 +149,10 @@ val Context.animatorDurationScale: Float
 
 fun ViewPropertyAnimator.applySystemAnimatorScale(context: Context): ViewPropertyAnimator = apply {
 	this.duration = (this.duration * context.animatorDurationScale).toLong()
+}
+
+fun Context.getAnimationDuration(@IntegerRes resId: Int): Long {
+	return (resources.getInteger(resId) * animatorDurationScale).roundToLong()
 }
 
 inline fun <reified T> ViewGroup.findChild(): T? {

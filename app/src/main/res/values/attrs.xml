@@ -69,4 +69,9 @@
 		</attr>
 	</declare-styleable>
 
+	<declare-styleable name="BottomSheetHeaderBar">
+		<attr name="title" />
+		<attr name="menu" />
+	</declare-styleable>
+
 </resources>

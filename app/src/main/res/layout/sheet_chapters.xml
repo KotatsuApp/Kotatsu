@@ -7,43 +7,17 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<LinearLayout
-		android:id="@+id/toolbar_layout"
+	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="vertical">
-
-		<ImageView
-			android:layout_width="36dp"
-			android:layout_height="3dp"
-			android:layout_gravity="center"
-			android:layout_marginTop="12dp"
-			android:alpha="0.2"
-			android:src="@drawable/tab_rounded_rectangle"
-			app:tint="?attr/colorOnSurfaceVariant" />
-
-		<com.google.android.material.appbar.AppBarLayout
-			android:id="@+id/appbar"
-			android:layout_width="match_parent"
-			android:layout_height="?attr/actionBarSize"
-			android:background="@drawable/sheet_toolbar_background">
-
-			<com.google.android.material.appbar.MaterialToolbar
-				android:id="@+id/toolbar"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				app:navigationIcon="?actionModeCloseDrawable"
-				app:title="@string/chapters" />
-
-		</com.google.android.material.appbar.AppBarLayout>
-		
-	</LinearLayout>
+		app:title="@string/chapters" />
 
 	<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_below="@id/toolbar_layout"
+		android:layout_below="@id/headerBar"
 		android:orientation="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
