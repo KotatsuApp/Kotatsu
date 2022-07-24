@@ -5,6 +5,7 @@ import androidx.appcompat.view.ActionMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.serializableArgument
@@ -24,9 +25,9 @@ class SearchFragment : MangaListFragment() {
 		viewModel.loadNextPage()
 	}
 
-	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_remote, menu)
-		return super.onCreateActionMode(mode, menu)
+		return super.onCreateActionMode(controller, mode, menu)
 	}
 
 	companion object {

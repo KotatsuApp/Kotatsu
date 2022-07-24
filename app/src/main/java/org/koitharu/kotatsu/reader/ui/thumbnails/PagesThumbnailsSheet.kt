@@ -33,7 +33,7 @@ class PagesThumbnailsSheet :
 	OnListItemClickListener<MangaPage> {
 
 	private lateinit var thumbnails: List<PageThumbnail>
-	private val spanResolver = MangaListSpanResolver()
+	private var spanResolver: MangaListSpanResolver? = null
 	private var currentPageIndex = -1
 	private var pageLoader: PageLoader? = null
 
@@ -51,7 +51,7 @@ class PagesThumbnailsSheet :
 				number = i + 1,
 				isCurrent = i == currentPageIndex,
 				repository = repository,
-				page = x
+				page = x,
 			)
 		}
 	}
@@ -78,17 +78,17 @@ class PagesThumbnailsSheet :
 
 		with(binding.recyclerView) {
 			addItemDecoration(
-				SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
+				SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)),
 			)
 			adapter = PageThumbnailAdapter(
 				dataSet = thumbnails,
 				coil = get(),
 				scope = viewLifecycleScope,
 				loader = getPageLoader(),
-				clickListener = this@PagesThumbnailsSheet
+				clickListener = this@PagesThumbnailsSheet,
 			)
 			addOnLayoutChangeListener(spanResolver)
-			spanResolver.setGridSize(get<AppSettings>().gridSize / 100f, this)
+			spanResolver?.setGridSize(get<AppSettings>().gridSize / 100f, this)
 			if (currentPageIndex > 0) {
 				val offset = resources.getDimensionPixelOffset(R.dimen.preferred_grid_width)
 				(layoutManager as GridLayoutManager).scrollToPositionWithOffset(currentPageIndex, offset)
@@ -98,6 +98,7 @@ class PagesThumbnailsSheet :
 
 	override fun onDestroyView() {
 		super.onDestroyView()
+		spanResolver = null
 		pageLoader?.close()
 		pageLoader = null
 	}
@@ -124,7 +125,7 @@ class PagesThumbnailsSheet :
 				toolbar.subtitle = resources.getQuantityString(
 					R.plurals.pages,
 					thumbnails.size,
-					thumbnails.size
+					thumbnails.size,
 				)
 			} else {
 				toolbar.subtitle = null

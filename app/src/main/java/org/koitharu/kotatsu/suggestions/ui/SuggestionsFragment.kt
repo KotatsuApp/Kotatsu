@@ -10,6 +10,7 @@ import androidx.core.view.MenuProvider
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
@@ -26,9 +27,9 @@ class SuggestionsFragment : MangaListFragment() {
 
 	override fun onScrolledToEnd() = Unit
 
-	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_remote, menu)
-		return super.onCreateActionMode(mode, menu)
+		return super.onCreateActionMode(controller, mode, menu)
 	}
 
 	private inner class SuggestionMenuProvider : MenuProvider {

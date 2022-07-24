@@ -53,13 +53,13 @@ abstract class MangaListFragment :
 	PaginationScrollListener.Callback,
 	MangaListListener,
 	SwipeRefreshLayout.OnRefreshListener,
-	ListSelectionController.Callback,
+	ListSelectionController.Callback2,
 	FastScroller.FastScrollListener {
 
 	private var listAdapter: MangaListAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
 	private var selectionController: ListSelectionController? = null
-	private val spanResolver = MangaListSpanResolver()
+	private var spanResolver: MangaListSpanResolver? = null
 	private val spanSizeLookup = SpanSizeLookup()
 	private val listCommitCallback = Runnable {
 		spanSizeLookup.invalidateCache()
@@ -82,6 +82,7 @@ abstract class MangaListFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		listAdapter = onCreateAdapter()
+		spanResolver = MangaListSpanResolver(view.resources)
 		selectionController = ListSelectionController(
 			activity = requireActivity(),
 			decoration = MangaSelectionDecoration(view.context),
@@ -116,6 +117,7 @@ abstract class MangaListFragment :
 		listAdapter = null
 		paginationListener = null
 		selectionController = null
+		spanResolver = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
 	}
@@ -230,7 +232,7 @@ abstract class MangaListFragment :
 
 	private fun onGridScaleChanged(scale: Float) {
 		spanSizeLookup.invalidateCache()
-		spanResolver.setGridSize(scale, binding.recyclerView)
+		spanResolver?.setGridSize(scale, binding.recyclerView)
 	}
 
 	private fun onListModeChanged(mode: ListMode) {
@@ -255,7 +257,7 @@ abstract class MangaListFragment :
 					addItemDecoration(SpacingItemDecoration(spacing))
 				}
 				ListMode.GRID -> {
-					layoutManager = FitHeightGridLayoutManager(context, spanResolver.spanCount).also {
+					layoutManager = FitHeightGridLayoutManager(context, checkNotNull(spanResolver).spanCount).also {
 						it.spanSizeLookup = spanSizeLookup
 					}
 					val spacing = resources.getDimensionPixelOffset(R.dimen.grid_spacing)
@@ -268,17 +270,11 @@ abstract class MangaListFragment :
 		}
 	}
 
-	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		return menu.isNotEmpty()
 	}
 
-	@CallSuper
-	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		mode.title = selectionController?.count?.toString()
-		return true
-	}
-
-	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_select_all -> {
 				val ids = listAdapter?.items?.mapNotNull {
@@ -306,7 +302,7 @@ abstract class MangaListFragment :
 		}
 	}
 
-	override fun onSelectionChanged(count: Int) {
+	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
 		binding.recyclerView.invalidateItemDecorations()
 	}
 

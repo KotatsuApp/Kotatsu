@@ -9,6 +9,7 @@ import androidx.appcompat.widget.PopupMenu
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.list.ui.MangaListFragment
@@ -48,26 +49,26 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 		return true
 	}
 
-	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_favourites, menu)
-		return super.onCreateActionMode(mode, menu)
+		return super.onCreateActionMode(controller, mode, menu)
 	}
 
-	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		menu.findItem(R.id.action_save)?.isVisible = selectedItems.none {
 			it.source == MangaSource.LOCAL
 		}
-		return super.onPrepareActionMode(mode, menu)
+		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
-	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				viewModel.removeFromFavourites(selectedItemsIds)
 				mode.finish()
 				true
 			}
-			else -> super.onActionItemClicked(mode, item)
+			else -> super.onActionItemClicked(controller, mode, item)
 		}
 	}
 

@@ -15,6 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ShareHelper
@@ -27,7 +28,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 	override val viewModel by viewModel<LocalListViewModel>()
 	private val importCall = registerForActivityResult(
 		ActivityResultContracts.OpenMultipleDocuments(),
-		this
+		this,
 	)
 	private var importSnackbar: Snackbar? = null
 	private val downloadReceiver = object : BroadcastReceiver() {
@@ -42,7 +43,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 		super.onAttach(context)
 		context.registerReceiver(
 			downloadReceiver,
-			IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE)
+			IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE),
 		)
 	}
 
@@ -73,7 +74,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 			Snackbar.make(
 				binding.recyclerView,
 				R.string.operation_not_supported,
-				Snackbar.LENGTH_SHORT
+				Snackbar.LENGTH_SHORT,
 			).show()
 		}
 	}
@@ -83,12 +84,12 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 		viewModel.importFiles(result)
 	}
 
-	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_local, menu)
-		return super.onCreateActionMode(mode, menu)
+		return super.onCreateActionMode(controller, mode, menu)
 	}
 
-	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				showDeletionConfirm(selectedItemsIds, mode)
@@ -100,7 +101,7 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 				mode.finish()
 				true
 			}
-			else -> super.onActionItemClicked(mode, item)
+			else -> super.onActionItemClicked(controller, mode, item)
 		}
 	}
 
