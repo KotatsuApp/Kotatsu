@@ -319,4 +319,5 @@
     <string name="show_all">Tümünü göster</string>
     <string name="invalid_domain_message">Geçersiz etki alanı</string>
     <string name="select_range">Aralık seç</string>
+    <string name="not_found_404">İçerik bulunamadı veya kaldırıldı</string>
 </resources>
