@@ -6,14 +6,15 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.R as materialR
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.dialog.RememberSelectionDialogListener
-import org.koitharu.kotatsu.library.ui.config.LibraryCategoriesConfigSheet
-import org.koitharu.kotatsu.utils.ext.startOfDay
 import java.util.*
 import java.util.concurrent.TimeUnit
-import com.google.android.material.R as materialR
+import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.dialog.RememberSelectionDialogListener
+import org.koitharu.kotatsu.library.ui.config.categories.LibraryCategoriesConfigSheet
+import org.koitharu.kotatsu.library.ui.config.size.LibrarySizeBottomSheet
+import org.koitharu.kotatsu.utils.ext.startOfDay
 
 class LibraryMenuProvider(
 	private val context: Context,
@@ -29,6 +30,10 @@ class LibraryMenuProvider(
 		return when (menuItem.itemId) {
 			R.id.action_clear_history -> {
 				showClearHistoryDialog()
+				true
+			}
+			R.id.action_grid_size -> {
+				LibrarySizeBottomSheet.show(fragmentManager)
 				true
 			}
 			R.id.action_categories -> {

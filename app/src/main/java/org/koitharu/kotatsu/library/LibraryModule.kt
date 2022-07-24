@@ -4,7 +4,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koitharu.kotatsu.library.domain.LibraryRepository
 import org.koitharu.kotatsu.library.ui.LibraryViewModel
-import org.koitharu.kotatsu.library.ui.config.LibraryCategoriesConfigViewModel
+import org.koitharu.kotatsu.library.ui.config.categories.LibraryCategoriesConfigViewModel
 
 val libraryModule
 	get() = module {

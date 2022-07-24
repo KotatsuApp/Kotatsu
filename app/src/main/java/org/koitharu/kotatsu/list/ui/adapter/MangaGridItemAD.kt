@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
-import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.google.android.material.badge.BadgeDrawable
@@ -24,9 +23,8 @@ fun mangaGridItemAD(
 	clickListener: OnListItemClickListener<Manga>,
 	sizeResolver: ItemSizeResolver?,
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
-	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) },
 ) {
-
 	var badge: BadgeDrawable? = null
 
 	itemView.setOnClickListener {
@@ -35,11 +33,7 @@ fun mangaGridItemAD(
 	itemView.setOnLongClickListener {
 		clickListener.onItemLongClick(item.manga, it)
 	}
-	if (sizeResolver != null) {
-		itemView.updateLayoutParams {
-			width = sizeResolver.cellWidth
-		}
-	}
+	sizeResolver?.attachToView(lifecycleOwner, itemView, binding.textViewTitle)
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title

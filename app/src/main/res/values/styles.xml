@@ -198,6 +198,15 @@
 		<item name="android:textColor">?attr/colorPrimary</item>
 	</style>
 
+	<style name="TextAppearance.Kotatsu.GridTitle" parent="TextAppearance.Material3.TitleSmall" />
+
+	<style name="TextAppearance.Kotatsu.GridTitle.Small" parent="TextAppearance.Material3.TitleSmall">
+		<item name="android:textSize">12sp</item>
+		<item name="android:letterSpacing">0.00714286</item>
+		<item name="lineHeight">14sp</item>
+		<item name="android:lineHeight" tools:ignore="NewApi">14sp</item>
+	</style>
+
 	<!-- Shapes -->
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover" parent="">

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:paddingHorizontal="@dimen/margin_small"
+	android:paddingBottom="@dimen/margin_normal">
+
+	<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+		android:id="@+id/dragHandle"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentEnd="true" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_alignWithParentIfMissing="true"
+		android:layout_below="@id/dragHandle"
+		android:layout_alignParentStart="true"
+		android:layout_toStartOf="@id/textView_label"
+		android:paddingHorizontal="@dimen/margin_small"
+		android:paddingBottom="@dimen/margin_small"
+		android:singleLine="true"
+		android:text="@string/grid_size"
+		android:textAppearance="?textAppearanceTitleMedium" />
+
+	<TextView
+		android:id="@+id/textView_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/textView_title"
+		android:layout_alignParentEnd="true"
+		android:paddingHorizontal="@dimen/margin_small"
+		android:singleLine="true"
+		android:textAppearance="?textAppearanceLabelLarge"
+		tools:text="100%" />
+
+	<ImageView
+		android:id="@+id/button_small"
+		android:layout_width="wrap_content"
+		android:layout_height="0dp"
+		android:layout_alignTop="@id/slider_grid"
+		android:layout_alignBottom="@id/slider_grid"
+		android:layout_alignParentStart="true"
+		android:background="?selectableItemBackgroundBorderless"
+		android:padding="8dp"
+		android:src="@drawable/ic_size_small"
+		android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar" />
+
+	<ImageView
+		android:id="@+id/button_large"
+		android:layout_width="wrap_content"
+		android:layout_height="0dp"
+		android:layout_alignTop="@id/slider_grid"
+		android:layout_alignBottom="@id/slider_grid"
+		android:layout_alignParentEnd="true"
+		android:background="?selectableItemBackgroundBorderless"
+		android:padding="8dp"
+		android:src="@drawable/ic_size_large"
+		android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar" />
+
+	<com.google.android.material.slider.Slider
+		android:id="@+id/slider_grid"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/textView_title"
+		android:layout_toStartOf="@id/button_large"
+		android:layout_toEndOf="@id/button_small"
+		android:stepSize="5"
+		android:valueFrom="50"
+		android:valueTo="150"
+		app:labelBehavior="gone"
+		app:tickVisible="false"
+		tools:value="100" />
+
+</RelativeLayout>

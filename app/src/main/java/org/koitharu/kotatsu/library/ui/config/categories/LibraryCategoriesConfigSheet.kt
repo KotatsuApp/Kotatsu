@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui.config
+package org.koitharu.kotatsu.library.ui.config.categories
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,9 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.SheetBaseBinding
 import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 
-class LibraryCategoriesConfigSheet : BaseBottomSheet<SheetBaseBinding>(), OnListItemClickListener<FavouriteCategory>,
+class LibraryCategoriesConfigSheet :
+	BaseBottomSheet<SheetBaseBinding>(),
+	OnListItemClickListener<FavouriteCategory>,
 	View.OnClickListener {
 
 	private val viewModel by viewModel<LibraryCategoriesConfigViewModel>()

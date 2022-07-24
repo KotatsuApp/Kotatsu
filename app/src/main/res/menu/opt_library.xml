@@ -11,6 +11,12 @@
 		app:showAsAction="never" />
 
 	<item
+		android:id="@+id/action_grid_size"
+		android:orderInCategory="50"
+		android:title="@string/grid_size"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_clear_history"
 		android:orderInCategory="50"
 		android:title="@string/clear_history"

@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui.config
+package org.koitharu.kotatsu.library.ui.config.categories
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
