@@ -5,16 +5,18 @@ import android.util.AttributeSet
 import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
 import androidx.core.view.children
+import com.google.android.material.R as materialR
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.ext.castOrNull
+import org.koitharu.kotatsu.utils.ext.getThemeColorStateList
 
 class ChipsView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
-	defStyleAttr: Int = com.google.android.material.R.attr.chipGroupStyle
+	defStyleAttr: Int = com.google.android.material.R.attr.chipGroupStyle,
 ) : ChipGroup(context, attrs, defStyleAttr) {
 
 	private var isLayoutSuppressedCompat = false
@@ -91,6 +93,7 @@ class ChipsView @JvmOverloads constructor(
 		chip.setChipDrawable(drawable)
 		chip.isCheckedIconVisible = true
 		chip.setCheckedIconResource(R.drawable.ic_check)
+		chip.checkedIconTint = context.getThemeColorStateList(materialR.attr.colorControlNormal)
 		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)
