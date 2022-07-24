@@ -309,4 +309,5 @@
     <string name="data_deletion">Tietojen poistaminen</string>
     <string name="show_all">Näytä kaikki</string>
     <string name="select_range">Valitse alue</string>
+    <string name="not_found_404">Sisältöä ei löydy tai se on poistettu</string>
 </resources>

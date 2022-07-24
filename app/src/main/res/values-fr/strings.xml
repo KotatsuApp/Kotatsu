@@ -319,4 +319,5 @@
     <string name="status_re_reading">Relecture</string>
     <string name="invalid_domain_message">Domaine invalide</string>
     <string name="select_range">Sélectionner une plage</string>
+    <string name="not_found_404">Contenu non trouvé ou supprimé</string>
 </resources>
