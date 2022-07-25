@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.tracker.domain
 import androidx.annotation.VisibleForTesting
 import androidx.room.withTransaction
 import java.util.*
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -22,7 +23,7 @@ import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 
 private const val NO_ID = 0L
 
-class TrackingRepository(
+class TrackingRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 

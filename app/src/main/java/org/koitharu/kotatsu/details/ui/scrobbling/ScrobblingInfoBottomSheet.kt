@@ -13,10 +13,11 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import coil.ImageLoader
 import coil.request.ImageRequest
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.databinding.SheetScrobblingBinding
@@ -30,6 +31,7 @@ import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 
+@AndroidEntryPoint
 class ScrobblingInfoBottomSheet :
 	BaseBottomSheet<SheetScrobblingBinding>(),
 	AdapterView.OnItemSelectedListener,
@@ -37,8 +39,10 @@ class ScrobblingInfoBottomSheet :
 	View.OnClickListener,
 	PopupMenu.OnMenuItemClickListener {
 
-	private val viewModel by sharedViewModel<DetailsViewModel>()
-	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by activityViewModels<DetailsViewModel>()
+
+	@Inject
+	lateinit var coil: ImageLoader
 	private var menu: PopupMenu? = null
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingBinding {
@@ -131,7 +135,7 @@ class ScrobblingInfoBottomSheet :
 				val url = viewModel.scrobblingInfo.value?.externalUrl ?: return false
 				val intent = Intent(Intent.ACTION_VIEW, url.toUri())
 				startActivity(
-					Intent.createChooser(intent, getString(R.string.open_in_browser))
+					Intent.createChooser(intent, getString(R.string.open_in_browser)),
 				)
 			}
 			R.id.action_unregister -> {

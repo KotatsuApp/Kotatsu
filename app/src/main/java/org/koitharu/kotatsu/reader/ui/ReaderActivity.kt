@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import androidx.activity.result.ActivityResultCallback
 import androidx.core.graphics.Insets
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.WindowInsetsCompat
@@ -18,12 +17,12 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -44,8 +43,8 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
-import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class ReaderActivity :
 	BaseFullscreenActivity<ActivityReaderBinding>(),
 	ChaptersBottomSheet.OnChapterChangeListener,
@@ -55,11 +54,14 @@ class ReaderActivity :
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener {
 
-	private val viewModel by viewModel<ReaderViewModel> {
-		parametersOf(
-			MangaIntent(intent),
-			intent?.getParcelableExtra<ReaderState>(EXTRA_STATE),
-			intent?.getStringExtra(EXTRA_BRANCH),
+	@Inject
+	lateinit var viewModelFactory: ReaderViewModel.Factory
+
+	val viewModel by assistedViewModels {
+		viewModelFactory.create(
+			intent = MangaIntent(intent),
+			initialState = intent?.getParcelableExtra(EXTRA_STATE),
+			preselectedBranch = intent?.getStringExtra(EXTRA_BRANCH),
 		)
 	}
 
@@ -75,7 +77,7 @@ class ReaderActivity :
 		readerManager = ReaderManager(supportFragmentManager, R.id.container)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
-		controlDelegate = ReaderControlDelegate(lifecycleScope, get(), this)
+		controlDelegate = ReaderControlDelegate(lifecycleScope, settings, this)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		binding.slider.setLabelFormatter(PageLabelFormatter())
 		ReaderSliderListener(this, viewModel).attachToSlider(binding.slider)
@@ -121,7 +123,7 @@ class ReaderActivity :
 				ChaptersBottomSheet.show(
 					supportFragmentManager,
 					viewModel.manga?.chapters.orEmpty(),
-					viewModel.getCurrentState()?.chapterId ?: 0L
+					viewModel.getCurrentState()?.chapterId ?: 0L,
 				)
 			}
 			R.id.action_pages_thumbs -> {
@@ -284,12 +286,12 @@ class ReaderActivity :
 		binding.appbarTop.updatePadding(
 			top = systemBars.top,
 			right = systemBars.right,
-			left = systemBars.left
+			left = systemBars.left,
 		)
 		binding.appbarBottom?.updatePadding(
 			bottom = systemBars.bottom,
 			right = systemBars.right,
-			left = systemBars.left
+			left = systemBars.left,
 		)
 		return WindowInsetsCompat.Builder(insets)
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)

@@ -4,9 +4,12 @@ import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
-class AppProtectHelper(private val settings: AppSettings) : Application.ActivityLifecycleCallbacks {
+@Singleton
+class AppProtectHelper @Inject constructor(private val settings: AppSettings) : Application.ActivityLifecycleCallbacks {
 
 	private var isUnlocked = settings.appPassword.isNullOrEmpty()
 

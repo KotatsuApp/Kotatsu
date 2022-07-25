@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -30,12 +32,17 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
+@AndroidEntryPoint
+class ExploreFragment :
+	BaseFragment<FragmentExploreBinding>(),
 	RecyclerViewOwner,
 	ExploreListEventListener,
 	OnListItemClickListener<ExploreItem.Source> {
 
-	private val viewModel by viewModel<ExploreViewModel>()
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by viewModels<ExploreViewModel>()
 	private var exploreAdapter: ExploreAdapter? = null
 	private var paddingHorizontal = 0
 
@@ -48,7 +55,7 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		exploreAdapter = ExploreAdapter(get(), viewLifecycleOwner, this, this)
+		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this)
 		with(binding.recyclerView) {
 			adapter = exploreAdapter
 			setHasFixedSize(true)
@@ -112,7 +119,7 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(),
 		val snackbar = Snackbar.make(
 			binding.recyclerView,
 			e.getDisplayMessage(resources),
-			Snackbar.LENGTH_SHORT
+			Snackbar.LENGTH_SHORT,
 		)
 		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
 		snackbar.show()

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
 import android.widget.Toast
@@ -16,7 +15,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
@@ -24,10 +22,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -45,17 +42,25 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.isReportable
 import org.koitharu.kotatsu.utils.ext.report
 
+@AndroidEntryPoint
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
 	TabLayoutMediator.TabConfigurationStrategy,
 	AdapterView.OnItemSelectedListener {
 
-	private val viewModel by viewModel<DetailsViewModel> {
-		parametersOf(MangaIntent(intent))
+	@Inject
+	lateinit var viewModelFactory: DetailsViewModel.Factory
+
+	@Inject
+	lateinit var shortcutsUpdater: ShortcutsUpdater
+
+	private val viewModel by assistedViewModels<DetailsViewModel> {
+		viewModelFactory.create(MangaIntent(intent))
 	}
 
 	private val downloadReceiver = object : BroadcastReceiver() {
@@ -103,8 +108,9 @@ class DetailsActivity :
 
 	private fun onMangaRemoved(manga: Manga) {
 		Toast.makeText(
-			this, getString(R.string._s_deleted_from_local_storage, manga.title),
-			Toast.LENGTH_SHORT
+			this,
+			getString(R.string._s_deleted_from_local_storage, manga.title),
+			Toast.LENGTH_SHORT,
 		).show()
 		finishAfterTransition()
 	}
@@ -130,7 +136,7 @@ class DetailsActivity :
 					onActionClick = {
 						e.report("DetailsActivity::onError")
 						dismiss()
-					}
+					},
 				)
 			}
 			else -> {
@@ -141,11 +147,11 @@ class DetailsActivity :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.snackbar.updatePadding(
-			bottom = insets.bottom
+			bottom = insets.bottom,
 		)
 		binding.root.updatePadding(
 			left = insets.left,
-			right = insets.right
+			right = insets.right,
 		)
 	}
 
@@ -222,7 +228,7 @@ class DetailsActivity :
 		R.id.action_shortcut -> {
 			viewModel.manga.value?.let {
 				lifecycleScope.launch {
-					if (!get<ShortcutsUpdater>().requestPinShortcut(it)) {
+					if (!shortcutsUpdater.requestPinShortcut(it)) {
 						binding.snackbar.show(getString(R.string.operation_not_supported))
 					}
 				}
@@ -272,8 +278,8 @@ class DetailsActivity :
 					ReaderActivity.newIntent(
 						context = this@DetailsActivity,
 						manga = remoteManga,
-						state = ReaderState(chapterId, 0, 0)
-					)
+						state = ReaderState(chapterId, 0, 0),
+					),
 				)
 			}
 			setNeutralButton(R.string.download) { _, _ ->
@@ -347,8 +353,8 @@ class DetailsActivity :
 			dialogBuilder.setMessage(
 				getString(
 					R.string.large_manga_save_confirm,
-					resources.getQuantityString(R.plurals.chapters, chaptersCount, chaptersCount)
-				)
+					resources.getQuantityString(R.plurals.chapters, chaptersCount, chaptersCount),
+				),
 			).setPositiveButton(R.string.save) { _, _ ->
 				DownloadService.start(this, manga)
 			}

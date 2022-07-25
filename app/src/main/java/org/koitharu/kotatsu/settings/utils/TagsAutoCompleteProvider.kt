@@ -1,8 +1,9 @@
 package org.koitharu.kotatsu.settings.utils
 
+import javax.inject.Inject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 
-class TagsAutoCompleteProvider(
+class TagsAutoCompleteProvider @Inject constructor(
 	private val db: MangaDatabase,
 ) : MultiAutoCompleteTextViewPreference.AutoCompleteProvider {
 

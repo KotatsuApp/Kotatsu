@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.history.domain
 
 import androidx.room.withTransaction
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -20,11 +21,11 @@ import org.koitharu.kotatsu.utils.ext.mapItems
 
 const val PROGRESS_NONE = -1f
 
-class HistoryRepository(
+class HistoryRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
-	private val scrobblers: List<Scrobbler>,
+	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 ) {
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
@@ -82,7 +83,7 @@ class HistoryRepository(
 					scroll = scroll.toFloat(), // we migrate to int, but decide to not update database
 					percent = percent,
 					deletedAt = 0L,
-				)
+				),
 			)
 			trackingRepository.syncWithHistory(manga, chapterId)
 			val chapter = manga.chapters?.find { x -> x.id == chapterId }

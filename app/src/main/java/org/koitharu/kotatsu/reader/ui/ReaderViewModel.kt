@@ -7,12 +7,16 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import java.util.*
+import javax.inject.Provider
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
-import org.koitharu.kotatsu.base.domain.MangaUtils
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
@@ -33,20 +37,21 @@ import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireValue
-import java.util.*
 
 private const val BOUNDS_PAGE_OFFSET = 2
 private const val PREFETCH_LIMIT = 10
 
-class ReaderViewModel(
-	private val intent: MangaIntent,
-	initialState: ReaderState?,
-	private val preselectedBranch: String?,
+class ReaderViewModel @AssistedInject constructor(
+	@Assisted private val intent: MangaIntent,
+	@Assisted initialState: ReaderState?,
+	@Assisted private val preselectedBranch: String?,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 	private val pageSaveHelper: PageSaveHelper,
+	pageLoaderFactory: Provider<PageLoader>,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job? = null
@@ -57,8 +62,8 @@ class ReaderViewModel(
 	private val chapters: LongSparseArray<MangaChapter>
 		get() = chaptersLoader.chapters
 
-	val pageLoader = PageLoader()
-	private val chaptersLoader = ChaptersLoader()
+	val pageLoader = pageLoaderFactory.get()
+	private val chaptersLoader = ChaptersLoader(mangaRepositoryFactory)
 
 	val readerMode = MutableLiveData<ReaderMode>()
 	val onPageSaved = SingleLiveEvent<Uri?>()
@@ -72,7 +77,7 @@ class ReaderViewModel(
 	val readerAnimation = settings.observeAsLiveData(
 		context = viewModelScope.coroutineContext + Dispatchers.Default,
 		key = AppSettings.KEY_READER_ANIMATION,
-		valueProducer = { readerAnimation }
+		valueProducer = { readerAnimation },
 	)
 
 	val isScreenshotsBlockEnabled = combine(
@@ -115,12 +120,12 @@ class ReaderViewModel(
 			val manga = checkNotNull(mangaData.value)
 			dataRepository.savePreferences(
 				manga = manga,
-				mode = newMode
+				mode = newMode,
 			)
 			readerMode.value = newMode
 			content.value?.run {
 				content.value = copy(
-					state = getCurrentState()
+					state = getCurrentState(),
 				)
 			}
 		}
@@ -253,7 +258,7 @@ class ReaderViewModel(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			var manga = dataRepository.resolveIntent(intent) ?: throw NotFoundException("Cannot find manga", "")
 			mangaData.value = manga
-			val repo = MangaRepository(manga.source)
+			val repo = mangaRepositoryFactory.create(manga.source)
 			manga = repo.getDetails(manga)
 			manga.chapters?.forEach {
 				chapters.put(it.id, it)
@@ -317,7 +322,7 @@ class ReaderViewModel(
 			?: error("There are no chapters in this manga")
 		val pages = repo.getPages(chapter)
 		return runCatching {
-			val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
+			val isWebtoon = dataRepository.determineMangaIsWebtoon(repo, pages)
 			if (isWebtoon) ReaderMode.WEBTOON else defaultMode
 		}.onSuccess {
 			dataRepository.savePreferences(manga, it)
@@ -352,6 +357,16 @@ class ReaderViewModel(
 		val pagePercent = (pageIndex + 1) / pagesCount.toFloat()
 		val ppc = 1f / chaptersCount
 		return ppc * chapterIndex + ppc * pagePercent
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(
+			intent: MangaIntent,
+			initialState: ReaderState?,
+			preselectedBranch: String?,
+		): ReaderViewModel
 	}
 }
 

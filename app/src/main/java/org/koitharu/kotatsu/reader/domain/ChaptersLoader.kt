@@ -10,7 +10,9 @@ import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 
 private const val PAGES_TRIM_THRESHOLD = 120
 
-class ChaptersLoader {
+class ChaptersLoader(
+	private val mangaRepositoryFactory: MangaRepository.Factory,
+) {
 
 	val chapters = LongSparseArray<MangaChapter>()
 	private val chapterPages = ChapterPages()
@@ -62,7 +64,7 @@ class ChaptersLoader {
 
 	private suspend fun loadChapter(manga: Manga, chapterId: Long): List<ReaderPage> {
 		val chapter = checkNotNull(chapters[chapterId]) { "Requested chapter not found" }
-		val repo = MangaRepository(manga.source)
+		val repo = mangaRepositoryFactory.create(manga.source)
 		return repo.getPages(chapter).mapIndexed { index, page ->
 			ReaderPage(page, index, chapterId)
 		}

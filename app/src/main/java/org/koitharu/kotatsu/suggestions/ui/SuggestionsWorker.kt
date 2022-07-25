@@ -7,13 +7,16 @@ import android.os.Build
 import androidx.annotation.FloatRange
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.work.HiltWorker
 import androidx.work.*
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import java.util.concurrent.TimeUnit
+import kotlin.math.pow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -24,15 +27,16 @@ import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.utils.ext.asArrayList
 import org.koitharu.kotatsu.utils.ext.trySetForeground
-import java.util.concurrent.TimeUnit
-import kotlin.math.pow
 
-class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
-	CoroutineWorker(appContext, params), KoinComponent {
-
-	private val suggestionRepository by inject<SuggestionRepository>()
-	private val historyRepository by inject<HistoryRepository>()
-	private val appSettings by inject<AppSettings>()
+@HiltWorker
+class SuggestionsWorker @AssistedInject constructor(
+	@Assisted appContext: Context,
+	@Assisted params: WorkerParameters,
+	private val suggestionRepository: SuggestionRepository,
+	private val historyRepository: HistoryRepository,
+	private val appSettings: AppSettings,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
+) : CoroutineWorker(appContext, params) {
 
 	override suspend fun doWork(): Result {
 		val count = doWorkImpl()
@@ -47,7 +51,7 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 			val channel = NotificationChannel(
 				WORKER_CHANNEL_ID,
 				title,
-				NotificationManager.IMPORTANCE_LOW
+				NotificationManager.IMPORTANCE_LOW,
 			)
 			channel.setShowBadge(false)
 			channel.enableVibration(false)
@@ -90,7 +94,7 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
 		val rawResults = coroutineScope {
 			tagsBySources.flatMap { (source, tags) ->
-				val repo = MangaRepository(source)
+				val repo = mangaRepositoryFactory.create(source)
 				tags.map { tag ->
 					async(dispatcher) {
 						repo.getList(
@@ -118,7 +122,7 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		}.map { manga ->
 			MangaSuggestion(
 				manga = manga,
-				relevance = computeRelevance(manga.tags, allTags)
+				relevance = computeRelevance(manga.tags, allTags),
 			)
 		}.sortedBy { it.relevance }.take(LIMIT)
 		suggestionRepository.replace(suggestions)

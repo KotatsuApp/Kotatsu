@@ -16,15 +16,18 @@ import coil.request.ImageRequest
 import coil.target.ViewTarget
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import org.koin.android.ext.android.inject
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityImageBinding
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.indicator
 
+@AndroidEntryPoint
 class ImageActivity : BaseActivity<ActivityImageBinding>() {
 
-	private val coil: ImageLoader by inject()
+	@Inject
+	lateinit var coil: ImageLoader
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -40,7 +43,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>() {
 		with(binding.toolbar) {
 			updatePadding(
 				left = insets.left,
-				right = insets.right
+				right = insets.right,
 			)
 			updateLayoutParams<ViewGroup.MarginLayoutParams> {
 				topMargin = insets.top

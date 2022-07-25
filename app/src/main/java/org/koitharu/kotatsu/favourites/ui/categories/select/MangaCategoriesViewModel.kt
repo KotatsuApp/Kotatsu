@@ -1,6 +1,9 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select
 
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -10,9 +13,9 @@ import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryI
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
-class MangaCategoriesViewModel(
-	private val manga: List<Manga>,
-	private val favouritesRepository: FavouritesRepository
+class MangaCategoriesViewModel @AssistedInject constructor(
+	@Assisted private val manga: List<Manga>,
+	private val favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 
 	val content = combine(
@@ -23,7 +26,7 @@ class MangaCategoriesViewModel(
 			MangaCategoryItem(
 				id = it.id,
 				name = it.title,
-				isChecked = it.id in checked
+				isChecked = it.id in checked,
 			)
 		}
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
@@ -43,7 +46,7 @@ class MangaCategoriesViewModel(
 		favouritesRepository.observeCategoriesIds(manga[0].id)
 	} else {
 		combine(
-			manga.map { favouritesRepository.observeCategoriesIds(it.id) }
+			manga.map { favouritesRepository.observeCategoriesIds(it.id) },
 		) { array ->
 			val result = HashSet<Long>()
 			var isFirst = true
@@ -57,5 +60,11 @@ class MangaCategoriesViewModel(
 			}
 			result
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(manga: List<Manga>): MangaCategoriesViewModel
 	}
 }

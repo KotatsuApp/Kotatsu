@@ -9,13 +9,22 @@ import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.Callable
-import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.core.db.*
 
 abstract class SyncProvider : ContentProvider() {
 
-	private val database by inject<MangaDatabase>()
+	private val database by lazy {
+		val appContext = checkNotNull(context?.applicationContext)
+		val entryPoint = EntryPointAccessors.fromApplication(appContext, SyncProviderEntryPoint::class.java)
+		entryPoint.database()
+	}
+
 	private val supportedTables = setOf(
 		TABLE_FAVOURITES,
 		TABLE_MANGA,
@@ -34,7 +43,7 @@ abstract class SyncProvider : ContentProvider() {
 		projection: Array<out String>?,
 		selection: String?,
 		selectionArgs: Array<out String>?,
-		sortOrder: String?
+		sortOrder: String?,
 	): Cursor? = if (getTableName(uri) != null) {
 		val sqlQuery = SupportSQLiteQueryBuilder.builder(uri.lastPathSegment)
 			.columns(projection)
@@ -107,5 +116,11 @@ abstract class SyncProvider : ContentProvider() {
 		val whereClause = keys.joinToString(" AND ") { "`$it` = ?" }
 		val whereArgs = Array<Any>(keys.size) { i -> values.get("`${keys[i]}`") ?: values.get(keys[i]) }
 		this.update(table, SQLiteDatabase.CONFLICT_IGNORE, values, whereClause, whereArgs)
+	}
+
+	@EntryPoint
+	@InstallIn(SingletonComponent::class)
+	interface SyncProviderEntryPoint {
+		fun database(): MangaDatabase
 	}
 }

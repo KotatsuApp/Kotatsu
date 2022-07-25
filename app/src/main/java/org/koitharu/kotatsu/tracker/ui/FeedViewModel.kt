@@ -1,6 +1,10 @@
 package org.koitharu.kotatsu.tracker.ui
 
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -20,11 +24,10 @@ import org.koitharu.kotatsu.tracker.ui.model.toFeedItem
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
-import java.util.*
-import java.util.concurrent.TimeUnit
 
-class FeedViewModel(
-	private val repository: TrackingRepository
+@HiltViewModel
+class FeedViewModel @Inject constructor(
+	private val repository: TrackingRepository,
 ) : BaseViewModel() {
 
 	private val logList = MutableStateFlow<List<TrackingLogItem>?>(null)
@@ -34,7 +37,7 @@ class FeedViewModel(
 	val onFeedCleared = SingleLiveEvent<Unit>()
 	val content = combine(
 		logList.filterNotNull(),
-		hasNextPage
+		hasNextPage,
 	) { list, isHasNextPage ->
 		buildList(list.size + 2) {
 			if (list.isEmpty()) {
@@ -44,7 +47,7 @@ class FeedViewModel(
 						textPrimary = R.string.text_empty_holder_primary,
 						textSecondary = R.string.text_feed_holder,
 						actionStringRes = 0,
-					)
+					),
 				)
 			} else {
 				list.mapListTo(this)

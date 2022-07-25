@@ -9,15 +9,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
@@ -33,13 +35,17 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 
+@AndroidEntryPoint
 class FavouriteCategoriesActivity :
 	BaseActivity<ActivityCategoriesBinding>(),
 	FavouriteCategoriesListListener,
 	View.OnClickListener,
 	ListStateHolderListener {
 
-	private val viewModel by viewModel<FavouritesCategoriesViewModel>()
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by viewModels<FavouritesCategoriesViewModel>()
 
 	private lateinit var adapter: CategoriesAdapter
 	private lateinit var selectionController: ListSelectionController
@@ -49,7 +55,7 @@ class FavouriteCategoriesActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		adapter = CategoriesAdapter(get(), this, this, this)
+		adapter = CategoriesAdapter(coil, this, this, this)
 		selectionController = ListSelectionController(
 			activity = this,
 			decoration = CategoriesSelectionDecoration(this),
@@ -169,7 +175,8 @@ class FavouriteCategoriesActivity :
 	}
 
 	private inner class ReorderHelperCallback : ItemTouchHelper.SimpleCallback(
-		ItemTouchHelper.DOWN or ItemTouchHelper.UP, 0
+		ItemTouchHelper.DOWN or ItemTouchHelper.UP,
+		0,
 	) {
 
 		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit

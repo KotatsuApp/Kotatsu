@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
-import org.koin.android.ext.android.inject
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -15,12 +16,14 @@ import org.koitharu.kotatsu.databinding.SheetLibrarySizeBinding
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import org.koitharu.kotatsu.utils.progress.IntPercentLabelFormatter
 
+@AndroidEntryPoint
 class LibrarySizeBottomSheet :
 	BaseBottomSheet<SheetLibrarySizeBinding>(),
 	Slider.OnChangeListener,
 	View.OnClickListener {
 
-	private val settings by inject<AppSettings>(mode = LazyThreadSafetyMode.NONE)
+	@Inject
+	lateinit var settings: AppSettings
 	private var labelFormatter: LabelFormatter? = null
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetLibrarySizeBinding {

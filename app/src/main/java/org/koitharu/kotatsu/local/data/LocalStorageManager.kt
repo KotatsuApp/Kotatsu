@@ -4,6 +4,10 @@ import android.content.ContentResolver
 import android.content.Context
 import android.os.StatFs
 import androidx.annotation.WorkerThread
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
@@ -12,15 +16,15 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.utils.ext.computeSize
 import org.koitharu.kotatsu.utils.ext.getStorageName
-import java.io.File
 
 private const val DIR_NAME = "manga"
 private const val CACHE_DISK_PERCENTAGE = 0.02
 private const val CACHE_SIZE_MIN: Long = 10 * 1024 * 1024 // 10MB
 private const val CACHE_SIZE_MAX: Long = 250 * 1024 * 1024 // 250MB
 
-class LocalStorageManager(
-	private val context: Context,
+@Singleton
+class LocalStorageManager @Inject constructor(
+	@ApplicationContext private val context: Context,
 	private val settings: AppSettings,
 ) {
 

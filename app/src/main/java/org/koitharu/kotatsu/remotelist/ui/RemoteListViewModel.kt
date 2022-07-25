@@ -2,6 +2,10 @@ package org.koitharu.kotatsu.remotelist.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -9,6 +13,7 @@ import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -18,21 +23,23 @@ import org.koitharu.kotatsu.list.ui.filter.FilterState
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import java.util.*
 
 private const val FILTER_MIN_INTERVAL = 250L
 
-class RemoteListViewModel(
-	private val repository: RemoteMangaRepository,
+class RemoteListViewModel @AssistedInject constructor(
+	@Assisted source: MangaSource,
+	mangaRepositoryFactory: MangaRepository.Factory,
 	private val searchRepository: MangaSearchRepository,
 	settings: AppSettings,
 	dataRepository: MangaDataRepository,
 ) : MangaListViewModel(settings), OnFilterChangedListener {
 
+	private val repository = mangaRepositoryFactory.create(source) as RemoteMangaRepository
 	private val filter = FilterCoordinator(repository, dataRepository, viewModelScope)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
@@ -158,7 +165,7 @@ class RemoteListViewModel(
 
 	private suspend fun createChipsList(
 		filterState: FilterState,
-		availableTags: Set<MangaTag>
+		availableTags: Set<MangaTag>,
 	): List<ChipsView.ChipModel> {
 		val selectedTags = filterState.tags.toMutableSet()
 		var tags = searchRepository.getTagsSuggestion("", 6, repository.source)
@@ -194,5 +201,11 @@ class RemoteListViewModel(
 			result.addFirst(model)
 		}
 		return result
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(source: MangaSource): RemoteListViewModel
 	}
 }

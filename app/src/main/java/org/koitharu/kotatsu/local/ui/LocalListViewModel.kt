@@ -3,6 +3,9 @@ package org.koitharu.kotatsu.local.ui
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.IOException
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,9 +28,9 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.io.IOException
 
-class LocalListViewModel(
+@HiltViewModel
+class LocalListViewModel @Inject constructor(
 	private val repository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
 	settings: AppSettings,
@@ -42,7 +45,7 @@ class LocalListViewModel(
 	override val content = combine(
 		mangaList,
 		createListModeFlow(),
-		listError
+		listError,
 	) { list, mode, error ->
 		when {
 			error != null -> listOf(error.toErrorState(canRetry = true))
@@ -53,7 +56,7 @@ class LocalListViewModel(
 					textPrimary = R.string.text_local_holder_primary,
 					textSecondary = R.string.text_local_holder_secondary,
 					actionStringRes = R.string._import,
-				)
+				),
 			)
 			else -> list.toUi(mode)
 		}

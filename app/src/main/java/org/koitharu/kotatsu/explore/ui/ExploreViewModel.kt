@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.explore.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
@@ -15,7 +17,8 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
-class ExploreViewModel(
+@HiltViewModel
+class ExploreViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val exploreRepository: ExploreRepository,
 ) : BaseViewModel() {

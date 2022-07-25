@@ -6,20 +6,25 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.PopupMenu
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener {
 
-	override val viewModel by viewModel<FavouritesListViewModel> {
-		parametersOf(categoryId)
+	@Inject
+	lateinit var viewModelFactory: FavouritesListViewModel.Factory
+
+	override val viewModel by assistedViewModels<FavouritesListViewModel> {
+		viewModelFactory.create(categoryId)
 	}
 
 	private val categoryId: Long

@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.sync.data
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -11,8 +13,8 @@ import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.parsers.util.removeSurrounding
 import org.koitharu.kotatsu.utils.ext.toRequestBody
 
-class SyncAuthApi(
-	context: Context,
+class SyncAuthApi @Inject constructor(
+	@ApplicationContext context: Context,
 	private val okHttpClient: OkHttpClient,
 ) {
 
@@ -20,7 +22,7 @@ class SyncAuthApi(
 
 	suspend fun authenticate(email: String, password: String): String {
 		val body = JSONObject(
-			mapOf("email" to email, "password" to password)
+			mapOf("email" to email, "password" to password),
 		).toRequestBody()
 		val request = Request.Builder()
 			.url("$baseUrl/auth")

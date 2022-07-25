@@ -11,21 +11,27 @@ import android.webkit.WebSettings
 import androidx.core.view.isInvisible
 import androidx.fragment.app.setFragmentResult
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koin.android.ext.android.get
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.network.AndroidCookieJar
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.databinding.FragmentCloudflareBinding
 import org.koitharu.kotatsu.utils.ext.stringArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), CloudFlareCallback {
 
 	private val url by stringArgument(ARG_URL)
 	private val pendingResult = Bundle(1)
 
+	@Inject
+	lateinit var cookieJar: AndroidCookieJar
+
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentCloudflareBinding.inflate(inflater, container, false)
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -38,7 +44,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 			databaseEnabled = true
 			userAgentString = UserAgentInterceptor.userAgent
 		}
-		binding.webView.webViewClient = CloudFlareClient(get(), this, url.orEmpty())
+		binding.webView.webViewClient = CloudFlareClient(cookieJar, this, url.orEmpty())
 		CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webView, true)
 		if (url.isNullOrEmpty()) {
 			dismissAllowingStateLoss()

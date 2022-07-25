@@ -6,6 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -17,6 +21,7 @@ import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.details.domain.BranchComparator
@@ -33,10 +38,9 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import java.io.IOException
 
-class DetailsViewModel(
-	intent: MangaIntent,
+class DetailsViewModel @AssistedInject constructor(
+	@Assisted intent: MangaIntent,
 	private val historyRepository: HistoryRepository,
 	favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
@@ -44,9 +48,12 @@ class DetailsViewModel(
 	mangaDataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
-	private val scrobbler: Scrobbler,
+	scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val imageGetter: Html.ImageGetter,
+	mangaRepositoryFactory: MangaRepository.Factory,
 ) : BaseViewModel() {
+
+	private val scrobbler = scrobblers.first() // TODO support multiple scrobblers
 
 	private val delegate = MangaDetailsDelegate(
 		intent = intent,
@@ -54,6 +61,7 @@ class DetailsViewModel(
 		mangaDataRepository = mangaDataRepository,
 		historyRepository = historyRepository,
 		localMangaRepository = localMangaRepository,
+		mangaRepositoryFactory = mangaRepositoryFactory,
 	)
 
 	private var loadingJob: Job
@@ -110,7 +118,7 @@ class DetailsViewModel(
 
 	val selectedBranchIndex = combine(
 		branches.asFlow(),
-		delegate.selectedBranch
+		delegate.selectedBranch,
 	) { branches, selected ->
 		branches.indexOf(selected)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, -1)
@@ -225,7 +233,7 @@ class DetailsViewModel(
 	fun unregisterScrobbling() {
 		launchJob(Dispatchers.Default) {
 			scrobbler.unregisterScrobbling(
-				mangaId = delegate.mangaId
+				mangaId = delegate.mangaId,
 			)
 		}
 	}
@@ -241,5 +249,11 @@ class DetailsViewModel(
 		return filter {
 			it.chapter.name.contains(query, ignoreCase = true)
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(intent: MangaIntent): DetailsViewModel
 	}
 }

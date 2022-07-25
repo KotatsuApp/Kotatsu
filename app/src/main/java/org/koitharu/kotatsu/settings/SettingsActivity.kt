@@ -16,6 +16,7 @@ import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.appbar.AppBarLayout
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -27,6 +28,7 @@ import org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
+@AndroidEntryPoint
 class SettingsActivity :
 	BaseActivity<ActivitySettingsBinding>(),
 	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
@@ -88,7 +90,7 @@ class SettingsActivity :
 
 	override fun onPreferenceStartFragment(
 		caller: PreferenceFragmentCompat,
-		pref: Preference
+		pref: Preference,
 	): Boolean {
 		val fm = supportFragmentManager
 		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment ?: return false)
@@ -126,7 +128,7 @@ class SettingsActivity :
 			ACTION_SHIKIMORI -> ShikimoriSettingsFragment()
 			ACTION_TRACKER -> TrackerSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
-				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL
+				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
 			)
 			ACTION_MANAGE_SOURCES -> SourcesSettingsFragment()
 			else -> SettingsHeadersFragment()

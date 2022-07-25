@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
-import org.koin.android.ext.android.inject
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
@@ -17,13 +17,16 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.DialogListModeBinding
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import org.koitharu.kotatsu.utils.progress.IntPercentLabelFormatter
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ListModeSelectDialog :
 	AlertDialogFragment<DialogListModeBinding>(),
 	CheckableButtonGroup.OnCheckedChangeListener,
 	Slider.OnChangeListener {
 
-	private val settings by inject<AppSettings>(mode = LazyThreadSafetyMode.NONE)
+	@Inject
+	lateinit var settings: AppSettings
 
 	override fun onInflateView(
 		inflater: LayoutInflater,

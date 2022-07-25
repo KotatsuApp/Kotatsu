@@ -2,16 +2,20 @@ package org.koitharu.kotatsu.settings.backup
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import javax.inject.Inject
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.io.File
 
-class BackupViewModel(
+@HiltViewModel
+class BackupViewModel @Inject constructor(
 	private val repository: BackupRepository,
-	context: Context
+	@ApplicationContext context: Context,
 ) : BaseViewModel() {
 
 	val progress = MutableLiveData<Progress?>(null)

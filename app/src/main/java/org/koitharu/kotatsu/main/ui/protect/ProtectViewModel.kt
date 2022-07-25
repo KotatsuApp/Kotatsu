@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.main.ui.protect
 
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -10,7 +12,8 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 
 private const val PASSWORD_COMPARE_DELAY = 1_000L
 
-class ProtectViewModel(
+@HiltViewModel
+class ProtectViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val protectHelper: AppProtectHelper,
 ) : BaseViewModel() {

@@ -12,9 +12,10 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
+import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -55,6 +56,9 @@ abstract class MangaListFragment :
 	SwipeRefreshLayout.OnRefreshListener,
 	ListSelectionController.Callback2,
 	FastScroller.FastScrollListener {
+
+	@Inject
+	lateinit var coil: ImageLoader
 
 	private var listAdapter: MangaListAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
@@ -188,7 +192,7 @@ abstract class MangaListFragment :
 
 	protected open fun onCreateAdapter(): MangaListAdapter {
 		return MangaListAdapter(
-			coil = get(),
+			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
 			listener = this,
 		)

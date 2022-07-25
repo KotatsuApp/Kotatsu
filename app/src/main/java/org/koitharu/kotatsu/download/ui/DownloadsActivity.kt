@@ -7,23 +7,29 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
+import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.utils.bindServiceWithLifecycle
 
+@AndroidEntryPoint
 class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
+
+	@Inject
+	lateinit var coil: ImageLoader
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		val adapter = DownloadsAdapter(lifecycleScope, get())
+		val adapter = DownloadsAdapter(lifecycleScope, coil)
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		bindServiceWithLifecycle(
@@ -42,11 +48,11 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 		binding.recyclerView.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			bottom = insets.bottom
+			bottom = insets.bottom,
 		)
 		binding.toolbar.updatePadding(
 			left = insets.left,
-			right = insets.right
+			right = insets.right,
 		)
 	}
 

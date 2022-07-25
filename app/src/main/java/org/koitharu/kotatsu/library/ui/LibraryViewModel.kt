@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.library.ui
 import androidx.collection.ArraySet
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -30,7 +32,8 @@ import org.koitharu.kotatsu.utils.ext.daysDiff
 
 private const val HISTORY_MAX_SEGMENTS = 2
 
-class LibraryViewModel(
+@HiltViewModel
+class LibraryViewModel @Inject constructor(
 	repository: LibraryRepository,
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,

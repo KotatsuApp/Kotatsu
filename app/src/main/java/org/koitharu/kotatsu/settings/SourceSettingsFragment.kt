@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
@@ -18,7 +20,11 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import org.koitharu.kotatsu.utils.ext.*
 
+@AndroidEntryPoint
 class SourceSettingsFragment : BasePreferenceFragment(0) {
+
+	@Inject
+	lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
 	private val source by serializableArgument<MangaSource>(EXTRA_SOURCE)
 	private var repository: RemoteMangaRepository? = null
@@ -31,7 +37,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		preferenceManager.sharedPreferencesName = source.name
-		val repo = MangaRepository(source) as? RemoteMangaRepository ?: return
+		val repo = mangaRepositoryFactory.create(source) as? RemoteMangaRepository ?: return
 		repository = repo
 		addPreferencesFromResource(R.xml.pref_source)
 		addPreferencesFromRepository(repo)
@@ -89,7 +95,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 		}
 	}
 
-	private fun resolveError(error: Throwable): Unit {
+	private fun resolveError(error: Throwable) {
 		viewLifecycleScope.launch {
 			if (exceptionResolver.resolve(error)) {
 				val pref = findPreference<Preference>(KEY_AUTH) ?: return@launch

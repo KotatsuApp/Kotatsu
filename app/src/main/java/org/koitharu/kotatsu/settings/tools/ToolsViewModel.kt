@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
@@ -13,7 +15,8 @@ import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.settings.tools.model.StorageUsage
 
-class ToolsViewModel(
+@HiltViewModel
+class ToolsViewModel @Inject constructor(
 	private val storageManager: LocalStorageManager,
 	private val appUpdateRepository: AppUpdateRepository,
 	private val settings: AppSettings,

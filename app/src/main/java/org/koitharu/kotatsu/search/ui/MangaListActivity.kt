@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
-import org.koin.androidx.viewmodel.ext.android.getViewModel
-import org.koin.core.parameter.parametersOf
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
@@ -19,8 +17,8 @@ import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
-import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 
+@AndroidEntryPoint
 class MangaListActivity :
 	BaseActivity<ActivityContainerBinding>(),
 	AppBarOwner {
@@ -48,7 +46,7 @@ class MangaListActivity :
 					RemoteListFragment.newInstance(source)
 				}
 				replace(R.id.container, fragment)
-				if (!tags.isNullOrEmpty()) {
+				if (!tags.isNullOrEmpty() && fragment is RemoteListFragment) {
 					runOnCommit(ApplyFilterRunnable(fragment, tags))
 				}
 			}
@@ -59,21 +57,18 @@ class MangaListActivity :
 		with(binding.toolbar) {
 			updatePadding(
 				left = insets.left,
-				right = insets.right
+				right = insets.right,
 			)
 		}
 	}
 
 	private class ApplyFilterRunnable(
-		private val fragment: Fragment,
+		private val fragment: RemoteListFragment,
 		private val tags: Set<MangaTag>,
 	) : Runnable {
 
 		override fun run() {
-			val viewModel = fragment.getViewModel<RemoteListViewModel> {
-				parametersOf(tags.first().source)
-			}
-			viewModel.applyFilter(tags)
+			fragment.viewModel.applyFilter(tags)
 		}
 	}
 

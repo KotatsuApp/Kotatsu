@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.absoluteValue
 import kotlinx.coroutines.async
-import org.koin.android.ext.android.get
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -20,19 +22,23 @@ import org.koitharu.kotatsu.utils.ext.recyclerView
 import org.koitharu.kotatsu.utils.ext.resetTransformations
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
+@AndroidEntryPoint
 class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private var pagerAdapter: ReversedPagesAdapter? = null
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentReaderStandardBinding.inflate(inflater, container, false)
 
 	@SuppressLint("NotifyDataSetChanged")
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		pagerAdapter = ReversedPagesAdapter(viewModel.pageLoader, get(), exceptionResolver)
+		pagerAdapter = ReversedPagesAdapter(viewModel.pageLoader, settings, exceptionResolver)
 		with(binding.pager) {
 			adapter = pagerAdapter
 			offscreenPageLimit = 2
@@ -67,7 +73,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	override fun switchPageTo(position: Int, smooth: Boolean) {
 		binding.pager.setCurrentItem(
 			reversed(position),
-			smooth && (binding.pager.currentItem - position).absoluteValue < PagerReaderFragment.SMOOTH_SCROLL_LIMIT
+			smooth && (binding.pager.currentItem - position).absoluteValue < PagerReaderFragment.SMOOTH_SCROLL_LIMIT,
 		)
 	}
 
@@ -98,7 +104,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 		ReaderState(
 			chapterId = page.chapterId,
 			page = page.index,
-			scroll = 0
+			scroll = 0,
 		)
 	}
 

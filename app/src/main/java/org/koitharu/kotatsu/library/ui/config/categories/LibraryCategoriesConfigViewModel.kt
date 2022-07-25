@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.library.ui.config.categories
 
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -8,7 +10,8 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
-class LibraryCategoriesConfigViewModel(
+@HiltViewModel
+class LibraryCategoriesConfigViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 

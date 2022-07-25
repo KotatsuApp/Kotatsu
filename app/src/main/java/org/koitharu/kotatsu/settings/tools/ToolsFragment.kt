@@ -15,9 +15,10 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
+import androidx.fragment.app.viewModels
 import com.google.android.material.R as materialR
 import com.google.android.material.color.MaterialColors
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.SegmentedBarView
@@ -29,12 +30,13 @@ import org.koitharu.kotatsu.settings.tools.model.StorageUsage
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 
+@AndroidEntryPoint
 class ToolsFragment :
 	BaseFragment<FragmentToolsBinding>(),
 	CompoundButton.OnCheckedChangeListener,
 	View.OnClickListener {
 
-	private val viewModel by viewModel<ToolsViewModel>()
+	private val viewModel by viewModels<ToolsViewModel>()
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentToolsBinding {
 		return FragmentToolsBinding.inflate(inflater, container, false)

@@ -8,18 +8,21 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
-import org.koin.android.ext.android.inject
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.SettingsHeadersFragment
 
+@AndroidEntryPoint
 abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	PreferenceFragmentCompat(),
 	WindowInsetsDelegate.WindowInsetsListener,
 	RecyclerViewOwner {
 
-	protected val settings by inject<AppSettings>(mode = LazyThreadSafetyMode.NONE)
+	@Inject
+	lateinit var settings: AppSettings
 
 	@Suppress("LeakingThis")
 	protected val insetsDelegate = WindowInsetsDelegate(this)
@@ -48,7 +51,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	@CallSuper
 	override fun onWindowInsetsChanged(insets: Insets) {
 		listView.updatePadding(
-			bottom = insets.bottom
+			bottom = insets.bottom,
 		)
 	}
 

@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.async
-import org.koin.android.ext.android.get
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -16,19 +18,23 @@ import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
 import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
+@AndroidEntryPoint
 class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private val scrollInterpolator = AccelerateDecelerateInterpolator()
 	private var webtoonAdapter: WebtoonAdapter? = null
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentReaderWebtoonBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		webtoonAdapter = WebtoonAdapter(viewModel.pageLoader, get(), exceptionResolver)
+		webtoonAdapter = WebtoonAdapter(viewModel.pageLoader, settings, exceptionResolver)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = webtoonAdapter
@@ -73,7 +79,7 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 			chapterId = page.chapterId,
 			page = page.index,
 			scroll = (recyclerView.findViewHolderForAdapterPosition(currentItem) as? WebtoonHolder)
-				?.getScrollY() ?: 0
+				?.getScrollY() ?: 0,
 		)
 	}
 
@@ -85,7 +91,7 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 		binding.recyclerView.smoothScrollBy(
 			0,
 			(binding.recyclerView.height * 0.9).toInt() * delta,
-			scrollInterpolator
+			scrollInterpolator,
 		)
 	}
 

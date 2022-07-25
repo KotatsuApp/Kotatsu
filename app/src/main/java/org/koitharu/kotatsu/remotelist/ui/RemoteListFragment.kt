@@ -8,8 +8,8 @@ import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.list.ui.MangaListFragment
@@ -19,13 +19,18 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.serializableArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class RemoteListFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<RemoteListViewModel> {
-		parametersOf(source)
+	@Inject
+	lateinit var viewModelFactory: RemoteListViewModel.Factory
+
+	public override val viewModel by assistedViewModels {
+		viewModelFactory.create(source)
 	}
 
 	private val source by serializableArgument<MangaSource>(ARG_SOURCE)

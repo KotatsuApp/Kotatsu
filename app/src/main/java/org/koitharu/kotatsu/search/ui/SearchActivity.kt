@@ -3,13 +3,11 @@ package org.koitharu.kotatsu.search.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
@@ -19,7 +17,7 @@ import org.koitharu.kotatsu.utils.ext.showKeyboard
 
 class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQueryTextListener {
 
-	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
+	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()
 	private lateinit var source: MangaSource
 
 	override fun onCreate(savedInstanceState: Bundle?) {

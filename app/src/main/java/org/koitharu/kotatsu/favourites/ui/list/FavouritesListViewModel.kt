@@ -3,6 +3,9 @@ package org.koitharu.kotatsu.favourites.ui.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -25,8 +28,8 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
-class FavouritesListViewModel(
-	private val categoryId: Long,
+class FavouritesListViewModel @AssistedInject constructor(
+	@Assisted private val categoryId: Long,
 	private val repository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val historyRepository: HistoryRepository,
@@ -120,5 +123,11 @@ class FavouritesListViewModel(
 		} else {
 			PROGRESS_NONE
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(categoryId: Long): FavouritesListViewModel
 	}
 }

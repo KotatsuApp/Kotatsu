@@ -18,8 +18,9 @@ import androidx.core.text.inSpans
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -31,12 +32,16 @@ import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 private const val KEY_IGNORE_DOZE = "ignore_dose"
 
+@AndroidEntryPoint
 class TrackerSettingsFragment :
 	BasePreferenceFragment(R.string.check_for_new_chapters),
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
-	private val repository by inject<TrackingRepository>()
-	private val channels by inject<TrackerNotificationChannels>()
+	@Inject
+	lateinit var repository: TrackingRepository
+
+	@Inject
+	lateinit var channels: TrackerNotificationChannels
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_tracker)
@@ -79,7 +84,8 @@ class TrackerSettingsFragment :
 		when (key) {
 			AppSettings.KEY_TRACKER_NOTIFICATIONS -> updateNotificationsSummary()
 			AppSettings.KEY_TRACK_SOURCES,
-			AppSettings.KEY_TRACKER_ENABLED -> updateCategoriesEnabled()
+			AppSettings.KEY_TRACKER_ENABLED,
+			-> updateCategoriesEnabled()
 		}
 	}
 
@@ -121,7 +127,7 @@ class TrackerSettingsFragment :
 				channels.areNotificationsDisabled -> R.string.disabled
 				channels.isNotificationGroupEnabled() -> R.string.show_notification_new_chapters_on
 				else -> R.string.show_notification_new_chapters_off
-			}
+			},
 		)
 	}
 

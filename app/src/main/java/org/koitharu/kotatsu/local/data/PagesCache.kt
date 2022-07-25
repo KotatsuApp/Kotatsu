@@ -2,15 +2,19 @@ package org.koitharu.kotatsu.local.data
 
 import android.content.Context
 import com.tomclaw.cache.DiskLruCache
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import java.io.InputStream
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.subdir
 import org.koitharu.kotatsu.utils.ext.takeIfReadable
-import java.io.File
-import java.io.InputStream
 
-class PagesCache(context: Context) {
+@Singleton
+class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 
 	private val cacheDir = context.externalCacheDir ?: context.cacheDir
 	private val lruCache = createDiskLruCacheSafe(

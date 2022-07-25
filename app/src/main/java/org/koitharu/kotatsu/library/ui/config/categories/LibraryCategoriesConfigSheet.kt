@@ -6,19 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.SheetBaseBinding
 
+@AndroidEntryPoint
 class LibraryCategoriesConfigSheet :
 	BaseBottomSheet<SheetBaseBinding>(),
 	OnListItemClickListener<FavouriteCategory>,
 	View.OnClickListener {
 
-	private val viewModel by viewModel<LibraryCategoriesConfigViewModel>()
+	private val viewModel by viewModels<LibraryCategoriesConfigViewModel>()
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetBaseBinding {
 		return SheetBaseBinding.inflate(inflater, container, false)

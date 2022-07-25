@@ -12,6 +12,8 @@ import java.io.IOException
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
@@ -31,7 +33,8 @@ import org.koitharu.kotatsu.utils.ext.resolveName
 
 private const val MAX_PARALLELISM = 4
 
-class LocalMangaRepository(private val storageManager: LocalStorageManager) : MangaRepository {
+@Singleton
+class LocalMangaRepository @Inject constructor(private val storageManager: LocalStorageManager) : MangaRepository {
 
 	override val source = MangaSource.LOCAL
 	private val filenameFilter = CbzFilter()
@@ -86,7 +89,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				entries.filter { x ->
 					!x.isDirectory && x.name.substringBeforeLast(
 						File.separatorChar,
-						""
+						"",
 					) == parent
 				}
 			}
@@ -138,11 +141,11 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				url = fileUri,
 				coverUrl = zipUri(
 					file,
-					entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty()
+					entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty(),
 				),
 				chapters = info.chapters?.map { c ->
 					c.copy(url = fileUri, source = MangaSource.LOCAL)
-				}
+				},
 			)
 		}
 		// fallback
@@ -211,7 +214,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 					return@runInterruptible info.copy2(
 						source = MangaSource.LOCAL,
 						url = fileUri,
-						chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
+						chapters = info.chapters?.map { c -> c.copy(url = fileUri) },
 					)
 				}
 			}

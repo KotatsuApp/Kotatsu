@@ -2,9 +2,11 @@ package org.koitharu.kotatsu.core.parser
 
 import java.lang.ref.WeakReference
 import java.util.*
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.collections.set
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.model.*
 
 interface MangaRepository {
@@ -25,18 +27,22 @@ interface MangaRepository {
 
 	suspend fun getTags(): Set<MangaTag>
 
-	companion object : KoinComponent {
+	@Singleton
+	class Factory @Inject constructor(
+		private val localMangaRepository: LocalMangaRepository,
+		private val loaderContext: MangaLoaderContext,
+	) {
 
 		private val cache = EnumMap<MangaSource, WeakReference<RemoteMangaRepository>>(MangaSource::class.java)
 
-		operator fun invoke(source: MangaSource): MangaRepository {
+		fun create(source: MangaSource): MangaRepository {
 			if (source == MangaSource.LOCAL) {
-				return get<LocalMangaRepository>()
+				return localMangaRepository
 			}
 			cache[source]?.get()?.let { return it }
 			return synchronized(cache) {
 				cache[source]?.get()?.let { return it }
-				val repository = RemoteMangaRepository(MangaParser(source, get()))
+				val repository = RemoteMangaRepository(MangaParser(source, loaderContext))
 				cache[source] = WeakReference(repository)
 				repository
 			}

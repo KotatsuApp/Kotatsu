@@ -5,9 +5,11 @@ import android.view.*
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
+import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -30,13 +32,17 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 
+@AndroidEntryPoint
 class BookmarksFragment :
 	BaseFragment<FragmentListSimpleBinding>(),
 	ListStateHolderListener,
 	OnListItemClickListener<Bookmark>,
 	SectionedSelectionController.Callback<Manga> {
 
-	private val viewModel by viewModel<BookmarksViewModel>()
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by viewModels<BookmarksViewModel>()
 	private var adapter: BookmarksGroupAdapter? = null
 	private var selectionController: SectionedSelectionController<Manga>? = null
 
@@ -53,7 +59,7 @@ class BookmarksFragment :
 		)
 		adapter = BookmarksGroupAdapter(
 			lifecycleOwner = viewLifecycleOwner,
-			coil = get(),
+			coil = coil,
 			listener = this,
 			selectionController = checkNotNull(selectionController),
 			bookmarkClickListener = this,

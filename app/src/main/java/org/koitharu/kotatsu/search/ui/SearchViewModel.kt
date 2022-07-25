@@ -1,6 +1,9 @@
 package org.koitharu.kotatsu.search.ui
 
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,14 +14,17 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
-class SearchViewModel(
-	private val repository: MangaRepository,
-	private val query: String,
-	settings: AppSettings
+class SearchViewModel @AssistedInject constructor(
+	@Assisted source: MangaSource,
+	@Assisted private val query: String,
+	repositoryFactory: MangaRepository.Factory,
+	settings: AppSettings,
 ) : MangaListViewModel(settings) {
 
+	private val repository = repositoryFactory.create(source)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private val listError = MutableStateFlow<Throwable?>(null)
@@ -28,7 +34,7 @@ class SearchViewModel(
 		mangaList,
 		createListModeFlow(),
 		listError,
-		hasNextPage
+		hasNextPage,
 	) { list, mode, error, hasNext ->
 		when {
 			list.isNullOrEmpty() && error != null -> listOf(error.toErrorState(canRetry = true))
@@ -39,7 +45,7 @@ class SearchViewModel(
 					textPrimary = R.string.nothing_found,
 					textSecondary = R.string.text_search_holder_secondary,
 					actionStringRes = 0,
-				)
+				),
 			)
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
@@ -92,5 +98,11 @@ class SearchViewModel(
 				listError.value = e
 			}
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(source: MangaSource, query: String): SearchViewModel
 	}
 }

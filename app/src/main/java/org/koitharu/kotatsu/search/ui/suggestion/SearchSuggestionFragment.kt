@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import coil.ImageLoader
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
@@ -19,7 +20,10 @@ class SearchSuggestionFragment :
 	BaseFragment<FragmentSearchSuggestionBinding>(),
 	SearchSuggestionItemCallback.SuggestionItemListener {
 
-	private val viewModel by sharedViewModel<SearchSuggestionViewModel>()
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by activityViewModels<SearchSuggestionViewModel>()
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -29,7 +33,7 @@ class SearchSuggestionFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = SearchSuggestionAdapter(
-			coil = get(),
+			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
 			listener = requireActivity() as SearchSuggestionListener,
 		)
@@ -49,7 +53,7 @@ class SearchSuggestionFragment :
 			top = extraPadding,
 			right = insets.right,
 			left = insets.left,
-			bottom = insets.bottom
+			bottom = insets.bottom,
 		)
 	}
 

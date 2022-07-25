@@ -9,9 +9,9 @@ import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
@@ -29,13 +29,23 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
 import org.koitharu.kotatsu.utils.ShareHelper
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 
-class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaListListener,
+@AndroidEntryPoint
+class MultiSearchActivity :
+	BaseActivity<ActivitySearchMultiBinding>(),
+	MangaListListener,
 	ListSelectionController.Callback {
 
-	private val viewModel by viewModel<MultiSearchViewModel> {
-		parametersOf(intent.getStringExtra(EXTRA_QUERY).orEmpty())
+	@Inject
+	lateinit var viewModelFactory: MultiSearchViewModel.Factory
+
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by assistedViewModels<MultiSearchViewModel> {
+		viewModelFactory.create(intent.getStringExtra(EXTRA_QUERY).orEmpty())
 	}
 	private lateinit var adapter: MultiSearchAdapter
 	private lateinit var selectionController: ListSelectionController
@@ -49,7 +59,7 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 				startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query.value))
 			}
 		}
-		val sizeResolver = ItemSizeResolver(resources, get())
+		val sizeResolver = ItemSizeResolver(resources, settings)
 		val selectionDecoration = MangaSelectionDecoration(this)
 		selectionController = ListSelectionController(
 			activity = this,
@@ -59,7 +69,7 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 		)
 		adapter = MultiSearchAdapter(
 			lifecycleOwner = this,
-			coil = get(),
+			coil = coil,
 			listener = this,
 			itemClickListener = itemCLickListener,
 			sizeResolver = sizeResolver,

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.main.ui
 
 import android.view.View
-import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -12,13 +11,13 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 
 class ExitCallback(
-	private val activity: ComponentActivity,
+	private val activity: BaseActivity<*>,
 	private val snackbarHost: View,
 ) : OnBackPressedCallback(false) {
 
@@ -46,7 +45,7 @@ class ExitCallback(
 	}
 
 	private fun observeSettings() {
-		activity.get<AppSettings>()
+		activity.settings
 			.observeAsFlow(AppSettings.KEY_EXIT_CONFIRM) { isExitConfirmationEnabled }
 			.flowOn(Dispatchers.Default)
 			.onEach { isEnabled = it }

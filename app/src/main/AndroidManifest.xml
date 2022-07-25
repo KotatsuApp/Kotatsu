@@ -204,6 +204,10 @@
 			android:exported="false"
 			android:label="@string/history"
 			android:syncable="true" />
+		<provider
+			android:name="androidx.startup.InitializationProvider"
+			android:authorities="${applicationId}.androidx-startup"
+			tools:node="remove" />
 
 		<receiver
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider"
