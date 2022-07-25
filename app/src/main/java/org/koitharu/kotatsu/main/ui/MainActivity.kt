@@ -312,7 +312,7 @@ class MainActivity :
 	private fun setPrimaryFragment(fragment: Fragment) {
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.container, fragment, TAG_PRIMARY)
-			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 			.commit()
 		adjustFabVisibility(topFragment = fragment)
 	}
