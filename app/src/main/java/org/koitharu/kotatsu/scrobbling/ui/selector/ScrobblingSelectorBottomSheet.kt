@@ -7,9 +7,8 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import coil.ImageLoader
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
@@ -21,6 +20,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikiMangaSelectionDecoration
 import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikimoriSelectorAdapter
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -33,8 +33,16 @@ class ScrobblingSelectorBottomSheet :
 	SearchView.OnQueryTextListener,
 	DialogInterface.OnKeyListener {
 
-	private val viewModel by viewModel<ScrobblingSelectorViewModel> {
-		parametersOf(requireNotNull(requireArguments().getParcelable<ParcelableManga>(MangaIntent.KEY_MANGA)).manga)
+	@Inject
+	lateinit var viewModelFactory: ScrobblingSelectorViewModel.Factory
+
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by assistedViewModels {
+		viewModelFactory.create(
+			requireNotNull(requireArguments().getParcelable<ParcelableManga>(MangaIntent.KEY_MANGA)).manga,
+		)
 	}
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingSelectorBinding {
@@ -49,7 +57,7 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val listAdapter = ShikimoriSelectorAdapter(viewLifecycleOwner, get(), this)
+		val listAdapter = ShikimoriSelectorAdapter(viewLifecycleOwner, coil, this)
 		val decoration = ShikiMangaSelectionDecoration(view.context)
 		with(binding.recyclerView) {
 			adapter = listAdapter

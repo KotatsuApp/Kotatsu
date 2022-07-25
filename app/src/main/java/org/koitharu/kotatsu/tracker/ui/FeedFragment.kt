@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
+import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
@@ -27,12 +29,16 @@ import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 
+@AndroidEntryPoint
 class FeedFragment :
 	BaseFragment<FragmentFeedBinding>(),
 	PaginationScrollListener.Callback,
 	MangaListListener {
 
-	private val viewModel by viewModel<FeedViewModel>()
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by viewModels<FeedViewModel>()
 
 	private var feedAdapter: FeedAdapter? = null
 	private var paddingVertical = 0
@@ -40,12 +46,12 @@ class FeedFragment :
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentFeedBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		feedAdapter = FeedAdapter(get(), viewLifecycleOwner, this)
+		feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this)
 		with(binding.recyclerView) {
 			adapter = feedAdapter
 			setHasFixedSize(true)
@@ -55,7 +61,7 @@ class FeedFragment :
 			paddingVertical = resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
 			val decoration = TypedSpacingItemDecoration(
 				FeedAdapter.ITEM_TYPE_FEED to 0,
-				fallbackSpacing = spacing
+				fallbackSpacing = spacing,
 			)
 			addItemDecoration(decoration)
 		}
@@ -64,7 +70,13 @@ class FeedFragment :
 			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
 			isEnabled = false
 		}
-		addMenuProvider(FeedMenuProvider(binding.recyclerView, (activity as? BottomNavOwner)?.bottomNav ?: binding.recyclerView, viewModel))
+		addMenuProvider(
+			FeedMenuProvider(
+				binding.recyclerView,
+				(activity as? BottomNavOwner)?.bottomNav ?: binding.recyclerView,
+				viewModel,
+			),
+		)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
@@ -105,7 +117,7 @@ class FeedFragment :
 		val snackbar = Snackbar.make(
 			binding.recyclerView,
 			R.string.updates_feed_cleared,
-			Snackbar.LENGTH_LONG
+			Snackbar.LENGTH_LONG,
 		)
 		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
 		snackbar.show()
@@ -115,7 +127,7 @@ class FeedFragment :
 		val snackbar = Snackbar.make(
 			binding.recyclerView,
 			e.getDisplayMessage(resources),
-			Snackbar.LENGTH_SHORT
+			Snackbar.LENGTH_SHORT,
 		)
 		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
 		snackbar.show()

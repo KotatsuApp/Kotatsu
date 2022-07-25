@@ -11,9 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ActionMode
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.download.ui.service.DownloadService
@@ -25,7 +25,7 @@ import org.koitharu.kotatsu.utils.progress.Progress
 
 class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmSuppressWildcards Uri>> {
 
-	override val viewModel by viewModel<LocalListViewModel>()
+	override val viewModel by viewModels<LocalListViewModel>()
 	private val importCall = registerForActivityResult(
 		ActivityResultContracts.OpenMultipleDocuments(),
 		this,

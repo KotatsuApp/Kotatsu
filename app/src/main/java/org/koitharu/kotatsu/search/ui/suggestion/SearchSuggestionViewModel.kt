@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.search.ui.suggestion
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -19,7 +21,8 @@ private const val MAX_QUERY_ITEMS = 16
 private const val MAX_TAGS_ITEMS = 8
 private const val MAX_SOURCES_ITEMS = 6
 
-class SearchSuggestionViewModel(
+@HiltViewModel
+class SearchSuggestionViewModel @Inject constructor(
 	private val repository: MangaSearchRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel() {

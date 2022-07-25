@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.suggestions.ui
 
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -16,14 +18,15 @@ import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.onFirst
 
-class SuggestionsViewModel(
+@HiltViewModel
+class SuggestionsViewModel @Inject constructor(
 	repository: SuggestionRepository,
 	settings: AppSettings,
 ) : MangaListViewModel(settings) {
 
 	override val content = combine(
 		repository.observeAll(),
-		createListModeFlow()
+		createListModeFlow(),
 	) { list, mode ->
 		when {
 			list.isEmpty() -> listOf(
@@ -32,7 +35,7 @@ class SuggestionsViewModel(
 					textPrimary = R.string.nothing_found,
 					textSecondary = R.string.text_suggestion_holder,
 					actionStringRes = 0,
-				)
+				),
 			)
 			else -> list.toUi(mode)
 		}
@@ -44,7 +47,7 @@ class SuggestionsViewModel(
 		it.toErrorState(canRetry = false)
 	}.asLiveDataDistinct(
 		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(LoadingState)
+		listOf(LoadingState),
 	)
 
 	override fun onRefresh() = Unit

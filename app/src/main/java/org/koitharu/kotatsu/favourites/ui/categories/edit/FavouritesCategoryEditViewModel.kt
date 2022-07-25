@@ -3,6 +3,9 @@ package org.koitharu.kotatsu.favourites.ui.categories.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -13,8 +16,8 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 
 private const val NO_ID = -1L
 
-class FavouritesCategoryEditViewModel(
-	private val categoryId: Long,
+class FavouritesCategoryEditViewModel @AssistedInject constructor(
+	@Assisted private val categoryId: Long,
 	private val repository: FavouritesRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel() {
@@ -50,5 +53,11 @@ class FavouritesCategoryEditViewModel(
 			}
 			onSaved.call(Unit)
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(categoryId: Long): FavouritesCategoryEditViewModel
 	}
 }

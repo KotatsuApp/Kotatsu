@@ -11,31 +11,33 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import kotlin.collections.set
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import org.koin.android.ext.android.get
-import org.koin.core.context.GlobalContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseService
-import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.domain.WakeLockNode
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.throttle
 import org.koitharu.kotatsu.utils.progress.ProgressJob
 import org.koitharu.kotatsu.utils.progress.TimeLeftEstimator
-import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class DownloadService : BaseService() {
 
 	private lateinit var downloadManager: DownloadManager
 	private lateinit var notificationSwitcher: ForegroundNotificationSwitcher
+
+	@Inject
+	lateinit var downloadManagerFactory: DownloadManager.Factory
 
 	private val jobs = LinkedHashMap<Int, ProgressJob<DownloadState>>()
 	private val jobCount = MutableStateFlow(0)
@@ -48,7 +50,7 @@ class DownloadService : BaseService() {
 		notificationSwitcher = ForegroundNotificationSwitcher(this)
 		val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
-		downloadManager = get<DownloadManager.Factory>().create(
+		downloadManager = downloadManagerFactory.create(
 			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1)),
 		)
 		DownloadNotification.createChannel(this)
@@ -122,7 +124,7 @@ class DownloadService : BaseService() {
 				(job.progressValue as? DownloadState.Done)?.let {
 					sendBroadcast(
 						Intent(ACTION_DOWNLOAD_COMPLETE)
-							.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga, withChapters = false))
+							.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga, withChapters = false)),
 					)
 				}
 				notificationSwitcher.detach(
@@ -131,7 +133,7 @@ class DownloadService : BaseService() {
 						null
 					} else {
 						notification.create(job.progressValue, -1L)
-					}
+					},
 				)
 				stopSelf(startId)
 			}
@@ -182,27 +184,23 @@ class DownloadService : BaseService() {
 			if (chaptersIds?.isEmpty() == true) {
 				return
 			}
-			confirmDataTransfer(context) {
-				val intent = Intent(context, DownloadService::class.java)
-				intent.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
-				if (chaptersIds != null) {
-					intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
-				}
-				ContextCompat.startForegroundService(context, intent)
-				Toast.makeText(context, R.string.manga_downloading_, Toast.LENGTH_SHORT).show()
+			val intent = Intent(context, DownloadService::class.java)
+			intent.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
+			if (chaptersIds != null) {
+				intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
 			}
+			ContextCompat.startForegroundService(context, intent)
+			Toast.makeText(context, R.string.manga_downloading_, Toast.LENGTH_SHORT).show()
 		}
 
 		fun start(context: Context, manga: Collection<Manga>) {
 			if (manga.isEmpty()) {
 				return
 			}
-			confirmDataTransfer(context) {
-				for (item in manga) {
-					val intent = Intent(context, DownloadService::class.java)
-					intent.putExtra(EXTRA_MANGA, ParcelableManga(item, withChapters = false))
-					ContextCompat.startForegroundService(context, intent)
-				}
+			for (item in manga) {
+				val intent = Intent(context, DownloadService::class.java)
+				intent.putExtra(EXTRA_MANGA, ParcelableManga(item, withChapters = false))
+				ContextCompat.startForegroundService(context, intent)
 			}
 		}
 
@@ -224,25 +222,6 @@ class DownloadService : BaseService() {
 				return intent.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga
 			}
 			return null
-		}
-
-		private fun confirmDataTransfer(context: Context, callback: () -> Unit) {
-			val settings = GlobalContext.get().get<AppSettings>()
-			if (context.connectivityManager.isActiveNetworkMetered && settings.isTrafficWarningEnabled) {
-				CheckBoxAlertDialog.Builder(context)
-					.setTitle(R.string.warning)
-					.setMessage(R.string.network_consumption_warning)
-					.setCheckBoxText(R.string.dont_ask_again)
-					.setCheckBoxChecked(false)
-					.setNegativeButton(android.R.string.cancel, null)
-					.setPositiveButton(R.string._continue) { _, doNotAsk ->
-						settings.isTrafficWarningEnabled = !doNotAsk
-						callback()
-					}.create()
-					.show()
-			} else {
-				callback()
-			}
 		}
 	}
 }

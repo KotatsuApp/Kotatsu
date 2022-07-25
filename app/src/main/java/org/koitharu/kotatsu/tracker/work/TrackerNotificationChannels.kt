@@ -7,12 +7,14 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 
-class TrackerNotificationChannels(
-	private val context: Context,
+class TrackerNotificationChannels @Inject constructor(
+	@ApplicationContext private val context: Context,
 	private val settings: AppSettings,
 ) {
 

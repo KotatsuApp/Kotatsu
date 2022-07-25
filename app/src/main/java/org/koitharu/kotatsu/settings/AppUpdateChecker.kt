@@ -17,7 +17,6 @@ import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
@@ -31,8 +30,8 @@ import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 @Deprecated("")
 class AppUpdateChecker(private val activity: ComponentActivity) {
 
-	private val settings = activity.get<AppSettings>()
-	private val repo = activity.get<AppUpdateRepository>()
+	private val settings: AppSettings = TODO()
+	private val repo: AppUpdateRepository = TODO()
 
 	suspend fun checkIfNeeded(): Boolean? = if (
 		settings.isUpdateCheckingEnabled &&

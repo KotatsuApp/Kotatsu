@@ -14,6 +14,7 @@ import coil.network.HttpException
 import coil.request.Options
 import coil.size.Size
 import coil.size.pxOrElse
+import java.net.HttpURLConnection
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -25,7 +26,6 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
-import java.net.HttpURLConnection
 
 private const val FALLBACK_SIZE = 9999 // largest icon
 
@@ -34,6 +34,7 @@ class FaviconFetcher(
 	private val diskCache: Lazy<DiskCache?>,
 	private val mangaSource: MangaSource,
 	private val options: Options,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : Fetcher {
 
 	private val diskCacheKey
@@ -44,7 +45,7 @@ class FaviconFetcher(
 
 	override suspend fun fetch(): FetchResult {
 		getCached(options)?.let { return it }
-		val repo = MangaRepository(mangaSource) as RemoteMangaRepository
+		val repo = mangaRepositoryFactory.create(mangaSource) as RemoteMangaRepository
 		val favicons = repo.getFavicons()
 		val sizePx = maxOf(
 			options.size.width.pxOrElse { FALLBACK_SIZE },
@@ -136,6 +137,7 @@ class FaviconFetcher(
 	class Factory(
 		context: Context,
 		private val okHttpClient: OkHttpClient,
+		private val mangaRepositoryFactory: MangaRepository.Factory,
 	) : Fetcher.Factory<Uri> {
 
 		private val diskCache = lazy {
@@ -148,7 +150,7 @@ class FaviconFetcher(
 		override fun create(data: Uri, options: Options, imageLoader: ImageLoader): Fetcher? {
 			return if (data.scheme == URI_SCHEME_FAVICON) {
 				val mangaSource = MangaSource.valueOf(data.schemeSpecificPart)
-				FaviconFetcher(okHttpClient, diskCache, mangaSource, options)
+				FaviconFetcher(okHttpClient, diskCache, mangaSource, options, mangaRepositoryFactory)
 			} else {
 				null
 			}

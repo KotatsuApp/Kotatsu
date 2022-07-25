@@ -6,10 +6,12 @@ import android.os.Bundle
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
 
+@AndroidEntryPoint
 class BookmarksActivity : BaseActivity<ActivityContainerBinding>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +31,7 @@ class BookmarksActivity : BaseActivity<ActivityContainerBinding>() {
 		with(binding.toolbar) {
 			updatePadding(
 				left = insets.left,
-				right = insets.right
+				right = insets.right,
 			)
 		}
 	}

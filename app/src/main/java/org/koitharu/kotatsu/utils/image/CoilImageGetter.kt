@@ -6,9 +6,11 @@ import android.text.Html
 import coil.ImageLoader
 import coil.executeBlocking
 import coil.request.ImageRequest
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class CoilImageGetter(
-	private val context: Context,
+class CoilImageGetter @Inject constructor(
+	@ApplicationContext private val context: Context,
 	private val coil: ImageLoader,
 ) : Html.ImageGetter {
 
@@ -17,7 +19,7 @@ class CoilImageGetter(
 			ImageRequest.Builder(context)
 				.data(source)
 				.allowHardware(false)
-				.build()
+				.build(),
 		).drawable?.apply {
 			setBounds(0, 0, intrinsicHeight, intrinsicHeight)
 		}

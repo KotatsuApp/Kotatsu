@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.favourites.domain
 
 import androidx.room.withTransaction
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.base.domain.ReversibleHandle
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -14,7 +16,8 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import org.koitharu.kotatsu.utils.ext.mapItems
 
-class FavouritesRepository(
+@Singleton
+class FavouritesRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val channels: TrackerNotificationChannels,
 ) {

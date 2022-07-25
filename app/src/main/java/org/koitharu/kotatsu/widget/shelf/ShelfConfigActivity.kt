@@ -6,12 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import com.google.android.material.R as materialR
 import com.google.android.material.snackbar.Snackbar
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -20,12 +21,13 @@ import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
-import com.google.android.material.R as materialR
 
-class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
-	OnListItemClickListener<CategoryItem>, View.OnClickListener {
+class ShelfConfigActivity :
+	BaseActivity<ActivityCategoriesBinding>(),
+	OnListItemClickListener<CategoryItem>,
+	View.OnClickListener {
 
-	private val viewModel by viewModel<ShelfConfigViewModel>()
+	private val viewModel by viewModels<ShelfConfigViewModel>()
 
 	private lateinit var adapter: CategorySelectAdapter
 	private lateinit var config: AppWidgetConfig
@@ -44,7 +46,7 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 		binding.fabAdd.hide()
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
-			AppWidgetManager.INVALID_APPWIDGET_ID
+			AppWidgetManager.INVALID_APPWIDGET_ID,
 		) ?: AppWidgetManager.INVALID_APPWIDGET_ID
 		if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
 			finishAfterTransition()
@@ -64,7 +66,7 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 				updateWidget()
 				setResult(
 					Activity.RESULT_OK,
-					Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.widgetId)
+					Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.widgetId),
 				)
 				finish()
 			}
@@ -84,12 +86,12 @@ class ShelfConfigActivity : BaseActivity<ActivityCategoriesBinding>(),
 		binding.recyclerView.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			bottom = insets.bottom
+			bottom = insets.bottom,
 		)
 		with(binding.toolbar) {
 			updatePadding(
 				left = insets.left,
-				right = insets.right
+				right = insets.right,
 			)
 			updateLayoutParams<ViewGroup.MarginLayoutParams> {
 				topMargin = insets.top

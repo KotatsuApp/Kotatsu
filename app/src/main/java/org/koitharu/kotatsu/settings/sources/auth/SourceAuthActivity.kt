@@ -12,6 +12,8 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.google.android.material.R as materialR
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserCallback
@@ -25,7 +27,11 @@ import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.TaggedActivityResult
 
+@AndroidEntryPoint
 class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
+
+	@Inject
+	lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
 	private lateinit var authProvider: MangaParserAuthProvider
 
@@ -38,11 +44,11 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 			finishAfterTransition()
 			return
 		}
-		authProvider = (MangaRepository(source) as? RemoteMangaRepository)?.getAuthProvider() ?: run {
+		authProvider = (mangaRepositoryFactory.create(source) as? RemoteMangaRepository)?.getAuthProvider() ?: run {
 			Toast.makeText(
 				this,
 				getString(R.string.auth_not_supported_by, source.title),
-				Toast.LENGTH_SHORT
+				Toast.LENGTH_SHORT,
 			).show()
 			finishAfterTransition()
 			return
@@ -63,7 +69,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		val url = authProvider.authUrl
 		onTitleChanged(
 			source.title,
-			getString(R.string.loading_)
+			getString(R.string.loading_),
 		)
 		binding.webView.loadUrl(url)
 	}

@@ -2,15 +2,19 @@ package org.koitharu.kotatsu.scrobbling.shikimori.data
 
 import android.content.Context
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONObject
 import org.koitharu.kotatsu.scrobbling.shikimori.data.model.ShikimoriUser
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val PREF_NAME = "shikimori"
 private const val KEY_ACCESS_TOKEN = "access_token"
 private const val KEY_REFRESH_TOKEN = "refresh_token"
 private const val KEY_USER = "user"
 
-class ShikimoriStorage(context: Context) {
+@Singleton
+class ShikimoriStorage @Inject constructor(@ApplicationContext context: Context) {
 
 	private val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 

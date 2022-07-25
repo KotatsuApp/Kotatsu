@@ -1,14 +1,16 @@
 package org.koitharu.kotatsu.explore.domain
 
+import javax.inject.Inject
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
 
-class ExploreRepository(
+class ExploreRepository @Inject constructor(
 	private val settings: AppSettings,
 	private val historyRepository: HistoryRepository,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
 	suspend fun findRandomManga(tagsLimit: Int): Manga {
@@ -20,7 +22,7 @@ class ExploreRepository(
 		val source = checkNotNull(tag?.source ?: settings.getMangaSources(includeHidden = false).randomOrNull()) {
 			"No sources found"
 		}
-		val repo = MangaRepository(source)
+		val repo = mangaRepositoryFactory.create(source)
 		val list = repo.getList(
 			offset = 0,
 			sortOrder = if (SortOrder.UPDATED in repo.sortOrders) SortOrder.UPDATED else null,

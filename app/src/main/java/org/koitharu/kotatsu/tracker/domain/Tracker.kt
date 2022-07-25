@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
+import javax.inject.Inject
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -9,10 +10,11 @@ import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import org.koitharu.kotatsu.tracker.work.TrackingItem
 
-class Tracker(
+class Tracker @Inject constructor(
 	private val settings: AppSettings,
 	private val repository: TrackingRepository,
 	private val channels: TrackerNotificationChannels,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
 	suspend fun getAllTracks(): List<TrackingItem> {
@@ -67,7 +69,7 @@ class Tracker(
 	}
 
 	suspend fun fetchUpdates(track: MangaTracking, commit: Boolean): MangaUpdates {
-		val manga = MangaRepository(track.manga.source).getDetails(track.manga)
+		val manga = mangaRepositoryFactory.create(track.manga.source).getDetails(track.manga)
 		val updates = compare(track, manga)
 		if (commit) {
 			repository.saveUpdates(updates)

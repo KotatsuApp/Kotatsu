@@ -5,17 +5,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 
+@AndroidEntryPoint
 class HistoryListFragment : MangaListFragment() {
 
-	override val viewModel by viewModel<HistoryListViewModel>()
+	override val viewModel by viewModels<HistoryListViewModel>()
 	override val isSwipeRefreshEnabled = false
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,7 +52,7 @@ class HistoryListFragment : MangaListFragment() {
 		}
 	}
 
-	override fun onCreateAdapter() = HistoryListAdapter(get(), viewLifecycleOwner, this)
+	override fun onCreateAdapter() = HistoryListAdapter(coil, viewLifecycleOwner, this)
 
 	companion object {
 

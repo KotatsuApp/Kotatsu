@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.bookmarks.domain
 
 import android.database.SQLException
 import androidx.room.withTransaction
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.base.domain.ReversibleHandle
@@ -17,7 +18,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.mapItems
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
-class BookmarksRepository(
+class BookmarksRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 

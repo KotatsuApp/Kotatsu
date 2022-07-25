@@ -2,6 +2,9 @@ package org.koitharu.kotatsu.favourites.ui.categories
 
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +19,9 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.mapItems
 import org.koitharu.kotatsu.utils.ext.requireValue
-import java.util.*
 
-class FavouritesCategoriesViewModel(
+@HiltViewModel
+class FavouritesCategoriesViewModel @Inject constructor(
 	private val repository: FavouritesRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel() {
@@ -56,7 +59,7 @@ class FavouritesCategoriesViewModel(
 					textPrimary = R.string.text_empty_holder_primary,
 					textSecondary = R.string.empty_favourite_categories,
 					actionStringRes = 0,
-				)
+				),
 			)
 		}
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))

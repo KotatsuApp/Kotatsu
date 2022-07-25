@@ -7,9 +7,9 @@ import android.view.View
 import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.network.AndroidCookieJar
@@ -23,12 +23,23 @@ import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
+@AndroidEntryPoint
 class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cache) {
 
-	private val trackerRepo by inject<TrackingRepository>(mode = LazyThreadSafetyMode.NONE)
-	private val searchRepository by inject<MangaSearchRepository>(mode = LazyThreadSafetyMode.NONE)
-	private val storageManager by inject<LocalStorageManager>(mode = LazyThreadSafetyMode.NONE)
-	private val shikimoriRepository by inject<ShikimoriRepository>(mode = LazyThreadSafetyMode.NONE)
+	@Inject
+	lateinit var trackerRepo: TrackingRepository
+
+	@Inject
+	lateinit var searchRepository: MangaSearchRepository
+
+	@Inject
+	lateinit var storageManager: LocalStorageManager
+
+	@Inject
+	lateinit var shikimoriRepository: ShikimoriRepository
+
+	@Inject
+	lateinit var cookieJar: AndroidCookieJar
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_history)
@@ -85,7 +96,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					Snackbar.make(
 						view ?: return@launch,
 						R.string.updates_feed_cleared,
-						Snackbar.LENGTH_SHORT
+						Snackbar.LENGTH_SHORT,
 					).show()
 				}
 				true
@@ -136,7 +147,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					Snackbar.make(
 						view ?: return@launch,
 						R.string.search_history_cleared,
-						Snackbar.LENGTH_SHORT
+						Snackbar.LENGTH_SHORT,
 					).show()
 				}
 			}.show()
@@ -149,12 +160,11 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.clear) { _, _ ->
 				viewLifecycleScope.launch {
-					val cookieJar = get<AndroidCookieJar>()
 					cookieJar.clear()
 					Snackbar.make(
 						listView ?: return@launch,
 						R.string.cookies_cleared,
-						Snackbar.LENGTH_SHORT
+						Snackbar.LENGTH_SHORT,
 					).show()
 				}
 			}.show()

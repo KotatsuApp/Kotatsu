@@ -2,6 +2,10 @@ package org.koitharu.kotatsu.history.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -22,10 +26,9 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
-import java.util.*
-import java.util.concurrent.TimeUnit
 
-class HistoryListViewModel(
+@HiltViewModel
+class HistoryListViewModel @Inject constructor(
 	private val repository: HistoryRepository,
 	private val settings: AppSettings,
 	private val trackingRepository: TrackingRepository,
@@ -39,7 +42,7 @@ class HistoryListViewModel(
 	override val content = combine(
 		repository.observeAllWithHistory(),
 		historyGrouping,
-		createListModeFlow()
+		createListModeFlow(),
 	) { list, grouped, mode ->
 		when {
 			list.isEmpty() -> listOf(
@@ -48,7 +51,7 @@ class HistoryListViewModel(
 					textPrimary = R.string.text_history_holder_primary,
 					textSecondary = R.string.text_history_holder_secondary,
 					actionStringRes = 0,
-				)
+				),
 			)
 			else -> mapList(list, grouped, mode)
 		}
@@ -87,7 +90,7 @@ class HistoryListViewModel(
 	private suspend fun mapList(
 		list: List<MangaWithHistory>,
 		grouped: Boolean,
-		mode: ListMode
+		mode: ListMode,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
 		val showPercent = settings.isReadingIndicatorsEnabled

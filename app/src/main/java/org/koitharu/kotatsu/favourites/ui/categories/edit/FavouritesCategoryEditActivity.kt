@@ -14,8 +14,8 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -23,13 +23,21 @@ import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.ActivityCategoryEditBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>(), AdapterView.OnItemClickListener,
-	View.OnClickListener, TextWatcher {
+@AndroidEntryPoint
+class FavouritesCategoryEditActivity :
+	BaseActivity<ActivityCategoryEditBinding>(),
+	AdapterView.OnItemClickListener,
+	View.OnClickListener,
+	TextWatcher {
 
-	private val viewModel by viewModel<FavouritesCategoryEditViewModel> {
-		parametersOf(intent.getLongExtra(EXTRA_ID, NO_ID))
+	@Inject
+	lateinit var viewModelFactory: FavouritesCategoryEditViewModel.Factory
+
+	private val viewModel by assistedViewModels<FavouritesCategoryEditViewModel> {
+		viewModelFactory.create(intent.getLongExtra(EXTRA_ID, NO_ID))
 	}
 	private var selectedSortOrder: SortOrder? = null
 

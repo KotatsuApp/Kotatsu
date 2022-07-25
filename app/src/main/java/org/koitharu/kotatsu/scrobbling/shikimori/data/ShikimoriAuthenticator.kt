@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.scrobbling.shikimori.data
 
+import javax.inject.Inject
+import javax.inject.Provider
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -8,9 +10,9 @@ import okhttp3.Route
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.network.CommonHeaders
 
-class ShikimoriAuthenticator(
+class ShikimoriAuthenticator @Inject constructor(
 	private val storage: ShikimoriStorage,
-	private val repositoryProvider: () -> ShikimoriRepository,
+	private val repositoryProvider: Provider<ShikimoriRepository>,
 ) : Authenticator {
 
 	override fun authenticate(route: Route?, response: Response): Request? {
@@ -40,7 +42,7 @@ class ShikimoriAuthenticator(
 	}
 
 	private fun refreshAccessToken(): String? = runCatching {
-		val repository = repositoryProvider()
+		val repository = repositoryProvider.get()
 		runBlocking { repository.authorize(null) }
 		return storage.accessToken
 	}.onFailure {

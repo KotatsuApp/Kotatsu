@@ -3,11 +3,14 @@ package org.koitharu.kotatsu.core.github
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.security.MessageDigest
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.OkHttpClient
@@ -22,8 +25,9 @@ import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 private const val CERT_SHA1 = "2C:19:C7:E8:07:61:2B:8E:94:51:1B:FD:72:67:07:64:5D:C2:58:AE"
 
-class AppUpdateRepository(
-	private val context: Context,
+@Singleton
+class AppUpdateRepository @Inject constructor(
+	@ApplicationContext private val context: Context,
 	private val okHttp: OkHttpClient,
 ) {
 

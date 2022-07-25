@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
 import android.provider.SearchRecentSuggestions
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.*
@@ -20,18 +22,19 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 
-class MangaSearchRepository(
+class MangaSearchRepository @Inject constructor(
 	private val settings: AppSettings,
 	private val db: MangaDatabase,
-	private val context: Context,
+	@ApplicationContext private val context: Context,
 	private val recentSuggestions: SearchRecentSuggestions,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
 	fun globalSearch(query: String, concurrency: Int = DEFAULT_CONCURRENCY): Flow<Manga> =
 		settings.getMangaSources(includeHidden = false).asFlow()
 			.flatMapMerge(concurrency) { source ->
 				runCatching {
-					MangaRepository(source).getList(
+					mangaRepositoryFactory.create(source).getList(
 						offset = 0,
 						query = query,
 					)
@@ -63,7 +66,7 @@ class MangaSearchRepository(
 			SUGGESTION_PROJECTION,
 			"${SearchManager.SUGGEST_COLUMN_QUERY} LIKE ?",
 			arrayOf("%$query%"),
-			"date DESC"
+			"date DESC",
 		)?.use { cursor ->
 			val count = minOf(cursor.count, limit)
 			if (count == 0) {
@@ -126,7 +129,7 @@ class MangaSearchRepository(
 			SUGGESTION_PROJECTION,
 			null,
 			arrayOfNulls(1),
-			null
+			null,
 		)?.use { cursor -> cursor.count } ?: 0
 	}
 

@@ -13,6 +13,9 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.room.InvalidationTracker
 import coil.ImageLoader
 import coil.request.ImageRequest
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -26,8 +29,9 @@ import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 
-class ShortcutsUpdater(
-	private val context: Context,
+@Singleton
+class ShortcutsUpdater @Inject constructor(
+	@ApplicationContext private val context: Context,
 	private val coil: ImageLoader,
 	private val historyRepository: HistoryRepository,
 	private val mangaRepository: MangaDataRepository,
@@ -37,6 +41,9 @@ class ShortcutsUpdater(
 	private var shortcutsUpdateJob: Job? = null
 
 	override fun onInvalidated(tables: MutableSet<String>) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+			return
+		}
 		val prevJob = shortcutsUpdateJob
 		shortcutsUpdateJob = processLifecycleScope.launch(Dispatchers.Default) {
 			prevJob?.join()
@@ -48,7 +55,7 @@ class ShortcutsUpdater(
 		return ShortcutManagerCompat.requestPinShortcut(
 			context,
 			buildShortcutInfo(manga).build(),
-			null
+			null,
 		)
 	}
 
@@ -73,12 +80,12 @@ class ShortcutsUpdater(
 				ImageRequest.Builder(context)
 					.data(manga.coverUrl)
 					.size(iconSize.width, iconSize.height)
-					.build()
+					.build(),
 			).requireBitmap()
 			ThumbnailUtils.extractThumbnail(bmp, iconSize.width, iconSize.height, 0)
 		}.fold(
 			onSuccess = { IconCompat.createWithAdaptiveBitmap(it) },
-			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) }
+			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },
 		)
 		mangaRepository.storeManga(manga)
 		return ShortcutInfoCompat.Builder(context, manga.id.toString())
@@ -87,7 +94,7 @@ class ShortcutsUpdater(
 			.setIcon(icon)
 			.setIntent(
 				ReaderActivity.newIntent(context, manga.id)
-					.setAction(ReaderActivity.ACTION_MANGA_READ)
+					.setAction(ReaderActivity.ACTION_MANGA_READ),
 			)
 	}
 

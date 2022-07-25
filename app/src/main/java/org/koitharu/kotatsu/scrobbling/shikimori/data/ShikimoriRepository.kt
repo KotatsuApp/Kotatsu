@@ -103,7 +103,7 @@ class ShikimoriRepository(
 				put("target_id", shikiMangaId)
 				put("target_type", "Manga")
 				put("user_id", user.id)
-			}
+			},
 		)
 		val url = BASE_URL.toHttpUrl().newBuilder()
 			.addPathSegment("api")
@@ -121,7 +121,7 @@ class ShikimoriRepository(
 			"user_rate",
 			JSONObject().apply {
 				put("chapters", chapter.number)
-			}
+			},
 		)
 		val url = BASE_URL.toHttpUrl().newBuilder()
 			.addPathSegment("api")
@@ -146,7 +146,7 @@ class ShikimoriRepository(
 				if (status != null) {
 					put("status", status)
 				}
-			}
+			},
 		)
 		val url = BASE_URL.toHttpUrl().newBuilder()
 			.addPathSegment("api")

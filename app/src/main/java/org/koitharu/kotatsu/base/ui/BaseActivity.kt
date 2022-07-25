@@ -18,18 +18,23 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
-import org.koin.android.ext.android.get
+import dagger.hilt.android.EntryPointAccessors
+import javax.inject.Inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
+import org.koitharu.kotatsu.base.ui.util.BaseActivityEntryPoint
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
+import org.koitharu.kotatsu.base.ui.util.inject
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.settings.SettingsActivity
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
 	WindowInsetsDelegate.WindowInsetsListener {
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	protected lateinit var binding: B
 		private set
@@ -43,7 +48,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	val actionModeDelegate = ActionModeDelegate()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		val settings = get<AppSettings>()
+		EntryPointAccessors.fromApplication(this, BaseActivityEntryPoint::class.java).inject(this)
 		val isAmoled = settings.isAmoledTheme
 		val isDynamic = settings.isDynamicTheme
 		// TODO support DialogWhenLarge theme
@@ -97,7 +102,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	protected fun isDarkAmoledTheme(): Boolean {
 		val uiMode = resources.configuration.uiMode
 		val isNight = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-		return isNight && get<AppSettings>().isAmoledTheme
+		return isNight && settings.isAmoledTheme
 	}
 
 	@CallSuper

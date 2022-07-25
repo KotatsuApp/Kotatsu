@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.R as materialR
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.AppBottomSheetDialog
 import org.koitharu.kotatsu.utils.ext.displayCompat
-import com.google.android.material.R as materialR
 
 abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 
@@ -30,7 +30,7 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 	final override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
-		savedInstanceState: Bundle?
+		savedInstanceState: Bundle?,
 	): View {
 		val binding = onInflateView(inflater, container)
 		viewBinding = binding

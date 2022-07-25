@@ -6,11 +6,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
+import org.koitharu.kotatsu.utils.ext.parentFragmentViewModels
 
 class FilterBottomSheet :
 	BaseBottomSheet<SheetFilterBinding>(),
@@ -18,9 +19,7 @@ class FilterBottomSheet :
 	SearchView.OnQueryTextListener,
 	DialogInterface.OnKeyListener {
 
-	private val viewModel by sharedViewModel<RemoteListViewModel>(
-		owner = { requireParentFragment() },
-	)
+	private val viewModel by parentFragmentViewModels<RemoteListViewModel>()
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		return super.onCreateDialog(savedInstanceState).also {

@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import javax.inject.Provider
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -21,15 +23,27 @@ import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class PagesThumbnailsSheet :
 	BaseBottomSheet<SheetPagesBinding>(),
 	OnListItemClickListener<MangaPage>,
 	BottomSheetHeaderBar.OnExpansionChangeListener {
+
+	@Inject
+	lateinit var mangaRepositoryFactory: MangaRepository.Factory
+
+	@Inject
+	lateinit var pageLoaderProvider: Provider<PageLoader>
+
+	@Inject
+	lateinit var coil: ImageLoader
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private lateinit var thumbnails: List<PageThumbnail>
 	private var spanResolver: MangaListSpanResolver? = null
@@ -44,7 +58,7 @@ class PagesThumbnailsSheet :
 			return
 		}
 		currentPageIndex = requireArguments().getInt(ARG_CURRENT, currentPageIndex)
-		val repository = MangaRepository(pages.first().source)
+		val repository = mangaRepositoryFactory.create(pages.first().source)
 		thumbnails = pages.mapIndexed { i, x ->
 			PageThumbnail(
 				number = i + 1,
@@ -75,13 +89,13 @@ class PagesThumbnailsSheet :
 			)
 			adapter = PageThumbnailAdapter(
 				dataSet = thumbnails,
-				coil = get(),
+				coil = coil,
 				scope = viewLifecycleScope,
 				loader = getPageLoader(),
 				clickListener = this@PagesThumbnailsSheet,
 			)
 			addOnLayoutChangeListener(spanResolver)
-			spanResolver?.setGridSize(get<AppSettings>().gridSize / 100f, this)
+			spanResolver?.setGridSize(settings.gridSize / 100f, this)
 			if (currentPageIndex > 0) {
 				val offset = resources.getDimensionPixelOffset(R.dimen.preferred_grid_width)
 				(layoutManager as GridLayoutManager).scrollToPositionWithOffset(currentPageIndex, offset)
@@ -119,8 +133,8 @@ class PagesThumbnailsSheet :
 	}
 
 	private fun getPageLoader(): PageLoader {
-		val viewModel = (activity as? ReaderActivity)?.getViewModel<ReaderViewModel>()
-		return viewModel?.pageLoader ?: PageLoader().also { pageLoader = it }
+		val viewModel = (activity as? ReaderActivity)?.viewModel
+		return viewModel?.pageLoader ?: pageLoaderProvider.get().also { pageLoader = it }
 	}
 
 	companion object {

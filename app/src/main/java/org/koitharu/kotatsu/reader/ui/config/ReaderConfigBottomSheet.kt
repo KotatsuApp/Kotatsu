@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultCallback
 import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
@@ -30,7 +30,7 @@ class ReaderConfigBottomSheet :
 	ActivityResultCallback<Uri?>,
 	View.OnClickListener {
 
-	private val viewModel by sharedViewModel<ReaderViewModel>()
+	private val viewModel by activityViewModels<ReaderViewModel>()
 	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
 	private var orientationHelper: ScreenOrientationHelper? = null
 	private lateinit var mode: ReaderMode

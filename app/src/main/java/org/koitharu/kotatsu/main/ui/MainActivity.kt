@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.result.ActivityResultCallback
+import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityOptionsCompat
@@ -17,20 +18,19 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
+import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.widgets.KotatsuBottomNavigationView
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
@@ -48,16 +48,15 @@ import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.settings.tools.ToolsFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
-import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.*
-import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
 
+@AndroidEntryPoint
 class MainActivity :
 	BaseActivity<ActivityMainBinding>(),
 	AppBarOwner,
@@ -68,8 +67,8 @@ class MainActivity :
 	NavigationBarView.OnItemSelectedListener,
 	NavigationBarView.OnItemReselectedListener {
 
-	private val viewModel by viewModel<MainViewModel>()
-	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
+	private val viewModel by viewModels<MainViewModel>()
+	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()
 	private val voiceInputLauncher = registerForActivityResult(VoiceInputContract(), VoiceInputCallback())
 	private lateinit var navBar: NavigationBarView
 
@@ -284,7 +283,8 @@ class MainActivity :
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).setAnchorView(bottomNav).show()
+		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).setAnchorView(bottomNav)
+			.show()
 	}
 
 	private fun onCountersChanged(counters: SparseIntArray) {
@@ -366,13 +366,12 @@ class MainActivity :
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
 			}
-			val settings = get<AppSettings>()
 			when {
 				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
 				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
 			}
 			yield()
-			get<SyncController>().requestFullSyncAndGc(get())
+			// TODO get<SyncController>().requestFullSyncAndGc(get())
 		}
 	}
 

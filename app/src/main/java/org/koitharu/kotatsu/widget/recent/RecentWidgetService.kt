@@ -2,11 +2,21 @@ package org.koitharu.kotatsu.widget.recent
 
 import android.content.Intent
 import android.widget.RemoteViewsService
-import org.koin.android.ext.android.get
+import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import org.koitharu.kotatsu.history.domain.HistoryRepository
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class RecentWidgetService : RemoteViewsService() {
 
+	@Inject
+	lateinit var historyRepository: HistoryRepository
+
+	@Inject
+	lateinit var coil: ImageLoader
+
 	override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-		return RecentListFactory(applicationContext, get(), get())
+		return RecentListFactory(applicationContext, historyRepository, coil)
 	}
 }

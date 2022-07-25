@@ -7,27 +7,32 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import org.koitharu.kotatsu.utils.ext.withArgs
 import org.koitharu.kotatsu.utils.progress.Progress
 
+@AndroidEntryPoint
 class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
+
+	@Inject
+	lateinit var viewModelFactory: RestoreViewModel.Factory
+
+	private val viewModel by assistedViewModels {
+		viewModelFactory.create(arguments?.getString(ARG_FILE)?.toUriOrNull())
+	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = DialogProgressBinding.inflate(inflater, container, false)
-
-	private val viewModel by viewModel<RestoreViewModel> {
-		parametersOf(arguments?.getString(ARG_FILE)?.toUriOrNull())
-	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
@@ -72,7 +77,7 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 				.setMessage(
 					result.failures.map {
 						it.getDisplayMessage(resources)
-					}.distinct().joinToString("\n")
+					}.distinct().joinToString("\n"),
 				)
 			else -> builder.setTitle(R.string.data_restored)
 				.setMessage(R.string.data_restored_with_errors)

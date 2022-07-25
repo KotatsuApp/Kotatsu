@@ -8,10 +8,12 @@ import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
@@ -24,14 +26,15 @@ import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
-import java.io.File
 
+@AndroidEntryPoint
 class ContentSettingsFragment :
 	BasePreferenceFragment(R.string.content),
 	SharedPreferences.OnSharedPreferenceChangeListener,
 	StorageSelectDialog.OnStorageSelectListener {
 
-	private val storageManager by inject<LocalStorageManager>()
+	@Inject
+	lateinit var storageManager: LocalStorageManager
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_content)
@@ -58,7 +61,7 @@ class ContentSettingsFragment :
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.bindStorageName()
 		findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
-			if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled
+			if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled,
 		)
 		bindRemoteSourcesSummary()
 		settings.subscribe(this)
@@ -81,7 +84,7 @@ class ContentSettingsFragment :
 			}
 			AppSettings.KEY_SUGGESTIONS -> {
 				findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
-					if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled
+					if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled,
 				)
 			}
 			AppSettings.KEY_SOURCES_HIDDEN -> {

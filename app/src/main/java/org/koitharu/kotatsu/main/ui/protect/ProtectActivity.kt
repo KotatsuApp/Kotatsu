@@ -10,25 +10,27 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.AuthenticationCallback
 import androidx.core.graphics.Insets
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityProtectBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
+@AndroidEntryPoint
 class ProtectActivity :
 	BaseActivity<ActivityProtectBinding>(),
 	TextView.OnEditorActionListener,
 	TextWatcher,
 	View.OnClickListener {
 
-	private val viewModel by viewModel<ProtectViewModel>()
+	private val viewModel by viewModels<ProtectViewModel>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -58,7 +60,7 @@ class ProtectActivity :
 			basePadding + insets.left,
 			basePadding + insets.top,
 			basePadding + insets.right,
-			basePadding + insets.bottom
+			basePadding + insets.bottom,
 		)
 	}
 

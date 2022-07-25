@@ -2,6 +2,9 @@ package org.koitharu.kotatsu.settings.sources
 
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.getLocaleTitle
@@ -12,11 +15,11 @@ import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.move
-import java.util.*
 
 private const val KEY_ENABLED = "!"
 
-class SourcesSettingsViewModel(
+@HiltViewModel
+class SourcesSettingsViewModel @Inject constructor(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 

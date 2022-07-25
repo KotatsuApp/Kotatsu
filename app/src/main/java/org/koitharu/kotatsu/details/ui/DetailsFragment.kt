@@ -12,13 +12,14 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.fragment.app.activityViewModels
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -45,6 +46,7 @@ import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
 
+@AndroidEntryPoint
 class DetailsFragment :
 	BaseFragment<FragmentDetailsBinding>(),
 	View.OnClickListener,
@@ -52,8 +54,10 @@ class DetailsFragment :
 	ChipsView.OnChipClickListener,
 	OnListItemClickListener<Bookmark> {
 
-	private val viewModel by sharedViewModel<DetailsViewModel>()
-	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by activityViewModels<DetailsViewModel>()
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -263,7 +267,7 @@ class DetailsFragment :
 							context = context ?: return,
 							manga = manga,
 							branch = viewModel.selectedBranchValue,
-						)
+						),
 					)
 				}
 			}
@@ -273,13 +277,13 @@ class DetailsFragment :
 						context = v.context,
 						source = manga.source,
 						query = manga.author ?: return,
-					)
+					),
 				)
 			}
 			R.id.imageView_cover -> {
 				startActivity(
 					ImageActivity.newIntent(v.context, manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }),
-					scaleUpActivityOptionsOf(v).toBundle()
+					scaleUpActivityOptionsOf(v).toBundle(),
 				)
 			}
 		}
@@ -305,8 +309,8 @@ class DetailsFragment :
 										c.chapter.branch == branch
 									}?.let { c ->
 										ReaderState(c.chapter.id, 0, 0)
-									}
-								)
+									},
+								),
 							)
 							true
 						}
@@ -329,7 +333,7 @@ class DetailsFragment :
 		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			bottom = insets.bottom
+			bottom = insets.bottom,
 		)
 	}
 
@@ -343,7 +347,7 @@ class DetailsFragment :
 					isCheckable = false,
 					isChecked = false,
 				)
-			}
+			},
 		)
 	}
 

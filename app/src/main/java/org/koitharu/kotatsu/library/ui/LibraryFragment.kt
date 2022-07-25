@@ -6,14 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
+import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.FragmentLibraryBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
@@ -28,11 +31,18 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
+@AndroidEntryPoint
 class LibraryFragment :
 	BaseFragment<FragmentLibraryBinding>(),
 	LibraryListEventListener {
 
-	private val viewModel by viewModel<LibraryViewModel>()
+	@Inject
+	lateinit var coil: ImageLoader
+
+	@Inject
+	lateinit var settings: AppSettings
+
+	private val viewModel by viewModels<LibraryViewModel>()
 	private var adapter: LibraryAdapter? = null
 	private var selectionController: SectionedSelectionController<LibrarySectionModel>? = null
 
@@ -42,7 +52,7 @@ class LibraryFragment :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val sizeResolver = ItemSizeResolver(resources, get())
+		val sizeResolver = ItemSizeResolver(resources, settings)
 		selectionController = SectionedSelectionController(
 			activity = requireActivity(),
 			owner = this,
@@ -50,7 +60,7 @@ class LibraryFragment :
 		)
 		adapter = LibraryAdapter(
 			lifecycleOwner = viewLifecycleOwner,
-			coil = get(),
+			coil = coil,
 			listener = this,
 			sizeResolver = sizeResolver,
 			selectionController = checkNotNull(selectionController),

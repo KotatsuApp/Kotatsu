@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -22,7 +22,7 @@ class OnboardDialogFragment :
 	OnListItemClickListener<SourceLocale>,
 	DialogInterface.OnClickListener {
 
-	private val viewModel by viewModel<OnboardViewModel>()
+	private val viewModel by viewModels<OnboardViewModel>()
 	private var isWelcome: Boolean = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {

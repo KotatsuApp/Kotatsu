@@ -8,6 +8,10 @@ import android.os.Bundle
 import android.util.ArrayMap
 import androidx.room.InvalidationTracker
 import androidx.room.withTransaction
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -18,10 +22,10 @@ import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITE_CATEGORIES
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
-import java.util.concurrent.TimeUnit
 
-class SyncController(
-	context: Context,
+@Singleton
+class SyncController @Inject constructor(
+	@ApplicationContext context: Context,
 ) : InvalidationTracker.Observer(arrayOf(TABLE_HISTORY, TABLE_FAVOURITES, TABLE_FAVOURITE_CATEGORIES)) {
 
 	private val am = AccountManager.get(context)

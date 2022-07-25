@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.absoluteValue
 import kotlinx.coroutines.async
-import org.koin.android.ext.android.get
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -19,19 +21,23 @@ import org.koitharu.kotatsu.utils.ext.recyclerView
 import org.koitharu.kotatsu.utils.ext.resetTransformations
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
+@AndroidEntryPoint
 class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private var pagesAdapter: PagesAdapter? = null
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentReaderStandardBinding.inflate(inflater, container, false)
 
 	@SuppressLint("NotifyDataSetChanged")
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		pagesAdapter = PagesAdapter(viewModel.pageLoader, get(), exceptionResolver)
+		pagesAdapter = PagesAdapter(viewModel.pageLoader, settings, exceptionResolver)
 		with(binding.pager) {
 			adapter = pagesAdapter
 			offscreenPageLimit = 2
@@ -86,7 +92,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	override fun switchPageTo(position: Int, smooth: Boolean) {
 		binding.pager.setCurrentItem(
 			position,
-			smooth && (binding.pager.currentItem - position).absoluteValue < SMOOTH_SCROLL_LIMIT
+			smooth && (binding.pager.currentItem - position).absoluteValue < SMOOTH_SCROLL_LIMIT,
 		)
 	}
 
@@ -96,7 +102,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 		ReaderState(
 			chapterId = page.chapterId,
 			page = page.index,
-			scroll = 0
+			scroll = 0,
 		)
 	}
 

@@ -11,8 +11,9 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import kotlin.math.roundToInt
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
@@ -30,7 +31,6 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
-import kotlin.math.roundToInt
 
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
@@ -40,14 +40,14 @@ class ChaptersFragment :
 	SearchView.OnQueryTextListener,
 	ListSelectionController.Callback {
 
-	private val viewModel by sharedViewModel<DetailsViewModel>()
+	private val viewModel by activityViewModels<DetailsViewModel>()
 
 	private var chaptersAdapter: ChaptersAdapter? = null
 	private var selectionController: ListSelectionController? = null
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentChaptersBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,7 +98,7 @@ class ChaptersFragment :
 				manga = viewModel.manga.value ?: return,
 				state = ReaderState(item.chapter.id, 0, 0),
 			),
-			scaleUpActivityOptionsOf(view).toBundle()
+			scaleUpActivityOptionsOf(view).toBundle(),
 		)
 	}
 
@@ -128,7 +128,7 @@ class ChaptersFragment :
 						Snackbar.make(
 							binding.recyclerViewChapters,
 							R.string.chapters_will_removed_background,
-							Snackbar.LENGTH_LONG
+							Snackbar.LENGTH_LONG,
 						).show()
 					}
 				}
