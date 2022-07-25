@@ -2,19 +2,19 @@ package org.koitharu.kotatsu.browser.cloudflare
 
 import android.graphics.Bitmap
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.koitharu.kotatsu.core.network.AndroidCookieJar
-import org.koitharu.kotatsu.core.network.WebViewClientCompat
 
 private const val CF_CLEARANCE = "cf_clearance"
 
 class CloudFlareClient(
 	private val cookieJar: AndroidCookieJar,
 	private val callback: CloudFlareCallback,
-	private val targetUrl: String
-) : WebViewClientCompat() {
+	private val targetUrl: String,
+) : WebViewClient() {
 
-	private val oldClearance = getCookieValue(CF_CLEARANCE)
+	private val oldClearance = getClearance()
 
 	override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
 		super.onPageStarted(view, url, favicon)
@@ -32,14 +32,14 @@ class CloudFlareClient(
 	}
 
 	private fun checkClearance() {
-		val clearance = getCookieValue(CF_CLEARANCE)
+		val clearance = getClearance()
 		if (clearance != null && clearance != oldClearance) {
 			callback.onCheckPassed()
 		}
 	}
 
-	private fun getCookieValue(name: String): String? {
+	private fun getClearance(): String? {
 		return cookieJar.loadForRequest(targetUrl.toHttpUrl())
-			.find { it.name == name }?.value
+			.find { it.name == CF_CLEARANCE }?.value
 	}
 }
