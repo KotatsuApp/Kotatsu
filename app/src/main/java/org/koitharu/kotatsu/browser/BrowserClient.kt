@@ -2,10 +2,9 @@ package org.koitharu.kotatsu.browser
 
 import android.graphics.Bitmap
 import android.webkit.WebView
-import org.koin.core.component.KoinComponent
-import org.koitharu.kotatsu.core.network.WebViewClientCompat
+import android.webkit.WebViewClient
 
-class BrowserClient(private val callback: BrowserCallback) : WebViewClientCompat(), KoinComponent {
+class BrowserClient(private val callback: BrowserCallback) : WebViewClient() {
 
 	override fun onPageFinished(webView: WebView, url: String) {
 		super.onPageFinished(webView, url)

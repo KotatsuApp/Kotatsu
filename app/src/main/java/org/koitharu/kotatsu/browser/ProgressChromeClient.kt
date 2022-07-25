@@ -2,13 +2,14 @@ package org.koitharu.kotatsu.browser
 
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.widget.ProgressBar
 import androidx.core.view.isVisible
-import com.google.android.material.progressindicator.BaseProgressIndicator
+import org.koitharu.kotatsu.utils.ext.setProgressCompat
 
 private const val PROGRESS_MAX = 100
 
 class ProgressChromeClient(
-	private val progressIndicator: BaseProgressIndicator<*>,
+	private val progressIndicator: ProgressBar,
 ) : WebChromeClient() {
 
 	init {
@@ -24,7 +25,7 @@ class ProgressChromeClient(
 			progressIndicator.isIndeterminate = false
 			progressIndicator.setProgressCompat(newProgress.coerceAtMost(PROGRESS_MAX), true)
 		} else {
-			progressIndicator.setIndeterminate(true)
+			progressIndicator.isIndeterminate = true
 		}
 	}
 }
