@@ -33,7 +33,7 @@ import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireValue
@@ -86,7 +86,7 @@ class ReaderViewModel @AssistedInject constructor(
 	) { manga, policy ->
 		policy == ScreenshotsPolicy.BLOCK_ALL ||
 			(policy == ScreenshotsPolicy.BLOCK_NSFW && manga != null && manga.isNsfw)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	val onZoomChanged = SingleLiveEvent<Unit>()
 
@@ -98,7 +98,7 @@ class ReaderViewModel @AssistedInject constructor(
 			bookmarksRepository.observeBookmark(manga, state.chapterId, state.page)
 				.map { it != null }
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	init {
 		loadImpl()
