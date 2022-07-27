@@ -9,11 +9,13 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
 import org.koitharu.kotatsu.main.ui.AppBarOwner
 
+@AndroidEntryPoint
 class SuggestionsActivity :
 	BaseActivity<ActivityContainerBinding>(),
 	AppBarOwner {

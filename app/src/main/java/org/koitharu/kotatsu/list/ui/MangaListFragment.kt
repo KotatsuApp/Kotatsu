@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
@@ -49,6 +50,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
 
+@AndroidEntryPoint
 abstract class MangaListFragment :
 	BaseFragment<FragmentListBinding>(),
 	PaginationScrollListener.Callback,

@@ -15,12 +15,14 @@ import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
 
 private const val MIN_PASSWORD_LENGTH = 4
 
+@AndroidEntryPoint
 class ProtectSetupActivity :
 	BaseActivity<ActivitySetupProtectBinding>(),
 	TextWatcher,

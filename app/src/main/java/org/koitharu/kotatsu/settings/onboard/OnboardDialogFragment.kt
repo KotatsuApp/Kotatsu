@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.showAllowStateLoss
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class OnboardDialogFragment :
 	AlertDialogFragment<DialogOnboardBinding>(),
 	OnListItemClickListener<SourceLocale>,

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
 import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -24,6 +25,7 @@ import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class ScrobblingSelectorBottomSheet :
 	BaseBottomSheet<SheetScrobblingSelectorBinding>(),
 	OnListItemClickListener<ScrobblerManga>,

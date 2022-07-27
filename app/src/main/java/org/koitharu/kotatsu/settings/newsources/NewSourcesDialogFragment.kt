@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
@@ -18,6 +19,7 @@ import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
+@AndroidEntryPoint
 class NewSourcesDialogFragment :
 	AlertDialogFragment<DialogOnboardBinding>(),
 	SourceConfigListener,
