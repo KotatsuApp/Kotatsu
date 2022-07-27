@@ -107,7 +107,7 @@ abstract class MangaListFragment :
 			setOnRefreshListener(this@MangaListFragment)
 			isEnabled = isSwipeRefreshEnabled
 		}
-		addMenuProvider(MangaListMenuProvider(childFragmentManager))
+		addMenuProvider(MangaListMenuProvider(this))
 
 		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)

@@ -317,4 +317,5 @@
     <string name="invalid_domain_message">Ungültige Domäne</string>
     <string name="status_reading">Lesen</string>
     <string name="select_range">Bereich auswählen</string>
+    <string name="not_found_404">Inhalt nicht gefunden oder entfernt</string>
 </resources>

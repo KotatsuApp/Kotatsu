@@ -40,8 +40,6 @@
 			android:maxLines="4"
 			android:padding="@dimen/margin_normal"
 			android:textAlignment="viewStart"
-			android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
-			android:textColor="@android:color/white"
 			tools:text="Look at all the wonderful snack bar text..." />
 
 		<Button
@@ -53,7 +51,6 @@
 			android:paddingStart="@dimen/margin_normal"
 			android:paddingEnd="@dimen/margin_normal"
 			android:visibility="gone"
-			tools:targetApi="o"
 			tools:text="Action"
 			tools:visibility="visible" />
 

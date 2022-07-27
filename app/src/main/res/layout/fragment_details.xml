@@ -215,7 +215,7 @@
 			app:layout_constraintTop_toBottomOf="@id/recyclerView_bookmarks"
 			tools:visibility="visible" />
 
-		<TextView
+		<org.koitharu.kotatsu.base.ui.widgets.SelectableTextView
 			android:id="@+id/textView_description"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"

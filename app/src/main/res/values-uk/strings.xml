@@ -318,4 +318,6 @@
     <string name="exclude_nsfw_from_history_summary">Манґа, позначена як NSFW, ніколи не буде додана до історії і ваш прогрес не буде збережений</string>
     <string name="clear_cookies_summary">Може допомогти в разі виникнення проблем. Усі авторизації будуть анульовані</string>
     <string name="show_all">Показати всі</string>
+    <string name="select_range">Виберіть діапазон</string>
+    <string name="not_found_404">Вміст не знайдено або видалено</string>
 </resources>
