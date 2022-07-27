@@ -68,7 +68,7 @@ abstract class MangaListFragment :
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentListBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,13 +76,13 @@ abstract class MangaListFragment :
 		listAdapter = MangaListAdapter(
 			coil = get(),
 			lifecycleOwner = viewLifecycleOwner,
-			listener = this,
+			listener = this
 		)
 		selectionController = ListSelectionController(
 			activity = requireActivity(),
 			decoration = MangaSelectionDecoration(view.context),
 			registryOwner = this,
-			callback = this,
+			callback = this
 		)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
@@ -97,7 +97,7 @@ abstract class MangaListFragment :
 			setOnRefreshListener(this@MangaListFragment)
 			isEnabled = isSwipeRefreshEnabled
 		}
-		addMenuProvider(MangaListMenuProvider(childFragmentManager))
+		addMenuProvider(MangaListMenuProvider(this))
 
 		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
@@ -171,21 +171,21 @@ abstract class MangaListFragment :
 		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
 		binding.root.updatePadding(
 			left = insets.left,
-			right = insets.right,
+			right = insets.right
 		)
 		if (activity is MainActivity) {
 			binding.recyclerView.updatePadding(
 				top = headerHeight,
-				bottom = insets.bottom,
+				bottom = insets.bottom
 			)
 			binding.swipeRefreshLayout.setProgressViewOffset(
 				true,
 				headerHeight + resources.resolveDp(-72),
-				headerHeight + resources.resolveDp(10),
+				headerHeight + resources.resolveDp(10)
 			)
 		} else {
 			binding.recyclerView.updatePadding(
-				bottom = insets.bottom,
+				bottom = insets.bottom
 			)
 		}
 	}
