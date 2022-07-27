@@ -4,11 +4,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.Fragment
 import org.koitharu.kotatsu.R
 
 class MangaListMenuProvider(
-	private val fragmentManager: FragmentManager,
+	private val fragment: Fragment,
 ) : MenuProvider {
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -17,7 +17,7 @@ class MangaListMenuProvider(
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 		R.id.action_list_mode -> {
-			ListModeSelectDialog.show(fragmentManager)
+			ListModeSelectDialog.show(fragment.childFragmentManager)
 			true
 		}
 		else -> false
