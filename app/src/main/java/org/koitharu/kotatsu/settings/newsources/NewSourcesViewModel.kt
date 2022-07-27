@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.newsources
 
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -7,6 +8,7 @@ import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
+import org.koitharu.kotatsu.utils.ext.mapToSet
 
 @HiltViewModel
 class NewSourcesViewModel @Inject constructor(
@@ -33,14 +35,23 @@ class NewSourcesViewModel @Inject constructor(
 	}
 
 	private fun buildList() {
-		val hidden = settings.hiddenSources
+		val locales = LocaleListCompat.getDefault().mapToSet { it.language }
+		val pendingHidden = HashSet<String>()
 		sources.value = initialList.map {
+			val locale = it.locale
+			val isEnabledByLocale = locale == null || locale in locales
+			if (!isEnabledByLocale) {
+				pendingHidden += it.name
+			}
 			SourceConfigItem.SourceItem(
 				source = it,
 				summary = it.getLocaleTitle(),
-				isEnabled = it.name !in hidden,
+				isEnabled = isEnabledByLocale,
 				isDraggable = false,
 			)
+		}
+		if (pendingHidden.isNotEmpty()) {
+			settings.hiddenSources += pendingHidden
 		}
 	}
 }
