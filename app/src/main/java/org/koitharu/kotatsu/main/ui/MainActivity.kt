@@ -295,7 +295,11 @@ class MainActivity :
 				navBar.getBadge(id)?.isVisible = false
 			} else {
 				val badge = navBar.getOrCreateBadge(id)
-				badge.number = counter
+				if (counter < 0) {
+					badge.clearNumber()
+				} else {
+					badge.number = counter
+				}
 				badge.isVisible = true
 			}
 		}
