@@ -33,15 +33,22 @@ class NewSourcesViewModel(
 
 	private fun buildList() {
 		val locales = LocaleListCompat.getDefault().mapToSet { it.language }
-		val hidden = settings.hiddenSources
+		val pendingHidden = HashSet<String>()
 		sources.value = initialList.map {
 			val locale = it.locale
+			val isEnabledByLocale = locale == null || locale in locales
+			if (!isEnabledByLocale) {
+				pendingHidden += it.name
+			}
 			SourceConfigItem.SourceItem(
 				source = it,
 				summary = it.getLocaleTitle(),
-				isEnabled = it.name !in hidden && (locale == null || locale in locales),
-				isDraggable = false,
+				isEnabled = isEnabledByLocale,
+				isDraggable = false
 			)
+		}
+		if (pendingHidden.isNotEmpty()) {
+			settings.hiddenSources += pendingHidden
 		}
 	}
 }
