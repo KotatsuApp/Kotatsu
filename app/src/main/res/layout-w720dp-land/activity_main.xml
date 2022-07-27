@@ -9,7 +9,7 @@
 
 	<com.google.android.material.navigation.NavigationView
 		android:id="@+id/navigationView"
-		android:layout_width="260dp"
+		android:layout_width="230dp"
 		android:layout_height="match_parent"
 		android:fitsSystemWindows="false"
 		app:drawerLayoutCornerSize="0dp"
