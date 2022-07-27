@@ -103,7 +103,8 @@ class DetailsActivity :
 
 	private fun onMangaRemoved(manga: Manga) {
 		Toast.makeText(
-			this, getString(R.string._s_deleted_from_local_storage, manga.title),
+			this,
+			getString(R.string._s_deleted_from_local_storage, manga.title),
 			Toast.LENGTH_SHORT
 		).show()
 		finishAfterTransition()
