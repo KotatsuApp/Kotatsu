@@ -9,6 +9,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -16,6 +17,7 @@ import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 
+@AndroidEntryPoint
 class SearchSuggestionFragment :
 	BaseFragment<FragmentSearchSuggestionBinding>(),
 	SearchSuggestionItemCallback.SuggestionItemListener {

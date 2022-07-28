@@ -15,12 +15,14 @@ import androidx.core.view.isVisible
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySyncAuthBinding
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
+@AndroidEntryPoint
 class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickListener {
 
 	private var accountAuthenticatorResponse: AccountAuthenticatorResponse? = null

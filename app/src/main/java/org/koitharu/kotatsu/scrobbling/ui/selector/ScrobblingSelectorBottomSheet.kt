@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
 import coil.ImageLoader
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
@@ -23,6 +22,7 @@ import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikimoriSelectorAdap
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
 
 class ScrobblingSelectorBottomSheet :
 	BaseBottomSheet<SheetScrobblingSelectorBinding>(),

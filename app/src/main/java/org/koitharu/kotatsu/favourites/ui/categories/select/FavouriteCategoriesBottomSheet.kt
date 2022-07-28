@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
@@ -22,6 +23,7 @@ import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class FavouriteCategoriesBottomSheet :
 	BaseBottomSheet<SheetFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>,
@@ -31,7 +33,7 @@ class FavouriteCategoriesBottomSheet :
 	@Inject
 	lateinit var viewModelFactory: MangaCategoriesViewModel.Factory
 
-	private val viewModel by assistedViewModels {
+	private val viewModel: MangaCategoriesViewModel by assistedViewModels {
 		viewModelFactory.create(
 			requireNotNull(arguments?.getParcelableArrayList<ParcelableManga>(KEY_MANGA_LIST)).map { it.manga },
 		)
