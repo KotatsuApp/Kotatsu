@@ -2,13 +2,13 @@ package org.koitharu.kotatsu.details.ui
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -30,7 +30,6 @@ import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingInfoBottomSheet
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -43,7 +42,6 @@ import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
-import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
 
 @AndroidEntryPoint
@@ -67,21 +65,16 @@ class DetailsFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		binding.textViewAuthor.setOnClickListener(this)
-		binding.buttonFavorite.setOnClickListener(this)
-		binding.buttonRead.setOnClickListener(this)
-		binding.buttonRead.setOnLongClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
 		binding.scrobblingLayout.root.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
-		viewModel.favouriteCategories.observe(viewLifecycleOwner, ::onFavouriteChanged)
 		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
 		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
-		addMenuProvider(DetailsMenuProvider())
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
@@ -165,9 +158,6 @@ class DetailsFragment :
 
 			infoLayout.textViewNsfw.isVisible = manga.isNsfw
 
-			// Buttons
-			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
-
 			// Chips
 			bindTags(manga)
 		}
@@ -182,25 +172,7 @@ class DetailsFragment :
 	}
 
 	private fun onHistoryChanged(history: MangaHistory?) {
-		with(binding.buttonRead) {
-			if (history == null) {
-				setText(R.string.read)
-				setIconResource(R.drawable.ic_read)
-			} else {
-				setText(R.string._continue)
-				setIconResource(R.drawable.ic_play)
-			}
-		}
 		binding.progressView.setPercent(history?.percent ?: PROGRESS_NONE, animate = true)
-	}
-
-	private fun onFavouriteChanged(isFavourite: Boolean) {
-		val iconRes = if (isFavourite) {
-			R.drawable.ic_heart
-		} else {
-			R.drawable.ic_heart_outline
-		}
-		binding.buttonFavorite.setIconResource(iconRes)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -251,25 +223,8 @@ class DetailsFragment :
 	override fun onClick(v: View) {
 		val manga = viewModel.manga.value ?: return
 		when (v.id) {
-			R.id.button_favorite -> {
-				FavouriteCategoriesBottomSheet.show(childFragmentManager, manga)
-			}
 			R.id.scrobbling_layout -> {
 				ScrobblingInfoBottomSheet.show(childFragmentManager)
-			}
-			R.id.button_read -> {
-				val chapterId = viewModel.readingHistory.value?.chapterId
-				if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
-					(activity as? DetailsActivity)?.showChapterMissingDialog(chapterId)
-				} else {
-					startActivity(
-						ReaderActivity.newIntent(
-							context = context ?: return,
-							manga = manga,
-							branch = viewModel.selectedBranchValue,
-						),
-					)
-				}
 			}
 			R.id.textView_author -> {
 				startActivity(
@@ -331,8 +286,6 @@ class DetailsFragment :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
 			bottom = insets.bottom,
 		)
 	}
@@ -367,27 +320,5 @@ class DetailsFragment :
 			request.fallback(it)
 		} ?: request.fallback(R.drawable.ic_placeholder)
 		request.enqueueWith(coil)
-	}
-
-	private inner class DetailsMenuProvider : MenuProvider {
-
-		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-			menuInflater.inflate(R.menu.opt_details_info, menu)
-		}
-
-		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
-			R.id.action_share -> {
-				viewModel.manga.value?.let {
-					val context = requireContext()
-					if (it.source == MangaSource.LOCAL) {
-						ShareHelper(context).shareCbz(listOf(it.url.toUri().toFile()))
-					} else {
-						ShareHelper(context).shareMangaLink(it)
-					}
-				}
-				true
-			}
-			else -> false
-		}
 	}
 }

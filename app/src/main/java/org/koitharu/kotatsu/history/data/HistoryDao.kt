@@ -30,7 +30,7 @@ abstract class HistoryDao {
 		WHERE history.deleted_at = 0
 		GROUP BY manga_tags.tag_id 
 		ORDER BY COUNT(manga_tags.manga_id) DESC 
-		LIMIT :limit"""
+		LIMIT :limit""",
 	)
 	abstract suspend fun findPopularTags(limit: Int): List<TagEntity>
 
@@ -49,7 +49,9 @@ abstract class HistoryDao {
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(entity: HistoryEntity): Long
 
-	@Query("UPDATE history SET page = :page, chapter_id = :chapterId, scroll = :scroll, percent = :percent, updated_at = :updatedAt WHERE manga_id = :mangaId")
+	@Query(
+		"UPDATE history SET page = :page, chapter_id = :chapterId, scroll = :scroll, percent = :percent, updated_at = :updatedAt, deleted_at = 0 WHERE manga_id = :mangaId",
+	)
 	abstract suspend fun update(
 		mangaId: Long,
 		page: Int,
@@ -76,7 +78,7 @@ abstract class HistoryDao {
 		chapterId = entity.chapterId,
 		scroll = entity.scroll,
 		percent = entity.percent,
-		updatedAt = entity.updatedAt
+		updatedAt = entity.updatedAt,
 	)
 
 	@Transaction

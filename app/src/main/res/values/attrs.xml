@@ -72,6 +72,7 @@
 	<declare-styleable name="BottomSheetHeaderBar">
 		<attr name="title" />
 		<attr name="menu" />
+		<attr name="fitStatusBar" format="boolean" />
 	</declare-styleable>
 
 </resources>

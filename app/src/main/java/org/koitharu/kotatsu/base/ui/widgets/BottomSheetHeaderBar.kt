@@ -2,17 +2,22 @@ package org.koitharu.kotatsu.base.ui.widgets
 
 import android.animation.LayoutTransition
 import android.content.Context
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.withStyledAttributes
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isGone
+import androidx.core.view.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
@@ -28,7 +33,7 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	@AttrRes defStyleAttr: Int = materialR.attr.appBarLayoutStyle,
-) : AppBarLayout(context, attrs, defStyleAttr) {
+) : AppBarLayout(context, attrs, defStyleAttr), MenuHost {
 
 	private val binding = LayoutSheetHeaderBinding.inflate(LayoutInflater.from(context), this)
 	private val closeDrawable = context.getThemeDrawable(materialR.attr.actionModeCloseDrawable)
@@ -36,9 +41,24 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 	private var bottomSheetBehavior: BottomSheetBehavior<*>? = null
 	private val locationBuffer = IntArray(2)
 	private val expansionListeners = LinkedList<OnExpansionChangeListener>()
+	private var fitStatusBar = false
+	private var transition: AutoTransition? = null
 
+	@Deprecated("")
 	val toolbar: MaterialToolbar
 		get() = binding.toolbar
+
+	var title: CharSequence?
+		get() = binding.toolbar.title
+		set(value) {
+			binding.toolbar.title = value
+		}
+
+	var subtitle: CharSequence?
+		get() = binding.toolbar.subtitle
+		set(value) {
+			binding.toolbar.subtitle = value
+		}
 
 	init {
 		setBackgroundResource(R.drawable.sheet_toolbar_background)
@@ -47,6 +67,7 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 		}
 		context.withStyledAttributes(attrs, R.styleable.BottomSheetHeaderBar, defStyleAttr) {
 			binding.toolbar.title = getString(R.styleable.BottomSheetHeaderBar_title)
+			fitStatusBar = getBoolean(R.styleable.BottomSheetHeaderBar_fitStatusBar, fitStatusBar)
 			val menuResId = getResourceId(R.styleable.BottomSheetHeaderBar_menu, 0)
 			if (menuResId != 0) {
 				binding.toolbar.inflateMenu(menuResId)
@@ -89,6 +110,31 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 		}
 	}
 
+	override fun onApplyWindowInsets(insets: WindowInsets?): WindowInsets {
+		dispatchInsets(if (insets != null) WindowInsetsCompat.toWindowInsetsCompat(insets) else null)
+		return super.onApplyWindowInsets(insets)
+	}
+
+	override fun addMenuProvider(provider: MenuProvider) {
+		binding.toolbar.addMenuProvider(provider)
+	}
+
+	override fun addMenuProvider(provider: MenuProvider, owner: LifecycleOwner) {
+		binding.toolbar.addMenuProvider(provider, owner)
+	}
+
+	override fun addMenuProvider(provider: MenuProvider, owner: LifecycleOwner, state: Lifecycle.State) {
+		binding.toolbar.addMenuProvider(provider, owner, state)
+	}
+
+	override fun removeMenuProvider(provider: MenuProvider) {
+		binding.toolbar.removeMenuProvider(provider)
+	}
+
+	override fun invalidateMenu() {
+		binding.toolbar.invalidateMenu()
+	}
+
 	fun setNavigationOnClickListener(onClickListener: OnClickListener) {
 		binding.toolbar.setNavigationOnClickListener(onClickListener)
 	}
@@ -115,9 +161,24 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 		if (isExpanded == binding.dragHandle.isGone) {
 			return
 		}
+		TransitionManager.beginDelayedTransition(this, getTransition())
 		binding.toolbar.navigationIcon = (if (isExpanded) closeDrawable else null)
 		binding.dragHandle.isGone = isExpanded
 		expansionListeners.forEach { it.onExpansionStateChanged(this, isExpanded) }
+		dispatchInsets(ViewCompat.getRootWindowInsets(this))
+	}
+
+	private fun dispatchInsets(insets: WindowInsetsCompat?) {
+		if (!fitStatusBar) {
+			return
+		}
+		val isExpanded = binding.dragHandle.isGone
+		if (isExpanded) {
+			val topInset = insets?.getInsets(WindowInsetsCompat.Type.systemBars())?.top ?: 0
+			updatePadding(top = topInset)
+		} else {
+			updatePadding(top = 0)
+		}
 	}
 
 	private fun findParentBottomSheetBehavior(): BottomSheetBehavior<*>? {
@@ -142,7 +203,12 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 	}
 
 	private fun dismissBottomSheet() {
-		bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+		val behavior = bottomSheetBehavior ?: return
+		if (behavior.isHideable) {
+			behavior.state = BottomSheetBehavior.STATE_HIDDEN
+		} else {
+			behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+		}
 	}
 
 	private fun shouldAddView(child: View?): Boolean {
@@ -165,6 +231,15 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 			}
 			else -> Toolbar.LayoutParams(params)
 		}
+	}
+
+	private fun getTransition(): AutoTransition {
+		transition?.let { return it }
+		val t = AutoTransition()
+		t.duration = context.getAnimationDuration(R.integer.config_tinyAnimTime)
+		// t.interpolator = AccelerateDecelerateInterpolator()
+		transition = t
+		return t
 	}
 
 	private inner class Callback : BottomSheetBehavior.BottomSheetCallback(), View.OnClickListener {

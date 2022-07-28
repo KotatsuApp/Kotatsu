@@ -6,52 +6,41 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.Spinner
 import android.widget.Toast
-import androidx.appcompat.view.ActionMode
-import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.browser.BrowserActivity
+import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
-import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
+import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.list.ui.adapter.bindBadge
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
-import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.isReportable
-import org.koitharu.kotatsu.utils.ext.report
+import org.koitharu.kotatsu.utils.ext.*
 
 @AndroidEntryPoint
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
-	TabLayoutMediator.TabConfigurationStrategy,
-	AdapterView.OnItemSelectedListener {
+	View.OnClickListener,
+	BottomSheetHeaderBar.OnExpansionChangeListener {
 
 	@Inject
 	lateinit var viewModelFactory: DetailsViewModel.Factory
@@ -59,9 +48,12 @@ class DetailsActivity :
 	@Inject
 	lateinit var shortcutsUpdater: ShortcutsUpdater
 
-	private val viewModel by assistedViewModels<DetailsViewModel> {
+	private var badge: BadgeDrawable? = null
+
+	private val viewModel: DetailsViewModel by assistedViewModels {
 		viewModelFactory.create(MangaIntent(intent))
 	}
+	private lateinit var chaptersMenuProvider: ChaptersMenuProvider
 
 	private val downloadReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
@@ -77,23 +69,51 @@ class DetailsActivity :
 			setDisplayHomeAsUpEnabled(true)
 			setDisplayShowTitleEnabled(false)
 		}
-		val pager = binding.pager
-		if (pager != null) {
-			pager.adapter = MangaDetailsAdapter(this)
-			TabLayoutMediator(checkNotNull(binding.tabs), pager, this).attach()
+		binding.buttonRead.setOnClickListener(this)
+		binding.buttonDropdown.setOnClickListener(this)
+
+		chaptersMenuProvider = if (binding.layoutBottom != null) {
+			val bsMediator = ChaptersBottomSheetMediator(checkNotNull(binding.layoutBottom))
+			actionModeDelegate.addListener(bsMediator)
+			checkNotNull(binding.headerChapters).addOnExpansionChangeListener(bsMediator)
+			checkNotNull(binding.headerChapters).addOnLayoutChangeListener(bsMediator)
+			onBackPressedDispatcher.addCallback(bsMediator)
+			ChaptersMenuProvider(viewModel, bsMediator)
+		} else {
+			ChaptersMenuProvider(viewModel, null)
 		}
-		gcFragments()
-		binding.spinnerBranches?.let(::initSpinner)
 
 		viewModel.manga.observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
 		viewModel.onShowToast.observe(this) {
-			binding.snackbar.show(messageText = getString(it))
+		}
+		viewModel.historyInfo.observe(this, ::onHistoryChanged)
+		viewModel.selectedBranchName.observe(this) {
+			binding.headerChapters?.subtitle = it
+			binding.textViewSubtitle?.textAndVisible = it
+		}
+		viewModel.isChaptersReversed.observe(this) {
+			binding.headerChapters?.invalidateMenu() ?: invalidateOptionsMenu()
+		}
+		viewModel.favouriteCategories.observe(this) {
+			invalidateOptionsMenu()
+		}
+		viewModel.branches.observe(this) {
+			binding.buttonDropdown.isVisible = it.size > 1
 		}
 
 		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
+		addMenuProvider(
+			DetailsMenuProvider(
+				activity = this,
+				viewModel = viewModel,
+				snackbarHost = binding.containerChapters,
+				shortcutsUpdater = shortcutsUpdater,
+			),
+		)
+		binding.headerChapters?.addOnExpansionChangeListener(this) ?: addMenuProvider(chaptersMenuProvider)
 	}
 
 	override fun onDestroy() {
@@ -101,8 +121,39 @@ class DetailsActivity :
 		super.onDestroy()
 	}
 
+	override fun onClick(v: View) {
+		val manga = viewModel.manga.value ?: return
+		when (v.id) {
+			R.id.button_read -> {
+				val chapterId = viewModel.historyInfo.value?.history?.chapterId
+				if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
+					showChapterMissingDialog(chapterId)
+				} else {
+					startActivity(
+						ReaderActivity.newIntent(
+							context = this,
+							manga = manga,
+							branch = viewModel.selectedBranchValue,
+						),
+					)
+				}
+			}
+			R.id.button_dropdown -> showBranchPopupMenu()
+		}
+	}
+
+	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
+		if (isExpanded) {
+			headerBar.addMenuProvider(chaptersMenuProvider)
+		} else {
+			headerBar.removeMenuProvider(chaptersMenuProvider)
+		}
+		binding.buttonRead.isGone = isExpanded
+	}
+
 	private fun onMangaUpdated(manga: Manga) {
 		title = manga.title
+		binding.buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
 		invalidateOptionsMenu()
 	}
 
@@ -124,149 +175,65 @@ class DetailsActivity :
 				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 				finishAfterTransition()
 			}
-			e.isReportable() -> {
-				binding.snackbar.show(
-					messageText = e.getDisplayMessage(resources),
-					actionId = R.string.report,
-					duration = if (viewModel.manga.value?.chapters == null) {
+			else -> {
+				val snackbar = Snackbar.make(
+					binding.containerDetails,
+					e.getDisplayMessage(resources),
+					if (viewModel.manga.value?.chapters == null) {
 						Snackbar.LENGTH_INDEFINITE
 					} else {
 						Snackbar.LENGTH_LONG
 					},
-					onActionClick = {
-						e.report("DetailsActivity::onError")
-						dismiss()
-					},
 				)
-			}
-			else -> {
-				binding.snackbar.show(e.getDisplayMessage(resources))
+				if (e.isReportable()) {
+					snackbar.setAction(R.string.report) {
+						e.report("DetailsActivity::onError")
+					}
+				}
+				snackbar.show()
 			}
 		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.snackbar.updatePadding(
-			bottom = insets.bottom,
-		)
 		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
+		if (insets.bottom > 0) {
+			window.setNavigationBarTransparentCompat(this, binding.layoutBottom?.elevation ?: 0f)
+		}
+	}
+
+	private fun onHistoryChanged(info: HistoryInfo?) {
+		with(binding.buttonRead) {
+			if (info?.history != null) {
+				setText(R.string._continue)
+				setIconResource(R.drawable.ic_play)
+			} else {
+				setText(R.string.read)
+				setIconResource(R.drawable.ic_read)
+			}
+		}
+		val text = when {
+			info == null -> getString(R.string.loading_)
+			info.currentChapter >= 0 -> getString(R.string.chapter_d_of_d, info.currentChapter + 1, info.totalChapters)
+			info.totalChapters == 0 -> getString(R.string.no_chapters)
+			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
+		}
+		binding.headerChapters?.title = text
+		binding.textViewTitle?.text = text
 	}
 
 	private fun onNewChaptersChanged(newChapters: Int) {
-		val tab = binding.tabs?.getTabAt(1) ?: return
-		if (newChapters == 0) {
-			tab.removeBadge()
-		} else {
-			val badge = tab.orCreateBadge
-			badge.number = newChapters
-			badge.isVisible = true
-		}
+		badge = binding.buttonRead.bindBadge(badge, newChapters)
 	}
-
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		super.onCreateOptionsMenu(menu)
-		menuInflater.inflate(R.menu.opt_details, menu)
-		return true
-	}
-
-	override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-		val manga = viewModel.manga.value
-		menu.findItem(R.id.action_save).isVisible = manga?.source != null && manga.source != MangaSource.LOCAL
-		menu.findItem(R.id.action_delete).isVisible = manga?.source == MangaSource.LOCAL
-		menu.findItem(R.id.action_browser).isVisible = manga?.source != MangaSource.LOCAL
-		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(this)
-		menu.findItem(R.id.action_shiki_track).isVisible = viewModel.isScrobblingAvailable
-		return super.onPrepareOptionsMenu(menu)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-		R.id.action_delete -> {
-			val title = viewModel.manga.value?.title.orEmpty()
-			MaterialAlertDialogBuilder(this)
-				.setTitle(R.string.delete_manga)
-				.setMessage(getString(R.string.text_delete_local_manga, title))
-				.setPositiveButton(R.string.delete) { _, _ ->
-					viewModel.deleteLocal()
-				}
-				.setNegativeButton(android.R.string.cancel, null)
-				.show()
-			true
-		}
-		R.id.action_save -> {
-			viewModel.manga.value?.let {
-				val chaptersCount = it.chapters?.size ?: 0
-				val branches = viewModel.branches.value.orEmpty()
-				if (chaptersCount > 5 || branches.size > 1) {
-					showSaveConfirmation(it, chaptersCount, branches)
-				} else {
-					DownloadService.start(this, it)
-				}
-			}
-			true
-		}
-		R.id.action_browser -> {
-			viewModel.manga.value?.let {
-				startActivity(BrowserActivity.newIntent(this, it.publicUrl, it.title))
-			}
-			true
-		}
-		R.id.action_related -> {
-			viewModel.manga.value?.let {
-				startActivity(MultiSearchActivity.newIntent(this, it.title))
-			}
-			true
-		}
-		R.id.action_shiki_track -> {
-			viewModel.manga.value?.let {
-				ScrobblingSelectorBottomSheet.show(supportFragmentManager, it)
-			}
-			true
-		}
-		R.id.action_shortcut -> {
-			viewModel.manga.value?.let {
-				lifecycleScope.launch {
-					if (!shortcutsUpdater.requestPinShortcut(it)) {
-						binding.snackbar.show(getString(R.string.operation_not_supported))
-					}
-				}
-			}
-			true
-		}
-		else -> super.onOptionsItemSelected(item)
-	}
-
-	override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
-		tab.text = when (position) {
-			0 -> getString(R.string.details)
-			1 -> getString(R.string.chapters)
-			else -> null
-		}
-	}
-
-	override fun onSupportActionModeStarted(mode: ActionMode) {
-		super.onSupportActionModeStarted(mode)
-		binding.pager?.isUserInputEnabled = false
-	}
-
-	override fun onSupportActionModeFinished(mode: ActionMode) {
-		super.onSupportActionModeFinished(mode)
-		binding.pager?.isUserInputEnabled = true
-	}
-
-	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-		val spinner = binding.spinnerBranches ?: return
-		viewModel.setSelectedBranch(spinner.selectedItem as String?)
-	}
-
-	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
 
 	fun showChapterMissingDialog(chapterId: Long) {
 		val remoteManga = viewModel.getRemoteManga()
 		if (remoteManga == null) {
-			binding.snackbar.show(getString(R.string.chapter_is_missing))
+			Snackbar.make(binding.containerDetails, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
+				.show()
 			return
 		}
 		MaterialAlertDialogBuilder(this).apply {
@@ -289,19 +256,19 @@ class DetailsActivity :
 		}.show()
 	}
 
-	private fun initSpinner(spinner: Spinner) {
-		val branchesAdapter = BranchesAdapter()
-		spinner.adapter = branchesAdapter
-		spinner.onItemSelectedListener = this
-		viewModel.branches.observe(this) {
-			branchesAdapter.setItems(it)
-			spinner.isVisible = it.size > 1
+	private fun showBranchPopupMenu() {
+		val menu = PopupMenu(this, binding.headerChapters ?: binding.buttonDropdown)
+		val currentBranch = viewModel.selectedBranchValue
+		for (branch in viewModel.branches.value ?: return) {
+			val item = menu.menu.add(R.id.group_branches, Menu.NONE, Menu.NONE, branch)
+			item.isChecked = branch == currentBranch
 		}
-		viewModel.selectedBranchIndex.observe(this) {
-			if (it != -1 && it != spinner.selectedItemPosition) {
-				spinner.setSelection(it)
-			}
+		menu.menu.setGroupCheckable(R.id.group_branches, true, true)
+		menu.setOnMenuItemClickListener { item ->
+			viewModel.setSelectedBranch(item.title?.toString())
+			true
 		}
+		menu.show()
 	}
 
 	private fun resolveError(e: Throwable) {
@@ -315,52 +282,7 @@ class DetailsActivity :
 		}
 	}
 
-	private fun gcFragments() {
-		val mustHaveId = binding.pager == null
-		val fm = supportFragmentManager
-		val fragmentsToRemove = fm.fragments.filter { f ->
-			(f.id == 0) == mustHaveId
-		}
-		if (fragmentsToRemove.isEmpty()) {
-			return
-		}
-		fm.commit {
-			setReorderingAllowed(true)
-			for (f in fragmentsToRemove) {
-				remove(f)
-			}
-		}
-	}
-
-	private fun showSaveConfirmation(manga: Manga, chaptersCount: Int, branches: List<String?>) {
-		val dialogBuilder = MaterialAlertDialogBuilder(this)
-			.setTitle(R.string.save_manga)
-			.setNegativeButton(android.R.string.cancel, null)
-		if (branches.size > 1) {
-			val items = Array(branches.size) { i -> branches[i].orEmpty() }
-			val currentBranch = viewModel.selectedBranchIndex.value ?: -1
-			val checkedIndices = BooleanArray(branches.size) { i -> i == currentBranch }
-			dialogBuilder.setMultiChoiceItems(items, checkedIndices) { _, i, checked ->
-				checkedIndices[i] = checked
-			}.setPositiveButton(R.string.save) { _, _ ->
-				val selectedBranches = branches.filterIndexedTo(HashSet()) { i, _ -> checkedIndices[i] }
-				val chaptersIds = manga.chapters?.mapNotNullToSet { c ->
-					if (c.branch in selectedBranches) c.id else null
-				}
-				DownloadService.start(this, manga, chaptersIds)
-			}
-		} else {
-			dialogBuilder.setMessage(
-				getString(
-					R.string.large_manga_save_confirm,
-					resources.getQuantityString(R.plurals.chapters, chaptersCount, chaptersCount),
-				),
-			).setPositiveButton(R.string.save) { _, _ ->
-				DownloadService.start(this, manga)
-			}
-		}
-		dialogBuilder.show()
-	}
+	private fun isTabletLayout() = binding.layoutBottom == null
 
 	companion object {
 

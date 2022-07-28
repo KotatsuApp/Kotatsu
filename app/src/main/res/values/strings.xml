@@ -360,4 +360,5 @@
 	<string name="not_found_404">Content not found or removed</string>
 	<string name="incognito_mode">Incognito mode</string>
 	<string name="app_update_available_s">Application update available: %s</string>
+	<string name="no_chapters">No chapters</string>
 </resources>

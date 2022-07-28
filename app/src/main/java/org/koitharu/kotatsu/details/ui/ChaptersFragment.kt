@@ -2,16 +2,14 @@ package org.koitharu.kotatsu.details.ui
 
 import android.os.Bundle
 import android.view.*
-import android.widget.AdapterView
-import android.widget.Spinner
 import androidx.appcompat.view.ActionMode
-import androidx.appcompat.widget.SearchView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import kotlin.math.roundToInt
 import org.koitharu.kotatsu.R
@@ -19,7 +17,6 @@ import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
-import org.koitharu.kotatsu.details.ui.adapter.BranchesAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -29,16 +26,13 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
-import org.koitharu.kotatsu.utils.ext.addMenuProvider
+import org.koitharu.kotatsu.utils.ext.parents
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem>,
-	AdapterView.OnItemSelectedListener,
-	MenuItem.OnActionExpandListener,
-	SearchView.OnQueryTextListener,
-	ListSelectionController.Callback {
+	ListSelectionController.Callback2 {
 
 	private val viewModel by activityViewModels<DetailsViewModel>()
 
@@ -64,23 +58,16 @@ class ChaptersFragment :
 			setHasFixedSize(true)
 			adapter = chaptersAdapter
 		}
-		binding.spinnerBranches?.let(::initSpinner)
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, this::onChaptersChanged)
-		viewModel.isChaptersReversed.observe(viewLifecycleOwner) {
-			activity?.invalidateOptionsMenu()
-		}
 		viewModel.isChaptersEmpty.observe(viewLifecycleOwner) {
 			binding.textViewHolder.isVisible = it
-			activity?.invalidateOptionsMenu()
 		}
-		addMenuProvider(ChaptersMenuProvider())
 	}
 
 	override fun onDestroyView() {
 		chaptersAdapter = null
 		selectionController = null
-		binding.spinnerBranches?.adapter = null
 		super.onDestroyView()
 	}
 
@@ -106,7 +93,7 @@ class ChaptersFragment :
 		return selectionController?.onItemLongClick(item.chapter.id) ?: false
 	}
 
-	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_save -> {
 				DownloadService.start(
@@ -136,7 +123,6 @@ class ChaptersFragment :
 				true
 			}
 			R.id.action_select_range -> {
-				val controller = selectionController ?: return false
 				val items = chaptersAdapter?.items ?: return false
 				val ids = HashSet(controller.peekCheckedIds())
 				val buffer = HashSet<Long>()
@@ -164,19 +150,12 @@ class ChaptersFragment :
 		}
 	}
 
-	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-		val spinner = binding.spinnerBranches ?: return
-		viewModel.setSelectedBranch(spinner.selectedItem as String?)
-	}
-
-	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
-
-	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_chapters, menu)
 		return true
 	}
 
-	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		val selectedIds = selectionController?.peekCheckedIds() ?: return false
 		val allItems = chaptersAdapter?.items.orEmpty()
 		val items = allItems.withIndex().filter { (_, x) -> x.chapter.id in selectedIds }
@@ -199,46 +178,16 @@ class ChaptersFragment :
 		return true
 	}
 
-	override fun onSelectionChanged(count: Int) {
+	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
 		binding.recyclerViewChapters.invalidateItemDecorations()
-	}
-
-	override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
-
-	override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-		(item?.actionView as? SearchView)?.setQuery("", false)
-		viewModel.performChapterSearch(null)
-		return true
-	}
-
-	override fun onQueryTextSubmit(query: String?): Boolean = false
-
-	override fun onQueryTextChange(newText: String?): Boolean {
-		viewModel.performChapterSearch(newText)
-		return true
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.recyclerViewChapters.updatePadding(
-			bottom = insets.bottom + (binding.spinnerBranches?.height ?: 0),
+			bottom = insets.bottom,
 		)
 		binding.recyclerViewChapters.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			bottomMargin = insets.bottom
-		}
-	}
-
-	private fun initSpinner(spinner: Spinner) {
-		val branchesAdapter = BranchesAdapter()
-		spinner.adapter = branchesAdapter
-		spinner.onItemSelectedListener = this
-		viewModel.branches.observe(viewLifecycleOwner) {
-			branchesAdapter.setItems(it)
-			spinner.isVisible = it.size > 1
-		}
-		viewModel.selectedBranchIndex.observe(viewLifecycleOwner) {
-			if (it != -1 && it != spinner.selectedItemPosition) {
-				spinner.setSelection(it)
-			}
 		}
 	}
 
@@ -261,29 +210,17 @@ class ChaptersFragment :
 		binding.progressBar.isVisible = isLoading
 	}
 
-	private inner class ChaptersMenuProvider : MenuProvider {
-
-		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-			menuInflater.inflate(R.menu.opt_chapters, menu)
-			val searchMenuItem = menu.findItem(R.id.action_search)
-			searchMenuItem.setOnActionExpandListener(this@ChaptersFragment)
-			val searchView = searchMenuItem.actionView as SearchView
-			searchView.setOnQueryTextListener(this@ChaptersFragment)
-			searchView.setIconifiedByDefault(false)
-			searchView.queryHint = searchMenuItem.title
-		}
-
-		override fun onPrepareMenu(menu: Menu) {
-			menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
-			menu.findItem(R.id.action_search).isVisible = viewModel.isChaptersEmpty.value == false
-		}
-
-		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
-			R.id.action_reversed -> {
-				viewModel.setChaptersReversed(!menuItem.isChecked)
-				true
+	private fun findBottomSheetBehavior(): BottomSheetBehavior<*>? {
+		val v = view ?: return null
+		for (p in v.parents) {
+			val layoutParams = (p as? View)?.layoutParams
+			if (layoutParams is CoordinatorLayout.LayoutParams) {
+				val behavior = layoutParams.behavior
+				if (behavior is BottomSheetBehavior<*>) {
+					return behavior
+				}
 			}
-			else -> false
 		}
+		return null
 	}
 }

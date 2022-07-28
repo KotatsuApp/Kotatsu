@@ -3,6 +3,9 @@
     <option name="myName" value="Project Default" />
     <inspection_tool class="BooleanLiteralArgument" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="Destructure" enabled="true" level="INFO" enabled_by_default="true" />
+    <inspection_tool class="FillClass" enabled="true" level="INFORMATION" enabled_by_default="true">
+      <option name="withoutDefaultValues" value="true" />
+    </inspection_tool>
     <inspection_tool class="KeySetIterationMayUseEntrySet" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="KotlinFunctionArgumentsHelper" enabled="true" level="INFORMATION" enabled_by_default="true">
       <option name="withoutDefaultValues" value="true" />

@@ -107,47 +107,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content" />
 
-			<androidx.constraintlayout.widget.ConstraintLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal">
-
-				<com.google.android.material.button.MaterialButton
-					android:id="@+id/button_favorite"
-					style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_marginStart="16dp"
-					android:contentDescription="@string/add_to_favourites"
-					android:paddingStart="0dp"
-					android:paddingEnd="0dp"
-					app:icon="@drawable/ic_heart_outline"
-					app:iconGravity="textTop"
-					app:iconPadding="0dp"
-					app:layout_constraintBottom_toBottomOf="@id/button_read"
-					app:layout_constraintDimensionRatio="1:1"
-					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toTopOf="@id/button_read" />
-
-				<com.google.android.material.button.MaterialButton
-					android:id="@+id/button_read"
-					style="@style/Widget.Material3.Button.TonalButton"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_marginStart="16dp"
-					android:layout_marginEnd="16dp"
-					android:enabled="false"
-					android:text="@string/read"
-					android:textAllCaps="false"
-					app:iconGravity="textStart"
-					app:iconPadding="8dp"
-					app:layout_constraintEnd_toEndOf="parent"
-					app:layout_constraintStart_toEndOf="@id/button_favorite"
-					app:layout_constraintTop_toTopOf="parent"
-					tools:text="@string/_continue" />
-
-			</androidx.constraintlayout.widget.ConstraintLayout>
-
 		</LinearLayout>
 
 		<androidx.constraintlayout.widget.Barrier

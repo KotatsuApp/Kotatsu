@@ -31,8 +31,8 @@ class DownloadNotification(private val context: Context, startId: Int) {
 			context,
 			startId,
 			DownloadService.getCancelIntent(startId),
-			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
-		)
+			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+		),
 	)
 	private val listIntent = PendingIntent.getActivity(
 		context,
@@ -63,7 +63,7 @@ class DownloadNotification(private val context: Context, startId: Int) {
 				NotificationCompat.VISIBILITY_PRIVATE
 			} else {
 				NotificationCompat.VISIBILITY_PUBLIC
-			}
+			},
 		)
 		when (state) {
 			is DownloadState.Cancelled -> {
@@ -143,7 +143,7 @@ class DownloadNotification(private val context: Context, startId: Int) {
 		context,
 		manga.hashCode(),
 		DetailsActivity.newIntent(context, manga),
-		PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
+		PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
 	)
 
 	companion object {
@@ -158,7 +158,7 @@ class DownloadNotification(private val context: Context, startId: Int) {
 					val channel = NotificationChannel(
 						CHANNEL_ID,
 						context.getString(R.string.downloads),
-						NotificationManager.IMPORTANCE_LOW
+						NotificationManager.IMPORTANCE_LOW,
 					)
 					channel.enableVibration(false)
 					channel.enableLights(false)

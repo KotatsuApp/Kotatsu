@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -7,12 +7,15 @@
 	android:layout_height="match_parent"
 	tools:context=".details.ui.DetailsActivity">
 
-	<com.google.android.material.appbar.KotatsuAppBarLayout
+	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:elevation="0dp"
 		android:fitsSystemWindows="true"
-		app:elevation="0dp">
+		android:stateListAnimator="@null"
+		app:elevation="0dp"
+		app:liftOnScroll="false">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
@@ -20,32 +23,69 @@
 			android:layout_height="?attr/actionBarSize"
 			android:background="@drawable/m3_tabs_background"
 			android:theme="?attr/actionBarTheme"
-			app:layout_scrollFlags="scroll|enterAlways|snap"
-			tools:ignore="PrivateResource">
+			app:layout_scrollFlags="noScroll"
+			tools:ignore="PrivateResource" />
 
-			<com.google.android.material.tabs.TabLayout
-				android:id="@+id/tabs"
-				style="@style/Widget.Kotatsu.SuperTabs"
-				android:layout_width="wrap_content"
-				android:layout_height="match_parent"
-				android:layout_gravity="center_horizontal"
-				android:background="@null" />
+	</com.google.android.material.appbar.AppBarLayout>
 
-		</com.google.android.material.appbar.MaterialToolbar>
-
-	</com.google.android.material.appbar.KotatsuAppBarLayout>
-
-	<androidx.viewpager2.widget.ViewPager2
-		android:id="@+id/pager"
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/container_details"
+		android:name="org.koitharu.kotatsu.details.ui.DetailsFragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+		tools:layout="@layout/fragment_details" />
 
-	<org.koitharu.kotatsu.base.ui.widgets.FadingSnackbar
-		android:id="@+id/snackbar"
+	<LinearLayout
+		android:id="@+id/layout_bottom"
+		style="@style/Widget.Material3.BottomSheet"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom"
-		android:visibility="gone" />
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		app:behavior_hideable="false"
+		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet">
 
-</org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout>
+		<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+			android:id="@+id/header_chapters"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
+			app:fitStatusBar="true"
+			tools:menu="@menu/opt_chapters">
+
+			<ImageView
+				android:id="@+id/button_dropdown"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="start|center_vertical"
+				android:background="?selectableItemBackgroundBorderless"
+				android:padding="@dimen/margin_small"
+				android:src="@drawable/ic_expand_more" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/button_read"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="end|center_vertical"
+				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+				android:enabled="false"
+				android:text="@string/read"
+				android:textAllCaps="false"
+				app:iconGravity="textStart"
+				app:iconPadding="8dp"
+				tools:enabled="true"
+				tools:icon="@drawable/ic_read" />
+
+		</org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar>
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/container_chapters"
+			android:name="org.koitharu.kotatsu.details.ui.ChaptersFragment"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			tools:layout="@layout/fragment_chapters" />
+
+	</LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
