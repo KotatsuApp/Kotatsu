@@ -182,14 +182,7 @@ class ChaptersFragment :
 		binding.recyclerViewChapters.invalidateItemDecorations()
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerViewChapters.updatePadding(
-			bottom = insets.bottom,
-		)
-		binding.recyclerViewChapters.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			bottomMargin = insets.bottom
-		}
-	}
+	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	private fun onChaptersChanged(list: List<ChapterListItem>) {
 		val adapter = chaptersAdapter ?: return
