@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -139,3 +140,12 @@ fun <T : View> ViewGroup.findViewsByType(clazz: Class<T>): Sequence<T> {
 		}
 	}
 }
+
+val View.parents: Sequence<ViewParent>
+	get() = sequence {
+		var p: ViewParent? = parent
+		while (p != null) {
+			yield(p)
+			p = p.parent
+		}
+	}

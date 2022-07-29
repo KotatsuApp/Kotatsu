@@ -13,14 +13,14 @@ import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import org.koitharu.kotatsu.utils.GoneOnInvisibleListener
 import org.koitharu.kotatsu.utils.ext.*
-
 
 class WebtoonHolder(
 	binding: ItemPageWebtoonBinding,
 	loader: PageLoader,
 	settings: AppSettings,
-	exceptionResolver: ExceptionResolver
+	exceptionResolver: ExceptionResolver,
 ) : BasePageHolder<ItemPageWebtoonBinding>(binding, loader, settings, exceptionResolver),
 	View.OnClickListener {
 
@@ -29,6 +29,7 @@ class WebtoonHolder(
 	init {
 		binding.ssiv.setOnImageEventListener(delegate)
 		bindingInfo.buttonRetry.setOnClickListener(this)
+		GoneOnInvisibleListener(bindingInfo.progressBar).attach()
 	}
 
 	override fun onBind(data: ReaderPage) {
@@ -61,9 +62,9 @@ class WebtoonHolder(
 
 	override fun onImageShowing(zoom: ZoomMode) {
 		with(binding.ssiv) {
-			maxScale = 2f * width / sWidth.toFloat()
 			setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM)
 			minScale = width / sWidth.toFloat()
+			maxScale = minScale
 			scrollTo(
 				when {
 					scrollToRestore != 0 -> scrollToRestore

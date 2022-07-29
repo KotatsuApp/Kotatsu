@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.sign
 
+@Suppress("unused")
 class WebtoonLayoutManager : LinearLayoutManager {
 
 	private var scrollDirection: Int = 0

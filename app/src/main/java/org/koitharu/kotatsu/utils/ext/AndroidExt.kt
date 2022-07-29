@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.app.ActivityManager
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.SharedPreferences
 import android.content.pm.ResolveInfo
 import android.net.ConnectivityManager
@@ -26,6 +28,9 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 
 val Context.connectivityManager: ConnectivityManager
 	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+val Context.activityManager: ActivityManager?
+	get() = getSystemService(ACTIVITY_SERVICE) as? ActivityManager
 
 suspend fun ConnectivityManager.waitForNetwork(): Network {
 	val request = NetworkRequest.Builder().build()
@@ -92,4 +97,8 @@ fun Lifecycle.postDelayed(runnable: Runnable, delay: Long) {
 		delay(delay)
 		runnable.run()
 	}
+}
+
+fun isLowRamDevice(context: Context): Boolean {
+	return context.activityManager?.isLowRamDevice ?: false
 }

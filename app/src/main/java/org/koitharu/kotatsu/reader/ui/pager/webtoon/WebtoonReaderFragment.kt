@@ -23,7 +23,7 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentReaderWebtoonBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

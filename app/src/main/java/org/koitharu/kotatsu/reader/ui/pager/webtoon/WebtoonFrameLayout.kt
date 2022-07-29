@@ -3,13 +3,16 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import androidx.annotation.AttrRes
 import org.koitharu.kotatsu.R
 
 class WebtoonFrameLayout @JvmOverloads constructor(
-	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+	context: Context,
+	attrs: AttributeSet? = null,
+	@AttrRes defStyleAttr: Int = 0,
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-	private val target by lazy {
+	private val target by lazy(LazyThreadSafetyMode.NONE) {
 		findViewById<WebtoonImageView>(R.id.ssiv)
 	}
 

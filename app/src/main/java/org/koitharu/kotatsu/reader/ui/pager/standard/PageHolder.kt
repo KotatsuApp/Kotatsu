@@ -7,6 +7,8 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
@@ -26,6 +28,8 @@ open class PageHolder(
 	View.OnClickListener {
 
 	init {
+		binding.ssiv.setExecutor(Dispatchers.Default.asExecutor())
+		binding.ssiv.setEagerLoadingEnabled(!isLowRamDevice(context))
 		binding.ssiv.setOnImageEventListener(delegate)
 		@Suppress("LeakingThis")
 		bindingInfo.buttonRetry.setOnClickListener(this)

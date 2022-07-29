@@ -1,11 +1,15 @@
 package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.PointF
 import android.util.AttributeSet
+import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import org.koitharu.kotatsu.parsers.util.toIntUp
+import org.koitharu.kotatsu.utils.ext.isLowRamDevice
+import org.koitharu.kotatsu.utils.ext.parents
 
 private const val SCROLL_UNKNOWN = -1
 
@@ -15,14 +19,14 @@ class WebtoonImageView @JvmOverloads constructor(
 ) : SubsamplingScaleImageView(context, attr) {
 
 	private val ct = PointF()
-	private val displayHeight = if (context is Activity) {
-		context.window.decorView.height
-	} else {
-		context.resources.displayMetrics.heightPixels
-	}
 
 	private var scrollPos = 0
 	private var scrollRange = SCROLL_UNKNOWN
+
+	init {
+		setExecutor(Dispatchers.Default.asExecutor())
+		setEagerLoadingEnabled(!isLowRamDevice(context))
+	}
 
 	fun scrollBy(delta: Int) {
 		val maxScroll = getScrollRange()
@@ -36,6 +40,7 @@ class WebtoonImageView @JvmOverloads constructor(
 	fun scrollTo(y: Int) {
 		val maxScroll = getScrollRange()
 		if (maxScroll == 0) {
+			resetScaleAndCenter()
 			return
 		}
 		scrollToInternal(y.coerceIn(0, maxScroll))
@@ -58,8 +63,11 @@ class WebtoonImageView @JvmOverloads constructor(
 
 	override fun getSuggestedMinimumHeight(): Int {
 		var desiredHeight = super.getSuggestedMinimumHeight()
-		if (sHeight == 0 && desiredHeight < displayHeight) {
-			desiredHeight = displayHeight
+		if (sHeight == 0) {
+			val parentHeight = parentHeight()
+			if (desiredHeight < parentHeight) {
+				desiredHeight = parentHeight
+			}
 		}
 		return desiredHeight
 	}
@@ -84,7 +92,7 @@ class WebtoonImageView @JvmOverloads constructor(
 			}
 		}
 		width = width.coerceAtLeast(suggestedMinimumWidth)
-		height = height.coerceIn(suggestedMinimumHeight, displayHeight)
+		height = height.coerceIn(suggestedMinimumHeight, parentHeight())
 		setMeasuredDimension(width, height)
 	}
 
@@ -100,5 +108,9 @@ class WebtoonImageView @JvmOverloads constructor(
 		}
 		val totalHeight = (sHeight * minScale).toIntUp()
 		scrollRange = (totalHeight - height).coerceAtLeast(0)
+	}
+
+	private fun parentHeight(): Int {
+		return parents.firstNotNullOfOrNull { it as? RecyclerView }?.height ?: 0
 	}
 }
