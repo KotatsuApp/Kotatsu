@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.download.domain
 
 import android.content.Context
-import android.net.ConnectivityManager
 import android.webkit.MimeTypeMap
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
+import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Semaphore
@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.download.ui.service.PausingHandle
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.CbzMangaOutput
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
@@ -25,11 +26,9 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.referer
-import org.koitharu.kotatsu.utils.ext.waitForNetwork
-import org.koitharu.kotatsu.utils.progress.ProgressJob
-import java.io.File
+import org.koitharu.kotatsu.utils.progress.PausingProgressJob
 
-private const val MAX_DOWNLOAD_ATTEMPTS = 3
+private const val MAX_FAILSAFE_ATTEMPTS = 2
 private const val DOWNLOAD_ERROR_DELAY = 500L
 private const val SLOWDOWN_DELAY = 200L
 
@@ -43,9 +42,6 @@ class DownloadManager(
 	private val settings: AppSettings,
 ) {
 
-	private val connectivityManager = context.getSystemService(
-		Context.CONNECTIVITY_SERVICE
-	) as ConnectivityManager
 	private val coverWidth = context.resources.getDimensionPixelSize(
 		androidx.core.R.dimen.compat_notification_large_icon_max_width
 	)
@@ -58,21 +54,24 @@ class DownloadManager(
 		manga: Manga,
 		chaptersIds: LongArray?,
 		startId: Int,
-	): ProgressJob<DownloadState> {
+	): PausingProgressJob<DownloadState> {
 		val stateFlow = MutableStateFlow<DownloadState>(
 			DownloadState.Queued(startId = startId, manga = manga, cover = null)
 		)
-		val job = downloadMangaImpl(manga, chaptersIds?.takeUnless { it.isEmpty() }, stateFlow, startId)
-		return ProgressJob(job, stateFlow)
+		val pausingHandle = PausingHandle()
+		val job = downloadMangaImpl(manga, chaptersIds?.takeUnless { it.isEmpty() }, stateFlow, pausingHandle, startId)
+		return PausingProgressJob(job, stateFlow, pausingHandle)
 	}
 
 	private fun downloadMangaImpl(
 		manga: Manga,
 		chaptersIds: LongArray?,
 		outState: MutableStateFlow<DownloadState>,
+		pausingHandle: PausingHandle,
 		startId: Int,
 	): Job = coroutineScope.launch(Dispatchers.Default + errorStateHandler(outState)) {
-		@Suppress("NAME_SHADOWING") var manga = manga
+		@Suppress("NAME_SHADOWING")
+		var manga = manga
 		val chaptersIdsSet = chaptersIds?.toMutableSet()
 		val cover = loadCover(manga)
 		outState.value = DownloadState.Queued(startId, manga, cover)
@@ -108,38 +107,28 @@ class DownloadManager(
 				"${chaptersIdsSet?.size} of ${chaptersIds?.size} requested chapters not found in manga"
 			}
 			for ((chapterIndex, chapter) in chapters.withIndex()) {
-				val pages = repo.getPages(chapter)
+				val pages = runFailsafe(outState, pausingHandle) {
+					repo.getPages(chapter)
+				}
 				for ((pageIndex, page) in pages.withIndex()) {
-					var retryCounter = 0
-					failsafe@ while (true) {
-						try {
-							val url = repo.getPageUrl(page)
-							val file = cache[url] ?: downloadFile(url, page.referer, destination, tempFileName)
-							output.addPage(
-								chapter = chapter,
-								file = file,
-								pageNumber = pageIndex,
-								ext = MimeTypeMap.getFileExtensionFromUrl(url),
-							)
-							break@failsafe
-						} catch (e: IOException) {
-							if (retryCounter < MAX_DOWNLOAD_ATTEMPTS) {
-								outState.value = DownloadState.WaitingForNetwork(startId, data, cover)
-								delay(DOWNLOAD_ERROR_DELAY)
-								connectivityManager.waitForNetwork()
-								retryCounter++
-							} else {
-								throw e
-							}
-						}
+					runFailsafe(outState, pausingHandle) {
+						val url = repo.getPageUrl(page)
+						val file = cache[url] ?: downloadFile(url, page.referer, destination, tempFileName)
+						output.addPage(
+							chapter = chapter,
+							file = file,
+							pageNumber = pageIndex,
+							ext = MimeTypeMap.getFileExtensionFromUrl(url)
+						)
 					}
-
 					outState.value = DownloadState.Progress(
-						startId, data, cover,
+						startId = startId,
+						manga = data,
+						cover = cover,
 						totalChapters = chapters.size,
 						currentChapter = chapterIndex,
 						totalPages = pages.size,
-						currentPage = pageIndex,
+						currentPage = pageIndex
 					)
 
 					if (settings.isDownloadsSlowdownEnabled) {
@@ -157,15 +146,40 @@ class DownloadManager(
 			throw e
 		} catch (e: Throwable) {
 			e.printStackTraceDebug()
-			outState.value = DownloadState.Error(startId, manga, cover, e)
+			outState.value = DownloadState.Error(startId, manga, cover, e, false)
 		} finally {
 			withContext(NonCancellable) {
 				output?.cleanup()
 				File(destination, tempFileName).deleteAwait()
+				coroutineContext[WakeLockNode]?.release()
+				semaphore.release()
+				localMangaRepository.unlockManga(manga.id)
 			}
-			coroutineContext[WakeLockNode]?.release()
-			semaphore.release()
-			localMangaRepository.unlockManga(manga.id)
+		}
+	}
+
+	private suspend fun <R> runFailsafe(
+		outState: MutableStateFlow<DownloadState>,
+		pausingHandle: PausingHandle,
+		block: suspend () -> R,
+	): R {
+		var countDown = MAX_FAILSAFE_ATTEMPTS
+		failsafe@ while (true) {
+			try {
+				return block()
+			} catch (e: IOException) {
+				if (countDown <= 0) {
+					val state = outState.value
+					outState.value = DownloadState.Error(state.startId, state.manga, state.cover, e, true)
+					countDown = MAX_FAILSAFE_ATTEMPTS
+					pausingHandle.pause()
+					pausingHandle.awaitResumed()
+					outState.value = state
+				} else {
+					countDown--
+					delay(DOWNLOAD_ERROR_DELAY)
+				}
+			}
 		}
 	}
 
@@ -195,6 +209,7 @@ class DownloadManager(
 				manga = prevValue.manga,
 				cover = prevValue.cover,
 				error = throwable,
+				canRetry = false
 			)
 		}
 
@@ -225,7 +240,7 @@ class DownloadManager(
 			okHttp = okHttp,
 			cache = cache,
 			localMangaRepository = localMangaRepository,
-			settings = settings,
+			settings = settings
 		)
 	}
 }

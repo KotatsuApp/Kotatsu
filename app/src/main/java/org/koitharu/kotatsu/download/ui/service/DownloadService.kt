@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -28,16 +29,16 @@ import org.koitharu.kotatsu.download.domain.WakeLockNode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.throttle
+import org.koitharu.kotatsu.utils.progress.PausingProgressJob
 import org.koitharu.kotatsu.utils.progress.ProgressJob
 import org.koitharu.kotatsu.utils.progress.TimeLeftEstimator
-import java.util.concurrent.TimeUnit
 
 class DownloadService : BaseService() {
 
 	private lateinit var downloadManager: DownloadManager
 	private lateinit var notificationSwitcher: ForegroundNotificationSwitcher
 
-	private val jobs = LinkedHashMap<Int, ProgressJob<DownloadState>>()
+	private val jobs = LinkedHashMap<Int, PausingProgressJob<DownloadState>>()
 	private val jobCount = MutableStateFlow(0)
 	private val controlReceiver = ControlReceiver()
 	private var binder: DownloadBinder? = null
@@ -49,10 +50,13 @@ class DownloadService : BaseService() {
 		val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
 		downloadManager = get<DownloadManager.Factory>().create(
-			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1)),
+			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1))
 		)
 		DownloadNotification.createChannel(this)
-		registerReceiver(controlReceiver, IntentFilter(ACTION_DOWNLOAD_CANCEL))
+		val intentFilter = IntentFilter()
+		intentFilter.addAction(ACTION_DOWNLOAD_CANCEL)
+		intentFilter.addAction(ACTION_DOWNLOAD_RESUME)
+		registerReceiver(controlReceiver, intentFilter)
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -90,7 +94,7 @@ class DownloadService : BaseService() {
 		startId: Int,
 		manga: Manga,
 		chaptersIds: LongArray?,
-	): ProgressJob<DownloadState> {
+	): PausingProgressJob<DownloadState> {
 		val job = downloadManager.downloadManga(manga, chaptersIds, startId)
 		listenJob(job)
 		return job
@@ -144,7 +148,7 @@ class DownloadService : BaseService() {
 	}
 
 	private val DownloadState.isTerminal: Boolean
-		get() = this is DownloadState.Done || this is DownloadState.Error || this is DownloadState.Cancelled
+		get() = this is DownloadState.Done || this is DownloadState.Cancelled || (this is DownloadState.Error && !canRetry)
 
 	inner class ControlReceiver : BroadcastReceiver() {
 
@@ -154,6 +158,10 @@ class DownloadService : BaseService() {
 					val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
 					jobs.remove(cancelId)?.cancel()
 					jobCount.value = jobs.size
+				}
+				ACTION_DOWNLOAD_RESUME -> {
+					val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
+					jobs[cancelId]?.resume()
 				}
 			}
 		}
@@ -173,6 +181,7 @@ class DownloadService : BaseService() {
 		const val ACTION_DOWNLOAD_COMPLETE = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_COMPLETE"
 
 		private const val ACTION_DOWNLOAD_CANCEL = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"
+		private const val ACTION_DOWNLOAD_RESUME = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_RESUME"
 
 		private const val EXTRA_MANGA = "manga"
 		private const val EXTRA_CHAPTERS_IDS = "chapters_ids"
@@ -217,6 +226,9 @@ class DownloadService : BaseService() {
 		}
 
 		fun getCancelIntent(startId: Int) = Intent(ACTION_DOWNLOAD_CANCEL)
+			.putExtra(EXTRA_CANCEL_ID, startId)
+
+		fun getResumeIntent(startId: Int) = Intent(ACTION_DOWNLOAD_RESUME)
 			.putExtra(EXTRA_CANCEL_ID, startId)
 
 		fun getDownloadedManga(intent: Intent?): Manga? {
