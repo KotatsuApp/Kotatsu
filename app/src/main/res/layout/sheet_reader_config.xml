@@ -55,7 +55,7 @@
 				android:text="@string/read_mode"
 				android:textAppearance="?textAppearanceTitleSmall" />
 
-			<org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
+			<com.google.android.material.button.MaterialButtonToggleGroup
 				android:id="@+id/checkableGroup"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -78,7 +78,6 @@
 					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
 					android:layout_weight="1"
 					android:text="@string/right_to_left"
 					app:icon="@drawable/ic_reader_rtl" />
@@ -92,7 +91,7 @@
 					android:text="@string/webtoon"
 					app:icon="@drawable/ic_script" />
 
-			</org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup>
+			</com.google.android.material.button.MaterialButtonToggleGroup>
 
 			<TextView
 				android:layout_width="match_parent"

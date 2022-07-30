@@ -109,13 +109,16 @@
 
 	<style name="Widget.Kotatsu.ToggleButton.Vertical">
 		<item name="android:textAlignment">center</item>
-		<item name="iconPadding">4dp</item>
+		<item name="iconPadding">2dp</item>
 		<item name="android:singleLine">false</item>
 		<item name="android:lines">2</item>
 		<item name="android:maxLines">2</item>
 		<item name="iconGravity">top</item>
-		<item name="android:paddingTop">10dp</item>
+		<item name="android:paddingTop">12dp</item>
 		<item name="android:paddingBottom">10dp</item>
+		<item name="android:paddingStart">6dp</item>
+		<item name="android:paddingEnd">6dp</item>
+		<item name="android:elegantTextHeight">false</item>
 		<item name="shapeAppearance">?shapeAppearanceCornerMedium</item>
 	</style>
 

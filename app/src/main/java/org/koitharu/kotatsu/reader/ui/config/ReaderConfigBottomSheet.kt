@@ -10,11 +10,11 @@ import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
+import com.google.android.material.button.MaterialButtonToggleGroup
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.ui.PageSaveContract
@@ -26,9 +26,9 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 
 class ReaderConfigBottomSheet :
 	BaseBottomSheet<SheetReaderConfigBinding>(),
-	CheckableButtonGroup.OnCheckedChangeListener,
 	ActivityResultCallback<Uri?>,
-	View.OnClickListener {
+	View.OnClickListener,
+	MaterialButtonToggleGroup.OnButtonCheckedListener {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
 	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
@@ -53,7 +53,7 @@ class ReaderConfigBottomSheet :
 		binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
 		binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
 
-		binding.checkableGroup.onCheckedChangeListener = this
+		binding.checkableGroup.addOnButtonCheckedListener(this)
 		binding.buttonSavePage.setOnClickListener(this)
 		binding.buttonScreenRotate.setOnClickListener(this)
 		binding.buttonSettings.setOnClickListener(this)
@@ -75,7 +75,10 @@ class ReaderConfigBottomSheet :
 		}
 	}
 
-	override fun onCheckedChanged(group: CheckableButtonGroup, checkedId: Int) {
+	override fun onButtonChecked(group: MaterialButtonToggleGroup?, checkedId: Int, isChecked: Boolean) {
+		if (!isChecked) {
+			return
+		}
 		val newMode = when (checkedId) {
 			R.id.button_standard -> ReaderMode.STANDARD
 			R.id.button_webtoon -> ReaderMode.WEBTOON
