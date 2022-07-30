@@ -14,7 +14,7 @@ val readerModule
 		factory { MangaDataRepository(get()) }
 		single { PagesCache(get()) }
 
-		factory { PageSaveHelper(get(), androidContext()) }
+		factory { PageSaveHelper(androidContext()) }
 
 		viewModel { params ->
 			ReaderViewModel(
@@ -25,7 +25,7 @@ val readerModule
 				historyRepository = get(),
 				settings = get(),
 				pageSaveHelper = get(),
-				bookmarksRepository = get(),
+				bookmarksRepository = get()
 			)
 		}
 	}
