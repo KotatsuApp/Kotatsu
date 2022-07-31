@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResultLauncher
+import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
@@ -61,7 +62,11 @@ class PageSaveHelper @Inject constructor(
 	} != null
 
 	private suspend fun getProposedFileName(url: String, file: File): String {
-		var name = url.toHttpUrl().pathSegments.last()
+		var name = if (url.startsWith("cbz://")) {
+			requireNotNull(url.toUri().fragment)
+		} else {
+			url.toHttpUrl().pathSegments.last()
+		}
 		var extension = name.substringAfterLast('.', "")
 		name = name.substringBeforeLast('.')
 		if (extension.length !in 2..4) {

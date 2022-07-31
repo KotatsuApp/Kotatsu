@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.ui.thumbnails.adapter
 import android.graphics.drawable.Drawable
 import coil.ImageLoader
 import coil.request.ImageRequest
+import coil.size.Scale
 import coil.size.Size
 import com.google.android.material.R as materialR
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -23,14 +24,13 @@ fun pageThumbnailAD(
 	loader: PageLoader,
 	clickListener: OnListItemClickListener<MangaPage>,
 ) = adapterDelegateViewBinding<PageThumbnail, PageThumbnail, ItemPageThumbBinding>(
-	{ inflater, parent -> ItemPageThumbBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemPageThumbBinding.inflate(inflater, parent, false) },
 ) {
-
 	var job: Job? = null
 	val gridWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
 	val thumbSize = Size(
 		width = gridWidth,
-		height = (gridWidth * 13f / 18f).toInt()
+		height = (gridWidth * 13f / 18f).toInt(),
 	)
 
 	suspend fun loadPageThumbnail(item: PageThumbnail): Drawable? = withContext(Dispatchers.Default) {
@@ -40,8 +40,9 @@ fun pageThumbnailAD(
 					.data(url)
 					.referer(item.page.referer)
 					.size(thumbSize)
-					.allowRgb565(isLowRamDevice(context))
-					.build()
+					.scale(Scale.FILL)
+					.allowRgb565(true)
+					.build(),
 			).drawable
 		}?.let { drawable ->
 			return@withContext drawable
@@ -52,7 +53,7 @@ fun pageThumbnailAD(
 				.data(file)
 				.size(thumbSize)
 				.allowRgb565(isLowRamDevice(context))
-				.build()
+				.build(),
 		).drawable
 	}
 

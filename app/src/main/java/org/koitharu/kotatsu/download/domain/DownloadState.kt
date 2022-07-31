@@ -108,6 +108,7 @@ sealed interface DownloadState {
 		}
 	}
 
+	@Deprecated("TODO: remove")
 	class WaitingForNetwork(
 		override val startId: Int,
 		override val manga: Manga,
@@ -170,6 +171,7 @@ sealed interface DownloadState {
 		override val manga: Manga,
 		override val cover: Drawable?,
 		val error: Throwable,
+		val canRetry: Boolean,
 	) : DownloadState {
 
 		override fun equals(other: Any?): Boolean {
@@ -182,6 +184,7 @@ sealed interface DownloadState {
 			if (manga != other.manga) return false
 			if (cover != other.cover) return false
 			if (error != other.error) return false
+			if (canRetry != other.canRetry) return false
 
 			return true
 		}
@@ -191,6 +194,7 @@ sealed interface DownloadState {
 			result = 31 * result + manga.hashCode()
 			result = 31 * result + (cover?.hashCode() ?: 0)
 			result = 31 * result + error.hashCode()
+			result = 31 * result + canRetry.hashCode()
 			return result
 		}
 	}

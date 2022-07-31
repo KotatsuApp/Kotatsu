@@ -11,8 +11,6 @@ import android.content.pm.ResolveInfo
 import android.database.SQLException
 import android.graphics.Color
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -29,7 +27,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
 import com.google.android.material.elevation.ElevationOverlayProvider
-import kotlin.coroutines.resume
 import kotlin.math.roundToLong
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
@@ -39,7 +36,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.IOException
 import org.json.JSONException
 import org.koitharu.kotatsu.BuildConfig
@@ -50,28 +46,6 @@ val Context.activityManager: ActivityManager?
 
 val Context.connectivityManager: ConnectivityManager
 	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-suspend fun ConnectivityManager.waitForNetwork(): Network {
-	val request = NetworkRequest.Builder().build()
-	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-		// fast path
-		activeNetwork?.let { return it }
-	}
-	return suspendCancellableCoroutine { cont ->
-		val callback = object : ConnectivityManager.NetworkCallback() {
-			override fun onAvailable(network: Network) {
-				unregisterNetworkCallback(this)
-				if (cont.isActive) {
-					cont.resume(network)
-				}
-			}
-		}
-		registerNetworkCallback(request, callback)
-		cont.invokeOnCancellation {
-			unregisterNetworkCallback(callback)
-		}
-	}
-}
 
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 

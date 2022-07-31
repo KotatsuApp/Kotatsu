@@ -29,16 +29,26 @@ class DownloadNotification(private val context: Context, startId: Int) {
 		context.getString(android.R.string.cancel),
 		PendingIntent.getBroadcast(
 			context,
-			startId,
+			startId * 2,
 			DownloadService.getCancelIntent(startId),
 			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
 		),
+	)
+	private val retryAction = NotificationCompat.Action(
+		R.drawable.ic_restart_black,
+		context.getString(R.string.try_again),
+		PendingIntent.getBroadcast(
+			context,
+			startId * 2 + 1,
+			DownloadService.getResumeIntent(startId),
+			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
+		)
 	)
 	private val listIntent = PendingIntent.getActivity(
 		context,
 		REQUEST_LIST,
 		DownloadsActivity.newIntent(context),
-		PendingIntentCompat.FLAG_IMMUTABLE,
+		PendingIntentCompat.FLAG_IMMUTABLE
 	)
 
 	init {
@@ -89,10 +99,14 @@ class DownloadNotification(private val context: Context, startId: Int) {
 				builder.setSmallIcon(android.R.drawable.stat_notify_error)
 				builder.setSubText(context.getString(R.string.error))
 				builder.setContentText(message)
-				builder.setAutoCancel(true)
-				builder.setOngoing(false)
+				builder.setAutoCancel(!state.canRetry)
+				builder.setOngoing(state.canRetry)
 				builder.setCategory(NotificationCompat.CATEGORY_ERROR)
 				builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+				if (state.canRetry) {
+					builder.addAction(cancelAction)
+					builder.addAction(retryAction)
+				}
 			}
 			is DownloadState.PostProcessing -> {
 				builder.setProgress(1, 0, true)

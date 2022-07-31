@@ -160,8 +160,6 @@ fun RecyclerView.invalidateNestedItemDecorations() {
 	}
 }
 
-internal val View.compatPaddingStart get() = ViewCompat.getPaddingStart(this)
-
 val View.parents: Sequence<ViewParent>
 	get() = sequence {
 		var p: ViewParent? = parent
