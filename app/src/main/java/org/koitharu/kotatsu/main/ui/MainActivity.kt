@@ -99,6 +99,7 @@ class MainActivity :
 			searchSuggestionListener = this@MainActivity
 		}
 
+		binding.root.isLiftAppBarOnScroll = false
 		navBar.setOnItemSelectedListener(this)
 		navBar.setOnItemReselectedListener(this)
 		binding.fab?.setOnClickListener(this)
