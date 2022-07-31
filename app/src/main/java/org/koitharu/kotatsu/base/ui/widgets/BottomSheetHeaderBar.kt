@@ -216,7 +216,7 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 			return true
 		}
 		val viewId = child.id
-		return viewId == R.id.dragHandle || viewId == R.id.toolbar
+		return viewId == R.id.dragHandle || viewId == R.id.toolbar || viewId == R.id.frame
 	}
 
 	private fun convertLayoutParams(params: ViewGroup.LayoutParams?): Toolbar.LayoutParams? {
@@ -236,8 +236,8 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 	private fun getTransition(): AutoTransition {
 		transition?.let { return it }
 		val t = AutoTransition()
-		t.duration = context.getAnimationDuration(R.integer.config_tinyAnimTime)
-		// t.interpolator = AccelerateDecelerateInterpolator()
+		t.duration = context.getAnimationDuration(android.R.integer.config_shortAnimTime)
+		t.addTarget(binding.dragHandle)
 		transition = t
 		return t
 	}
