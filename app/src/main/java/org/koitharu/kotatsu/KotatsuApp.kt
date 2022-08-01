@@ -73,7 +73,7 @@ class KotatsuApp : Application() {
 				appWidgetModule,
 				suggestionsModule,
 				shikimoriModule,
-				bookmarksModule,
+				bookmarksModule
 			)
 		}
 	}
@@ -91,8 +91,7 @@ class KotatsuApp : Application() {
 				ReportField.PHONE_MODEL,
 				ReportField.CRASH_CONFIGURATION,
 				ReportField.STACK_TRACE,
-				ReportField.CUSTOM_DATA,
-				ReportField.SHARED_PREFERENCES,
+				ReportField.SHARED_PREFERENCES
 			)
 			dialog {
 				text = getString(R.string.crash_text)
