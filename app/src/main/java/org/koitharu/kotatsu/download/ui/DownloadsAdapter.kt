@@ -5,12 +5,14 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import kotlinx.coroutines.CoroutineScope
 import org.koitharu.kotatsu.download.domain.DownloadState
-import org.koitharu.kotatsu.utils.progress.ProgressJob
+import org.koitharu.kotatsu.utils.progress.PausingProgressJob
+
+typealias DownloadItem = PausingProgressJob<DownloadState>
 
 class DownloadsAdapter(
 	scope: CoroutineScope,
 	coil: ImageLoader,
-) : AsyncListDifferDelegationAdapter<ProgressJob<DownloadState>>(DiffCallback()) {
+) : AsyncListDifferDelegationAdapter<DownloadItem>(DiffCallback()) {
 
 	init {
 		delegatesManager.addDelegate(downloadItemAD(scope, coil))
@@ -21,20 +23,24 @@ class DownloadsAdapter(
 		return items[position].progressValue.startId.toLong()
 	}
 
-	private class DiffCallback : DiffUtil.ItemCallback<ProgressJob<DownloadState>>() {
+	private class DiffCallback : DiffUtil.ItemCallback<DownloadItem>() {
 
 		override fun areItemsTheSame(
-			oldItem: ProgressJob<DownloadState>,
-			newItem: ProgressJob<DownloadState>,
+			oldItem: DownloadItem,
+			newItem: DownloadItem,
 		): Boolean {
 			return oldItem.progressValue.startId == newItem.progressValue.startId
 		}
 
 		override fun areContentsTheSame(
-			oldItem: ProgressJob<DownloadState>,
-			newItem: ProgressJob<DownloadState>,
+			oldItem: DownloadItem,
+			newItem: DownloadItem,
 		): Boolean {
-			return oldItem.progressValue == newItem.progressValue
+			return oldItem.progressValue == newItem.progressValue && oldItem.isPaused == newItem.isPaused
+		}
+
+		override fun getChangePayload(oldItem: DownloadItem, newItem: DownloadItem): Any {
+			return Unit
 		}
 	}
 }

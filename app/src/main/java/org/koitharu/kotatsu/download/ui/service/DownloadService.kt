@@ -171,7 +171,7 @@ class DownloadService : BaseService() {
 
 	class DownloadBinder(private val service: DownloadService) : Binder() {
 
-		val downloads: Flow<Collection<ProgressJob<DownloadState>>>
+		val downloads: Flow<Collection<PausingProgressJob<DownloadState>>>
 			get() = service.jobCount.mapLatest { service.jobs.values }
 	}
 

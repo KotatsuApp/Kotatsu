@@ -41,14 +41,14 @@ class DownloadNotification(private val context: Context, startId: Int) {
 			context,
 			startId * 2 + 1,
 			DownloadService.getResumeIntent(startId),
-			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
-		)
+			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+		),
 	)
 	private val listIntent = PendingIntent.getActivity(
 		context,
 		REQUEST_LIST,
 		DownloadsActivity.newIntent(context),
-		PendingIntentCompat.FLAG_IMMUTABLE
+		PendingIntentCompat.FLAG_IMMUTABLE,
 	)
 
 	init {
@@ -138,13 +138,6 @@ class DownloadNotification(private val context: Context, startId: Int) {
 					builder.setContentText(context.getString(R.string.percent_string_pattern, percent))
 				}
 				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
-				builder.setStyle(null)
-				builder.setOngoing(true)
-				builder.addAction(cancelAction)
-			}
-			is DownloadState.WaitingForNetwork -> {
-				builder.setProgress(0, 0, false)
-				builder.setContentText(context.getString(R.string.waiting_for_network))
 				builder.setStyle(null)
 				builder.setOngoing(true)
 				builder.addAction(cancelAction)
