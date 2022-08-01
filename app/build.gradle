@@ -15,7 +15,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 32
 		versionCode 420
-		versionName '3.5.0'
+		versionName '3.4.8'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -79,7 +79,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:dac06ddd0b') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:85bfe42ddf') {
 		exclude group: 'org.json', module: 'json'
 	}
 
