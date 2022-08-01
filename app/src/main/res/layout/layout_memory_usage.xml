@@ -6,19 +6,36 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
-	android:padding="@dimen/screen_padding">
+	android:paddingStart="@dimen/screen_padding"
+	android:paddingTop="@dimen/margin_small"
+	android:paddingBottom="@dimen/screen_padding"
+	tools:ignore="RtlSymmetry">
 
-	<TextView
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/storage_usage"
-		android:textAppearance="?textAppearanceTitleMedium" />
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/storage_usage"
+			android:textAppearance="?textAppearanceTitleMedium" />
+
+		<Button
+			android:id="@+id/button_manage"
+			style="@style/Widget.Material3.Button.TextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/manage" />
+
+	</LinearLayout>
 
 	<org.koitharu.kotatsu.base.ui.widgets.SegmentedBarView
 		android:id="@+id/bar"
 		android:layout_width="match_parent"
-		android:layout_height="8dp"
-		android:layout_marginVertical="@dimen/margin_normal"
+		android:layout_height="16dp"
+		android:layout_marginEnd="@dimen/screen_padding"
 		android:background="?colorSecondaryContainer" />
 
 	<TextView
@@ -26,6 +43,8 @@
 		style="@style/Widget.Kotatsu.TextView.Indicator"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:layout_marginEnd="@dimen/screen_padding"
 		android:text="@string/saved_manga"
 		android:visibility="gone"
 		app:drawableStartCompat="@drawable/bg_circle"
@@ -38,6 +57,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/margin_small"
+		android:layout_marginEnd="@dimen/screen_padding"
 		android:text="@string/pages_cache"
 		android:visibility="gone"
 		app:drawableStartCompat="@drawable/bg_circle"
@@ -50,6 +70,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/margin_small"
+		android:layout_marginEnd="@dimen/screen_padding"
 		android:text="@string/other_cache"
 		android:visibility="gone"
 		app:drawableStartCompat="@drawable/bg_circle"
@@ -62,6 +83,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/margin_small"
+		android:layout_marginEnd="@dimen/screen_padding"
 		android:text="@string/computing_"
 		app:drawableStartCompat="@drawable/bg_circle"
 		app:drawableTint="?colorSecondaryContainer" />

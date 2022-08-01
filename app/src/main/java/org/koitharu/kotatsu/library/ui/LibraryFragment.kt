@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,6 +17,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
+import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.FragmentLibraryBinding
@@ -34,6 +37,7 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 @AndroidEntryPoint
 class LibraryFragment :
 	BaseFragment<FragmentLibraryBinding>(),
+	RecyclerViewOwner,
 	LibraryListEventListener {
 
 	@Inject
@@ -45,6 +49,9 @@ class LibraryFragment :
 	private val viewModel by viewModels<LibraryViewModel>()
 	private var adapter: LibraryAdapter? = null
 	private var selectionController: SectionedSelectionController<LibrarySectionModel>? = null
+
+	override val recyclerView: RecyclerView
+		get() = binding.recyclerView
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentLibraryBinding {
 		return FragmentLibraryBinding.inflate(inflater, container, false)

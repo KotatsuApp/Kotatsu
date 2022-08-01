@@ -10,9 +10,11 @@ import android.view.ViewOutlineProvider
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.graphics.ColorUtils
-import org.koitharu.kotatsu.parsers.util.replaceWith
-import org.koitharu.kotatsu.utils.ext.resolveDp
+import com.google.android.material.R as materialR
 import kotlin.random.Random
+import org.koitharu.kotatsu.parsers.util.replaceWith
+import org.koitharu.kotatsu.utils.ext.getThemeColor
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class SegmentedBarView @JvmOverloads constructor(
 	context: Context,
@@ -22,17 +24,20 @@ class SegmentedBarView @JvmOverloads constructor(
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val segmentsData = ArrayList<Segment>()
-	private val minSegmentSize = context.resources.resolveDp(3f)
+	private val segmentsSizes = ArrayList<Float>()
+	private val outlineColor = context.getThemeColor(materialR.attr.colorOutline)
+	private var cornerSize = 0f
 
 	var segments: List<Segment>
 		get() = segmentsData
 		set(value) {
 			segmentsData.replaceWith(value)
+			updateSizes()
 			invalidate()
 		}
 
 	init {
-		paint.style = Paint.Style.FILL
+		paint.strokeWidth = context.resources.resolveDp(1f)
 		outlineProvider = OutlineProvider()
 		clipToOutline = true
 
@@ -46,15 +51,44 @@ class SegmentedBarView @JvmOverloads constructor(
 		}
 	}
 
+	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+		super.onSizeChanged(w, h, oldw, oldh)
+		cornerSize = h / 2f
+		updateSizes()
+	}
+
 	override fun onDraw(canvas: Canvas) {
-		var x = 0f
-		val w = width.toFloat()
-		for (segment in segmentsData) {
-			paint.color = segment.color
-			val segmentWidth = (w * segment.percent).coerceAtLeast(minSegmentSize)
-			canvas.drawRect(x, 0f, x + segmentWidth, height.toFloat(), paint)
-			x += segmentWidth
+		if (segmentsSizes.isEmpty()) {
+			return
 		}
+		val w = width.toFloat()
+		var x = w - segmentsSizes.last()
+		for (i in (0 until segmentsData.size).reversed()) {
+			val segment = segmentsData[i]
+			paint.color = segment.color
+			paint.style = Paint.Style.FILL
+			val segmentWidth = segmentsSizes[i]
+			canvas.drawRoundRect(0f, 0f, x + cornerSize, height.toFloat(), cornerSize, cornerSize, paint)
+			paint.color = outlineColor
+			paint.style = Paint.Style.STROKE
+			canvas.drawRoundRect(0f, 0f, x + cornerSize, height.toFloat(), cornerSize, cornerSize, paint)
+			x -= segmentWidth
+		}
+		paint.color = outlineColor
+		paint.style = Paint.Style.STROKE
+		canvas.drawRoundRect(0f, 0f, w, height.toFloat(), cornerSize, cornerSize, paint)
+	}
+
+	private fun updateSizes() {
+		segmentsSizes.clear()
+		segmentsSizes.ensureCapacity(segmentsData.size + 1)
+		var w = width.toFloat()
+		for (segment in segmentsData) {
+			val segmentWidth = (w * segment.percent).coerceAtLeast(cornerSize)
+			segmentsSizes.add(segmentWidth)
+			w -= segmentWidth
+		}
+		segmentsSizes.add(w)
 	}
 
 	class Segment(

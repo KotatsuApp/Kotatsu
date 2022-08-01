@@ -60,6 +60,7 @@ class ToolsFragment :
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_settings -> startActivity(SettingsActivity.newIntent(v.context))
+			R.id.button_manage -> startActivity(SettingsActivity.newHistorySettingsIntent(v.context))
 			R.id.button_downloads -> startActivity(DownloadsActivity.newIntent(v.context))
 			R.id.button_download -> {
 				val url = viewModel.appUpdate.value?.apkUrl ?: return
@@ -98,6 +99,7 @@ class ToolsFragment :
 		val otherSegment = SegmentedBarView.Segment(usage.otherCache.percent, segmentColor(3))
 
 		with(binding.layoutStorage) {
+			buttonManage.setOnClickListener(this@ToolsFragment)
 			bar.segments = listOf(storageSegment, pagesSegment, otherSegment)
 			val pattern = getString(R.string.memory_usage_pattern)
 			labelStorage.text = pattern.format(
@@ -131,7 +133,7 @@ class ToolsFragment :
 	@ColorInt
 	private fun segmentColor(i: Int): Int {
 		val hue = (93.6f * i) % 360
-		val color = ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
+		val color = ColorUtils.HSLToColor(floatArrayOf(hue, 0.4f, 0.6f))
 		val backgroundColor = requireContext().getThemeColor(materialR.attr.colorSecondaryContainer)
 		return MaterialColors.harmonize(color, backgroundColor)
 	}
