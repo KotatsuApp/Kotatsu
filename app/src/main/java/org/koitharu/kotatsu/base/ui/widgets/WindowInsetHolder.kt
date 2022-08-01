@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.base.ui.widgets
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
@@ -21,8 +20,7 @@ class WindowInsetHolder @JvmOverloads constructor(
 	private var desiredHeight = 0
 	private var desiredWidth = 0
 
-	@SuppressLint("RtlHardcoded")
-	override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
+	override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
 		val barsInsets = WindowInsetsCompat.toWindowInsetsCompat(insets, this)
 			.getInsets(WindowInsetsCompat.Type.systemBars())
 		val gravity = getLayoutGravity()
@@ -41,24 +39,26 @@ class WindowInsetHolder @JvmOverloads constructor(
 			desiredHeight = newHeight
 			requestLayout()
 		}
-		return super.dispatchApplyWindowInsets(insets)
+		return super.onApplyWindowInsets(insets)
 	}
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 		val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+		val widthSize = MeasureSpec.getSize(widthMeasureSpec)
 		val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-		super.onMeasure(
-			if (desiredWidth == 0 || widthMode == MeasureSpec.EXACTLY) {
-				widthMeasureSpec
-			} else {
-				MeasureSpec.makeMeasureSpec(desiredWidth, widthMode)
-			},
-			if (desiredHeight == 0 || heightMode == MeasureSpec.EXACTLY) {
-				heightMeasureSpec
-			} else {
-				MeasureSpec.makeMeasureSpec(desiredHeight, heightMode)
-			},
-		)
+		val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+
+		val width: Int = when (widthMode) {
+			MeasureSpec.EXACTLY -> widthSize
+			MeasureSpec.AT_MOST -> minOf(desiredWidth, widthSize)
+			else -> desiredWidth
+		}
+		val height = when (heightMode) {
+			MeasureSpec.EXACTLY -> heightSize
+			MeasureSpec.AT_MOST -> minOf(desiredHeight, heightSize)
+			else -> desiredHeight
+		}
+		setMeasuredDimension(width, height)
 	}
 
 	private fun getLayoutGravity(): Int {

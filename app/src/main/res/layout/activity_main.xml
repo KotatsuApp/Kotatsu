@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -14,14 +14,22 @@
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		tools:layout="@layout/fragment_list" />
 
-	<com.google.android.material.appbar.KotatsuAppBarLayout
+	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:clipToPadding="false"
-		android:fitsSystemWindows="true"
+		android:fitsSystemWindows="false"
 		android:paddingHorizontal="16dp"
-		android:stateListAnimator="@null">
+		android:stateListAnimator="@null"
+		app:liftOnScroll="false">
+
+		<org.koitharu.kotatsu.base.ui.widgets.WindowInsetHolder
+			android:id="@+id/insetsHolder"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top"
+			app:layout_scrollFlags="scroll|enterAlways|snap" />
 
 		<FrameLayout
 			android:id="@+id/toolbar_card"
@@ -60,7 +68,7 @@
 
 		</FrameLayout>
 
-	</com.google.android.material.appbar.KotatsuAppBarLayout>
+	</com.google.android.material.appbar.AppBarLayout>
 
 	<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 		android:id="@+id/fab"
@@ -68,6 +76,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginHorizontal="16dp"
 		android:layout_marginBottom="-4dp"
+		android:paddingBottom="8dp"
 		android:text="@string/_continue"
 		android:visibility="gone"
 		app:backgroundTint="?attr/colorContainer"
@@ -75,12 +84,11 @@
 		app:layout_anchor="@id/bottomNav"
 		app:layout_anchorGravity="top|end"
 		app:layout_behavior="org.koitharu.kotatsu.base.ui.util.ShrinkOnScrollBehavior"
-		app:layout_insetEdge="bottom"
 		app:layout_dodgeInsetEdges="bottom"
-		android:paddingBottom="8dp"
+		app:layout_insetEdge="bottom"
 		tools:visibility="visible" />
 
-	<org.koitharu.kotatsu.base.ui.widgets.KotatsuBottomNavigationView
+	<org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 		android:id="@+id/bottomNav"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -90,4 +98,4 @@
 		app:menu="@menu/nav_bottom"
 		tools:ignore="KeyboardInaccessibleWidget" />
 
-</org.koitharu.kotatsu.base.ui.widgets.KotatsuCoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -201,16 +201,11 @@ abstract class MangaListFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
 		binding.recyclerView.fastScroller.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = insets.bottom
-			marginEnd = insets.end(binding.recyclerView)
 		}
 		if (activity is MainActivity) {
 			val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top

@@ -8,46 +8,42 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.ViewPropertyAnimator
+import androidx.annotation.AttrRes
+import androidx.annotation.StyleRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.doOnLayout
-import androidx.core.view.updateLayoutParams
-import androidx.customview.view.AbsSavedState
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
+import com.google.android.material.R as materialR
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koitharu.kotatsu.utils.ext.applySystemAnimatorScale
-import com.google.android.material.R as materialR
+import org.koitharu.kotatsu.utils.ext.measureHeight
 
-class KotatsuBottomNavigationView @JvmOverloads constructor(
+private const val STATE_DOWN = 1
+private const val STATE_UP = 2
+
+private const val SLIDE_UP_ANIMATION_DURATION = 225L
+private const val SLIDE_DOWN_ANIMATION_DURATION = 175L
+
+class SlidingBottomNavigationView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
-	defStyleAttr: Int = materialR.attr.bottomNavigationStyle,
-	defStyleRes: Int = materialR.style.Widget_Design_BottomNavigationView,
-) : BottomNavigationView(context, attrs, defStyleAttr, defStyleRes) {
+	@AttrRes defStyleAttr: Int = materialR.attr.bottomNavigationStyle,
+	@StyleRes defStyleRes: Int = materialR.style.Widget_Design_BottomNavigationView,
+) : BottomNavigationView(context, attrs, defStyleAttr, defStyleRes),
+	CoordinatorLayout.AttachedBehavior {
 
 	private var currentAnimator: ViewPropertyAnimator? = null
 
 	private var currentState = STATE_UP
+	private var behavior = HideBottomNavigationOnScrollBehavior()
 
-	init {
-		// Hide on scroll
-		doOnLayout {
-			findViewTreeLifecycleOwner()?.lifecycleScope?.let {
-				updateLayoutParams<CoordinatorLayout.LayoutParams> {
-					behavior = HideBottomNavigationOnScrollBehavior()
-				}
-			}
-		}
+	override fun getBehavior(): CoordinatorLayout.Behavior<*> {
+		return behavior
 	}
 
 	override fun onSaveInstanceState(): Parcelable {
 		val superState = super.onSaveInstanceState()
-		return SavedState(superState).also {
-			it.currentState = currentState
-			it.translationY = translationY
-		}
+		return SavedState(superState, currentState, translationY)
 	}
 
 	override fun onRestoreInstanceState(state: Parcelable?) {
@@ -62,14 +58,12 @@ class KotatsuBottomNavigationView @JvmOverloads constructor(
 
 	override fun setTranslationY(translationY: Float) {
 		// Disallow translation change when state down
-		if (currentState == STATE_DOWN) return
-		super.setTranslationY(translationY)
+		if (currentState != STATE_DOWN) {
+			super.setTranslationY(translationY)
+		}
 	}
 
-	/**
-	 * Shows this view up.
-	 */
-	fun slideUp() = post {
+	fun show() {
 		currentAnimator?.cancel()
 		clearAnimation()
 
@@ -81,16 +75,17 @@ class KotatsuBottomNavigationView @JvmOverloads constructor(
 		)
 	}
 
-	/**
-	 * Hides this view down. [setTranslationY] won't work until [slideUp] is called.
-	 */
-	fun slideDown() = post {
+	fun hide() {
 		currentAnimator?.cancel()
 		clearAnimation()
 
 		currentState = STATE_DOWN
+		val target = measureHeight()
+		if (target == 0) {
+			return
+		}
 		animateTranslation(
-			height.toFloat(),
+			target.toFloat(),
 			SLIDE_DOWN_ANIMATION_DURATION,
 			FastOutLinearInInterpolator(),
 		)
@@ -102,22 +97,26 @@ class KotatsuBottomNavigationView @JvmOverloads constructor(
 			.setInterpolator(interpolator)
 			.setDuration(duration)
 			.applySystemAnimatorScale(context)
-			.setListener(object : AnimatorListenerAdapter() {
-				override fun onAnimationEnd(animation: Animator?) {
-					currentAnimator = null
-					postInvalidate()
-				}
-			},
+			.setListener(
+				object : AnimatorListenerAdapter() {
+					override fun onAnimationEnd(animation: Animator?) {
+						currentAnimator = null
+						postInvalidate()
+					}
+				},
 			)
 	}
 
-	internal class SavedState : AbsSavedState {
+	internal class SavedState : BaseSavedState {
 		var currentState = STATE_UP
 		var translationY = 0F
 
-		constructor(superState: Parcelable) : super(superState)
+		constructor(superState: Parcelable, currentState: Int, translationY: Float) : super(superState) {
+			this.currentState = currentState
+			this.translationY = translationY
+		}
 
-		constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
+		constructor(source: Parcel) : super(source) {
 			currentState = source.readInt()
 			translationY = source.readFloat()
 		}
@@ -129,28 +128,14 @@ class KotatsuBottomNavigationView @JvmOverloads constructor(
 		}
 
 		companion object {
+
+			@Suppress("unused")
 			@JvmField
-			val CREATOR: Parcelable.ClassLoaderCreator<SavedState> = object : Parcelable.ClassLoaderCreator<SavedState> {
-				override fun createFromParcel(source: Parcel, loader: ClassLoader): SavedState {
-					return SavedState(source, loader)
-				}
+			val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
+				override fun createFromParcel(`in`: Parcel) = SavedState(`in`)
 
-				override fun createFromParcel(source: Parcel): SavedState {
-					return SavedState(source, null)
-				}
-
-				override fun newArray(size: Int): Array<SavedState> {
-					return newArray(size)
-				}
+				override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
 			}
 		}
-	}
-
-	companion object {
-		private const val STATE_DOWN = 1
-		private const val STATE_UP = 2
-
-		private const val SLIDE_UP_ANIMATION_DURATION = 225L
-		private const val SLIDE_DOWN_ANIMATION_DURATION = 175L
 	}
 }

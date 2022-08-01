@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.viewModels
-import androidx.annotation.IdRes
 import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.util.size
 import androidx.core.view.*
@@ -21,7 +21,6 @@ import androidx.transition.TransitionManager
 import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
-import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -29,11 +28,9 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
-import org.koitharu.kotatsu.base.ui.widgets.KotatsuBottomNavigationView
+import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.explore.ui.ExploreFragment
 import org.koitharu.kotatsu.library.ui.LibraryFragment
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -46,14 +43,11 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
-import org.koitharu.kotatsu.settings.tools.ToolsFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
-import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.*
 
-private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
 
 @AndroidEntryPoint
@@ -64,25 +58,23 @@ class MainActivity :
 	View.OnClickListener,
 	View.OnFocusChangeListener,
 	SearchSuggestionListener,
-	NavigationBarView.OnItemSelectedListener,
-	NavigationBarView.OnItemReselectedListener {
+	MainNavigationDelegate.OnFragmentChangedListener {
 
 	private val viewModel by viewModels<MainViewModel>()
 	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()
 	private val voiceInputLauncher = registerForActivityResult(VoiceInputContract(), VoiceInputCallback())
-	private lateinit var navBar: NavigationBarView
+	private lateinit var navigationDelegate: MainNavigationDelegate
 
 	override val appBar: AppBarLayout
 		get() = binding.appbar
 
-	override val bottomNav: KotatsuBottomNavigationView?
+	override val bottomNav: SlidingBottomNavigationView?
 		get() = binding.bottomNav
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 
-		navBar = checkNotNull(bottomNav ?: binding.navRail)
 		if (bottomNav != null) {
 			ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
 				if (insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom > 0) {
@@ -98,18 +90,17 @@ class MainActivity :
 			onFocusChangeListener = this@MainActivity
 			searchSuggestionListener = this@MainActivity
 		}
+		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
 
-		binding.root.isLiftAppBarOnScroll = false
-		navBar.setOnItemSelectedListener(this)
-		navBar.setOnItemReselectedListener(this)
 		binding.fab?.setOnClickListener(this)
 		binding.navRail?.headerView?.setOnClickListener(this)
 		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
 		onBackPressedDispatcher.addCallback(ExitCallback(this, binding.container))
-		supportFragmentManager.findFragmentByTag(TAG_PRIMARY)?.let {
-			if (it is LibraryFragment) binding.fab?.show() else binding.fab?.hide()
-		} ?: onNavigationItemSelected(navBar.selectedItemId)
+		navigationDelegate = MainNavigationDelegate(checkNotNull(bottomNav ?: binding.navRail), supportFragmentManager)
+		navigationDelegate.addOnFragmentChangedListener(this)
+		navigationDelegate.onCreate(savedInstanceState)
+
 		if (savedInstanceState == null) {
 			onFirstStart()
 		}
@@ -123,17 +114,7 @@ class MainActivity :
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		val isSearchOpened = isSearchOpened()
-		if (isSearchOpened) {
-			binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
-				scrollFlags = SCROLL_FLAG_NO_SCROLL
-			}
-			binding.toolbarCard.background = null
-			binding.appbar.setBackgroundColor(getThemeColor(materialR.attr.colorSurfaceVariant))
-			binding.appbar.updatePadding(left = 0, right = 0)
-			supportActionBar?.setHomeAsUpIndicator(materialR.drawable.abc_ic_ab_back_material)
-		}
-		adjustFabVisibility(isSearchOpened = isSearchOpened)
+		adjustSearchUI(isSearchOpened(), animate = false)
 	}
 
 	override fun onBackPressed() {
@@ -149,8 +130,15 @@ class MainActivity :
 		}
 	}
 
-	override fun onNavigationItemSelected(item: MenuItem): Boolean {
-		return onNavigationItemSelected(item.itemId)
+	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
+		if (fragment is LibraryFragment) {
+			binding.fab?.show()
+		} else {
+			binding.fab?.hide()
+		}
+		if (fromUser) {
+			binding.appbar.setExpanded(true)
+		}
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -248,36 +236,9 @@ class MainActivity :
 		showNav(true)
 	}
 
-	private fun onNavigationItemSelected(@IdRes itemId: Int): Boolean {
-		when (itemId) {
-			R.id.nav_library -> {
-				setPrimaryFragment(LibraryFragment.newInstance())
-			}
-			R.id.nav_explore -> {
-				setPrimaryFragment(ExploreFragment.newInstance())
-			}
-			R.id.nav_feed -> {
-				setPrimaryFragment(FeedFragment.newInstance())
-			}
-			R.id.nav_tools -> {
-				setPrimaryFragment(ToolsFragment.newInstance())
-			}
-			else -> return false
-		}
-		appBar.setExpanded(true)
-		appBar.isLifted = false
-		return true
-	}
-
-	override fun onNavigationItemReselected(item: MenuItem) {
-		val fragment = supportFragmentManager.findFragmentById(R.id.container) as? RecyclerViewOwner ?: return
-		val recyclerView = fragment.recyclerView
-		recyclerView.smoothScrollToPosition(0)
-		binding.appbar.isLifted = false
-	}
-
 	private fun onOpenReader(manga: Manga) {
-		val options = binding.fab?.let {
+		val fab = binding.fab ?: binding.navRail?.headerView
+		val options = fab?.let {
 			scaleUpActivityOptionsOf(it).toBundle()
 		}
 		startActivity(ReaderActivity.newIntent(this, manga), options)
@@ -292,17 +253,7 @@ class MainActivity :
 		repeat(counters.size) { i ->
 			val id = counters.keyAt(i)
 			val counter = counters.valueAt(i)
-			if (counter == 0) {
-				navBar.getBadge(id)?.isVisible = false
-			} else {
-				val badge = navBar.getOrCreateBadge(id)
-				if (counter < 0) {
-					badge.clearNumber()
-				} else {
-					badge.number = counter
-				}
-				badge.isVisible = true
-			}
+			navigationDelegate.setCounter(id, counter)
 		}
 	}
 
@@ -314,55 +265,28 @@ class MainActivity :
 		adjustFabVisibility(isResumeEnabled = isEnabled)
 	}
 
-	private fun setPrimaryFragment(fragment: Fragment) {
-		supportFragmentManager.beginTransaction()
-			.replace(R.id.container, fragment, TAG_PRIMARY)
-			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-			.commit()
-		adjustFabVisibility(topFragment = fragment)
-	}
-
 	private fun onSearchOpened() {
-		TransitionManager.beginDelayedTransition(binding.appbar)
-		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
-			scrollFlags = SCROLL_FLAG_NO_SCROLL
-		}
-		binding.toolbarCard.background = null
-		binding.appbar.isLifted = true
-		binding.appbar.updatePadding(left = 0, right = 0)
-		adjustFabVisibility(isSearchOpened = true)
-		supportActionBar?.setHomeAsUpIndicator(materialR.drawable.abc_ic_ab_back_material)
-		showNav(false)
+		adjustSearchUI(isOpened = true, animate = true)
 	}
 
 	private fun onSearchClosed() {
 		binding.searchView.hideKeyboard()
-		TransitionManager.beginDelayedTransition(binding.appbar)
-		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
-			scrollFlags = SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
-		}
-		binding.toolbarCard.setBackgroundResource(R.drawable.toolbar_background)
-		binding.appbar.isLifted = false
-		val padding = resources.getDimensionPixelOffset(R.dimen.margin_normal)
-		binding.appbar.updatePadding(left = padding, right = padding)
-		adjustFabVisibility(isSearchOpened = false)
-		supportActionBar?.setHomeAsUpIndicator(materialR.drawable.abc_ic_search_api_material)
-		showNav(true)
+		adjustSearchUI(isOpened = false, animate = true)
 	}
 
 	private fun showNav(visible: Boolean) {
 		bottomNav?.run {
 			if (visible) {
-				slideUp()
+				show()
 			} else {
-				slideDown()
+				hide()
 			}
 		}
 		binding.navRail?.isVisible = visible
 	}
 
 	private fun isSearchOpened(): Boolean {
-		return supportFragmentManager.findFragmentByTag(TAG_SEARCH)?.isVisible == true
+		return supportFragmentManager.findFragmentByTag(TAG_SEARCH) != null
 	}
 
 	private fun onFirstStart() {
@@ -382,7 +306,7 @@ class MainActivity :
 
 	private fun adjustFabVisibility(
 		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value == true,
-		topFragment: Fragment? = supportFragmentManager.findFragmentByTag(TAG_PRIMARY),
+		topFragment: Fragment? = navigationDelegate.primaryFragment,
 		isSearchOpened: Boolean = isSearchOpened(),
 	) {
 		val fab = binding.fab
@@ -400,6 +324,31 @@ class MainActivity :
 				fab.hide()
 			}
 		}
+	}
+
+	private fun adjustSearchUI(isOpened: Boolean, animate: Boolean) {
+		if (animate) {
+			TransitionManager.beginDelayedTransition(binding.appbar)
+		}
+		val appBarScrollFlags = if (isOpened) {
+			SCROLL_FLAG_NO_SCROLL
+		} else {
+			SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
+		}
+		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> { scrollFlags = appBarScrollFlags }
+		binding.insetsHolder.updateLayoutParams<AppBarLayout.LayoutParams> { scrollFlags = appBarScrollFlags }
+		binding.toolbarCard.background = if (isOpened) {
+			null
+		} else {
+			ContextCompat.getDrawable(this, R.drawable.toolbar_background)
+		}
+		val padding = if (isOpened) 0 else resources.getDimensionPixelOffset(R.dimen.margin_normal)
+		binding.appbar.updatePadding(left = padding, right = padding)
+		adjustFabVisibility(isSearchOpened = isOpened)
+		supportActionBar?.setHomeAsUpIndicator(
+			if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
+		)
+		showNav(!isOpened)
 	}
 
 	private inner class VoiceInputCallback : ActivityResultCallback<String?> {

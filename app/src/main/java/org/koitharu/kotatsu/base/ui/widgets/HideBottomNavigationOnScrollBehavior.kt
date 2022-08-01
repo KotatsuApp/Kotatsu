@@ -4,17 +4,14 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import org.koitharu.kotatsu.utils.ext.animatorDurationScale
-import org.koitharu.kotatsu.utils.ext.findChild
+import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.utils.ext.getAnimationDuration
 import org.koitharu.kotatsu.utils.ext.measureHeight
-import kotlin.math.roundToLong
 
 class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
 	context: Context? = null,
@@ -90,7 +87,7 @@ class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
 		offsetAnimator?.cancel()
 		offsetAnimator = ValueAnimator().apply {
 			interpolator = DecelerateInterpolator()
-			duration = (150 * child.context.animatorDurationScale).roundToLong()
+			duration = child.context.getAnimationDuration(R.integer.config_shorterAnimTime)
 			addUpdateListener {
 				child.translationY = it.animatedValue as Float
 			}

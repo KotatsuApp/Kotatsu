@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.main.ui
 
-import org.koitharu.kotatsu.base.ui.widgets.KotatsuBottomNavigationView
+import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 
 interface BottomNavOwner {
 
-	val bottomNav: KotatsuBottomNavigationView?
+	val bottomNav: SlidingBottomNavigationView?
 }

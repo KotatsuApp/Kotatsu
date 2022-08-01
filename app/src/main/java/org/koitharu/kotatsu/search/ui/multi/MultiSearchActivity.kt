@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import coil.ImageLoader
@@ -53,6 +54,7 @@ class MultiSearchActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchMultiBinding.inflate(layoutInflater))
+		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
 
 		val itemCLickListener = object : OnListItemClickListener<MultiSearchListModel> {
 			override fun onItemClick(item: MultiSearchListModel, view: View) {
