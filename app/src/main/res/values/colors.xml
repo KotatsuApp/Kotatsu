@@ -18,7 +18,6 @@
 	<color name="grey">#424242</color>
 	<color name="grey_dark">#212121</color>
 	<color name="dim">#99000000</color>
-	<color name="dim_statusbar">#99FFFFFF</color>
 	<color name="scrollbar">#66000000</color>
 	<color name="selector_foreground">#29000000</color>
 	<color name="divider_default">#1F000000</color>
