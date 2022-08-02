@@ -80,6 +80,12 @@ class ReaderViewModel @AssistedInject constructor(
 		valueProducer = { readerAnimation },
 	)
 
+	val isInfoBarEnabled = settings.observeAsLiveData(
+		context = viewModelScope.coroutineContext + Dispatchers.Default,
+		key = AppSettings.KEY_READER_BAR,
+		valueProducer = { isReaderBarEnabled },
+	)
+
 	val isScreenshotsBlockEnabled = combine(
 		mangaData,
 		settings.observeAsFlow(AppSettings.KEY_SCREENSHOTS_POLICY) { screenshotsPolicy },

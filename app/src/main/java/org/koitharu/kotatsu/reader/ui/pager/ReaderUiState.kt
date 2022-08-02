@@ -7,4 +7,12 @@ data class ReaderUiState(
 	val chaptersTotal: Int,
 	val currentPage: Int,
 	val totalPages: Int,
-)
+) {
+
+	fun computePercent(): Float {
+		val ppc = 1f / chaptersTotal
+		val chapterIndex = chapterNumber - 1
+		val pagePercent = (currentPage + 1) / totalPages.toFloat()
+		return ppc * chapterIndex + ppc * pagePercent
+	}
+}

@@ -364,4 +364,6 @@
 	<string name="automatic_scroll">Automatic scroll</string>
 	<string name="off_short">Off</string>
 	<string name="seconds_pattern">%ss</string>
+	<string name="reader_info_pattern">Ch. %1$d/%2$d Pg. %3$d/%4$d</string>
+	<string name="reader_info_bar">Show information bar in reader</string>
 </resources>

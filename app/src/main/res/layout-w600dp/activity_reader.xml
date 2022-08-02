@@ -12,6 +12,15 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
 
+	<org.koitharu.kotatsu.reader.ui.ReaderInfoBarView
+		android:id="@+id/infoBar"
+		android:layout_width="match_parent"
+		android:layout_height="16dp"
+		android:layout_gravity="top"
+		android:paddingHorizontal="6dp"
+		android:visibility="gone"
+		tools:visibility="visible" />
+
 	<org.koitharu.kotatsu.reader.ui.ReaderToastView
 		android:id="@+id/toastView"
 		android:layout_width="wrap_content"

@@ -5,16 +5,14 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.Slide
+import android.transition.TransitionManager
+import android.transition.TransitionSet
 import android.view.*
 import androidx.core.graphics.Insets
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
+import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.Slide
-import androidx.transition.TransitionManager
-import androidx.transition.TransitionSet
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -101,6 +99,7 @@ class ReaderActivity :
 			onLoadingStateChanged(viewModel.isLoading.value == true)
 		}
 		viewModel.isScreenshotsBlockEnabled.observe(this, this::setWindowSecure)
+		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, this::onBookmarkStateChanged)
 		viewModel.onShowToast.observe(this) { msgId ->
 			Snackbar.make(binding.container, msgId, Snackbar.LENGTH_SHORT)
@@ -280,12 +279,14 @@ class ReaderActivity :
 			val transition = TransitionSet()
 				.setOrdering(TransitionSet.ORDERING_TOGETHER)
 				.addTransition(Slide(Gravity.TOP).addTarget(binding.appbarTop))
+				.addTransition(Fade().addTarget(binding.infoBar))
 			binding.appbarBottom?.let { bottomBar ->
 				transition.addTransition(Slide(Gravity.BOTTOM).addTarget(bottomBar))
 			}
 			TransitionManager.beginDelayedTransition(binding.root, transition)
 			binding.appbarTop.isVisible = isUiVisible
 			binding.appbarBottom?.isVisible = isUiVisible
+			binding.infoBar.isGone = isUiVisible || (viewModel.isInfoBarEnabled.value == false)
 			if (isUiVisible) {
 				showSystemUI()
 			} else {
@@ -322,6 +323,10 @@ class ReaderActivity :
 		setUiIsVisible(!binding.appbarTop.isVisible)
 	}
 
+	private fun onReaderBarChanged(isBarEnabled: Boolean) {
+		binding.infoBar.isVisible = isBarEnabled && binding.appbarTop.isGone
+	}
+
 	private fun onBookmarkStateChanged(isAdded: Boolean) {
 		val menuItem = binding.toolbarBottom.menu.findItem(R.id.action_bookmark) ?: return
 		menuItem.setTitle(if (isAdded) R.string.bookmark_remove else R.string.bookmark_add)
@@ -330,6 +335,7 @@ class ReaderActivity :
 
 	private fun onUiStateChanged(uiState: ReaderUiState?, previous: ReaderUiState?) {
 		title = uiState?.chapterName ?: uiState?.mangaName ?: getString(R.string.loading_)
+		binding.infoBar.update(uiState)
 		if (uiState == null) {
 			supportActionBar?.subtitle = null
 			binding.slider.isVisible = false

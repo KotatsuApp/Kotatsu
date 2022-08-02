@@ -25,6 +25,15 @@
 		android:theme="@style/ThemeOverlay.Material3.Dark"
 		tools:text="@string/loading_" />
 
+	<org.koitharu.kotatsu.reader.ui.ReaderInfoBarView
+		android:id="@+id/infoBar"
+		android:layout_width="match_parent"
+		android:layout_height="16dp"
+		android:layout_gravity="top"
+		android:paddingHorizontal="4dp"
+		android:visibility="gone"
+		tools:visibility="visible" />
+
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar_top"
 		android:layout_width="match_parent"

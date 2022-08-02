@@ -35,6 +35,11 @@
 		android:title="@string/pages_animation" />
 
 	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="reader_bar"
+		android:title="@string/reader_info_bar" />
+
+	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="pages_numbers"
 		android:title="@string/show_pages_numbers" />
@@ -45,7 +50,6 @@
 		android:key="screenshots_policy"
 		android:title="@string/screenshots_policy"
 		app:defaultValue="allow"
-
 		app:useSimpleSummaryProvider="true" />
 
 	<ListPreference
