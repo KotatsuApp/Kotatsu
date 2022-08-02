@@ -77,6 +77,7 @@ class PagesThumbnailsSheet :
 		super.onViewCreated(view, savedInstanceState)
 
 		val title = arguments?.getString(ARG_TITLE)
+		spanResolver = MangaListSpanResolver(view.resources)
 		with(binding.headerBar) {
 			toolbar.title = title
 			toolbar.subtitle = null
