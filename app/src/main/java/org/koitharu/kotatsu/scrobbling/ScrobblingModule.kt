@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.ElementsIntoSet
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
@@ -13,7 +14,6 @@ import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriInterceptor
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriStorage
 import org.koitharu.kotatsu.scrobbling.shikimori.domain.ShikimoriScrobbler
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

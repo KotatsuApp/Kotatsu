@@ -24,8 +24,10 @@ import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class ScrobblingSelectorViewModel @AssistedInject constructor(
 	@Assisted val manga: Manga,
-	private val scrobbler: Scrobbler,
+	scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 ) : BaseViewModel() {
+
+	private val scrobbler = scrobblers.first() // TODO support multiple scrobblers
 
 	private val shikiMangaList = MutableStateFlow<List<ScrobblerManga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)

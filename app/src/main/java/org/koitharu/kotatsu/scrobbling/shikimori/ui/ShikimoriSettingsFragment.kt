@@ -8,6 +8,7 @@ import androidx.preference.Preference
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class ShikimoriSettingsFragment : BasePreferenceFragment(R.string.shikimori) {
 
 	@Inject
