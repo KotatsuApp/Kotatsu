@@ -35,6 +35,7 @@ import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.reader.ui.config.PageSwitchTimer
 import org.koitharu.kotatsu.reader.ui.config.ReaderConfigBottomSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
@@ -65,6 +66,13 @@ class ReaderActivity :
 		)
 	}
 
+	override var pageSwitchDelay: Float
+		get() = pageSwitchTimer.delaySec
+		set(value) {
+			pageSwitchTimer.delaySec = value
+		}
+
+	private lateinit var pageSwitchTimer: PageSwitchTimer
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
 	private var gestureInsets: Insets = Insets.NONE
@@ -77,6 +85,7 @@ class ReaderActivity :
 		readerManager = ReaderManager(supportFragmentManager, R.id.container)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
+		pageSwitchTimer = PageSwitchTimer(this, this)
 		controlDelegate = ReaderControlDelegate(lifecycleScope, settings, this)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		binding.slider.setLabelFormatter(PageLabelFormatter())
@@ -98,6 +107,11 @@ class ReaderActivity :
 				.setAnchorView(binding.appbarBottom)
 				.show()
 		}
+	}
+
+	override fun onUserInteraction() {
+		super.onUserInteraction()
+		pageSwitchTimer.onUserInteraction()
 	}
 
 	private fun onInitReader(mode: ReaderMode) {

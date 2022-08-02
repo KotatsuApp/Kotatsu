@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.slider.Slider
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
@@ -28,7 +29,8 @@ class ReaderConfigBottomSheet :
 	BaseBottomSheet<SheetReaderConfigBinding>(),
 	ActivityResultCallback<Uri?>,
 	View.OnClickListener,
-	MaterialButtonToggleGroup.OnButtonCheckedListener {
+	MaterialButtonToggleGroup.OnButtonCheckedListener,
+	Slider.OnSliderTouchListener {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
 	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
@@ -57,6 +59,12 @@ class ReaderConfigBottomSheet :
 		binding.buttonSavePage.setOnClickListener(this)
 		binding.buttonScreenRotate.setOnClickListener(this)
 		binding.buttonSettings.setOnClickListener(this)
+		binding.sliderTimer.addOnSliderTouchListener(this)
+		binding.sliderTimer.setLabelFormatter(PageSwitchTimer.DelayLabelFormatter(view.resources))
+
+		findCallback()?.run {
+			binding.sliderTimer.value = pageSwitchDelay
+		}
 	}
 
 	override fun onClick(v: View) {
@@ -92,6 +100,12 @@ class ReaderConfigBottomSheet :
 		mode = newMode
 	}
 
+	override fun onStartTrackingTouch(slider: Slider) = Unit
+
+	override fun onStopTrackingTouch(slider: Slider) {
+		findCallback()?.pageSwitchDelay = slider.value
+	}
+
 	override fun onActivityResult(uri: Uri?) {
 		viewModel.onActivityResult(uri)
 		dismissAllowingStateLoss()
@@ -112,6 +126,8 @@ class ReaderConfigBottomSheet :
 	}
 
 	interface Callback {
+
+		var pageSwitchDelay: Float
 
 		fun onReaderModeChanged(mode: ReaderMode)
 	}

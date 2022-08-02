@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.utils.GridTouchHelper
 class ReaderControlDelegate(
 	scope: LifecycleCoroutineScope,
 	settings: AppSettings,
-	private val listener: OnInteractionListener
+	private val listener: OnInteractionListener,
 ) {
 
 	private var isTapSwitchEnabled: Boolean = true
@@ -72,14 +72,16 @@ class ReaderControlDelegate(
 		KeyEvent.KEYCODE_PAGE_DOWN,
 		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN,
 		KeyEvent.KEYCODE_DPAD_DOWN,
-		KeyEvent.KEYCODE_DPAD_RIGHT -> {
+		KeyEvent.KEYCODE_DPAD_RIGHT,
+		-> {
 			listener.switchPageBy(1)
 			true
 		}
 		KeyEvent.KEYCODE_PAGE_UP,
 		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_UP,
 		KeyEvent.KEYCODE_DPAD_UP,
-		KeyEvent.KEYCODE_DPAD_LEFT -> {
+		KeyEvent.KEYCODE_DPAD_LEFT,
+		-> {
 			listener.switchPageBy(-1)
 			true
 		}

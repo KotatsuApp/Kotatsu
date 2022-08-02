@@ -361,4 +361,7 @@
 	<string name="incognito_mode">Incognito mode</string>
 	<string name="app_update_available_s">Application update available: %s</string>
 	<string name="no_chapters">No chapters</string>
+	<string name="automatic_scroll">Automatic scroll</string>
+	<string name="off_short">Off</string>
+	<string name="seconds_pattern">%ss</string>
 </resources>
