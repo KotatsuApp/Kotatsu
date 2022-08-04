@@ -79,19 +79,19 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:85bfe42ddf') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:e2308214a7') {
 		exclude group: 'org.json', module: 'json'
 	}
 
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
 	implementation 'androidx.core:core-ktx:1.8.0'
-	implementation 'androidx.activity:activity-ktx:1.5.0'
-	implementation 'androidx.fragment:fragment-ktx:1.5.0'
-	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
-	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.0'
-	implementation 'androidx.lifecycle:lifecycle-service:2.5.0'
-	implementation 'androidx.lifecycle:lifecycle-process:2.5.0'
+	implementation 'androidx.activity:activity-ktx:1.5.1'
+	implementation 'androidx.fragment:fragment-ktx:1.5.1'
+	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+	implementation 'androidx.lifecycle:lifecycle-service:2.5.1'
+	implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
 	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 	implementation 'androidx.recyclerview:recyclerview:1.2.1'
@@ -101,11 +101,11 @@ dependencies {
 	implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha04'
 	implementation 'com.google.android.material:material:1.7.0-alpha03'
 	//noinspection LifecycleAnnotationProcessorWithJava8
-	kapt 'androidx.lifecycle:lifecycle-compiler:2.5.0'
+	kapt 'androidx.lifecycle:lifecycle-compiler:2.5.1'
 
-	implementation 'androidx.room:room-runtime:2.4.2'
-	implementation 'androidx.room:room-ktx:2.4.2'
-	kapt 'androidx.room:room-compiler:2.4.2'
+	implementation 'androidx.room:room-runtime:2.4.3'
+	implementation 'androidx.room:room-ktx:2.4.3'
+	kapt 'androidx.room:room-compiler:2.4.3'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
@@ -137,6 +137,6 @@ dependencies {
 	androidTestImplementation 'io.insert-koin:koin-test:3.2.0'
 	androidTestImplementation 'io.insert-koin:koin-test-junit4:3.2.0'
 
-	androidTestImplementation 'androidx.room:room-testing:2.4.2'
+	androidTestImplementation 'androidx.room:room-testing:2.4.3'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
 }
