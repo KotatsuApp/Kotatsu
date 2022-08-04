@@ -16,7 +16,6 @@ import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 class MangaDetailsDelegate(
@@ -84,7 +83,7 @@ class MangaDetailsDelegate(
 		val dateFormat = settings.getDateFormat()
 		val currentIndex = chapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = chapters.size - newCount
-		val downloadedIds = downloadedChapters?.mapToSet { it.id }
+		val downloadedIds = downloadedChapters?.mapTo(HashSet(downloadedChapters.size)) { it.id }
 		for (i in chapters.indices) {
 			val chapter = chapters[i]
 			if (chapter.branch != branch) {
@@ -98,6 +97,9 @@ class MangaDetailsDelegate(
 				isDownloaded = downloadedIds?.contains(chapter.id) == true,
 				dateFormat = dateFormat,
 			)
+		}
+		if (result.size < chapters.size / 2) {
+			result.trimToSize()
 		}
 		return result
 	}
@@ -153,6 +155,9 @@ class MangaDetailsDelegate(
 				}
 			}
 			result.sortBy { it.chapter.number }
+		}
+		if (result.size < sourceChapters.size / 2) {
+			result.trimToSize()
 		}
 		return result
 	}
