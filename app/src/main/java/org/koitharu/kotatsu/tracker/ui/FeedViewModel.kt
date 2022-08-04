@@ -16,12 +16,13 @@ import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import org.koitharu.kotatsu.tracker.ui.model.toFeedItem
+import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.daysDiff
 
 class FeedViewModel(
-	private val repository: TrackingRepository
+	private val repository: TrackingRepository,
 ) : BaseViewModel() {
 
 	private val logList = MutableStateFlow<List<TrackingLogItem>?>(null)
@@ -32,7 +33,7 @@ class FeedViewModel(
 	val onFeedCleared = SingleLiveEvent<Unit>()
 	val content = combine(
 		logList.filterNotNull(),
-		hasNextPage
+		hasNextPage,
 	) { list, isHasNextPage ->
 		buildList(list.size + 2) {
 			if (list.isEmpty()) {
@@ -43,7 +44,7 @@ class FeedViewModel(
 						textPrimary = R.string.text_empty_holder_primary,
 						textSecondary = R.string.text_feed_holder,
 						actionStringRes = 0,
-					)
+					),
 				)
 			} else {
 				list.mapListTo(this)
@@ -54,7 +55,7 @@ class FeedViewModel(
 		}
 	}.asLiveDataDistinct(
 		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(header, LoadingState)
+		listOf(header, LoadingState),
 	)
 
 	init {

@@ -14,7 +14,7 @@ val trackerModule
 		factory { TrackingRepository(get()) }
 		factory { TrackerNotificationChannels(androidContext(), get()) }
 
-		factory { Tracker(get(), get(), get()) }
+		factory { Tracker(get(), get(), get(), get()) }
 
 		viewModel { FeedViewModel(get()) }
 	}

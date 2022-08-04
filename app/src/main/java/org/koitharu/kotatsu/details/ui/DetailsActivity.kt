@@ -105,7 +105,7 @@ class DetailsActivity :
 		Toast.makeText(
 			this,
 			getString(R.string._s_deleted_from_local_storage, manga.title),
-			Toast.LENGTH_SHORT
+			Toast.LENGTH_SHORT,
 		).show()
 		finishAfterTransition()
 	}
@@ -131,7 +131,7 @@ class DetailsActivity :
 					onActionClick = {
 						e.report("DetailsActivity::onError")
 						dismiss()
-					}
+					},
 				)
 			}
 			else -> {
@@ -142,14 +142,14 @@ class DetailsActivity :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.snackbar.updatePadding(
-			bottom = insets.bottom
+			bottom = insets.bottom,
 		)
 		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			topMargin = insets.top
 		}
 		binding.root.updatePadding(
 			left = insets.left,
-			right = insets.right
+			right = insets.right,
 		)
 	}
 
@@ -159,6 +159,7 @@ class DetailsActivity :
 			tab.removeBadge()
 		} else {
 			val badge = tab.orCreateBadge
+			badge.maxCharacterCount = 3
 			badge.number = newChapters
 			badge.isVisible = true
 		}
@@ -275,8 +276,8 @@ class DetailsActivity :
 					ReaderActivity.newIntent(
 						context = this@DetailsActivity,
 						manga = remoteManga,
-						state = ReaderState(chapterId, 0, 0)
-					)
+						state = ReaderState(chapterId, 0, 0),
+					),
 				)
 			}
 			setNeutralButton(R.string.download) { _, _ ->
@@ -350,8 +351,8 @@ class DetailsActivity :
 			dialogBuilder.setMessage(
 				getString(
 					R.string.large_manga_save_confirm,
-					resources.getQuantityString(R.plurals.chapters, chaptersCount, chaptersCount)
-				)
+					resources.getQuantityString(R.plurals.chapters, chaptersCount, chaptersCount),
+				),
 			).setPositiveButton(R.string.save) { _, _ ->
 				DownloadService.start(this, manga)
 			}

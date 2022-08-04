@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
+import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
@@ -12,6 +14,7 @@ import org.koitharu.kotatsu.tracker.work.TrackingItem
 class Tracker(
 	private val settings: AppSettings,
 	private val repository: TrackingRepository,
+	private val historyRepository: HistoryRepository,
 	private val channels: TrackerNotificationChannels,
 ) {
 
@@ -68,7 +71,7 @@ class Tracker(
 
 	suspend fun fetchUpdates(track: MangaTracking, commit: Boolean): MangaUpdates {
 		val manga = MangaRepository(track.manga.source).getDetails(track.manga)
-		val updates = compare(track, manga)
+		val updates = compare(track, manga, getBranch(manga))
 		if (commit) {
 			repository.saveUpdates(updates)
 		}
@@ -78,7 +81,7 @@ class Tracker(
 	@VisibleForTesting
 	suspend fun checkUpdates(manga: Manga, commit: Boolean): MangaUpdates {
 		val track = repository.getTrack(manga)
-		val updates = compare(track, manga)
+		val updates = compare(track, manga, getBranch(manga))
 		if (commit) {
 			repository.saveUpdates(updates)
 		}
@@ -90,25 +93,30 @@ class Tracker(
 		repository.deleteTrack(mangaId)
 	}
 
+	private suspend fun getBranch(manga: Manga): String? {
+		val history = historyRepository.getOne(manga)
+		return manga.getPreferredBranch(history)
+	}
+
 	/**
 	 * The main functionality of tracker: check new chapters in [manga] comparing to the [track]
 	 */
-	private fun compare(track: MangaTracking, manga: Manga): MangaUpdates {
+	private fun compare(track: MangaTracking, manga: Manga, branch: String?): MangaUpdates {
 		if (track.isEmpty()) {
 			// first check or manga was empty on last check
 			return MangaUpdates(manga, emptyList(), isValid = false)
 		}
-		val chapters = requireNotNull(manga.chapters)
+		val chapters = requireNotNull(manga.getChapters(branch))
 		val newChapters = chapters.takeLastWhile { x -> x.id != track.lastChapterId }
 		return when {
 			newChapters.isEmpty() -> {
-				return MangaUpdates(manga, emptyList(), isValid = chapters.lastOrNull()?.id == track.lastChapterId)
+				MangaUpdates(manga, emptyList(), isValid = chapters.lastOrNull()?.id == track.lastChapterId)
 			}
 			newChapters.size == chapters.size -> {
-				return MangaUpdates(manga, emptyList(), isValid = false)
+				MangaUpdates(manga, emptyList(), isValid = false)
 			}
 			else -> {
-				return MangaUpdates(manga, newChapters, isValid = true)
+				MangaUpdates(manga, newChapters, isValid = true)
 			}
 		}
 	}

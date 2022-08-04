@@ -29,6 +29,9 @@
 				android:layout_height="match_parent"
 				android:layout_gravity="center_horizontal"
 				android:background="@null"
+				android:clipChildren="false"
+				android:clipToPadding="false"
+				android:paddingHorizontal="@dimen/margin_normal"
 				app:tabGravity="center"
 				app:tabMode="scrollable" />
 

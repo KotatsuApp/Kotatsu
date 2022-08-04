@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.AppBarOwner
+import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.measureHeight
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class FeedFragment :
 	BaseFragment<FragmentFeedBinding>(),
@@ -39,7 +41,7 @@ class FeedFragment :
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentFeedBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,7 +56,7 @@ class FeedFragment :
 			paddingVertical = resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
 			val decoration = TypedSpacingItemDecoration(
 				FeedAdapter.ITEM_TYPE_FEED to 0,
-				fallbackSpacing = spacing
+				fallbackSpacing = spacing,
 			)
 			addItemDecoration(decoration)
 		}
@@ -77,12 +79,25 @@ class FeedFragment :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
-		binding.recyclerView.updatePadding(
-			top = headerHeight + paddingVertical,
-			left = insets.left + paddingHorizontal,
-			right = insets.right + paddingHorizontal,
-			bottom = insets.bottom + paddingVertical,
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right,
 		)
+		if (activity is MainActivity) {
+			binding.recyclerView.updatePadding(
+				top = headerHeight,
+				bottom = insets.bottom,
+			)
+			binding.swipeRefreshLayout.setProgressViewOffset(
+				true,
+				headerHeight + resources.resolveDp(-72),
+				headerHeight + resources.resolveDp(10),
+			)
+		} else {
+			binding.recyclerView.updatePadding(
+				bottom = insets.bottom,
+			)
+		}
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit
@@ -101,7 +116,7 @@ class FeedFragment :
 		Snackbar.make(
 			binding.recyclerView,
 			R.string.updates_feed_cleared,
-			Snackbar.LENGTH_LONG
+			Snackbar.LENGTH_LONG,
 		).show()
 	}
 
@@ -109,7 +124,7 @@ class FeedFragment :
 		Snackbar.make(
 			binding.recyclerView,
 			e.getDisplayMessage(resources),
-			Snackbar.LENGTH_SHORT
+			Snackbar.LENGTH_SHORT,
 		).show()
 	}
 

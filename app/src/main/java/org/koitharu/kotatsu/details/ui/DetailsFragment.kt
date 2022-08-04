@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.details.ui
 
 import android.app.ActivityOptions
 import android.os.Bundle
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.*
 import androidx.appcompat.widget.PopupMenu
@@ -10,18 +9,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.core.text.parseAsHtml
 import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.size.Scale
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
@@ -33,6 +29,7 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingInfoBottomSheet
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
@@ -82,6 +79,7 @@ class DetailsFragment :
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
 		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
+		viewModel.chapters.observe(viewLifecycleOwner, ::onChaptersChanged)
 		addMenuProvider(DetailsMenuProvider())
 	}
 
@@ -126,18 +124,6 @@ class DetailsFragment :
 				else -> textViewState.isVisible = false
 			}
 
-			// Info containers
-			val chapters = manga.chapters
-			if (chapters.isNullOrEmpty()) {
-				infoLayout.textViewChapters.isVisible = false
-			} else {
-				infoLayout.textViewChapters.isVisible = true
-				infoLayout.textViewChapters.text = resources.getQuantityString(
-					R.plurals.chapters,
-					chapters.size,
-					chapters.size,
-				)
-			}
 			if (manga.hasRating) {
 				infoLayout.textViewRating.text = String.format("%.1f", manga.rating * 5)
 				infoLayout.ratingContainer.isVisible = true
@@ -164,12 +150,25 @@ class DetailsFragment :
 
 			infoLayout.textViewNsfw.isVisible = manga.isNsfw
 
-			// Buttons
-			buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
-
 			// Chips
 			bindTags(manga)
 		}
+	}
+
+	private fun onChaptersChanged(chapters: List<ChapterListItem>?) {
+		val infoLayout = binding.infoLayout
+		if (chapters.isNullOrEmpty()) {
+			infoLayout.textViewChapters.isVisible = false
+		} else {
+			infoLayout.textViewChapters.isVisible = true
+			infoLayout.textViewChapters.text = resources.getQuantityString(
+				R.plurals.chapters,
+				chapters.size,
+				chapters.size,
+			)
+		}
+		// Buttons
+		binding.buttonRead.isEnabled = !chapters.isNullOrEmpty()
 	}
 
 	private fun onDescriptionChanged(description: CharSequence?) {
@@ -266,7 +265,7 @@ class DetailsFragment :
 							context = context ?: return,
 							manga = manga,
 							branch = viewModel.selectedBranchValue,
-						)
+						),
 					)
 				}
 			}
@@ -276,14 +275,14 @@ class DetailsFragment :
 						context = v.context,
 						source = manga.source,
 						query = manga.author ?: return,
-					)
+					),
 				)
 			}
 			R.id.imageView_cover -> {
 				val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
 				startActivity(
 					ImageActivity.newIntent(v.context, manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }),
-					options.toBundle()
+					options.toBundle(),
 				)
 			}
 		}
@@ -309,8 +308,8 @@ class DetailsFragment :
 										c.chapter.branch == branch
 									}?.let { c ->
 										ReaderState(c.chapter.id, 0, 0)
-									}
-								)
+									},
+								),
 							)
 							true
 						}
@@ -343,7 +342,7 @@ class DetailsFragment :
 					icon = 0,
 					data = tag,
 				)
-			}
+			},
 		)
 	}
 
