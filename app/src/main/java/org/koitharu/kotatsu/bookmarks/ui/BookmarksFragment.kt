@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.bookmarks.data.ids
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.main.ui.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -37,7 +39,8 @@ class BookmarksFragment :
 	BaseFragment<FragmentListSimpleBinding>(),
 	ListStateHolderListener,
 	OnListItemClickListener<Bookmark>,
-	SectionedSelectionController.Callback<Manga> {
+	SectionedSelectionController.Callback<Manga>,
+	FastScroller.FastScrollListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -95,6 +98,12 @@ class BookmarksFragment :
 	override fun onRetryClick(error: Throwable) = Unit
 
 	override fun onEmptyActionClick() = Unit
+
+	override fun onFastScrollStart(fastScroller: FastScroller) {
+		(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
+	}
+
+	override fun onFastScrollStop(fastScroller: FastScroller) = Unit
 
 	override fun onSelectionChanged(controller: SectionedSelectionController<Manga>, count: Int) {
 		binding.recyclerView.invalidateNestedItemDecorations()

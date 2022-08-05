@@ -5,18 +5,15 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/swipeRefreshLayout"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:clipToPadding="false"
-	android:paddingLeft="@dimen/list_spacing"
-	android:paddingTop="@dimen/grid_spacing_outer"
-	android:paddingRight="@dimen/list_spacing"
-	android:paddingBottom="@dimen/grid_spacing_outer">
+	android:layout_height="match_parent">
 
 	<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:clipToPadding="false"
 		android:orientation="vertical"
+		android:paddingHorizontal="@dimen/list_spacing"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_feed" />
 
