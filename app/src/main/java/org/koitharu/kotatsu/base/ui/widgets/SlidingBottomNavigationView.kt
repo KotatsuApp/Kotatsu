@@ -11,6 +11,7 @@ import android.view.ViewPropertyAnimator
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.customview.view.AbsSavedState
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.google.android.material.R as materialR
@@ -107,7 +108,7 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 			)
 	}
 
-	internal class SavedState : BaseSavedState {
+	internal class SavedState : AbsSavedState {
 		var currentState = STATE_UP
 		var translationY = 0F
 
@@ -116,7 +117,7 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 			this.translationY = translationY
 		}
 
-		constructor(source: Parcel) : super(source) {
+		constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
 			currentState = source.readInt()
 			translationY = source.readFloat()
 		}
@@ -132,7 +133,7 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 			@Suppress("unused")
 			@JvmField
 			val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
-				override fun createFromParcel(`in`: Parcel) = SavedState(`in`)
+				override fun createFromParcel(`in`: Parcel) = SavedState(`in`, SavedState::class.java.classLoader)
 
 				override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
 			}
