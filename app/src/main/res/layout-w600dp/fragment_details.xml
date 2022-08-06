@@ -44,19 +44,18 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
+			android:paddingHorizontal="16dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintVertical_bias="0">
+			app:layout_constraintTop_toTopOf="@+id/imageView_cover">
 
 			<TextView
 				android:id="@+id/textView_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="16dp"
-				android:layout_marginTop="16dp"
 				android:ellipsize="end"
 				android:maxLines="4"
+				android:padding="4dp"
 				android:textAppearance="?attr/textAppearanceHeadlineSmall"
 				tools:text="@tools:sample/lorem[15]" />
 
@@ -64,10 +63,9 @@
 				android:id="@+id/textView_subtitle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="16dp"
-				android:layout_marginTop="4dp"
 				android:ellipsize="end"
 				android:maxLines="3"
+				android:padding="4dp"
 				android:textAppearance="?attr/textAppearanceBodyMedium"
 				tools:text="@tools:sample/lorem[12]" />
 
@@ -75,10 +73,8 @@
 				android:id="@+id/textView_author"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="14dp"
-				android:layout_marginTop="4dp"
 				android:background="@drawable/list_selector"
-				android:padding="2dp"
+				android:padding="4dp"
 				android:singleLine="true"
 				android:textColor="?attr/colorTertiary"
 				android:textStyle="bold"
@@ -89,24 +85,12 @@
 				style="@style/Widget.AppCompat.RatingBar.Small"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="16dp"
-				android:layout_marginTop="4dp"
 				android:isIndicator="true"
 				android:max="1"
 				android:numStars="5"
+				android:padding="4dp"
 				android:stepSize="0.5"
 				tools:rating="4" />
-
-			<Space
-				android:layout_width="wrap_content"
-				android:layout_height="0dp"
-				android:layout_weight="1" />
-
-			<include
-				android:id="@+id/info_layout"
-				layout="@layout/layout_details_info"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content" />
 
 		</LinearLayout>
 
@@ -117,6 +101,15 @@
 			app:barrierDirection="bottom"
 			app:barrierMargin="8dp"
 			app:constraint_referenced_ids="layout_titles,imageView_cover" />
+
+		<include
+			android:id="@+id/info_layout"
+			layout="@layout/layout_details_info"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
 
 		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"
@@ -129,7 +122,7 @@
 			app:chipSpacingVertical="6dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
+			app:layout_constraintTop_toBottomOf="@+id/info_layout" />
 
 		<TextView
 			android:id="@+id/textView_bookmarks"
