@@ -88,21 +88,23 @@
 			app:layout_constraintWidth_default="wrap"
 			tools:text="@tools:sample/full_names" />
 
-		<TextView
-			android:id="@+id/textView_state"
-			android:layout_width="0dp"
+		<RatingBar
+			android:id="@+id/rating_bar"
+			style="@style/Widget.AppCompat.RatingBar.Small"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="4dp"
 			android:layout_marginEnd="16dp"
-			android:drawablePadding="4dp"
-			android:singleLine="true"
-			android:textAppearance="?attr/textAppearanceBodySmall"
+			android:isIndicator="true"
+			android:max="1"
+			android:numStars="5"
+			android:stepSize="0.5"
 			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_author"
-			tools:drawableStart="@drawable/ic_state_finished"
-			tools:text="Finished" />
+			tools:rating="4" />
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/barrier_header"
@@ -110,7 +112,7 @@
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
 			app:barrierMargin="8dp"
-			app:constraint_referenced_ids="imageView_cover,textView_state" />
+			app:constraint_referenced_ids="imageView_cover,rating_bar" />
 
 		<include
 			android:id="@+id/info_layout"

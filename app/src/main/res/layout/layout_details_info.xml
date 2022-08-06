@@ -15,26 +15,19 @@
 	android:paddingEnd="8dp"
 	android:showDividers="middle">
 
-	<FrameLayout
-		android:id="@+id/rating_container"
+	<TextView
+		android:id="@+id/textView_state"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
+		android:drawablePadding="4dp"
+		android:gravity="center_horizontal"
+		android:padding="4dp"
+		android:textSize="12sp"
 		android:visibility="gone"
-		tools:visibility="visible">
-
-		<TextView
-			android:id="@+id/textView_rating"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:drawablePadding="4dp"
-			android:padding="4dp"
-			android:textSize="20sp"
-			app:drawableEndCompat="@drawable/ic_star_manga_info"
-			tools:text="4.8" />
-
-	</FrameLayout>
+		tools:drawableTopCompat="@drawable/ic_state_finished"
+		tools:text="Completed"
+		tools:visibility="visible" />
 
 	<TextView
 		android:id="@+id/textView_chapters"

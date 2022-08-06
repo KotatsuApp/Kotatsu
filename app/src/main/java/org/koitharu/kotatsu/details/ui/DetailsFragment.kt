@@ -104,20 +104,11 @@ class DetailsFragment :
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
 			textViewAuthor.textAndVisible = manga.author
-			when (manga.state) {
-				MangaState.FINISHED -> {
-					textViewState.apply {
-						textAndVisible = resources.getString(R.string.state_finished)
-						drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_state_finished)
-					}
-				}
-				MangaState.ONGOING -> {
-					textViewState.apply {
-						textAndVisible = resources.getString(R.string.state_ongoing)
-						drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_state_ongoing)
-					}
-				}
-				else -> textViewState.isVisible = false
+			if (manga.hasRating) {
+				ratingBar.rating = manga.rating * ratingBar.numStars
+				ratingBar.isVisible = true
+			} else {
+				ratingBar.isVisible = false
 			}
 
 			// Info containers
@@ -132,11 +123,20 @@ class DetailsFragment :
 					chapters.size,
 				)
 			}
-			if (manga.hasRating) {
-				infoLayout.textViewRating.text = String.format("%.1f", manga.rating * 5)
-				infoLayout.ratingContainer.isVisible = true
-			} else {
-				infoLayout.ratingContainer.isVisible = false
+			when (manga.state) {
+				MangaState.FINISHED -> {
+					infoLayout.textViewState.apply {
+						textAndVisible = resources.getString(R.string.state_finished)
+						drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_finished)
+					}
+				}
+				MangaState.ONGOING -> {
+					infoLayout.textViewState.apply {
+						textAndVisible = resources.getString(R.string.state_ongoing)
+						drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_ongoing)
+					}
+				}
+				else -> infoLayout.textViewState.isVisible = false
 			}
 			if (manga.source == MangaSource.LOCAL) {
 				infoLayout.textViewSource.isVisible = false

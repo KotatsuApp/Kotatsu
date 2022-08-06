@@ -84,17 +84,18 @@
 				android:textStyle="bold"
 				tools:text="@tools:sample/full_names" />
 
-			<TextView
-				android:id="@+id/textView_state"
-				android:layout_width="match_parent"
+			<RatingBar
+				android:id="@+id/rating_bar"
+				style="@style/Widget.AppCompat.RatingBar.Small"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginHorizontal="16dp"
 				android:layout_marginTop="4dp"
-				android:drawablePadding="4dp"
-				android:singleLine="true"
-				android:textAppearance="?attr/textAppearanceBodySmall"
-				tools:drawableStart="@drawable/ic_state_finished"
-				tools:text="Finished" />
+				android:isIndicator="true"
+				android:max="1"
+				android:numStars="5"
+				android:stepSize="0.5"
+				tools:rating="4" />
 
 			<Space
 				android:layout_width="wrap_content"
