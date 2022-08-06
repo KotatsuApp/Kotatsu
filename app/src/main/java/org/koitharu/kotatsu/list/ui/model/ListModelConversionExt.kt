@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.list.ui.model
 
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
@@ -79,16 +81,19 @@ fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(
 	exception = this,
 	icon = getErrorIcon(this),
 	canRetry = canRetry,
-	buttonText = ExceptionResolver.getResolveStringId(this).ifZero { R.string.try_again }
+	buttonText = ExceptionResolver.getResolveStringId(this).ifZero { R.string.try_again },
 )
 
 fun Throwable.toErrorFooter() = ErrorFooter(
 	exception = this,
-	icon = R.drawable.ic_alert_outline
+	icon = R.drawable.ic_alert_outline,
 )
 
 private fun getErrorIcon(error: Throwable) = when (error) {
-	is AuthRequiredException,
-	is CloudFlareProtectedException -> R.drawable.ic_denied_large
+	is AuthRequiredException -> R.drawable.ic_auth_key_large
+	is CloudFlareProtectedException -> R.drawable.ic_bot_large
+	is UnknownHostException,
+	is SocketTimeoutException,
+	-> R.drawable.ic_plug_large
 	else -> R.drawable.ic_error_large
 }
