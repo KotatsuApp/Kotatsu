@@ -185,6 +185,7 @@ class DetailsActivity :
 						Snackbar.LENGTH_LONG
 					},
 				)
+				snackbar.anchorView = binding.headerChapters
 				if (e.isReportable()) {
 					snackbar.setAction(R.string.report) {
 						e.report("DetailsActivity::onError")
@@ -232,8 +233,9 @@ class DetailsActivity :
 	fun showChapterMissingDialog(chapterId: Long) {
 		val remoteManga = viewModel.getRemoteManga()
 		if (remoteManga == null) {
-			Snackbar.make(binding.containerDetails, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
-				.show()
+			val snackbar = Snackbar.make(binding.containerDetails, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
+			snackbar.anchorView = binding.headerChapters
+			snackbar.show()
 			return
 		}
 		MaterialAlertDialogBuilder(this).apply {
