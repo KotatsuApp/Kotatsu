@@ -6,13 +6,20 @@ import android.os.Bundle
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
+import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
+import org.koitharu.kotatsu.main.ui.AppBarOwner
 
 @AndroidEntryPoint
-class BookmarksActivity : BaseActivity<ActivityContainerBinding>() {
+class BookmarksActivity :
+	BaseActivity<ActivityContainerBinding>(),
+	AppBarOwner {
+
+	override val appBar: AppBarLayout
+		get() = binding.appbar
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
