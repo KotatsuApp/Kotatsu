@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.tracker.work.TrackWorker
 
 class FeedMenuProvider(
 	private val snackbarHost: View,
-	private val anchorView: View,
+	private val anchorView: View?,
 	private val viewModel: FeedViewModel,
 ) : MenuProvider {
 

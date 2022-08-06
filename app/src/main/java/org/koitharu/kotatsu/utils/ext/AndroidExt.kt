@@ -129,14 +129,6 @@ fun Context.getAnimationDuration(@IntegerRes resId: Int): Long {
 	return (resources.getInteger(resId) * animatorDurationScale).roundToLong()
 }
 
-inline fun <reified T> ViewGroup.findChild(): T? {
-	return children.find { it is T } as? T
-}
-
-inline fun <reified T> ViewGroup.findDescendant(): T? {
-	return descendants.find { it is T } as? T
-}
-
 fun isLowRamDevice(context: Context): Boolean {
 	return context.activityManager?.isLowRamDevice ?: false
 }

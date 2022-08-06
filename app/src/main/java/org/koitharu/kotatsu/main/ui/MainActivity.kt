@@ -245,8 +245,7 @@ class MainActivity :
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).setAnchorView(bottomNav)
-			.show()
+		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
 	}
 
 	private fun onCountersChanged(counters: SparseIntArray) {
