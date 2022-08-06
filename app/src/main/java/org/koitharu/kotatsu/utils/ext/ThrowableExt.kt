@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
+import java.net.SocketTimeoutException
 import okio.FileNotFoundException
 import org.acra.ktx.sendWithAcra
 import org.koitharu.kotatsu.R
@@ -10,13 +11,13 @@ import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.ContentUnavailableException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
-import java.net.SocketTimeoutException
 
 fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
 	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required)
 	is ActivityNotFoundException,
-	is UnsupportedOperationException -> resources.getString(R.string.operation_not_supported)
+	is UnsupportedOperationException,
+	-> resources.getString(R.string.operation_not_supported)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
@@ -37,5 +38,6 @@ fun Throwable.isReportable(): Boolean {
 }
 
 fun Throwable.report(message: String?) {
-	CaughtException(this, message).sendWithAcra()
+	val exception = CaughtException(this, message)
+	exception.sendWithAcra()
 }

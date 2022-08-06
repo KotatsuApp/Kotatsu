@@ -10,6 +10,7 @@ import android.widget.Checkable
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.os.ParcelCompat
+import androidx.customview.view.AbsSavedState
 
 class CheckableImageView @JvmOverloads constructor(
 	context: Context,
@@ -73,7 +74,7 @@ class CheckableImageView @JvmOverloads constructor(
 		fun onCheckedChanged(view: CheckableImageView, isChecked: Boolean)
 	}
 
-	private class SavedState : BaseSavedState {
+	private class SavedState : AbsSavedState {
 
 		val isChecked: Boolean
 
@@ -81,7 +82,7 @@ class CheckableImageView @JvmOverloads constructor(
 			isChecked = checked
 		}
 
-		constructor(source: Parcel) : super(source) {
+		constructor(source: Parcel, classLoader: ClassLoader?) : super(source, classLoader) {
 			isChecked = ParcelCompat.readBoolean(source)
 		}
 
@@ -91,9 +92,10 @@ class CheckableImageView @JvmOverloads constructor(
 		}
 
 		companion object {
+			@Suppress("unused")
 			@JvmField
 			val CREATOR: Creator<SavedState> = object : Creator<SavedState> {
-				override fun createFromParcel(`in`: Parcel) = SavedState(`in`)
+				override fun createFromParcel(`in`: Parcel) = SavedState(`in`, SavedState::class.java.classLoader)
 
 				override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
 			}
