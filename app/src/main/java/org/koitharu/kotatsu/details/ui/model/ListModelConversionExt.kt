@@ -1,12 +1,12 @@
 package org.koitharu.kotatsu.details.ui.model
 
+import java.text.DateFormat
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_CURRENT
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_DOWNLOADED
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_MISSING
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_NEW
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_UNREAD
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import java.text.DateFormat
 
 fun MangaChapter.toListItem(
 	isCurrent: Boolean,
@@ -25,6 +25,7 @@ fun MangaChapter.toListItem(
 	return ChapterListItem(
 		chapter = this,
 		flags = flags,
-		uploadDate = if (uploadDate != 0L) dateFormat.format(uploadDate) else null
+		uploadDateMs = uploadDate,
+		dateFormat = dateFormat,
 	)
 }

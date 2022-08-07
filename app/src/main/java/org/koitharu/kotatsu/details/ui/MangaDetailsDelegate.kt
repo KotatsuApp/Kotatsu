@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.details.ui
 
-import androidx.core.os.LocaleListCompat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -16,9 +16,6 @@ import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.parsers.util.toTitleCase
-import org.koitharu.kotatsu.utils.ext.iterator
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 class MangaDetailsDelegate(
@@ -46,12 +43,7 @@ class MangaDetailsDelegate(
 		manga = mangaRepositoryFactory.create(manga.source).getDetails(manga)
 		// find default branch
 		val hist = historyRepository.getOne(manga)
-		selectedBranch.value = if (hist != null) {
-			val currentChapter = manga.chapters?.find { it.id == hist.chapterId }
-			if (currentChapter != null) currentChapter.branch else predictBranch(manga.chapters)
-		} else {
-			predictBranch(manga.chapters)
-		}
+		selectedBranch.value = manga.getPreferredBranch(hist)
 		mangaData.value = manga
 		relatedManga.value = runCatching {
 			if (manga.source == MangaSource.LOCAL) {
@@ -92,7 +84,7 @@ class MangaDetailsDelegate(
 		val dateFormat = settings.getDateFormat()
 		val currentIndex = chapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = chapters.size - newCount
-		val downloadedIds = downloadedChapters?.mapToSet { it.id }
+		val downloadedIds = downloadedChapters?.mapTo(HashSet(downloadedChapters.size)) { it.id }
 		for (i in chapters.indices) {
 			val chapter = chapters[i]
 			if (chapter.branch != branch) {
@@ -106,6 +98,9 @@ class MangaDetailsDelegate(
 				isDownloaded = downloadedIds?.contains(chapter.id) == true,
 				dateFormat = dateFormat,
 			)
+		}
+		if (result.size < chapters.size / 2) {
+			result.trimToSize()
 		}
 		return result
 	}
@@ -162,24 +157,9 @@ class MangaDetailsDelegate(
 			}
 			result.sortBy { it.chapter.number }
 		}
+		if (result.size < sourceChapters.size / 2) {
+			result.trimToSize()
+		}
 		return result
-	}
-
-	private fun predictBranch(chapters: List<MangaChapter>?): String? {
-		if (chapters.isNullOrEmpty()) {
-			return null
-		}
-		val groups = chapters.groupBy { it.branch }
-		for (locale in LocaleListCompat.getAdjustedDefault()) {
-			var language = locale.getDisplayLanguage(locale).toTitleCase(locale)
-			if (groups.containsKey(language)) {
-				return language
-			}
-			language = locale.getDisplayName(locale).toTitleCase(locale)
-			if (groups.containsKey(language)) {
-				return language
-			}
-		}
-		return groups.maxByOrNull { it.value.size }?.key
 	}
 }

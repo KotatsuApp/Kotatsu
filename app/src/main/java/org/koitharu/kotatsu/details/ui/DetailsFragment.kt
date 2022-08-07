@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingInfoBottomSheet
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
@@ -75,6 +76,7 @@ class DetailsFragment :
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
 		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
+		viewModel.chapters.observe(viewLifecycleOwner, ::onChaptersChanged)
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
@@ -111,18 +113,6 @@ class DetailsFragment :
 				ratingBar.isVisible = false
 			}
 
-			// Info containers
-			val chapters = manga.chapters
-			if (chapters.isNullOrEmpty()) {
-				infoLayout.textViewChapters.isVisible = false
-			} else {
-				infoLayout.textViewChapters.isVisible = true
-				infoLayout.textViewChapters.text = resources.getQuantityString(
-					R.plurals.chapters,
-					chapters.size,
-					chapters.size,
-				)
-			}
 			when (manga.state) {
 				MangaState.FINISHED -> {
 					infoLayout.textViewState.apply {
@@ -160,6 +150,20 @@ class DetailsFragment :
 
 			// Chips
 			bindTags(manga)
+		}
+	}
+
+	private fun onChaptersChanged(chapters: List<ChapterListItem>?) {
+		val infoLayout = binding.infoLayout
+		if (chapters.isNullOrEmpty()) {
+			infoLayout.textViewChapters.isVisible = false
+		} else {
+			infoLayout.textViewChapters.isVisible = true
+			infoLayout.textViewChapters.text = resources.getQuantityString(
+				R.plurals.chapters,
+				chapters.size,
+				chapters.size,
+			)
 		}
 	}
 

@@ -17,7 +17,8 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
 	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required)
 	is ActivityNotFoundException,
-	is UnsupportedOperationException, -> resources.getString(R.string.operation_not_supported)
+	is UnsupportedOperationException,
+	-> resources.getString(R.string.operation_not_supported)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
@@ -40,5 +41,6 @@ fun Throwable.isReportable(): Boolean {
 }
 
 fun Throwable.report(message: String?) {
-	CaughtException(this, message).sendWithAcra()
+	val exception = CaughtException(this, message)
+	exception.sendWithAcra()
 }

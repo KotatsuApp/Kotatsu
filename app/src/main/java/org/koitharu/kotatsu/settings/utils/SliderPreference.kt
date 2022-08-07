@@ -5,8 +5,8 @@ import android.content.res.TypedArray
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.view.View
 import androidx.core.content.withStyledAttributes
+import androidx.customview.view.AbsSavedState
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.google.android.material.slider.Slider
@@ -40,11 +40,11 @@ class SliderPreference @JvmOverloads constructor(
 			attrs,
 			R.styleable.SliderPreference,
 			defStyleAttr,
-			defStyleRes
+			defStyleRes,
 		) {
 			valueFrom = getFloat(
 				R.styleable.SliderPreference_android_valueFrom,
-				valueFrom.toFloat()
+				valueFrom.toFloat(),
 			).toInt()
 			valueTo =
 				getFloat(R.styleable.SliderPreference_android_valueTo, valueTo.toFloat()).toInt()
@@ -117,7 +117,7 @@ class SliderPreference @JvmOverloads constructor(
 		}
 	}
 
-	private class SavedState : View.BaseSavedState {
+	private class SavedState : AbsSavedState {
 
 		val valueFrom: Int
 		val valueTo: Int
@@ -134,7 +134,7 @@ class SliderPreference @JvmOverloads constructor(
 			this.currentValue = currentValue
 		}
 
-		constructor(source: Parcel) : super(source) {
+		constructor(source: Parcel, classLoader: ClassLoader?) : super(source, classLoader) {
 			valueFrom = source.readInt()
 			valueTo = source.readInt()
 			currentValue = source.readInt()
@@ -148,9 +148,10 @@ class SliderPreference @JvmOverloads constructor(
 		}
 
 		companion object {
+			@Suppress("unused")
 			@JvmField
 			val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
-				override fun createFromParcel(`in`: Parcel) = SavedState(`in`)
+				override fun createFromParcel(`in`: Parcel) = SavedState(`in`, SavedState::class.java.classLoader)
 
 				override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
 			}

@@ -14,17 +14,18 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.replaceWith
 import org.koitharu.kotatsu.utils.ext.requireBitmap
 
 class RecentListFactory(
 	private val context: Context,
 	private val historyRepository: HistoryRepository,
-	private val coil: ImageLoader
+	private val coil: ImageLoader,
 ) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
 	private val transformation = RoundedCornersTransformation(
-		context.resources.getDimension(R.dimen.appwidget_corner_radius_inner)
+		context.resources.getDimension(R.dimen.appwidget_corner_radius_inner),
 	)
 	private val coverSize = Size(
 		context.resources.getDimensionPixelSize(R.dimen.widget_cover_width),
@@ -38,9 +39,8 @@ class RecentListFactory(
 	override fun getItemId(position: Int) = dataSet[position].id
 
 	override fun onDataSetChanged() {
-		dataSet.clear()
 		val data = runBlocking { historyRepository.getList(0, 10) }
-		dataSet.addAll(data)
+		dataSet.replaceWith(data)
 	}
 
 	override fun hasStableIds() = true
@@ -54,7 +54,7 @@ class RecentListFactory(
 					.data(item.coverUrl)
 					.size(coverSize)
 					.transformations(transformation)
-					.build()
+					.build(),
 			).requireBitmap()
 		}.onSuccess { cover ->
 			views.setImageViewBitmap(R.id.imageView_cover, cover)
