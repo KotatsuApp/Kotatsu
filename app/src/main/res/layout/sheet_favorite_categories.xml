@@ -5,8 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:paddingBottom="@dimen/list_spacing">
+	android:orientation="vertical">
 
 	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
 		android:id="@+id/headerBar"
@@ -32,6 +31,7 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
 		android:overScrollMode="never"
+		android:paddingVertical="@dimen/list_spacing"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_checkable_new" />

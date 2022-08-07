@@ -111,10 +111,6 @@ class LibraryFragment :
 	override fun onEmptyActionClick() = Unit
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)

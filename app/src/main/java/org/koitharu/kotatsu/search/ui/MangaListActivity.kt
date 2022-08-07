@@ -54,12 +54,10 @@ class MangaListActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right,
-			)
-		}
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 	}
 
 	private class ApplyFilterRunnable(

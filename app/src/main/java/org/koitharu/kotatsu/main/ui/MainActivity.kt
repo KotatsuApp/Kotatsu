@@ -156,16 +156,7 @@ class MainActivity :
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
-			leftMargin = insets.left
-			rightMargin = insets.right
-		}
-		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-	}
+	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onFocusChange(v: View?, hasFocus: Boolean) {
 		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)

@@ -93,13 +93,7 @@ class FeedFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
 		binding.recyclerView.updatePadding(
-			left = insets.left + paddingHorizontal,
-			right = insets.right + paddingHorizontal,
 			bottom = insets.bottom,
 		)
 	}

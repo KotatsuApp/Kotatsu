@@ -9,16 +9,17 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.RectShape
+import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatCheckedTextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import com.google.android.material.ripple.RippleUtils
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.getThemeColorStateList
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 @SuppressLint("RestrictedApi")
 class ListItemTextView @JvmOverloads constructor(
@@ -38,10 +39,11 @@ class ListItemTextView @JvmOverloads constructor(
 		context.withStyledAttributes(attrs, R.styleable.ListItemTextView, defStyleAttr) {
 			val itemRippleColor = getRippleColor(context)
 			val shape = createShapeDrawable(this)
+			val roundCorners = FloatArray(8) { resources.resolveDp(32f) }
 			background = RippleDrawable(
 				RippleUtils.sanitizeRippleDrawableColor(itemRippleColor),
 				shape,
-				ShapeDrawable(RectShape()),
+				ShapeDrawable(RoundRectShape(roundCorners, null, null)),
 			)
 			checkedDrawableStart = getDrawable(R.styleable.ListItemTextView_checkedDrawableStart)
 			checkedDrawableEnd = getDrawable(R.styleable.ListItemTextView_checkedDrawableEnd)
@@ -118,7 +120,7 @@ class ListItemTextView @JvmOverloads constructor(
 	}
 
 	private fun getRippleColor(context: Context): ColorStateList {
-		return context.getThemeColorStateList(android.R.attr.colorControlHighlight)
+		return ContextCompat.getColorStateList(context, R.color.selector_overlay)
 			?: ColorStateList.valueOf(Color.TRANSPARENT)
 	}
 }

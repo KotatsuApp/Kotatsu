@@ -77,8 +77,6 @@ class ToolsFragment :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
 			bottom = insets.bottom,
 		)
 	}
