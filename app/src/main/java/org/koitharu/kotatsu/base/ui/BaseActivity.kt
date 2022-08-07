@@ -13,6 +13,8 @@ import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -28,6 +30,7 @@ import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.base.ui.util.inject
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
@@ -109,18 +112,26 @@ abstract class BaseActivity<B : ViewBinding> :
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
 		actionModeDelegate.onSupportActionModeStarted(mode)
+		val actionModeColor = ColorUtils.compositeColors(
+			ContextCompat.getColor(this, com.google.android.material.R.color.m3_appbar_overlay_color),
+			getThemeColor(com.google.android.material.R.attr.colorSurface),
+		)
 		val insets = ViewCompat.getRootWindowInsets(binding.root)
 			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
-		val view = findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)
-		view?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top
+		findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar).apply {
+			setBackgroundColor(actionModeColor)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
 		}
+		window.statusBarColor = actionModeColor
 	}
 
 	@CallSuper
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		actionModeDelegate.onSupportActionModeFinished(mode)
+		window.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
 	}
 
 	override fun onBackPressed() {
