@@ -25,6 +25,7 @@
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
 				android:adjustViewBounds="true"
+				android:scaleType="fitXY"
 				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 				tools:ignore="ContentDescription"
 				tools:src="@sample/covers[5]" />
