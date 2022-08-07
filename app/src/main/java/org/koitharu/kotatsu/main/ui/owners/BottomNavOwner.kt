@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.main.ui
+package org.koitharu.kotatsu.main.ui.owners
 
 import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 

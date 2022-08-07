@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import coil.ImageLoader
@@ -27,7 +28,8 @@ import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.main.ui.AppBarOwner
+import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
+import org.koitharu.kotatsu.main.ui.owners.SnackbarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -140,13 +142,12 @@ class BookmarksFragment :
 	): AbstractSelectionItemDecoration = BookmarksSelectionDecoration(requireContext())
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
+		binding.recyclerView.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			bottomMargin = insets.bottom
+		}
 	}
 
 	private fun onListChanged(list: List<ListModel>) {
@@ -164,7 +165,7 @@ class BookmarksFragment :
 	private fun onActionDone(action: ReversibleAction) {
 		val handle = action.handle
 		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
-		val snackbar = Snackbar.make(binding.recyclerView, action.stringResId, length)
+		val snackbar = Snackbar.make((activity as SnackbarOwner).snackbarHost, action.stringResId, length)
 		if (handle != null) {
 			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
 		}
