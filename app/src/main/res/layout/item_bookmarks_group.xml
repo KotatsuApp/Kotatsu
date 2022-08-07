@@ -20,7 +20,7 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
-			tools:src="@tools:sample/backgrounds/scenic" />
+			tools:src="@sample/covers" />
 
 		<TextView
 			android:id="@+id/textView_title"
@@ -33,7 +33,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
 			app:layout_constraintTop_toTopOf="@+id/imageView_cover"
-			tools:text="@tools:sample/lorem[3]" />
+			tools:text="@sample/titles" />
 
 		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/recyclerView"

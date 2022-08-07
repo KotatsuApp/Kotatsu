@@ -23,7 +23,7 @@
 			android:orientation="vertical"
 			android:scaleType="centerCrop"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
-			tools:src="@tools:sample/backgrounds/scenic" />
+			tools:src="@sample/covers" />
 
 		<TextView
 			android:id="@+id/textView_title"
@@ -33,7 +33,7 @@
 			android:ellipsize="end"
 			android:lines="1"
 			android:textAppearance="?attr/textAppearanceLabelSmall"
-			tools:text="@tools:sample/lorem[6]" />
+			tools:text="@sample/titles" />
 
 	</LinearLayout>
 

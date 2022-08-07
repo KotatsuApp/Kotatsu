@@ -26,7 +26,7 @@
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
 		app:tintMode="src_atop"
 		tools:backgroundTint="#99FFFFFF"
-		tools:src="@tools:sample/backgrounds/scenic"
+		tools:src="@sample/covers"
 		tools:tint="#99FFFFFF" />
 
 	<com.google.android.material.imageview.ShapeableImageView
@@ -44,7 +44,7 @@
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
 		app:tintMode="src_atop"
 		tools:backgroundTint="#4DFFFFFF"
-		tools:src="@tools:sample/backgrounds/scenic"
+		tools:src="@sample/covers"
 		tools:tint="#4DFFFFFF" />
 
 	<com.google.android.material.imageview.ShapeableImageView
@@ -60,7 +60,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
-		tools:src="@tools:sample/backgrounds/scenic" />
+		tools:src="@sample/covers" />
 
 	<TextView
 		android:id="@+id/textView_title"

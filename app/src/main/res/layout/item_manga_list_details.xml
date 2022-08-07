@@ -22,7 +22,7 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-			tools:src="@tools:sample/backgrounds/scenic" />
+			tools:src="@sample/covers" />
 	
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 			android:id="@+id/progressView"
@@ -46,7 +46,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@tools:sample/lorem/random" />
+			tools:text="@sample/titles" />
 
 		<TextView
 			android:id="@+id/textView_subtitle"
@@ -90,7 +90,7 @@
 				android:requiresFadingEdge="horizontal"
 				android:singleLine="true"
 				android:textAppearance="?attr/textAppearanceBodySmall"
-				tools:text="@tools:sample/lorem/random" />
+				tools:text="@sample/genres" />
 
 			<TextView
 				android:id="@+id/textView_rating"

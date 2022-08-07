@@ -24,10 +24,10 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
-				android:scaleType="centerCrop"
+				android:adjustViewBounds="true"
 				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 				tools:ignore="ContentDescription"
-				tools:src="@tools:sample/backgrounds/scenic[3]" />
+				tools:src="@sample/covers[5]" />
 
 			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 				android:id="@+id/progressView"
@@ -51,7 +51,7 @@
 			android:textColor="?android:attr/textColorPrimary"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/thumbnail"
-			tools:text="Sample name" />
+			tools:text="@sample/titles[5]" />
 
 	</LinearLayout>
 
