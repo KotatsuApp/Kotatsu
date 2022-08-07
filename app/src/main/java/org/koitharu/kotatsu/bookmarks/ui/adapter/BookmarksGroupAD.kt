@@ -24,9 +24,8 @@ fun bookmarksGroupAD(
 	bookmarkClickListener: OnListItemClickListener<Bookmark>,
 	groupClickListener: OnListItemClickListener<BookmarksGroup>,
 ) = adapterDelegateViewBinding<BookmarksGroup, ListModel, ItemBookmarksGroupBinding>(
-	{ layoutInflater, parent -> ItemBookmarksGroupBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemBookmarksGroupBinding.inflate(layoutInflater, parent, false) },
 ) {
-
 	val viewListenerAdapter = object : View.OnClickListener, View.OnLongClickListener {
 		override fun onClick(v: View) = groupClickListener.onItemClick(item, v)
 		override fun onLongClick(v: View) = groupClickListener.onItemLongClick(item, v)
@@ -50,7 +49,7 @@ fun bookmarksGroupAD(
 			referer(item.manga.publicUrl)
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)

@@ -19,6 +19,7 @@
 			android:layout_height="0dp"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="16dp"
+			android:background="?colorSecondaryContainer"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="H,13:18"

@@ -18,9 +18,8 @@ fun mangaListDetailedItemAD(
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>,
 ) = adapterDelegateViewBinding<MangaListDetailedModel, ListModel, ItemMangaListDetailsBinding>(
-	{ inflater, parent -> ItemMangaListDetailsBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemMangaListDetailsBinding.inflate(inflater, parent, false) },
 ) {
-
 	var badge: BadgeDrawable? = null
 
 	itemView.setOnClickListener {
@@ -38,7 +37,7 @@ fun mangaListDetailedItemAD(
 			referer(item.manga.publicUrl)
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)

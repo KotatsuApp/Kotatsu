@@ -23,9 +23,8 @@ fun categoryAD(
 	lifecycleOwner: LifecycleOwner,
 	clickListener: FavouriteCategoriesListListener,
 ) = adapterDelegateViewBinding<CategoryListModel, ListModel, ItemCategoryBinding>(
-	{ inflater, parent -> ItemCategoryBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemCategoryBinding.inflate(inflater, parent, false) },
 ) {
-
 	val eventListener = object : OnClickListener, OnLongClickListener, OnTouchListener {
 		override fun onClick(v: View) = clickListener.onItemClick(item.category, binding.imageViewCover1)
 		override fun onLongClick(v: View) = clickListener.onItemLongClick(item.category, binding.imageViewCover1)
@@ -36,11 +35,11 @@ fun categoryAD(
 	val backgroundColor = context.getThemeColor(android.R.attr.colorBackground)
 	ImageViewCompat.setImageTintList(
 		binding.imageViewCover3,
-		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 153))
+		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 153)),
 	)
 	ImageViewCompat.setImageTintList(
 		binding.imageViewCover2,
-		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 76))
+		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 76)),
 	)
 	binding.imageViewCover2.backgroundTintList =
 		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 76))
@@ -48,8 +47,10 @@ fun categoryAD(
 		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 153))
 	val fallback = ColorDrawable(Color.TRANSPARENT)
 	val coverViews = arrayOf(binding.imageViewCover1, binding.imageViewCover2, binding.imageViewCover3)
-	val crossFadeDuration = (context.resources.getInteger(R.integer.config_defaultAnimTime) *
-		context.animatorDurationScale).toInt()
+	val crossFadeDuration = (
+		context.resources.getInteger(R.integer.config_defaultAnimTime) *
+			context.animatorDurationScale
+		).toInt()
 	itemView.setOnClickListener(eventListener)
 	itemView.setOnLongClickListener(eventListener)
 	itemView.setOnTouchListener(eventListener)
@@ -74,7 +75,7 @@ fun categoryAD(
 				placeholder(R.drawable.ic_placeholder)
 				fallback(fallback)
 				crossfade(crossFadeDuration * (i + 1))
-				error(R.drawable.ic_placeholder)
+				error(R.drawable.ic_error_placeholder)
 				allowRgb565(true)
 				lifecycle(lifecycleOwner)
 				enqueueWith(coil)

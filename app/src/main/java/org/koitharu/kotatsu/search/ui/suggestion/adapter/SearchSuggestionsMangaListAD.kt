@@ -24,7 +24,6 @@ fun searchSuggestionMangaListAD(
 	lifecycleOwner: LifecycleOwner,
 	listener: SearchSuggestionListener,
 ) = adapterDelegate<SearchSuggestionItem.MangaList, SearchSuggestionItem>(R.layout.item_search_suggestion_manga_list) {
-
 	val adapter = AsyncListDifferDelegationAdapter(
 		SuggestionMangaDiffCallback(),
 		searchSuggestionMangaGridAD(coil, lifecycleOwner, listener),
@@ -49,9 +48,8 @@ private fun searchSuggestionMangaGridAD(
 	lifecycleOwner: LifecycleOwner,
 	listener: SearchSuggestionListener,
 ) = adapterDelegateViewBinding<Manga, Manga, ItemSearchSuggestionMangaGridBinding>(
-	{ layoutInflater, parent -> ItemSearchSuggestionMangaGridBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemSearchSuggestionMangaGridBinding.inflate(layoutInflater, parent, false) },
 ) {
-
 	itemView.setOnClickListener {
 		listener.onMangaClick(item)
 	}
@@ -60,7 +58,7 @@ private fun searchSuggestionMangaGridAD(
 		binding.imageViewCover.newImageRequest(item.coverUrl)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)
@@ -82,5 +80,4 @@ private class SuggestionMangaDiffCallback : DiffUtil.ItemCallback<Manga>() {
 	override fun areContentsTheSame(oldItem: Manga, newItem: Manga): Boolean {
 		return oldItem.title == newItem.title && oldItem.coverUrl == newItem.coverUrl
 	}
-
 }

@@ -211,7 +211,7 @@ class DetailsFragment :
 			imageViewCover.newImageRequest(scrobbling.coverUrl)?.run {
 				placeholder(R.drawable.ic_placeholder)
 				fallback(R.drawable.ic_placeholder)
-				error(R.drawable.ic_placeholder)
+				error(R.drawable.ic_error_placeholder)
 				lifecycle(viewLifecycleOwner)
 				enqueueWith(coil)
 			}
@@ -316,6 +316,9 @@ class DetailsFragment :
 		}
 		val request = ImageRequest.Builder(context ?: return)
 			.target(binding.imageViewCover)
+			.placeholder(R.drawable.ic_placeholder)
+			.fallback(R.drawable.ic_placeholder)
+			.error(R.drawable.ic_error_placeholder)
 			.data(imageUrl)
 			.crossfade(context)
 			.referer(manga.publicUrl)

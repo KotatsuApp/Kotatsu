@@ -29,7 +29,7 @@ fun downloadItemAD(
 				referer(state.manga.publicUrl)
 				placeholder(state.cover)
 				fallback(R.drawable.ic_placeholder)
-				error(R.drawable.ic_placeholder)
+				error(R.drawable.ic_error_placeholder)
 				allowRgb565(true)
 				enqueueWith(coil)
 			}

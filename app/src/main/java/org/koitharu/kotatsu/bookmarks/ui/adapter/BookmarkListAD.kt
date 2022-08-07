@@ -18,9 +18,8 @@ fun bookmarkListAD(
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Bookmark>,
 ) = adapterDelegateViewBinding<Bookmark, Bookmark, ItemBookmarkBinding>(
-	{ inflater, parent -> ItemBookmarkBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemBookmarkBinding.inflate(inflater, parent, false) },
 ) {
-
 	val listener = AdapterDelegateClickListenerAdapter(this, clickListener)
 
 	binding.root.setOnClickListener(listener)
@@ -31,7 +30,7 @@ fun bookmarkListAD(
 			referer(item.manga.publicUrl)
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)

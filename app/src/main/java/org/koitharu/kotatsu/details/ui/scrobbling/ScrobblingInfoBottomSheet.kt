@@ -118,7 +118,7 @@ class ScrobblingInfoBottomSheet :
 			.lifecycle(viewLifecycleOwner)
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
-			.error(R.drawable.ic_placeholder)
+			.error(R.drawable.ic_error_placeholder)
 			.enqueueWith(coil)
 	}
 
