@@ -1,11 +1,16 @@
 package org.koitharu.kotatsu.details.ui
 
 import android.text.Html
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import androidx.core.text.getSpans
 import androidx.core.text.parseAsHtml
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -33,7 +38,6 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import java.io.IOException
 
 class DetailsViewModel(
 	intent: MangaIntent,
@@ -91,8 +95,8 @@ class DetailsViewModel(
 			if (description.isNullOrEmpty()) {
 				emit(null)
 			} else {
-				emit(description.parseAsHtml())
-				emit(description.parseAsHtml(imageGetter = imageGetter))
+				emit(description.parseAsHtml().filterSpans())
+				emit(description.parseAsHtml(imageGetter = imageGetter).filterSpans())
 			}
 		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
@@ -110,7 +114,7 @@ class DetailsViewModel(
 
 	val selectedBranchIndex = combine(
 		branches.asFlow(),
-		delegate.selectedBranch
+		delegate.selectedBranch,
 	) { branches, selected ->
 		branches.indexOf(selected)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
@@ -225,7 +229,7 @@ class DetailsViewModel(
 	fun unregisterScrobbling() {
 		launchJob(Dispatchers.Default) {
 			scrobbler.unregisterScrobbling(
-				mangaId = delegate.mangaId
+				mangaId = delegate.mangaId,
 			)
 		}
 	}
@@ -241,5 +245,14 @@ class DetailsViewModel(
 		return filter {
 			it.chapter.name.contains(query, ignoreCase = true)
 		}
+	}
+
+	private fun Spanned.filterSpans(): CharSequence {
+		val spannable = SpannableString.valueOf(this)
+		val spans = spannable.getSpans<ForegroundColorSpan>()
+		for (span in spans) {
+			spannable.removeSpan(span)
+		}
+		return spannable.trim()
 	}
 }
