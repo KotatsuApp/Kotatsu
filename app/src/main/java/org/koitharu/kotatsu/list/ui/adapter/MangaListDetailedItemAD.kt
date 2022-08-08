@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 
 fun mangaListDetailedItemAD(
 	coil: ImageLoader,
@@ -35,6 +36,7 @@ fun mangaListDetailedItemAD(
 		binding.progressView.setPercent(item.progress, MangaListAdapter.PAYLOAD_PROGRESS in payloads)
 		binding.imageViewCover.newImageRequest(item.coverUrl)?.run {
 			referer(item.manga.publicUrl)
+			size(CoverSizeResolver(binding.imageViewCover))
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)

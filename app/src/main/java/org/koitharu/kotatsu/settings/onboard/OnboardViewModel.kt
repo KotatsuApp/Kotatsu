@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
 import javax.inject.Inject
+import kotlin.Comparator
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
@@ -30,7 +32,7 @@ class OnboardViewModel @Inject constructor(
 
 	init {
 		if (settings.isSourcesSelected) {
-			selectedLocales.removeAll(settings.hiddenSources.mapToSet { x -> MangaSource.valueOf(x).locale })
+			selectedLocales.removeAll(settings.hiddenSources.mapNotNullToSet { x -> MangaSource(x)?.locale })
 		} else {
 			val deviceLocales = LocaleListCompat.getDefault().mapToSet { x ->
 				x.language

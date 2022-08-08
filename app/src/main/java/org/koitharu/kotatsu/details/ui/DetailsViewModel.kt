@@ -1,6 +1,10 @@
 package org.koitharu.kotatsu.details.ui
 
 import android.text.Html
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import androidx.core.text.getSpans
 import androidx.core.text.parseAsHtml
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
@@ -110,8 +114,8 @@ class DetailsViewModel @AssistedInject constructor(
 			if (description.isNullOrEmpty()) {
 				emit(null)
 			} else {
-				emit(description.parseAsHtml())
-				emit(description.parseAsHtml(imageGetter = imageGetter))
+				emit(description.parseAsHtml().filterSpans())
+				emit(description.parseAsHtml(imageGetter = imageGetter).filterSpans())
 			}
 		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
@@ -263,6 +267,15 @@ class DetailsViewModel @AssistedInject constructor(
 		return filter {
 			it.chapter.name.contains(query, ignoreCase = true)
 		}
+	}
+
+	private fun Spanned.filterSpans(): CharSequence {
+		val spannable = SpannableString.valueOf(this)
+		val spans = spannable.getSpans<ForegroundColorSpan>()
+		for (span in spans) {
+			spannable.removeSpan(span)
+		}
+		return spannable.trim()
 	}
 
 	@AssistedFactory

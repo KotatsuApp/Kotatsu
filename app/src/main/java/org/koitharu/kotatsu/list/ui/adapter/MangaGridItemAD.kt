@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 
 fun mangaGridItemAD(
 	coil: ImageLoader,
@@ -40,6 +41,7 @@ fun mangaGridItemAD(
 		binding.progressView.setPercent(item.progress, MangaListAdapter.PAYLOAD_PROGRESS in payloads)
 		binding.imageViewCover.newImageRequest(item.coverUrl)?.run {
 			referer(item.manga.publicUrl)
+			size(CoverSizeResolver(binding.imageViewCover))
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)

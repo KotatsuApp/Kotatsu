@@ -45,6 +45,7 @@ import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 
 @AndroidEntryPoint
 class DetailsFragment :
@@ -291,8 +292,10 @@ class DetailsFragment :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
-			bottom = ((activity as? NoModalBottomSheetOwner)?.bsHeader?.measureHeight()
-				?.plus(insets.bottom)?.plus(resources.resolveDp(16)))
+			bottom = (
+				(activity as? NoModalBottomSheetOwner)?.bsHeader?.measureHeight()
+					?.plus(insets.bottom)?.plus(resources.resolveDp(16))
+				)
 				?: insets.bottom,
 		)
 	}
@@ -319,16 +322,22 @@ class DetailsFragment :
 		}
 		val request = ImageRequest.Builder(context ?: return)
 			.target(binding.imageViewCover)
-			.placeholder(R.drawable.ic_placeholder)
-			.fallback(R.drawable.ic_placeholder)
-			.error(R.drawable.ic_error_placeholder)
+			.size(CoverSizeResolver(binding.imageViewCover))
 			.data(imageUrl)
 			.crossfade(context)
 			.referer(manga.publicUrl)
 			.lifecycle(viewLifecycleOwner)
-		lastResult?.drawable?.let {
-			request.fallback(it)
-		} ?: request.fallback(R.drawable.ic_placeholder)
+			.placeholderMemoryCacheKey(manga.coverUrl)
+		val previousDrawable = lastResult?.drawable
+		if (previousDrawable != null) {
+			request.fallback(previousDrawable)
+				.placeholder(previousDrawable)
+				.error(previousDrawable)
+		} else {
+			request.fallback(R.drawable.ic_placeholder)
+				.placeholder(R.drawable.ic_placeholder)
+				.error(R.drawable.ic_error_placeholder)
+		}
 		request.enqueueWith(coil)
 	}
 }

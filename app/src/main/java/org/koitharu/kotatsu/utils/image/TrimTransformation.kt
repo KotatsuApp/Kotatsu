@@ -1,11 +1,15 @@
 package org.koitharu.kotatsu.utils.image
 
 import android.graphics.Bitmap
-import androidx.core.graphics.get
+import androidx.annotation.ColorInt
+import androidx.core.graphics.*
 import coil.size.Size
 import coil.transform.Transformation
+import kotlin.math.abs
 
-class TrimTransformation : Transformation {
+class TrimTransformation(
+	private val tolerance: Int = 20,
+) : Transformation {
 
 	override val cacheKey: String = javaClass.name
 
@@ -20,7 +24,7 @@ class TrimTransformation : Transformation {
 			var isColBlank = true
 			val prevColor = input[x, 0]
 			for (y in 1 until input.height) {
-				if (input[x, y] != prevColor) {
+				if (!isColorTheSame(input[x, y], prevColor)) {
 					isColBlank = false
 					break
 				}
@@ -39,7 +43,7 @@ class TrimTransformation : Transformation {
 			var isColBlank = true
 			val prevColor = input[x, 0]
 			for (y in 1 until input.height) {
-				if (input[x, y] != prevColor) {
+				if (!isColorTheSame(input[x, y], prevColor)) {
 					isColBlank = false
 					break
 				}
@@ -55,7 +59,7 @@ class TrimTransformation : Transformation {
 			var isRowBlank = true
 			val prevColor = input[0, y]
 			for (x in 1 until input.width) {
-				if (input[x, y] != prevColor) {
+				if (!isColorTheSame(input[x, y], prevColor)) {
 					isRowBlank = false
 					break
 				}
@@ -71,7 +75,7 @@ class TrimTransformation : Transformation {
 			var isRowBlank = true
 			val prevColor = input[0, y]
 			for (x in 1 until input.width) {
-				if (input[x, y] != prevColor) {
+				if (!isColorTheSame(input[x, y], prevColor)) {
 					isRowBlank = false
 					break
 				}
@@ -93,4 +97,11 @@ class TrimTransformation : Transformation {
 	override fun equals(other: Any?) = other is TrimTransformation
 
 	override fun hashCode() = javaClass.hashCode()
+
+	private fun isColorTheSame(@ColorInt a: Int, @ColorInt b: Int): Boolean {
+		return abs(a.red - b.red) <= tolerance &&
+			abs(a.green - b.green) <= tolerance &&
+			abs(a.blue - b.blue) <= tolerance &&
+			abs(a.alpha - b.alpha) <= tolerance
+	}
 }
