@@ -20,6 +20,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.internal.closeQuietly
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -149,7 +150,7 @@ class FaviconFetcher(
 
 		override fun create(data: Uri, options: Options, imageLoader: ImageLoader): Fetcher? {
 			return if (data.scheme == URI_SCHEME_FAVICON) {
-				val mangaSource = MangaSource.valueOf(data.schemeSpecificPart)
+				val mangaSource = MangaSource(data.schemeSpecificPart) ?: return null
 				FaviconFetcher(okHttpClient, diskCache, mangaSource, options, mangaRepositoryFactory)
 			} else {
 				null
