@@ -43,7 +43,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
 		android:paddingStart="@dimen/fastscroll_scrollbar_padding_start"
-		android:paddingEnd="@dimen/fastscroll_scrollbar_padding_end"
+		android:paddingEnd="0dp"
 		android:visibility="gone"
 		tools:visibility="visible">
 
