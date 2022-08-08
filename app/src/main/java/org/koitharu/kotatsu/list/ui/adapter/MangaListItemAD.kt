@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.list.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import org.koitharu.kotatsu.utils.ext.*
 import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
@@ -11,15 +10,15 @@ import org.koitharu.kotatsu.databinding.ItemMangaListBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.utils.ext.*
 
 fun mangaListItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Manga>,
 ) = adapterDelegateViewBinding<MangaListModel, ListModel, ItemMangaListBinding>(
-	{ inflater, parent -> ItemMangaListBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemMangaListBinding.inflate(inflater, parent, false) },
 ) {
-
 	var badge: BadgeDrawable? = null
 
 	itemView.setOnClickListener {

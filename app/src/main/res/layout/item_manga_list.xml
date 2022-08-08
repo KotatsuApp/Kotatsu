@@ -12,10 +12,9 @@
 	<com.google.android.material.imageview.ShapeableImageView
 		android:id="@+id/imageView_cover"
 		android:layout_width="42dp"
-		android:layout_height="0dp"
+		android:layout_height="42dp"
 		android:scaleType="centerCrop"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintDimensionRatio="h,1:1"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"

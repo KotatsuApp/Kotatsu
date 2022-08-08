@@ -46,6 +46,7 @@ import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 
 class DetailsFragment :
 	BaseFragment<FragmentDetailsBinding>(),
@@ -354,13 +355,22 @@ class DetailsFragment :
 		}
 		val request = ImageRequest.Builder(context ?: return)
 			.target(binding.imageViewCover)
+			.size(CoverSizeResolver(binding.imageViewCover))
 			.data(imageUrl)
 			.crossfade(true)
 			.referer(manga.publicUrl)
 			.lifecycle(viewLifecycleOwner)
-		lastResult?.drawable?.let {
-			request.fallback(it)
-		} ?: request.fallback(R.drawable.ic_placeholder)
+			.placeholderMemoryCacheKey(manga.coverUrl)
+		val previousDrawable = lastResult?.drawable
+		if (previousDrawable != null) {
+			request.fallback(previousDrawable)
+				.placeholder(previousDrawable)
+				.error(previousDrawable)
+		} else {
+			request.fallback(R.drawable.ic_placeholder)
+				.placeholder(R.drawable.ic_placeholder)
+				.error(R.drawable.ic_placeholder)
+		}
 		request.enqueueWith(coil)
 	}
 
