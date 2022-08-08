@@ -3,8 +3,10 @@ package org.koitharu.kotatsu.bookmarks.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
@@ -25,7 +27,7 @@ class BookmarksActivity :
 		get() = binding.appbar
 
 	override val snackbarHost: CoordinatorLayout
-		get() = binding.coordinator
+		get() = binding.root
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -41,12 +43,10 @@ class BookmarksActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right,
-			)
-		}
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 	}
 
 	companion object {

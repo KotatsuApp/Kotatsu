@@ -136,10 +136,12 @@ class FavouriteCategoriesActivity :
 			leftMargin = topMargin + insets.left
 			bottomMargin = topMargin + insets.bottom
 		}
-		binding.recyclerView.updatePadding(
+		binding.root.updatePadding(
 			left = insets.left,
-			right = insets.right,
-			bottom = 2 * insets.bottom + binding.fabAdd.measureHeight(),
+			right = insets.right
+		)
+		binding.recyclerView.updatePadding(
+			bottom = insets.bottom,
 		)
 	}
 

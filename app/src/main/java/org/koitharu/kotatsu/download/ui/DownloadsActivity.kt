@@ -45,14 +45,12 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
+		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			bottom = insets.bottom,
 		)
-		binding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
+		binding.recyclerView.updatePadding(
+			bottom = insets.bottom,
 		)
 	}
 

@@ -94,9 +94,11 @@ class FavouritesCategoryEditActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.scrollView.updatePadding(
+		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
+		)
+		binding.scrollView.updatePadding(
 			bottom = insets.bottom,
 		)
 		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {

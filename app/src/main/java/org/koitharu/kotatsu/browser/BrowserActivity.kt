@@ -8,14 +8,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import com.google.android.material.R as materialR
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
-import com.google.android.material.R as materialR
 
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
@@ -42,7 +44,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		} else {
 			onTitleChanged(
 				intent?.getStringExtra(EXTRA_TITLE) ?: getString(R.string.loading_),
-				url
+				url,
 			)
 			binding.webView.loadUrl(url)
 		}
@@ -117,8 +119,6 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.appbar.updatePadding(
 			top = insets.top,
-			left = insets.left,
-			right = insets.right,
 		)
 		binding.root.updatePadding(
 			left = insets.left,

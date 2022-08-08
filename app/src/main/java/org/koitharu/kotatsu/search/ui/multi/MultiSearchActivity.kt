@@ -90,14 +90,12 @@ class MultiSearchActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
+		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
-			left = insets.left,
-			right = insets.right,
 		)
 	}
 

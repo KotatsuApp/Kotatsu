@@ -35,7 +35,7 @@ class FavouritesActivity : BaseActivity<ActivityContainerBinding>() {
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
+		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)

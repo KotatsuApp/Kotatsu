@@ -157,7 +157,12 @@ class MainActivity :
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
+	override fun onWindowInsetsChanged(insets: Insets) {
+		binding.root.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
+	}
 
 	override fun onFocusChange(v: View?, hasFocus: Boolean) {
 		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
