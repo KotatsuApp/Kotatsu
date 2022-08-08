@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingInfoBottomSheet
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
+import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaState
@@ -290,7 +291,9 @@ class DetailsFragment :
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.root.updatePadding(
-			bottom = insets.bottom,
+			bottom = ((activity as? NoModalBottomSheetOwner)?.bsHeader?.measureHeight()
+				?.plus(insets.bottom)?.plus(resources.resolveDp(16)))
+				?: insets.bottom,
 		)
 	}
 

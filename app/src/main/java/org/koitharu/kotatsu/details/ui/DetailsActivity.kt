@@ -7,11 +7,13 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.badge.BadgeDrawable
@@ -31,6 +33,7 @@ import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.adapter.bindBadge
+import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -40,7 +43,11 @@ import org.koitharu.kotatsu.utils.ext.*
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
 	View.OnClickListener,
-	BottomSheetHeaderBar.OnExpansionChangeListener {
+	BottomSheetHeaderBar.OnExpansionChangeListener,
+	NoModalBottomSheetOwner {
+
+	override val bsHeader: BottomSheetHeaderBar?
+		get() = binding.headerChapters
 
 	@Inject
 	lateinit var viewModelFactory: DetailsViewModel.Factory
