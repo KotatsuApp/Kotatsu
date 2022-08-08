@@ -5,7 +5,7 @@ import coil.map.Mapper
 import coil.request.Options
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaSource
 
 class FaviconMapper : Mapper<Uri, HttpUrl> {
 
@@ -13,7 +13,7 @@ class FaviconMapper : Mapper<Uri, HttpUrl> {
 		if (data.scheme != "favicon") {
 			return null
 		}
-		val mangaSource = MangaSource.valueOf(data.schemeSpecificPart)
+		val mangaSource = MangaSource(data.schemeSpecificPart) ?: return null
 		val repo = MangaRepository(mangaSource) as RemoteMangaRepository
 		return repo.getFaviconUrl().toHttpUrl()
 	}
