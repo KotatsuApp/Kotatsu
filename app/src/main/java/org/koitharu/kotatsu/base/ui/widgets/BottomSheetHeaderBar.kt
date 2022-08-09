@@ -12,6 +12,7 @@ import android.view.WindowInsets
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.AttrRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.withStyledAttributes
@@ -145,6 +146,14 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 
 	fun removeOnExpansionChangeListener(listener: OnExpansionChangeListener) {
 		expansionListeners.remove(listener)
+	}
+
+	fun setTitle(@StringRes resId: Int) {
+		binding.toolbar.setTitle(resId)
+	}
+
+	fun setSubtitle(@StringRes resId: Int) {
+		binding.toolbar.setSubtitle(resId)
 	}
 
 	private fun setBottomSheetBehavior(behavior: BottomSheetBehavior<*>?) {

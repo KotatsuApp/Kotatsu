@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
 import javax.inject.Inject
-import kotlin.Comparator
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -41,6 +40,7 @@ class OnboardViewModel @Inject constructor(
 			if (selectedLocales.isEmpty()) {
 				selectedLocales += "en"
 			}
+			selectedLocales += null
 		}
 		rebuildList()
 	}

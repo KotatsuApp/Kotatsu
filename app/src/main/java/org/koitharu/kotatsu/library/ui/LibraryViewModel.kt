@@ -130,8 +130,8 @@ class LibraryViewModel @Inject constructor(
 		if (result.isEmpty()) {
 			result += EmptyState(
 				icon = R.drawable.ic_empty_history,
-				textPrimary = R.string.text_history_holder_primary,
-				textSecondary = R.string.text_history_holder_secondary,
+				textPrimary = R.string.text_shelf_holder_primary,
+				textSecondary = R.string.text_shelf_holder_secondary,
 				actionStringRes = 0,
 			)
 		}
@@ -168,11 +168,13 @@ class LibraryViewModel @Inject constructor(
 		favourites: Map<FavouriteCategory, List<Manga>>,
 	) {
 		for ((category, list) in favourites) {
-			destination += LibrarySectionModel.Favourites(
-				items = list.toUi(ListMode.GRID, this),
-				category = category,
-				showAllButtonText = R.string.show_all,
-			)
+			if (list.isNotEmpty()) {
+				destination += LibrarySectionModel.Favourites(
+					items = list.toUi(ListMode.GRID, this),
+					category = category,
+					showAllButtonText = R.string.show_all,
+				)
+			}
 		}
 	}
 

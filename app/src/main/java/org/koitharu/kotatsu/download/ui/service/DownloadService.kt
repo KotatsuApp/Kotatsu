@@ -139,6 +139,8 @@ class DownloadService : BaseService() {
 						notification.create(job.progressValue, -1L)
 					},
 				)
+				jobs.remove(job.progressValue.startId)
+				jobCount.value = jobs.size
 				stopSelf(startId)
 			}
 		}
@@ -158,8 +160,7 @@ class DownloadService : BaseService() {
 			when (intent?.action) {
 				ACTION_DOWNLOAD_CANCEL -> {
 					val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
-					jobs.remove(cancelId)?.cancel()
-					jobCount.value = jobs.size
+					jobs[cancelId]?.cancel()
 				}
 				ACTION_DOWNLOAD_RESUME -> {
 					val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)

@@ -11,7 +11,7 @@ class SpacingItemDecoration(@Px private val spacing: Int) : RecyclerView.ItemDec
 		outRect: Rect,
 		view: View,
 		parent: RecyclerView,
-		state: RecyclerView.State
+		state: RecyclerView.State,
 	) {
 		outRect.set(spacing, spacing, spacing, spacing)
 	}

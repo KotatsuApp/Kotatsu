@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings
+package org.koitharu.kotatsu.settings.tracker
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
@@ -15,20 +15,18 @@ import android.view.View
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
+import androidx.fragment.app.viewModels
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
+import org.koitharu.kotatsu.settings.tracker.categories.TrackerCategoriesConfigSheet
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
-import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 private const val KEY_IGNORE_DOZE = "ignore_dose"
 
@@ -37,8 +35,7 @@ class TrackerSettingsFragment :
 	BasePreferenceFragment(R.string.check_for_new_chapters),
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
-	@Inject
-	lateinit var repository: TrackingRepository
+	private val viewModel by viewModels<TrackerSettingsViewModel>()
 
 	@Inject
 	lateinit var channels: TrackerNotificationChannels
@@ -66,13 +63,13 @@ class TrackerSettingsFragment :
 		findPreference<Preference>(KEY_IGNORE_DOZE)?.run {
 			isVisible = isDozeIgnoreAvailable(context)
 		}
-		updateCategoriesSummary()
 		updateNotificationsSummary()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		settings.subscribe(this)
+		viewModel.categoriesCount.observe(viewLifecycleOwner, ::onCategoriesCountChanged)
 	}
 
 	override fun onDestroyView() {
@@ -109,7 +106,7 @@ class TrackerSettingsFragment :
 				}
 			}
 			AppSettings.KEY_TRACK_CATEGORIES -> {
-				startActivity(FavouriteCategoriesActivity.newIntent(preference.context))
+				TrackerCategoriesConfigSheet.show(childFragmentManager)
 				true
 			}
 			KEY_IGNORE_DOZE -> {
@@ -136,11 +133,10 @@ class TrackerSettingsFragment :
 		pref.isEnabled = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources
 	}
 
-	private fun updateCategoriesSummary() {
+	private fun onCategoriesCountChanged(count: IntArray?) {
 		val pref = findPreference<Preference>(AppSettings.KEY_TRACK_CATEGORIES) ?: return
-		viewLifecycleScope.launch {
-			val count = repository.getCategoriesCount()
-			pref.summary = getString(R.string.enabled_d_of_d, count[0], count[1])
+		pref.summary = count?.let {
+			getString(R.string.enabled_d_of_d, count[0], count[1])
 		}
 	}
 

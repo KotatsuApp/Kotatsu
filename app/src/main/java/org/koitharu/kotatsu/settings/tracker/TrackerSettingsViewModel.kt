@@ -1,0 +1,51 @@
+package org.koitharu.kotatsu.settings.tracker
+
+import androidx.lifecycle.MutableLiveData
+import androidx.room.InvalidationTracker
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import okio.Closeable
+import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.db.TABLE_FAVOURITE_CATEGORIES
+import org.koitharu.kotatsu.core.db.removeObserverAsync
+import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+
+@HiltViewModel
+class TrackerSettingsViewModel @Inject constructor(
+	private val repository: TrackingRepository,
+	private val database: MangaDatabase,
+) : BaseViewModel() {
+
+	val categoriesCount = MutableLiveData<IntArray?>(null)
+
+	init {
+		updateCategoriesCount()
+		val databaseObserver = DatabaseObserver(this)
+		addCloseable(databaseObserver)
+		launchJob(Dispatchers.Default) {
+			database.invalidationTracker.addObserver(databaseObserver)
+		}
+	}
+
+	private fun updateCategoriesCount() {
+		launchJob(Dispatchers.Default) {
+			categoriesCount.postValue(repository.getCategoriesCount())
+		}
+	}
+
+	private class DatabaseObserver(private var vm: TrackerSettingsViewModel?) :
+		InvalidationTracker.Observer(arrayOf(TABLE_FAVOURITE_CATEGORIES)),
+		Closeable {
+
+		override fun onInvalidated(tables: MutableSet<String>) {
+			vm?.updateCategoriesCount()
+		}
+
+		override fun close() {
+			(vm ?: return).database.invalidationTracker.removeObserverAsync(this)
+			vm = null
+		}
+	}
+}

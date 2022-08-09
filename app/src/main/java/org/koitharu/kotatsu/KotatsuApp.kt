@@ -3,6 +3,7 @@ package org.koitharu.kotatsu
 import android.app.Application
 import android.content.Context
 import android.os.StrictMode
+import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.strictmode.FragmentStrictMode
 import androidx.hilt.work.HiltWorkerFactory
@@ -10,6 +11,8 @@ import androidx.room.InvalidationTracker
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.acra.ReportField
 import org.acra.config.dialog
 import org.acra.config.mailSender
@@ -20,6 +23,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
+import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 
 @HiltAndroidApp
 class KotatsuApp : Application(), Configuration.Provider {
@@ -46,7 +50,9 @@ class KotatsuApp : Application(), Configuration.Provider {
 		}
 		AppCompatDelegate.setDefaultNightMode(settings.theme)
 		setupActivityLifecycleCallbacks()
-		setupDatabaseObservers()
+		processLifecycleScope.launch(Dispatchers.Default) {
+			setupDatabaseObservers()
+		}
 	}
 
 	override fun attachBaseContext(base: Context?) {
@@ -86,6 +92,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 			.build()
 	}
 
+	@WorkerThread
 	private fun setupDatabaseObservers() {
 		val tracker = database.invalidationTracker
 		databaseObservers.forEach {

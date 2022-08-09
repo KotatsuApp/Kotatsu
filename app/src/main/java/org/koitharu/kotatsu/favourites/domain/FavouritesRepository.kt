@@ -108,6 +108,10 @@ class FavouritesRepository @Inject constructor(
 		db.favouriteCategoriesDao.updateLibVisibility(id, isVisibleInLibrary)
 	}
 
+	suspend fun updateCategoryTracking(id: Long, isTrackingEnabled: Boolean) {
+		db.favouriteCategoriesDao.updateTracking(id, isTrackingEnabled)
+	}
+
 	suspend fun removeCategory(id: Long) {
 		db.withTransaction {
 			db.favouriteCategoriesDao.delete(id)

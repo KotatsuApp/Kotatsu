@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.utils.bindServiceWithLifecycle
@@ -30,6 +32,8 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val adapter = DownloadsAdapter(lifecycleScope, coil)
+		val spacing = resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+		binding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing))
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		bindServiceWithLifecycle(

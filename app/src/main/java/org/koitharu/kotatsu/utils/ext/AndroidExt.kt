@@ -15,14 +15,11 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.Window
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.view.children
-import androidx.core.view.descendants
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
@@ -104,7 +101,7 @@ fun SyncResult.onError(error: Throwable) {
 	error.printStackTraceDebug()
 }
 
-fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float = 0F) {
+fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float, alphaFactor: Float = 0.7f) {
 	navigationBarColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
 		!InternalResourceHelper.getBoolean(context, "config_navBarNeedsScrim", true)
 	) {
@@ -112,7 +109,7 @@ fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float 
 	} else {
 		// Set navbar scrim 70% of navigationBarColor
 		ElevationOverlayProvider(context).compositeOverlayIfNeeded(
-			context.getResourceColor(android.R.attr.navigationBarColor, 0.7F),
+			context.getThemeColor(android.R.attr.navigationBarColor, alphaFactor),
 			elevation,
 		)
 	}

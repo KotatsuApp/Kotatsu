@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.download.ui
 
+import android.view.View
 import androidx.core.view.isVisible
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
+import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.utils.ext.*
@@ -21,6 +23,19 @@ fun downloadItemAD(
 ) {
 	var job: Job? = null
 	val percentPattern = context.resources.getString(R.string.percent_string_pattern)
+
+	val clickListener = View.OnClickListener { v ->
+		when (v.id) {
+			R.id.button_cancel -> item.cancel()
+			R.id.button_resume -> item.resume()
+			else -> context.startActivity(
+				DetailsActivity.newIntent(context, item.progressValue.manga),
+			)
+		}
+	}
+	binding.buttonCancel.setOnClickListener(clickListener)
+	binding.buttonResume.setOnClickListener(clickListener)
+	itemView.setOnClickListener(clickListener)
 
 	bind {
 		job?.cancel()
