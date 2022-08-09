@@ -9,6 +9,8 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +45,6 @@ class DownloadService : BaseService() {
 	private val jobs = LinkedHashMap<Int, PausingProgressJob<DownloadState>>()
 	private val jobCount = MutableStateFlow(0)
 	private val controlReceiver = ControlReceiver()
-	private var binder: DownloadBinder? = null
 
 	override fun onCreate() {
 		super.onCreate()
@@ -77,17 +78,11 @@ class DownloadService : BaseService() {
 
 	override fun onBind(intent: Intent): IBinder {
 		super.onBind(intent)
-		return binder ?: DownloadBinder(this).also { binder = it }
-	}
-
-	override fun onUnbind(intent: Intent?): Boolean {
-		binder = null
-		return super.onUnbind(intent)
+		return DownloadBinder(this)
 	}
 
 	override fun onDestroy() {
 		unregisterReceiver(controlReceiver)
-		binder = null
 		isRunning = false
 		super.onDestroy()
 	}
@@ -170,10 +165,25 @@ class DownloadService : BaseService() {
 		}
 	}
 
-	class DownloadBinder(private val service: DownloadService) : Binder() {
+	class DownloadBinder(service: DownloadService) : Binder(), DefaultLifecycleObserver {
 
-		val downloads: Flow<Collection<PausingProgressJob<DownloadState>>>
-			get() = service.jobCount.mapLatest { service.jobs.values }
+		private var downloadsStateFlow = MutableStateFlow<Collection<PausingProgressJob<DownloadState>>>(emptyList())
+
+		init {
+			service.lifecycle.addObserver(this)
+			service.jobCount.onEach {
+				downloadsStateFlow.value = service.jobs.values
+			}.launchIn(service.lifecycleScope)
+		}
+
+		override fun onDestroy(owner: LifecycleOwner) {
+			owner.lifecycle.removeObserver(this)
+			downloadsStateFlow.value = emptyList()
+			super.onDestroy(owner)
+		}
+
+		val downloads
+			get() = downloadsStateFlow.asStateFlow()
 	}
 
 	companion object {
