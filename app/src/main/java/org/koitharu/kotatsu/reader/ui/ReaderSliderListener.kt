@@ -9,18 +9,25 @@ class ReaderSliderListener(
 ) : Slider.OnChangeListener, Slider.OnSliderTouchListener {
 
 	private var isChanged = false
+	private var isTracking = false
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
 		if (fromUser) {
-			isChanged = true
+			if (isTracking) {
+				isChanged = true
+			} else {
+				switchPageToIndex(value.toInt())
+			}
 		}
 	}
 
 	override fun onStartTrackingTouch(slider: Slider) {
 		isChanged = false
+		isTracking = true
 	}
 
 	override fun onStopTrackingTouch(slider: Slider) {
+		isTracking = false
 		if (isChanged) {
 			switchPageToIndex(slider.value.toInt())
 		}
