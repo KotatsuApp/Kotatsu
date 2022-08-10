@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 421
-		versionName '3.4.9'
+		versionCode 490
+		versionName '4.0-a1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -29,10 +29,6 @@ android {
 		// define this values in your local.properties file
 		buildConfigField 'String', 'SHIKIMORI_CLIENT_ID', "\"${localProperty('shikimori.clientId')}\""
 		buildConfigField 'String', 'SHIKIMORI_CLIENT_SECRET', "\"${localProperty('shikimori.clientSecret')}\""
-
-		if (currentBranch().startsWith("feature/nextgen")) {
-			applicationIdSuffix = '.next'
-		}
 	}
 	buildTypes {
 		debug {
