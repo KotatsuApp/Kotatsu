@@ -33,7 +33,7 @@ class SettingsHeadersFragment : PreferenceHeaderFragmentCompat(), SlidingPaneLay
 
 	fun setTitle(title: CharSequence?) {
 		currentTitle = title
-		if (slidingPaneLayout.isOpen) {
+		if (slidingPaneLayout.width != 0 && slidingPaneLayout.isOpen) {
 			activity?.title = title
 		}
 	}
