@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:paddingHorizontal="@dimen/grid_spacing_outer"
+	android:paddingTop="@dimen/margin_normal">
+
+	<org.koitharu.kotatsu.base.ui.widgets.ListItemTextView
+		android:id="@+id/button_file"
+		android:layout_width="match_parent"
+		android:layout_height="?android:listPreferredItemHeightSmall"
+		android:drawableStart="@drawable/ic_file_zip"
+		android:drawablePadding="?android:listPreferredItemPaddingStart"
+		android:paddingStart="?android:listPreferredItemPaddingStart"
+		android:paddingEnd="?android:listPreferredItemPaddingEnd"
+		android:text="@string/comics_archive"
+		android:textAppearance="?attr/textAppearanceButton" />
+
+	<org.koitharu.kotatsu.base.ui.widgets.ListItemTextView
+		android:id="@+id/button_dir"
+		android:layout_width="match_parent"
+		android:layout_height="?android:listPreferredItemHeightSmall"
+		android:drawableStart="@drawable/ic_folder_file"
+		android:drawablePadding="?android:listPreferredItemPaddingStart"
+		android:paddingStart="?android:listPreferredItemPaddingStart"
+		android:paddingEnd="?android:listPreferredItemPaddingEnd"
+		android:text="@string/folder_with_images"
+		android:textAppearance="?attr/textAppearanceButton" />
+
+</LinearLayout>

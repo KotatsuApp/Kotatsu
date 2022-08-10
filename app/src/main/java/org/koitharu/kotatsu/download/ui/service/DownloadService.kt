@@ -196,7 +196,7 @@ class DownloadService : BaseService() {
 		private const val ACTION_DOWNLOAD_CANCEL = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"
 		private const val ACTION_DOWNLOAD_RESUME = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_RESUME"
 
-		private const val EXTRA_MANGA = "manga"
+		const val EXTRA_MANGA = "manga"
 		private const val EXTRA_CHAPTERS_IDS = "chapters_ids"
 		private const val EXTRA_CANCEL_ID = "cancel_id"
 

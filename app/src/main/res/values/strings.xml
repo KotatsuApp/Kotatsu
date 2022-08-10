@@ -368,4 +368,10 @@
 	<string name="seconds_pattern">%ss</string>
 	<string name="reader_info_pattern">Ch. %1$d/%2$d Pg. %3$d/%4$d</string>
 	<string name="reader_info_bar">Show information bar in reader</string>
+	<string name="comics_archive">Comics archive</string>
+	<string name="folder_with_images">Folder with images</string>
+	<string name="importing_manga">Importing manga</string>
+	<string name="import_completed">Import completed</string>
+	<string name="import_completed_hint">You can delete the original file from storage to save space</string>
+	<string name="import_will_start_soon">Import will start soon</string>
 </resources>

@@ -9,6 +9,10 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import okhttp3.Cache
@@ -74,6 +78,14 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	fun getStorageDisplayName(file: File) = file.getStorageName(context)
+
+	fun observe(files: List<File>): Flow<File> {
+		if (files.isEmpty()) {
+			return emptyFlow()
+		}
+		return files.asFlow()
+			.flatMapMerge(files.size) { it.observe() }
+	}
 
 	@WorkerThread
 	private fun getConfiguredStorageDirs(): MutableSet<File> {

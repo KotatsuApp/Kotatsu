@@ -12,7 +12,6 @@ import com.google.android.material.R as materialR
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.shape.ShapeAppearanceModel
 
-@Deprecated("")
 class CheckableButtonGroup @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,

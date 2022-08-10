@@ -1,13 +1,13 @@
 package org.koitharu.kotatsu.local.ui
 
-import android.content.*
-import android.net.Uri
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ActionMode
 import androidx.core.net.toFile
 import androidx.core.net.toUri
@@ -20,17 +20,10 @@ import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.progress.Progress
 
-class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmSuppressWildcards Uri>> {
+class LocalListFragment : MangaListFragment() {
 
 	override val viewModel by viewModels<LocalListViewModel>()
-	private val importCall = registerForActivityResult(
-		ActivityResultContracts.OpenMultipleDocuments(),
-		this,
-	)
-	private var importSnackbar: Snackbar? = null
 	private val downloadReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
 			if (intent?.action == DownloadService.ACTION_DOWNLOAD_COMPLETE) {
@@ -51,12 +44,6 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 		super.onViewCreated(view, savedInstanceState)
 		addMenuProvider(LocalListMenuProvider(this::onEmptyActionClick))
 		viewModel.onMangaRemoved.observe(viewLifecycleOwner) { onItemRemoved() }
-		viewModel.importProgress.observe(viewLifecycleOwner, ::onImportProgressChanged)
-	}
-
-	override fun onDestroyView() {
-		importSnackbar = null
-		super.onDestroyView()
 	}
 
 	override fun onDetach() {
@@ -64,25 +51,11 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 		super.onDetach()
 	}
 
-	override fun onScrolledToEnd() = Unit
-
 	override fun onEmptyActionClick() {
-		try {
-			importCall.launch(arrayOf("*/*"))
-		} catch (e: ActivityNotFoundException) {
-			e.printStackTraceDebug()
-			Snackbar.make(
-				binding.recyclerView,
-				R.string.operation_not_supported,
-				Snackbar.LENGTH_SHORT,
-			).show()
-		}
+		ImportDialogFragment.show(childFragmentManager)
 	}
 
-	override fun onActivityResult(result: List<@JvmSuppressWildcards Uri>) {
-		if (result.isEmpty()) return
-		viewModel.importFiles(result)
-	}
+	override fun onScrolledToEnd() = Unit
 
 	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_local, menu)
@@ -119,25 +92,6 @@ class LocalListFragment : MangaListFragment(), ActivityResultCallback<List<@JvmS
 
 	private fun onItemRemoved() {
 		Snackbar.make(binding.recyclerView, R.string.removal_completed, Snackbar.LENGTH_SHORT).show()
-	}
-
-	private fun onImportProgressChanged(progress: Progress?) {
-		if (progress == null) {
-			importSnackbar?.dismiss()
-			importSnackbar = null
-			return
-		}
-		val summaryText = getString(
-			R.string.importing_progress,
-			progress.value + 1,
-			progress.total,
-		)
-		importSnackbar?.setText(summaryText) ?: run {
-			val snackbar =
-				Snackbar.make(binding.recyclerView, summaryText, Snackbar.LENGTH_INDEFINITE)
-			importSnackbar = snackbar
-			snackbar.show()
-		}
 	}
 
 	companion object {

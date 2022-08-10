@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.RememberSelectionDialogListener
 import org.koitharu.kotatsu.library.ui.config.categories.LibraryCategoriesConfigSheet
 import org.koitharu.kotatsu.library.ui.config.size.LibrarySizeBottomSheet
+import org.koitharu.kotatsu.local.ui.ImportDialogFragment
 import org.koitharu.kotatsu.utils.ext.startOfDay
 
 class LibraryMenuProvider(
@@ -34,6 +35,10 @@ class LibraryMenuProvider(
 			}
 			R.id.action_grid_size -> {
 				LibrarySizeBottomSheet.show(fragmentManager)
+				true
+			}
+			R.id.action_import -> {
+				ImportDialogFragment.show(fragmentManager)
 				true
 			}
 			R.id.action_categories -> {

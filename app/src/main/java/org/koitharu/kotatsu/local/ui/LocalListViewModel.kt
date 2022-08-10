@@ -1,13 +1,10 @@
 package org.koitharu.kotatsu.local.ui
 
-import android.net.Uri
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.IOException
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
@@ -27,7 +24,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.progress.Progress
 
 @HiltViewModel
 class LocalListViewModel @Inject constructor(
@@ -37,10 +33,8 @@ class LocalListViewModel @Inject constructor(
 ) : MangaListViewModel(settings) {
 
 	val onMangaRemoved = SingleLiveEvent<Unit>()
-	val importProgress = MutableLiveData<Progress?>(null)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
-	private var importJob: Job? = null
 
 	override val content = combine(
 		mangaList,
@@ -75,20 +69,6 @@ class LocalListViewModel @Inject constructor(
 
 	override fun onRetry() = onRefresh()
 
-	fun importFiles(uris: List<Uri>) {
-		val previousJob = importJob
-		importJob = launchJob(Dispatchers.Default) {
-			previousJob?.join()
-			importProgress.postValue(Progress(0, uris.size))
-			for ((i, uri) in uris.withIndex()) {
-				repository.import(uri)
-				importProgress.postValue(Progress(i + 1, uris.size))
-				doRefresh()
-			}
-			importProgress.postValue(null)
-		}
-	}
-
 	fun delete(ids: Set<Long>) {
 		launchLoadingJob {
 			withContext(Dispatchers.Default) {
@@ -118,7 +98,7 @@ class LocalListViewModel @Inject constructor(
 	}
 
 	private fun cleanup() {
-		if (!DownloadService.isRunning) {
+		if (!DownloadService.isRunning && !ImportService.isRunning && !LocalChaptersRemoveService.isRunning) {
 			viewModelScope.launch {
 				runCatching {
 					repository.cleanup()

@@ -23,6 +23,16 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 	@Inject
 	lateinit var localMangaRepository: LocalMangaRepository
 
+	override fun onCreate() {
+		super.onCreate()
+		isRunning = true
+	}
+
+	override fun onDestroy() {
+		isRunning = false
+		super.onDestroy()
+	}
+
 	override suspend fun processIntent(intent: Intent?) {
 		val manga = intent?.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga ?: return
 		val chaptersIds = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toSet() ?: return
@@ -63,6 +73,9 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 	}
 
 	companion object {
+
+		var isRunning: Boolean = false
+			private set
 
 		private const val CHANNEL_ID = "local_processing"
 		private const val NOTIFICATION_ID = 21

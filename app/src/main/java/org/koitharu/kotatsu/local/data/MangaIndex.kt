@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
+import org.koitharu.kotatsu.utils.AlphanumComparator
 
 class MangaIndex(source: String?) {
 
@@ -37,7 +38,7 @@ class MangaIndex(source: String?) {
 					jo.put("title", tag.title)
 					a.put(jo)
 				}
-			}
+			},
 		)
 		if (!append || !json.has("chapters")) {
 			json.put("chapters", JSONObject())
@@ -68,7 +69,7 @@ class MangaIndex(source: String?) {
 				MangaTag(
 					title = x.getString("title").toTitleCase(),
 					key = x.getString("key"),
-					source = source
+					source = source,
 				)
 			},
 			chapters = getChapters(json.getJSONObject("chapters"), source),
@@ -103,8 +104,27 @@ class MangaIndex(source: String?) {
 	fun getChapterNamesPattern(chapter: MangaChapter) = Regex(
 		json.getJSONObject("chapters")
 			.getJSONObject(chapter.id.toString())
-			.getString("entries")
+			.getString("entries"),
 	)
+
+	fun sortChaptersByName() {
+		val jo = json.getJSONObject("chapters")
+		val list = ArrayList<JSONObject>(jo.length())
+		jo.keys().forEach { id ->
+			val item = jo.getJSONObject(id)
+			item.put("id", id)
+			list.add(item)
+		}
+		val comparator = AlphanumComparator()
+		list.sortWith(compareBy(comparator) { it.getString("name") })
+		val newJo = JSONObject()
+		list.forEachIndexed { i, obj ->
+			obj.put("number", i + 1)
+			val id = obj.remove("id") as String
+			newJo.put(id, obj)
+		}
+		json.put("chapters", newJo)
+	}
 
 	private fun getChapters(json: JSONObject, source: MangaSource): List<MangaChapter> {
 		val chapters = ArrayList<MangaChapter>(json.length())
@@ -120,7 +140,7 @@ class MangaIndex(source: String?) {
 					scanlator = v.getStringOrNull("scanlator"),
 					branch = v.getStringOrNull("branch"),
 					source = source,
-				)
+				),
 			)
 		}
 		return chapters.sortedBy { it.number }
