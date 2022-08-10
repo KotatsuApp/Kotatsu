@@ -6,6 +6,7 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -59,6 +60,7 @@ class LocalListViewModel @Inject constructor(
 	init {
 		onRefresh()
 		cleanup()
+		watchDirectories()
 	}
 
 	override fun onRefresh() {
@@ -106,6 +108,15 @@ class LocalListViewModel @Inject constructor(
 					error.printStackTraceDebug()
 				}
 			}
+		}
+	}
+
+	private fun watchDirectories() {
+		viewModelScope.launch(Dispatchers.Default) {
+			repository.watchReadableDirs()
+				.collectLatest {
+					doRefresh()
+				}
 		}
 	}
 }

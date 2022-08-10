@@ -191,6 +191,7 @@ class DownloadService : BaseService() {
 		var isRunning: Boolean = false
 			private set
 
+		@Deprecated("Use LocalMangaRepository.watchReadableDirs instead")
 		const val ACTION_DOWNLOAD_COMPLETE = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_COMPLETE"
 
 		private const val ACTION_DOWNLOAD_CANCEL = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"

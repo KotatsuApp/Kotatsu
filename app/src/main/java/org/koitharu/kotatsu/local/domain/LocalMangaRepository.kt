@@ -15,6 +15,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNot
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -217,6 +219,13 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 			}
 			null
 		}
+	}
+
+	suspend fun watchReadableDirs(): Flow<File> {
+		val filter = TempFileFilter()
+		val dirs = storageManager.getReadableDirs()
+		return storageManager.observe(dirs)
+			.filterNot { filter.accept(it, it.name) }
 	}
 
 	private fun CoroutineScope.getFromFileAsync(
