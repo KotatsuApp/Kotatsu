@@ -24,6 +24,7 @@ class MangaDetailsDelegate(
 	private val mangaDataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val localMangaRepository: LocalMangaRepository,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
 	private val mangaData = MutableStateFlow(intent.manga)
@@ -39,7 +40,7 @@ class MangaDetailsDelegate(
 	suspend fun doLoad() {
 		var manga = mangaDataRepository.resolveIntent(intent) ?: throw NotFoundException("Cannot find manga", "")
 		mangaData.value = manga
-		manga = MangaRepository(manga.source).getDetails(manga)
+		manga = mangaRepositoryFactory.create(manga.source).getDetails(manga)
 		// find default branch
 		val hist = historyRepository.getOne(manga)
 		selectedBranch.value = manga.getPreferredBranch(hist)
@@ -47,7 +48,7 @@ class MangaDetailsDelegate(
 		relatedManga.value = runCatching {
 			if (manga.source == MangaSource.LOCAL) {
 				val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatching null
-				MangaRepository(m.source).getDetails(m)
+				mangaRepositoryFactory.create(m.source).getDetails(m)
 			} else {
 				localMangaRepository.findSavedManga(manga)
 			}

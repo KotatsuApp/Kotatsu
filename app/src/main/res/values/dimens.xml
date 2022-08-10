@@ -17,6 +17,7 @@
 	<dimen name="bookmark_list_spacing">4dp</dimen>
 	<dimen name="chapter_list_item_height">48dp</dimen>
 	<dimen name="preferred_grid_width">120dp</dimen>
+	<dimen name="small_grid_width">92dp</dimen>
 	<dimen name="header_height">48dp</dimen>
 	<dimen name="list_footer_height_inner">36dp</dimen>
 	<dimen name="list_footer_height_outer">48dp</dimen>
@@ -36,4 +37,27 @@
 	<dimen name="dialog_radius">8dp</dimen>
 
 	<dimen name="appwidget_corner_radius_inner">8dp</dimen>
+
+	<!-- FastScroller -->
+	<dimen name="fastscroll_bubble_radius">44dp</dimen>
+	<dimen name="fastscroll_bubble_size">88dp</dimen>
+	<dimen name="fastscroll_bubble_text_size">48sp</dimen>
+	<dimen name="fastscroll_bubble_padding">16dp</dimen>
+
+	<dimen name="fastscroll_bubble_radius_small">32dp</dimen>
+	<dimen name="fastscroll_bubble_size_small">36dp</dimen>
+	<dimen name="fastscroll_bubble_text_size_small">24sp</dimen>
+	<dimen name="fastscroll_bubble_padding_small">12dp</dimen>
+
+	<dimen name="fastscroll_handle_height">58dp</dimen>
+	<dimen name="fastscroll_handle_width">6dp</dimen>
+	<dimen name="fastscroll_handle_radius">4dp</dimen>
+
+	<dimen name="fastscroll_track_width">1dp</dimen>
+
+	<dimen name="fastscroll_scrollbar_margin_top">8dp</dimen>
+	<dimen name="fastscroll_scrollbar_margin_bottom">8dp</dimen>
+	<dimen name="fastscroll_scrollbar_padding_start">6dp</dimen>
+	<dimen name="fastscroll_scrollbar_padding_end">6dp</dimen>
+
 </resources>

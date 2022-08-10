@@ -6,15 +6,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.recyclerview.widget.RecyclerView
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
@@ -23,21 +21,32 @@ import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
+import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.ui.SearchActivity
-import org.koitharu.kotatsu.search.ui.multi.adapter.ItemSizeResolver
 import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.findViewsByType
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
+import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 
-class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaListListener,
+@AndroidEntryPoint
+class MultiSearchActivity :
+	BaseActivity<ActivitySearchMultiBinding>(),
+	MangaListListener,
 	ListSelectionController.Callback {
 
-	private val viewModel by viewModel<MultiSearchViewModel> {
-		parametersOf(intent.getStringExtra(EXTRA_QUERY).orEmpty())
+	@Inject
+	lateinit var viewModelFactory: MultiSearchViewModel.Factory
+
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by assistedViewModels<MultiSearchViewModel> {
+		viewModelFactory.create(intent.getStringExtra(EXTRA_QUERY).orEmpty())
 	}
 	private lateinit var adapter: MultiSearchAdapter
 	private lateinit var selectionController: ListSelectionController
@@ -45,13 +54,14 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchMultiBinding.inflate(layoutInflater))
+		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
 
 		val itemCLickListener = object : OnListItemClickListener<MultiSearchListModel> {
 			override fun onItemClick(item: MultiSearchListModel, view: View) {
 				startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query.value))
 			}
 		}
-		val sizeResolver = ItemSizeResolver(resources, get())
+		val sizeResolver = ItemSizeResolver(resources, settings)
 		val selectionDecoration = MangaSelectionDecoration(this)
 		selectionController = ListSelectionController(
 			activity = this,
@@ -61,7 +71,7 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 		)
 		adapter = MultiSearchAdapter(
 			lifecycleOwner = this,
-			coil = get(),
+			coil = coil,
 			listener = this,
 			itemClickListener = itemCLickListener,
 			sizeResolver = sizeResolver,
@@ -80,19 +90,12 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right,
-			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
-		}
-		binding.recyclerView.updatePadding(
-			bottom = insets.bottom,
+		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
+		)
+		binding.recyclerView.updatePadding(
+			bottom = insets.bottom,
 		)
 	}
 
@@ -111,11 +114,13 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 		viewModel.doSearch(viewModel.query.value.orEmpty())
 	}
 
-	override fun onTagRemoveClick(tag: MangaTag) = Unit
+	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 
-	override fun onFilterClick() = Unit
+	override fun onFilterClick(view: View?) = Unit
 
 	override fun onEmptyActionClick() = Unit
+
+	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
 
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_remote, menu)
@@ -149,9 +154,7 @@ class MultiSearchActivity : BaseActivity<ActivitySearchMultiBinding>(), MangaLis
 	}
 
 	override fun onSelectionChanged(count: Int) {
-		binding.recyclerView.findViewsByType(RecyclerView::class.java).forEach {
-			it.invalidateItemDecorations()
-		}
+		binding.recyclerView.invalidateNestedItemDecorations()
 	}
 
 	private fun collectSelectedItems(): Set<Manga> {

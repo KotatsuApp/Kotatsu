@@ -4,7 +4,10 @@ import android.content.Context
 import android.webkit.MimeTypeMap
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.size.Scale
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,21 +35,22 @@ private const val MAX_FAILSAFE_ATTEMPTS = 2
 private const val DOWNLOAD_ERROR_DELAY = 500L
 private const val SLOWDOWN_DELAY = 200L
 
-class DownloadManager(
-	private val coroutineScope: CoroutineScope,
-	private val context: Context,
+class DownloadManager @AssistedInject constructor(
+	@Assisted private val coroutineScope: CoroutineScope,
+	@ApplicationContext private val context: Context,
 	private val imageLoader: ImageLoader,
 	private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
 	private val localMangaRepository: LocalMangaRepository,
 	private val settings: AppSettings,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
 	private val coverWidth = context.resources.getDimensionPixelSize(
-		androidx.core.R.dimen.compat_notification_large_icon_max_width
+		androidx.core.R.dimen.compat_notification_large_icon_max_width,
 	)
 	private val coverHeight = context.resources.getDimensionPixelSize(
-		androidx.core.R.dimen.compat_notification_large_icon_max_height
+		androidx.core.R.dimen.compat_notification_large_icon_max_height,
 	)
 	private val semaphore = Semaphore(settings.downloadsParallelism)
 
@@ -56,7 +60,7 @@ class DownloadManager(
 		startId: Int,
 	): PausingProgressJob<DownloadState> {
 		val stateFlow = MutableStateFlow<DownloadState>(
-			DownloadState.Queued(startId = startId, manga = manga, cover = null)
+			DownloadState.Queued(startId = startId, manga = manga, cover = null),
 		)
 		val pausingHandle = PausingHandle()
 		val job = downloadMangaImpl(manga, chaptersIds?.takeUnless { it.isEmpty() }, stateFlow, pausingHandle, startId)
@@ -87,7 +91,7 @@ class DownloadManager(
 			if (manga.source == MangaSource.LOCAL) {
 				manga = localMangaRepository.getRemoteManga(manga) ?: error("Cannot obtain remote manga instance")
 			}
-			val repo = MangaRepository(manga.source)
+			val repo = mangaRepositoryFactory.create(manga.source)
 			outState.value = DownloadState.Preparing(startId, manga, cover)
 			val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
 			output = CbzMangaOutput.get(destination, data)
@@ -100,7 +104,7 @@ class DownloadManager(
 					data.chapters
 				} else {
 					data.chapters?.filter { x -> chaptersIdsSet.remove(x.id) }
-				}
+				},
 			) { "Chapters list must not be null" }
 			check(chapters.isNotEmpty()) { "Chapters list must not be empty" }
 			check(chaptersIdsSet.isNullOrEmpty()) {
@@ -118,7 +122,7 @@ class DownloadManager(
 							chapter = chapter,
 							file = file,
 							pageNumber = pageIndex,
-							ext = MimeTypeMap.getFileExtensionFromUrl(url)
+							ext = MimeTypeMap.getFileExtensionFromUrl(url),
 						)
 					}
 					outState.value = DownloadState.Progress(
@@ -128,7 +132,7 @@ class DownloadManager(
 						totalChapters = chapters.size,
 						currentChapter = chapterIndex,
 						totalPages = pages.size,
-						currentPage = pageIndex
+						currentPage = pageIndex,
 					)
 
 					if (settings.isDownloadsSlowdownEnabled) {
@@ -209,7 +213,7 @@ class DownloadManager(
 				manga = prevValue.manga,
 				cover = prevValue.cover,
 				error = throwable,
-				canRetry = false
+				canRetry = false,
 			)
 		}
 
@@ -219,28 +223,13 @@ class DownloadManager(
 				.data(manga.coverUrl)
 				.referer(manga.publicUrl)
 				.size(coverWidth, coverHeight)
-				.scale(Scale.FILL)
-				.build()
+				.build(),
 		).drawable
 	}.getOrNull()
 
-	class Factory(
-		private val context: Context,
-		private val imageLoader: ImageLoader,
-		private val okHttp: OkHttpClient,
-		private val cache: PagesCache,
-		private val localMangaRepository: LocalMangaRepository,
-		private val settings: AppSettings,
-	) {
+	@AssistedFactory
+	interface Factory {
 
-		fun create(coroutineScope: CoroutineScope) = DownloadManager(
-			coroutineScope = coroutineScope,
-			context = context,
-			imageLoader = imageLoader,
-			okHttp = okHttp,
-			cache = cache,
-			localMangaRepository = localMangaRepository,
-			settings = settings
-		)
+		fun create(coroutineScope: CoroutineScope): DownloadManager
 	}
 }

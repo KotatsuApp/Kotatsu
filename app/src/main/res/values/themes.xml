@@ -29,7 +29,7 @@
 		<item name="colorOutline">@color/kotatsu_outline</item>
 		<item name="colorOnSurfaceInverse">@color/kotatsu_inverseOnSurface</item>
 		<item name="colorSurfaceInverse">@color/kotatsu_inverseSurface</item>
-		<item name="colorPrimaryInverse">@color/kotatsu_primaryInverse</item>
+		<item name="colorPrimaryInverse">@color/kotatsu_inversePrimary</item>
 		<item name="colorError">@color/error</item>
 		<item name="colorOnError">@color/onError</item>
 		<item name="colorErrorContainer">@color/errorContainer</item>
@@ -67,9 +67,11 @@
 		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
 		<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>
 		<item name="appBarLayoutStyle">@style/Widget.Material3.AppBarLayout</item>
+		<item name="bottomNavigationStyle">@style/Widget.Kotatsu.BottomNavigationView</item>
 		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
 		<item name="materialCardViewStyle">@style/Widget.Material3.CardView.Filled</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
+		<item name="fastScrollerStyle">@style/Widget.Kotatsu.FastScroller</item>
 		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
 		<item name="materialSwitchStyle">@style/Widget.Material3.CompoundButton.MaterialSwitch</item>
 		<item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>

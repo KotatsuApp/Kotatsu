@@ -2,9 +2,13 @@ package org.koitharu.kotatsu.core.db
 
 import android.content.Context
 import androidx.room.Database
+import androidx.room.InvalidationTracker
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.bookmarks.data.BookmarkEntity
 import org.koitharu.kotatsu.bookmarks.data.BookmarksDao
 import org.koitharu.kotatsu.core.db.dao.MangaDao
@@ -29,8 +33,9 @@ import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 import org.koitharu.kotatsu.tracker.data.TrackEntity
 import org.koitharu.kotatsu.tracker.data.TrackLogEntity
 import org.koitharu.kotatsu.tracker.data.TracksDao
+import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 
-const val DATABASE_VERSION = 12
+const val DATABASE_VERSION = 14
 
 @Database(
 	entities = [
@@ -79,6 +84,8 @@ val databaseMigrations: Array<Migration>
 		Migration9To10(),
 		Migration10To11(),
 		Migration11To12(),
+		Migration12To13(),
+		Migration13To14(),
 	)
 
 fun MangaDatabase(context: Context): MangaDatabase = Room
@@ -86,3 +93,12 @@ fun MangaDatabase(context: Context): MangaDatabase = Room
 	.addMigrations(*databaseMigrations)
 	.addCallback(DatabasePrePopulateCallback(context.resources))
 	.build()
+
+fun InvalidationTracker.removeObserverAsync(observer: InvalidationTracker.Observer) {
+	val scope = processLifecycleScope
+	if (scope.isActive) {
+		processLifecycleScope.launch(Dispatchers.Default) {
+			removeObserver(observer)
+		}
+	}
+}

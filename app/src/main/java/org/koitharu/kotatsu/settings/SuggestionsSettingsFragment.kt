@@ -3,9 +3,9 @@ package org.koitharu.kotatsu.settings
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -14,10 +14,16 @@ import org.koitharu.kotatsu.settings.utils.TagsAutoCompleteProvider
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 
-class SuggestionsSettingsFragment : BasePreferenceFragment(R.string.suggestions),
+@AndroidEntryPoint
+class SuggestionsSettingsFragment :
+	BasePreferenceFragment(R.string.suggestions),
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
-	private val repository by inject<SuggestionRepository>(mode = LazyThreadSafetyMode.NONE)
+	@Inject
+	lateinit var repository: SuggestionRepository
+
+	@Inject
+	lateinit var tagsCompletionProvider: TagsAutoCompleteProvider
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -28,7 +34,7 @@ class SuggestionsSettingsFragment : BasePreferenceFragment(R.string.suggestions)
 		addPreferencesFromResource(R.xml.pref_suggestions)
 
 		findPreference<MultiAutoCompleteTextViewPreference>(AppSettings.KEY_SUGGESTIONS_EXCLUDE_TAGS)?.run {
-			autoCompleteProvider = TagsAutoCompleteProvider(get())
+			autoCompleteProvider = tagsCompletionProvider
 			summaryProvider = MultiAutoCompleteTextViewPreference.SimpleSummaryProvider(summary)
 		}
 	}

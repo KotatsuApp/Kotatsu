@@ -21,7 +21,7 @@ fun <T> AppSettings.observeAsFlow(key: String, valueProducer: AppSettings.() -> 
 fun <T> AppSettings.observeAsLiveData(
 	context: CoroutineContext,
 	key: String,
-	valueProducer: AppSettings.() -> T
+	valueProducer: AppSettings.() -> T,
 ) = liveData(context) {
 	emit(valueProducer())
 	observe().collect {

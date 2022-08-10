@@ -48,5 +48,5 @@ fun DialogFragment.showAllowStateLoss(manager: FragmentManager, tag: String?) {
 }
 
 fun Fragment.addMenuProvider(provider: MenuProvider) {
-	requireActivity().addMenuProvider(provider, viewLifecycleOwner, Lifecycle.State.RESUMED)
+	requireActivity().addMenuProvider(provider, viewLifecycleOwner, Lifecycle.State.STARTED)
 }

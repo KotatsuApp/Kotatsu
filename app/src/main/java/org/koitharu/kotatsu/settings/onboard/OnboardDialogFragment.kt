@@ -6,24 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.DialogOnboardBinding
 import org.koitharu.kotatsu.settings.onboard.adapter.SourceLocalesAdapter
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
-import org.koitharu.kotatsu.utils.ext.observeNotNull
 import org.koitharu.kotatsu.utils.ext.showAllowStateLoss
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class OnboardDialogFragment :
 	AlertDialogFragment<DialogOnboardBinding>(),
 	OnListItemClickListener<SourceLocale>,
 	DialogInterface.OnClickListener {
 
-	private val viewModel by viewModel<OnboardViewModel>()
+	private val viewModel by viewModels<OnboardViewModel>()
 	private var isWelcome: Boolean = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,8 +57,8 @@ class OnboardDialogFragment :
 		val adapter = SourceLocalesAdapter(this)
 		binding.recyclerView.adapter = adapter
 		binding.textViewTitle.setText(R.string.onboard_text)
-		viewModel.list.observeNotNull(viewLifecycleOwner) {
-			adapter.items = it
+		viewModel.list.observe(viewLifecycleOwner) {
+			adapter.items = it.orEmpty()
 		}
 	}
 

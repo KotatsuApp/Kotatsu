@@ -7,7 +7,6 @@ import android.widget.RemoteViewsService
 import coil.ImageLoader
 import coil.executeBlocking
 import coil.request.ImageRequest
-import coil.size.Scale
 import coil.size.Size
 import coil.transform.RoundedCornersTransformation
 import kotlinx.coroutines.runBlocking
@@ -26,11 +25,11 @@ class RecentListFactory(
 
 	private val dataSet = ArrayList<Manga>()
 	private val transformation = RoundedCornersTransformation(
-		context.resources.getDimension(R.dimen.appwidget_corner_radius_inner)
+		context.resources.getDimension(R.dimen.appwidget_corner_radius_inner),
 	)
 	private val coverSize = Size(
 		context.resources.getDimensionPixelSize(R.dimen.widget_cover_width),
-		context.resources.getDimensionPixelSize(R.dimen.widget_cover_height)
+		context.resources.getDimensionPixelSize(R.dimen.widget_cover_height),
 	)
 
 	override fun onCreate() = Unit
@@ -54,9 +53,8 @@ class RecentListFactory(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
 					.size(coverSize)
-					.scale(Scale.FILL)
 					.transformations(transformation)
-					.build()
+					.build(),
 			).requireBitmap()
 		}.onSuccess { cover ->
 			views.setImageViewBitmap(R.id.imageView_cover, cover)

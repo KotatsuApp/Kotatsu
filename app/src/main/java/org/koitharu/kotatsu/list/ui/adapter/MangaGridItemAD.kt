@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
-import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.google.android.material.badge.BadgeDrawable
@@ -9,10 +8,10 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ItemMangaGridBinding
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.search.ui.multi.adapter.ItemSizeResolver
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
@@ -35,11 +34,7 @@ fun mangaGridItemAD(
 	itemView.setOnLongClickListener {
 		clickListener.onItemLongClick(item.manga, it)
 	}
-	if (sizeResolver != null) {
-		itemView.updateLayoutParams {
-			width = sizeResolver.cellWidth
-		}
-	}
+	sizeResolver?.attachToView(lifecycleOwner, itemView, binding.textViewTitle)
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
@@ -49,7 +44,7 @@ fun mangaGridItemAD(
 			size(CoverSizeResolver(binding.imageViewCover))
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)

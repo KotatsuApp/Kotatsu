@@ -8,23 +8,25 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import java.io.FileOutputStream
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.io.File
-import java.io.FileOutputStream
 
+@AndroidEntryPoint
 class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
-	private val viewModel by viewModel<BackupViewModel>()
+	private val viewModel by viewModels<BackupViewModel>()
 
 	private var backup: File? = null
 	private val saveFileContract = registerForActivityResult(
-		ActivityResultContracts.CreateDocument("*/*")
+		ActivityResultContracts.CreateDocument("*/*"),
 	) { uri ->
 		val file = backup
 		if (uri != null && file != null) {

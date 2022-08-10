@@ -10,8 +10,11 @@ class CbzFilter : FilenameFilter {
 		return isFileSupported(name)
 	}
 
-	fun isFileSupported(name: String): Boolean {
-		val ext = name.substringAfterLast('.', "").lowercase(Locale.ROOT)
-		return ext == "cbz" || ext == "zip"
+	companion object {
+
+		fun isFileSupported(name: String): Boolean {
+			val ext = name.substringAfterLast('.', "").lowercase(Locale.ROOT)
+			return ext == "cbz" || ext == "zip"
+		}
 	}
 }

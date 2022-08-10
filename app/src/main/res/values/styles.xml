@@ -6,6 +6,12 @@
 		<item name="android:tint">?colorControlNormal</item>
 	</style>
 
+	<!--Navigation Views-->
+
+	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+		<item name="labelVisibilityMode">labeled</item>
+	</style>
+
 	<style name="Widget.Kotatsu.ActionMode" parent="Base.Widget.Material3.ActionMode">
 		<!--<item name="titleTextStyle">@style/TextAppearance.Kotatsu.ActionBar.Title</item>-->
 		<item name="theme">@style/ThemeOverlay.Kotatsu.ActionMode</item>
@@ -54,6 +60,21 @@
 		<item name="tabRippleColor">@color/ripple_toolbar</item>
 	</style>
 
+	<style name="Widget.Kotatsu.SuperTabs" parent="Widget.Material3.TabLayout">
+		<item name="tabGravity">center</item>
+		<item name="tabIndicator">@drawable/tab_selector_drawable</item>
+		<item name="tabIndicatorColor">@color/tab_indicator_foreground</item>
+		<item name="tabIndicatorFullWidth">true</item>
+		<item name="tabIndicatorGravity">center</item>
+		<item name="tabMinWidth">75dp</item>
+		<item name="tabMode">scrollable</item>
+		<item name="tabRippleColor">@color/ripple_toolbar</item>
+		<item name="tabPaddingStart">8dp</item>
+		<item name="tabPaddingEnd">8dp</item>
+		<item name="dividerThickness">0dp</item>
+		<item name="android:clipChildren">false</item>
+	</style>
+
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
@@ -86,12 +107,31 @@
 		<item name="iconPadding">16dp</item>
 	</style>
 
+	<style name="Widget.Kotatsu.ToggleButton.Vertical">
+		<item name="android:textAlignment">center</item>
+		<item name="iconPadding">2dp</item>
+		<item name="android:singleLine">false</item>
+		<item name="android:lines">2</item>
+		<item name="android:maxLines">2</item>
+		<item name="iconGravity">top</item>
+		<item name="android:paddingTop">12dp</item>
+		<item name="android:paddingBottom">10dp</item>
+		<item name="android:paddingStart">6dp</item>
+		<item name="android:paddingEnd">6dp</item>
+		<item name="android:elegantTextHeight">false</item>
+		<item name="shapeAppearance">?shapeAppearanceCornerMedium</item>
+	</style>
+
 	<style name="Widget.Kotatsu.RecyclerView" parent="">
-		<item name="fastScrollHorizontalThumbDrawable">@drawable/list_thumb</item>
-		<item name="fastScrollVerticalThumbDrawable">@drawable/list_thumb</item>
-		<item name="fastScrollHorizontalTrackDrawable">@drawable/list_track</item>
-		<item name="fastScrollVerticalTrackDrawable">@drawable/list_track</item>
 		<item name="android:scrollbarStyle">outsideOverlay</item>
+	</style>
+
+	<style name="Widget.Kotatsu.FastScroller" parent="">
+		<item name="thumbColor">?colorTertiary</item>
+		<item name="bubbleColor">?colorTertiary</item>
+		<item name="bubbleTextColor">?colorOnTertiary</item>
+		<item name="trackColor">?colorOutline</item>
+		<item name="bubbleSize">normal</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">
@@ -104,6 +144,27 @@
 		<item name="android:insetLeft">6dp</item>
 		<item name="android:insetTop">2dp</item>
 		<item name="android:insetBottom">2dp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.ExploreButton" parent="Widget.Material3.Button.TonalButton.Icon">
+		<item name="android:minHeight">58dp</item>
+		<item name="android:textColor">?attr/colorOnSurface</item>
+		<item name="android:singleLine">true</item>
+		<item name="shapeAppearance">?shapeAppearanceCornerLarge</item>
+		<item name="iconSize">22dp</item>
+		<item name="iconPadding">16dp</item>
+		<item name="iconGravity">start</item>
+		<item name="android:insetTop">2dp</item>
+		<item name="android:insetBottom">2dp</item>
+		<item name="iconTint">?attr/colorPrimary</item>
+		<item name="android:gravity">start|center_vertical</item>
+		<item name="android:textAppearance">?textAppearanceButton</item>
+	</style>
+
+	<style name="Widget.Kotatsu.TextView.Indicator" parent="Widget.MaterialComponents.TextView">
+		<item name="android:drawablePadding">12dp</item>
+		<item name="android:gravity">center_vertical</item>
+		<item name="android:textAppearance">?textAppearanceLabelMedium</item>
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.MainToolbar" parent="">
@@ -140,10 +201,19 @@
 		<item name="android:textColor">?attr/colorPrimary</item>
 	</style>
 
+	<style name="TextAppearance.Kotatsu.GridTitle" parent="TextAppearance.Material3.TitleSmall" />
+
+	<style name="TextAppearance.Kotatsu.GridTitle.Small" parent="TextAppearance.Material3.TitleSmall">
+		<item name="android:textSize">12sp</item>
+		<item name="android:letterSpacing">0.00714286</item>
+		<item name="lineHeight">14sp</item>
+		<item name="android:lineHeight" tools:ignore="NewApi">14sp</item>
+	</style>
+
 	<!-- Shapes -->
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover" parent="">
-		<item name="cornerSize">12dp</item>
+		<item name="cornerSize">16dp</item>
 	</style>
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Small" parent="">
@@ -176,11 +246,11 @@
 	<!-- Progress drawable -->
 
 	<style name="ProgressDrawable">
-		<item name="android:fillAlpha">0.8</item>
-		<item name="android:fillColor">?android:colorBackground</item>
-		<item name="android:strokeColor">?colorPrimaryDark</item>
-		<item name="android:textColor">?android:textColorPrimary</item>
-		<item name="strokeWidth">3dp</item>
+		<item name="android:fillAlpha">1</item>
+		<item name="android:fillColor">?attr/colorPrimary</item>
+		<item name="android:strokeColor">?attr/colorSurfaceVariant</item>
+		<item name="android:textColor">?attr/colorOnPrimary</item>
+		<item name="strokeWidth">4dp</item>
 		<item name="android:textSize">9sp</item>
 		<item name="autoFitTextSize">true</item>
 	</style>

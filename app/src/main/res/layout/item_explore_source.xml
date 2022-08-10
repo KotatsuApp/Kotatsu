@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="?attr/listPreferredItemHeightSmall"
+	android:background="@drawable/list_selector"
+	android:clipChildren="false"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
+	android:padding="@dimen/list_spacing">
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/imageView_icon"
+		android:layout_width="32dp"
+		android:layout_height="32dp"
+		android:background="?colorControlHighlight"
+		android:labelFor="@id/textView_title"
+		android:scaleType="fitCenter"
+		app:shapeAppearance="?shapeAppearanceCornerSmall"
+		tools:src="@tools:sample/backgrounds/scenic" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:ellipsize="end"
+		android:singleLine="true"
+		android:textAppearance="?attr/textAppearanceBodyMedium"
+		tools:text="@tools:sample/lorem[2]" />
+
+</LinearLayout>

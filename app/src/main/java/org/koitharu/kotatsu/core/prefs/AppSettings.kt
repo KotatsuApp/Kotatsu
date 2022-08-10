@@ -10,13 +10,7 @@ import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
-import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.callbackFlow
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
@@ -25,8 +19,15 @@ import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
+import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AppSettings(context: Context) {
+@Singleton
+class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -115,6 +116,10 @@ class AppSettings(context: Context) {
 	val isHistoryExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_EXCLUDE_NSFW, false)
 
+	var isIncognitoModeEnabled: Boolean
+		get() = prefs.getBoolean(KEY_INCOGNITO_MODE, false)
+		set(value) = prefs.edit { putBoolean(KEY_INCOGNITO_MODE, value) }
+
 	var chaptersReverse: Boolean
 		get() = prefs.getBoolean(KEY_REVERSE_CHAPTERS, false)
 		set(value) = prefs.edit { putBoolean(KEY_REVERSE_CHAPTERS, value) }
@@ -132,6 +137,9 @@ class AppSettings(context: Context) {
 	var isBiometricProtectionEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
 		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
+
+	val isExitConfirmationEnabled: Boolean
+		get() = prefs.getBoolean(KEY_EXIT_CONFIRM, false)
 
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
@@ -195,9 +203,8 @@ class AppSettings(context: Context) {
 	val isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
 
-	var isSearchSingleSource: Boolean
-		get() = prefs.getBoolean(KEY_SEARCH_SINGLE_SOURCE, false)
-		set(value) = prefs.edit { putBoolean(KEY_SEARCH_SINGLE_SOURCE, value) }
+	val isReaderBarEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READER_BAR, true)
 
 	val dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
@@ -308,12 +315,15 @@ class AppSettings(context: Context) {
 		const val KEY_SUGGESTIONS = "suggestions"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
-		const val KEY_SEARCH_SINGLE_SOURCE = "search_single_source"
 		const val KEY_SHIKIMORI = "shikimori"
 		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 		const val KEY_DOH = "doh"
+		const val KEY_EXIT_CONFIRM = "exit_confirm"
+		const val KEY_INCOGNITO_MODE = "incognito"
+		const val KEY_SYNC = "sync"
+		const val KEY_READER_BAR = "reader_bar"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

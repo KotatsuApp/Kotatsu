@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils.ext
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import okio.FileNotFoundException
 import org.acra.ktx.sendWithAcra
 import org.koitharu.kotatsu.R
@@ -21,9 +22,11 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
-	is ContentUnavailableException -> message
+	is SyncApiException,
+	is ContentUnavailableException, -> message
 	is ParseException -> shortMessage
-	is SocketTimeoutException -> resources.getString(R.string.network_error)
+	is UnknownHostException,
+	is SocketTimeoutException, -> resources.getString(R.string.network_error)
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
 	else -> localizedMessage

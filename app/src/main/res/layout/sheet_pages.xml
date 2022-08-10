@@ -7,19 +7,10 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<com.google.android.material.appbar.AppBarLayout
-		android:id="@+id/appbar"
+	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
-		android:layout_height="?attr/actionBarSize"
-		android:background="@drawable/sheet_toolbar_background">
-
-		<com.google.android.material.appbar.MaterialToolbar
-			android:id="@+id/toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:navigationIcon="?actionModeCloseDrawable" />
-
-	</com.google.android.material.appbar.AppBarLayout>
+		android:layout_height="wrap_content" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView"

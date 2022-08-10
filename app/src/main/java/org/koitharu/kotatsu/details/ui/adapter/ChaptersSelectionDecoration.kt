@@ -6,10 +6,11 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.view.View
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R as materialR
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.utils.ext.getThemeColor
-import com.google.android.material.R as materialR
 
 class ChaptersSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
 
@@ -17,7 +18,10 @@ class ChaptersSelectionDecoration(context: Context) : AbstractSelectionItemDecor
 	private val radius = context.resources.getDimension(materialR.dimen.abc_control_corner_material)
 
 	init {
-		paint.color = context.getThemeColor(materialR.attr.colorSecondaryContainer, Color.LTGRAY)
+		paint.color = ColorUtils.setAlphaComponent(
+			context.getThemeColor(materialR.attr.colorPrimary, Color.DKGRAY),
+			98,
+		)
 		paint.style = Paint.Style.FILL
 	}
 

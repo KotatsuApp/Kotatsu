@@ -6,6 +6,12 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.zip.ZipFile
+import javax.inject.Inject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +20,6 @@ import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.Closeable
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -27,26 +31,25 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
-import java.io.File
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.zip.ZipFile
 
 private const val PROGRESS_UNDEFINED = -1f
 private const val PREFETCH_LIMIT_DEFAULT = 10
 
-class PageLoader : KoinComponent, Closeable {
+class PageLoader @Inject constructor(
+	private val okHttp: OkHttpClient,
+	private val cache: PagesCache,
+	private val settings: AppSettings,
+	@ApplicationContext context: Context,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
+) : Closeable {
 
 	val loaderScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-	private val okHttp = get<OkHttpClient>()
-	private val cache = get<PagesCache>()
-	private val settings = get<AppSettings>()
-	private val connectivityManager = get<Context>().connectivityManager
+	private val connectivityManager = context.connectivityManager
 	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
 	private val convertLock = Mutex()
 	private var repository: MangaRepository? = null
-	private var prefetchQueue = LinkedList<MangaPage>()
+	private val prefetchQueue = LinkedList<MangaPage>()
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
 	private val emptyProgressFlow: StateFlow<Float> = MutableStateFlow(-1f)
@@ -150,7 +153,7 @@ class PageLoader : KoinComponent, Closeable {
 		return if (result != null && result.source == source) {
 			result
 		} else {
-			MangaRepository(source).also { repository = it }
+			mangaRepositoryFactory.create(source).also { repository = it }
 		}
 	}
 

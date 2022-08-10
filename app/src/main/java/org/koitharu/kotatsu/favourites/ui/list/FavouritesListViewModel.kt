@@ -3,11 +3,16 @@ package org.koitharu.kotatsu.favourites.ui.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
@@ -23,20 +28,23 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
-class FavouritesListViewModel(
-	private val categoryId: Long,
+class FavouritesListViewModel @AssistedInject constructor(
+	@Assisted private val categoryId: Long,
 	private val repository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val historyRepository: HistoryRepository,
 	private val settings: AppSettings,
 ) : MangaListViewModel(settings), ListExtraProvider {
 
-	var sortOrder: LiveData<SortOrder?> = if (categoryId == NO_ID) {
+	var categoryName: String? = null
+		private set
+
+	val sortOrder: LiveData<SortOrder?> = if (categoryId == NO_ID) {
 		MutableLiveData(null)
 	} else {
 		repository.observeCategory(categoryId)
 			.map { it?.order }
-			.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+			.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 	}
 
 	override val content = combine(
@@ -66,6 +74,18 @@ class FavouritesListViewModel(
 		emit(listOf(it.toErrorState(canRetry = false)))
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
+	init {
+		if (categoryId != NO_ID) {
+			launchJob {
+				categoryName = withContext(Dispatchers.Default) {
+					runCatching {
+						repository.getCategory(categoryId).title
+					}.getOrNull()
+				}
+			}
+		}
+	}
+
 	override fun onRefresh() = Unit
 
 	override fun onRetry() = Unit
@@ -74,12 +94,13 @@ class FavouritesListViewModel(
 		if (ids.isEmpty()) {
 			return
 		}
-		launchJob {
-			if (categoryId == NO_ID) {
+		launchJob(Dispatchers.Default) {
+			val handle = if (categoryId == NO_ID) {
 				repository.removeFromFavourites(ids)
 			} else {
 				repository.removeFromCategory(categoryId, ids)
 			}
+			onActionDone.postCall(ReversibleAction(R.string.removed_from_favourites, handle))
 		}
 	}
 
@@ -102,5 +123,11 @@ class FavouritesListViewModel(
 		} else {
 			PROGRESS_NONE
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(categoryId: Long): FavouritesListViewModel
 	}
 }

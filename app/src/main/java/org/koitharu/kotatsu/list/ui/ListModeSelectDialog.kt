@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
-import org.koin.android.ext.android.inject
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
@@ -17,15 +17,20 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.DialogListModeBinding
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import org.koitharu.kotatsu.utils.progress.IntPercentLabelFormatter
+import javax.inject.Inject
 
-class ListModeSelectDialog : AlertDialogFragment<DialogListModeBinding>(),
-	CheckableButtonGroup.OnCheckedChangeListener, Slider.OnSliderTouchListener {
+@AndroidEntryPoint
+class ListModeSelectDialog :
+	AlertDialogFragment<DialogListModeBinding>(),
+	CheckableButtonGroup.OnCheckedChangeListener,
+	Slider.OnChangeListener {
 
-	private val settings by inject<AppSettings>(mode = LazyThreadSafetyMode.NONE)
+	@Inject
+	lateinit var settings: AppSettings
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = DialogListModeBinding.inflate(inflater, container, false)
 
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
@@ -45,7 +50,7 @@ class ListModeSelectDialog : AlertDialogFragment<DialogListModeBinding>(),
 
 		binding.sliderGrid.setLabelFormatter(IntPercentLabelFormatter(view.context))
 		binding.sliderGrid.setValueRounded(settings.gridSize.toFloat())
-		binding.sliderGrid.addOnSliderTouchListener(this)
+		binding.sliderGrid.addOnChangeListener(this)
 
 		binding.checkableGroup.onCheckedChangeListener = this
 	}
@@ -62,10 +67,10 @@ class ListModeSelectDialog : AlertDialogFragment<DialogListModeBinding>(),
 		settings.listMode = mode
 	}
 
-	override fun onStartTrackingTouch(slider: Slider) = Unit
-
-	override fun onStopTrackingTouch(slider: Slider) {
-		settings.gridSize = slider.value.toInt()
+	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
+		if (fromUser) {
+			settings.gridSize = value.toInt()
+		}
 	}
 
 	companion object {

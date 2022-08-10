@@ -6,15 +6,17 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.MenuProvider
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
-import org.koitharu.kotatsu.main.ui.AppBarOwner
+import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.SettingsHeadersFragment
 import org.koitharu.kotatsu.settings.SourceSettingsFragment
@@ -23,20 +25,24 @@ import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 
+@AndroidEntryPoint
 class SourcesSettingsFragment :
 	BaseFragment<FragmentSettingsSourcesBinding>(),
 	SourceConfigListener,
 	RecyclerViewOwner {
 
+	@Inject
+	lateinit var coil: ImageLoader
+
 	private var reorderHelper: ItemTouchHelper? = null
-	private val viewModel by viewModel<SourcesSettingsViewModel>()
+	private val viewModel by viewModels<SourcesSettingsViewModel>()
 
 	override val recyclerView: RecyclerView
 		get() = binding.recyclerView
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentSettingsSourcesBinding.inflate(inflater, container, false)
 
 	override fun onResume() {
@@ -46,7 +52,7 @@ class SourcesSettingsFragment :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val sourcesAdapter = SourceConfigAdapter(this, get(), viewLifecycleOwner)
+		val sourcesAdapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = sourcesAdapter
@@ -69,7 +75,7 @@ class SourcesSettingsFragment :
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 			left = insets.left,
-			right = insets.right
+			right = insets.right,
 		)
 	}
 

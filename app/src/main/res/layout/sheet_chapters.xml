@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -7,29 +7,20 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<com.google.android.material.appbar.AppBarLayout
-		android:id="@+id/appbar"
-		android:layout_width="match_parent"
-		android:layout_height="?attr/actionBarSize"
-		android:background="@drawable/sheet_toolbar_background">
-
-		<com.google.android.material.appbar.MaterialToolbar
-			android:id="@+id/toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:navigationIcon="?actionModeCloseDrawable"
-			app:title="@string/chapters" />
-
-	</com.google.android.material.appbar.AppBarLayout>
-
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/recyclerView"
+	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:clipToPadding="false"
+		app:title="@string/chapters" />
+
+	<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
+		android:id="@+id/recyclerView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@id/headerBar"
 		android:orientation="vertical"
-		app:fastScrollEnabled="true"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		tools:listitem="@layout/item_chapter" />
 
-</LinearLayout>
+</RelativeLayout>

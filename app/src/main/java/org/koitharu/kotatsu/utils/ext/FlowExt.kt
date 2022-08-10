@@ -2,10 +2,7 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.os.SystemClock
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.*
 
 fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
 	var isFirstCall = true
@@ -34,4 +31,8 @@ fun <T> Flow<T>.throttle(timeoutMillis: (T) -> Long): Flow<T> {
 		emit(value)
 		lastEmittedAt = now
 	}
+}
+
+fun <T> StateFlow<T?>.requireValue(): T = checkNotNull(value) {
+	"StateFlow value is null"
 }

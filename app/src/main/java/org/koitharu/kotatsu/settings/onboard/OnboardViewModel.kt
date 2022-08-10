@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.settings.onboard
 import androidx.collection.ArraySet
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
+import javax.inject.Inject
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -14,7 +16,8 @@ import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.mapToSet
 
-class OnboardViewModel(
+@HiltViewModel
+class OnboardViewModel @Inject constructor(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
@@ -37,6 +40,7 @@ class OnboardViewModel(
 			if (selectedLocales.isEmpty()) {
 				selectedLocales += "en"
 			}
+			selectedLocales += null
 		}
 		rebuildList()
 	}

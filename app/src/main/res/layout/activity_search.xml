@@ -8,13 +8,14 @@
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:fitsSystemWindows="true">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:layout_scrollFlags="scroll|enterAlways">
+			app:layout_scrollFlags="scroll|enterAlways|snap">
 
 			<androidx.appcompat.widget.SearchView
 				android:id="@+id/searchView"

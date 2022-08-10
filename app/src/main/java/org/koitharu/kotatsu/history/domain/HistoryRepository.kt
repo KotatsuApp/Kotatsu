@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.history.domain
 
 import androidx.room.withTransaction
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -20,11 +21,11 @@ import org.koitharu.kotatsu.utils.ext.mapItems
 
 const val PROGRESS_NONE = -1f
 
-class HistoryRepository(
+class HistoryRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
-	private val scrobblers: List<Scrobbler>,
+	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 ) {
 
 	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
@@ -65,7 +66,7 @@ class HistoryRepository(
 	}
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int, percent: Float) {
-		if (manga.isNsfw && settings.isHistoryExcludeNsfw) {
+		if (manga.isNsfw && settings.isHistoryExcludeNsfw || settings.isIncognitoModeEnabled) {
 			return
 		}
 		val tags = manga.tags.toEntities()
@@ -81,7 +82,8 @@ class HistoryRepository(
 					page = page,
 					scroll = scroll.toFloat(), // we migrate to int, but decide to not update database
 					percent = percent,
-				)
+					deletedAt = 0L,
+				),
 			)
 			trackingRepository.syncWithHistory(manga, chapterId)
 			val chapter = manga.chapters?.find { x -> x.id == chapterId }
@@ -107,24 +109,18 @@ class HistoryRepository(
 		db.historyDao.delete(manga.id)
 	}
 
-	suspend fun delete(ids: Collection<Long>) {
+	suspend fun deleteAfter(minDate: Long) {
+		db.historyDao.deleteAfter(minDate)
+	}
+
+	suspend fun delete(ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
 				db.historyDao.delete(id)
 			}
 		}
-	}
-
-	suspend fun deleteReversible(ids: Collection<Long>): ReversibleHandle {
-		val entities = db.withTransaction {
-			val entities = db.historyDao.findAll(ids.toList()).filterNotNull()
-			for (id in ids) {
-				db.historyDao.delete(id)
-			}
-			entities
-		}
 		return ReversibleHandle {
-			db.historyDao.upsert(entities)
+			recover(ids)
 		}
 	}
 
@@ -140,5 +136,13 @@ class HistoryRepository(
 
 	suspend fun getPopularTags(limit: Int): List<MangaTag> {
 		return db.historyDao.findPopularTags(limit).map { x -> x.toMangaTag() }
+	}
+
+	private suspend fun recover(ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				db.historyDao.recover(id)
+			}
+		}
 	}
 }

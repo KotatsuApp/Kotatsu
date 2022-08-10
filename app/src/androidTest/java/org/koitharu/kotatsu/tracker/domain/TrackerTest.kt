@@ -1,24 +1,39 @@
 package org.koitharu.kotatsu.tracker.domain
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
+import junit.framework.TestCase.*
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.test.KoinTest
-import org.koin.test.inject
 import org.koitharu.kotatsu.SampleData
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.parsers.model.Manga
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class TrackerTest : KoinTest {
+class TrackerTest {
 
-	private val repository by inject<TrackingRepository>()
-	private val dataRepository by inject<MangaDataRepository>()
-	private val tracker by inject<Tracker>()
+	@get:Rule
+	var hiltRule = HiltAndroidRule(this)
+
+	@Inject
+	lateinit var repository: TrackingRepository
+
+	@Inject
+	lateinit var dataRepository: MangaDataRepository
+
+	@Inject
+	lateinit var tracker: Tracker
+
+	@Before
+	fun setUp() {
+		hiltRule.inject()
+	}
 
 	@Test
 	fun noUpdates() = runTest {

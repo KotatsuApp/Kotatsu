@@ -3,6 +3,9 @@ package org.koitharu.kotatsu.search.ui.multi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -21,9 +24,10 @@ import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 private const val MAX_PARALLELISM = 4
 private const val MIN_HAS_MORE_ITEMS = 8
 
-class MultiSearchViewModel(
-	initialQuery: String,
+class MultiSearchViewModel @AssistedInject constructor(
+	@Assisted initialQuery: String,
 	private val settings: AppSettings,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : BaseViewModel() {
 
 	private var searchJob: Job? = null
@@ -48,7 +52,7 @@ class MultiSearchViewModel(
 						textSecondary = R.string.text_search_holder_secondary,
 						actionStringRes = 0,
 					)
-				}
+				},
 			)
 			loading -> list + LoadingFooter
 			else -> list
@@ -95,7 +99,7 @@ class MultiSearchViewModel(
 		val deferredList = sources.map { source ->
 			async(dispatcher) {
 				runCatching {
-					val list = MangaRepository(source).getList(offset = 0, query = q)
+					val list = mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
 						.toUi(ListMode.GRID)
 					if (list.isNotEmpty()) {
 						MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list)
@@ -126,5 +130,11 @@ class MultiSearchViewModel(
 				else -> throw CompositeException(errors)
 			}
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(initialQuery: String): MultiSearchViewModel
 	}
 }

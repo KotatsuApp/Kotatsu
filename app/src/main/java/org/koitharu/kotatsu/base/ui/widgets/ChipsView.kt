@@ -5,23 +5,26 @@ import android.util.AttributeSet
 import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
 import androidx.core.view.children
+import com.google.android.material.R as materialR
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.utils.ext.castOrNull
+import org.koitharu.kotatsu.utils.ext.getThemeColorStateList
 
 class ChipsView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
-	defStyleAttr: Int = com.google.android.material.R.attr.chipGroupStyle
+	defStyleAttr: Int = com.google.android.material.R.attr.chipGroupStyle,
 ) : ChipGroup(context, attrs, defStyleAttr) {
 
 	private var isLayoutSuppressedCompat = false
 	private var isLayoutCalledOnSuppressed = false
-	private var chipOnClickListener = OnClickListener {
+	private val chipOnClickListener = OnClickListener {
 		onChipClickListener?.onChipClick(it as Chip, it.tag)
 	}
-	private var chipOnCloseListener = OnClickListener {
+	private val chipOnCloseListener = OnClickListener {
 		onChipCloseClickListener?.onChipCloseClick(it as Chip, it.tag)
 	}
 	var onChipClickListener: OnChipClickListener? = null
@@ -60,15 +63,27 @@ class ChipsView @JvmOverloads constructor(
 		}
 	}
 
+	fun <T> getCheckedData(cls: Class<T>): Set<T> {
+		val result = LinkedHashSet<T>(childCount)
+		for (child in children) {
+			if (child is Chip && child.isChecked) {
+				result += cls.castOrNull(child.tag) ?: continue
+			}
+		}
+		return result
+	}
+
 	private fun bindChip(chip: Chip, model: ChipModel) {
 		chip.text = model.title
 		if (model.icon == 0) {
 			chip.isChipIconVisible = false
 		} else {
-			chip.isCheckedIconVisible = true
+			chip.isChipIconVisible = true
 			chip.setChipIconResource(model.icon)
 		}
-		chip.isClickable = onChipClickListener != null
+		chip.isClickable = onChipClickListener != null || model.isCheckable
+		chip.isCheckable = model.isCheckable
+		chip.isChecked = model.isChecked
 		chip.tag = model.data
 	}
 
@@ -76,11 +91,13 @@ class ChipsView @JvmOverloads constructor(
 		val chip = Chip(context)
 		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
 		chip.setChipDrawable(drawable)
+		chip.isCheckedIconVisible = true
+		chip.setCheckedIconResource(R.drawable.ic_check)
+		chip.checkedIconTint = context.getThemeColorStateList(materialR.attr.colorControlNormal)
 		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)
 		chip.setOnClickListener(chipOnClickListener)
-		chip.isCheckable = false
 		addView(chip)
 		return chip
 	}
@@ -98,7 +115,9 @@ class ChipsView @JvmOverloads constructor(
 	class ChipModel(
 		@DrawableRes val icon: Int,
 		val title: CharSequence,
-		val data: Any? = null
+		val isCheckable: Boolean,
+		val isChecked: Boolean,
+		val data: Any? = null,
 	) {
 
 		override fun equals(other: Any?): Boolean {
@@ -109,6 +128,8 @@ class ChipsView @JvmOverloads constructor(
 
 			if (icon != other.icon) return false
 			if (title != other.title) return false
+			if (isCheckable != other.isCheckable) return false
+			if (isChecked != other.isChecked) return false
 			if (data != other.data) return false
 
 			return true
@@ -117,7 +138,9 @@ class ChipsView @JvmOverloads constructor(
 		override fun hashCode(): Int {
 			var result = icon
 			result = 31 * result + title.hashCode()
-			result = 31 * result + data.hashCode()
+			result = 31 * result + isCheckable.hashCode()
+			result = 31 * result + isChecked.hashCode()
+			result = 31 * result + (data?.hashCode() ?: 0)
 			return result
 		}
 	}

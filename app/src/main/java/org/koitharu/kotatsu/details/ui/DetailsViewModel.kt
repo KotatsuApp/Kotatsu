@@ -10,6 +10,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,10 +25,12 @@ import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
@@ -36,11 +41,12 @@ import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
-class DetailsViewModel(
-	intent: MangaIntent,
+class DetailsViewModel @AssistedInject constructor(
+	@Assisted intent: MangaIntent,
 	private val historyRepository: HistoryRepository,
 	favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
@@ -48,9 +54,12 @@ class DetailsViewModel(
 	mangaDataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
-	private val scrobbler: Scrobbler,
+	scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val imageGetter: Html.ImageGetter,
+	mangaRepositoryFactory: MangaRepository.Factory,
 ) : BaseViewModel() {
+
+	private val scrobbler = scrobblers.first() // TODO support multiple scrobblers
 
 	private val delegate = MangaDetailsDelegate(
 		intent = intent,
@@ -58,6 +67,7 @@ class DetailsViewModel(
 		mangaDataRepository = mangaDataRepository,
 		historyRepository = historyRepository,
 		localMangaRepository = localMangaRepository,
+		mangaRepositoryFactory = mangaRepositoryFactory,
 	)
 
 	private var loadingJob: Job
@@ -81,8 +91,17 @@ class DetailsViewModel(
 	val manga = delegate.manga.filterNotNull().asLiveData(viewModelScope.coroutineContext)
 	val favouriteCategories = favourite.asLiveData(viewModelScope.coroutineContext)
 	val newChaptersCount = newChapters.asLiveData(viewModelScope.coroutineContext)
+
+	@Deprecated("")
 	val readingHistory = history.asLiveData(viewModelScope.coroutineContext)
 	val isChaptersReversed = chaptersReversed.asLiveData(viewModelScope.coroutineContext)
+
+	val historyInfo = combine(
+		delegate.manga,
+		history,
+	) { m, h ->
+		HistoryInfo(m, h)
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
 	val bookmarks = delegate.manga.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
@@ -110,14 +129,17 @@ class DetailsViewModel(
 	val branches: LiveData<List<String?>> = delegate.manga.map {
 		val chapters = it?.chapters ?: return@map emptyList()
 		chapters.mapToSet { x -> x.branch }.sortedWith(BranchComparator())
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val selectedBranchIndex = combine(
 		branches.asFlow(),
 		delegate.selectedBranch,
 	) { branches, selected ->
 		branches.indexOf(selected)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, -1)
+
+	val selectedBranchName = delegate.selectedBranch
+		.asFlowLiveData(viewModelScope.coroutineContext, null)
 
 	val isChaptersEmpty: LiveData<Boolean> = combine(
 		delegate.manga,
@@ -254,5 +276,11 @@ class DetailsViewModel(
 			spannable.removeSpan(span)
 		}
 		return spannable.trim()
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(intent: MangaIntent): DetailsViewModel
 	}
 }

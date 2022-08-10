@@ -3,6 +3,13 @@ package org.koitharu.kotatsu.settings.backup
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import java.io.FileNotFoundException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -12,13 +19,11 @@ import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.io.File
-import java.io.FileNotFoundException
 
-class RestoreViewModel(
-	uri: Uri?,
+class RestoreViewModel @AssistedInject constructor(
+	@Assisted uri: Uri?,
 	private val repository: BackupRepository,
-	context: Context
+	@ApplicationContext context: Context,
 ) : BaseViewModel() {
 
 	val progress = MutableLiveData<Progress?>(null)
@@ -59,5 +64,11 @@ class RestoreViewModel(
 				backup.file.delete()
 			}
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(uri: Uri?): RestoreViewModel
 	}
 }

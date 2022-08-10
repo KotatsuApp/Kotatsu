@@ -8,7 +8,16 @@
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:fitsSystemWindows="false"
+		app:elevation="0dp"
+		app:liftOnScroll="false">
+
+		<org.koitharu.kotatsu.base.ui.widgets.WindowInsetHolder
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top"
+			app:layout_scrollFlags="scroll|enterAlways|snap" />
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"

@@ -39,7 +39,7 @@ fun mangaListDetailedItemAD(
 			size(CoverSizeResolver(binding.imageViewCover))
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)

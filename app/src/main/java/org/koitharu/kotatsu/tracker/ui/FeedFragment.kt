@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
+import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
@@ -16,24 +18,27 @@ import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.main.ui.AppBarOwner
-import org.koitharu.kotatsu.main.ui.MainActivity
+import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.getThemeColor
 
+@AndroidEntryPoint
 class FeedFragment :
 	BaseFragment<FragmentFeedBinding>(),
 	PaginationScrollListener.Callback,
 	MangaListListener {
 
-	private val viewModel by viewModel<FeedViewModel>()
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by viewModels<FeedViewModel>()
 
 	private var feedAdapter: FeedAdapter? = null
 	private var paddingVertical = 0
@@ -46,7 +51,7 @@ class FeedFragment :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		feedAdapter = FeedAdapter(get(), viewLifecycleOwner, this)
+		feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this)
 		with(binding.recyclerView) {
 			adapter = feedAdapter
 			setHasFixedSize(true)
@@ -60,8 +65,18 @@ class FeedFragment :
 			)
 			addItemDecoration(decoration)
 		}
-		binding.swipeRefreshLayout.isEnabled = false
-		addMenuProvider(FeedMenuProvider(binding.recyclerView, viewModel))
+		with(binding.swipeRefreshLayout) {
+			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
+			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
+			isEnabled = false
+		}
+		addMenuProvider(
+			FeedMenuProvider(
+				binding.recyclerView,
+				(activity as? BottomNavOwner)?.bottomNav,
+				viewModel,
+			),
+		)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
@@ -78,54 +93,43 @@ class FeedFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
-		binding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
+		binding.recyclerView.updatePadding(
+			bottom = insets.bottom,
 		)
-		if (activity is MainActivity) {
-			binding.recyclerView.updatePadding(
-				top = headerHeight,
-				bottom = insets.bottom,
-			)
-			binding.swipeRefreshLayout.setProgressViewOffset(
-				true,
-				headerHeight + resources.resolveDp(-72),
-				headerHeight + resources.resolveDp(10),
-			)
-		} else {
-			binding.recyclerView.updatePadding(
-				bottom = insets.bottom,
-			)
-		}
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit
 
-	override fun onTagRemoveClick(tag: MangaTag) = Unit
+	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 
-	override fun onFilterClick() = Unit
+	override fun onFilterClick(view: View?) = Unit
 
 	override fun onEmptyActionClick() = Unit
+
+	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
 
 	private fun onListChanged(list: List<ListModel>) {
 		feedAdapter?.items = list
 	}
 
 	private fun onFeedCleared() {
-		Snackbar.make(
+		val snackbar = Snackbar.make(
 			binding.recyclerView,
 			R.string.updates_feed_cleared,
 			Snackbar.LENGTH_LONG,
-		).show()
+		)
+		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
+		snackbar.show()
 	}
 
 	private fun onError(e: Throwable) {
-		Snackbar.make(
+		val snackbar = Snackbar.make(
 			binding.recyclerView,
 			e.getDisplayMessage(resources),
 			Snackbar.LENGTH_SHORT,
-		).show()
+		)
+		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
+		snackbar.show()
 	}
 
 	private fun onIsTrackerRunningChanged(isRunning: Boolean) {

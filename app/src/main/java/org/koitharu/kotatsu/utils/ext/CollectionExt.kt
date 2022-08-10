@@ -25,7 +25,7 @@ inline fun <T> Set(size: Int, init: (index: Int) -> T): Set<T> = when (size) {
 	else -> MutableSet(size, init)
 }
 
-fun <T> List<T>.asArrayList(): ArrayList<T> = if (this is ArrayList<*>) {
+fun <T> Collection<T>.asArrayList(): ArrayList<T> = if (this is ArrayList<*>) {
 	this as ArrayList<T>
 } else {
 	ArrayList(this)

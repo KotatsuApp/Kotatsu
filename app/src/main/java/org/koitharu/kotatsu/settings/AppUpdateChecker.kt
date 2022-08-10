@@ -7,30 +7,31 @@ import android.content.pm.PackageManager
 import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.core.net.toUri
+import com.google.android.material.R as materialR
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.get
-import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.github.AppVersion
-import org.koitharu.kotatsu.core.github.GithubRepository
-import org.koitharu.kotatsu.core.github.VersionId
-import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.parsers.util.byte2HexFormatted
-import org.koitharu.kotatsu.utils.FileSize
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.security.MessageDigest
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.github.AppUpdateRepository
+import org.koitharu.kotatsu.core.github.AppVersion
+import org.koitharu.kotatsu.core.github.VersionId
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.parsers.util.byte2HexFormatted
+import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
+@Deprecated("")
 class AppUpdateChecker(private val activity: ComponentActivity) {
 
-	private val settings = activity.get<AppSettings>()
-	private val repo = activity.get<GithubRepository>()
+	private val settings: AppSettings = TODO()
+	private val repo: AppUpdateRepository = TODO()
 
 	suspend fun checkIfNeeded(): Boolean? = if (
 		settings.isUpdateCheckingEnabled &&
@@ -42,7 +43,7 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 	}
 
 	suspend fun checkNow() = runCatching {
-		val version = repo.getLatestVersion()
+		val version = repo.fetchUpdate() ?: return@runCatching false
 		val newVersionId = VersionId(version.name)
 		val currentVersionId = VersionId(BuildConfig.VERSION_NAME)
 		val result = newVersionId > currentVersionId
@@ -67,9 +68,10 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 			appendLine()
 			append(version.description)
 		}
-		MaterialAlertDialogBuilder(activity)
+		MaterialAlertDialogBuilder(activity, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
 			.setTitle(R.string.app_update_available)
 			.setMessage(message)
+			.setIcon(R.drawable.ic_app_update)
 			.setPositiveButton(R.string.download) { _, _ ->
 				val intent = Intent(Intent.ACTION_VIEW, version.apkUrl.toUri())
 				activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.open_in_browser)))

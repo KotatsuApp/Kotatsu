@@ -15,7 +15,7 @@ abstract class CoroutineIntentService : BaseService() {
 	private val mutex = Mutex()
 	protected open val dispatcher: CoroutineDispatcher = Dispatchers.Default
 
-	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+	final override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		super.onStartCommand(intent, flags, startId)
 		launchCoroutine(intent, startId)
 		return Service.START_REDELIVER_INTENT

@@ -4,8 +4,11 @@ import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Bundle
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ActivityRecreationHandle : ActivityLifecycleCallbacks {
+@Singleton
+class ActivityRecreationHandle @Inject constructor() : ActivityLifecycleCallbacks {
 
 	private val activities = WeakHashMap<Activity, Unit>()
 

@@ -7,6 +7,7 @@ buildscript {
 	dependencies {
 		classpath 'com.android.tools.build:gradle:7.2.1'
 		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
+		classpath 'com.google.dagger:hilt-android-gradle-plugin:2.42'
 
 		// NOTE: Do not place your application dependencies here; they belong
 		// in the individual module build.gradle files
@@ -30,6 +31,16 @@ Object localProperty(String name, Object defaultValue = 'null') {
 	def value = localProperties[name]
 
 	return value != null ? value : defaultValue
+}
+
+String currentBranch() {
+	def branchName = ""
+	try {
+		branchName = "git rev-parse --abbrev-ref HEAD".execute().text.trim();
+	} catch (ignored) {
+		println "Git not found"
+	}
+	return branchName
 }
 
 task clean(type: Delete) {

@@ -12,6 +12,15 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
 
+	<org.koitharu.kotatsu.reader.ui.ReaderInfoBarView
+		android:id="@+id/infoBar"
+		android:layout_width="match_parent"
+		android:layout_height="16dp"
+		android:layout_gravity="top"
+		android:paddingHorizontal="6dp"
+		android:visibility="gone"
+		tools:visibility="visible" />
+
 	<org.koitharu.kotatsu.reader.ui.ReaderToastView
 		android:id="@+id/toastView"
 		android:layout_width="wrap_content"
@@ -48,9 +57,22 @@
 
 			<com.google.android.material.appbar.MaterialToolbar
 				android:id="@+id/toolbar_bottom"
-				android:layout_width="wrap_content"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				app:popupTheme="@style/ThemeOverlay.Kotatsu" />
+				android:layout_weight="1"
+				app:menu="@menu/opt_reader_bottom"
+				app:popupTheme="@style/ThemeOverlay.Kotatsu">
+
+				<com.google.android.material.slider.Slider
+					android:id="@+id/slider"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:stepSize="1"
+					android:valueFrom="0"
+					app:labelBehavior="floating"
+					app:tickVisible="false" />
+
+			</com.google.android.material.appbar.MaterialToolbar>
 
 		</LinearLayout>
 

@@ -8,7 +8,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.ColorUtils
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
-import kotlin.math.roundToInt
+import org.koitharu.kotatsu.utils.ext.scale
 
 class ReadingProgressDrawable(
 	context: Context,
@@ -105,7 +105,7 @@ class ReadingProgressDrawable(
 		if (hasText) {
 			if (checkDrawable != null && progress >= 1f - Math.ulp(progress)) {
 				tempRect.set(bounds)
-				tempRect *= 0.6
+				tempRect.scale(0.6)
 				checkDrawable.bounds = tempRect
 				checkDrawable.draw(canvas)
 			} else {
@@ -138,14 +138,5 @@ class ReadingProgressDrawable(
 		paint.textSize = testTextSize
 		paint.getTextBounds(text, 0, text.length, tempRect)
 		return testTextSize * width / tempRect.width()
-	}
-
-	private operator fun Rect.timesAssign(factor: Double) {
-		val newWidth = (width() * factor).roundToInt()
-		val newHeight = (height() * factor).roundToInt()
-		inset(
-			(width() - newWidth) / 2,
-			(height() - newHeight) / 2,
-		)
 	}
 }

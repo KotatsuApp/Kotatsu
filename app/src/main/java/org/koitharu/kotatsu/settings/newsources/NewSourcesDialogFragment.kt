@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogOnboardBinding
@@ -17,12 +19,16 @@ import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
+@AndroidEntryPoint
 class NewSourcesDialogFragment :
 	AlertDialogFragment<DialogOnboardBinding>(),
 	SourceConfigListener,
 	DialogInterface.OnClickListener {
 
-	private val viewModel by viewModel<NewSourcesViewModel>()
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by viewModels<NewSourcesViewModel>()
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): DialogOnboardBinding {
 		return DialogOnboardBinding.inflate(inflater, container, false)
@@ -30,7 +36,7 @@ class NewSourcesDialogFragment :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val adapter = SourceConfigAdapter(this, get(), viewLifecycleOwner)
+		val adapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
 		binding.recyclerView.adapter = adapter
 		binding.textViewTitle.setText(R.string.new_sources_text)
 

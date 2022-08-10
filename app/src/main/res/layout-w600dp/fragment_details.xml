@@ -19,6 +19,7 @@
 			android:layout_height="0dp"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="16dp"
+			android:background="?colorSecondaryContainer"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="H,13:18"
@@ -44,19 +45,18 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
+			android:paddingHorizontal="16dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintVertical_bias="0">
+			app:layout_constraintTop_toTopOf="@+id/imageView_cover">
 
 			<TextView
 				android:id="@+id/textView_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="16dp"
-				android:layout_marginTop="16dp"
 				android:ellipsize="end"
-				android:maxLines="3"
+				android:maxLines="4"
+				android:padding="4dp"
 				android:textAppearance="?attr/textAppearanceHeadlineSmall"
 				tools:text="@tools:sample/lorem[15]" />
 
@@ -64,10 +64,9 @@
 				android:id="@+id/textView_subtitle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="16dp"
-				android:layout_marginTop="4dp"
 				android:ellipsize="end"
 				android:maxLines="3"
+				android:padding="4dp"
 				android:textAppearance="?attr/textAppearanceBodyMedium"
 				tools:text="@tools:sample/lorem[12]" />
 
@@ -75,78 +74,24 @@
 				android:id="@+id/textView_author"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="14dp"
-				android:layout_marginTop="4dp"
 				android:background="@drawable/list_selector"
-				android:padding="2dp"
+				android:padding="4dp"
 				android:singleLine="true"
 				android:textColor="?attr/colorTertiary"
 				android:textStyle="bold"
 				tools:text="@tools:sample/full_names" />
 
-			<TextView
-				android:id="@+id/textView_state"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="16dp"
-				android:layout_marginTop="4dp"
-				android:drawablePadding="4dp"
-				android:singleLine="true"
-				android:textAppearance="?attr/textAppearanceBodySmall"
-				tools:drawableStart="@drawable/ic_state_finished"
-				tools:text="Finished" />
-
-			<Space
+			<RatingBar
+				android:id="@+id/rating_bar"
+				style="?ratingBarStyleSmall"
 				android:layout_width="wrap_content"
-				android:layout_height="0dp"
-				android:layout_weight="1" />
-
-			<include
-				android:id="@+id/info_layout"
-				layout="@layout/layout_details_info"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content" />
-
-			<androidx.constraintlayout.widget.ConstraintLayout
-				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal">
-
-				<com.google.android.material.button.MaterialButton
-					android:id="@+id/button_favorite"
-					style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_marginStart="16dp"
-					android:contentDescription="@string/add_to_favourites"
-					android:paddingStart="0dp"
-					android:paddingEnd="0dp"
-					app:icon="@drawable/ic_heart_outline"
-					app:iconGravity="textTop"
-					app:iconPadding="0dp"
-					app:layout_constraintBottom_toBottomOf="@id/button_read"
-					app:layout_constraintDimensionRatio="1:1"
-					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toTopOf="@id/button_read" />
-
-				<com.google.android.material.button.MaterialButton
-					android:id="@+id/button_read"
-					style="@style/Widget.Material3.Button.TonalButton"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_marginStart="16dp"
-					android:layout_marginEnd="16dp"
-					android:enabled="false"
-					android:text="@string/read"
-					android:textAllCaps="false"
-					app:iconGravity="textStart"
-					app:iconPadding="8dp"
-					app:layout_constraintEnd_toEndOf="parent"
-					app:layout_constraintStart_toEndOf="@id/button_favorite"
-					app:layout_constraintTop_toTopOf="parent"
-					tools:text="@string/_continue" />
-
-			</androidx.constraintlayout.widget.ConstraintLayout>
+				android:isIndicator="true"
+				android:max="1"
+				android:numStars="5"
+				android:padding="4dp"
+				android:stepSize="0.5"
+				tools:rating="4" />
 
 		</LinearLayout>
 
@@ -157,6 +102,15 @@
 			app:barrierDirection="bottom"
 			app:barrierMargin="8dp"
 			app:constraint_referenced_ids="layout_titles,imageView_cover" />
+
+		<include
+			android:id="@+id/info_layout"
+			layout="@layout/layout_details_info"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
 
 		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"
@@ -169,7 +123,7 @@
 			app:chipSpacingVertical="6dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
+			app:layout_constraintTop_toBottomOf="@+id/info_layout" />
 
 		<TextView
 			android:id="@+id/textView_bookmarks"
@@ -193,6 +147,7 @@
 			android:layout_marginTop="4dp"
 			android:layout_marginBottom="6dp"
 			android:clipToPadding="false"
+			android:nestedScrollingEnabled="false"
 			android:orientation="horizontal"
 			android:paddingStart="12dp"
 			android:paddingEnd="12dp"

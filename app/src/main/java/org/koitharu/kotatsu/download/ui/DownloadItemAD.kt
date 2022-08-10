@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.download.ui
 
+import android.view.View
 import androidx.core.view.isVisible
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -9,20 +10,32 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
+import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.utils.ext.*
-import org.koitharu.kotatsu.utils.progress.ProgressJob
 
 fun downloadItemAD(
 	scope: CoroutineScope,
 	coil: ImageLoader,
-) = adapterDelegateViewBinding<ProgressJob<DownloadState>, ProgressJob<DownloadState>, ItemDownloadBinding>(
-	{ inflater, parent -> ItemDownloadBinding.inflate(inflater, parent, false) }
+) = adapterDelegateViewBinding<DownloadItem, DownloadItem, ItemDownloadBinding>(
+	{ inflater, parent -> ItemDownloadBinding.inflate(inflater, parent, false) },
 ) {
-
 	var job: Job? = null
 	val percentPattern = context.resources.getString(R.string.percent_string_pattern)
+
+	val clickListener = View.OnClickListener { v ->
+		when (v.id) {
+			R.id.button_cancel -> item.cancel()
+			R.id.button_resume -> item.resume()
+			else -> context.startActivity(
+				DetailsActivity.newIntent(context, item.progressValue.manga),
+			)
+		}
+	}
+	binding.buttonCancel.setOnClickListener(clickListener)
+	binding.buttonResume.setOnClickListener(clickListener)
+	itemView.setOnClickListener(clickListener)
 
 	bind {
 		job?.cancel()
@@ -31,7 +44,7 @@ fun downloadItemAD(
 				referer(state.manga.publicUrl)
 				placeholder(state.cover)
 				fallback(R.drawable.ic_placeholder)
-				error(R.drawable.ic_placeholder)
+				error(R.drawable.ic_error_placeholder)
 				allowRgb565(true)
 				enqueueWith(coil)
 			}
@@ -44,6 +57,8 @@ fun downloadItemAD(
 					binding.progressBar.isVisible = true
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
+					binding.buttonCancel.isVisible = false
+					binding.buttonResume.isVisible = false
 				}
 				is DownloadState.Done -> {
 					binding.textViewStatus.setText(R.string.download_complete)
@@ -51,6 +66,8 @@ fun downloadItemAD(
 					binding.progressBar.isVisible = false
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
+					binding.buttonCancel.isVisible = false
+					binding.buttonResume.isVisible = false
 				}
 				is DownloadState.Error -> {
 					binding.textViewStatus.setText(R.string.error_occurred)
@@ -59,6 +76,8 @@ fun downloadItemAD(
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.text = state.error.getDisplayMessage(context.resources)
 					binding.textViewDetails.isVisible = true
+					binding.buttonCancel.isVisible = state.canRetry
+					binding.buttonResume.isVisible = state.canRetry
 				}
 				is DownloadState.PostProcessing -> {
 					binding.textViewStatus.setText(R.string.processing_)
@@ -66,6 +85,8 @@ fun downloadItemAD(
 					binding.progressBar.isVisible = true
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
+					binding.buttonCancel.isVisible = false
+					binding.buttonResume.isVisible = false
 				}
 				is DownloadState.Preparing -> {
 					binding.textViewStatus.setText(R.string.preparing_)
@@ -73,6 +94,8 @@ fun downloadItemAD(
 					binding.progressBar.isVisible = true
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
+					binding.buttonCancel.isVisible = true
+					binding.buttonResume.isVisible = false
 				}
 				is DownloadState.Progress -> {
 					binding.textViewStatus.setText(R.string.manga_downloading_)
@@ -83,6 +106,8 @@ fun downloadItemAD(
 					binding.textViewPercent.text = percentPattern.format((state.percent * 100f).format(1))
 					binding.textViewPercent.isVisible = true
 					binding.textViewDetails.isVisible = false
+					binding.buttonCancel.isVisible = true
+					binding.buttonResume.isVisible = false
 				}
 				is DownloadState.Queued -> {
 					binding.textViewStatus.setText(R.string.queued)
@@ -90,13 +115,8 @@ fun downloadItemAD(
 					binding.progressBar.isVisible = false
 					binding.textViewPercent.isVisible = false
 					binding.textViewDetails.isVisible = false
-				}
-				is DownloadState.WaitingForNetwork -> {
-					binding.textViewStatus.setText(R.string.waiting_for_network)
-					binding.progressBar.isIndeterminate = false
-					binding.progressBar.isVisible = false
-					binding.textViewPercent.isVisible = false
-					binding.textViewDetails.isVisible = false
+					binding.buttonCancel.isVisible = true
+					binding.buttonResume.isVisible = false
 				}
 			}
 		}.launchIn(scope)

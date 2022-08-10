@@ -1,14 +1,17 @@
 package org.koitharu.kotatsu.scrobbling.shikimori.ui
 
 import androidx.lifecycle.MutableLiveData
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.model.ShikimoriUser
 
-class ShikimoriSettingsViewModel(
+class ShikimoriSettingsViewModel @AssistedInject constructor(
 	private val repository: ShikimoriRepository,
-	authCode: String?,
+	@Assisted authCode: String?,
 ) : BaseViewModel() {
 
 	val authorizationUrl: String
@@ -44,5 +47,11 @@ class ShikimoriSettingsViewModel(
 	private fun authorize(code: String) = launchJob(Dispatchers.Default) {
 		repository.authorize(code)
 		user.postValue(repository.loadUser())
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(authCode: String?): ShikimoriSettingsViewModel
 	}
 }

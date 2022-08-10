@@ -13,6 +13,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 		JSONObject().apply {
 			put("manga_id", e.mangaId)
 			put("category_id", e.categoryId)
+			put("sort_key", e.sortKey)
 			put("created_at", e.createdAt)
 		}
 	)
@@ -25,6 +26,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("title", e.title)
 			put("order", e.order)
 			put("track", e.track)
+			put("show_in_lib", e.isVisibleInLibrary)
 		}
 	)
 

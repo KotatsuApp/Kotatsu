@@ -9,15 +9,16 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.core.app.NotificationCompat.VISIBILITY_SECRET
 import androidx.core.content.ContextCompat
+import androidx.hilt.work.HiltWorker
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import androidx.work.*
 import coil.ImageLoader
 import coil.request.ImageRequest
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.*
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -30,17 +31,18 @@ import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.trySetForeground
 
-class TrackWorker(context: Context, workerParams: WorkerParameters) :
-	CoroutineWorker(context, workerParams),
-	KoinComponent {
+@HiltWorker
+class TrackWorker @AssistedInject constructor(
+	@Assisted context: Context,
+	@Assisted workerParams: WorkerParameters,
+	private val coil: ImageLoader,
+	private val settings: AppSettings,
+	private val tracker: Tracker,
+) : CoroutineWorker(context, workerParams) {
 
 	private val notificationManager by lazy {
 		applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 	}
-
-	private val coil by inject<ImageLoader>()
-	private val settings by inject<AppSettings>()
-	private val tracker by inject<Tracker>()
 
 	override suspend fun doWork(): Result {
 		if (!settings.isTrackerEnabled) {
@@ -105,7 +107,9 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		val colorPrimary = ContextCompat.getColor(applicationContext, R.color.blue_primary)
 		val builder = NotificationCompat.Builder(applicationContext, channelId)
 		val summary = applicationContext.resources.getQuantityString(
-			R.plurals.new_chapters, newChapters.size, newChapters.size
+			R.plurals.new_chapters,
+			newChapters.size,
+			newChapters.size,
 		)
 		with(builder) {
 			setContentText(summary)
@@ -113,8 +117,8 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 			setNumber(newChapters.size)
 			setLargeIcon(
 				coil.execute(
-					ImageRequest.Builder(applicationContext).data(manga.coverUrl).referer(manga.publicUrl).build()
-				).toBitmapOrNull()
+					ImageRequest.Builder(applicationContext).data(manga.coverUrl).referer(manga.publicUrl).build(),
+				).toBitmapOrNull(),
 			)
 			setSmallIcon(R.drawable.ic_stat_book_plus)
 			val style = NotificationCompat.InboxStyle(this)
@@ -130,8 +134,8 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 					applicationContext,
 					id,
 					intent,
-					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
-				)
+					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+				),
 			)
 			setAutoCancel(true)
 			setVisibility(if (manga.isNsfw) VISIBILITY_SECRET else VISIBILITY_PUBLIC)
@@ -160,7 +164,9 @@ class TrackWorker(context: Context, workerParams: WorkerParameters) :
 		val title = applicationContext.getString(R.string.check_for_new_chapters)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			val channel = NotificationChannel(
-				WORKER_CHANNEL_ID, title, NotificationManager.IMPORTANCE_LOW
+				WORKER_CHANNEL_ID,
+				title,
+				NotificationManager.IMPORTANCE_LOW,
 			)
 			channel.setShowBadge(false)
 			channel.enableVibration(false)

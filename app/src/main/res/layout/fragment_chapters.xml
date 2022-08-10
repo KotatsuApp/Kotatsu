@@ -1,34 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<Spinner
-		android:id="@+id/spinner_branches"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_alignParentStart="true"
-		android:layout_alignParentTop="true"
-		android:layout_alignParentEnd="true"
-		android:visibility="gone"
-		tools:listitem="@layout/item_branch"
-		tools:visibility="visible" />
-
-	<androidx.recyclerview.widget.RecyclerView
+	<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
 		android:id="@+id/recyclerView_chapters"
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:layout_alignWithParentIfMissing="true"
-		android:layout_below="@id/spinner_branches"
-		android:layout_alignParentStart="true"
-		android:layout_alignParentEnd="true"
-		android:layout_alignParentBottom="true"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		app:fastScrollEnabled="true"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_chapter" />
 
@@ -36,7 +19,6 @@
 		android:id="@+id/progressBar"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
 		android:layout_gravity="center"
 		android:indeterminate="true"
 		android:visibility="gone"
@@ -46,12 +28,11 @@
 		android:id="@+id/textView_holder"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_alignWithParentIfMissing="true"
-		android:layout_below="@id/spinner_branches"
-		android:layout_alignParentStart="true"
-		android:layout_alignParentEnd="true"
-		android:layout_alignParentBottom="true"
-		android:layout_margin="@dimen/margin_normal"
+		android:layout_gravity="center"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:layout_marginEnd="@dimen/margin_normal"
+		android:layout_marginBottom="@dimen/margin_normal"
 		android:gravity="center"
 		android:text="@string/chapters_empty"
 		android:textAlignment="center"
@@ -59,4 +40,4 @@
 		android:visibility="gone"
 		tools:visibility="visible" />
 
-</RelativeLayout>
+</FrameLayout>

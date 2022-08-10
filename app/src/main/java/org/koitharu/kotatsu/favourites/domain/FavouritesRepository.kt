@@ -1,7 +1,10 @@
 package org.koitharu.kotatsu.favourites.domain
 
 import androidx.room.withTransaction
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.*
+import org.koitharu.kotatsu.base.domain.ReversibleHandle
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.*
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -13,7 +16,8 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import org.koitharu.kotatsu.utils.ext.mapItems
 
-class FavouritesRepository(
+@Singleton
+class FavouritesRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val channels: TrackerNotificationChannels,
 ) {
@@ -49,15 +53,26 @@ class FavouritesRepository(
 		}.distinctUntilChanged()
 	}
 
+	fun observeCategoriesWithCovers(): Flow<Map<FavouriteCategory, List<String>>> {
+		return db.favouriteCategoriesDao.observeAll()
+			.map {
+				db.withTransaction {
+					val res = LinkedHashMap<FavouriteCategory, List<String>>()
+					for (entity in it) {
+						val cat = entity.toFavouriteCategory()
+						res[cat] = db.favouritesDao.findCovers(
+							categoryId = cat.id,
+							order = cat.order,
+						)
+					}
+					res
+				}
+			}
+	}
+
 	fun observeCategory(id: Long): Flow<FavouriteCategory?> {
 		return db.favouriteCategoriesDao.observe(id)
 			.map { it?.toFavouriteCategory() }
-	}
-
-	fun observeCategories(mangaId: Long): Flow<List<FavouriteCategory>> {
-		return db.favouritesDao.observe(mangaId).map { entity ->
-			entity?.categories?.map { it.toFavouriteCategory() }.orEmpty()
-		}.distinctUntilChanged()
 	}
 
 	fun observeCategoriesIds(mangaId: Long): Flow<Set<Long>> {
@@ -76,6 +91,8 @@ class FavouritesRepository(
 			categoryId = 0,
 			order = sortOrder.name,
 			track = isTrackerEnabled,
+			deletedAt = 0L,
+			isVisibleInLibrary = true,
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
 		val category = entity.toFavouriteCategory(id)
@@ -87,37 +104,37 @@ class FavouritesRepository(
 		db.favouriteCategoriesDao.update(id, title, sortOrder.name, isTrackerEnabled)
 	}
 
-	suspend fun addCategory(title: String): FavouriteCategory {
-		val entity = FavouriteCategoryEntity(
-			title = title,
-			createdAt = System.currentTimeMillis(),
-			sortKey = db.favouriteCategoriesDao.getNextSortKey(),
-			categoryId = 0,
-			order = SortOrder.NEWEST.name,
-			track = true,
-		)
-		val id = db.favouriteCategoriesDao.insert(entity)
-		val category = entity.toFavouriteCategory(id)
-		channels.createChannel(category)
-		return category
+	suspend fun updateCategory(id: Long, isVisibleInLibrary: Boolean) {
+		db.favouriteCategoriesDao.updateLibVisibility(id, isVisibleInLibrary)
 	}
 
-	suspend fun renameCategory(id: Long, title: String) {
-		db.favouriteCategoriesDao.updateTitle(id, title)
-		channels.renameChannel(id, title)
+	suspend fun updateCategoryTracking(id: Long, isTrackingEnabled: Boolean) {
+		db.favouriteCategoriesDao.updateTracking(id, isTrackingEnabled)
 	}
 
 	suspend fun removeCategory(id: Long) {
-		db.favouriteCategoriesDao.delete(id)
+		db.withTransaction {
+			db.favouriteCategoriesDao.delete(id)
+			db.favouritesDao.deleteAll(id)
+		}
 		channels.deleteChannel(id)
+	}
+
+	suspend fun removeCategories(ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				db.favouriteCategoriesDao.delete(id)
+				db.favouritesDao.deleteAll(id)
+			}
+		}
+		// run after transaction success
+		for (id in ids) {
+			channels.deleteChannel(id)
+		}
 	}
 
 	suspend fun setCategoryOrder(id: Long, order: SortOrder) {
 		db.favouriteCategoriesDao.updateOrder(id, order.name)
-	}
-
-	suspend fun setCategoryTracking(id: Long, isEnabled: Boolean) {
-		db.favouriteCategoriesDao.updateTracking(id, isEnabled)
 	}
 
 	suspend fun reorderCategories(orderedIds: List<Long>) {
@@ -135,26 +152,34 @@ class FavouritesRepository(
 				val tags = manga.tags.toEntities()
 				db.tagsDao.upsert(tags)
 				db.mangaDao.upsert(manga.toEntity(), tags)
-				val entity = FavouriteEntity(manga.id, categoryId, System.currentTimeMillis())
+				val entity = FavouriteEntity(
+					mangaId = manga.id,
+					categoryId = categoryId,
+					createdAt = System.currentTimeMillis(),
+					sortKey = 0,
+					deletedAt = 0L,
+				)
 				db.favouritesDao.insert(entity)
 			}
 		}
 	}
 
-	suspend fun removeFromFavourites(ids: Collection<Long>) {
+	suspend fun removeFromFavourites(ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.delete(id)
+				db.favouritesDao.delete(mangaId = id)
 			}
 		}
+		return ReversibleHandle { recoverToFavourites(ids) }
 	}
 
-	suspend fun removeFromCategory(categoryId: Long, ids: Collection<Long>) {
+	suspend fun removeFromCategory(categoryId: Long, ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.delete(categoryId, id)
+				db.favouritesDao.delete(categoryId = categoryId, mangaId = id)
 			}
 		}
+		return ReversibleHandle { recoverToCategory(categoryId, ids) }
 	}
 
 	private fun observeOrder(categoryId: Long): Flow<SortOrder> {
@@ -162,5 +187,21 @@ class FavouritesRepository(
 			.filterNotNull()
 			.map { x -> SortOrder(x.order, SortOrder.NEWEST) }
 			.distinctUntilChanged()
+	}
+
+	private suspend fun recoverToFavourites(ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				db.favouritesDao.recover(mangaId = id)
+			}
+		}
+	}
+
+	private suspend fun recoverToCategory(categoryId: Long, ids: Collection<Long>) {
+		db.withTransaction {
+			for (id in ids) {
+				db.favouritesDao.recover(mangaId = id, categoryId = categoryId)
+			}
+		}
 	}
 }

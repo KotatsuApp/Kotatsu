@@ -7,9 +7,9 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
@@ -21,10 +21,11 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikiMangaSelectionDecoration
 import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikimoriSelectorAdapter
-import org.koitharu.kotatsu.utils.BottomSheetToolbarController
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.withArgs
 
+@AndroidEntryPoint
 class ScrobblingSelectorBottomSheet :
 	BaseBottomSheet<SheetScrobblingSelectorBinding>(),
 	OnListItemClickListener<ScrobblerManga>,
@@ -34,8 +35,16 @@ class ScrobblingSelectorBottomSheet :
 	SearchView.OnQueryTextListener,
 	DialogInterface.OnKeyListener {
 
-	private val viewModel by viewModel<ScrobblingSelectorViewModel> {
-		parametersOf(requireNotNull(requireArguments().getParcelable<ParcelableManga>(MangaIntent.KEY_MANGA)).manga)
+	@Inject
+	lateinit var viewModelFactory: ScrobblingSelectorViewModel.Factory
+
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private val viewModel by assistedViewModels {
+		viewModelFactory.create(
+			requireNotNull(requireArguments().getParcelable<ParcelableManga>(MangaIntent.KEY_MANGA)).manga,
+		)
 	}
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingSelectorBinding {
@@ -50,9 +59,7 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		binding.toolbar.setNavigationOnClickListener { dismiss() }
-		addBottomSheetCallback(BottomSheetToolbarController(binding.toolbar))
-		val listAdapter = ShikimoriSelectorAdapter(viewLifecycleOwner, get(), this)
+		val listAdapter = ShikimoriSelectorAdapter(viewLifecycleOwner, coil, this)
 		val decoration = ShikiMangaSelectionDecoration(view.context)
 		with(binding.recyclerView) {
 			adapter = listAdapter
@@ -72,7 +79,7 @@ class ScrobblingSelectorBottomSheet :
 			dismiss()
 		}
 		viewModel.searchQuery.observe(viewLifecycleOwner) {
-			binding.toolbar.subtitle = it
+			binding.headerBar.toolbar.subtitle = it
 		}
 	}
 
@@ -107,7 +114,7 @@ class ScrobblingSelectorBottomSheet :
 			return false
 		}
 		viewModel.search(query)
-		binding.toolbar.menu.findItem(R.id.action_search)?.collapseActionView()
+		binding.headerBar.toolbar.menu.findItem(R.id.action_search)?.collapseActionView()
 		return true
 	}
 
@@ -115,7 +122,7 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			val menuItem = binding.toolbar.menu.findItem(R.id.action_search) ?: return false
+			val menuItem = binding.headerBar.toolbar.menu.findItem(R.id.action_search) ?: return false
 			if (menuItem.isActionViewExpanded) {
 				if (event?.action == KeyEvent.ACTION_UP) {
 					menuItem.collapseActionView()
@@ -134,8 +141,8 @@ class ScrobblingSelectorBottomSheet :
 	}
 
 	private fun initOptionsMenu() {
-		binding.toolbar.inflateMenu(R.menu.opt_shiki_selector)
-		val searchMenuItem = binding.toolbar.menu.findItem(R.id.action_search)
+		binding.headerBar.toolbar.inflateMenu(R.menu.opt_shiki_selector)
+		val searchMenuItem = binding.headerBar.toolbar.menu.findItem(R.id.action_search)
 		searchMenuItem.setOnActionExpandListener(this)
 		val searchView = searchMenuItem.actionView as SearchView
 		searchView.setOnQueryTextListener(this)

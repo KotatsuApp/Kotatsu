@@ -14,22 +14,30 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.ActivityCategoryEditBinding
-import org.koitharu.kotatsu.favourites.ui.categories.CategoriesActivity
+import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
-class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>(), AdapterView.OnItemClickListener,
-	View.OnClickListener, TextWatcher {
+@AndroidEntryPoint
+class FavouritesCategoryEditActivity :
+	BaseActivity<ActivityCategoryEditBinding>(),
+	AdapterView.OnItemClickListener,
+	View.OnClickListener,
+	TextWatcher {
 
-	private val viewModel by viewModel<FavouritesCategoryEditViewModel> {
-		parametersOf(intent.getLongExtra(EXTRA_ID, NO_ID))
+	@Inject
+	lateinit var viewModelFactory: FavouritesCategoryEditViewModel.Factory
+
+	private val viewModel by assistedViewModels<FavouritesCategoryEditViewModel> {
+		viewModelFactory.create(intent.getLongExtra(EXTRA_ID, NO_ID))
 	}
 	private var selectedSortOrder: SortOrder? = null
 
@@ -86,9 +94,11 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.scrollView.updatePadding(
+		binding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
+		)
+		binding.scrollView.updatePadding(
 			bottom = insets.bottom,
 		)
 		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -97,7 +107,7 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 	}
 
 	override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-		selectedSortOrder = CategoriesActivity.SORT_ORDERS.getOrNull(position)
+		selectedSortOrder = FavouriteCategoriesActivity.SORT_ORDERS.getOrNull(position)
 	}
 
 	private fun onCategoryChanged(category: FavouriteCategory?) {
@@ -127,7 +137,7 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 	}
 
 	private fun initSortSpinner() {
-		val entries = CategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
+		val entries = FavouriteCategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
 		val adapter = SortAdapter(this, entries)
 		binding.editSort.setAdapter(adapter)
 		binding.editSort.onItemClickListener = this
@@ -135,9 +145,9 @@ class FavouritesCategoryEditActivity : BaseActivity<ActivityCategoryEditBinding>
 
 	private fun getSelectedSortOrder(): SortOrder {
 		selectedSortOrder?.let { return it }
-		val entries = CategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
+		val entries = FavouriteCategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
 		val index = entries.indexOf(binding.editSort.text.toString())
-		return CategoriesActivity.SORT_ORDERS.getOrNull(index) ?: SortOrder.NEWEST
+		return FavouriteCategoriesActivity.SORT_ORDERS.getOrNull(index) ?: SortOrder.NEWEST
 	}
 
 	private class SortAdapter(

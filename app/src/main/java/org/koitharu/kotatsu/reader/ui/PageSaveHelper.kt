@@ -5,7 +5,9 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.net.toUri
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
+import javax.inject.Inject
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +16,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okio.IOException
-import org.koitharu.kotatsu.base.domain.MangaUtils
+import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -22,8 +24,8 @@ import org.koitharu.kotatsu.reader.domain.PageLoader
 private const val MAX_FILENAME_LENGTH = 10
 private const val EXTENSION_FALLBACK = "png"
 
-class PageSaveHelper(
-	context: Context,
+class PageSaveHelper @Inject constructor(
+	@ApplicationContext context: Context,
 ) {
 
 	private var continuation: Continuation<Uri>? = null
@@ -68,7 +70,7 @@ class PageSaveHelper(
 		var extension = name.substringAfterLast('.', "")
 		name = name.substringBeforeLast('.')
 		if (extension.length !in 2..4) {
-			val mimeType = MangaUtils.getImageMimeType(file)
+			val mimeType = MangaDataRepository.getImageMimeType(file)
 			extension = if (mimeType != null) {
 				MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: EXTENSION_FALLBACK
 			} else {

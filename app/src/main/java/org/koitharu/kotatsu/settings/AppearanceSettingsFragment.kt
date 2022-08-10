@@ -10,7 +10,9 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
 import com.google.android.material.color.DynamicColors
-import org.koin.android.ext.android.get
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.util.ActivityRecreationHandle
@@ -20,11 +22,14 @@ import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
-import java.util.*
 
+@AndroidEntryPoint
 class AppearanceSettingsFragment :
 	BasePreferenceFragment(R.string.appearance),
 	SharedPreferences.OnSharedPreferenceChangeListener {
+
+	@Inject
+	lateinit var activityRecreationHandle: ActivityRecreationHandle
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_appearance)
@@ -105,7 +110,7 @@ class AppearanceSettingsFragment :
 
 	private fun postRestart() {
 		view?.postDelayed(400) {
-			get<ActivityRecreationHandle>().recreateAll()
+			activityRecreationHandle.recreateAll()
 		}
 	}
 }

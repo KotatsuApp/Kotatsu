@@ -6,28 +6,40 @@ import android.os.Build
 import androidx.core.content.getSystemService
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.test.KoinTest
-import org.koin.test.inject
 import org.koitharu.kotatsu.SampleData
 import org.koitharu.kotatsu.awaitForIdle
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.history.domain.HistoryRepository
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class ShortcutsUpdaterTest : KoinTest {
+class ShortcutsUpdaterTest {
 
-	private val historyRepository by inject<HistoryRepository>()
-	private val shortcutsUpdater by inject<ShortcutsUpdater>()
-	private val database by inject<MangaDatabase>()
+	@get:Rule
+	var hiltRule = HiltAndroidRule(this)
+
+	@Inject
+	lateinit var historyRepository: HistoryRepository
+
+	@Inject
+	lateinit var shortcutsUpdater: ShortcutsUpdater
+
+	@Inject
+	lateinit var database: MangaDatabase
 
 	@Before
 	fun setUp() {
+		hiltRule.inject()
 		database.clearAllTables()
 	}
 
@@ -43,7 +55,7 @@ class ShortcutsUpdaterTest : KoinTest {
 			chapterId = SampleData.chapter.id,
 			page = 4,
 			scroll = 2,
-			percent = 0.3f
+			percent = 0.3f,
 		)
 		awaitUpdate()
 

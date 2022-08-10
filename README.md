@@ -21,11 +21,12 @@ Download APK directly from GitHub:
 * Reading history and bookmarks
 * Favourites organized by user-defined categories
 * Downloading manga and reading it offline. Third-party CBZ archives also supported
-* Tablet-optimized material design UI
+* Tablet-optimized Material You UI
 * Standard and Webtoon-optimized reader
 * Notifications about new chapters with updates feed
 * Shikimori integration (manga tracking)
 * Password/fingerprint protect access to the app
+* History and favourites synchronization across devices (coming soon)
 
 ### Screenshots
 

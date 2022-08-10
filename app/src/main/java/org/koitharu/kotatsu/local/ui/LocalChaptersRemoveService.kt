@@ -8,7 +8,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
-import org.koin.android.ext.android.inject
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
@@ -16,9 +17,21 @@ import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 
+@AndroidEntryPoint
 class LocalChaptersRemoveService : CoroutineIntentService() {
 
-	private val localMangaRepository by inject<LocalMangaRepository>()
+	@Inject
+	lateinit var localMangaRepository: LocalMangaRepository
+
+	override fun onCreate() {
+		super.onCreate()
+		isRunning = true
+	}
+
+	override fun onDestroy() {
+		isRunning = false
+		super.onDestroy()
+	}
 
 	override suspend fun processIntent(intent: Intent?) {
 		val manga = intent?.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga ?: return
@@ -28,7 +41,7 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 		localMangaRepository.deleteChapters(mangaWithChapters, chaptersIds)
 		sendBroadcast(
 			Intent(DownloadService.ACTION_DOWNLOAD_COMPLETE)
-				.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
+				.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false)),
 		)
 		ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
 	}
@@ -60,6 +73,9 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 	}
 
 	companion object {
+
+		var isRunning: Boolean = false
+			private set
 
 		private const val CHANNEL_ID = "local_processing"
 		private const val NOTIFICATION_ID = 21

@@ -12,6 +12,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.utils.ext.getAnimationDuration
 
 class ReadingProgressView @JvmOverloads constructor(
 	context: Context,
@@ -20,7 +21,7 @@ class ReadingProgressView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr), ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
 
 	private var percentAnimator: ValueAnimator? = null
-	private val animationDuration = context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+	private val animationDuration = context.getAnimationDuration(android.R.integer.config_shortAnimTime)
 
 	@StyleRes
 	private val drawableStyle: Int
@@ -76,7 +77,7 @@ class ReadingProgressView @JvmOverloads constructor(
 		percentAnimator?.cancel()
 		percentAnimator = ValueAnimator.ofFloat(
 			currentDrawable.progress.coerceAtLeast(0f),
-			value
+			value,
 		).apply {
 			duration = animationDuration
 			interpolator = AccelerateDecelerateInterpolator()

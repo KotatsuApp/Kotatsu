@@ -19,6 +19,7 @@
 			android:layout_height="0dp"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="16dp"
+			android:background="?colorSecondaryContainer"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="H,13:18"
@@ -28,7 +29,7 @@
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintWidth_percent="0.3"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-			tools:background="@tools:sample/backgrounds/scenic"
+			tools:background="@sample/covers[5]"
 			tools:ignore="ContentDescription,UnusedAttribute" />
 
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
@@ -47,12 +48,12 @@
 			android:layout_marginTop="16dp"
 			android:layout_marginEnd="16dp"
 			android:ellipsize="end"
-			android:maxLines="3"
+			android:maxLines="5"
 			android:textAppearance="?attr/textAppearanceHeadlineSmall"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@tools:sample/lorem[15]" />
+			tools:text="@sample/titles[5]" />
 
 		<TextView
 			android:id="@+id/textView_subtitle"
@@ -88,21 +89,23 @@
 			app:layout_constraintWidth_default="wrap"
 			tools:text="@tools:sample/full_names" />
 
-		<TextView
-			android:id="@+id/textView_state"
-			android:layout_width="0dp"
+		<RatingBar
+			android:id="@+id/rating_bar"
+			style="?ratingBarStyleSmall"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="4dp"
 			android:layout_marginEnd="16dp"
-			android:drawablePadding="4dp"
-			android:singleLine="true"
-			android:textAppearance="?attr/textAppearanceBodySmall"
+			android:isIndicator="true"
+			android:max="1"
+			android:numStars="5"
+			android:stepSize="0.5"
 			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_author"
-			tools:drawableStart="@drawable/ic_state_finished"
-			tools:text="Finished" />
+			tools:rating="4" />
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/barrier_header"
@@ -110,7 +113,7 @@
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
 			app:barrierMargin="8dp"
-			app:constraint_referenced_ids="imageView_cover,textView_state" />
+			app:constraint_referenced_ids="imageView_cover,rating_bar" />
 
 		<include
 			android:id="@+id/info_layout"
@@ -120,40 +123,6 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/barrier_header" />
-
-		<com.google.android.material.button.MaterialButton
-			android:id="@+id/button_favorite"
-			style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-			android:layout_width="0dp"
-			android:layout_height="0dp"
-			android:layout_marginStart="16dp"
-			android:contentDescription="@string/add_to_favourites"
-			android:paddingStart="0dp"
-			android:paddingEnd="0dp"
-			app:icon="@drawable/ic_heart_outline"
-			app:iconGravity="textTop"
-			app:iconPadding="0dp"
-			app:layout_constraintBottom_toBottomOf="@id/button_read"
-			app:layout_constraintDimensionRatio="1:1"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="@id/button_read" />
-
-		<com.google.android.material.button.MaterialButton
-			android:id="@+id/button_read"
-			style="@style/Widget.Material3.Button.TonalButton"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginEnd="16dp"
-			android:enabled="false"
-			android:text="@string/read"
-			android:textAllCaps="false"
-			app:iconGravity="textStart"
-			app:iconPadding="8dp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/button_favorite"
-			app:layout_constraintTop_toBottomOf="@id/info_layout"
-			tools:text="@string/_continue" />
 
 		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"
@@ -166,7 +135,7 @@
 			app:chipSpacingVertical="6dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/button_read" />
+			app:layout_constraintTop_toBottomOf="@+id/info_layout" />
 
 		<TextView
 			android:id="@+id/textView_bookmarks"
@@ -190,6 +159,7 @@
 			android:layout_marginTop="4dp"
 			android:layout_marginBottom="6dp"
 			android:clipToPadding="false"
+			android:nestedScrollingEnabled="false"
 			android:orientation="horizontal"
 			android:paddingStart="12dp"
 			android:paddingEnd="12dp"

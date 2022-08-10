@@ -5,13 +5,15 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"
 	tools:context=".details.ui.DetailsActivity">
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
+		android:elevation="0dp"
+		android:fitsSystemWindows="true"
+		android:stateListAnimator="@null"
 		app:elevation="0dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -22,17 +24,28 @@
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
-			android:theme="?attr/actionBarTheme">
+			android:background="@drawable/m3_tabs_background"
+			android:theme="?attr/actionBarTheme"
+			app:layout_scrollFlags="noScroll"
+			tools:ignore="PrivateResource"
+			tools:menu="@menu/opt_details">
 
-			<Spinner
-				android:id="@+id/spinner_branches"
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/button_read"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_gravity="end"
-				android:layout_marginEnd="8dp"
-				android:visibility="gone"
-				tools:listitem="@layout/item_branch"
-				tools:visibility="visible" />
+				android:layout_gravity="end|center_vertical"
+				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+				android:enabled="false"
+				android:text="@string/read"
+				android:textAllCaps="false"
+				app:iconGravity="textStart"
+				app:iconPadding="8dp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/appbar"
+				tools:enabled="true"
+				tools:icon="@drawable/ic_read" />
 
 		</com.google.android.material.appbar.MaterialToolbar>
 
@@ -43,11 +56,63 @@
 		android:name="org.koitharu.kotatsu.details.ui.DetailsFragment"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/guideline"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/appbar"
+		app:layout_constraintWidth_percent="0.5"
 		tools:layout="@layout/fragment_details" />
+
+	<ImageView
+		android:id="@+id/button_dropdown"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:padding="@dimen/margin_small"
+		android:src="@drawable/ic_expand_more"
+		app:layout_constraintBottom_toTopOf="@id/divider"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:paddingHorizontal="@dimen/margin_normal"
+		android:singleLine="true"
+		android:textAppearance="?textAppearanceTitleMedium"
+		app:layout_constraintBottom_toTopOf="@id/textView_subtitle"
+		app:layout_constraintEnd_toStartOf="@id/button_dropdown"
+		app:layout_constraintStart_toStartOf="@id/container_chapters"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		app:layout_constraintVertical_chainStyle="packed"
+		tools:text="@string/chapter_d_of_d" />
+
+	<TextView
+		android:id="@+id/textView_subtitle"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:paddingHorizontal="@dimen/margin_normal"
+		android:singleLine="true"
+		android:textAppearance="?textAppearanceTitleSmall"
+		android:textColor="?android:textColorSecondary"
+		android:visibility="gone"
+		app:layout_constraintBottom_toTopOf="@id/divider"
+		app:layout_constraintEnd_toStartOf="@id/button_dropdown"
+		app:layout_constraintStart_toStartOf="@id/container_chapters"
+		app:layout_constraintTop_toBottomOf="@id/textView_title"
+		tools:text="English"
+		tools:visibility="visible" />
+
+	<View
+		android:id="@+id/divider"
+		android:layout_width="0dp"
+		android:layout_height="1dp"
+		android:layout_marginTop="48dp"
+		android:background="?colorSecondaryContainer"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/container_details"
+		app:layout_constraintTop_toBottomOf="@id/appbar" />
 
 	<androidx.fragment.app.FragmentContainerView
 		android:id="@+id/container_chapters"
@@ -56,30 +121,8 @@
 		android:layout_height="0dp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toEndOf="@id/guideline"
-		app:layout_constraintTop_toBottomOf="@id/appbar"
+		app:layout_constraintStart_toEndOf="@id/container_details"
+		app:layout_constraintTop_toBottomOf="@id/divider"
 		tools:layout="@layout/fragment_chapters" />
-
-	<org.koitharu.kotatsu.base.ui.widgets.FadingSnackbar
-		android:id="@+id/snackbar"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom"
-		android:visibility="gone"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent" />
-
-	<View
-		android:id="@+id/guideline"
-		android:layout_width="1dp"
-		android:layout_height="0dp"
-		android:layout_marginBottom="6dp"
-		android:background="?colorOutline"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.6"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/appbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

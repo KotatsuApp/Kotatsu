@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView.NO_ID
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,10 +22,12 @@ import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
-class ScrobblingSelectorViewModel(
-	val manga: Manga,
-	private val scrobbler: Scrobbler,
+class ScrobblingSelectorViewModel @AssistedInject constructor(
+	@Assisted val manga: Manga,
+	scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 ) : BaseViewModel() {
+
+	private val scrobbler = scrobblers.first() // TODO support multiple scrobblers
 
 	private val shikiMangaList = MutableStateFlow<List<ScrobblerManga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
@@ -31,7 +36,7 @@ class ScrobblingSelectorViewModel(
 
 	val content: LiveData<List<ListModel>> = combine(
 		shikiMangaList.filterNotNull(),
-		hasNextPage
+		hasNextPage,
 	) { list, isHasNextPage ->
 		when {
 			list.isEmpty() -> listOf()
@@ -97,5 +102,11 @@ class ScrobblingSelectorViewModel(
 			scrobbler.linkManga(manga.id, targetId)
 			onClose.postCall(Unit)
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(manga: Manga): ScrobblingSelectorViewModel
 	}
 }

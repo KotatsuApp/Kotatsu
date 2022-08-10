@@ -11,20 +11,26 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
 
 private const val MIN_PASSWORD_LENGTH = 4
 
-class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWatcher,
-	View.OnClickListener, TextView.OnEditorActionListener, CompoundButton.OnCheckedChangeListener {
+@AndroidEntryPoint
+class ProtectSetupActivity :
+	BaseActivity<ActivitySetupProtectBinding>(),
+	TextWatcher,
+	View.OnClickListener,
+	TextView.OnEditorActionListener,
+	CompoundButton.OnCheckedChangeListener {
 
-	private val viewModel by viewModel<ProtectSetupViewModel>()
+	private val viewModel by viewModels<ProtectSetupViewModel>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -56,7 +62,7 @@ class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWa
 			basePadding + insets.left,
 			basePadding + insets.top,
 			basePadding + insets.right,
-			basePadding + insets.bottom
+			basePadding + insets.bottom,
 		)
 	}
 
@@ -64,7 +70,7 @@ class ProtectSetupActivity : BaseActivity<ActivitySetupProtectBinding>(), TextWa
 		when (v.id) {
 			R.id.button_cancel -> finish()
 			R.id.button_next -> viewModel.onNextClick(
-				password = binding.editPassword.text?.toString() ?: return
+				password = binding.editPassword.text?.toString() ?: return,
 			)
 		}
 	}

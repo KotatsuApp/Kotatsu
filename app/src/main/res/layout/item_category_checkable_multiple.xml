@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/checkedTextView"
+	android:layout_width="match_parent"
+	android:layout_height="?android:listPreferredItemHeightSmall"
+	android:background="?android:selectableItemBackground"
+	android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+	android:gravity="start|center_vertical"
+	android:paddingStart="?android:listPreferredItemPaddingStart"
+	android:paddingEnd="?android:listPreferredItemPaddingEnd"
+	android:textAppearance="?attr/textAppearanceBodyLarge"
+	tools:checked="true"
+	tools:text="@tools:sample/lorem[4]" />

@@ -13,22 +13,31 @@ import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
-import org.koin.android.ext.android.get
+import dagger.hilt.android.EntryPointAccessors
+import javax.inject.Inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
+import org.koitharu.kotatsu.base.ui.util.BaseActivityEntryPoint
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
+import org.koitharu.kotatsu.base.ui.util.inject
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
 	WindowInsetsDelegate.WindowInsetsListener {
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	protected lateinit var binding: B
 		private set
@@ -42,7 +51,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	val actionModeDelegate = ActionModeDelegate()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		val settings = get<AppSettings>()
+		EntryPointAccessors.fromApplication(this, BaseActivityEntryPoint::class.java).inject(this)
 		val isAmoled = settings.isAmoledTheme
 		val isDynamic = settings.isDynamicTheme
 		// TODO support DialogWhenLarge theme
@@ -96,25 +105,33 @@ abstract class BaseActivity<B : ViewBinding> :
 	protected fun isDarkAmoledTheme(): Boolean {
 		val uiMode = resources.configuration.uiMode
 		val isNight = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-		return isNight && get<AppSettings>().isAmoledTheme
+		return isNight && settings.isAmoledTheme
 	}
 
 	@CallSuper
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
 		actionModeDelegate.onSupportActionModeStarted(mode)
+		val actionModeColor = ColorUtils.compositeColors(
+			ContextCompat.getColor(this, com.google.android.material.R.color.m3_appbar_overlay_color),
+			getThemeColor(com.google.android.material.R.attr.colorSurface),
+		)
 		val insets = ViewCompat.getRootWindowInsets(binding.root)
 			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
-		val view = findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)
-		view?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top
+		findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar).apply {
+			setBackgroundColor(actionModeColor)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
 		}
+		window.statusBarColor = actionModeColor
 	}
 
 	@CallSuper
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		actionModeDelegate.onSupportActionModeFinished(mode)
+		window.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
 	}
 
 	override fun onBackPressed() {

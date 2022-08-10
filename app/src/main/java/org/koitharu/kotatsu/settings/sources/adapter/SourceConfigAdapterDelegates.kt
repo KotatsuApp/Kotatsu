@@ -9,15 +9,14 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.databinding.ItemExpandableBinding
 import org.koitharu.kotatsu.databinding.ItemFilterHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigDraggableBinding
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
-import org.koitharu.kotatsu.utils.ext.disposeImageRequest
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.textAndVisible
+import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 
 fun sourceConfigHeaderDelegate() =
 	adapterDelegateViewBinding<SourceConfigItem.Header, SourceConfigItem, ItemFilterHeaderBinding>(
@@ -62,8 +61,12 @@ fun sourceConfigItemDelegate(
 		binding.textViewTitle.text = item.source.title
 		binding.switchToggle.isChecked = item.isEnabled
 		binding.textViewDescription.textAndVisible = item.summary
-		binding.imageViewIcon.newImageRequest(item.faviconUrl)?.run {
-			error(R.drawable.ic_favicon_fallback)
+		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		binding.imageViewIcon.newImageRequest(item.source.faviconUri())?.run {
+			crossfade(context)
+			error(fallbackIcon)
+			placeholder(fallbackIcon)
+			fallback(fallbackIcon)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)
 		}

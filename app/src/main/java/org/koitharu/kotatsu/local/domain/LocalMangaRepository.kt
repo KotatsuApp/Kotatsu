@@ -8,13 +8,15 @@ import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import java.io.File
-import java.io.IOException
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.*
-import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNot
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -27,11 +29,11 @@ import org.koitharu.kotatsu.utils.CompositeMutex
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.readText
-import org.koitharu.kotatsu.utils.ext.resolveName
 
 private const val MAX_PARALLELISM = 4
 
-class LocalMangaRepository(private val storageManager: LocalStorageManager) : MangaRepository {
+@Singleton
+class LocalMangaRepository @Inject constructor(private val storageManager: LocalStorageManager) : MangaRepository {
 
 	override val source = MangaSource.LOCAL
 	private val filenameFilter = CbzFilter()
@@ -86,7 +88,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				entries.filter { x ->
 					!x.isDirectory && x.name.substringBeforeLast(
 						File.separatorChar,
-						""
+						"",
 					) == parent
 				}
 			}
@@ -138,11 +140,11 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				url = fileUri,
 				coverUrl = zipUri(
 					file,
-					entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty()
+					entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty(),
 				),
 				chapters = info.chapters?.map { c ->
 					c.copy(url = fileUri, source = MangaSource.LOCAL)
-				}
+				},
 			)
 		}
 		// fallback
@@ -211,12 +213,19 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 					return@runInterruptible info.copy2(
 						source = MangaSource.LOCAL,
 						url = fileUri,
-						chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
+						chapters = info.chapters?.map { c -> c.copy(url = fileUri) },
 					)
 				}
 			}
 			null
 		}
+	}
+
+	suspend fun watchReadableDirs(): Flow<File> {
+		val filter = TempFileFilter()
+		val dirs = storageManager.getReadableDirs()
+		return storageManager.observe(dirs)
+			.filterNot { filter.accept(it, it.name) }
 	}
 
 	private fun CoroutineScope.getFromFileAsync(
@@ -246,28 +255,6 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 	override suspend fun getPageUrl(page: MangaPage) = page.url
 
 	override suspend fun getTags() = emptySet<MangaTag>()
-
-	suspend fun import(uri: Uri) {
-		val contentResolver = storageManager.contentResolver
-		withContext(Dispatchers.IO) {
-			val name = contentResolver.resolveName(uri)
-				?: throw IOException("Cannot fetch name from uri: $uri")
-			if (!filenameFilter.isFileSupported(name)) {
-				throw UnsupportedFileException("Unsupported file on $uri")
-			}
-			val dest = File(
-				getOutputDir() ?: throw IOException("External files dir unavailable"),
-				name,
-			)
-			runInterruptible {
-				contentResolver.openInputStream(uri)?.use { source ->
-					dest.outputStream().use { output ->
-						source.copyTo(output)
-					}
-				}
-			} ?: throw IOException("Cannot open input stream: $uri")
-		}
-	}
 
 	suspend fun getOutputDir(): File? {
 		return storageManager.getDefaultWriteableDir()

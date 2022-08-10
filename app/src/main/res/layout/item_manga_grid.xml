@@ -3,15 +3,17 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	style="@style/Widget.Material3.CardView.Filled"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:clipChildren="false"
-	app:cardCornerRadius="12dp">
+	app:cardCornerRadius="16dp">
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="vertical">
+		android:orientation="vertical"
+		android:padding="4dp">
 
 		<FrameLayout
 			android:layout_width="match_parent"
@@ -22,10 +24,10 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
-				android:scaleType="centerCrop"
+				android:adjustViewBounds="true"
 				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 				tools:ignore="ContentDescription"
-				tools:src="@tools:sample/backgrounds/scenic[3]" />
+				tools:src="@sample/covers[5]" />
 
 			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 				android:id="@+id/progressView"
@@ -43,12 +45,13 @@
 			android:elegantTextHeight="false"
 			android:ellipsize="end"
 			android:lines="2"
-			android:padding="8dp"
+			android:paddingHorizontal="8dp"
+			android:paddingVertical="4dp"
 			android:textAppearance="?attr/textAppearanceTitleSmall"
 			android:textColor="?android:attr/textColorPrimary"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/thumbnail"
-			tools:text="Sample name" />
+			tools:text="@sample/titles[5]" />
 
 	</LinearLayout>
 

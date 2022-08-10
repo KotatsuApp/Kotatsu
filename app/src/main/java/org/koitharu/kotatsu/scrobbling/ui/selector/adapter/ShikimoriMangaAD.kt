@@ -18,9 +18,8 @@ fun shikimoriMangaAD(
 	coil: ImageLoader,
 	clickListener: OnListItemClickListener<ScrobblerManga>,
 ) = adapterDelegateViewBinding<ScrobblerManga, ListModel, ItemMangaListBinding>(
-	{ inflater, parent -> ItemMangaListBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemMangaListBinding.inflate(inflater, parent, false) },
 ) {
-
 	itemView.setOnClickListener {
 		clickListener.onItemClick(item, it)
 	}
@@ -31,7 +30,7 @@ fun shikimoriMangaAD(
 		binding.imageViewCover.newImageRequest(item.cover)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)

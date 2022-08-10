@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.ui.model.FeedItem
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 
 fun feedItemAD(
@@ -29,7 +30,7 @@ fun feedItemAD(
 		binding.imageViewCover.newImageRequest(item.imageUrl)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)

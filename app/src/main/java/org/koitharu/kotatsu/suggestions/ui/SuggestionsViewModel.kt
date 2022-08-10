@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.suggestions.ui
 
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -8,21 +10,23 @@ import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.onFirst
 
-class SuggestionsViewModel(
+@HiltViewModel
+class SuggestionsViewModel @Inject constructor(
 	repository: SuggestionRepository,
 	settings: AppSettings,
 ) : MangaListViewModel(settings) {
 
-	private val headerModel = ListHeader(null, R.string.suggestions, null)
-
 	override val content = combine(
 		repository.observeAll(),
-		createListModeFlow()
+		createListModeFlow(),
 	) { list, mode ->
 		when {
 			list.isEmpty() -> listOf(
@@ -31,12 +35,9 @@ class SuggestionsViewModel(
 					textPrimary = R.string.nothing_found,
 					textSecondary = R.string.text_suggestion_holder,
 					actionStringRes = 0,
-				)
+				),
 			)
-			else -> buildList<ListModel>(list.size + 1) {
-				add(headerModel)
-				list.toUi(this, mode)
-			}
+			else -> list.toUi(mode)
 		}
 	}.onStart {
 		loadingCounter.increment()
@@ -46,7 +47,7 @@ class SuggestionsViewModel(
 		it.toErrorState(canRetry = false)
 	}.asLiveDataDistinct(
 		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(LoadingState)
+		listOf(LoadingState),
 	)
 
 	override fun onRefresh() = Unit

@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.details.ui.scrobbling
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -14,11 +13,11 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.size.Scale
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.databinding.SheetScrobblingBinding
@@ -27,9 +26,12 @@ import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
+import org.koitharu.kotatsu.utils.ext.crossfade
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 
+@AndroidEntryPoint
 class ScrobblingInfoBottomSheet :
 	BaseBottomSheet<SheetScrobblingBinding>(),
 	AdapterView.OnItemSelectedListener,
@@ -37,8 +39,10 @@ class ScrobblingInfoBottomSheet :
 	View.OnClickListener,
 	PopupMenu.OnMenuItemClickListener {
 
-	private val viewModel by sharedViewModel<DetailsViewModel>()
-	private val coil by inject<ImageLoader>(mode = LazyThreadSafetyMode.NONE)
+	private val viewModel by activityViewModels<DetailsViewModel>()
+
+	@Inject
+	lateinit var coil: ImageLoader
 	private var menu: PopupMenu? = null
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingBinding {
@@ -92,7 +96,7 @@ class ScrobblingInfoBottomSheet :
 			R.id.button_menu -> menu?.show()
 			R.id.imageView_cover -> {
 				val coverUrl = viewModel.scrobblingInfo.value?.coverUrl ?: return
-				val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
+				val options = scaleUpActivityOptionsOf(v)
 				startActivity(ImageActivity.newIntent(v.context, coverUrl), options.toBundle())
 			}
 		}
@@ -110,12 +114,11 @@ class ScrobblingInfoBottomSheet :
 		ImageRequest.Builder(context ?: return)
 			.target(binding.imageViewCover)
 			.data(scrobbling.coverUrl)
-			.crossfade(true)
+			.crossfade(context)
 			.lifecycle(viewLifecycleOwner)
 			.placeholder(R.drawable.ic_placeholder)
 			.fallback(R.drawable.ic_placeholder)
-			.error(R.drawable.ic_placeholder)
-			.scale(Scale.FILL)
+			.error(R.drawable.ic_error_placeholder)
 			.enqueueWith(coil)
 	}
 
@@ -132,7 +135,7 @@ class ScrobblingInfoBottomSheet :
 				val url = viewModel.scrobblingInfo.value?.externalUrl ?: return false
 				val intent = Intent(Intent.ACTION_VIEW, url.toUri())
 				startActivity(
-					Intent.createChooser(intent, getString(R.string.open_in_browser))
+					Intent.createChooser(intent, getString(R.string.open_in_browser)),
 				)
 			}
 			R.id.action_unregister -> {

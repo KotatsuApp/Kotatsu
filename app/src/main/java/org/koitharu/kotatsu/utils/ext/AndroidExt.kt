@@ -1,17 +1,30 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.app.ActivityManager
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
+import android.content.OperationApplicationException
 import android.content.SharedPreferences
+import android.content.SyncResult
 import android.content.pm.ResolveInfo
+import android.database.SQLException
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import android.view.View
+import android.view.ViewPropertyAnimator
+import android.view.Window
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
+import com.google.android.material.elevation.ElevationOverlayProvider
+import kotlin.math.roundToLong
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
@@ -20,12 +33,16 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-
-val Context.connectivityManager: ConnectivityManager
-	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+import okio.IOException
+import org.json.JSONException
+import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.utils.InternalResourceHelper
 
 val Context.activityManager: ActivityManager?
 	get() = getSystemService(ACTIVITY_SERVICE) as? ActivityManager
+
+val Context.connectivityManager: ConnectivityManager
+	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 
@@ -72,6 +89,51 @@ fun Lifecycle.postDelayed(runnable: Runnable, delay: Long) {
 	}
 }
 
+fun SyncResult.onError(error: Throwable) {
+	when (error) {
+		is IOException -> stats.numIoExceptions++
+		is OperationApplicationException,
+		is SQLException,
+		-> databaseError = true
+		is JSONException -> stats.numParseExceptions++
+		else -> if (BuildConfig.DEBUG) throw error
+	}
+	error.printStackTraceDebug()
+}
+
+fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float, alphaFactor: Float = 0.7f) {
+	navigationBarColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+		!InternalResourceHelper.getBoolean(context, "config_navBarNeedsScrim", true)
+	) {
+		Color.TRANSPARENT
+	} else {
+		// Set navbar scrim 70% of navigationBarColor
+		ElevationOverlayProvider(context).compositeOverlayIfNeeded(
+			context.getThemeColor(android.R.attr.navigationBarColor, alphaFactor),
+			elevation,
+		)
+	}
+}
+
+val Context.animatorDurationScale: Float
+	get() = Settings.Global.getFloat(this.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
+
+fun ViewPropertyAnimator.applySystemAnimatorScale(context: Context): ViewPropertyAnimator = apply {
+	this.duration = (this.duration * context.animatorDurationScale).toLong()
+}
+
+fun Context.getAnimationDuration(@IntegerRes resId: Int): Long {
+	return (resources.getInteger(resId) * animatorDurationScale).roundToLong()
+}
+
 fun isLowRamDevice(context: Context): Boolean {
 	return context.activityManager?.isLowRamDevice ?: false
 }
+
+fun scaleUpActivityOptionsOf(view: View): ActivityOptions = ActivityOptions.makeScaleUpAnimation(
+	view,
+	0,
+	0,
+	view.width,
+	view.height,
+)

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/action_import"
+		android:orderInCategory="50"
+		android:title="@string/_import"
+		app:showAsAction="never" />
+
+	<item
+		android:id="@+id/action_categories"
+		android:orderInCategory="50"
+		android:title="@string/categories_"
+		app:showAsAction="never" />
+
+	<item
+		android:id="@+id/action_grid_size"
+		android:orderInCategory="50"
+		android:title="@string/grid_size"
+		app:showAsAction="never" />
+
+	<item
+		android:id="@+id/action_clear_history"
+		android:orderInCategory="50"
+		android:title="@string/clear_history"
+		app:showAsAction="never" />
+
+</menu>

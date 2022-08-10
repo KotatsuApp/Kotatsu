@@ -2,7 +2,6 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
@@ -14,9 +13,10 @@
 
 		<com.google.android.material.appbar.CollapsingToolbarLayout
 			android:id="@+id/collapsingToolbarLayout"
+			style="?attr/collapsingToolbarLayoutMediumStyle"
 			android:layout_width="match_parent"
-			android:layout_height="@dimen/toolbar_height_expanded"
-			app:layout_scrollFlags="scroll|exitUntilCollapsed"
+			android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
+			app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
 			app:toolbarId="@id/toolbar">
 
 			<com.google.android.material.appbar.MaterialToolbar
@@ -47,21 +47,10 @@
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:orientation="vertical"
+		android:paddingVertical="@dimen/list_spacing"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
-
-	<TextView
-		android:id="@+id/textView_holder"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:layout_margin="20dp"
-		android:gravity="center"
-		android:text="@string/text_categories_holder"
-		android:textAppearance="?attr/textAppearanceBody2"
-		android:visibility="gone"
-		tools:visibility="visible" />
 
 	<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 		android:id="@+id/fab_add"

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.suggestions.domain
 
 import androidx.room.withTransaction
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toEntities
@@ -11,7 +12,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 import org.koitharu.kotatsu.utils.ext.mapItems
 
-class SuggestionRepository(
+class SuggestionRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 
@@ -41,7 +42,7 @@ class SuggestionRepository(
 						mangaId = manga.id,
 						relevance = relevance,
 						createdAt = System.currentTimeMillis(),
-					)
+					),
 				)
 			}
 		}

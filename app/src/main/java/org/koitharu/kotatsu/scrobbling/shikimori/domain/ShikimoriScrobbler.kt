@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.scrobbling.shikimori.domain
 
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
@@ -11,7 +13,8 @@ import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 
 private const val RATING_MAX = 10f
 
-class ShikimoriScrobbler(
+@Singleton
+class ShikimoriScrobbler @Inject constructor(
 	private val repository: ShikimoriRepository,
 	db: MangaDatabase,
 ) : Scrobbler(db, ScrobblerService.SHIKIMORI) {

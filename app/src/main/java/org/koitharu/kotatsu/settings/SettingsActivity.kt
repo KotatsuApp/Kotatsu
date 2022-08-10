@@ -16,16 +16,20 @@ import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.appbar.AppBarLayout
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
-import org.koitharu.kotatsu.main.ui.AppBarOwner
+import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment
+import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
+import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
+@AndroidEntryPoint
 class SettingsActivity :
 	BaseActivity<ActivitySettingsBinding>(),
 	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
@@ -61,8 +65,9 @@ class SettingsActivity :
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		super.onCreateOptionsMenu(menu)
 		menuInflater.inflate(R.menu.opt_settings, menu)
-		return super.onCreateOptionsMenu(menu)
+		return true
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -86,7 +91,7 @@ class SettingsActivity :
 
 	override fun onPreferenceStartFragment(
 		caller: PreferenceFragmentCompat,
-		pref: Preference
+		pref: Preference,
 	): Boolean {
 		val fm = supportFragmentManager
 		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment ?: return false)
@@ -122,10 +127,12 @@ class SettingsActivity :
 			ACTION_READER -> ReaderSettingsFragment()
 			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
 			ACTION_SHIKIMORI -> ShikimoriSettingsFragment()
+			ACTION_HISTORY -> HistorySettingsFragment()
 			ACTION_TRACKER -> TrackerSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
-				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL
+				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
 			)
+			ACTION_MANAGE_SOURCES -> SourcesSettingsFragment()
 			else -> SettingsHeadersFragment()
 		}
 		supportFragmentManager.commit {
@@ -148,8 +155,10 @@ class SettingsActivity :
 		private const val ACTION_READER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_READER_SETTINGS"
 		private const val ACTION_SUGGESTIONS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SUGGESTIONS"
 		private const val ACTION_TRACKER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_TRACKER"
+		private const val ACTION_HISTORY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_HISTORY"
 		private const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
 		private const val ACTION_SHIKIMORI = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SHIKIMORI_SETTINGS"
+		private const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
 		private const val EXTRA_SOURCE = "source"
 
 		private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
@@ -171,6 +180,14 @@ class SettingsActivity :
 		fun newTrackerSettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_TRACKER)
+
+		fun newHistorySettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_HISTORY)
+
+		fun newManageSourcesIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_MANAGE_SOURCES)
 
 		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
 			Intent(context, SettingsActivity::class.java)

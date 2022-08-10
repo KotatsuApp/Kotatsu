@@ -10,22 +10,29 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
 
+		<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+			android:id="@+id/dragHandle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
 		<com.google.android.material.imageview.ShapeableImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
 			android:layout_marginStart="16dp"
-			android:layout_marginTop="16dp"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="H,13:18"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/dragHandle"
 			app:layout_constraintWidth_percent="0.3"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-			tools:background="@tools:sample/backgrounds/scenic"
+			tools:background="@sample/covers[9]"
 			tools:ignore="ContentDescription,UnusedAttribute" />
 
 		<TextView
@@ -33,27 +40,25 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
-			android:layout_marginTop="16dp"
 			android:layout_marginEnd="6dp"
 			android:ellipsize="end"
 			android:maxLines="2"
 			android:textAppearance="?attr/textAppearanceHeadlineSmall"
 			app:layout_constraintEnd_toStartOf="@id/button_menu"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@tools:sample/lorem[15]" />
+			app:layout_constraintTop_toBottomOf="@id/dragHandle"
+			tools:text="@sample/titles[9]" />
 
 		<ImageButton
 			android:id="@+id/button_menu"
 			style="?android:attr/actionOverflowButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
 			android:layout_marginEnd="8dp"
 			android:background="?selectableItemBackgroundBorderless"
 			android:contentDescription="@string/open_in_browser"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/dragHandle"
 			app:tint="?android:colorControlNormal" />
 
 		<RatingBar

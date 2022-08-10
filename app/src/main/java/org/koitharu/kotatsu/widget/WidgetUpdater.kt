@@ -5,12 +5,18 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import androidx.room.InvalidationTracker
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.widget.recent.RecentWidgetProvider
 import org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider
 
-class WidgetUpdater(private val context: Context) : InvalidationTracker.Observer(TABLE_HISTORY, TABLE_FAVOURITES) {
+@Singleton
+class WidgetUpdater @Inject constructor(
+	@ApplicationContext private val context: Context,
+) : InvalidationTracker.Observer(TABLE_HISTORY, TABLE_FAVOURITES) {
 
 	override fun onInvalidated(tables: MutableSet<String>) {
 		if (TABLE_HISTORY in tables) {

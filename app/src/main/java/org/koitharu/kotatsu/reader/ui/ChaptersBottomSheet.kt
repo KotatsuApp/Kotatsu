@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import org.koin.android.ext.android.get
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -16,12 +16,16 @@ import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.utils.BottomSheetToolbarController
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
+@AndroidEntryPoint
 class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemClickListener<ChapterListItem> {
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetChaptersBinding {
 		return SheetChaptersBinding.inflate(inflater, container, false)
@@ -29,11 +33,6 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		binding.toolbar.setNavigationOnClickListener { dismiss() }
-		behavior?.addBottomSheetCallback(BottomSheetToolbarController(binding.toolbar))
-		if (!resources.getBoolean(R.bool.is_tablet)) {
-			binding.toolbar.navigationIcon = null
-		}
 		val chapters = arguments?.getParcelable<ParcelableMangaChapters>(ARG_CHAPTERS)?.chapters
 		if (chapters.isNullOrEmpty()) {
 			dismissAllowingStateLoss()
@@ -41,7 +40,7 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 		}
 		val currentId = requireArguments().getLong(ARG_CURRENT_ID, 0L)
 		val currentPosition = chapters.indexOfFirst { it.id == currentId }
-		val dateFormat = get<AppSettings>().getDateFormat()
+		val dateFormat = settings.getDateFormat()
 		val items = chapters.mapIndexed { index, chapter ->
 			chapter.toListItem(
 				isCurrent = index == currentPosition,
@@ -90,9 +89,5 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 			putParcelable(ARG_CHAPTERS, ParcelableMangaChapters(chapters))
 			putLong(ARG_CURRENT_ID, currentId)
 		}.show(fm, TAG)
-
-		private fun <T> List<T>.asArrayList(): ArrayList<T> {
-			return this as? ArrayList<T> ?: ArrayList(this)
-		}
 	}
 }

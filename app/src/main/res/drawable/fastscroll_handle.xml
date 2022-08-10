@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:shape="rectangle">
+
+	<tools:solid android:color="#555555" />
+
+	<corners android:radius="@dimen/fastscroll_handle_radius" />
+
+	<size
+		android:height="@dimen/fastscroll_handle_height"
+		android:width="@dimen/fastscroll_handle_width" />
+
+</shape>

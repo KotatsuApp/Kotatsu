@@ -7,30 +7,22 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<com.google.android.material.appbar.AppBarLayout
-		android:id="@+id/appbar"
+	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
-		android:layout_height="?attr/actionBarSize">
+		android:layout_height="wrap_content"
+		app:title="@string/tracking">
 
-		<com.google.android.material.appbar.MaterialToolbar
-			android:id="@+id/toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:navigationIcon="?actionModeCloseDrawable"
-			app:title="@string/tracking">
+		<Button
+			android:id="@+id/button_done"
+			style="@style/Widget.Material3.Button.UnelevatedButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+			android:text="@string/done" />
 
-			<Button
-				android:id="@+id/button_done"
-				style="@style/Widget.Material3.Button.UnelevatedButton"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="end"
-				android:layout_marginEnd="4dp"
-				android:text="@string/done" />
-
-		</com.google.android.material.appbar.MaterialToolbar>
-
-	</com.google.android.material.appbar.AppBarLayout>
+	</org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar>
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView"

@@ -5,6 +5,12 @@ import android.content.Context
 import android.util.Base64
 import android.webkit.WebView
 import androidx.core.os.LocaleListCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -14,14 +20,12 @@ import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.toList
-import java.util.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
-class MangaLoaderContextImpl(
+@Singleton
+class MangaLoaderContextImpl @Inject constructor(
 	override val httpClient: OkHttpClient,
 	override val cookieJar: AndroidCookieJar,
-	private val androidContext: Context,
+	@ApplicationContext private val androidContext: Context,
 ) : MangaLoaderContext() {
 
 	@SuppressLint("SetJavaScriptEnabled")

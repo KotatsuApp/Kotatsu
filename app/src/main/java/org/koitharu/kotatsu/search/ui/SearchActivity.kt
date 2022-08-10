@@ -3,13 +3,12 @@ package org.koitharu.kotatsu.search.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
@@ -17,9 +16,10 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.utils.ext.showKeyboard
 
+@AndroidEntryPoint
 class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQueryTextListener {
 
-	private val searchSuggestionViewModel by viewModel<SearchSuggestionViewModel>()
+	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()
 	private lateinit var source: MangaSource
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,17 +45,12 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		with(binding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right
-			)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
-		}
+		binding.toolbar.updatePadding(
+			left = insets.left,
+			right = insets.right,
+		)
 		binding.container.updatePadding(
-			bottom = insets.bottom
+			bottom = insets.bottom,
 		)
 	}
 

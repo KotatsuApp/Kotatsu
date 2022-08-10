@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:padding="@dimen/screen_padding">
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:drawablePadding="16dp"
+		android:gravity="center_horizontal"
+		android:text="@string/sync_title"
+		android:textAppearance="?textAppearanceHeadline5"
+		app:drawableTint="?colorPrimary"
+		app:drawableTopCompat="@drawable/ic_sync"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<ViewSwitcher
+		android:id="@+id/switcher"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<RelativeLayout
+			android:id="@+id/page_email"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<TextView
+				android:id="@+id/textView_subtitle"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_alignParentStart="true"
+				android:layout_alignParentTop="true"
+				android:layout_alignParentEnd="true"
+				android:layout_marginTop="12dp"
+				android:gravity="center_horizontal"
+				android:text="@string/email_enter_hint"
+				android:textAppearance="?textAppearanceSubtitle1" />
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/layout_email"
+				style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/textView_subtitle"
+				android:layout_alignParentStart="true"
+				android:layout_alignParentEnd="true"
+				android:layout_marginTop="30dp"
+				app:errorIconDrawable="@null"
+				app:helperText="You can sign in into an existing account or create a new one"
+				app:hintEnabled="false">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/edit_email"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:autofillHints="emailAddress"
+					android:imeOptions="actionDone"
+					android:inputType="textEmailAddress"
+					android:singleLine="true"
+					android:textSize="16sp"
+					tools:text="test@mail.com" />
+
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<Button
+				android:id="@+id/button_cancel"
+				style="@style/Widget.Material3.Button.OutlinedButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentStart="true"
+				android:layout_alignParentBottom="true"
+				android:text="@android:string/cancel" />
+
+			<Button
+				android:id="@+id/button_next"
+				style="@style/Widget.Material3.Button.TonalButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentEnd="true"
+				android:layout_alignParentBottom="true"
+				android:enabled="false"
+				android:text="@string/next"
+				tools:ignore="RelativeOverlap" />
+
+		</RelativeLayout>
+
+		<RelativeLayout
+			android:id="@+id/page_password"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<TextView
+				android:id="@+id/textView_subtitle_2"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_alignParentStart="true"
+				android:layout_alignParentTop="true"
+				android:layout_alignParentEnd="true"
+				android:layout_marginTop="12dp"
+				android:gravity="center_horizontal"
+				android:text="@string/enter_email_text"
+				android:textAppearance="?textAppearanceSubtitle1" />
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/layout_password"
+				style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/textView_subtitle_2"
+				android:layout_alignParentStart="true"
+				android:layout_alignParentEnd="true"
+				android:layout_marginTop="30dp"
+				app:endIconMode="password_toggle"
+				app:errorIconDrawable="@null"
+				app:helperText="You can sign in into an existing account or create a new one"
+				app:hintEnabled="false">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/edit_password"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:autofillHints="password"
+					android:imeOptions="actionDone"
+					android:inputType="textPassword"
+					android:maxLength="24"
+					android:singleLine="true"
+					android:textSize="16sp"
+					tools:text="qwerty" />
+
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<Button
+				android:id="@+id/button_back"
+				style="@style/Widget.Material3.Button.OutlinedButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentStart="true"
+				android:layout_alignParentBottom="true"
+				android:text="@string/back" />
+
+			<Button
+				android:id="@+id/button_done"
+				style="@style/Widget.Material3.Button.TonalButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentEnd="true"
+				android:layout_alignParentBottom="true"
+				android:enabled="false"
+				android:text="@string/done"
+				tools:ignore="RelativeOverlap" />
+
+		</RelativeLayout>
+	</ViewSwitcher>
+
+	<FrameLayout
+		android:id="@+id/layout_progress"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:visibility="gone">
+
+		<com.google.android.material.progressindicator.CircularProgressIndicator
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:indeterminate="true" />
+
+	</FrameLayout>
+
+</LinearLayout>

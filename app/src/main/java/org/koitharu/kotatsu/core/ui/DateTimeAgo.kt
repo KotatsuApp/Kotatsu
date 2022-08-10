@@ -15,6 +15,8 @@ sealed class DateTimeAgo : ListModel {
 		override fun format(resources: Resources): String {
 			return resources.getString(R.string.just_now)
 		}
+
+		override fun toString() = "just_now"
 	}
 
 	class MinutesAgo(val minutes: Int) : DateTimeAgo() {
@@ -31,6 +33,8 @@ sealed class DateTimeAgo : ListModel {
 		}
 
 		override fun hashCode(): Int = minutes
+
+		override fun toString() = "minutes_ago_$minutes"
 	}
 
 	class HoursAgo(val hours: Int) : DateTimeAgo() {
@@ -46,18 +50,24 @@ sealed class DateTimeAgo : ListModel {
 		}
 
 		override fun hashCode(): Int = hours
+
+		override fun toString() = "hours_ago_$hours"
 	}
 
 	object Today : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return resources.getString(R.string.today)
 		}
+
+		override fun toString() = "today"
 	}
 
 	object Yesterday : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return resources.getString(R.string.yesterday)
 		}
+
+		override fun toString() = "yesterday"
 	}
 
 	class DaysAgo(val days: Int) : DateTimeAgo() {
@@ -73,6 +83,8 @@ sealed class DateTimeAgo : ListModel {
 		}
 
 		override fun hashCode(): Int = days
+
+		override fun toString() = "days_ago_$days"
 	}
 
 	class Absolute(private val date: Date) : DateTimeAgo() {
@@ -97,11 +109,15 @@ sealed class DateTimeAgo : ListModel {
 		override fun hashCode(): Int {
 			return day
 		}
+
+		override fun toString() = "abs_$day"
 	}
 
 	object LongAgo : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return resources.getString(R.string.long_ago)
 		}
+
+		override fun toString() = "long_ago"
 	}
 }

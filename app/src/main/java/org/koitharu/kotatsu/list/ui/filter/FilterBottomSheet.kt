@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
-import org.koitharu.kotatsu.utils.BottomSheetToolbarController
+import org.koitharu.kotatsu.utils.ext.parentFragmentViewModels
 
 class FilterBottomSheet :
 	BaseBottomSheet<SheetFilterBinding>(),
@@ -19,9 +19,7 @@ class FilterBottomSheet :
 	SearchView.OnQueryTextListener,
 	DialogInterface.OnKeyListener {
 
-	private val viewModel by sharedViewModel<RemoteListViewModel>(
-		owner = { requireParentFragment() }
-	)
+	private val viewModel by parentFragmentViewModels<RemoteListViewModel>()
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		return super.onCreateDialog(savedInstanceState).also {
@@ -35,11 +33,6 @@ class FilterBottomSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		binding.toolbar.setNavigationOnClickListener { dismiss() }
-		behavior?.addBottomSheetCallback(BottomSheetToolbarController(binding.toolbar))
-		if (!resources.getBoolean(R.bool.is_tablet)) {
-			binding.toolbar.navigationIcon = null
-		}
 		val adapter = FilterAdapter(viewModel)
 		binding.recyclerView.adapter = adapter
 		viewModel.filterItems.observe(viewLifecycleOwner, adapter::setItems)
@@ -67,7 +60,7 @@ class FilterBottomSheet :
 
 	override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			val menuItem = binding.toolbar.menu.findItem(R.id.action_search) ?: return false
+			val menuItem = binding.headerBar.toolbar.menu.findItem(R.id.action_search) ?: return false
 			if (menuItem.isActionViewExpanded) {
 				if (event?.action == KeyEvent.ACTION_UP) {
 					menuItem.collapseActionView()
@@ -79,8 +72,8 @@ class FilterBottomSheet :
 	}
 
 	private fun initOptionsMenu() {
-		binding.toolbar.inflateMenu(R.menu.opt_filter)
-		val searchMenuItem = binding.toolbar.menu.findItem(R.id.action_search)
+		binding.headerBar.toolbar.inflateMenu(R.menu.opt_filter)
+		val searchMenuItem = binding.headerBar.toolbar.menu.findItem(R.id.action_search)
 		searchMenuItem.setOnActionExpandListener(this)
 		val searchView = searchMenuItem.actionView as SearchView
 		searchView.setOnQueryTextListener(this)

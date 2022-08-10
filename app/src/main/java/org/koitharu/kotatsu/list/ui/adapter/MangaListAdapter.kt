@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.*
 import kotlin.jvm.internal.Intrinsics
 
-class MangaListAdapter(
+open class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
@@ -25,9 +25,8 @@ class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(listener))
 			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(listener))
 			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(listener))
-			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
-			.addDelegate(ITEM_TYPE_FILTER, currentFilterAD(listener))
-			.addDelegate(ITEM_TYPE_HEADER_FILTER, listHeaderWithFilterAD(listener))
+			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD(listener))
+			.addDelegate(ITEM_TYPE_HEADER_2, listHeader2AD(listener))
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {
@@ -45,6 +44,11 @@ class MangaListAdapter(
 			oldItem is DateTimeAgo && newItem is DateTimeAgo -> {
 				oldItem == newItem
 			}
+			oldItem is ListHeader && newItem is ListHeader -> {
+				oldItem.textRes == newItem.textRes &&
+					oldItem.text == newItem.text &&
+					oldItem.dateTimeAgo == newItem.dateTimeAgo
+			}
 			else -> oldItem.javaClass == newItem.javaClass
 		}
 
@@ -59,10 +63,9 @@ class MangaListAdapter(
 					if (oldItem.progress != newItem.progress) {
 						PAYLOAD_PROGRESS
 					} else {
-						Unit
 					}
 				}
-				is CurrentFilterModel -> Unit
+				is ListHeader2 -> Unit
 				else -> super.getChangePayload(oldItem, newItem)
 			}
 		}
@@ -80,8 +83,7 @@ class MangaListAdapter(
 		const val ITEM_TYPE_ERROR_FOOTER = 7
 		const val ITEM_TYPE_EMPTY = 8
 		const val ITEM_TYPE_HEADER = 9
-		const val ITEM_TYPE_FILTER = 10
-		const val ITEM_TYPE_HEADER_FILTER = 11
+		const val ITEM_TYPE_HEADER_2 = 10
 
 		val PAYLOAD_PROGRESS = Any()
 	}

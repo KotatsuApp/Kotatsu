@@ -1,12 +1,10 @@
 package org.koitharu.kotatsu.settings
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.view.View
 import androidx.preference.Preference
-import org.koin.android.ext.android.get
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -17,7 +15,7 @@ class NotificationSettingsLegacyFragment :
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private val ringtonePickContract = registerForActivityResult(
-		RingtonePickContract(get<Context>().getString(R.string.notification_sound))
+		RingtonePickContract(R.string.notification_sound),
 	) { uri ->
 		settings.notificationSound = uri ?: return@registerForActivityResult
 		findPreference<Preference>(AppSettings.KEY_NOTIFICATIONS_SOUND)?.run {

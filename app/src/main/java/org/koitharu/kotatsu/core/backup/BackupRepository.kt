@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.backup
 
 import androidx.room.withTransaction
+import javax.inject.Inject
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
@@ -10,7 +11,7 @@ import org.koitharu.kotatsu.parsers.util.json.mapJSON
 
 private const val PAGE_SIZE = 10
 
-class BackupRepository(private val db: MangaDatabase) {
+class BackupRepository @Inject constructor(private val db: MangaDatabase) {
 
 	suspend fun dumpHistory(): BackupEntry {
 		var offset = 0

@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.search.ui.suggestion.model
 
-import kotlinx.coroutines.flow.MutableStateFlow
+import android.net.Uri
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -52,26 +52,26 @@ sealed interface SearchSuggestionItem {
 		}
 	}
 
-	class Header(
+	class Source(
 		val source: MangaSource,
-		val isChecked: MutableStateFlow<Boolean>,
+		val isEnabled: Boolean,
 	) : SearchSuggestionItem {
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
 			if (javaClass != other?.javaClass) return false
 
-			other as Header
+			other as Source
 
 			if (source != other.source) return false
-			if (isChecked !== other.isChecked) return false
+			if (isEnabled != other.isEnabled) return false
 
 			return true
 		}
 
 		override fun hashCode(): Int {
 			var result = source.hashCode()
-			result = 31 * result + isChecked.hashCode()
+			result = 31 * result + isEnabled.hashCode()
 			return result
 		}
 	}

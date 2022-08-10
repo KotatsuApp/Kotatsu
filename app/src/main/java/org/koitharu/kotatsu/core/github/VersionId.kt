@@ -63,6 +63,9 @@ class VersionId(
 	}
 }
 
+val VersionId.isStable: Boolean
+	get() = variantType.isEmpty()
+
 fun VersionId(versionName: String): VersionId {
 	val parts = versionName.substringBeforeLast('-').split('.')
 	val variant = versionName.substringAfterLast('-', "")

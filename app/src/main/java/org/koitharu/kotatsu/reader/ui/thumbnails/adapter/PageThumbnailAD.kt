@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
+import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.setTextColorAttr
 
@@ -23,13 +24,13 @@ fun pageThumbnailAD(
 	loader: PageLoader,
 	clickListener: OnListItemClickListener<MangaPage>,
 ) = adapterDelegateViewBinding<PageThumbnail, PageThumbnail, ItemPageThumbBinding>(
-	{ inflater, parent -> ItemPageThumbBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemPageThumbBinding.inflate(inflater, parent, false) },
 ) {
 	var job: Job? = null
 	val gridWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
 	val thumbSize = Size(
 		width = gridWidth,
-		height = (gridWidth * 13f / 18f).toInt()
+		height = (gridWidth * 13f / 18f).toInt(),
 	)
 
 	suspend fun loadPageThumbnail(item: PageThumbnail): Drawable? = withContext(Dispatchers.Default) {
@@ -41,7 +42,7 @@ fun pageThumbnailAD(
 					.size(thumbSize)
 					.scale(Scale.FILL)
 					.allowRgb565(true)
-					.build()
+					.build(),
 			).drawable
 		}?.let { drawable ->
 			return@withContext drawable
@@ -51,8 +52,8 @@ fun pageThumbnailAD(
 			ImageRequest.Builder(context)
 				.data(file)
 				.size(thumbSize)
-				.allowRgb565(true)
-				.build()
+				.allowRgb565(isLowRamDevice(context))
+				.build(),
 		).drawable
 	}
 
