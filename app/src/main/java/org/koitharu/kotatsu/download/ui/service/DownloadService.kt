@@ -129,6 +129,8 @@ class DownloadService : BaseService() {
 				}
 				if (job.isCancelled) {
 					notificationItem.dismiss()
+					jobs.remove(startId)
+					jobCount.value = jobs.size
 				} else {
 					notificationItem.notify(job.progressValue, -1L)
 				}

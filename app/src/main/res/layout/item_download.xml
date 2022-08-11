@@ -77,10 +77,10 @@
 		android:id="@+id/textView_percent"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_marginEnd="8dp"
 		android:textAppearance="?attr/textAppearanceBodyMedium"
 		app:layout_constraintBaseline_toBaselineOf="@id/textView_status"
 		app:layout_constraintEnd_toEndOf="parent"
-		android:layout_marginEnd="8dp"
 		tools:text="25%" />
 
 	<TextView
@@ -97,5 +97,31 @@
 		app:layout_constraintStart_toEndOf="@id/card_cover"
 		app:layout_constraintTop_toBottomOf="@id/textView_status"
 		tools:text="@tools:sample/lorem[3]" />
+
+	<Button
+		android:id="@+id/button_cancel"
+		style="?buttonBarButtonStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:text="@android:string/cancel"
+		android:visibility="gone"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/textView_details"
+		tools:visibility="visible" />
+
+
+	<Button
+		android:id="@+id/button_resume"
+		style="?buttonBarButtonStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:text="@string/try_again"
+		android:visibility="gone"
+		app:layout_constraintEnd_toStartOf="@id/button_cancel"
+		app:layout_constraintTop_toBottomOf="@id/textView_details"
+		tools:visibility="visible" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,7 @@ import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
 import androidx.core.text.parseAsHtml
 import androidx.core.util.forEach
+import androidx.core.util.isNotEmpty
 import androidx.core.util.size
 import com.google.android.material.R as materialR
 import org.koitharu.kotatsu.R
@@ -98,7 +99,7 @@ class DownloadNotification(private val context: Context) {
 			style.addLine(
 				context.getString(
 					R.string.download_summary_pattern,
-					state.manga.title.ellipsize(10).htmlEncode(),
+					state.manga.title.ellipsize(16).htmlEncode(),
 					summary.htmlEncode(),
 				).parseAsHtml(HtmlCompat.FROM_HTML_MODE_LEGACY),
 			)
@@ -113,15 +114,17 @@ class DownloadNotification(private val context: Context) {
 		when (progress) {
 			1f -> groupBuilder.setProgress(0, 0, false)
 			0f -> groupBuilder.setProgress(1, 0, true)
-			else -> groupBuilder.setProgress(100, (progress * 100f).toInt(), progress == 0f)
+			else -> groupBuilder.setProgress(100, (progress * 100f).toInt(), false)
 		}
 		return groupBuilder.build()
 	}
 
 	fun detach() {
 		manager.cancel(ID_GROUP)
-		val notification = buildGroupNotification()
-		manager.notify(ID_GROUP_DETACHED, notification)
+		if (states.isNotEmpty() && Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+			val notification = buildGroupNotification()
+			manager.notify(ID_GROUP_DETACHED, notification)
+		}
 	}
 
 	fun newItem(startId: Int) = Item(startId)
@@ -171,6 +174,8 @@ class DownloadNotification(private val context: Context) {
 			builder.setStyle(null)
 			builder.setLargeIcon(state.cover?.toBitmap())
 			builder.clearActions()
+			builder.setSubText(null)
+			builder.setShowWhen(false)
 			builder.setVisibility(
 				if (state.manga.isNsfw) {
 					NotificationCompat.VISIBILITY_PRIVATE
@@ -196,6 +201,8 @@ class DownloadNotification(private val context: Context) {
 					builder.setCategory(null)
 					builder.setStyle(null)
 					builder.setOngoing(false)
+					builder.setShowWhen(true)
+					builder.setWhen(System.currentTimeMillis())
 					builder.priority = NotificationCompat.PRIORITY_DEFAULT
 				}
 				is DownloadState.Error -> {
@@ -207,6 +214,8 @@ class DownloadNotification(private val context: Context) {
 					builder.setAutoCancel(!state.canRetry)
 					builder.setOngoing(state.canRetry)
 					builder.setCategory(NotificationCompat.CATEGORY_ERROR)
+					builder.setShowWhen(true)
+					builder.setWhen(System.currentTimeMillis())
 					builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
 					if (state.canRetry) {
 						builder.addAction(cancelAction)
@@ -239,12 +248,13 @@ class DownloadNotification(private val context: Context) {
 				}
 				is DownloadState.Progress -> {
 					builder.setProgress(state.max, state.progress, false)
+					val percent = context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
 					if (timeLeft > 0L) {
 						val eta = DateUtils.getRelativeTimeSpanString(timeLeft, 0L, DateUtils.SECOND_IN_MILLIS)
 						builder.setContentText(eta)
+						builder.setSubText(percent)
 					} else {
-						val percent = (state.percent * 100).format()
-						builder.setContentText(context.getString(R.string.percent_string_pattern, percent))
+						builder.setContentText(percent)
 					}
 					builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 					builder.setStyle(null)
