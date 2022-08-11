@@ -374,4 +374,5 @@
 	<string name="import_completed">Import completed</string>
 	<string name="import_completed_hint">You can delete the original file from storage to save space</string>
 	<string name="import_will_start_soon">Import will start soon</string>
+	<string name="feed">Feed</string>
 </resources>
