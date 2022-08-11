@@ -86,7 +86,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				entries.filter { x ->
 					!x.isDirectory && x.name.substringBeforeLast(
 						File.separatorChar,
-						""
+						"",
 					) == parent
 				}
 			}
@@ -138,11 +138,11 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				url = fileUri,
 				coverUrl = zipUri(
 					file,
-					entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty()
+					entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty(),
 				),
 				chapters = info.chapters?.map { c ->
 					c.copy(url = fileUri, source = MangaSource.LOCAL)
-				}
+				},
 			)
 		}
 		// fallback
@@ -211,7 +211,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 					return@runInterruptible info.copy2(
 						source = MangaSource.LOCAL,
 						url = fileUri,
-						chapters = info.chapters?.map { c -> c.copy(url = fileUri) }
+						chapters = info.chapters?.map { c -> c.copy(url = fileUri) },
 					)
 				}
 			}
@@ -288,7 +288,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 		locks.lock(id)
 	}
 
-	suspend fun unlockManga(id: Long) {
+	fun unlockManga(id: Long) {
 		locks.unlock(id)
 	}
 

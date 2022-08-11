@@ -18,7 +18,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import org.koin.android.ext.android.get
 import org.koin.core.context.GlobalContext
 import org.koitharu.kotatsu.BuildConfig
@@ -29,7 +28,6 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.download.domain.DownloadState
-import org.koitharu.kotatsu.download.domain.WakeLockNode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.throttle
@@ -41,6 +39,7 @@ class DownloadService : BaseService() {
 
 	private lateinit var downloadManager: DownloadManager
 	private lateinit var downloadNotification: DownloadNotification
+	private lateinit var wakeLock: PowerManager.WakeLock
 
 	private val jobs = LinkedHashMap<Int, PausingProgressJob<DownloadState>>()
 	private val jobCount = MutableStateFlow(0)
@@ -50,11 +49,10 @@ class DownloadService : BaseService() {
 		super.onCreate()
 		isRunning = true
 		downloadNotification = DownloadNotification(this)
-		val wakeLock = (applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager)
+		wakeLock = (applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
-		downloadManager = get<DownloadManager.Factory>().create(
-			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1)),
-		)
+		wakeLock.acquire(TimeUnit.HOURS.toMillis(8))
+		downloadManager = get<DownloadManager.Factory>().create(lifecycleScope)
 		DownloadNotification.createChannel(this)
 		startForeground(DownloadNotification.ID_GROUP, downloadNotification.buildGroupNotification())
 		val intentFilter = IntentFilter()
@@ -84,6 +82,7 @@ class DownloadService : BaseService() {
 
 	override fun onDestroy() {
 		unregisterReceiver(controlReceiver)
+		wakeLock.release()
 		isRunning = false
 		super.onDestroy()
 	}
@@ -129,8 +128,9 @@ class DownloadService : BaseService() {
 				}
 				if (job.isCancelled) {
 					notificationItem.dismiss()
-					jobs.remove(startId)
-					jobCount.value = jobs.size
+					if (jobs.remove(startId) != null) {
+						jobCount.value = jobs.size
+					}
 				} else {
 					notificationItem.notify(job.progressValue, -1L)
 				}
@@ -164,8 +164,9 @@ class DownloadService : BaseService() {
 			when (intent?.action) {
 				ACTION_DOWNLOAD_CANCEL -> {
 					val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
-					jobs.remove(cancelId)?.cancel()
-					jobCount.value = jobs.size
+					jobs[cancelId]?.cancel()
+					// jobs.remove(cancelId)?.cancel()
+					// jobCount.value = jobs.size
 				}
 				ACTION_DOWNLOAD_RESUME -> {
 					val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
@@ -177,12 +178,12 @@ class DownloadService : BaseService() {
 
 	class DownloadBinder(service: DownloadService) : Binder(), DefaultLifecycleObserver {
 
-		private var downloadsStateFlow = MutableStateFlow<Collection<PausingProgressJob<DownloadState>>>(emptyList())
+		private var downloadsStateFlow = MutableStateFlow<List<PausingProgressJob<DownloadState>>>(emptyList())
 
 		init {
 			service.lifecycle.addObserver(this)
 			service.jobCount.onEach {
-				downloadsStateFlow.value = service.jobs.values
+				downloadsStateFlow.value = service.jobs.values.toList()
 			}.launchIn(service.lifecycleScope)
 		}
 

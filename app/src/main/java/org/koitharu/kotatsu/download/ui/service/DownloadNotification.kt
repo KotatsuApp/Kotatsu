@@ -59,6 +59,7 @@ class DownloadNotification(private val context: Context) {
 		val style = NotificationCompat.InboxStyle(groupBuilder)
 		var progress = 0f
 		var isAllDone = true
+		var isInProgress = false
 		groupBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 		states.forEach { _, state ->
 			if (state.manga.isNsfw) {
@@ -79,20 +80,24 @@ class DownloadNotification(private val context: Context) {
 				}
 				is DownloadState.PostProcessing -> {
 					progress++
+					isInProgress = true
 					isAllDone = false
 					context.getString(R.string.processing_)
 				}
 				is DownloadState.Preparing -> {
 					isAllDone = false
+					isInProgress = true
 					context.getString(R.string.preparing_)
 				}
 				is DownloadState.Progress -> {
 					isAllDone = false
+					isInProgress = true
 					progress += state.percent
 					context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
 				}
 				is DownloadState.Queued -> {
 					isAllDone = false
+					isInProgress = true
 					context.getString(R.string.queued)
 				}
 			}
@@ -104,13 +109,20 @@ class DownloadNotification(private val context: Context) {
 				).parseAsHtml(HtmlCompat.FROM_HTML_MODE_LEGACY),
 			)
 		}
-		progress /= states.size.toFloat()
-		style.setBigContentTitle(context.getString(R.string.downloading_manga))
+		progress = if (isInProgress) {
+			progress / states.size.toFloat()
+		} else {
+			1f
+		}
+		style.setBigContentTitle(
+			context.getString(if (isAllDone) R.string.download_complete else R.string.downloading_manga),
+		)
 		groupBuilder.setContentText(context.resources.getQuantityString(R.plurals.items, states.size, states.size()))
 		groupBuilder.setNumber(states.size)
 		groupBuilder.setSmallIcon(
-			if (isAllDone) android.R.drawable.stat_sys_download_done else android.R.drawable.stat_sys_download,
+			if (isInProgress) android.R.drawable.stat_sys_download else android.R.drawable.stat_sys_download_done,
 		)
+		groupBuilder.setAutoCancel(isAllDone)
 		when (progress) {
 			1f -> groupBuilder.setProgress(0, 0, false)
 			0f -> groupBuilder.setProgress(1, 0, true)
@@ -120,11 +132,11 @@ class DownloadNotification(private val context: Context) {
 	}
 
 	fun detach() {
-		manager.cancel(ID_GROUP)
-		if (states.isNotEmpty() && Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+		if (states.isNotEmpty()) {
 			val notification = buildGroupNotification()
 			manager.notify(ID_GROUP_DETACHED, notification)
 		}
+		manager.cancel(ID_GROUP)
 	}
 
 	fun newItem(startId: Int) = Item(startId)
