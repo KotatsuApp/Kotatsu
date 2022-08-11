@@ -318,5 +318,4 @@
 	<string name="clear_cookies_summary">Может помочь в случае каких-либо проблем. Все авторизации будут аннулированы</string>
 	<string name="show_all">Показать все</string>
 	<string name="downloading_manga">Downloading manga</string>
-	<string name="completed">Completed</string>
 </resources>

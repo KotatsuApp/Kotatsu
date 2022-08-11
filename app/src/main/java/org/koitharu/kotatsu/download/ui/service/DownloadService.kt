@@ -8,6 +8,8 @@ import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
 import android.widget.Toast
+import androidx.annotation.MainThread
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -48,7 +50,7 @@ class DownloadService : BaseService() {
 		super.onCreate()
 		isRunning = true
 		downloadNotification = DownloadNotification(this)
-		val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
+		val wakeLock = (applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
 		downloadManager = get<DownloadManager.Factory>().create(
 			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1)),
@@ -70,7 +72,7 @@ class DownloadService : BaseService() {
 			jobCount.value = jobs.size
 			START_REDELIVER_INTENT
 		} else {
-			stopSelf(startId)
+			stopSelfIfIdle()
 			START_NOT_STICKY
 		}
 	}
@@ -81,7 +83,6 @@ class DownloadService : BaseService() {
 	}
 
 	override fun onDestroy() {
-		downloadNotification.dismiss()
 		unregisterReceiver(controlReceiver)
 		isRunning = false
 		super.onDestroy()
@@ -131,8 +132,9 @@ class DownloadService : BaseService() {
 				} else {
 					notificationItem.notify(job.progressValue, -1L)
 				}
-				stopSelf(startId)
 			}
+		}.invokeOnCompletion {
+			stopSelfIfIdle()
 		}
 	}
 
@@ -143,6 +145,16 @@ class DownloadService : BaseService() {
 
 	private val DownloadState.isTerminal: Boolean
 		get() = this is DownloadState.Done || this is DownloadState.Cancelled || (this is DownloadState.Error && !canRetry)
+
+	@MainThread
+	private fun stopSelfIfIdle() {
+		if (jobs.any { (_, job) -> job.isActive }) {
+			return
+		}
+		downloadNotification.detach()
+		ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+		stopSelf()
+	}
 
 	inner class ControlReceiver : BroadcastReceiver() {
 

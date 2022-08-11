@@ -17,6 +17,7 @@ import androidx.core.text.htmlEncode
 import androidx.core.text.parseAsHtml
 import androidx.core.util.forEach
 import androidx.core.util.size
+import com.google.android.material.R as materialR
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
@@ -26,7 +27,6 @@ import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import com.google.android.material.R as materialR
 
 class DownloadNotification(private val context: Context) {
 
@@ -70,7 +70,7 @@ class DownloadNotification(private val context: Context) {
 				}
 				is DownloadState.Done -> {
 					progress++
-					context.getString(R.string.completed)
+					context.getString(R.string.download_complete)
 				}
 				is DownloadState.Error -> {
 					isAllDone = false
@@ -118,8 +118,10 @@ class DownloadNotification(private val context: Context) {
 		return groupBuilder.build()
 	}
 
-	fun dismiss() {
+	fun detach() {
 		manager.cancel(ID_GROUP)
+		val notification = buildGroupNotification()
+		manager.notify(ID_GROUP_DETACHED, notification)
 	}
 
 	fun newItem(startId: Int) = Item(startId)
@@ -283,6 +285,7 @@ class DownloadNotification(private val context: Context) {
 		private const val GROUP_ID = "downloads"
 		private const val REQUEST_LIST = 6
 		const val ID_GROUP = 9999
+		private const val ID_GROUP_DETACHED = 9998
 
 		fun createChannel(context: Context) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
