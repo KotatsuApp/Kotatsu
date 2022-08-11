@@ -8,6 +8,8 @@ import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
 import android.widget.Toast
+import androidx.annotation.MainThread
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -19,14 +21,12 @@ import javax.inject.Inject
 import kotlin.collections.set
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseService
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.download.domain.DownloadState
-import org.koitharu.kotatsu.download.domain.WakeLockNode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.throttle
 import org.koitharu.kotatsu.utils.progress.PausingProgressJob
@@ -37,7 +37,8 @@ import org.koitharu.kotatsu.utils.progress.TimeLeftEstimator
 class DownloadService : BaseService() {
 
 	private lateinit var downloadManager: DownloadManager
-	private lateinit var notificationSwitcher: ForegroundNotificationSwitcher
+	private lateinit var downloadNotification: DownloadNotification
+	private lateinit var wakeLock: PowerManager.WakeLock
 
 	@Inject
 	lateinit var downloadManagerFactory: DownloadManager.Factory
@@ -49,13 +50,13 @@ class DownloadService : BaseService() {
 	override fun onCreate() {
 		super.onCreate()
 		isRunning = true
-		notificationSwitcher = ForegroundNotificationSwitcher(this)
-		val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
+		downloadNotification = DownloadNotification(this)
+		wakeLock = (applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
-		downloadManager = downloadManagerFactory.create(
-			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1)),
-		)
+		downloadManager = downloadManagerFactory.create(lifecycleScope)
+		wakeLock.acquire(TimeUnit.HOURS.toMillis(8))
 		DownloadNotification.createChannel(this)
+		startForeground(DownloadNotification.ID_GROUP, downloadNotification.buildGroupNotification())
 		val intentFilter = IntentFilter()
 		intentFilter.addAction(ACTION_DOWNLOAD_CANCEL)
 		intentFilter.addAction(ACTION_DOWNLOAD_RESUME)
@@ -71,7 +72,7 @@ class DownloadService : BaseService() {
 			jobCount.value = jobs.size
 			START_REDELIVER_INTENT
 		} else {
-			stopSelf(startId)
+			stopSelfIfIdle()
 			START_NOT_STICKY
 		}
 	}
@@ -83,6 +84,7 @@ class DownloadService : BaseService() {
 
 	override fun onDestroy() {
 		unregisterReceiver(controlReceiver)
+		wakeLock.release()
 		isRunning = false
 		super.onDestroy()
 	}
@@ -100,10 +102,10 @@ class DownloadService : BaseService() {
 	private fun listenJob(job: ProgressJob<DownloadState>) {
 		lifecycleScope.launch {
 			val startId = job.progressValue.startId
-			val notification = DownloadNotification(this@DownloadService, startId)
+			val notificationItem = downloadNotification.newItem(startId)
 			try {
 				val timeLeftEstimator = TimeLeftEstimator()
-				notificationSwitcher.notify(startId, notification.create(job.progressValue, -1L))
+				notificationItem.notify(job.progressValue, -1L)
 				job.progressAsFlow()
 					.onEach { state ->
 						if (state is DownloadState.Progress) {
@@ -116,7 +118,7 @@ class DownloadService : BaseService() {
 					.whileActive()
 					.collect { state ->
 						val timeLeft = timeLeftEstimator.getEstimatedTimeLeft()
-						notificationSwitcher.notify(startId, notification.create(state, timeLeft))
+						notificationItem.notify(state, timeLeft)
 					}
 				job.join()
 			} finally {
@@ -126,18 +128,17 @@ class DownloadService : BaseService() {
 							.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga, withChapters = false)),
 					)
 				}
-				notificationSwitcher.detach(
-					startId,
-					if (job.isCancelled) {
-						null
-					} else {
-						notification.create(job.progressValue, -1L)
-					},
-				)
-				jobs.remove(job.progressValue.startId)
-				jobCount.value = jobs.size
-				stopSelf(startId)
+				if (job.isCancelled) {
+					notificationItem.dismiss()
+					if (jobs.remove(startId) != null) {
+						jobCount.value = jobs.size
+					}
+				} else {
+					notificationItem.notify(job.progressValue, -1L)
+				}
 			}
+		}.invokeOnCompletion {
+			stopSelfIfIdle()
 		}
 	}
 
@@ -148,6 +149,16 @@ class DownloadService : BaseService() {
 
 	private val DownloadState.isTerminal: Boolean
 		get() = this is DownloadState.Done || this is DownloadState.Cancelled || (this is DownloadState.Error && !canRetry)
+
+	@MainThread
+	private fun stopSelfIfIdle() {
+		if (jobs.any { (_, job) -> job.isActive }) {
+			return
+		}
+		downloadNotification.detach()
+		ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+		stopSelf()
+	}
 
 	inner class ControlReceiver : BroadcastReceiver() {
 
@@ -167,12 +178,12 @@ class DownloadService : BaseService() {
 
 	class DownloadBinder(service: DownloadService) : Binder(), DefaultLifecycleObserver {
 
-		private var downloadsStateFlow = MutableStateFlow<Collection<PausingProgressJob<DownloadState>>>(emptyList())
+		private var downloadsStateFlow = MutableStateFlow<List<PausingProgressJob<DownloadState>>>(emptyList())
 
 		init {
 			service.lifecycle.addObserver(this)
 			service.jobCount.onEach {
-				downloadsStateFlow.value = service.jobs.values
+				downloadsStateFlow.value = service.jobs.values.toList()
 			}.launchIn(service.lifecycleScope)
 		}
 

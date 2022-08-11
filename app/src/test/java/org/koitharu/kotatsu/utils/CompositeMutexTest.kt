@@ -1,17 +1,14 @@
 package org.koitharu.kotatsu.utils
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withTimeoutOrNull
-import kotlinx.coroutines.yield
 import org.junit.Assert.assertNull
 import org.junit.Test
 
 class CompositeMutexTest {
 
 	@Test
-	fun testSingleLock() = runTest {
+	fun singleLock() = runTest {
 		val mutex = CompositeMutex<Int>()
 		mutex.lock(1)
 		mutex.lock(2)
@@ -22,7 +19,7 @@ class CompositeMutexTest {
 	}
 
 	@Test
-	fun testDoubleLock() = runTest {
+	fun doubleLock() = runTest {
 		val mutex = CompositeMutex<Int>()
 		repeat(2) {
 			launch(Dispatchers.Default) {
@@ -35,5 +32,21 @@ class CompositeMutexTest {
 			mutex.lock(1)
 		}
 		assertNull(tryLock)
+	}
+
+	@Test
+	fun cancellation() = runTest {
+		val mutex = CompositeMutex<Int>()
+		mutex.lock(1)
+		val job = launch {
+			try {
+				mutex.lock(1)
+			} finally {
+				mutex.unlock(1)
+			}
+		}
+		withTimeout(2000) {
+			job.cancelAndJoin()
+		}
 	}
 }

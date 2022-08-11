@@ -1,14 +1,14 @@
 package org.koitharu.kotatsu.utils
 
 import android.util.ArrayMap
+import java.util.*
+import kotlin.coroutines.coroutineContext
+import kotlin.coroutines.resume
 import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.*
-import kotlin.coroutines.resume
 
 class CompositeMutex<T : Any> : Set<T> {
 
@@ -35,7 +35,7 @@ class CompositeMutex<T : Any> : Set<T> {
 	}
 
 	suspend fun lock(element: T) {
-		while (currentCoroutineContext().isActive) {
+		while (coroutineContext.isActive) {
 			waitForRemoval(element)
 			mutex.withLock {
 				if (data[element] == null) {
@@ -46,11 +46,9 @@ class CompositeMutex<T : Any> : Set<T> {
 		}
 	}
 
-	suspend fun unlock(element: T) {
-		val continuations = mutex.withLock {
-			checkNotNull(data.remove(element)) {
-				"CompositeMutex is not locked for $element"
-			}
+	fun unlock(element: T) {
+		val continuations = checkNotNull(data.remove(element)) {
+			"CompositeMutex is not locked for $element"
 		}
 		continuations.forEach { c ->
 			if (c.isActive) {

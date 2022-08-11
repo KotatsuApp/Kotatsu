@@ -275,7 +275,7 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 		locks.lock(id)
 	}
 
-	suspend fun unlockManga(id: Long) {
+	fun unlockManga(id: Long) {
 		locks.unlock(id)
 	}
 

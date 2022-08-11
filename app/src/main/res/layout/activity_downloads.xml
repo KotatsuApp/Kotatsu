@@ -49,7 +49,6 @@
 		android:gravity="center"
 		android:text="@string/text_downloads_holder"
 		android:textAppearance="?attr/textAppearanceBody2"
-		android:visibility="gone"
 		tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
