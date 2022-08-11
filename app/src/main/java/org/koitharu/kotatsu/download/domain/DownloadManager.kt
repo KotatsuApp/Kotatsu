@@ -43,10 +43,10 @@ class DownloadManager(
 ) {
 
 	private val coverWidth = context.resources.getDimensionPixelSize(
-		androidx.core.R.dimen.compat_notification_large_icon_max_width
+		androidx.core.R.dimen.compat_notification_large_icon_max_width,
 	)
 	private val coverHeight = context.resources.getDimensionPixelSize(
-		androidx.core.R.dimen.compat_notification_large_icon_max_height
+		androidx.core.R.dimen.compat_notification_large_icon_max_height,
 	)
 	private val semaphore = Semaphore(settings.downloadsParallelism)
 
@@ -56,7 +56,7 @@ class DownloadManager(
 		startId: Int,
 	): PausingProgressJob<DownloadState> {
 		val stateFlow = MutableStateFlow<DownloadState>(
-			DownloadState.Queued(startId = startId, manga = manga, cover = null)
+			DownloadState.Queued(startId = startId, manga = manga, cover = null),
 		)
 		val pausingHandle = PausingHandle()
 		val job = downloadMangaImpl(manga, chaptersIds?.takeUnless { it.isEmpty() }, stateFlow, pausingHandle, startId)
@@ -100,7 +100,7 @@ class DownloadManager(
 					data.chapters
 				} else {
 					data.chapters?.filter { x -> chaptersIdsSet.remove(x.id) }
-				}
+				},
 			) { "Chapters list must not be null" }
 			check(chapters.isNotEmpty()) { "Chapters list must not be empty" }
 			check(chaptersIdsSet.isNullOrEmpty()) {
@@ -118,7 +118,7 @@ class DownloadManager(
 							chapter = chapter,
 							file = file,
 							pageNumber = pageIndex,
-							ext = MimeTypeMap.getFileExtensionFromUrl(url)
+							ext = MimeTypeMap.getFileExtensionFromUrl(url),
 						)
 					}
 					outState.value = DownloadState.Progress(
@@ -128,7 +128,7 @@ class DownloadManager(
 						totalChapters = chapters.size,
 						currentChapter = chapterIndex,
 						totalPages = pages.size,
-						currentPage = pageIndex
+						currentPage = pageIndex,
 					)
 
 					if (settings.isDownloadsSlowdownEnabled) {
@@ -209,7 +209,7 @@ class DownloadManager(
 				manga = prevValue.manga,
 				cover = prevValue.cover,
 				error = throwable,
-				canRetry = false
+				canRetry = false,
 			)
 		}
 
@@ -220,7 +220,7 @@ class DownloadManager(
 				.referer(manga.publicUrl)
 				.size(coverWidth, coverHeight)
 				.scale(Scale.FILL)
-				.build()
+				.build(),
 		).drawable
 	}.getOrNull()
 
@@ -240,7 +240,7 @@ class DownloadManager(
 			okHttp = okHttp,
 			cache = cache,
 			localMangaRepository = localMangaRepository,
-			settings = settings
+			settings = settings,
 		)
 	}
 }

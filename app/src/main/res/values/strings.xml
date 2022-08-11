@@ -323,4 +323,7 @@
 	<string name="invalid_domain_message">Invalid domain</string>
 	<string name="select_range">Select range</string>
 	<string name="not_found_404">Content not found or removed</string>
+	<string name="downloading_manga">Downloading manga</string>
+	<string name="download_summary_pattern" translatable="false">&lt;b>%1$s&lt;/b> %2$s</string>
+	<string name="completed">Completed</string>
 </resources>

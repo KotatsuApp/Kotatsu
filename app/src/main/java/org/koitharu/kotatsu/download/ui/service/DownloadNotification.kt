@@ -7,163 +7,282 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import android.text.format.DateUtils
+import android.util.SparseArray
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import com.google.android.material.R as materialR
+import androidx.core.text.HtmlCompat
+import androidx.core.text.htmlEncode
+import androidx.core.text.parseAsHtml
+import androidx.core.util.forEach
+import androidx.core.util.size
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.DownloadsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import com.google.android.material.R as materialR
 
-class DownloadNotification(private val context: Context, startId: Int) {
+class DownloadNotification(private val context: Context) {
 
-	private val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-	private val cancelAction = NotificationCompat.Action(
-		materialR.drawable.material_ic_clear_black_24dp,
-		context.getString(android.R.string.cancel),
-		PendingIntent.getBroadcast(
-			context,
-			startId * 2,
-			DownloadService.getCancelIntent(startId),
-			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
-		)
-	)
-	private val retryAction = NotificationCompat.Action(
-		R.drawable.ic_restart_black,
-		context.getString(R.string.try_again),
-		PendingIntent.getBroadcast(
-			context,
-			startId * 2 + 1,
-			DownloadService.getResumeIntent(startId),
-			PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
-		)
-	)
+	private val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+	private val states = SparseArray<DownloadState>()
+	private val groupBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+
 	private val listIntent = PendingIntent.getActivity(
 		context,
 		REQUEST_LIST,
 		DownloadsActivity.newIntent(context),
-		PendingIntentCompat.FLAG_IMMUTABLE
+		PendingIntentCompat.FLAG_IMMUTABLE,
 	)
 
 	init {
-		builder.setOnlyAlertOnce(true)
-		builder.setDefaults(0)
-		builder.color = ContextCompat.getColor(context, R.color.blue_primary)
-		builder.foregroundServiceBehavior = NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
-		builder.setSilent(true)
+		groupBuilder.setOnlyAlertOnce(true)
+		groupBuilder.setDefaults(0)
+		groupBuilder.color = ContextCompat.getColor(context, R.color.blue_primary)
+		groupBuilder.foregroundServiceBehavior = NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
+		groupBuilder.setSilent(true)
+		groupBuilder.setGroup(GROUP_ID)
+		groupBuilder.setContentIntent(listIntent)
+		groupBuilder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+		groupBuilder.setGroupSummary(true)
+		groupBuilder.setContentTitle(context.getString(R.string.downloading_manga))
 	}
 
-	fun create(state: DownloadState, timeLeft: Long): Notification {
-		builder.setContentTitle(state.manga.title)
-		builder.setContentText(context.getString(R.string.manga_downloading_))
-		builder.setProgress(1, 0, true)
-		builder.setSmallIcon(android.R.drawable.stat_sys_download)
-		builder.setContentIntent(listIntent)
-		builder.setStyle(null)
-		builder.setLargeIcon(state.cover?.toBitmap())
-		builder.clearActions()
-		builder.setVisibility(
+	fun buildGroupNotification(): Notification {
+		val style = NotificationCompat.InboxStyle(groupBuilder)
+		var progress = 0f
+		var isAllDone = true
+		groupBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+		states.forEach { _, state ->
 			if (state.manga.isNsfw) {
-				NotificationCompat.VISIBILITY_PRIVATE
-			} else {
-				NotificationCompat.VISIBILITY_PUBLIC
+				groupBuilder.setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
 			}
-		)
-		when (state) {
-			is DownloadState.Cancelled -> {
-				builder.setProgress(1, 0, true)
-				builder.setContentText(context.getString(R.string.cancelling_))
-				builder.setContentIntent(null)
-				builder.setStyle(null)
-				builder.setOngoing(true)
-			}
-			is DownloadState.Done -> {
-				builder.setProgress(0, 0, false)
-				builder.setContentText(context.getString(R.string.download_complete))
-				builder.setContentIntent(createMangaIntent(context, state.localManga))
-				builder.setAutoCancel(true)
-				builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
-				builder.setCategory(null)
-				builder.setStyle(null)
-				builder.setOngoing(false)
-			}
-			is DownloadState.Error -> {
-				val message = state.error.getDisplayMessage(context.resources)
-				builder.setProgress(0, 0, false)
-				builder.setSmallIcon(android.R.drawable.stat_notify_error)
-				builder.setSubText(context.getString(R.string.error))
-				builder.setContentText(message)
-				builder.setAutoCancel(!state.canRetry)
-				builder.setOngoing(state.canRetry)
-				builder.setCategory(NotificationCompat.CATEGORY_ERROR)
-				builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
-				if (state.canRetry) {
-					builder.addAction(cancelAction)
-					builder.addAction(retryAction)
+			val summary = when (state) {
+				is DownloadState.Cancelled -> {
+					progress++
+					context.getString(R.string.cancelling_)
+				}
+				is DownloadState.Done -> {
+					progress++
+					context.getString(R.string.completed)
+				}
+				is DownloadState.Error -> {
+					isAllDone = false
+					context.getString(R.string.error)
+				}
+				is DownloadState.PostProcessing -> {
+					progress++
+					isAllDone = false
+					context.getString(R.string.processing_)
+				}
+				is DownloadState.Preparing -> {
+					isAllDone = false
+					context.getString(R.string.preparing_)
+				}
+				is DownloadState.Progress -> {
+					isAllDone = false
+					progress += state.percent
+					context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
+				}
+				is DownloadState.Queued -> {
+					isAllDone = false
+					context.getString(R.string.queued)
 				}
 			}
-			is DownloadState.PostProcessing -> {
-				builder.setProgress(1, 0, true)
-				builder.setContentText(context.getString(R.string.processing_))
-				builder.setStyle(null)
-				builder.setOngoing(true)
-			}
-			is DownloadState.Queued -> {
-				builder.setProgress(0, 0, false)
-				builder.setContentText(context.getString(R.string.queued))
-				builder.setStyle(null)
-				builder.setOngoing(true)
-				builder.addAction(cancelAction)
-			}
-			is DownloadState.Preparing -> {
-				builder.setProgress(1, 0, true)
-				builder.setContentText(context.getString(R.string.preparing_))
-				builder.setStyle(null)
-				builder.setOngoing(true)
-				builder.addAction(cancelAction)
-			}
-			is DownloadState.Progress -> {
-				builder.setProgress(state.max, state.progress, false)
-				if (timeLeft > 0L) {
-					val eta = DateUtils.getRelativeTimeSpanString(timeLeft, 0L, DateUtils.SECOND_IN_MILLIS)
-					builder.setContentText(eta)
-				} else {
-					val percent = (state.percent * 100).format()
-					builder.setContentText(context.getString(R.string.percent_string_pattern, percent))
-				}
-				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
-				builder.setStyle(null)
-				builder.setOngoing(true)
-				builder.addAction(cancelAction)
-			}
-			is DownloadState.WaitingForNetwork -> {
-				builder.setProgress(0, 0, false)
-				builder.setContentText(context.getString(R.string.waiting_for_network))
-				builder.setStyle(null)
-				builder.setOngoing(true)
-				builder.addAction(cancelAction)
-			}
+			style.addLine(
+				context.getString(
+					R.string.download_summary_pattern,
+					state.manga.title.ellipsize(10).htmlEncode(),
+					summary.htmlEncode(),
+				).parseAsHtml(HtmlCompat.FROM_HTML_MODE_LEGACY),
+			)
 		}
-		return builder.build()
+		progress /= states.size.toFloat()
+		style.setBigContentTitle(context.getString(R.string.downloading_manga))
+		groupBuilder.setContentText(context.resources.getQuantityString(R.plurals.items, states.size, states.size()))
+		groupBuilder.setNumber(states.size)
+		groupBuilder.setSmallIcon(
+			if (isAllDone) android.R.drawable.stat_sys_download_done else android.R.drawable.stat_sys_download,
+		)
+		when (progress) {
+			1f -> groupBuilder.setProgress(0, 0, false)
+			0f -> groupBuilder.setProgress(1, 0, true)
+			else -> groupBuilder.setProgress(100, (progress * 100f).toInt(), progress == 0f)
+		}
+		return groupBuilder.build()
+	}
+
+	fun dismiss() {
+		manager.cancel(ID_GROUP)
+	}
+
+	fun newItem(startId: Int) = Item(startId)
+
+	inner class Item(
+		private val startId: Int,
+	) {
+
+		private val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+		private val cancelAction = NotificationCompat.Action(
+			materialR.drawable.material_ic_clear_black_24dp,
+			context.getString(android.R.string.cancel),
+			PendingIntent.getBroadcast(
+				context,
+				startId * 2,
+				DownloadService.getCancelIntent(startId),
+				PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+			),
+		)
+		private val retryAction = NotificationCompat.Action(
+			R.drawable.ic_restart_black,
+			context.getString(R.string.try_again),
+			PendingIntent.getBroadcast(
+				context,
+				startId * 2 + 1,
+				DownloadService.getResumeIntent(startId),
+				PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+			),
+		)
+
+		init {
+			builder.setOnlyAlertOnce(true)
+			builder.setDefaults(0)
+			builder.color = ContextCompat.getColor(context, R.color.blue_primary)
+			builder.foregroundServiceBehavior = NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
+			builder.setSilent(true)
+			builder.setGroup(GROUP_ID)
+			builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+		}
+
+		fun notify(state: DownloadState, timeLeft: Long) {
+			builder.setContentTitle(state.manga.title)
+			builder.setContentText(context.getString(R.string.manga_downloading_))
+			builder.setProgress(1, 0, true)
+			builder.setSmallIcon(android.R.drawable.stat_sys_download)
+			builder.setContentIntent(listIntent)
+			builder.setStyle(null)
+			builder.setLargeIcon(state.cover?.toBitmap())
+			builder.clearActions()
+			builder.setVisibility(
+				if (state.manga.isNsfw) {
+					NotificationCompat.VISIBILITY_PRIVATE
+				} else {
+					NotificationCompat.VISIBILITY_PUBLIC
+				},
+			)
+			when (state) {
+				is DownloadState.Cancelled -> {
+					builder.setProgress(1, 0, true)
+					builder.setContentText(context.getString(R.string.cancelling_))
+					builder.setContentIntent(null)
+					builder.setStyle(null)
+					builder.setOngoing(true)
+					builder.priority = NotificationCompat.PRIORITY_DEFAULT
+				}
+				is DownloadState.Done -> {
+					builder.setProgress(0, 0, false)
+					builder.setContentText(context.getString(R.string.download_complete))
+					builder.setContentIntent(createMangaIntent(context, state.localManga))
+					builder.setAutoCancel(true)
+					builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
+					builder.setCategory(null)
+					builder.setStyle(null)
+					builder.setOngoing(false)
+					builder.priority = NotificationCompat.PRIORITY_DEFAULT
+				}
+				is DownloadState.Error -> {
+					val message = state.error.getDisplayMessage(context.resources)
+					builder.setProgress(0, 0, false)
+					builder.setSmallIcon(android.R.drawable.stat_notify_error)
+					builder.setSubText(context.getString(R.string.error))
+					builder.setContentText(message)
+					builder.setAutoCancel(!state.canRetry)
+					builder.setOngoing(state.canRetry)
+					builder.setCategory(NotificationCompat.CATEGORY_ERROR)
+					builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+					if (state.canRetry) {
+						builder.addAction(cancelAction)
+						builder.addAction(retryAction)
+					}
+					builder.priority = NotificationCompat.PRIORITY_DEFAULT
+				}
+				is DownloadState.PostProcessing -> {
+					builder.setProgress(1, 0, true)
+					builder.setContentText(context.getString(R.string.processing_))
+					builder.setStyle(null)
+					builder.setOngoing(true)
+					builder.priority = NotificationCompat.PRIORITY_DEFAULT
+				}
+				is DownloadState.Queued -> {
+					builder.setProgress(0, 0, false)
+					builder.setContentText(context.getString(R.string.queued))
+					builder.setStyle(null)
+					builder.setOngoing(true)
+					builder.addAction(cancelAction)
+					builder.priority = NotificationCompat.PRIORITY_LOW
+				}
+				is DownloadState.Preparing -> {
+					builder.setProgress(1, 0, true)
+					builder.setContentText(context.getString(R.string.preparing_))
+					builder.setStyle(null)
+					builder.setOngoing(true)
+					builder.addAction(cancelAction)
+					builder.priority = NotificationCompat.PRIORITY_DEFAULT
+				}
+				is DownloadState.Progress -> {
+					builder.setProgress(state.max, state.progress, false)
+					if (timeLeft > 0L) {
+						val eta = DateUtils.getRelativeTimeSpanString(timeLeft, 0L, DateUtils.SECOND_IN_MILLIS)
+						builder.setContentText(eta)
+					} else {
+						val percent = (state.percent * 100).format()
+						builder.setContentText(context.getString(R.string.percent_string_pattern, percent))
+					}
+					builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
+					builder.setStyle(null)
+					builder.setOngoing(true)
+					builder.addAction(cancelAction)
+					builder.priority = NotificationCompat.PRIORITY_DEFAULT
+				}
+			}
+			val notification = builder.build()
+			states.append(startId, state)
+			updateGroupNotification()
+			manager.notify(TAG, startId, notification)
+		}
+
+		fun dismiss() {
+			manager.cancel(TAG, startId)
+			states.remove(startId)
+			updateGroupNotification()
+		}
+	}
+
+	private fun updateGroupNotification() {
+		val notification = buildGroupNotification()
+		manager.notify(ID_GROUP, notification)
 	}
 
 	private fun createMangaIntent(context: Context, manga: Manga) = PendingIntent.getActivity(
 		context,
 		manga.hashCode(),
 		DetailsActivity.newIntent(context, manga),
-		PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE
+		PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
 	)
 
 	companion object {
 
+		private const val TAG = "download"
 		private const val CHANNEL_ID = "download"
+		private const val GROUP_ID = "downloads"
 		private const val REQUEST_LIST = 6
+		const val ID_GROUP = 9999
 
 		fun createChannel(context: Context) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -172,7 +291,7 @@ class DownloadNotification(private val context: Context, startId: Int) {
 					val channel = NotificationChannel(
 						CHANNEL_ID,
 						context.getString(R.string.downloads),
-						NotificationManager.IMPORTANCE_LOW
+						NotificationManager.IMPORTANCE_LOW,
 					)
 					channel.enableVibration(false)
 					channel.enableLights(false)

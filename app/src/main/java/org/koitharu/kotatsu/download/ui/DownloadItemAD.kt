@@ -18,9 +18,8 @@ fun downloadItemAD(
 	scope: CoroutineScope,
 	coil: ImageLoader,
 ) = adapterDelegateViewBinding<ProgressJob<DownloadState>, ProgressJob<DownloadState>, ItemDownloadBinding>(
-	{ inflater, parent -> ItemDownloadBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemDownloadBinding.inflate(inflater, parent, false) },
 ) {
-
 	var job: Job? = null
 	val percentPattern = context.resources.getString(R.string.percent_string_pattern)
 
@@ -86,13 +85,6 @@ fun downloadItemAD(
 				}
 				is DownloadState.Queued -> {
 					binding.textViewStatus.setText(R.string.queued)
-					binding.progressBar.isIndeterminate = false
-					binding.progressBar.isVisible = false
-					binding.textViewPercent.isVisible = false
-					binding.textViewDetails.isVisible = false
-				}
-				is DownloadState.WaitingForNetwork -> {
-					binding.textViewStatus.setText(R.string.waiting_for_network)
 					binding.progressBar.isIndeterminate = false
 					binding.progressBar.isVisible = false
 					binding.textViewPercent.isVisible = false

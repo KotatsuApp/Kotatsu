@@ -38,7 +38,7 @@ import org.koitharu.kotatsu.utils.progress.TimeLeftEstimator
 class DownloadService : BaseService() {
 
 	private lateinit var downloadManager: DownloadManager
-	private lateinit var notificationSwitcher: ForegroundNotificationSwitcher
+	private lateinit var downloadNotification: DownloadNotification
 
 	private val jobs = LinkedHashMap<Int, PausingProgressJob<DownloadState>>()
 	private val jobCount = MutableStateFlow(0)
@@ -47,13 +47,14 @@ class DownloadService : BaseService() {
 	override fun onCreate() {
 		super.onCreate()
 		isRunning = true
-		notificationSwitcher = ForegroundNotificationSwitcher(this)
+		downloadNotification = DownloadNotification(this)
 		val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
 		downloadManager = get<DownloadManager.Factory>().create(
 			coroutineScope = lifecycleScope + WakeLockNode(wakeLock, TimeUnit.HOURS.toMillis(1)),
 		)
 		DownloadNotification.createChannel(this)
+		startForeground(DownloadNotification.ID_GROUP, downloadNotification.buildGroupNotification())
 		val intentFilter = IntentFilter()
 		intentFilter.addAction(ACTION_DOWNLOAD_CANCEL)
 		intentFilter.addAction(ACTION_DOWNLOAD_RESUME)
@@ -80,6 +81,7 @@ class DownloadService : BaseService() {
 	}
 
 	override fun onDestroy() {
+		downloadNotification.dismiss()
 		unregisterReceiver(controlReceiver)
 		isRunning = false
 		super.onDestroy()
@@ -98,10 +100,10 @@ class DownloadService : BaseService() {
 	private fun listenJob(job: ProgressJob<DownloadState>) {
 		lifecycleScope.launch {
 			val startId = job.progressValue.startId
-			val notification = DownloadNotification(this@DownloadService, startId)
+			val notificationItem = downloadNotification.newItem(startId)
 			try {
 				val timeLeftEstimator = TimeLeftEstimator()
-				notificationSwitcher.notify(startId, notification.create(job.progressValue, -1L))
+				notificationItem.notify(job.progressValue, -1L)
 				job.progressAsFlow()
 					.onEach { state ->
 						if (state is DownloadState.Progress) {
@@ -114,7 +116,7 @@ class DownloadService : BaseService() {
 					.whileActive()
 					.collect { state ->
 						val timeLeft = timeLeftEstimator.getEstimatedTimeLeft()
-						notificationSwitcher.notify(startId, notification.create(state, timeLeft))
+						notificationItem.notify(state, timeLeft)
 					}
 				job.join()
 			} finally {
@@ -124,14 +126,11 @@ class DownloadService : BaseService() {
 							.putExtra(EXTRA_MANGA, ParcelableManga(it.localManga, withChapters = false)),
 					)
 				}
-				notificationSwitcher.detach(
-					startId,
-					if (job.isCancelled) {
-						null
-					} else {
-						notification.create(job.progressValue, -1L)
-					},
-				)
+				if (job.isCancelled) {
+					notificationItem.dismiss()
+				} else {
+					notificationItem.notify(job.progressValue, -1L)
+				}
 				stopSelf(startId)
 			}
 		}

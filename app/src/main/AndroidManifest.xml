@@ -111,6 +111,7 @@
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
+			android:stopWithTask="false"
 			android:foregroundServiceType="dataSync" />
 		<service android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService" />
 		<service

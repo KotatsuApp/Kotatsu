@@ -108,34 +108,6 @@ sealed interface DownloadState {
 		}
 	}
 
-	@Deprecated("TODO: remove")
-	class WaitingForNetwork(
-		override val startId: Int,
-		override val manga: Manga,
-		override val cover: Drawable?,
-	) : DownloadState {
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as WaitingForNetwork
-
-			if (startId != other.startId) return false
-			if (manga != other.manga) return false
-			if (cover != other.cover) return false
-
-			return true
-		}
-
-		override fun hashCode(): Int {
-			var result = startId
-			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
-			return result
-		}
-	}
-
 	class Done(
 		override val startId: Int,
 		override val manga: Manga,
