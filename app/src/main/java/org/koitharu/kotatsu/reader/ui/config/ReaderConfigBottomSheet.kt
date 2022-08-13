@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.ui.PageSaveContract
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
+import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -59,6 +60,7 @@ class ReaderConfigBottomSheet :
 		binding.buttonSavePage.setOnClickListener(this)
 		binding.buttonScreenRotate.setOnClickListener(this)
 		binding.buttonSettings.setOnClickListener(this)
+		binding.buttonColorFilter.setOnClickListener(this)
 		binding.sliderTimer.addOnSliderTouchListener(this)
 		binding.sliderTimer.setLabelFormatter(PageSwitchTimer.DelayLabelFormatter(view.resources))
 
@@ -79,6 +81,10 @@ class ReaderConfigBottomSheet :
 			}
 			R.id.button_screen_rotate -> {
 				orientationHelper?.toggleOrientation()
+			}
+			R.id.button_color_filter -> {
+				val page = viewModel.getCurrentPage() ?: return
+				startActivity(ColorFilterConfigActivity.newIntent(v.context, page))
 			}
 		}
 	}

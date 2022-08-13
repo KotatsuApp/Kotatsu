@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import com.google.android.material.R as materialR
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.koitharu.kotatsu.R
@@ -46,7 +47,7 @@ class FavouritesCategoryEditActivity :
 		setContentView(ActivityCategoryEditBinding.inflate(layoutInflater))
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(com.google.android.material.R.drawable.abc_ic_clear_material)
+			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		initSortSpinner()
 		binding.buttonDone.setOnClickListener(this)

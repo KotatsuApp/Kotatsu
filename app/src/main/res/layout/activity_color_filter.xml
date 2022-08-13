@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		tools:navigationIcon="@drawable/abc_ic_clear_material"
+		tools:title="@string/color_filter">
+
+		<Button
+			android:id="@+id/button_done"
+			style="@style/Widget.Material3.Button.UnelevatedButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+			android:text="@string/done" />
+
+	</com.google.android.material.appbar.MaterialToolbar>
+
+	<ScrollView
+		android:id="@+id/scrollView"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:clipToPadding="false"
+		android:overScrollMode="ifContentScrolls">
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="@dimen/margin_normal">
+
+			<com.google.android.material.imageview.ShapeableImageView
+				android:id="@+id/imageView_before"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:scaleType="centerCrop"
+				app:layout_constraintDimensionRatio="W,14:9"
+				app:layout_constraintEnd_toStartOf="@id/imageView_arrow"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				app:shapeAppearance="?shapeAppearanceCornerLarge"
+				app:strokeColor="?colorOutline"
+				app:strokeWidth="1dp"
+				tools:src="@sample/covers" />
+
+			<ImageView
+				android:id="@+id/imageView_arrow"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/margin_normal"
+				android:src="@drawable/ic_arrow_forward"
+				app:layout_constraintBottom_toBottomOf="@id/imageView_before"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="@id/imageView_before" />
+
+			<com.google.android.material.imageview.ShapeableImageView
+				android:id="@+id/imageView_after"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:scaleType="centerCrop"
+				app:layout_constraintDimensionRatio="W,14:9"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/imageView_arrow"
+				app:layout_constraintTop_toTopOf="parent"
+				app:shapeAppearance="?shapeAppearanceCornerLarge"
+				app:strokeColor="?colorOutline"
+				app:strokeWidth="1dp"
+				tools:src="@sample/covers" />
+
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider_saturation"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:value="255.0"
+				android:valueFrom="0.0"
+				android:valueTo="255.0"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/imageView_before" />
+
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider_lightness"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:value="0.0"
+				android:valueFrom="0.0"
+				android:valueTo="255.0"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/slider_saturation" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</ScrollView>
+
+</LinearLayout>

@@ -132,11 +132,14 @@
 		<activity
 			android:name="org.koitharu.kotatsu.sync.ui.SyncAuthActivity"
 			android:label="@string/sync" />
+		<activity
+			android:name="org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity"
+			android:label="@string/color_filter" />
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
-			android:stopWithTask="false"
-			android:foregroundServiceType="dataSync" />
+			android:foregroundServiceType="dataSync"
+			android:stopWithTask="false" />
 		<service android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService" />
 		<service android:name="org.koitharu.kotatsu.local.ui.ImportService" />
 		<service
