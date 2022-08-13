@@ -372,4 +372,6 @@
     <string name="reader_info_pattern">Ch.%1$d/%2$d Pg.%3$d/%4$d</string>
     <string name="reader_info_bar">リーダーで情報バーを表示する</string>
     <string name="comics_archive">コミックアーカイブ</string>
+    <string name="downloading_manga">漫画をダウンロードする</string>
+    <string name="feed">フィード</string>
 </resources>
