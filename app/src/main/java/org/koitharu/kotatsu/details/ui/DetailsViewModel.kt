@@ -38,6 +38,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
@@ -54,12 +55,10 @@ class DetailsViewModel @AssistedInject constructor(
 	mangaDataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
-	scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
+	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val imageGetter: Html.ImageGetter,
 	mangaRepositoryFactory: MangaRepository.Factory,
 ) : BaseViewModel() {
-
-	private val scrobbler = scrobblers.first() // TODO support multiple scrobblers
 
 	private val delegate = MangaDetailsDelegate(
 		intent = intent,
@@ -121,10 +120,13 @@ class DetailsViewModel @AssistedInject constructor(
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 	val isScrobblingAvailable: Boolean
-		get() = scrobbler.isAvailable
+		get() = scrobblers.any { it.isAvailable }
 
-	val scrobblingInfo = scrobbler.observeScrobblingInfo(delegate.mangaId)
-		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
+	val scrobblingInfo: LiveData<List<ScrobblingInfo>> = combine(
+		scrobblers.map { it.observeScrobblingInfo(delegate.mangaId) },
+	) { scrobblingInfo ->
+		scrobblingInfo.filterNotNull()
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val branches: LiveData<List<String?>> = delegate.manga.map {
 		val chapters = it?.chapters ?: return@map emptyList()
@@ -238,21 +240,27 @@ class DetailsViewModel @AssistedInject constructor(
 	}
 
 	fun updateScrobbling(rating: Float, status: ScrobblingStatus?) {
-		launchJob(Dispatchers.Default) {
-			scrobbler.updateScrobblingInfo(
-				mangaId = delegate.mangaId,
-				rating = rating,
-				status = status,
-				comment = null,
-			)
+		for (scrobbler in scrobblers) {
+			if (!scrobbler.isAvailable) continue
+			launchJob(Dispatchers.Default) {
+				scrobbler.updateScrobblingInfo(
+					mangaId = delegate.mangaId,
+					rating = rating,
+					status = status,
+					comment = null,
+				)
+			}
 		}
 	}
 
 	fun unregisterScrobbling() {
-		launchJob(Dispatchers.Default) {
-			scrobbler.unregisterScrobbling(
-				mangaId = delegate.mangaId,
-			)
+		for (scrobbler in scrobblers) {
+			if (!scrobbler.isAvailable) continue
+			launchJob(Dispatchers.Default) {
+				scrobbler.unregisterScrobbling(
+					mangaId = delegate.mangaId,
+				)
+			}
 		}
 	}
 

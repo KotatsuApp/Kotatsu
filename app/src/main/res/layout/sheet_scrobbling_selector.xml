@@ -24,6 +24,12 @@
 
 	</org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar>
 
+	<Spinner
+		android:id="@+id/spinner_scrobblers"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		tools:listitem="@android:layout/simple_spinner_item" />
+
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"

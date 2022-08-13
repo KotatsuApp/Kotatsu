@@ -30,7 +30,8 @@ import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
-import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingInfoBottomSheet
+import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
+import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
@@ -69,7 +70,6 @@ class DetailsFragment :
 		super.onViewCreated(view, savedInstanceState)
 		binding.textViewAuthor.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
-		binding.scrobblingLayout.root.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
@@ -203,35 +203,22 @@ class DetailsFragment :
 		}
 	}
 
-	private fun onScrobblingInfoChanged(scrobbling: ScrobblingInfo?) {
-		with(binding.scrobblingLayout) {
-			root.isVisible = scrobbling != null
-			if (scrobbling == null) {
-				CoilUtils.dispose(imageViewCover)
-				return
-			}
-			imageViewCover.newImageRequest(scrobbling.coverUrl)?.run {
-				placeholder(R.drawable.ic_placeholder)
-				fallback(R.drawable.ic_placeholder)
-				error(R.drawable.ic_error_placeholder)
-				lifecycle(viewLifecycleOwner)
-				enqueueWith(coil)
-			}
-			textViewTitle.text = scrobbling.title
-			textViewTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, scrobbling.scrobbler.iconResId, 0)
-			ratingBar.rating = scrobbling.rating * ratingBar.numStars
-			textViewStatus.text = scrobbling.status?.let {
-				resources.getStringArray(R.array.scrobbling_statuses).getOrNull(it.ordinal)
-			}
+	private fun onScrobblingInfoChanged(scrobblings: List<ScrobblingInfo>) {
+		var adapter = binding.recyclerViewScrobbling.adapter as? ScrollingInfoAdapter
+		binding.recyclerViewScrobbling.isGone = scrobblings.isEmpty()
+		if (adapter != null) {
+			adapter.items = scrobblings
+		} else {
+			adapter = ScrollingInfoAdapter(viewLifecycleOwner, coil, childFragmentManager)
+			adapter.items = scrobblings
+			binding.recyclerViewScrobbling.adapter = adapter
+			binding.recyclerViewScrobbling.addItemDecoration(ScrobblingItemDecoration())
 		}
 	}
 
 	override fun onClick(v: View) {
 		val manga = viewModel.manga.value ?: return
 		when (v.id) {
-			R.id.scrobbling_layout -> {
-				ScrobblingInfoBottomSheet.show(childFragmentManager)
-			}
 			R.id.textView_author -> {
 				startActivity(
 					SearchActivity.newIntent(

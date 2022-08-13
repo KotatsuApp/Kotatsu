@@ -26,10 +26,7 @@ import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
-import org.koitharu.kotatsu.utils.ext.crossfade
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.utils.ext.*
 
 @AndroidEntryPoint
 class ScrobblingInfoBottomSheet :
@@ -40,10 +37,16 @@ class ScrobblingInfoBottomSheet :
 	PopupMenu.OnMenuItemClickListener {
 
 	private val viewModel by activityViewModels<DetailsViewModel>()
+	private var scrobblerIndex: Int = -1
 
 	@Inject
 	lateinit var coil: ImageLoader
 	private var menu: PopupMenu? = null
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		scrobblerIndex = requireArguments().getInt(ARG_INDEX, scrobblerIndex)
+	}
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingBinding {
 		return SheetScrobblingBinding.inflate(inflater, container, false)
@@ -95,14 +98,15 @@ class ScrobblingInfoBottomSheet :
 		when (v.id) {
 			R.id.button_menu -> menu?.show()
 			R.id.imageView_cover -> {
-				val coverUrl = viewModel.scrobblingInfo.value?.coverUrl ?: return
+				val coverUrl = viewModel.scrobblingInfo.value?.getOrNull(scrobblerIndex)?.coverUrl ?: return
 				val options = scaleUpActivityOptionsOf(v)
 				startActivity(ImageActivity.newIntent(v.context, coverUrl), options.toBundle())
 			}
 		}
 	}
 
-	private fun onScrobblingInfoChanged(scrobbling: ScrobblingInfo?) {
+	private fun onScrobblingInfoChanged(scrobblings: List<ScrobblingInfo>) {
+		val scrobbling = scrobblings.getOrNull(scrobblerIndex)
 		if (scrobbling == null) {
 			dismissAllowingStateLoss()
 			return
@@ -122,17 +126,10 @@ class ScrobblingInfoBottomSheet :
 			.enqueueWith(coil)
 	}
 
-	companion object {
-
-		private const val TAG = "ScrobblingInfoBottomSheet"
-
-		fun show(fm: FragmentManager) = ScrobblingInfoBottomSheet().show(fm, TAG)
-	}
-
 	override fun onMenuItemClick(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.action_browser -> {
-				val url = viewModel.scrobblingInfo.value?.externalUrl ?: return false
+				val url = viewModel.scrobblingInfo.value?.getOrNull(scrobblerIndex)?.externalUrl ?: return false
 				val intent = Intent(Intent.ACTION_VIEW, url.toUri())
 				startActivity(
 					Intent.createChooser(intent, getString(R.string.open_in_browser)),
@@ -149,5 +146,15 @@ class ScrobblingInfoBottomSheet :
 			}
 		}
 		return true
+	}
+
+	companion object {
+
+		private const val TAG = "ScrobblingInfoBottomSheet"
+		private const val ARG_INDEX = "index"
+
+		fun show(fm: FragmentManager, index: Int) = ScrobblingInfoBottomSheet().withArgs(1) {
+			putInt(ARG_INDEX, index)
+		}.show(fm, TAG)
 	}
 }

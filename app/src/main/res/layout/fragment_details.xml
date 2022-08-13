@@ -169,19 +169,24 @@
 			app:layout_constraintTop_toBottomOf="@id/textView_bookmarks"
 			tools:listitem="@layout/item_bookmark" />
 
-		<include
-			android:id="@+id/scrobbling_layout"
-			layout="@layout/layout_scrobbling_info"
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/recyclerView_scrobbling"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
-			android:layout_marginTop="12dp"
 			android:layout_marginEnd="16dp"
 			android:layout_marginBottom="12dp"
+			android:nestedScrollingEnabled="false"
+			android:orientation="vertical"
+			android:overScrollMode="never"
+			android:scrollbars="none"
 			android:visibility="gone"
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/recyclerView_bookmarks"
+			tools:itemCount="2"
+			tools:listitem="@layout/item_scrobbling_info"
 			tools:visibility="visible" />
 
 		<org.koitharu.kotatsu.base.ui.widgets.SelectableTextView
@@ -197,7 +202,7 @@
 			android:textIsSelectable="true"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/scrobbling_layout"
+			app:layout_constraintTop_toBottomOf="@id/recyclerView_scrobbling"
 			tools:ignore="UnusedAttribute"
 			tools:text="@tools:sample/lorem/random[250]" />
 

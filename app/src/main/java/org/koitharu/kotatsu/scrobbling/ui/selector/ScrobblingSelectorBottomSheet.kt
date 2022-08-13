@@ -4,8 +4,11 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +36,8 @@ class ScrobblingSelectorBottomSheet :
 	View.OnClickListener,
 	MenuItem.OnActionExpandListener,
 	SearchView.OnQueryTextListener,
-	DialogInterface.OnKeyListener {
+	DialogInterface.OnKeyListener,
+	AdapterView.OnItemSelectedListener {
 
 	@Inject
 	lateinit var viewModelFactory: ScrobblingSelectorViewModel.Factory
@@ -68,6 +72,7 @@ class ScrobblingSelectorBottomSheet :
 		}
 		binding.buttonDone.setOnClickListener(this)
 		initOptionsMenu()
+		initSpinner()
 
 		viewModel.content.observe(viewLifecycleOwner) { listAdapter.items = it }
 		viewModel.selectedItemId.observe(viewLifecycleOwner) {
@@ -133,6 +138,12 @@ class ScrobblingSelectorBottomSheet :
 		return false
 	}
 
+	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+		viewModel.setScrobblerIndex(position)
+	}
+
+	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+
 	private fun onError(e: Throwable) {
 		Toast.makeText(requireContext(), e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 		if (viewModel.isEmpty) {
@@ -148,6 +159,21 @@ class ScrobblingSelectorBottomSheet :
 		searchView.setOnQueryTextListener(this)
 		searchView.setIconifiedByDefault(false)
 		searchView.queryHint = searchMenuItem.title
+	}
+
+	private fun initSpinner() {
+		val entries = viewModel.availableScrobblers
+		if (entries.size <= 1) {
+			binding.spinnerScrobblers.isVisible = false
+			return
+		}
+		val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, entries)
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+		binding.spinnerScrobblers.adapter = adapter
+		viewModel.selectedScrobblerIndex.observe(viewLifecycleOwner) {
+			binding.spinnerScrobblers.setSelection(it)
+		}
+		binding.spinnerScrobblers.onItemSelectedListener = this
 	}
 
 	companion object {
