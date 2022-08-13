@@ -351,7 +351,7 @@ class ReaderActivity :
 				binding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
 			}
 		}
-		if (uiState.totalPages > 1) {
+		if (uiState.totalPages > 1 && uiState.currentPage < uiState.totalPages) {
 			binding.slider.valueTo = uiState.totalPages.toFloat() - 1
 			binding.slider.value = uiState.currentPage.toFloat()
 			binding.slider.isVisible = true
