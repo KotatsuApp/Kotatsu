@@ -88,7 +88,7 @@ dependencies {
 
 	implementation 'androidx.core:core-ktx:1.8.0'
 	implementation 'androidx.activity:activity-ktx:1.5.1'
-	implementation 'androidx.fragment:fragment-ktx:1.5.1'
+	implementation 'androidx.fragment:fragment-ktx:1.5.2'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
 	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
 	implementation 'androidx.lifecycle:lifecycle-service:2.5.1'
@@ -100,7 +100,7 @@ dependencies {
 	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.work:work-runtime-ktx:2.7.1'
 	implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha04'
-	implementation 'com.google.android.material:material:1.7.0-alpha03'
+	implementation 'com.google.android.material:material:1.7.0-beta01'
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.5.1'
 
@@ -122,7 +122,8 @@ dependencies {
 
 	implementation 'io.coil-kt:coil-base:2.1.0'
 	implementation 'io.coil-kt:coil-svg:2.1.0'
-	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
+//	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
+	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:d3aa1d2beb'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
 	implementation 'ch.acra:acra-mail:5.9.5'
