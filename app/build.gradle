@@ -14,8 +14,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 421
-		versionName '3.4.9'
+		versionCode 422
+		versionName '3.4.10'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -79,7 +79,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:8709c3dd0c') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:f112a06ab6') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -87,7 +87,7 @@ dependencies {
 
 	implementation 'androidx.core:core-ktx:1.8.0'
 	implementation 'androidx.activity:activity-ktx:1.5.1'
-	implementation 'androidx.fragment:fragment-ktx:1.5.1'
+	implementation 'androidx.fragment:fragment-ktx:1.5.2'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
 	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
 	implementation 'androidx.lifecycle:lifecycle-service:2.5.1'
@@ -99,7 +99,7 @@ dependencies {
 	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.work:work-runtime-ktx:2.7.1'
 	implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha04'
-	implementation 'com.google.android.material:material:1.7.0-alpha03'
+	implementation 'com.google.android.material:material:1.7.0-beta01'
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.5.1'
 
@@ -115,7 +115,7 @@ dependencies {
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
 
 	implementation 'io.insert-koin:koin-android:3.2.0'
-	implementation 'io.coil-kt:coil-base:2.1.0'
+	implementation 'io.coil-kt:coil-base:2.2.0'
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
