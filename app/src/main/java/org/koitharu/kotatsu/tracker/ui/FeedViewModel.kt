@@ -4,44 +4,39 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import org.koitharu.kotatsu.tracker.ui.model.toFeedItem
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.daysDiff
+
+private const val PAGE_SIZE = 20
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
 	private val repository: TrackingRepository,
 ) : BaseViewModel() {
 
-	private val logList = MutableStateFlow<List<TrackingLogItem>?>(null)
-	private val hasNextPage = MutableStateFlow(false)
-	private var loadingJob: Job? = null
+	private val limit = MutableStateFlow(PAGE_SIZE)
+	private val isReady = AtomicBoolean(false)
 
 	val onFeedCleared = SingleLiveEvent<Unit>()
-	val content = combine(
-		logList.filterNotNull(),
-		hasNextPage,
-	) { list, isHasNextPage ->
-		buildList(list.size + 2) {
+	val content = repository.observeTrackingLog(limit)
+		.map { list ->
 			if (list.isEmpty()) {
-				add(
+				listOf(
 					EmptyState(
 						icon = R.drawable.ic_empty_feed,
 						textPrimary = R.string.text_empty_holder_primary,
@@ -50,48 +45,26 @@ class FeedViewModel @Inject constructor(
 					),
 				)
 			} else {
-				list.mapListTo(this)
-				if (isHasNextPage) {
-					add(LoadingFooter)
-				}
+				isReady.set(true)
+				list.mapList()
 			}
-		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
-
-	init {
-		loadList(append = false)
-	}
-
-	fun loadList(append: Boolean) {
-		if (loadingJob?.isActive == true) {
-			return
-		}
-		if (append && !hasNextPage.value) {
-			return
-		}
-		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			val offset = if (append) logList.value?.size ?: 0 else 0
-			val list = repository.getTrackingLog(offset, 20)
-			if (!append) {
-				logList.value = list
-			} else if (list.isNotEmpty()) {
-				logList.value = logList.value?.plus(list) ?: list
-			}
-			hasNextPage.value = list.isNotEmpty()
-		}
-	}
+		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	fun clearFeed() {
-		val lastJob = loadingJob
-		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			lastJob?.cancelAndJoin()
+		launchLoadingJob(Dispatchers.Default) {
 			repository.clearLogs()
-			logList.value = emptyList()
 			onFeedCleared.postCall(Unit)
 		}
 	}
 
-	private fun List<TrackingLogItem>.mapListTo(destination: MutableList<ListModel>) {
+	fun requestMoreItems() {
+		if (isReady.compareAndSet(true, false)) {
+			limit.value += PAGE_SIZE
+		}
+	}
+
+	private fun List<TrackingLogItem>.mapList(): List<ListModel> {
+		val destination = ArrayList<ListModel>((size * 1.4).toInt())
 		var prevDate: DateTimeAgo? = null
 		for (item in this) {
 			val date = timeAgo(item.createdAt)
@@ -101,6 +74,7 @@ class FeedViewModel @Inject constructor(
 			prevDate = date
 			destination += item.toFeedItem()
 		}
+		return destination
 	}
 
 	private fun timeAgo(date: Date): DateTimeAgo {

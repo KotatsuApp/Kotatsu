@@ -9,4 +9,5 @@ data class FeedItem(
 	val title: String,
 	val manga: Manga,
 	val count: Int,
+	val isNew: Boolean,
 ) : ListModel

@@ -137,7 +137,7 @@ class FeedFragment :
 	}
 
 	override fun onScrolledToEnd() {
-		viewModel.loadList(append = true)
+		viewModel.requestMoreItems()
 	}
 
 	override fun onItemClick(item: Manga, view: View) {

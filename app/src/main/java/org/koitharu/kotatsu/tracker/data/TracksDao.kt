@@ -18,6 +18,10 @@ abstract class TracksDao {
 	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun findNewChapters(mangaId: Long): Int?
 
+	@MapInfo(keyColumn = "manga_id", valueColumn = "chapters_new")
+	@Query("SELECT manga_id, chapters_new FROM tracks")
+	abstract fun observeNewChaptersMap(): Flow<Map<Long, Int>>
+
 	@Query("SELECT chapters_new FROM tracks")
 	abstract fun observeNewChapters(): Flow<List<Int>>
 
