@@ -6,7 +6,7 @@
 	<string name="url_twitter" translatable="false">https://twitter.com/kotatsuapp</string>
 	<string name="url_reddit" translatable="false">https://reddit.com/user/kotatsuapp</string>
 	<string name="url_weblate" translatable="false">https://hosted.weblate.org/engage/kotatsu</string>
-	<string name="email_error_report" translatable="false">kotatsu@waifu.club</string>
+	<string name="url_error_report" translatable="false">http://86.57.183.214:8082/report</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
 	<string name="url_sync_server" translatable="false">http://86.57.183.214:8081</string>
 	<string-array name="values_theme" translatable="false">
