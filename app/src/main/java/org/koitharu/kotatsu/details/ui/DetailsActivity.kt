@@ -18,7 +18,6 @@ import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -27,6 +26,7 @@ import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.core.ui.MangaErrorDialog
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.download.ui.service.DownloadService
@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.ext.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsActivity :
@@ -172,11 +173,12 @@ class DetailsActivity :
 	}
 
 	private fun onError(e: Throwable) {
+		val manga = viewModel.manga.value
 		when {
 			ExceptionResolver.canResolve(e) -> {
 				resolveError(e)
 			}
-			viewModel.manga.value == null -> {
+			manga == null -> {
 				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 				finishAfterTransition()
 			}
@@ -192,8 +194,8 @@ class DetailsActivity :
 				)
 				snackbar.anchorView = binding.headerChapters
 				if (e.isReportable()) {
-					snackbar.setAction(R.string.report) {
-						e.report("DetailsActivity::onError")
+					snackbar.setAction(R.string.details) {
+						MangaErrorDialog.show(supportFragmentManager, manga, e)
 					}
 				}
 				snackbar.show()

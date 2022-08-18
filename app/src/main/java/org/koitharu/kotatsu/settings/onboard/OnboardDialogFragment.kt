@@ -39,8 +39,8 @@ class OnboardDialogFragment :
 		container: ViewGroup?,
 	) = DialogOnboardBinding.inflate(inflater, container, false)
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
-		builder
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
+		super.onBuildDialog(builder)
 			.setPositiveButton(R.string.done, this)
 			.setCancelable(true)
 		if (isWelcome) {
@@ -50,6 +50,7 @@ class OnboardDialogFragment :
 				.setTitle(R.string.remote_sources)
 				.setNegativeButton(android.R.string.cancel, this)
 		}
+		return builder
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

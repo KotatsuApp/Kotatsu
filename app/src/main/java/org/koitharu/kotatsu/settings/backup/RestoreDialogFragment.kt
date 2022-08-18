@@ -44,8 +44,9 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
 	}
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
-		builder.setCancelable(false)
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
+		return super.onBuildDialog(builder)
+			.setCancelable(false)
 	}
 
 	private fun onError(e: Throwable) {

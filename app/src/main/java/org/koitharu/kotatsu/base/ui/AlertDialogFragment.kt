@@ -21,14 +21,14 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 		viewBinding = binding
 		return MaterialAlertDialogBuilder(requireContext(), theme)
 			.setView(binding.root)
-			.also(::onBuildDialog)
+			.run(::onBuildDialog)
 			.create()
 	}
 
 	final override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
-		savedInstanceState: Bundle?
+		savedInstanceState: Bundle?,
 	) = viewBinding?.root
 
 	@CallSuper
@@ -37,7 +37,7 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 		super.onDestroyView()
 	}
 
-	open fun onBuildDialog(builder: MaterialAlertDialogBuilder) = Unit
+	open fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder = builder
 
 	protected fun bindingOrNull(): B? = viewBinding
 

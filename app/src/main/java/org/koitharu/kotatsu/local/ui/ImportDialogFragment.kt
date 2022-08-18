@@ -27,8 +27,9 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 		return DialogImportBinding.inflate(inflater, container, false)
 	}
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
-		builder.setTitle(R.string._import)
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
+		return super.onBuildDialog(builder)
+			.setTitle(R.string._import)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setCancelable(true)
 	}

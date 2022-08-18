@@ -58,8 +58,8 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 		super.onDestroyView()
 	}
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
-		builder.setNegativeButton(android.R.string.cancel, null)
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
+		return super.onBuildDialog(builder).setNegativeButton(android.R.string.cancel, null)
 	}
 
 	override fun onResume() {
