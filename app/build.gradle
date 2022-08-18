@@ -80,7 +80,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:8709c3dd0c') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:f112a06ab6') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -120,7 +120,7 @@ dependencies {
 	implementation 'androidx.hilt:hilt-work:1.0.0'
 	kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
-	implementation 'io.coil-kt:coil-base:2.1.0'
+	implementation 'io.coil-kt:coil-base:2.2.0'
 	implementation 'io.coil-kt:coil-svg:2.1.0'
 //	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:d3aa1d2beb'
