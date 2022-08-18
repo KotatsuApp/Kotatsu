@@ -23,7 +23,7 @@ import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
 
@@ -60,8 +60,8 @@ class HistoryListViewModel @Inject constructor(
 	}.onFirst {
 		loadingCounter.decrement()
 	}.catch {
-		it.toErrorState(canRetry = false)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+		emit(listOf(it.toErrorState(canRetry = false)))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	override fun onRefresh() = Unit
 

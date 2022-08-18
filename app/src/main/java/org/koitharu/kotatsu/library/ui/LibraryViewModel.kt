@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.daysDiff
 
 private const val HISTORY_MAX_SEGMENTS = 2
@@ -49,8 +49,8 @@ class LibraryViewModel @Inject constructor(
 	) { history, favourites ->
 		mapList(history, favourites)
 	}.catch { e ->
-		e.toErrorState(canRetry = false)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+		emit(listOf(e.toErrorState(canRetry = false)))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	override suspend fun getCounter(mangaId: Long): Int {
 		return trackingRepository.getNewChaptersCount(mangaId)

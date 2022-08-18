@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.onFirst
 
 @HiltViewModel
@@ -44,8 +44,8 @@ class SuggestionsViewModel @Inject constructor(
 	}.onFirst {
 		loadingCounter.decrement()
 	}.catch {
-		it.toErrorState(canRetry = false)
-	}.asLiveDataDistinct(
+		emit(listOf(it.toErrorState(canRetry = false)))
+	}.asFlowLiveData(
 		viewModelScope.coroutineContext + Dispatchers.Default,
 		listOf(LoadingState),
 	)

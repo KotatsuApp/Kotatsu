@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.db.entity
 
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
@@ -10,7 +11,7 @@ import org.koitharu.kotatsu.utils.ext.longHashCode
 fun TagEntity.toMangaTag() = MangaTag(
 	key = this.key,
 	title = this.title.toTitleCase(),
-	source = MangaSource.valueOf(this.source),
+	source = MangaSource(this.source) ?: MangaSource.DUMMY,
 )
 
 fun Collection<TagEntity>.toMangaTags() = mapToSet(TagEntity::toMangaTag)
@@ -19,7 +20,7 @@ fun MangaEntity.toManga(tags: Set<MangaTag>) = Manga(
 	id = this.id,
 	title = this.title,
 	altTitle = this.altTitle,
-	state = this.state?.let { MangaState.valueOf(it) },
+	state = this.state?.let { MangaState(it) },
 	rating = this.rating,
 	isNsfw = this.isNsfw,
 	url = this.url,
@@ -27,8 +28,8 @@ fun MangaEntity.toManga(tags: Set<MangaTag>) = Manga(
 	coverUrl = this.coverUrl,
 	largeCoverUrl = this.largeCoverUrl,
 	author = this.author,
-	source = MangaSource.valueOf(this.source),
-	tags = tags
+	source = MangaSource(this.source) ?: MangaSource.DUMMY,
+	tags = tags,
 )
 
 fun MangaWithTags.toManga() = manga.toManga(tags.toMangaTags())
@@ -54,14 +55,18 @@ fun MangaTag.toEntity() = TagEntity(
 	title = title,
 	key = key,
 	source = source.name,
-	id = "${key}_${source.name}".longHashCode()
+	id = "${key}_${source.name}".longHashCode(),
 )
 
 fun Collection<MangaTag>.toEntities() = map(MangaTag::toEntity)
 
 // Other
 
-@Suppress("FunctionName")
 fun SortOrder(name: String, fallback: SortOrder): SortOrder = runCatching {
 	SortOrder.valueOf(name)
 }.getOrDefault(fallback)
+
+@Suppress("FunctionName")
+fun MangaState(name: String): MangaState? = runCatching {
+	MangaState.valueOf(name)
+}.getOrNull()
