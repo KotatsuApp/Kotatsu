@@ -9,12 +9,6 @@
 			android:persistent="false"
 			android:summary="@string/check_for_updates" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="true"
-			android:key="app_update_auto"
-			android:summary="@string/show_notification_app_update"
-			android:title="@string/application_update" />
-
 		<Preference
 			android:key="about_app_translation"
 			android:summary="@string/about_app_translation_summary"

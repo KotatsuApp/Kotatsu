@@ -11,8 +11,10 @@ import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koitharu.kotatsu.BuildConfig
@@ -53,11 +55,11 @@ class AppUpdateRepository @Inject constructor(
 		}
 	}
 
-	suspend fun fetchUpdate(): AppVersion? {
+	suspend fun fetchUpdate(): AppVersion? = withContext(Dispatchers.Default) {
 		if (!isUpdateSupported()) {
-			return null
+			return@withContext null
 		}
-		return runCatching {
+		runCatching {
 			val currentVersion = VersionId(BuildConfig.VERSION_NAME)
 			val available = getAvailableVersions().asArrayList()
 			available.sortBy { it.versionId }

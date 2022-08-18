@@ -11,6 +11,12 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
@@ -19,12 +25,6 @@ import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
-import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class AppSettings @Inject constructor(@ApplicationContext context: Context) {
@@ -72,13 +72,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var isAllFavouritesVisible: Boolean
 		get() = prefs.getBoolean(KEY_ALL_FAVOURITES_VISIBLE, true)
 		set(value) = prefs.edit { putBoolean(KEY_ALL_FAVOURITES_VISIBLE, value) }
-
-	val isUpdateCheckingEnabled: Boolean
-		get() = prefs.getBoolean(KEY_APP_UPDATE_AUTO, true)
-
-	var lastUpdateCheckTimestamp: Long
-		get() = prefs.getLong(KEY_APP_UPDATE, 0L)
-		set(value) = prefs.edit { putLong(KEY_APP_UPDATE, value) }
 
 	val isTrackerEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_ENABLED, true)
@@ -327,7 +320,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
-		const val KEY_APP_UPDATE_AUTO = "app_update_auto"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
 
 		private const val NETWORK_NEVER = 0

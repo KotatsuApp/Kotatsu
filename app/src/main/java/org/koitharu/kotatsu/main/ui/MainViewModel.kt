@@ -4,6 +4,7 @@ import android.util.SparseIntArray
 import androidx.core.util.set
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
@@ -16,12 +17,10 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
-import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
-	private val settings: AppSettings,
 	private val appUpdateRepository: AppUpdateRepository,
 	private val trackingRepository: TrackingRepository,
 ) : BaseViewModel() {
@@ -43,7 +42,7 @@ class MainViewModel @Inject constructor(
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, SparseIntArray(0))
 
 	init {
-		launchJob(Dispatchers.Default) {
+		launchJob {
 			appUpdateRepository.fetchUpdate()
 		}
 	}

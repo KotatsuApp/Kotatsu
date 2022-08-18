@@ -2,34 +2,41 @@ package org.koitharu.kotatsu.settings.about
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.core.net.toUri
+import androidx.fragment.app.viewModels
 import androidx.preference.Preference
-import kotlinx.coroutines.launch
+import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.settings.AppUpdateChecker
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 
 class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 
+	private val viewModel by viewModels<AboutSettingsViewModel>()
+
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_about)
-		val isUpdateSupported = AppUpdateChecker.isUpdateSupported(requireContext())
-		findPreference<Preference>(AppSettings.KEY_APP_UPDATE_AUTO)?.run {
-			isVisible = isUpdateSupported
-		}
 		findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
 			title = getString(R.string.app_version, BuildConfig.VERSION_NAME)
-			isEnabled = isUpdateSupported
+			isEnabled = viewModel.isUpdateSupported
 		}
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		viewModel.isLoading.observe(viewLifecycleOwner) {
+			findPreference<Preference>(AppSettings.KEY_APP_UPDATE)?.isEnabled = !it
+		}
+		viewModel.onUpdateAvailable.observe(viewLifecycleOwner, ::onUpdateAvailable)
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			AppSettings.KEY_APP_VERSION -> {
-				checkForUpdates()
+				viewModel.checkForUpdates()
 				true
 			}
 			AppSettings.KEY_APP_TRANSLATION -> {
@@ -40,24 +47,12 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 		}
 	}
 
-	private fun checkForUpdates() {
-		viewLifecycleScope.launch {
-			findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
-				setSummary(R.string.checking_for_updates)
-				isSelectable = false
-			}
-			val result = AppUpdateChecker(activity ?: return@launch).checkNow()
-			findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
-				setSummary(
-					when (result) {
-						true -> R.string.check_for_updates
-						false -> R.string.no_update_available
-						null -> R.string.update_check_failed
-					}
-				)
-				isSelectable = true
-			}
+	private fun onUpdateAvailable(version: AppVersion?) {
+		if (version == null) {
+			Snackbar.make(listView, R.string.no_update_available, Snackbar.LENGTH_SHORT).show()
+			return
 		}
+		AppUpdateDialog(context ?: return).show(version)
 	}
 
 	private fun openLink(url: String, title: CharSequence?) {
@@ -68,7 +63,7 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 				Intent.createChooser(intent, title)
 			} else {
 				intent
-			}
+			},
 		)
 	}
 }
