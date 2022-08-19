@@ -5,8 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.transition.Slide
+import android.transition.TransitionManager
+import android.view.Gravity
 import android.view.Menu
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
@@ -18,6 +23,7 @@ import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -36,7 +42,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.ext.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsActivity :
@@ -159,8 +164,11 @@ class DetailsActivity :
 
 	private fun onMangaUpdated(manga: Manga) {
 		title = manga.title
-		binding.buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
+		val hasChapters = !manga.chapters.isNullOrEmpty()
+		binding.buttonRead.isEnabled = hasChapters
 		invalidateOptionsMenu()
+		showBottomSheet(hasChapters)
+		binding.groupHeader?.isVisible = hasChapters
 	}
 
 	private fun onMangaRemoved(manga: Manga) {
@@ -192,7 +200,9 @@ class DetailsActivity :
 						Snackbar.LENGTH_LONG
 					},
 				)
-				snackbar.anchorView = binding.headerChapters
+				if (binding.layoutBottom?.isVisible == true) {
+					snackbar.anchorView = binding.headerChapters
+				}
 				if (e.isReportable()) {
 					snackbar.setAction(R.string.details) {
 						MangaErrorDialog.show(supportFragmentManager, manga, e)
@@ -292,6 +302,16 @@ class DetailsActivity :
 	}
 
 	private fun isTabletLayout() = binding.layoutBottom == null
+
+	private fun showBottomSheet(isVisible: Boolean) {
+		val view = binding.layoutBottom ?: return
+		if (view.isVisible == isVisible) return
+		val transition = Slide(Gravity.BOTTOM)
+		transition.addTarget(view)
+		transition.interpolator = AccelerateDecelerateInterpolator()
+		TransitionManager.beginDelayedTransition(binding.root as ViewGroup, transition)
+		view.isVisible = isVisible
+	}
 
 	companion object {
 

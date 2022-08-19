@@ -70,6 +70,7 @@ class DetailsFragment :
 		super.onViewCreated(view, savedInstanceState)
 		binding.textViewAuthor.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
+		binding.infoLayout.textViewSource.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
@@ -225,6 +226,14 @@ class DetailsFragment :
 						context = v.context,
 						source = manga.source,
 						query = manga.author ?: return,
+					),
+				)
+			}
+			R.id.textView_source -> {
+				startActivity(
+					MangaListActivity.newIntent(
+						context = v.context,
+						source = manga.source,
 					),
 				)
 			}

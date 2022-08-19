@@ -42,9 +42,11 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
+		android:visibility="gone"
 		app:behavior_hideable="false"
 		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet">
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet"
+		tools:visibility="visible">
 
 		<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
 			android:id="@+id/header_chapters"
