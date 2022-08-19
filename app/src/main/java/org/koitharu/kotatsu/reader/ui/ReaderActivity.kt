@@ -40,6 +40,7 @@ import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
+import org.koitharu.kotatsu.utils.IdlingDetector
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
 
@@ -51,10 +52,13 @@ class ReaderActivity :
 	OnPageSelectListener,
 	ReaderConfigBottomSheet.Callback,
 	ReaderControlDelegate.OnInteractionListener,
-	OnApplyWindowInsetsListener {
+	OnApplyWindowInsetsListener,
+	IdlingDetector.Callback {
 
 	@Inject
 	lateinit var viewModelFactory: ReaderViewModel.Factory
+
+	private val idlingDetector = IdlingDetector(TimeUnit.SECONDS.toMillis(10), this)
 
 	val viewModel by assistedViewModels {
 		viewModelFactory.create(
@@ -89,6 +93,7 @@ class ReaderActivity :
 		binding.slider.setLabelFormatter(PageLabelFormatter())
 		ReaderSliderListener(this, viewModel).attachToSlider(binding.slider)
 		insetsDelegate.interceptingWindowInsetsListener = this
+		idlingDetector.bindToLifecycle(this)
 
 		viewModel.onError.observe(this, this::onError)
 		viewModel.readerMode.observe(this, this::onInitReader)
@@ -111,6 +116,11 @@ class ReaderActivity :
 	override fun onUserInteraction() {
 		super.onUserInteraction()
 		pageSwitchTimer.onUserInteraction()
+		idlingDetector.onUserInteraction()
+	}
+
+	override fun onIdle() {
+		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 	}
 
 	private fun onInitReader(mode: ReaderMode) {
