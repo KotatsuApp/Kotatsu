@@ -10,10 +10,13 @@ private const val USER_AGENT_SHIKIMORI = "Kotatsu"
 class ShikimoriInterceptor(private val storage: ShikimoriStorage) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
-		val request = chain.request().newBuilder()
+		val sourceRequest = chain.request()
+		val request = sourceRequest.newBuilder()
 		request.header(CommonHeaders.USER_AGENT, USER_AGENT_SHIKIMORI)
-		storage.accessToken?.let {
-			request.header(CommonHeaders.AUTHORIZATION, "Bearer $it")
+		if (!sourceRequest.url.pathSegments.contains("oauth")) {
+			storage.accessToken?.let {
+				request.header(CommonHeaders.AUTHORIZATION, "Bearer $it")
+			}
 		}
 		val response = chain.proceed(request.build())
 		if (!response.isSuccessful && !response.isRedirect) {
