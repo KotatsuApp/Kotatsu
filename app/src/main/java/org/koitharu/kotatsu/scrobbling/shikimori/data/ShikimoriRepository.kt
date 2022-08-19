@@ -40,13 +40,14 @@ class ShikimoriRepository(
 
 	suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
-		body.add("grant_type", "authorization_code")
 		body.add("client_id", BuildConfig.SHIKIMORI_CLIENT_ID)
 		body.add("client_secret", BuildConfig.SHIKIMORI_CLIENT_SECRET)
 		if (code != null) {
+			body.add("grant_type", "authorization_code")
 			body.add("redirect_uri", REDIRECT_URI)
 			body.add("code", code)
 		} else {
+			body.add("grant_type", "refresh_token")
 			body.add("refresh_token", checkNotNull(storage.refreshToken))
 		}
 		val request = Request.Builder()
