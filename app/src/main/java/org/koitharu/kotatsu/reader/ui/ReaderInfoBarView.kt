@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 import org.koitharu.kotatsu.utils.ext.measureDimension
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class ReaderInfoBarView @JvmOverloads constructor(
 	context: Context,
@@ -35,6 +36,14 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	private var insetLeft: Int = 0
 	private var insetRight: Int = 0
 	private var insetTop: Int = 0
+	private val colorText = ColorUtils.setAlphaComponent(
+		context.getThemeColor(materialR.attr.colorOnSurface, Color.BLACK),
+		200,
+	)
+	private val colorOutline = ColorUtils.setAlphaComponent(
+		context.getThemeColor(materialR.attr.colorSurface, Color.WHITE),
+		200,
+	)
 
 	private var timeText = timeFormat.format(Date())
 	private var text: String = ""
@@ -46,11 +55,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		get() = width - paddingLeft - paddingRight - insetLeft - insetRight
 
 	init {
-		paint.color = ColorUtils.setAlphaComponent(
-			context.getThemeColor(materialR.attr.colorOnSurface, Color.BLACK),
-			160,
-		)
-		paint.setShadowLayer(20f, 0f, 0f, context.getThemeColor(materialR.attr.colorOnSurfaceInverse, Color.WHITE))
+		paint.strokeWidth = context.resources.resolveDp(2f)
 		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start")
 		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end")
 		val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
@@ -72,9 +77,9 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		super.onDraw(canvas)
 		val ty = innerHeight / 2f + textBounds.height() / 2f - textBounds.bottom
 		paint.textAlign = Paint.Align.LEFT
-		canvas.drawText(text, (paddingLeft + insetLeft).toFloat(), paddingTop + insetTop + ty, paint)
+		canvas.drawTextOutline(text, (paddingLeft + insetLeft).toFloat(), paddingTop + insetTop + ty)
 		paint.textAlign = Paint.Align.RIGHT
-		canvas.drawText(timeText, (width - paddingRight - insetRight).toFloat(), paddingTop + insetTop + ty, paint)
+		canvas.drawTextOutline(timeText, (width - paddingRight - insetRight).toFloat(), paddingTop + insetTop + ty)
 	}
 
 	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -120,6 +125,15 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		paint.getTextBounds(str, 0, str.length, textBounds)
 		paint.textSize = testTextSize * innerHeight / textBounds.height()
 		paint.getTextBounds(str, 0, str.length, textBounds)
+	}
+
+	private fun Canvas.drawTextOutline(text: String, x: Float, y: Float) {
+		paint.color = colorOutline
+		paint.style = Paint.Style.STROKE
+		drawText(text, x, y, paint)
+		paint.color = colorText
+		paint.style = Paint.Style.FILL
+		drawText(text, x, y, paint)
 	}
 
 	private inner class TimeReceiver : BroadcastReceiver() {
