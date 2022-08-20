@@ -69,7 +69,7 @@ open class PageHolder(
 	override fun onImageShowing(zoom: ZoomMode) {
 		binding.ssiv.maxScale = 2f * maxOf(
 			binding.ssiv.width / binding.ssiv.sWidth.toFloat(),
-			binding.ssiv.height / binding.ssiv.sHeight.toFloat()
+			binding.ssiv.height / binding.ssiv.sHeight.toFloat(),
 		)
 		when (zoom) {
 			ZoomMode.FIT_CENTER -> {
@@ -81,7 +81,7 @@ open class PageHolder(
 				binding.ssiv.minScale = binding.ssiv.height / binding.ssiv.sHeight.toFloat()
 				binding.ssiv.setScaleAndCenter(
 					binding.ssiv.minScale,
-					PointF(0f, binding.ssiv.sHeight / 2f)
+					PointF(0f, binding.ssiv.sHeight / 2f),
 				)
 			}
 			ZoomMode.FIT_WIDTH -> {
@@ -89,14 +89,14 @@ open class PageHolder(
 				binding.ssiv.minScale = binding.ssiv.width / binding.ssiv.sWidth.toFloat()
 				binding.ssiv.setScaleAndCenter(
 					binding.ssiv.minScale,
-					PointF(binding.ssiv.sWidth / 2f, 0f)
+					PointF(binding.ssiv.sWidth / 2f, 0f),
 				)
 			}
 			ZoomMode.KEEP_START -> {
 				binding.ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE)
 				binding.ssiv.setScaleAndCenter(
 					binding.ssiv.maxScale,
-					PointF(0f, 0f)
+					PointF(0f, 0f),
 				)
 			}
 		}
@@ -115,7 +115,7 @@ open class PageHolder(
 	override fun onError(e: Throwable) {
 		bindingInfo.textViewError.text = e.getDisplayMessage(context.resources)
 		bindingInfo.buttonRetry.setText(
-			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again }
+			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again },
 		)
 		bindingInfo.layoutError.isVisible = true
 		bindingInfo.progressBar.hideCompat()
