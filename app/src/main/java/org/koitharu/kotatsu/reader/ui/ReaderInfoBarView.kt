@@ -56,8 +56,9 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	init {
 		paint.strokeWidth = context.resources.resolveDp(2f)
-		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start")
-		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end")
+		val insetCorner = getSystemUiDimensionOffset("rounded_corner_content_padding")
+		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start") + insetCorner
+		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end") + insetCorner
 		val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
 		insetLeft = if (isRtl) insetEnd else insetStart
 		insetRight = if (isRtl) insetStart else insetEnd
