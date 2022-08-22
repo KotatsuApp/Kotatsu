@@ -21,6 +21,7 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -99,6 +100,7 @@ class DetailsActivity :
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
 		viewModel.onShowToast.observe(this) {
+			makeSnackbar(getString(it), Snackbar.LENGTH_SHORT).show()
 		}
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
 		viewModel.selectedBranchName.observe(this) {
@@ -167,7 +169,7 @@ class DetailsActivity :
 		val hasChapters = !manga.chapters.isNullOrEmpty()
 		binding.buttonRead.isEnabled = hasChapters
 		invalidateOptionsMenu()
-		showBottomSheet(hasChapters)
+		showBottomSheet(manga.chapters != null)
 		binding.groupHeader?.isVisible = hasChapters
 	}
 
@@ -191,8 +193,7 @@ class DetailsActivity :
 				finishAfterTransition()
 			}
 			else -> {
-				val snackbar = Snackbar.make(
-					binding.containerDetails,
+				val snackbar = makeSnackbar(
 					e.getDisplayMessage(resources),
 					if (viewModel.manga.value?.chapters == null) {
 						Snackbar.LENGTH_INDEFINITE
@@ -200,9 +201,6 @@ class DetailsActivity :
 						Snackbar.LENGTH_LONG
 					},
 				)
-				if (binding.layoutBottom?.isVisible == true) {
-					snackbar.anchorView = binding.headerChapters
-				}
 				if (e.isReportable()) {
 					snackbar.setAction(R.string.details) {
 						MangaErrorDialog.show(supportFragmentManager, manga, e)
@@ -250,8 +248,7 @@ class DetailsActivity :
 	fun showChapterMissingDialog(chapterId: Long) {
 		val remoteManga = viewModel.getRemoteManga()
 		if (remoteManga == null) {
-			val snackbar = Snackbar.make(binding.containerDetails, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
-			snackbar.anchorView = binding.headerChapters
+			val snackbar = makeSnackbar(getString(R.string.chapter_is_missing), Snackbar.LENGTH_SHORT)
 			snackbar.show()
 			return
 		}
@@ -311,6 +308,14 @@ class DetailsActivity :
 		transition.interpolator = AccelerateDecelerateInterpolator()
 		TransitionManager.beginDelayedTransition(binding.root as ViewGroup, transition)
 		view.isVisible = isVisible
+	}
+
+	private fun makeSnackbar(text: CharSequence, @BaseTransientBottomBar.Duration duration: Int): Snackbar {
+		val sb = Snackbar.make(binding.containerDetails, text, duration)
+		if (binding.layoutBottom?.isVisible == true) {
+			sb.anchorView = binding.headerChapters
+		}
+		return sb
 	}
 
 	companion object {
