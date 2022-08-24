@@ -35,13 +35,13 @@ class ChaptersMenuProvider(
 		else -> false
 	}
 
-	override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
 		bottomSheetMediator?.lock()
 		return true
 	}
 
-	override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-		(item?.actionView as? SearchView)?.setQuery("", false)
+	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+		(item.actionView as? SearchView)?.setQuery("", false)
 		viewModel.performChapterSearch(null)
 		bottomSheetMediator?.unlock()
 		return true

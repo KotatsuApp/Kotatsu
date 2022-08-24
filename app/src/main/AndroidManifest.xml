@@ -17,6 +17,7 @@
 	<uses-permission android:name="android.permission.READ_SYNC_STATS" />
 	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
 	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
 	<application
 		android:name="org.koitharu.kotatsu.KotatsuApp"
@@ -135,8 +136,8 @@
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
-			android:stopWithTask="false"
-			android:foregroundServiceType="dataSync" />
+			android:foregroundServiceType="dataSync"
+			android:stopWithTask="false" />
 		<service android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService" />
 		<service android:name="org.koitharu.kotatsu.local.ui.ImportService" />
 		<service

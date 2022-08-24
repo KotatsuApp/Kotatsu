@@ -47,12 +47,12 @@ class ItemSizeResolver(resources: Resources, private val settings: AppSettings) 
 			}
 		}
 
-		override fun onViewAttachedToWindow(v: View?) {
+		override fun onViewAttachedToWindow(v: View) {
 			settings.subscribe(this)
 			update()
 		}
 
-		override fun onViewDetachedFromWindow(v: View?) {
+		override fun onViewDetachedFromWindow(v: View) {
 			settings.unsubscribe(this)
 		}
 

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -19,14 +18,6 @@ inline fun <T : Fragment> T.withArgs(size: Int, block: Bundle.() -> Unit): T {
 
 val Fragment.viewLifecycleScope
 	inline get() = viewLifecycleOwner.lifecycle.coroutineScope
-
-fun <T : Parcelable> Fragment.parcelableArgument(name: String): Lazy<T> {
-	return lazy(LazyThreadSafetyMode.NONE) {
-		requireNotNull(arguments?.getParcelable(name)) {
-			"No argument $name passed into ${javaClass.simpleName}"
-		}
-	}
-}
 
 fun <T : Serializable> Fragment.serializableArgument(name: String): Lazy<T> {
 	return lazy(LazyThreadSafetyMode.NONE) {

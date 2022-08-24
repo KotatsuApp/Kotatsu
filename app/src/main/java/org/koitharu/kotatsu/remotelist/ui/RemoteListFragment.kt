@@ -99,7 +99,7 @@ class RemoteListFragment : MangaListFragment() {
 
 		override fun onQueryTextChange(newText: String?): Boolean = false
 
-		override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+		override fun onMenuItemActionExpand(item: MenuItem): Boolean {
 			(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
 			return true
 		}

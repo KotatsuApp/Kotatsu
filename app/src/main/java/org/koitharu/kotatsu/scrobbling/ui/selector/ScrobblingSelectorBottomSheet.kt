@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikiMangaSelectionDe
 import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikimoriSelectorAdapter
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.requireParcelable
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 @AndroidEntryPoint
@@ -47,7 +48,7 @@ class ScrobblingSelectorBottomSheet :
 
 	private val viewModel by assistedViewModels {
 		viewModelFactory.create(
-			requireNotNull(requireArguments().getParcelable<ParcelableManga>(MangaIntent.KEY_MANGA)).manga,
+			requireArguments().requireParcelable<ParcelableManga>(MangaIntent.KEY_MANGA).manga,
 		)
 	}
 
@@ -84,7 +85,7 @@ class ScrobblingSelectorBottomSheet :
 			dismiss()
 		}
 		viewModel.searchQuery.observe(viewLifecycleOwner) {
-			binding.headerBar.toolbar.subtitle = it
+			binding.headerBar.subtitle = it
 		}
 	}
 
@@ -102,7 +103,7 @@ class ScrobblingSelectorBottomSheet :
 		viewModel.loadList(append = true)
 	}
 
-	override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
 		setExpanded(isExpanded = true, isLocked = true)
 		return true
 	}

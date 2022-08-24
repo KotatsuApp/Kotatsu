@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import kotlin.math.roundToInt
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -17,9 +19,8 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.utils.ext.getParcelableCompat
 import org.koitharu.kotatsu.utils.ext.withArgs
-import javax.inject.Inject
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemClickListener<ChapterListItem> {
@@ -33,7 +34,7 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val chapters = arguments?.getParcelable<ParcelableMangaChapters>(ARG_CHAPTERS)?.chapters
+		val chapters = arguments?.getParcelableCompat<ParcelableMangaChapters>(ARG_CHAPTERS)?.chapters
 		if (chapters.isNullOrEmpty()) {
 			dismissAllowingStateLoss()
 			return

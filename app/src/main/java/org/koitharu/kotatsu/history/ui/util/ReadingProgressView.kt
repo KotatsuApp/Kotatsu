@@ -56,17 +56,17 @@ class ReadingProgressView @JvmOverloads constructor(
 		getProgressDrawable().progress = p
 	}
 
-	override fun onAnimationStart(animation: Animator?) = Unit
+	override fun onAnimationStart(animation: Animator) = Unit
 
-	override fun onAnimationEnd(animation: Animator?) {
+	override fun onAnimationEnd(animation: Animator) {
 		if (percentAnimator === animation) {
 			percentAnimator = null
 		}
 	}
 
-	override fun onAnimationCancel(animation: Animator?) = Unit
+	override fun onAnimationCancel(animation: Animator) = Unit
 
-	override fun onAnimationRepeat(animation: Animator?) = Unit
+	override fun onAnimationRepeat(animation: Animator) = Unit
 
 	fun setPercent(value: Float, animate: Boolean) {
 		val currentDrawable = peekProgressDrawable()

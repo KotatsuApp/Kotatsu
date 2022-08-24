@@ -16,6 +16,8 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.databinding.DialogMangaErrorBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.report
+import org.koitharu.kotatsu.utils.ext.requireParcelable
+import org.koitharu.kotatsu.utils.ext.requireSerializable
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class MangaErrorDialog : AlertDialogFragment<DialogMangaErrorBinding>() {
@@ -26,8 +28,8 @@ class MangaErrorDialog : AlertDialogFragment<DialogMangaErrorBinding>() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		val args = requireArguments()
-		manga = requireNotNull(args.getParcelable<ParcelableManga>(ARG_MANGA)?.manga)
-		error = args.getSerializable(ARG_ERROR) as Throwable
+		manga = args.requireParcelable<ParcelableManga>(ARG_MANGA).manga
+		error = args.requireSerializable(ARG_ERROR)
 	}
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): DialogMangaErrorBinding {

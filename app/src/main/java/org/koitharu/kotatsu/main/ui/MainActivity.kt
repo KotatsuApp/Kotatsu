@@ -1,5 +1,8 @@
 package org.koitharu.kotatsu.main.ui
 
+import android.Manifest
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import android.os.Bundle
 import android.util.SparseIntArray
 import android.view.MenuItem
@@ -7,6 +10,7 @@ import android.view.View
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
@@ -24,7 +28,6 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
@@ -291,12 +294,11 @@ class MainActivity :
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
 			}
+			requestNotificationsPermission()
 			when {
 				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
 				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
 			}
-			yield()
-			// TODO get<SyncController>().requestFullSyncAndGc(get())
 		}
 	}
 
@@ -345,6 +347,15 @@ class MainActivity :
 			if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
 		)
 		showNav(!isOpened)
+	}
+
+	private fun requestNotificationsPermission() {
+		if (
+			Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+			ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED
+		) {
+			ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
+		}
 	}
 
 	private inner class VoiceInputCallback : ActivityResultCallback<String?> {

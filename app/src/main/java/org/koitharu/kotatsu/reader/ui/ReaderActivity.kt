@@ -63,7 +63,7 @@ class ReaderActivity :
 	val viewModel by assistedViewModels {
 		viewModelFactory.create(
 			intent = MangaIntent(intent),
-			initialState = intent?.getParcelableExtra(EXTRA_STATE),
+			initialState = intent?.getParcelableExtraCompat(EXTRA_STATE),
 			preselectedBranch = intent?.getStringExtra(EXTRA_BRANCH),
 		)
 	}

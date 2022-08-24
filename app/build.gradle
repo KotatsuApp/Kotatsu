@@ -7,16 +7,16 @@ plugins {
 }
 
 android {
-	compileSdkVersion 32
-	buildToolsVersion '32.0.0'
+	compileSdkVersion 33
+	buildToolsVersion '33.0.0'
 	namespace 'org.koitharu.kotatsu'
 
 	defaultConfig {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
-		targetSdkVersion 32
-		versionCode 491
-		versionName '4.0-a2'
+		targetSdkVersion 33
+		versionCode 492
+		versionName '4.0-a3'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -117,19 +117,19 @@ dependencies {
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
 
-	implementation "com.google.dagger:hilt-android:2.42"
-	kapt "com.google.dagger:hilt-compiler:2.42"
+	implementation "com.google.dagger:hilt-android:2.43.2"
+	kapt "com.google.dagger:hilt-compiler:2.43.2"
 	implementation 'androidx.hilt:hilt-work:1.0.0'
 	kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
 	implementation 'io.coil-kt:coil-base:2.2.0'
-	implementation 'io.coil-kt:coil-svg:2.1.0'
+	implementation 'io.coil-kt:coil-svg:2.2.0'
 //	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:2942b797a2'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
-	implementation 'ch.acra:acra-http:5.9.5'
-	implementation 'ch.acra:acra-dialog:5.9.5'
+	implementation 'ch.acra:acra-http:5.9.6'
+	implementation 'ch.acra:acra-dialog:5.9.6'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
@@ -147,6 +147,6 @@ dependencies {
 	androidTestImplementation 'androidx.room:room-testing:2.4.3'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
 
-	androidTestImplementation 'com.google.dagger:hilt-android-testing:2.42'
-	kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.42'
+	androidTestImplementation 'com.google.dagger:hilt-android-testing:2.43.2'
+	kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.43.2'
 }

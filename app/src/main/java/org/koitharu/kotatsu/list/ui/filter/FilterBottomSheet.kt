@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
-import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
@@ -39,7 +38,7 @@ class FilterBottomSheet :
 		initOptionsMenu()
 	}
 
-	override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
 		setExpanded(isExpanded = true, isLocked = true)
 		return true
 	}
