@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.StyleRes
 import androidx.core.view.updateLayoutParams
+import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import kotlin.math.roundToInt
@@ -77,7 +78,7 @@ class ItemSizeResolver(resources: Resources, private val settings: AppSettings) 
 			}
 			if (textAppearanceResId != prevTextAppearance) {
 				prevTextAppearance = textAppearanceResId
-				setTextAppearance(textAppearanceResId)
+				TextViewCompat.setTextAppearance(this, textAppearanceResId)
 				requestLayout()
 			}
 		}
