@@ -2,10 +2,12 @@ package org.koitharu.kotatsu.core.os
 
 import android.app.ActivityManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.media.ThumbnailUtils
 import android.os.Build
 import android.util.Size
+import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -22,6 +24,7 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
@@ -35,19 +38,34 @@ class ShortcutsUpdater @Inject constructor(
 	private val coil: ImageLoader,
 	private val historyRepository: HistoryRepository,
 	private val mangaRepository: MangaDataRepository,
-) : InvalidationTracker.Observer(TABLE_HISTORY) {
+	private val settings: AppSettings,
+) : InvalidationTracker.Observer(TABLE_HISTORY), SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private val iconSize by lazy { getIconSize(context) }
 	private var shortcutsUpdateJob: Job? = null
 
-	override fun onInvalidated(tables: MutableSet<String>) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+	init {
+		settings.subscribe(this)
+	}
+
+	override fun onInvalidated(tables: Set<String>) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1 || !settings.isDynamicShortcutsEnabled) {
 			return
 		}
 		val prevJob = shortcutsUpdateJob
 		shortcutsUpdateJob = processLifecycleScope.launch(Dispatchers.Default) {
 			prevJob?.join()
 			updateShortcutsImpl()
+		}
+	}
+
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && key == AppSettings.KEY_SHORTCUTS) {
+			if (settings.isDynamicShortcutsEnabled) {
+				onInvalidated(emptySet())
+			} else {
+				clearShortcuts()
+			}
 		}
 	}
 
@@ -64,6 +82,15 @@ class ShortcutsUpdater @Inject constructor(
 		return shortcutsUpdateJob?.join() != null
 	}
 
+	fun isDynamicShortcutsAvailable(): Boolean {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+			return false
+		}
+		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
+		return manager.maxShortcutCountPerActivity > 0
+	}
+
+	@RequiresApi(Build.VERSION_CODES.N_MR1)
 	private suspend fun updateShortcutsImpl() = runCatching {
 		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
 		val shortcuts = historyRepository.getList(0, manager.maxShortcutCountPerActivity)
@@ -72,6 +99,15 @@ class ShortcutsUpdater @Inject constructor(
 		manager.dynamicShortcuts = shortcuts
 	}.onFailure {
 		it.printStackTraceDebug()
+	}
+
+	@RequiresApi(Build.VERSION_CODES.N_MR1)
+	private fun clearShortcuts() {
+		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
+		try {
+			manager.removeAllDynamicShortcuts()
+		} catch (_: IllegalStateException) {
+		}
 	}
 
 	private suspend fun buildShortcutInfo(manga: Manga): ShortcutInfoCompat.Builder {

@@ -134,6 +134,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isExitConfirmationEnabled: Boolean
 		get() = prefs.getBoolean(KEY_EXIT_CONFIRM, false)
 
+	val isDynamicShortcutsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_SHORTCUTS, true)
+
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
 			?.split('|')
@@ -317,6 +320,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_INCOGNITO_MODE = "incognito"
 		const val KEY_SYNC = "sync"
 		const val KEY_READER_BAR = "reader_bar"
+		const val KEY_SHORTCUTS = "dynamic_shortcuts"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

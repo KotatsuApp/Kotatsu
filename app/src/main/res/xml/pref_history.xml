@@ -13,6 +13,12 @@
 		android:summary="@string/exclude_nsfw_from_history_summary"
 		android:title="@string/exclude_nsfw_from_history" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="dynamic_shortcuts"
+		android:summary="@string/history_shortcuts_summary"
+		android:title="@string/history_shortcuts" />
+
 	<PreferenceCategory android:title="@string/tracking">
 
 		<PreferenceScreen
