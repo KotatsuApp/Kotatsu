@@ -74,6 +74,9 @@ class ReaderActivity :
 			pageSwitchTimer.delaySec = value
 		}
 
+	override val readerMode: ReaderMode?
+		get() = readerManager.currentMode
+
 	private lateinit var pageSwitchTimer: PageSwitchTimer
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
@@ -88,7 +91,7 @@ class ReaderActivity :
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
 		pageSwitchTimer = PageSwitchTimer(this, this)
-		controlDelegate = ReaderControlDelegate(lifecycleScope, settings, this)
+		controlDelegate = ReaderControlDelegate(settings, this, this)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		binding.slider.setLabelFormatter(PageLabelFormatter())
 		ReaderSliderListener(this, viewModel).attachToSlider(binding.slider)

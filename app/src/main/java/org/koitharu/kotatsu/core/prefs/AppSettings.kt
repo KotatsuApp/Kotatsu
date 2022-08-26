@@ -65,6 +65,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val readerPageSwitch: Set<String>
 		get() = prefs.getStringSet(KEY_READER_SWITCHERS, null) ?: setOf(PAGE_SWITCH_TAPS)
 
+	val isReaderTapsAdaptive: Boolean
+		get() = !prefs.getBoolean(KEY_READER_TAPS_LTR, false)
+
 	var isTrafficWarningEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRAFFIC_WARNING, true)
 		set(value) = prefs.edit { putBoolean(KEY_TRAFFIC_WARNING, value) }
@@ -321,6 +324,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SYNC = "sync"
 		const val KEY_READER_BAR = "reader_bar"
 		const val KEY_SHORTCUTS = "dynamic_shortcuts"
+		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

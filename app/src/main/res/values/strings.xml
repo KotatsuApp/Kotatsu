@@ -379,4 +379,6 @@
 	<string name="manga_error_description_pattern">Error details:&lt;br>&lt;tt>%1$s&lt;/tt>&lt;br>&lt;br>1. Try to &lt;a href="%2$s">open manga in a web browser&lt;/a> to ensure it is available on its source&lt;br>2. If it is available, send an error report to the developers.</string>
 	<string name="history_shortcuts">Show recent manga shortcuts</string>
 	<string name="history_shortcuts_summary">Make recent manga available by long pressing on application icon</string>
+	<string name="reader_control_ltr_summary">Tap on the right edge or pressing the right key always switches to the next page</string>
+	<string name="reader_control_ltr">Ergonomic reader control</string>
 </resources>
