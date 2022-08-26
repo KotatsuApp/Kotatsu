@@ -1,33 +1,39 @@
 package org.koitharu.kotatsu.reader.ui
 
+import android.content.SharedPreferences
 import android.view.KeyEvent
 import android.view.SoundEffectConstants
 import android.view.View
-import androidx.lifecycle.LifecycleCoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.utils.GridTouchHelper
 
 class ReaderControlDelegate(
-	scope: LifecycleCoroutineScope,
-	settings: AppSettings,
-	private val listener: OnInteractionListener
-) {
+	private val settings: AppSettings,
+	private val listener: OnInteractionListener,
+	owner: LifecycleOwner,
+) : DefaultLifecycleObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private var isTapSwitchEnabled: Boolean = true
 	private var isVolumeKeysSwitchEnabled: Boolean = false
+	private var isReaderTapsAdaptive: Boolean = true
 
 	init {
-		settings.observeAsFlow(AppSettings.KEY_READER_SWITCHERS) { readerPageSwitch }
-			.flowOn(Dispatchers.Default)
-			.onEach {
-				isTapSwitchEnabled = AppSettings.PAGE_SWITCH_TAPS in it
-				isVolumeKeysSwitchEnabled = AppSettings.PAGE_SWITCH_VOLUME_KEYS in it
-			}.launchIn(scope)
+		owner.lifecycle.addObserver(this)
+		settings.subscribe(this)
+		updateSettings()
+	}
+
+	override fun onDestroy(owner: LifecycleOwner) {
+		settings.unsubscribe(this)
+		owner.lifecycle.removeObserver(this)
+		super.onDestroy(owner)
+	}
+
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+		updateSettings()
 	}
 
 	fun onGridTouch(area: Int, view: View) {
@@ -41,7 +47,7 @@ class ReaderControlDelegate(
 				view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
 			}
 			GridTouchHelper.AREA_LEFT -> if (isTapSwitchEnabled) {
-				listener.switchPageBy(-1)
+				listener.switchPageBy(if (isReaderTapsReversed()) 1 else -1)
 				view.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT)
 			}
 			GridTouchHelper.AREA_BOTTOM -> if (isTapSwitchEnabled) {
@@ -49,7 +55,7 @@ class ReaderControlDelegate(
 				view.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN)
 			}
 			GridTouchHelper.AREA_RIGHT -> if (isTapSwitchEnabled) {
-				listener.switchPageBy(1)
+				listener.switchPageBy(if (isReaderTapsReversed()) -1 else 1)
 				view.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT)
 			}
 		}
@@ -72,15 +78,23 @@ class ReaderControlDelegate(
 		KeyEvent.KEYCODE_PAGE_DOWN,
 		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN,
 		KeyEvent.KEYCODE_DPAD_DOWN,
-		KeyEvent.KEYCODE_DPAD_RIGHT -> {
+		-> {
 			listener.switchPageBy(1)
+			true
+		}
+		KeyEvent.KEYCODE_DPAD_RIGHT -> {
+			listener.switchPageBy(if (isReaderTapsReversed()) -1 else 1)
 			true
 		}
 		KeyEvent.KEYCODE_PAGE_UP,
 		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_UP,
 		KeyEvent.KEYCODE_DPAD_UP,
-		KeyEvent.KEYCODE_DPAD_LEFT -> {
+		-> {
 			listener.switchPageBy(-1)
+			true
+		}
+		KeyEvent.KEYCODE_DPAD_LEFT -> {
+			listener.switchPageBy(if (isReaderTapsReversed()) 1 else -1)
 			true
 		}
 		KeyEvent.KEYCODE_DPAD_CENTER -> {
@@ -97,7 +111,20 @@ class ReaderControlDelegate(
 			)
 	}
 
+	private fun updateSettings() {
+		val switch = settings.readerPageSwitch
+		isTapSwitchEnabled = AppSettings.PAGE_SWITCH_TAPS in switch
+		isVolumeKeysSwitchEnabled = AppSettings.PAGE_SWITCH_VOLUME_KEYS in switch
+		isReaderTapsAdaptive = settings.isReaderTapsAdaptive
+	}
+
+	private fun isReaderTapsReversed(): Boolean {
+		return isReaderTapsAdaptive && listener.readerMode == ReaderMode.REVERSED
+	}
+
 	interface OnInteractionListener {
+
+		val readerMode: ReaderMode?
 
 		fun switchPageBy(delta: Int)
 

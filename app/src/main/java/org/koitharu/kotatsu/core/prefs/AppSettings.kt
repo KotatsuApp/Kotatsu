@@ -14,9 +14,6 @@ import java.io.File
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.callbackFlow
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
@@ -63,6 +60,9 @@ class AppSettings(context: Context) {
 
 	val readerPageSwitch: Set<String>
 		get() = prefs.getStringSet(KEY_READER_SWITCHERS, null) ?: setOf(PAGE_SWITCH_TAPS)
+
+	val isReaderTapsAdaptive: Boolean
+		get() = !prefs.getBoolean(KEY_READER_TAPS_LTR, false)
 
 	var isTrafficWarningEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRAFFIC_WARNING, true)
@@ -314,6 +314,7 @@ class AppSettings(context: Context) {
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 		const val KEY_DOH = "doh"
+		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

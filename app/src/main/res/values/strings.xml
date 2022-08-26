@@ -325,4 +325,6 @@
 	<string name="not_found_404">Content not found or removed</string>
 	<string name="downloading_manga">Downloading manga</string>
 	<string name="download_summary_pattern" translatable="false">&lt;b>%1$s&lt;/b> %2$s</string>
+	<string name="reader_control_ltr_summary">Tap on the right edge or pressing the right key always switches to the next page</string>
+	<string name="reader_control_ltr">Ergonomic reader control</string>
 </resources>

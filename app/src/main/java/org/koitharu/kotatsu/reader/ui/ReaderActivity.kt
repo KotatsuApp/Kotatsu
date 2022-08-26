@@ -19,6 +19,7 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -47,7 +48,6 @@ import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.*
-import java.util.concurrent.TimeUnit
 
 class ReaderActivity :
 	BaseFullscreenActivity<ActivityReaderBinding>(),
@@ -67,6 +67,9 @@ class ReaderActivity :
 		)
 	}
 
+	override val readerMode: ReaderMode?
+		get() = readerManager.currentMode
+
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var orientationHelper: ScreenOrientationHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
@@ -82,7 +85,7 @@ class ReaderActivity :
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
 		orientationHelper = ScreenOrientationHelper(this)
-		controlDelegate = ReaderControlDelegate(lifecycleScope, get(), this)
+		controlDelegate = ReaderControlDelegate(get(), this, this)
 		binding.toolbarBottom.inflateMenu(R.menu.opt_reader_bottom)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		insetsDelegate.interceptingWindowInsetsListener = this
@@ -146,7 +149,7 @@ class ReaderActivity :
 				ChaptersBottomSheet.show(
 					supportFragmentManager,
 					viewModel.manga?.chapters.orEmpty(),
-					viewModel.getCurrentState()?.chapterId ?: 0L
+					viewModel.getCurrentState()?.chapterId ?: 0L,
 				)
 			}
 			R.id.action_screen_rotate -> {
@@ -317,12 +320,12 @@ class ReaderActivity :
 		binding.appbarTop.updatePadding(
 			top = systemBars.top,
 			right = systemBars.right,
-			left = systemBars.left
+			left = systemBars.left,
 		)
 		binding.appbarBottom?.updatePadding(
 			bottom = systemBars.bottom,
 			right = systemBars.right,
-			left = systemBars.left
+			left = systemBars.left,
 		)
 		return WindowInsetsCompat.Builder(insets)
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
