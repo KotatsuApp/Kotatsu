@@ -63,6 +63,10 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 				x.tags.containsAll(tags)
 			}
 		}
+		when (sortOrder) {
+			SortOrder.ALPHABETICAL -> list.sortBy { it.title }
+			SortOrder.RATING -> list.sortBy { it.rating }
+		}
 		return list
 	}
 
@@ -250,7 +254,7 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 		}
 	}
 
-	override val sortOrders = setOf(SortOrder.ALPHABETICAL)
+	override val sortOrders = setOf(SortOrder.ALPHABETICAL, SortOrder.RATING)
 
 	override suspend fun getPageUrl(page: MangaPage) = page.url
 
