@@ -7,7 +7,7 @@ import kotlin.math.roundToInt
 
 class GridTouchHelper(
 	context: Context,
-	private val listener: OnGridTouchListener
+	private val listener: OnGridTouchListener,
 ) : GestureDetector.SimpleOnGestureListener() {
 
 	private val detector = GestureDetector(context, this)
@@ -16,7 +16,7 @@ class GridTouchHelper(
 	private var isDispatching = false
 
 	init {
-		detector.setIsLongpressEnabled(false)
+		detector.setIsLongpressEnabled(true)
 		detector.setOnDoubleTapListener(this)
 	}
 
@@ -46,7 +46,7 @@ class GridTouchHelper(
 				}
 				2 -> AREA_RIGHT
 				else -> return false
-			}
+			},
 		)
 		return true
 	}
