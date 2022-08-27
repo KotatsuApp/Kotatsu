@@ -14,8 +14,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 423
-		versionName '3.4.11'
+		versionCode 424
+		versionName '3.4.12'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -119,8 +119,8 @@ dependencies {
 	implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
-	implementation 'ch.acra:acra-mail:5.9.5'
-	implementation 'ch.acra:acra-dialog:5.9.5'
+	implementation 'ch.acra:acra-mail:5.9.6'
+	implementation 'ch.acra:acra-dialog:5.9.6'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 

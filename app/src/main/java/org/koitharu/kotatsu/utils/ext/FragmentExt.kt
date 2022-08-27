@@ -7,8 +7,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
 import java.io.Serializable
+import kotlin.coroutines.resume
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 inline fun <T : Fragment> T.withArgs(size: Int, block: Bundle.() -> Unit): T {
 	val b = Bundle(size)
@@ -49,4 +53,20 @@ fun DialogFragment.showAllowStateLoss(manager: FragmentManager, tag: String?) {
 
 fun Fragment.addMenuProvider(provider: MenuProvider) {
 	requireActivity().addMenuProvider(provider, viewLifecycleOwner, Lifecycle.State.RESUMED)
+}
+
+suspend fun Fragment.awaitViewLifecycle(): LifecycleOwner = suspendCancellableCoroutine { cont ->
+	val liveData = viewLifecycleOwnerLiveData
+	val observer = object : Observer<LifecycleOwner> {
+		override fun onChanged(result: LifecycleOwner?) {
+			if (result != null) {
+				liveData.removeObserver(this)
+				cont.resume(result)
+			}
+		}
+	}
+	liveData.observeForever(observer)
+	cont.invokeOnCancellation {
+		liveData.removeObserver(observer)
+	}
 }

@@ -9,6 +9,7 @@ import coil.request.ImageResult
 import coil.request.SuccessResult
 import coil.util.CoilUtils
 import com.google.android.material.progressindicator.BaseProgressIndicator
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.utils.progress.ImageRequestIndicatorListener
 
@@ -45,9 +46,28 @@ fun ImageResult.toBitmapOrNull() = when (this) {
 }
 
 fun ImageRequest.Builder.referer(referer: String): ImageRequest.Builder {
-	return setHeader(CommonHeaders.REFERER, referer)
+	if (referer.isEmpty()) {
+		return this
+	}
+	try {
+		setHeader(CommonHeaders.REFERER, referer)
+	} catch (e: IllegalArgumentException) {
+		val baseUrl = referer.baseUrl()
+		if (baseUrl != null) {
+			setHeader(CommonHeaders.REFERER, baseUrl)
+		}
+	}
+	return this
 }
 
 fun ImageRequest.Builder.indicator(indicator: BaseProgressIndicator<*>): ImageRequest.Builder {
 	return listener(ImageRequestIndicatorListener(indicator))
+}
+
+private fun String.baseUrl(): String? {
+	return (this.toHttpUrlOrNull()?.newBuilder("/") ?: return null)
+		.username("")
+		.password("")
+		.build()
+		.toString()
 }

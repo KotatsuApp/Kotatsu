@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +49,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(KEY_AUTH)?.run {
 			if (isVisible) {
-				loadUsername(this)
+				loadUsername(viewLifecycleOwner, this)
 			}
 		}
 	}
@@ -62,7 +64,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 		}
 	}
 
-	private fun loadUsername(preference: Preference) = viewLifecycleScope.launch {
+	private fun loadUsername(owner: LifecycleOwner, preference: Preference) = owner.lifecycleScope.launch {
 		runCatching {
 			preference.summary = null
 			withContext(Dispatchers.Default) {
@@ -89,11 +91,12 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 		}
 	}
 
-	private fun resolveError(error: Throwable): Unit {
+	private fun resolveError(error: Throwable) {
 		viewLifecycleScope.launch {
 			if (exceptionResolver.resolve(error)) {
 				val pref = findPreference<Preference>(KEY_AUTH) ?: return@launch
-				loadUsername(pref)
+				val lifecycleOwner = awaitViewLifecycle()
+				loadUsername(lifecycleOwner, pref)
 			}
 		}
 	}
