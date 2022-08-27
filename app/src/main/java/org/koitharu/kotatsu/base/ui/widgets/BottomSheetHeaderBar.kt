@@ -26,6 +26,8 @@ import org.koitharu.kotatsu.utils.ext.getAnimationDuration
 import org.koitharu.kotatsu.utils.ext.getThemeDrawable
 import org.koitharu.kotatsu.utils.ext.parents
 
+private const val THROTTLE_DELAY = 200L
+
 class BottomSheetHeaderBar @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
@@ -35,6 +37,7 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 	private val binding = LayoutSheetHeaderBinding.inflate(LayoutInflater.from(context), this)
 	private val closeDrawable = context.getThemeDrawable(materialR.attr.actionModeCloseDrawable)
 	private val bottomSheetCallback = Callback()
+	private val adjustStateRunnable = Runnable { adjustState() }
 	private var bottomSheetBehavior: BottomSheetBehavior<*>? = null
 	private val locationBuffer = IntArray(2)
 	private val expansionListeners = LinkedList<OnExpansionChangeListener>()
@@ -43,6 +46,8 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 	private val maxHandleHeight = context.resources.getDimensionPixelSize(R.dimen.bottom_sheet_handle_size_max)
 	private var isLayoutSuppressedCompat = false
 	private var isLayoutCalledWhileSuppressed = false
+	private var isBsExpanded = false
+	private var stateAdjustedAt = 0L
 
 	@Deprecated("")
 	val toolbar: MaterialToolbar
@@ -173,16 +178,11 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 	}
 
 	private fun onBottomSheetStateChanged(newState: Int) {
-		val isExpanded = newState == BottomSheetBehavior.STATE_EXPANDED && isOnTopOfScreen()
-		if (isExpanded == binding.dragHandle.isGone) {
-			return
+		val expanded = newState == BottomSheetBehavior.STATE_EXPANDED && isOnTopOfScreen()
+		if (isBsExpanded != expanded) {
+			isBsExpanded = expanded
+			postAdjustState()
 		}
-		suppressLayoutCompat(true)
-		binding.toolbar.navigationIcon = (if (isExpanded) closeDrawable else null)
-		binding.dragHandle.isGone = isExpanded
-		expansionListeners.forEach { it.onExpansionStateChanged(this, isExpanded) }
-		dispatchInsets(ViewCompat.getRootWindowInsets(this))
-		suppressLayoutCompat(false)
 	}
 
 	private fun suppressLayoutCompat(suppress: Boolean) {
@@ -260,6 +260,26 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 			}
 			else -> Toolbar.LayoutParams(params)
 		}
+	}
+
+	private fun postAdjustState() {
+		removeCallbacks(adjustStateRunnable)
+		val now = System.currentTimeMillis()
+		if (stateAdjustedAt + THROTTLE_DELAY < now) {
+			adjustState()
+		} else {
+			postDelayed(adjustStateRunnable, THROTTLE_DELAY)
+		}
+	}
+
+	private fun adjustState() {
+		suppressLayoutCompat(true)
+		binding.toolbar.navigationIcon = (if (isBsExpanded) closeDrawable else null)
+		binding.dragHandle.isGone = isBsExpanded
+		expansionListeners.forEach { it.onExpansionStateChanged(this, isBsExpanded) }
+		dispatchInsets(ViewCompat.getRootWindowInsets(this))
+		stateAdjustedAt = System.currentTimeMillis()
+		suppressLayoutCompat(false)
 	}
 
 	private inner class Callback : BottomSheetBehavior.BottomSheetCallback(), View.OnClickListener {

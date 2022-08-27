@@ -103,7 +103,7 @@
 				android:text="@string/reader_mode_hint"
 				android:textAppearance="?attr/textAppearanceBodySmall" />
 
-			<LinearLayout
+			<androidx.constraintlayout.widget.ConstraintLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"
@@ -115,23 +115,38 @@
 				android:paddingEnd="?android:listPreferredItemPaddingEnd">
 
 				<TextView
-					android:layout_width="wrap_content"
+					android:id="@+id/textView_timer"
+					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:drawablePadding="?android:listPreferredItemPaddingStart"
+					android:ellipsize="end"
+					android:singleLine="true"
 					android:text="@string/automatic_scroll"
 					android:textAppearance="?attr/textAppearanceButton"
-					app:drawableStartCompat="@drawable/ic_timer" />
+					app:drawableStartCompat="@drawable/ic_timer"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toStartOf="@id/slider_timer"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintWidth_default="wrap" />
 
 				<com.google.android.material.slider.Slider
 					android:id="@+id/slider_timer"
-					android:layout_width="match_parent"
+					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_marginStart="@dimen/margin_normal"
+					android:contentDescription="@string/automatic_scroll"
+					android:labelFor="@id/textView_timer"
 					android:valueFrom="0"
 					android:valueTo="20"
-					app:labelBehavior="floating" />
+					app:labelBehavior="floating"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toEndOf="@id/textView_timer"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintWidth_min="120dp" />
 
-			</LinearLayout>
+			</androidx.constraintlayout.widget.ConstraintLayout>
 
 			<org.koitharu.kotatsu.base.ui.widgets.ListItemTextView
 				android:id="@+id/button_settings"

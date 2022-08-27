@@ -6,17 +6,21 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.LinearLayoutManager
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
+import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 import org.koitharu.kotatsu.utils.ext.parentFragmentViewModels
 
 class FilterBottomSheet :
 	BaseBottomSheet<SheetFilterBinding>(),
 	MenuItem.OnActionExpandListener,
 	SearchView.OnQueryTextListener,
-	DialogInterface.OnKeyListener {
+	DialogInterface.OnKeyListener,
+	AsyncListDiffer.ListListener<FilterItem> {
 
 	private val viewModel by parentFragmentViewModels<RemoteListViewModel>()
 
@@ -32,7 +36,7 @@ class FilterBottomSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val adapter = FilterAdapter(viewModel)
+		val adapter = FilterAdapter(viewModel, this)
 		binding.recyclerView.adapter = adapter
 		viewModel.filterItems.observe(viewLifecycleOwner, adapter::setItems)
 		initOptionsMenu()
@@ -68,6 +72,12 @@ class FilterBottomSheet :
 			}
 		}
 		return false
+	}
+
+	override fun onCurrentListChanged(previousList: MutableList<FilterItem>, currentList: MutableList<FilterItem>) {
+		if (currentList.size > previousList.size && view != null) {
+			(binding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 0)
+		}
 	}
 
 	private fun initOptionsMenu() {
