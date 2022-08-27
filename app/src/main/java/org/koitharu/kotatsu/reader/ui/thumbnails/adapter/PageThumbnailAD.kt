@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
+import org.koitharu.kotatsu.utils.ext.decodeRegion
 import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.setTextColorAttr
@@ -30,7 +31,7 @@ fun pageThumbnailAD(
 	val gridWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
 	val thumbSize = Size(
 		width = gridWidth,
-		height = (gridWidth * 13f / 18f).toInt(),
+		height = (gridWidth / 13f * 18f).toInt(),
 	)
 
 	suspend fun loadPageThumbnail(item: PageThumbnail): Drawable? = withContext(Dispatchers.Default) {
@@ -52,6 +53,7 @@ fun pageThumbnailAD(
 			ImageRequest.Builder(context)
 				.data(file)
 				.size(thumbSize)
+				.decodeRegion()
 				.allowRgb565(isLowRamDevice(context))
 				.build(),
 		).drawable

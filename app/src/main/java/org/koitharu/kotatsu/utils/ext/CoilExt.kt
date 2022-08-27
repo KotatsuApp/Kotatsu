@@ -13,6 +13,7 @@ import com.google.android.material.progressindicator.BaseProgressIndicator
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.utils.image.RegionBitmapDecoder
 import org.koitharu.kotatsu.utils.progress.ImageRequestIndicatorListener
 
 fun ImageView.newImageRequest(url: Any?): ImageRequest.Builder? {
@@ -64,6 +65,10 @@ fun ImageRequest.Builder.referer(referer: String): ImageRequest.Builder {
 
 fun ImageRequest.Builder.indicator(indicator: BaseProgressIndicator<*>): ImageRequest.Builder {
 	return listener(ImageRequestIndicatorListener(indicator))
+}
+
+fun ImageRequest.Builder.decodeRegion(): ImageRequest.Builder {
+	return decoderFactory(RegionBitmapDecoder.Factory())
 }
 
 @Suppress("SpellCheckingInspection")

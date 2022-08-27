@@ -123,6 +123,7 @@
 					android:singleLine="true"
 					android:text="@string/automatic_scroll"
 					android:textAppearance="?attr/textAppearanceButton"
+					android:textColor="@color/list_item_text_color"
 					app:drawableStartCompat="@drawable/ic_timer"
 					app:layout_constraintBottom_toBottomOf="parent"
 					app:layout_constraintEnd_toStartOf="@id/slider_timer"

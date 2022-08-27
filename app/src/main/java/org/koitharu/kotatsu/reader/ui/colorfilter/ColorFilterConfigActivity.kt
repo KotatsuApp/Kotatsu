@@ -27,10 +27,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
-import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.*
 
 @AndroidEntryPoint
 class ColorFilterConfigActivity :
@@ -117,6 +114,7 @@ class ColorFilterConfigActivity :
 			.data(preview.url)
 			.referer(preview.referer)
 			.scale(Scale.FILL)
+			.decodeRegion()
 			.error(R.drawable.ic_error_placeholder)
 			.size(ViewSizeResolver(binding.imageViewBefore))
 			.allowRgb565(false)
