@@ -10,8 +10,11 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
+import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.R as materialR
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,6 +39,8 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	private var insetLeft: Int = 0
 	private var insetRight: Int = 0
 	private var insetTop: Int = 0
+	private var cutoutInsetLeft = 0
+	private var cutoutInsetRight = 0
 	private val colorText = ColorUtils.setAlphaComponent(
 		context.getThemeColor(materialR.attr.colorOnSurface, Color.BLACK),
 		200,
@@ -78,19 +83,34 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		super.onDraw(canvas)
 		val ty = innerHeight / 2f + textBounds.height() / 2f - textBounds.bottom
 		paint.textAlign = Paint.Align.LEFT
-		canvas.drawTextOutline(text, (paddingLeft + insetLeft).toFloat(), paddingTop + insetTop + ty)
+		canvas.drawTextOutline(
+			text,
+			(paddingLeft + insetLeft + cutoutInsetLeft).toFloat(),
+			paddingTop + insetTop + ty,
+		)
 		paint.textAlign = Paint.Align.RIGHT
-		canvas.drawTextOutline(timeText, (width - paddingRight - insetRight).toFloat(), paddingTop + insetTop + ty)
+		canvas.drawTextOutline(
+			timeText,
+			(width - paddingRight - insetRight - cutoutInsetRight).toFloat(),
+			paddingTop + insetTop + ty,
+		)
 	}
 
 	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
 		super.onSizeChanged(w, h, oldw, oldh)
+		updateCutoutInsets(ViewCompat.getRootWindowInsets(this))
 		updateTextSize()
+	}
+
+	override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+		updateCutoutInsets(WindowInsetsCompat.toWindowInsetsCompat(insets))
+		return super.onApplyWindowInsets(insets)
 	}
 
 	override fun onAttachedToWindow() {
 		super.onAttachedToWindow()
 		context.registerReceiver(timeReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
+		updateCutoutInsets(ViewCompat.getRootWindowInsets(this))
 	}
 
 	override fun onDetachedFromWindow() {
@@ -135,6 +155,20 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		paint.color = colorText
 		paint.style = Paint.Style.FILL
 		drawText(text, x, y, paint)
+	}
+
+	private fun updateCutoutInsets(insetsCompat: WindowInsetsCompat?) {
+		val cutouts = (insetsCompat ?: return).displayCutout?.boundingRects.orEmpty()
+		cutoutInsetLeft = 0
+		cutoutInsetRight = 0
+		for (rect in cutouts) {
+			if (rect.left <= paddingLeft) {
+				cutoutInsetLeft += rect.width()
+			}
+			if (rect.right >= width - paddingRight) {
+				cutoutInsetRight += rect.width()
+			}
+		}
 	}
 
 	private inner class TimeReceiver : BroadcastReceiver() {
