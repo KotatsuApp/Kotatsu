@@ -8,4 +8,5 @@ fun TrackingLogItem.toFeedItem() = FeedItem(
 	title = manga.title,
 	count = chapters.size,
 	manga = manga,
+	isNew = isNew,
 )

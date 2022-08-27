@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.TextView
@@ -48,3 +49,15 @@ fun TextView.setTextAndVisible(@StringRes textResId: Int) {
 fun TextView.setTextColorAttr(@AttrRes attrResId: Int) {
 	setTextColor(context.getThemeColorStateList(attrResId))
 }
+
+var TextView.isBold: Boolean
+	get() = typeface.isBold
+	set(value) {
+		var style = typeface.style
+		style = if (value) {
+			style or Typeface.BOLD
+		} else {
+			style and Typeface.BOLD.inv()
+		}
+		setTypeface(typeface, style)
+	}

@@ -5,6 +5,8 @@ import androidx.room.withTransaction
 import java.util.*
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
@@ -73,9 +75,15 @@ class TrackingRepository @Inject constructor(
 		db.tracksDao.delete(mangaId)
 	}
 
-	suspend fun getTrackingLog(offset: Int, limit: Int): List<TrackingLogItem> {
-		return db.trackLogsDao.findAll(offset, limit).map { x ->
-			x.toTrackingLogItem()
+	fun observeTrackingLog(limit: Flow<Int>): Flow<List<TrackingLogItem>> {
+		return limit.flatMapLatest { limitValue ->
+			combine(
+				db.tracksDao.observeNewChaptersMap(),
+				db.trackLogsDao.observeAll(limitValue),
+			) { counters, entities ->
+				val countersMap = counters.toMutableMap()
+				entities.map { x -> x.toTrackingLogItem(countersMap) }
+			}
 		}
 	}
 

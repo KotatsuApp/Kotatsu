@@ -7,5 +7,6 @@ data class TrackingLogItem(
 	val id: Long,
 	val manga: Manga,
 	val chapters: List<String>,
-	val createdAt: Date
+	val createdAt: Date,
+	val isNew: Boolean,
 )

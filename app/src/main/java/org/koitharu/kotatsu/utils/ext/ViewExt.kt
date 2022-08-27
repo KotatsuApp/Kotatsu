@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils.ext
 import android.app.Activity
 import android.graphics.Rect
 import android.view.View
+import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.view.inputmethod.InputMethodManager
@@ -167,3 +168,19 @@ val View.parents: Sequence<ViewParent>
 			p = p.parent
 		}
 	}
+
+@Suppress("unused")
+fun View.measureDimension(desiredSize: Int, measureSpec: Int): Int {
+	var result: Int
+	val specMode = MeasureSpec.getMode(measureSpec)
+	val specSize = MeasureSpec.getSize(measureSpec)
+	if (specMode == MeasureSpec.EXACTLY) {
+		result = specSize
+	} else {
+		result = desiredSize
+		if (specMode == MeasureSpec.AT_MOST) {
+			result = result.coerceAtMost(specSize)
+		}
+	}
+	return result
+}

@@ -8,16 +8,18 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import kotlin.math.hypot
 import org.koitharu.kotatsu.utils.ext.animatorDurationScale
 import org.koitharu.kotatsu.utils.ext.measureWidth
-import kotlin.math.hypot
 
 class BubbleAnimator(
 	private val bubble: View,
 ) {
 
-	private val animationDuration = (bubble.resources.getInteger(android.R.integer.config_shortAnimTime) *
-		bubble.context.animatorDurationScale).toLong()
+	private val animationDuration = (
+		bubble.resources.getInteger(android.R.integer.config_shortAnimTime) *
+			bubble.context.animatorDurationScale
+		).toLong()
 	private var animator: Animator? = null
 	private var isHiding = false
 
@@ -65,12 +67,12 @@ class BubbleAnimator(
 
 		private var isCancelled = false
 
-		override fun onAnimationCancel(animation: Animator?) {
+		override fun onAnimationCancel(animation: Animator) {
 			super.onAnimationCancel(animation)
 			isCancelled = true
 		}
 
-		override fun onAnimationEnd(animation: Animator?) {
+		override fun onAnimationEnd(animation: Animator) {
 			super.onAnimationEnd(animation)
 			if (!isCancelled && animation === this@BubbleAnimator.animator) {
 				bubble.isInvisible = true

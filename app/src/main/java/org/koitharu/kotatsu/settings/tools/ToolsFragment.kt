@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.databinding.FragmentToolsBinding
 import org.koitharu.kotatsu.download.ui.DownloadsActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.about.AppUpdateDialog
 import org.koitharu.kotatsu.settings.tools.model.StorageUsage
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getThemeColor
@@ -67,6 +68,10 @@ class ToolsFragment :
 				val intent = Intent(Intent.ACTION_VIEW)
 				intent.data = url.toUri()
 				startActivity(Intent.createChooser(intent, getString(R.string.open_in_browser)))
+			}
+			R.id.card_update -> {
+				val version = viewModel.appUpdate.value ?: return
+				AppUpdateDialog(v.context).show(version)
 			}
 		}
 	}

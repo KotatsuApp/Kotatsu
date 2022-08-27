@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.getSerializableCompat
 
 @AndroidEntryPoint
 class FavouritesCategoryEditActivity :
@@ -70,8 +71,8 @@ class FavouritesCategoryEditActivity :
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		val order = savedInstanceState.getSerializable(KEY_SORT_ORDER)
-		if (order != null && order is SortOrder) {
+		val order = savedInstanceState.getSerializableCompat<SortOrder>(KEY_SORT_ORDER)
+		if (order != null) {
 			selectedSortOrder = order
 		}
 	}

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.db.dao
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.tracker.data.TrackLogEntity
 import org.koitharu.kotatsu.tracker.data.TrackLogWithManga
 
@@ -8,8 +9,8 @@ import org.koitharu.kotatsu.tracker.data.TrackLogWithManga
 interface TrackLogsDao {
 
 	@Transaction
-	@Query("SELECT * FROM track_logs ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
-	suspend fun findAll(offset: Int, limit: Int): List<TrackLogWithManga>
+	@Query("SELECT * FROM track_logs ORDER BY created_at DESC LIMIT :limit OFFSET 0")
+	fun observeAll(limit: Int): Flow<List<TrackLogWithManga>>
 
 	@Query("DELETE FROM track_logs")
 	suspend fun clear()

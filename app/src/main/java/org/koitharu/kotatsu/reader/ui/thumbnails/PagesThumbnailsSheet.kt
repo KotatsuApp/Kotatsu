@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
+import org.koitharu.kotatsu.utils.ext.getParcelableCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -52,7 +53,7 @@ class PagesThumbnailsSheet :
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		val pages = arguments?.getParcelable<ParcelableMangaPages>(ARG_PAGES)?.pages
+		val pages = arguments?.getParcelableCompat<ParcelableMangaPages>(ARG_PAGES)?.pages
 		if (pages.isNullOrEmpty()) {
 			dismissAllowingStateLoss()
 			return

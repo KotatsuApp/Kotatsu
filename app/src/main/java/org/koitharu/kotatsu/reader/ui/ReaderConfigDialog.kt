@@ -15,14 +15,15 @@ import org.koitharu.kotatsu.databinding.DialogReaderConfigBinding
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 @Deprecated("Not in use")
-class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
+class ReaderConfigDialog :
+	AlertDialogFragment<DialogReaderConfigBinding>(),
 	CheckableButtonGroup.OnCheckedChangeListener {
 
 	private lateinit var mode: ReaderMode
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = DialogReaderConfigBinding.inflate(inflater, container, false)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,8 +33,9 @@ class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 			?: ReaderMode.STANDARD
 	}
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
-		builder.setTitle(R.string.read_mode)
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
+		return super.onBuildDialog(builder)
+			.setTitle(R.string.read_mode)
 			.setPositiveButton(R.string.done, null)
 			.setCancelable(true)
 	}
@@ -48,8 +50,10 @@ class ReaderConfigDialog : AlertDialogFragment<DialogReaderConfigBinding>(),
 	}
 
 	override fun onDismiss(dialog: DialogInterface) {
-		((parentFragment as? Callback)
-			?: (activity as? Callback))?.onReaderModeChanged(mode)
+		(
+			(parentFragment as? Callback)
+				?: (activity as? Callback)
+			)?.onReaderModeChanged(mode)
 		super.onDismiss(dialog)
 	}
 

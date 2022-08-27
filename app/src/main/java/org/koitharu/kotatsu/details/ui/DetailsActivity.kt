@@ -5,8 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.transition.Slide
+import android.transition.TransitionManager
+import android.view.Gravity
 import android.view.Menu
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
@@ -16,6 +21,7 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -27,6 +33,7 @@ import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.core.ui.MangaErrorDialog
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.download.ui.service.DownloadService
@@ -93,6 +100,7 @@ class DetailsActivity :
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
 		viewModel.onError.observe(this, ::onError)
 		viewModel.onShowToast.observe(this) {
+			makeSnackbar(getString(it), Snackbar.LENGTH_SHORT).show()
 		}
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
 		viewModel.selectedBranchName.observe(this) {
@@ -158,8 +166,11 @@ class DetailsActivity :
 
 	private fun onMangaUpdated(manga: Manga) {
 		title = manga.title
-		binding.buttonRead.isEnabled = !manga.chapters.isNullOrEmpty()
+		val hasChapters = !manga.chapters.isNullOrEmpty()
+		binding.buttonRead.isEnabled = hasChapters
 		invalidateOptionsMenu()
+		showBottomSheet(manga.chapters != null)
+		binding.groupHeader?.isVisible = hasChapters
 	}
 
 	private fun onMangaRemoved(manga: Manga) {
@@ -172,17 +183,17 @@ class DetailsActivity :
 	}
 
 	private fun onError(e: Throwable) {
+		val manga = viewModel.manga.value
 		when {
 			ExceptionResolver.canResolve(e) -> {
 				resolveError(e)
 			}
-			viewModel.manga.value == null -> {
+			manga == null -> {
 				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 				finishAfterTransition()
 			}
 			else -> {
-				val snackbar = Snackbar.make(
-					binding.containerDetails,
+				val snackbar = makeSnackbar(
 					e.getDisplayMessage(resources),
 					if (viewModel.manga.value?.chapters == null) {
 						Snackbar.LENGTH_INDEFINITE
@@ -190,10 +201,9 @@ class DetailsActivity :
 						Snackbar.LENGTH_LONG
 					},
 				)
-				snackbar.anchorView = binding.headerChapters
 				if (e.isReportable()) {
-					snackbar.setAction(R.string.report) {
-						e.report("DetailsActivity::onError")
+					snackbar.setAction(R.string.details) {
+						MangaErrorDialog.show(supportFragmentManager, manga, e)
 					}
 				}
 				snackbar.show()
@@ -238,8 +248,7 @@ class DetailsActivity :
 	fun showChapterMissingDialog(chapterId: Long) {
 		val remoteManga = viewModel.getRemoteManga()
 		if (remoteManga == null) {
-			val snackbar = Snackbar.make(binding.containerDetails, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
-			snackbar.anchorView = binding.headerChapters
+			val snackbar = makeSnackbar(getString(R.string.chapter_is_missing), Snackbar.LENGTH_SHORT)
 			snackbar.show()
 			return
 		}
@@ -290,6 +299,24 @@ class DetailsActivity :
 	}
 
 	private fun isTabletLayout() = binding.layoutBottom == null
+
+	private fun showBottomSheet(isVisible: Boolean) {
+		val view = binding.layoutBottom ?: return
+		if (view.isVisible == isVisible) return
+		val transition = Slide(Gravity.BOTTOM)
+		transition.addTarget(view)
+		transition.interpolator = AccelerateDecelerateInterpolator()
+		TransitionManager.beginDelayedTransition(binding.root as ViewGroup, transition)
+		view.isVisible = isVisible
+	}
+
+	private fun makeSnackbar(text: CharSequence, @BaseTransientBottomBar.Duration duration: Int): Snackbar {
+		val sb = Snackbar.make(binding.containerDetails, text, duration)
+		if (binding.layoutBottom?.isVisible == true) {
+			sb.anchorView = binding.headerChapters
+		}
+		return sb
+	}
 
 	companion object {
 

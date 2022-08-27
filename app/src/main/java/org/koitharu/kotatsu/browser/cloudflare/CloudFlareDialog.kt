@@ -55,11 +55,12 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 
 	override fun onDestroyView() {
 		binding.webView.stopLoading()
+		binding.webView.destroy()
 		super.onDestroyView()
 	}
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
-		builder.setNegativeButton(android.R.string.cancel, null)
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
+		return super.onBuildDialog(builder).setNegativeButton(android.R.string.cancel, null)
 	}
 
 	override fun onResume() {
@@ -83,7 +84,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 
 	override fun onCheckPassed() {
 		pendingResult.putBoolean(EXTRA_RESULT, true)
-		dismiss()
+		dismissAllowingStateLoss()
 	}
 
 	companion object {

@@ -43,8 +43,8 @@ class NewSourcesDialogFragment :
 		viewModel.sources.observe(viewLifecycleOwner) { adapter.items = it }
 	}
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
-		builder
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
+		return super.onBuildDialog(builder)
 			.setPositiveButton(R.string.done, this)
 			.setCancelable(true)
 			.setTitle(R.string.remote_sources)

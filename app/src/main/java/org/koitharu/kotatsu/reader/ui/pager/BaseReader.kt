@@ -8,6 +8,7 @@ import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
+import org.koitharu.kotatsu.utils.ext.getParcelableCompat
 
 private const val KEY_STATE = "state"
 
@@ -18,7 +19,7 @@ abstract class BaseReader<B : ViewBinding> : BaseFragment<B>() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		var restoredState = savedInstanceState?.getParcelable<ReaderState?>(KEY_STATE)
+		var restoredState = savedInstanceState?.getParcelableCompat<ReaderState>(KEY_STATE)
 
 		viewModel.content.observe(viewLifecycleOwner) {
 			onPagesChanged(it.pages, restoredState ?: it.state)

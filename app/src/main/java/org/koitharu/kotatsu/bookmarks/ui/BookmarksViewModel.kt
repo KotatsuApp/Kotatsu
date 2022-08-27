@@ -42,7 +42,7 @@ class BookmarksViewModel @Inject constructor(
 				BookmarksGroup(manga, bookmarks)
 			}
 		}
-		.catch { e -> e.toErrorState(canRetry = false) }
+		.catch { e -> emit(listOf(e.toErrorState(canRetry = false))) }
 		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	fun removeBookmarks(ids: Map<Manga, Set<Long>>) {

@@ -51,8 +51,9 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		viewModel.onError.observe(viewLifecycleOwner, this::onError)
 	}
 
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
-		builder.setCancelable(false)
+	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
+		return super.onBuildDialog(builder)
+			.setCancelable(false)
 			.setNegativeButton(android.R.string.cancel, null)
 	}
 

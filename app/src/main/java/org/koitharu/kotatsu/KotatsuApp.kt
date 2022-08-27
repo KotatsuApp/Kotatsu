@@ -15,9 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.acra.ReportField
 import org.acra.config.dialog
-import org.acra.config.mailSender
+import org.acra.config.httpSender
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
+import org.acra.sender.HttpSender
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.PagesCache
@@ -59,16 +60,24 @@ class KotatsuApp : Application(), Configuration.Provider {
 		super.attachBaseContext(base)
 		initAcra {
 			buildConfigClass = BuildConfig::class.java
-			reportFormat = StringFormat.KEY_VALUE_LIST
+			reportFormat = StringFormat.JSON
+			excludeMatchingSharedPreferencesKeys = listOf(
+				"sources_\\w+",
+			)
+			httpSender {
+				uri = getString(R.string.url_error_report)
+				basicAuthLogin = getString(R.string.acra_login)
+				basicAuthPassword = getString(R.string.acra_password)
+				httpMethod = HttpSender.Method.POST
+			}
 			reportContent = listOf(
 				ReportField.PACKAGE_NAME,
 				ReportField.APP_VERSION_CODE,
 				ReportField.APP_VERSION_NAME,
 				ReportField.ANDROID_VERSION,
 				ReportField.PHONE_MODEL,
-				ReportField.CRASH_CONFIGURATION,
 				ReportField.STACK_TRACE,
-				ReportField.CUSTOM_DATA,
+				ReportField.CRASH_CONFIGURATION,
 				ReportField.SHARED_PREFERENCES,
 			)
 			dialog {
@@ -77,11 +86,6 @@ class KotatsuApp : Application(), Configuration.Provider {
 				positiveButtonText = getString(R.string.send)
 				resIcon = R.drawable.ic_alert_outline
 				resTheme = android.R.style.Theme_Material_Light_Dialog_Alert
-			}
-			mailSender {
-				mailTo = getString(R.string.email_error_report)
-				reportAsFile = true
-				reportFileName = "stacktrace.txt"
 			}
 		}
 	}

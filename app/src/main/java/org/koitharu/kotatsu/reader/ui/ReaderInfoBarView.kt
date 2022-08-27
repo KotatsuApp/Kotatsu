@@ -8,17 +8,19 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
-import android.icu.text.SimpleDateFormat
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.core.graphics.ColorUtils
 import com.google.android.material.R as materialR
+import java.text.SimpleDateFormat
 import java.util.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.utils.ext.getThemeColor
+import org.koitharu.kotatsu.utils.ext.measureDimension
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.resolveDp
 
 class ReaderInfoBarView @JvmOverloads constructor(
@@ -29,23 +31,46 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val textBounds = Rect()
-	private val inset = context.resources.resolveDp(2f)
 	private val timeFormat = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT)
 	private val timeReceiver = TimeReceiver()
+	private var insetLeft: Int = 0
+	private var insetRight: Int = 0
+	private var insetTop: Int = 0
+	private val colorText = ColorUtils.setAlphaComponent(
+		context.getThemeColor(materialR.attr.colorOnSurface, Color.BLACK),
+		200,
+	)
+	private val colorOutline = ColorUtils.setAlphaComponent(
+		context.getThemeColor(materialR.attr.colorSurface, Color.WHITE),
+		200,
+	)
 
 	private var timeText = timeFormat.format(Date())
 	private var text: String = ""
 
 	private val innerHeight
-		get() = height - inset - inset - paddingTop - paddingBottom
+		get() = height - paddingTop - paddingBottom - insetTop
 
 	private val innerWidth
-		get() = width - inset - inset - paddingLeft - paddingRight
+		get() = width - paddingLeft - paddingRight - insetLeft - insetRight
 
 	init {
-		paint.color = ColorUtils.setAlphaComponent(
-			context.getThemeColor(materialR.attr.colorOnSurface, Color.BLACK),
-			160,
+		paint.strokeWidth = context.resources.resolveDp(2f)
+		val insetCorner = getSystemUiDimensionOffset("rounded_corner_content_padding")
+		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start") + insetCorner
+		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end") + insetCorner
+		val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
+		insetLeft = if (isRtl) insetEnd else insetStart
+		insetRight = if (isRtl) insetStart else insetEnd
+		insetTop = minOf(insetLeft, insetRight)
+	}
+
+	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+		val desiredWidth = suggestedMinimumWidth + paddingLeft + paddingRight + insetLeft + insetRight
+		val desiredHeight = suggestedMinimumHeight + paddingTop + paddingBottom + insetTop
+		setMeasuredDimension(
+			measureDimension(desiredWidth, widthMeasureSpec),
+			measureDimension(desiredHeight, heightMeasureSpec),
 		)
 	}
 
@@ -53,9 +78,9 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		super.onDraw(canvas)
 		val ty = innerHeight / 2f + textBounds.height() / 2f - textBounds.bottom
 		paint.textAlign = Paint.Align.LEFT
-		canvas.drawText(text, paddingLeft + inset, paddingTop + inset + ty, paint)
+		canvas.drawTextOutline(text, (paddingLeft + insetLeft).toFloat(), paddingTop + insetTop + ty)
 		paint.textAlign = Paint.Align.RIGHT
-		canvas.drawText(timeText, width - paddingRight - inset, paddingTop + inset + ty, paint)
+		canvas.drawTextOutline(timeText, (width - paddingRight - insetRight).toFloat(), paddingTop + insetTop + ty)
 	}
 
 	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -103,6 +128,15 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		paint.getTextBounds(str, 0, str.length, textBounds)
 	}
 
+	private fun Canvas.drawTextOutline(text: String, x: Float, y: Float) {
+		paint.color = colorOutline
+		paint.style = Paint.Style.STROKE
+		drawText(text, x, y, paint)
+		paint.color = colorText
+		paint.style = Paint.Style.FILL
+		drawText(text, x, y, paint)
+	}
+
 	private inner class TimeReceiver : BroadcastReceiver() {
 
 		override fun onReceive(context: Context?, intent: Intent?) {
@@ -110,4 +144,13 @@ class ReaderInfoBarView @JvmOverloads constructor(
 			invalidate()
 		}
 	}
+
+	private fun getSystemUiDimensionOffset(name: String): Int = runCatching {
+		val manager = context.packageManager
+		val resources = manager.getResourcesForApplication("com.android.systemui")
+		val resId = resources.getIdentifier(name, "dimen", "com.android.systemui")
+		resources.getDimensionPixelOffset(resId)
+	}.onFailure {
+		it.printStackTraceDebug()
+	}.getOrDefault(0)
 }

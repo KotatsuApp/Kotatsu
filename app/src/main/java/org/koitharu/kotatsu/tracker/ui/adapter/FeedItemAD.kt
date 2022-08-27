@@ -11,22 +11,23 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.ui.model.FeedItem
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.isLowRamDevice
+import org.koitharu.kotatsu.utils.ext.isBold
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 
 fun feedItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-	clickListener: OnListItemClickListener<Manga>
+	clickListener: OnListItemClickListener<Manga>,
 ) = adapterDelegateViewBinding<FeedItem, ListModel, ItemFeedBinding>(
-	{ inflater, parent -> ItemFeedBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemFeedBinding.inflate(inflater, parent, false) },
 ) {
-
 	itemView.setOnClickListener {
 		clickListener.onItemClick(item.manga, it)
 	}
 
 	bind {
+		binding.textViewTitle.isBold = item.isNew
+		binding.textViewSummary.isBold = item.isNew
 		binding.imageViewCover.newImageRequest(item.imageUrl)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)

@@ -4,12 +4,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.utils.ext.resetTransformations
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 @Suppress("LeakingThis")
 abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
@@ -45,7 +45,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 
 	final override fun onCreateViewHolder(
 		parent: ViewGroup,
-		viewType: Int
+		viewType: Int,
 	): H = onCreateViewHolder(parent, loader, settings, exceptionResolver)
 
 	suspend fun setItems(items: List<ReaderPage>) = suspendCoroutine<Unit> { cont ->
@@ -58,7 +58,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 		parent: ViewGroup,
 		loader: PageLoader,
 		settings: AppSettings,
-		exceptionResolver: ExceptionResolver
+		exceptionResolver: ExceptionResolver,
 	): H
 
 	private class DiffCallback : DiffUtil.ItemCallback<ReaderPage>() {
@@ -70,6 +70,5 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 		override fun areContentsTheSame(oldItem: ReaderPage, newItem: ReaderPage): Boolean {
 			return oldItem == newItem
 		}
-
 	}
 }

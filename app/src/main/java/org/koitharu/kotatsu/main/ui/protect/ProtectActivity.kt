@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityProtectBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 
 @AndroidEntryPoint
 class ProtectActivity :
@@ -44,7 +45,7 @@ class ProtectActivity :
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.onUnlockSuccess.observe(this) {
-			val intent = intent.getParcelableExtra<Intent>(EXTRA_INTENT)
+			val intent = intent.getParcelableExtraCompat<Intent>(EXTRA_INTENT)
 			startActivity(intent)
 			finishAfterTransition()
 		}

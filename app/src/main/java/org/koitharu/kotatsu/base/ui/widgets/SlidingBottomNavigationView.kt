@@ -100,7 +100,7 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 			.applySystemAnimatorScale(context)
 			.setListener(
 				object : AnimatorListenerAdapter() {
-					override fun onAnimationEnd(animation: Animator?) {
+					override fun onAnimationEnd(animation: Animator) {
 						currentAnimator = null
 						postInvalidate()
 					}
