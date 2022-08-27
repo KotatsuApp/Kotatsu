@@ -135,7 +135,7 @@
 			android:label="@string/sync" />
 		<activity
 			android:name="org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity"
-			android:label="@string/color_filter" />
+			android:label="@string/color_correction" />
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"

@@ -6,16 +6,16 @@ import android.widget.FrameLayout
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.standard.PageHolder
 
 class ReversedPageHolder(
 	binding: ItemPageBinding,
 	loader: PageLoader,
-	settings: AppSettings,
-	exceptionResolver: ExceptionResolver
+	settings: ReaderSettings,
+	exceptionResolver: ExceptionResolver,
 ) : PageHolder(binding, loader, settings, exceptionResolver) {
 
 	init {
@@ -23,13 +23,14 @@ class ReversedPageHolder(
 			.gravity = Gravity.START or Gravity.BOTTOM
 	}
 
-	override fun onImageShowing(zoom: ZoomMode) {
+	override fun onImageShowing(settings: ReaderSettings) {
 		with(binding.ssiv) {
 			maxScale = 2f * maxOf(
 				width / sWidth.toFloat(),
-				height / sHeight.toFloat()
+				height / sHeight.toFloat(),
 			)
-			when (zoom) {
+			binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
+			when (settings.zoomMode) {
 				ZoomMode.FIT_CENTER -> {
 					setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE)
 					resetScaleAndCenter()
@@ -39,7 +40,7 @@ class ReversedPageHolder(
 					minScale = height / sHeight.toFloat()
 					setScaleAndCenter(
 						minScale,
-						PointF(sWidth.toFloat(), sHeight / 2f)
+						PointF(sWidth.toFloat(), sHeight / 2f),
 					)
 				}
 				ZoomMode.FIT_WIDTH -> {
@@ -47,14 +48,14 @@ class ReversedPageHolder(
 					minScale = width / sWidth.toFloat()
 					setScaleAndCenter(
 						minScale,
-						PointF(sWidth / 2f, 0f)
+						PointF(sWidth / 2f, 0f),
 					)
 				}
 				ZoomMode.KEEP_START -> {
 					setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE)
 					setScaleAndCenter(
 						maxScale,
-						PointF(sWidth.toFloat(), 0f)
+						PointF(sWidth.toFloat(), 0f),
 					)
 				}
 			}

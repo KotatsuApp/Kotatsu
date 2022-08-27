@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.utils.ext.resetTransformations
 
 @Suppress("LeakingThis")
 abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	private val loader: PageLoader,
-	private val settings: AppSettings,
+	private val readerSettings: ReaderSettings,
 	private val exceptionResolver: ExceptionResolver,
 ) : RecyclerView.Adapter<H>() {
 
@@ -35,6 +35,16 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 		super.onViewRecycled(holder)
 	}
 
+	override fun onViewAttachedToWindow(holder: H) {
+		super.onViewAttachedToWindow(holder)
+		holder.onAttachedToWindow()
+	}
+
+	override fun onViewDetachedFromWindow(holder: H) {
+		holder.onDetachedFromWindow()
+		super.onViewDetachedFromWindow(holder)
+	}
+
 	open fun getItem(position: Int): ReaderPage = differ.currentList[position]
 
 	open fun getItemOrNull(position: Int) = differ.currentList.getOrNull(position)
@@ -46,7 +56,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	final override fun onCreateViewHolder(
 		parent: ViewGroup,
 		viewType: Int,
-	): H = onCreateViewHolder(parent, loader, settings, exceptionResolver)
+	): H = onCreateViewHolder(parent, loader, readerSettings, exceptionResolver)
 
 	suspend fun setItems(items: List<ReaderPage>) = suspendCoroutine<Unit> { cont ->
 		differ.submitList(items) {
@@ -57,7 +67,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	protected abstract fun onCreateViewHolder(
 		parent: ViewGroup,
 		loader: PageLoader,
-		settings: AppSettings,
+		settings: ReaderSettings,
 		exceptionResolver: ExceptionResolver,
 	): H
 

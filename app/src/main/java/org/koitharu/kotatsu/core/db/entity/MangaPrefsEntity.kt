@@ -12,12 +12,15 @@ import androidx.room.PrimaryKey
 			entity = MangaEntity::class,
 			parentColumns = ["manga_id"],
 			childColumns = ["manga_id"],
-			onDelete = ForeignKey.CASCADE
-		)
-	]
+			onDelete = ForeignKey.CASCADE,
+		),
+	],
 )
-class MangaPrefsEntity(
+data class MangaPrefsEntity(
 	@PrimaryKey(autoGenerate = false)
-	@ColumnInfo(name = "manga_id") val mangaId: Long,
-	@ColumnInfo(name = "mode") val mode: Int
+	@ColumnInfo(name = "manga_id")
+	val mangaId: Long,
+	@ColumnInfo(name = "mode") val mode: Int,
+	@ColumnInfo(name = "cf_brightness") val cfBrightness: Float,
+	@ColumnInfo(name = "cf_contrast") val cfContrast: Float,
 )

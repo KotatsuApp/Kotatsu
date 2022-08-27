@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.data.filterChapters
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
@@ -86,6 +87,14 @@ class ReaderViewModel @AssistedInject constructor(
 		valueProducer = { isReaderBarEnabled },
 	)
 
+	val readerSettings = ReaderSettings(
+		parentScope = viewModelScope,
+		settings = settings,
+		colorFilterFlow = mangaData.flatMapLatest {
+			if (it == null) flowOf(null) else dataRepository.observeColorFilter(it.id)
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null),
+	)
+
 	val isScreenshotsBlockEnabled = combine(
 		mangaData,
 		settings.observeAsFlow(AppSettings.KEY_SCREENSHOTS_POLICY) { screenshotsPolicy },
@@ -93,8 +102,6 @@ class ReaderViewModel @AssistedInject constructor(
 		policy == ScreenshotsPolicy.BLOCK_ALL ||
 			(policy == ScreenshotsPolicy.BLOCK_NSFW && manga != null && manga.isNsfw)
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
-
-	val onZoomChanged = SingleLiveEvent<Unit>()
 
 	val isBookmarkAdded: LiveData<Boolean> = currentState.flatMapLatest { state ->
 		val manga = mangaData.value
@@ -108,7 +115,6 @@ class ReaderViewModel @AssistedInject constructor(
 
 	init {
 		loadImpl()
-		subscribeToSettings()
 	}
 
 	override fun onCleared() {
@@ -124,7 +130,7 @@ class ReaderViewModel @AssistedInject constructor(
 	fun switchMode(newMode: ReaderMode) {
 		launchJob {
 			val manga = checkNotNull(mangaData.value)
-			dataRepository.savePreferences(
+			dataRepository.saveReaderMode(
 				manga = manga,
 				mode = newMode,
 			)
@@ -300,13 +306,6 @@ class ReaderViewModel @AssistedInject constructor(
 		}
 	}
 
-	private fun subscribeToSettings() {
-		settings.observe()
-			.onEach { key ->
-				if (key == AppSettings.KEY_ZOOM_MODE) onZoomChanged.postCall(Unit)
-			}.launchIn(viewModelScope + Dispatchers.Default)
-	}
-
 	private fun <T> List<T>.trySublist(fromIndex: Int, toIndex: Int): List<T> {
 		val fromIndexBounded = fromIndex.coerceAtMost(lastIndex)
 		val toIndexBounded = toIndex.coerceIn(fromIndexBounded, lastIndex)
@@ -331,7 +330,7 @@ class ReaderViewModel @AssistedInject constructor(
 			val isWebtoon = dataRepository.determineMangaIsWebtoon(repo, pages)
 			if (isWebtoon) ReaderMode.WEBTOON else defaultMode
 		}.onSuccess {
-			dataRepository.savePreferences(manga, it)
+			dataRepository.saveReaderMode(manga, it)
 		}.onFailure {
 			it.printStackTraceDebug()
 		}.getOrDefault(defaultMode)

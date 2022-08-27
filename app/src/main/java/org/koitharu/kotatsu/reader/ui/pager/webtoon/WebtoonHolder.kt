@@ -7,10 +7,9 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.model.ZoomMode
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.GoneOnInvisibleListener
@@ -19,7 +18,7 @@ import org.koitharu.kotatsu.utils.ext.*
 class WebtoonHolder(
 	binding: ItemPageWebtoonBinding,
 	loader: PageLoader,
-	settings: AppSettings,
+	settings: ReaderSettings,
 	exceptionResolver: ExceptionResolver,
 ) : BasePageHolder<ItemPageWebtoonBinding>(binding, loader, settings, exceptionResolver),
 	View.OnClickListener {
@@ -60,7 +59,8 @@ class WebtoonHolder(
 		binding.ssiv.setImage(ImageSource.uri(uri))
 	}
 
-	override fun onImageShowing(zoom: ZoomMode) {
+	override fun onImageShowing(settings: ReaderSettings) {
+		binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
 		with(binding.ssiv) {
 			setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM)
 			minScale = width / sWidth.toFloat()
@@ -70,7 +70,7 @@ class WebtoonHolder(
 					scrollToRestore != 0 -> scrollToRestore
 					itemView.top < 0 -> getScrollRange()
 					else -> 0
-				}
+				},
 			)
 			scrollToRestore = 0
 		}
@@ -89,7 +89,7 @@ class WebtoonHolder(
 	override fun onError(e: Throwable) {
 		bindingInfo.textViewError.text = e.getDisplayMessage(context.resources)
 		bindingInfo.buttonRetry.setText(
-			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again }
+			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again },
 		)
 		bindingInfo.layoutError.isVisible = true
 		bindingInfo.progressBar.hideCompat()

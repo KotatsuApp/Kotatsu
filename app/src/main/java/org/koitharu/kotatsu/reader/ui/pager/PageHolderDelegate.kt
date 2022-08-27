@@ -2,26 +2,26 @@ package org.koitharu.kotatsu.reader.ui.pager
 
 import android.net.Uri
 import androidx.core.net.toUri
+import androidx.lifecycle.Observer
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import java.io.File
+import java.io.IOException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.model.ZoomMode
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
-import java.io.File
-import java.io.IOException
+import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 
 class PageHolderDelegate(
 	private val loader: PageLoader,
-	private val settings: AppSettings,
+	private val readerSettings: ReaderSettings,
 	private val callback: Callback,
-	private val exceptionResolver: ExceptionResolver
-) : SubsamplingScaleImageView.DefaultOnImageEventListener() {
+	private val exceptionResolver: ExceptionResolver,
+) : SubsamplingScaleImageView.DefaultOnImageEventListener(), Observer<ReaderSettings> {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
 	private var state = State.EMPTY
@@ -49,6 +49,14 @@ class PageHolderDelegate(
 		}
 	}
 
+	fun onAttachedToWindow() {
+		readerSettings.observeForever(this)
+	}
+
+	fun onDetachedFromWindow() {
+		readerSettings.removeObserver(this)
+	}
+
 	fun onRecycle() {
 		state = State.EMPTY
 		file = null
@@ -59,7 +67,7 @@ class PageHolderDelegate(
 	override fun onReady() {
 		state = State.SHOWING
 		error = null
-		callback.onImageShowing(settings.zoomMode)
+		callback.onImageShowing(readerSettings)
 	}
 
 	override fun onImageLoaded() {
@@ -76,6 +84,12 @@ class PageHolderDelegate(
 		} else {
 			state = State.ERROR
 			callback.onError(e)
+		}
+	}
+
+	override fun onChanged(t: ReaderSettings?) {
+		if (state == State.SHOWN) {
+			callback.onImageShowing(readerSettings)
 		}
 	}
 
@@ -134,7 +148,7 @@ class PageHolderDelegate(
 
 		fun onImageReady(uri: Uri)
 
-		fun onImageShowing(zoom: ZoomMode)
+		fun onImageShowing(settings: ReaderSettings)
 
 		fun onImageShown()
 

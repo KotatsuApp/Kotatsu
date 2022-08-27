@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlin.math.absoluteValue
 import kotlinx.coroutines.async
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -24,9 +22,6 @@ import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 @AndroidEntryPoint
 class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
-	@Inject
-	lateinit var settings: AppSettings
-
 	private var pagesAdapter: PagesAdapter? = null
 
 	override fun onInflateView(
@@ -37,7 +32,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	@SuppressLint("NotifyDataSetChanged")
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		pagesAdapter = PagesAdapter(viewModel.pageLoader, settings, exceptionResolver)
+		pagesAdapter = PagesAdapter(viewModel.pageLoader, viewModel.readerSettings, exceptionResolver)
 		with(binding.pager) {
 			adapter = pagesAdapter
 			offscreenPageLimit = 2
@@ -52,9 +47,6 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 					view.resetTransformations()
 				}
 			}
-		}
-		viewModel.onZoomChanged.observe(viewLifecycleOwner) {
-			pagesAdapter?.notifyDataSetChanged()
 		}
 	}
 

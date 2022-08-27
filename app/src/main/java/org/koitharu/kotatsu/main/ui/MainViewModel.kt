@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 @HiltViewModel
@@ -32,7 +33,7 @@ class MainViewModel @Inject constructor(
 
 	val isResumeEnabled = historyRepository
 		.observeHasItems()
-		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, false)
+		.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	val counters = combine(
 		appUpdateRepository.observeAvailableUpdate(),

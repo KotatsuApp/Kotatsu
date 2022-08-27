@@ -12,9 +12,9 @@ import kotlinx.coroutines.asExecutor
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.*
@@ -22,7 +22,7 @@ import org.koitharu.kotatsu.utils.ext.*
 open class PageHolder(
 	binding: ItemPageBinding,
 	loader: PageLoader,
-	settings: AppSettings,
+	settings: ReaderSettings,
 	exceptionResolver: ExceptionResolver,
 ) : BasePageHolder<ItemPageBinding>(binding, loader, settings, exceptionResolver),
 	View.OnClickListener {
@@ -66,12 +66,13 @@ open class PageHolder(
 		binding.ssiv.setImage(ImageSource.uri(uri))
 	}
 
-	override fun onImageShowing(zoom: ZoomMode) {
+	override fun onImageShowing(settings: ReaderSettings) {
 		binding.ssiv.maxScale = 2f * maxOf(
 			binding.ssiv.width / binding.ssiv.sWidth.toFloat(),
 			binding.ssiv.height / binding.ssiv.sHeight.toFloat(),
 		)
-		when (zoom) {
+		binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
+		when (settings.zoomMode) {
 			ZoomMode.FIT_CENTER -> {
 				binding.ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE)
 				binding.ssiv.resetScaleAndCenter()

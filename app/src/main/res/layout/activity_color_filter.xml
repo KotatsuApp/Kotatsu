@@ -12,7 +12,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="?attr/actionBarSize"
 		tools:navigationIcon="@drawable/abc_ic_clear_material"
-		tools:title="@string/color_filter">
+		tools:title="@string/color_correction">
 
 		<Button
 			android:id="@+id/button_done"
@@ -42,6 +42,7 @@
 				android:id="@+id/imageView_before"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
+				android:padding="2dp"
 				android:scaleType="centerCrop"
 				app:layout_constraintDimensionRatio="W,14:9"
 				app:layout_constraintEnd_toStartOf="@id/imageView_arrow"
@@ -56,6 +57,7 @@
 				android:id="@+id/imageView_arrow"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:contentDescription="@null"
 				android:padding="@dimen/margin_normal"
 				android:src="@drawable/ic_arrow_forward"
 				app:layout_constraintBottom_toBottomOf="@id/imageView_before"
@@ -67,6 +69,7 @@
 				android:id="@+id/imageView_after"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
+				android:padding="2dp"
 				android:scaleType="centerCrop"
 				app:layout_constraintDimensionRatio="W,14:9"
 				app:layout_constraintEnd_toEndOf="parent"
@@ -77,29 +80,72 @@
 				app:strokeWidth="1dp"
 				tools:src="@sample/covers" />
 
-			<com.google.android.material.slider.Slider
-				android:id="@+id/slider_saturation"
+			<TextView
+				android:id="@+id/textView_brightness"
 				android:layout_width="0dp"
-				android:layout_height="wrap_content"
+				android:layout_height="match_parent"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:value="255.0"
-				android:valueFrom="0.0"
-				android:valueTo="255.0"
+				android:text="@string/brightness"
+				android:textAppearance="?textAppearanceTitleMedium"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/imageView_before" />
 
 			<com.google.android.material.slider.Slider
-				android:id="@+id/slider_lightness"
+				android:id="@+id/slider_brightness"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_small"
+				android:labelFor="@id/textView_brightness"
 				android:value="0.0"
-				android:valueFrom="0.0"
-				android:valueTo="255.0"
+				android:valueFrom="-1.0"
+				android:valueTo="1.0"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/slider_saturation" />
+				app:layout_constraintTop_toBottomOf="@id/textView_brightness" />
+
+			<TextView
+				android:id="@+id/textView_contrast"
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_marginTop="@dimen/margin_small"
+				android:text="@string/contrast"
+				android:textAppearance="?textAppearanceTitleMedium"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/slider_brightness" />
+
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider_contrast"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_small"
+				android:value="0.0"
+				android:valueFrom="-1.0"
+				android:valueTo="1.0"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/textView_contrast" />
+
+			<Button
+				android:id="@+id/button_reset"
+				style="?materialButtonOutlinedStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:text="@string/reset"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/slider_contrast" />
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginEnd="@dimen/margin_normal"
+				android:text="@string/color_correction_hint"
+				android:textAppearance="?textAppearanceBodySmall"
+				app:layout_constraintEnd_toStartOf="@id/button_reset"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="@id/button_reset" />
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -10,6 +10,9 @@ import java.util.zip.ZipFile
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -23,6 +26,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 
 private const val MIN_WEBTOON_RATIO = 2
 
@@ -31,15 +35,22 @@ class MangaDataRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 
-	suspend fun savePreferences(manga: Manga, mode: ReaderMode) {
-		val tags = manga.tags.toEntities()
+	suspend fun saveReaderMode(manga: Manga, mode: ReaderMode) {
 		db.withTransaction {
-			db.tagsDao.upsert(tags)
-			db.mangaDao.upsert(manga.toEntity(), tags)
+			storeManga(manga)
+			val entity = db.preferencesDao.find(manga.id) ?: newEntity(manga.id)
+			db.preferencesDao.upsert(entity.copy(mode = mode.id))
+		}
+	}
+
+	suspend fun saveColorFilter(manga: Manga, colorFilter: ReaderColorFilter?) {
+		db.withTransaction {
+			storeManga(manga)
+			val entity = db.preferencesDao.find(manga.id) ?: newEntity(manga.id)
 			db.preferencesDao.upsert(
-				MangaPrefsEntity(
-					mangaId = manga.id,
-					mode = mode.id,
+				entity.copy(
+					cfBrightness = colorFilter?.brightness ?: 0f,
+					cfContrast = colorFilter?.contrast ?: 0f,
 				),
 			)
 		}
@@ -47,6 +58,16 @@ class MangaDataRepository @Inject constructor(
 
 	suspend fun getReaderMode(mangaId: Long): ReaderMode? {
 		return db.preferencesDao.find(mangaId)?.let { ReaderMode.valueOf(it.mode) }
+	}
+
+	suspend fun getColorFilter(mangaId: Long): ReaderColorFilter? {
+		return db.preferencesDao.find(mangaId)?.getColorFilterOrNull()
+	}
+
+	fun observeColorFilter(mangaId: Long): Flow<ReaderColorFilter?> {
+		return db.preferencesDao.observe(mangaId)
+			.map { it?.getColorFilterOrNull() }
+			.distinctUntilChanged()
 	}
 
 	suspend fun findMangaById(mangaId: Long): Manga? {
@@ -69,6 +90,14 @@ class MangaDataRepository @Inject constructor(
 
 	suspend fun findTags(source: MangaSource): Set<MangaTag> {
 		return db.tagsDao.findTags(source.name).toMangaTags()
+	}
+
+	private fun MangaPrefsEntity.getColorFilterOrNull(): ReaderColorFilter? {
+		return if (cfBrightness != 0f || cfContrast != 0f) {
+			ReaderColorFilter(cfBrightness, cfContrast)
+		} else {
+			null
+		}
 	}
 
 	/**
@@ -103,6 +132,13 @@ class MangaDataRepository @Inject constructor(
 		}
 		return size.width * MIN_WEBTOON_RATIO < size.height
 	}
+
+	private fun newEntity(mangaId: Long) = MangaPrefsEntity(
+		mangaId = mangaId,
+		mode = -1,
+		cfBrightness = 0f,
+		cfContrast = 0f,
+	)
 
 	companion object {
 

@@ -5,15 +5,15 @@ import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.LayoutPageInfoBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 
 abstract class BasePageHolder<B : ViewBinding>(
 	protected val binding: B,
 	loader: PageLoader,
-	settings: AppSettings,
-	exceptionResolver: ExceptionResolver
+	settings: ReaderSettings,
+	exceptionResolver: ExceptionResolver,
 ) : RecyclerView.ViewHolder(binding.root), PageHolderDelegate.Callback {
 
 	@Suppress("LeakingThis")
@@ -36,6 +36,14 @@ abstract class BasePageHolder<B : ViewBinding>(
 	}
 
 	protected abstract fun onBind(data: ReaderPage)
+
+	fun onAttachedToWindow() {
+		delegate.onAttachedToWindow()
+	}
+
+	fun onDetachedFromWindow() {
+		delegate.onDetachedFromWindow()
+	}
 
 	@CallSuper
 	open fun onRecycled() {

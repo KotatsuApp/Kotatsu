@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlin.math.absoluteValue
 import kotlinx.coroutines.async
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -25,9 +23,6 @@ import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 @AndroidEntryPoint
 class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
-	@Inject
-	lateinit var settings: AppSettings
-
 	private var pagerAdapter: ReversedPagesAdapter? = null
 
 	override fun onInflateView(
@@ -38,7 +33,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	@SuppressLint("NotifyDataSetChanged")
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		pagerAdapter = ReversedPagesAdapter(viewModel.pageLoader, settings, exceptionResolver)
+		pagerAdapter = ReversedPagesAdapter(viewModel.pageLoader, viewModel.readerSettings, exceptionResolver)
 		with(binding.pager) {
 			adapter = pagerAdapter
 			offscreenPageLimit = 2
@@ -53,9 +48,6 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 					it.resetTransformations()
 				}
 			}
-		}
-		viewModel.onZoomChanged.observe(viewLifecycleOwner) {
-			pagerAdapter?.notifyDataSetChanged()
 		}
 	}
 
