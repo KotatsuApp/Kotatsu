@@ -13,3 +13,4 @@
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
 
 -keep class org.koitharu.kotatsu.core.exceptions.* { *; }
+-keep class org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment

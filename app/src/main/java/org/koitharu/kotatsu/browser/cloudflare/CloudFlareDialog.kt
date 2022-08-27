@@ -55,6 +55,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 
 	override fun onDestroyView() {
 		binding.webView.stopLoading()
+		binding.webView.destroy()
 		super.onDestroyView()
 	}
 
@@ -83,7 +84,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 
 	override fun onCheckPassed() {
 		pendingResult.putBoolean(EXTRA_RESULT, true)
-		dismiss()
+		dismissAllowingStateLoss()
 	}
 
 	companion object {
