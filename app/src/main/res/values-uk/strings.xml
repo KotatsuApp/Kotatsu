@@ -373,4 +373,5 @@
     <string name="removed_from_favourites">Видалено з уподобань</string>
     <string name="other_cache">Інший кеш</string>
     <string name="memory_usage_pattern">%s - %s</string>
+    <string name="manga_error_description_pattern">Деталі помилки:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Спробуйте &lt;a href=%2$s&gt;відкрити манґу у веб-браузері&lt;/a&gt;, щоб переконатися, що вона доступна в джерелі&lt;br&gt;2. Якщо вона доступна, то надішліть звіт про помилку розробникам.</string>
 </resources>
