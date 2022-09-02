@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="settings">设置</string>
     <string name="local_storage">本地存储</string>
     <string name="favourites">喜欢</string>
@@ -78,7 +78,7 @@
     <string name="sort_order">排序顺序</string>
     <string name="filter">过滤器</string>
     <string name="theme">主题</string>
-    <string name="dark">黑暗</string>
+    <string name="dark">深色</string>
     <string name="light">浅色</string>
     <string name="automatic">跟随系统</string>
     <string name="pages">页数</string>
@@ -101,7 +101,7 @@
     <string name="cache">缓存</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="standard">标准</string>
-    <string name="webtoon">Webtoon</string>
+    <string name="webtoon">条漫</string>
     <string name="read_mode">阅读模式</string>
     <string name="grid_size">网格大小</string>
     <string name="search_on_s">在%s上搜索</string>
@@ -188,7 +188,7 @@
     <string name="checking_for_updates">检查更新…</string>
     <string name="update_check_failed">无法查找更新</string>
     <string name="no_update_available">没有更新</string>
-    <string name="right_to_left">从右到左 (←)</string>
+    <string name="right_to_left">从右到左</string>
     <string name="create_category">新类别</string>
     <string name="scale_mode">缩放模式</string>
     <string name="zoom_mode_fit_center">适应中心</string>
@@ -249,7 +249,7 @@
     <string name="screenshots_block_all">始终阻止</string>
     <string name="suggestions">建议</string>
     <string name="suggestions_enable">启用建议</string>
-    <string name="text_suggestion_holder">开始阅读漫画,你会得到个性化的建议</string>
+    <string name="text_suggestion_holder">开始阅读漫画，你会得到个性化的建议</string>
     <string name="exclude_nsfw_from_suggestions">请勿推荐18+漫画</string>
     <string name="enabled">启用</string>
     <string name="disabled">禁用</string>
@@ -290,7 +290,7 @@
     <string name="dns_over_https">DNS over HTTPS</string>
     <string name="default_mode">默认模式</string>
     <string name="detect_reader_mode">自动检测阅读器模式</string>
-    <string name="detect_reader_mode_summary">自动检测漫画是否为网络漫画</string>
+    <string name="detect_reader_mode_summary">自动检测漫画是否为条漫</string>
     <string name="disable_battery_optimization">禁用电池优化</string>
     <string name="disable_battery_optimization_summary">帮助进行背景更新检查</string>
     <string name="crash_text">出了点问题. 请向开发人员提交一份错误报告以帮助我们修复它.</string>
@@ -313,4 +313,65 @@
     <string name="exclude_nsfw_from_history_summary">标记为NSFW的漫画将永远不会被添加到历史中你的进度也不会被保存</string>
     <string name="clear_cookies_summary">可以在出现一些问题时提供帮助. 所有授权将被视为无效</string>
     <string name="show_all">显示全部</string>
+    <string name="manga_error_description_pattern">错误详情：&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1.尝试&lt;a href=%2$s&gt;在网络浏览器中打开漫画&lt;/a&gt;以确保在其来源中可用&lt;br&gt;2.如果可用，请向开发人员发送错误报告。</string>
+    <string name="invalid_domain_message">无效域名</string>
+    <string name="text_shelf_holder_primary">此处将显示你的漫画</string>
+    <string name="text_shelf_holder_secondary">在【浏览】页面搜索想要阅读的漫画</string>
+    <string name="percent_string_pattern">%1$s%%</string>
+    <string name="canceled">已取消</string>
+    <string name="account_already_exists">账号已存在</string>
+    <string name="back">返回</string>
+    <string name="sync">同步</string>
+    <string name="sync_title">同步您的数据</string>
+    <string name="email_enter_hint">输入您的邮箱以继续</string>
+    <string name="status_dropped">已放弃</string>
+    <string name="select_range">选择范围</string>
+    <string name="clear_all_history">清除所有历史</string>
+    <string name="last_2_hours">过去2小时</string>
+    <string name="bookmarks_removed">书签已移除</string>
+    <string name="history_cleared">历史已清除</string>
+    <string name="manage">管理</string>
+    <string name="no_bookmarks_yet">还没有书签</string>
+    <string name="no_bookmarks_summary">您可以在阅读漫画时创建书签</string>
+    <string name="no_manga_sources">无漫画源</string>
+    <string name="no_manga_sources_text">启用漫画源以在线阅读漫画</string>
+    <string name="random">随机</string>
+    <string name="categories_delete_confirm">您确定要删除选定的收藏夹吗？
+\n所有收藏夹中的漫画将丢失且无法恢复。</string>
+    <string name="reorder">重新排序</string>
+    <string name="empty">留空</string>
+    <string name="changelog">变更日志</string>
+    <string name="explore">浏览</string>
+    <string name="automatic_scroll">自动滚动</string>
+    <string name="off_short">关闭</string>
+    <string name="reader_info_bar">在阅读器中显示信息栏</string>
+    <string name="comics_archive">漫画压缩包</string>
+    <string name="folder_with_images">图片文件夹</string>
+    <string name="importing_manga">漫画导入中</string>
+    <string name="seconds_pattern">%ss</string>
+    <string name="reader_info_pattern">Ch. %1$d/%2$d Pg. %3$d/%4$d</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d 的 %2$d 启用</string>
+    <string name="size_s">大小：%s</string>
+    <string name="confirm_exit">再按一次返回键退出</string>
+    <string name="exit_confirmation_summary">按两次返回键退出应用</string>
+    <string name="exit_confirmation">退出确认</string>
+    <string name="saved_manga">已保存漫画</string>
+    <string name="pages_cache">页面缓存</string>
+    <string name="other_cache">其他缓存</string>
+    <string name="storage_usage">存储占用</string>
+    <string name="available">可用</string>
+    <string name="enter_email_text">输入您的邮箱以继续</string>
+    <string name="removed_from_favourites">从收藏中移除</string>
+    <string name="removed_from_s">从 \"%s\" 中移除</string>
+    <string name="options">选项</string>
+    <string name="downloading_manga">下载中的漫画</string>
+    <string name="incognito_mode">隐身模式</string>
+    <string name="app_update_available_s">应用更新可用： %s</string>
+    <string name="no_chapters">无章节</string>
+    <string name="import_completed">导入完毕</string>
+    <string name="import_completed_hint">您可以从存储中删除原文件以节省空间</string>
+    <string name="import_will_start_soon">即将开始导入</string>
+    <string name="feed">订阅源</string>
+    <string name="memory_usage_pattern">%s - %s</string>
+    <string name="not_found_404">内容未找到或已移除</string>
 </resources>
