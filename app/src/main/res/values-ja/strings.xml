@@ -374,4 +374,5 @@
     <string name="comics_archive">コミックアーカイブ</string>
     <string name="downloading_manga">漫画をダウンロードする</string>
     <string name="feed">フィード</string>
+    <string name="manga_error_description_pattern">エラーの詳細:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. &lt;a href=%2$s&gt;Webブラウザで漫画を開いてみて&lt;/a&gt;、そのソースで利用できるか確認する&lt;br&gt;2. 利用できる場合は、開発者にエラーレポートを送信する&lt;/a&gt;。</string>
 </resources>
