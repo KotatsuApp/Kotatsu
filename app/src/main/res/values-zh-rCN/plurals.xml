@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="items">
+        <item quantity="other">%1$d 个项目</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="other">%1$d 个新章节</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="other">%1$d 章节</item>
+    </plurals>
+    <plurals name="chapters_from_x">
+        <item quantity="other">来自 %2$d 中的 %1$d 个章节</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="other">%1$d 分钟前</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="other">%1$d 小时前</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="other">%1$d 天前</item>
+    </plurals>
+    <plurals name="pages">
+        <item quantity="other">共 %1$d 页</item>
+    </plurals>
+</resources>
