@@ -16,7 +16,7 @@
     <string name="try_again">Tekrar dene</string>
     <string name="clear_history">Geçmişi temizle</string>
     <string name="nothing_found">Hiçbir şey bulunamadı</string>
-    <string name="history_is_empty">Sen geçmişiniz yok</string>
+    <string name="history_is_empty">Geçmiş yok</string>
     <string name="read">Oku</string>
     <string name="you_have_not_favourites_yet">Henüz favorileriniz yok</string>
     <string name="add_to_favourites">Favoriniz</string>
@@ -209,7 +209,7 @@
     <string name="new_version_s">Yeni sürüm: %s</string>
     <string name="protect_application">Uygulamayı koru</string>
     <string name="passwords_mismatch">Parolalar eşleşmiyor</string>
-    <string name="right_to_left">Sağdan sola (←)</string>
+    <string name="right_to_left">Sağdan-sola</string>
     <string name="create_category">Yeni kategori</string>
     <string name="file_not_found">Dosya bulunamadı</string>
     <string name="data_restored_success">Tüm veriler geri yüklendi</string>
@@ -320,4 +320,25 @@
     <string name="invalid_domain_message">Geçersiz etki alanı</string>
     <string name="select_range">Aralık seç</string>
     <string name="not_found_404">İçerik bulunamadı veya kaldırıldı</string>
+    <string name="text_shelf_holder_primary">Manganız burada görüntülenecek</string>
+    <string name="canceled">İptal edilmiş</string>
+    <string name="account_already_exists">Hesap zaten var</string>
+    <string name="back">Geri</string>
+    <string name="sync">Senkronizasyon</string>
+    <string name="sync_title">Verini yedekle</string>
+    <string name="email_enter_hint">Devam etmek için E-Postanızı girin</string>
+    <string name="clear_all_history">Tüm gecmişi temizle</string>
+    <string name="last_2_hours">Son 2 saat</string>
+    <string name="history_cleared">Geçmiş temizlendi</string>
+    <string name="manage">Yönet</string>
+    <string name="no_bookmarks_yet">Yer işareti yok</string>
+    <string name="no_bookmarks_summary">Manga okurken yer işareti oluşturabilirsiniz</string>
+    <string name="bookmarks_removed">Yer işaretleri kaldırıldı</string>
+    <string name="no_manga_sources">Manga kaynağı yok</string>
+    <string name="no_manga_sources_text">Çevrimiçi manga okumak için manga kaynaklarını aktif edin</string>
+    <string name="random">Rastgele</string>
+    <string name="empty">Boş</string>
+    <string name="explore">Keşfet</string>
+    <string name="confirm_exit">Çıkmak için tekrar Geri tıkla</string>
+    <string name="exit_confirmation_summary">Çıkmak için iki defa Geri tıkla</string>
 </resources>
