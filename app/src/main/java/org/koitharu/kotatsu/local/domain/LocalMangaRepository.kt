@@ -45,12 +45,9 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 		}
 		val list = getRawList()
 		if (query.isNotEmpty()) {
-			list.retainAll { x ->
-				x.title.contains(query, ignoreCase = true) ||
-					x.altTitle?.contains(query, ignoreCase = true) == true
-			}
+			list.retainAll { x -> x.isMatchesQuery(query) }
 		}
-		return list
+		return list.unwrap()
 	}
 
 	override suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga> {
@@ -59,15 +56,17 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 		}
 		val list = getRawList()
 		if (!tags.isNullOrEmpty()) {
-			list.retainAll { x ->
-				x.tags.containsAll(tags)
-			}
+			list.retainAll { x -> x.containsTags(tags) }
 		}
+		@Suppress("NON_EXHAUSTIVE_WHEN_STATEMENT")
 		when (sortOrder) {
-			SortOrder.ALPHABETICAL -> list.sortBy { it.title }
-			SortOrder.RATING -> list.sortBy { it.rating }
+			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(AlphanumComparator()) { x -> x.manga.title })
+			SortOrder.RATING -> list.sortByDescending { it.manga.rating }
+			SortOrder.NEWEST,
+			SortOrder.UPDATED,
+			-> list.sortByDescending { it.createdAt }
 		}
-		return list
+		return list.unwrap()
 	}
 
 	override suspend fun getDetails(manga: Manga) = when {
@@ -235,9 +234,9 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 	private fun CoroutineScope.getFromFileAsync(
 		file: File,
 		context: CoroutineContext,
-	): Deferred<Manga?> = async(context) {
+	): Deferred<LocalManga?> = async(context) {
 		runInterruptible {
-			runCatching { getFromFile(file) }.getOrNull()
+			runCatching { LocalManga(getFromFile(file), file) }.getOrNull()
 		}
 	}
 
@@ -283,7 +282,7 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 		locks.unlock(id)
 	}
 
-	private suspend fun getRawList(): ArrayList<Manga> {
+	private suspend fun getRawList(): ArrayList<LocalManga> {
 		val files = getAllFiles()
 		return coroutineScope {
 			val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)

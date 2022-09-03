@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
@@ -208,6 +209,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
 
+	var localListOrder: SortOrder
+		get() = prefs.getEnumValue(KEY_LOCAL_LIST_ORDER, SortOrder.NEWEST)
+		set(value) = prefs.edit { putEnumValue(KEY_LOCAL_LIST_ORDER, value) }
+
 	fun isPagesPreloadAllowed(cm: ConnectivityManager): Boolean {
 		return when (prefs.getString(KEY_PAGES_PRELOAD, null)?.toIntOrNull()) {
 			NETWORK_ALWAYS -> true
@@ -325,6 +330,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_BAR = "reader_bar"
 		const val KEY_SHORTCUTS = "dynamic_shortcuts"
 		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
+		const val KEY_LOCAL_LIST_ORDER = "local_order"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

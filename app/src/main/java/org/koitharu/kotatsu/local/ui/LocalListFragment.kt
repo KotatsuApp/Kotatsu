@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
@@ -13,10 +14,11 @@ import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.list.ui.MangaListFragment
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 
-class LocalListFragment : MangaListFragment() {
+class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener {
 
 	override val viewModel by viewModels<LocalListViewModel>()
 
@@ -28,6 +30,14 @@ class LocalListFragment : MangaListFragment() {
 
 	override fun onEmptyActionClick() {
 		ImportDialogFragment.show(childFragmentManager)
+	}
+
+	override fun onFilterClick(view: View?) {
+		super.onFilterClick(view)
+		val menu = PopupMenu(requireContext(), view ?: binding.recyclerView)
+		menu.inflate(R.menu.popup_order)
+		menu.setOnMenuItemClickListener(this)
+		menu.show()
 	}
 
 	override fun onScrolledToEnd() = Unit
@@ -51,6 +61,17 @@ class LocalListFragment : MangaListFragment() {
 			}
 			else -> super.onActionItemClicked(controller, mode, item)
 		}
+	}
+
+	override fun onMenuItemClick(item: MenuItem): Boolean {
+		val order = when (item.itemId) {
+			R.id.action_order_new -> SortOrder.NEWEST
+			R.id.action_order_abs -> SortOrder.ALPHABETICAL
+			R.id.action_order_rating -> SortOrder.RATING
+			else -> return false
+		}
+		viewModel.setSortOrder(order)
+		return true
 	}
 
 	private fun showDeletionConfirm(ids: Set<Long>, mode: ActionMode) {
