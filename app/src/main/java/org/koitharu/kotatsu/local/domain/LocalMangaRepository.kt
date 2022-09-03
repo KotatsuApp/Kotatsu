@@ -48,6 +48,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 					x.altTitle?.contains(query, ignoreCase = true) == true
 			}
 		}
+		list.sortWith(compareBy(AlphanumComparator()) { x -> x.title })
 		return list
 	}
 
@@ -61,6 +62,7 @@ class LocalMangaRepository(private val storageManager: LocalStorageManager) : Ma
 				x.tags.containsAll(tags)
 			}
 		}
+		list.sortWith(compareBy(AlphanumComparator()) { x -> x.title })
 		return list
 	}
 
