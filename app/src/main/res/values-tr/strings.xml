@@ -341,4 +341,9 @@
     <string name="explore">Keşfet</string>
     <string name="confirm_exit">Çıkmak için tekrar Geri tıkla</string>
     <string name="exit_confirmation_summary">Çıkmak için iki defa Geri tıkla</string>
+    <string name="removed_from_favourites">Favorilerden kaldırıldı</string>
+    <string name="downloading_manga">Manga indiriliyor</string>
+    <string name="changelog">Değişiklik günlüğü</string>
+    <string name="exit_confirmation">Çıkış doğrulaması</string>
+    <string name="enter_email_text">Devam etmek için e-postanızı girin</string>
 </resources>
