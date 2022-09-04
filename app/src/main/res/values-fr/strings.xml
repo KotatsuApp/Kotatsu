@@ -374,4 +374,15 @@
     <string name="import_completed">Importation terminée</string>
     <string name="import_completed_hint">Vous pouvez supprimer le fichier original du stockage pour gagner de l\'espace</string>
     <string name="import_will_start_soon">L\'importation va bientôt commencer</string>
+    <string name="text_unsaved_changes_prompt">Vous avez des modifications non sauvegardées, voulez-vous les sauvegarder ou les abandonner \?</string>
+    <string name="discard">Abandonner</string>
+    <string name="history_shortcuts_summary">Rendre les mangas récents disponibles en appuyant longuement sur l\'icône de l\'application</string>
+    <string name="reader_control_ltr_summary">Taper sur le bord droit ou appuyer sur la touche droite permet toujours de passer à la page suivante</string>
+    <string name="reader_control_ltr">Contrôle ergonomique du lecteur</string>
+    <string name="history_shortcuts">Afficher les raccourcis des mangas récents</string>
+    <string name="color_correction">Correction des couleurs</string>
+    <string name="brightness">Luminosité</string>
+    <string name="contrast">Contraste</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="color_correction_hint">Les paramètres de couleurs choisis seront sauvegardés pour ce manga</string>
 </resources>
