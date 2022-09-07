@@ -6,7 +6,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 
 // Limits to avoid TransactionTooLargeException
 private const val MAX_SAFE_SIZE = 1024 * 512 // Assume that 512 kb is safe parcel size
-private const val MAX_SAFE_CHAPTERS_COUNT = 40 // this is 100% safe
+private const val MAX_SAFE_CHAPTERS_COUNT = 32 // this is 100% safe
 
 class ParcelableManga(
 	val manga: Manga,
