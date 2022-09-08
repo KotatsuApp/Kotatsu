@@ -33,6 +33,7 @@ class ScrollbarAnimator(
 			.animate()
 			.translationX(0f)
 			.alpha(1f)
+			.setListener(null)
 			.setDuration(animationDuration)
 	}
 
