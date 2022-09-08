@@ -8,6 +8,9 @@ import java.io.Serializable
 
 @Suppress("DEPRECATION")
 inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String): T? {
+	if (!containsKey(key)) {
+		return null
+	}
 	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 		getParcelable(key, T::class.java)
 	} else {
@@ -17,6 +20,9 @@ inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String): T? 
 
 @Suppress("DEPRECATION")
 inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? {
+	if (!hasExtra(key)) {
+		return null
+	}
 	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 		getParcelableExtra(key, T::class.java)
 	} else {
@@ -26,6 +32,9 @@ inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String)
 
 @Suppress("DEPRECATION")
 inline fun <reified T : Serializable> Bundle.getSerializableCompat(key: String): T? {
+	if (!containsKey(key)) {
+		return null
+	}
 	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 		getSerializable(key, T::class.java)
 	} else {

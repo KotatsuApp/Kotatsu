@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
@@ -92,7 +91,8 @@ abstract class BaseActivity<B : ViewBinding> :
 
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
 		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_UP) { // TODO remove
-			ActivityCompat.recreate(this)
+			// ActivityCompat.recreate(this)
+			TODO("Test error")
 			return true
 		}
 		return super.onKeyDown(keyCode, event)

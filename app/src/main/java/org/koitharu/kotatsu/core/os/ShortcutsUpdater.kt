@@ -4,7 +4,6 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
-import android.media.ThumbnailUtils
 import android.os.Build
 import android.util.Size
 import androidx.annotation.RequiresApi
@@ -15,6 +14,8 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.room.InvalidationTracker
 import coil.ImageLoader
 import coil.request.ImageRequest
+import coil.size.Precision
+import coil.size.Scale
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -112,13 +113,14 @@ class ShortcutsUpdater @Inject constructor(
 
 	private suspend fun buildShortcutInfo(manga: Manga): ShortcutInfoCompat.Builder {
 		val icon = runCatching {
-			val bmp = coil.execute(
+			coil.execute(
 				ImageRequest.Builder(context)
 					.data(manga.coverUrl)
 					.size(iconSize.width, iconSize.height)
+					.precision(Precision.EXACT)
+					.scale(Scale.FILL)
 					.build(),
 			).requireBitmap()
-			ThumbnailUtils.extractThumbnail(bmp, iconSize.width, iconSize.height, 0)
 		}.fold(
 			onSuccess = { IconCompat.createWithAdaptiveBitmap(it) },
 			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },

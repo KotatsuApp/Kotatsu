@@ -13,6 +13,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.R as materialR
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -22,6 +23,7 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 
+@AndroidEntryPoint
 class ShelfConfigActivity :
 	BaseActivity<ActivityCategoriesBinding>(),
 	OnListItemClickListener<CategoryItem>,
