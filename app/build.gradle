@@ -82,7 +82,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:551a1d70ae') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:b3a9c5fcda') {
 		exclude group: 'org.json', module: 'json'
 	}
 
