@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 495
-		versionName '4.0-a6'
+		versionCode 496
+		versionName '4.0-a7'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -122,9 +122,9 @@ dependencies {
 	implementation 'androidx.hilt:hilt-work:1.0.0'
 	kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
-	implementation 'io.coil-kt:coil-base:2.2.0'
-	implementation 'io.coil-kt:coil-svg:2.2.0'
-	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:2942b797a2'
+	implementation 'io.coil-kt:coil-base:2.2.1'
+	implementation 'io.coil-kt:coil-svg:2.2.1'
+	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:fc92ecb766'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
 	implementation 'ch.acra:acra-http:5.9.6'
@@ -144,7 +144,7 @@ dependencies {
 	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
 	androidTestImplementation 'androidx.room:room-testing:2.4.3'
-	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
+	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
 
 	androidTestImplementation 'com.google.dagger:hilt-android-testing:2.43.2'
 	kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.43.2'
