@@ -5,10 +5,7 @@ import android.graphics.PointF
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asExecutor
 import org.koitharu.kotatsu.parsers.util.toIntUp
-import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.parents
 
 private const val SCROLL_UNKNOWN = -1
@@ -22,11 +19,6 @@ class WebtoonImageView @JvmOverloads constructor(
 
 	private var scrollPos = 0
 	private var scrollRange = SCROLL_UNKNOWN
-
-	init {
-		setExecutor(Dispatchers.Default.asExecutor())
-		setEagerLoadingEnabled(!isLowRamDevice(context))
-	}
 
 	fun scrollBy(delta: Int) {
 		val maxScroll = getScrollRange()

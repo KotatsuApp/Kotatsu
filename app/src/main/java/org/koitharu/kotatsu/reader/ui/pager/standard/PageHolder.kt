@@ -7,6 +7,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import org.koitharu.kotatsu.R
@@ -28,8 +29,7 @@ open class PageHolder(
 	View.OnClickListener {
 
 	init {
-		binding.ssiv.setExecutor(Dispatchers.Default.asExecutor())
-		binding.ssiv.setEagerLoadingEnabled(!isLowRamDevice(context))
+		binding.ssiv.isEagerLoadingEnabled = !isLowRamDevice(context)
 		binding.ssiv.setOnImageEventListener(delegate)
 		@Suppress("LeakingThis")
 		bindingInfo.buttonRetry.setOnClickListener(this)
@@ -63,7 +63,7 @@ open class PageHolder(
 	}
 
 	override fun onImageReady(uri: Uri) {
-		binding.ssiv.setImage(ImageSource.uri(uri))
+		binding.ssiv.setImage(ImageSource.Uri(uri))
 	}
 
 	override fun onImageShowing(settings: ReaderSettings) {
@@ -74,11 +74,11 @@ open class PageHolder(
 		binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
 		when (settings.zoomMode) {
 			ZoomMode.FIT_CENTER -> {
-				binding.ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE)
+				binding.ssiv.minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 				binding.ssiv.resetScaleAndCenter()
 			}
 			ZoomMode.FIT_HEIGHT -> {
-				binding.ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM)
+				binding.ssiv.minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 				binding.ssiv.minScale = binding.ssiv.height / binding.ssiv.sHeight.toFloat()
 				binding.ssiv.setScaleAndCenter(
 					binding.ssiv.minScale,
@@ -86,7 +86,7 @@ open class PageHolder(
 				)
 			}
 			ZoomMode.FIT_WIDTH -> {
-				binding.ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM)
+				binding.ssiv.minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 				binding.ssiv.minScale = binding.ssiv.width / binding.ssiv.sWidth.toFloat()
 				binding.ssiv.setScaleAndCenter(
 					binding.ssiv.minScale,
@@ -94,7 +94,7 @@ open class PageHolder(
 				)
 			}
 			ZoomMode.KEEP_START -> {
-				binding.ssiv.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE)
+				binding.ssiv.minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 				binding.ssiv.setScaleAndCenter(
 					binding.ssiv.maxScale,
 					PointF(0f, 0f),

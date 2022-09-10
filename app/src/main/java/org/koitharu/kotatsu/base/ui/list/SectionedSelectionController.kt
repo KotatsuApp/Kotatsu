@@ -16,6 +16,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.utils.ext.removeItemDecoration
 
 private const val PROVIDER_NAME = "selection_decoration_sectioned"
 
@@ -60,10 +61,22 @@ class SectionedSelectionController<T : Any>(
 			startActionMode()
 			notifySelectionChanged()
 		}
+		recyclerView.removeItemDecoration(decoration.javaClass)
 		recyclerView.addItemDecoration(decoration)
 		if (pendingData?.isEmpty() == true) {
 			pendingData = null
 		}
+	}
+
+	fun isAttached(recyclerView: RecyclerView): Boolean {
+		if (decorations.isEmpty()) return false
+		val anyDecoration = decorations.valueAt(0)
+		for (i in 0 until recyclerView.itemDecorationCount) {
+			if (recyclerView.getItemDecorationAt(i).javaClass == anyDecoration.javaClass) {
+				return true
+			}
+		}
+		return false
 	}
 
 	override fun saveState(): Bundle {

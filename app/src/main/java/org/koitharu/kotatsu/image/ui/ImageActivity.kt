@@ -79,7 +79,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>() {
 
 		private fun setDrawable(drawable: Drawable?) {
 			if (drawable != null) {
-				view.setImage(ImageSource.bitmap(drawable.toBitmap()))
+				view.setImage(ImageSource.Bitmap(drawable.toBitmap()))
 			} else {
 				view.recycle()
 			}

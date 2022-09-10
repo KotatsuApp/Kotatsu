@@ -56,8 +56,7 @@ fun libraryGroupAD(
 	binding.buttonMore.setOnClickListener(listenerAdapter)
 
 	bind { payloads ->
-		if (payloads.isEmpty()) {
-			binding.recyclerView.removeItemDecoration(AbstractSelectionItemDecoration::class.java)
+		if (payloads.isEmpty() || !selectionController.isAttached(binding.recyclerView)) {
 			selectionController.attachToRecyclerView(item, binding.recyclerView)
 		}
 		binding.textViewTitle.text = item.getTitle(context.resources)

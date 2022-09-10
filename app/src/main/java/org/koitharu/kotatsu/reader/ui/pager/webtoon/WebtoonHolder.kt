@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
@@ -26,6 +27,7 @@ class WebtoonHolder(
 	private var scrollToRestore = 0
 
 	init {
+		binding.ssiv.regionDecoderFactory = SkiaPooledImageRegionDecoder.Factory()
 		binding.ssiv.setOnImageEventListener(delegate)
 		bindingInfo.buttonRetry.setOnClickListener(this)
 		GoneOnInvisibleListener(bindingInfo.progressBar).attach()
@@ -56,13 +58,13 @@ class WebtoonHolder(
 	}
 
 	override fun onImageReady(uri: Uri) {
-		binding.ssiv.setImage(ImageSource.uri(uri))
+		binding.ssiv.setImage(ImageSource.Uri(uri))
 	}
 
 	override fun onImageShowing(settings: ReaderSettings) {
 		binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
 		with(binding.ssiv) {
-			setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM)
+			minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 			minScale = width / sWidth.toFloat()
 			maxScale = minScale
 			scrollTo(

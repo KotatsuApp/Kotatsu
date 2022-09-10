@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.ui.pager
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
+import com.davemorrissey.labs.subscaleview.OnImageEventListener
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import java.io.File
 import java.io.IOException
@@ -21,7 +22,7 @@ class PageHolderDelegate(
 	private val readerSettings: ReaderSettings,
 	private val callback: Callback,
 	private val exceptionResolver: ExceptionResolver,
-) : SubsamplingScaleImageView.DefaultOnImageEventListener(), Observer<ReaderSettings> {
+) : OnImageEventListener, Observer<ReaderSettings> {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
 	private var state = State.EMPTY
@@ -76,7 +77,7 @@ class PageHolderDelegate(
 		callback.onImageShown()
 	}
 
-	override fun onImageLoadError(e: Exception) {
+	override fun onImageLoadError(e: Throwable) {
 		val file = this.file
 		error = e
 		if (state == State.LOADED && e is IOException && file != null && file.exists()) {
