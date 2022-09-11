@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.local.domain
 
 import androidx.annotation.WorkerThread
+import java.io.File
+import java.util.zip.ZipFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okio.Closeable
@@ -11,8 +13,6 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.readText
-import java.io.File
-import java.util.zip.ZipFile
 
 class CbzMangaOutput(
 	val file: File,
@@ -62,7 +62,7 @@ class CbzMangaOutput(
 		index.addChapter(chapter)
 	}
 
-	suspend fun finalize() {
+	suspend fun finish() {
 		runInterruptible(Dispatchers.IO) {
 			output.put(ENTRY_NAME_INDEX, index.toString())
 			output.finish()
@@ -89,7 +89,7 @@ class CbzMangaOutput(
 					otherIndex = MangaIndex(
 						zip.getInputStream(entry).use {
 							it.reader().readText()
-						}
+						},
 					)
 				} else {
 					output.copyEntryFrom(zip, entry)

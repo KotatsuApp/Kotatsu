@@ -1,13 +1,16 @@
 @file:SuppressLint("UnsafeOptInUsageError")
+
 package org.koitharu.kotatsu.list.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.View
+import androidx.annotation.CheckResult
 import androidx.core.view.doOnNextLayout
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import org.koitharu.kotatsu.R
 
+@CheckResult
 fun View.bindBadge(badge: BadgeDrawable?, counter: Int): BadgeDrawable? {
 	return if (counter > 0) {
 		val badgeDrawable = badge ?: initBadge(this)

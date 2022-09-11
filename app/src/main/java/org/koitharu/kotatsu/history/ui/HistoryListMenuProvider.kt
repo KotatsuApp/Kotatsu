@@ -5,9 +5,9 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
+import com.google.android.material.R as materialR
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import com.google.android.material.R as materialR
 
 class HistoryListMenuProvider(
 	private val context: Context,
@@ -38,6 +38,6 @@ class HistoryListMenuProvider(
 	}
 
 	override fun onPrepareMenu(menu: Menu) {
-		menu.findItem(R.id.action_history_grouping).isChecked = viewModel.isGroupingEnabled.value == true
+		menu.findItem(R.id.action_history_grouping)?.isChecked = viewModel.isGroupingEnabled.value == true
 	}
 }

@@ -12,6 +12,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
+import kotlin.math.roundToInt
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -29,7 +30,6 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import kotlin.math.roundToInt
 
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
@@ -46,7 +46,7 @@ class ChaptersFragment :
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
-		container: ViewGroup?
+		container: ViewGroup?,
 	) = FragmentChaptersBinding.inflate(inflater, container, false)
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,7 +98,7 @@ class ChaptersFragment :
 				manga = viewModel.manga.value ?: return,
 				state = ReaderState(item.chapter.id, 0, 0),
 			),
-			options.toBundle()
+			options.toBundle(),
 		)
 	}
 
@@ -128,7 +128,7 @@ class ChaptersFragment :
 						Snackbar.make(
 							binding.recyclerViewChapters,
 							R.string.chapters_will_removed_background,
-							Snackbar.LENGTH_LONG
+							Snackbar.LENGTH_LONG,
 						).show()
 					}
 				}
@@ -271,8 +271,8 @@ class ChaptersFragment :
 		}
 
 		override fun onPrepareMenu(menu: Menu) {
-			menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
-			menu.findItem(R.id.action_search).isVisible = viewModel.isChaptersEmpty.value == false
+			menu.findItem(R.id.action_reversed)?.isChecked = viewModel.isChaptersReversed.value == true
+			menu.findItem(R.id.action_search)?.isVisible = viewModel.isChaptersEmpty.value == false
 		}
 
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {

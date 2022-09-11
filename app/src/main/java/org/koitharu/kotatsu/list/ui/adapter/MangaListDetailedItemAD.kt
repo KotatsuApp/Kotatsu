@@ -46,7 +46,7 @@ fun mangaListDetailedItemAD(
 		}
 		binding.textViewRating.textAndVisible = item.rating
 		binding.textViewTags.text = item.tags
-		itemView.bindBadge(badge, item.counter)
+		badge = itemView.bindBadge(badge, item.counter)
 	}
 
 	onViewRecycled {

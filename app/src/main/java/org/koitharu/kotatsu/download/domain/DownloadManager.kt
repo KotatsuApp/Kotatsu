@@ -150,7 +150,7 @@ class DownloadManager(
 					}
 					outState.value = DownloadState.PostProcessing(startId, data, cover)
 					output.mergeWithExisting()
-					output.finalize()
+					output.finish()
 					val localManga = localMangaRepository.getFromFile(output.file)
 					outState.value = DownloadState.Done(startId, data, cover, localManga)
 				} catch (e: CancellationException) {

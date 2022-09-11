@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
+import androidx.collection.arraySetOf
 import java.net.SocketTimeoutException
 import okio.FileNotFoundException
 import org.acra.ktx.sendWithAcra
@@ -30,14 +31,19 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 } ?: resources.getString(R.string.error_occurred)
 
 fun Throwable.isReportable(): Boolean {
-	if (this !is Exception) {
-		return true
-	}
-	return this is ParseException || this is IllegalArgumentException ||
-		this is IllegalStateException || this.javaClass == RuntimeException::class.java
+	return this is Error || this.javaClass in reportableExceptions
 }
 
 fun Throwable.report(message: String?) {
 	val exception = CaughtException(this, message)
 	exception.sendWithAcra()
 }
+
+private val reportableExceptions = arraySetOf<Class<*>>(
+	ParseException::class.java,
+	RuntimeException::class.java,
+	IllegalStateException::class.java,
+	IllegalArgumentException::class.java,
+	ConcurrentModificationException::class.java,
+	UnsupportedOperationException::class.java,
+)
