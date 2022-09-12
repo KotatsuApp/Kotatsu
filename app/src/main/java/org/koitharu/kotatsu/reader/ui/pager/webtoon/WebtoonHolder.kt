@@ -28,7 +28,7 @@ class WebtoonHolder(
 
 	init {
 		binding.ssiv.regionDecoderFactory = SkiaPooledImageRegionDecoder.Factory()
-		binding.ssiv.setOnImageEventListener(delegate)
+		binding.ssiv.addOnImageEventListener(delegate)
 		bindingInfo.buttonRetry.setOnClickListener(this)
 		GoneOnInvisibleListener(bindingInfo.progressBar).attach()
 	}

@@ -3,8 +3,7 @@ package org.koitharu.kotatsu.reader.ui.pager
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
-import com.davemorrissey.labs.subscaleview.OnImageEventListener
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
 import java.io.File
 import java.io.IOException
 import kotlinx.coroutines.*
@@ -22,7 +21,7 @@ class PageHolderDelegate(
 	private val readerSettings: ReaderSettings,
 	private val callback: Callback,
 	private val exceptionResolver: ExceptionResolver,
-) : OnImageEventListener, Observer<ReaderSettings> {
+) : DefaultOnImageEventListener, Observer<ReaderSettings> {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
 	private var state = State.EMPTY

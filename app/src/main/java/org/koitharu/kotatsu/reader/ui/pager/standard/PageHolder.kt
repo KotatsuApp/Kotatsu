@@ -7,9 +7,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asExecutor
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
@@ -30,7 +27,7 @@ open class PageHolder(
 
 	init {
 		binding.ssiv.isEagerLoadingEnabled = !isLowRamDevice(context)
-		binding.ssiv.setOnImageEventListener(delegate)
+		binding.ssiv.addOnImageEventListener(delegate)
 		@Suppress("LeakingThis")
 		bindingInfo.buttonRetry.setOnClickListener(this)
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
