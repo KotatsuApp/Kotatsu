@@ -213,7 +213,7 @@ class ReaderActivity :
 		val resolveTextId = ExceptionResolver.getResolveStringId(e)
 		if (resolveTextId != 0) {
 			dialog.setPositiveButton(resolveTextId, listener)
-		} else {
+		} else if (e.isReportable()) {
 			dialog.setPositiveButton(R.string.report, listener)
 		}
 		dialog.show()
