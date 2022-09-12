@@ -19,5 +19,10 @@ class GoneOnInvisibleListener(
 
 	fun attach() {
 		view.viewTreeObserver.addOnGlobalLayoutListener(this)
+		onGlobalLayout()
+	}
+
+	fun detach() {
+		view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 	}
 }

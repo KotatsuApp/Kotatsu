@@ -37,11 +37,13 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 	protected abstract fun onBind(data: ReaderPage)
 
-	fun onAttachedToWindow() {
+	@CallSuper
+	open fun onAttachedToWindow() {
 		delegate.onAttachedToWindow()
 	}
 
-	fun onDetachedFromWindow() {
+	@CallSuper
+	open fun onDetachedFromWindow() {
 		delegate.onDetachedFromWindow()
 	}
 
