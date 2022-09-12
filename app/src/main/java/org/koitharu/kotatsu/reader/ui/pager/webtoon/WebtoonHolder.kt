@@ -25,11 +25,11 @@ class WebtoonHolder(
 	View.OnClickListener {
 
 	private var scrollToRestore = 0
+	private val goneOnInvisibleListener = GoneOnInvisibleListener(bindingInfo.progressBar)
 
 	init {
 		binding.ssiv.setOnImageEventListener(delegate)
 		bindingInfo.buttonRetry.setOnClickListener(this)
-		GoneOnInvisibleListener(bindingInfo.progressBar).attach()
 	}
 
 	override fun onBind(data: ReaderPage) {
@@ -39,6 +39,16 @@ class WebtoonHolder(
 	override fun onRecycled() {
 		super.onRecycled()
 		binding.ssiv.recycle()
+	}
+
+	override fun onAttachedToWindow() {
+		super.onAttachedToWindow()
+		goneOnInvisibleListener.attach()
+	}
+
+	override fun onDetachedFromWindow() {
+		super.onDetachedFromWindow()
+		goneOnInvisibleListener.detach()
 	}
 
 	override fun onLoadingStarted() {

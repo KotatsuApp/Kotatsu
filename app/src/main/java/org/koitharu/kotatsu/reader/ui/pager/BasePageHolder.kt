@@ -13,7 +13,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	protected val binding: B,
 	loader: PageLoader,
 	settings: AppSettings,
-	exceptionResolver: ExceptionResolver
+	exceptionResolver: ExceptionResolver,
 ) : RecyclerView.ViewHolder(binding.root), PageHolderDelegate.Callback {
 
 	@Suppress("LeakingThis")
@@ -36,6 +36,14 @@ abstract class BasePageHolder<B : ViewBinding>(
 	}
 
 	protected abstract fun onBind(data: ReaderPage)
+
+	@CallSuper
+	open fun onAttachedToWindow() {
+	}
+
+	@CallSuper
+	open fun onDetachedFromWindow() {
+	}
 
 	@CallSuper
 	open fun onRecycled() {
