@@ -55,10 +55,8 @@ fun libraryGroupAD(
 	binding.recyclerView.addItemDecoration(spacingDecoration)
 	binding.buttonMore.setOnClickListener(listenerAdapter)
 
-	bind { payloads ->
-		if (payloads.isEmpty() || !selectionController.isAttached(binding.recyclerView)) {
-			selectionController.attachToRecyclerView(item, binding.recyclerView)
-		}
+	bind {
+		selectionController.attachToRecyclerView(item, binding.recyclerView)
 		binding.textViewTitle.text = item.getTitle(context.resources)
 		binding.buttonMore.setTextAndVisible(item.showAllButtonText)
 		adapter.items = item.items
