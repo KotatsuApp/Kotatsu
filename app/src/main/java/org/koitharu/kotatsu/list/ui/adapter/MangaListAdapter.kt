@@ -4,9 +4,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.*
-import kotlin.jvm.internal.Intrinsics
 
 class MangaListAdapter(
 	coil: ImageLoader,
@@ -24,7 +24,7 @@ class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_DATE, relatedDateItemAD())
 			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(listener))
 			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(listener))
-			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(listener))
+			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(coil, listener))
 			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD())
 			.addDelegate(ITEM_TYPE_FILTER, currentFilterAD(listener))
 			.addDelegate(ITEM_TYPE_HEADER_FILTER, listHeaderWithFilterAD(listener))

@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.*
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchListModel
-import kotlin.jvm.internal.Intrinsics
 
 class MultiSearchAdapter(
 	lifecycleOwner: LifecycleOwner,
@@ -33,11 +33,11 @@ class MultiSearchAdapter(
 					selectionDecoration = selectionDecoration,
 					listener = listener,
 					itemClickListener = itemClickListener,
-				)
+				),
 			)
 			.addDelegate(loadingStateAD())
 			.addDelegate(loadingFooterAD())
-			.addDelegate(emptyStateListAD(listener))
+			.addDelegate(emptyStateListAD(coil, listener))
 			.addDelegate(errorStateListAD(listener))
 	}
 
