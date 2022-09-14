@@ -374,4 +374,6 @@
     <string name="feed">订阅源</string>
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="not_found_404">内容未找到或已移除</string>
+    <string name="reader_control_ltr_summary">点击屏幕右侧或按下右键翻到下一页</string>
+    <string name="reader_control_ltr">高效阅读器控制</string>
 </resources>
