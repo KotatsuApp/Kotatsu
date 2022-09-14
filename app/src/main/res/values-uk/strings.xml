@@ -374,4 +374,15 @@
     <string name="other_cache">Інший кеш</string>
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="manga_error_description_pattern">Деталі помилки:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Спробуйте &lt;a href=%2$s&gt;відкрити манґу у веб-браузері&lt;/a&gt;, щоб переконатися, що вона доступна в джерелі&lt;br&gt;2. Якщо вона доступна, то надішліть звіт про помилку розробникам.</string>
+    <string name="history_shortcuts">Показувати ярлики останньої прочитаної манґи</string>
+    <string name="history_shortcuts_summary">Зробити нещодавно прочитану манґу доступною за довгим натисканням на іконку програми</string>
+    <string name="reader_control_ltr_summary">Натискання на правий край або натискання правої клавіші завжди переходить на наступну сторінку</string>
+    <string name="reader_control_ltr">Ергономічне керування режимом читання</string>
+    <string name="brightness">Яскравість</string>
+    <string name="color_correction">Корекція кольору</string>
+    <string name="contrast">Контрастність</string>
+    <string name="reset">Скинути</string>
+    <string name="color_correction_hint">Вибрані параметри кольору будуть запам\'ятовані для цієї манґи</string>
+    <string name="text_unsaved_changes_prompt">У вас є незбережені зміни, ви хочете зберегти чи скасувати їх\?</string>
+    <string name="discard">Скасувати</string>
 </resources>
