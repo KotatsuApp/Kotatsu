@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="KtlintProjectConfiguration">
+    <enableKtlint>false</enableKtlint>
     <androidMode>true</androidMode>
     <treatAsErrors>false</treatAsErrors>
+    <disabledRules>
+      <list>
+        <option value="no-empty-first-line-in-method-block" />
+      </list>
+    </disabledRules>
   </component>
 </project>

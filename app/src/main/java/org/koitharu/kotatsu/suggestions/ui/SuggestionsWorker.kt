@@ -11,8 +11,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import java.util.concurrent.TimeUnit
-import kotlin.math.pow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -21,12 +19,16 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.utils.ext.asArrayList
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.trySetForeground
+import java.util.concurrent.TimeUnit
+import kotlin.math.pow
 
 @HiltWorker
 class SuggestionsWorker @AssistedInject constructor(
@@ -94,14 +96,10 @@ class SuggestionsWorker @AssistedInject constructor(
 		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
 		val rawResults = coroutineScope {
 			tagsBySources.flatMap { (source, tags) ->
-				val repo = mangaRepositoryFactory.create(source)
+				val repo = mangaRepositoryFactory.tryCreate(source) ?: return@flatMap emptyList()
 				tags.map { tag ->
 					async(dispatcher) {
-						repo.getList(
-							offset = 0,
-							sortOrder = SortOrder.UPDATED,
-							tags = setOf(tag),
-						)
+						repo.getListSafe(tag)
 					}
 				}
 			}.awaitAll().flatten().asArrayList()
@@ -138,6 +136,18 @@ class SuggestionsWorker @AssistedInject constructor(
 		}
 		return (weight / maxWeight).pow(2.0).toFloat()
 	}
+
+	private suspend fun MangaRepository.getListSafe(tag: MangaTag) = runCatching {
+		getList(offset = 0, sortOrder = SortOrder.UPDATED, tags = setOf(tag))
+	}.onFailure { error ->
+		error.printStackTraceDebug()
+	}.getOrDefault(emptyList())
+
+	private fun MangaRepository.Factory.tryCreate(source: MangaSource) = runCatching {
+		create(source)
+	}.onFailure { error ->
+		error.printStackTraceDebug()
+	}.getOrNull()
 
 	companion object {
 
