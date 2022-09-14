@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<item
-		android:id="@+id/nav_library"
+		android:id="@+id/nav_shelf"
 		android:icon="@drawable/ic_bookshelf_selector"
 		android:title="@string/manga_shelf" />
 

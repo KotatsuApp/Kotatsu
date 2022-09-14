@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui.model
+package org.koitharu.kotatsu.shelf.ui.model
 
 import android.content.res.Resources
 import androidx.annotation.StringRes
@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 
-sealed class LibrarySectionModel(
+sealed class ShelfSectionModel(
 	val items: List<MangaItemModel>,
 	@StringRes val showAllButtonText: Int,
 ) : ListModel {
@@ -20,7 +20,7 @@ sealed class LibrarySectionModel(
 		items: List<MangaItemModel>,
 		val timeAgo: DateTimeAgo?,
 		showAllButtonText: Int,
-	) : LibrarySectionModel(items, showAllButtonText) {
+	) : ShelfSectionModel(items, showAllButtonText) {
 
 		override val key: Any
 			get() = timeAgo?.javaClass ?: this::class.java
@@ -58,7 +58,7 @@ sealed class LibrarySectionModel(
 		items: List<MangaItemModel>,
 		val category: FavouriteCategory,
 		showAllButtonText: Int,
-	) : LibrarySectionModel(items, showAllButtonText) {
+	) : ShelfSectionModel(items, showAllButtonText) {
 
 		override val key: Any
 			get() = category.id

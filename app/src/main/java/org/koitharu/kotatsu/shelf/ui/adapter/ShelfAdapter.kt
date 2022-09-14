@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui.adapter
+package org.koitharu.kotatsu.shelf.ui.adapter
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
@@ -9,7 +9,7 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
+import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
@@ -17,19 +17,19 @@ import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
-class LibraryAdapter(
+class ShelfAdapter(
 	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
-	listener: LibraryListEventListener,
+	listener: ShelfListEventListener,
 	sizeResolver: ItemSizeResolver,
-	selectionController: SectionedSelectionController<LibrarySectionModel>,
+	selectionController: SectionedSelectionController<ShelfSectionModel>,
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()), FastScroller.SectionIndexer {
 
 	init {
 		val pool = RecyclerView.RecycledViewPool()
 		delegatesManager
 			.addDelegate(
-				libraryGroupAD(
+				shelfGroupAD(
 					sharedPool = pool,
 					lifecycleOwner = lifecycleOwner,
 					coil = coil,
@@ -45,7 +45,7 @@ class LibraryAdapter(
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence {
-		val item = items.getOrNull(position) as? LibrarySectionModel
+		val item = items.getOrNull(position) as? ShelfSectionModel
 		return item?.getTitle(context.resources) ?: ""
 	}
 
@@ -53,7 +53,7 @@ class LibraryAdapter(
 
 		override fun areItemsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
 			return when {
-				oldItem is LibrarySectionModel && newItem is LibrarySectionModel -> {
+				oldItem is ShelfSectionModel && newItem is ShelfSectionModel -> {
 					oldItem.key == newItem.key
 				}
 				else -> oldItem.javaClass == newItem.javaClass
@@ -66,7 +66,7 @@ class LibraryAdapter(
 
 		override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
 			return when {
-				oldItem is LibrarySectionModel && newItem is LibrarySectionModel -> Unit
+				oldItem is ShelfSectionModel && newItem is ShelfSectionModel -> Unit
 				else -> super.getChangePayload(oldItem, newItem)
 			}
 		}

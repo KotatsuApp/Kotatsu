@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.domain
+package org.koitharu.kotatsu.shelf.domain
 
 import javax.inject.Inject
 import kotlinx.coroutines.flow.*
@@ -10,7 +10,7 @@ import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.parsers.model.Manga
 
-class LibraryRepository @Inject constructor(
+class ShelfRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 

@@ -10,7 +10,7 @@ import com.google.android.material.navigation.NavigationBarView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
-import org.koitharu.kotatsu.library.ui.LibraryFragment
+import org.koitharu.kotatsu.shelf.ui.ShelfFragment
 import org.koitharu.kotatsu.settings.tools.ToolsFragment
 import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import java.util.*
@@ -73,7 +73,7 @@ class MainNavigationDelegate(
 	private fun onNavigationItemSelected(@IdRes itemId: Int): Boolean {
 		setPrimaryFragment(
 			when (itemId) {
-				R.id.nav_library -> LibraryFragment.newInstance()
+				R.id.nav_shelf -> ShelfFragment.newInstance()
 				R.id.nav_explore -> ExploreFragment.newInstance()
 				R.id.nav_feed -> FeedFragment.newInstance()
 				R.id.nav_tools -> ToolsFragment.newInstance()

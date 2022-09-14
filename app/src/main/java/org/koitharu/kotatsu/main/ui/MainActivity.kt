@@ -34,7 +34,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.library.ui.LibraryFragment
+import org.koitharu.kotatsu.shelf.ui.ShelfFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -136,7 +136,7 @@ class MainActivity :
 	}
 
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
-		if (fragment is LibraryFragment) {
+		if (fragment is ShelfFragment) {
 			binding.fab?.show()
 		} else {
 			binding.fab?.hide()
@@ -313,7 +313,7 @@ class MainActivity :
 			isResumeEnabled &&
 			!actionModeDelegate.isActionModeStarted &&
 			!isSearchOpened &&
-			topFragment is LibraryFragment
+			topFragment is ShelfFragment
 		) {
 			if (fab?.isVisible == false) {
 				fab.show()

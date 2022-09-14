@@ -1,16 +1,16 @@
-package org.koitharu.kotatsu.library.ui.config.categories
+package org.koitharu.kotatsu.shelf.ui.config.categories
 
 import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 
-class LibraryCategoriesConfigAdapter(
+class ShelfCategoriesConfigAdapter(
 	listener: OnListItemClickListener<FavouriteCategory>,
 ) : AsyncListDifferDelegationAdapter<FavouriteCategory>(DiffCallback()) {
 
 	init {
-		delegatesManager.addDelegate(libraryCategoryAD(listener))
+		delegatesManager.addDelegate(shelfCategoryAD(listener))
 	}
 
 	class DiffCallback : DiffUtil.ItemCallback<FavouriteCategory>() {

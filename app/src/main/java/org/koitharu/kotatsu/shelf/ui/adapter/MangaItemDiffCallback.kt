@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui.adapter
+package org.koitharu.kotatsu.shelf.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter

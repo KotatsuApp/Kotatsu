@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui.config.size
+package org.koitharu.kotatsu.shelf.ui.config.size
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,13 +12,13 @@ import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.databinding.SheetLibrarySizeBinding
+import org.koitharu.kotatsu.databinding.SheetShelfSizeBinding
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import org.koitharu.kotatsu.utils.progress.IntPercentLabelFormatter
 
 @AndroidEntryPoint
-class LibrarySizeBottomSheet :
-	BaseBottomSheet<SheetLibrarySizeBinding>(),
+class ShelfSizeBottomSheet :
+	BaseBottomSheet<SheetShelfSizeBinding>(),
 	Slider.OnChangeListener,
 	View.OnClickListener {
 
@@ -26,8 +26,8 @@ class LibrarySizeBottomSheet :
 	lateinit var settings: AppSettings
 	private var labelFormatter: LabelFormatter? = null
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetLibrarySizeBinding {
-		return SheetLibrarySizeBinding.inflate(inflater, container, false)
+	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetShelfSizeBinding {
+		return SheetShelfSizeBinding.inflate(inflater, container, false)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,8 +59,8 @@ class LibrarySizeBottomSheet :
 
 	companion object {
 
-		private const val TAG = "LibrarySizeBottomSheet"
+		private const val TAG = "ShelfSizeBottomSheet"
 
-		fun show(fm: FragmentManager) = LibrarySizeBottomSheet().show(fm, TAG)
+		fun show(fm: FragmentManager) = ShelfSizeBottomSheet().show(fm, TAG)
 	}
 }

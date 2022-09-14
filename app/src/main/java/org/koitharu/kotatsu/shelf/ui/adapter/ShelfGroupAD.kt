@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui.adapter
+package org.koitharu.kotatsu.shelf.ui.adapter
 
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.databinding.ItemListGroupBinding
-import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
+import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -20,14 +20,14 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.removeItemDecoration
 import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 
-fun libraryGroupAD(
+fun shelfGroupAD(
 	sharedPool: RecyclerView.RecycledViewPool,
 	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
 	sizeResolver: ItemSizeResolver,
-	selectionController: SectionedSelectionController<LibrarySectionModel>,
-	listener: LibraryListEventListener,
-) = adapterDelegateViewBinding<LibrarySectionModel, ListModel, ItemListGroupBinding>(
+	selectionController: SectionedSelectionController<ShelfSectionModel>,
+	listener: ShelfListEventListener,
+) = adapterDelegateViewBinding<ShelfSectionModel, ListModel, ItemListGroupBinding>(
 	{ layoutInflater, parent -> ItemListGroupBinding.inflate(layoutInflater, parent, false) },
 ) {
 	val listenerAdapter = object : OnListItemClickListener<Manga>, View.OnClickListener {

@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui
+package org.koitharu.kotatsu.shelf.ui
 
 import androidx.collection.ArraySet
 import androidx.lifecycle.LiveData
@@ -20,8 +20,8 @@ import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
-import org.koitharu.kotatsu.library.domain.LibraryRepository
-import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
+import org.koitharu.kotatsu.shelf.domain.ShelfRepository
+import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -33,8 +33,8 @@ import org.koitharu.kotatsu.utils.ext.daysDiff
 private const val HISTORY_MAX_SEGMENTS = 2
 
 @HiltViewModel
-class LibraryViewModel @Inject constructor(
-	repository: LibraryRepository,
+class ShelfViewModel @Inject constructor(
+	repository: ShelfRepository,
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
@@ -101,7 +101,7 @@ class LibraryViewModel @Inject constructor(
 		val snapshot = content.value ?: return emptySet()
 		val result = ArraySet<Manga>(ids.size)
 		for (section in snapshot) {
-			if (section !is LibrarySectionModel) {
+			if (section !is ShelfSectionModel) {
 				continue
 			}
 			for (item in section.items) {
@@ -140,7 +140,7 @@ class LibraryViewModel @Inject constructor(
 	}
 
 	private suspend fun mapHistory(
-		destination: MutableList<in LibrarySectionModel.History>,
+		destination: MutableList<in ShelfSectionModel.History>,
 		list: List<MangaWithHistory>,
 	) {
 		val showPercent = settings.isReadingIndicatorsEnabled
@@ -151,7 +151,7 @@ class LibraryViewModel @Inject constructor(
 			groups[groups.keys.last()]?.addAll(subList)
 		}
 		for ((timeAgo, subList) in groups) {
-			destination += LibrarySectionModel.History(
+			destination += ShelfSectionModel.History(
 				items = subList.map { (manga, history) ->
 					val counter = trackingRepository.getNewChaptersCount(manga.id)
 					val percent = if (showPercent) history.percent else PROGRESS_NONE
@@ -164,12 +164,12 @@ class LibraryViewModel @Inject constructor(
 	}
 
 	private suspend fun mapFavourites(
-		destination: MutableList<in LibrarySectionModel.Favourites>,
+		destination: MutableList<in ShelfSectionModel.Favourites>,
 		favourites: Map<FavouriteCategory, List<Manga>>,
 	) {
 		for ((category, list) in favourites) {
 			if (list.isNotEmpty()) {
-				destination += LibrarySectionModel.Favourites(
+				destination += ShelfSectionModel.Favourites(
 					items = list.toUi(ListMode.GRID, this),
 					category = category,
 					showAllButtonText = R.string.show_all,

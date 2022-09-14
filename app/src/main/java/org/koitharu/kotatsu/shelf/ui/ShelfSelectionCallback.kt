@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui
+package org.koitharu.kotatsu.shelf.ui
 
 import android.content.Context
 import android.view.Menu
@@ -11,33 +11,33 @@ import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
-import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
+import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.flattenTo
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 
-class LibrarySelectionCallback(
+class ShelfSelectionCallback(
 	private val recyclerView: RecyclerView,
 	private val fragmentManager: FragmentManager,
-	private val viewModel: LibraryViewModel,
-) : SectionedSelectionController.Callback<LibrarySectionModel> {
+	private val viewModel: ShelfViewModel,
+) : SectionedSelectionController.Callback<ShelfSectionModel> {
 
 	private val context: Context
 		get() = recyclerView.context
 
 	override fun onCreateActionMode(
-		controller: SectionedSelectionController<LibrarySectionModel>,
+		controller: SectionedSelectionController<ShelfSectionModel>,
 		mode: ActionMode,
 		menu: Menu,
 	): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_library, menu)
+		mode.menuInflater.inflate(R.menu.mode_shelf, menu)
 		return true
 	}
 
 	override fun onPrepareActionMode(
-		controller: SectionedSelectionController<LibrarySectionModel>,
+		controller: SectionedSelectionController<ShelfSectionModel>,
 		mode: ActionMode,
 		menu: Menu,
 	): Boolean {
@@ -47,7 +47,7 @@ class LibrarySelectionCallback(
 	}
 
 	override fun onActionItemClicked(
-		controller: SectionedSelectionController<LibrarySectionModel>,
+		controller: SectionedSelectionController<ShelfSectionModel>,
 		mode: ActionMode,
 		item: MenuItem,
 	): Boolean {
@@ -70,8 +70,8 @@ class LibrarySelectionCallback(
 			R.id.action_remove -> {
 				val (group, ids) = controller.snapshot().entries.singleOrNull { it.value.isNotEmpty() } ?: return false
 				when (group) {
-					is LibrarySectionModel.Favourites -> viewModel.removeFromFavourites(group.category, ids)
-					is LibrarySectionModel.History -> viewModel.removeFromHistory(ids)
+					is ShelfSectionModel.Favourites -> viewModel.removeFromFavourites(group.category, ids)
+					is ShelfSectionModel.History -> viewModel.removeFromHistory(ids)
 				}
 				mode.finish()
 				true
@@ -80,18 +80,18 @@ class LibrarySelectionCallback(
 		}
 	}
 
-	override fun onSelectionChanged(controller: SectionedSelectionController<LibrarySectionModel>, count: Int) {
+	override fun onSelectionChanged(controller: SectionedSelectionController<ShelfSectionModel>, count: Int) {
 		recyclerView.invalidateNestedItemDecorations()
 	}
 
 	override fun onCreateItemDecoration(
-		controller: SectionedSelectionController<LibrarySectionModel>,
-		section: LibrarySectionModel,
+		controller: SectionedSelectionController<ShelfSectionModel>,
+		section: ShelfSectionModel,
 	): AbstractSelectionItemDecoration = MangaSelectionDecoration(context)
 
 	private fun collectSelectedItemsMap(
-		controller: SectionedSelectionController<LibrarySectionModel>,
-	): Map<LibrarySectionModel, Set<Manga>> {
+		controller: SectionedSelectionController<ShelfSectionModel>,
+	): Map<ShelfSectionModel, Set<Manga>> {
 		val snapshot = controller.peekCheckedIds()
 		if (snapshot.isEmpty()) {
 			return emptyMap()
@@ -100,7 +100,7 @@ class LibrarySelectionCallback(
 	}
 
 	private fun collectSelectedItems(
-		controller: SectionedSelectionController<LibrarySectionModel>,
+		controller: SectionedSelectionController<ShelfSectionModel>,
 	): Set<Manga> {
 		val snapshot = controller.peekCheckedIds()
 		if (snapshot.isEmpty()) {

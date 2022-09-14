@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui.adapter
+package org.koitharu.kotatsu.shelf.ui.adapter
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

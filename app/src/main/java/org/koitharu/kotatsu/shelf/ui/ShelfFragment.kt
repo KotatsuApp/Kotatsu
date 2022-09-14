@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.library.ui
+package org.koitharu.kotatsu.shelf.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,13 +19,13 @@ import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.databinding.FragmentLibraryBinding
+import org.koitharu.kotatsu.databinding.FragmentShelfBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.history.ui.HistoryActivity
-import org.koitharu.kotatsu.library.ui.adapter.LibraryAdapter
-import org.koitharu.kotatsu.library.ui.adapter.LibraryListEventListener
-import org.koitharu.kotatsu.library.ui.model.LibrarySectionModel
+import org.koitharu.kotatsu.shelf.ui.adapter.ShelfAdapter
+import org.koitharu.kotatsu.shelf.ui.adapter.ShelfListEventListener
+import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
@@ -34,10 +34,10 @@ import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 @AndroidEntryPoint
-class LibraryFragment :
-	BaseFragment<FragmentLibraryBinding>(),
+class ShelfFragment :
+	BaseFragment<FragmentShelfBinding>(),
 	RecyclerViewOwner,
-	LibraryListEventListener {
+	ShelfListEventListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -45,15 +45,15 @@ class LibraryFragment :
 	@Inject
 	lateinit var settings: AppSettings
 
-	private val viewModel by viewModels<LibraryViewModel>()
-	private var adapter: LibraryAdapter? = null
-	private var selectionController: SectionedSelectionController<LibrarySectionModel>? = null
+	private val viewModel by viewModels<ShelfViewModel>()
+	private var adapter: ShelfAdapter? = null
+	private var selectionController: SectionedSelectionController<ShelfSectionModel>? = null
 
 	override val recyclerView: RecyclerView
 		get() = binding.recyclerView
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentLibraryBinding {
-		return FragmentLibraryBinding.inflate(inflater, container, false)
+	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentShelfBinding {
+		return FragmentShelfBinding.inflate(inflater, container, false)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,9 +62,9 @@ class LibraryFragment :
 		selectionController = SectionedSelectionController(
 			activity = requireActivity(),
 			owner = this,
-			callback = LibrarySelectionCallback(binding.recyclerView, childFragmentManager, viewModel),
+			callback = ShelfSelectionCallback(binding.recyclerView, childFragmentManager, viewModel),
 		)
-		adapter = LibraryAdapter(
+		adapter = ShelfAdapter(
 			lifecycleOwner = viewLifecycleOwner,
 			coil = coil,
 			listener = this,
@@ -73,7 +73,7 @@ class LibraryFragment :
 		)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.setHasFixedSize(true)
-		addMenuProvider(LibraryMenuProvider(view.context, childFragmentManager, viewModel))
+		addMenuProvider(ShelfMenuProvider(view.context, childFragmentManager, viewModel))
 
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
@@ -86,22 +86,22 @@ class LibraryFragment :
 		selectionController = null
 	}
 
-	override fun onItemClick(item: Manga, section: LibrarySectionModel, view: View) {
+	override fun onItemClick(item: Manga, section: ShelfSectionModel, view: View) {
 		if (selectionController?.onItemClick(section, item.id) != true) {
 			val intent = DetailsActivity.newIntent(view.context, item)
 			startActivity(intent)
 		}
 	}
 
-	override fun onItemLongClick(item: Manga, section: LibrarySectionModel, view: View): Boolean {
+	override fun onItemLongClick(item: Manga, section: ShelfSectionModel, view: View): Boolean {
 		return selectionController?.onItemLongClick(section, item.id) ?: false
 	}
 
-	override fun onSectionClick(section: LibrarySectionModel, view: View) {
+	override fun onSectionClick(section: ShelfSectionModel, view: View) {
 		selectionController?.clear()
 		val intent = when (section) {
-			is LibrarySectionModel.History -> HistoryActivity.newIntent(view.context)
-			is LibrarySectionModel.Favourites -> FavouritesActivity.newIntent(view.context, section.category)
+			is ShelfSectionModel.History -> HistoryActivity.newIntent(view.context)
+			is ShelfSectionModel.Favourites -> FavouritesActivity.newIntent(view.context, section.category)
 		}
 		startActivity(intent)
 	}
@@ -143,6 +143,6 @@ class LibraryFragment :
 
 	companion object {
 
-		fun newInstance() = LibraryFragment()
+		fun newInstance() = ShelfFragment()
 	}
 }
