@@ -41,7 +41,7 @@ class OnboardDialogFragment :
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder) {
 		builder
 			.setPositiveButton(R.string.done, this)
-			.setCancelable(true)
+			.setCancelable(false)
 		if (isWelcome) {
 			builder.setTitle(R.string.welcome)
 		} else {

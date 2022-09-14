@@ -12,19 +12,24 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.*
+import androidx.core.view.ViewCompat
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
+import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -59,7 +64,6 @@ import org.koitharu.kotatsu.tracker.ui.FeedFragment
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.*
-import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 private const val TAG_SEARCH = "search"
@@ -94,10 +98,10 @@ class MainActivity :
 				it,
 				binding.toolbar,
 				R.string.open_menu,
-				R.string.close_menu
+				R.string.close_menu,
 			).apply {
 				setHomeAsUpIndicator(
-					ContextCompat.getDrawable(this@MainActivity, materialR.drawable.abc_ic_ab_back_material)
+					ContextCompat.getDrawable(this@MainActivity, materialR.drawable.abc_ic_ab_back_material),
 				)
 				setToolbarNavigationClickListener {
 					binding.searchView.hideKeyboard()
@@ -429,7 +433,12 @@ class MainActivity :
 	}
 
 	private fun onFirstStart() {
-		lifecycleScope.launchWhenResumed {
+		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
+			val settings = get<AppSettings>()
+			when {
+				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
+				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
+			}
 			val isUpdateSupported = withContext(Dispatchers.Default) {
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
@@ -437,11 +446,6 @@ class MainActivity :
 			}
 			if (isUpdateSupported) {
 				AppUpdateChecker(this@MainActivity).checkIfNeeded()
-			}
-			val settings = get<AppSettings>()
-			when {
-				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
-				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
 			}
 		}
 	}
@@ -469,7 +473,7 @@ class MainActivity :
 		val drawer = drawer ?: return
 		val isLocked = actionModeDelegate.isActionModeStarted || isSearchOpened
 		drawer.setDrawerLockMode(
-			if (isLocked) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED
+			if (isLocked) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED,
 		)
 		drawerToggle?.isDrawerIndicatorEnabled = !isLocked
 	}
