@@ -31,6 +31,7 @@
 			android:elegantTextHeight="false"
 			android:ellipsize="end"
 			android:lines="2"
+			android:padding="2dp"
 			android:paddingHorizontal="4dp"
 			android:paddingBottom="4dp"
 			android:textColor="?android:attr/textColorPrimary" />
