@@ -62,8 +62,9 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	init {
 		paint.strokeWidth = context.resources.resolveDp(2f)
 		val insetCorner = getSystemUiDimensionOffset("rounded_corner_content_padding")
-		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start", resources.resolveDp(8)) + insetCorner
-		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end", resources.resolveDp(8)) + insetCorner
+		val fallbackInset = resources.getDimensionPixelOffset(R.dimen.reader_bar_inset_fallback)
+		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start", fallbackInset) + insetCorner
+		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end", fallbackInset) + insetCorner
 		val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
 		insetLeft = if (isRtl) insetEnd else insetStart
 		insetRight = if (isRtl) insetStart else insetEnd
@@ -179,12 +180,12 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		}
 	}
 
-	private fun getSystemUiDimensionOffset(name: String, default: Int = 0): Int = runCatching {
+	private fun getSystemUiDimensionOffset(name: String, fallback: Int = 0): Int = runCatching {
 		val manager = context.packageManager
 		val resources = manager.getResourcesForApplication("com.android.systemui")
 		val resId = resources.getIdentifier(name, "dimen", "com.android.systemui")
 		resources.getDimensionPixelOffset(resId)
 	}.onFailure {
 		it.printStackTraceDebug()
-	}.getOrDefault(default)
+	}.getOrDefault(fallback)
 }
