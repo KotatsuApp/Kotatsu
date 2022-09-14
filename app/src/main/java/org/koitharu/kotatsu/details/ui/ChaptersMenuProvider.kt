@@ -23,8 +23,8 @@ class ChaptersMenuProvider(
 	}
 
 	override fun onPrepareMenu(menu: Menu) {
-		menu.findItem(R.id.action_reversed).isChecked = viewModel.isChaptersReversed.value == true
-		menu.findItem(R.id.action_search).isVisible = viewModel.isChaptersEmpty.value == false
+		menu.findItem(R.id.action_reversed)?.isChecked = viewModel.isChaptersReversed.value == true
+		menu.findItem(R.id.action_search)?.isVisible = viewModel.isChaptersEmpty.value == false
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {

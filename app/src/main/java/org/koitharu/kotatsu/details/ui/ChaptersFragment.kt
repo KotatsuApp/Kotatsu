@@ -6,8 +6,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
@@ -201,19 +199,5 @@ class ChaptersFragment :
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.progressBar.isVisible = isLoading
-	}
-
-	private fun findBottomSheetBehavior(): BottomSheetBehavior<*>? {
-		val v = view ?: return null
-		for (p in v.parents) {
-			val layoutParams = (p as? View)?.layoutParams
-			if (layoutParams is CoordinatorLayout.LayoutParams) {
-				val behavior = layoutParams.behavior
-				if (behavior is BottomSheetBehavior<*>) {
-					return behavior
-				}
-			}
-		}
-		return null
 	}
 }

@@ -4,12 +4,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import kotlin.jvm.internal.Intrinsics
 
 class CategoriesAdapter(
 	coil: ImageLoader,
@@ -20,7 +20,7 @@ class CategoriesAdapter(
 
 	init {
 		delegatesManager.addDelegate(categoryAD(coil, lifecycleOwner, onItemClickListener))
-			.addDelegate(emptyStateListAD(listListener))
+			.addDelegate(emptyStateListAD(coil, listListener))
 			.addDelegate(loadingStateAD())
 	}
 

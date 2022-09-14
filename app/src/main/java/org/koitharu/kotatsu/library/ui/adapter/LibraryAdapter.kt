@@ -40,7 +40,7 @@ class LibraryAdapter(
 			)
 			.addDelegate(loadingStateAD())
 			.addDelegate(loadingFooterAD())
-			.addDelegate(emptyStateListAD(listener))
+			.addDelegate(emptyStateListAD(coil, listener))
 			.addDelegate(errorStateListAD(listener))
 	}
 

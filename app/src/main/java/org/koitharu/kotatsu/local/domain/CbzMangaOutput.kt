@@ -62,7 +62,7 @@ class CbzMangaOutput(
 		index.addChapter(chapter)
 	}
 
-	suspend fun finalize() {
+	suspend fun finish() {
 		runInterruptible(Dispatchers.IO) {
 			output.put(ENTRY_NAME_INDEX, index.toString())
 			output.finish()

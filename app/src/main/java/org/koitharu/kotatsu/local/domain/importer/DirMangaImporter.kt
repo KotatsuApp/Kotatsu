@@ -43,7 +43,7 @@ class DirMangaImporter(
 				)
 				it.sortChaptersByName()
 				it.mergeWithExisting()
-				it.finalize()
+				it.finish()
 				it.file
 			}
 			return localMangaRepository.getFromFile(dest)

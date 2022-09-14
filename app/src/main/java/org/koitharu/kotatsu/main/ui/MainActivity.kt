@@ -27,6 +27,7 @@ import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
@@ -289,16 +290,16 @@ class MainActivity :
 	}
 
 	private fun onFirstStart() {
-		lifecycleScope.launchWhenResumed {
+		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
+			when {
+				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
+				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
+			}
 			withContext(Dispatchers.Default) {
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
 			}
 			requestNotificationsPermission()
-			when {
-				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
-				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
-			}
 		}
 	}
 

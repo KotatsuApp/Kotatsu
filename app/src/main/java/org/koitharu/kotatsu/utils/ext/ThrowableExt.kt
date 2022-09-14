@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
+import androidx.collection.arraySetOf
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import okio.FileNotFoundException
@@ -23,24 +24,31 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
 	is SyncApiException,
-	is ContentUnavailableException, -> message
+	is ContentUnavailableException,
+	-> message
 	is ParseException -> shortMessage
 	is UnknownHostException,
-	is SocketTimeoutException, -> resources.getString(R.string.network_error)
+	is SocketTimeoutException,
+	-> resources.getString(R.string.network_error)
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
 	else -> localizedMessage
 } ?: resources.getString(R.string.error_occurred)
 
 fun Throwable.isReportable(): Boolean {
-	if (this !is Exception) {
-		return true
-	}
-	return this is ParseException || this is IllegalArgumentException ||
-		this is IllegalStateException || this.javaClass == RuntimeException::class.java
+	return this is Error || this.javaClass in reportableExceptions
 }
 
 fun Throwable.report(message: String?) {
 	val exception = CaughtException(this, message)
 	exception.sendWithAcra()
 }
+
+private val reportableExceptions = arraySetOf<Class<*>>(
+	ParseException::class.java,
+	RuntimeException::class.java,
+	IllegalStateException::class.java,
+	IllegalArgumentException::class.java,
+	ConcurrentModificationException::class.java,
+	UnsupportedOperationException::class.java,
+)

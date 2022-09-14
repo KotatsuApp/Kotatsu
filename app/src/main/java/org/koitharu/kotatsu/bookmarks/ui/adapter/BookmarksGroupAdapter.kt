@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
@@ -12,7 +13,6 @@ import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
 import org.koitharu.kotatsu.list.ui.adapter.*
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import kotlin.jvm.internal.Intrinsics
 
 class BookmarksGroupAdapter(
 	coil: ImageLoader,
@@ -34,11 +34,11 @@ class BookmarksGroupAdapter(
 					selectionController = selectionController,
 					bookmarkClickListener = bookmarkClickListener,
 					groupClickListener = groupClickListener,
-				)
+				),
 			)
 			.addDelegate(loadingStateAD())
 			.addDelegate(loadingFooterAD())
-			.addDelegate(emptyStateListAD(listener))
+			.addDelegate(emptyStateListAD(coil, listener))
 			.addDelegate(errorStateListAD(listener))
 	}
 

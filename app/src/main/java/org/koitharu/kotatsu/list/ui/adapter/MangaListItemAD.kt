@@ -40,7 +40,7 @@ fun mangaListItemAD(
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)
 		}
-		itemView.bindBadge(badge, item.counter)
+		badge = itemView.bindBadge(badge, item.counter)
 	}
 
 	onViewRecycled {
