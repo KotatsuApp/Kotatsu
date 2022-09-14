@@ -124,7 +124,7 @@ dependencies {
 
 	implementation 'io.coil-kt:coil-base:2.2.1'
 	implementation 'io.coil-kt:coil-svg:2.2.1'
-	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:2aae2133d1'
+	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:a9ab74c8b4'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
 	implementation 'ch.acra:acra-http:5.9.6'
