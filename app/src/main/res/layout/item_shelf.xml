@@ -23,7 +23,8 @@
 			android:layout_width="@dimen/widget_cover_width"
 			android:layout_height="@dimen/widget_cover_height"
 			android:scaleType="centerCrop"
-			tools:ignore="ContentDescription" />
+			tools:ignore="ContentDescription"
+			tools:src="@sample/covers" />
 
 		<TextView
 			android:id="@+id/textView_title"
@@ -32,7 +33,9 @@
 			android:elegantTextHeight="false"
 			android:ellipsize="end"
 			android:lines="2"
-			android:textColor="?android:attr/textColorPrimary" />
+			android:padding="2dp"
+			android:textColor="?android:attr/textColorPrimary"
+			tools:text="@sample/titles" />
 
 	</LinearLayout>
 
