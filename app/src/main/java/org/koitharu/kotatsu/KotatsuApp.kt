@@ -8,9 +8,10 @@ import androidx.fragment.app.strictmode.FragmentStrictMode
 import androidx.room.InvalidationTracker
 import org.acra.ReportField
 import org.acra.config.dialog
-import org.acra.config.mailSender
+import org.acra.config.httpSender
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
+import org.acra.sender.HttpSender
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.koin.androidContext
@@ -73,7 +74,7 @@ class KotatsuApp : Application() {
 				appWidgetModule,
 				suggestionsModule,
 				shikimoriModule,
-				bookmarksModule
+				bookmarksModule,
 			)
 		}
 	}
@@ -82,16 +83,25 @@ class KotatsuApp : Application() {
 		super.attachBaseContext(base)
 		initAcra {
 			buildConfigClass = BuildConfig::class.java
-			reportFormat = StringFormat.KEY_VALUE_LIST
+			reportFormat = StringFormat.JSON
+			excludeMatchingSharedPreferencesKeys = listOf(
+				"sources_\\w+",
+			)
+			httpSender {
+				uri = getString(R.string.url_error_report)
+				basicAuthLogin = getString(R.string.acra_login)
+				basicAuthPassword = getString(R.string.acra_password)
+				httpMethod = HttpSender.Method.POST
+			}
 			reportContent = listOf(
 				ReportField.PACKAGE_NAME,
 				ReportField.APP_VERSION_CODE,
 				ReportField.APP_VERSION_NAME,
 				ReportField.ANDROID_VERSION,
 				ReportField.PHONE_MODEL,
-				ReportField.CRASH_CONFIGURATION,
 				ReportField.STACK_TRACE,
-				ReportField.SHARED_PREFERENCES
+				ReportField.CRASH_CONFIGURATION,
+				ReportField.SHARED_PREFERENCES,
 			)
 			dialog {
 				text = getString(R.string.crash_text)
@@ -99,11 +109,6 @@ class KotatsuApp : Application() {
 				positiveButtonText = getString(R.string.send)
 				resIcon = R.drawable.ic_alert_outline
 				resTheme = android.R.style.Theme_Material_Light_Dialog_Alert
-			}
-			mailSender {
-				mailTo = getString(R.string.email_error_report)
-				reportAsFile = true
-				reportFileName = "stacktrace.txt"
 			}
 		}
 	}
@@ -129,7 +134,7 @@ class KotatsuApp : Application() {
 			StrictMode.ThreadPolicy.Builder()
 				.detectAll()
 				.penaltyLog()
-				.build()
+				.build(),
 		)
 		StrictMode.setVmPolicy(
 			StrictMode.VmPolicy.Builder()
@@ -138,7 +143,7 @@ class KotatsuApp : Application() {
 				.setClassInstanceLimit(PagesCache::class.java, 1)
 				.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
 				.penaltyLog()
-				.build()
+				.build(),
 		)
 		FragmentStrictMode.defaultPolicy = FragmentStrictMode.Policy.Builder()
 			.penaltyDeath()
