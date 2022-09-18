@@ -372,4 +372,18 @@
     <string name="import_completed_hint">Puedes eliminar el archivo original del almacenamiento para ahorrar espacio</string>
     <string name="select_range">Selecciona el rango</string>
     <string name="not_found_404">Contenido no encontrado o eliminado</string>
+    <string name="manga_error_description_pattern">Detalles del error:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Intenta &lt;a href=%2$s&gt;abrir el manga en un navegador web&lt;/a&gt; para asegurarte de que está disponible en tu fuente&lt;br&gt;2. Si está disponible, envía un informe de error a los desarrolladores.</string>
+    <string name="history_shortcuts_summary">Hacer que los mangas recientes estén disponibles mediante una pulsación larga en el icono de la aplicación</string>
+    <string name="color_correction_hint">Los ajustes de color elegidos serán recordados para este manga</string>
+    <string name="feed">Feed</string>
+    <string name="downloading_manga">Descargando manga</string>
+    <string name="history_shortcuts">Mostrar los accesos directos a los mangas recientes</string>
+    <string name="reader_control_ltr_summary">Tocando el borde derecho o pulsando la tecla derecha se pasa siempre a la página siguiente</string>
+    <string name="reader_control_ltr">Control ergonómico del lector</string>
+    <string name="color_correction">Corrección del color</string>
+    <string name="brightness">Brillo</string>
+    <string name="contrast">Contraste</string>
+    <string name="reset">Restablecer</string>
+    <string name="text_unsaved_changes_prompt">Tienes cambios sin guardar. ¿Quieres guardarlos o descartarlos\?</string>
+    <string name="discard">Descartar</string>
 </resources>
