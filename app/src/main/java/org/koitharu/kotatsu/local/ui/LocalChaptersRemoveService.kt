@@ -9,13 +9,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LocalChaptersRemoveService : CoroutineIntentService() {
@@ -34,7 +35,7 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 	}
 
 	override suspend fun processIntent(intent: Intent?) {
-		val manga = intent?.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga ?: return
+		val manga = intent?.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga ?: return
 		val chaptersIds = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toSet() ?: return
 		startForeground()
 		val mangaWithChapters = localMangaRepository.getDetails(manga)

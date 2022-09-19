@@ -20,7 +20,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
 import dagger.hilt.android.EntryPointAccessors
-import javax.inject.Inject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
@@ -30,6 +29,7 @@ import org.koitharu.kotatsu.base.ui.util.inject
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.ext.getThemeColor
+import javax.inject.Inject
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
@@ -134,6 +134,7 @@ abstract class BaseActivity<B : ViewBinding> :
 		window.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
 	}
 
+	@Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
 	override fun onBackPressed() {
 		if ( // https://issuetracker.google.com/issues/139738913
 			Build.VERSION.SDK_INT == Build.VERSION_CODES.Q &&

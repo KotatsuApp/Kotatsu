@@ -16,9 +16,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import kotlin.collections.set
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.BuildConfig
@@ -28,10 +25,14 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.utils.ext.throttle
 import org.koitharu.kotatsu.utils.progress.PausingProgressJob
 import org.koitharu.kotatsu.utils.progress.ProgressJob
 import org.koitharu.kotatsu.utils.progress.TimeLeftEstimator
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import kotlin.collections.set
 
 @AndroidEntryPoint
 class DownloadService : BaseService() {
@@ -65,7 +66,7 @@ class DownloadService : BaseService() {
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		super.onStartCommand(intent, flags, startId)
-		val manga = intent?.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga
+		val manga = intent?.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga
 		val chapters = intent?.getLongArrayExtra(EXTRA_CHAPTERS_IDS)
 		return if (manga != null) {
 			jobs[startId] = downloadManga(startId, manga, chapters)
@@ -254,7 +255,7 @@ class DownloadService : BaseService() {
 
 		fun getDownloadedManga(intent: Intent?): Manga? {
 			if (intent?.action == ACTION_DOWNLOAD_COMPLETE) {
-				return intent.getParcelableExtra<ParcelableManga>(EXTRA_MANGA)?.manga
+				return intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga
 			}
 			return null
 		}

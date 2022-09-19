@@ -24,7 +24,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
 import com.google.android.material.elevation.ElevationOverlayProvider
-import kotlin.math.roundToLong
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
@@ -37,6 +36,7 @@ import okio.IOException
 import org.json.JSONException
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.utils.InternalResourceHelper
+import kotlin.math.roundToLong
 
 val Context.activityManager: ActivityManager?
 	get() = getSystemService(ACTIVITY_SERVICE) as? ActivityManager

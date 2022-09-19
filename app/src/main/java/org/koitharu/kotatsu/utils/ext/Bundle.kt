@@ -1,45 +1,39 @@
+@file:Suppress("DEPRECATION")
+
 package org.koitharu.kotatsu.utils.ext
 
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcel
 import android.os.Parcelable
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import java.io.Serializable
 
-@Suppress("DEPRECATION")
+// https://issuetracker.google.com/issues/240585930
+
 inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String): T? {
-	if (!containsKey(key)) {
-		return null
-	}
-	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-		getParcelable(key, T::class.java)
-	} else {
-		getParcelable(key) as? T
-	}
+	return getParcelable(key) as T?
 }
 
-@Suppress("DEPRECATION")
 inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? {
-	if (!hasExtra(key)) {
-		return null
-	}
-	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-		getParcelableExtra(key, T::class.java)
-	} else {
-		getParcelableExtra(key) as? T
-	}
+	return getParcelableExtra(key) as T?
 }
 
-@Suppress("DEPRECATION")
 inline fun <reified T : Serializable> Bundle.getSerializableCompat(key: String): T? {
-	if (!containsKey(key)) {
-		return null
-	}
 	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 		getSerializable(key, T::class.java)
 	} else {
-		getSerializable(key) as? T
+		getSerializable(key) as T?
 	}
+}
+
+inline fun <reified T : Parcelable> Parcel.readParcelableCompat(): T? {
+	return readParcelable(ParcelableMangaTags::class.java.classLoader) as T?
+}
+
+inline fun <reified T : Serializable> Parcel.readSerializableCompat(): T? {
+	return readSerializable() as T?
 }
 
 inline fun <reified T : Serializable> Bundle.requireSerializable(key: String): T {

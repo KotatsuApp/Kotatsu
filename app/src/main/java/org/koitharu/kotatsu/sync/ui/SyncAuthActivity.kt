@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySyncAuthBinding
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 
 @AndroidEntryPoint
 class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickListener {
@@ -33,7 +34,8 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySyncAuthBinding.inflate(layoutInflater))
-		accountAuthenticatorResponse = intent.getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
+		accountAuthenticatorResponse =
+			intent.getParcelableExtraCompat(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
 		accountAuthenticatorResponse?.onRequestContinued()
 		binding.buttonCancel.setOnClickListener(this)
 		binding.buttonNext.setOnClickListener(this)
@@ -57,6 +59,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		)
 	}
 
+	@Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
 	override fun onBackPressed() {
 		if (binding.switcher.isVisible && binding.switcher.displayedChild > 0) {
 			binding.switcher.showPrevious()

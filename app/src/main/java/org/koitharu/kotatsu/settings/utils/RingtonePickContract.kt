@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.StringRes
+import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 
 class RingtonePickContract(@StringRes private val titleResId: Int) : ActivityResultContract<Uri?, Uri?>() {
 
@@ -30,6 +31,6 @@ class RingtonePickContract(@StringRes private val titleResId: Int) : ActivityRes
 	}
 
 	override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-		return intent?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+		return intent?.getParcelableExtraCompat(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
 	}
 }

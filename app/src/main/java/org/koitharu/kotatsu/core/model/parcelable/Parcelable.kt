@@ -2,7 +2,12 @@ package org.koitharu.kotatsu.core.model.parcelable
 
 import android.os.Parcel
 import androidx.core.os.ParcelCompat
-import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.utils.ext.readParcelableCompat
+import org.koitharu.kotatsu.utils.ext.readSerializableCompat
 
 fun Manga.writeToParcel(out: Parcel, flags: Int, withChapters: Boolean) {
 	out.writeLong(id)
@@ -37,11 +42,11 @@ fun Parcel.readManga() = Manga(
 	coverUrl = requireNotNull(readString()),
 	largeCoverUrl = readString(),
 	description = readString(),
-	tags = requireNotNull(readParcelable<ParcelableMangaTags>(ParcelableMangaTags::class.java.classLoader)).tags,
-	state = readSerializable() as MangaState?,
+	tags = requireNotNull(readParcelableCompat<ParcelableMangaTags>()).tags,
+	state = readSerializableCompat(),
 	author = readString(),
-	chapters = readParcelable<ParcelableMangaChapters>(ParcelableMangaChapters::class.java.classLoader)?.chapters,
-	source = readSerializable() as MangaSource,
+	chapters = readParcelableCompat<ParcelableMangaChapters>()?.chapters,
+	source = checkNotNull(readSerializableCompat()),
 )
 
 fun MangaPage.writeToParcel(out: Parcel) {
@@ -57,7 +62,7 @@ fun Parcel.readMangaPage() = MangaPage(
 	url = requireNotNull(readString()),
 	referer = requireNotNull(readString()),
 	preview = readString(),
-	source = readSerializable() as MangaSource,
+	source = checkNotNull(readSerializableCompat()),
 )
 
 fun MangaChapter.writeToParcel(out: Parcel) {
@@ -79,7 +84,7 @@ fun Parcel.readMangaChapter() = MangaChapter(
 	scanlator = readString(),
 	uploadDate = readLong(),
 	branch = readString(),
-	source = readSerializable() as MangaSource,
+	source = checkNotNull(readSerializableCompat()),
 )
 
 fun MangaTag.writeToParcel(out: Parcel) {
@@ -91,5 +96,5 @@ fun MangaTag.writeToParcel(out: Parcel) {
 fun Parcel.readMangaTag() = MangaTag(
 	title = requireNotNull(readString()),
 	key = requireNotNull(readString()),
-	source = readSerializable() as MangaSource,
+	source = checkNotNull(readSerializableCompat()),
 )
