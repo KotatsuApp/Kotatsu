@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class MangaSearchRepository @Inject constructor(
 	private val settings: AppSettings,
@@ -33,7 +34,7 @@ class MangaSearchRepository @Inject constructor(
 	fun globalSearch(query: String, concurrency: Int = DEFAULT_CONCURRENCY): Flow<Manga> =
 		settings.getMangaSources(includeHidden = false).asFlow()
 			.flatMapMerge(concurrency) { source ->
-				runCatching {
+				runCatchingCancellable {
 					mangaRepositoryFactory.create(source).getList(
 						offset = 0,
 						query = query,

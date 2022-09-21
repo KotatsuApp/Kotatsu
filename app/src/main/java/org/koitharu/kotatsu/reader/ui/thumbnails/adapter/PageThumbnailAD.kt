@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import org.koitharu.kotatsu.utils.ext.decodeRegion
 import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.ext.setTextColorAttr
 
 fun pageThumbnailAD(
@@ -72,7 +73,7 @@ fun pageThumbnailAD(
 			text = (item.number).toString()
 		}
 		job = scope.launch {
-			val drawable = runCatching {
+			val drawable = runCatchingCancellable {
 				loadPageThumbnail(item)
 			}.getOrNull()
 			binding.imageViewThumb.setImageDrawable(drawable)

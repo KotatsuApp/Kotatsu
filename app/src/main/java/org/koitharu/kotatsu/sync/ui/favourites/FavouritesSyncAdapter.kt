@@ -9,6 +9,7 @@ import android.os.Bundle
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.sync.domain.SyncHelper
 import org.koitharu.kotatsu.utils.ext.onError
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class FavouritesSyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context, true) {
 
@@ -20,7 +21,7 @@ class FavouritesSyncAdapter(context: Context) : AbstractThreadedSyncAdapter(cont
 		syncResult: SyncResult,
 	) {
 		val syncHelper = SyncHelper(context, account, provider)
-		runCatching {
+		runCatchingCancellable {
 			syncHelper.syncFavourites(syncResult)
 			SyncController(context).setLastSync(account, authority, System.currentTimeMillis())
 		}.onFailure(syncResult::onError)

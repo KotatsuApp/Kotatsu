@@ -7,28 +7,40 @@ import androidx.annotation.WorkerThread
 import androidx.collection.ArraySet
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import java.io.File
-import java.util.*
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.TempFileFilter
-import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.toCamelCase
 import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.CompositeMutex
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.longHashCode
 import org.koitharu.kotatsu.utils.ext.readText
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import java.io.File
+import java.util.Enumeration
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.coroutines.CoroutineContext
 
 private const val MAX_PARALLELISM = 4
 
@@ -73,6 +85,7 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 		manga.source != MangaSource.LOCAL -> requireNotNull(findSavedManga(manga)) {
 			"Manga is not local or saved"
 		}
+
 		else -> getFromFile(Uri.parse(manga.url).toFile())
 	}
 
@@ -236,7 +249,7 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 		context: CoroutineContext,
 	): Deferred<LocalManga?> = async(context) {
 		runInterruptible {
-			runCatching { LocalManga(getFromFile(file), file) }.getOrNull()
+			runCatchingCancellable { LocalManga(getFromFile(file), file) }.getOrNull()
 		}
 	}
 

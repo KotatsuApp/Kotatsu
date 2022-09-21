@@ -4,17 +4,23 @@ import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
-import java.io.File
-import java.io.IOException
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
+import java.io.File
+import java.io.IOException
 
 class PageHolderDelegate(
 	private val loader: PageLoader,
@@ -102,6 +108,8 @@ class PageHolderDelegate(
 				loader.convertInPlace(file)
 				state = State.CONVERTED
 				callback.onImageReady(file.toUri())
+			} catch (ce: CancellationException) {
+				throw ce
 			} catch (e2: Throwable) {
 				e.addSuppressed(e2)
 				state = State.ERROR

@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.utils.ext.asArrayList
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.ext.trySetForeground
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
@@ -137,7 +138,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		return (weight / maxWeight).pow(2.0).toFloat()
 	}
 
-	private suspend fun MangaRepository.getListSafe(tag: MangaTag) = runCatching {
+	private suspend fun MangaRepository.getListSafe(tag: MangaTag) = runCatchingCancellable {
 		getList(offset = 0, sortOrder = SortOrder.UPDATED, tags = setOf(tag))
 	}.onFailure { error ->
 		error.printStackTraceDebug()

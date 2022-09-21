@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class FavouritesListViewModel @AssistedInject constructor(
 	@Assisted private val categoryId: Long,
@@ -69,6 +70,7 @@ class FavouritesListViewModel @AssistedInject constructor(
 					actionStringRes = 0,
 				),
 			)
+
 			else -> list.toUi(mode, this)
 		}
 	}.catch {
@@ -79,7 +81,7 @@ class FavouritesListViewModel @AssistedInject constructor(
 		if (categoryId != NO_ID) {
 			launchJob {
 				categoryName = withContext(Dispatchers.Default) {
-					runCatching {
+					runCatchingCancellable {
 						repository.getCategory(categoryId).title
 					}.getOrNull()
 				}

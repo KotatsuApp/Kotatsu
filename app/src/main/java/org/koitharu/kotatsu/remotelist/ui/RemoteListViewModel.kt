@@ -5,11 +5,16 @@ import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import java.util.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
@@ -21,13 +26,20 @@ import org.koitharu.kotatsu.list.ui.filter.FilterCoordinator
 import org.koitharu.kotatsu.list.ui.filter.FilterItem
 import org.koitharu.kotatsu.list.ui.filter.FilterState
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListHeader2
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorFooter
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import java.util.LinkedList
 
 private const val FILTER_MIN_INTERVAL = 250L
 
@@ -138,6 +150,8 @@ class RemoteListViewModel @AssistedInject constructor(
 					mangaList.value = mangaList.value?.plus(list) ?: list
 				}
 				hasNextPage.value = list.isNotEmpty()
+			} catch (e: CancellationException) {
+				throw e
 			} catch (e: Throwable) {
 				e.printStackTraceDebug()
 				listError.value = e

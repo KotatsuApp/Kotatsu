@@ -17,8 +17,6 @@ import coil.request.ImageRequest
 import coil.size.Precision
 import coil.size.Scale
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -32,6 +30,9 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireBitmap
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class ShortcutsUpdater @Inject constructor(
@@ -92,7 +93,7 @@ class ShortcutsUpdater @Inject constructor(
 	}
 
 	@RequiresApi(Build.VERSION_CODES.N_MR1)
-	private suspend fun updateShortcutsImpl() = runCatching {
+	private suspend fun updateShortcutsImpl() = runCatchingCancellable {
 		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
 		val shortcuts = historyRepository.getList(0, manager.maxShortcutCountPerActivity)
 			.filter { x -> x.title.isNotEmpty() }
@@ -112,7 +113,7 @@ class ShortcutsUpdater @Inject constructor(
 	}
 
 	private suspend fun buildShortcutInfo(manga: Manga): ShortcutInfoCompat.Builder {
-		val icon = runCatching {
+		val icon = runCatchingCancellable {
 			coil.execute(
 				ImageRequest.Builder(context)
 					.data(manga.coverUrl)

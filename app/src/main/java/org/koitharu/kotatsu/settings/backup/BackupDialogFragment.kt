@@ -11,13 +11,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
-import java.io.FileOutputStream
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.progress.Progress
+import java.io.File
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
@@ -91,6 +91,8 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 			}
 			Toast.makeText(requireContext(), R.string.backup_saved, Toast.LENGTH_LONG).show()
 			dismiss()
+		} catch (e: InterruptedException) {
+			throw e
 		} catch (e: Exception) {
 			onError(e)
 		}

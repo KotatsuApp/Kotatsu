@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorFooter
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
@@ -47,6 +54,7 @@ class SearchViewModel @AssistedInject constructor(
 					actionStringRes = 0,
 				),
 			)
+
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
 				list.toUi(result, mode)
@@ -94,6 +102,8 @@ class SearchViewModel @AssistedInject constructor(
 					mangaList.value = mangaList.value?.plus(list) ?: list
 				}
 				hasNextPage.value = list.isNotEmpty()
+			} catch (e: CancellationException) {
+				throw e
 			} catch (e: Throwable) {
 				listError.value = e
 			}

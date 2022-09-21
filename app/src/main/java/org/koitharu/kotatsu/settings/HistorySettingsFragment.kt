@@ -8,7 +8,7 @@ import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cache) {
@@ -82,18 +83,22 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				clearCache(preference, CacheDir.PAGES)
 				true
 			}
+
 			AppSettings.KEY_THUMBS_CACHE_CLEAR -> {
 				clearCache(preference, CacheDir.THUMBS)
 				true
 			}
+
 			AppSettings.KEY_COOKIES_CLEAR -> {
 				clearCookies()
 				true
 			}
+
 			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
 				clearSearchHistory(preference)
 				true
 			}
+
 			AppSettings.KEY_UPDATES_FEED_CLEAR -> {
 				viewLifecycleScope.launch {
 					trackerRepo.clearLogs()
@@ -107,6 +112,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				}
 				true
 			}
+
 			AppSettings.KEY_SHIKIMORI -> {
 				if (!shikimoriRepository.isAuthorized) {
 					launchShikimoriAuth()
@@ -115,6 +121,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					super.onPreferenceTreeClick(preference)
 				}
 			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
@@ -127,6 +134,8 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				storageManager.clearCache(cache)
 				val size = storageManager.computeCacheSize(cache)
 				preference.summary = FileSize.BYTES.format(ctx, size)
+			} catch (e: CancellationException) {
+				throw e
 			} catch (e: Exception) {
 				preference.summary = e.getDisplayMessage(ctx.resources)
 			} finally {

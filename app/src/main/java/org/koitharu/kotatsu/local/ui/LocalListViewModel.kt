@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 @HiltViewModel
 class LocalListViewModel @Inject constructor(
@@ -63,6 +64,7 @@ class LocalListViewModel @Inject constructor(
 					actionStringRes = R.string._import,
 				),
 			)
+
 			else -> buildList(list.size + 1) {
 				add(createHeader(list, tags, order))
 				list.toUi(this, mode, this@LocalListViewModel)
@@ -104,7 +106,7 @@ class LocalListViewModel @Inject constructor(
 				for (manga in itemsToRemove) {
 					val original = repository.getRemoteManga(manga)
 					repository.delete(manga) || throw IOException("Unable to delete file")
-					runCatching {
+					runCatchingCancellable {
 						historyRepository.deleteOrSwap(manga, original)
 					}
 					mangaList.update { list ->
@@ -120,6 +122,8 @@ class LocalListViewModel @Inject constructor(
 		try {
 			listError.value = null
 			mangaList.value = repository.getList(0, selectedTags.value, sortOrder.value)
+		} catch (e: CancellationException) {
+			throw e
 		} catch (e: Throwable) {
 			listError.value = e
 		}
@@ -128,7 +132,7 @@ class LocalListViewModel @Inject constructor(
 	private fun cleanup() {
 		if (!DownloadService.isRunning && !ImportService.isRunning && !LocalChaptersRemoveService.isRunning) {
 			viewModelScope.launch {
-				runCatching {
+				runCatchingCancellable {
 					repository.cleanup()
 				}.onFailure { error ->
 					error.printStackTraceDebug()

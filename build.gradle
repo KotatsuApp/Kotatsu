@@ -36,7 +36,7 @@ Object localProperty(String name, Object defaultValue = 'null') {
 String currentBranch() {
 	def branchName = ""
 	try {
-		branchName = "git rev-parse --abbrev-ref HEAD".execute().text.trim();
+		branchName = "git rev-parse --abbrev-ref HEAD".execute().text.trim()
 	} catch (ignored) {
 		println "Git not found"
 	}

@@ -38,6 +38,7 @@ import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireValue
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 private const val BOUNDS_PAGE_OFFSET = 2
 private const val PREFETCH_LIMIT = 10
@@ -326,7 +327,7 @@ class ReaderViewModel @AssistedInject constructor(
 			?: manga.chapters?.randomOrNull()
 			?: error("There are no chapters in this manga")
 		val pages = repo.getPages(chapter)
-		return runCatching {
+		return runCatchingCancellable {
 			val isWebtoon = dataRepository.determineMangaIsWebtoon(repo, pages)
 			if (isWebtoon) ReaderMode.WEBTOON else defaultMode
 		}.onSuccess {
@@ -381,7 +382,7 @@ class ReaderViewModel @AssistedInject constructor(
  */
 private fun HistoryRepository.saveStateAsync(manga: Manga, state: ReaderState, percent: Float): Job {
 	return processLifecycleScope.launch(Dispatchers.Default) {
-		runCatching {
+		runCatchingCancellable {
 			addOrUpdate(
 				manga = manga,
 				chapterId = state.chapterId,

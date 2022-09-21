@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.list.ui.model.*
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 private const val MAX_PARALLELISM = 4
 private const val MIN_HAS_MORE_ITEMS = 8
@@ -54,6 +55,7 @@ class MultiSearchViewModel @AssistedInject constructor(
 					)
 				},
 			)
+
 			loading -> list + LoadingFooter
 			else -> list
 		}
@@ -85,6 +87,8 @@ class MultiSearchViewModel @AssistedInject constructor(
 				loadingData.value = true
 				query.postValue(q)
 				searchImpl(q)
+			} catch (e: CancellationException) {
+				throw e
 			} catch (e: Throwable) {
 				listError.value = e
 			} finally {
@@ -98,7 +102,7 @@ class MultiSearchViewModel @AssistedInject constructor(
 		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
 		val deferredList = sources.map { source ->
 			async(dispatcher) {
-				runCatching {
+				runCatchingCancellable {
 					val list = mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
 						.toUi(ListMode.GRID)
 					if (list.isNotEmpty()) {

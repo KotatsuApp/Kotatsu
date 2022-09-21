@@ -6,15 +6,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.text.Collator
-import java.util.*
+import java.util.Locale
+import java.util.TreeSet
 
 class FilterCoordinator(
 	private val repository: RemoteMangaRepository,
@@ -153,7 +160,7 @@ class FilterCoordinator(
 	}
 
 	private fun loadTagsAsync() = coroutineScope.async(Dispatchers.Default, CoroutineStart.LAZY) {
-		runCatching {
+		runCatchingCancellable {
 			repository.getTags()
 		}.onFailure { error ->
 			error.printStackTraceDebug()

@@ -46,7 +46,7 @@ val Context.connectivityManager: ConnectivityManager
 
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 
-suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatching {
+suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatchingCancellable {
 	val info = getForegroundInfo()
 	setForeground(info)
 }.isSuccess
@@ -95,6 +95,7 @@ fun SyncResult.onError(error: Throwable) {
 		is OperationApplicationException,
 		is SQLException,
 		-> databaseError = true
+
 		is JSONException -> stats.numParseExceptions++
 		else -> if (BuildConfig.DEBUG) throw error
 	}

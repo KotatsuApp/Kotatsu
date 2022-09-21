@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.trySetForeground
 
@@ -82,7 +83,7 @@ class TrackWorker @AssistedInject constructor(
 		val deferredList = coroutineScope {
 			tracks.map { (track, channelId) ->
 				async(dispatcher) {
-					runCatching {
+					runCatchingCancellable {
 						tracker.fetchUpdates(track, commit = true)
 					}.onSuccess { updates ->
 						if (updates.isValid && updates.isNotEmpty()) {

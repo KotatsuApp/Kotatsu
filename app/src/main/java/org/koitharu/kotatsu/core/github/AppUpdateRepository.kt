@@ -4,13 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.ByteArrayInputStream
-import java.io.InputStream
-import java.security.MessageDigest
-import java.security.cert.CertificateFactory
-import java.security.cert.X509Certificate
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +17,14 @@ import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
 import org.koitharu.kotatsu.parsers.util.parseJsonArray
 import org.koitharu.kotatsu.utils.ext.asArrayList
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import java.security.MessageDigest
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val CERT_SHA1 = "2C:19:C7:E8:07:61:2B:8E:94:51:1B:FD:72:67:07:64:5D:C2:58:AE"
 
@@ -59,7 +60,7 @@ class AppUpdateRepository @Inject constructor(
 		if (!isUpdateSupported()) {
 			return@withContext null
 		}
-		runCatching {
+		runCatchingCancellable {
 			val currentVersion = VersionId(BuildConfig.VERSION_NAME)
 			val available = getAvailableVersions().asArrayList()
 			available.sortBy { it.versionId }

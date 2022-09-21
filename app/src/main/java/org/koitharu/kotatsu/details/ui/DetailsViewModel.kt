@@ -45,6 +45,7 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class DetailsViewModel @AssistedInject constructor(
 	@Assisted intent: MangaIntent,
@@ -189,7 +190,7 @@ class DetailsViewModel @AssistedInject constructor(
 			checkNotNull(manga) { "Cannot find saved manga for ${m.title}" }
 			val original = localMangaRepository.getRemoteManga(manga)
 			localMangaRepository.delete(manga) || throw IOException("Unable to delete file")
-			runCatching {
+			runCatchingCancellable {
 				historyRepository.deleteOrSwap(manga, original)
 			}
 			onMangaRemoved.postCall(manga)
@@ -228,7 +229,7 @@ class DetailsViewModel @AssistedInject constructor(
 			reload()
 		} else {
 			viewModelScope.launch(Dispatchers.Default) {
-				runCatching {
+				runCatchingCancellable {
 					localMangaRepository.getDetails(downloadedManga)
 				}.onSuccess {
 					delegate.relatedManga.value = it
