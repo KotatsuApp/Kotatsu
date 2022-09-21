@@ -70,13 +70,14 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 		if (!tags.isNullOrEmpty()) {
 			list.retainAll { x -> x.containsTags(tags) }
 		}
-		@Suppress("NON_EXHAUSTIVE_WHEN_STATEMENT")
 		when (sortOrder) {
 			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(AlphanumComparator()) { x -> x.manga.title })
 			SortOrder.RATING -> list.sortByDescending { it.manga.rating }
 			SortOrder.NEWEST,
 			SortOrder.UPDATED,
 			-> list.sortByDescending { it.createdAt }
+
+			else -> Unit
 		}
 		return list.unwrap()
 	}
