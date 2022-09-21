@@ -29,7 +29,7 @@ val Context.activityManager: ActivityManager?
 
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 
-suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatching {
+suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatchingCancellable {
 	val info = getForegroundInfo()
 	setForeground(info)
 }.isSuccess

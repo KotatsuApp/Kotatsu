@@ -9,14 +9,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.File
+import java.io.FileOutputStream
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.io.File
-import java.io.FileOutputStream
 
 class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
@@ -24,7 +24,7 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	private var backup: File? = null
 	private val saveFileContract = registerForActivityResult(
-		ActivityResultContracts.CreateDocument("*/*")
+		ActivityResultContracts.CreateDocument("*/*"),
 	) { uri ->
 		val file = backup
 		if (uri != null && file != null) {
@@ -88,6 +88,8 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 			}
 			Toast.makeText(requireContext(), R.string.backup_saved, Toast.LENGTH_LONG).show()
 			dismiss()
+		} catch (e: InterruptedException) {
+			throw e
 		} catch (e: Exception) {
 			onError(e)
 		}

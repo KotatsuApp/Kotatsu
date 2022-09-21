@@ -3,15 +3,20 @@ package org.koitharu.kotatsu.scrobbling.domain
 import androidx.collection.LongSparseArray
 import androidx.collection.getOrElse
 import androidx.core.text.parseAsHtml
-import java.util.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.scrobbling.data.ScrobblingEntity
-import org.koitharu.kotatsu.scrobbling.domain.model.*
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerMangaInfo
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.utils.ext.findKeyByValue
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import java.util.EnumMap
 
 abstract class Scrobbler(
 	protected val db: MangaDatabase,
@@ -47,7 +52,7 @@ abstract class Scrobbler(
 
 	private suspend fun ScrobblingEntity.toScrobblingInfo(mangaId: Long): ScrobblingInfo? {
 		val mangaInfo = infoCache.getOrElse(targetId) {
-			runCatching {
+			runCatchingCancellable {
 				getMangaInfo(targetId)
 			}.onFailure {
 				it.printStackTraceDebug()
@@ -72,7 +77,7 @@ abstract class Scrobbler(
 }
 
 suspend fun Scrobbler.tryScrobble(mangaId: Long, chapter: MangaChapter): Boolean {
-	return runCatching {
+	return runCatchingCancellable {
 		scrobble(mangaId, chapter)
 	}.onFailure {
 		it.printStackTraceDebug()

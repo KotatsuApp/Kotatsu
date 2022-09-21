@@ -6,6 +6,7 @@ import android.content.pm.ShortcutManager
 import android.media.ThumbnailUtils
 import android.os.Build
 import android.util.Size
+import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireBitmap
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class ShortcutsUpdater(
 	private val context: Context,
@@ -37,10 +39,12 @@ class ShortcutsUpdater(
 	private var shortcutsUpdateJob: Job? = null
 
 	override fun onInvalidated(tables: MutableSet<String>) {
-		val prevJob = shortcutsUpdateJob
-		shortcutsUpdateJob = processLifecycleScope.launch(Dispatchers.Default) {
-			prevJob?.join()
-			updateShortcutsImpl()
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+			val prevJob = shortcutsUpdateJob
+			shortcutsUpdateJob = processLifecycleScope.launch(Dispatchers.Default) {
+				prevJob?.join()
+				updateShortcutsImpl()
+			}
 		}
 	}
 
@@ -48,7 +52,7 @@ class ShortcutsUpdater(
 		return ShortcutManagerCompat.requestPinShortcut(
 			context,
 			buildShortcutInfo(manga).build(),
-			null
+			null,
 		)
 	}
 
@@ -57,7 +61,8 @@ class ShortcutsUpdater(
 		return shortcutsUpdateJob?.join() != null
 	}
 
-	private suspend fun updateShortcutsImpl() = runCatching {
+	@RequiresApi(Build.VERSION_CODES.N_MR1)
+	private suspend fun updateShortcutsImpl() = runCatchingCancellable {
 		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
 		val shortcuts = historyRepository.getList(0, manager.maxShortcutCountPerActivity)
 			.filter { x -> x.title.isNotEmpty() }
@@ -68,17 +73,17 @@ class ShortcutsUpdater(
 	}
 
 	private suspend fun buildShortcutInfo(manga: Manga): ShortcutInfoCompat.Builder {
-		val icon = runCatching {
+		val icon = runCatchingCancellable {
 			val bmp = coil.execute(
 				ImageRequest.Builder(context)
 					.data(manga.coverUrl)
 					.size(iconSize.width, iconSize.height)
-					.build()
+					.build(),
 			).requireBitmap()
 			ThumbnailUtils.extractThumbnail(bmp, iconSize.width, iconSize.height, 0)
 		}.fold(
 			onSuccess = { IconCompat.createWithAdaptiveBitmap(it) },
-			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) }
+			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },
 		)
 		mangaRepository.storeManga(manga)
 		return ShortcutInfoCompat.Builder(context, manga.id.toString())
@@ -87,7 +92,7 @@ class ShortcutsUpdater(
 			.setIcon(icon)
 			.setIntent(
 				ReaderActivity.newIntent(context, manga.id)
-					.setAction(ReaderActivity.ACTION_MANGA_READ)
+					.setAction(ReaderActivity.ACTION_MANGA_READ),
 			)
 	}
 

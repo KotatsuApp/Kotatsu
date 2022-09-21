@@ -7,6 +7,7 @@ import android.view.View
 import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -65,18 +66,22 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				clearCache(preference, CacheDir.PAGES)
 				true
 			}
+
 			AppSettings.KEY_THUMBS_CACHE_CLEAR -> {
 				clearCache(preference, CacheDir.THUMBS)
 				true
 			}
+
 			AppSettings.KEY_COOKIES_CLEAR -> {
 				clearCookies()
 				true
 			}
+
 			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
 				clearSearchHistory(preference)
 				true
 			}
+
 			AppSettings.KEY_UPDATES_FEED_CLEAR -> {
 				viewLifecycleScope.launch {
 					trackerRepo.clearLogs()
@@ -85,11 +90,12 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					Snackbar.make(
 						view ?: return@launch,
 						R.string.updates_feed_cleared,
-						Snackbar.LENGTH_SHORT
+						Snackbar.LENGTH_SHORT,
 					).show()
 				}
 				true
 			}
+
 			AppSettings.KEY_SHIKIMORI -> {
 				if (!shikimoriRepository.isAuthorized) {
 					launchShikimoriAuth()
@@ -98,6 +104,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					super.onPreferenceTreeClick(preference)
 				}
 			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
@@ -110,6 +117,8 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				storageManager.clearCache(cache)
 				val size = storageManager.computeCacheSize(cache)
 				preference.summary = FileSize.BYTES.format(ctx, size)
+			} catch (e: CancellationException) {
+				throw e
 			} catch (e: Exception) {
 				preference.summary = e.getDisplayMessage(ctx.resources)
 			} finally {
@@ -136,7 +145,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					Snackbar.make(
 						view ?: return@launch,
 						R.string.search_history_cleared,
-						Snackbar.LENGTH_SHORT
+						Snackbar.LENGTH_SHORT,
 					).show()
 				}
 			}.show()
@@ -154,7 +163,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 					Snackbar.make(
 						listView ?: return@launch,
 						R.string.cookies_cleared,
-						Snackbar.LENGTH_SHORT
+						Snackbar.LENGTH_SHORT,
 					).show()
 				}
 			}.show()

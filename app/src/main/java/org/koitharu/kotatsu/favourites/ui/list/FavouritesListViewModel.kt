@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class FavouritesListViewModel(
 	private val categoryId: Long,
@@ -45,7 +46,7 @@ class FavouritesListViewModel(
 		} else {
 			repository.observeAll(categoryId)
 		},
-		createListModeFlow()
+		createListModeFlow(),
 	) { list, mode ->
 		when {
 			list.isEmpty() -> listOf(
@@ -58,8 +59,9 @@ class FavouritesListViewModel(
 						R.string.favourites_category_empty
 					},
 					actionStringRes = 0,
-				)
+				),
 			)
+
 			else -> list.toUi(mode, this)
 		}
 	}.catch {

@@ -3,24 +3,30 @@ package org.koitharu.kotatsu.reader.ui.pager
 import android.net.Uri
 import androidx.core.net.toUri
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import kotlinx.coroutines.*
+import java.io.File
+import java.io.IOException
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
-import java.io.File
-import java.io.IOException
 
 class PageHolderDelegate(
 	private val loader: PageLoader,
 	private val settings: AppSettings,
 	private val callback: Callback,
-	private val exceptionResolver: ExceptionResolver
+	private val exceptionResolver: ExceptionResolver,
 ) : SubsamplingScaleImageView.DefaultOnImageEventListener() {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
@@ -88,6 +94,8 @@ class PageHolderDelegate(
 				loader.convertInPlace(file)
 				state = State.CONVERTED
 				callback.onImageReady(file.toUri())
+			} catch (ce: CancellationException) {
+				throw ce
 			} catch (e2: Throwable) {
 				e.addSuppressed(e2)
 				state = State.ERROR

@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class MangaDetailsDelegate(
 	private val intent: MangaIntent,
@@ -44,9 +45,9 @@ class MangaDetailsDelegate(
 		val hist = historyRepository.getOne(manga)
 		selectedBranch.value = manga.getPreferredBranch(hist)
 		mangaData.value = manga
-		relatedManga.value = runCatching {
+		relatedManga.value = runCatchingCancellable {
 			if (manga.source == MangaSource.LOCAL) {
-				val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatching null
+				val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatchingCancellable null
 				MangaRepository(m.source).getDetails(m)
 			} else {
 				localMangaRepository.findSavedManga(manga)

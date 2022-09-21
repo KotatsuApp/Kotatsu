@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.util.json.JSONIterator
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 private const val PAGE_SIZE = 10
 
@@ -84,7 +85,7 @@ class BackupRepository(private val db: MangaDatabase) {
 				JsonDeserializer(it).toTagEntity()
 			}
 			val history = JsonDeserializer(item).toHistoryEntity()
-			result += runCatching {
+			result += runCatchingCancellable {
 				db.withTransaction {
 					db.tagsDao.upsert(tags)
 					db.mangaDao.upsert(manga, tags)
@@ -99,7 +100,7 @@ class BackupRepository(private val db: MangaDatabase) {
 		val result = CompositeResult()
 		for (item in entry.data.JSONIterator()) {
 			val category = JsonDeserializer(item).toFavouriteCategoryEntity()
-			result += runCatching {
+			result += runCatchingCancellable {
 				db.favouriteCategoriesDao.upsert(category)
 			}
 		}
@@ -115,7 +116,7 @@ class BackupRepository(private val db: MangaDatabase) {
 				JsonDeserializer(it).toTagEntity()
 			}
 			val favourite = JsonDeserializer(item).toFavouriteEntity()
-			result += runCatching {
+			result += runCatchingCancellable {
 				db.withTransaction {
 					db.tagsDao.upsert(tags)
 					db.mangaDao.upsert(manga, tags)

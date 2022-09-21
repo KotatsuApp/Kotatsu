@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.local.ui
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.IOException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.ui.service.DownloadService
@@ -21,8 +23,8 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.progress.Progress
-import java.io.IOException
 
 class LocalListViewModel(
 	private val repository: LocalMangaRepository,
@@ -40,7 +42,7 @@ class LocalListViewModel(
 	override val content = combine(
 		mangaList,
 		createListModeFlow(),
-		listError
+		listError,
 	) { list, mode, error ->
 		when {
 			error != null -> listOf(error.toErrorState(canRetry = true))
@@ -51,8 +53,9 @@ class LocalListViewModel(
 					textPrimary = R.string.text_local_holder_primary,
 					textSecondary = R.string.text_local_holder_secondary,
 					actionStringRes = R.string._import,
-				)
+				),
 			)
+
 			else -> ArrayList<ListModel>(list.size + 1).apply {
 				add(headerModel)
 				list.toUi(this, mode)
@@ -60,7 +63,7 @@ class LocalListViewModel(
 		}
 	}.asLiveDataDistinct(
 		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(LoadingState)
+		listOf(LoadingState),
 	)
 
 	init {
@@ -97,7 +100,7 @@ class LocalListViewModel(
 				for (manga in itemsToRemove) {
 					val original = repository.getRemoteManga(manga)
 					repository.delete(manga) || throw IOException("Unable to delete file")
-					runCatching {
+					runCatchingCancellable {
 						historyRepository.deleteOrSwap(manga, original)
 					}
 					mangaList.update { list ->
@@ -113,6 +116,8 @@ class LocalListViewModel(
 		try {
 			listError.value = null
 			mangaList.value = repository.getList(0, null, null)
+		} catch (e: CancellationException) {
+			throw e
 		} catch (e: Throwable) {
 			listError.value = e
 		}
@@ -121,7 +126,7 @@ class LocalListViewModel(
 	private fun cleanup() {
 		if (!DownloadService.isRunning) {
 			viewModelScope.launch {
-				runCatching {
+				runCatchingCancellable {
 					repository.cleanup()
 				}.onFailure { error ->
 					error.printStackTraceDebug()

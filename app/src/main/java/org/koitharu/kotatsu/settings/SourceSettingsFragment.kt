@@ -18,7 +18,13 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.awaitViewLifecycle
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import org.koitharu.kotatsu.utils.ext.serializableArgument
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import org.koitharu.kotatsu.utils.ext.withArgs
 
 class SourceSettingsFragment : BasePreferenceFragment(0) {
 
@@ -60,12 +66,13 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 				startActivity(SourceAuthActivity.newIntent(preference.context, source))
 				true
 			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
 
 	private fun loadUsername(owner: LifecycleOwner, preference: Preference) = owner.lifecycleScope.launch {
-		runCatching {
+		runCatchingCancellable {
 			preference.summary = null
 			withContext(Dispatchers.Default) {
 				requireNotNull(repository?.getAuthProvider()?.getUsername())
@@ -85,6 +92,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 					).setAction(ExceptionResolver.getResolveStringId(error)) { resolveError(error) }
 						.show()
 				}
+
 				else -> preference.summary = error.getDisplayMessage(preference.context.resources)
 			}
 			error.printStackTraceDebug()

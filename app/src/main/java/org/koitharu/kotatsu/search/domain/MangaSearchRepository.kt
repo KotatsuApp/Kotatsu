@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class MangaSearchRepository(
 	private val settings: AppSettings,
@@ -30,7 +31,7 @@ class MangaSearchRepository(
 	fun globalSearch(query: String, concurrency: Int = DEFAULT_CONCURRENCY): Flow<Manga> =
 		settings.getMangaSources(includeHidden = false).asFlow()
 			.flatMapMerge(concurrency) { source ->
-				runCatching {
+				runCatchingCancellable {
 					MangaRepository(source).getList(
 						offset = 0,
 						query = query,
@@ -63,7 +64,7 @@ class MangaSearchRepository(
 			SUGGESTION_PROJECTION,
 			"${SearchManager.SUGGEST_COLUMN_QUERY} LIKE ?",
 			arrayOf("%$query%"),
-			"date DESC"
+			"date DESC",
 		)?.use { cursor ->
 			val count = minOf(cursor.count, limit)
 			if (count == 0) {
@@ -113,7 +114,7 @@ class MangaSearchRepository(
 			SUGGESTION_PROJECTION,
 			null,
 			arrayOfNulls(1),
-			null
+			null,
 		)?.use { cursor -> cursor.count } ?: 0
 	}
 

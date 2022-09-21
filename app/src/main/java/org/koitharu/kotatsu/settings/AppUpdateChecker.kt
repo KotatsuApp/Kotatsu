@@ -8,6 +8,12 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.core.net.toUri
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import java.security.MessageDigest
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
@@ -20,12 +26,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.byte2HexFormatted
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import java.io.ByteArrayInputStream
-import java.io.InputStream
-import java.security.MessageDigest
-import java.security.cert.CertificateFactory
-import java.security.cert.X509Certificate
-import java.util.concurrent.TimeUnit
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class AppUpdateChecker(private val activity: ComponentActivity) {
 
@@ -41,7 +42,7 @@ class AppUpdateChecker(private val activity: ComponentActivity) {
 		null
 	}
 
-	suspend fun checkNow() = runCatching {
+	suspend fun checkNow() = runCatchingCancellable {
 		val version = repo.getLatestVersion()
 		val newVersionId = VersionId(version.name)
 		val currentVersionId = VersionId(BuildConfig.VERSION_NAME)

@@ -6,10 +6,18 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
 import java.io.File
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.internal.closeQuietly
@@ -28,6 +36,7 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.progress.PausingProgressJob
 
 private const val MAX_FAILSAFE_ATTEMPTS = 2
@@ -226,7 +235,7 @@ class DownloadManager(
 			)
 		}
 
-	private suspend fun loadCover(manga: Manga) = runCatching {
+	private suspend fun loadCover(manga: Manga) = runCatchingCancellable {
 		imageLoader.execute(
 			ImageRequest.Builder(context)
 				.data(manga.coverUrl)

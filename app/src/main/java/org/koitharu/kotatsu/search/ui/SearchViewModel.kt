@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.search.ui
 
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,14 +10,20 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorFooter
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 
 class SearchViewModel(
 	private val repository: MangaRepository,
 	private val query: String,
-	settings: AppSettings
+	settings: AppSettings,
 ) : MangaListViewModel(settings) {
 
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
@@ -28,7 +35,7 @@ class SearchViewModel(
 		mangaList,
 		createListModeFlow(),
 		listError,
-		hasNextPage
+		hasNextPage,
 	) { list, mode, error, hasNext ->
 		when {
 			list.isNullOrEmpty() && error != null -> listOf(error.toErrorState(canRetry = true))
@@ -39,8 +46,9 @@ class SearchViewModel(
 					textPrimary = R.string.nothing_found,
 					textSecondary = R.string.text_search_holder_secondary,
 					actionStringRes = 0,
-				)
+				),
 			)
+
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
 				list.toUi(result, mode)
@@ -88,6 +96,8 @@ class SearchViewModel(
 					mangaList.value = mangaList.value?.plus(list) ?: list
 				}
 				hasNextPage.value = list.isNotEmpty()
+			} catch (e: CancellationException) {
+				throw e
 			} catch (e: Throwable) {
 				listError.value = e
 			}

@@ -8,6 +8,8 @@ import androidx.annotation.FloatRange
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.*
+import java.util.concurrent.TimeUnit
+import kotlin.math.pow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -24,8 +26,6 @@ import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.utils.ext.asArrayList
 import org.koitharu.kotatsu.utils.ext.trySetForeground
-import java.util.concurrent.TimeUnit
-import kotlin.math.pow
 
 class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 	CoroutineWorker(appContext, params), KoinComponent {
@@ -47,7 +47,7 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 			val channel = NotificationChannel(
 				WORKER_CHANNEL_ID,
 				title,
-				NotificationManager.IMPORTANCE_LOW
+				NotificationManager.IMPORTANCE_LOW,
 			)
 			channel.setShowBadge(false)
 			channel.enableVibration(false)
@@ -118,7 +118,7 @@ class SuggestionsWorker(appContext: Context, params: WorkerParameters) :
 		}.map { manga ->
 			MangaSuggestion(
 				manga = manga,
-				relevance = computeRelevance(manga.tags, allTags)
+				relevance = computeRelevance(manga.tags, allTags),
 			)
 		}.sortedBy { it.relevance }.take(LIMIT)
 		suggestionRepository.replace(suggestions)

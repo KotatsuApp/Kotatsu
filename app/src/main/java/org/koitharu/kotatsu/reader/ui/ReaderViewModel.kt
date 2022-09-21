@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import java.util.Date
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koitharu.kotatsu.R
@@ -31,7 +32,7 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
-import java.util.*
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 private const val BOUNDS_PAGE_OFFSET = 2
 private const val PAGES_TRIM_THRESHOLD = 120
@@ -69,7 +70,7 @@ class ReaderViewModel(
 			mangaName = manga?.title,
 			chapterName = chapter?.name,
 			chapterNumber = chapter?.number ?: 0,
-			chaptersTotal = chapters.size()
+			chaptersTotal = chapters.size(),
 		)
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
@@ -80,7 +81,7 @@ class ReaderViewModel(
 	val readerAnimation = settings.observeAsLiveData(
 		context = viewModelScope.coroutineContext + Dispatchers.Default,
 		key = AppSettings.KEY_READER_ANIMATION,
-		valueProducer = { readerAnimation }
+		valueProducer = { readerAnimation },
 	)
 
 	val isScreenshotsBlockEnabled = combine(
@@ -123,12 +124,12 @@ class ReaderViewModel(
 			val manga = checkNotNull(mangaData.value)
 			dataRepository.savePreferences(
 				manga = manga,
-				mode = newMode
+				mode = newMode,
 			)
 			readerMode.value = newMode
 			content.value?.run {
 				content.value = copy(
-					state = getCurrentState()
+					state = getCurrentState(),
 				)
 			}
 		}
@@ -358,7 +359,7 @@ class ReaderViewModel(
 			?: manga.chapters?.randomOrNull()
 			?: error("There are no chapters in this manga")
 		val pages = repo.getPages(chapter)
-		return runCatching {
+		return runCatchingCancellable {
 			val isWebtoon = MangaUtils.determineMangaIsWebtoon(pages)
 			if (isWebtoon) ReaderMode.WEBTOON else defaultMode
 		}.onSuccess {
@@ -389,7 +390,7 @@ class ReaderViewModel(
  */
 private fun HistoryRepository.saveStateAsync(manga: Manga, state: ReaderState, percent: Float): Job {
 	return processLifecycleScope.launch(Dispatchers.Default) {
-		runCatching {
+		runCatchingCancellable {
 			addOrUpdate(
 				manga = manga,
 				chapterId = state.chapterId,
