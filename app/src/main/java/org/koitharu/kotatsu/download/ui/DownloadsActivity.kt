@@ -34,7 +34,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val adapter = DownloadsAdapter(lifecycleScope, coil)
-		val spacing = resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+		val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 		binding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing))
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter

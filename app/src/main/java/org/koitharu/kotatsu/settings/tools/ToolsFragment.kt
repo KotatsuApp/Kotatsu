@@ -91,8 +91,8 @@ class ToolsFragment :
 			binding.cardUpdate.root.isVisible = false
 			return
 		}
-		binding.cardUpdate.textPrimary.text = getString(R.string.app_update_available_s, version.name)
-		binding.cardUpdate.textSecondary.text = version.description
+		binding.cardUpdate.textSecondary.text = getString(R.string.new_version_s, version.name)
+		binding.cardUpdate.textChangelog.text = version.description
 		binding.cardUpdate.root.isVisible = true
 	}
 

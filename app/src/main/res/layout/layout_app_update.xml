@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/card_update"
 	style="@style/Widget.Material3.CardView.Filled"
 	android:layout_width="match_parent"
@@ -47,6 +48,22 @@
 			app:layout_constraintStart_toEndOf="@id/icon"
 			app:layout_constraintTop_toBottomOf="@id/textPrimary" />
 
+
+		<TextView
+			android:id="@+id/textChangelog"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/margin_normal"
+			android:layout_marginTop="@dimen/margin_small"
+			android:background="@drawable/bg_badge_empty"
+			android:fontFamily="monospace"
+			android:padding="8dp"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/icon"
+			app:layout_constraintTop_toBottomOf="@id/textSecondary"
+			tools:text="- Fixes\n- Improvements" />
+
 		<Button
 			android:id="@+id/button_download"
 			style="@style/Widget.Material3.Button"
@@ -55,7 +72,7 @@
 			android:layout_marginTop="12dp"
 			android:text="@string/download"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/textSecondary" />
+			app:layout_constraintTop_toBottomOf="@id/textChangelog" />
 
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
