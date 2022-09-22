@@ -16,7 +16,8 @@
 			android:id="@+id/checkableGroup"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_margin="16dp"
+			android:layout_marginVertical="16dp"
+			android:layout_marginHorizontal="?attr/dialogPreferredPadding"
 			android:orientation="vertical">
 
 			<com.google.android.material.button.MaterialButton
@@ -50,8 +51,7 @@
 			style="?materialAlertDialogTitleTextStyle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingLeft="?attr/dialogPreferredPadding"
-			android:paddingRight="?attr/dialogPreferredPadding"
+			android:paddingHorizontal="?attr/dialogPreferredPadding"
 			android:singleLine="true"
 			android:text="@string/grid_size"
 			android:visibility="gone"

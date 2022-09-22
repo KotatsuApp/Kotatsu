@@ -6,7 +6,7 @@
 	android:layout_height="wrap_content"
 	android:gravity="center_vertical"
 	android:orientation="vertical"
-	android:padding="20dp">
+	android:padding="?attr/dialogPreferredPadding">
 
 	<TextView
 		android:id="@+id/textView_title"

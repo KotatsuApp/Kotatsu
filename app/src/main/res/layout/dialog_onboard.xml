@@ -11,10 +11,8 @@
 		android:id="@+id/textView_title"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:paddingStart="?listPreferredItemPaddingStart"
-		android:paddingTop="6dp"
-		android:paddingEnd="?listPreferredItemPaddingEnd"
-		android:paddingBottom="6dp"
+		android:paddingHorizontal="?attr/dialogPreferredPadding"
+		android:paddingVertical="16dp"
 		android:textAppearance="?attr/textAppearanceBodyMedium"
 		tools:text="@string/onboard_text" />
 
