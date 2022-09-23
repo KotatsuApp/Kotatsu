@@ -52,6 +52,7 @@ import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.*
+import kotlin.text.Typography.dagger
 
 private const val TAG_SEARCH = "search"
 
@@ -127,10 +128,12 @@ class MainActivity :
 		binding.searchView.clearFocus()
 		when {
 			fragment != null -> supportFragmentManager.commit {
+				setReorderingAllowed(true)
 				remove(fragment)
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 				runOnCommit { onSearchClosed() }
 			}
+
 			else -> super.onBackPressed()
 		}
 	}
@@ -173,6 +176,7 @@ class MainActivity :
 		if (v?.id == R.id.searchView && hasFocus) {
 			if (fragment == null) {
 				supportFragmentManager.commit {
+					setReorderingAllowed(true)
 					add(R.id.container, SearchSuggestionFragment.newInstance(), TAG_SEARCH)
 					setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 					runOnCommit { onSearchOpened() }

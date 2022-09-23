@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.utils.ext.showKeyboard
+import kotlin.text.Typography.dagger
 
 @AndroidEntryPoint
 class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQueryTextListener {
@@ -61,6 +62,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 		}
 		title = query
 		supportFragmentManager.commit {
+			setReorderingAllowed(true)
 			replace(R.id.container, SearchFragment.newInstance(source, q))
 		}
 		binding.searchView.clearFocus()

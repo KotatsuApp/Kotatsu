@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonReaderFragment
-import java.util.*
+import java.util.EnumMap
 
 class ReaderManager(
 	private val fragmentManager: FragmentManager,
@@ -35,11 +35,15 @@ class ReaderManager(
 	fun replace(newMode: ReaderMode) {
 		val readerClass = requireNotNull(modeMap[newMode])
 		fragmentManager.commit {
+			setReorderingAllowed(true)
 			replace(containerResId, readerClass, null, null)
 		}
 	}
 
 	fun replace(reader: BaseReader<*>) {
-		fragmentManager.commit { replace(containerResId, reader) }
+		fragmentManager.commit {
+			setReorderingAllowed(true)
+			replace(containerResId, reader)
+		}
 	}
 }

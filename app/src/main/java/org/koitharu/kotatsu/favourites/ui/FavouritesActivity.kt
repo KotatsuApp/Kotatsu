@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
+import kotlin.text.Typography.dagger
 
 @AndroidEntryPoint
 class FavouritesActivity : BaseActivity<ActivityContainerBinding>() {
@@ -28,6 +29,7 @@ class FavouritesActivity : BaseActivity<ActivityContainerBinding>() {
 		val fm = supportFragmentManager
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {
+				setReorderingAllowed(true)
 				val fragment = FavouritesListFragment.newInstance(intent.getLongExtra(EXTRA_CATEGORY_ID, NO_ID))
 				replace(R.id.container, fragment)
 			}

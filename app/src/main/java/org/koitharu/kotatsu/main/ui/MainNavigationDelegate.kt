@@ -85,6 +85,7 @@ class MainNavigationDelegate(
 
 	private fun setPrimaryFragment(fragment: Fragment) {
 		fragmentManager.beginTransaction()
+			.setReorderingAllowed(true)
 			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 			.commit()

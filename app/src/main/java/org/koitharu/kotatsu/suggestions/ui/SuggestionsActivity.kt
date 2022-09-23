@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
+import kotlin.text.Typography.dagger
 
 @AndroidEntryPoint
 class SuggestionsActivity :
@@ -28,6 +29,7 @@ class SuggestionsActivity :
 		val fm = supportFragmentManager
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {
+				setReorderingAllowed(true)
 				val fragment = SuggestionsFragment.newInstance()
 				replace(R.id.container, fragment)
 			}

@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
+import kotlin.text.Typography.dagger
 
 @AndroidEntryPoint
 class MangaListActivity :
@@ -41,6 +42,7 @@ class MangaListActivity :
 		val fm = supportFragmentManager
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {
+				setReorderingAllowed(true)
 				val fragment = if (source == MangaSource.LOCAL) {
 					LocalListFragment.newInstance()
 				} else {
