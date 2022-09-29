@@ -375,4 +375,15 @@
     <string name="downloading_manga">漫画をダウンロードする</string>
     <string name="feed">フィード</string>
     <string name="manga_error_description_pattern">エラーの詳細:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. &lt;a href=%2$s&gt;Webブラウザで漫画を開いてみて&lt;/a&gt;、そのソースで利用できるか確認する&lt;br&gt;2. 利用できる場合は、開発者にエラーレポートを送信する&lt;/a&gt;。</string>
+    <string name="reader_control_ltr">人間工学に基づいたリーダーコントロール</string>
+    <string name="history_shortcuts">最近のマンガのショートカットを表示</string>
+    <string name="history_shortcuts_summary">アプリケーションアイコンを長押しして最近のマンガを利用できるようにする</string>
+    <string name="reader_control_ltr_summary">右端をタップするか、右キーを押すと、常に次のページに切り替わります</string>
+    <string name="color_correction">色補正</string>
+    <string name="brightness">輝度</string>
+    <string name="contrast">コントラスト</string>
+    <string name="reset">リセット</string>
+    <string name="text_unsaved_changes_prompt">未保存の変更がありますが、保存しますか、それとも破棄しますか？</string>
+    <string name="color_correction_hint">選択した色の設定は、この漫画のために記憶されます</string>
+    <string name="discard">破棄</string>
 </resources>
