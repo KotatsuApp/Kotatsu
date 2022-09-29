@@ -69,7 +69,7 @@
     <string name="dont_ask_again">Não pergunte novamente</string>
     <string name="cancelling_">Cancelando…</string>
     <string name="error">Erro</string>
-    <string name="clear_thumbs_cache">Limpar cache de thumbnails</string>
+    <string name="clear_thumbs_cache">Limpar cache de miniaturas</string>
     <string name="search_history_cleared">Limpo</string>
     <string name="gestures_only">Apenas gestos</string>
     <string name="internal_storage">Armazenamento interno</string>
@@ -193,7 +193,7 @@
     <string name="vibration">Vibração</string>
     <string name="cannot_find_available_storage">Sem armazenamento disponível</string>
     <string name="favourites_categories">Categorias favoritas</string>
-    <string name="category_delete_confirm">Remover a categoria «%s» dos seus favoritos\?
+    <string name="category_delete_confirm">Remover a categoria \"%s\" dos seus favoritos\?
 \nTodos os mangás nela serão perdidos.</string>
     <string name="text_history_holder_secondary">Encontre o que ler no menu lateral.</string>
     <string name="text_local_holder_secondary">Salve-o de fontes online ou importe arquivos.</string>
@@ -263,4 +263,6 @@
     <string name="content">Conteúdo</string>
     <string name="chapters_empty">Não há capítulos nesta manga</string>
     <string name="percent_string_pattern">%1$s%%</string>
+    <string name="text_shelf_holder_primary">Seu mangá será exibido aqui</string>
+    <string name="color_correction">Correção de cor</string>
 </resources>
