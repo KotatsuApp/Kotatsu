@@ -10,10 +10,22 @@ import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import java.util.*
-import javax.inject.Provider
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -21,7 +33,11 @@ import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.prefs.*
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.core.prefs.observeAsLiveData
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
@@ -39,6 +55,8 @@ import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireValue
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import java.util.Date
+import javax.inject.Provider
 
 private const val BOUNDS_PAGE_OFFSET = 2
 private const val PREFETCH_LIMIT = 10
@@ -116,6 +134,10 @@ class ReaderViewModel @AssistedInject constructor(
 
 	init {
 		loadImpl()
+		settings.observe()
+			.onEach { key ->
+				if (key == AppSettings.KEY_READER_SLIDER) notifyStateChanged()
+			}.launchIn(viewModelScope)
 	}
 
 	override fun onCleared() {
@@ -348,6 +370,7 @@ class ReaderViewModel @AssistedInject constructor(
 			chaptersTotal = chapters.size(),
 			totalPages = if (chapter != null) chaptersLoader.getPagesCount(chapter.id) else 0,
 			currentPage = state?.page ?: 0,
+			isSliderEnabled = settings.isReaderSliderEnabled,
 		)
 		uiState.postValue(newState)
 	}

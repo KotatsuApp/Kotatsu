@@ -9,15 +9,23 @@ import android.transition.Fade
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.transition.TransitionSet
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.view.WindowManager
 import androidx.core.graphics.Insets
-import androidx.core.view.*
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,7 +50,16 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.IdlingDetector
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
+import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
+import org.koitharu.kotatsu.utils.ext.isReportable
+import org.koitharu.kotatsu.utils.ext.observeWithPrevious
+import org.koitharu.kotatsu.utils.ext.postDelayed
+import org.koitharu.kotatsu.utils.ext.report
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ReaderActivity :
@@ -145,6 +162,7 @@ class ReaderActivity :
 			R.id.action_settings -> {
 				startActivity(SettingsActivity.newReaderSettingsIntent(this))
 			}
+
 			R.id.action_chapters -> {
 				ChaptersBottomSheet.show(
 					supportFragmentManager,
@@ -152,6 +170,7 @@ class ReaderActivity :
 					viewModel.getCurrentState()?.chapterId ?: 0L,
 				)
 			}
+
 			R.id.action_pages_thumbs -> {
 				val pages = viewModel.getCurrentChapterPages()
 				if (!pages.isNullOrEmpty()) {
@@ -165,6 +184,7 @@ class ReaderActivity :
 					return false
 				}
 			}
+
 			R.id.action_bookmark -> {
 				if (viewModel.isBookmarkAdded.value == true) {
 					viewModel.removeBookmark()
@@ -172,11 +192,13 @@ class ReaderActivity :
 					viewModel.addBookmark()
 				}
 			}
+
 			R.id.action_options -> {
 				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 				val currentMode = readerManager.currentMode ?: return false
 				ReaderConfigBottomSheet.show(supportFragmentManager, currentMode)
 			}
+
 			else -> return super.onOptionsItemSelected(item)
 		}
 		return true
@@ -364,7 +386,7 @@ class ReaderActivity :
 				binding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
 			}
 		}
-		if (uiState.totalPages > 1 && uiState.currentPage < uiState.totalPages) {
+		if (uiState.isSliderAvailable()) {
 			binding.slider.valueTo = uiState.totalPages.toFloat() - 1
 			binding.slider.value = uiState.currentPage.toFloat()
 			binding.slider.isVisible = true

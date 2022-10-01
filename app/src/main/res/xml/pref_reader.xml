@@ -46,6 +46,11 @@
 		android:title="@string/reader_info_bar" />
 
 	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="reader_slider"
+		android:title="@string/reader_slider" />
+
+	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="pages_numbers"
 		android:title="@string/show_pages_numbers" />

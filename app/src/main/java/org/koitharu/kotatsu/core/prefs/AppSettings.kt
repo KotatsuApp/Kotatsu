@@ -11,12 +11,6 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
@@ -26,6 +20,14 @@ import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
+import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Collections
+import java.util.EnumSet
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class AppSettings @Inject constructor(@ApplicationContext context: Context) {
@@ -206,6 +208,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderBarEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_BAR, true)
 
+	val isReaderSliderEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READER_SLIDER, true)
+
 	val dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
 
@@ -328,6 +333,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_INCOGNITO_MODE = "incognito"
 		const val KEY_SYNC = "sync"
 		const val KEY_READER_BAR = "reader_bar"
+		const val KEY_READER_SLIDER = "reader_slider"
 		const val KEY_SHORTCUTS = "dynamic_shortcuts"
 		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
 		const val KEY_LOCAL_LIST_ORDER = "local_order"

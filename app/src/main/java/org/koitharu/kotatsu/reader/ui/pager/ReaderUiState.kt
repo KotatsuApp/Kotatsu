@@ -7,7 +7,12 @@ data class ReaderUiState(
 	val chaptersTotal: Int,
 	val currentPage: Int,
 	val totalPages: Int,
+	private val isSliderEnabled: Boolean,
 ) {
+
+	fun isSliderAvailable(): Boolean {
+		return isSliderEnabled && totalPages > 1 && currentPage < totalPages
+	}
 
 	fun computePercent(): Float {
 		val ppc = 1f / chaptersTotal
