@@ -5,7 +5,9 @@ import android.content.res.Resources
 import androidx.collection.arraySetOf
 import kotlinx.coroutines.CancellationException
 import okio.FileNotFoundException
+import okio.IOException
 import org.acra.ktx.sendWithAcra
+import org.json.JSONException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CaughtException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
@@ -19,6 +21,8 @@ import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+
+private const val MSG_NO_SPACE_LEFT = "No space left on device"
 
 fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
@@ -41,8 +45,15 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
+	is IOException -> getDisplayMessage(message, resources) ?: localizedMessage
 	else -> localizedMessage
 } ?: resources.getString(R.string.error_occurred)
+
+private fun getDisplayMessage(msg: String?, resources: Resources): String? = when {
+	msg.isNullOrEmpty() -> null
+	msg.contains(MSG_NO_SPACE_LEFT) -> resources.getString(R.string.error_no_space_left)
+	else -> null
+}
 
 fun Throwable.isReportable(): Boolean {
 	return this is Error || this.javaClass in reportableExceptions
@@ -55,6 +66,7 @@ fun Throwable.report(message: String?) {
 
 private val reportableExceptions = arraySetOf<Class<*>>(
 	ParseException::class.java,
+	JSONException::class.java,
 	RuntimeException::class.java,
 	IllegalStateException::class.java,
 	IllegalArgumentException::class.java,

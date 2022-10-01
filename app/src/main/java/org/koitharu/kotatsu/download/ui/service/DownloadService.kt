@@ -16,7 +16,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
@@ -85,7 +90,9 @@ class DownloadService : BaseService() {
 
 	override fun onDestroy() {
 		unregisterReceiver(controlReceiver)
-		wakeLock.release()
+		if (wakeLock.isHeld) {
+			wakeLock.release()
+		}
 		isRunning = false
 		super.onDestroy()
 	}
@@ -169,6 +176,7 @@ class DownloadService : BaseService() {
 					val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
 					jobs[cancelId]?.cancel()
 				}
+
 				ACTION_DOWNLOAD_RESUME -> {
 					val cancelId = intent.getIntExtra(EXTRA_CANCEL_ID, 0)
 					jobs[cancelId]?.resume()

@@ -388,4 +388,5 @@
 	<string name="color_correction_hint">The chosen color settings will be remembered for this manga</string>
 	<string name="text_unsaved_changes_prompt">You have unsaved changes, do you want to save or discard them?</string>
 	<string name="discard">Discard</string>
+	<string name="error_no_space_left">No space left on device</string>
 </resources>

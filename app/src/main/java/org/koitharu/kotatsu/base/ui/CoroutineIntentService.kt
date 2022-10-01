@@ -4,11 +4,13 @@ import android.app.Service
 import android.content.Intent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 
 abstract class CoroutineIntentService : BaseService() {
 
@@ -21,11 +23,13 @@ abstract class CoroutineIntentService : BaseService() {
 		return Service.START_REDELIVER_INTENT
 	}
 
-	private fun launchCoroutine(intent: Intent?, startId: Int) = lifecycleScope.launch {
+	private fun launchCoroutine(intent: Intent?, startId: Int) = lifecycleScope.launch(errorHandler(startId)) {
 		mutex.withLock {
 			try {
-				withContext(dispatcher) {
-					processIntent(intent)
+				if (intent != null) {
+					withContext(dispatcher) {
+						processIntent(startId, intent)
+					}
 				}
 			} finally {
 				stopSelf(startId)
@@ -33,5 +37,12 @@ abstract class CoroutineIntentService : BaseService() {
 		}
 	}
 
-	protected abstract suspend fun processIntent(intent: Intent?)
+	protected abstract suspend fun processIntent(startId: Int, intent: Intent)
+
+	protected abstract fun onError(startId: Int, error: Throwable)
+
+	private fun errorHandler(startId: Int) = CoroutineExceptionHandler { _, throwable ->
+		throwable.printStackTraceDebug()
+		onError(startId, throwable)
+	}
 }

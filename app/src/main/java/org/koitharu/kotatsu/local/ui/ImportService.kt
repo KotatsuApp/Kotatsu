@@ -23,7 +23,12 @@ import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.local.domain.importer.MangaImporter
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.PendingIntentCompat
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.asArrayList
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.report
+import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -48,8 +53,8 @@ class ImportService : CoroutineIntentService() {
 		super.onDestroy()
 	}
 
-	override suspend fun processIntent(intent: Intent?) {
-		val uris = intent?.getParcelableArrayListExtra<Uri>(EXTRA_URIS)
+	override suspend fun processIntent(startId: Int, intent: Intent) {
+		val uris = intent.getParcelableArrayListExtra<Uri>(EXTRA_URIS)
 		if (uris.isNullOrEmpty()) {
 			return
 		}
@@ -67,6 +72,10 @@ class ImportService : CoroutineIntentService() {
 			}
 		}
 		ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+	}
+
+	override fun onError(startId: Int, error: Throwable) {
+		error.report(null)
 	}
 
 	private suspend fun importImpl(uri: Uri): Manga {

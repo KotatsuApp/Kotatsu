@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 import javax.inject.Inject
 
@@ -34,8 +35,8 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 		super.onDestroy()
 	}
 
-	override suspend fun processIntent(intent: Intent?) {
-		val manga = intent?.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga ?: return
+	override suspend fun processIntent(startId: Int, intent: Intent) {
+		val manga = intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga ?: return
 		val chaptersIds = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toSet() ?: return
 		startForeground()
 		val mangaWithChapters = localMangaRepository.getDetails(manga)
@@ -45,6 +46,21 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 				.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false)),
 		)
 		ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+	}
+
+	override fun onError(startId: Int, error: Throwable) {
+		val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+			.setContentTitle(getString(R.string.error_occurred))
+			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+			.setDefaults(0)
+			.setColor(ContextCompat.getColor(this, R.color.blue_primary_dark))
+			.setSilent(true)
+			.setContentText(error.getDisplayMessage(resources))
+			.setSmallIcon(android.R.drawable.stat_notify_error)
+			.setAutoCancel(true)
+			.build()
+		val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+		nm.notify(NOTIFICATION_ID + startId, notification)
 	}
 
 	private fun startForeground() {
