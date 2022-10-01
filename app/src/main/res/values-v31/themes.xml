@@ -43,8 +43,8 @@
 	</style>
 
 	<style name="Theme.Kotatsu.AppWidgetContainer" parent="@android:style/Theme.DeviceDefault.DayNight">
-		<item name="android:colorBackground">@android:color/system_accent1_50</item>
-		<item name="android:panelColorBackground">@android:color/system_accent1_100</item>
+		<item name="android:colorBackground">@color/m3_sys_color_dynamic_light_secondary_container</item>
+		<item name="android:panelColorBackground">@color/m3_sys_color_dynamic_light_inverse_primary</item>
 	</style>
 
 </resources>
