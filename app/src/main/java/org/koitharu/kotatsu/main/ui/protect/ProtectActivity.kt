@@ -49,7 +49,10 @@ class ProtectActivity :
 			startActivity(intent)
 			finishAfterTransition()
 		}
+	}
 
+	override fun onStart() {
+		super.onStart()
 		if (!useFingerprint()) {
 			binding.editPassword.requestFocus()
 		}
