@@ -1,8 +1,5 @@
-@file:SuppressLint("UnsafeOptInUsageError")
-
 package org.koitharu.kotatsu.list.ui.adapter
 
-import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.CheckResult
 import androidx.core.view.doOnNextLayout

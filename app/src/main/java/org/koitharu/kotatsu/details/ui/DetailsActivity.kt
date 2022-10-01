@@ -19,12 +19,10 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -37,12 +35,17 @@ import org.koitharu.kotatsu.core.ui.MangaErrorDialog
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.download.ui.service.DownloadService
-import org.koitharu.kotatsu.list.ui.adapter.bindBadge
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ViewBadge
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.isReportable
+import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
+import org.koitharu.kotatsu.utils.ext.textAndVisible
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsActivity :
@@ -60,7 +63,7 @@ class DetailsActivity :
 	@Inject
 	lateinit var shortcutsUpdater: ShortcutsUpdater
 
-	private var badge: BadgeDrawable? = null
+	private lateinit var viewBadge: ViewBadge
 
 	private val viewModel: DetailsViewModel by assistedViewModels {
 		viewModelFactory.create(MangaIntent(intent))
@@ -83,6 +86,7 @@ class DetailsActivity :
 		}
 		binding.buttonRead.setOnClickListener(this)
 		binding.buttonDropdown.setOnClickListener(this)
+		viewBadge = ViewBadge(binding.buttonRead, this)
 
 		chaptersMenuProvider = if (binding.layoutBottom != null) {
 			val bsMediator = ChaptersBottomSheetMediator(checkNotNull(binding.layoutBottom))
@@ -151,6 +155,7 @@ class DetailsActivity :
 					)
 				}
 			}
+
 			R.id.button_dropdown -> showBranchPopupMenu()
 		}
 	}
@@ -188,10 +193,12 @@ class DetailsActivity :
 			ExceptionResolver.canResolve(e) -> {
 				resolveError(e)
 			}
+
 			manga == null -> {
 				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
 				finishAfterTransition()
 			}
+
 			else -> {
 				val snackbar = makeSnackbar(
 					e.getDisplayMessage(resources),
@@ -242,7 +249,7 @@ class DetailsActivity :
 	}
 
 	private fun onNewChaptersChanged(newChapters: Int) {
-		badge = binding.buttonRead.bindBadge(badge, newChapters)
+		viewBadge.counter = newChapters
 	}
 
 	fun showChapterMissingDialog(chapterId: Long) {

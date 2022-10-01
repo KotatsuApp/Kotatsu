@@ -60,6 +60,7 @@ android {
 			'-opt-in=kotlinx.coroutines.FlowPreview',
 			'-opt-in=kotlin.contracts.ExperimentalContracts',
 			'-opt-in=coil.annotation.ExperimentalCoilApi',
+			'-opt-in=com.google.android.material.badge.ExperimentalBadgeUtils',
 		]
 	}
 	lint {
