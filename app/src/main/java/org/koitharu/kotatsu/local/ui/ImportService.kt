@@ -75,7 +75,7 @@ class ImportService : CoroutineIntentService() {
 	}
 
 	override fun onError(startId: Int, error: Throwable) {
-		error.report(null)
+		error.report()
 	}
 
 	private suspend fun importImpl(uri: Uri): Manga {

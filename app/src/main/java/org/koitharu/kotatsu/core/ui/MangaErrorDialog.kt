@@ -54,7 +54,7 @@ class MangaErrorDialog : AlertDialogFragment<DialogMangaErrorBinding>() {
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.report) { _, _ ->
 				dismiss()
-				error.report(TAG)
+				error.report()
 			}.setTitle(R.string.error_occurred)
 	}
 

@@ -59,8 +59,8 @@ fun Throwable.isReportable(): Boolean {
 	return this is Error || this.javaClass in reportableExceptions
 }
 
-fun Throwable.report(message: String?) {
-	val exception = CaughtException(this, message)
+fun Throwable.report() {
+	val exception = CaughtException(this, "${javaClass.simpleName}($message)")
 	exception.sendWithAcra()
 }
 

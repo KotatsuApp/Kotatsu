@@ -405,7 +405,7 @@ class ReaderActivity :
 				if (ExceptionResolver.canResolve(exception)) {
 					tryResolve(exception)
 				} else {
-					exception.report("ReaderActivity::onError")
+					exception.report()
 				}
 			} else {
 				onCancel(dialog)
