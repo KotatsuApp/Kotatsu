@@ -127,7 +127,8 @@ fun <T> RecyclerView.ViewHolder.getItem(clazz: Class<T>): T? {
 
 fun Slider.setValueRounded(newValue: Float) {
 	val step = stepSize
-	value = (newValue / step).roundToInt() * step
+	val roundedValue = (newValue / step).roundToInt() * step
+	value = roundedValue.coerceIn(valueFrom, valueTo)
 }
 
 val RecyclerView.isScrolledToTop: Boolean
