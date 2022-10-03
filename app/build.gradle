@@ -14,8 +14,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 428
-		versionName '3.4.16'
+		versionCode 429
+		versionName '3.4.17'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -81,7 +81,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:b3a9c5fcda') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:b1990c7918') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -89,7 +89,7 @@ dependencies {
 
 	implementation 'androidx.core:core-ktx:1.8.0'
 	implementation 'androidx.activity:activity-ktx:1.5.1'
-	implementation 'androidx.fragment:fragment-ktx:1.5.2'
+	implementation 'androidx.fragment:fragment-ktx:1.5.3'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
 	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
 	implementation 'androidx.lifecycle:lifecycle-service:2.5.1'
@@ -140,5 +140,5 @@ dependencies {
 	androidTestImplementation 'io.insert-koin:koin-test-junit4:3.2.0'
 
 	androidTestImplementation 'androidx.room:room-testing:2.4.3'
-	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
+	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
 }
