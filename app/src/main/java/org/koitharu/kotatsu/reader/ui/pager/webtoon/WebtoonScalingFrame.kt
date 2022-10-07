@@ -30,13 +30,14 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	private val scale
 		get() = matrixValues[Matrix.MSCALE_X]
 	private val transX
-		get() = halfWidth*(scale - 1f) + matrixValues[Matrix.MTRANS_X]
+		get() = halfWidth * (scale - 1f) + matrixValues[Matrix.MTRANS_X]
 	private val transY
-		get() = halfHeight*(scale - 1f) + matrixValues[Matrix.MTRANS_Y]
+		get() = halfHeight * (scale - 1f) + matrixValues[Matrix.MTRANS_Y]
 	private var halfWidth = 0f
 	private var halfHeight = 0f
 	private val translateBounds = RectF()
 	private val targetHitRect = Rect()
+	private var pendingScroll = 0
 
 	init {
 		syncMatrixValues()
@@ -53,9 +54,13 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 
 		// Offset event to inside the child view
 		if (scale < 1 && !targetHitRect.contains(ev.x.toInt(), ev.y.toInt())) {
-			ev.offsetLocation(halfWidth - ev.x + targetHitRect.width()/3, 0f)
+			ev.offsetLocation(halfWidth - ev.x + targetHitRect.width() / 3, 0f)
 		}
 
+		// Send action cancel to avoid recycler jump when scale end
+		if (scaleDetector.isInProgress) {
+			ev.action = MotionEvent.ACTION_CANCEL
+		}
 		return super.dispatchTouchEvent(ev)
 	}
 
@@ -86,6 +91,8 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 
 		if (scale < 1) {
 			targetChild.getHitRect(targetHitRect)
+			targetChild.scrollBy(0, pendingScroll)
+			pendingScroll = 0
 		}
 	}
 
@@ -107,6 +114,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			else -> 0f
 		}
 
+		pendingScroll = dy.toInt()
 		transformMatrix.postTranslate(dx, dy)
 		syncMatrixValues()
 	}
@@ -135,13 +143,15 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 
 	override fun onScale(detector: ScaleGestureDetector): Boolean {
 		val newScale = (scale * detector.scaleFactor).coerceIn(MIN_SCALE, MAX_SCALE)
-		scaleChild(newScale, halfWidth, halfHeight)
+		scaleChild(newScale, detector.focusX, detector.focusY)
 		return true
 	}
 
 	override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
 
-	override fun onScaleEnd(p0: ScaleGestureDetector) = Unit
+	override fun onScaleEnd(p0: ScaleGestureDetector) {
+		pendingScroll = 0
+	}
 
 
 	private inner class GestureListener(): GestureDetector.SimpleOnGestureListener(), Runnable {
@@ -153,7 +163,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 		}
 
 		override fun onDoubleTap(e: MotionEvent): Boolean {
-			val newScale = if (scale != 1f) 1f else MAX_SCALE
+			val newScale = if (scale != 1f) 1f else MAX_SCALE * 0.8f
 			ObjectAnimator.ofFloat(scale, newScale).run {
 				interpolator = AccelerateDecelerateInterpolator()
 				duration = 300
