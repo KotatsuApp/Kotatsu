@@ -2,9 +2,7 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.graphics.Matrix
-import android.graphics.Rect
-import android.graphics.RectF
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -14,11 +12,10 @@ import android.widget.FrameLayout
 import android.widget.OverScroller
 import androidx.core.view.GestureDetectorCompat
 
-private const val TAG = "ScalingFrame"
 private const val MAX_SCALE = 2.5f
 private const val MIN_SCALE = 0.5f
 
-class ScalingFrame @JvmOverloads constructor(
+class WebtoonScalingFrame @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	defStyles: Int = 0
@@ -39,7 +36,7 @@ class ScalingFrame @JvmOverloads constructor(
 	private var halfWidth = 0f
 	private var halfHeight = 0f
 	private val translateBounds = RectF()
-	private val targetTouchRect = Rect()
+	private val targetHitRect = Rect()
 
 	init {
 		syncMatrixValues()
@@ -55,11 +52,8 @@ class ScalingFrame @JvmOverloads constructor(
 		scaleDetector.onTouchEvent(ev)
 
 		// Offset event to inside the child view
-		if (scale < 1) {
-			targetChild.getHitRect(targetTouchRect)
-			if (!targetTouchRect.contains(ev.x.toInt(), ev.y.toInt())) {
-				ev.offsetLocation(halfWidth - ev.x - targetChild.width/4, 0f)
-			}
+		if (scale < 1 && !targetHitRect.contains(ev.x.toInt(), ev.y.toInt())) {
+			ev.offsetLocation(halfWidth - ev.x + targetHitRect.width()/3, 0f)
 		}
 
 		return super.dispatchTouchEvent(ev)
@@ -75,7 +69,7 @@ class ScalingFrame @JvmOverloads constructor(
 		halfHeight = measuredHeight / 2f
 	}
 
-	private fun invalidateRecycler() {
+	private fun invalidateTarget() {
 		adjustBounds()
 		targetChild.run {
 			scaleX = scale
@@ -90,6 +84,9 @@ class ScalingFrame @JvmOverloads constructor(
 			targetChild.requestLayout()
 		}
 
+		if (scale < 1) {
+			targetChild.getHitRect(targetHitRect)
+		}
 	}
 
 	private fun syncMatrixValues() {
@@ -132,7 +129,7 @@ class ScalingFrame @JvmOverloads constructor(
 			)
 		}
 		transformMatrix.postScale(factor, factor, focusX, focusY)
-		invalidateRecycler()
+		invalidateTarget()
 	}
 
 
@@ -151,7 +148,7 @@ class ScalingFrame @JvmOverloads constructor(
 		override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
 			if (scale <= 1f) return false
 			transformMatrix.postTranslate(-distanceX, -distanceY)
-			invalidateRecycler()
+			invalidateTarget()
 			return true
 		}
 
@@ -188,7 +185,7 @@ class ScalingFrame @JvmOverloads constructor(
 		override fun run() {
 			if (overScroller.computeScrollOffset()) {
 				transformMatrix.postTranslate(overScroller.currX - transX, overScroller.currY - transY)
-				invalidateRecycler()
+				invalidateTarget()
 				postOnAnimation(this)
 			}
 		}

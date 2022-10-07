@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.koitharu.kotatsu.reader.ui.pager.webtoon.ScalingFrame
+<org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonScalingFrame
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/frame"
@@ -11,4 +11,4 @@
 		android:layout_height="match_parent"
 		android:orientation="vertical"
 		app:layoutManager="org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonLayoutManager" />
-</org.koitharu.kotatsu.reader.ui.pager.webtoon.ScalingFrame>
+</org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonScalingFrame>
