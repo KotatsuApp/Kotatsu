@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="close_menu">মেনু বন্ধ করুন</string>
+    <string name="favourites">প্রিয়গুলি</string>
+    <string name="open_menu">মেনু খুলুন</string>
+    <string name="history">ইতিহাস</string>
+    <string name="local_storage">লোকাল স্টোরেজ</string>
+</resources>

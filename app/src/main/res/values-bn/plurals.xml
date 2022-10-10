@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="items">
+        <item quantity="one">%1$dটি আইটেম</item>
+        <item quantity="other">%1$dটি আইটেম</item>
+    </plurals>
+    <plurals name="pages">
+        <item quantity="one">সর্বমোট %1$dটি পেজ</item>
+        <item quantity="other">সর্বমোট %1$dটি পেজ</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$dটি নতুন চ্যাপ্টার</item>
+        <item quantity="other">%1$dটি নতুন চ্যাপ্টার</item>
+    </plurals>
+</resources>
