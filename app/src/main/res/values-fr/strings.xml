@@ -385,4 +385,6 @@
     <string name="contrast">Contraste</string>
     <string name="reset">Réinitialiser</string>
     <string name="color_correction_hint">Les paramètres de couleurs choisis seront sauvegardés pour ce manga</string>
+    <string name="error_no_space_left">Il n\'y a plus d\'espace sur l\'appareil</string>
+    <string name="reader_slider">Afficher le curseur de changement de page</string>
 </resources>
