@@ -27,6 +27,9 @@ class ReaderSettings(
 	val isPagesNumbersEnabled: Boolean
 		get() = settings.isPagesNumbersEnabled
 
+	val isWebtoonZoomEnable: Boolean
+		get() = settings.isWebtoonZoomEnable
+
 	override fun onInactive() {
 		super.onInactive()
 		settings.unsubscribe(internalObserver)
@@ -60,7 +63,7 @@ class ReaderSettings(
 		}
 
 		override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-			if (key == AppSettings.KEY_ZOOM_MODE || key == AppSettings.KEY_PAGES_NUMBERS) {
+			if (key == AppSettings.KEY_ZOOM_MODE || key == AppSettings.KEY_PAGES_NUMBERS || key == AppSettings.KEY_WEBTOON_ZOOM) {
 				notifyChanged()
 			}
 		}

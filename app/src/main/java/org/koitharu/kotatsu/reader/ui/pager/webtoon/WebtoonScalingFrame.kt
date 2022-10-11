@@ -39,12 +39,23 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	private val targetHitRect = Rect()
 	private var pendingScroll = 0
 
+	var isZoomEnable = true
+		set(value) {
+			field = value
+			if (scale != 1f) {
+				scaleChild(1f, halfWidth, halfHeight)
+			}
+		}
+
 	init {
 		syncMatrixValues()
 	}
 
 	override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-		ev ?: return super.dispatchTouchEvent(ev)
+		if (!isZoomEnable || ev == null) {
+			return super.dispatchTouchEvent(ev)
+		}
+
 		if (ev.action == MotionEvent.ACTION_DOWN && overScroller.computeScrollOffset()) {
 			overScroller.forceFinished(true)
 		}
@@ -62,10 +73,6 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			ev.action = MotionEvent.ACTION_CANCEL
 		}
 		return super.dispatchTouchEvent(ev)
-	}
-
-	override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-		return super.onInterceptTouchEvent(ev) || scaleDetector.isInProgress
 	}
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

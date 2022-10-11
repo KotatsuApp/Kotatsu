@@ -42,6 +42,11 @@
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
+		android:key="webtoon_zoom"
+		android:title="@string/webtoon_zoom" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
 		android:key="reader_bar"
 		android:title="@string/reader_info_bar" />
 

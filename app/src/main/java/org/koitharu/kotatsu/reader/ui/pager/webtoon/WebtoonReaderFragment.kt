@@ -35,6 +35,8 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 			adapter = webtoonAdapter
 			addOnPageScrollListener(PageScrollListener())
 		}
+
+		viewModel.readerSettings.observe(viewLifecycleOwner) { binding.frame.isZoomEnable = it.isWebtoonZoomEnable }
 	}
 
 	override fun onDestroyView() {
