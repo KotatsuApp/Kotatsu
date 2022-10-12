@@ -271,7 +271,7 @@
 	<string name="suggestions_excluded_genres_summary">Specify genres that you do not want to see in the suggestions</string>
 	<string name="text_delete_local_manga_batch">Delete selected items from device permanently?</string>
 	<string name="removal_completed">Removal completed</string>
-	<string name="batch_manga_save_confirm">Are you sure you want to download all selected manga with all its chapters? This action can consume a lot of traffic and storage</string>
+	<string name="batch_manga_save_confirm">Download all selected manga and its chapters\? This can consume a lot of traffic and storage.</string>
 	<string name="shikimori" translatable="false">Shikimori</string>
 	<string name="parallel_downloads">Parallel downloads</string>
 	<string name="download_slowdown">Download slowdown</string>
@@ -295,7 +295,7 @@
 	<string name="edit_category">Edit category</string>
 	<string name="tracking">Tracking</string>
 	<string name="empty_favourite_categories">No favourite categories</string>
-	<string name="logout">Logout</string>
+	<string name="logout">Log out</string>
 	<string name="bookmark_add">Add bookmark</string>
 	<string name="bookmark_remove">Remove bookmark</string>
 	<string name="bookmarks">Bookmarks</string>
@@ -360,7 +360,7 @@
 	<string name="options">Options</string>
 	<string name="not_found_404">Content not found or removed</string>
 	<string name="downloading_manga">Downloading manga</string>
-	<string name="download_summary_pattern" translatable="false">&lt;b>%1$s&lt;/b> %2$s</string>
+	<string name="download_summary_pattern" translatable="false">&lt;b&gt;%1$s&lt;/b&gt; %2$s</string>
 	<string name="incognito_mode">Incognito mode</string>
 	<string name="app_update_available_s">Application update available: %s</string>
 	<string name="no_chapters">No chapters</string>
@@ -376,7 +376,7 @@
 	<string name="import_completed_hint">You can delete the original file from storage to save space</string>
 	<string name="import_will_start_soon">Import will start soon</string>
 	<string name="feed">Feed</string>
-	<string name="manga_error_description_pattern">Error details:&lt;br>&lt;tt>%1$s&lt;/tt>&lt;br>&lt;br>1. Try to &lt;a href="%2$s">open manga in a web browser&lt;/a> to ensure it is available on its source&lt;br>2. If it is available, send an error report to the developers.</string>
+	<string name="manga_error_description_pattern">Error details:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Try to &lt;a href="%2$s"&gt;open manga in a web browser&lt;/a&gt; to ensure it is available on its source&lt;br&gt;2. If it is available, send an error report to the developers.</string>
 	<string name="history_shortcuts">Show recent manga shortcuts</string>
 	<string name="history_shortcuts_summary">Make recent manga available by long pressing on application icon</string>
 	<string name="reader_control_ltr_summary">Tap on the right edge or pressing the right key always switches to the next page</string>
@@ -386,7 +386,7 @@
 	<string name="contrast">Contrast</string>
 	<string name="reset">Reset</string>
 	<string name="color_correction_hint">The chosen color settings will be remembered for this manga</string>
-	<string name="text_unsaved_changes_prompt">You have unsaved changes, do you want to save or discard them?</string>
+	<string name="text_unsaved_changes_prompt">Save or discard unsaved changes\?</string>
 	<string name="discard">Discard</string>
 	<string name="error_no_space_left">No space left on device</string>
 	<string name="reader_slider">Show page switching slider</string>

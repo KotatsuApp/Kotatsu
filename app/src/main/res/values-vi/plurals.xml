@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="new_chapters">
+        <item quantity="other">%1$d chương mới</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="other">%1$d chương</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="other">%1$d phút trước</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="other">%1$d giờ trước</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="other">%1$d ngày trước</item>
+    </plurals>
+</resources>

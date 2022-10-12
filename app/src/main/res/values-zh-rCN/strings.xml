@@ -269,7 +269,7 @@
     <string name="removal_completed">删除已完成</string>
     <string name="parallel_downloads">并行下载</string>
     <string name="download_slowdown">下载速度减慢</string>
-    <string name="batch_manga_save_confirm">你确定你要下载所有选定的漫画及其所有章节吗\? 这个动作会消耗大量的流量和存储空间</string>
+    <string name="batch_manga_save_confirm">下载所有选定的漫画及其所有章节吗\? 这会消耗大量的流量和存储空间。</string>
     <string name="download_slowdown_summary">有助于避免阻断你的IP地址</string>
     <string name="local_manga_processing">保存的漫画处理</string>
     <string name="chapters_will_removed_background">章节将在后台被删除. 这可能需要一些时间</string>
@@ -385,4 +385,6 @@
     <string name="color_correction_hint">所选颜色设置将会应用于此漫画</string>
     <string name="text_unsaved_changes_prompt">您有未保存的更改，您希望存储还是放弃更改？</string>
     <string name="discard">放弃</string>
+    <string name="error_no_space_left">设备上没有剩余空间</string>
+    <string name="reader_slider">显示换页滑块</string>
 </resources>
