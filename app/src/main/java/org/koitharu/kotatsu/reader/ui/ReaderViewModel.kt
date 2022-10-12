@@ -106,6 +106,12 @@ class ReaderViewModel @AssistedInject constructor(
 		valueProducer = { isReaderBarEnabled },
 	)
 
+	val isWebtoonZoomEnabled = settings.observeAsLiveData(
+		context = viewModelScope.coroutineContext + Dispatchers.Default,
+		key = AppSettings.KEY_WEBTOON_ZOOM,
+		valueProducer = { isWebtoonZoomEnable },
+	)
+
 	val readerSettings = ReaderSettings(
 		parentScope = viewModelScope,
 		settings = settings,

@@ -2,9 +2,13 @@ package org.koitharu.kotatsu.reader.ui.config
 
 import android.content.SharedPreferences
 import androidx.lifecycle.MediatorLiveData
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
@@ -60,7 +64,7 @@ class ReaderSettings(
 		}
 
 		override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-			if (key == AppSettings.KEY_ZOOM_MODE || key == AppSettings.KEY_PAGES_NUMBERS) {
+			if (key == AppSettings.KEY_ZOOM_MODE || key == AppSettings.KEY_PAGES_NUMBERS || key == AppSettings.KEY_WEBTOON_ZOOM) {
 				notifyChanged()
 			}
 		}

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonRecyclerView
+<org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonScalingFrame
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/recyclerView"
+	android:id="@+id/frame"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical"
-	app:layoutManager="org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonLayoutManager" />
+	android:layout_height="match_parent">
+	<org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonRecyclerView
+		android:id="@+id/recyclerView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		app:layoutManager="org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonLayoutManager" />
+</org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonScalingFrame>
