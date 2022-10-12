@@ -391,4 +391,5 @@
 	<string name="error_no_space_left">No space left on device</string>
 	<string name="reader_slider">Show page switching slider</string>
 	<string name="webtoon_zoom">Webtoon zoom</string>
+	<string name="webtoon_zoom_summary">Allow zoom in/zoom out gesture in webtoon mode (beta)</string>
 </resources>

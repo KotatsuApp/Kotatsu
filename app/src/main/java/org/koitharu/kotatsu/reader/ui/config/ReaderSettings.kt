@@ -2,9 +2,13 @@ package org.koitharu.kotatsu.reader.ui.config
 
 import android.content.SharedPreferences
 import androidx.lifecycle.MediatorLiveData
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
@@ -26,9 +30,6 @@ class ReaderSettings(
 
 	val isPagesNumbersEnabled: Boolean
 		get() = settings.isPagesNumbersEnabled
-
-	val isWebtoonZoomEnable: Boolean
-		get() = settings.isWebtoonZoomEnable
 
 	override fun onInactive() {
 		super.onInactive()
