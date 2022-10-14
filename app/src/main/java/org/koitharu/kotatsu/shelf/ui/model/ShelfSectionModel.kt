@@ -111,4 +111,34 @@ sealed interface ShelfSectionModel : ListModel {
 
 		override fun toString(): String = key
 	}
+
+	class Local(
+		override val items: List<MangaItemModel>,
+		override val showAllButtonText: Int,
+	) : ShelfSectionModel {
+
+		override val key = "local"
+
+		override fun getTitle(resources: Resources) = resources.getString(R.string.local_storage)
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+
+			other as Local
+
+			if (items != other.items) return false
+			if (showAllButtonText != other.showAllButtonText) return false
+
+			return true
+		}
+
+		override fun hashCode(): Int {
+			var result = items.hashCode()
+			result = 31 * result + showAllButtonText
+			return result
+		}
+
+		override fun toString(): String = key
+	}
 }

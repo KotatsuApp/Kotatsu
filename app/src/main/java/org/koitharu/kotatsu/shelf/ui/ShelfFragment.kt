@@ -26,6 +26,8 @@ import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.shelf.ui.adapter.ShelfAdapter
 import org.koitharu.kotatsu.shelf.ui.adapter.ShelfListEventListener
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
@@ -104,6 +106,7 @@ class ShelfFragment :
 			is ShelfSectionModel.History -> HistoryActivity.newIntent(view.context)
 			is ShelfSectionModel.Favourites -> FavouritesActivity.newIntent(view.context, section.category)
 			is ShelfSectionModel.Updated -> UpdatesActivity.newIntent(view.context)
+			is ShelfSectionModel.Local -> MangaListActivity.newIntent(view.context, MangaSource.LOCAL)
 		}
 		startActivity(intent)
 	}

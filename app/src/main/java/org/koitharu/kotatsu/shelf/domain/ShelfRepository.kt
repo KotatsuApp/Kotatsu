@@ -1,18 +1,43 @@
 package org.koitharu.kotatsu.shelf.domain
 
-import javax.inject.Inject
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
+import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import javax.inject.Inject
 
 class ShelfRepository @Inject constructor(
+	private val localMangaRepository: LocalMangaRepository,
+	private val historyRepository: HistoryRepository,
 	private val db: MangaDatabase,
 ) {
+
+	fun observeLocalManga(sortOrder: SortOrder): Flow<List<Manga>> {
+		return flow {
+			emit(null)
+			emitAll(localMangaRepository.watchReadableDirs())
+		}.mapLatest {
+			localMangaRepository.getList(0, null, sortOrder)
+		}
+	}
 
 	fun observeFavourites(): Flow<Map<FavouriteCategory, List<Manga>>> {
 		return db.favouriteCategoriesDao.observeAll()
@@ -24,6 +49,23 @@ class ShelfRepository @Inject constructor(
 					observeCategoriesContent(cats)
 				}
 			}
+	}
+
+	suspend fun deleteLocalManga(ids: Set<Long>) {
+		val list = localMangaRepository.getList(0, null, null)
+			.filter { x -> x.id in ids }
+		coroutineScope {
+			list.map { manga ->
+				async {
+					val original = localMangaRepository.getRemoteManga(manga)
+					if (localMangaRepository.delete(manga)) {
+						runCatchingCancellable {
+							historyRepository.deleteOrSwap(manga, original)
+						}
+					}
+				}
+			}.awaitAll()
+		}
 	}
 
 	private fun observeCategoriesContent(

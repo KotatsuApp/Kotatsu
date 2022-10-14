@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
@@ -24,8 +25,8 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toUi
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.shelf.domain.ShelfRepository
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
@@ -35,11 +36,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShelfViewModel @Inject constructor(
-	repository: ShelfRepository,
+	private val repository: ShelfRepository,
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
-	private val localMangaRepository: LocalMangaRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel(), ListExtraProvider {
 
@@ -47,13 +47,15 @@ class ShelfViewModel @Inject constructor(
 
 	val content: LiveData<List<ListModel>> = combine(
 		historyRepository.observeAllWithHistory(),
+		repository.observeLocalManga(SortOrder.UPDATED),
 		repository.observeFavourites(),
 		trackingRepository.observeUpdatedManga(),
-	) { history, favourites, updated ->
-		mapList(history, favourites, updated)
-	}.catch { e ->
-		emit(listOf(e.toErrorState(canRetry = false)))
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	) { history, local, favourites, updated ->
+		mapList(history, favourites, updated, local)
+	}.debounce(500)
+		.catch { e ->
+			emit(listOf(e.toErrorState(canRetry = false)))
+		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	override suspend fun getCounter(mangaId: Long): Int {
 		return trackingRepository.getNewChaptersCount(mangaId)
@@ -84,6 +86,13 @@ class ShelfViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			val handle = historyRepository.delete(ids)
 			onActionDone.postCall(ReversibleAction(R.string.removed_from_history, handle))
+		}
+	}
+
+	fun deleteLocal(ids: Set<Long>) {
+		launchLoadingJob(Dispatchers.Default) {
+			repository.deleteLocalManga(ids)
+			onActionDone.postCall(ReversibleAction(R.string.removal_completed, null))
 		}
 	}
 
@@ -123,10 +132,14 @@ class ShelfViewModel @Inject constructor(
 		history: List<MangaWithHistory>,
 		favourites: Map<FavouriteCategory, List<Manga>>,
 		updated: Map<Manga, Int>,
+		local: List<Manga>,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(favourites.keys.size + 2)
 		if (history.isNotEmpty()) {
 			mapHistory(result, history)
+		}
+		if (local.isNotEmpty()) {
+			mapLocal(result, local)
 		}
 		if (updated.isNotEmpty()) {
 			mapUpdated(result, updated)
@@ -170,6 +183,16 @@ class ShelfViewModel @Inject constructor(
 				val percent = if (showPercent) getProgress(manga.id) else PROGRESS_NONE
 				manga.toGridModel(counter, percent)
 			},
+			showAllButtonText = R.string.show_all,
+		)
+	}
+
+	private suspend fun mapLocal(
+		destination: MutableList<in ShelfSectionModel.Local>,
+		local: List<Manga>,
+	) {
+		destination += ShelfSectionModel.Local(
+			items = local.toUi(ListMode.GRID, this),
 			showAllButtonText = R.string.show_all,
 		)
 	}

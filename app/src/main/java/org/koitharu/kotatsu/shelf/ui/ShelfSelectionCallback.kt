@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
@@ -41,9 +42,10 @@ class ShelfSelectionCallback(
 		mode: ActionMode,
 		menu: Menu,
 	): Boolean {
-		val checkedIds = controller.peekCheckedIds()
-		menu.findItem(R.id.action_remove).isVisible = checkedIds.none { (key, _) -> key is ShelfSectionModel.Updated }
-			&& checkedIds.count { (_, v) -> v.isNotEmpty() } == 1
+		val checkedIds = controller.peekCheckedIds().entries
+		val singleKey = checkedIds.singleOrNull { (_, ids) -> ids.isNotEmpty() }?.key
+		menu.findItem(R.id.action_remove)?.isVisible = singleKey != null && singleKey !is ShelfSectionModel.Updated
+		menu.findItem(R.id.action_save)?.isVisible = singleKey !is ShelfSectionModel.Local
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
@@ -77,6 +79,10 @@ class ShelfSelectionCallback(
 					is ShelfSectionModel.Favourites -> viewModel.removeFromFavourites(group.category, ids)
 					is ShelfSectionModel.History -> viewModel.removeFromHistory(ids)
 					is ShelfSectionModel.Updated -> return false
+					is ShelfSectionModel.Local -> {
+						showDeletionConfirm(ids, mode)
+						return true
+					}
 				}
 				mode.finish()
 				true
@@ -113,5 +119,20 @@ class ShelfSelectionCallback(
 			return emptySet()
 		}
 		return viewModel.getManga(snapshot.values.flattenTo(HashSet()))
+	}
+
+	private fun showDeletionConfirm(ids: Set<Long>, mode: ActionMode) {
+		if (ids.isEmpty()) {
+			return
+		}
+		MaterialAlertDialogBuilder(context ?: return)
+			.setTitle(R.string.delete_manga)
+			.setMessage(context.getString(R.string.text_delete_local_manga_batch))
+			.setPositiveButton(R.string.delete) { _, _ ->
+				viewModel.deleteLocal(ids)
+				mode.finish()
+			}
+			.setNegativeButton(android.R.string.cancel, null)
+			.show()
 	}
 }
