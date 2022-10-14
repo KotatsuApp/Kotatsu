@@ -4,30 +4,29 @@ import android.content.res.Resources
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 
-sealed class ShelfSectionModel(
-	val items: List<MangaItemModel>,
-	@StringRes val showAllButtonText: Int,
-) : ListModel {
+sealed interface ShelfSectionModel : ListModel {
 
-	abstract val key: Any
-	abstract fun getTitle(resources: Resources): CharSequence
+	val items: List<MangaItemModel>
+
+	@get:StringRes
+	val showAllButtonText: Int
+
+	val key: String
+	fun getTitle(resources: Resources): CharSequence
+
+	override fun toString(): String
 
 	class History(
-		items: List<MangaItemModel>,
-		val timeAgo: DateTimeAgo?,
-		showAllButtonText: Int,
-	) : ShelfSectionModel(items, showAllButtonText) {
+		override val items: List<MangaItemModel>,
+		override val showAllButtonText: Int,
+	) : ShelfSectionModel {
 
-		override val key: Any
-			get() = timeAgo?.javaClass ?: this::class.java
+		override val key = "history"
 
-		override fun getTitle(resources: Resources): CharSequence {
-			return timeAgo?.format(resources) ?: resources.getString(R.string.history)
-		}
+		override fun getTitle(resources: Resources) = resources.getString(R.string.history)
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
@@ -35,7 +34,6 @@ sealed class ShelfSectionModel(
 
 			other as History
 
-			if (timeAgo != other.timeAgo) return false
 			if (showAllButtonText != other.showAllButtonText) return false
 			if (items != other.items) return false
 
@@ -44,28 +42,22 @@ sealed class ShelfSectionModel(
 
 		override fun hashCode(): Int {
 			var result = items.hashCode()
-			result = 31 * result + (timeAgo?.hashCode() ?: 0)
 			result = 31 * result + showAllButtonText.hashCode()
 			return result
 		}
 
-		override fun toString(): String {
-			return "hist_$timeAgo"
-		}
+		override fun toString(): String = key
 	}
 
 	class Favourites(
-		items: List<MangaItemModel>,
+		override val items: List<MangaItemModel>,
 		val category: FavouriteCategory,
-		showAllButtonText: Int,
-	) : ShelfSectionModel(items, showAllButtonText) {
+		override val showAllButtonText: Int,
+	) : ShelfSectionModel {
 
-		override val key: Any
-			get() = category.id
+		override val key = "fav_${category.id}"
 
-		override fun getTitle(resources: Resources): CharSequence {
-			return category.title
-		}
+		override fun getTitle(resources: Resources) = category.title
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
@@ -87,8 +79,36 @@ sealed class ShelfSectionModel(
 			return result
 		}
 
-		override fun toString(): String {
-			return "fav_${category.id}"
+		override fun toString(): String = key
+	}
+
+	class Updated(
+		override val items: List<MangaItemModel>,
+		override val showAllButtonText: Int,
+	) : ShelfSectionModel {
+
+		override val key = "upd"
+
+		override fun getTitle(resources: Resources) = resources.getString(R.string.updated)
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+
+			other as Updated
+
+			if (items != other.items) return false
+			if (showAllButtonText != other.showAllButtonText) return false
+
+			return true
 		}
+
+		override fun hashCode(): Int {
+			var result = items.hashCode()
+			result = 31 * result + showAllButtonText
+			return result
+		}
+
+		override fun toString(): String = key
 	}
 }

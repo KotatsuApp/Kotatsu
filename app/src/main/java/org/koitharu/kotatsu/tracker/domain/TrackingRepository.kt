@@ -2,10 +2,9 @@ package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
 import androidx.room.withTransaction
-import java.util.*
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -22,6 +21,8 @@ import org.koitharu.kotatsu.tracker.data.toTrackingLogItem
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
+import java.util.Date
+import javax.inject.Inject
 
 private const val NO_ID = 0L
 
@@ -39,6 +40,12 @@ class TrackingRepository @Inject constructor(
 
 	fun observeUpdatedMangaCount(): Flow<Int> {
 		return db.tracksDao.observeNewChapters().map { list -> list.count { it > 0 } }
+	}
+
+	fun observeUpdatedManga(): Flow<Map<Manga, Int>> {
+		return db.tracksDao.observeUpdatedManga()
+			.map { x -> x.mapKeys { it.key.toManga() } }
+			.distinctUntilChanged()
 	}
 
 	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {

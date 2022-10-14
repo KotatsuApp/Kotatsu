@@ -11,10 +11,10 @@ import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
-import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.flattenTo
+import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 
@@ -41,8 +41,9 @@ class ShelfSelectionCallback(
 		mode: ActionMode,
 		menu: Menu,
 	): Boolean {
-		menu.findItem(R.id.action_remove).isVisible =
-			controller.peekCheckedIds().count { (_, v) -> v.isNotEmpty() } == 1
+		val checkedIds = controller.peekCheckedIds()
+		menu.findItem(R.id.action_remove).isVisible = checkedIds.none { (key, _) -> key is ShelfSectionModel.Updated }
+			&& checkedIds.count { (_, v) -> v.isNotEmpty() } == 1
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
@@ -57,25 +58,30 @@ class ShelfSelectionCallback(
 				mode.finish()
 				true
 			}
+
 			R.id.action_favourite -> {
 				FavouriteCategoriesBottomSheet.show(fragmentManager, collectSelectedItems(controller))
 				mode.finish()
 				true
 			}
+
 			R.id.action_save -> {
 				DownloadService.confirmAndStart(context, collectSelectedItems(controller))
 				mode.finish()
 				true
 			}
+
 			R.id.action_remove -> {
 				val (group, ids) = controller.snapshot().entries.singleOrNull { it.value.isNotEmpty() } ?: return false
 				when (group) {
 					is ShelfSectionModel.Favourites -> viewModel.removeFromFavourites(group.category, ids)
 					is ShelfSectionModel.History -> viewModel.removeFromHistory(ids)
+					is ShelfSectionModel.Updated -> return false
 				}
 				mode.finish()
 				true
 			}
+
 			else -> false
 		}
 	}

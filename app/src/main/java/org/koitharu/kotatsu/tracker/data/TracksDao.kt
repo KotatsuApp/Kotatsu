@@ -1,7 +1,14 @@
 package org.koitharu.kotatsu.tracker.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.MapInfo
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 
 @Dao
 abstract class TracksDao {
@@ -27,6 +34,11 @@ abstract class TracksDao {
 
 	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
 	abstract fun observeNewChapters(mangaId: Long): Flow<Int?>
+
+	@Transaction
+	@MapInfo(valueColumn = "chapters_new")
+	@Query("SELECT manga.*, chapters_new FROM tracks LEFT JOIN manga ON manga.manga_id = tracks.manga_id WHERE chapters_new > 0 ORDER BY chapters_new DESC")
+	abstract fun observeUpdatedManga(): Flow<Map<MangaWithTags, Int>>
 
 	@Query("DELETE FROM tracks")
 	abstract suspend fun clear()

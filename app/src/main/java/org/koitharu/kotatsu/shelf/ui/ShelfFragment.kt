@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -23,15 +22,17 @@ import org.koitharu.kotatsu.databinding.FragmentShelfBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.history.ui.HistoryActivity
-import org.koitharu.kotatsu.shelf.ui.adapter.ShelfAdapter
-import org.koitharu.kotatsu.shelf.ui.adapter.ShelfListEventListener
-import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.shelf.ui.adapter.ShelfAdapter
+import org.koitharu.kotatsu.shelf.ui.adapter.ShelfListEventListener
+import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
+import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShelfFragment :
@@ -102,6 +103,7 @@ class ShelfFragment :
 		val intent = when (section) {
 			is ShelfSectionModel.History -> HistoryActivity.newIntent(view.context)
 			is ShelfSectionModel.Favourites -> FavouritesActivity.newIntent(view.context, section.category)
+			is ShelfSectionModel.Updated -> UpdatesActivity.newIntent(view.context)
 		}
 		startActivity(intent)
 	}

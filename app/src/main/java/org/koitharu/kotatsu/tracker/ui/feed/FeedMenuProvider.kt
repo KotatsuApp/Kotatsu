@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.tracker.ui
+package org.koitharu.kotatsu.tracker.ui.feed
 
 import android.content.Context
 import android.view.Menu
@@ -37,6 +37,7 @@ class FeedMenuProvider(
 			snackbar.show()
 			true
 		}
+
 		R.id.action_clear_feed -> {
 			MaterialAlertDialogBuilder(context)
 				.setTitle(R.string.clear_updates_feed)
@@ -47,11 +48,13 @@ class FeedMenuProvider(
 				}.show()
 			true
 		}
+
 		R.id.action_settings -> {
 			val intent = SettingsActivity.newTrackerSettingsIntent(context)
 			context.startActivity(intent)
 			true
 		}
+
 		else -> false
 	}
 }

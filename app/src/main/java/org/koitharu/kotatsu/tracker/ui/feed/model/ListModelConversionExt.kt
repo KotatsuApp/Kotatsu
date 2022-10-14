@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.tracker.ui.model
+package org.koitharu.kotatsu.tracker.ui.feed.model
 
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 

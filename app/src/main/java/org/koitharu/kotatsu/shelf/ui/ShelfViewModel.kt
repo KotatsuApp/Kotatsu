@@ -4,8 +4,6 @@ import androidx.collection.ArraySet
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.*
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -15,22 +13,25 @@ import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toGridModel
+import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.shelf.domain.ShelfRepository
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
-import org.koitharu.kotatsu.list.ui.model.*
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.daysDiff
-
-private const val HISTORY_MAX_SEGMENTS = 2
+import javax.inject.Inject
 
 @HiltViewModel
 class ShelfViewModel @Inject constructor(
@@ -38,6 +39,7 @@ class ShelfViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
+	private val localMangaRepository: LocalMangaRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel(), ListExtraProvider {
 
@@ -46,8 +48,9 @@ class ShelfViewModel @Inject constructor(
 	val content: LiveData<List<ListModel>> = combine(
 		historyRepository.observeAllWithHistory(),
 		repository.observeFavourites(),
-	) { history, favourites ->
-		mapList(history, favourites)
+		trackingRepository.observeUpdatedManga(),
+	) { history, favourites, updated ->
+		mapList(history, favourites, updated)
 	}.catch { e ->
 		emit(listOf(e.toErrorState(canRetry = false)))
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
@@ -119,10 +122,14 @@ class ShelfViewModel @Inject constructor(
 	private suspend fun mapList(
 		history: List<MangaWithHistory>,
 		favourites: Map<FavouriteCategory, List<Manga>>,
+		updated: Map<Manga, Int>,
 	): List<ListModel> {
-		val result = ArrayList<ListModel>(favourites.keys.size + 1)
+		val result = ArrayList<ListModel>(favourites.keys.size + 2)
 		if (history.isNotEmpty()) {
 			mapHistory(result, history)
+		}
+		if (updated.isNotEmpty()) {
+			mapUpdated(result, updated)
 		}
 		if (favourites.isNotEmpty()) {
 			mapFavourites(result, favourites)
@@ -135,7 +142,6 @@ class ShelfViewModel @Inject constructor(
 				actionStringRes = 0,
 			)
 		}
-		result.trimToSize()
 		return result
 	}
 
@@ -144,23 +150,28 @@ class ShelfViewModel @Inject constructor(
 		list: List<MangaWithHistory>,
 	) {
 		val showPercent = settings.isReadingIndicatorsEnabled
-		val groups = list.groupByTo(LinkedHashMap()) { timeAgo(it.history.updatedAt) }
-		while (groups.size > HISTORY_MAX_SEGMENTS) {
-			val lastKey = groups.keys.last()
-			val subList = groups.remove(lastKey) ?: continue
-			groups[groups.keys.last()]?.addAll(subList)
-		}
-		for ((timeAgo, subList) in groups) {
-			destination += ShelfSectionModel.History(
-				items = subList.map { (manga, history) ->
-					val counter = trackingRepository.getNewChaptersCount(manga.id)
-					val percent = if (showPercent) history.percent else PROGRESS_NONE
-					manga.toGridModel(counter, percent)
-				},
-				timeAgo = timeAgo,
-				showAllButtonText = R.string.show_all,
-			)
-		}
+		destination += ShelfSectionModel.History(
+			items = list.map { (manga, history) ->
+				val counter = trackingRepository.getNewChaptersCount(manga.id)
+				val percent = if (showPercent) history.percent else PROGRESS_NONE
+				manga.toGridModel(counter, percent)
+			},
+			showAllButtonText = R.string.show_all,
+		)
+	}
+
+	private suspend fun mapUpdated(
+		destination: MutableList<in ShelfSectionModel.Updated>,
+		updated: Map<Manga, Int>,
+	) {
+		val showPercent = settings.isReadingIndicatorsEnabled
+		destination += ShelfSectionModel.Updated(
+			items = updated.map { (manga, counter) ->
+				val percent = if (showPercent) getProgress(manga.id) else PROGRESS_NONE
+				manga.toGridModel(counter, percent)
+			},
+			showAllButtonText = R.string.show_all,
+		)
 	}
 
 	private suspend fun mapFavourites(
@@ -175,16 +186,6 @@ class ShelfViewModel @Inject constructor(
 					showAllButtonText = R.string.show_all,
 				)
 			}
-		}
-	}
-
-	private fun timeAgo(date: Date): DateTimeAgo {
-		val diffDays = -date.daysDiff(System.currentTimeMillis())
-		return when {
-			diffDays < 1 -> DateTimeAgo.Today
-			diffDays == 1 -> DateTimeAgo.Yesterday
-			diffDays <= 3 -> DateTimeAgo.DaysAgo(diffDays)
-			else -> DateTimeAgo.LongAgo
 		}
 	}
 }

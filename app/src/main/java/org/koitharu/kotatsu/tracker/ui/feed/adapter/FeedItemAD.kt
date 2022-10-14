@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.tracker.ui.adapter
+package org.koitharu.kotatsu.tracker.ui.feed.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ItemFeedBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.tracker.ui.model.FeedItem
+import org.koitharu.kotatsu.tracker.ui.feed.model.FeedItem
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.isBold

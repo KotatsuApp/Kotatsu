@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.tracker.ui.model
+package org.koitharu.kotatsu.tracker.ui.feed.model
 
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga

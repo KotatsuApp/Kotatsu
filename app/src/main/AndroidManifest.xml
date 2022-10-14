@@ -69,6 +69,9 @@
 			android:name="org.koitharu.kotatsu.history.ui.HistoryActivity"
 			android:label="@string/history" />
 		<activity
+			android:name="org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity"
+			android:label="@string/updates" />
+		<activity
 			android:name="org.koitharu.kotatsu.favourites.ui.FavouritesActivity"
 			android:label="@string/favourites" />
 		<activity

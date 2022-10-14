@@ -1,14 +1,20 @@
-package org.koitharu.kotatsu.tracker.ui.adapter
+package org.koitharu.kotatsu.tracker.ui.feed.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
-import org.koitharu.kotatsu.list.ui.adapter.*
+import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
+import org.koitharu.kotatsu.list.ui.adapter.errorFooterAD
+import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
+import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
+import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
+import org.koitharu.kotatsu.list.ui.adapter.relatedDateItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.tracker.ui.model.FeedItem
+import org.koitharu.kotatsu.tracker.ui.feed.model.FeedItem
+import kotlin.jvm.internal.Intrinsics
 
 class FeedAdapter(
 	coil: ImageLoader,
@@ -33,9 +39,11 @@ class FeedAdapter(
 			oldItem is FeedItem && newItem is FeedItem -> {
 				oldItem.id == newItem.id
 			}
+
 			oldItem is DateTimeAgo && newItem is DateTimeAgo -> {
 				oldItem == newItem
 			}
+
 			else -> oldItem.javaClass == newItem.javaClass
 		}
 
