@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.graphics.*
+import android.graphics.Matrix
+import android.graphics.Rect
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -13,13 +15,14 @@ import android.widget.OverScroller
 import androidx.core.view.GestureDetectorCompat
 
 private const val MAX_SCALE = 2.5f
-private const val MIN_SCALE = 0.5f
+private const val MIN_SCALE = 1f // under-scaling disabled due to buggy nested scroll
 
 class WebtoonScalingFrame @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
-	defStyles: Int = 0
-): FrameLayout(context, attrs, defStyles), ScaleGestureDetector.OnScaleGestureListener {
+	defStyles: Int = 0,
+) : FrameLayout(context, attrs, defStyles), ScaleGestureDetector.OnScaleGestureListener {
+
 	private val targetChild by lazy(LazyThreadSafetyMode.NONE) { getChildAt(0) }
 
 	private val scaleDetector = ScaleGestureDetector(context, this)
@@ -133,14 +136,14 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 				halfWidth * (1 - newScale),
 				halfHeight * (1 - newScale),
 				halfWidth * (newScale - 1),
-				halfHeight * (newScale - 1)
+				halfHeight * (newScale - 1),
 			)
 		} else {
 			translateBounds.set(
 				0f,
 				halfHeight - halfHeight / newScale,
 				0f,
-				halfHeight - halfHeight / newScale
+				halfHeight - halfHeight / newScale,
 			)
 		}
 		transformMatrix.postScale(factor, factor, focusX, focusY)
@@ -161,7 +164,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	}
 
 
-	private inner class GestureListener(): GestureDetector.SimpleOnGestureListener(), Runnable {
+	private inner class GestureListener : GestureDetector.SimpleOnGestureListener(), Runnable {
 		override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
 			if (scale <= 1f) return false
 			transformMatrix.postTranslate(-distanceX, -distanceY)
@@ -193,7 +196,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 				translateBounds.left.toInt(),
 				translateBounds.right.toInt(),
 				translateBounds.top.toInt(),
-				translateBounds.bottom.toInt()
+				translateBounds.bottom.toInt(),
 			)
 			postOnAnimation(this)
 			return true
