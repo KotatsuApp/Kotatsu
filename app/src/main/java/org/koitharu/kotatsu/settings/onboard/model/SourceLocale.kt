@@ -1,10 +1,11 @@
 package org.koitharu.kotatsu.settings.onboard.model
 
-import java.util.*
+import java.util.Locale
 
 data class SourceLocale(
 	val key: String?,
 	val title: String?,
+	val summary: String?,
 	val isChecked: Boolean,
 ) : Comparable<SourceLocale> {
 

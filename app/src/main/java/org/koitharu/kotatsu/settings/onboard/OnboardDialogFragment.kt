@@ -11,8 +11,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.DialogOnboardBinding
+import org.koitharu.kotatsu.settings.onboard.adapter.SourceLocaleListener
 import org.koitharu.kotatsu.settings.onboard.adapter.SourceLocalesAdapter
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.showAllowStateLoss
@@ -21,8 +21,7 @@ import org.koitharu.kotatsu.utils.ext.withArgs
 @AndroidEntryPoint
 class OnboardDialogFragment :
 	AlertDialogFragment<DialogOnboardBinding>(),
-	OnListItemClickListener<SourceLocale>,
-	DialogInterface.OnClickListener {
+	DialogInterface.OnClickListener, SourceLocaleListener {
 
 	private val viewModel by viewModels<OnboardViewModel>()
 	private var isWelcome: Boolean = false
@@ -63,8 +62,8 @@ class OnboardDialogFragment :
 		}
 	}
 
-	override fun onItemClick(item: SourceLocale, view: View) {
-		viewModel.setItemChecked(item.key, !item.isChecked)
+	override fun onItemCheckedChanged(item: SourceLocale, isChecked: Boolean) {
+		viewModel.setItemChecked(item.key, isChecked)
 	}
 
 	override fun onClick(dialog: DialogInterface?, which: Int) {

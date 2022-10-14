@@ -1,11 +1,8 @@
 package org.koitharu.kotatsu.settings.onboard
 
-import androidx.collection.ArraySet
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.*
-import javax.inject.Inject
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -15,6 +12,8 @@ import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.mapToSet
+import java.util.Locale
+import javax.inject.Inject
 
 @HiltViewModel
 class OnboardViewModel @Inject constructor(
@@ -23,9 +22,9 @@ class OnboardViewModel @Inject constructor(
 
 	private val allSources = settings.remoteMangaSources
 
-	private val locales = allSources.mapTo(ArraySet()) { it.locale }
+	private val locales = allSources.groupBy { it.locale }
 
-	private val selectedLocales = locales.toMutableSet()
+	private val selectedLocales = locales.keys.toMutableSet()
 
 	val list = MutableLiveData<List<SourceLocale>?>()
 
@@ -64,13 +63,14 @@ class OnboardViewModel @Inject constructor(
 	}
 
 	private fun rebuildList() {
-		list.value = locales.map { key ->
+		list.value = locales.map { (key, srcs) ->
 			val locale = if (key != null) {
 				Locale(key)
 			} else null
 			SourceLocale(
 				key = key,
 				title = locale?.getDisplayLanguage(locale)?.toTitleCase(locale),
+				summary = srcs.joinToString { it.title },
 				isChecked = key in selectedLocales,
 			)
 		}.sortedWith(SourceLocaleComparator())
@@ -87,11 +87,12 @@ class OnboardViewModel @Inject constructor(
 				a?.key == null -> 1
 				b?.key == null -> -1
 				else -> {
-					val index = deviceLocales.indexOf(a.key)
-					if (index == -1) {
+					val indexA = deviceLocales.indexOf(a.key)
+					val indexB = deviceLocales.indexOf(b.key)
+					if (indexA == -1 && indexB == -1) {
 						compareValues(a.title, b.title)
 					} else {
-						-2 - index
+						-2 - (indexA - indexB)
 					}
 				}
 			}

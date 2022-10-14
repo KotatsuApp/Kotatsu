@@ -2,15 +2,14 @@ package org.koitharu.kotatsu.settings.onboard.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 
 class SourceLocalesAdapter(
-	clickListener: OnListItemClickListener<SourceLocale>,
+	listener: SourceLocaleListener,
 ) : AsyncListDifferDelegationAdapter<SourceLocale>(DiffCallback()) {
 
 	init {
-		delegatesManager.addDelegate(sourceLocaleAD(clickListener))
+		delegatesManager.addDelegate(sourceLocaleAD(listener))
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<SourceLocale>() {

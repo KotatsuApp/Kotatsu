@@ -392,4 +392,5 @@
 	<string name="reader_slider">Show page switching slider</string>
 	<string name="webtoon_zoom">Webtoon zoom</string>
 	<string name="webtoon_zoom_summary">Allow zoom in/zoom out gesture in webtoon mode (beta)</string>
+	<string name="different_languages">Different languages</string>
 </resources>
