@@ -4,7 +4,6 @@ import android.util.SparseIntArray
 import androidx.core.util.set
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
@@ -12,6 +11,8 @@ import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsLiveData
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.sync.domain.SyncController
@@ -19,6 +20,7 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -27,6 +29,7 @@ class MainViewModel @Inject constructor(
 	private val trackingRepository: TrackingRepository,
 	syncController: SyncController,
 	database: MangaDatabase,
+	private val settings: AppSettings,
 ) : BaseViewModel() {
 
 	val onOpenReader = SingleLiveEvent<Manga>()
@@ -34,6 +37,12 @@ class MainViewModel @Inject constructor(
 	val isResumeEnabled = historyRepository
 		.observeHasItems()
 		.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
+
+	val isFeedAvailable = settings.observeAsLiveData(
+		context = viewModelScope.coroutineContext + Dispatchers.Default,
+		key = AppSettings.KEY_TRACKER_ENABLED,
+		valueProducer = { isTrackerEnabled },
+	)
 
 	val counters = combine(
 		appUpdateRepository.observeAvailableUpdate(),

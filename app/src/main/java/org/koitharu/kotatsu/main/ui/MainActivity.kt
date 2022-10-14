@@ -15,15 +15,21 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.util.size
-import androidx.core.view.*
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
-import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
+import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +40,6 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.shelf.ui.ShelfFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -48,11 +53,18 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
+import org.koitharu.kotatsu.shelf.ui.ShelfFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
-import org.koitharu.kotatsu.utils.ext.*
-import kotlin.text.Typography.dagger
+import org.koitharu.kotatsu.utils.ext.drawableEnd
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.hideKeyboard
+import org.koitharu.kotatsu.utils.ext.resolve
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
+import org.koitharu.kotatsu.utils.ext.tryLaunch
+import com.google.android.material.R as materialR
 
 private const val TAG_SEARCH = "search"
 
@@ -116,6 +128,7 @@ class MainActivity :
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
+		viewModel.isFeedAvailable.observe(this, ::onFeedAvailabilityChanged)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -259,6 +272,10 @@ class MainActivity :
 			val counter = counters.valueAt(i)
 			navigationDelegate.setCounter(id, counter)
 		}
+	}
+
+	private fun onFeedAvailabilityChanged(isFeedAvailable: Boolean) {
+		navigationDelegate.setItemVisibility(R.id.nav_feed, isFeedAvailable)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {

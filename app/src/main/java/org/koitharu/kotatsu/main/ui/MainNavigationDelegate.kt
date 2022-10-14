@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.main.ui
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.annotation.IdRes
+import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -62,6 +63,14 @@ class MainNavigationDelegate(
 		}
 	}
 
+	fun setItemVisibility(@IdRes itemId: Int, isVisible: Boolean) {
+		val item = navBar.menu.findItem(itemId) ?: return
+		item.isVisible = isVisible
+		if (item.isChecked && !isVisible) {
+			navBar.selectedItemId = firstItem()?.itemId ?: return
+		}
+	}
+
 	fun addOnFragmentChangedListener(listener: OnFragmentChangedListener) {
 		listeners.add(listener)
 	}
@@ -94,6 +103,14 @@ class MainNavigationDelegate(
 
 	private fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
 		listeners.forEach { it.onFragmentChanged(fragment, fromUser) }
+	}
+
+	private fun firstItem(): MenuItem? {
+		val menu = navBar.menu
+		for (item in menu) {
+			if (item.isVisible) return item
+		}
+		return null
 	}
 
 	interface OnFragmentChangedListener {
