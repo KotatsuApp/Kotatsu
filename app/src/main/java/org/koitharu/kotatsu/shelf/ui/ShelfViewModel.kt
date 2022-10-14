@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
@@ -19,6 +20,7 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
@@ -26,6 +28,7 @@ import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.shelf.domain.ShelfRepository
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
@@ -41,17 +44,19 @@ class ShelfViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
+	private val networkStateObserver: NetworkStateObserver,
 ) : BaseViewModel(), ListExtraProvider {
 
 	val onActionDone = SingleLiveEvent<ReversibleAction>()
 
 	val content: LiveData<List<ListModel>> = combine(
+		networkStateObserver,
 		historyRepository.observeAllWithHistory(),
 		repository.observeLocalManga(SortOrder.UPDATED),
 		repository.observeFavourites(),
 		trackingRepository.observeUpdatedManga(),
-	) { history, local, favourites, updated ->
-		mapList(history, favourites, updated, local)
+	) { isConnected, history, local, favourites, updated ->
+		mapList(history, favourites, updated, local, isConnected)
 	}.debounce(500)
 		.catch { e ->
 			emit(listOf(e.toErrorState(canRetry = false)))
@@ -133,19 +138,36 @@ class ShelfViewModel @Inject constructor(
 		favourites: Map<FavouriteCategory, List<Manga>>,
 		updated: Map<Manga, Int>,
 		local: List<Manga>,
+		isNetworkAvailable: Boolean,
 	): List<ListModel> {
-		val result = ArrayList<ListModel>(favourites.keys.size + 2)
-		if (history.isNotEmpty()) {
-			mapHistory(result, history)
-		}
-		if (local.isNotEmpty()) {
-			mapLocal(result, local)
-		}
-		if (updated.isNotEmpty()) {
-			mapUpdated(result, updated)
-		}
-		if (favourites.isNotEmpty()) {
-			mapFavourites(result, favourites)
+		val result = ArrayList<ListModel>(favourites.keys.size + 3)
+		if (isNetworkAvailable) {
+			if (history.isNotEmpty()) {
+				mapHistory(result, history)
+			}
+			if (local.isNotEmpty()) {
+				mapLocal(result, local)
+			}
+			if (updated.isNotEmpty()) {
+				mapUpdated(result, updated)
+			}
+			if (favourites.isNotEmpty()) {
+				mapFavourites(result, favourites)
+			}
+		} else {
+			result += EmptyHint(
+				icon = R.drawable.ic_empty_suggestions,
+				textPrimary = R.string.network_unavailable,
+				textSecondary = R.string.network_unavailable_hint,
+				actionStringRes = R.string.manage,
+			)
+			val offlineHistory = history.filter { it.manga.source == MangaSource.LOCAL }
+			if (offlineHistory.isNotEmpty()) {
+				mapHistory(result, offlineHistory)
+			}
+			if (local.isNotEmpty()) {
+				mapLocal(result, local)
+			}
 		}
 		if (result.isEmpty()) {
 			result += EmptyState(
@@ -154,6 +176,11 @@ class ShelfViewModel @Inject constructor(
 				textSecondary = R.string.text_shelf_holder_secondary,
 				actionStringRes = 0,
 			)
+		} else {
+			val one = result.singleOrNull()
+			if (one is EmptyHint) {
+				result[0] = one.toState()
+			}
 		}
 		return result
 	}

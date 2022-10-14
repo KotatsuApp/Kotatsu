@@ -44,6 +44,14 @@ val Context.activityManager: ActivityManager?
 val Context.connectivityManager: ConnectivityManager
 	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+val ConnectivityManager.isNetworkAvailable: Boolean
+	get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+		activeNetwork != null
+	} else {
+		@Suppress("DEPRECATION")
+		activeNetworkInfo?.isConnectedOrConnecting == true
+	}
+
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 
 suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatchingCancellable {

@@ -6,16 +6,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
+import org.koitharu.kotatsu.list.ui.adapter.emptyHintAD
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
+import kotlin.jvm.internal.Intrinsics
 
 class ShelfAdapter(
 	lifecycleOwner: LifecycleOwner,
@@ -40,6 +41,7 @@ class ShelfAdapter(
 			)
 			.addDelegate(loadingStateAD())
 			.addDelegate(loadingFooterAD())
+			.addDelegate(emptyHintAD(listener))
 			.addDelegate(emptyStateListAD(coil, listener))
 			.addDelegate(errorStateListAD(listener))
 	}
@@ -56,6 +58,7 @@ class ShelfAdapter(
 				oldItem is ShelfSectionModel && newItem is ShelfSectionModel -> {
 					oldItem.key == newItem.key
 				}
+
 				else -> oldItem.javaClass == newItem.javaClass
 			}
 		}

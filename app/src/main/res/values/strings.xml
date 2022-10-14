@@ -393,4 +393,6 @@
 	<string name="webtoon_zoom">Webtoon zoom</string>
 	<string name="webtoon_zoom_summary">Allow zoom in/zoom out gesture in webtoon mode (beta)</string>
 	<string name="different_languages">Different languages</string>
+	<string name="network_unavailable">Network is not available</string>
+	<string name="network_unavailable_hint">Turn on Wi-Fi or mobile network to read manga online</string>
 </resources>

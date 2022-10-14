@@ -1,6 +1,9 @@
 package org.koitharu.kotatsu.shelf.ui
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -113,7 +116,14 @@ class ShelfFragment :
 
 	override fun onRetryClick(error: Throwable) = Unit
 
-	override fun onEmptyActionClick() = Unit
+	override fun onEmptyActionClick() {
+		val action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			Settings.Panel.ACTION_INTERNET_CONNECTIVITY
+		} else {
+			Settings.ACTION_WIRELESS_SETTINGS
+		}
+		startActivity(Intent(action))
+	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		binding.recyclerView.updatePadding(

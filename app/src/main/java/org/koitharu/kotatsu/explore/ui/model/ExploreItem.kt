@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.explore.ui.model
 
-import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -73,6 +72,7 @@ sealed interface ExploreItem : ListModel {
 		}
 	}
 
+	@Deprecated("")
 	class EmptyHint(
 		@DrawableRes icon: Int,
 		@StringRes textPrimary: Int,
