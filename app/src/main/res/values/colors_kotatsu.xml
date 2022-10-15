@@ -6,6 +6,7 @@
 <resources>
 	<color name="kotatsu_primary">#005FAE</color>
 	<color name="kotatsu_onPrimary">#FFFFFF</color>
+	<color name="kotatsu_inversePrimary">#A5C8FF</color>
 	<color name="kotatsu_primaryContainer">#D4E3FF</color>
 	<color name="kotatsu_onPrimaryContainer">#001C3A</color>
 	<color name="kotatsu_secondary">#545F71</color>
@@ -22,10 +23,9 @@
 	<color name="kotatsu_onSurface">#1A1C1E</color>
 	<color name="kotatsu_surfaceVariant">#E0E2EC</color>
 	<color name="kotatsu_onSurfaceVariant">#43474E</color>
-	<color name="kotatsu_outline">#74777F</color>
-	<color name="kotatsu_inverseOnSurface">#F1F0F4</color>
 	<color name="kotatsu_inverseSurface">#2F3033</color>
-	<color name="kotatsu_inversePrimary">#A5C8FF</color>
+	<color name="kotatsu_inverseOnSurface">#F1F0F4</color>
+	<color name="kotatsu_outline">#74777F</color>
 	<color name="kotatsu_shadow">#000000</color>
 	<color name="kotatsu_surfaceTint">#005FAE</color>
 	<color name="kotatsu_surfaceTintColor">#005FAE</color>
