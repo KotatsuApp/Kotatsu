@@ -12,6 +12,10 @@
 		<item name="labelVisibilityMode">labeled</item>
 	</style>
 
+	<style name="Widget.Kotatsu.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+		<item name="android:color">@color/bottom_menu_active_indicator</item>
+	</style>
+
 	<style name="Widget.Kotatsu.ActionMode" parent="Base.Widget.Material3.ActionMode">
 		<!--<item name="titleTextStyle">@style/TextAppearance.Kotatsu.ActionBar.Title</item>-->
 		<item name="theme">@style/ThemeOverlay.Kotatsu.ActionMode</item>

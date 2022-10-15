@@ -61,7 +61,7 @@ class ExploreViewModel @Inject constructor(
 			sources.mapTo(result) { ExploreItem.Source(it) }
 		} else {
 			result += ExploreItem.EmptyHint(
-				icon = R.drawable.ic_empty_search,
+				icon = R.drawable.ic_empty_common,
 				textPrimary = R.string.no_manga_sources,
 				textSecondary = R.string.no_manga_sources_text,
 				actionStringRes = R.string.manage,

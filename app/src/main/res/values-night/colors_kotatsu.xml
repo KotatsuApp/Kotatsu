@@ -16,10 +16,6 @@
 	<color name="kotatsu_onTertiary">#3D2946</color>
 	<color name="kotatsu_tertiaryContainer">#553F5E</color>
 	<color name="kotatsu_onTertiaryContainer">#F7D8FF</color>
-	<color name="kotatsu_error">#FFB4AB</color>
-	<color name="kotatsu_errorContainer">#93000A</color>
-	<color name="kotatsu_onError">#690005</color>
-	<color name="kotatsu_onErrorContainer">#FFDAD6</color>
 	<color name="kotatsu_background">#1A1C1E</color>
 	<color name="kotatsu_onBackground">#E3E2E6</color>
 	<color name="kotatsu_surface">#1A1C1E</color>

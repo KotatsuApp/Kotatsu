@@ -163,7 +163,7 @@ class RemoteListViewModel @AssistedInject constructor(
 	}
 
 	private fun createEmptyState(canResetFilter: Boolean) = EmptyState(
-		icon = R.drawable.ic_empty_search,
+		icon = R.drawable.ic_empty_common,
 		textPrimary = R.string.nothing_found,
 		textSecondary = 0,
 		actionStringRes = if (canResetFilter) R.string.reset_filter else 0,

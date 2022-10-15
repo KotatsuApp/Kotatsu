@@ -34,7 +34,7 @@ fun chapterListItemAD(
 		when (item.status) {
 			FLAG_UNREAD -> {
 				binding.textViewNumber.setBackgroundResource(R.drawable.bg_badge_default)
-				binding.textViewNumber.setTextColor(context.getThemeColor(android.R.attr.textColorSecondaryInverse))
+				binding.textViewNumber.setTextColor(context.getThemeColor(com.google.android.material.R.attr.colorOnTertiary))
 			}
 			FLAG_CURRENT -> {
 				binding.textViewNumber.setBackgroundResource(R.drawable.bg_badge_accent)

@@ -16,9 +16,9 @@
 	<color name="kotatsu_onTertiary">#FFFFFF</color>
 	<color name="kotatsu_tertiaryContainer">#F7D8FF</color>
 	<color name="kotatsu_onTertiaryContainer">#271430</color>
-	<color name="kotatsu_background">#FDFCFF</color>
+	<color name="kotatsu_background">#F0F0F3</color>
 	<color name="kotatsu_onBackground">#1A1C1E</color>
-	<color name="kotatsu_surface">#FDFCFF</color>
+	<color name="kotatsu_surface">#F0F0F3</color>
 	<color name="kotatsu_onSurface">#1A1C1E</color>
 	<color name="kotatsu_surfaceVariant">#E0E2EC</color>
 	<color name="kotatsu_onSurfaceVariant">#43474E</color>

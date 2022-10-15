@@ -48,7 +48,7 @@ class SearchViewModel @AssistedInject constructor(
 			list == null -> listOf(LoadingState)
 			list.isEmpty() -> listOf(
 				EmptyState(
-					icon = R.drawable.ic_empty_search,
+					icon = R.drawable.ic_empty_common,
 					textPrimary = R.string.nothing_found,
 					textSecondary = R.string.text_search_holder_secondary,
 					actionStringRes = 0,

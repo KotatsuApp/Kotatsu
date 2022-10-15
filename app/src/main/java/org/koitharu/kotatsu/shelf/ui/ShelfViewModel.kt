@@ -156,7 +156,7 @@ class ShelfViewModel @Inject constructor(
 			}
 		} else {
 			result += EmptyHint(
-				icon = R.drawable.ic_empty_suggestions,
+				icon = R.drawable.ic_empty_common,
 				textPrimary = R.string.network_unavailable,
 				textSecondary = R.string.network_unavailable_hint,
 				actionStringRes = R.string.manage,

@@ -31,7 +31,7 @@ class SuggestionsViewModel @Inject constructor(
 		when {
 			list.isEmpty() -> listOf(
 				EmptyState(
-					icon = R.drawable.ic_empty_suggestions,
+					icon = R.drawable.ic_empty_common,
 					textPrimary = R.string.nothing_found,
 					textSecondary = R.string.text_suggestion_holder,
 					actionStringRes = 0,
