@@ -12,8 +12,8 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginVertical="8dp"
-		android:layout_marginStart="?android:listPreferredItemPaddingStart"
-		android:layout_marginEnd="?android:listPreferredItemPaddingEnd"
+		android:layout_marginStart="?attr/dialogPreferredPadding"
+		android:layout_marginEnd="?attr/dialogPreferredPadding"
 		android:layout_weight="1"
 		android:orientation="vertical">
 
@@ -42,6 +42,6 @@
 		android:id="@+id/switch_toggle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginEnd="?listPreferredItemPaddingEnd" />
+		android:layout_marginEnd="?attr/dialogPreferredPadding" />
 
 </LinearLayout>
