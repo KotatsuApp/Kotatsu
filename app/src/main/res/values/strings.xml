@@ -395,4 +395,5 @@
 	<string name="different_languages">Different languages</string>
 	<string name="network_unavailable">Network is not available</string>
 	<string name="network_unavailable_hint">Turn on Wi-Fi or mobile network to read manga online</string>
+	<string name="mal" translatable="false">MyAnimeList</string>
 </resources>

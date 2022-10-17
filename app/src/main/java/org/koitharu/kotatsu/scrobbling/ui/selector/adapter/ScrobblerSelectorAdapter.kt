@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 
-class ShikimoriSelectorAdapter(
+class ScrobblerSelectorAdapter(
 	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
 	clickListener: OnListItemClickListener<ScrobblerManga>,
@@ -19,7 +19,7 @@ class ShikimoriSelectorAdapter(
 
 	init {
 		delegatesManager.addDelegate(loadingStateAD())
-			.addDelegate(shikimoriMangaAD(lifecycleOwner, coil, clickListener))
+			.addDelegate(scrobblerMangaAD(lifecycleOwner, coil, clickListener))
 			.addDelegate(loadingFooterAD())
 	}
 

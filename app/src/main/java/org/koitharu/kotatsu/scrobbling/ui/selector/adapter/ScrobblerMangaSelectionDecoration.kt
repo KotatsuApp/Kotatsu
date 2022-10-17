@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.utils.ext.getItem
 
-class ShikiMangaSelectionDecoration(context: Context) : MangaSelectionDecoration(context) {
+class ScrobblerMangaSelectionDecoration(context: Context) : MangaSelectionDecoration(context) {
 
 	var checkedItemId: Long
 		get() = selection.singleOrNull() ?: NO_ID

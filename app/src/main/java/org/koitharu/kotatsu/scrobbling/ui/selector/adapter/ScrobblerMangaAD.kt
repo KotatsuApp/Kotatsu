@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 
-fun shikimoriMangaAD(
+fun scrobblerMangaAD(
 	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
 	clickListener: OnListItemClickListener<ScrobblerManga>,

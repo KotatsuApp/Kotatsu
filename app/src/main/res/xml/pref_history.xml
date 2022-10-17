@@ -24,7 +24,14 @@
 		<PreferenceScreen
 			android:fragment="org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment"
 			android:key="shikimori"
+			android:icon="@drawable/ic_shikimori"
 			android:title="@string/shikimori" />
+
+		<PreferenceScreen
+			android:fragment="org.koitharu.kotatsu.scrobbling.mal.ui.MALSettingsFragment"
+			android:key="mal"
+			android:icon="@drawable/ic_mal"
+			android:title="@string/mal" />
 
 	</PreferenceCategory>
 

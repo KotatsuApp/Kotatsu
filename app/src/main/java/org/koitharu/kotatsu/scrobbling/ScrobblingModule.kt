@@ -9,6 +9,11 @@ import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.mal.data.MALAuthenticator
+import org.koitharu.kotatsu.scrobbling.mal.data.MALInterceptor
+import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
+import org.koitharu.kotatsu.scrobbling.mal.data.MALStorage
+import org.koitharu.kotatsu.scrobbling.mal.domain.MALScrobbler
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriAuthenticator
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriInterceptor
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
@@ -34,8 +39,23 @@ object ScrobblingModule {
 	}
 
 	@Provides
+	@Singleton
+	fun provideMALRepository(
+		storage: MALStorage,
+		database: MangaDatabase,
+		authenticator: MALAuthenticator,
+	): MALRepository {
+		val okHttp = OkHttpClient.Builder().apply {
+			authenticator(authenticator)
+			addInterceptor(MALInterceptor(storage))
+		}.build()
+		return MALRepository(okHttp, storage, database)
+	}
+
+	@Provides
 	@ElementsIntoSet
 	fun provideScrobblers(
 		shikimoriScrobbler: ShikimoriScrobbler,
-	): Set<@JvmSuppressWildcards Scrobbler> = setOf(shikimoriScrobbler)
+		malScrobbler: MALScrobbler,
+	): Set<@JvmSuppressWildcards Scrobbler> = setOf(shikimoriScrobbler, malScrobbler)
 }

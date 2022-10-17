@@ -22,8 +22,8 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.databinding.SheetScrobblingSelectorBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
-import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikiMangaSelectionDecoration
-import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikimoriSelectorAdapter
+import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ScrobblerMangaSelectionDecoration
+import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ScrobblerSelectorAdapter
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.requireParcelable
@@ -64,8 +64,8 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val listAdapter = ShikimoriSelectorAdapter(viewLifecycleOwner, coil, this)
-		val decoration = ShikiMangaSelectionDecoration(view.context)
+		val listAdapter = ScrobblerSelectorAdapter(viewLifecycleOwner, coil, this)
+		val decoration = ScrobblerMangaSelectionDecoration(view.context)
 		with(binding.recyclerView) {
 			adapter = listAdapter
 			addItemDecoration(decoration)

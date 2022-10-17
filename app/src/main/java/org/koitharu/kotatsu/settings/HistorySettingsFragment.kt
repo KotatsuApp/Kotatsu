@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.LocalStorageManager
+import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
@@ -39,6 +40,9 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	@Inject
 	lateinit var shikimoriRepository: ShikimoriRepository
+
+	@Inject
+	lateinit var malRepository: MALRepository
 
 	@Inject
 	lateinit var cookieJar: AndroidCookieJar
@@ -75,6 +79,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	override fun onResume() {
 		super.onResume()
 		bindShikimoriSummary()
+		bindMALSummary()
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -116,6 +121,15 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			AppSettings.KEY_SHIKIMORI -> {
 				if (!shikimoriRepository.isAuthorized) {
 					launchShikimoriAuth()
+					true
+				} else {
+					super.onPreferenceTreeClick(preference)
+				}
+			}
+
+			AppSettings.KEY_MAL -> {
+				if (!malRepository.isAuthorized) {
+					launchMALAuth()
 					true
 				} else {
 					super.onPreferenceTreeClick(preference)
@@ -197,6 +211,24 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 		runCatching {
 			val intent = Intent(Intent.ACTION_VIEW)
 			intent.data = Uri.parse(shikimoriRepository.oauthUrl)
+			startActivity(intent)
+		}.onFailure {
+			Snackbar.make(listView, it.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+		}
+	}
+
+	private fun bindMALSummary() {
+		findPreference<Preference>(AppSettings.KEY_MAL)?.summary = if (malRepository.isAuthorized) {
+			getString(R.string.logged_in_as, malRepository.getCachedUser()?.nickname)
+		} else {
+			getString(R.string.disabled)
+		}
+	}
+
+	private fun launchMALAuth() {
+		runCatching {
+			val intent = Intent(Intent.ACTION_VIEW)
+			intent.data = Uri.parse(malRepository.oauthUrl)
 			startActivity(intent)
 		}.onFailure {
 			Snackbar.make(listView, it.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
