@@ -266,7 +266,7 @@
     <string name="suggestions_excluded_genres">Genres ausschließen</string>
     <string name="suggestions_excluded_genres_summary">Geben Sie Genres an, die Sie nicht in den Vorschlägen sehen möchten</string>
     <string name="text_delete_local_manga_batch">Ausgewählte Elemente dauerhaft vom Gerät löschen\?</string>
-    <string name="batch_manga_save_confirm">Sind Sie sicher, dass Sie alle ausgewählten Mangas mit allen Kapiteln herunterladen möchten\? Diese Aktion kann eine Menge Datenverkehr und Speicherplatz verbrauchen</string>
+    <string name="batch_manga_save_confirm">Alle ausgewählten Mangas und ihre Kapitel herunterladen\? Das kann eine Menge Datenverkehr und Speicherplatz verbrauchen.</string>
     <string name="removal_completed">Entfernung abgeschlossen</string>
     <string name="download_slowdown">Download-Verzögerung</string>
     <string name="parallel_downloads">Parallele Downloads</string>
