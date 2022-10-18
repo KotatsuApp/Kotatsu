@@ -382,4 +382,8 @@
     <string name="color_correction_hint">Seçilen renk ayarları bu manga için hatırlanacaktır</string>
     <string name="text_unsaved_changes_prompt">Kaydedilmemiş değişiklikleriniz var, kaydetmek mi istersiniz yoksa, yoksaymak mı istersiniz\?</string>
     <string name="discard">Yoksay</string>
+    <string name="error_no_space_left">Cihazda yer yok</string>
+    <string name="webtoon_zoom">Webtoon yakınlaştırma</string>
+    <string name="webtoon_zoom_summary">Webtoon modunda yakınlaştırma hareketine izin ver (beta)</string>
+    <string name="reader_slider">Sayfa değiştirme kaydırıcısını göster</string>
 </resources>
