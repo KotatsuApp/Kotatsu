@@ -266,7 +266,7 @@
     <string name="suggestions_excluded_genres_summary">Укажите жанры, которые Вы не хотите видеть в рекомендациях</string>
     <string name="text_delete_local_manga_batch">Удалить выбранную мангу с накопителя?</string>
     <string name="removal_completed">Удаление завершено</string>
-    <string name="batch_manga_save_confirm">Загрузить выбранную мангу со всеми главами? Это может привести к большому расходу трафика и места на накопителе</string>
+    <string name="batch_manga_save_confirm">Загрузить выбранную мангу со всеми главами\? Это может привести к большому расходу трафика и места на накопителе.</string>
     <string name="parallel_downloads">Загружать параллельно</string>
     <string name="download_slowdown">Замедление загрузки</string>
     <string name="download_slowdown_summary">Помогает избежать блокировки IP-адреса</string>
@@ -381,9 +381,13 @@
     <string name="reader_control_ltr">Эргономичное управление режимом чтения</string>
     <string name="reset">Сбросить</string>
     <string name="discard">Отменить</string>
-    <string name="text_unsaved_changes_prompt">У вас есть несохраненные изменения, вы хотите сохранить или отменить их\?</string>
+    <string name="text_unsaved_changes_prompt">Сохранить или отменить не сохраненные изменения\?</string>
     <string name="contrast">Контрастность</string>
     <string name="brightness">Яркость</string>
     <string name="color_correction">Цветокоррекция</string>
     <string name="color_correction_hint">Выбранные настройки цвета запомнятся для этой манги</string>
+    <string name="error_no_space_left">Не осталось свободного места на накопителе</string>
+    <string name="webtoon_zoom">Масштабирование в режиме манхвы</string>
+    <string name="webtoon_zoom_summary">Позволяет включить масштабирование страниц в режиме манхвы (бета)</string>
+    <string name="reader_slider">Показывать слайдер переключения страниц</string>
 </resources>
