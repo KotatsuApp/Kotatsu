@@ -17,9 +17,10 @@ class MangaListMenuProvider(
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 		R.id.action_list_mode -> {
-			ListModeSelectDialog.show(fragment.childFragmentManager)
+			ListModeBottomSheet.show(fragment.childFragmentManager)
 			true
 		}
+
 		else -> false
 	}
 }

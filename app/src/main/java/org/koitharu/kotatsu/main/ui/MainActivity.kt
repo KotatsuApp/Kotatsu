@@ -152,11 +152,7 @@ class MainActivity :
 	}
 
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
-		if (fragment is ShelfFragment) {
-			binding.fab?.show()
-		} else {
-			binding.fab?.hide()
-		}
+		adjustFabVisibility(topFragment = fragment)
 		if (fromUser) {
 			binding.appbar.setExpanded(true)
 		}
@@ -329,18 +325,18 @@ class MainActivity :
 		topFragment: Fragment? = navigationDelegate.primaryFragment,
 		isSearchOpened: Boolean = isSearchOpened(),
 	) {
-		val fab = binding.fab
+		val fab = binding.fab ?: return
 		if (
 			isResumeEnabled &&
 			!actionModeDelegate.isActionModeStarted &&
 			!isSearchOpened &&
 			topFragment is ShelfFragment
 		) {
-			if (fab?.isVisible == false) {
+			if (!fab.isVisible) {
 				fab.show()
 			}
 		} else {
-			if (fab?.isVisible == true) {
+			if (fab.isVisible) {
 				fab.hide()
 			}
 		}

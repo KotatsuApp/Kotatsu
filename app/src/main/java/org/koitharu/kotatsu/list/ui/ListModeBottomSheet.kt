@@ -6,24 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.AlertDialogFragment
-import org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
+import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.DialogListModeBinding
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import org.koitharu.kotatsu.utils.progress.IntPercentLabelFormatter
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class ListModeSelectDialog :
-	AlertDialogFragment<DialogListModeBinding>(),
-	CheckableButtonGroup.OnCheckedChangeListener,
-	Slider.OnChangeListener {
+class ListModeBottomSheet :
+	BaseBottomSheet<DialogListModeBinding>(),
+	Slider.OnChangeListener,
+	MaterialButtonToggleGroup.OnButtonCheckedListener {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -32,13 +31,6 @@ class ListModeSelectDialog :
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = DialogListModeBinding.inflate(inflater, container, false)
-
-	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
-		return super.onBuildDialog(builder)
-			.setTitle(R.string.list_mode)
-			.setPositiveButton(R.string.done, null)
-			.setCancelable(true)
-	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
@@ -53,10 +45,10 @@ class ListModeSelectDialog :
 		binding.sliderGrid.setValueRounded(settings.gridSize.toFloat())
 		binding.sliderGrid.addOnChangeListener(this)
 
-		binding.checkableGroup.onCheckedChangeListener = this
+		binding.checkableGroup.addOnButtonCheckedListener(this)
 	}
 
-	override fun onCheckedChanged(group: CheckableButtonGroup, checkedId: Int) {
+	override fun onButtonChecked(group: MaterialButtonToggleGroup?, checkedId: Int, isChecked: Boolean) {
 		val mode = when (checkedId) {
 			R.id.button_list -> ListMode.LIST
 			R.id.button_list_detailed -> ListMode.DETAILED_LIST
@@ -78,6 +70,6 @@ class ListModeSelectDialog :
 
 		private const val TAG = "ListModeSelectDialog"
 
-		fun show(fm: FragmentManager) = ListModeSelectDialog().show(fm, TAG)
+		fun show(fm: FragmentManager) = ListModeBottomSheet().show(fm, TAG)
 	}
 }
