@@ -18,8 +18,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.ElementsIntoSet
-import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
@@ -40,9 +38,12 @@ import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import org.koitharu.kotatsu.settings.backup.BackupObserver
 import org.koitharu.kotatsu.sync.domain.SyncController
+import org.koitharu.kotatsu.utils.IncognitoModeIndicator
 import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.image.CoilImageGetter
 import org.koitharu.kotatsu.widget.WidgetUpdater
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -152,9 +153,11 @@ interface AppModule {
 		fun provideActivityLifecycleCallbacks(
 			appProtectHelper: AppProtectHelper,
 			activityRecreationHandle: ActivityRecreationHandle,
+			incognitoModeIndicator: IncognitoModeIndicator,
 		): Set<@JvmSuppressWildcards Application.ActivityLifecycleCallbacks> = arraySetOf(
 			appProtectHelper,
 			activityRecreationHandle,
+			incognitoModeIndicator,
 		)
 	}
 }
