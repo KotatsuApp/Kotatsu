@@ -43,6 +43,9 @@ abstract class TracksDao {
 	@Query("DELETE FROM tracks")
 	abstract suspend fun clear()
 
+	@Query("UPDATE tracks SET chapters_new = 0")
+	abstract suspend fun clearCounters()
+
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(entity: TrackEntity): Long
 

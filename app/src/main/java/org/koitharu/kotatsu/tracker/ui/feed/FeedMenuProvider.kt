@@ -6,9 +6,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.core.view.MenuProvider
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 
@@ -39,13 +39,15 @@ class FeedMenuProvider(
 		}
 
 		R.id.action_clear_feed -> {
-			MaterialAlertDialogBuilder(context)
+			CheckBoxAlertDialog.Builder(context)
 				.setTitle(R.string.clear_updates_feed)
 				.setMessage(R.string.text_clear_updates_feed_prompt)
 				.setNegativeButton(android.R.string.cancel, null)
-				.setPositiveButton(R.string.clear) { _, _ ->
-					viewModel.clearFeed()
-				}.show()
+				.setCheckBoxChecked(true)
+				.setCheckBoxText(R.string.clear_new_chapters_counters)
+				.setPositiveButton(R.string.clear) { _, isChecked ->
+					viewModel.clearFeed(isChecked)
+				}.create().show()
 			true
 		}
 

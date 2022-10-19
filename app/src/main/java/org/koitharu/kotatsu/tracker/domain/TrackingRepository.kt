@@ -98,6 +98,8 @@ class TrackingRepository @Inject constructor(
 
 	suspend fun clearLogs() = db.trackLogsDao.clear()
 
+	suspend fun clearCounters() = db.tracksDao.clearCounters()
+
 	suspend fun gc() {
 		db.withTransaction {
 			db.tracksDao.gc()
