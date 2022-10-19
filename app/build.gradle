@@ -123,8 +123,8 @@ dependencies {
 	implementation 'androidx.hilt:hilt-work:1.0.0'
 	kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
-	implementation 'io.coil-kt:coil-base:2.2.1'
-	implementation 'io.coil-kt:coil-svg:2.2.1'
+	implementation 'io.coil-kt:coil-base:2.2.2'
+	implementation 'io.coil-kt:coil-svg:2.2.2'
 	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:0ff0278f0f'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
@@ -134,7 +134,7 @@ dependencies {
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
 	testImplementation 'junit:junit:4.13.2'
-	testImplementation 'org.json:json:20220320'
+	testImplementation 'org.json:json:20220924'
 	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
 	androidTestImplementation 'androidx.test:runner:1.4.0'
