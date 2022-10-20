@@ -394,4 +394,5 @@
     <string name="network_unavailable_hint">打开 Wi-Fi 或移动网络在线阅读漫画</string>
     <string name="clear_new_chapters_counters">同样清除新章节信息</string>
     <string name="server_error">服务器端错误 (%1$d)。请稍后再试</string>
+    <string name="compact">紧凑</string>
 </resources>
