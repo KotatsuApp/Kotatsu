@@ -393,4 +393,6 @@
     <string name="network_unavailable_hint">Включите Wi-Fi или передачу данных, чтобы читать мангу онлайн</string>
     <string name="different_languages">Разные языки</string>
     <string name="network_unavailable">Сеть недоступна</string>
+    <string name="clear_new_chapters_counters">Также очистить информацию о новых главах</string>
+    <string name="server_error">Внутренняя ошибка сервера (%1$d). Повторите попытку позже</string>
 </resources>
