@@ -331,4 +331,12 @@
     <string name="brightness">Lysstyrke</string>
     <string name="color_correction">Fargekorrigering</string>
     <string name="text_unsaved_changes_prompt">Lagre eller forkast ulagrede endringer\?</string>
+    <string name="compact">Kompakt</string>
+    <string name="disable_all">Skru av alle</string>
+    <string name="use_fingerprint">Bruk fingeravtrykk hvis tilgjengelig</string>
+    <string name="network_unavailable_hint">Skru på Wi-Fi eller mobilnettverk for å lese manga på nett</string>
+    <string name="notifications_enable">Skru på merknader</string>
+    <string name="show_reading_indicators">Vis indikatorer for leseforløp</string>
+    <string name="data_deletion">Datasletting</string>
+    <string name="exit_confirmation">Avsluttingsbekreftelse</string>
 </resources>
