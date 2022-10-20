@@ -83,7 +83,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:a62662d116') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:a1441e7ed7') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -103,7 +103,7 @@ dependencies {
 	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.work:work-runtime-ktx:2.7.1'
 	implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha05'
-	implementation 'com.google.android.material:material:1.7.0-rc01'
+	implementation 'com.google.android.material:material:1.7.0'
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.5.1'
 
