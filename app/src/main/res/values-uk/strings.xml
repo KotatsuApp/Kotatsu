@@ -211,7 +211,7 @@
     <string name="suggestions_updating">Оновлення пропозицій</string>
     <string name="text_delete_local_manga_batch">Видалити вибрані елементи з пристрою назавжди\?</string>
     <string name="removal_completed">Видалення завершено</string>
-    <string name="batch_manga_save_confirm">Ви впевнені, що хочете завантажити всю вибрану манґу з усіма її розділами\? Це може споживати багато трафіку та пам’яті</string>
+    <string name="batch_manga_save_confirm">Завантажити всю вибрану манґу з усіма її розділами\? Це може споживати багато трафіку та пам’яті.</string>
     <string name="parallel_downloads">Завантажувати паралельно</string>
     <string name="download_slowdown">Сповільнення завантаження</string>
     <string name="local_manga_processing">Обробка збереженої манґи</string>
@@ -292,7 +292,7 @@
     <string name="removed_from_history">Видалено з історії</string>
     <string name="dns_over_https">DNS через HTTPS</string>
     <string name="default_mode">Режим за замовчуванням</string>
-    <string name="detect_reader_mode_summary">Автоматично визначати, чи є манга вебтуном</string>
+    <string name="detect_reader_mode_summary">Автоматично визначати, чи є манґа вебтуном</string>
     <string name="detect_reader_mode">Автовизначення режиму читання</string>
     <string name="disable_battery_optimization">Вимкнути оптимізацію акумулятора</string>
     <string name="disable_battery_optimization_summary">Допомагає з перевірками фонових оновлень</string>
@@ -383,6 +383,15 @@
     <string name="contrast">Контрастність</string>
     <string name="reset">Скинути</string>
     <string name="color_correction_hint">Вибрані параметри кольору будуть запам\'ятовані для цієї манґи</string>
-    <string name="text_unsaved_changes_prompt">У вас є незбережені зміни, ви хочете зберегти чи скасувати їх\?</string>
+    <string name="text_unsaved_changes_prompt">Зберегти чи скасувати незбережені зміни\?</string>
     <string name="discard">Скасувати</string>
+    <string name="server_error">Помилка на стороні сервера (%1$d). Будь ласка спробуйте пізніше</string>
+    <string name="clear_new_chapters_counters">Також очистити інформацію про нові розділи</string>
+    <string name="error_no_space_left">На пристрої не залишилося вільного місця</string>
+    <string name="different_languages">Різні мови</string>
+    <string name="network_unavailable">Мережа недоступна</string>
+    <string name="network_unavailable_hint">Увімкніть Wi-Fi або мобільну мережу, щоб читати манґу онлайн</string>
+    <string name="webtoon_zoom">Масштабування в режимі вебтуну</string>
+    <string name="webtoon_zoom_summary">Дозволити жести збільшення/зменшення масштабу в режимі вебтуну (бета)</string>
+    <string name="reader_slider">Відображати повзунок перемикання сторінок</string>
 </resources>
