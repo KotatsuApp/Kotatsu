@@ -267,7 +267,7 @@
     <string name="suggestions_excluded_genres_summary">サジェストで表示したくないジャンルを指定</string>
     <string name="text_delete_local_manga_batch">選択した項目をデバイスから完全に削除しますか？</string>
     <string name="removal_completed">削除が完了しました</string>
-    <string name="batch_manga_save_confirm">本当に選択したマンガを全編ダウンロードしますか？この動作は多くのトラフィックとストレージを消費する可能性があります</string>
+    <string name="batch_manga_save_confirm">選択したマンガとそのチャプターをすべてダウンロードしますか？これは、多くのトラフィックとストレージを消費する可能性があります。</string>
     <string name="download_slowdown_summary">IPアドレスのブロックを回避することができます</string>
     <string name="local_manga_processing">保存されたマンガの処理</string>
     <string name="download_slowdown">ダウンロードの速度低下</string>
@@ -383,9 +383,16 @@
     <string name="brightness">輝度</string>
     <string name="contrast">コントラスト</string>
     <string name="reset">リセット</string>
-    <string name="text_unsaved_changes_prompt">未保存の変更がありますが、保存しますか、それとも破棄しますか？</string>
+    <string name="text_unsaved_changes_prompt">未保存の変更を保存または破棄しますか\?</string>
     <string name="color_correction_hint">選択した色の設定は、この漫画のために記憶されます</string>
     <string name="discard">破棄</string>
     <string name="error_no_space_left">デバイスに空き容量がありません</string>
     <string name="reader_slider">ページ切り替えスライダーを表示</string>
+    <string name="server_error">サーバーサイドエラー (%1$d) です。後で再試行してください</string>
+    <string name="clear_new_chapters_counters">新しいチャプターの情報も明確に</string>
+    <string name="different_languages">さまざまな言語</string>
+    <string name="network_unavailable">ネットワークが利用できません</string>
+    <string name="network_unavailable_hint">Wi-Fiまたはモバイルネットワークをオンにして、オンラインでマンガを読むことができます</string>
+    <string name="webtoon_zoom">Webtoonズーム</string>
+    <string name="webtoon_zoom_summary">ウェブトゥーンモードでズームイン/ズームアウトのジェスチャーを可能にする（ベータ版）</string>
 </resources>
