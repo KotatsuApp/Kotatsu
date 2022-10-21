@@ -58,6 +58,7 @@ import org.koitharu.kotatsu.utils.ext.isReportable
 import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 import org.koitharu.kotatsu.utils.ext.postDelayed
 import org.koitharu.kotatsu.utils.ext.report
+import org.koitharu.kotatsu.utils.ext.setValueRounded
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -388,7 +389,7 @@ class ReaderActivity :
 		}
 		if (uiState.isSliderAvailable()) {
 			binding.slider.valueTo = uiState.totalPages.toFloat() - 1
-			binding.slider.value = uiState.currentPage.toFloat()
+			binding.slider.setValueRounded(uiState.currentPage.toFloat())
 			binding.slider.isVisible = true
 		} else {
 			binding.slider.isVisible = false
