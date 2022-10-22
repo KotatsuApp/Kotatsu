@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 500
-		versionName '4.0'
+		versionCode 501
+		versionName '4.0.1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -125,7 +125,7 @@ dependencies {
 
 	implementation 'io.coil-kt:coil-base:2.2.2'
 	implementation 'io.coil-kt:coil-svg:2.2.2'
-	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:0ff0278f0f'
+	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:f8a38b08fe'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 
 	implementation 'ch.acra:acra-http:5.9.6'
