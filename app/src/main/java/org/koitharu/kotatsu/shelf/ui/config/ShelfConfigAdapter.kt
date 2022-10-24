@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.shelf.ui.config.categories
+package org.koitharu.kotatsu.shelf.ui.config
 
 import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter

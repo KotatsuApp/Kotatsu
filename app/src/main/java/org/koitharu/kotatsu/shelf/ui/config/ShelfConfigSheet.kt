@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.shelf.ui.config.categories
+package org.koitharu.kotatsu.shelf.ui.config
 
 import android.os.Bundle
 import android.view.LayoutInflater

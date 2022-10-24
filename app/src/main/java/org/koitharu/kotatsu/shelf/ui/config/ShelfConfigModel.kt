@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.shelf.ui.config.categories
+package org.koitharu.kotatsu.shelf.ui.config
 
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.shelf.domain.ShelfSection

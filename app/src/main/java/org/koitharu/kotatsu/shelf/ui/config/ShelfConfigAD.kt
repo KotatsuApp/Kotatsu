@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.shelf.ui.config.categories
+package org.koitharu.kotatsu.shelf.ui.config
 
 import androidx.core.view.updatePaddingRelative
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding

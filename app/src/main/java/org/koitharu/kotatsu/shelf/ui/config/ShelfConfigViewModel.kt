@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.shelf.ui.config.categories
+package org.koitharu.kotatsu.shelf.ui.config
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,10 +39,15 @@ class ShelfConfigViewModel @Inject constructor(
 				}
 
 				is ShelfConfigModel.Section -> {
-					if (item.isChecked) {
-						settings.shelfSections -= item.section
+					val sections = settings.shelfSections
+					settings.shelfSections = if (item.isChecked) {
+						if (sections.size > 1) {
+							sections - item.section
+						} else {
+							return@launchJob
+						}
 					} else {
-						settings.shelfSections += item.section
+						sections + item.section
 					}
 				}
 			}
