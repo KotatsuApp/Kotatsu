@@ -7,6 +7,7 @@ import android.net.NetworkRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.onSuccess
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,8 @@ class NetworkStateObserver @Inject constructor(
 	override val replayCache: List<Boolean>
 		get() = listOf(value)
 
-	override var value: Boolean = connectivityManager.isNetworkAvailable
+	override val value: Boolean
+		get() = connectivityManager.isNetworkAvailable
 
 	override suspend fun collect(collector: FlowCollector<Boolean>): Nothing {
 		collector.emit(value)
@@ -44,9 +46,12 @@ class NetworkStateObserver @Inject constructor(
 		}
 	}
 
-	inner class FlowNetworkCallback(
+	private inner class FlowNetworkCallback(
 		private val producerScope: ProducerScope<Boolean>,
 	) : NetworkCallback() {
+
+		private var prevValue = value
+
 		override fun onAvailable(network: Network) = update()
 
 		override fun onLost(network: Network) = update()
@@ -55,9 +60,10 @@ class NetworkStateObserver @Inject constructor(
 
 		private fun update() {
 			val newValue = connectivityManager.isNetworkAvailable
-			if (value != newValue) {
-				value = newValue
-				producerScope.trySendBlocking(newValue)
+			if (newValue != prevValue) {
+				producerScope.trySendBlocking(newValue).onSuccess {
+					prevValue = newValue
+				}
 			}
 		}
 	}
