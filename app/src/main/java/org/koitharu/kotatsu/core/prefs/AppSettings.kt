@@ -16,6 +16,8 @@ import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.shelf.domain.ShelfSection
 import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
@@ -44,13 +46,22 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val remoteMangaSources: Set<MangaSource>
 		get() = Collections.unmodifiableSet(remoteSources)
 
+	var shelfSections: Set<ShelfSection>
+		get() {
+			val raw = prefs.getStringSet(KEY_SHELF_SECTIONS, null)
+			if (raw == null) {
+				return EnumSet.allOf(ShelfSection::class.java)
+			}
+			return raw.mapTo(EnumSet.noneOf(ShelfSection::class.java)) { ShelfSection.valueOf(it) }
+		}
+		set(value) {
+			val raw = value.mapToSet { it.name }
+			prefs.edit { putStringSet(KEY_SHELF_SECTIONS, raw) }
+		}
+
 	var listMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)
 		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE, value) }
-
-	var defaultSection: AppSection
-		get() = prefs.getEnumValue(KEY_APP_SECTION, AppSection.HISTORY)
-		set(value) = prefs.edit { putEnumValue(KEY_APP_SECTION, value) }
 
 	val theme: Int
 		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -341,6 +352,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
 		const val KEY_LOCAL_LIST_ORDER = "local_order"
 		const val KEY_WEBTOON_ZOOM = "webtoon_zoom"
+		const val KEY_SHELF_SECTIONS = "shelf_sections"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

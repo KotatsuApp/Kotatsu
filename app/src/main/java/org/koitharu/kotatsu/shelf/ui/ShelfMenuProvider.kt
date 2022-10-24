@@ -12,7 +12,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.RememberSelectionDialogListener
-import org.koitharu.kotatsu.shelf.ui.config.categories.ShelfCategoriesConfigSheet
+import org.koitharu.kotatsu.shelf.ui.config.categories.ShelfConfigSheet
 import org.koitharu.kotatsu.shelf.ui.config.size.ShelfSizeBottomSheet
 import org.koitharu.kotatsu.local.ui.ImportDialogFragment
 import org.koitharu.kotatsu.utils.ext.startOfDay
@@ -33,18 +33,22 @@ class ShelfMenuProvider(
 				showClearHistoryDialog()
 				true
 			}
+
 			R.id.action_grid_size -> {
 				ShelfSizeBottomSheet.show(fragmentManager)
 				true
 			}
+
 			R.id.action_import -> {
 				ImportDialogFragment.show(fragmentManager)
 				true
 			}
+
 			R.id.action_categories -> {
-				ShelfCategoriesConfigSheet.show(fragmentManager)
+				ShelfConfigSheet.show(fragmentManager)
 				true
 			}
+
 			else -> false
 		}
 	}

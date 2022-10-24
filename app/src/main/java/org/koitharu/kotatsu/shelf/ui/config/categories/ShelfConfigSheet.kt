@@ -11,16 +11,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.SheetBaseBinding
 
 @AndroidEntryPoint
-class ShelfCategoriesConfigSheet :
+class ShelfConfigSheet :
 	BaseBottomSheet<SheetBaseBinding>(),
-	OnListItemClickListener<FavouriteCategory>,
+	OnListItemClickListener<ShelfConfigModel>,
 	View.OnClickListener {
 
-	private val viewModel by viewModels<ShelfCategoriesConfigViewModel>()
+	private val viewModel by viewModels<ShelfConfigViewModel>()
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetBaseBinding {
 		return SheetBaseBinding.inflate(inflater, container, false)
@@ -28,16 +27,16 @@ class ShelfCategoriesConfigSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		binding.headerBar.toolbar.setTitle(R.string.favourites_categories)
+		binding.headerBar.setTitle(R.string.settings)
 		binding.buttonDone.isVisible = true
 		binding.buttonDone.setOnClickListener(this)
-		val adapter = ShelfCategoriesConfigAdapter(this)
+		val adapter = ShelfConfigAdapter(this)
 		binding.recyclerView.adapter = adapter
 
 		viewModel.content.observe(viewLifecycleOwner) { adapter.items = it }
 	}
 
-	override fun onItemClick(item: FavouriteCategory, view: View) {
+	override fun onItemClick(item: ShelfConfigModel, view: View) {
 		viewModel.toggleItem(item)
 	}
 
@@ -49,6 +48,6 @@ class ShelfCategoriesConfigSheet :
 
 		private const val TAG = "ShelfCategoriesConfigSheet"
 
-		fun show(fm: FragmentManager) = ShelfCategoriesConfigSheet().show(fm, TAG)
+		fun show(fm: FragmentManager) = ShelfConfigSheet().show(fm, TAG)
 	}
 }

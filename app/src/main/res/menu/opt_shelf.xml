@@ -12,7 +12,7 @@
 	<item
 		android:id="@+id/action_categories"
 		android:orderInCategory="50"
-		android:title="@string/categories_"
+		android:title="@string/settings"
 		app:showAsAction="never" />
 
 	<item

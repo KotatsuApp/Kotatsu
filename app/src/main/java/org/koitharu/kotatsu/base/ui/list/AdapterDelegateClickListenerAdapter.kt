@@ -6,7 +6,7 @@ import android.view.View.OnLongClickListener
 import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateViewBindingViewHolder
 
 class AdapterDelegateClickListenerAdapter<I>(
-	private val adapterDelegate: AdapterDelegateViewBindingViewHolder<I, *>,
+	private val adapterDelegate: AdapterDelegateViewBindingViewHolder<out I, *>,
 	private val clickListener: OnListItemClickListener<I>,
 ) : OnClickListener, OnLongClickListener {
 

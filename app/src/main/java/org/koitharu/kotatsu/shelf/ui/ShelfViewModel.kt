@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
@@ -29,8 +30,9 @@ import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.shelf.domain.ShelfContent
 import org.koitharu.kotatsu.shelf.domain.ShelfRepository
+import org.koitharu.kotatsu.shelf.domain.ShelfSection
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
@@ -44,19 +46,17 @@ class ShelfViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
-	private val networkStateObserver: NetworkStateObserver,
+	networkStateObserver: NetworkStateObserver,
 ) : BaseViewModel(), ListExtraProvider {
 
 	val onActionDone = SingleLiveEvent<ReversibleAction>()
 
 	val content: LiveData<List<ListModel>> = combine(
+		settings.observeAsFlow(AppSettings.KEY_SHELF_SECTIONS) { shelfSections },
 		networkStateObserver,
-		historyRepository.observeAllWithHistory(),
-		repository.observeLocalManga(SortOrder.UPDATED),
-		repository.observeFavourites(),
-		trackingRepository.observeUpdatedManga(),
-	) { isConnected, history, local, favourites, updated ->
-		mapList(history, favourites, updated, local, isConnected)
+		repository.observeShelfContent(),
+	) { sections, isConnected, content ->
+		mapList(content, sections, isConnected)
 	}.debounce(500)
 		.catch { e ->
 			emit(listOf(e.toErrorState(canRetry = false)))
@@ -134,25 +134,23 @@ class ShelfViewModel @Inject constructor(
 	}
 
 	private suspend fun mapList(
-		history: List<MangaWithHistory>,
-		favourites: Map<FavouriteCategory, List<Manga>>,
-		updated: Map<Manga, Int>,
-		local: List<Manga>,
+		content: ShelfContent,
+		sections: Set<ShelfSection>,
 		isNetworkAvailable: Boolean,
 	): List<ListModel> {
-		val result = ArrayList<ListModel>(favourites.keys.size + 3)
+		val result = ArrayList<ListModel>(content.favourites.keys.size + 3)
 		if (isNetworkAvailable) {
-			if (history.isNotEmpty()) {
-				mapHistory(result, history)
+			if (content.history.isNotEmpty() && ShelfSection.HISTORY in sections) {
+				mapHistory(result, content.history)
 			}
-			if (local.isNotEmpty()) {
-				mapLocal(result, local)
+			if (content.local.isNotEmpty() && ShelfSection.LOCAL in sections) {
+				mapLocal(result, content.local)
 			}
-			if (updated.isNotEmpty()) {
-				mapUpdated(result, updated)
+			if (content.updated.isNotEmpty() && ShelfSection.UPDATED in sections) {
+				mapUpdated(result, content.updated)
 			}
-			if (favourites.isNotEmpty()) {
-				mapFavourites(result, favourites)
+			if (content.favourites.isNotEmpty() && ShelfSection.FAVORITES in sections) {
+				mapFavourites(result, content.favourites)
 			}
 		} else {
 			result += EmptyHint(
@@ -161,12 +159,12 @@ class ShelfViewModel @Inject constructor(
 				textSecondary = R.string.network_unavailable_hint,
 				actionStringRes = R.string.manage,
 			)
-			val offlineHistory = history.filter { it.manga.source == MangaSource.LOCAL }
-			if (offlineHistory.isNotEmpty()) {
+			val offlineHistory = content.history.filter { it.manga.source == MangaSource.LOCAL }
+			if (offlineHistory.isNotEmpty() && ShelfSection.HISTORY in sections) {
 				mapHistory(result, offlineHistory)
 			}
-			if (local.isNotEmpty()) {
-				mapLocal(result, local)
+			if (content.local.isNotEmpty() && ShelfSection.LOCAL in sections) {
+				mapLocal(result, content.local)
 			}
 		}
 		if (result.isEmpty()) {
