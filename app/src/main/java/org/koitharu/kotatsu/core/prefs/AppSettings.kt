@@ -339,6 +339,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
 		const val KEY_SHIKIMORI = "shikimori"
+		const val KEY_ANILIST = "anilist"
 		const val KEY_DOWNLOADS_PARALLELISM = "downloads_parallelism"
 		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"

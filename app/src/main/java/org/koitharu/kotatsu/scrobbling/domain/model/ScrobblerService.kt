@@ -10,5 +10,6 @@ enum class ScrobblerService(
 	@DrawableRes val iconResId: Int,
 ) {
 
-	SHIKIMORI(1, R.string.shikimori, R.drawable.ic_shikimori)
+	SHIKIMORI(1, R.string.shikimori, R.drawable.ic_shikimori),
+	ANILIST(2, R.string.anilist, R.drawable.ic_anilist),
 }

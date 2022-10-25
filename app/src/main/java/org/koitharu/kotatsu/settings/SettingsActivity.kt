@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.scrobbling.anilist.ui.AniListSettingsFragment
 import org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
@@ -78,6 +79,7 @@ class SettingsActivity :
 			startActivity(intent)
 			true
 		}
+
 		else -> super.onOptionsItemSelected(item)
 	}
 
@@ -132,6 +134,7 @@ class SettingsActivity :
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
 			)
+
 			ACTION_MANAGE_SOURCES -> SourcesSettingsFragment()
 			else -> SettingsHeadersFragment()
 		}
@@ -145,6 +148,9 @@ class SettingsActivity :
 		when (uri?.host) {
 			HOST_SHIKIMORI_AUTH ->
 				return ShikimoriSettingsFragment.newInstance(authCode = uri.getQueryParameter("code"))
+
+			HOST_ANILIST_AUTH ->
+				return AniListSettingsFragment.newInstance(authCode = uri.getQueryParameter("code"))
 		}
 		finishAfterTransition()
 		return null
@@ -162,6 +168,7 @@ class SettingsActivity :
 		private const val EXTRA_SOURCE = "source"
 
 		private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
+		private const val HOST_ANILIST_AUTH = "anilist-auth"
 
 		fun newIntent(context: Context) = Intent(context, SettingsActivity::class.java)
 

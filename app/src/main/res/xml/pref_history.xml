@@ -23,8 +23,15 @@
 
 		<PreferenceScreen
 			android:fragment="org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment"
+			android:icon="@drawable/ic_shikimori"
 			android:key="shikimori"
 			android:title="@string/shikimori" />
+
+		<PreferenceScreen
+			android:fragment="org.koitharu.kotatsu.scrobbling.anilist.ui.AniListSettingsFragment"
+			android:icon="@drawable/ic_anilist"
+			android:key="anilist"
+			android:title="@string/anilist" />
 
 	</PreferenceCategory>
 

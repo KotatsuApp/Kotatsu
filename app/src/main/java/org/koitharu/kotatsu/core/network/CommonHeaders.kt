@@ -7,6 +7,7 @@ object CommonHeaders {
 	const val REFERER = "Referer"
 	const val USER_AGENT = "User-Agent"
 	const val ACCEPT = "Accept"
+	const val CONTENT_TYPE = "Content-Type"
 	const val CONTENT_DISPOSITION = "Content-Disposition"
 	const val COOKIE = "Cookie"
 	const val CONTENT_ENCODING = "Content-Encoding"
