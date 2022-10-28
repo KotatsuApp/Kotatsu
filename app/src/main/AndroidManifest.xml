@@ -139,6 +139,9 @@
 		<activity
 			android:name="org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity"
 			android:label="@string/color_correction" />
+		<activity
+			android:name="org.koitharu.kotatsu.shelf.ui.config.ShelfSettingsActivity"
+			android:label="@string/settings" />
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
