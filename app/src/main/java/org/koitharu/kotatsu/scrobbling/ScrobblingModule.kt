@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.scrobbling
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.ElementsIntoSet
 import okhttp3.OkHttpClient
@@ -10,13 +12,14 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListAuthenticator
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListInterceptor
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
-import org.koitharu.kotatsu.scrobbling.anilist.data.AniListStorage
 import org.koitharu.kotatsu.scrobbling.anilist.domain.AniListScrobbler
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerType
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriAuthenticator
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriInterceptor
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
-import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriStorage
 import org.koitharu.kotatsu.scrobbling.shikimori.domain.ShikimoriScrobbler
 import javax.inject.Singleton
 
@@ -27,7 +30,7 @@ object ScrobblingModule {
 	@Provides
 	@Singleton
 	fun provideShikimoriRepository(
-		storage: ShikimoriStorage,
+		@ScrobblerType(ScrobblerService.SHIKIMORI) storage: ScrobblerStorage,
 		database: MangaDatabase,
 		authenticator: ShikimoriAuthenticator,
 	): ShikimoriRepository {
@@ -41,7 +44,7 @@ object ScrobblingModule {
 	@Provides
 	@Singleton
 	fun provideAniListRepository(
-		storage: AniListStorage,
+		@ScrobblerType(ScrobblerService.ANILIST) storage: ScrobblerStorage,
 		database: MangaDatabase,
 		authenticator: AniListAuthenticator,
 	): AniListRepository {
@@ -51,6 +54,20 @@ object ScrobblingModule {
 		}.build()
 		return AniListRepository(okHttp, storage, database)
 	}
+
+	@Provides
+	@Singleton
+	@ScrobblerType(ScrobblerService.ANILIST)
+	fun provideAniListStorage(
+		@ApplicationContext context: Context,
+	): ScrobblerStorage = ScrobblerStorage(context, ScrobblerService.ANILIST)
+
+	@Provides
+	@Singleton
+	@ScrobblerType(ScrobblerService.SHIKIMORI)
+	fun provideShikimoriStorage(
+		@ApplicationContext context: Context,
+	): ScrobblerStorage = ScrobblerStorage(context, ScrobblerService.SHIKIMORI)
 
 	@Provides
 	@ElementsIntoSet

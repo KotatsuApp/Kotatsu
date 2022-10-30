@@ -201,7 +201,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	private fun bindShikimoriSummary() {
 		findPreference<Preference>(AppSettings.KEY_SHIKIMORI)?.summary = if (shikimoriRepository.isAuthorized) {
-			getString(R.string.logged_in_as, shikimoriRepository.getCachedUser()?.nickname)
+			getString(R.string.logged_in_as, shikimoriRepository.cachedUser?.nickname)
 		} else {
 			getString(R.string.disabled)
 		}
@@ -209,7 +209,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	private fun bindAniListSummary() {
 		findPreference<Preference>(AppSettings.KEY_ANILIST)?.summary = if (aniListRepository.isAuthorized) {
-			getString(R.string.logged_in_as, aniListRepository.getCachedUser()?.nickname)
+			getString(R.string.logged_in_as, aniListRepository.cachedUser?.nickname)
 		} else {
 			getString(R.string.disabled)
 		}

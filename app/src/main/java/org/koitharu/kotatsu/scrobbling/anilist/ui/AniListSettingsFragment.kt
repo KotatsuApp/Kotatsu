@@ -11,7 +11,7 @@ import coil.transform.CircleCropTransformation
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.scrobbling.anilist.data.model.AniListUser
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.utils.PreferenceIconTarget
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.enqueueWith
@@ -52,7 +52,7 @@ class AniListSettingsFragment : BasePreferenceFragment(R.string.anilist) {
 		}
 	}
 
-	private fun onUserChanged(user: AniListUser?) {
+	private fun onUserChanged(user: ScrobblerUser?) {
 		val pref = findPreference<Preference>(KEY_USER) ?: return
 		pref.isSelectable = user == null
 		pref.title = user?.nickname ?: getString(R.string.sign_in)

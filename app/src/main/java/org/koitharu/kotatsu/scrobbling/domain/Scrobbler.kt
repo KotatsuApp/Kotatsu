@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerMangaInfo
@@ -21,18 +22,27 @@ import java.util.EnumMap
 abstract class Scrobbler(
 	protected val db: MangaDatabase,
 	val scrobblerService: ScrobblerService,
+	private val repository: ScrobblerRepository,
 ) {
 
 	private val infoCache = LongSparseArray<ScrobblerMangaInfo>()
 	protected val statuses = EnumMap<ScrobblingStatus, String>(ScrobblingStatus::class.java)
 
-	abstract val isAvailable: Boolean
+	val isAvailable: Boolean
+		get() = repository.isAuthorized
 
-	abstract suspend fun findManga(query: String, offset: Int): List<ScrobblerManga>
+	suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
+		return repository.findManga(query, offset)
+	}
 
-	abstract suspend fun linkManga(mangaId: Long, targetId: Long)
+	suspend fun linkManga(mangaId: Long, targetId: Long) {
+		repository.createRate(mangaId, targetId)
+	}
 
-	abstract suspend fun scrobble(mangaId: Long, chapter: MangaChapter)
+	suspend fun scrobble(mangaId: Long, chapter: MangaChapter) {
+		val entity = db.scrobblingDao.find(scrobblerService.id, mangaId) ?: return
+		repository.updateRate(entity.id, entity.mangaId, chapter)
+	}
 
 	suspend fun getScrobblingInfoOrNull(mangaId: Long): ScrobblingInfo? {
 		val entity = db.scrobblingDao.find(scrobblerService.id, mangaId) ?: return null
@@ -46,9 +56,13 @@ abstract class Scrobbler(
 			.map { it?.toScrobblingInfo(mangaId) }
 	}
 
-	abstract suspend fun unregisterScrobbling(mangaId: Long)
+	suspend fun unregisterScrobbling(mangaId: Long) {
+		repository.unregister(mangaId)
+	}
 
-	protected abstract suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo
+	protected suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
+		return repository.getMangaInfo(id)
+	}
 
 	private suspend fun ScrobblingEntity.toScrobblingInfo(mangaId: Long): ScrobblingInfo? {
 		val mangaInfo = infoCache.getOrElse(targetId) {

@@ -15,13 +15,13 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.parseJson
-import org.koitharu.kotatsu.parsers.util.parseJsonArray
-import org.koitharu.kotatsu.parsers.util.toAbsoluteUrl
-import org.koitharu.kotatsu.scrobbling.anilist.data.model.AniListUser
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerRepository
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerMangaInfo
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.utils.ext.toRequestBody
 
 private const val REDIRECT_URI = "kotatsu://anilist-auth"
@@ -31,18 +31,18 @@ private const val MANGA_PAGE_SIZE = 10
 
 class AniListRepository(
 	private val okHttp: OkHttpClient,
-	private val storage: AniListStorage,
+	private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
-) {
+) : ScrobblerRepository {
 
-	val oauthUrl: String
+	override val oauthUrl: String
 		get() = "${BASE_URL}oauth/authorize?client_id=${BuildConfig.ANILIST_CLIENT_ID}&" +
 			"redirect_uri=${REDIRECT_URI}&response_type=code"
 
-	val isAuthorized: Boolean
+	override val isAuthorized: Boolean
 		get() = storage.accessToken != null
 
-	suspend fun authorize(code: String?) {
+	override suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
 		body.add("client_id", BuildConfig.ANILIST_CLIENT_ID)
 		body.add("client_secret", BuildConfig.ANILIST_CLIENT_SECRET)
@@ -62,7 +62,7 @@ class AniListRepository(
 		storage.refreshToken = response.getString("refresh_token")
 	}
 
-	suspend fun loadUser(): AniListUser {
+	override suspend fun loadUser(): ScrobblerUser {
 		val response = query(
 			"""
 			AniChartUser {
@@ -80,57 +80,61 @@ class AniListRepository(
 		return AniListUser(jo).also { storage.user = it }
 	}
 
-	fun getCachedUser(): AniListUser? {
-		return storage.user
-	}
+	override val cachedUser: ScrobblerUser?
+		get() {
+			return storage.user
+		}
 
-	suspend fun unregister(mangaId: Long) {
+	override suspend fun unregister(mangaId: Long) {
 		return db.scrobblingDao.delete(ScrobblerService.SHIKIMORI.id, mangaId)
 	}
 
-	fun logout() {
+	override fun logout() {
 		storage.clear()
 	}
 
-	suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
+	override suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
 		val page = offset / MANGA_PAGE_SIZE
-		val pageOffset = offset % MANGA_PAGE_SIZE
-		val url = BASE_URL.toHttpUrl().newBuilder()
-			.addPathSegment("api")
-			.addPathSegment("mangas")
-			.addEncodedQueryParameter("page", (page + 1).toString())
-			.addEncodedQueryParameter("limit", MANGA_PAGE_SIZE.toString())
-			.addEncodedQueryParameter("censored", false.toString())
-			.addQueryParameter("search", query)
-			.build()
-		val request = Request.Builder().url(url).get().build()
-		val response = okHttp.newCall(request).await().parseJsonArray()
-		val list = response.mapJSON { ScrobblerManga(it) }
-		return if (pageOffset != 0) list.drop(pageOffset) else list
+		val response = query(
+			"""
+			Page(page: $page, perPage: ${MANGA_PAGE_SIZE}) {
+				media(type: MANGA, isAdult: true, sort: SEARCH_MATCH, search: "${JSONObject.quote(query)}") {
+					id
+					title {
+						userPreferred
+						native
+					}
+					coverImage {
+						medium
+					}
+					siteUrl
+				}
+			}
+		""".trimIndent(),
+		)
+		val data = response.getJSONObject("data").getJSONObject("Page").getJSONArray("media")
+		return data.mapJSON { ScrobblerManga(it) }
 	}
 
-	suspend fun createRate(mangaId: Long, shikiMangaId: Long) {
-		val user = getCachedUser() ?: loadUser()
-		val payload = JSONObject()
-		payload.put(
-			"user_rate",
-			JSONObject().apply {
-				put("target_id", shikiMangaId)
-				put("target_type", "Manga")
-				put("user_id", user.id)
-			},
+	override suspend fun createRate(mangaId: Long, scrobblerMangaId: Long) {
+		val response = query(
+			"""
+			mutation {
+				SaveMediaListEntry(mediaId: $scrobblerMangaId) {
+					id
+					mediaId
+					status
+					notes
+					scoreRaw
+					progress
+				}
+			}
+			""".trimIndent(),
 		)
-		val url = BASE_URL.toHttpUrl().newBuilder()
-			.addPathSegment("api")
-			.addPathSegment("v2")
-			.addPathSegment("user_rates")
-			.build()
-		val request = Request.Builder().url(url).post(payload.toRequestBody()).build()
-		val response = okHttp.newCall(request).await().parseJson()
 		saveRate(response, mangaId)
 	}
 
-	suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
+	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
 		val payload = JSONObject()
 		payload.put(
 			"user_rate",
@@ -149,7 +153,7 @@ class AniListRepository(
 		saveRate(response, mangaId)
 	}
 
-	suspend fun updateRate(rateId: Int, mangaId: Long, rating: Float, status: String?, comment: String?) {
+	override suspend fun updateRate(rateId: Int, mangaId: Long, rating: Float, status: String?, comment: String?) {
 		val payload = JSONObject()
 		payload.put(
 			"user_rate",
@@ -174,12 +178,23 @@ class AniListRepository(
 		saveRate(response, mangaId)
 	}
 
-	suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
-		val request = Request.Builder()
-			.get()
-			.url("${BASE_URL}api/mangas/$id")
-		val response = okHttp.newCall(request.build()).await().parseJson()
-		return ScrobblerMangaInfo(response)
+	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
+		val response = query(
+			"""
+			Media(id: $id) {
+				id
+				title {
+					userPreferred
+				}
+				coverImage {
+					large
+				}
+				description
+				siteUrl
+			}
+			""".trimIndent(),
+		)
+		return ScrobblerMangaInfo(response.getJSONObject("data").getJSONObject("Media"))
 	}
 
 	private suspend fun saveRate(json: JSONObject, mangaId: Long) {
@@ -187,29 +202,39 @@ class AniListRepository(
 			scrobbler = ScrobblerService.SHIKIMORI.id,
 			id = json.getInt("id"),
 			mangaId = mangaId,
-			targetId = json.getLong("target_id"),
+			targetId = json.getLong("mediaId"),
 			status = json.getString("status"),
-			chapter = json.getInt("chapters"),
-			comment = json.getString("text"),
-			rating = json.getDouble("score").toFloat() / 10f,
+			chapter = json.getInt("progress"),
+			comment = json.getString("notes"),
+			rating = json.getDouble("scoreRaw").toFloat() / 100f,
 		)
 		db.scrobblingDao.insert(entity)
 	}
 
-	private fun ScrobblerManga(json: JSONObject) = ScrobblerManga(
-		id = json.getLong("id"),
-		name = json.getString("name"),
-		altName = json.getStringOrNull("russian"),
-		cover = json.getJSONObject("image").getString("preview").toAbsoluteUrl("shikimori.one"),
-		url = json.getString("url").toAbsoluteUrl("shikimori.one"),
-	)
+	private fun ScrobblerManga(json: JSONObject): ScrobblerManga {
+		val title = json.getJSONObject("title")
+		return ScrobblerManga(
+			id = json.getLong("id"),
+			name = title.getString("userPreferred"),
+			altName = title.getStringOrNull("native"),
+			cover = json.getJSONObject("coverImage").getString("medium"),
+			url = json.getString("siteUrl"),
+		)
+	}
 
 	private fun ScrobblerMangaInfo(json: JSONObject) = ScrobblerMangaInfo(
 		id = json.getLong("id"),
-		name = json.getString("name"),
-		cover = json.getJSONObject("image").getString("preview").toAbsoluteUrl("shikimori.one"),
-		url = json.getString("url").toAbsoluteUrl("shikimori.one"),
-		descriptionHtml = json.getString("description_html"),
+		name = json.getJSONObject("title").getString("userPreferred"),
+		cover = json.getJSONObject("coverImage").getString("large"),
+		url = json.getString("siteUrl"),
+		descriptionHtml = json.getString("description"),
+	)
+
+	private fun AniListUser(json: JSONObject) = ScrobblerUser(
+		id = json.getLong("id"),
+		nickname = json.getString("name"),
+		avatar = json.getJSONObject("avatar").getString("medium"),
+		service = ScrobblerService.ANILIST,
 	)
 
 	private suspend fun query(query: String): JSONObject {

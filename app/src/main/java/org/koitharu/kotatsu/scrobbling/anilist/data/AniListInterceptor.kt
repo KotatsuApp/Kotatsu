@@ -3,10 +3,11 @@ package org.koitharu.kotatsu.scrobbling.anilist.data
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
 
 private const val JSON = "application/json"
 
-class AniListInterceptor(private val storage: AniListStorage) : Interceptor {
+class AniListInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
 		val sourceRequest = chain.request()

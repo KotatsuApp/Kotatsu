@@ -7,7 +7,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
-import org.koitharu.kotatsu.scrobbling.anilist.data.model.AniListUser
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerUser
 
 class AniListSettingsViewModel @AssistedInject constructor(
 	private val repository: AniListRepository,
@@ -17,7 +17,7 @@ class AniListSettingsViewModel @AssistedInject constructor(
 	val authorizationUrl: String
 		get() = repository.oauthUrl
 
-	val user = MutableLiveData<AniListUser?>()
+	val user = MutableLiveData<ScrobblerUser?>()
 
 	init {
 		if (authCode != null) {
@@ -36,7 +36,7 @@ class AniListSettingsViewModel @AssistedInject constructor(
 
 	private fun loadUser() = launchJob(Dispatchers.Default) {
 		val userModel = if (repository.isAuthorized) {
-			repository.getCachedUser()?.let(user::postValue)
+			repository.cachedUser?.let(user::postValue)
 			repository.loadUser()
 		} else {
 			null
