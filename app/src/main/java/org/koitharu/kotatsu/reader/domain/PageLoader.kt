@@ -66,7 +66,9 @@ class PageLoader @Inject constructor(
 
 	override fun close() {
 		loaderScope.cancel()
-		tasks.clear()
+		synchronized(tasks) {
+			tasks.clear()
+		}
 	}
 
 	fun isPrefetchApplicable(): Boolean {
@@ -103,7 +105,9 @@ class PageLoader @Inject constructor(
 			return task
 		}
 		task = loadPageAsyncImpl(page)
-		tasks[page.id] = task
+		synchronized(tasks) {
+			tasks[page.id] = task
+		}
 		return task
 	}
 
@@ -135,7 +139,9 @@ class PageLoader @Inject constructor(
 			while (prefetchQueue.isNotEmpty()) {
 				val page = prefetchQueue.pollFirst() ?: return
 				if (cache[page.url] == null) {
-					tasks[page.id] = loadPageAsyncImpl(page)
+					synchronized(tasks) {
+						tasks[page.id] = loadPageAsyncImpl(page)
+					}
 					return
 				}
 			}
