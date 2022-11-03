@@ -86,8 +86,6 @@
 	<!--== Default Theme ==-->
 	<style name="Theme.Kotatsu" parent="Base.Theme.Kotatsu" />
 
-	<style name="Theme.Kotatsu.DialogWhenLarge" />
-
 	<!-- Monet theme only support S+ -->
 	<style name="Theme.Kotatsu.Monet" />
 
