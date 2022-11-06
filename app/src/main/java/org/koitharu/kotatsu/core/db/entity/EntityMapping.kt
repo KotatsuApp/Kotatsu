@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.utils.ext.longHashCode
 fun TagEntity.toMangaTag() = MangaTag(
 	key = this.key,
 	title = this.title.toTitleCase(),
-	source = MangaSource(this.source) ?: MangaSource.DUMMY,
+	source = MangaSource(this.source),
 )
 
 fun Collection<TagEntity>.toMangaTags() = mapToSet(TagEntity::toMangaTag)
@@ -28,7 +28,7 @@ fun MangaEntity.toManga(tags: Set<MangaTag>) = Manga(
 	coverUrl = this.coverUrl,
 	largeCoverUrl = this.largeCoverUrl,
 	author = this.author,
-	source = MangaSource(this.source) ?: MangaSource.DUMMY,
+	source = MangaSource(this.source),
 	tags = tags,
 )
 
