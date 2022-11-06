@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.SparseIntArray
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
@@ -26,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
@@ -322,8 +322,13 @@ class MainActivity :
 	private fun onFirstStart() {
 		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
 			when {
-				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
-				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
+				!settings.isSourcesSelected -> whenResumed {
+					OnboardDialogFragment.showWelcome(supportFragmentManager)
+				}
+
+				settings.newSources.isNotEmpty() -> whenResumed {
+					NewSourcesDialogFragment.show(supportFragmentManager)
+				}
 			}
 			withContext(Dispatchers.Default) {
 				TrackWorker.setup(applicationContext)
