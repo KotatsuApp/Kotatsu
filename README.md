@@ -26,7 +26,7 @@ Download APK directly from GitHub:
 * Notifications about new chapters with updates feed
 * Shikimori integration (manga tracking)
 * Password/fingerprint protect access to the app
-* History and favourites synchronization across devices (coming soon)
+* History and favourites [synchronization](https://github.com/KotatsuApp/kotatsu-syncserver) across devices
 
 ### Screenshots
 

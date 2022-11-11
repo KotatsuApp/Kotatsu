@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.documentfile.provider.DocumentFile
-import java.io.File
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -14,8 +13,10 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.RATING_UNKNOWN
+import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.longOf
+import java.io.File
 
 // TODO: Add support for chapters in cbz
 // https://github.com/KotatsuApp/Kotatsu/issues/31
@@ -62,6 +63,7 @@ class DirMangaImporter(
 				file.isDirectory -> {
 					addPages(output, file, path + "/" + file.name, state)
 				}
+
 				file.isFile -> {
 					val tempFile = file.asTempFile()
 					if (!state.hasCover) {
@@ -86,7 +88,7 @@ class DirMangaImporter(
 			"Cannot open input stream for $uri"
 		}.use { input ->
 			file.outputStream().use { output ->
-				input.copyTo(output)
+				input.copyToSuspending(output)
 			}
 		}
 		return file

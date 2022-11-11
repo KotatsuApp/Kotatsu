@@ -3,15 +3,21 @@ package org.koitharu.kotatsu.local.data
 import android.content.Context
 import com.tomclaw.cache.DiskLruCache
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ext.copyToSuspending
+import org.koitharu.kotatsu.utils.ext.longHashCode
+import org.koitharu.kotatsu.utils.ext.subdir
+import org.koitharu.kotatsu.utils.ext.takeIfReadable
 import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.MutableStateFlow
-import org.koitharu.kotatsu.utils.FileSize
-import org.koitharu.kotatsu.utils.ext.longHashCode
-import org.koitharu.kotatsu.utils.ext.subdir
-import org.koitharu.kotatsu.utils.ext.takeIfReadable
 
 @Singleton
 class PagesCache @Inject constructor(@ApplicationContext context: Context) {
@@ -26,37 +32,44 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		return lruCache.get(url)?.takeIfReadable()
 	}
 
-	fun put(url: String, inputStream: InputStream): File {
+	suspend fun put(url: String, inputStream: InputStream): File = withContext(Dispatchers.IO) {
 		val file = File(cacheDir, url.longHashCode().toString())
-		file.outputStream().use { out ->
-			inputStream.copyTo(out)
+		try {
+			file.outputStream().use { out ->
+				inputStream.copyToSuspending(out)
+			}
+			lruCache.put(url, file)
+		} finally {
+			file.delete()
 		}
-		val res = lruCache.put(url, file)
-		file.delete()
-		return res
 	}
 
-	fun put(
+	suspend fun put(
 		url: String,
 		inputStream: InputStream,
 		contentLength: Long,
 		progress: MutableStateFlow<Float>,
-	): File {
+	): File = withContext(Dispatchers.IO) {
+		val job = currentCoroutineContext()[Job]
 		val file = File(cacheDir, url.longHashCode().toString())
-		file.outputStream().use { out ->
-			var bytesCopied: Long = 0
-			val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-			var bytes = inputStream.read(buffer)
-			while (bytes >= 0) {
-				out.write(buffer, 0, bytes)
-				bytesCopied += bytes
-				publishProgress(contentLength, bytesCopied, progress)
-				bytes = inputStream.read(buffer)
+		try {
+			file.outputStream().use { out ->
+				var bytesCopied: Long = 0
+				val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+				var bytes = inputStream.read(buffer)
+				while (bytes >= 0) {
+					out.write(buffer, 0, bytes)
+					bytesCopied += bytes
+					job?.ensureActive()
+					publishProgress(contentLength, bytesCopied, progress)
+					bytes = inputStream.read(buffer)
+					job?.ensureActive()
+				}
 			}
+			lruCache.put(url, file)
+		} finally {
+			file.delete()
 		}
-		val res = lruCache.put(url, file)
-		file.delete()
-		return res
 	}
 
 	private fun publishProgress(contentLength: Long, bytesCopied: Long, progress: MutableStateFlow<Float>) {

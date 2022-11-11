@@ -179,9 +179,12 @@ class PageLoader @Inject constructor(
 		val uri = Uri.parse(pageUrl)
 		return if (uri.scheme == "cbz") {
 			runInterruptible(Dispatchers.IO) {
-				val zip = ZipFile(uri.schemeSpecificPart)
-				val entry = zip.getEntry(uri.fragment)
-				zip.getInputStream(entry).use {
+				ZipFile(uri.schemeSpecificPart)
+			}.use { zip ->
+				runInterruptible(Dispatchers.IO) {
+					val entry = zip.getEntry(uri.fragment)
+					zip.getInputStream(entry)
+				}.use {
 					cache.put(pageUrl, it)
 				}
 			}
@@ -200,10 +203,8 @@ class PageLoader @Inject constructor(
 				val body = checkNotNull(response.body) {
 					"Null response"
 				}
-				runInterruptible(Dispatchers.IO) {
-					body.byteStream().use {
-						cache.put(pageUrl, it, body.contentLength(), progress)
-					}
+				body.byteStream().use {
+					cache.put(pageUrl, it, body.contentLength(), progress)
 				}
 			}
 		}

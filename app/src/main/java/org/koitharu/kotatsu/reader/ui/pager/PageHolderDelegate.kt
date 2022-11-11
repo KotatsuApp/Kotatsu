@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
@@ -118,18 +119,20 @@ class PageHolderDelegate(
 		}
 	}
 
-	private suspend fun CoroutineScope.doLoad(data: MangaPage, force: Boolean) {
+	private suspend fun doLoad(data: MangaPage, force: Boolean) {
 		state = State.LOADING
 		error = null
 		callback.onLoadingStarted()
 		try {
 			val task = loader.loadPageAsync(data, force)
-			val progressObserver = observeProgress(this, task.progressAsFlow())
-			val file = task.await()
-			progressObserver.cancel()
-			this@PageHolderDelegate.file = file
+			file = coroutineScope {
+				val progressObserver = observeProgress(this, task.progressAsFlow())
+				val file = task.await()
+				progressObserver.cancel()
+				file
+			}
 			state = State.LOADED
-			callback.onImageReady(file.toUri())
+			callback.onImageReady(checkNotNull(file).toUri())
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
