@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.withProgress
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
 import java.io.File
 import java.util.LinkedList
@@ -203,8 +204,8 @@ class PageLoader @Inject constructor(
 				val body = checkNotNull(response.body) {
 					"Null response"
 				}
-				body.byteStream().use {
-					cache.put(pageUrl, it, body.contentLength(), progress)
+				body.withProgress(progress).byteStream().use {
+					cache.put(pageUrl, it)
 				}
 			}
 		}

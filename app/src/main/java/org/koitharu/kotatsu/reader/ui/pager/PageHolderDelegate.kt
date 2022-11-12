@@ -143,7 +143,7 @@ class PageHolderDelegate(
 	}
 
 	private fun observeProgress(scope: CoroutineScope, progress: Flow<Float>) = progress
-		.debounce(500)
+		.debounce(250)
 		.onEach { callback.onProgressChanged((100 * it).toInt()) }
 		.launchIn(scope)
 

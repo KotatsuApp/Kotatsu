@@ -4,7 +4,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
+import org.koitharu.kotatsu.utils.progress.ProgressResponseBody
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -24,4 +27,8 @@ suspend fun InputStream.copyToSuspending(
 		job?.ensureActive()
 	}
 	bytesCopied
+}
+
+fun ResponseBody.withProgress(progressState: MutableStateFlow<Float>): ResponseBody {
+	return ProgressResponseBody(this, progressState)
 }

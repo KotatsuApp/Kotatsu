@@ -4,10 +4,6 @@ import android.content.Context
 import com.tomclaw.cache.DiskLruCache
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
@@ -41,40 +37,6 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 			lruCache.put(url, file)
 		} finally {
 			file.delete()
-		}
-	}
-
-	suspend fun put(
-		url: String,
-		inputStream: InputStream,
-		contentLength: Long,
-		progress: MutableStateFlow<Float>,
-	): File = withContext(Dispatchers.IO) {
-		val job = currentCoroutineContext()[Job]
-		val file = File(cacheDir, url.longHashCode().toString())
-		try {
-			file.outputStream().use { out ->
-				var bytesCopied: Long = 0
-				val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-				var bytes = inputStream.read(buffer)
-				while (bytes >= 0) {
-					out.write(buffer, 0, bytes)
-					bytesCopied += bytes
-					job?.ensureActive()
-					publishProgress(contentLength, bytesCopied, progress)
-					bytes = inputStream.read(buffer)
-					job?.ensureActive()
-				}
-			}
-			lruCache.put(url, file)
-		} finally {
-			file.delete()
-		}
-	}
-
-	private fun publishProgress(contentLength: Long, bytesCopied: Long, progress: MutableStateFlow<Float>) {
-		if (contentLength > 0) {
-			progress.value = (bytesCopied.toDouble() / contentLength.toDouble()).toFloat()
 		}
 	}
 }
