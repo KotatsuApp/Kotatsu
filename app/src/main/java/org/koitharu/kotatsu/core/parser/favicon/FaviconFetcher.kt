@@ -14,7 +14,6 @@ import coil.network.HttpException
 import coil.request.Options
 import coil.size.Size
 import coil.size.pxOrElse
-import java.net.HttpURLConnection
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -27,6 +26,7 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
+import java.net.HttpURLConnection
 
 private const val FALLBACK_SIZE = 9999 // largest icon
 
@@ -150,7 +150,7 @@ class FaviconFetcher(
 
 		override fun create(data: Uri, options: Options, imageLoader: ImageLoader): Fetcher? {
 			return if (data.scheme == URI_SCHEME_FAVICON) {
-				val mangaSource = MangaSource(data.schemeSpecificPart) ?: return null
+				val mangaSource = MangaSource(data.schemeSpecificPart)
 				FaviconFetcher(okHttpClient, diskCache, mangaSource, options, mangaRepositoryFactory)
 			} else {
 				null

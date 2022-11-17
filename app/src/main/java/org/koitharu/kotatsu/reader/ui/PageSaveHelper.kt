@@ -6,10 +6,6 @@ import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
-import javax.inject.Inject
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -20,6 +16,11 @@ import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.utils.ext.copyToSuspending
+import java.io.File
+import javax.inject.Inject
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 private const val MAX_FILENAME_LENGTH = 10
 private const val EXTENSION_FALLBACK = "png"
@@ -48,12 +49,12 @@ class PageSaveHelper @Inject constructor(
 			}
 		}
 		runInterruptible(Dispatchers.IO) {
-			contentResolver.openOutputStream(destination)?.use { output ->
-				pageFile.inputStream().use { input ->
-					input.copyTo(output)
-				}
-			} ?: throw IOException("Output stream is null")
-		}
+			contentResolver.openOutputStream(destination)
+		}?.use { output ->
+			pageFile.inputStream().use { input ->
+				input.copyToSuspending(output)
+			}
+		} ?: throw IOException("Output stream is null")
 		return destination
 	}
 

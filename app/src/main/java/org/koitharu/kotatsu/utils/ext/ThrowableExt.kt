@@ -8,6 +8,7 @@ import okio.FileNotFoundException
 import okio.IOException
 import org.acra.ktx.sendWithAcra
 import org.json.JSONException
+import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CaughtException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
@@ -45,6 +46,12 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
+
+	is HttpStatusException -> when (statusCode) {
+		in 500..599 -> resources.getString(R.string.server_error, statusCode)
+		else -> localizedMessage
+	}
+
 	is IOException -> getDisplayMessage(message, resources) ?: localizedMessage
 	else -> localizedMessage
 } ?: resources.getString(R.string.error_occurred)

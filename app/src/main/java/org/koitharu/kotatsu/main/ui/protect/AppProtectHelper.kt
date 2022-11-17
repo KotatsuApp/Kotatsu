@@ -1,16 +1,16 @@
 package org.koitharu.kotatsu.main.ui.protect
 
 import android.app.Activity
-import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import org.acra.dialog.CrashReportDialog
+import org.koitharu.kotatsu.base.ui.DefaultActivityLifecycleCallbacks
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.acra.dialog.CrashReportDialog
-import org.koitharu.kotatsu.core.prefs.AppSettings
 
 @Singleton
-class AppProtectHelper @Inject constructor(private val settings: AppSettings) : Application.ActivityLifecycleCallbacks {
+class AppProtectHelper @Inject constructor(private val settings: AppSettings) : DefaultActivityLifecycleCallbacks {
 
 	private var isUnlocked = settings.appPassword.isNullOrEmpty()
 
@@ -26,16 +26,6 @@ class AppProtectHelper @Inject constructor(private val settings: AppSettings) : 
 			activity.finishAfterTransition()
 		}
 	}
-
-	override fun onActivityStarted(activity: Activity) = Unit
-
-	override fun onActivityResumed(activity: Activity) = Unit
-
-	override fun onActivityPaused(activity: Activity) = Unit
-
-	override fun onActivityStopped(activity: Activity) = Unit
-
-	override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
 
 	override fun onActivityDestroyed(activity: Activity) {
 		if (activity !is ProtectActivity && activity.isFinishing && activity.isTaskRoot) {

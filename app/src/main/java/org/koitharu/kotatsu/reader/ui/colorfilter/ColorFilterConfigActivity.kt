@@ -103,8 +103,8 @@ class ColorFilterConfigActivity :
 	}
 
 	private fun onColorFilterChanged(readerColorFilter: ReaderColorFilter?) {
-		binding.sliderBrightness.value = readerColorFilter?.brightness ?: 0f
-		binding.sliderContrast.value = readerColorFilter?.contrast ?: 0f
+		binding.sliderBrightness.setValueRounded(readerColorFilter?.brightness ?: 0f)
+		binding.sliderContrast.setValueRounded(readerColorFilter?.contrast ?: 0f)
 		binding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
 	}
 

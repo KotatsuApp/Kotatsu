@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -26,6 +28,7 @@ class PageHolderDelegate(
 	private val loader: PageLoader,
 	private val readerSettings: ReaderSettings,
 	private val callback: Callback,
+	private val networkState: NetworkStateObserver,
 	private val exceptionResolver: ExceptionResolver,
 ) : DefaultOnImageEventListener, Observer<ReaderSettings> {
 
@@ -118,29 +121,35 @@ class PageHolderDelegate(
 		}
 	}
 
-	private suspend fun CoroutineScope.doLoad(data: MangaPage, force: Boolean) {
+	private suspend fun doLoad(data: MangaPage, force: Boolean) {
 		state = State.LOADING
 		error = null
 		callback.onLoadingStarted()
 		try {
 			val task = loader.loadPageAsync(data, force)
-			val progressObserver = observeProgress(this, task.progressAsFlow())
-			val file = task.await()
-			progressObserver.cancel()
-			this@PageHolderDelegate.file = file
+			file = coroutineScope {
+				val progressObserver = observeProgress(this, task.progressAsFlow())
+				val file = task.await()
+				progressObserver.cancel()
+				file
+			}
 			state = State.LOADED
-			callback.onImageReady(file.toUri())
+			callback.onImageReady(checkNotNull(file).toUri())
 		} catch (e: CancellationException) {
 			throw e
-		} catch (e: Exception) {
+		} catch (e: Throwable) {
 			state = State.ERROR
 			error = e
 			callback.onError(e)
+			if (e is IOException && !networkState.value) {
+				networkState.awaitForConnection()
+				retry(data)
+			}
 		}
 	}
 
 	private fun observeProgress(scope: CoroutineScope, progress: Flow<Float>) = progress
-		.debounce(500)
+		.debounce(250)
 		.onEach { callback.onProgressChanged((100 * it).toInt()) }
 		.launchIn(scope)
 

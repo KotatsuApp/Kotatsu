@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
+import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +16,6 @@ import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.utils.ext.showKeyboard
-import kotlin.text.Typography.dagger
 
 @AndroidEntryPoint
 class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQueryTextListener {
@@ -32,6 +32,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 		}
 		val query = intent.getStringExtra(EXTRA_QUERY)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 		with(binding.searchView) {
 			queryHint = getString(R.string.search_on_s, source.title)
 			setOnQueryTextListener(this@SearchActivity)
@@ -71,6 +72,16 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	}
 
 	override fun onQueryTextChange(newText: String?): Boolean = false
+
+	private fun onIncognitoModeChanged(isIncognito: Boolean) {
+		var options = binding.searchView.imeOptions
+		options = if (isIncognito) {
+			options or EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING
+		} else {
+			options and EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING.inv()
+		}
+		binding.searchView.imeOptions = options
+	}
 
 	companion object {
 

@@ -4,17 +4,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.utils.ext.resetTransformations
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @Suppress("LeakingThis")
 abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	private val loader: PageLoader,
 	private val readerSettings: ReaderSettings,
+	private val networkState: NetworkStateObserver,
 	private val exceptionResolver: ExceptionResolver,
 ) : RecyclerView.Adapter<H>() {
 
@@ -56,9 +58,9 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	final override fun onCreateViewHolder(
 		parent: ViewGroup,
 		viewType: Int,
-	): H = onCreateViewHolder(parent, loader, readerSettings, exceptionResolver)
+	): H = onCreateViewHolder(parent, loader, readerSettings, networkState, exceptionResolver)
 
-	suspend fun setItems(items: List<ReaderPage>) = suspendCoroutine<Unit> { cont ->
+	suspend fun setItems(items: List<ReaderPage>) = suspendCoroutine { cont ->
 		differ.submitList(items) {
 			cont.resume(Unit)
 		}
@@ -68,6 +70,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 		parent: ViewGroup,
 		loader: PageLoader,
 		settings: ReaderSettings,
+		networkState: NetworkStateObserver,
 		exceptionResolver: ExceptionResolver,
 	): H
 

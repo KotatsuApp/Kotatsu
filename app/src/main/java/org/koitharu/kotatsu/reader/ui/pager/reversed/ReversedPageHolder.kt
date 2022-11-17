@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -15,8 +16,9 @@ class ReversedPageHolder(
 	binding: ItemPageBinding,
 	loader: PageLoader,
 	settings: ReaderSettings,
+	networkState: NetworkStateObserver,
 	exceptionResolver: ExceptionResolver,
-) : PageHolder(binding, loader, settings, exceptionResolver) {
+) : PageHolder(binding, loader, settings, networkState, exceptionResolver) {
 
 	init {
 		(binding.textViewNumber.layoutParams as FrameLayout.LayoutParams)
@@ -35,6 +37,7 @@ class ReversedPageHolder(
 					minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 					resetScaleAndCenter()
 				}
+
 				ZoomMode.FIT_HEIGHT -> {
 					minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 					minScale = height / sHeight.toFloat()
@@ -43,6 +46,7 @@ class ReversedPageHolder(
 						PointF(sWidth.toFloat(), sHeight / 2f),
 					)
 				}
+
 				ZoomMode.FIT_WIDTH -> {
 					minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 					minScale = width / sWidth.toFloat()
@@ -51,6 +55,7 @@ class ReversedPageHolder(
 						PointF(sWidth / 2f, 0f),
 					)
 				}
+
 				ZoomMode.KEEP_START -> {
 					minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 					setScaleAndCenter(

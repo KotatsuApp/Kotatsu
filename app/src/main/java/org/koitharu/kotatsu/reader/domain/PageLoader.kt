@@ -7,14 +7,16 @@ import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.zip.ZipFile
-import javax.inject.Inject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
@@ -30,7 +32,16 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.connectivityManager
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.withProgress
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
+import java.io.File
+import java.util.LinkedList
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.zip.ZipFile
+import javax.inject.Inject
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
 
 private const val PROGRESS_UNDEFINED = -1f
 private const val PREFETCH_LIMIT_DEFAULT = 10
@@ -43,7 +54,7 @@ class PageLoader @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : Closeable {
 
-	val loaderScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+	val loaderScope = CoroutineScope(SupervisorJob() + InternalErrorHandler() + Dispatchers.Default)
 
 	private val connectivityManager = context.connectivityManager
 	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
@@ -56,7 +67,9 @@ class PageLoader @Inject constructor(
 
 	override fun close() {
 		loaderScope.cancel()
-		tasks.clear()
+		synchronized(tasks) {
+			tasks.clear()
+		}
 	}
 
 	fun isPrefetchApplicable(): Boolean {
@@ -93,7 +106,9 @@ class PageLoader @Inject constructor(
 			return task
 		}
 		task = loadPageAsyncImpl(page)
-		tasks[page.id] = task
+		synchronized(tasks) {
+			tasks[page.id] = task
+		}
 		return task
 	}
 
@@ -125,7 +140,9 @@ class PageLoader @Inject constructor(
 			while (prefetchQueue.isNotEmpty()) {
 				val page = prefetchQueue.pollFirst() ?: return
 				if (cache[page.url] == null) {
-					tasks[page.id] = loadPageAsyncImpl(page)
+					synchronized(tasks) {
+						tasks[page.id] = loadPageAsyncImpl(page)
+					}
 					return
 				}
 			}
@@ -163,9 +180,12 @@ class PageLoader @Inject constructor(
 		val uri = Uri.parse(pageUrl)
 		return if (uri.scheme == "cbz") {
 			runInterruptible(Dispatchers.IO) {
-				val zip = ZipFile(uri.schemeSpecificPart)
-				val entry = zip.getEntry(uri.fragment)
-				zip.getInputStream(entry).use {
+				ZipFile(uri.schemeSpecificPart)
+			}.use { zip ->
+				runInterruptible(Dispatchers.IO) {
+					val entry = zip.getEntry(uri.fragment)
+					zip.getInputStream(entry)
+				}.use {
 					cache.put(pageUrl, it)
 				}
 			}
@@ -184,10 +204,8 @@ class PageLoader @Inject constructor(
 				val body = checkNotNull(response.body) {
 					"Null response"
 				}
-				runInterruptible(Dispatchers.IO) {
-					body.byteStream().use {
-						cache.put(pageUrl, it, body.contentLength(), progress)
-					}
+				body.withProgress(progress).byteStream().use {
+					cache.put(pageUrl, it)
 				}
 			}
 		}
@@ -196,5 +214,14 @@ class PageLoader @Inject constructor(
 	private fun getCompletedTask(file: File): ProgressDeferred<File, Float> {
 		val deferred = CompletableDeferred(file)
 		return ProgressDeferred(deferred, emptyProgressFlow)
+	}
+
+	private class InternalErrorHandler : AbstractCoroutineContextElement(CoroutineExceptionHandler),
+		CoroutineExceptionHandler {
+
+		override fun handleException(context: CoroutineContext, exception: Throwable) {
+			exception.printStackTraceDebug()
+		}
+
 	}
 }

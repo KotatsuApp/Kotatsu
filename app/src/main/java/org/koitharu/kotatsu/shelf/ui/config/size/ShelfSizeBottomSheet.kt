@@ -8,13 +8,13 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.SheetShelfSizeBinding
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import org.koitharu.kotatsu.utils.progress.IntPercentLabelFormatter
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShelfSizeBottomSheet :
@@ -51,9 +51,10 @@ class ShelfSizeBottomSheet :
 	}
 
 	override fun onClick(v: View) {
+		val slider = binding.sliderGrid
 		when (v.id) {
-			R.id.button_small -> binding.sliderGrid.value -= binding.sliderGrid.stepSize
-			R.id.button_large -> binding.sliderGrid.value += binding.sliderGrid.stepSize
+			R.id.button_small -> slider.setValueRounded(slider.value - slider.stepSize)
+			R.id.button_large -> slider.setValueRounded(slider.value + slider.stepSize)
 		}
 	}
 

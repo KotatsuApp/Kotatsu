@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
+import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -15,9 +16,13 @@ import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
 import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
+
+	@Inject
+	lateinit var networkStateObserver: NetworkStateObserver
 
 	private val scrollInterpolator = AccelerateDecelerateInterpolator()
 	private var webtoonAdapter: WebtoonAdapter? = null
@@ -29,7 +34,12 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		webtoonAdapter = WebtoonAdapter(viewModel.pageLoader, viewModel.readerSettings, exceptionResolver)
+		webtoonAdapter = WebtoonAdapter(
+			viewModel.pageLoader,
+			viewModel.readerSettings,
+			networkStateObserver,
+			exceptionResolver,
+		)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = webtoonAdapter

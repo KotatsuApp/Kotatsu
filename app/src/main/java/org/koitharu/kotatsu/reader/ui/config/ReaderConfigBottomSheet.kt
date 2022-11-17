@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
+import org.koitharu.kotatsu.utils.ext.setValueRounded
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -65,7 +66,7 @@ class ReaderConfigBottomSheet :
 		binding.sliderTimer.setLabelFormatter(PageSwitchTimer.DelayLabelFormatter(view.resources))
 
 		findCallback()?.run {
-			binding.sliderTimer.value = pageSwitchDelay
+			binding.sliderTimer.setValueRounded(pageSwitchDelay)
 		}
 	}
 
@@ -75,13 +76,16 @@ class ReaderConfigBottomSheet :
 				startActivity(SettingsActivity.newReaderSettingsIntent(v.context))
 				dismissAllowingStateLoss()
 			}
+
 			R.id.button_save_page -> {
 				val page = viewModel.getCurrentPage() ?: return
 				viewModel.saveCurrentPage(page, savePageRequest)
 			}
+
 			R.id.button_screen_rotate -> {
 				orientationHelper?.toggleOrientation()
 			}
+
 			R.id.button_color_filter -> {
 				val page = viewModel.getCurrentPage() ?: return
 				val manga = viewModel.manga ?: return

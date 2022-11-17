@@ -21,14 +21,25 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import javax.inject.Inject
 
 class ShelfRepository @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
+	private val trackingRepository: TrackingRepository,
 	private val db: MangaDatabase,
 ) {
+
+	fun observeShelfContent(): Flow<ShelfContent> = combine(
+		historyRepository.observeAllWithHistory(),
+		observeLocalManga(SortOrder.UPDATED),
+		observeFavourites(),
+		trackingRepository.observeUpdatedManga(),
+	) { history, local, favorites, updated ->
+		ShelfContent(history, favorites, updated, local)
+	}
 
 	fun observeLocalManga(sortOrder: SortOrder): Flow<List<Manga>> {
 		return flow {

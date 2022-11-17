@@ -266,7 +266,7 @@
     <string name="suggestions_excluded_genres">Türleri hariç tut</string>
     <string name="suggestions_excluded_genres_summary">Önerilerde görmek istemediğiniz türleri belirtin</string>
     <string name="text_delete_local_manga_batch">Seçilen ögeler aygıttan kalıcı olarak silinsin mi\?</string>
-    <string name="batch_manga_save_confirm">Seçilen tüm mangaları tüm bölümleriyle birlikte indirmek istediğinizden emin misiniz\? Bu işlem çok fazla trafik ve depolama alanı tüketebilir</string>
+    <string name="batch_manga_save_confirm">Seçilen tüm manga ve bölümleri indirilsin mi\? Bu, çok fazla trafik ve depolama tüketebilir.</string>
     <string name="removal_completed">Kaldırma tamamlandı</string>
     <string name="chapters_will_removed_background">Bölümler arka planda kaldırılacaktır. Bu biraz zaman alabilir</string>
     <string name="parallel_downloads">Paralel indirmeler</string>
@@ -372,7 +372,7 @@
     <string name="import_completed">İçe aktarım tamamlandı</string>
     <string name="import_completed_hint">Yer açmak için orijinal dosyayı depolamadan silebilirsiniz</string>
     <string name="import_will_start_soon">İçe aktarım birazdan başlayacak</string>
-    <string name="feed">Feed</string>
+    <string name="feed">Akış</string>
     <string name="history_shortcuts">En son manga kısayollarını göster</string>
     <string name="reader_control_ltr">Ergonomik okuyucu kontrol</string>
     <string name="color_correction">Renk düzeltme</string>
@@ -380,6 +380,19 @@
     <string name="contrast">Kontrast</string>
     <string name="reset">Sıfırla</string>
     <string name="color_correction_hint">Seçilen renk ayarları bu manga için hatırlanacaktır</string>
-    <string name="text_unsaved_changes_prompt">Kaydedilmemiş değişiklikleriniz var, kaydetmek mi istersiniz yoksa, yoksaymak mı istersiniz\?</string>
+    <string name="text_unsaved_changes_prompt">Kaydedilmeyen değişiklikler kaydedilsin mi yoksa atılsın mı\?</string>
     <string name="discard">Yoksay</string>
+    <string name="error_no_space_left">Cihazda yer yok</string>
+    <string name="webtoon_zoom">Webtoon yakınlaştırma</string>
+    <string name="webtoon_zoom_summary">Webtoon modunda yakınlaştırma hareketine izin ver (beta)</string>
+    <string name="reader_slider">Sayfa değiştirme kaydırıcısını göster</string>
+    <string name="clear_new_chapters_counters">Ayrıca yeni bölümler hakkındaki bilgileri temizle</string>
+    <string name="compact">Sıkı</string>
+    <string name="different_languages">Farklı diller</string>
+    <string name="network_unavailable">Ağ kullanılamıyor</string>
+    <string name="network_unavailable_hint">Çevrim içi manga okumak için Wi-Fi veya mobil ağı açın</string>
+    <string name="server_error">Sunucu tarafı hatası (%1$d). Lütfen daha sonra tekrar deneyin</string>
+    <string name="saved_manga">Kaydedilen mangalar</string>
+    <string name="history_shortcuts_summary">Uygulama simgesine uzun basarak son mangaları kullanılabilir hale getirin</string>
+    <string name="reader_control_ltr_summary">Sağ kenara dokunulduğunda veya sağ tuşa basıldığında her zaman bir sonraki sayfaya geçilir</string>
 </resources>

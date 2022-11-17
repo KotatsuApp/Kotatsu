@@ -10,7 +10,6 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.InvalidationTracker
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.acra.ReportField
@@ -25,6 +24,7 @@ import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
+import javax.inject.Inject
 
 @HiltAndroidApp
 class KotatsuApp : Application(), Configuration.Provider {
@@ -72,6 +72,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 			}
 			reportContent = listOf(
 				ReportField.PACKAGE_NAME,
+				ReportField.INSTALLATION_ID,
 				ReportField.APP_VERSION_CODE,
 				ReportField.APP_VERSION_NAME,
 				ReportField.ANDROID_VERSION,

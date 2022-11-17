@@ -53,7 +53,6 @@ abstract class BaseActivity<B : ViewBinding> :
 		EntryPointAccessors.fromApplication(this, BaseActivityEntryPoint::class.java).inject(this)
 		val isAmoled = settings.isAmoledTheme
 		val isDynamic = settings.isDynamicTheme
-		// TODO support DialogWhenLarge theme
 		when {
 			isAmoled && isDynamic -> setTheme(R.style.Theme_Kotatsu_Monet_Amoled)
 			isAmoled -> setTheme(R.style.Theme_Kotatsu_Amoled)

@@ -50,9 +50,12 @@ class FeedViewModel @Inject constructor(
 			}
 		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
-	fun clearFeed() {
+	fun clearFeed(clearCounters: Boolean) {
 		launchLoadingJob(Dispatchers.Default) {
 			repository.clearLogs()
+			if (clearCounters) {
+				repository.clearCounters()
+			}
 			onFeedCleared.postCall(Unit)
 		}
 	}

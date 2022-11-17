@@ -1,75 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
+	android:layout_height="wrap_content"
+	android:animateLayoutChanges="true"
+	android:orientation="vertical">
 
-	<LinearLayout
+	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:animateLayoutChanges="true"
-		android:orientation="vertical">
+		app:title="@string/options" />
 
-		<org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup
-			android:id="@+id/checkableGroup"
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginVertical="16dp"
-			android:layout_marginHorizontal="?attr/dialogPreferredPadding"
-			android:orientation="vertical">
+			android:orientation="vertical"
+			android:paddingBottom="@dimen/margin_normal">
 
-			<com.google.android.material.button.MaterialButton
-				android:id="@+id/button_list"
-				style="@style/Widget.Kotatsu.ToggleButton"
+			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="@string/list"
-				app:icon="@drawable/ic_list" />
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:text="@string/list_mode"
+				android:textAppearance="?textAppearanceTitleSmall" />
 
-			<com.google.android.material.button.MaterialButton
-				android:id="@+id/button_list_detailed"
-				style="@style/Widget.Kotatsu.ToggleButton"
+			<com.google.android.material.button.MaterialButtonToggleGroup
+				android:id="@+id/checkableGroup"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="@string/detailed_list"
-				app:icon="@drawable/ic_list_detailed" />
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_small"
+				android:baselineAligned="false"
+				android:orientation="horizontal"
+				app:selectionRequired="true"
+				app:singleSelection="true">
 
-			<com.google.android.material.button.MaterialButton
-				android:id="@+id/button_grid"
-				style="@style/Widget.Kotatsu.ToggleButton"
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_list"
+					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/compact"
+					app:icon="@drawable/ic_list" />
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_list_detailed"
+					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/details"
+					app:icon="@drawable/ic_list_detailed" />
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_grid"
+					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/grid"
+					app:icon="@drawable/ic_grid" />
+
+			</com.google.android.material.button.MaterialButtonToggleGroup>
+
+			<TextView
+				android:id="@+id/textView_grid_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="@string/grid"
-				app:icon="@drawable/ic_grid" />
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/grid_size"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
 
-		</org.koitharu.kotatsu.base.ui.widgets.CheckableButtonGroup>
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider_grid"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				android:stepSize="5"
+				android:valueFrom="50"
+				android:valueTo="150"
+				android:visibility="gone"
+				app:labelBehavior="floating"
+				app:tickVisible="false"
+				tools:value="100"
+				tools:visibility="visible" />
 
-		<TextView
-			android:id="@+id/textView_grid_title"
-			style="?materialAlertDialogTitleTextStyle"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:paddingHorizontal="?attr/dialogPreferredPadding"
-			android:singleLine="true"
-			android:text="@string/grid_size"
-			android:visibility="gone"
-			tools:visibility="visible" />
-
-		<com.google.android.material.slider.Slider
-			android:id="@+id/slider_grid"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginHorizontal="16dp"
-			android:stepSize="5"
-			android:valueFrom="50"
-			android:valueTo="150"
-			android:visibility="gone"
-			app:labelBehavior="floating"
-			app:tickVisible="false"
-			tools:value="100"
-			tools:visibility="visible" />
-
-	</LinearLayout>
-</ScrollView>
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+</LinearLayout>

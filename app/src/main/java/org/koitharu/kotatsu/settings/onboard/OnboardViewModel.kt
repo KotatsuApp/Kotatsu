@@ -30,7 +30,7 @@ class OnboardViewModel @Inject constructor(
 
 	init {
 		if (settings.isSourcesSelected) {
-			selectedLocales.removeAll(settings.hiddenSources.mapNotNullToSet { x -> MangaSource(x)?.locale })
+			selectedLocales.removeAll(settings.hiddenSources.mapNotNullToSet { x -> MangaSource(x).locale })
 		} else {
 			val deviceLocales = LocaleListCompat.getDefault().mapToSet { x ->
 				x.language

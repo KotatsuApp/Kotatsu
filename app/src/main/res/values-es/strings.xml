@@ -386,4 +386,8 @@
     <string name="reset">Restablecer</string>
     <string name="text_unsaved_changes_prompt">Tienes cambios sin guardar. ¿Quieres guardarlos o descartarlos\?</string>
     <string name="discard">Descartar</string>
+    <string name="error_no_space_left">Sin espacio en dispositivo</string>
+    <string name="webtoon_zoom">Zoom de webtoon</string>
+    <string name="webtoon_zoom_summary">Permitir el gesto de acercamiento/alejamiento en modo webtoon (beta)</string>
+    <string name="reader_slider">Mostrar el deslizador de cambio de página</string>
 </resources>
