@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets
 import androidx.core.util.size
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -24,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
@@ -129,6 +131,7 @@ class MainActivity :
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
 		viewModel.isFeedAvailable.observe(this, ::onFeedAvailabilityChanged)
+		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -274,6 +277,16 @@ class MainActivity :
 		navigationDelegate.setItemVisibility(R.id.nav_feed, isFeedAvailable)
 	}
 
+	private fun onIncognitoModeChanged(isIncognito: Boolean) {
+		var options = binding.searchView.imeOptions
+		options = if (isIncognito) {
+			options or EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING
+		} else {
+			options and EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING.inv()
+		}
+		binding.searchView.imeOptions = options
+	}
+
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.fab?.isEnabled = !isLoading
 	}
@@ -309,8 +322,13 @@ class MainActivity :
 	private fun onFirstStart() {
 		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
 			when {
-				!settings.isSourcesSelected -> OnboardDialogFragment.showWelcome(supportFragmentManager)
-				settings.newSources.isNotEmpty() -> NewSourcesDialogFragment.show(supportFragmentManager)
+				!settings.isSourcesSelected -> whenResumed {
+					OnboardDialogFragment.showWelcome(supportFragmentManager)
+				}
+
+				settings.newSources.isNotEmpty() -> whenResumed {
+					NewSourcesDialogFragment.show(supportFragmentManager)
+				}
 			}
 			withContext(Dispatchers.Default) {
 				TrackWorker.setup(applicationContext)

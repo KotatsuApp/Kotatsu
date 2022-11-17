@@ -3,14 +3,14 @@ package org.koitharu.kotatsu.shelf.ui.config
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.shelf.domain.ShelfSection
 
-sealed interface ShelfConfigModel : ListModel {
+sealed interface ShelfSettingsItemModel : ListModel {
 
 	val isChecked: Boolean
 
 	class Section(
 		val section: ShelfSection,
 		override val isChecked: Boolean,
-	) : ShelfConfigModel {
+	) : ShelfSettingsItemModel {
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
@@ -35,7 +35,7 @@ sealed interface ShelfConfigModel : ListModel {
 		val id: Long,
 		val title: String,
 		override val isChecked: Boolean,
-	) : ShelfConfigModel {
+	) : ShelfSettingsItemModel {
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true

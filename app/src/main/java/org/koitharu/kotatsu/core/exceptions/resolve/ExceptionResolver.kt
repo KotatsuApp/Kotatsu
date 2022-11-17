@@ -6,9 +6,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
@@ -20,6 +17,9 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import org.koitharu.kotatsu.utils.TaggedActivityResult
 import org.koitharu.kotatsu.utils.isSuccess
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class ExceptionResolver private constructor(
 	private val activity: FragmentActivity?,
@@ -49,6 +49,7 @@ class ExceptionResolver private constructor(
 			openInBrowser(e.url)
 			false
 		}
+
 		else -> false
 	}
 

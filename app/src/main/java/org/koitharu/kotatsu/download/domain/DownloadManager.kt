@@ -17,7 +17,6 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
@@ -36,6 +35,7 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.referer
@@ -219,10 +219,8 @@ class DownloadManager @AssistedInject constructor(
 		val call = okHttp.newCall(request)
 		val file = File(destination, tempFileName)
 		val response = call.clone().await()
-		runInterruptible(Dispatchers.IO) {
-			file.outputStream().use { out ->
-				checkNotNull(response.body).byteStream().copyTo(out)
-			}
+		file.outputStream().use { out ->
+			checkNotNull(response.body).byteStream().copyToSuspending(out)
 		}
 		return file
 	}

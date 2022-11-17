@@ -3,17 +3,28 @@ package org.koitharu.kotatsu.search.ui.suggestion
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.core.prefs.observeAsLiveData
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
+import javax.inject.Inject
 
 private const val DEBOUNCE_TIMEOUT = 500L
 private const val MAX_MANGA_ITEMS = 6
@@ -30,6 +41,12 @@ class SearchSuggestionViewModel @Inject constructor(
 	private val query = MutableStateFlow("")
 	private var suggestionJob: Job? = null
 
+	val isIncognitoModeEnabled = settings.observeAsLiveData(
+		context = viewModelScope.coroutineContext + Dispatchers.Default,
+		key = AppSettings.KEY_INCOGNITO_MODE,
+		valueProducer = { isIncognitoModeEnabled },
+	)
+
 	val suggestion = MutableLiveData<List<SearchSuggestionItem>>()
 
 	init {
@@ -41,7 +58,11 @@ class SearchSuggestionViewModel @Inject constructor(
 	}
 
 	fun saveQuery(query: String) {
-		repository.saveSearchQuery(query)
+		launchJob(Dispatchers.Default) {
+			if (!settings.isIncognitoModeEnabled) {
+				repository.saveSearchQuery(query)
+			}
+		}
 	}
 
 	fun clearSearchHistory() {

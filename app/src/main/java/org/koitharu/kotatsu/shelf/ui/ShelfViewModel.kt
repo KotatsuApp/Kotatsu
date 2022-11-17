@@ -135,22 +135,18 @@ class ShelfViewModel @Inject constructor(
 
 	private suspend fun mapList(
 		content: ShelfContent,
-		sections: Set<ShelfSection>,
+		sections: List<ShelfSection>,
 		isNetworkAvailable: Boolean,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(content.favourites.keys.size + 3)
 		if (isNetworkAvailable) {
-			if (content.history.isNotEmpty() && ShelfSection.HISTORY in sections) {
-				mapHistory(result, content.history)
-			}
-			if (content.local.isNotEmpty() && ShelfSection.LOCAL in sections) {
-				mapLocal(result, content.local)
-			}
-			if (content.updated.isNotEmpty() && ShelfSection.UPDATED in sections) {
-				mapUpdated(result, content.updated)
-			}
-			if (content.favourites.isNotEmpty() && ShelfSection.FAVORITES in sections) {
-				mapFavourites(result, content.favourites)
+			for (section in sections) {
+				when (section) {
+					ShelfSection.HISTORY -> mapHistory(result, content.history)
+					ShelfSection.LOCAL -> mapLocal(result, content.local)
+					ShelfSection.UPDATED -> mapUpdated(result, content.updated)
+					ShelfSection.FAVORITES -> mapFavourites(result, content.favourites)
+				}
 			}
 		} else {
 			result += EmptyHint(
@@ -159,12 +155,17 @@ class ShelfViewModel @Inject constructor(
 				textSecondary = R.string.network_unavailable_hint,
 				actionStringRes = R.string.manage,
 			)
-			val offlineHistory = content.history.filter { it.manga.source == MangaSource.LOCAL }
-			if (offlineHistory.isNotEmpty() && ShelfSection.HISTORY in sections) {
-				mapHistory(result, offlineHistory)
-			}
-			if (content.local.isNotEmpty() && ShelfSection.LOCAL in sections) {
-				mapLocal(result, content.local)
+			for (section in sections) {
+				when (section) {
+					ShelfSection.HISTORY -> mapHistory(
+						result,
+						content.history.filter { it.manga.source == MangaSource.LOCAL },
+					)
+
+					ShelfSection.LOCAL -> mapLocal(result, content.local)
+					ShelfSection.UPDATED -> Unit
+					ShelfSection.FAVORITES -> Unit
+				}
 			}
 		}
 		if (result.isEmpty()) {
@@ -187,6 +188,9 @@ class ShelfViewModel @Inject constructor(
 		destination: MutableList<in ShelfSectionModel.History>,
 		list: List<MangaWithHistory>,
 	) {
+		if (list.isEmpty()) {
+			return
+		}
 		val showPercent = settings.isReadingIndicatorsEnabled
 		destination += ShelfSectionModel.History(
 			items = list.map { (manga, history) ->
@@ -202,6 +206,9 @@ class ShelfViewModel @Inject constructor(
 		destination: MutableList<in ShelfSectionModel.Updated>,
 		updated: Map<Manga, Int>,
 	) {
+		if (updated.isEmpty()) {
+			return
+		}
 		val showPercent = settings.isReadingIndicatorsEnabled
 		destination += ShelfSectionModel.Updated(
 			items = updated.map { (manga, counter) ->
@@ -216,6 +223,9 @@ class ShelfViewModel @Inject constructor(
 		destination: MutableList<in ShelfSectionModel.Local>,
 		local: List<Manga>,
 	) {
+		if (local.isEmpty()) {
+			return
+		}
 		destination += ShelfSectionModel.Local(
 			items = local.toUi(ListMode.GRID, this),
 			showAllButtonText = R.string.show_all,
@@ -226,6 +236,9 @@ class ShelfViewModel @Inject constructor(
 		destination: MutableList<in ShelfSectionModel.Favourites>,
 		favourites: Map<FavouriteCategory, List<Manga>>,
 	) {
+		if (favourites.isEmpty()) {
+			return
+		}
 		for ((category, list) in favourites) {
 			if (list.isNotEmpty()) {
 				destination += ShelfSectionModel.Favourites(

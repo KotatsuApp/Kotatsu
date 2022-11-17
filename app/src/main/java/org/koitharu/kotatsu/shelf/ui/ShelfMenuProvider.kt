@@ -10,7 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.RememberSelectionDialogListener
 import org.koitharu.kotatsu.local.ui.ImportDialogFragment
-import org.koitharu.kotatsu.shelf.ui.config.ShelfConfigSheet
+import org.koitharu.kotatsu.shelf.ui.config.ShelfSettingsActivity
 import org.koitharu.kotatsu.shelf.ui.config.size.ShelfSizeBottomSheet
 import org.koitharu.kotatsu.utils.ext.startOfDay
 import java.util.Date
@@ -45,7 +45,7 @@ class ShelfMenuProvider(
 			}
 
 			R.id.action_categories -> {
-				ShelfConfigSheet.show(fragmentManager)
+				context.startActivity(ShelfSettingsActivity.newIntent(context))
 				true
 			}
 

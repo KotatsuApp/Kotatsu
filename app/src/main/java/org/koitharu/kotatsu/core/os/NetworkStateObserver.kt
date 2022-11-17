@@ -12,6 +12,7 @@ import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.first
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.isNetworkAvailable
 import javax.inject.Inject
@@ -35,6 +36,13 @@ class NetworkStateObserver @Inject constructor(
 		while (true) {
 			observeImpl().collect(collector)
 		}
+	}
+
+	suspend fun awaitForConnection(): Unit {
+		if (value) {
+			return
+		}
+		first { it }
 	}
 
 	private fun observeImpl() = callbackFlow<Boolean> {

@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.withProgress
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
 import java.io.File
 import java.util.LinkedList
@@ -66,7 +67,9 @@ class PageLoader @Inject constructor(
 
 	override fun close() {
 		loaderScope.cancel()
-		tasks.clear()
+		synchronized(tasks) {
+			tasks.clear()
+		}
 	}
 
 	fun isPrefetchApplicable(): Boolean {
@@ -103,7 +106,9 @@ class PageLoader @Inject constructor(
 			return task
 		}
 		task = loadPageAsyncImpl(page)
-		tasks[page.id] = task
+		synchronized(tasks) {
+			tasks[page.id] = task
+		}
 		return task
 	}
 
@@ -135,7 +140,9 @@ class PageLoader @Inject constructor(
 			while (prefetchQueue.isNotEmpty()) {
 				val page = prefetchQueue.pollFirst() ?: return
 				if (cache[page.url] == null) {
-					tasks[page.id] = loadPageAsyncImpl(page)
+					synchronized(tasks) {
+						tasks[page.id] = loadPageAsyncImpl(page)
+					}
 					return
 				}
 			}
@@ -173,9 +180,12 @@ class PageLoader @Inject constructor(
 		val uri = Uri.parse(pageUrl)
 		return if (uri.scheme == "cbz") {
 			runInterruptible(Dispatchers.IO) {
-				val zip = ZipFile(uri.schemeSpecificPart)
-				val entry = zip.getEntry(uri.fragment)
-				zip.getInputStream(entry).use {
+				ZipFile(uri.schemeSpecificPart)
+			}.use { zip ->
+				runInterruptible(Dispatchers.IO) {
+					val entry = zip.getEntry(uri.fragment)
+					zip.getInputStream(entry)
+				}.use {
 					cache.put(pageUrl, it)
 				}
 			}
@@ -194,10 +204,8 @@ class PageLoader @Inject constructor(
 				val body = checkNotNull(response.body) {
 					"Null response"
 				}
-				runInterruptible(Dispatchers.IO) {
-					body.byteStream().use {
-						cache.put(pageUrl, it, body.contentLength(), progress)
-					}
+				body.withProgress(progress).byteStream().use {
+					cache.put(pageUrl, it)
 				}
 			}
 		}

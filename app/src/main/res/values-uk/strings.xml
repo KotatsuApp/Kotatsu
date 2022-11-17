@@ -394,4 +394,5 @@
     <string name="webtoon_zoom">Масштабування в режимі вебтуну</string>
     <string name="webtoon_zoom_summary">Дозволити жести збільшення/зменшення масштабу в режимі вебтуну (бета)</string>
     <string name="reader_slider">Відображати повзунок перемикання сторінок</string>
+    <string name="compact">Компактно</string>
 </resources>

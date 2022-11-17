@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.local.domain.importer
 
 import android.net.Uri
-import java.io.File
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
@@ -11,7 +9,10 @@ import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.resolveName
+import java.io.File
+import java.io.IOException
 
 class ZipMangaImporter(
 	storageManager: LocalStorageManager,
@@ -27,10 +28,10 @@ class ZipMangaImporter(
 			}
 			val dest = File(getOutputDir(), name)
 			runInterruptible {
-				contentResolver.openInputStream(uri)?.use { source ->
-					dest.outputStream().use { output ->
-						source.copyTo(output)
-					}
+				contentResolver.openInputStream(uri)
+			}?.use { source ->
+				dest.outputStream().use { output ->
+					source.copyToSuspending(output)
 				}
 			} ?: throw IOException("Cannot open input stream: $uri")
 			localMangaRepository.getFromFile(dest)
