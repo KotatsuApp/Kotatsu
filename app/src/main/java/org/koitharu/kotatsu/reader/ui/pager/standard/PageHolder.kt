@@ -10,6 +10,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -21,8 +22,9 @@ open class PageHolder(
 	binding: ItemPageBinding,
 	loader: PageLoader,
 	settings: ReaderSettings,
+	networkState: NetworkStateObserver,
 	exceptionResolver: ExceptionResolver,
-) : BasePageHolder<ItemPageBinding>(binding, loader, settings, exceptionResolver),
+) : BasePageHolder<ItemPageBinding>(binding, loader, settings, networkState, exceptionResolver),
 	View.OnClickListener {
 
 	init {
@@ -74,6 +76,7 @@ open class PageHolder(
 				binding.ssiv.minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 				binding.ssiv.resetScaleAndCenter()
 			}
+
 			ZoomMode.FIT_HEIGHT -> {
 				binding.ssiv.minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 				binding.ssiv.minScale = binding.ssiv.height / binding.ssiv.sHeight.toFloat()
@@ -82,6 +85,7 @@ open class PageHolder(
 					PointF(0f, binding.ssiv.sHeight / 2f),
 				)
 			}
+
 			ZoomMode.FIT_WIDTH -> {
 				binding.ssiv.minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 				binding.ssiv.minScale = binding.ssiv.width / binding.ssiv.sWidth.toFloat()
@@ -90,6 +94,7 @@ open class PageHolder(
 					PointF(binding.ssiv.sWidth / 2f, 0f),
 				)
 			}
+
 			ZoomMode.KEEP_START -> {
 				binding.ssiv.minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 				binding.ssiv.setScaleAndCenter(

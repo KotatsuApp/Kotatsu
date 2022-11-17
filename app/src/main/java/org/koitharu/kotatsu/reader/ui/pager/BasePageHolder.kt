@@ -5,6 +5,7 @@ import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.databinding.LayoutPageInfoBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -13,11 +14,12 @@ abstract class BasePageHolder<B : ViewBinding>(
 	protected val binding: B,
 	loader: PageLoader,
 	settings: ReaderSettings,
+	networkStateObserver: NetworkStateObserver,
 	exceptionResolver: ExceptionResolver,
 ) : RecyclerView.ViewHolder(binding.root), PageHolderDelegate.Callback {
 
 	@Suppress("LeakingThis")
-	protected val delegate = PageHolderDelegate(loader, settings, this, exceptionResolver)
+	protected val delegate = PageHolderDelegate(loader, settings, this, networkStateObserver, exceptionResolver)
 	protected val bindingInfo = LayoutPageInfoBinding.bind(binding.root)
 
 	val context: Context

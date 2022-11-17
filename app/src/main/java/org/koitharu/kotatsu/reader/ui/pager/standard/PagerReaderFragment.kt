@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.absoluteValue
 import kotlinx.coroutines.async
+import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -18,9 +18,14 @@ import org.koitharu.kotatsu.utils.ext.doOnPageChanged
 import org.koitharu.kotatsu.utils.ext.recyclerView
 import org.koitharu.kotatsu.utils.ext.resetTransformations
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import javax.inject.Inject
+import kotlin.math.absoluteValue
 
 @AndroidEntryPoint
 class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
+
+	@Inject
+	lateinit var networkStateObserver: NetworkStateObserver
 
 	private var pagesAdapter: PagesAdapter? = null
 
@@ -32,7 +37,12 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	@SuppressLint("NotifyDataSetChanged")
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		pagesAdapter = PagesAdapter(viewModel.pageLoader, viewModel.readerSettings, exceptionResolver)
+		pagesAdapter = PagesAdapter(
+			viewModel.pageLoader,
+			viewModel.readerSettings,
+			networkStateObserver,
+			exceptionResolver,
+		)
 		with(binding.pager) {
 			adapter = pagesAdapter
 			offscreenPageLimit = 2

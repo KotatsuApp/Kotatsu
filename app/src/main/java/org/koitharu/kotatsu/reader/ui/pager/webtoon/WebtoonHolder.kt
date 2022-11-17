@@ -8,20 +8,26 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.os.NetworkStateObserver
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.GoneOnInvisibleListener
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.hideCompat
+import org.koitharu.kotatsu.utils.ext.ifZero
+import org.koitharu.kotatsu.utils.ext.setProgressCompat
+import org.koitharu.kotatsu.utils.ext.showCompat
 
 class WebtoonHolder(
 	binding: ItemPageWebtoonBinding,
 	loader: PageLoader,
 	settings: ReaderSettings,
+	networkState: NetworkStateObserver,
 	exceptionResolver: ExceptionResolver,
-) : BasePageHolder<ItemPageWebtoonBinding>(binding, loader, settings, exceptionResolver),
+) : BasePageHolder<ItemPageWebtoonBinding>(binding, loader, settings, networkState, exceptionResolver),
 	View.OnClickListener {
 
 	private var scrollToRestore = 0
