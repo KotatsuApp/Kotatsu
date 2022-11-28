@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.os.NetworkStateObserver
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.utils.ext.resetTransformations
@@ -16,7 +16,7 @@ import kotlin.coroutines.suspendCoroutine
 abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	private val loader: PageLoader,
 	private val readerSettings: ReaderSettings,
-	private val networkState: NetworkStateObserver,
+	private val networkState: NetworkState,
 	private val exceptionResolver: ExceptionResolver,
 ) : RecyclerView.Adapter<H>() {
 
@@ -70,7 +70,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 		parent: ViewGroup,
 		loader: PageLoader,
 		settings: ReaderSettings,
-		networkState: NetworkStateObserver,
+		networkState: NetworkState,
 		exceptionResolver: ExceptionResolver,
 	): H
 

@@ -8,7 +8,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.os.NetworkStateObserver
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -25,7 +25,7 @@ class WebtoonHolder(
 	binding: ItemPageWebtoonBinding,
 	loader: PageLoader,
 	settings: ReaderSettings,
-	networkState: NetworkStateObserver,
+	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
 ) : BasePageHolder<ItemPageWebtoonBinding>(binding, loader, settings, networkState, exceptionResolver),
 	View.OnClickListener {

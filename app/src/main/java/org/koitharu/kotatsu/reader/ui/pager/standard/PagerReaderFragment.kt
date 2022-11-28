@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.children
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
-import org.koitharu.kotatsu.core.os.NetworkStateObserver
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -25,7 +25,7 @@ import kotlin.math.absoluteValue
 class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	@Inject
-	lateinit var networkStateObserver: NetworkStateObserver
+	lateinit var networkState: NetworkState
 
 	private var pagesAdapter: PagesAdapter? = null
 
@@ -40,7 +40,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 		pagesAdapter = PagesAdapter(
 			viewModel.pageLoader,
 			viewModel.readerSettings,
-			networkStateObserver,
+			networkState,
 			exceptionResolver,
 		)
 		with(binding.pager) {
