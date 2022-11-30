@@ -1,29 +1,21 @@
 package org.koitharu.kotatsu.core.os
 
-import android.content.Context
+import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkRequest
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import org.koitharu.kotatsu.utils.MediatorStateFlow
-import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.isNetworkAvailable
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class NetworkState @Inject constructor(
-	@ApplicationContext context: Context,
-) : MediatorStateFlow<Boolean>() {
+class NetworkState(
+	private val connectivityManager: ConnectivityManager,
+) : MediatorStateFlow<Boolean>(connectivityManager.isNetworkAvailable) {
 
-	private val connectivityManager = context.connectivityManager
 	private val callback = NetworkCallbackImpl()
 
-	override val initialValue: Boolean
-		get() = connectivityManager.isNetworkAvailable
-
 	override fun onActive() {
+		invalidate()
 		val request = NetworkRequest.Builder().build()
 		connectivityManager.registerNetworkCallback(request, callback)
 	}
@@ -39,16 +31,16 @@ class NetworkState @Inject constructor(
 		first { it }
 	}
 
+	private fun invalidate() {
+		publishValue(connectivityManager.isNetworkAvailable)
+	}
+
 	private inner class NetworkCallbackImpl : NetworkCallback() {
 
-		override fun onAvailable(network: Network) = update()
+		override fun onAvailable(network: Network) = invalidate()
 
-		override fun onLost(network: Network) = update()
+		override fun onLost(network: Network) = invalidate()
 
-		override fun onUnavailable() = update()
-
-		private fun update() {
-			publishValue(connectivityManager.isNetworkAvailable)
-		}
+		override fun onUnavailable() = invalidate()
 	}
 }

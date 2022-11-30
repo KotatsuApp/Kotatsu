@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.base.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.network.*
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -39,6 +40,7 @@ import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import org.koitharu.kotatsu.settings.backup.BackupObserver
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.utils.IncognitoModeIndicator
+import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.image.CoilImageGetter
 import org.koitharu.kotatsu.widget.WidgetUpdater
@@ -80,6 +82,12 @@ interface AppModule {
 				addInterceptor(CloudFlareInterceptor())
 			}.build()
 		}
+
+		@Provides
+		@Singleton
+		fun provideNetworkState(
+			@ApplicationContext context: Context
+		) = NetworkState(context.connectivityManager)
 
 		@Provides
 		@Singleton

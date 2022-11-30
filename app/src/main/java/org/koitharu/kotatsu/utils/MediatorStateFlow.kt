@@ -5,13 +5,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.atomic.AtomicInteger
 
-abstract class MediatorStateFlow<T> : StateFlow<T> {
+abstract class MediatorStateFlow<T>(initialValue: T) : StateFlow<T> {
 
-	@Suppress("LeakingThis")
 	private val delegate = MutableStateFlow(initialValue)
 	private val collectors = AtomicInteger(0)
-
-	protected abstract val initialValue: T
 
 	final override val replayCache: List<T>
 		get() = delegate.replayCache
