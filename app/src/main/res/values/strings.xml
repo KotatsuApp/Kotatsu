@@ -7,7 +7,7 @@
 	<string name="favourites">Favourites</string>
 	<string name="history">History</string>
 	<string name="error_occurred">An error occurred</string>
-	<string name="network_error">Could not connect to the Internet</string>
+	<string name="network_error">Network error</string>
 	<string name="details">Details</string>
 	<string name="chapters">Chapters</string>
 	<string name="list">List</string>

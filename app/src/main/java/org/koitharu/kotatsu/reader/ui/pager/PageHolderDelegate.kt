@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import java.io.File
 import java.io.IOException
 
@@ -138,6 +139,7 @@ class PageHolderDelegate(
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
+			e.printStackTraceDebug()
 			state = State.ERROR
 			error = e
 			callback.onError(e)
