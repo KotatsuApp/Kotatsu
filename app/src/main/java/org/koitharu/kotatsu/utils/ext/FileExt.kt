@@ -23,6 +23,8 @@ fun File.subdir(name: String) = File(this, name).also {
 
 fun File.takeIfReadable() = takeIf { it.exists() && it.canRead() }
 
+fun File.takeIfWriteable() = takeIf { it.exists() && it.canWrite() }
+
 fun ZipFile.readText(entry: ZipEntry) = getInputStream(entry).bufferedReader().use {
 	it.readText()
 }
