@@ -58,7 +58,7 @@ class DirMangaImporter(
 
 	private suspend fun addPages(output: CbzMangaOutput, root: DocumentFile, path: String, state: State) {
 		var number = 0
-		for (file in root.listFiles()) {
+		for (file in root.listFiles().sortedBy {it.name}) {
 			when {
 				file.isDirectory -> {
 					addPages(output, file, path + "/" + file.name, state)
