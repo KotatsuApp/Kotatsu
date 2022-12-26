@@ -4,11 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.ReversibleHandle
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
@@ -16,6 +22,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import javax.inject.Inject
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
@@ -24,6 +31,7 @@ class ExploreViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	val onOpenManga = SingleLiveEvent<Manga>()
+	val onActionDone = SingleLiveEvent<ReversibleAction>()
 
 	val content: LiveData<List<ExploreItem>> = isLoading.asFlow().flatMapLatest { loading ->
 		if (loading) {
@@ -37,6 +45,16 @@ class ExploreViewModel @Inject constructor(
 		launchLoadingJob(Dispatchers.Default) {
 			val manga = exploreRepository.findRandomManga(tagsLimit = 8)
 			onOpenManga.postCall(manga)
+		}
+	}
+
+	fun hideSource(source: MangaSource) {
+		launchJob(Dispatchers.Default) {
+			settings.hiddenSources += source.name
+			val rollback = ReversibleHandle {
+				settings.hiddenSources -= source.name
+			}
+			onActionDone.postCall(ReversibleAction(R.string.source_disabled, rollback))
 		}
 	}
 
