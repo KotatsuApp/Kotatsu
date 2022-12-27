@@ -6,7 +6,7 @@
     <string name="favourites">Favoritos</string>
     <string name="history">Historial</string>
     <string name="error_occurred">Ocurrió un error</string>
-    <string name="network_error">No se pudo conectar a Internet</string>
+    <string name="network_error">Error en la red</string>
     <string name="details">Detalles</string>
     <string name="chapters">Capítulos</string>
     <string name="list">Lista</string>
@@ -266,7 +266,7 @@
     <string name="suggestions_excluded_genres">Excluir géneros</string>
     <string name="suggestions_excluded_genres_summary">Especifica los géneros que no quieres ver en las sugerencias</string>
     <string name="removal_completed">Remoción completada</string>
-    <string name="batch_manga_save_confirm">¿Estás seguro de que quieres descargar todos los manga seleccionados con todos sus capítulos\? Esta acción puede consumir mucho tráfico y almacenamiento</string>
+    <string name="batch_manga_save_confirm">¿Descargar todos los mangas seleccionados y sus capítulos\? Esto puede consumir mucho tráfico y almacenamiento.</string>
     <string name="text_delete_local_manga_batch">¿Eliminar elementos seleccionados del dispositivo de forma permanente\?</string>
     <string name="hide">Ocultar</string>
     <string name="download_slowdown">Ralentización de la descarga</string>
@@ -375,7 +375,7 @@
     <string name="manga_error_description_pattern">Detalles del error:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Intenta &lt;a href=%2$s&gt;abrir el manga en un navegador web&lt;/a&gt; para asegurarte de que está disponible en tu fuente&lt;br&gt;2. Si está disponible, envía un informe de error a los desarrolladores.</string>
     <string name="history_shortcuts_summary">Hacer que los mangas recientes estén disponibles mediante una pulsación larga en el icono de la aplicación</string>
     <string name="color_correction_hint">Los ajustes de color elegidos serán recordados para este manga</string>
-    <string name="feed">Feed</string>
+    <string name="feed">Fuente</string>
     <string name="downloading_manga">Descargando manga</string>
     <string name="history_shortcuts">Mostrar los accesos directos a los mangas recientes</string>
     <string name="reader_control_ltr_summary">Tocando el borde derecho o pulsando la tecla derecha se pasa siempre a la página siguiente</string>
@@ -384,10 +384,16 @@
     <string name="brightness">Brillo</string>
     <string name="contrast">Contraste</string>
     <string name="reset">Restablecer</string>
-    <string name="text_unsaved_changes_prompt">Tienes cambios sin guardar. ¿Quieres guardarlos o descartarlos\?</string>
+    <string name="text_unsaved_changes_prompt">¿Guardar o descartar los cambios no guardados\?</string>
     <string name="discard">Descartar</string>
     <string name="error_no_space_left">Sin espacio en dispositivo</string>
     <string name="webtoon_zoom">Zoom de webtoon</string>
     <string name="webtoon_zoom_summary">Permitir el gesto de acercamiento/alejamiento en modo webtoon (beta)</string>
     <string name="reader_slider">Mostrar el deslizador de cambio de página</string>
+    <string name="server_error">Error del servidor (%1$d). Vuelva a intentarlo más tarde</string>
+    <string name="clear_new_chapters_counters">Información clara sobre los nuevos capítulos</string>
+    <string name="different_languages">Diferentes idiomas</string>
+    <string name="network_unavailable">La red no está disponible</string>
+    <string name="compact">Compacta</string>
+    <string name="network_unavailable_hint">Enciende la Wi-Fi o la red móvil para leer los mangas en línea</string>
 </resources>
