@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.RATING_UNKNOWN
+import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.longOf
@@ -58,7 +59,7 @@ class DirMangaImporter(
 
 	private suspend fun addPages(output: CbzMangaOutput, root: DocumentFile, path: String, state: State) {
 		var number = 0
-		for (file in root.listFiles().sortedBy {it.name}) {
+		for (file in root.listFiles().sortedWith(compareBy(AlphanumComparator()) { it.name.orEmpty() })) {
 			when {
 				file.isDirectory -> {
 					addPages(output, file, path + "/" + file.name, state)
