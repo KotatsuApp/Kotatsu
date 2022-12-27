@@ -5,7 +5,7 @@
     <string name="favourites">喜欢</string>
     <string name="history">历史</string>
     <string name="error_occurred">发生了一个错误</string>
-    <string name="network_error">未能连接到互联网</string>
+    <string name="network_error">网络错误</string>
     <string name="chapters">章节</string>
     <string name="list">列表</string>
     <string name="data_restored_with_errors">数据被恢复了，但有错误</string>
