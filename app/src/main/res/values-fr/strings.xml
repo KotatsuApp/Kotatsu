@@ -202,7 +202,7 @@
     <string name="list">Liste</string>
     <string name="chapters">Chapitres</string>
     <string name="details">Détails</string>
-    <string name="network_error">Impossible de se connecter à Internet</string>
+    <string name="network_error">Erreur réseau</string>
     <string name="error_occurred">Une erreur s\'est produite</string>
     <string name="history">Historique</string>
     <string name="favourites">Favoris</string>
