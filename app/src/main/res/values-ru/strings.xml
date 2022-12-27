@@ -396,4 +396,5 @@
     <string name="clear_new_chapters_counters">Также очистить информацию о новых главах</string>
     <string name="server_error">Внутренняя ошибка сервера (%1$d). Повторите попытку позже</string>
     <string name="compact">Компактно</string>
+    <string name="source_disabled">Источник отключен</string>
 </resources>
