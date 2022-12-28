@@ -13,10 +13,18 @@ import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -46,6 +54,7 @@ import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import java.io.IOException
 
 class DetailsViewModel @AssistedInject constructor(
 	@Assisted intent: MangaIntent,
@@ -91,17 +100,18 @@ class DetailsViewModel @AssistedInject constructor(
 	val manga = delegate.manga.filterNotNull().asLiveData(viewModelScope.coroutineContext)
 	val favouriteCategories = favourite.asLiveData(viewModelScope.coroutineContext)
 	val newChaptersCount = newChapters.asLiveData(viewModelScope.coroutineContext)
-
-	@Deprecated("")
-	val readingHistory = history.asLiveData(viewModelScope.coroutineContext)
 	val isChaptersReversed = chaptersReversed.asLiveData(viewModelScope.coroutineContext)
 
-	val historyInfo = combine(
+	val historyInfo: LiveData<HistoryInfo> = combine(
 		delegate.manga,
 		history,
-	) { m, h ->
-		HistoryInfo(m, h)
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, null)
+		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
+	) { m, h, im ->
+		HistoryInfo(m, h, im)
+	}.asFlowLiveData(
+		context = viewModelScope.coroutineContext + Dispatchers.Default,
+		defaultValue = HistoryInfo(null, null, false),
+	)
 
 	val bookmarks = delegate.manga.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
