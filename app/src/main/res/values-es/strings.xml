@@ -396,4 +396,5 @@
     <string name="network_unavailable">La red no está disponible</string>
     <string name="compact">Compacta</string>
     <string name="network_unavailable_hint">Enciende la Wi-Fi o la red móvil para leer los mangas en línea</string>
+    <string name="source_disabled">Fuente desactivada</string>
 </resources>
