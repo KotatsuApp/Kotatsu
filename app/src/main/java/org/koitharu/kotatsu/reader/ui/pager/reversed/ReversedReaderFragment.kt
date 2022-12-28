@@ -39,10 +39,11 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		pagerAdapter = ReversedPagesAdapter(
-			viewModel.pageLoader,
-			viewModel.readerSettings,
-			networkState,
-			exceptionResolver,
+			lifecycleOwner = viewLifecycleOwner,
+			loader = viewModel.pageLoader,
+			settings = viewModel.readerSettings,
+			networkState = networkState,
+			exceptionResolver = exceptionResolver,
 		)
 		with(binding.pager) {
 			adapter = pagerAdapter

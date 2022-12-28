@@ -35,10 +35,11 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		webtoonAdapter = WebtoonAdapter(
-			viewModel.pageLoader,
-			viewModel.readerSettings,
-			networkState,
-			exceptionResolver,
+			lifecycleOwner = viewLifecycleOwner,
+			loader = viewModel.pageLoader,
+			settings = viewModel.readerSettings,
+			networkState = networkState,
+			exceptionResolver = exceptionResolver,
 		)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)

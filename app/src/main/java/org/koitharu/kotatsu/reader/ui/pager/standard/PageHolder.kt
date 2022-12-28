@@ -5,6 +5,7 @@ import android.graphics.PointF
 import android.net.Uri
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
@@ -19,6 +20,7 @@ import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.*
 
 open class PageHolder(
+	owner: LifecycleOwner,
 	binding: ItemPageBinding,
 	loader: PageLoader,
 	settings: ReaderSettings,
@@ -28,6 +30,7 @@ open class PageHolder(
 	View.OnClickListener {
 
 	init {
+		binding.ssiv.bindToLifecycle(owner)
 		binding.ssiv.isEagerLoadingEnabled = !isLowRamDevice(context)
 		binding.ssiv.addOnImageEventListener(delegate)
 		@Suppress("LeakingThis")

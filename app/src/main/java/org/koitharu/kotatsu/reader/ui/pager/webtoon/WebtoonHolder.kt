@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 import android.net.Uri
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
@@ -22,6 +23,7 @@ import org.koitharu.kotatsu.utils.ext.setProgressCompat
 import org.koitharu.kotatsu.utils.ext.showCompat
 
 class WebtoonHolder(
+	owner: LifecycleOwner,
 	binding: ItemPageWebtoonBinding,
 	loader: PageLoader,
 	settings: ReaderSettings,
@@ -34,6 +36,7 @@ class WebtoonHolder(
 	private val goneOnInvisibleListener = GoneOnInvisibleListener(bindingInfo.progressBar)
 
 	init {
+		binding.ssiv.bindToLifecycle(owner)
 		binding.ssiv.regionDecoderFactory = SkiaPooledImageRegionDecoder.Factory()
 		binding.ssiv.addOnImageEventListener(delegate)
 		bindingInfo.buttonRetry.setOnClickListener(this)
