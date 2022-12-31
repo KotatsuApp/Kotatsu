@@ -395,4 +395,5 @@
     <string name="compact">Compact</string>
     <string name="server_error">Erreur côté serveur (%1$d). Veuillez réessayer plus tard</string>
     <string name="clear_new_chapters_counters">Effacer aussi les informations sur les nouveaux chapitres</string>
+    <string name="source_disabled">Source désactivée</string>
 </resources>

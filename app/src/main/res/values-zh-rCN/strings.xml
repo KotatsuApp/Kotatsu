@@ -31,7 +31,7 @@
     <string name="clear_cookies">清除cookies</string>
     <string name="chapters_checking_progress">检查新的章节: %1$d/%2$d</string>
     <string name="error_empty_name">你必须输入一个名称</string>
-    <string name="new_sources_text">新的漫画来源</string>
+    <string name="new_sources_text">有新的漫画源可用</string>
     <string name="suggestions_summary">根据你的喜好推荐漫画</string>
     <string name="suggestions_info">所有的数据都在这个设备上进行本地分析. 您的个人数据不会被转移到任何服务机构</string>
     <string name="never">从不</string>
@@ -48,7 +48,7 @@
     <string name="detailed_list">详细列表</string>
     <string name="grid">网格</string>
     <string name="list_mode">列表模式</string>
-    <string name="remote_sources">远程资源</string>
+    <string name="remote_sources">远程源</string>
     <string name="loading_">加载中…</string>
     <string name="computing_">计算中…</string>
     <string name="chapter_d_of_d">%1$d/%2$d章节</string>
@@ -230,7 +230,7 @@
     <string name="about_feedback_4pda">关于4PDA主题</string>
     <string name="auth_complete">授权</string>
     <string name="auth_not_supported_by">不支持在%s上登录</string>
-    <string name="text_clear_cookies_prompt">你将被从所有来源中注销</string>
+    <string name="text_clear_cookies_prompt">你将退出登录所有来源</string>
     <string name="genres">类型</string>
     <string name="state_ongoing">连载中</string>
     <string name="state_finished">已完结</string>
@@ -395,4 +395,5 @@
     <string name="clear_new_chapters_counters">同样清除新章节信息</string>
     <string name="server_error">服务器端错误 (%1$d)。请稍后再试</string>
     <string name="compact">紧凑</string>
+    <string name="source_disabled">已禁用图源</string>
 </resources>
