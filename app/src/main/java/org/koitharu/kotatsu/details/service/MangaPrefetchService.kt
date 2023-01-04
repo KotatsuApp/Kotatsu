@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.base.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
@@ -16,7 +14,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
-import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import javax.inject.Inject
 
@@ -46,16 +43,12 @@ class MangaPrefetchService : CoroutineIntentService() {
 
 	private suspend fun prefetchDetails(manga: Manga) = coroutineScope {
 		val source = mangaRepositoryFactory.create(manga.source)
-		processLifecycleScope.launch(Dispatchers.Default) {
-			runCatchingCancellable { source.getDetails(manga) }
-		}.join()
+		runCatchingCancellable { source.getDetails(manga) }
 	}
 
 	private suspend fun prefetchPages(chapter: MangaChapter) {
 		val source = mangaRepositoryFactory.create(chapter.source)
-		processLifecycleScope.launch(Dispatchers.Default) {
-			runCatchingCancellable { source.getPages(chapter) }
-		}.join()
+		runCatchingCancellable { source.getPages(chapter) }
 	}
 
 	companion object {
