@@ -61,20 +61,19 @@
 		android:title="@string/show_pages_numbers" />
 
 	<ListPreference
+		android:defaultValue="allow"
 		android:entries="@array/screenshots_policy"
 		android:entryValues="@array/values_screenshots_policy"
 		android:key="screenshots_policy"
 		android:title="@string/screenshots_policy"
-		app:defaultValue="allow"
 		app:useSimpleSummaryProvider="true" />
 
 	<ListPreference
+		android:defaultValue="2"
 		android:entries="@array/network_policy"
 		android:entryValues="@array/values_network_policy"
 		android:key="pages_preload"
 		android:title="@string/preload_pages"
-		app:defaultValue="2"
-
 		app:useSimpleSummaryProvider="true" />
 
 </PreferenceScreen>

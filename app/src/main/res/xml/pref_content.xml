@@ -19,6 +19,14 @@
 		android:title="@string/dns_over_https"
 		app:useSimpleSummaryProvider="true" />
 
+	<ListPreference
+		android:defaultValue="0"
+		android:entries="@array/network_policy"
+		android:entryValues="@array/values_network_policy"
+		android:key="prefetch_content"
+		android:title="@string/prefetch_content"
+		app:useSimpleSummaryProvider="true" />
+
 	<Preference
 		android:key="local_storage"
 		android:persistent="false"
