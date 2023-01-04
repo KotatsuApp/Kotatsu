@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
+import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
@@ -334,6 +335,7 @@ class MainActivity :
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
 			}
+			MangaPrefetchService.prefetchLast(this@MainActivity)
 			requestNotificationsPermission()
 		}
 	}
