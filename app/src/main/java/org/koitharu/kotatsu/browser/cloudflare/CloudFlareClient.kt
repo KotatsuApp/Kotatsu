@@ -4,12 +4,12 @@ import android.graphics.Bitmap
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.koitharu.kotatsu.core.network.AndroidCookieJar
+import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 
 private const val CF_CLEARANCE = "cf_clearance"
 
 class CloudFlareClient(
-	private val cookieJar: AndroidCookieJar,
+	private val cookieJar: MutableCookieJar,
 	private val callback: CloudFlareCallback,
 	private val targetUrl: String,
 ) : WebViewClient() {

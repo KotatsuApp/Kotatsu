@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.provider.SearchRecentSuggestions
 import android.text.Html
+import android.util.AndroidRuntimeException
 import androidx.collection.arraySetOf
 import androidx.room.InvalidationTracker
 import coil.ComponentRegistry
@@ -25,6 +26,9 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.base.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.network.*
+import org.koitharu.kotatsu.core.network.cookies.AndroidCookieJar
+import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
+import org.koitharu.kotatsu.core.network.cookies.PreferencesCookieJar
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
@@ -52,7 +56,7 @@ import javax.inject.Singleton
 interface AppModule {
 
 	@Binds
-	fun bindCookieJar(androidCookieJar: AndroidCookieJar): CookieJar
+	fun bindCookieJar(androidCookieJar: MutableCookieJar): CookieJar
 
 	@Binds
 	fun bindMangaLoaderContext(mangaLoaderContextImpl: MangaLoaderContextImpl): MangaLoaderContext
@@ -61,6 +65,17 @@ interface AppModule {
 	fun bindImageGetter(coilImageGetter: CoilImageGetter): Html.ImageGetter
 
 	companion object {
+
+		@Provides
+		@Singleton
+		fun provideCookieJar(
+			@ApplicationContext context: Context
+		): MutableCookieJar = try {
+			AndroidCookieJar()
+		} catch (e: AndroidRuntimeException) {
+			// WebView is not available
+			PreferencesCookieJar(context)
+		}
 
 		@Provides
 		@Singleton

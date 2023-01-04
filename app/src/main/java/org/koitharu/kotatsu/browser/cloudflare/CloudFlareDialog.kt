@@ -12,13 +12,13 @@ import androidx.core.view.isInvisible
 import androidx.fragment.app.setFragmentResult
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
-import org.koitharu.kotatsu.core.network.AndroidCookieJar
 import org.koitharu.kotatsu.core.network.UserAgentInterceptor
+import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.databinding.FragmentCloudflareBinding
 import org.koitharu.kotatsu.utils.ext.stringArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), CloudFlareCallback {
@@ -27,7 +27,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 	private val pendingResult = Bundle(1)
 
 	@Inject
-	lateinit var cookieJar: AndroidCookieJar
+	lateinit var cookieJar: MutableCookieJar
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
