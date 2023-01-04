@@ -9,7 +9,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.base.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.cache.ContentCache
-import org.koitharu.kotatsu.core.cache.StubContentCache
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaChapters
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -87,10 +86,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 				return false
 			}
 			val entryPoint = EntryPointAccessors.fromApplication(context, PrefetchCompanionEntryPoint::class.java)
-			if (entryPoint.contentCache is StubContentCache) {
-				return false
-			}
-			return entryPoint.settings.isContentPrefetchEnabled()
+			return entryPoint.contentCache.isCachingEnabled && entryPoint.settings.isContentPrefetchEnabled()
 		}
 	}
 }

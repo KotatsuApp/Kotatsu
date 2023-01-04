@@ -190,12 +190,12 @@ interface AppModule {
 		@Provides
 		@Singleton
 		fun provideContentCache(
-			@ApplicationContext context: Context,
+			application: Application,
 		): ContentCache {
-			return if (context.activityManager?.isLowRamDevice == true) {
+			return if (application.activityManager?.isLowRamDevice == true) {
 				StubContentCache()
 			} else {
-				MemoryContentCache()
+				MemoryContentCache(application)
 			}
 		}
 	}
