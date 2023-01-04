@@ -23,6 +23,9 @@ import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.base.ui.util.ActivityRecreationHandle
+import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.cache.MemoryContentCache
+import org.koitharu.kotatsu.core.cache.StubContentCache
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.network.*
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -40,6 +43,7 @@ import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import org.koitharu.kotatsu.settings.backup.BackupObserver
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.utils.IncognitoModeIndicator
+import org.koitharu.kotatsu.utils.ext.activityManager
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.isLowRamDevice
 import org.koitharu.kotatsu.utils.image.CoilImageGetter
@@ -167,5 +171,17 @@ interface AppModule {
 			activityRecreationHandle,
 			incognitoModeIndicator,
 		)
+
+		@Provides
+		@Singleton
+		fun provideContentCache(
+			@ApplicationContext context: Context,
+		): ContentCache {
+			return if (context.activityManager?.isLowRamDevice == true) {
+				StubContentCache()
+			} else {
+				MemoryContentCache()
+			}
+		}
 	}
 }
