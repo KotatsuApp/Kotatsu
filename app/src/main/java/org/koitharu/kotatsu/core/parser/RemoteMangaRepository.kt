@@ -1,12 +1,24 @@
 package org.koitharu.kotatsu.core.parser
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.config.ConfigKey
-import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.model.Favicons
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
 
-class RemoteMangaRepository(private val parser: MangaParser) : MangaRepository {
+class RemoteMangaRepository(
+	private val parser: MangaParser,
+	private val cache: ContentCache,
+) : MangaRepository {
 
 	override val source: MangaSource
 		get() = parser.source
@@ -28,9 +40,23 @@ class RemoteMangaRepository(private val parser: MangaParser) : MangaRepository {
 		return parser.getList(offset, tags, sortOrder)
 	}
 
-	override suspend fun getDetails(manga: Manga): Manga = parser.getDetails(manga)
+	override suspend fun getDetails(manga: Manga): Manga {
+		cache.getDetails(source, manga.url)?.let { return it }
+		return coroutineScope {
+			val details = async { parser.getDetails(manga) }
+			cache.putDetails(source, manga.url, details)
+			details
+		}.await()
+	}
 
-	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> = parser.getPages(chapter)
+	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
+		cache.getPages(source, chapter.url)?.let { return it }
+		return coroutineScope {
+			val pages = async { parser.getPages(chapter) }
+			cache.putPages(source, chapter.url, pages)
+			pages
+		}.await()
+	}
 
 	override suspend fun getPageUrl(page: MangaPage): String = parser.getPageUrl(page)
 

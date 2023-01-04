@@ -188,6 +188,9 @@
 				android:name="android.content.SyncAdapter"
 				android:resource="@xml/sync_history" />
 		</service>
+		<service
+			android:name="org.koitharu.kotatsu.details.service.MangaPrefetchService"
+			android:exported="false" />
 
 		<provider
 			android:name="org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider"
@@ -250,7 +253,7 @@
 			android:value="true" />
 		<meta-data
 			android:name="com.samsung.android.icon_container.has_icon_container"
-			android:value="@bool/com_samsung_android_icon_container_has_icon_container"/>
+			android:value="@bool/com_samsung_android_icon_container_has_icon_container" />
 
 	</application>
 
