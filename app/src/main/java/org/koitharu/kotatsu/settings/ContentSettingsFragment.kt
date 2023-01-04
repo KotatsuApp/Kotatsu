@@ -9,14 +9,13 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
+import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -26,6 +25,8 @@ import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
 import org.koitharu.kotatsu.utils.ext.getStorageName
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ContentSettingsFragment :
@@ -36,9 +37,12 @@ class ContentSettingsFragment :
 	@Inject
 	lateinit var storageManager: LocalStorageManager
 
+	@Inject
+	lateinit var contentCache: ContentCache
+
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_content)
-
+		findPreference<Preference>(AppSettings.KEY_PREFETCH_CONTENT)?.isVisible = contentCache.isCachingEnabled
 		findPreference<SliderPreference>(AppSettings.KEY_DOWNLOADS_PARALLELISM)?.run {
 			summary = value.toString()
 			setOnPreferenceChangeListener { preference, newValue ->
@@ -82,11 +86,13 @@ class ContentSettingsFragment :
 			AppSettings.KEY_LOCAL_STORAGE -> {
 				findPreference<Preference>(key)?.bindStorageName()
 			}
+
 			AppSettings.KEY_SUGGESTIONS -> {
 				findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
 					if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled,
 				)
 			}
+
 			AppSettings.KEY_SOURCES_HIDDEN -> {
 				bindRemoteSourcesSummary()
 			}
@@ -104,6 +110,7 @@ class ContentSettingsFragment :
 					.show()
 				true
 			}
+
 			AppSettings.KEY_SYNC -> {
 				val am = AccountManager.get(requireContext())
 				val accountType = getString(R.string.account_type_sync)
@@ -119,6 +126,7 @@ class ContentSettingsFragment :
 				}
 				true
 			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
