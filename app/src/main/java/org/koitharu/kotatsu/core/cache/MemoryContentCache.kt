@@ -3,12 +3,10 @@ package org.koitharu.kotatsu.core.cache
 import android.app.Application
 import android.content.ComponentCallbacks2
 import android.content.res.Configuration
-import kotlinx.coroutines.Deferred
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
-@Suppress("DeferredResultUnused")
 class MemoryContentCache(application: Application) : ContentCache, ComponentCallbacks2 {
 
 	init {
@@ -21,18 +19,18 @@ class MemoryContentCache(application: Application) : ContentCache, ComponentCall
 	override val isCachingEnabled: Boolean = true
 
 	override suspend fun getDetails(source: MangaSource, url: String): Manga? {
-		return detailsCache[ContentCache.Key(source, url)]?.await()
+		return detailsCache[ContentCache.Key(source, url)]?.awaitOrNull()
 	}
 
-	override fun putDetails(source: MangaSource, url: String, details: Deferred<Manga>) {
+	override fun putDetails(source: MangaSource, url: String, details: SafeDeferred<Manga>) {
 		detailsCache.put(ContentCache.Key(source, url), details)
 	}
 
 	override suspend fun getPages(source: MangaSource, url: String): List<MangaPage>? {
-		return pagesCache[ContentCache.Key(source, url)]?.await()
+		return pagesCache[ContentCache.Key(source, url)]?.awaitOrNull()
 	}
 
-	override fun putPages(source: MangaSource, url: String, pages: Deferred<List<MangaPage>>) {
+	override fun putPages(source: MangaSource, url: String, pages: SafeDeferred<List<MangaPage>>) {
 		pagesCache.put(ContentCache.Key(source, url), pages)
 	}
 

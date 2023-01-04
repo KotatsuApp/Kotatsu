@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.core.parser
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.cache.SafeDeferred
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
@@ -14,6 +16,8 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.utils.ext.processLifecycleScope
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class RemoteMangaRepository(
 	private val parser: MangaParser,
@@ -42,20 +46,20 @@ class RemoteMangaRepository(
 
 	override suspend fun getDetails(manga: Manga): Manga {
 		cache.getDetails(source, manga.url)?.let { return it }
-		return coroutineScope {
-			val details = async { parser.getDetails(manga) }
-			cache.putDetails(source, manga.url, details)
-			details
-		}.await()
+		val details = asyncSafe {
+			parser.getDetails(manga)
+		}
+		cache.putDetails(source, manga.url, details)
+		return details.await()
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		cache.getPages(source, chapter.url)?.let { return it }
-		return coroutineScope {
-			val pages = async { parser.getPages(chapter) }
-			cache.putPages(source, chapter.url, pages)
-			pages
-		}.await()
+		val pages = asyncSafe {
+			parser.getPages(chapter)
+		}
+		cache.putPages(source, chapter.url, pages)
+		return pages.await()
 	}
 
 	override suspend fun getPageUrl(page: MangaPage): String = parser.getPageUrl(page)
@@ -71,4 +75,10 @@ class RemoteMangaRepository(
 	}
 
 	private fun getConfig() = parser.config as SourceSettings
+
+	private fun <T> asyncSafe(block: suspend CoroutineScope.() -> T) = SafeDeferred(
+		processLifecycleScope.async(Dispatchers.Default) {
+			runCatchingCancellable { block() }
+		},
+	)
 }
