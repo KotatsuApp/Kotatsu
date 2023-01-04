@@ -90,7 +90,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 			if (entryPoint.contentCache is StubContentCache) {
 				return false
 			}
-			return true
+			return entryPoint.settings.isContentPrefetchEnabled()
 		}
 	}
 }

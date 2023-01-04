@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
@@ -17,6 +16,7 @@ import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.shelf.domain.ShelfSection
+import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
@@ -34,6 +34,7 @@ import javax.inject.Singleton
 class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+	private val connectivityManager = context.connectivityManager
 
 	private val remoteSources = EnumSet.allOf(MangaSource::class.java).apply {
 		remove(MangaSource.LOCAL)
@@ -156,6 +157,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isDynamicShortcutsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SHORTCUTS, true)
 
+	fun isContentPrefetchEnabled(): Boolean {
+		val policy = NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
+		return policy.isNetworkAllowed(connectivityManager)
+	}
+
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
 			?.split('|')
@@ -234,12 +240,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isWebtoonZoomEnable: Boolean
 		get() = prefs.getBoolean(KEY_WEBTOON_ZOOM, true)
 
-	fun isPagesPreloadAllowed(cm: ConnectivityManager): Boolean {
-		return when (prefs.getString(KEY_PAGES_PRELOAD, null)?.toIntOrNull()) {
-			NETWORK_ALWAYS -> true
-			NETWORK_NEVER -> false
-			else -> cm.isActiveNetworkMetered
-		}
+	fun isPagesPreloadEnabled(): Boolean {
+		val policy = NetworkPolicy.from(prefs.getString(KEY_PAGES_PRELOAD, null), NetworkPolicy.NON_METERED)
+		return policy.isNetworkAllowed(connectivityManager)
 	}
 
 	fun getDateFormat(format: String = prefs.getString(KEY_DATE_FORMAT, "").orEmpty()): DateFormat =
@@ -293,7 +296,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val TRACK_FAVOURITES = "favourites"
 
 		const val KEY_LIST_MODE = "list_mode_2"
-		const val KEY_APP_SECTION = "app_section_2"
 		const val KEY_THEME = "theme"
 		const val KEY_DYNAMIC_THEME = "dynamic_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
@@ -355,13 +357,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOCAL_LIST_ORDER = "local_order"
 		const val KEY_WEBTOON_ZOOM = "webtoon_zoom"
 		const val KEY_SHELF_SECTIONS = "shelf_sections_2"
+		const val KEY_PREFETCH_CONTENT = "prefetch_content"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
-
-		private const val NETWORK_NEVER = 0
-		private const val NETWORK_ALWAYS = 1
-		private const val NETWORK_NON_METERED = 2
 	}
 }
