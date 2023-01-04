@@ -516,6 +516,6 @@ class FastScroller @JvmOverloads constructor(
 
 	interface SectionIndexer {
 
-		fun getSectionText(context: Context, position: Int): CharSequence
+		fun getSectionText(context: Context, position: Int): CharSequence?
 	}
 }
