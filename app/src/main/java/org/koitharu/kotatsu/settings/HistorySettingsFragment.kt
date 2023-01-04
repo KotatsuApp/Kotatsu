@@ -12,7 +12,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.core.network.AndroidCookieJar
+import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.CacheDir
@@ -45,7 +45,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	lateinit var malRepository: MALRepository
 
 	@Inject
-	lateinit var cookieJar: AndroidCookieJar
+	lateinit var cookieJar: MutableCookieJar
 
 	@Inject
 	lateinit var shortcutsUpdater: ShortcutsUpdater

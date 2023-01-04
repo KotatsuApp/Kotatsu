@@ -14,14 +14,14 @@ class HistoryListAdapter(
 	listener: MangaListListener
 ) : MangaListAdapter(coil, lifecycleOwner, listener), FastScroller.SectionIndexer {
 
-	override fun getSectionText(context: Context, position: Int): CharSequence {
+	override fun getSectionText(context: Context, position: Int): CharSequence? {
 		val list = items
 		for (i in (0..position).reversed()) {
-			val item = list[i]
+			val item = list.getOrNull(i) ?: continue
 			if (item is DateTimeAgo) {
 				return item.format(context.resources)
 			}
 		}
-		return ""
+		return null
 	}
 }

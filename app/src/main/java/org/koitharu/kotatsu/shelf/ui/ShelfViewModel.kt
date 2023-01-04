@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.os.NetworkStateObserver
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -46,14 +46,14 @@ class ShelfViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
-	networkStateObserver: NetworkStateObserver,
+	networkState: NetworkState,
 ) : BaseViewModel(), ListExtraProvider {
 
 	val onActionDone = SingleLiveEvent<ReversibleAction>()
 
 	val content: LiveData<List<ListModel>> = combine(
 		settings.observeAsFlow(AppSettings.KEY_SHELF_SECTIONS) { shelfSections },
-		networkStateObserver,
+		networkState,
 		repository.observeShelfContent(),
 	) { sections, isConnected, content ->
 		mapList(content, sections, isConnected)

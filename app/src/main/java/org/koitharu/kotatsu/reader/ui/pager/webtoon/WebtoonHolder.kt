@@ -3,12 +3,13 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 import android.net.Uri
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.os.NetworkStateObserver
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -22,10 +23,11 @@ import org.koitharu.kotatsu.utils.ext.setProgressCompat
 import org.koitharu.kotatsu.utils.ext.showCompat
 
 class WebtoonHolder(
+	owner: LifecycleOwner,
 	binding: ItemPageWebtoonBinding,
 	loader: PageLoader,
 	settings: ReaderSettings,
-	networkState: NetworkStateObserver,
+	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
 ) : BasePageHolder<ItemPageWebtoonBinding>(binding, loader, settings, networkState, exceptionResolver),
 	View.OnClickListener {
@@ -34,6 +36,7 @@ class WebtoonHolder(
 	private val goneOnInvisibleListener = GoneOnInvisibleListener(bindingInfo.progressBar)
 
 	init {
+		binding.ssiv.bindToLifecycle(owner)
 		binding.ssiv.regionDecoderFactory = SkiaPooledImageRegionDecoder.Factory()
 		binding.ssiv.addOnImageEventListener(delegate)
 		bindingInfo.buttonRetry.setOnClickListener(this)

@@ -1,14 +1,14 @@
 package org.koitharu.kotatsu.utils
 
-import android.util.ArrayMap
-import java.util.*
-import kotlin.coroutines.coroutineContext
-import kotlin.coroutines.resume
+import androidx.collection.ArrayMap
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.util.LinkedList
+import kotlin.coroutines.coroutineContext
+import kotlin.coroutines.resume
 
 class CompositeMutex<T : Any> : Set<T> {
 
@@ -27,7 +27,7 @@ class CompositeMutex<T : Any> : Set<T> {
 	}
 
 	override fun isEmpty(): Boolean {
-		return data.isEmpty()
+		return data.isEmpty
 	}
 
 	override fun iterator(): Iterator<T> {
@@ -59,7 +59,7 @@ class CompositeMutex<T : Any> : Set<T> {
 
 	private suspend fun waitForRemoval(element: T) {
 		val list = data[element] ?: return
-		suspendCancellableCoroutine<Unit> { continuation ->
+		suspendCancellableCoroutine { continuation ->
 			list.add(continuation)
 			continuation.invokeOnCancellation {
 				list.remove(continuation)

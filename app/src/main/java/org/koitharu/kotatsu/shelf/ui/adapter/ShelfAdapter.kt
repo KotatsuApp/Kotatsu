@@ -46,9 +46,9 @@ class ShelfAdapter(
 			.addDelegate(errorStateListAD(listener))
 	}
 
-	override fun getSectionText(context: Context, position: Int): CharSequence {
-		val item = items.getOrNull(position) as? ShelfSectionModel
-		return item?.getTitle(context.resources) ?: ""
+	override fun getSectionText(context: Context, position: Int): CharSequence? {
+		val item = items.getOrNull(position) as? ShelfSectionModel ?: return null
+		return item.getTitle(context.resources)
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {

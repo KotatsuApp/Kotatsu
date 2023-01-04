@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsLiveData
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -34,9 +35,12 @@ class MainViewModel @Inject constructor(
 
 	val onOpenReader = SingleLiveEvent<Manga>()
 
-	val isResumeEnabled = historyRepository
-		.observeHasItems()
-		.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	val isResumeEnabled = combine(
+		historyRepository.observeHasItems(),
+		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
+	) { hasItems, incognito ->
+		hasItems && !incognito
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	val isFeedAvailable = settings.observeAsLiveData(
 		context = viewModelScope.coroutineContext + Dispatchers.Default,

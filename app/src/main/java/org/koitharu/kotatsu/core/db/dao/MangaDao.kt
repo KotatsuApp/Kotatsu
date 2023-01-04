@@ -14,11 +14,11 @@ abstract class MangaDao {
 	abstract suspend fun find(id: Long): MangaWithTags?
 
 	@Transaction
-	@Query("SELECT * FROM manga WHERE title LIKE :query OR alt_title LIKE :query LIMIT :limit")
+	@Query("SELECT * FROM manga WHERE (title LIKE :query OR alt_title LIKE :query) AND manga_id IN (SELECT manga_id FROM favourites UNION SELECT manga_id FROM history) LIMIT :limit")
 	abstract suspend fun searchByTitle(query: String, limit: Int): List<MangaWithTags>
 
 	@Transaction
-	@Query("SELECT * FROM manga WHERE (title LIKE :query OR alt_title LIKE :query) AND source = :source LIMIT :limit")
+	@Query("SELECT * FROM manga WHERE (title LIKE :query OR alt_title LIKE :query) AND source = :source AND manga_id IN (SELECT manga_id FROM favourites UNION SELECT manga_id FROM history) LIMIT :limit")
 	abstract suspend fun searchByTitle(query: String, source: String, limit: Int): List<MangaWithTags>
 
 	@Insert(onConflict = OnConflictStrategy.IGNORE)

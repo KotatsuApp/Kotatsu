@@ -228,18 +228,18 @@ class DetailsActivity :
 		}
 	}
 
-	private fun onHistoryChanged(info: HistoryInfo?) {
+	private fun onHistoryChanged(info: HistoryInfo) {
 		with(binding.buttonRead) {
-			if (info?.history != null) {
+			if (info.history != null) {
 				setText(R.string._continue)
-				setIconResource(R.drawable.ic_play)
+				setIconResource(if (info.isIncognitoMode) R.drawable.ic_incognito else R.drawable.ic_play)
 			} else {
 				setText(R.string.read)
-				setIconResource(R.drawable.ic_read)
+				setIconResource(if (info.isIncognitoMode) R.drawable.ic_incognito else R.drawable.ic_play)
 			}
 		}
 		val text = when {
-			info == null -> getString(R.string.loading_)
+			!info.isValid -> getString(R.string.loading_)
 			info.currentChapter >= 0 -> getString(R.string.chapter_d_of_d, info.currentChapter + 1, info.totalChapters)
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
 			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)

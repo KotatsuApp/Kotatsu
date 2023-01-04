@@ -18,7 +18,6 @@ import coil.request.ImageRequest
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -27,9 +26,9 @@ import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
-import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
@@ -45,8 +44,20 @@ import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.computeSize
+import org.koitharu.kotatsu.utils.ext.crossfade
+import org.koitharu.kotatsu.utils.ext.drawableTop
+import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.utils.ext.measureHeight
+import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.utils.ext.textAndVisible
+import org.koitharu.kotatsu.utils.ext.toFileOrNull
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.image.CoverSizeResolver
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsFragment :
@@ -75,7 +86,7 @@ class DetailsFragment :
 		binding.chipsTags.onChipClickListener = this
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
-		viewModel.readingHistory.observe(viewLifecycleOwner, ::onHistoryChanged)
+		viewModel.historyInfo.observe(viewLifecycleOwner, ::onHistoryChanged)
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
 		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
@@ -123,12 +134,14 @@ class DetailsFragment :
 						drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_finished)
 					}
 				}
+
 				MangaState.ONGOING -> {
 					infoLayout.textViewState.apply {
 						textAndVisible = resources.getString(R.string.state_ongoing)
 						drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_ongoing)
 					}
 				}
+
 				else -> infoLayout.textViewState.isVisible = false
 			}
 			if (manga.source == MangaSource.LOCAL) {
@@ -178,8 +191,8 @@ class DetailsFragment :
 		}
 	}
 
-	private fun onHistoryChanged(history: MangaHistory?) {
-		binding.progressView.setPercent(history?.percent ?: PROGRESS_NONE, animate = true)
+	private fun onHistoryChanged(history: HistoryInfo) {
+		binding.progressView.setPercent(history.history?.percent ?: PROGRESS_NONE, animate = true)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -229,6 +242,7 @@ class DetailsFragment :
 					),
 				)
 			}
+
 			R.id.textView_source -> {
 				startActivity(
 					MangaListActivity.newIntent(
@@ -237,6 +251,7 @@ class DetailsFragment :
 					),
 				)
 			}
+
 			R.id.imageView_cover -> {
 				startActivity(
 					ImageActivity.newIntent(v.context, manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }),
@@ -249,7 +264,7 @@ class DetailsFragment :
 	override fun onLongClick(v: View): Boolean {
 		when (v.id) {
 			R.id.button_read -> {
-				if (viewModel.readingHistory.value == null) {
+				if (viewModel.historyInfo.value?.history == null) {
 					return false
 				}
 				val menu = PopupMenu(v.context, v)
@@ -271,12 +286,14 @@ class DetailsFragment :
 							)
 							true
 						}
+
 						else -> false
 					}
 				}
 				menu.show()
 				return true
 			}
+
 			else -> return false
 		}
 	}

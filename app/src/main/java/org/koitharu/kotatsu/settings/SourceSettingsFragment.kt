@@ -86,7 +86,6 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 		}.onSuccess { username ->
 			preference.title = getString(R.string.logged_in_as, username)
 		}.onFailure { error ->
-			preference.isEnabled = error is AuthRequiredException
 			when {
 				error is AuthRequiredException -> Unit
 				ExceptionResolver.canResolve(error) -> {

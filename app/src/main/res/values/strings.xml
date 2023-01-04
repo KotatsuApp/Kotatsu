@@ -7,7 +7,7 @@
 	<string name="favourites">Favourites</string>
 	<string name="history">History</string>
 	<string name="error_occurred">An error occurred</string>
-	<string name="network_error">Could not connect to the Internet</string>
+	<string name="network_error">Network error</string>
 	<string name="details">Details</string>
 	<string name="chapters">Chapters</string>
 	<string name="list">List</string>
@@ -399,4 +399,5 @@
 	<string name="clear_new_chapters_counters">Also clear information about new chapters</string>
 	<string name="compact">Compact</string>
 	<string name="mal" translatable="false">MyAnimeList</string>
+	<string name="source_disabled">Source disabled</string>
 </resources>

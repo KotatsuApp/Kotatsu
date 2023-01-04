@@ -15,4 +15,10 @@
     <plurals name="days_ago">
         <item quantity="other">%1$d ngày trước</item>
     </plurals>
+    <plurals name="chapters_from_x">
+        <item quantity="other">%1$d chương từ %2$d</item>
+    </plurals>
+    <plurals name="pages">
+        <item quantity="other">Tổng %1$d trang</item>
+    </plurals>
 </resources>

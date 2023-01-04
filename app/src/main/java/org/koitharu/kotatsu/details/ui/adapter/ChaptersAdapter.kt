@@ -42,7 +42,8 @@ class ChaptersAdapter(
 		}
 	}
 
-	override fun getSectionText(context: Context, position: Int): CharSequence {
-		return items[position].chapter.number.toString()
+	override fun getSectionText(context: Context, position: Int): CharSequence? {
+		val item = items.getOrNull(position) ?: return null
+		return item.chapter.number.toString()
 	}
 }

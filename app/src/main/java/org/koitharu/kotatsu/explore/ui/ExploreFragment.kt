@@ -2,8 +2,10 @@ package org.koitharu.kotatsu.explore.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
@@ -11,11 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -31,6 +34,7 @@ import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ExploreFragment :
@@ -67,6 +71,7 @@ class ExploreFragment :
 		}
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 		viewModel.onOpenManga.observe(viewLifecycleOwner, ::onOpenManga)
+		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
 	}
 
 	override fun onDestroyView() {
@@ -95,6 +100,7 @@ class ExploreFragment :
 				viewModel.openRandom()
 				return
 			}
+
 			else -> return
 		}
 		startActivity(intent)
@@ -103,6 +109,14 @@ class ExploreFragment :
 	override fun onItemClick(item: ExploreItem.Source, view: View) {
 		val intent = MangaListActivity.newIntent(view.context, item.source)
 		startActivity(intent)
+	}
+
+	override fun onItemLongClick(item: ExploreItem.Source, view: View): Boolean {
+		val menu = PopupMenu(view.context, view)
+		menu.inflate(R.menu.popup_source)
+		menu.setOnMenuItemClickListener(SourceMenuListener(item))
+		menu.show()
+		return true
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit
@@ -122,6 +136,37 @@ class ExploreFragment :
 	private fun onOpenManga(manga: Manga) {
 		val intent = DetailsActivity.newIntent(context ?: return, manga)
 		startActivity(intent)
+	}
+
+	private fun onActionDone(action: ReversibleAction) {
+		val handle = action.handle
+		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
+		val snackbar = Snackbar.make(binding.recyclerView, action.stringResId, length)
+		if (handle != null) {
+			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
+		}
+		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
+		snackbar.show()
+	}
+
+	private inner class SourceMenuListener(
+		private val sourceItem: ExploreItem.Source,
+	) : PopupMenu.OnMenuItemClickListener {
+
+		override fun onMenuItemClick(item: MenuItem): Boolean {
+			when (item.itemId) {
+				R.id.action_settings -> {
+					startActivity(SettingsActivity.newSourceSettingsIntent(requireContext(), sourceItem.source))
+				}
+
+				R.id.action_hide -> {
+					viewModel.hideSource(sourceItem.source)
+				}
+
+				else -> return false
+			}
+			return true
+		}
 	}
 
 	companion object {

@@ -6,25 +6,25 @@ import android.util.Base64
 import android.webkit.WebView
 import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import org.koitharu.kotatsu.core.network.AndroidCookieJar
+import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.toList
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @Singleton
 class MangaLoaderContextImpl @Inject constructor(
 	override val httpClient: OkHttpClient,
-	override val cookieJar: AndroidCookieJar,
+	override val cookieJar: MutableCookieJar,
 	@ApplicationContext private val androidContext: Context,
 ) : MangaLoaderContext() {
 

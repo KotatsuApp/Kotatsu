@@ -31,6 +31,9 @@ abstract class CoroutineIntentService : BaseService() {
 						processIntent(startId, intent)
 					}
 				}
+			} catch (e: Throwable) {
+				e.printStackTraceDebug()
+				onError(startId, e)
 			} finally {
 				stopSelf(startId)
 			}

@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.core.exceptions.resolve
 
-import android.util.ArrayMap
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.StringRes
+import androidx.collection.ArrayMap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.suspendCancellableCoroutine

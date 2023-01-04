@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.children
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
-import org.koitharu.kotatsu.core.os.NetworkStateObserver
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -26,7 +26,7 @@ import kotlin.math.absoluteValue
 class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	@Inject
-	lateinit var networkStateObserver: NetworkStateObserver
+	lateinit var networkState: NetworkState
 
 	private var pagerAdapter: ReversedPagesAdapter? = null
 
@@ -39,10 +39,11 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		pagerAdapter = ReversedPagesAdapter(
-			viewModel.pageLoader,
-			viewModel.readerSettings,
-			networkStateObserver,
-			exceptionResolver,
+			lifecycleOwner = viewLifecycleOwner,
+			loader = viewModel.pageLoader,
+			settings = viewModel.readerSettings,
+			networkState = networkState,
+			exceptionResolver = exceptionResolver,
 		)
 		with(binding.pager) {
 			adapter = pagerAdapter

@@ -2,20 +2,20 @@ package org.koitharu.kotatsu.base.ui.list
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.ArrayMap
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.collection.ArrayMap
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
+import kotlin.coroutines.EmptyCoroutineContext
 
 private const val PROVIDER_NAME = "selection_decoration_sectioned"
 

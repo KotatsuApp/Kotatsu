@@ -320,4 +320,6 @@
     <string name="invalid_domain_message">Dominio non valido</string>
     <string name="select_range">Seleziona l\'intervallo</string>
     <string name="not_found_404">Contenuto non trovato o rimosso</string>
+    <string name="compact">Compatto</string>
+    <string name="source_disabled">Fonte disabilitata</string>
 </resources>

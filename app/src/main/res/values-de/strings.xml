@@ -70,7 +70,7 @@
     <string name="list">Liste</string>
     <string name="chapters">Kapitel</string>
     <string name="details">Einzelheiten</string>
-    <string name="network_error">Keine Verbindung zum Internet möglich</string>
+    <string name="network_error">Netzwerkfehler</string>
     <string name="error_occurred">Es ist ein Fehler aufgetreten</string>
     <string name="history">Verlauf</string>
     <string name="favourites">Favoriten</string>
@@ -372,4 +372,23 @@
     <string name="import_completed">Import abgeschlossen</string>
     <string name="import_completed_hint">Du kannst die Originaldatei aus dem Speicher löschen, um Platz zu sparen</string>
     <string name="import_will_start_soon">Import wird bald beginnen</string>
+    <string name="server_error">Serverseitiger Fehler (%1$d). Bitte versuchen Sie es später noch einmal</string>
+    <string name="compact">Kompakt</string>
+    <string name="contrast">Kontrast</string>
+    <string name="network_unavailable_hint">Schalten Sie Wi-Fi oder ein mobiles Netzwerk ein, um Manga online zu lesen</string>
+    <string name="clear_new_chapters_counters">Auch klare Informationen über neue Kapitel</string>
+    <string name="text_unsaved_changes_prompt">Ungespeicherte Änderungen speichern oder verwerfen\?</string>
+    <string name="discard">Verwerfen</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="brightness">Helligkeit</string>
+    <string name="color_correction_hint">Die gewählten Farbeinstellungen werden für diesen Manga in Erinnerung bleiben</string>
+    <string name="color_correction">Farbkorrektur</string>
+    <string name="error_no_space_left">Kein Platz mehr auf dem Gerät</string>
+    <string name="different_languages">Verschiedene Sprachen</string>
+    <string name="network_unavailable">Netzwerk ist nicht verfügbar</string>
+    <string name="webtoon_zoom_summary">Vergrößerungs-/Verkleinerungsgesten im Webtoon-Modus zulassen (beta)</string>
+    <string name="reader_control_ltr">Ergonomische Leserkontrolle</string>
+    <string name="reader_control_ltr_summary">Tippe auf den rechten Rand oder drücke die rechte Taste, um immer zur nächsten Seite zu wechseln</string>
+    <string name="reader_slider">Seitenwechsel-Schieberegler anzeigen</string>
+    <string name="source_disabled">Quelle deaktiviert</string>
 </resources>
