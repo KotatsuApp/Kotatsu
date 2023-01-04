@@ -7,6 +7,8 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 
 class StubContentCache : ContentCache {
 
+	override val isCachingEnabled: Boolean = false
+
 	override suspend fun getDetails(source: MangaSource, url: String): Manga? = null
 
 	override fun putDetails(source: MangaSource, url: String, details: Deferred<Manga>) = Unit

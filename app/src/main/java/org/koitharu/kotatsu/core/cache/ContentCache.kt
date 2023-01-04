@@ -7,6 +7,8 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 
 interface ContentCache {
 
+	val isCachingEnabled: Boolean
+
 	suspend fun getDetails(source: MangaSource, url: String): Manga?
 
 	fun putDetails(source: MangaSource, url: String, details: Deferred<Manga>)
