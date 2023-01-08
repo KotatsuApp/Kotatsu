@@ -89,8 +89,14 @@ class DetailsViewModel @AssistedInject constructor(
 	private val favourite = favouritesRepository.observeCategoriesIds(delegate.mangaId).map { it.isNotEmpty() }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	private val newChapters = trackingRepository.observeNewChaptersCount(delegate.mangaId)
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
+	private val newChapters = settings.observeAsFlow(AppSettings.KEY_TRACKER_ENABLED) { isTrackerEnabled }
+		.flatMapLatest { isEnabled ->
+			if (isEnabled) {
+				trackingRepository.observeNewChaptersCount(delegate.mangaId)
+			} else {
+				flowOf(0)
+			}
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	private val chaptersQuery = MutableStateFlow("")
 

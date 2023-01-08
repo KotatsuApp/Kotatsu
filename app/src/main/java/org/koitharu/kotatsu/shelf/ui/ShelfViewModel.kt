@@ -53,17 +53,22 @@ class ShelfViewModel @Inject constructor(
 
 	val content: LiveData<List<ListModel>> = combine(
 		settings.observeAsFlow(AppSettings.KEY_SHELF_SECTIONS) { shelfSections },
+		settings.observeAsFlow(AppSettings.KEY_TRACKER_ENABLED) { isTrackerEnabled },
 		networkState,
 		repository.observeShelfContent(),
-	) { sections, isConnected, content ->
-		mapList(content, sections, isConnected)
+	) { sections, isTrackerEnabled, isConnected, content ->
+		mapList(content, isTrackerEnabled, sections, isConnected)
 	}.debounce(500)
 		.catch { e ->
 			emit(listOf(e.toErrorState(canRetry = false)))
 		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	override suspend fun getCounter(mangaId: Long): Int {
-		return trackingRepository.getNewChaptersCount(mangaId)
+		return if (settings.isTrackerEnabled) {
+			trackingRepository.getNewChaptersCount(mangaId)
+		} else {
+			0
+		}
 	}
 
 	override suspend fun getProgress(mangaId: Long): Float {
@@ -135,6 +140,7 @@ class ShelfViewModel @Inject constructor(
 
 	private suspend fun mapList(
 		content: ShelfContent,
+		isTrackerEnabled: Boolean,
 		sections: List<ShelfSection>,
 		isNetworkAvailable: Boolean,
 	): List<ListModel> {
@@ -144,7 +150,10 @@ class ShelfViewModel @Inject constructor(
 				when (section) {
 					ShelfSection.HISTORY -> mapHistory(result, content.history)
 					ShelfSection.LOCAL -> mapLocal(result, content.local)
-					ShelfSection.UPDATED -> mapUpdated(result, content.updated)
+					ShelfSection.UPDATED -> if (isTrackerEnabled) {
+						mapUpdated(result, content.updated)
+					}
+
 					ShelfSection.FAVORITES -> mapFavourites(result, content.favourites)
 				}
 			}
@@ -194,7 +203,7 @@ class ShelfViewModel @Inject constructor(
 		val showPercent = settings.isReadingIndicatorsEnabled
 		destination += ShelfSectionModel.History(
 			items = list.map { (manga, history) ->
-				val counter = trackingRepository.getNewChaptersCount(manga.id)
+				val counter = getCounter(manga.id)
 				val percent = if (showPercent) history.percent else PROGRESS_NONE
 				manga.toGridModel(counter, percent)
 			},

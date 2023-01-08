@@ -3,9 +3,6 @@ package org.koitharu.kotatsu.history.ui
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.*
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -21,11 +18,20 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toGridModel
+import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
+import org.koitharu.kotatsu.list.ui.model.toListModel
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.onFirst
+import java.util.Date
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @HiltViewModel
 class HistoryListViewModel @Inject constructor(
@@ -53,6 +59,7 @@ class HistoryListViewModel @Inject constructor(
 					actionStringRes = 0,
 				),
 			)
+
 			else -> mapList(list, grouped, mode)
 		}
 	}.onStart {
@@ -103,7 +110,11 @@ class HistoryListViewModel @Inject constructor(
 				}
 				prevDate = date
 			}
-			val counter = trackingRepository.getNewChaptersCount(manga.id)
+			val counter = if (settings.isTrackerEnabled) {
+				trackingRepository.getNewChaptersCount(manga.id)
+			} else {
+				0
+			}
 			val percent = if (showPercent) history.percent else PROGRESS_NONE
 			result += when (mode) {
 				ListMode.LIST -> manga.toListModel(counter, percent)

@@ -117,7 +117,11 @@ class FavouritesListViewModel @AssistedInject constructor(
 	}
 
 	override suspend fun getCounter(mangaId: Long): Int {
-		return trackingRepository.getNewChaptersCount(mangaId)
+		return if (settings.isTrackerEnabled) {
+			trackingRepository.getNewChaptersCount(mangaId)
+		} else {
+			0
+		}
 	}
 
 	override suspend fun getProgress(mangaId: Long): Float {
