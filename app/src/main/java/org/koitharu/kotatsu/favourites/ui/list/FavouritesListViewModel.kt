@@ -31,7 +31,7 @@ import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class FavouritesListViewModel @AssistedInject constructor(
-	@Assisted private val categoryId: Long,
+	@Assisted val categoryId: Long,
 	private val repository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val historyRepository: HistoryRepository,
