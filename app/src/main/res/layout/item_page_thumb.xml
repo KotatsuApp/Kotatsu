@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	style="@style/Widget.Material3.CardView.Outlined"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	style="@style/Widget.Material3.CardView.Outlined"
 	app:cardBackgroundColor="?scrimBackground">
 
 	<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
@@ -17,16 +17,16 @@
 
 	<TextView
 		android:id="@+id/textView_number"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_width="32dp"
+		android:layout_height="32dp"
 		android:layout_gravity="bottom|end"
-		android:layout_margin="4dp"
+		android:layout_margin="8dp"
 		android:ellipsize="none"
 		android:gravity="center"
-		android:minWidth="26dp"
 		android:singleLine="true"
 		android:textAlignment="center"
 		android:textColor="?attr/colorOnTertiary"
+		android:textSize="14sp"
 		tools:background="@drawable/bg_badge_default"
 		tools:text="2" />
 
