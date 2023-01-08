@@ -111,7 +111,7 @@ class DetailsViewModel @AssistedInject constructor(
 	val historyInfo: LiveData<HistoryInfo> = combine(
 		delegate.manga,
 		history,
-		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
+		historyRepository.observeShouldSkip(delegate.manga),
 	) { m, h, im ->
 		HistoryInfo(m, h, im)
 	}.asFlowLiveData(
