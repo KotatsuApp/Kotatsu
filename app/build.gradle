@@ -114,7 +114,7 @@ dependencies {
 
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
-	implementation 'com.squareup.okio:okio:3.2.0'
+	implementation 'com.squareup.okio:okio:3.3.0'
 
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
@@ -138,10 +138,10 @@ dependencies {
 	testImplementation 'org.json:json:20220924'
 	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
-	androidTestImplementation 'androidx.test:runner:1.5.1'
+	androidTestImplementation 'androidx.test:runner:1.5.2'
 	androidTestImplementation 'androidx.test:rules:1.5.0'
 	androidTestImplementation 'androidx.test:core-ktx:1.5.0'
-	androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.4'
+	androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
 
 	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
