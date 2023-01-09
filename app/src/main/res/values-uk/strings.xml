@@ -9,7 +9,7 @@
     <string name="add">Додати</string>
     <string name="save">Зберегти</string>
     <string name="local_storage">Локальне сховище</string>
-    <string name="network_error">Не вдалося підключитися до Інтернету</string>
+    <string name="network_error">Помилка мережі</string>
     <string name="details">Деталі</string>
     <string name="try_again">Спробуйте ще раз</string>
     <string name="open_menu">Відкрити меню</string>
@@ -395,4 +395,6 @@
     <string name="webtoon_zoom_summary">Дозволити жести збільшення/зменшення масштабу в режимі вебтуну (бета)</string>
     <string name="reader_slider">Відображати повзунок перемикання сторінок</string>
     <string name="compact">Компактно</string>
+    <string name="prefetch_content">Передвчасне завантаження контенту</string>
+    <string name="source_disabled">Джерело відключено</string>
 </resources>
