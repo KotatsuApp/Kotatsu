@@ -46,6 +46,7 @@ class MainNavigationDelegate(
 	fun onCreate(savedInstanceState: Bundle?) {
 		primaryFragment?.let {
 			onFragmentChanged(it, fromUser = false)
+			navBar.selectedItemId = getItemId(it)
 		} ?: onNavigationItemSelected(navBar.selectedItemId)
 	}
 
@@ -90,6 +91,14 @@ class MainNavigationDelegate(
 			},
 		)
 		return true
+	}
+
+	private fun getItemId(fragment: Fragment) = when (fragment) {
+		is ShelfFragment -> R.id.nav_shelf
+		is ExploreFragment -> R.id.nav_explore
+		is FeedFragment -> R.id.nav_feed
+		is ToolsFragment -> R.id.nav_tools
+		else -> 0
 	}
 
 	private fun setPrimaryFragment(fragment: Fragment) {

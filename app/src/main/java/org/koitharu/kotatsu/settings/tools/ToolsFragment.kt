@@ -16,7 +16,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
-import com.google.android.material.R as materialR
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -30,6 +29,7 @@ import org.koitharu.kotatsu.settings.about.AppUpdateDialog
 import org.koitharu.kotatsu.settings.tools.model.StorageUsage
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getThemeColor
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ToolsFragment :
@@ -48,6 +48,7 @@ class ToolsFragment :
 		binding.buttonSettings.setOnClickListener(this)
 		binding.buttonDownloads.setOnClickListener(this)
 		binding.cardUpdate.root.setOnClickListener(this)
+		binding.cardUpdate.buttonChangelog.setOnClickListener(this)
 		binding.cardUpdate.buttonDownload.setOnClickListener(this)
 		binding.switchIncognito.setOnCheckedChangeListener(this)
 
@@ -69,10 +70,13 @@ class ToolsFragment :
 				intent.data = url.toUri()
 				startActivity(Intent.createChooser(intent, getString(R.string.open_in_browser)))
 			}
+
 			R.id.card_update -> {
 				val version = viewModel.appUpdate.value ?: return
 				AppUpdateDialog(v.context).show(version)
 			}
+
+			R.id.button_changelog -> showChangelog()
 		}
 	}
 
@@ -139,6 +143,13 @@ class ToolsFragment :
 		val color = ColorUtils.HSLToColor(floatArrayOf(hue, 0.4f, 0.6f))
 		val backgroundColor = requireContext().getThemeColor(materialR.attr.colorSecondaryContainer)
 		return MaterialColors.harmonize(color, backgroundColor)
+	}
+
+	private fun showChangelog() {
+		TransitionManager.beginDelayedTransition(binding.cardUpdate.root)
+		binding.cardUpdate.buttonChangelog.isVisible = false
+		binding.cardUpdate.textSecondary.isVisible = true
+		binding.cardUpdate.textChangelog.isVisible = true
 	}
 
 	companion object {
