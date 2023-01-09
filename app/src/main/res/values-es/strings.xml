@@ -397,4 +397,5 @@
     <string name="compact">Compacta</string>
     <string name="network_unavailable_hint">Enciende la Wi-Fi o la red móvil para leer los mangas en línea</string>
     <string name="source_disabled">Fuente desactivada</string>
+    <string name="prefetch_content">Precargar el contenido</string>
 </resources>
