@@ -400,4 +400,5 @@
 	<string name="compact">Compact</string>
 	<string name="source_disabled">Source disabled</string>
 	<string name="prefetch_content">Content preloading</string>
+	<string name="mark_as_current">Mark as current</string>
 </resources>

@@ -1,15 +1,16 @@
 package org.koitharu.kotatsu.details.ui
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import kotlin.math.roundToInt
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
@@ -24,8 +25,8 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
-import org.koitharu.kotatsu.utils.ext.parents
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
+import kotlin.math.roundToInt
 
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
@@ -102,6 +103,7 @@ class ChaptersFragment :
 				mode.finish()
 				true
 			}
+
 			R.id.action_delete -> {
 				val ids = selectionController?.peekCheckedIds()
 				val manga = viewModel.manga.value
@@ -120,6 +122,7 @@ class ChaptersFragment :
 				mode.finish()
 				true
 			}
+
 			R.id.action_select_range -> {
 				val items = chaptersAdapter?.items ?: return false
 				val ids = HashSet(controller.peekCheckedIds())
@@ -139,11 +142,20 @@ class ChaptersFragment :
 				controller.addAll(ids)
 				true
 			}
+
 			R.id.action_select_all -> {
 				val ids = chaptersAdapter?.items?.map { it.chapter.id } ?: return false
-				selectionController?.addAll(ids)
+				controller.addAll(ids)
 				true
 			}
+
+			R.id.action_mark_current -> {
+				val id = controller.peekCheckedIds().singleOrNull() ?: return false
+				viewModel.markChapterAsCurrent(id)
+				mode.finish()
+				true
+			}
+
 			else -> false
 		}
 	}
@@ -164,6 +176,7 @@ class ChaptersFragment :
 			x.chapter.source == MangaSource.LOCAL
 		}
 		menu.findItem(R.id.action_select_all).isVisible = items.size < allItems.size
+		menu.findItem(R.id.action_mark_current).isVisible = items.size == 1
 		mode.title = items.size.toString()
 		var hasGap = false
 		for (i in 0 until items.size - 1) {

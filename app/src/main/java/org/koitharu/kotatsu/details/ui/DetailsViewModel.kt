@@ -281,6 +281,17 @@ class DetailsViewModel @AssistedInject constructor(
 		}
 	}
 
+	fun markChapterAsCurrent(chapterId: Long) {
+		launchJob(Dispatchers.Default) {
+			val manga = checkNotNull(delegate.manga.value)
+			val chapters = checkNotNull(manga.chapters)
+			val chapterIndex = chapters.indexOfFirst { it.id == chapterId }
+			check(chapterIndex in chapters.indices) { "Chapter not found" }
+			val percent = chapterIndex / chapters.size.toFloat()
+			historyRepository.addOrUpdate(manga = manga, chapterId = chapterId, page = 0, scroll = 0, percent = percent)
+		}
+	}
+
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
 		delegate.doLoad()
 	}
