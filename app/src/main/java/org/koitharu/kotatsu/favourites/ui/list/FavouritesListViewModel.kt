@@ -55,7 +55,7 @@ class FavouritesListViewModel @AssistedInject constructor(
 		} else {
 			repository.observeAll(categoryId)
 		},
-		createListModeFlow(),
+		listModeFlow,
 	) { list, mode ->
 		when {
 			list.isEmpty() -> listOf(

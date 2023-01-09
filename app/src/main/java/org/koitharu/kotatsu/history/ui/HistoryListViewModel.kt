@@ -48,7 +48,7 @@ class HistoryListViewModel @Inject constructor(
 	override val content = combine(
 		repository.observeAllWithHistory(),
 		historyGrouping,
-		createListModeFlow(),
+		listModeFlow,
 	) { list, grouped, mode ->
 		when {
 			list.isEmpty() -> listOf(

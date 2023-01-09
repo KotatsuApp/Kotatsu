@@ -57,7 +57,7 @@ class LocalListViewModel @Inject constructor(
 
 	override val content = combine(
 		mangaList,
-		createListModeFlow(),
+		listModeFlow,
 		sortOrder.asFlow(),
 		selectedTags,
 		listError,

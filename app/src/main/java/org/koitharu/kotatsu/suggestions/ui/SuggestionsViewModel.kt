@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.suggestions.ui
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -17,6 +16,7 @@ import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.onFirst
+import javax.inject.Inject
 
 @HiltViewModel
 class SuggestionsViewModel @Inject constructor(
@@ -26,7 +26,7 @@ class SuggestionsViewModel @Inject constructor(
 
 	override val content = combine(
 		repository.observeAll(),
-		createListModeFlow(),
+		listModeFlow,
 	) { list, mode ->
 		when {
 			list.isEmpty() -> listOf(
@@ -37,6 +37,7 @@ class SuggestionsViewModel @Inject constructor(
 					actionStringRes = 0,
 				),
 			)
+
 			else -> list.toUi(mode)
 		}
 	}.onStart {

@@ -34,7 +34,7 @@ class UpdatesViewModel @Inject constructor(
 
 	override val content = combine(
 		repository.observeUpdatedManga(),
-		createListModeFlow(),
+		listModeFlow,
 	) { mangaMap, mode ->
 		when {
 			mangaMap.isEmpty() -> listOf(
