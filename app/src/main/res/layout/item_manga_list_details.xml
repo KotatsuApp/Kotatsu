@@ -4,31 +4,29 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="@dimen/manga_list_details_item_height"
+	android:layout_height="wrap_content"
 	app:cardCornerRadius="16dp">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="horizontal"
-		android:padding="4dp">
+		android:layout_height="match_parent">
 
-		<org.koitharu.kotatsu.base.ui.widgets.CoverImageView
+		<com.google.android.material.imageview.ShapeableImageView
 			android:id="@+id/imageView_cover"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:orientation="vertical"
+			android:layout_width="98dp"
+			android:layout_height="0dp"
 			android:scaleType="centerCrop"
+			app:layout_constraintDimensionRatio="13:18"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 			tools:src="@sample/covers" />
-	
+
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 			android:id="@+id/progressView"
-			android:layout_width="32dp"
-			android:layout_height="32dp"
-			android:layout_margin="4dp"
+			android:layout_width="@dimen/card_indicator_size"
+			android:layout_height="@dimen/card_indicator_size"
+			android:layout_margin="@dimen/card_indicator_offset"
 			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
 
@@ -36,13 +34,13 @@
 			android:id="@+id/textView_title"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="8dp"
-			android:layout_marginEnd="8dp"
+			android:layout_marginStart="12dp"
+			android:layout_marginTop="12dp"
+			android:layout_marginEnd="12dp"
 			android:ellipsize="end"
 			android:maxLines="2"
-			android:textAppearance="?attr/textAppearanceTitleMedium"
-			app:layout_constraintBottom_toTopOf="@+id/textView_subtitle"
+			android:textAppearance="?attr/textAppearanceTitleLarge"
+			android:textSize="20sp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
@@ -52,61 +50,68 @@
 			android:id="@+id/textView_subtitle"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginEnd="8dp"
+			android:layout_marginStart="12dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="12dp"
 			android:ellipsize="none"
 			android:gravity="center_vertical"
 			android:maxLines="2"
 			android:requiresFadingEdge="horizontal"
-			android:textAppearance="?attr/textAppearanceBodyMedium"
-			app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+			android:textAppearance="?attr/textAppearanceSubtitle1"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@+id/textView_title"
 			tools:text="@tools:sample/lorem/random" />
 
-		<LinearLayout
-			android:id="@+id/linearLayout"
+		<HorizontalScrollView
+			android:id="@+id/scrollView_tags"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginEnd="8dp"
+			android:layout_marginStart="12dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="12dp"
 			android:layout_marginBottom="8dp"
-			android:baselineAligned="false"
-			android:clipChildren="false"
-			android:orientation="horizontal"
-			app:layout_constraintBottom_toBottomOf="parent"
+			android:scrollbars="none"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@+id/textView_subtitle">
+			app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
+			app:layout_goneMarginTop="12dp">
 
-			<TextView
-				android:id="@+id/textView_tags"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:ellipsize="none"
-				android:gravity="center_vertical"
-				android:requiresFadingEdge="horizontal"
-				android:singleLine="true"
-				android:textAppearance="?attr/textAppearanceBodySmall"
-				tools:text="@sample/genres" />
-
-			<TextView
-				android:id="@+id/textView_rating"
+			<org.koitharu.kotatsu.base.ui.widgets.ChipsView
+				android:id="@+id/chips_tags"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:drawablePadding="4dp"
-				android:elegantTextHeight="false"
-				android:gravity="center_vertical"
-				android:paddingStart="6dp"
-				android:singleLine="true"
-				android:textAppearance="?attr/textAppearanceBodySmall"
-				app:drawableEndCompat="@drawable/ic_star"
-				tools:ignore="RtlSymmetry"
-				tools:text="9.6" />
+				app:chipSpacingHorizontal="6dp"
+				app:chipSpacingVertical="6dp"
+				app:singleLine="true" />
+		</HorizontalScrollView>
 
-		</LinearLayout>
+		<RatingBar
+			android:id="@+id/ratingBar"
+			style="?android:ratingBarStyleSmall"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:isIndicator="true"
+			android:paddingVertical="8dp"
+			app:layout_constraintEnd_toEndOf="@id/imageView_cover"
+			app:layout_constraintStart_toStartOf="@id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@id/imageView_cover" />
+
+		<ImageView
+			android:id="@+id/button_read"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_marginTop="12dp"
+			android:layout_marginEnd="12dp"
+			android:layout_marginBottom="12dp"
+			android:background="@drawable/bg_circle_button"
+			android:contentDescription="@string/read"
+			android:scaleType="center"
+			android:src="@drawable/ic_read"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/scrollView_tags"
+			app:layout_constraintVertical_bias="1" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -224,6 +224,11 @@
 		<item name="cornerSize">6dp</item>
 	</style>
 
+	<style name="ShapeAppearanceOverlay.Kotatsu.Circle" parent="">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">50%</item>
+	</style>
+
 	<!--Preferences-->
 
 	<style name="PreferenceThemeOverlay.Kotatsu">

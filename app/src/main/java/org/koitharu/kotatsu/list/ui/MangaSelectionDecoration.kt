@@ -22,11 +22,12 @@ open class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDec
 
 	protected val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	protected val checkIcon = ContextCompat.getDrawable(context, materialR.drawable.ic_mtrl_checked_circle)
-	protected val iconOffset = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
+	protected val iconOffset = context.resources.getDimensionPixelOffset(R.dimen.card_indicator_offset)
+	protected val iconSize = context.resources.getDimensionPixelOffset(R.dimen.card_indicator_size)
 	protected val strokeColor = context.getThemeColor(materialR.attr.colorPrimary, Color.RED)
 	protected val fillColor = ColorUtils.setAlphaComponent(
 		ColorUtils.blendARGB(strokeColor, context.getThemeColor(materialR.attr.colorSurface), 0.8f),
-		0x74
+		0x74,
 	)
 	protected val defaultRadius = context.resources.getDimension(R.dimen.list_selector_corner)
 
@@ -65,8 +66,8 @@ open class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDec
 				setBounds(
 					(bounds.left + iconOffset).toInt(),
 					(bounds.top + iconOffset).toInt(),
-					(bounds.left + iconOffset + intrinsicWidth).toInt(),
-					(bounds.top + iconOffset + intrinsicHeight).toInt(),
+					(bounds.left + iconOffset + iconSize).toInt(),
+					(bounds.top + iconOffset + iconSize).toInt(),
 				)
 				draw(canvas)
 			}

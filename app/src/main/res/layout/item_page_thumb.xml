@@ -17,10 +17,10 @@
 
 	<TextView
 		android:id="@+id/textView_number"
-		android:layout_width="32dp"
-		android:layout_height="32dp"
+		android:layout_width="@dimen/card_indicator_size"
+		android:layout_height="@dimen/card_indicator_size"
 		android:layout_gravity="bottom|end"
-		android:layout_margin="8dp"
+		android:layout_margin="@dimen/card_indicator_offset"
 		android:ellipsize="none"
 		android:gravity="center"
 		android:singleLine="true"
