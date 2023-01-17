@@ -46,7 +46,10 @@ class MainNavigationDelegate(
 	fun onCreate(savedInstanceState: Bundle?) {
 		primaryFragment?.let {
 			onFragmentChanged(it, fromUser = false)
-			navBar.selectedItemId = getItemId(it)
+			val itemId = getItemId(it)
+			if (navBar.selectedItemId != itemId) {
+				navBar.selectedItemId = itemId
+			}
 		} ?: onNavigationItemSelected(navBar.selectedItemId)
 	}
 
