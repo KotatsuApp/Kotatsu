@@ -1,12 +1,10 @@
 package org.koitharu.kotatsu.tracker.data
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.MapInfo
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Update
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 
@@ -46,22 +44,12 @@ abstract class TracksDao {
 	@Query("UPDATE tracks SET chapters_new = 0")
 	abstract suspend fun clearCounters()
 
-	@Insert(onConflict = OnConflictStrategy.IGNORE)
-	abstract suspend fun insert(entity: TrackEntity): Long
-
-	@Update
-	abstract suspend fun update(entity: TrackEntity): Int
-
 	@Query("DELETE FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun delete(mangaId: Long)
 
 	@Query("DELETE FROM tracks WHERE manga_id NOT IN (SELECT manga_id FROM history UNION SELECT manga_id FROM favourites)")
 	abstract suspend fun gc()
 
-	@Transaction
-	open suspend fun upsert(entity: TrackEntity) {
-		if (update(entity) == 0) {
-			insert(entity)
-		}
-	}
+	@Upsert
+	abstract suspend fun upsert(entity: TrackEntity)
 }

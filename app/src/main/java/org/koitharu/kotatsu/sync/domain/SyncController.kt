@@ -44,7 +44,7 @@ class SyncController @Inject constructor(
 	private val defaultGcPeriod: Long // gc period if sync disabled
 		get() = TimeUnit.HOURS.toMillis(2)
 
-	override fun onInvalidated(tables: MutableSet<String>) {
+	override fun onInvalidated(tables: Set<String>) {
 		requestSync(
 			favourites = TABLE_FAVOURITES in tables || TABLE_FAVOURITE_CATEGORIES in tables,
 			history = TABLE_HISTORY in tables,

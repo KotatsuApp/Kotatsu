@@ -108,9 +108,9 @@ dependencies {
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.5.1'
 
-	implementation 'androidx.room:room-runtime:2.4.3'
-	implementation 'androidx.room:room-ktx:2.4.3'
-	kapt 'androidx.room:room-compiler:2.4.3'
+	implementation 'androidx.room:room-runtime:2.5.0'
+	implementation 'androidx.room:room-ktx:2.5.0'
+	kapt 'androidx.room:room-compiler:2.5.0'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
@@ -145,7 +145,7 @@ dependencies {
 
 	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
-	androidTestImplementation 'androidx.room:room-testing:2.4.3'
+	androidTestImplementation 'androidx.room:room-testing:2.5.0'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
 
 	androidTestImplementation 'com.google.dagger:hilt-android-testing:2.44.2'

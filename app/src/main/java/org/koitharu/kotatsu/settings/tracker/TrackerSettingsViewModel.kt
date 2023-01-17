@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.settings.tracker
 import androidx.lifecycle.MutableLiveData
 import androidx.room.InvalidationTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import okio.Closeable
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -11,6 +10,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITE_CATEGORIES
 import org.koitharu.kotatsu.core.db.removeObserverAsync
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import javax.inject.Inject
 
 @HiltViewModel
 class TrackerSettingsViewModel @Inject constructor(
@@ -39,7 +39,7 @@ class TrackerSettingsViewModel @Inject constructor(
 		InvalidationTracker.Observer(arrayOf(TABLE_FAVOURITE_CATEGORIES)),
 		Closeable {
 
-		override fun onInvalidated(tables: MutableSet<String>) {
+		override fun onInvalidated(tables: Set<String>) {
 			vm?.updateCategoriesCount()
 		}
 

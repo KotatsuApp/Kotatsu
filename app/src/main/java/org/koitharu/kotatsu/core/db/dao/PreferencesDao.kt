@@ -13,16 +13,6 @@ abstract class PreferencesDao {
 	@Query("SELECT * FROM preferences WHERE manga_id = :mangaId")
 	abstract fun observe(mangaId: Long): Flow<MangaPrefsEntity?>
 
-	@Insert(onConflict = OnConflictStrategy.IGNORE)
-	abstract suspend fun insert(pref: MangaPrefsEntity): Long
-
-	@Update
-	abstract suspend fun update(pref: MangaPrefsEntity): Int
-
-	@Transaction
-	open suspend fun upsert(pref: MangaPrefsEntity) {
-		if (update(pref) == 0) {
-			insert(pref)
-		}
-	}
+	@Upsert
+	abstract suspend fun upsert(pref: MangaPrefsEntity)
 }
