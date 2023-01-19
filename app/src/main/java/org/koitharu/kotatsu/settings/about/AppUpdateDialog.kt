@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.core.net.toUri
 import com.google.android.material.R as materialR
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.noties.markwon.Markwon
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.utils.FileSize
@@ -25,7 +26,7 @@ class AppUpdateDialog(private val context: Context) {
 			materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered,
 		)
 			.setTitle(R.string.app_update_available)
-			.setMessage(message)
+			.setMessage(Markwon.create(context).toMarkdown(message))
 			.setIcon(R.drawable.ic_app_update)
 			.setPositiveButton(R.string.download) { _, _ ->
 				val intent = Intent(Intent.ACTION_VIEW, version.apkUrl.toUri())

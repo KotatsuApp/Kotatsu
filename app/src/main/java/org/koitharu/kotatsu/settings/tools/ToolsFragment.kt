@@ -18,6 +18,7 @@ import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
+import io.noties.markwon.Markwon
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.SegmentedBarView
@@ -96,7 +97,7 @@ class ToolsFragment :
 			return
 		}
 		binding.cardUpdate.textSecondary.text = getString(R.string.new_version_s, version.name)
-		binding.cardUpdate.textChangelog.text = version.description
+		binding.cardUpdate.textChangelog.text = Markwon.create(requireActivity()).toMarkdown(version.description)
 		binding.cardUpdate.root.isVisible = true
 	}
 

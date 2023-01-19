@@ -128,6 +128,7 @@ dependencies {
 	implementation 'io.coil-kt:coil-svg:2.2.2'
 	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:1b19231b2f'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
+	implementation 'io.noties.markwon:core:4.6.2'
 
 	implementation 'ch.acra:acra-http:5.9.7'
 	implementation 'ch.acra:acra-dialog:5.9.7'
