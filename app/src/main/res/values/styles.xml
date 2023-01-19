@@ -24,10 +24,9 @@
 	<!--AlertDialog-->
 
 	<style name="ThemeOverlay.Kotatsu.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-		<item name="android:background">?attr/colorSurface</item>
-		<item name="android:textColorPrimary">?attr/colorOnSurface</item>
-		<item name="android:textColor">?attr/colorOnSurface</item>
-		<item name="dialogCornerRadius">28dp</item>
+		<item name="android:layout">@layout/m3_alert_dialog</item>
+		<item name="android:background">@drawable/m3_popup_background</item>
+		<item name="dialogCornerRadius">@dimen/m3_alert_dialog_corner_size</item>
 	</style>
 
 	<!-- Bottom sheet -->
