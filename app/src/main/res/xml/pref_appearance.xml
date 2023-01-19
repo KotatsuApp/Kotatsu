@@ -24,6 +24,10 @@
 		android:summary="@string/black_dark_theme_summary"
 		android:title="@string/black_dark_theme" />
 
+	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
+		android:key="app_locale"
+		android:title="@string/language" />
+
 	<ListPreference
 		android:key="date_format"
 		android:title="@string/date_format" />

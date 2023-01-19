@@ -7,6 +7,7 @@ import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
+import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -78,6 +79,17 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
 		set(value) = prefs.edit { putInt(KEY_GRID_SIZE, value) }
+
+	var appLocales: LocaleListCompat
+		get() {
+			val raw = prefs.getString(KEY_APP_LOCALE, null)
+			return LocaleListCompat.forLanguageTags(raw)
+		}
+		set(value) {
+			prefs.edit {
+				putString(KEY_APP_LOCALE, value.toLanguageTags())
+			}
+		}
 
 	val readerPageSwitch: Set<String>
 		get() = prefs.getStringSet(KEY_READER_SWITCHERS, null) ?: setOf(PAGE_SWITCH_TAPS)
@@ -358,6 +370,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_WEBTOON_ZOOM = "webtoon_zoom"
 		const val KEY_SHELF_SECTIONS = "shelf_sections_2"
 		const val KEY_PREFETCH_CONTENT = "prefetch_content"
+		const val KEY_APP_LOCALE = "app_locale"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
