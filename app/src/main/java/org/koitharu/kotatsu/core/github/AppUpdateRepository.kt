@@ -80,6 +80,12 @@ class AppUpdateRepository @Inject constructor(
 		return BuildConfig.DEBUG || getCertificateSHA1Fingerprint() == CERT_SHA1
 	}
 
+	suspend fun getCurrentVersionChangelog(): String? {
+		val currentVersion = VersionId(BuildConfig.VERSION_NAME)
+		val available = getAvailableVersions()
+		return available.find { x -> x.versionId == currentVersion }?.description
+	}
+
 	@Suppress("DEPRECATION")
 	@SuppressLint("PackageManagerGetSignatures")
 	private fun getCertificateSHA1Fingerprint(): String? = runCatching {

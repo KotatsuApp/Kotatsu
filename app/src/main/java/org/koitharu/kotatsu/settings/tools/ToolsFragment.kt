@@ -18,7 +18,6 @@ import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
-import io.noties.markwon.Markwon
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.widgets.SegmentedBarView
@@ -48,7 +47,6 @@ class ToolsFragment :
 		super.onViewCreated(view, savedInstanceState)
 		binding.buttonSettings.setOnClickListener(this)
 		binding.buttonDownloads.setOnClickListener(this)
-		binding.cardUpdate.root.setOnClickListener(this)
 		binding.cardUpdate.buttonChangelog.setOnClickListener(this)
 		binding.cardUpdate.buttonDownload.setOnClickListener(this)
 		binding.switchIncognito.setOnCheckedChangeListener(this)
@@ -72,12 +70,10 @@ class ToolsFragment :
 				startActivity(Intent.createChooser(intent, getString(R.string.open_in_browser)))
 			}
 
-			R.id.card_update -> {
+			R.id.button_changelog -> {
 				val version = viewModel.appUpdate.value ?: return
 				AppUpdateDialog(v.context).show(version)
 			}
-
-			R.id.button_changelog -> showChangelog()
 		}
 	}
 
@@ -97,7 +93,6 @@ class ToolsFragment :
 			return
 		}
 		binding.cardUpdate.textSecondary.text = getString(R.string.new_version_s, version.name)
-		binding.cardUpdate.textChangelog.text = Markwon.create(requireActivity()).toMarkdown(version.description)
 		binding.cardUpdate.root.isVisible = true
 	}
 
@@ -144,13 +139,6 @@ class ToolsFragment :
 		val color = ColorUtils.HSLToColor(floatArrayOf(hue, 0.4f, 0.6f))
 		val backgroundColor = requireContext().getThemeColor(materialR.attr.colorSecondaryContainer)
 		return MaterialColors.harmonize(color, backgroundColor)
-	}
-
-	private fun showChangelog() {
-		TransitionManager.beginDelayedTransition(binding.cardUpdate.root)
-		binding.cardUpdate.buttonChangelog.isVisible = false
-		binding.cardUpdate.textSecondary.isVisible = true
-		binding.cardUpdate.textChangelog.isVisible = true
 	}
 
 	companion object {

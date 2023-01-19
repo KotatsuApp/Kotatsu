@@ -2,7 +2,6 @@
 <com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/card_update"
 	style="@style/Widget.Material3.CardView.Filled"
 	android:layout_width="match_parent"
@@ -30,25 +29,9 @@
 			android:layout_marginTop="@dimen/margin_small"
 			android:text="@string/new_version_s"
 			android:textAppearance="?attr/textAppearanceBodyMedium"
-			android:visibility="gone"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/textPrimary"
-			tools:visibility="visible" />
-
-		<TextView
-			android:id="@+id/textChangelog"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="@dimen/margin_small"
-			android:fontFamily="monospace"
-			android:textAppearance="?attr/textAppearanceBodyMedium"
-			android:visibility="gone"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/textSecondary"
-			tools:text="- Fixes\n- Improvements"
-			tools:visibility="visible" />
+			app:layout_constraintTop_toBottomOf="@id/textPrimary" />
 
 		<Button
 			android:id="@+id/button_changelog"
@@ -59,7 +42,7 @@
 			android:layout_marginEnd="12dp"
 			android:text="@string/details"
 			app:layout_constraintEnd_toStartOf="@id/button_download"
-			app:layout_constraintTop_toBottomOf="@id/textChangelog" />
+			app:layout_constraintTop_toBottomOf="@id/textSecondary" />
 
 		<Button
 			android:id="@+id/button_download"
@@ -69,7 +52,7 @@
 			android:layout_marginTop="12dp"
 			android:text="@string/download"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/textChangelog" />
+			app:layout_constraintTop_toBottomOf="@id/textSecondary" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
