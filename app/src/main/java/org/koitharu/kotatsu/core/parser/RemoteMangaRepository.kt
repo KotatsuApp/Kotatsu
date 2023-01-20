@@ -1,8 +1,11 @@
 package org.koitharu.kotatsu.core.parser
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.currentCoroutineContext
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.cache.SafeDeferred
 import org.koitharu.kotatsu.core.prefs.SourceSettings
@@ -76,9 +79,15 @@ class RemoteMangaRepository(
 
 	private fun getConfig() = parser.config as SourceSettings
 
-	private fun <T> asyncSafe(block: suspend CoroutineScope.() -> T) = SafeDeferred(
-		processLifecycleScope.async(Dispatchers.Default) {
-			runCatchingCancellable { block() }
-		},
-	)
+	private suspend fun <T> asyncSafe(block: suspend CoroutineScope.() -> T): SafeDeferred<T> {
+		var dispatcher = currentCoroutineContext()[CoroutineDispatcher.Key]
+		if (dispatcher == null || dispatcher is MainCoroutineDispatcher) {
+			dispatcher = Dispatchers.Default
+		}
+		return SafeDeferred(
+			processLifecycleScope.async(dispatcher) {
+				runCatchingCancellable { block() }
+			},
+		)
+	}
 }

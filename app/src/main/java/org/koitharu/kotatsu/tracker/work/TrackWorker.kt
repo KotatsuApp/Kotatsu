@@ -30,12 +30,11 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.logs.FileLogger
@@ -94,8 +93,7 @@ class TrackWorker @AssistedInject constructor(
 			return Result.success(workDataOf(0, 0))
 		}
 
-		val updates = checkUpdatesAsync(tracks)
-		val results = updates.awaitAll()
+		val results = checkUpdatesAsync(tracks)
 		tracker.gc()
 
 		var success = 0
@@ -116,9 +114,9 @@ class TrackWorker @AssistedInject constructor(
 		}
 	}
 
-	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<Deferred<MangaUpdates?>> {
+	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<MangaUpdates?> {
 		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
-		val deferredList = coroutineScope {
+		return supervisorScope {
 			tracks.map { (track, channelId) ->
 				async(dispatcher) {
 					runCatchingCancellable {
@@ -135,9 +133,8 @@ class TrackWorker @AssistedInject constructor(
 						}
 					}.getOrNull()
 				}
-			}
+			}.awaitAll()
 		}
-		return deferredList
 	}
 
 	private suspend fun showNotification(manga: Manga, channelId: String?, newChapters: List<MangaChapter>) {

@@ -56,6 +56,7 @@ android {
 	kotlinOptions {
 		jvmTarget = JavaVersion.VERSION_1_8.toString()
 		freeCompilerArgs += [
+			'-opt-in=kotlin.ExperimentalStdlibApi',
 			'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
 			'-opt-in=kotlinx.coroutines.FlowPreview',
 			'-opt-in=kotlin.contracts.ExperimentalContracts',

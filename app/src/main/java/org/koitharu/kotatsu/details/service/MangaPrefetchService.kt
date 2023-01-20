@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
-import kotlinx.coroutines.coroutineScope
 import org.koitharu.kotatsu.base.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
@@ -47,7 +46,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 
 	override fun onError(startId: Int, error: Throwable) = Unit
 
-	private suspend fun prefetchDetails(manga: Manga) = coroutineScope {
+	private suspend fun prefetchDetails(manga: Manga) {
 		val source = mangaRepositoryFactory.create(manga.source)
 		runCatchingCancellable { source.getDetails(manga) }
 	}
