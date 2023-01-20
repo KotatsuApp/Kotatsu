@@ -38,7 +38,10 @@ class MainNavigationDelegate(
 	}
 
 	override fun onNavigationItemReselected(item: MenuItem) {
-		val fragment = fragmentManager.findFragmentByTag(TAG_PRIMARY) as? RecyclerViewOwner ?: return
+		val fragment = fragmentManager.findFragmentByTag(TAG_PRIMARY)
+		if (fragment == null || fragment !is RecyclerViewOwner || fragment.view == null) {
+			return
+		}
 		val recyclerView = fragment.recyclerView
 		recyclerView.smoothScrollToPosition(0)
 	}

@@ -12,14 +12,34 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import androidx.work.*
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ForegroundInfo
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkQuery
+import androidx.work.WorkerParameters
 import coil.ImageLoader
 import coil.request.ImageRequest
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.logs.FileLogger
+import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -31,6 +51,7 @@ import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.trySetForeground
+import java.util.concurrent.TimeUnit
 
 @HiltWorker
 class TrackWorker @AssistedInject constructor(
@@ -39,6 +60,7 @@ class TrackWorker @AssistedInject constructor(
 	private val coil: ImageLoader,
 	private val settings: AppSettings,
 	private val tracker: Tracker,
+	@TrackerLogger private val logger: FileLogger,
 ) : CoroutineWorker(context, workerParams) {
 
 	private val notificationManager by lazy {
@@ -46,6 +68,20 @@ class TrackWorker @AssistedInject constructor(
 	}
 
 	override suspend fun doWork(): Result {
+		logger.log("doWork()")
+		try {
+			return doWorkImpl()
+		} catch (e: Throwable) {
+			logger.log("fatal", e)
+			throw e
+		} finally {
+			withContext(NonCancellable) {
+				logger.flush()
+			}
+		}
+	}
+
+	private suspend fun doWorkImpl(): Result {
 		if (!settings.isTrackerEnabled) {
 			return Result.success(workDataOf(0, 0))
 		}
@@ -53,6 +89,7 @@ class TrackWorker @AssistedInject constructor(
 			trySetForeground()
 		}
 		val tracks = tracker.getAllTracks()
+		logger.log("Total ${tracks.size} tracks")
 		if (tracks.isEmpty()) {
 			return Result.success(workDataOf(0, 0))
 		}
@@ -70,6 +107,7 @@ class TrackWorker @AssistedInject constructor(
 				success++
 			}
 		}
+		logger.log("Result: success: $success, failed: $failed")
 		val resultData = workDataOf(success, failed)
 		return if (success == 0 && failed != 0) {
 			Result.failure(resultData)
@@ -85,6 +123,8 @@ class TrackWorker @AssistedInject constructor(
 				async(dispatcher) {
 					runCatchingCancellable {
 						tracker.fetchUpdates(track, commit = true)
+					}.onFailure {
+						logger.log("checkUpdatesAsync", it)
 					}.onSuccess { updates ->
 						if (updates.isValid && updates.isNotEmpty()) {
 							showNotification(

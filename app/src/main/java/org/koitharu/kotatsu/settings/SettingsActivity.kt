@@ -78,6 +78,7 @@ class SettingsActivity :
 			startActivity(intent)
 			true
 		}
+
 		else -> super.onOptionsItemSelected(item)
 	}
 
@@ -132,6 +133,7 @@ class SettingsActivity :
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
 			)
+
 			ACTION_MANAGE_SOURCES -> SourcesSettingsFragment()
 			else -> SettingsHeadersFragment()
 		}

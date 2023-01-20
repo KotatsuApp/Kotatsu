@@ -159,6 +159,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit { if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD) }
 
+	val isLoggingEnabled: Boolean
+		get() = prefs.getBoolean(KEY_LOGGING_ENABLED, false)
+
 	var isBiometricProtectionEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
 		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
@@ -371,6 +374,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SHELF_SECTIONS = "shelf_sections_2"
 		const val KEY_PREFETCH_CONTENT = "prefetch_content"
 		const val KEY_APP_LOCALE = "app_locale"
+		const val KEY_LOGGING_ENABLED = "logging"
+		const val KEY_LOGS_SHARE = "logs_share"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

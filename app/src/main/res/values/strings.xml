@@ -402,4 +402,7 @@
 	<string name="prefetch_content">Content preloading</string>
 	<string name="mark_as_current">Mark as current</string>
 	<string name="language">Language</string>
+	<string name="share_logs">Share logs</string>
+	<string name="enable_logging">Enable logging</string>
+	<string name="enable_logging_summary">Record some actions for debug purposes</string>
 </resources>
