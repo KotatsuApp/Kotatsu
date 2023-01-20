@@ -7,9 +7,9 @@ plugins {
 }
 
 android {
-	compileSdkVersion 33
-	buildToolsVersion '33.0.0'
-	namespace 'org.koitharu.kotatsu'
+	compileSdk = 33
+	buildToolsVersion = '33.0.1'
+	namespace = 'org.koitharu.kotatsu'
 
 	defaultConfig {
 		applicationId 'org.koitharu.kotatsu'
