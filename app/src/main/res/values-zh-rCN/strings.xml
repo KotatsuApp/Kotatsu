@@ -396,4 +396,10 @@
     <string name="server_error">服务器端错误 (%1$d)。请稍后再试</string>
     <string name="compact">紧凑</string>
     <string name="source_disabled">已禁用图源</string>
+    <string name="prefetch_content">内容预加载</string>
+    <string name="mark_as_current">标为当前</string>
+    <string name="language">语言</string>
+    <string name="enable_logging">启用日志记录</string>
+    <string name="share_logs">分享日志</string>
+    <string name="enable_logging_summary">出于调试目的记录某些操作</string>
 </resources>
