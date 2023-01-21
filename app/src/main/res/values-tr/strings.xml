@@ -396,4 +396,10 @@
     <string name="history_shortcuts_summary">Uygulama simgesine uzun basarak son mangaları kullanılabilir hale getirin</string>
     <string name="reader_control_ltr_summary">Sağ kenara dokunulduğunda veya sağ tuşa basıldığında her zaman bir sonraki sayfaya geçilir</string>
     <string name="source_disabled">Kaynak devre dışı</string>
+    <string name="prefetch_content">İçerik ön yüklemesi</string>
+    <string name="mark_as_current">Geçerli olarak işaretle</string>
+    <string name="language">Dil</string>
+    <string name="share_logs">Günlükleri paylaş</string>
+    <string name="enable_logging">Günlük kaydını etkinleştir</string>
+    <string name="enable_logging_summary">Hata ayıklama amacıyla bazı eylemleri kaydedin</string>
 </resources>
