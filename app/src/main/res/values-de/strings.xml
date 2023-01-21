@@ -391,4 +391,7 @@
     <string name="reader_control_ltr_summary">Tippe auf den rechten Rand oder drücke die rechte Taste, um immer zur nächsten Seite zu wechseln</string>
     <string name="reader_slider">Seitenwechsel-Schieberegler anzeigen</string>
     <string name="source_disabled">Quelle deaktiviert</string>
+    <string name="prefetch_content">Vorladen von Inhalten</string>
+    <string name="mark_as_current">Als aktuell markieren</string>
+    <string name="webtoon_zoom">Webtoon-Zoom</string>
 </resources>
