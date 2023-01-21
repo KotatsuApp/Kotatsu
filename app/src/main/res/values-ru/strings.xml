@@ -398,4 +398,5 @@
     <string name="compact">Компактно</string>
     <string name="source_disabled">Источник отключен</string>
     <string name="prefetch_content">Предварительная загрузка содержимого</string>
+    <string name="mark_as_current">Пометить как текущую</string>
 </resources>
