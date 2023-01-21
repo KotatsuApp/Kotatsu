@@ -2,7 +2,7 @@
 <resources>
     <plurals name="new_chapters">
         <item quantity="one">%1$d новий розділ</item>
-        <item quantity="few">%1$d нових розділи</item>
+        <item quantity="few">%1$d нові розділи</item>
         <item quantity="many">%1$d нових розділів</item>
         <item quantity="other">%1$d нових розділів</item>
     </plurals>

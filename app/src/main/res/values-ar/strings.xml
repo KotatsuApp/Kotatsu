@@ -11,7 +11,7 @@
     <string name="open_menu">فتح قائمة</string>
     <string name="chapters">فصول</string>
     <string name="favourites">المفضلة</string>
-    <string name="network_error">تعذر الاتصال بالإنترنت</string>
+    <string name="network_error">‌خطاء في الشبكة</string>
     <string name="loading_">جار التحميل…</string>
     <string name="chapter_d_of_d">فصل %1$d في %2$d</string>
     <string name="close">غلق</string>
@@ -54,4 +54,5 @@
     <string name="add_new_category">قائمة جديدة</string>
     <string name="download_complete">تم التنزيل</string>
     <string name="text_clear_history_prompt">هل تريد محو سجل القراءة بالكامل بشكل دائم؟</string>
+    <string name="_s_deleted_from_local_storage">حذفت من تخزين محلي</string>
 </resources>

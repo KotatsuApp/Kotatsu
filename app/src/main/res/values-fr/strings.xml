@@ -396,4 +396,6 @@
     <string name="server_error">Erreur côté serveur (%1$d). Veuillez réessayer plus tard</string>
     <string name="clear_new_chapters_counters">Effacer aussi les informations sur les nouveaux chapitres</string>
     <string name="source_disabled">Source désactivée</string>
+    <string name="prefetch_content">Préchargement du contenu</string>
+    <string name="mark_as_current">Marquer comme actuel</string>
 </resources>

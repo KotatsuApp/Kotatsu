@@ -82,8 +82,8 @@
     <string name="internal_storage">Внутрішнє сховище</string>
     <string name="external_storage">Зовнішнє сховище</string>
     <string name="domain">Домен</string>
-    <string name="application_update">Перевірити наявність нових версій додатка</string>
-    <string name="app_update_available">Доступна нова версія додатка</string>
+    <string name="application_update">Перевірити наявність нових версій застосунку</string>
+    <string name="app_update_available">Доступна нова версія застосунку</string>
     <string name="large_manga_save_confirm">Ця манґа має %s. Зберегти все це\?</string>
     <string name="save_manga">Зберегти</string>
     <string name="notifications">Сповіщення</string>
@@ -125,11 +125,11 @@
     <string name="track_sources">Стежити за оновленнями</string>
     <string name="dont_check">Не перевіряти</string>
     <string name="wrong_password">Неправильний пароль</string>
-    <string name="protect_application">Захистити додаток</string>
+    <string name="protect_application">Захистити застосунок</string>
     <string name="protect_application_summary">Запитувати пароль під час запуску Kotatsu</string>
     <string name="repeat_password">Повторіть пароль</string>
     <string name="passwords_mismatch">Паролі не співпадають</string>
-    <string name="about">Про програму</string>
+    <string name="about">Про застосунок</string>
     <string name="app_version">Версія %s</string>
     <string name="check_for_updates">Перевірити наявність оновлень</string>
     <string name="checking_for_updates">Перевірка наявності оновлень…</string>
@@ -165,7 +165,7 @@
     <string name="default_s">За замовчуванням: %s</string>
     <string name="_and_x_more">…і ще %1$d</string>
     <string name="next">Далі</string>
-    <string name="protect_application_subtitle">Введіть пароль для запуску програми</string>
+    <string name="protect_application_subtitle">Введіть пароль для запуску застосунку</string>
     <string name="confirm">Підтвердити</string>
     <string name="password_length_hint">Пароль має містити 4 символи або більше</string>
     <string name="search_only_on_s">Пошук лише на %s</string>
@@ -174,7 +174,7 @@
     <string name="read_more">Докладніше</string>
     <string name="queued">У черзі</string>
     <string name="text_downloads_holder">Немає активних завантажень</string>
-    <string name="about_app_translation_summary">Допомогти з перекладом програми</string>
+    <string name="about_app_translation_summary">Допомогти з перекладом застосунку</string>
     <string name="about_app_translation">Переклад</string>
     <string name="about_feedback_4pda">Тема на 4PDA</string>
     <string name="auth_complete">Авторизація виконана</string>
@@ -187,7 +187,7 @@
     <string name="error_empty_name">Ви повинні ввести ім’я</string>
     <string name="show_pages_numbers">Показувати номери сторінок</string>
     <string name="enabled_sources">Включені джерела</string>
-    <string name="dynamic_theme_summary">Застосовує тему програми, засновану на палітрі кольорів шпалер на пристрої</string>
+    <string name="dynamic_theme_summary">Застосовує тему застосунку, засновану на палітрі кольорів шпалер на пристрої</string>
     <string name="importing_progress">Імпорт манґи: %1$d з %2$d</string>
     <string name="screenshots_policy">Політика щодо знімків екрана</string>
     <string name="screenshots_allow">Дозволити</string>
@@ -346,7 +346,7 @@
     <string name="options">Параметри</string>
     <string name="downloading_manga">Завантаження манґи</string>
     <string name="incognito_mode">Режим інкогніто</string>
-    <string name="app_update_available_s">Доступне оновлення програми: %s</string>
+    <string name="app_update_available_s">Доступне оновлення застосунку: %s</string>
     <string name="no_chapters">Немає розділів</string>
     <string name="automatic_scroll">Автоматична прокрутка</string>
     <string name="off_short">Викл.</string>
@@ -367,7 +367,7 @@
     <string name="sync">Синхронізація</string>
     <string name="clear_all_history">Очистити всю історію</string>
     <string name="last_2_hours">Останні 2 години</string>
-    <string name="exit_confirmation_summary">Двічі натисніть Назад, щоб вийти з програми</string>
+    <string name="exit_confirmation_summary">Двічі натисніть Назад, щоб вийти зі застосунку</string>
     <string name="exit_confirmation">Підтвердження виходу</string>
     <string name="enter_email_text">Введіть електронну пошту, щоб продовжити</string>
     <string name="removed_from_favourites">Видалено з уподобань</string>
@@ -375,7 +375,7 @@
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="manga_error_description_pattern">Деталі помилки:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Спробуйте &lt;a href=%2$s&gt;відкрити манґу у веб-браузері&lt;/a&gt;, щоб переконатися, що вона доступна в джерелі&lt;br&gt;2. Якщо вона доступна, то надішліть звіт про помилку розробникам.</string>
     <string name="history_shortcuts">Показувати ярлики останньої прочитаної манґи</string>
-    <string name="history_shortcuts_summary">Зробити нещодавно прочитану манґу доступною за довгим натисканням на іконку програми</string>
+    <string name="history_shortcuts_summary">Зробити нещодавно прочитану манґу доступною за довгим натисканням на іконку застосунку</string>
     <string name="reader_control_ltr_summary">Натискання на правий край або натискання правої клавіші завжди переходить на наступну сторінку</string>
     <string name="reader_control_ltr">Ергономічне керування режимом читання</string>
     <string name="brightness">Яскравість</string>
@@ -397,4 +397,6 @@
     <string name="compact">Компактно</string>
     <string name="prefetch_content">Передвчасне завантаження контенту</string>
     <string name="source_disabled">Джерело відключено</string>
+    <string name="mark_as_current">Позначити як актуальне</string>
+    <string name="language">Мова</string>
 </resources>
