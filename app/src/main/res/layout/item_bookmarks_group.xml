@@ -43,11 +43,12 @@
 			android:clipToPadding="false"
 			android:nestedScrollingEnabled="false"
 			android:orientation="horizontal"
-			android:requiresFadingEdge="horizontal"
+			android:scrollIndicators="start|end"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
+			tools:ignore="UnusedAttribute"
 			tools:listitem="@layout/item_bookmark" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

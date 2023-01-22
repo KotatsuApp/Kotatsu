@@ -53,10 +53,9 @@
 			android:layout_marginStart="12dp"
 			android:layout_marginTop="8dp"
 			android:layout_marginEnd="12dp"
-			android:ellipsize="none"
+			android:ellipsize="end"
 			android:gravity="center_vertical"
 			android:maxLines="2"
-			android:requiresFadingEdge="horizontal"
 			android:textAppearance="?attr/textAppearanceSubtitle1"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
@@ -71,12 +70,13 @@
 			android:layout_marginTop="8dp"
 			android:layout_marginEnd="12dp"
 			android:layout_marginBottom="8dp"
-			android:requiresFadingEdge="horizontal"
+			android:scrollIndicators="start|end"
 			android:scrollbars="none"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
-			app:layout_goneMarginTop="12dp">
+			app:layout_goneMarginTop="12dp"
+			tools:ignore="UnusedAttribute">
 
 			<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 				android:id="@+id/chips_tags"
