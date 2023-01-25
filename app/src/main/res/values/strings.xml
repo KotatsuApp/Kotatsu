@@ -405,4 +405,5 @@
 	<string name="share_logs">Share logs</string>
 	<string name="enable_logging">Enable logging</string>
 	<string name="enable_logging_summary">Record some actions for debug purposes</string>
+	<string name="show_suspicious_content">Show suspicious content</string>
 </resources>
