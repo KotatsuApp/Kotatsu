@@ -150,7 +150,9 @@ class MainActivity :
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 				runOnCommit { onSearchClosed() }
 			}
-
+			navigationDelegate.primaryFragment !is ShelfFragment -> {
+				bottomNav?.selectedItemId = R.id.nav_shelf
+			}
 			else -> super.onBackPressed()
 		}
 	}
