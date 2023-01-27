@@ -7,7 +7,11 @@ class HistoryInfo(
 	val totalChapters: Int,
 	val currentChapter: Int,
 	val history: MangaHistory?,
+	val isIncognitoMode: Boolean,
 ) {
+
+	val isValid: Boolean
+		get() = totalChapters >= 0
 
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
@@ -18,6 +22,7 @@ class HistoryInfo(
 		if (totalChapters != other.totalChapters) return false
 		if (currentChapter != other.currentChapter) return false
 		if (history != other.history) return false
+		if (isIncognitoMode != other.isIncognitoMode) return false
 
 		return true
 	}
@@ -26,20 +31,21 @@ class HistoryInfo(
 		var result = totalChapters
 		result = 31 * result + currentChapter
 		result = 31 * result + (history?.hashCode() ?: 0)
+		result = 31 * result + isIncognitoMode.hashCode()
 		return result
 	}
 }
 
-@Suppress("FunctionName")
-fun HistoryInfo(manga: Manga?, history: MangaHistory?): HistoryInfo? {
-	val chapters = manga?.chapters ?: return null
+fun HistoryInfo(manga: Manga?, history: MangaHistory?, isIncognitoMode: Boolean): HistoryInfo {
+	val chapters = manga?.chapters
 	return HistoryInfo(
-		totalChapters = chapters.size,
-		currentChapter = if (history != null) {
+		totalChapters = chapters?.size ?: -1,
+		currentChapter = if (history != null && !chapters.isNullOrEmpty()) {
 			chapters.indexOfFirst { it.id == history.chapterId }
 		} else {
 			-1
 		},
 		history = history,
+		isIncognitoMode = isIncognitoMode,
 	)
 }

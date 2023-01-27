@@ -34,9 +34,9 @@
 
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 			android:id="@+id/progressView"
-			android:layout_width="32dp"
-			android:layout_height="32dp"
-			android:layout_margin="4dp"
+			android:layout_width="@dimen/card_indicator_size"
+			android:layout_height="@dimen/card_indicator_size"
+			android:layout_margin="@dimen/card_indicator_offset"
 			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
 

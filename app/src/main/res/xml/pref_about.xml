@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<PreferenceCategory android:title="@string/app_name">
 
@@ -9,10 +10,22 @@
 			android:persistent="false"
 			android:summary="@string/check_for_updates" />
 
+		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="logging"
+			android:summary="@string/enable_logging_summary"
+			android:title="@string/enable_logging" />
+
+		<Preference
+			android:dependency="logging"
+			android:key="logs_share"
+			android:title="@string/share_logs" />
+
 		<Preference
 			android:key="about_app_translation"
 			android:summary="@string/about_app_translation_summary"
-			android:title="@string/about_app_translation" />
+			android:title="@string/about_app_translation"
+			app:allowDividerAbove="true" />
 
 		<org.koitharu.kotatsu.settings.utils.AboutLinksPreference />
 

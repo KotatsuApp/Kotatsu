@@ -1,12 +1,10 @@
 package org.koitharu.kotatsu.reader.domain
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +29,6 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.withProgress
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
@@ -50,13 +47,11 @@ class PageLoader @Inject constructor(
 	private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
 	private val settings: AppSettings,
-	@ApplicationContext context: Context,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : Closeable {
 
 	val loaderScope = CoroutineScope(SupervisorJob() + InternalErrorHandler() + Dispatchers.Default)
 
-	private val connectivityManager = context.connectivityManager
 	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
 	private val convertLock = Mutex()
 	private var repository: MangaRepository? = null
@@ -73,7 +68,7 @@ class PageLoader @Inject constructor(
 	}
 
 	fun isPrefetchApplicable(): Boolean {
-		return repository is RemoteMangaRepository && settings.isPagesPreloadAllowed(connectivityManager)
+		return repository is RemoteMangaRepository && settings.isPagesPreloadEnabled()
 	}
 
 	fun prefetch(pages: List<ReaderPage>) {

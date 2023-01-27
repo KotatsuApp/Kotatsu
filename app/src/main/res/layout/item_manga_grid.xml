@@ -7,13 +7,13 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:clipChildren="false"
-	app:cardCornerRadius="16dp">
+	app:cardCornerRadius="16dp"
+	tools:layout_width="140dp">
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		android:padding="4dp">
+		android:orientation="vertical">
 
 		<FrameLayout
 			android:layout_width="match_parent"
@@ -31,10 +31,10 @@
 
 			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 				android:id="@+id/progressView"
-				android:layout_width="32dp"
-				android:layout_height="32dp"
+				android:layout_width="@dimen/card_indicator_size"
+				android:layout_height="@dimen/card_indicator_size"
 				android:layout_gravity="bottom|end"
-				android:layout_margin="4dp" />
+				android:layout_margin="@dimen/card_indicator_offset" />
 
 		</FrameLayout>
 
@@ -45,8 +45,7 @@
 			android:elegantTextHeight="false"
 			android:ellipsize="end"
 			android:lines="2"
-			android:paddingHorizontal="8dp"
-			android:paddingVertical="4dp"
+			android:padding="8dp"
 			android:textAppearance="?attr/textAppearanceTitleSmall"
 			android:textColor="?android:attr/textColorPrimary"
 			app:layout_constraintStart_toStartOf="parent"

@@ -14,3 +14,4 @@
 
 -keep class org.koitharu.kotatsu.core.exceptions.* { *; }
 -keep class org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment
+-keep class org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy { *; }

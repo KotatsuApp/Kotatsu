@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
-import org.koitharu.kotatsu.core.os.NetworkStateObserver
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
 	@Inject
-	lateinit var networkStateObserver: NetworkStateObserver
+	lateinit var networkState: NetworkState
 
 	private val scrollInterpolator = AccelerateDecelerateInterpolator()
 	private var webtoonAdapter: WebtoonAdapter? = null
@@ -35,10 +35,11 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		webtoonAdapter = WebtoonAdapter(
-			viewModel.pageLoader,
-			viewModel.readerSettings,
-			networkStateObserver,
-			exceptionResolver,
+			lifecycleOwner = viewLifecycleOwner,
+			loader = viewModel.pageLoader,
+			settings = viewModel.readerSettings,
+			networkState = networkState,
+			exceptionResolver = exceptionResolver,
 		)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)

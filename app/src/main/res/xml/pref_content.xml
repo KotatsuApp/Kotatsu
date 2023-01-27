@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment"
@@ -18,6 +19,16 @@
 		android:key="doh"
 		android:title="@string/dns_over_https"
 		app:useSimpleSummaryProvider="true" />
+
+	<ListPreference
+		android:defaultValue="0"
+		android:entries="@array/network_policy"
+		android:entryValues="@array/values_network_policy"
+		android:key="prefetch_content"
+		android:title="@string/prefetch_content"
+		app:isPreferenceVisible="false"
+		app:useSimpleSummaryProvider="true"
+		tools:isPreferenceVisible="true" />
 
 	<Preference
 		android:key="local_storage"

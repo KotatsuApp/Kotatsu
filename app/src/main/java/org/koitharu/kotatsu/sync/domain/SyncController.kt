@@ -5,16 +5,17 @@ import android.accounts.AccountManager
 import android.content.ContentResolver
 import android.content.Context
 import android.os.Bundle
-import android.util.ArrayMap
+import androidx.collection.ArrayMap
 import androidx.room.InvalidationTracker
 import androidx.room.withTransaction
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -22,6 +23,9 @@ import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITE_CATEGORIES
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class SyncController @Inject constructor(
@@ -40,7 +44,7 @@ class SyncController @Inject constructor(
 	private val defaultGcPeriod: Long // gc period if sync disabled
 		get() = TimeUnit.HOURS.toMillis(2)
 
-	override fun onInvalidated(tables: MutableSet<String>) {
+	override fun onInvalidated(tables: Set<String>) {
 		requestSync(
 			favourites = TABLE_FAVOURITES in tables || TABLE_FAVOURITE_CATEGORIES in tables,
 			history = TABLE_HISTORY in tables,

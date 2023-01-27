@@ -14,7 +14,7 @@ abstract class TagsDao {
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id
 		GROUP BY tags.title 
 		ORDER BY COUNT(manga_id) DESC 
-		LIMIT :limit"""
+		LIMIT :limit""",
 	)
 	abstract suspend fun findPopularTags(limit: Int): List<TagEntity>
 
@@ -24,7 +24,7 @@ abstract class TagsDao {
 		WHERE tags.source = :source 
 		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 
-		LIMIT :limit"""
+		LIMIT :limit""",
 	)
 	abstract suspend fun findPopularTags(source: String, limit: Int): List<TagEntity>
 
@@ -34,7 +34,7 @@ abstract class TagsDao {
 		WHERE tags.source = :source AND title LIKE :query
 		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 
-		LIMIT :limit"""
+		LIMIT :limit""",
 	)
 	abstract suspend fun findTags(source: String, query: String, limit: Int): List<TagEntity>
 
@@ -44,22 +44,10 @@ abstract class TagsDao {
 		WHERE title LIKE :query
 		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 
-		LIMIT :limit"""
+		LIMIT :limit""",
 	)
 	abstract suspend fun findTags(query: String, limit: Int): List<TagEntity>
 
-	@Insert(onConflict = OnConflictStrategy.IGNORE)
-	abstract suspend fun insert(tag: TagEntity): Long
-
-	@Update(onConflict = OnConflictStrategy.IGNORE)
-	abstract suspend fun update(tag: TagEntity): Int
-
-	@Transaction
-	open suspend fun upsert(tags: Iterable<TagEntity>) {
-		tags.forEach { tag ->
-			if (update(tag) <= 0) {
-				insert(tag)
-			}
-		}
-	}
+	@Upsert
+	abstract suspend fun upsert(tags: Iterable<TagEntity>)
 }

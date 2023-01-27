@@ -1,15 +1,23 @@
 package org.koitharu.kotatsu.history.domain
 
 import androidx.room.withTransaction
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.base.domain.ReversibleHandle
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.*
+import org.koitharu.kotatsu.core.db.entity.toEntities
+import org.koitharu.kotatsu.core.db.entity.toEntity
+import org.koitharu.kotatsu.core.db.entity.toManga
+import org.koitharu.kotatsu.core.db.entity.toMangaTag
+import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.history.data.toMangaHistory
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -18,6 +26,7 @@ import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.domain.tryScrobble
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
+import javax.inject.Inject
 
 const val PROGRESS_NONE = -1f
 
@@ -66,7 +75,7 @@ class HistoryRepository @Inject constructor(
 	}
 
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int, percent: Float) {
-		if (manga.isNsfw && settings.isHistoryExcludeNsfw || settings.isIncognitoModeEnabled) {
+		if (shouldSkip(manga)) {
 			return
 		}
 		val tags = manga.tags.toEntities()
@@ -136,6 +145,30 @@ class HistoryRepository @Inject constructor(
 
 	suspend fun getPopularTags(limit: Int): List<MangaTag> {
 		return db.historyDao.findPopularTags(limit).map { x -> x.toMangaTag() }
+	}
+
+	fun shouldSkip(manga: Manga): Boolean {
+		return manga.isNsfw && settings.isHistoryExcludeNsfw || settings.isIncognitoModeEnabled
+	}
+
+	fun observeShouldSkip(manga: Manga): Flow<Boolean> {
+		return settings.observe()
+			.filter { key -> key == AppSettings.KEY_INCOGNITO_MODE || key == AppSettings.KEY_HISTORY_EXCLUDE_NSFW }
+			.onStart { emit("") }
+			.map { shouldSkip(manga) }
+			.distinctUntilChanged()
+	}
+
+	fun observeShouldSkip(mangaFlow: Flow<Manga?>): Flow<Boolean> {
+		return mangaFlow
+			.distinctUntilChangedBy { it?.isNsfw }
+			.flatMapLatest { m ->
+				if (m != null) {
+					observeShouldSkip(m)
+				} else {
+					settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled }
+				}
+			}
 	}
 
 	private suspend fun recover(ids: Collection<Long>) {

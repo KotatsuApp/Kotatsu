@@ -102,15 +102,15 @@
     <string name="notification_sound">Suara pemberitahuan</string>
     <string name="categories_">Kategori…</string>
     <string name="rename">Ubah Nama</string>
-    <string name="category_delete_confirm">"Hapus kategori \"%s\" dari favorit Anda\?
-\nSemua manga  disana akan hilang."</string>
+    <string name="category_delete_confirm">Hapus kategori \"%s\" dari favorit Anda\?
+\nSemua manga di situ akan hilang.</string>
     <string name="text_empty_holder_primary">Sepi juga di sini…</string>
     <string name="text_categories_holder">Anda bisa menggunakan kategori untuk mengelola favorit Anda. Tekan «+» untuk membuat kategori</string>
     <string name="text_history_holder_primary">Apa yang Anda baca akan ditampilkan di sini</string>
     <string name="text_history_holder_secondary">Cari apa untuk di baca di bilah samping.</string>
     <string name="text_local_holder_primary">Simpan sesuatu dulu</string>
     <string name="manga_shelf">Rak</string>
-    <string name="recent_manga">Terbaru</string>
+    <string name="recent_manga">Baru-baru ini</string>
     <string name="pages_animation">Animasi halaman</string>
     <string name="manga_save_location">Folder untuk unduhan</string>
     <string name="not_available">Tidak tersedia</string>
@@ -298,7 +298,7 @@
     <string name="status_completed">Selesai</string>
     <string name="canceled">Dibatalkan</string>
     <string name="sync_title">Sinkronisasi data Anda</string>
-    <string name="enter_email_text">Masukkan email Anda untuk melanjutkan</string>
+    <string name="enter_email_text">Masukkan surel Anda untuk melanjutkan</string>
     <string name="tracking">Pelacakan</string>
     <string name="logout">Keluar</string>
     <string name="sync">Sinkronisasi</string>
@@ -329,7 +329,7 @@
     <string name="exit_confirmation_summary">Tekan Kembali dua kali untuk keluar dari aplikasi</string>
     <string name="exit_confirmation">Konfirmasi keluar</string>
     <string name="pages_cache">Tembolok halaman</string>
-    <string name="other_cache">Cache lainnya</string>
+    <string name="other_cache">Tembolok lainnya</string>
     <string name="storage_usage">Penggunaan penyimpanan</string>
     <string name="available">Tersedia</string>
     <string name="incognito_mode">Mode Incognito</string>
@@ -356,14 +356,14 @@
     <string name="crash_text">Ada sesuatu yang salah. Mohon untuk mengirim laporan kutu (bug) ke pengembang untuk membantu kami memperbaikinya.</string>
     <string name="report">Lapor</string>
     <string name="exclude_nsfw_from_history_summary">Manga yang ditandai sebagai NSFW tidak akan ditambahkan ke riwayat dan progres Anda tidak akan disimpan</string>
-    <string name="clear_cookies_summary">Bisa membantu dalam beberapa masalah. Seluruh otorisasi akan menjadi tidak valid.</string>
+    <string name="clear_cookies_summary">Bisa membantu dalam beberapa masalah. Seluruh otorisasi akan menjadi tidak valid</string>
     <string name="manage">Kelola</string>
     <string name="no_manga_sources_text">Aktifkan sumber manga untuk membaca manga daring</string>
     <string name="categories_delete_confirm">Apakah Anda yakin ingin menghapus kategori favorit yang dipilih\?
 \n Semua manga di sana akan hilang dan ini tidak bisa diurungkan.</string>
     <string name="reorder">Atur Ulang</string>
     <string name="saved_manga">Manga tersimpan</string>
-    <string name="confirm_exit">Tekan lagi untuk keluar</string>
+    <string name="confirm_exit">Tekan Kembali lagi untuk keluar</string>
     <string name="no_chapters">Tidak ada bab</string>
     <string name="history_shortcuts">Tampilkan pintasan manga baru-baru ini</string>
     <string name="history_shortcuts_summary">Buat manga baru-baru ini tersedia dengan menekan panjang pada ikon aplikasi</string>
@@ -372,4 +372,5 @@
     <string name="gestures_only">Hanya gestur</string>
     <string name="dns_over_https">DNS melalui HTTPS</string>
     <string name="status_dropped">Istirahat</string>
+    <string name="off_short">Mati</string>
 </resources>

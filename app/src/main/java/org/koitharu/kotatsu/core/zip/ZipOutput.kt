@@ -52,10 +52,13 @@ class ZipOutput(
 		return if (entryNames.add(entry.name)) {
 			val zipEntry = ZipEntry(entry.name)
 			output.putNextEntry(zipEntry)
-			other.getInputStream(entry).use { input ->
-				input.copyTo(output)
+			try {
+				other.getInputStream(entry).use { input ->
+					input.copyTo(output)
+				}
+			} finally {
+				output.closeEntry()
 			}
-			output.closeEntry()
 			true
 		} else {
 			false

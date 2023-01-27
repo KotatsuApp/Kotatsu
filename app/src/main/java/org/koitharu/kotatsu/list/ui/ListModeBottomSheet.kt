@@ -49,6 +49,9 @@ class ListModeBottomSheet :
 	}
 
 	override fun onButtonChecked(group: MaterialButtonToggleGroup?, checkedId: Int, isChecked: Boolean) {
+		if (!isChecked) {
+			return
+		}
 		val mode = when (checkedId) {
 			R.id.button_list -> ListMode.LIST
 			R.id.button_list_detailed -> ListMode.DETAILED_LIST

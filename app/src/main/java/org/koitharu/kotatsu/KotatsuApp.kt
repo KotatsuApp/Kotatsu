@@ -50,6 +50,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 			enableStrictMode()
 		}
 		AppCompatDelegate.setDefaultNightMode(settings.theme)
+		AppCompatDelegate.setApplicationLocales(settings.appLocales)
 		setupActivityLifecycleCallbacks()
 		processLifecycleScope.launch(Dispatchers.Default) {
 			setupDatabaseObservers()

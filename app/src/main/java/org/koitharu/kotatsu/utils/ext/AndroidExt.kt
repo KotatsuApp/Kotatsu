@@ -8,6 +8,7 @@ import android.content.OperationApplicationException
 import android.content.SharedPreferences
 import android.content.SyncResult
 import android.content.pm.ResolveInfo
+import android.content.res.Resources
 import android.database.SQLException
 import android.graphics.Color
 import android.net.ConnectivityManager
@@ -20,6 +21,7 @@ import android.view.Window
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
@@ -34,8 +36,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import okio.IOException
 import org.json.JSONException
+import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.InternalResourceHelper
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import kotlin.math.roundToLong
 
 val Context.activityManager: ActivityManager?
@@ -146,3 +152,23 @@ fun scaleUpActivityOptionsOf(view: View): ActivityOptions = ActivityOptions.make
 	view.width,
 	view.height,
 )
+
+fun Resources.getLocalesConfig(): LocaleListCompat {
+	val tagsList = StringJoiner(",")
+	try {
+		val xpp: XmlPullParser = getXml(R.xml.locales)
+		while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
+			if (xpp.eventType == XmlPullParser.START_TAG) {
+				if (xpp.name == "locale") {
+					tagsList.add(xpp.getAttributeValue(0))
+				}
+			}
+			xpp.next()
+		}
+	} catch (e: XmlPullParserException) {
+		e.printStackTraceDebug()
+	} catch (e: IOException) {
+		e.printStackTraceDebug()
+	}
+	return LocaleListCompat.forLanguageTags(tagsList.complete())
+}

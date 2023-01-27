@@ -1,19 +1,17 @@
-package org.koitharu.kotatsu.core.network
+package org.koitharu.kotatsu.core.network.cookies
 
 import android.webkit.CookieManager
-import javax.inject.Inject
-import javax.inject.Singleton
+import androidx.annotation.WorkerThread
+import okhttp3.Cookie
+import okhttp3.HttpUrl
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import okhttp3.Cookie
-import okhttp3.CookieJar
-import okhttp3.HttpUrl
 
-@Singleton
-class AndroidCookieJar @Inject constructor() : CookieJar {
+class AndroidCookieJar : MutableCookieJar {
 
 	private val cookieManager = CookieManager.getInstance()
 
+	@WorkerThread
 	override fun loadForRequest(url: HttpUrl): List<Cookie> {
 		val rawCookie = cookieManager.getCookie(url.toString()) ?: return emptyList()
 		return rawCookie.split(';').mapNotNull {
@@ -21,6 +19,7 @@ class AndroidCookieJar @Inject constructor() : CookieJar {
 		}
 	}
 
+	@WorkerThread
 	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
 		if (cookies.isEmpty()) {
 			return
@@ -31,7 +30,7 @@ class AndroidCookieJar @Inject constructor() : CookieJar {
 		}
 	}
 
-	suspend fun clear() = suspendCoroutine<Boolean> { continuation ->
+	override suspend fun clear() = suspendCoroutine<Boolean> { continuation ->
 		cookieManager.removeAllCookies(continuation::resume)
 	}
 }

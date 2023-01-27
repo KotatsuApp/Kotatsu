@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
@@ -19,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
@@ -32,8 +32,8 @@ import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class FavouriteCategoriesActivity :
@@ -47,6 +47,7 @@ class FavouriteCategoriesActivity :
 
 	private val viewModel by viewModels<FavouritesCategoriesViewModel>()
 
+	private lateinit var exitReorderModeCallback: ExitReorderModeCallback
 	private lateinit var adapter: CategoriesAdapter
 	private lateinit var selectionController: ListSelectionController
 	private var reorderHelper: ItemTouchHelper? = null
@@ -55,6 +56,7 @@ class FavouriteCategoriesActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		exitReorderModeCallback = ExitReorderModeCallback(viewModel)
 		adapter = CategoriesAdapter(coil, this, this, this)
 		selectionController = ListSelectionController(
 			activity = this,
@@ -67,6 +69,7 @@ class FavouriteCategoriesActivity :
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
 		binding.fabAdd.setOnClickListener(this)
+		onBackPressedDispatcher.addCallback(exitReorderModeCallback)
 
 		viewModel.detalizedCategories.observe(this, ::onCategoriesChanged)
 		viewModel.onError.observe(this, ::onError)
@@ -90,15 +93,8 @@ class FavouriteCategoriesActivity :
 				viewModel.setReorderMode(true)
 				true
 			}
-			else -> super.onOptionsItemSelected(item)
-		}
-	}
 
-	override fun onBackPressed() {
-		if (viewModel.isInReorderMode()) {
-			viewModel.setReorderMode(false)
-		} else {
-			super.onBackPressed()
+			else -> super.onOptionsItemSelected(item)
 		}
 	}
 
@@ -138,7 +134,7 @@ class FavouriteCategoriesActivity :
 		}
 		binding.root.updatePadding(
 			left = insets.left,
-			right = insets.right
+			right = insets.right,
 		)
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
@@ -174,6 +170,7 @@ class FavouriteCategoriesActivity :
 		binding.recyclerView.isNestedScrollingEnabled = !isReorderMode
 		invalidateOptionsMenu()
 		binding.buttonDone.isVisible = isReorderMode
+		exitReorderModeCallback.isEnabled = isReorderMode
 	}
 
 	private inner class ReorderHelperCallback : ItemTouchHelper.SimpleCallback(
@@ -209,6 +206,15 @@ class FavouriteCategoriesActivity :
 		}
 
 		override fun isLongPressDragEnabled(): Boolean = false
+	}
+
+	private class ExitReorderModeCallback(
+		private val viewModel: FavouritesCategoriesViewModel,
+	) : OnBackPressedCallback(viewModel.isInReorderMode()) {
+
+		override fun handleOnBackPressed() {
+			viewModel.setReorderMode(false)
+		}
 	}
 
 	companion object {

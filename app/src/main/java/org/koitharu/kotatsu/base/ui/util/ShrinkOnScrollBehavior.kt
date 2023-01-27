@@ -8,10 +8,12 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior
 import androidx.core.view.ViewCompat
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
-class ShrinkOnScrollBehavior : Behavior<ExtendedFloatingActionButton> {
+open class ShrinkOnScrollBehavior : Behavior<ExtendedFloatingActionButton> {
 
-	@Suppress("unused") constructor() : super()
-	@Suppress("unused") constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+	@Suppress("unused")
+	constructor() : super()
+	@Suppress("unused")
+	constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
 	override fun onStartNestedScroll(
 		coordinatorLayout: CoordinatorLayout,

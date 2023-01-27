@@ -23,9 +23,10 @@ class ShelfSettingsViewModel @Inject constructor(
 
 	val content = combine(
 		settings.observeAsFlow(AppSettings.KEY_SHELF_SECTIONS) { shelfSections },
+		settings.observeAsFlow(AppSettings.KEY_TRACKER_ENABLED) { isTrackerEnabled },
 		favouritesRepository.observeCategories(),
-	) { sections, categories ->
-		buildList(sections, categories)
+	) { sections, isTrackerEnabled, categories ->
+		buildList(sections, isTrackerEnabled, categories)
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	private var updateJob: Job? = null
@@ -64,13 +65,18 @@ class ShelfSettingsViewModel @Inject constructor(
 
 	private fun buildList(
 		sections: List<ShelfSection>,
+		isTrackerEnabled: Boolean,
 		categories: List<FavouriteCategory>
 	): List<ShelfSettingsItemModel> {
 		val result = ArrayList<ShelfSettingsItemModel>()
 		val sectionsList = ShelfSection.values().toMutableList()
+		if (!isTrackerEnabled) {
+			sectionsList.remove(ShelfSection.UPDATED)
+		}
 		for (section in sections) {
-			sectionsList.remove(section)
-			result.addSection(section, true, categories)
+			if (sectionsList.remove(section)) {
+				result.addSection(section, true, categories)
+			}
 		}
 		for (section in sectionsList) {
 			result.addSection(section, false, categories)

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+		android:id="@+id/action_order"
+		android:orderInCategory="50"
+		android:title="@string/sort_order">
+
+		<menu>
+
+			<group android:id="@+id/group_order" />
+
+		</menu>
+
+	</item>
+
+	<item
+		android:id="@+id/action_edit"
+		android:orderInCategory="50"
+		android:title="@string/edit_category"
+		android:titleCondensed="@string/edit" />
+
+</menu>

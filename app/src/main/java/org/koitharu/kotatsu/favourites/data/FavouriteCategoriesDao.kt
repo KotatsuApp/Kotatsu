@@ -21,9 +21,6 @@ abstract class FavouriteCategoriesDao {
 	@Insert(onConflict = OnConflictStrategy.ABORT)
 	abstract suspend fun insert(category: FavouriteCategoryEntity): Long
 
-	@Update
-	abstract suspend fun update(category: FavouriteCategoryEntity): Int
-
 	suspend fun delete(id: Long) = setDeletedAt(id, System.currentTimeMillis())
 
 	@Query("UPDATE favourite_categories SET title = :title, `order` = :order, `track` = :tracker  WHERE category_id = :id")
@@ -51,12 +48,8 @@ abstract class FavouriteCategoriesDao {
 		return (getMaxSortKey() ?: 0) + 1
 	}
 
-	@Transaction
-	open suspend fun upsert(entity: FavouriteCategoryEntity) {
-		if (update(entity) == 0) {
-			insert(entity)
-		}
-	}
+	@Upsert
+	abstract suspend fun upsert(entity: FavouriteCategoryEntity)
 
 	@Query("UPDATE favourite_categories SET deleted_at = :deletedAt WHERE category_id = :id")
 	protected abstract suspend fun setDeletedAt(id: Long, deletedAt: Long)

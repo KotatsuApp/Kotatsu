@@ -313,7 +313,7 @@ class ReaderViewModel @AssistedInject constructor(
 				} ?: ReaderState(manga, preselectedBranch)
 			}
 
-			val branch = chapters[currentState.value?.chapterId ?: 0L].branch
+			val branch = chapters[currentState.value?.chapterId ?: 0L]?.branch
 			mangaData.value = manga.filterChapters(branch)
 			readerMode.postValue(mode)
 

@@ -40,6 +40,9 @@
 	<dimen name="bottom_sheet_handle_size_max">24dp</dimen>
 	<dimen name="dialog_radius">8dp</dimen>
 
+	<dimen name="card_indicator_size">32dp</dimen>
+	<dimen name="card_indicator_offset">8dp</dimen>
+
 	<dimen name="appwidget_corner_radius_inner">8dp</dimen>
 
 	<!-- FastScroller -->

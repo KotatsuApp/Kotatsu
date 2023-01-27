@@ -63,7 +63,7 @@ class RemoteListViewModel @AssistedInject constructor(
 
 	override val content = combine(
 		mangaList,
-		createListModeFlow(),
+		listModeFlow,
 		createHeaderFlow(),
 		listError,
 		hasNextPage,

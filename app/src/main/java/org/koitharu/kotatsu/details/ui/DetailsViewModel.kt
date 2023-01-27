@@ -13,10 +13,18 @@ import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -46,6 +54,7 @@ import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import java.io.IOException
 
 class DetailsViewModel @AssistedInject constructor(
 	@Assisted intent: MangaIntent,
@@ -80,8 +89,14 @@ class DetailsViewModel @AssistedInject constructor(
 	private val favourite = favouritesRepository.observeCategoriesIds(delegate.mangaId).map { it.isNotEmpty() }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	private val newChapters = trackingRepository.observeNewChaptersCount(delegate.mangaId)
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
+	private val newChapters = settings.observeAsFlow(AppSettings.KEY_TRACKER_ENABLED) { isTrackerEnabled }
+		.flatMapLatest { isEnabled ->
+			if (isEnabled) {
+				trackingRepository.observeNewChaptersCount(delegate.mangaId)
+			} else {
+				flowOf(0)
+			}
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	private val chaptersQuery = MutableStateFlow("")
 
@@ -91,17 +106,18 @@ class DetailsViewModel @AssistedInject constructor(
 	val manga = delegate.manga.filterNotNull().asLiveData(viewModelScope.coroutineContext)
 	val favouriteCategories = favourite.asLiveData(viewModelScope.coroutineContext)
 	val newChaptersCount = newChapters.asLiveData(viewModelScope.coroutineContext)
-
-	@Deprecated("")
-	val readingHistory = history.asLiveData(viewModelScope.coroutineContext)
 	val isChaptersReversed = chaptersReversed.asLiveData(viewModelScope.coroutineContext)
 
-	val historyInfo = combine(
+	val historyInfo: LiveData<HistoryInfo> = combine(
 		delegate.manga,
 		history,
-	) { m, h ->
-		HistoryInfo(m, h)
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, null)
+		historyRepository.observeShouldSkip(delegate.manga),
+	) { m, h, im ->
+		HistoryInfo(m, h, im)
+	}.asFlowLiveData(
+		context = viewModelScope.coroutineContext + Dispatchers.Default,
+		defaultValue = HistoryInfo(null, null, false),
+	)
 
 	val bookmarks = delegate.manga.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
@@ -262,6 +278,17 @@ class DetailsViewModel @AssistedInject constructor(
 					mangaId = delegate.mangaId,
 				)
 			}
+		}
+	}
+
+	fun markChapterAsCurrent(chapterId: Long) {
+		launchJob(Dispatchers.Default) {
+			val manga = checkNotNull(delegate.manga.value)
+			val chapters = checkNotNull(manga.chapters)
+			val chapterIndex = chapters.indexOfFirst { it.id == chapterId }
+			check(chapterIndex in chapters.indices) { "Chapter not found" }
+			val percent = chapterIndex / chapters.size.toFloat()
+			historyRepository.addOrUpdate(manga = manga, chapterId = chapterId, page = 0, scroll = 0, percent = percent)
 		}
 	}
 

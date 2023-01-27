@@ -1,12 +1,31 @@
 package org.koitharu.kotatsu.core.parser
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainCoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.currentCoroutineContext
+import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.cache.SafeDeferred
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.config.ConfigKey
-import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.model.Favicons
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.utils.ext.processLifecycleScope
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
-class RemoteMangaRepository(private val parser: MangaParser) : MangaRepository {
+class RemoteMangaRepository(
+	private val parser: MangaParser,
+	private val cache: ContentCache,
+) : MangaRepository {
 
 	override val source: MangaSource
 		get() = parser.source
@@ -28,9 +47,23 @@ class RemoteMangaRepository(private val parser: MangaParser) : MangaRepository {
 		return parser.getList(offset, tags, sortOrder)
 	}
 
-	override suspend fun getDetails(manga: Manga): Manga = parser.getDetails(manga)
+	override suspend fun getDetails(manga: Manga): Manga {
+		cache.getDetails(source, manga.url)?.let { return it }
+		val details = asyncSafe {
+			parser.getDetails(manga)
+		}
+		cache.putDetails(source, manga.url, details)
+		return details.await()
+	}
 
-	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> = parser.getPages(chapter)
+	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
+		cache.getPages(source, chapter.url)?.let { return it }
+		val pages = asyncSafe {
+			parser.getPages(chapter)
+		}
+		cache.putPages(source, chapter.url, pages)
+		return pages.await()
+	}
 
 	override suspend fun getPageUrl(page: MangaPage): String = parser.getPageUrl(page)
 
@@ -45,4 +78,16 @@ class RemoteMangaRepository(private val parser: MangaParser) : MangaRepository {
 	}
 
 	private fun getConfig() = parser.config as SourceSettings
+
+	private suspend fun <T> asyncSafe(block: suspend CoroutineScope.() -> T): SafeDeferred<T> {
+		var dispatcher = currentCoroutineContext()[CoroutineDispatcher.Key]
+		if (dispatcher == null || dispatcher is MainCoroutineDispatcher) {
+			dispatcher = Dispatchers.Default
+		}
+		return SafeDeferred(
+			processLifecycleScope.async(dispatcher) {
+				runCatchingCancellable { block() }
+			},
+		)
+	}
 }

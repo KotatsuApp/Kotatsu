@@ -17,10 +17,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.os.NetworkStateObserver
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import java.io.File
 import java.io.IOException
 
@@ -28,7 +29,7 @@ class PageHolderDelegate(
 	private val loader: PageLoader,
 	private val readerSettings: ReaderSettings,
 	private val callback: Callback,
-	private val networkState: NetworkStateObserver,
+	private val networkState: NetworkState,
 	private val exceptionResolver: ExceptionResolver,
 ) : DefaultOnImageEventListener, Observer<ReaderSettings> {
 
@@ -138,6 +139,7 @@ class PageHolderDelegate(
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
+			e.printStackTraceDebug()
 			state = State.ERROR
 			error = e
 			callback.onError(e)
