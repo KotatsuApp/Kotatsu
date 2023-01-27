@@ -117,6 +117,7 @@ class MainActivity :
 		binding.navRail?.headerView?.setOnClickListener(this)
 		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
+		onBackPressedDispatcher.addCallback(navigationDelegate)
 		onBackPressedDispatcher.addCallback(ExitCallback(this, binding.container))
 		navigationDelegate = MainNavigationDelegate(checkNotNull(bottomNav ?: binding.navRail), supportFragmentManager)
 		navigationDelegate.addOnFragmentChangedListener(this)
@@ -150,9 +151,7 @@ class MainActivity :
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 				runOnCommit { onSearchClosed() }
 			}
-			navigationDelegate.primaryFragment !is ShelfFragment -> {
-				bottomNav?.selectedItemId = R.id.nav_shelf
-			}
+
 			else -> super.onBackPressed()
 		}
 	}

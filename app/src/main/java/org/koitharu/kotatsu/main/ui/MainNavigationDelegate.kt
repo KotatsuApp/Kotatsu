@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.main.ui
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
@@ -21,7 +22,7 @@ private const val TAG_PRIMARY = "primary"
 class MainNavigationDelegate(
 	private val navBar: NavigationBarView,
 	private val fragmentManager: FragmentManager,
-) : NavigationBarView.OnItemSelectedListener, NavigationBarView.OnItemReselectedListener {
+) : OnBackPressedCallback(false), NavigationBarView.OnItemSelectedListener, NavigationBarView.OnItemReselectedListener {
 
 	private val listeners = LinkedList<OnFragmentChangedListener>()
 
@@ -44,6 +45,10 @@ class MainNavigationDelegate(
 		}
 		val recyclerView = fragment.recyclerView
 		recyclerView.smoothScrollToPosition(0)
+	}
+
+	override fun handleOnBackPressed() {
+		navBar.selectedItemId = R.id.nav_shelf
 	}
 
 	fun onCreate(savedInstanceState: Bundle?) {
@@ -117,6 +122,7 @@ class MainNavigationDelegate(
 	}
 
 	private fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
+		isEnabled = fragment !is ShelfFragment
 		listeners.forEach { it.onFragmentChanged(fragment, fromUser) }
 	}
 
