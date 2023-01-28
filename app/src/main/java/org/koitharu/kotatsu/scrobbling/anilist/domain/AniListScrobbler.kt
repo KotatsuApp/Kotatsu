@@ -8,8 +8,6 @@ import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val RATING_MAX = 10f
-
 @Singleton
 class AniListScrobbler @Inject constructor(
 	private val repository: AniListRepository,
@@ -17,12 +15,12 @@ class AniListScrobbler @Inject constructor(
 ) : Scrobbler(db, ScrobblerService.ANILIST, repository) {
 
 	init {
-		statuses[ScrobblingStatus.PLANNED] = "planned"
-		statuses[ScrobblingStatus.READING] = "watching"
-		statuses[ScrobblingStatus.RE_READING] = "rewatching"
-		statuses[ScrobblingStatus.COMPLETED] = "completed"
-		statuses[ScrobblingStatus.ON_HOLD] = "on_hold"
-		statuses[ScrobblingStatus.DROPPED] = "dropped"
+		statuses[ScrobblingStatus.PLANNED] = "PLANNING"
+		statuses[ScrobblingStatus.READING] = "CURRENT"
+		statuses[ScrobblingStatus.RE_READING] = "REPEATING"
+		statuses[ScrobblingStatus.COMPLETED] = "COMPLETED"
+		statuses[ScrobblingStatus.ON_HOLD] = "PAUSED"
+		statuses[ScrobblingStatus.DROPPED] = "DROPPED"
 	}
 
 	override suspend fun updateScrobblingInfo(
@@ -36,7 +34,7 @@ class AniListScrobbler @Inject constructor(
 		repository.updateRate(
 			rateId = entity.id,
 			mangaId = entity.mangaId,
-			rating = rating * RATING_MAX,
+			rating = rating,
 			status = statuses[status],
 			comment = comment,
 		)

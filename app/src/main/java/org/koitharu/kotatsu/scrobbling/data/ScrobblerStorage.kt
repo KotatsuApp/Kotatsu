@@ -48,6 +48,10 @@ class ScrobblerStorage(context: Context, service: ScrobblerService) {
 			putString(KEY_USER, str)
 		}
 
+	operator fun get(key: String): String? = prefs.getString(key, null)
+
+	operator fun set(key: String, value: String?) = prefs.edit { putString(key, value) }
+
 	fun clear() = prefs.edit {
 		clear()
 	}

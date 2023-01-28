@@ -257,7 +257,8 @@ class DetailsViewModel @AssistedInject constructor(
 	}
 
 	fun updateScrobbling(rating: Float, status: ScrobblingStatus?) {
-		for (scrobbler in scrobblers) {
+		for (info in scrobblingInfo.value ?: return) {
+			val scrobbler = scrobblers.first { it.scrobblerService == info.scrobbler }
 			if (!scrobbler.isAvailable) continue
 			launchJob(Dispatchers.Default) {
 				scrobbler.updateScrobblingInfo(

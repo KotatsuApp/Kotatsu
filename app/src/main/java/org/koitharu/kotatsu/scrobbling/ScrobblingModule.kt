@@ -8,7 +8,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.ElementsIntoSet
 import okhttp3.OkHttpClient
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.network.CurlLoggingInterceptor
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListAuthenticator
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListInterceptor
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
@@ -37,6 +39,9 @@ object ScrobblingModule {
 		val okHttp = OkHttpClient.Builder().apply {
 			authenticator(authenticator)
 			addInterceptor(ShikimoriInterceptor(storage))
+			if (BuildConfig.DEBUG) {
+				addInterceptor(CurlLoggingInterceptor())
+			}
 		}.build()
 		return ShikimoriRepository(okHttp, storage, database)
 	}
@@ -51,6 +56,9 @@ object ScrobblingModule {
 		val okHttp = OkHttpClient.Builder().apply {
 			authenticator(authenticator)
 			addInterceptor(AniListInterceptor(storage))
+			if (BuildConfig.DEBUG) {
+				addInterceptor(CurlLoggingInterceptor())
+			}
 		}.build()
 		return AniListRepository(okHttp, storage, database)
 	}

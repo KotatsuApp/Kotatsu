@@ -117,11 +117,12 @@ class MainActivity :
 		binding.navRail?.headerView?.setOnClickListener(this)
 		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
-		onBackPressedDispatcher.addCallback(navigationDelegate)
-		onBackPressedDispatcher.addCallback(ExitCallback(this, binding.container))
 		navigationDelegate = MainNavigationDelegate(checkNotNull(bottomNav ?: binding.navRail), supportFragmentManager)
 		navigationDelegate.addOnFragmentChangedListener(this)
 		navigationDelegate.onCreate(savedInstanceState)
+
+		onBackPressedDispatcher.addCallback(navigationDelegate)
+		onBackPressedDispatcher.addCallback(ExitCallback(this, binding.container))
 
 		if (savedInstanceState == null) {
 			onFirstStart()

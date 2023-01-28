@@ -99,6 +99,9 @@ interface AppModule {
 				addInterceptor(GZipInterceptor())
 				addInterceptor(UserAgentInterceptor())
 				addInterceptor(CloudFlareInterceptor())
+				if (BuildConfig.DEBUG) {
+					addInterceptor(CurlLoggingInterceptor())
+				}
 			}.build()
 		}
 

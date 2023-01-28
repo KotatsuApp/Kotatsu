@@ -182,7 +182,7 @@ class ShikimoriRepository(
 			comment = json.getString("text"),
 			rating = json.getDouble("score").toFloat() / 10f,
 		)
-		db.scrobblingDao.insert(entity)
+		db.scrobblingDao.upsert(entity)
 	}
 
 	private fun ScrobblerManga(json: JSONObject) = ScrobblerManga(
