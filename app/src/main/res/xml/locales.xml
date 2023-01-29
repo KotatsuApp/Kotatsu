@@ -14,16 +14,16 @@
 	<locale android:name="in" />
 	<locale android:name="it" />
 	<locale android:name="ja" />
-	<locale android:name="nb-rNO" />
+	<locale android:name="nb-NO" />
 	<locale android:name="pl" />
 	<locale android:name="pt" />
-	<locale android:name="pt-rBR" />
+	<locale android:name="pt-BR" />
 	<locale android:name="ru" />
 	<locale android:name="si" />
 	<locale android:name="sr" />
 	<locale android:name="sv" />
 	<locale android:name="tr" />
 	<locale android:name="uk" />
-	<locale android:name="zh-rCN" />
-	<locale android:name="zh-rTW" />
+	<locale android:name="zh-CN" />
+	<locale android:name="zh-TW" />
 </locale-config>

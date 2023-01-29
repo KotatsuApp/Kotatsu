@@ -23,6 +23,7 @@
 
 		<PreferenceScreen
 			android:fragment="org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment"
+			android:icon="@drawable/ic_shikimori"
 			android:key="shikimori"
 			android:icon="@drawable/ic_shikimori"
 			android:title="@string/shikimori" />
@@ -32,6 +33,12 @@
 			android:key="mal"
 			android:icon="@drawable/ic_mal"
 			android:title="@string/mal" />
+
+		<PreferenceScreen
+			android:fragment="org.koitharu.kotatsu.scrobbling.anilist.ui.AniListSettingsFragment"
+			android:icon="@drawable/ic_anilist"
+			android:key="anilist"
+			android:title="@string/anilist" />
 
 	</PreferenceCategory>
 

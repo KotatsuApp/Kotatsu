@@ -16,7 +16,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
-import com.google.android.material.R as materialR
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -30,6 +29,7 @@ import org.koitharu.kotatsu.settings.about.AppUpdateDialog
 import org.koitharu.kotatsu.settings.tools.model.StorageUsage
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getThemeColor
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ToolsFragment :
@@ -47,7 +47,7 @@ class ToolsFragment :
 		super.onViewCreated(view, savedInstanceState)
 		binding.buttonSettings.setOnClickListener(this)
 		binding.buttonDownloads.setOnClickListener(this)
-		binding.cardUpdate.root.setOnClickListener(this)
+		binding.cardUpdate.buttonChangelog.setOnClickListener(this)
 		binding.cardUpdate.buttonDownload.setOnClickListener(this)
 		binding.switchIncognito.setOnCheckedChangeListener(this)
 
@@ -69,7 +69,8 @@ class ToolsFragment :
 				intent.data = url.toUri()
 				startActivity(Intent.createChooser(intent, getString(R.string.open_in_browser)))
 			}
-			R.id.card_update -> {
+
+			R.id.button_changelog -> {
 				val version = viewModel.appUpdate.value ?: return
 				AppUpdateDialog(v.context).show(version)
 			}
@@ -92,7 +93,6 @@ class ToolsFragment :
 			return
 		}
 		binding.cardUpdate.textSecondary.text = getString(R.string.new_version_s, version.name)
-		binding.cardUpdate.textChangelog.text = version.description
 		binding.cardUpdate.root.isVisible = true
 	}
 

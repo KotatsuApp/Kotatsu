@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.scrobbling.shikimori.data
 
-import javax.inject.Inject
-import javax.inject.Provider
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -9,9 +7,14 @@ import okhttp3.Response
 import okhttp3.Route
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerType
+import javax.inject.Inject
+import javax.inject.Provider
 
 class ShikimoriAuthenticator @Inject constructor(
-	private val storage: ShikimoriStorage,
+	@ScrobblerType(ScrobblerService.SHIKIMORI) private val storage: ScrobblerStorage,
 	private val repositoryProvider: Provider<ShikimoriRepository>,
 ) : Authenticator {
 

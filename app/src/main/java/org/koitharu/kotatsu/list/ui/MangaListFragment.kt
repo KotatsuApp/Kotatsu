@@ -1,7 +1,11 @@
 package org.koitharu.kotatsu.list.ui
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.annotation.CallSuper
 import androidx.appcompat.view.ActionMode
@@ -15,7 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.reverseAsync
@@ -42,13 +45,23 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
-import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
+import org.koitharu.kotatsu.utils.ext.clearItemDecorations
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.getThemeColor
+import org.koitharu.kotatsu.utils.ext.measureHeight
+import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import javax.inject.Inject
 
 @AndroidEntryPoint
 abstract class MangaListFragment :
@@ -136,6 +149,20 @@ abstract class MangaListFragment :
 
 	override fun onItemLongClick(item: Manga, view: View): Boolean {
 		return selectionController?.onItemLongClick(item.id) ?: false
+	}
+
+	override fun onReadClick(manga: Manga, view: View) {
+		if (selectionController?.onItemClick(manga.id) != true) {
+			val intent = ReaderActivity.newIntent(context ?: return, manga)
+			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+		}
+	}
+
+	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) {
+		if (selectionController?.onItemClick(manga.id) != true) {
+			val intent = MangaListActivity.newIntent(context ?: return, setOf(tag))
+			startActivity(intent)
+		}
 	}
 
 	@CallSuper
@@ -251,12 +278,14 @@ abstract class MangaListFragment :
 					)
 					addItemDecoration(decoration)
 				}
+
 				ListMode.DETAILED_LIST -> {
 					layoutManager = FitHeightLinearLayoutManager(context)
 					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 					updatePadding(left = spacing, right = spacing)
 					addItemDecoration(SpacingItemDecoration(spacing))
 				}
+
 				ListMode.GRID -> {
 					layoutManager = FitHeightGridLayoutManager(context, checkNotNull(spanResolver).spanCount).also {
 						it.spanSizeLookup = spanSizeLookup
@@ -284,21 +313,25 @@ abstract class MangaListFragment :
 				selectionController?.addAll(ids)
 				true
 			}
+
 			R.id.action_share -> {
 				ShareHelper(requireContext()).shareMangaLinks(selectedItems)
 				mode.finish()
 				true
 			}
+
 			R.id.action_favourite -> {
 				FavouriteCategoriesBottomSheet.show(childFragmentManager, selectedItems)
 				mode.finish()
 				true
 			}
+
 			R.id.action_save -> {
 				DownloadService.confirmAndStart(requireContext(), selectedItems)
 				mode.finish()
 				true
 			}
+
 			else -> false
 		}
 	}

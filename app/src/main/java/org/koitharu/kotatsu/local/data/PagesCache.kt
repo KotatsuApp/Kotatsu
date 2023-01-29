@@ -21,7 +21,7 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 
 	private val cacheDir = checkNotNull(findSuitableDir(context)) {
 		val dirs = (context.externalCacheDirs + context.cacheDir).joinToString(";") {
-			it.absolutePath
+			it?.absolutePath.toString()
 		}
 		"Cannot find any suitable directory for PagesCache: [$dirs]"
 	}
@@ -60,6 +60,6 @@ private fun createDiskLruCacheSafe(dir: File, size: Long): DiskLruCache {
 private fun findSuitableDir(context: Context): File? {
 	val dirs = context.externalCacheDirs + context.cacheDir
 	return dirs.firstNotNullOfOrNull {
-		it.subdir(CacheDir.PAGES.dir).takeIfWriteable()
+		it?.subdir(CacheDir.PAGES.dir)?.takeIfWriteable()
 	}
 }

@@ -7,15 +7,16 @@ import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.PopupMenu
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener {
@@ -23,9 +24,7 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 	@Inject
 	lateinit var viewModelFactory: FavouritesListViewModel.Factory
 
-	override val viewModel by assistedViewModels<FavouritesListViewModel> {
-		viewModelFactory.create(categoryId)
-	}
+	override val viewModel by assistedViewModels { viewModelFactory.create(categoryId) }
 
 	private val categoryId: Long
 		get() = arguments?.getLong(ARG_CATEGORY_ID) ?: NO_ID
@@ -34,6 +33,9 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		if (viewModel.categoryId != NO_ID) {
+			addMenuProvider(FavouritesListMenuProvider(view.context, viewModel))
+		}
 		viewModel.sortOrder.observe(viewLifecycleOwner) { activity?.invalidateOptionsMenu() }
 	}
 
@@ -73,6 +75,7 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 				mode.finish()
 				true
 			}
+
 			else -> super.onActionItemClicked(controller, mode, item)
 		}
 	}

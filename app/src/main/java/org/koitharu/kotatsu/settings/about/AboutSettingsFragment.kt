@@ -7,15 +7,23 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.github.AppVersion
+import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.utils.ShareHelper
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 
 	private val viewModel by viewModels<AboutSettingsViewModel>()
+
+	@Inject
+	lateinit var loggers: Set<@JvmSuppressWildcards FileLogger>
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_about)
@@ -39,10 +47,17 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 				viewModel.checkForUpdates()
 				true
 			}
+
 			AppSettings.KEY_APP_TRANSLATION -> {
 				openLink(getString(R.string.url_weblate), preference.title)
 				true
 			}
+
+			AppSettings.KEY_LOGS_SHARE -> {
+				ShareHelper(preference.context).shareLogs(loggers)
+				true
+			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}

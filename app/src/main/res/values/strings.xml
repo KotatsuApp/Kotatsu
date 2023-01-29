@@ -273,6 +273,7 @@
 	<string name="removal_completed">Removal completed</string>
 	<string name="batch_manga_save_confirm">Download all selected manga and its chapters\? This can consume a lot of traffic and storage.</string>
 	<string name="shikimori" translatable="false">Shikimori</string>
+	<string name="anilist" translatable="false">AniList</string>
 	<string name="parallel_downloads">Parallel downloads</string>
 	<string name="download_slowdown">Download slowdown</string>
 	<string name="download_slowdown_summary">Helps avoid blocking your IP address</string>
@@ -400,4 +401,11 @@
 	<string name="compact">Compact</string>
 	<string name="mal" translatable="false">MyAnimeList</string>
 	<string name="source_disabled">Source disabled</string>
+	<string name="prefetch_content">Content preloading</string>
+	<string name="mark_as_current">Mark as current</string>
+	<string name="language">Language</string>
+	<string name="share_logs">Share logs</string>
+	<string name="enable_logging">Enable logging</string>
+	<string name="enable_logging_summary">Record some actions for debug purposes</string>
+	<string name="show_suspicious_content">Show suspicious content</string>
 </resources>

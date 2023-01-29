@@ -18,6 +18,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -33,6 +34,8 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.core.ui.MangaErrorDialog
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
+import org.koitharu.kotatsu.details.service.MangaPrefetchService
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
@@ -120,6 +123,7 @@ class DetailsActivity :
 		viewModel.branches.observe(this) {
 			binding.buttonDropdown.isVisible = it.size > 1
 		}
+		viewModel.chapters.observe(this, PrefetchObserver(this))
 
 		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
 		addMenuProvider(
@@ -323,6 +327,24 @@ class DetailsActivity :
 			sb.anchorView = binding.headerChapters
 		}
 		return sb
+	}
+
+	private class PrefetchObserver(
+		private val context: Context,
+	) : Observer<List<ChapterListItem>> {
+
+		private var isCalled = false
+
+		override fun onChanged(t: List<ChapterListItem>?) {
+			if (t.isNullOrEmpty()) {
+				return
+			}
+			if (!isCalled) {
+				isCalled = true
+				val item = t.find { it.hasFlag(ChapterListItem.FLAG_CURRENT) } ?: t.first()
+				MangaPrefetchService.prefetchPages(context, item.chapter)
+			}
+		}
 	}
 
 	companion object {

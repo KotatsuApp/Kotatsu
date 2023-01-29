@@ -4,10 +4,11 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import okio.IOException
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
 
 private const val USER_AGENT_SHIKIMORI = "Kotatsu"
 
-class ShikimoriInterceptor(private val storage: ShikimoriStorage) : Interceptor {
+class ShikimoriInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
 		val sourceRequest = chain.request()

@@ -397,4 +397,10 @@
     <string name="server_error">Внутренняя ошибка сервера (%1$d). Повторите попытку позже</string>
     <string name="compact">Компактно</string>
     <string name="source_disabled">Источник отключен</string>
+    <string name="prefetch_content">Предварительная загрузка содержимого</string>
+    <string name="mark_as_current">Пометить как текущую</string>
+    <string name="language">Язык</string>
+    <string name="share_logs">Поделиться логами</string>
+    <string name="enable_logging">Включить логирование</string>
+    <string name="enable_logging_summary">Записывать некоторые действия для отладки</string>
 </resources>

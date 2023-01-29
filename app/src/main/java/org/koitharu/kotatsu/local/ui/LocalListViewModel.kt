@@ -4,14 +4,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.io.IOException
-import java.util.*
-import javax.inject.Inject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -20,7 +22,11 @@ import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListHeader2
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -30,6 +36,9 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import java.io.IOException
+import java.util.LinkedList
+import javax.inject.Inject
 
 @HiltViewModel
 class LocalListViewModel @Inject constructor(
@@ -48,7 +57,7 @@ class LocalListViewModel @Inject constructor(
 
 	override val content = combine(
 		mangaList,
-		createListModeFlow(),
+		listModeFlow,
 		sortOrder.asFlow(),
 		selectedTags,
 		listError,
@@ -181,7 +190,11 @@ class LocalListViewModel @Inject constructor(
 	}
 
 	override suspend fun getCounter(mangaId: Long): Int {
-		return trackingRepository.getNewChaptersCount(mangaId)
+		return if (settings.isTrackerEnabled) {
+			trackingRepository.getNewChaptersCount(mangaId)
+		} else {
+			0
+		}
 	}
 
 	override suspend fun getProgress(mangaId: Long): Float {

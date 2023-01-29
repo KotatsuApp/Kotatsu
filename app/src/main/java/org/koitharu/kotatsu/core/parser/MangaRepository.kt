@@ -1,13 +1,19 @@
 package org.koitharu.kotatsu.core.parser
 
+import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.parsers.MangaLoaderContext
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.EnumMap
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.set
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
-import org.koitharu.kotatsu.parsers.MangaLoaderContext
-import org.koitharu.kotatsu.parsers.model.*
 
 interface MangaRepository {
 
@@ -31,6 +37,7 @@ interface MangaRepository {
 	class Factory @Inject constructor(
 		private val localMangaRepository: LocalMangaRepository,
 		private val loaderContext: MangaLoaderContext,
+		private val contentCache: ContentCache,
 	) {
 
 		private val cache = EnumMap<MangaSource, WeakReference<RemoteMangaRepository>>(MangaSource::class.java)
@@ -42,7 +49,7 @@ interface MangaRepository {
 			cache[source]?.get()?.let { return it }
 			return synchronized(cache) {
 				cache[source]?.get()?.let { return it }
-				val repository = RemoteMangaRepository(MangaParser(source, loaderContext))
+				val repository = RemoteMangaRepository(MangaParser(source, loaderContext), contentCache)
 				cache[source] = WeakReference(repository)
 				repository
 			}

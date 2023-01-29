@@ -99,11 +99,6 @@ abstract class FavouritesDao {
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	abstract suspend fun insert(favourite: FavouriteEntity)
 
-	/** UPDATE **/
-
-	@Update
-	abstract suspend fun update(favourite: FavouriteEntity): Int
-
 	/** DELETE **/
 
 	suspend fun delete(mangaId: Long) = setDeletedAt(
@@ -138,12 +133,8 @@ abstract class FavouritesDao {
 
 	/** TOOLS **/
 
-	@Transaction
-	open suspend fun upsert(entity: FavouriteEntity) {
-		if (update(entity) == 0) {
-			insert(entity)
-		}
-	}
+	@Upsert
+	abstract suspend fun upsert(entity: FavouriteEntity)
 
 	@Transaction
 	@RawQuery(observedEntities = [FavouriteEntity::class])
@@ -166,6 +157,7 @@ abstract class FavouritesDao {
 		SortOrder.NEWEST,
 		SortOrder.UPDATED,
 		-> "created_at DESC"
+
 		SortOrder.ALPHABETICAL -> "title ASC"
 		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
 	}

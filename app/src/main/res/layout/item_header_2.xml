@@ -14,8 +14,9 @@
 		android:layout_centerVertical="true"
 		android:layout_marginEnd="@dimen/margin_small"
 		android:layout_toStartOf="@id/textView_filter"
-		android:requiresFadingEdge="horizontal"
-		android:scrollbars="none">
+		android:scrollIndicators="start|end"
+		android:scrollbars="none"
+		tools:ignore="UnusedAttribute">
 
 		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"

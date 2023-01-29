@@ -12,7 +12,6 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
@@ -27,11 +26,15 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MultiSearchActivity :
@@ -110,6 +113,20 @@ class MultiSearchActivity :
 		return selectionController.onItemLongClick(item.id)
 	}
 
+	override fun onReadClick(manga: Manga, view: View) {
+		if (!selectionController.onItemClick(manga.id)) {
+			val intent = ReaderActivity.newIntent(this, manga)
+			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+		}
+	}
+
+	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) {
+		if (!selectionController.onItemClick(manga.id)) {
+			val intent = MangaListActivity.newIntent(this, setOf(tag))
+			startActivity(intent)
+		}
+	}
+
 	override fun onRetryClick(error: Throwable) {
 		viewModel.doSearch(viewModel.query.value.orEmpty())
 	}
@@ -139,16 +156,19 @@ class MultiSearchActivity :
 				mode.finish()
 				true
 			}
+
 			R.id.action_favourite -> {
 				FavouriteCategoriesBottomSheet.show(supportFragmentManager, collectSelectedItems())
 				mode.finish()
 				true
 			}
+
 			R.id.action_save -> {
 				DownloadService.confirmAndStart(this, collectSelectedItems())
 				mode.finish()
 				true
 			}
+
 			else -> false
 		}
 	}

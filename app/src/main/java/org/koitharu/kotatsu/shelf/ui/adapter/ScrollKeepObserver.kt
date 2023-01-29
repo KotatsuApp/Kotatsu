@@ -12,13 +12,13 @@ class ScrollKeepObserver(
 
 	override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
 		val position = minOf(toPosition, fromPosition) // if items are swapping positions may be swapped too
-		if (position < layoutManager.findFirstVisibleItemPosition()) {
+		if (position == 0 || position < layoutManager.findFirstVisibleItemPosition()) {
 			postScroll(position)
 		}
 	}
 
 	override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-		if (positionStart < layoutManager.findFirstVisibleItemPosition()) {
+		if (positionStart == 0 || positionStart < layoutManager.findFirstVisibleItemPosition()) {
 			postScroll(positionStart)
 		}
 	}

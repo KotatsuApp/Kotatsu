@@ -1,34 +1,52 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.chip.Chip
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.databinding.ItemMangaListDetailsBinding
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
-import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.utils.ext.disposeImageRequest
+import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.textAndVisible
 import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 
 fun mangaListDetailedItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-	clickListener: OnListItemClickListener<Manga>,
+	clickListener: MangaDetailsClickListener,
 ) = adapterDelegateViewBinding<MangaListDetailedModel, ListModel, ItemMangaListDetailsBinding>(
 	{ inflater, parent -> ItemMangaListDetailsBinding.inflate(inflater, parent, false) },
 ) {
 	var badge: BadgeDrawable? = null
 
-	itemView.setOnClickListener {
-		clickListener.onItemClick(item.manga, it)
+	val listenerAdapter = object : View.OnClickListener, View.OnLongClickListener, ChipsView.OnChipClickListener {
+		override fun onClick(v: View) = when (v.id) {
+			R.id.button_read -> clickListener.onReadClick(item.manga, v)
+			else -> clickListener.onItemClick(item.manga, v)
+		}
+
+		override fun onLongClick(v: View): Boolean = clickListener.onItemLongClick(item.manga, v)
+
+		override fun onChipClick(chip: Chip, data: Any?) {
+			val tag = data as? MangaTag ?: return
+			clickListener.onTagClick(item.manga, tag, chip)
+		}
 	}
-	itemView.setOnLongClickListener {
-		clickListener.onItemLongClick(item.manga, it)
-	}
+	itemView.setOnClickListener(listenerAdapter)
+	itemView.setOnLongClickListener(listenerAdapter)
+	binding.buttonRead.setOnClickListener(listenerAdapter)
+	binding.chipsTags.onChipClickListener = listenerAdapter
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
@@ -44,8 +62,9 @@ fun mangaListDetailedItemAD(
 			lifecycle(lifecycleOwner)
 			enqueueWith(coil)
 		}
-		binding.textViewRating.textAndVisible = item.rating
-		binding.textViewTags.text = item.tags
+		binding.chipsTags.setChips(item.tags)
+		binding.ratingBar.isVisible = item.manga.hasRating
+		binding.ratingBar.rating = binding.ratingBar.numStars * item.manga.rating
 		badge = itemView.bindBadge(badge, item.counter)
 	}
 

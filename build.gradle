@@ -1,16 +1,12 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
 	repositories {
 		google()
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:7.3.1'
-		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20'
+		classpath 'com.android.tools.build:gradle:7.4.0'
+		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0'
 		classpath 'com.google.dagger:hilt-android-gradle-plugin:2.44'
-
-		// NOTE: Do not place your application dependencies here; they belong
-		// in the individual module build.gradle files
 	}
 }
 
@@ -24,7 +20,7 @@ allprojects {
 	}
 }
 
-Object localProperty(String name, Object defaultValue = 'null') {
+String localProperty(String name, String defaultValue = 'null') {
 	Properties localProperties = new Properties()
 	project.rootProject.file('local.properties').withInputStream { localProperties.load(it) }
 

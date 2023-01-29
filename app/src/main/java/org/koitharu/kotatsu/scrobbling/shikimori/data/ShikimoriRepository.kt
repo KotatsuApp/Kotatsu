@@ -14,11 +14,13 @@ import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.parsers.util.parseJsonArray
 import org.koitharu.kotatsu.parsers.util.toAbsoluteUrl
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerRepository
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerMangaInfo
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
-import org.koitharu.kotatsu.scrobbling.shikimori.data.model.ShikimoriUser
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.utils.ext.toRequestBody
 
 private const val REDIRECT_URI = "kotatsu://shikimori-auth"
@@ -27,18 +29,18 @@ private const val MANGA_PAGE_SIZE = 10
 
 class ShikimoriRepository(
 	private val okHttp: OkHttpClient,
-	private val storage: ShikimoriStorage,
+	private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
-) {
+) : ScrobblerRepository {
 
-	val oauthUrl: String
+	override val oauthUrl: String
 		get() = "${BASE_URL}oauth/authorize?client_id=${BuildConfig.SHIKIMORI_CLIENT_ID}&" +
 			"redirect_uri=$REDIRECT_URI&response_type=code&scope="
 
-	val isAuthorized: Boolean
+	override val isAuthorized: Boolean
 		get() = storage.accessToken != null
 
-	suspend fun authorize(code: String?) {
+	override suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
 		body.add("client_id", BuildConfig.SHIKIMORI_CLIENT_ID)
 		body.add("client_secret", BuildConfig.SHIKIMORI_CLIENT_SECRET)
@@ -58,7 +60,7 @@ class ShikimoriRepository(
 		storage.refreshToken = response.getString("refresh_token")
 	}
 
-	suspend fun loadUser(): ShikimoriUser {
+	override suspend fun loadUser(): ScrobblerUser {
 		val request = Request.Builder()
 			.get()
 			.url("${BASE_URL}api/users/whoami")
@@ -66,19 +68,20 @@ class ShikimoriRepository(
 		return ShikimoriUser(response).also { storage.user = it }
 	}
 
-	fun getCachedUser(): ShikimoriUser? {
-		return storage.user
-	}
+	override val cachedUser: ScrobblerUser?
+		get() {
+			return storage.user
+		}
 
-	suspend fun unregister(mangaId: Long) {
+	override suspend fun unregister(mangaId: Long) {
 		return db.scrobblingDao.delete(ScrobblerService.SHIKIMORI.id, mangaId)
 	}
 
-	fun logout() {
+	override fun logout() {
 		storage.clear()
 	}
 
-	suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
+	override suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
 		val page = offset / MANGA_PAGE_SIZE
 		val pageOffset = offset % MANGA_PAGE_SIZE
 		val url = BASE_URL.toHttpUrl().newBuilder()
@@ -95,8 +98,8 @@ class ShikimoriRepository(
 		return if (pageOffset != 0) list.drop(pageOffset) else list
 	}
 
-	suspend fun createRate(mangaId: Long, shikiMangaId: Long) {
-		val user = getCachedUser() ?: loadUser()
+	override suspend fun createRate(mangaId: Long, shikiMangaId: Long) {
+		val user = cachedUser ?: loadUser()
 		val payload = JSONObject()
 		payload.put(
 			"user_rate",
@@ -116,7 +119,7 @@ class ShikimoriRepository(
 		saveRate(response, mangaId)
 	}
 
-	suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
+	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
 		val payload = JSONObject()
 		payload.put(
 			"user_rate",
@@ -135,7 +138,7 @@ class ShikimoriRepository(
 		saveRate(response, mangaId)
 	}
 
-	suspend fun updateRate(rateId: Int, mangaId: Long, rating: Float, status: String?, comment: String?) {
+	override suspend fun updateRate(rateId: Int, mangaId: Long, rating: Float, status: String?, comment: String?) {
 		val payload = JSONObject()
 		payload.put(
 			"user_rate",
@@ -160,7 +163,7 @@ class ShikimoriRepository(
 		saveRate(response, mangaId)
 	}
 
-	suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
+	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
 		val request = Request.Builder()
 			.get()
 			.url("${BASE_URL}api/mangas/$id")
@@ -179,7 +182,7 @@ class ShikimoriRepository(
 			comment = json.getString("text"),
 			rating = json.getDouble("score").toFloat() / 10f,
 		)
-		db.scrobblingDao.insert(entity)
+		db.scrobblingDao.upsert(entity)
 	}
 
 	private fun ScrobblerManga(json: JSONObject) = ScrobblerManga(
@@ -196,5 +199,12 @@ class ShikimoriRepository(
 		cover = json.getJSONObject("image").getString("preview").toAbsoluteUrl("shikimori.one"),
 		url = json.getString("url").toAbsoluteUrl("shikimori.one"),
 		descriptionHtml = json.getString("description_html"),
+	)
+
+	private fun ShikimoriUser(json: JSONObject) = ScrobblerUser(
+		id = json.getLong("id"),
+		nickname = json.getString("nickname"),
+		avatar = json.getString("avatar"),
+		service = ScrobblerService.SHIKIMORI,
 	)
 }

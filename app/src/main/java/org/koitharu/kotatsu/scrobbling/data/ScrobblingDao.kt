@@ -12,11 +12,8 @@ abstract class ScrobblingDao {
 	@Query("SELECT * FROM scrobblings WHERE scrobbler = :scrobbler AND manga_id = :mangaId")
 	abstract fun observe(scrobbler: Int, mangaId: Long): Flow<ScrobblingEntity?>
 
-	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	abstract suspend fun insert(entity: ScrobblingEntity)
-
-	@Update
-	abstract suspend fun update(entity: ScrobblingEntity)
+	@Upsert
+	abstract suspend fun upsert(entity: ScrobblingEntity)
 
 	@Query("DELETE FROM scrobblings WHERE scrobbler = :scrobbler AND manga_id = :mangaId")
 	abstract suspend fun delete(scrobbler: Int, mangaId: Long)

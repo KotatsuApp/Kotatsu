@@ -13,13 +13,15 @@
 
 	<TextView
 		android:id="@+id/textView_number"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_width="32dp"
+		android:layout_height="32dp"
 		android:layout_marginStart="?android:listPreferredItemPaddingStart"
 		android:background="@drawable/bg_badge_default"
+		android:ellipsize="none"
 		android:gravity="center"
-		android:minWidth="26dp"
+		android:singleLine="true"
 		android:textAlignment="center"
+		android:textSize="14sp"
 		tools:text="13"
 		tools:textColor="?attr/colorOnPrimary" />
 

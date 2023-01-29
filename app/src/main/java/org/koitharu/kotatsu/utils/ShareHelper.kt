@@ -4,10 +4,11 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
-import java.io.File
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.parsers.model.Manga
+import java.io.File
 
 private const val TYPE_TEXT = "text/plain"
 private const val TYPE_IMAGE = "image/*"
@@ -78,5 +79,16 @@ class ShareHelper(private val context: Context) {
 			.setType(TYPE_TEXT)
 			.setChooserTitle(R.string.share)
 			.startChooser()
+	}
+
+	fun shareLogs(loggers: Collection<FileLogger>) {
+		val intentBuilder = ShareCompat.IntentBuilder(context)
+			.setType(TYPE_TEXT)
+		for (logger in loggers) {
+			val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", logger.file)
+			intentBuilder.addStream(uri)
+		}
+		intentBuilder.setChooserTitle(R.string.share_logs)
+		intentBuilder.startChooser()
 	}
 }

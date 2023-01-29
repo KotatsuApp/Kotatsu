@@ -89,8 +89,14 @@ class DetailsViewModel @AssistedInject constructor(
 	private val favourite = favouritesRepository.observeCategoriesIds(delegate.mangaId).map { it.isNotEmpty() }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	private val newChapters = trackingRepository.observeNewChaptersCount(delegate.mangaId)
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
+	private val newChapters = settings.observeAsFlow(AppSettings.KEY_TRACKER_ENABLED) { isTrackerEnabled }
+		.flatMapLatest { isEnabled ->
+			if (isEnabled) {
+				trackingRepository.observeNewChaptersCount(delegate.mangaId)
+			} else {
+				flowOf(0)
+			}
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	private val chaptersQuery = MutableStateFlow("")
 
@@ -105,7 +111,7 @@ class DetailsViewModel @AssistedInject constructor(
 	val historyInfo: LiveData<HistoryInfo> = combine(
 		delegate.manga,
 		history,
-		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
+		historyRepository.observeShouldSkip(delegate.manga),
 	) { m, h, im ->
 		HistoryInfo(m, h, im)
 	}.asFlowLiveData(
@@ -251,7 +257,8 @@ class DetailsViewModel @AssistedInject constructor(
 	}
 
 	fun updateScrobbling(rating: Float, status: ScrobblingStatus?) {
-		for (scrobbler in scrobblers) {
+		for (info in scrobblingInfo.value ?: return) {
+			val scrobbler = scrobblers.first { it.scrobblerService == info.scrobbler }
 			if (!scrobbler.isAvailable) continue
 			launchJob(Dispatchers.Default) {
 				scrobbler.updateScrobblingInfo(
@@ -272,6 +279,17 @@ class DetailsViewModel @AssistedInject constructor(
 					mangaId = delegate.mangaId,
 				)
 			}
+		}
+	}
+
+	fun markChapterAsCurrent(chapterId: Long) {
+		launchJob(Dispatchers.Default) {
+			val manga = checkNotNull(delegate.manga.value)
+			val chapters = checkNotNull(manga.chapters)
+			val chapterIndex = chapters.indexOfFirst { it.id == chapterId }
+			check(chapterIndex in chapters.indices) { "Chapter not found" }
+			val percent = chapterIndex / chapters.size.toFloat()
+			historyRepository.addOrUpdate(manga = manga, chapterId = chapterId, page = 0, scroll = 0, percent = percent)
 		}
 	}
 

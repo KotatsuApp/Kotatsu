@@ -4,6 +4,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -29,10 +30,17 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 							inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_URI,
 							hint = key.defaultValue,
 							validator = DomainValidator(),
-						)
+						),
 					)
 					setTitle(R.string.domain)
 					setDialogTitle(R.string.domain)
+				}
+			}
+
+			is ConfigKey.ShowSuspiciousContent -> {
+				SwitchPreferenceCompat(requireContext()).apply {
+					setDefaultValue(key.defaultValue)
+					setTitle(R.string.show_suspicious_content)
 				}
 			}
 		}

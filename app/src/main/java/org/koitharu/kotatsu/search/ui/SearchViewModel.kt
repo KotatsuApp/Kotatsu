@@ -39,7 +39,7 @@ class SearchViewModel @AssistedInject constructor(
 
 	override val content = combine(
 		mangaList,
-		createListModeFlow(),
+		listModeFlow,
 		listError,
 		hasNextPage,
 	) { list, mode, error, hasNext ->

@@ -23,10 +23,7 @@ class CbzFetcher(
 		val zip = ZipFile(uri.schemeSpecificPart)
 		val entry = zip.getEntry(uri.fragment)
 		val ext = MimeTypeMap.getFileExtensionFromUrl(entry.name)
-		val bufferedSource = ExtraCloseableBufferedSource(
-			zip.getInputStream(entry).source().buffer(),
-			zip,
-		)
+		val bufferedSource = zip.getInputStream(entry).source().withExtraCloseable(zip).buffer()
 		SourceResult(
 			source = ImageSource(
 				source = bufferedSource,

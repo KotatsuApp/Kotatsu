@@ -11,11 +11,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
-import java.util.concurrent.Callable
 import org.koitharu.kotatsu.core.db.*
+import java.util.concurrent.Callable
 
 abstract class SyncProvider : ContentProvider() {
 
@@ -44,15 +43,14 @@ abstract class SyncProvider : ContentProvider() {
 		selection: String?,
 		selectionArgs: Array<out String>?,
 		sortOrder: String?,
-	): Cursor? = if (getTableName(uri) != null) {
-		val sqlQuery = SupportSQLiteQueryBuilder.builder(uri.lastPathSegment)
+	): Cursor? {
+		val tableName = getTableName(uri) ?: return null
+		val sqlQuery = SupportSQLiteQueryBuilder.builder(tableName)
 			.columns(projection)
 			.selection(selection, selectionArgs)
 			.orderBy(sortOrder)
 			.create()
-		database.openHelper.readableDatabase.query(sqlQuery)
-	} else {
-		null
+		return database.openHelper.readableDatabase.query(sqlQuery)
 	}
 
 	override fun getType(uri: Uri): String? {

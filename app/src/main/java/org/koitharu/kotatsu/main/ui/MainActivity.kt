@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
+import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
@@ -116,10 +117,12 @@ class MainActivity :
 		binding.navRail?.headerView?.setOnClickListener(this)
 		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
-		onBackPressedDispatcher.addCallback(ExitCallback(this, binding.container))
 		navigationDelegate = MainNavigationDelegate(checkNotNull(bottomNav ?: binding.navRail), supportFragmentManager)
 		navigationDelegate.addOnFragmentChangedListener(this)
 		navigationDelegate.onCreate(savedInstanceState)
+
+		onBackPressedDispatcher.addCallback(navigationDelegate)
+		onBackPressedDispatcher.addCallback(ExitCallback(this, binding.container))
 
 		if (savedInstanceState == null) {
 			onFirstStart()
@@ -334,6 +337,7 @@ class MainActivity :
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
 			}
+			MangaPrefetchService.prefetchLast(this@MainActivity)
 			requestNotificationsPermission()
 		}
 	}

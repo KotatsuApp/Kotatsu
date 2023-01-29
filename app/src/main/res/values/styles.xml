@@ -12,6 +12,10 @@
 		<item name="labelVisibilityMode">labeled</item>
 	</style>
 
+	<style name="Widget.Kotatsu.BottomNavigationView.ColoredIndicators">
+		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
+	</style>
+
 	<style name="Widget.Kotatsu.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
 		<item name="android:color">@color/bottom_menu_active_indicator</item>
 	</style>
@@ -24,10 +28,9 @@
 	<!--AlertDialog-->
 
 	<style name="ThemeOverlay.Kotatsu.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-		<item name="android:background">?attr/colorSurface</item>
-		<item name="android:textColorPrimary">?attr/colorOnSurface</item>
-		<item name="android:textColor">?attr/colorOnSurface</item>
-		<item name="dialogCornerRadius">28dp</item>
+		<item name="android:layout">@layout/m3_alert_dialog</item>
+		<item name="android:background">@drawable/m3_popup_background</item>
+		<item name="dialogCornerRadius">@dimen/m3_alert_dialog_corner_size</item>
 	</style>
 
 	<!-- Bottom sheet -->
@@ -222,6 +225,11 @@
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Small" parent="">
 		<item name="cornerSize">6dp</item>
+	</style>
+
+	<style name="ShapeAppearanceOverlay.Kotatsu.Circle" parent="">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">50%</item>
 	</style>
 
 	<!--Preferences-->
