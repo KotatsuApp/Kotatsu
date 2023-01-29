@@ -20,7 +20,6 @@ import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.mal.data.MALAuthenticator
 import org.koitharu.kotatsu.scrobbling.mal.data.MALInterceptor
 import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
-import org.koitharu.kotatsu.scrobbling.mal.data.MALStorage
 import org.koitharu.kotatsu.scrobbling.mal.domain.MALScrobbler
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerType
@@ -54,13 +53,16 @@ object ScrobblingModule {
 	@Provides
 	@Singleton
 	fun provideMALRepository(
-		storage: MALStorage,
+		@ScrobblerType(ScrobblerService.MAL) storage: ScrobblerStorage,
 		database: MangaDatabase,
 		authenticator: MALAuthenticator,
 	): MALRepository {
 		val okHttp = OkHttpClient.Builder().apply {
 			authenticator(authenticator)
 			addInterceptor(MALInterceptor(storage))
+			if (BuildConfig.DEBUG) {
+				addInterceptor(CurlLoggingInterceptor())
+			}
 		}.build()
 		return MALRepository(okHttp, storage, database)
 	}
@@ -95,6 +97,13 @@ object ScrobblingModule {
 	fun provideShikimoriStorage(
 		@ApplicationContext context: Context,
 	): ScrobblerStorage = ScrobblerStorage(context, ScrobblerService.SHIKIMORI)
+
+	@Provides
+	@Singleton
+	@ScrobblerType(ScrobblerService.MAL)
+	fun provideMALStorage(
+		@ApplicationContext context: Context,
+	): ScrobblerStorage = ScrobblerStorage(context, ScrobblerService.MAL)
 
 	@Provides
 	@ElementsIntoSet

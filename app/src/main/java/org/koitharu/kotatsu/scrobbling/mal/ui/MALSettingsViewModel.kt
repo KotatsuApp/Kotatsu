@@ -6,10 +6,8 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
-import org.koitharu.kotatsu.scrobbling.mal.data.model.MALUser
-import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
-import org.koitharu.kotatsu.scrobbling.shikimori.data.model.ShikimoriUser
 
 class MALSettingsViewModel @AssistedInject constructor(
 	private val repository: MALRepository,
@@ -19,7 +17,7 @@ class MALSettingsViewModel @AssistedInject constructor(
 	val authorizationUrl: String
 		get() = repository.oauthUrl
 
-	val user = MutableLiveData<MALUser?>()
+	val user = MutableLiveData<ScrobblerUser?>()
 
 	init {
 		if (authCode != null) {
@@ -38,7 +36,7 @@ class MALSettingsViewModel @AssistedInject constructor(
 
 	private fun loadUser() = launchJob(Dispatchers.Default) {
 		val userModel = if (repository.isAuthorized) {
-			repository.getCachedUser()?.let(user::postValue)
+			repository.cachedUser?.let(user::postValue)
 			repository.loadUser()
 		} else {
 			null

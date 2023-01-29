@@ -241,7 +241,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	private fun bindMALSummary() {
 		findPreference<Preference>(AppSettings.KEY_MAL)?.summary = if (malRepository.isAuthorized) {
-			getString(R.string.logged_in_as, malRepository.getCachedUser()?.nickname)
+			getString(R.string.logged_in_as, malRepository.cachedUser?.nickname)
 		} else {
 			getString(R.string.disabled)
 		}

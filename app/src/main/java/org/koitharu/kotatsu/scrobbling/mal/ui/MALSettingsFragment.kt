@@ -8,7 +8,7 @@ import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.scrobbling.mal.data.model.MALUser
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
@@ -43,7 +43,7 @@ class MALSettingsFragment : BasePreferenceFragment(R.string.mal) {
 		}
 	}
 
-	private fun onUserChanged(user: MALUser?) {
+	private fun onUserChanged(user: ScrobblerUser?) {
 		val pref = findPreference<Preference>(KEY_USER) ?: return
 		pref.isSelectable = user == null
 		pref.title = user?.nickname ?: getString(R.string.sign_in)

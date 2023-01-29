@@ -7,11 +7,14 @@ import okhttp3.Response
 import okhttp3.Route
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerType
 import javax.inject.Inject
 import javax.inject.Provider
 
 class MALAuthenticator @Inject constructor(
-	private val storage: MALStorage,
+	@ScrobblerType(ScrobblerService.MAL) private val storage: ScrobblerStorage,
 	private val repositoryProvider: Provider<MALRepository>,
 ) : Authenticator {
 

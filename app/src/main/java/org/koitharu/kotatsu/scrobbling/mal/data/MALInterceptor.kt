@@ -3,23 +3,23 @@ package org.koitharu.kotatsu.scrobbling.mal.data
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.koitharu.kotatsu.core.network.CommonHeaders
-import java.io.IOException
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
 
-class MALInterceptor(private val storage: MALStorage) : Interceptor {
+private const val JSON = "application/json"
+
+class MALInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
 		val sourceRequest = chain.request()
 		val request = sourceRequest.newBuilder()
-		if (!sourceRequest.url.pathSegments.contains("oauth2")) {
+		request.header(CommonHeaders.CONTENT_TYPE, JSON)
+		request.header(CommonHeaders.ACCEPT, JSON)
+		if (!sourceRequest.url.pathSegments.contains("oauth")) {
 			storage.accessToken?.let {
 				request.header(CommonHeaders.AUTHORIZATION, "Bearer $it")
 			}
 		}
-		val response = chain.proceed(request.build())
-		if (!response.isSuccessful && !response.isRedirect) {
-			throw IOException("${response.code} ${response.message}")
-		}
-		return response
+		return chain.proceed(request.build())
 	}
 
 }

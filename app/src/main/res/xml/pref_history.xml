@@ -25,7 +25,6 @@
 			android:fragment="org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment"
 			android:icon="@drawable/ic_shikimori"
 			android:key="shikimori"
-			android:icon="@drawable/ic_shikimori"
 			android:title="@string/shikimori" />
 
 		<PreferenceScreen

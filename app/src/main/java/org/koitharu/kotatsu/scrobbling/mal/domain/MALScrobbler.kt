@@ -17,7 +17,7 @@ private const val RATING_MAX = 10f
 class MALScrobbler @Inject constructor(
 	private val repository: MALRepository,
 	db: MangaDatabase,
-) : Scrobbler(db, ScrobblerService.MAL) {
+) : Scrobbler(db, ScrobblerService.MAL, repository) {
 
 	init {
 		statuses[ScrobblingStatus.PLANNED] = "plan_to_read"
@@ -25,21 +25,6 @@ class MALScrobbler @Inject constructor(
 		statuses[ScrobblingStatus.COMPLETED] = "completed"
 		statuses[ScrobblingStatus.ON_HOLD] = "on_hold"
 		statuses[ScrobblingStatus.DROPPED] = "dropped"
-	}
-
-	override val isAvailable: Boolean
-		get() = repository.isAuthorized
-
-	override suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
-		TODO()
-	}
-
-	override suspend fun linkManga(mangaId: Long, targetId: Long) {
-		TODO()
-	}
-
-	override suspend fun scrobble(mangaId: Long, chapter: MangaChapter) {
-		TODO()
 	}
 
 	override suspend fun updateScrobblingInfo(
@@ -51,11 +36,4 @@ class MALScrobbler @Inject constructor(
 		TODO()
 	}
 
-	override suspend fun unregisterScrobbling(mangaId: Long) {
-		repository.unregister(mangaId)
-	}
-
-	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
-		TODO()
-	}
 }
