@@ -1,15 +1,18 @@
 package org.koitharu.kotatsu.scrobbling.mal.data
 
 import okhttp3.FormBody
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.scrobbling.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
+import org.koitharu.kotatsu.scrobbling.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerMangaInfo
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
@@ -19,7 +22,8 @@ import org.koitharu.kotatsu.utils.PKCEGenerator
 private const val REDIRECT_URI = "kotatsu://mal-auth"
 private const val BASE_OAUTH_URL = "https://myanimelist.net"
 private const val BASE_API_URL = "https://api.myanimelist.net/v2"
-private const val MANGA_PAGE_SIZE = 250
+private const val MANGA_PAGE_SIZE = 10
+private const val AVATAR_STUB = "https://cdn.myanimelist.net/images/questionmark_50.gif"
 
 // af16954886b040673378423f5d62cccd
 
@@ -29,28 +33,32 @@ class MALRepository(
 	private val db: MangaDatabase,
 ) : ScrobblerRepository {
 
-	private var codeVerifier: String = ""
+	private var codeVerifier: String = getPKCEChallengeCode()
 
 	override val oauthUrl: String
-		get() = "${BASE_OAUTH_URL}/v1/oauth2/authorize?" +
+		get() = "$BASE_OAUTH_URL/v1/oauth2/authorize?" +
 			"response_type=code" +
 			"&client_id=af16954886b040673378423f5d62cccd" +
-			"&redirect_uri=${REDIRECT_URI}" +
-			"&code_challenge=${getPKCEChallengeCode()}" +
+			"&redirect_uri=$REDIRECT_URI" +
+			"&code_challenge=$codeVerifier" +
 			"&code_challenge_method=plain"
 
 	override val isAuthorized: Boolean
 		get() = storage.accessToken != null
+
 	override val cachedUser: ScrobblerUser?
-		get() = TODO("Not yet implemented")
+		get() {
+			return storage.user
+		}
 
 	override suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
 		if (code != null) {
 			body.add("client_id", "af16954886b040673378423f5d62cccd")
-			body.add("code", code)
-			body.add("code_verifier", getPKCEChallengeCode())
 			body.add("grant_type", "authorization_code")
+			body.add("code", code)
+			body.add("redirect_uri", REDIRECT_URI)
+			body.add("code_verifier", codeVerifier)
 		}
 		val request = Request.Builder()
 			.post(body.build())
@@ -64,7 +72,7 @@ class MALRepository(
 	override suspend fun loadUser(): ScrobblerUser {
 		val request = Request.Builder()
 			.get()
-			.url("${BASE_API_URL}/users")
+			.url("${BASE_API_URL}/users/@me")
 		val response = okHttp.newCall(request.build()).await().parseJson()
 		return MALUser(response).also { storage.user = it }
 	}
@@ -74,23 +82,74 @@ class MALRepository(
 	}
 
 	override suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
-		TODO("Not yet implemented")
+		val pageOffset = offset % MANGA_PAGE_SIZE
+		val url = BASE_API_URL.toHttpUrl().newBuilder()
+			.addPathSegment("manga")
+			.addQueryParameter("offset", (pageOffset + 1).toString())
+			.addQueryParameter("nsfw", "true")
+			.addEncodedQueryParameter("q", query.take(64)) // WARNING! MAL API throws a 400 when the query is over 64 characters
+			.build()
+		val request = Request.Builder().url(url).get().build()
+		val response = okHttp.newCall(request).await().parseJson()
+		val data = response.getJSONArray("data")
+		val mangas = data.mapJSON { jsonToManga(it) }
+		return if (pageOffset != 0) mangas.drop(pageOffset) else mangas
 	}
 
 	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
-		TODO("Not yet implemented")
+		val request = Request.Builder()
+			.get()
+			.url("${BASE_API_URL}/manga/$id")
+		val response = okHttp.newCall(request.build()).await().parseJson()
+		return ScrobblerMangaInfo(response)
 	}
 
 	override suspend fun createRate(mangaId: Long, scrobblerMangaId: Long) {
-		TODO("Not yet implemented")
+		val body = FormBody.Builder()
+			.add("status", "reading")
+			.add("score", "0")
+		val url = BASE_API_URL.toHttpUrl().newBuilder()
+			.addPathSegment("manga")
+			.addPathSegment(scrobblerMangaId.toString())
+			.addPathSegment("my_list_status")
+			.build()
+		val request = Request.Builder()
+			.url(url)
+			.put(body.build())
+			.build()
+		val response = okHttp.newCall(request).await().parseJson()
 	}
 
 	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
-		TODO("Not yet implemented")
+		val body = FormBody.Builder()
+			.add("status", "reading")
+			.add("score", "0")
+		val url = BASE_API_URL.toHttpUrl().newBuilder()
+			.addPathSegment("manga")
+			.addPathSegment(mangaId.toString())
+			.addPathSegment("my_list_status")
+			.build()
+		val request = Request.Builder()
+			.url(url)
+			.put(body.build())
+			.build()
+		val response = okHttp.newCall(request).await().parseJson()
 	}
 
 	override suspend fun updateRate(rateId: Int, mangaId: Long, rating: Float, status: String?, comment: String?) {
-		TODO("Not yet implemented")
+		val body = FormBody.Builder()
+			.add("status", status!!)
+			.add("score", rating.toString())
+		val url = BASE_API_URL.toHttpUrl().newBuilder()
+			.addPathSegment("manga")
+			.addPathSegment(mangaId.toString())
+			.addPathSegment("my_list_status")
+			.build()
+		val request = Request.Builder()
+			.url(url)
+			.put(body.build())
+			.build()
+		val response = okHttp.newCall(request).await().parseJson()
 	}
 
 	override fun logout() {
@@ -102,11 +161,39 @@ class MALRepository(
 		return codeVerifier
 	}
 
+	private fun jsonToManga(json: JSONObject): ScrobblerManga {
+		for (i in 0 until json.length()) {
+			val node = json.getJSONObject("node")
+			return ScrobblerManga(
+				id = node.getLong("id"),
+				name = node.getString("title"),
+				altName = null,
+				cover = node.getJSONObject("main_picture").getString("large"),
+				url = ""
+			)
+		}
+		return ScrobblerManga(
+			id = 1,
+			name = "",
+			altName = null,
+			cover = "",
+			url = ""
+		)
+	}
+
+	private fun ScrobblerMangaInfo(json: JSONObject) = ScrobblerMangaInfo(
+		id = json.getLong("id"),
+		name = json.getString("title"),
+		cover = json.getJSONObject("main_picture").getString("large"),
+		url = "",
+		descriptionHtml = json.getString("synopsis"),
+	)
+
 	private fun MALUser(json: JSONObject) = ScrobblerUser(
 		id = json.getLong("id"),
-		nickname = json.getString("nickname"),
-		avatar = json.getString("avatar"),
-		service = ScrobblerService.SHIKIMORI,
+		nickname = json.getString("name"),
+		avatar = json.getString("picture") ?: AVATAR_STUB,
+		service = ScrobblerService.MAL,
 	)
 
 }

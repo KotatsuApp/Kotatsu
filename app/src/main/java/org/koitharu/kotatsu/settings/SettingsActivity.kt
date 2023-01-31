@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.scrobbling.anilist.ui.AniListSettingsFragment
+import org.koitharu.kotatsu.scrobbling.mal.ui.MALSettingsFragment
 import org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
@@ -151,6 +152,9 @@ class SettingsActivity :
 
 			HOST_ANILIST_AUTH ->
 				return AniListSettingsFragment.newInstance(authCode = uri.getQueryParameter("code"))
+
+			HOST_MAL_AUTH ->
+				return MALSettingsFragment.newInstance(authCode = uri.getQueryParameter("code"))
 		}
 		finishAfterTransition()
 		return null
@@ -169,6 +173,7 @@ class SettingsActivity :
 
 		private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
 		private const val HOST_ANILIST_AUTH = "anilist-auth"
+		private const val HOST_MAL_AUTH = "mal-auth"
 
 		fun newIntent(context: Context) = Intent(context, SettingsActivity::class.java)
 

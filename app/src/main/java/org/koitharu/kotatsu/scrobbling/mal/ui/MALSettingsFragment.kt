@@ -5,16 +5,24 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.preference.Preference
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerUser
+import org.koitharu.kotatsu.utils.PreferenceIconTarget
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
+import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MALSettingsFragment : BasePreferenceFragment(R.string.mal) {
+
+	@Inject
+	lateinit var coil: ImageLoader
 
 	@Inject
 	lateinit var viewModelFactory: MALSettingsViewModel.Factory
@@ -47,6 +55,11 @@ class MALSettingsFragment : BasePreferenceFragment(R.string.mal) {
 		val pref = findPreference<Preference>(KEY_USER) ?: return
 		pref.isSelectable = user == null
 		pref.title = user?.nickname ?: getString(R.string.sign_in)
+		ImageRequest.Builder(requireContext())
+			.data(user?.avatar)
+			.transformations(CircleCropTransformation())
+			.target(PreferenceIconTarget(pref))
+			.enqueueWith(coil)
 		findPreference<Preference>(KEY_LOGOUT)?.isVisible = user != null
 	}
 
