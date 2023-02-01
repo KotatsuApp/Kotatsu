@@ -8,13 +8,12 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import coil.ImageLoader
+import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
@@ -23,11 +22,14 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.databinding.SheetScrobblingSelectorBinding
+import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
+import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikiMangaSelectionDecoration
 import org.koitharu.kotatsu.scrobbling.ui.selector.adapter.ShikimoriSelectorAdapter
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
+import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.requireParcelable
 import org.koitharu.kotatsu.utils.ext.withArgs
@@ -42,7 +44,8 @@ class ScrobblingSelectorBottomSheet :
 	MenuItem.OnActionExpandListener,
 	SearchView.OnQueryTextListener,
 	DialogInterface.OnKeyListener,
-	AdapterView.OnItemSelectedListener {
+	TabLayout.OnTabSelectedListener,
+	ListStateHolderListener {
 
 	@Inject
 	lateinit var viewModelFactory: ScrobblingSelectorViewModel.Factory
@@ -68,7 +71,7 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val listAdapter = ShikimoriSelectorAdapter(viewLifecycleOwner, coil, this)
+		val listAdapter = ShikimoriSelectorAdapter(viewLifecycleOwner, coil, this, this)
 		val decoration = ShikiMangaSelectionDecoration(view.context)
 		with(binding.recyclerView) {
 			adapter = listAdapter
@@ -77,7 +80,7 @@ class ScrobblingSelectorBottomSheet :
 		}
 		binding.buttonDone.setOnClickListener(this)
 		initOptionsMenu()
-		initSpinner()
+		initTabs()
 
 		viewModel.content.observe(viewLifecycleOwner) { listAdapter.items = it }
 		viewModel.selectedItemId.observe(viewLifecycleOwner) {
@@ -101,6 +104,12 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onItemClick(item: ScrobblerManga, view: View) {
 		viewModel.selectedItemId.value = item.id
+	}
+
+	override fun onRetryClick(error: Throwable) = Unit
+
+	override fun onEmptyActionClick() {
+		openSearch()
 	}
 
 	override fun onScrolledToEnd() {
@@ -143,11 +152,23 @@ class ScrobblingSelectorBottomSheet :
 		return false
 	}
 
-	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-		viewModel.setScrobblerIndex(position)
+	override fun onTabSelected(tab: TabLayout.Tab) {
+		viewModel.setScrobblerIndex(tab.position)
 	}
 
-	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+	override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
+
+	override fun onTabReselected(tab: TabLayout.Tab?) {
+		if (!isExpanded) {
+			setExpanded(isExpanded = true, isLocked = behavior?.isDraggable == false)
+		}
+		binding.recyclerView.firstVisibleItemPosition = 0
+	}
+
+	private fun openSearch() {
+		val menuItem = binding.headerBar.menu.findItem(R.id.action_search) ?: return
+		menuItem.expandActionView()
+	}
 
 	private fun onError(e: Throwable) {
 		Toast.makeText(requireContext(), e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
@@ -166,32 +187,41 @@ class ScrobblingSelectorBottomSheet :
 		searchView.queryHint = searchMenuItem.title
 	}
 
-	private fun initSpinner() {
+	private fun initTabs() {
 		val entries = viewModel.availableScrobblers
+		val tabs = binding.tabs
 		if (entries.size <= 1) {
-			binding.spinnerScrobblers.isVisible = false
+			tabs.isVisible = false
 			return
 		}
-		val adapter = ArrayAdapter(
-			requireContext(),
-			android.R.layout.simple_spinner_item,
-			entries.map { getString(it.scrobblerService.titleResId) },
-		)
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-		binding.spinnerScrobblers.adapter = adapter
-		viewModel.selectedScrobblerIndex.observe(viewLifecycleOwner) {
-			binding.spinnerScrobblers.setSelection(it)
+		val selectedId = arguments?.getInt(ARG_SCROBBLER, -1) ?: -1
+		tabs.removeAllTabs()
+		tabs.clearOnTabSelectedListeners()
+		tabs.addOnTabSelectedListener(this)
+		for (entry in entries) {
+			val tab = tabs.newTab()
+			tab.tag = entry.scrobblerService
+			tab.setIcon(entry.scrobblerService.iconResId)
+			tab.setText(entry.scrobblerService.titleResId)
+			tabs.addTab(tab)
+			if (entry.scrobblerService.id == selectedId) {
+				tab.select()
+			}
 		}
-		binding.spinnerScrobblers.onItemSelectedListener = this
+		tabs.isVisible = true
 	}
 
 	companion object {
 
 		private const val TAG = "ScrobblingSelectorBottomSheet"
+		private const val ARG_SCROBBLER = "scrobbler"
 
-		fun show(fm: FragmentManager, manga: Manga) =
-			ScrobblingSelectorBottomSheet().withArgs(1) {
+		fun show(fm: FragmentManager, manga: Manga, scrobblerService: ScrobblerService?) =
+			ScrobblingSelectorBottomSheet().withArgs(2) {
 				putParcelable(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = false))
+				if (scrobblerService != null) {
+					putInt(ARG_SCROBBLER, scrobblerService.id)
+				}
 			}.show(fm, TAG)
 	}
 }

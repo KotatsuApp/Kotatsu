@@ -256,29 +256,24 @@ class DetailsViewModel @AssistedInject constructor(
 		}
 	}
 
-	fun updateScrobbling(rating: Float, status: ScrobblingStatus?) {
-		for (info in scrobblingInfo.value ?: return) {
-			val scrobbler = scrobblers.first { it.scrobblerService == info.scrobbler }
-			if (!scrobbler.isAvailable) continue
-			launchJob(Dispatchers.Default) {
-				scrobbler.updateScrobblingInfo(
-					mangaId = delegate.mangaId,
-					rating = rating,
-					status = status,
-					comment = null,
-				)
-			}
+	fun updateScrobbling(index: Int, rating: Float, status: ScrobblingStatus?) {
+		val scrobbler = getScrobbler(index) ?: return
+		launchJob(Dispatchers.Default) {
+			scrobbler.updateScrobblingInfo(
+				mangaId = delegate.mangaId,
+				rating = rating,
+				status = status,
+				comment = null,
+			)
 		}
 	}
 
-	fun unregisterScrobbling() {
-		for (scrobbler in scrobblers) {
-			if (!scrobbler.isAvailable) continue
-			launchJob(Dispatchers.Default) {
-				scrobbler.unregisterScrobbling(
-					mangaId = delegate.mangaId,
-				)
-			}
+	fun unregisterScrobbling(index: Int) {
+		val scrobbler = getScrobbler(index) ?: return
+		launchJob(Dispatchers.Default) {
+			scrobbler.unregisterScrobbling(
+				mangaId = delegate.mangaId,
+			)
 		}
 	}
 
@@ -313,6 +308,19 @@ class DetailsViewModel @AssistedInject constructor(
 			spannable.removeSpan(span)
 		}
 		return spannable.trim()
+	}
+
+	private fun getScrobbler(index: Int): Scrobbler? {
+		val info = scrobblingInfo.value?.getOrNull(index)
+		val scrobbler = if (info != null) {
+			scrobblers.find { it.scrobblerService == info.scrobbler && it.isAvailable }
+		} else {
+			null
+		}
+		if (scrobbler == null) {
+			errorEvent.call(IllegalStateException("Scrobbler [$index] is not available"))
+		}
+		return scrobbler
 	}
 
 	@AssistedFactory

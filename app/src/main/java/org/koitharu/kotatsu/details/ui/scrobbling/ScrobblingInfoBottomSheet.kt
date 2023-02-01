@@ -15,9 +15,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import coil.ImageLoader
-import coil.request.ImageRequest
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.databinding.SheetScrobblingBinding
@@ -26,7 +24,12 @@ import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ScrobblingInfoBottomSheet :
@@ -41,6 +44,7 @@ class ScrobblingInfoBottomSheet :
 
 	@Inject
 	lateinit var coil: ImageLoader
+
 	private var menu: PopupMenu? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +82,7 @@ class ScrobblingInfoBottomSheet :
 
 	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 		viewModel.updateScrobbling(
+			index = scrobblerIndex,
 			rating = binding.ratingBar.rating / binding.ratingBar.numStars,
 			status = enumValues<ScrobblingStatus>().getOrNull(position),
 		)
@@ -88,6 +93,7 @@ class ScrobblingInfoBottomSheet :
 	override fun onRatingChanged(ratingBar: RatingBar, rating: Float, fromUser: Boolean) {
 		if (fromUser) {
 			viewModel.updateScrobbling(
+				index = scrobblerIndex,
 				rating = rating / ratingBar.numStars,
 				status = enumValues<ScrobblingStatus>().getOrNull(binding.spinnerStatus.selectedItemPosition),
 			)
@@ -115,15 +121,15 @@ class ScrobblingInfoBottomSheet :
 		binding.ratingBar.rating = scrobbling.rating * binding.ratingBar.numStars
 		binding.textViewDescription.text = scrobbling.description
 		binding.spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
-		ImageRequest.Builder(context ?: return)
-			.target(binding.imageViewCover)
-			.data(scrobbling.coverUrl)
-			.crossfade(context)
-			.lifecycle(viewLifecycleOwner)
-			.placeholder(R.drawable.ic_placeholder)
-			.fallback(R.drawable.ic_placeholder)
-			.error(R.drawable.ic_error_placeholder)
-			.enqueueWith(coil)
+		binding.imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
+		binding.imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
+		binding.imageViewCover.newImageRequest(scrobbling.coverUrl)?.apply {
+			lifecycle(viewLifecycleOwner)
+			placeholder(R.drawable.ic_placeholder)
+			fallback(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
+			enqueueWith(coil)
+		}
 	}
 
 	override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -135,13 +141,16 @@ class ScrobblingInfoBottomSheet :
 					Intent.createChooser(intent, getString(R.string.open_in_browser)),
 				)
 			}
+
 			R.id.action_unregister -> {
-				viewModel.unregisterScrobbling()
+				viewModel.unregisterScrobbling(scrobblerIndex)
 				dismiss()
 			}
+
 			R.id.action_edit -> {
 				val manga = viewModel.manga.value ?: return false
-				ScrobblingSelectorBottomSheet.show(parentFragmentManager, manga)
+				val scrobblerService = viewModel.scrobblingInfo.value?.getOrNull(scrobblerIndex)?.scrobbler
+				ScrobblingSelectorBottomSheet.show(parentFragmentManager, manga, scrobblerService)
 				dismiss()
 			}
 		}

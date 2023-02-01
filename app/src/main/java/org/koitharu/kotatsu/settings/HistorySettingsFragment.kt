@@ -217,7 +217,8 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			viewLifecycleScope.launch {
 				pref.summary = withContext(Dispatchers.Default) {
 					runCatching {
-						repository.loadUser().nickname
+						val user = repository.loadUser()
+						getString(R.string.logged_in_as, user.nickname)
 					}.getOrElse {
 						it.printStackTraceDebug()
 						it.getDisplayMessage(resources)
