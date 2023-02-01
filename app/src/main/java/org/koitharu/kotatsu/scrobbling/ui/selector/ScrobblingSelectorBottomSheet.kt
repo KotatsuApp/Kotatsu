@@ -3,7 +3,11 @@ package org.koitharu.kotatsu.scrobbling.ui.selector
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.*
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -12,7 +16,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
@@ -28,6 +31,7 @@ import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.requireParcelable
 import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ScrobblingSelectorBottomSheet :
@@ -120,7 +124,7 @@ class ScrobblingSelectorBottomSheet :
 			return false
 		}
 		viewModel.search(query)
-		binding.headerBar.toolbar.menu.findItem(R.id.action_search)?.collapseActionView()
+		binding.headerBar.menu.findItem(R.id.action_search)?.collapseActionView()
 		return true
 	}
 
@@ -128,7 +132,7 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			val menuItem = binding.headerBar.toolbar.menu.findItem(R.id.action_search) ?: return false
+			val menuItem = binding.headerBar.menu.findItem(R.id.action_search) ?: return false
 			if (menuItem.isActionViewExpanded) {
 				if (event?.action == KeyEvent.ACTION_UP) {
 					menuItem.collapseActionView()
@@ -153,8 +157,8 @@ class ScrobblingSelectorBottomSheet :
 	}
 
 	private fun initOptionsMenu() {
-		binding.headerBar.toolbar.inflateMenu(R.menu.opt_shiki_selector)
-		val searchMenuItem = binding.headerBar.toolbar.menu.findItem(R.id.action_search)
+		binding.headerBar.inflateMenu(R.menu.opt_shiki_selector)
+		val searchMenuItem = binding.headerBar.menu.findItem(R.id.action_search)
 		searchMenuItem.setOnActionExpandListener(this)
 		val searchView = searchMenuItem.actionView as SearchView
 		searchView.setOnQueryTextListener(this)
@@ -168,7 +172,11 @@ class ScrobblingSelectorBottomSheet :
 			binding.spinnerScrobblers.isVisible = false
 			return
 		}
-		val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, entries)
+		val adapter = ArrayAdapter(
+			requireContext(),
+			android.R.layout.simple_spinner_item,
+			entries.map { getString(it.scrobblerService.titleResId) },
+		)
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 		binding.spinnerScrobblers.adapter = adapter
 		viewModel.selectedScrobblerIndex.observe(viewLifecycleOwner) {

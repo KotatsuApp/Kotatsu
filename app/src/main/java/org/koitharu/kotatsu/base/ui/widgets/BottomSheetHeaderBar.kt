@@ -4,10 +4,12 @@ import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.annotation.AttrRes
+import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -15,16 +17,16 @@ import androidx.core.content.withStyledAttributes
 import androidx.core.view.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.material.R as materialR
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import java.util.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.LayoutSheetHeaderBinding
 import org.koitharu.kotatsu.utils.ext.getAnimationDuration
 import org.koitharu.kotatsu.utils.ext.getThemeDrawable
 import org.koitharu.kotatsu.utils.ext.parents
+import java.util.*
+import com.google.android.material.R as materialR
 
 private const val THROTTLE_DELAY = 200L
 
@@ -52,6 +54,9 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 	@Deprecated("")
 	val toolbar: MaterialToolbar
 		get() = binding.toolbar
+
+	val menu: Menu
+		get() = binding.toolbar.menu
 
 	var title: CharSequence?
 		get() = binding.toolbar.title
@@ -138,6 +143,10 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 
 	override fun invalidateMenu() {
 		binding.toolbar.invalidateMenu()
+	}
+
+	fun inflateMenu(@MenuRes resId: Int) {
+		binding.toolbar.inflateMenu(resId)
 	}
 
 	fun setNavigationOnClickListener(onClickListener: OnClickListener) {
@@ -258,6 +267,7 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 				}
 				lp
 			}
+
 			else -> Toolbar.LayoutParams(params)
 		}
 	}
