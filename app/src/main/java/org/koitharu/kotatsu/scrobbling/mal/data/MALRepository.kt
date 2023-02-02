@@ -25,8 +25,6 @@ private const val BASE_API_URL = "https://api.myanimelist.net/v2"
 private const val MANGA_PAGE_SIZE = 10
 private const val AVATAR_STUB = "https://cdn.myanimelist.net/images/questionmark_50.gif"
 
-// af16954886b040673378423f5d62cccd
-
 class MALRepository(
 	private val okHttp: OkHttpClient,
 	private val storage: ScrobblerStorage,
@@ -93,13 +91,16 @@ class MALRepository(
 		val response = okHttp.newCall(request).await().parseJson()
 		val data = response.getJSONArray("data")
 		val mangas = data.mapJSON { jsonToManga(it) }
-		return if (pageOffset != 0) mangas.drop(pageOffset) else mangas
+		return if (pageOffset != 0) mangas.drop(pageOffset) else mangas // TODO
 	}
 
 	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
-		val request = Request.Builder()
-			.get()
-			.url("${BASE_API_URL}/manga/$id")
+		val url = BASE_API_URL.toHttpUrl().newBuilder()
+			.addPathSegment("manga")
+			.addPathSegment(id.toString())
+			.addQueryParameter("fields", "synopsis")
+			.build()
+		val request = Request.Builder().url(url)
 		val response = okHttp.newCall(request.build()).await().parseJson()
 		return ScrobblerMangaInfo(response)
 	}
@@ -112,12 +113,14 @@ class MALRepository(
 			.addPathSegment("manga")
 			.addPathSegment(scrobblerMangaId.toString())
 			.addPathSegment("my_list_status")
+			.addQueryParameter("fields", "synopsis")
 			.build()
 		val request = Request.Builder()
 			.url(url)
 			.put(body.build())
 			.build()
 		val response = okHttp.newCall(request).await().parseJson()
+		saveRate(response, mangaId)
 	}
 
 	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
@@ -134,6 +137,7 @@ class MALRepository(
 			.put(body.build())
 			.build()
 		val response = okHttp.newCall(request).await().parseJson()
+		saveRate(response, mangaId)
 	}
 
 	override suspend fun updateRate(rateId: Int, mangaId: Long, rating: Float, status: String?, comment: String?) {
@@ -150,6 +154,21 @@ class MALRepository(
 			.put(body.build())
 			.build()
 		val response = okHttp.newCall(request).await().parseJson()
+		saveRate(response, mangaId)
+	}
+
+	private suspend fun saveRate(json: JSONObject, mangaId: Long) {
+		val entity = ScrobblingEntity(
+			scrobbler = ScrobblerService.MAL.id,
+			id = mangaId.toInt(),
+			mangaId = mangaId,
+			targetId = 2, // TODO
+			status = json.getString("status"),
+			chapter = json.getInt("num_chapters_read"),
+			comment = json.getString("comments"),
+			rating = json.getDouble("score").toFloat() / 10f,
+		)
+		db.scrobblingDao.upsert(entity)
 	}
 
 	override fun logout() {
@@ -169,10 +188,10 @@ class MALRepository(
 				name = node.getString("title"),
 				altName = null,
 				cover = node.getJSONObject("main_picture").getString("large"),
-				url = ""
+				url = "" // TODO
 			)
 		}
-		return ScrobblerManga(
+		return ScrobblerManga( // TODO
 			id = 1,
 			name = "",
 			altName = null,
@@ -185,7 +204,7 @@ class MALRepository(
 		id = json.getLong("id"),
 		name = json.getString("title"),
 		cover = json.getJSONObject("main_picture").getString("large"),
-		url = "",
+		url = "", // TODO
 		descriptionHtml = json.getString("synopsis"),
 	)
 

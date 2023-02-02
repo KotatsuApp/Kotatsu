@@ -33,7 +33,15 @@ class MALScrobbler @Inject constructor(
 		status: ScrobblingStatus?,
 		comment: String?,
 	) {
-		TODO()
+		val entity = db.scrobblingDao.find(scrobblerService.id, mangaId)
+		requireNotNull(entity) { "Scrobbling info for manga $mangaId not found" }
+		repository.updateRate(
+			rateId = entity.id,
+			mangaId = 2, // TODO
+			rating = rating * RATING_MAX,
+			status = statuses[status],
+			comment = comment,
+		)
 	}
 
 }
