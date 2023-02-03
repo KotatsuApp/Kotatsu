@@ -12,7 +12,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
@@ -46,7 +48,7 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 		hasNextPage,
 	) { list, isHasNextPage ->
 		when {
-			list.isEmpty() -> listOf()
+			list.isEmpty() -> listOf(emptyResultsHint())
 			isHasNextPage -> list + LoadingFooter
 			else -> list
 		}
@@ -124,6 +126,13 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 			}
 		}
 	}
+
+	private fun emptyResultsHint() = EmptyHint(
+		icon = R.drawable.ic_empty_history,
+		textPrimary = R.string.nothing_found,
+		textSecondary = R.string.text_search_holder_secondary,
+		actionStringRes = R.string.search,
+	)
 
 	@AssistedFactory
 	interface Factory {

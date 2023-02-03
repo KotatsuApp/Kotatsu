@@ -9,7 +9,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
@@ -18,12 +20,14 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
+import org.koitharu.kotatsu.scrobbling.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import javax.inject.Inject
 
@@ -82,9 +86,9 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 	override fun onResume() {
 		super.onResume()
-		bindShikimoriSummary()
-		bindMALSummary()
-		bindAniListSummary()
+		bindScrobblerSummary(AppSettings.KEY_SHIKIMORI, shikimoriRepository)
+		bindScrobblerSummary(AppSettings.KEY_ANILIST, aniListRepository)
+		bindScrobblerSummary(AppSettings.KEY_MAL, malRepository)
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -125,7 +129,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 			AppSettings.KEY_SHIKIMORI -> {
 				if (!shikimoriRepository.isAuthorized) {
-					launchShikimoriAuth()
+					launchScrobblerAuth(shikimoriRepository)
 					true
 				} else {
 					super.onPreferenceTreeClick(preference)
@@ -134,7 +138,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 			AppSettings.KEY_MAL -> {
 				if (!malRepository.isAuthorized) {
-					launchMALAuth()
+					launchScrobblerAuth(malRepository)
 					true
 				} else {
 					super.onPreferenceTreeClick(preference)
@@ -143,7 +147,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 			AppSettings.KEY_ANILIST -> {
 				if (!aniListRepository.isAuthorized) {
-					launchAniListAuth()
+					launchScrobblerAuth(aniListRepository)
 					true
 				} else {
 					super.onPreferenceTreeClick(preference)
@@ -213,54 +217,35 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			}.show()
 	}
 
-	private fun bindShikimoriSummary() {
-		findPreference<Preference>(AppSettings.KEY_SHIKIMORI)?.summary = if (shikimoriRepository.isAuthorized) {
-			getString(R.string.logged_in_as, shikimoriRepository.cachedUser?.nickname)
+	private fun bindScrobblerSummary(key: String, repository: ScrobblerRepository) {
+		val pref = findPreference<Preference>(key) ?: return
+		if (!repository.isAuthorized) {
+			pref.setSummary(R.string.disabled)
+			return
+		}
+		val username = repository.cachedUser?.nickname
+		if (username != null) {
+			pref.summary = getString(R.string.logged_in_as, username)
 		} else {
-			getString(R.string.disabled)
+			pref.setSummary(R.string.loading_)
+			viewLifecycleScope.launch {
+				pref.summary = withContext(Dispatchers.Default) {
+					runCatching {
+						val user = repository.loadUser()
+						getString(R.string.logged_in_as, user.nickname)
+					}.getOrElse {
+						it.printStackTraceDebug()
+						it.getDisplayMessage(resources)
+					}
+				}
+			}
 		}
 	}
 
-	private fun bindAniListSummary() {
-		findPreference<Preference>(AppSettings.KEY_ANILIST)?.summary = if (aniListRepository.isAuthorized) {
-			getString(R.string.logged_in_as, aniListRepository.cachedUser?.nickname)
-		} else {
-			getString(R.string.disabled)
-		}
-	}
-
-	private fun launchShikimoriAuth() {
+	private fun launchScrobblerAuth(repository: ScrobblerRepository) {
 		runCatching {
 			val intent = Intent(Intent.ACTION_VIEW)
-			intent.data = Uri.parse(shikimoriRepository.oauthUrl)
-			startActivity(intent)
-		}.onFailure {
-			Snackbar.make(listView, it.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
-		}
-	}
-
-	private fun bindMALSummary() {
-		findPreference<Preference>(AppSettings.KEY_MAL)?.summary = if (malRepository.isAuthorized) {
-			getString(R.string.logged_in_as, malRepository.cachedUser?.nickname)
-		} else {
-			getString(R.string.disabled)
-		}
-	}
-
-	private fun launchMALAuth() {
-		runCatching {
-			val intent = Intent(Intent.ACTION_VIEW)
-			intent.data = Uri.parse(malRepository.oauthUrl)
-			startActivity(intent)
-		}.onFailure {
-			Snackbar.make(listView, it.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
-		}
-	}
-
-	private fun launchAniListAuth() {
-		runCatching {
-			val intent = Intent(Intent.ACTION_VIEW)
-			intent.data = Uri.parse(aniListRepository.oauthUrl)
+			intent.data = Uri.parse(repository.oauthUrl)
 			startActivity(intent)
 		}.onFailure {
 			Snackbar.make(listView, it.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()

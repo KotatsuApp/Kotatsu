@@ -42,7 +42,7 @@ class DetailsMenuProvider(
 		menu.findItem(R.id.action_delete).isVisible = manga?.source == MangaSource.LOCAL
 		menu.findItem(R.id.action_browser).isVisible = manga?.source != MangaSource.LOCAL
 		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(activity)
-		menu.findItem(R.id.action_shiki_track).isVisible = viewModel.isScrobblingAvailable
+		menu.findItem(R.id.action_scrobbling).isVisible = viewModel.isScrobblingAvailable
 		menu.findItem(R.id.action_favourite).setIcon(
 			if (viewModel.favouriteCategories.value == true) R.drawable.ic_heart else R.drawable.ic_heart_outline,
 		)
@@ -60,11 +60,13 @@ class DetailsMenuProvider(
 					}
 				}
 			}
+
 			R.id.action_favourite -> {
 				viewModel.manga.value?.let {
 					FavouriteCategoriesBottomSheet.show(activity.supportFragmentManager, it)
 				}
 			}
+
 			R.id.action_delete -> {
 				val title = viewModel.manga.value?.title.orEmpty()
 				MaterialAlertDialogBuilder(activity)
@@ -76,6 +78,7 @@ class DetailsMenuProvider(
 					.setNegativeButton(android.R.string.cancel, null)
 					.show()
 			}
+
 			R.id.action_save -> {
 				viewModel.manga.value?.let {
 					val chaptersCount = it.chapters?.size ?: 0
@@ -87,21 +90,25 @@ class DetailsMenuProvider(
 					}
 				}
 			}
+
 			R.id.action_browser -> {
 				viewModel.manga.value?.let {
 					activity.startActivity(BrowserActivity.newIntent(activity, it.publicUrl, it.title))
 				}
 			}
+
 			R.id.action_related -> {
 				viewModel.manga.value?.let {
 					activity.startActivity(MultiSearchActivity.newIntent(activity, it.title))
 				}
 			}
-			R.id.action_shiki_track -> {
+
+			R.id.action_scrobbling -> {
 				viewModel.manga.value?.let {
-					ScrobblingSelectorBottomSheet.show(activity.supportFragmentManager, it)
+					ScrobblingSelectorBottomSheet.show(activity.supportFragmentManager, it, null)
 				}
 			}
+
 			R.id.action_shortcut -> {
 				viewModel.manga.value?.let {
 					activity.lifecycleScope.launch {
@@ -112,6 +119,7 @@ class DetailsMenuProvider(
 					}
 				}
 			}
+
 			else -> return false
 		}
 		return true

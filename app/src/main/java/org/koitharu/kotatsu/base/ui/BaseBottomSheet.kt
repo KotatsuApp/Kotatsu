@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
-import com.google.android.material.R as materialR
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.AppBottomSheetDialog
 import org.koitharu.kotatsu.utils.ext.displayCompat
+import com.google.android.material.R as materialR
 
 abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 
@@ -26,6 +26,9 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 
 	protected val behavior: BottomSheetBehavior<*>?
 		get() = (dialog as? BottomSheetDialog)?.behavior
+
+	val isExpanded: Boolean
+		get() = behavior?.state == BottomSheetBehavior.STATE_EXPANDED
 
 	final override fun onCreateView(
 		inflater: LayoutInflater,

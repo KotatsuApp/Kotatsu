@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:baselineAligned="false"
+	android:clipChildren="false"
+	android:clipToPadding="false"
+	android:gravity="center_vertical"
+	android:minHeight="?android:attr/listPreferredItemHeightSmall"
+	android:orientation="horizontal"
+	android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+	android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+	tools:ignore="PrivateResource">
+
+	<include layout="@layout/image_frame" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:layout_marginBottom="8dp"
+		android:clipChildren="false"
+		android:clipToPadding="false"
+		android:orientation="vertical">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:baselineAligned="true"
+			android:baselineAlignedChildIndex="0"
+			android:orientation="horizontal">
+
+			<TextView
+				android:id="@android:id/title"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:ellipsize="marquee"
+				android:labelFor="@id/seekbar"
+				android:singleLine="true"
+				android:textAppearance="?android:attr/textAppearanceListItem"
+				tools:ignore="LabelFor" />
+
+			<TextView
+				android:id="@android:id/summary"
+				style="@style/PreferenceSummaryTextStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:textAlignment="viewStart"
+				android:textColor="?android:attr/textColorSecondary" />
+
+		</LinearLayout>
+
+		<HorizontalScrollView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="2dp"
+			android:clipToPadding="false"
+			android:paddingStart="0dp"
+			android:paddingEnd="16dp"
+			android:scrollIndicators="start|end"
+			android:scrollbars="none"
+			tools:ignore="UnusedAttribute">
+
+			<LinearLayout
+				android:id="@+id/linear"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal" />
+
+		</HorizontalScrollView>
+	</LinearLayout>
+</LinearLayout>

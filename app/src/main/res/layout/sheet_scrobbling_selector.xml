@@ -24,11 +24,13 @@
 
 	</org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar>
 
-	<Spinner
-		android:id="@+id/spinner_scrobblers"
+	<com.google.android.material.tabs.TabLayout
+		android:id="@+id/tabs"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		tools:listitem="@android:layout/simple_spinner_item" />
+		android:visibility="gone"
+		app:tabGravity="start"
+		tools:visibility="visible" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView"
@@ -36,7 +38,6 @@
 		android:layout_height="wrap_content"
 		android:clipToPadding="false"
 		android:padding="@dimen/grid_spacing"
-		android:scrollbarStyle="outsideOverlay"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_manga_list" />

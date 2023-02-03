@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
@@ -51,12 +52,9 @@ abstract class BaseActivity<B : ViewBinding> :
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		EntryPointAccessors.fromApplication(this, BaseActivityEntryPoint::class.java).inject(this)
-		val isAmoled = settings.isAmoledTheme
-		val isDynamic = settings.isDynamicTheme
-		when {
-			isAmoled && isDynamic -> setTheme(R.style.Theme_Kotatsu_Monet_Amoled)
-			isAmoled -> setTheme(R.style.Theme_Kotatsu_Amoled)
-			isDynamic -> setTheme(R.style.Theme_Kotatsu_Monet)
+		setTheme(settings.colorScheme.styleResId)
+		if (settings.isAmoledTheme) {
+			setTheme(R.style.ThemeOverlay_Kotatsu_Amoled)
 		}
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -89,9 +87,8 @@ abstract class BaseActivity<B : ViewBinding> :
 	} else super.onOptionsItemSelected(item)
 
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_UP) { // TODO remove
-			// ActivityCompat.recreate(this)
-			TODO("Test error")
+		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+			ActivityCompat.recreate(this)
 			return true
 		}
 		return super.onKeyDown(keyCode, event)

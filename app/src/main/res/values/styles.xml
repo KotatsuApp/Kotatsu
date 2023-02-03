@@ -255,6 +255,11 @@
 		<item name="android:widgetLayout">@layout/preference_widget_material_switch</item>
 	</style>
 
+	<style name="Preference.ThemeChooser" parent="Preference.Material">
+		<item name="android:layout">@layout/preference_theme</item>
+		<item name="android:selectable">false</item>
+	</style>
+
 	<!-- Progress drawable -->
 
 	<style name="ProgressDrawable">

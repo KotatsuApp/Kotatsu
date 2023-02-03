@@ -32,7 +32,7 @@
 		app:showAsAction="never" />
 
 	<item
-		android:id="@+id/action_shiki_track"
+		android:id="@+id/action_scrobbling"
 		android:orderInCategory="50"
 		android:title="@string/tracking"
 		app:showAsAction="never" />

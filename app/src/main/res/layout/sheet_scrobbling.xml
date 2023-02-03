@@ -8,7 +8,8 @@
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:paddingBottom="16dp">
 
 		<com.google.android.material.bottomsheet.BottomSheetDragHandleView
 			android:id="@+id/dragHandle"
@@ -34,6 +35,17 @@
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 			tools:background="@sample/covers[9]"
 			tools:ignore="ContentDescription,UnusedAttribute" />
+
+		<ImageView
+			android:id="@+id/imageView_logo"
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:layout_margin="@dimen/card_indicator_offset"
+			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
+			app:layout_constraintEnd_toEndOf="@id/imageView_cover"
+			app:tint="?colorControlLight"
+			tools:ignore="ContentDescription"
+			tools:src="@drawable/ic_shikimori" />
 
 		<TextView
 			android:id="@+id/textView_title"
@@ -103,7 +115,6 @@
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="12dp"
 			android:layout_marginEnd="16dp"
-			android:layout_marginBottom="16dp"
 			android:lineSpacingMultiplier="1.2"
 			android:textAppearance="?attr/textAppearanceBodyMedium"
 			android:textIsSelectable="true"

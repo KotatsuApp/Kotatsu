@@ -4,23 +4,27 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
+import org.koitharu.kotatsu.list.ui.adapter.emptyHintAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
+import kotlin.jvm.internal.Intrinsics
 
 class ScrobblerSelectorAdapter(
 	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
 	clickListener: OnListItemClickListener<ScrobblerManga>,
+	stateHolderListener: ListStateHolderListener,
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
 	init {
 		delegatesManager.addDelegate(loadingStateAD())
-			.addDelegate(scrobblerMangaAD(lifecycleOwner, coil, clickListener))
+			.addDelegate(scrobblingMangaAD(lifecycleOwner, coil, clickListener))
 			.addDelegate(loadingFooterAD())
+			.addDelegate(emptyHintAD(stateHolderListener))
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {

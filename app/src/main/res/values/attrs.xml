@@ -4,6 +4,7 @@
 	<attr name="sliderPreferenceStyle" />
 	<attr name="multiAutoCompleteTextViewPreferenceStyle" />
 	<attr name="autoCompleteTextViewPreferenceStyle" />
+	<attr name="themeChooserPreferenceStyle" />
 	<attr name="listItemTextViewStyle" />
 	<attr name="fastScrollerStyle" />
 
@@ -73,6 +74,16 @@
 		<attr name="title" />
 		<attr name="menu" />
 		<attr name="fitStatusBar" format="boolean" />
+	</declare-styleable>
+
+	<declare-styleable name="ShapeView">
+		<attr name="strokeWidth" />
+		<attr name="strokeColor" />
+		<attr name="cornerSize" />
+		<attr name="cornerSizeTopLeft" />
+		<attr name="cornerSizeTopRight" />
+		<attr name="cornerSizeBottomLeft" />
+		<attr name="cornerSizeBottomRight" />
 	</declare-styleable>
 
 </resources>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:background="?selectableItemBackground"
+	android:orientation="vertical"
+	android:padding="6dp"
+	tools:theme="@style/Theme.Kotatsu.Mint">
+
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card"
+		style="?materialCardViewFilledStyle"
+		android:layout_width="@dimen/widget_cover_width"
+		android:layout_height="@dimen/widget_cover_height"
+		android:focusableInTouchMode="false">
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:padding="6dp">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:text="Abc"
+				android:textSize="12sp"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				tools:ignore="HardcodedText" />
+
+			<org.koitharu.kotatsu.base.ui.widgets.ShapeView
+				android:id="@+id/shape_1"
+				android:layout_width="0dp"
+				android:layout_height="6dp"
+				android:layout_marginBottom="6dp"
+				android:background="?colorSecondary"
+				app:cornerSize="4dp"
+				app:layout_constraintBottom_toTopOf="@id/shape_2"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintWidth_percent="0.4" />
+
+			<org.koitharu.kotatsu.base.ui.widgets.ShapeView
+				android:id="@+id/shape_2"
+				android:layout_width="0dp"
+				android:layout_height="6dp"
+				android:background="?colorSecondary"
+				app:cornerSize="4dp"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintVertical_bias="0.65"
+				app:layout_constraintWidth_percent="0.7" />
+
+			<org.koitharu.kotatsu.base.ui.widgets.ShapeView
+				android:layout_width="16dp"
+				android:layout_height="16dp"
+				android:background="?colorPrimary"
+				app:cornerSize="6dp"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+		<ImageView
+			android:id="@+id/imageView_check"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top|end"
+			android:layout_margin="6dp"
+			android:visibility="gone"
+			app:srcCompat="@drawable/ic_mtrl_checked_circle"
+			app:tint="?colorPrimary"
+			tools:visibility="visible" />
+
+	</com.google.android.material.card.MaterialCardView>
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:elegantTextHeight="false"
+		android:ellipsize="end"
+		android:paddingTop="4dp"
+		android:singleLine="true"
+		android:textAppearance="?attr/textAppearanceBodySmall"
+		android:textColor="?android:attr/textColorPrimary"
+		tools:text="@string/theme_name_mint" />
+</LinearLayout>
