@@ -87,11 +87,9 @@
 	<!-- Monet theme only support S+ -->
 	<style name="Theme.Kotatsu.Monet" />
 
-	<style name="Theme.Kotatsu.Amoled" />
-
-	<style name="Theme.Kotatsu.Monet.Amoled" />
-
 	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Light" />
+
+	<style name="ThemeOverlay.Kotatsu.Amoled" parent="" />
 
 	<style name="Theme.Kotatsu.Dialog" parent="">
 		<item name="android:windowNoTitle">true</item>

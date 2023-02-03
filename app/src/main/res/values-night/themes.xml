@@ -3,12 +3,7 @@
 
 	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Dark" />
 
-	<style name="Theme.Kotatsu.Amoled">
-		<item name="colorSurface">@color/surface_amoled</item>
-		<item name="android:colorBackground">@color/background_amoled</item>
-	</style>
-
-	<style name="Theme.Kotatsu.Monet.Amoled">
+	<style name="ThemeOverlay.Kotatsu.Amoled" parent="">
 		<item name="colorSurface">@color/surface_amoled</item>
 		<item name="android:colorBackground">@color/background_amoled</item>
 	</style>

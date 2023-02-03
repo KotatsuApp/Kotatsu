@@ -9,7 +9,6 @@ import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
-import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
@@ -70,8 +69,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val theme: Int
 		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
-	val isDynamicTheme: Boolean
-		get() = DynamicColors.isDynamicColorAvailable() && prefs.getBoolean(KEY_DYNAMIC_THEME, false)
+	val colorScheme: ColorScheme
+		get() = prefs.getEnumValue(KEY_COLOR_THEME, ColorScheme.default)
 
 	val isAmoledTheme: Boolean
 		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
@@ -312,7 +311,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 		const val KEY_LIST_MODE = "list_mode_2"
 		const val KEY_THEME = "theme"
-		const val KEY_DYNAMIC_THEME = "dynamic_theme"
+		const val KEY_COLOR_THEME = "color_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
 		const val KEY_DATE_FORMAT = "date_format"
 		const val KEY_SOURCES_ORDER = "sources_order_2"

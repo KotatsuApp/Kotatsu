@@ -14,7 +14,6 @@ import androidx.core.view.postDelayed
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
-import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
@@ -56,7 +55,6 @@ class AppearanceSettingsFragment :
 			entryValues = ListMode.values().names()
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
-		findPreference<Preference>(AppSettings.KEY_DYNAMIC_THEME)?.isVisible = DynamicColors.isDynamicColorAvailable()
 		findPreference<ListPreference>(AppSettings.KEY_DATE_FORMAT)?.run {
 			entryValues = resources.getStringArray(R.array.date_formats)
 			val now = Date().time
@@ -105,10 +103,7 @@ class AppearanceSettingsFragment :
 				AppCompatDelegate.setDefaultNightMode(settings.theme)
 			}
 
-			AppSettings.KEY_DYNAMIC_THEME -> {
-				postRestart()
-			}
-
+			AppSettings.KEY_COLOR_THEME,
 			AppSettings.KEY_THEME_AMOLED -> {
 				postRestart()
 			}

@@ -11,12 +11,10 @@
 		android:title="@string/theme"
 		app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="dynamic_theme"
-		android:summary="@string/dynamic_theme_summary"
-		android:title="@string/dynamic_theme"
-		app:isPreferenceVisible="false" />
+	<org.koitharu.kotatsu.settings.utils.ThemeChooserPreference
+		android:key="color_theme"
+		android:title="@string/color_theme"
+		app:isPreferenceVisible="@bool/is_color_themes_available" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
@@ -26,7 +24,8 @@
 
 	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
 		android:key="app_locale"
-		android:title="@string/language" />
+		android:title="@string/language"
+		app:allowDividerAbove="true" />
 
 	<ListPreference
 		android:key="date_format"
@@ -36,7 +35,6 @@
 		android:entries="@array/list_modes"
 		android:key="list_mode_2"
 		android:title="@string/list_mode"
-		app:allowDividerAbove="true"
 		app:useSimpleSummaryProvider="true" />
 
 	<org.koitharu.kotatsu.settings.utils.SliderPreference
