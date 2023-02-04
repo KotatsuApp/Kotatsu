@@ -11,18 +11,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
+import org.koitharu.kotatsu.scrobbling.ui.selector.model.ScrobblerHint
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.requireValue
 
 class ScrobblingSelectorViewModel @AssistedInject constructor(
@@ -34,8 +35,9 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 
 	val selectedScrobblerIndex = MutableLiveData(0)
 
-	private val scrobblerMangaList = MutableStateFlow<List<ScrobblerManga>?>(null)
-	private val hasNextPage = MutableStateFlow(false)
+	private val scrobblerMangaList = MutableStateFlow<List<ScrobblerManga>>(emptyList())
+	private val hasNextPage = MutableStateFlow(true)
+	private val listError = MutableStateFlow<Throwable?>(null)
 	private var loadingJob: Job? = null
 	private var doneJob: Job? = null
 	private var initJob: Job? = null
@@ -44,13 +46,24 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 		get() = availableScrobblers[selectedScrobblerIndex.requireValue()]
 
 	val content: LiveData<List<ListModel>> = combine(
-		scrobblerMangaList.filterNotNull(),
+		scrobblerMangaList,
+		listError,
 		hasNextPage,
-	) { list, isHasNextPage ->
-		when {
-			list.isEmpty() -> listOf(emptyResultsHint())
-			isHasNextPage -> list + LoadingFooter
-			else -> list
+	) { list, error, isHasNextPage ->
+		if (list.isNotEmpty()) {
+			if (isHasNextPage) {
+				list + LoadingFooter
+			} else {
+				list
+			}
+		} else {
+			listOf(
+				when {
+					error != null -> errorHint(error)
+					isHasNextPage -> LoadingFooter
+					else -> emptyResultsHint()
+				},
+			)
 		}
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
@@ -59,7 +72,7 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 	val onClose = SingleLiveEvent<Unit>()
 
 	val isEmpty: Boolean
-		get() = scrobblerMangaList.value.isNullOrEmpty()
+		get() = scrobblerMangaList.value.isEmpty()
 
 	init {
 		initialize()
@@ -71,22 +84,39 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 		loadList(append = false)
 	}
 
-	fun loadList(append: Boolean) {
+	fun loadNextPage() {
+		if (scrobblerMangaList.value.isNotEmpty() && hasNextPage.value) {
+			loadList(append = true)
+		}
+	}
+
+	fun retry() {
+		loadingJob?.cancel()
+		hasNextPage.value = true
+		scrobblerMangaList.value = emptyList()
+		loadList(append = false)
+	}
+
+	private fun loadList(append: Boolean) {
 		if (loadingJob?.isActive == true) {
 			return
 		}
-		if (append && !hasNextPage.value) {
-			return
-		}
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			val offset = if (append) scrobblerMangaList.value?.size ?: 0 else 0
-			val list = currentScrobbler.findManga(checkNotNull(searchQuery.value), offset)
-			if (!append) {
-				scrobblerMangaList.value = list
-			} else if (list.isNotEmpty()) {
-				scrobblerMangaList.value = scrobblerMangaList.value?.plus(list) ?: list
+			listError.value = null
+			val offset = if (append) scrobblerMangaList.value.size else 0
+			runCatchingCancellable {
+				currentScrobbler.findManga(checkNotNull(searchQuery.value), offset)
+			}.onSuccess { list ->
+				if (!append) {
+					scrobblerMangaList.value = list
+				} else if (list.isNotEmpty()) {
+					scrobblerMangaList.value = scrobblerMangaList.value + list
+				}
+				hasNextPage.value = list.isNotEmpty()
+			}.onFailure { error ->
+				error.printStackTraceDebug()
+				listError.value = error
 			}
-			hasNextPage.value = list.isNotEmpty()
 		}
 	}
 
@@ -113,8 +143,8 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 	private fun initialize() {
 		initJob?.cancel()
 		loadingJob?.cancel()
-		hasNextPage.value = false
-		scrobblerMangaList.value = null
+		hasNextPage.value = true
+		scrobblerMangaList.value = emptyList()
 		initJob = launchJob(Dispatchers.Default) {
 			try {
 				val info = currentScrobbler.getScrobblingInfoOrNull(manga.id)
@@ -127,11 +157,20 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 		}
 	}
 
-	private fun emptyResultsHint() = EmptyHint(
+	private fun emptyResultsHint() = ScrobblerHint(
 		icon = R.drawable.ic_empty_history,
 		textPrimary = R.string.nothing_found,
 		textSecondary = R.string.text_search_holder_secondary,
+		error = null,
 		actionStringRes = R.string.search,
+	)
+
+	private fun errorHint(e: Throwable) = ScrobblerHint(
+		icon = R.drawable.ic_error_large,
+		textPrimary = R.string.error_occurred,
+		error = e,
+		textSecondary = 0,
+		actionStringRes = R.string.try_again,
 	)
 
 	@AssistedFactory
