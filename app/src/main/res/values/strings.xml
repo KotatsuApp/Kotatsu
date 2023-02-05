@@ -412,4 +412,5 @@
 	<string name="theme_name_dynamic">Dynamic</string>
 	<string name="color_theme">Color scheme</string>
 	<string name="theme_name_october">October</string>
+	<string name="show_in_grid_view">Show in grid view</string>
 </resources>

@@ -12,6 +12,7 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 /.idea/kotlinScripting.xml
+/.idea/kotlinc.xml
 /.idea/deploymentTargetDropDown.xml
 /.idea/androidTestResultsUserPreferences.xml
 /.idea/render.experimental.xml

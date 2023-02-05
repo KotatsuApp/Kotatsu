@@ -91,6 +91,12 @@ class ScrobblingSelectorBottomSheet :
 		viewModel.onClose.observe(viewLifecycleOwner) {
 			dismiss()
 		}
+		viewModel.selectedScrobblerIndex.observe(viewLifecycleOwner) { index ->
+			val tab = binding.tabs.getTabAt(index)
+			if (tab != null && !tab.isSelected) {
+				tab.select()
+			}
+		}
 		viewModel.searchQuery.observe(viewLifecycleOwner) {
 			binding.headerBar.subtitle = it
 		}
@@ -106,14 +112,16 @@ class ScrobblingSelectorBottomSheet :
 		viewModel.selectedItemId.value = item.id
 	}
 
-	override fun onRetryClick(error: Throwable) = Unit
+	override fun onRetryClick(error: Throwable) {
+		viewModel.retry()
+	}
 
 	override fun onEmptyActionClick() {
 		openSearch()
 	}
 
 	override fun onScrolledToEnd() {
-		viewModel.loadList(append = true)
+		viewModel.loadNextPage()
 	}
 
 	override fun onMenuItemActionExpand(item: MenuItem): Boolean {

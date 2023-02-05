@@ -9,10 +9,16 @@
 		android:key="remote_sources"
 		android:title="@string/remote_sources" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="sources_grid"
+		android:title="@string/show_in_grid_view" />
+
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.SuggestionsSettingsFragment"
 		android:key="suggestions"
-		android:title="@string/suggestions" />
+		android:title="@string/suggestions"
+		app:allowDividerAbove="true" />
 
 	<ListPreference
 		android:entries="@array/doh_providers"

@@ -12,7 +12,8 @@ import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.databinding.ItemEmptyCardBinding
 import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
-import org.koitharu.kotatsu.databinding.ItemExploreSourceBinding
+import org.koitharu.kotatsu.databinding.ItemExploreSourceGridBinding
+import org.koitharu.kotatsu.databinding.ItemExploreSourceListBinding
 import org.koitharu.kotatsu.databinding.ItemHeaderButtonBinding
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -25,7 +26,7 @@ import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 fun exploreButtonsAD(
 	clickListener: View.OnClickListener,
 ) = adapterDelegateViewBinding<ExploreItem.Buttons, ExploreItem, ItemExploreButtonsBinding>(
-	{ layoutInflater, parent -> ItemExploreButtonsBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemExploreButtonsBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	binding.buttonBookmarks.setOnClickListener(clickListener)
@@ -43,7 +44,7 @@ fun exploreButtonsAD(
 fun exploreSourcesHeaderAD(
 	listener: ExploreListEventListener,
 ) = adapterDelegateViewBinding<ExploreItem.Header, ExploreItem, ItemHeaderButtonBinding>(
-	{ layoutInflater, parent -> ItemHeaderButtonBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemHeaderButtonBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	val listenerAdapter = View.OnClickListener {
@@ -58,13 +59,44 @@ fun exploreSourcesHeaderAD(
 	}
 }
 
-fun exploreSourceItemAD(
+fun exploreSourceListItemAD(
 	coil: ImageLoader,
 	listener: OnListItemClickListener<ExploreItem.Source>,
 	lifecycleOwner: LifecycleOwner,
-) = adapterDelegateViewBinding<ExploreItem.Source, ExploreItem, ItemExploreSourceBinding>(
-	{ layoutInflater, parent -> ItemExploreSourceBinding.inflate(layoutInflater, parent, false) },
-	on = { item, _, _ -> item is ExploreItem.Source }
+) = adapterDelegateViewBinding<ExploreItem.Source, ExploreItem, ItemExploreSourceListBinding>(
+	{ layoutInflater, parent -> ItemExploreSourceListBinding.inflate(layoutInflater, parent, false) },
+	on = { item, _, _ -> item is ExploreItem.Source && !item.isGrid },
+) {
+
+	val eventListener = AdapterDelegateClickListenerAdapter(this, listener)
+
+	binding.root.setOnClickListener(eventListener)
+	binding.root.setOnLongClickListener(eventListener)
+
+	bind {
+		binding.textViewTitle.text = item.source.title
+		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		binding.imageViewIcon.newImageRequest(item.source.faviconUri())?.run {
+			fallback(fallbackIcon)
+			placeholder(fallbackIcon)
+			error(fallbackIcon)
+			lifecycle(lifecycleOwner)
+			enqueueWith(coil)
+		}
+	}
+
+	onViewRecycled {
+		binding.imageViewIcon.disposeImageRequest()
+	}
+}
+
+fun exploreSourceGridItemAD(
+	coil: ImageLoader,
+	listener: OnListItemClickListener<ExploreItem.Source>,
+	lifecycleOwner: LifecycleOwner,
+) = adapterDelegateViewBinding<ExploreItem.Source, ExploreItem, ItemExploreSourceGridBinding>(
+	{ layoutInflater, parent -> ItemExploreSourceGridBinding.inflate(layoutInflater, parent, false) },
+	on = { item, _, _ -> item is ExploreItem.Source && item.isGrid },
 ) {
 
 	val eventListener = AdapterDelegateClickListenerAdapter(this, listener)
@@ -92,7 +124,7 @@ fun exploreSourceItemAD(
 fun exploreEmptyHintListAD(
 	listener: ListStateHolderListener,
 ) = adapterDelegateViewBinding<ExploreItem.EmptyHint, ExploreItem, ItemEmptyCardBinding>(
-	{ inflater, parent -> ItemEmptyCardBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemEmptyCardBinding.inflate(inflater, parent, false) },
 ) {
 
 	binding.buttonRetry.setOnClickListener { listener.onEmptyActionClick() }

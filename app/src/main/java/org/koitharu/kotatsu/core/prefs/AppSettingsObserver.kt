@@ -1,8 +1,13 @@
 package org.koitharu.kotatsu.core.prefs
 
 import androidx.lifecycle.liveData
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transform
+import kotlin.coroutines.CoroutineContext
 
 fun <T> AppSettings.observeAsFlow(key: String, valueProducer: AppSettings.() -> T) = flow {
 	var lastValue: T = valueProducer()
@@ -33,3 +38,13 @@ fun <T> AppSettings.observeAsLiveData(
 		}
 	}
 }
+
+fun <T> AppSettings.observeAsStateFlow(
+	key: String,
+	scope: CoroutineScope,
+	valueProducer: AppSettings.() -> T,
+): StateFlow<T> = observe().transform {
+	if (it == key) {
+		emit(valueProducer())
+	}
+}.stateIn(scope, SharingStarted.Eagerly, valueProducer())
