@@ -42,7 +42,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 			cacheMode = WebSettings.LOAD_DEFAULT
 			domStorageEnabled = true
 			databaseEnabled = true
-			userAgentString = UserAgentInterceptor.userAgent
+			userAgentString = UserAgentInterceptor.userAgentChrome
 		}
 		binding.webView.webViewClient = CloudFlareClient(cookieJar, this, url.orEmpty())
 		CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webView, true)
