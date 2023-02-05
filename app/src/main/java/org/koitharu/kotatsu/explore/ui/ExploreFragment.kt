@@ -9,6 +9,8 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
@@ -19,6 +21,7 @@ import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
+import org.koitharu.kotatsu.base.ui.util.SpanSizeResolver
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -63,6 +66,7 @@ class ExploreFragment :
 		with(binding.recyclerView) {
 			adapter = exploreAdapter
 			setHasFixedSize(true)
+			SpanSizeResolver(this, resources.getDimensionPixelSize(R.dimen.explore_grid_width)).attach()
 			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 			paddingHorizontal = spacing
 		}
@@ -72,6 +76,7 @@ class ExploreFragment :
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 		viewModel.onOpenManga.observe(viewLifecycleOwner, ::onOpenManga)
 		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
+		viewModel.isGrid.observe(viewLifecycleOwner, ::onGridModeChanged)
 	}
 
 	override fun onDestroyView() {
@@ -147,6 +152,16 @@ class ExploreFragment :
 		}
 		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
 		snackbar.show()
+	}
+
+	private fun onGridModeChanged(isGrid: Boolean) {
+		binding.recyclerView.layoutManager = if (isGrid) {
+			GridLayoutManager(requireContext(), 4).also { lm ->
+				lm.spanSizeLookup = ExploreGridSpanSizeLookup(checkNotNull(exploreAdapter), lm)
+			}
+		} else {
+			LinearLayoutManager(requireContext())
+		}
 	}
 
 	private inner class SourceMenuListener(

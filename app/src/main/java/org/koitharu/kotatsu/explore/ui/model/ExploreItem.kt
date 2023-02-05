@@ -54,6 +54,7 @@ sealed interface ExploreItem : ListModel {
 
 	class Source(
 		val source: MangaSource,
+		val isGrid: Boolean,
 	) : ExploreItem {
 
 		override fun equals(other: Any?): Boolean {
@@ -63,12 +64,15 @@ sealed interface ExploreItem : ListModel {
 			other as Source
 
 			if (source != other.source) return false
+			if (isGrid != other.isGrid) return false
 
 			return true
 		}
 
 		override fun hashCode(): Int {
-			return source.hashCode()
+			var result = source.hashCode()
+			result = 31 * result + isGrid.hashCode()
+			return result
 		}
 	}
 

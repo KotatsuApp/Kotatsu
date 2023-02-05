@@ -12,11 +12,13 @@ class ExploreDiffCallback : DiffUtil.ItemCallback<ExploreItem>() {
 			oldItem is ExploreItem.Loading && newItem is ExploreItem.Loading -> true
 			oldItem is ExploreItem.EmptyHint && newItem is ExploreItem.EmptyHint -> true
 			oldItem is ExploreItem.Source && newItem is ExploreItem.Source -> {
-				oldItem.source == newItem.source
+				oldItem.source == newItem.source && oldItem.isGrid == newItem.isGrid
 			}
+
 			oldItem is ExploreItem.Header && newItem is ExploreItem.Header -> {
 				oldItem.titleResId == newItem.titleResId
 			}
+
 			else -> false
 		}
 	}

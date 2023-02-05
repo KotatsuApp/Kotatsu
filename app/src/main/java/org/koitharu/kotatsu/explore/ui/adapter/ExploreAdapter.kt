@@ -11,11 +11,25 @@ class ExploreAdapter(
 	lifecycleOwner: LifecycleOwner,
 	listener: ExploreListEventListener,
 	clickListener: OnListItemClickListener<ExploreItem.Source>,
-) : AsyncListDifferDelegationAdapter<ExploreItem>(
-	ExploreDiffCallback(),
-	exploreButtonsAD(listener),
-	exploreSourcesHeaderAD(listener),
-	exploreSourceItemAD(coil, clickListener, lifecycleOwner),
-	exploreEmptyHintListAD(listener),
-	exploreLoadingAD(),
-)
+) : AsyncListDifferDelegationAdapter<ExploreItem>(ExploreDiffCallback()) {
+
+	init {
+		delegatesManager
+			.addDelegate(ITEM_TYPE_BUTTONS, exploreButtonsAD(listener))
+			.addDelegate(ITEM_TYPE_HEADER, exploreSourcesHeaderAD(listener))
+			.addDelegate(ITEM_TYPE_SOURCE_LIST, exploreSourceListItemAD(coil, clickListener, lifecycleOwner))
+			.addDelegate(ITEM_TYPE_SOURCE_GRID, exploreSourceGridItemAD(coil, clickListener, lifecycleOwner))
+			.addDelegate(ITEM_TYPE_HINT, exploreEmptyHintListAD(listener))
+			.addDelegate(ITEM_TYPE_LOADING, exploreLoadingAD())
+	}
+
+	companion object {
+
+		const val ITEM_TYPE_BUTTONS = 0
+		const val ITEM_TYPE_HEADER = 1
+		const val ITEM_TYPE_SOURCE_LIST = 2
+		const val ITEM_TYPE_SOURCE_GRID = 3
+		const val ITEM_TYPE_HINT = 4
+		const val ITEM_TYPE_LOADING = 5
+	}
+}

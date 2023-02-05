@@ -205,6 +205,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		sourcesOrder = (sourcesOrder + sources.map { it.name }).distinct()
 	}
 
+	var isSourcesGridMode: Boolean
+		get() = prefs.getBoolean(KEY_SOURCES_GRID, false)
+		set(value) = prefs.edit { putBoolean(KEY_SOURCES_GRID, value) }
+
 	val isPagesNumbersEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PAGES_NUMBERS, false)
 
@@ -376,6 +380,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_APP_LOCALE = "app_locale"
 		const val KEY_LOGGING_ENABLED = "logging"
 		const val KEY_LOGS_SHARE = "logs_share"
+		const val KEY_SOURCES_GRID = "sources_grid"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
