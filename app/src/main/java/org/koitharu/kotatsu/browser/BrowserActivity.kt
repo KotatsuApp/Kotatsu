@@ -31,7 +31,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		}
 		with(binding.webView.settings) {
 			javaScriptEnabled = true
-			userAgentString = UserAgentInterceptor.userAgent
+			userAgentString = UserAgentInterceptor.userAgentChrome
 		}
 		binding.webView.webViewClient = BrowserClient(this)
 		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)
