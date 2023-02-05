@@ -13,7 +13,7 @@ class UserAgentInterceptor : Interceptor {
 		return chain.proceed(
 			if (request.header(CommonHeaders.USER_AGENT) == null) {
 				request.newBuilder()
-					.addHeader(CommonHeaders.USER_AGENT, userAgent)
+					.addHeader(CommonHeaders.USER_AGENT, userAgentChrome)
 					.build()
 			} else request
 		)
@@ -29,7 +29,7 @@ class UserAgentInterceptor : Interceptor {
 				Build.BRAND,
 				Build.DEVICE,
 				Locale.getDefault().language
-			)
+			) // TODO Decide what to do with this afterwards
 
 		val userAgentChrome
 			get() = (
