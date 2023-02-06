@@ -26,7 +26,7 @@ fun bookmarkListAD(
 	binding.root.setOnLongClickListener(listener)
 
 	bind {
-		binding.imageViewThumb.newImageRequest(item.imageUrl)?.run {
+		binding.imageViewThumb.newImageRequest(item.imageUrl, item.manga.source)?.run {
 			referer(item.manga.publicUrl)
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)

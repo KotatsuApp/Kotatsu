@@ -76,7 +76,7 @@ fun exploreSourceListItemAD(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
-		binding.imageViewIcon.newImageRequest(item.source.faviconUri())?.run {
+		binding.imageViewIcon.newImageRequest(item.source.faviconUri(), item.source)?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)
 			error(fallbackIcon)

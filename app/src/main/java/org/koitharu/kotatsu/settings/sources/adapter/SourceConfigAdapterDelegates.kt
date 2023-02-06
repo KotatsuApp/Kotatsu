@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 
 fun sourceConfigHeaderDelegate() =
 	adapterDelegateViewBinding<SourceConfigItem.Header, SourceConfigItem, ItemFilterHeaderBinding>(
-		{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) }
+		{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) },
 	) {
 
 		bind {
@@ -31,7 +31,7 @@ fun sourceConfigHeaderDelegate() =
 fun sourceConfigGroupDelegate(
 	listener: SourceConfigListener,
 ) = adapterDelegateViewBinding<SourceConfigItem.LocaleGroup, SourceConfigItem, ItemExpandableBinding>(
-	{ layoutInflater, parent -> ItemExpandableBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemExpandableBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	binding.root.setOnClickListener {
@@ -50,7 +50,7 @@ fun sourceConfigItemDelegate(
 	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<SourceConfigItem.SourceItem, SourceConfigItem, ItemSourceConfigBinding>(
 	{ layoutInflater, parent -> ItemSourceConfigBinding.inflate(layoutInflater, parent, false) },
-	on = { item, _, _ -> item is SourceConfigItem.SourceItem && !item.isDraggable }
+	on = { item, _, _ -> item is SourceConfigItem.SourceItem && !item.isDraggable },
 ) {
 
 	binding.switchToggle.setOnCheckedChangeListener { _, isChecked ->
@@ -62,7 +62,7 @@ fun sourceConfigItemDelegate(
 		binding.switchToggle.isChecked = item.isEnabled
 		binding.textViewDescription.textAndVisible = item.summary
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
-		binding.imageViewIcon.newImageRequest(item.source.faviconUri())?.run {
+		binding.imageViewIcon.newImageRequest(item.source.faviconUri(), item.source)?.run {
 			crossfade(context)
 			error(fallbackIcon)
 			placeholder(fallbackIcon)
@@ -82,7 +82,7 @@ fun sourceConfigDraggableItemDelegate(
 	listener: SourceConfigListener,
 ) = adapterDelegateViewBinding<SourceConfigItem.SourceItem, SourceConfigItem, ItemSourceConfigDraggableBinding>(
 	{ layoutInflater, parent -> ItemSourceConfigDraggableBinding.inflate(layoutInflater, parent, false) },
-	on = { item, _, _ -> item is SourceConfigItem.SourceItem && item.isDraggable }
+	on = { item, _, _ -> item is SourceConfigItem.SourceItem && item.isDraggable },
 ) {
 
 	val eventListener = object :
@@ -117,5 +117,5 @@ fun sourceConfigDraggableItemDelegate(
 }
 
 fun sourceConfigEmptySearchDelegate() = adapterDelegate<SourceConfigItem.EmptySearchResult, SourceConfigItem>(
-	R.layout.item_sources_empty
+	R.layout.item_sources_empty,
 ) { }

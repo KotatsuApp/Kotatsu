@@ -53,7 +53,7 @@ class FaviconFetcher(
 			options.size.height.pxOrElse { FALLBACK_SIZE },
 		)
 		val icon = checkNotNull(favicons.find(sizePx)) { "No favicons found" }
-		val response = loadIcon(icon.url, favicons.referer)
+		val response = loadIcon(icon.url, repo.userAgent, favicons.referer)
 		val responseBody = response.requireBody()
 		val source = writeToDiskCache(responseBody)?.toImageSource() ?: responseBody.toImageSource()
 		return SourceResult(
@@ -63,11 +63,14 @@ class FaviconFetcher(
 		)
 	}
 
-	private suspend fun loadIcon(url: String, referer: String): Response {
+	private suspend fun loadIcon(url: String, userAgent: String?, referer: String): Response {
 		val request = Request.Builder()
 			.url(url)
 			.get()
 			.header(CommonHeaders.REFERER, referer)
+		if (userAgent != null) {
+			request.header(CommonHeaders.USER_AGENT, userAgent)
+		}
 		@Suppress("UNCHECKED_CAST")
 		options.tags.asMap().forEach { request.tag(it.key as Class<Any>, it.value) }
 		val response = okHttpClient.newCall(request.build()).await()

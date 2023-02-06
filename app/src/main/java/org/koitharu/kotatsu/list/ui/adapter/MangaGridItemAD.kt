@@ -39,7 +39,7 @@ fun mangaGridItemAD(
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
 		binding.progressView.setPercent(item.progress, MangaListAdapter.PAYLOAD_PROGRESS in payloads)
-		binding.imageViewCover.newImageRequest(item.coverUrl)?.run {
+		binding.imageViewCover.newImageRequest(item.coverUrl, item.source)?.run {
 			referer(item.manga.publicUrl)
 			size(CoverSizeResolver(binding.imageViewCover))
 			placeholder(R.drawable.ic_placeholder)

@@ -106,7 +106,7 @@ class ScrobblingInfoBottomSheet :
 			R.id.imageView_cover -> {
 				val coverUrl = viewModel.scrobblingInfo.value?.getOrNull(scrobblerIndex)?.coverUrl ?: return
 				val options = scaleUpActivityOptionsOf(v)
-				startActivity(ImageActivity.newIntent(v.context, coverUrl), options.toBundle())
+				startActivity(ImageActivity.newIntent(v.context, coverUrl, null), options.toBundle())
 			}
 		}
 	}
@@ -123,7 +123,7 @@ class ScrobblingInfoBottomSheet :
 		binding.spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
 		binding.imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
 		binding.imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
-		binding.imageViewCover.newImageRequest(scrobbling.coverUrl)?.apply {
+		binding.imageViewCover.newImageRequest(scrobbling.coverUrl, null)?.apply {
 			lifecycle(viewLifecycleOwner)
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)

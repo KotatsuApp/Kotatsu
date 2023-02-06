@@ -155,7 +155,11 @@ class TrackWorker @AssistedInject constructor(
 			setNumber(newChapters.size)
 			setLargeIcon(
 				coil.execute(
-					ImageRequest.Builder(applicationContext).data(manga.coverUrl).referer(manga.publicUrl).build(),
+					ImageRequest.Builder(applicationContext)
+						.data(manga.coverUrl)
+						.referer(manga.publicUrl)
+						.tag(manga.source)
+						.build(),
 				).toBitmapOrNull(),
 			)
 			setSmallIcon(R.drawable.ic_stat_book_plus)

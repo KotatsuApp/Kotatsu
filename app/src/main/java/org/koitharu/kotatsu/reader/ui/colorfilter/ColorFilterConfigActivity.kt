@@ -13,11 +13,9 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.ViewSizeResolver
-import com.google.android.material.R as materialR
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
@@ -27,7 +25,14 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.assistedViewModels
+import org.koitharu.kotatsu.utils.ext.decodeRegion
+import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
+import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.setValueRounded
+import javax.inject.Inject
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ColorFilterConfigActivity :
@@ -115,6 +120,7 @@ class ColorFilterConfigActivity :
 			.referer(preview.referer)
 			.scale(Scale.FILL)
 			.decodeRegion()
+			.tag(preview.source)
 			.error(R.drawable.ic_error_placeholder)
 			.size(ViewSizeResolver(binding.imageViewBefore))
 			.allowRgb565(false)

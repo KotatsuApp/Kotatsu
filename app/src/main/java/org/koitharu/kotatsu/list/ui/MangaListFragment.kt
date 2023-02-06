@@ -177,7 +177,7 @@ abstract class MangaListFragment :
 
 	private fun onError(e: Throwable) {
 		if (e is CloudFlareProtectedException) {
-			CloudFlareDialog.newInstance(e.url).show(childFragmentManager, CloudFlareDialog.TAG)
+			CloudFlareDialog.newInstance(e.url, e.headers).show(childFragmentManager, CloudFlareDialog.TAG)
 		} else {
 			Snackbar.make(
 				binding.recyclerView,

@@ -28,7 +28,7 @@ fun feedItemAD(
 	bind {
 		binding.textViewTitle.isBold = item.isNew
 		binding.textViewSummary.isBold = item.isNew
-		binding.imageViewCover.newImageRequest(item.imageUrl)?.run {
+		binding.imageViewCover.newImageRequest(item.imageUrl, item.manga.source)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
