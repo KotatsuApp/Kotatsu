@@ -17,11 +17,12 @@ import coil.target.ViewTarget
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityImageBinding
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.indicator
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ImageActivity : BaseActivity<ActivityImageBinding>() {
@@ -56,6 +57,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>() {
 			.data(url)
 			.memoryCachePolicy(CachePolicy.DISABLED)
 			.lifecycle(this)
+			.tag(intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource)
 			.target(SsivTarget(binding.ssiv))
 			.indicator(binding.progressBar)
 			.enqueueWith(coil)
@@ -88,9 +90,12 @@ class ImageActivity : BaseActivity<ActivityImageBinding>() {
 
 	companion object {
 
-		fun newIntent(context: Context, url: String): Intent {
+		private const val EXTRA_SOURCE = "source"
+
+		fun newIntent(context: Context, url: String, source: MangaSource?): Intent {
 			return Intent(context, ImageActivity::class.java)
 				.setData(Uri.parse(url))
+				.putExtra(EXTRA_SOURCE, source)
 		}
 	}
 }

@@ -55,7 +55,7 @@ private fun searchSuggestionMangaGridAD(
 	}
 
 	bind {
-		binding.imageViewCover.newImageRequest(item.coverUrl)?.run {
+		binding.imageViewCover.newImageRequest(item.coverUrl, item.source)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)

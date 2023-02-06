@@ -8,6 +8,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.currentCoroutineContext
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.cache.SafeDeferred
+import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
@@ -38,6 +39,9 @@ class RemoteMangaRepository(
 		set(value) {
 			getConfig().defaultSortOrder = value
 		}
+
+	val userAgent: String?
+		get() = parser.headers?.get(CommonHeaders.USER_AGENT)
 
 	override suspend fun getList(offset: Int, query: String): List<Manga> {
 		return parser.getList(offset, query)

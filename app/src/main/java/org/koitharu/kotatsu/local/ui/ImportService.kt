@@ -99,7 +99,11 @@ class ImportService : CoroutineIntentService() {
 		if (manga != null) {
 			notification.setLargeIcon(
 				coil.execute(
-					ImageRequest.Builder(applicationContext).data(manga.coverUrl).referer(manga.publicUrl).build(),
+					ImageRequest.Builder(applicationContext)
+						.data(manga.coverUrl)
+						.tag(manga.source)
+						.referer(manga.publicUrl)
+						.build(),
 				).toBitmapOrNull(),
 			)
 			notification.setSubText(manga.title)

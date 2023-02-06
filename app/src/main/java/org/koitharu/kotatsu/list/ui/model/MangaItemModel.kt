@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.list.ui.model
 
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 
 sealed interface MangaItemModel : ListModel {
 
@@ -10,4 +11,7 @@ sealed interface MangaItemModel : ListModel {
 	val coverUrl: String
 	val counter: Int
 	val progress: Float
+
+	val source: MangaSource
+		get() = manga.source
 }

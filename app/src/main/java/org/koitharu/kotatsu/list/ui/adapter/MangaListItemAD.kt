@@ -10,7 +10,11 @@ import org.koitharu.kotatsu.databinding.ItemMangaListBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.disposeImageRequest
+import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.referer
+import org.koitharu.kotatsu.utils.ext.textAndVisible
 
 fun mangaListItemAD(
 	coil: ImageLoader,
@@ -31,7 +35,7 @@ fun mangaListItemAD(
 	bind {
 		binding.textViewTitle.text = item.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle
-		binding.imageViewCover.newImageRequest(item.coverUrl)?.run {
+		binding.imageViewCover.newImageRequest(item.coverUrl, item.source)?.run {
 			referer(item.manga.publicUrl)
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)

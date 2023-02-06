@@ -85,6 +85,7 @@ interface AppModule {
 		@Singleton
 		fun provideOkHttpClient(
 			localStorageManager: LocalStorageManager,
+			userAgentInterceptor: UserAgentInterceptor,
 			cookieJar: CookieJar,
 			settings: AppSettings,
 		): OkHttpClient {
@@ -97,7 +98,7 @@ interface AppModule {
 				dns(DoHManager(cache, settings))
 				cache(cache)
 				addInterceptor(GZipInterceptor())
-				addInterceptor(UserAgentInterceptor())
+				addInterceptor(userAgentInterceptor)
 				addInterceptor(CloudFlareInterceptor())
 			}.build()
 		}

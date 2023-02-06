@@ -100,7 +100,7 @@ class ScrobblingInfoBottomSheet :
 			R.id.imageView_cover -> {
 				val coverUrl = viewModel.scrobblingInfo.value?.getOrNull(scrobblerIndex)?.coverUrl ?: return
 				val options = scaleUpActivityOptionsOf(v)
-				startActivity(ImageActivity.newIntent(v.context, coverUrl), options.toBundle())
+				startActivity(ImageActivity.newIntent(v.context, coverUrl, null), options.toBundle())
 			}
 		}
 	}
@@ -115,15 +115,13 @@ class ScrobblingInfoBottomSheet :
 		binding.ratingBar.rating = scrobbling.rating * binding.ratingBar.numStars
 		binding.textViewDescription.text = scrobbling.description
 		binding.spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
-		ImageRequest.Builder(context ?: return)
-			.target(binding.imageViewCover)
-			.data(scrobbling.coverUrl)
-			.crossfade(context)
-			.lifecycle(viewLifecycleOwner)
-			.placeholder(R.drawable.ic_placeholder)
-			.fallback(R.drawable.ic_placeholder)
-			.error(R.drawable.ic_error_placeholder)
-			.enqueueWith(coil)
+		binding.imageViewCover.newImageRequest(scrobbling.coverUrl)?.apply {
+			lifecycle(viewLifecycleOwner)
+			placeholder(R.drawable.ic_placeholder)
+			fallback(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
+			enqueueWith(coil)
+		}
 	}
 
 	override fun onMenuItemClick(item: MenuItem): Boolean {

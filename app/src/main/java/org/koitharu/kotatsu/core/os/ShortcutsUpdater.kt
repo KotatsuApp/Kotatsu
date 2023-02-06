@@ -118,6 +118,7 @@ class ShortcutsUpdater @Inject constructor(
 				ImageRequest.Builder(context)
 					.data(manga.coverUrl)
 					.size(iconSize.width, iconSize.height)
+					.tag(manga.source)
 					.precision(Precision.EXACT)
 					.scale(Scale.FILL)
 					.build(),

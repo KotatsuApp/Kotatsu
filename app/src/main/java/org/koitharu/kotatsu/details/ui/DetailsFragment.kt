@@ -254,7 +254,11 @@ class DetailsFragment :
 
 			R.id.imageView_cover -> {
 				startActivity(
-					ImageActivity.newIntent(v.context, manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }),
+					ImageActivity.newIntent(
+						v.context,
+						manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
+						manga.source,
+					),
 					scaleUpActivityOptionsOf(v).toBundle(),
 				)
 			}
@@ -337,6 +341,7 @@ class DetailsFragment :
 			.target(binding.imageViewCover)
 			.size(CoverSizeResolver(binding.imageViewCover))
 			.data(imageUrl)
+			.tag(manga.source)
 			.crossfade(context)
 			.referer(manga.publicUrl)
 			.lifecycle(viewLifecycleOwner)

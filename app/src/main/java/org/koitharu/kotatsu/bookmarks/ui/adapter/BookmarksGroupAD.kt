@@ -14,7 +14,11 @@ import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
 import org.koitharu.kotatsu.databinding.ItemBookmarksGroupBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.clearItemDecorations
+import org.koitharu.kotatsu.utils.ext.disposeImageRequest
+import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.referer
 
 fun bookmarksGroupAD(
 	coil: ImageLoader,
@@ -45,7 +49,7 @@ fun bookmarksGroupAD(
 			binding.recyclerView.addItemDecoration(spacingDecoration)
 			selectionController.attachToRecyclerView(item.manga, binding.recyclerView)
 		}
-		binding.imageViewCover.newImageRequest(item.manga.coverUrl)?.run {
+		binding.imageViewCover.newImageRequest(item.manga.coverUrl, item.manga.source)?.run {
 			referer(item.manga.publicUrl)
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)

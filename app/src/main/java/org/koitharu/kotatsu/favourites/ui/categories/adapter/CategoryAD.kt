@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.*
+import android.view.View.OnClickListener
+import android.view.View.OnLongClickListener
+import android.view.View.OnTouchListener
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
@@ -16,7 +18,11 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemCategoryBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.animatorDurationScale
+import org.koitharu.kotatsu.utils.ext.disposeImageRequest
+import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.getThemeColor
+import org.koitharu.kotatsu.utils.ext.newImageRequest
 
 fun categoryAD(
 	coil: ImageLoader,

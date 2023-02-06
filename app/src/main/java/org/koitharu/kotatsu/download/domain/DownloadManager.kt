@@ -118,7 +118,7 @@ class DownloadManager @AssistedInject constructor(
 					val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
 					output = CbzMangaOutput.get(destination, data)
 					val coverUrl = data.largeCoverUrl ?: data.coverUrl
-					downloadFile(coverUrl, data.publicUrl, destination, tempFileName).let { file ->
+					downloadFile(coverUrl, data.publicUrl, destination, tempFileName, repo.source).let { file ->
 						output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
 					}
 					val chapters = checkNotNull(
@@ -139,7 +139,8 @@ class DownloadManager @AssistedInject constructor(
 						for ((pageIndex, page) in pages.withIndex()) {
 							runFailsafe(outState, pausingHandle) {
 								val url = repo.getPageUrl(page)
-								val file = cache[url] ?: downloadFile(url, page.referer, destination, tempFileName)
+								val file = cache[url]
+									?: downloadFile(url, page.referer, destination, tempFileName, repo.source)
 								output.addPage(
 									chapter = chapter,
 									file = file,
@@ -209,10 +210,17 @@ class DownloadManager @AssistedInject constructor(
 		}
 	}
 
-	private suspend fun downloadFile(url: String, referer: String, destination: File, tempFileName: String): File {
+	private suspend fun downloadFile(
+		url: String,
+		referer: String,
+		destination: File,
+		tempFileName: String,
+		source: MangaSource,
+	): File {
 		val request = Request.Builder()
 			.url(url)
 			.header(CommonHeaders.REFERER, referer)
+			.tag(source)
 			.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
 			.get()
 			.build()
@@ -243,6 +251,7 @@ class DownloadManager @AssistedInject constructor(
 			ImageRequest.Builder(context)
 				.data(manga.coverUrl)
 				.referer(manga.publicUrl)
+				.tag(manga.source)
 				.size(coverWidth, coverHeight)
 				.scale(Scale.FILL)
 				.build(),

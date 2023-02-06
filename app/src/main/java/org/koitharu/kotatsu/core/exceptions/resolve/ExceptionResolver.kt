@@ -7,6 +7,7 @@ import androidx.collection.ArrayMap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.suspendCancellableCoroutine
+import okhttp3.Headers
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
@@ -43,7 +44,7 @@ class ExceptionResolver private constructor(
 	}
 
 	suspend fun resolve(e: Throwable): Boolean = when (e) {
-		is CloudFlareProtectedException -> resolveCF(e.url)
+		is CloudFlareProtectedException -> resolveCF(e.url, e.headers)
 		is AuthRequiredException -> resolveAuthException(e.source)
 		is NotFoundException -> {
 			openInBrowser(e.url)
@@ -53,8 +54,8 @@ class ExceptionResolver private constructor(
 		else -> false
 	}
 
-	private suspend fun resolveCF(url: String): Boolean {
-		val dialog = CloudFlareDialog.newInstance(url)
+	private suspend fun resolveCF(url: String, headers: Headers): Boolean {
+		val dialog = CloudFlareDialog.newInstance(url, headers)
 		val fm = getFragmentManager()
 		return suspendCancellableCoroutine { cont ->
 			fm.clearFragmentResult(CloudFlareDialog.TAG)
