@@ -123,7 +123,7 @@ class ScrobblingInfoBottomSheet :
 		binding.spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
 		binding.imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
 		binding.imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
-		binding.imageViewCover.newImageRequest(scrobbling.coverUrl, null)?.apply {
+		binding.imageViewCover.newImageRequest(scrobbling.coverUrl)?.apply {
 			lifecycle(viewLifecycleOwner)
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)

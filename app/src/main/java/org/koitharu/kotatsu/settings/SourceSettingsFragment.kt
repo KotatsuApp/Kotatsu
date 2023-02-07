@@ -105,6 +105,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 	}
 
 	private fun resolveError(error: Throwable) {
+		view ?: return
 		viewLifecycleScope.launch {
 			if (exceptionResolver.resolve(error)) {
 				val pref = findPreference<Preference>(KEY_AUTH) ?: return@launch
