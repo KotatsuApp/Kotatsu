@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import kotlin.math.roundToInt
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -21,6 +19,8 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.getParcelableCompat
 import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemClickListener<ChapterListItem> {
@@ -41,7 +41,6 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 		}
 		val currentId = requireArguments().getLong(ARG_CURRENT_ID, 0L)
 		val currentPosition = chapters.indexOfFirst { it.id == currentId }
-		val dateFormat = settings.getDateFormat()
 		val items = chapters.mapIndexed { index, chapter ->
 			chapter.toListItem(
 				isCurrent = index == currentPosition,
@@ -49,7 +48,6 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 				isNew = false,
 				isMissing = false,
 				isDownloaded = false,
-				dateFormat = dateFormat,
 			)
 		}
 		binding.recyclerView.adapter = ChaptersAdapter(this).also { adapter ->

@@ -38,12 +38,4 @@
 		<item>2</item>
 		<item>0</item>
 	</string-array>
-	<string-array name="date_formats">
-		<item />
-		<item>MM/dd/yy</item>
-		<item>dd/MM/yy</item>
-		<item>yyyy-MM-dd</item>
-		<item>dd MMM yyyy</item>
-		<item>MMM dd, yyyy</item>
-	</string-array>
 </resources>

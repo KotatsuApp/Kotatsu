@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.details.ui.model
 
-import java.text.DateFormat
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_CURRENT
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_DOWNLOADED
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_MISSING
@@ -14,7 +13,6 @@ fun MangaChapter.toListItem(
 	isNew: Boolean,
 	isMissing: Boolean,
 	isDownloaded: Boolean,
-	dateFormat: DateFormat,
 ): ChapterListItem {
 	var flags = 0
 	if (isCurrent) flags = flags or FLAG_CURRENT
@@ -26,6 +24,5 @@ fun MangaChapter.toListItem(
 		chapter = this,
 		flags = flags,
 		uploadDateMs = uploadDate,
-		dateFormat = dateFormat,
 	)
 }

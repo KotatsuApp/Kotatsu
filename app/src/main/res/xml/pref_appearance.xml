@@ -28,10 +28,6 @@
 		app:allowDividerAbove="true" />
 
 	<ListPreference
-		android:key="date_format"
-		android:title="@string/date_format" />
-
-	<ListPreference
 		android:entries="@array/list_modes"
 		android:key="list_mode_2"
 		android:title="@string/list_mode"

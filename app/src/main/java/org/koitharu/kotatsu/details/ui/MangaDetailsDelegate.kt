@@ -7,7 +7,6 @@ import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -21,7 +20,6 @@ import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class MangaDetailsDelegate(
 	private val intent: MangaIntent,
-	private val settings: AppSettings,
 	private val mangaDataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val localMangaRepository: LocalMangaRepository,
@@ -82,7 +80,6 @@ class MangaDetailsDelegate(
 		branch: String?,
 	): List<ChapterListItem> {
 		val result = ArrayList<ChapterListItem>(chapters.size)
-		val dateFormat = settings.getDateFormat()
 		val currentIndex = chapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = chapters.size - newCount
 		val downloadedIds = downloadedChapters?.mapTo(HashSet(downloadedChapters.size)) { it.id }
@@ -97,7 +94,6 @@ class MangaDetailsDelegate(
 				isNew = i >= firstNewIndex,
 				isMissing = false,
 				isDownloaded = downloadedIds?.contains(chapter.id) == true,
-				dateFormat = dateFormat,
 			)
 		}
 		if (result.size < chapters.size / 2) {
@@ -117,7 +113,6 @@ class MangaDetailsDelegate(
 		val result = ArrayList<ChapterListItem>(sourceChapters.size)
 		val currentIndex = sourceChapters.indexOfFirst { it.id == currentId }
 		val firstNewIndex = sourceChapters.size - newCount
-		val dateFormat = settings.getDateFormat()
 		for (i in sourceChapters.indices) {
 			val chapter = sourceChapters[i]
 			val localChapter = chaptersMap.remove(chapter.id)
@@ -130,14 +125,12 @@ class MangaDetailsDelegate(
 				isNew = i >= firstNewIndex,
 				isMissing = false,
 				isDownloaded = false,
-				dateFormat = dateFormat,
 			) ?: chapter.toListItem(
 				isCurrent = i == currentIndex,
 				isUnread = i > currentIndex,
 				isNew = i >= firstNewIndex,
 				isMissing = true,
 				isDownloaded = false,
-				dateFormat = dateFormat,
 			)
 		}
 		if (chaptersMap.isNotEmpty()) { // some chapters on device but not online source
@@ -150,7 +143,6 @@ class MangaDetailsDelegate(
 						isNew = false,
 						isMissing = false,
 						isDownloaded = false,
-						dateFormat = dateFormat,
 					)
 				} else {
 					null
