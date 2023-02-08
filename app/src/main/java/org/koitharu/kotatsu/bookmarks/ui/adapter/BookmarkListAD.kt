@@ -11,7 +11,6 @@ import org.koitharu.kotatsu.databinding.ItemBookmarkBinding
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.referer
 
 fun bookmarkListAD(
 	coil: ImageLoader,
@@ -27,7 +26,6 @@ fun bookmarkListAD(
 
 	bind {
 		binding.imageViewThumb.newImageRequest(item.imageUrl, item.manga.source)?.run {
-			referer(item.manga.publicUrl)
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)

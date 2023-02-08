@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.EnumSet
 
-class DummyParser(override val context: MangaLoaderContext) : MangaParser(MangaSource.DUMMY) {
+class DummyParser(context: MangaLoaderContext) : MangaParser(context, MangaSource.DUMMY) {
 
 	override val configKeyDomain: ConfigKey.Domain
 		get() = ConfigKey.Domain("localhost", null)

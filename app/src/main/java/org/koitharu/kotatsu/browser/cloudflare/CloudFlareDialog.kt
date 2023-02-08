@@ -15,7 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.Headers
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.network.CommonHeaders
-import org.koitharu.kotatsu.core.network.UserAgentInterceptor
+import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.databinding.FragmentCloudflareBinding
 import org.koitharu.kotatsu.utils.ext.stringArgument
@@ -44,7 +44,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 			cacheMode = WebSettings.LOAD_DEFAULT
 			domStorageEnabled = true
 			databaseEnabled = true
-			userAgentString = arguments?.getString(ARG_UA) ?: UserAgentInterceptor.userAgentChrome
+			userAgentString = arguments?.getString(ARG_UA) ?: CommonHeadersInterceptor.userAgentChrome
 		}
 		binding.webView.webViewClient = CloudFlareClient(cookieJar, this, url.orEmpty())
 		CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webView, true)

@@ -46,7 +46,6 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.utils.PendingIntentCompat
-import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.trySetForeground
@@ -157,7 +156,6 @@ class TrackWorker @AssistedInject constructor(
 				coil.execute(
 					ImageRequest.Builder(applicationContext)
 						.data(manga.coverUrl)
-						.referer(manga.publicUrl)
 						.tag(manga.source)
 						.build(),
 				).toBitmapOrNull(),

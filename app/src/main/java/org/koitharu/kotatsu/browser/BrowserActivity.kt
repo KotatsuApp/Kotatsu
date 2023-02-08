@@ -8,16 +8,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import com.google.android.material.R as materialR
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.core.network.UserAgentInterceptor
+import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import com.google.android.material.R as materialR
 
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
@@ -31,7 +29,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		}
 		with(binding.webView.settings) {
 			javaScriptEnabled = true
-			userAgentString = UserAgentInterceptor.userAgentChrome
+			userAgentString = CommonHeadersInterceptor.userAgentChrome
 		}
 		binding.webView.webViewClient = BrowserClient(this)
 		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)
@@ -72,6 +70,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			finishAfterTransition()
 			true
 		}
+
 		R.id.action_browser -> {
 			val intent = Intent(Intent.ACTION_VIEW)
 			intent.data = Uri.parse(binding.webView.url)
@@ -81,6 +80,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			}
 			true
 		}
+
 		else -> super.onOptionsItemSelected(item)
 	}
 

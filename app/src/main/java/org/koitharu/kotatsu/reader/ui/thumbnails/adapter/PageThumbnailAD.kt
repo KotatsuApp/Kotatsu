@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import org.koitharu.kotatsu.utils.ext.decodeRegion
 import org.koitharu.kotatsu.utils.ext.isLowRamDevice
-import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.ext.setTextColorAttr
 import com.google.android.material.R as materialR
@@ -44,7 +43,6 @@ fun pageThumbnailAD(
 			coil.execute(
 				ImageRequest.Builder(context)
 					.data(url)
-					.referer(item.page.referer)
 					.tag(item.page.source)
 					.size(thumbSize)
 					.scale(Scale.FILL)

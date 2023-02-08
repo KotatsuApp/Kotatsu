@@ -17,7 +17,8 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.browser.ProgressChromeClient
-import org.koitharu.kotatsu.core.network.UserAgentInterceptor
+import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
@@ -60,7 +61,8 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		}
 		with(binding.webView.settings) {
 			javaScriptEnabled = true
-			userAgentString = repository.userAgent ?: UserAgentInterceptor.userAgent
+			userAgentString = repository.headers?.get(CommonHeaders.USER_AGENT)
+				?: CommonHeadersInterceptor.userAgentFallback
 		}
 		binding.webView.webViewClient = BrowserClient(this)
 		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)

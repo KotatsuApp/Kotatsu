@@ -26,7 +26,6 @@ import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.asArrayList
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.report
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import javax.inject.Inject
@@ -102,7 +101,6 @@ class ImportService : CoroutineIntentService() {
 					ImageRequest.Builder(applicationContext)
 						.data(manga.coverUrl)
 						.tag(manga.source)
-						.referer(manga.publicUrl)
 						.build(),
 				).toBitmapOrNull(),
 			)

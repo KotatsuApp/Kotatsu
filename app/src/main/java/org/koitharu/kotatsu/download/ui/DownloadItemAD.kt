@@ -17,7 +17,6 @@ import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.onFirst
-import org.koitharu.kotatsu.utils.ext.referer
 
 fun downloadItemAD(
 	scope: CoroutineScope,
@@ -45,7 +44,6 @@ fun downloadItemAD(
 		job?.cancel()
 		job = item.progressAsFlow().onFirst { state ->
 			binding.imageViewCover.newImageRequest(state.manga.coverUrl, state.manga.source)?.run {
-				referer(state.manga.publicUrl)
 				placeholder(state.cover)
 				fallback(R.drawable.ic_placeholder)
 				error(R.drawable.ic_error_placeholder)

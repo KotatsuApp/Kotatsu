@@ -29,7 +29,6 @@ import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.decodeRegion
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
-import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -117,7 +116,6 @@ class ColorFilterConfigActivity :
 		if (preview == null) return
 		ImageRequest.Builder(this@ColorFilterConfigActivity)
 			.data(preview.url)
-			.referer(preview.referer)
 			.scale(Scale.FILL)
 			.decodeRegion()
 			.tag(preview.source)

@@ -38,7 +38,6 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.progress.PausingProgressJob
 import java.io.File
@@ -220,7 +219,7 @@ class DownloadManager @AssistedInject constructor(
 		val request = Request.Builder()
 			.url(url)
 			.header(CommonHeaders.REFERER, referer)
-			.tag(source)
+			.tag(MangaSource::class.java, source)
 			.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
 			.get()
 			.build()
@@ -250,7 +249,6 @@ class DownloadManager @AssistedInject constructor(
 		imageLoader.execute(
 			ImageRequest.Builder(context)
 				.data(manga.coverUrl)
-				.referer(manga.publicUrl)
 				.tag(manga.source)
 				.size(coverWidth, coverHeight)
 				.scale(Scale.FILL)

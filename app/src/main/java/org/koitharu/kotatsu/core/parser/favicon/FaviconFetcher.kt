@@ -20,7 +20,6 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.local.data.CacheDir
@@ -53,7 +52,7 @@ class FaviconFetcher(
 			options.size.height.pxOrElse { FALLBACK_SIZE },
 		)
 		val icon = checkNotNull(favicons.find(sizePx)) { "No favicons found" }
-		val response = loadIcon(icon.url, repo.userAgent, favicons.referer)
+		val response = loadIcon(icon.url, mangaSource)
 		val responseBody = response.requireBody()
 		val source = writeToDiskCache(responseBody)?.toImageSource() ?: responseBody.toImageSource()
 		return SourceResult(
@@ -63,14 +62,11 @@ class FaviconFetcher(
 		)
 	}
 
-	private suspend fun loadIcon(url: String, userAgent: String?, referer: String): Response {
+	private suspend fun loadIcon(url: String, source: MangaSource): Response {
 		val request = Request.Builder()
 			.url(url)
 			.get()
-			.header(CommonHeaders.REFERER, referer)
-		if (userAgent != null) {
-			request.header(CommonHeaders.USER_AGENT, userAgent)
-		}
+			.tag(MangaSource::class.java, source)
 		@Suppress("UNCHECKED_CAST")
 		options.tags.asMap().forEach { request.tag(it.key as Class<Any>, it.value) }
 		val response = okHttpClient.newCall(request.build()).await()

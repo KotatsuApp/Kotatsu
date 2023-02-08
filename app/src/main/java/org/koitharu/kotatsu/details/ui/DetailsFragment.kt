@@ -50,7 +50,6 @@ import org.koitharu.kotatsu.utils.ext.drawableTop
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.resolveDp
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.utils.ext.textAndVisible
@@ -343,7 +342,6 @@ class DetailsFragment :
 			.data(imageUrl)
 			.tag(manga.source)
 			.crossfade(context)
-			.referer(manga.publicUrl)
 			.lifecycle(viewLifecycleOwner)
 			.placeholderMemoryCacheKey(manga.coverUrl)
 		val previousDrawable = lastResult?.drawable
