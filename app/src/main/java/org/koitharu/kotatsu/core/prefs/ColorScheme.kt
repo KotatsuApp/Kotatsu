@@ -12,8 +12,11 @@ enum class ColorScheme(
 
 	DEFAULT(R.style.Theme_Kotatsu, R.string.system_default),
 	MONET(R.style.Theme_Kotatsu_Monet, R.string.theme_name_dynamic),
-	MINT(R.style.Theme_Kotatsu_Mint, R.string.theme_name_mint),
-	OCTOBER(R.style.Theme_Kotatsu_October, R.string.theme_name_october),
+	MIKU(R.style.Theme_Kotatsu_Miku, R.string.theme_name_miku),
+	RENA(R.style.Theme_Kotatsu_Asuka, R.string.theme_name_asuka),
+	FROG(R.style.Theme_Kotatsu_Mion, R.string.theme_name_mion),
+	BLUEBERRY(R.style.Theme_Kotatsu_Rikka, R.string.theme_name_rikka),
+	NAME2(R.style.Theme_Kotatsu_Sakura, R.string.theme_name_sakura),
 	;
 
 	companion object {
