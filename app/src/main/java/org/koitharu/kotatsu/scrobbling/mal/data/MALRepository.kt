@@ -5,11 +5,13 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.parseJson
+import org.koitharu.kotatsu.parsers.util.toIntUp
 import org.koitharu.kotatsu.scrobbling.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.data.ScrobblingEntity
@@ -22,7 +24,6 @@ import org.koitharu.kotatsu.utils.PKCEGenerator
 private const val REDIRECT_URI = "kotatsu://mal-auth"
 private const val BASE_OAUTH_URL = "https://myanimelist.net"
 private const val BASE_API_URL = "https://api.myanimelist.net/v2"
-private const val MANGA_PAGE_SIZE = 10
 private const val AVATAR_STUB = "https://cdn.myanimelist.net/images/questionmark_50.gif"
 
 class MALRepository(
@@ -36,7 +37,7 @@ class MALRepository(
 	override val oauthUrl: String
 		get() = "$BASE_OAUTH_URL/v1/oauth2/authorize?" +
 			"response_type=code" +
-			"&client_id=af16954886b040673378423f5d62cccd" +
+			"&client_id=${BuildConfig.MAL_CLIENT_ID}" +
 			"&redirect_uri=$REDIRECT_URI" +
 			"&code_challenge=$codeVerifier" +
 			"&code_challenge_method=plain"
@@ -52,7 +53,7 @@ class MALRepository(
 	override suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
 		if (code != null) {
-			body.add("client_id", "af16954886b040673378423f5d62cccd")
+			body.add("client_id", BuildConfig.MAL_CLIENT_ID)
 			body.add("grant_type", "authorization_code")
 			body.add("code", code)
 			body.add("redirect_uri", REDIRECT_URI)
@@ -80,18 +81,19 @@ class MALRepository(
 	}
 
 	override suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
-		val pageOffset = offset % MANGA_PAGE_SIZE
 		val url = BASE_API_URL.toHttpUrl().newBuilder()
 			.addPathSegment("manga")
-			.addQueryParameter("offset", (pageOffset + 1).toString())
+			.addQueryParameter("offset", offset.toFloat().toIntUp().toString())
 			.addQueryParameter("nsfw", "true")
-			.addEncodedQueryParameter("q", query.take(64)) // WARNING! MAL API throws a 400 when the query is over 64 characters
+			.addQueryParameter(
+				"q",
+				query.take(64)
+			) // WARNING! MAL API throws a 400 when the query is over 64 characters
 			.build()
 		val request = Request.Builder().url(url).get().build()
 		val response = okHttp.newCall(request).await().parseJson()
 		val data = response.getJSONArray("data")
-		val mangas = data.mapJSON { jsonToManga(it) }
-		return if (pageOffset != 0) mangas.drop(pageOffset) else mangas // TODO
+		return data.mapJSON { jsonToManga(it) }
 	}
 
 	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
@@ -120,16 +122,15 @@ class MALRepository(
 			.put(body.build())
 			.build()
 		val response = okHttp.newCall(request).await().parseJson()
-		saveRate(response, mangaId)
+		saveRate(response, mangaId, scrobblerMangaId)
 	}
 
 	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
 		val body = FormBody.Builder()
-			.add("status", "reading")
-			.add("score", "0")
+			.add("num_chapters_read", chapter.number.toString())
 		val url = BASE_API_URL.toHttpUrl().newBuilder()
 			.addPathSegment("manga")
-			.addPathSegment(mangaId.toString())
+			.addPathSegment(rateId.toString())
 			.addPathSegment("my_list_status")
 			.build()
 		val request = Request.Builder()
@@ -137,16 +138,16 @@ class MALRepository(
 			.put(body.build())
 			.build()
 		val response = okHttp.newCall(request).await().parseJson()
-		saveRate(response, mangaId)
+		saveRate(response, mangaId, rateId.toLong())
 	}
 
 	override suspend fun updateRate(rateId: Int, mangaId: Long, rating: Float, status: String?, comment: String?) {
 		val body = FormBody.Builder()
-			.add("status", status!!)
+			.add("status", status.toString())
 			.add("score", rating.toString())
 		val url = BASE_API_URL.toHttpUrl().newBuilder()
 			.addPathSegment("manga")
-			.addPathSegment(mangaId.toString())
+			.addPathSegment(rateId.toString())
 			.addPathSegment("my_list_status")
 			.build()
 		val request = Request.Builder()
@@ -154,15 +155,15 @@ class MALRepository(
 			.put(body.build())
 			.build()
 		val response = okHttp.newCall(request).await().parseJson()
-		saveRate(response, mangaId)
+		saveRate(response, mangaId, rateId.toLong())
 	}
 
-	private suspend fun saveRate(json: JSONObject, mangaId: Long) {
+	private suspend fun saveRate(json: JSONObject, mangaId: Long, scrobblerMangaId: Long) {
 		val entity = ScrobblingEntity(
 			scrobbler = ScrobblerService.MAL.id,
-			id = mangaId.toInt(),
+			id = scrobblerMangaId.toInt(),
 			mangaId = mangaId,
-			targetId = 2, // TODO
+			targetId = scrobblerMangaId,
 			status = json.getString("status"),
 			chapter = json.getInt("num_chapters_read"),
 			comment = json.getString("comments"),
@@ -188,10 +189,10 @@ class MALRepository(
 				name = node.getString("title"),
 				altName = null,
 				cover = node.getJSONObject("main_picture").getString("large"),
-				url = "" // TODO
+				url = "https://myanimelist.net/manga/${node.getLong("id")}"
 			)
 		}
-		return ScrobblerManga( // TODO
+		return ScrobblerManga(
 			id = 1,
 			name = "",
 			altName = null,
@@ -204,7 +205,7 @@ class MALRepository(
 		id = json.getLong("id"),
 		name = json.getString("title"),
 		cover = json.getJSONObject("main_picture").getString("large"),
-		url = "", // TODO
+		url = "https://myanimelist.net/manga/${json.getLong("id")}",
 		descriptionHtml = json.getString("synopsis"),
 	)
 

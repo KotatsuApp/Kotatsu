@@ -37,7 +37,7 @@ class MALScrobbler @Inject constructor(
 		requireNotNull(entity) { "Scrobbling info for manga $mangaId not found" }
 		repository.updateRate(
 			rateId = entity.id,
-			mangaId = 2, // TODO
+			mangaId = entity.mangaId,
 			rating = rating * RATING_MAX,
 			status = statuses[status],
 			comment = comment,

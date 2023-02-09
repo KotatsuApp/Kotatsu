@@ -31,6 +31,7 @@ android {
 		buildConfigField 'String', 'SHIKIMORI_CLIENT_SECRET', "\"${localProperty('shikimori.clientSecret')}\""
 		buildConfigField 'String', 'ANILIST_CLIENT_ID', "\"${localProperty('anilist.clientId')}\""
 		buildConfigField 'String', 'ANILIST_CLIENT_SECRET', "\"${localProperty('anilist.clientSecret')}\""
+		buildConfigField 'String', 'MAL_CLIENT_ID', "\"${localProperty('mal.clientId')}\""
 		resValue "string", "acra_login", "${localProperty('acra.login')}"
 		resValue "string", "acra_password", "${localProperty('acra.password')}"
 	}
