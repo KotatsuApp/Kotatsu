@@ -38,14 +38,16 @@
 
 		<ImageView
 			android:id="@+id/imageView_logo"
-			android:layout_width="24dp"
-			android:layout_height="24dp"
+			android:layout_width="32dp"
+			android:layout_height="32dp"
+			android:padding="4dp"
 			android:layout_margin="@dimen/card_indicator_offset"
+			android:background="@drawable/bg_badge_accent"
 			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="@id/imageView_cover"
-			app:tint="?colorControlLight"
 			tools:ignore="ContentDescription"
-			tools:src="@drawable/ic_shikimori" />
+			tools:src="@drawable/ic_shikimori"
+			app:tint="?attr/colorOnSecondary" />
 
 		<TextView
 			android:id="@+id/textView_title"
