@@ -13,11 +13,15 @@ private const val SERVER_CLOUDFLARE = "cloudflare"
 class CloudFlareInterceptor : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
-		val response = chain.proceed(chain.request())
+		val request = chain.request()
+		val response = chain.proceed(request)
 		if (response.code == HTTP_FORBIDDEN || response.code == HTTP_UNAVAILABLE) {
 			if (response.header(HEADER_SERVER)?.startsWith(SERVER_CLOUDFLARE) == true) {
 				response.closeQuietly()
-				throw CloudFlareProtectedException(response.request.url.toString())
+				throw CloudFlareProtectedException(
+					url = response.request.url.toString(),
+					headers = request.headers,
+				)
 			}
 		}
 		return response

@@ -72,7 +72,6 @@ class DetailsViewModel @AssistedInject constructor(
 
 	private val delegate = MangaDetailsDelegate(
 		intent = intent,
-		settings = settings,
 		mangaDataRepository = mangaDataRepository,
 		historyRepository = historyRepository,
 		localMangaRepository = localMangaRepository,

@@ -6,6 +6,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.currentCoroutineContext
+import okhttp3.Headers
+import okhttp3.Interceptor
+import okhttp3.Response
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.cache.SafeDeferred
 import org.koitharu.kotatsu.core.prefs.SourceSettings
@@ -19,13 +22,14 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.domain
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class RemoteMangaRepository(
 	private val parser: MangaParser,
 	private val cache: ContentCache,
-) : MangaRepository {
+) : MangaRepository, Interceptor {
 
 	override val source: MangaSource
 		get() = parser.source
@@ -38,6 +42,20 @@ class RemoteMangaRepository(
 		set(value) {
 			getConfig().defaultSortOrder = value
 		}
+
+	val domain: String
+		get() = parser.domain
+
+	val headers: Headers?
+		get() = parser.headers
+
+	override fun intercept(chain: Interceptor.Chain): Response {
+		return if (parser is Interceptor) {
+			parser.intercept(chain)
+		} else {
+			chain.proceed(chain.request())
+		}
+	}
 
 	override suspend fun getList(offset: Int, query: String): List<Manga> {
 		return parser.getList(offset, query)

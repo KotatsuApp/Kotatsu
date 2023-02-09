@@ -408,9 +408,12 @@
 	<string name="enable_logging">Enable logging</string>
 	<string name="enable_logging_summary">Record some actions for debug purposes</string>
 	<string name="show_suspicious_content">Show suspicious content</string>
-	<string name="theme_name_mint">Mint</string>
 	<string name="theme_name_dynamic">Dynamic</string>
 	<string name="color_theme">Color scheme</string>
-	<string name="theme_name_october">October</string>
 	<string name="show_in_grid_view">Show in grid view</string>
+	<string name="theme_name_miku">Miku</string>
+	<string name="theme_name_asuka">Asuka</string>
+	<string name="theme_name_mion">Mion</string>
+	<string name="theme_name_rikka">Rikka</string>
+	<string name="theme_name_sakura">Sakura</string>
 </resources>

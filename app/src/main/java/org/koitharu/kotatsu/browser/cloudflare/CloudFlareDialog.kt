@@ -12,8 +12,10 @@ import androidx.core.view.isInvisible
 import androidx.fragment.app.setFragmentResult
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.Headers
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
-import org.koitharu.kotatsu.core.network.UserAgentInterceptor
+import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.databinding.FragmentCloudflareBinding
 import org.koitharu.kotatsu.utils.ext.stringArgument
@@ -42,7 +44,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 			cacheMode = WebSettings.LOAD_DEFAULT
 			domStorageEnabled = true
 			databaseEnabled = true
-			userAgentString = UserAgentInterceptor.userAgentChrome
+			userAgentString = arguments?.getString(ARG_UA) ?: CommonHeadersInterceptor.userAgentChrome
 		}
 		binding.webView.webViewClient = CloudFlareClient(cookieJar, this, url.orEmpty())
 		CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webView, true)
@@ -92,9 +94,13 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 		const val TAG = "CloudFlareDialog"
 		const val EXTRA_RESULT = "result"
 		private const val ARG_URL = "url"
+		private const val ARG_UA = "ua"
 
-		fun newInstance(url: String) = CloudFlareDialog().withArgs(1) {
+		fun newInstance(url: String, headers: Headers?) = CloudFlareDialog().withArgs(2) {
 			putString(ARG_URL, url)
+			headers?.get(CommonHeaders.USER_AGENT)?.let {
+				putString(ARG_UA, it)
+			}
 		}
 	}
 }

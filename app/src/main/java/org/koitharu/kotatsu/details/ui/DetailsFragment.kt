@@ -50,7 +50,6 @@ import org.koitharu.kotatsu.utils.ext.drawableTop
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.resolveDp
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.utils.ext.textAndVisible
@@ -254,7 +253,11 @@ class DetailsFragment :
 
 			R.id.imageView_cover -> {
 				startActivity(
-					ImageActivity.newIntent(v.context, manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }),
+					ImageActivity.newIntent(
+						v.context,
+						manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
+						manga.source,
+					),
 					scaleUpActivityOptionsOf(v).toBundle(),
 				)
 			}
@@ -337,8 +340,8 @@ class DetailsFragment :
 			.target(binding.imageViewCover)
 			.size(CoverSizeResolver(binding.imageViewCover))
 			.data(imageUrl)
+			.tag(manga.source)
 			.crossfade(context)
-			.referer(manga.publicUrl)
 			.lifecycle(viewLifecycleOwner)
 			.placeholderMemoryCacheKey(manga.coverUrl)
 		val previousDrawable = lastResult?.drawable

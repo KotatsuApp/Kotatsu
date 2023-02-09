@@ -17,7 +17,7 @@ fun searchSuggestionSourceAD(
 	lifecycleOwner: LifecycleOwner,
 	listener: SearchSuggestionListener,
 ) = adapterDelegateViewBinding<SearchSuggestionItem.Source, SearchSuggestionItem, ItemSearchSuggestionSourceBinding>(
-	{ inflater, parent -> ItemSearchSuggestionSourceBinding.inflate(inflater, parent, false) }
+	{ inflater, parent -> ItemSearchSuggestionSourceBinding.inflate(inflater, parent, false) },
 ) {
 
 	binding.switchLocal.setOnCheckedChangeListener { _, isChecked ->
@@ -31,7 +31,7 @@ fun searchSuggestionSourceAD(
 		binding.textViewTitle.text = item.source.title
 		binding.switchLocal.isChecked = item.isEnabled
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
-		binding.imageViewCover.newImageRequest(item.source.faviconUri())?.run {
+		binding.imageViewCover.newImageRequest(item.source.faviconUri(), item.source)?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)
 			error(fallbackIcon)

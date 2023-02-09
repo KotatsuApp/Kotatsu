@@ -29,7 +29,6 @@ import org.koitharu.kotatsu.utils.ext.getLocalesConfig
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.toList
-import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -54,20 +53,6 @@ class AppearanceSettingsFragment :
 		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
 			entryValues = ListMode.values().names()
 			setDefaultValueCompat(ListMode.GRID.name)
-		}
-		findPreference<ListPreference>(AppSettings.KEY_DATE_FORMAT)?.run {
-			entryValues = resources.getStringArray(R.array.date_formats)
-			val now = Date().time
-			entries = entryValues.map { value ->
-				val formattedDate = settings.getDateFormat(value.toString()).format(now)
-				if (value == "") {
-					getString(R.string.default_s, formattedDate)
-				} else {
-					formattedDate
-				}
-			}.toTypedArray()
-			setDefaultValueCompat("")
-			summary = "%s"
 		}
 		findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)
 			?.isChecked = !settings.appPassword.isNullOrEmpty()

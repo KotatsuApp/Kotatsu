@@ -1,21 +1,24 @@
 package org.koitharu.kotatsu.details.ui.model
 
-import java.text.DateFormat
+import android.text.format.DateUtils
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 
 class ChapterListItem(
 	val chapter: MangaChapter,
 	val flags: Int,
 	private val uploadDateMs: Long,
-	private val dateFormat: DateFormat,
 ) {
 
-	var uploadDate: String? = null
+	var uploadDate: CharSequence? = null
 		private set
 		get() {
 			if (field != null) return field
 			if (uploadDateMs == 0L) return null
-			field = dateFormat.format(uploadDateMs)
+			field = DateUtils.getRelativeTimeSpanString(
+				uploadDateMs,
+				System.currentTimeMillis(),
+				DateUtils.DAY_IN_MILLIS,
+			)
 			return field
 		}
 
@@ -44,7 +47,6 @@ class ChapterListItem(
 		if (chapter != other.chapter) return false
 		if (flags != other.flags) return false
 		if (uploadDateMs != other.uploadDateMs) return false
-		if (dateFormat != other.dateFormat) return false
 
 		return true
 	}
@@ -53,7 +55,6 @@ class ChapterListItem(
 		var result = chapter.hashCode()
 		result = 31 * result + flags
 		result = 31 * result + uploadDateMs.hashCode()
-		result = 31 * result + dateFormat.hashCode()
 		return result
 	}
 

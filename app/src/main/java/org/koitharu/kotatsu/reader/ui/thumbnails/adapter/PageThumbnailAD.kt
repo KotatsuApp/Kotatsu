@@ -5,9 +5,12 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.Size
-import com.google.android.material.R as materialR
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
@@ -16,9 +19,9 @@ import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import org.koitharu.kotatsu.utils.ext.decodeRegion
 import org.koitharu.kotatsu.utils.ext.isLowRamDevice
-import org.koitharu.kotatsu.utils.ext.referer
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.ext.setTextColorAttr
+import com.google.android.material.R as materialR
 
 fun pageThumbnailAD(
 	coil: ImageLoader,
@@ -40,7 +43,7 @@ fun pageThumbnailAD(
 			coil.execute(
 				ImageRequest.Builder(context)
 					.data(url)
-					.referer(item.page.referer)
+					.tag(item.page.source)
 					.size(thumbSize)
 					.scale(Scale.FILL)
 					.allowRgb565(true)

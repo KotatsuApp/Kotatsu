@@ -64,6 +64,7 @@ class ShelfListFactory(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
 					.size(coverSize)
+					.tag(item.source)
 					.transformations(transformation)
 					.build(),
 			).requireBitmap()

@@ -16,7 +16,7 @@ Download APK directly from GitHub:
 
 ### Main Features
 
-* Online manga catalogues
+* Online [manga catalogues](https://github.com/KotatsuApp/kotatsu-parsers)
 * Search manga by name and genres
 * Reading history and bookmarks
 * Favourites organized by user-defined categories
@@ -24,7 +24,7 @@ Download APK directly from GitHub:
 * Tablet-optimized Material You UI
 * Standard and Webtoon-optimized reader
 * Notifications about new chapters with updates feed
-* Shikimori integration (manga tracking)
+* Integration with manga tracking services: Shikimori, AniList, MAL (coming soon)
 * Password/fingerprint protect access to the app
 * History and favourites [synchronization](https://github.com/KotatsuApp/kotatsu-syncserver) across devices
 

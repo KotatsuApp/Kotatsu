@@ -13,7 +13,10 @@ import org.koitharu.kotatsu.databinding.ItemDownloadBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.parsers.util.format
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.onFirst
 
 fun downloadItemAD(
 	scope: CoroutineScope,
@@ -40,8 +43,7 @@ fun downloadItemAD(
 	bind {
 		job?.cancel()
 		job = item.progressAsFlow().onFirst { state ->
-			binding.imageViewCover.newImageRequest(state.manga.coverUrl)?.run {
-				referer(state.manga.publicUrl)
+			binding.imageViewCover.newImageRequest(state.manga.coverUrl, state.manga.source)?.run {
 				placeholder(state.cover)
 				fallback(R.drawable.ic_placeholder)
 				error(R.drawable.ic_error_placeholder)
@@ -60,6 +62,7 @@ fun downloadItemAD(
 					binding.buttonCancel.isVisible = false
 					binding.buttonResume.isVisible = false
 				}
+
 				is DownloadState.Done -> {
 					binding.textViewStatus.setText(R.string.download_complete)
 					binding.progressBar.isIndeterminate = false
@@ -69,6 +72,7 @@ fun downloadItemAD(
 					binding.buttonCancel.isVisible = false
 					binding.buttonResume.isVisible = false
 				}
+
 				is DownloadState.Error -> {
 					binding.textViewStatus.setText(R.string.error_occurred)
 					binding.progressBar.isIndeterminate = false
@@ -79,6 +83,7 @@ fun downloadItemAD(
 					binding.buttonCancel.isVisible = state.canRetry
 					binding.buttonResume.isVisible = state.canRetry
 				}
+
 				is DownloadState.PostProcessing -> {
 					binding.textViewStatus.setText(R.string.processing_)
 					binding.progressBar.isIndeterminate = true
@@ -88,6 +93,7 @@ fun downloadItemAD(
 					binding.buttonCancel.isVisible = false
 					binding.buttonResume.isVisible = false
 				}
+
 				is DownloadState.Preparing -> {
 					binding.textViewStatus.setText(R.string.preparing_)
 					binding.progressBar.isIndeterminate = true
@@ -97,6 +103,7 @@ fun downloadItemAD(
 					binding.buttonCancel.isVisible = true
 					binding.buttonResume.isVisible = false
 				}
+
 				is DownloadState.Progress -> {
 					binding.textViewStatus.setText(R.string.manga_downloading_)
 					binding.progressBar.isIndeterminate = false
@@ -109,6 +116,7 @@ fun downloadItemAD(
 					binding.buttonCancel.isVisible = true
 					binding.buttonResume.isVisible = false
 				}
+
 				is DownloadState.Queued -> {
 					binding.textViewStatus.setText(R.string.queued)
 					binding.progressBar.isIndeterminate = false

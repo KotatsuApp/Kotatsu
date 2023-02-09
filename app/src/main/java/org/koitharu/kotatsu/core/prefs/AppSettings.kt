@@ -22,8 +22,6 @@ import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.Collections
 import java.util.EnumSet
 import java.util.Locale
@@ -263,12 +261,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		return policy.isNetworkAllowed(connectivityManager)
 	}
 
-	fun getDateFormat(format: String = prefs.getString(KEY_DATE_FORMAT, "").orEmpty()): DateFormat =
-		when (format) {
-			"" -> DateFormat.getDateInstance(DateFormat.SHORT)
-			else -> SimpleDateFormat(format, Locale.getDefault())
-		}
-
 	fun getSuggestionsTagsBlacklistRegex(): Regex? {
 		val string = prefs.getString(KEY_SUGGESTIONS_EXCLUDE_TAGS, null)?.trimEnd(' ', ',')
 		if (string.isNullOrEmpty()) {
@@ -317,7 +309,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_THEME = "theme"
 		const val KEY_COLOR_THEME = "color_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
-		const val KEY_DATE_FORMAT = "date_format"
 		const val KEY_SOURCES_ORDER = "sources_order_2"
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"

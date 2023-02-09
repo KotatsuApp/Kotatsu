@@ -85,6 +85,7 @@ interface AppModule {
 		@Singleton
 		fun provideOkHttpClient(
 			localStorageManager: LocalStorageManager,
+			commonHeadersInterceptor: CommonHeadersInterceptor,
 			cookieJar: CookieJar,
 			settings: AppSettings,
 		): OkHttpClient {
@@ -97,7 +98,7 @@ interface AppModule {
 				dns(DoHManager(cache, settings))
 				cache(cache)
 				addInterceptor(GZipInterceptor())
-				addInterceptor(UserAgentInterceptor())
+				addInterceptor(commonHeadersInterceptor)
 				addInterceptor(CloudFlareInterceptor())
 				if (BuildConfig.DEBUG) {
 					addInterceptor(CurlLoggingInterceptor())
