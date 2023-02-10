@@ -17,6 +17,7 @@ enum class ColorScheme(
 	FROG(R.style.Theme_Kotatsu_Mion, R.string.theme_name_mion),
 	BLUEBERRY(R.style.Theme_Kotatsu_Rikka, R.string.theme_name_rikka),
 	NAME2(R.style.Theme_Kotatsu_Sakura, R.string.theme_name_sakura),
+	MAMIMI(R.style.Theme_Kotatsu_Mamimi, R.string.theme_name_mamimi),
 	;
 
 	companion object {

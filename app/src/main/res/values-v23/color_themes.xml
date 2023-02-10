@@ -60,25 +60,25 @@
 	</style>
 
 	<style name="Theme.Kotatsu.Mion">
-		<item name="colorPrimary">#006E2F</item>
+		<item name="colorPrimary">#2D956A</item>
 		<item name="colorOnPrimary">#FFFFFF</item>
 		<item name="colorPrimaryContainer">#9AF7A8</item>
-		<item name="colorOnPrimaryContainer">#002109</item>
+		<item name="colorOnPrimaryContainer">#00301C</item>
 		<item name="colorSecondary">#725C00</item>
 		<item name="colorOnSecondary">#FFFFFF</item>
-		<item name="colorSecondaryContainer">#FFE080</item>
+		<item name="colorSecondaryContainer">#FFEFC0</item>
 		<item name="colorOnSecondaryContainer">#231B00</item>
-		<item name="colorTertiary">#00677E</item>
+		<item name="colorTertiary">#f28795</item>
 		<item name="colorOnTertiary">#FFFFFF</item>
-		<item name="colorTertiaryContainer">#B4EBFF</item>
-		<item name="colorOnTertiaryContainer">#001F27</item>
+		<item name="colorTertiaryContainer">#FFB3BD</item>
+		<item name="colorOnTertiaryContainer">#2B0006</item>
 		<item name="colorError">#BA1A1A</item>
 		<item name="colorErrorContainer">#FFDAD6</item>
 		<item name="colorOnError">#FFFFFF</item>
 		<item name="colorOnErrorContainer">#410002</item>
-		<item name="android:colorBackground">#FCFDF7</item>
+		<item name="android:colorBackground">#FDFFF3</item>
 		<item name="colorOnBackground">#1A1C19</item>
-		<item name="colorSurface">#FCFDF7</item>
+		<item name="colorSurface">#FDFFF3</item>
 		<item name="colorOnSurface">#1A1C19</item>
 		<item name="colorSurfaceVariant">#DDE5DA</item>
 		<item name="colorOnSurfaceVariant">#414941</item>
@@ -89,18 +89,18 @@
 	</style>
 
 	<style name="Theme.Kotatsu.Rikka">
-		<item name="colorPrimary">#4841EE</item>
+		<item name="colorPrimary">#4b4965</item>
 		<item name="colorOnPrimary">#FFFFFF</item>
-		<item name="colorPrimaryContainer">#E2DFFF</item>
-		<item name="colorOnPrimaryContainer">#0B006B</item>
-		<item name="colorSecondary">#9135A3</item>
+		<item name="colorPrimaryContainer">#E3E1FF</item>
+		<item name="colorOnPrimaryContainer">#1E1C49</item>
+		<item name="colorSecondary">#c44b50</item>
 		<item name="colorOnSecondary">#FFFFFF</item>
-		<item name="colorSecondaryContainer">#FFD6FF</item>
-		<item name="colorOnSecondaryContainer">#350040</item>
-		<item name="colorTertiary">#795369</item>
+		<item name="colorSecondaryContainer">#FFD3D5</item>
+		<item name="colorOnSecondaryContainer">#450003</item>
+		<item name="colorTertiary">#592A2A</item>
 		<item name="colorOnTertiary">#FFFFFF</item>
-		<item name="colorTertiaryContainer">#FFD8EB</item>
-		<item name="colorOnTertiaryContainer">#2F1124</item>
+		<item name="colorTertiaryContainer">#FFD8D8</item>
+		<item name="colorOnTertiaryContainer">#301111</item>
 		<item name="colorError">#BA1A1A</item>
 		<item name="colorErrorContainer">#FFDAD6</item>
 		<item name="colorOnError">#FFFFFF</item>
@@ -139,6 +139,35 @@
 		<item name="colorSurface">#FFFBFF</item>
 		<item name="colorOnSurface">#201A1B</item>
 		<item name="colorSurfaceVariant">#F2DDE1</item>
+		<item name="colorOnSurfaceVariant">#514347</item>
+		<item name="colorOutline">#837377</item>
+		<item name="colorOnSurfaceInverse">#FAEEEF</item>
+		<item name="colorSurfaceInverse">#352F30</item>
+		<item name="colorPrimaryInverse">#FFB1C8</item>
+	</style>
+
+	<style name="Theme.Kotatsu.Mamimi">
+		<item name="colorPrimary">#964d54</item>
+		<item name="colorOnPrimary">#FFFFFF</item>
+		<item name="colorPrimaryContainer">#FFD6DA</item>
+		<item name="colorOnPrimaryContainer">#400006</item>
+		<item name="colorSecondary">#385068</item>
+		<item name="colorOnSecondary">#FFFFFF</item>
+		<item name="colorSecondaryContainer">#CAE5FF</item>
+		<item name="colorOnSecondaryContainer">#002142</item>
+		<item name="colorTertiary">#A19086</item>
+		<item name="colorOnTertiary">#FFFFFF</item>
+		<item name="colorTertiaryContainer">#FFD7BF</item>
+		<item name="colorOnTertiaryContainer">#491B00</item>
+		<item name="colorError">#BA1A1A</item>
+		<item name="colorErrorContainer">#FFDAD6</item>
+		<item name="colorOnError">#FFFFFF</item>
+		<item name="colorOnErrorContainer">#410002</item>
+		<item name="android:colorBackground">#F0F7FF</item>
+		<item name="colorOnBackground">#201A1B</item>
+		<item name="colorSurface">#F0F7FF</item>
+		<item name="colorOnSurface">#201A1B</item>
+		<item name="colorSurfaceVariant">#CAE5FF</item>
 		<item name="colorOnSurfaceVariant">#514347</item>
 		<item name="colorOutline">#837377</item>
 		<item name="colorOnSurfaceInverse">#FAEEEF</item>

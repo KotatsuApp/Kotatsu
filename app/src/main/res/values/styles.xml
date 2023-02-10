@@ -14,6 +14,7 @@
 
 	<style name="Widget.Kotatsu.BottomNavigationView.ColoredIndicators">
 		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
+		<item name="itemIconTint">@color/bottom_menu_active_item</item>
 	</style>
 
 	<style name="Widget.Kotatsu.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
@@ -163,7 +164,7 @@
 		<item name="iconGravity">start</item>
 		<item name="android:insetTop">2dp</item>
 		<item name="android:insetBottom">2dp</item>
-		<item name="iconTint">?attr/colorPrimary</item>
+		<item name="iconTint">?attr/colorSecondary</item>
 		<item name="android:gravity">start|center_vertical</item>
 		<item name="android:textAppearance">?textAppearanceButton</item>
 	</style>
