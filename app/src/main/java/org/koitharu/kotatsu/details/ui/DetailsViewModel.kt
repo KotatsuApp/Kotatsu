@@ -45,9 +45,9 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
+import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData

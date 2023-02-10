@@ -5,7 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 
 class ScrollingInfoAdapter(
 	lifecycleOwner: LifecycleOwner,
@@ -27,7 +27,7 @@ class ScrollingInfoAdapter(
 			return oldItem == newItem
 		}
 
-		override fun getChangePayload(oldItem: ScrobblingInfo, newItem: ScrobblingInfo): Any? {
+		override fun getChangePayload(oldItem: ScrobblingInfo, newItem: ScrobblingInfo): Any {
 			return Unit
 		}
 	}

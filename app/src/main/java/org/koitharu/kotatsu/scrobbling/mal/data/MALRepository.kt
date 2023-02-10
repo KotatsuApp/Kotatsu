@@ -9,20 +9,18 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
-import org.koitharu.kotatsu.parsers.util.json.mapJSON
+import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
 import org.koitharu.kotatsu.parsers.util.parseJson
-import org.koitharu.kotatsu.parsers.util.toIntUp
-import org.koitharu.kotatsu.scrobbling.data.ScrobblerRepository
-import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
-import org.koitharu.kotatsu.scrobbling.data.ScrobblingEntity
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerMangaInfo
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerUser
+import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
+import org.koitharu.kotatsu.scrobbling.common.data.ScrobblingEntity
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerMangaInfo
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.utils.PKCEGenerator
 
 private const val REDIRECT_URI = "kotatsu://mal-auth"
-private const val BASE_OAUTH_URL = "https://myanimelist.net"
+private const val BASE_WEB_URL = "https://myanimelist.net"
 private const val BASE_API_URL = "https://api.myanimelist.net/v2"
 private const val AVATAR_STUB = "https://cdn.myanimelist.net/images/questionmark_50.gif"
 
@@ -30,12 +28,12 @@ class MALRepository(
 	private val okHttp: OkHttpClient,
 	private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
-) : ScrobblerRepository {
+) : org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository {
 
 	private var codeVerifier: String = getPKCEChallengeCode()
 
 	override val oauthUrl: String
-		get() = "$BASE_OAUTH_URL/v1/oauth2/authorize?" +
+		get() = "$BASE_WEB_URL/v1/oauth2/authorize?" +
 			"response_type=code" +
 			"&client_id=${BuildConfig.MAL_CLIENT_ID}" +
 			"&redirect_uri=$REDIRECT_URI" +
@@ -61,7 +59,7 @@ class MALRepository(
 		}
 		val request = Request.Builder()
 			.post(body.build())
-			.url("${BASE_OAUTH_URL}/v1/oauth2/token")
+			.url("${BASE_WEB_URL}/v1/oauth2/token")
 
 		val response = okHttp.newCall(request.build()).await().parseJson()
 		storage.accessToken = response.getString("access_token")
@@ -83,17 +81,15 @@ class MALRepository(
 	override suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
 		val url = BASE_API_URL.toHttpUrl().newBuilder()
 			.addPathSegment("manga")
-			.addQueryParameter("offset", offset.toFloat().toIntUp().toString())
+			.addQueryParameter("offset", offset.toString())
 			.addQueryParameter("nsfw", "true")
-			.addQueryParameter(
-				"q",
-				query.take(64)
-			) // WARNING! MAL API throws a 400 when the query is over 64 characters
+			// WARNING! MAL API throws a 400 when the query is over 64 characters
+			.addQueryParameter("q", query.take(64))
 			.build()
 		val request = Request.Builder().url(url).get().build()
 		val response = okHttp.newCall(request).await().parseJson()
 		val data = response.getJSONArray("data")
-		return data.mapJSON { jsonToManga(it) }
+		return data.mapJSONNotNull { jsonToManga(it) }
 	}
 
 	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
@@ -181,7 +177,7 @@ class MALRepository(
 		return codeVerifier
 	}
 
-	private fun jsonToManga(json: JSONObject): ScrobblerManga {
+	private fun jsonToManga(json: JSONObject): ScrobblerManga? {
 		for (i in 0 until json.length()) {
 			val node = json.getJSONObject("node")
 			return ScrobblerManga(
@@ -189,23 +185,17 @@ class MALRepository(
 				name = node.getString("title"),
 				altName = null,
 				cover = node.getJSONObject("main_picture").getString("large"),
-				url = "https://myanimelist.net/manga/${node.getLong("id")}"
+				url = "$BASE_WEB_URL/manga/${node.getLong("id")}",
 			)
 		}
-		return ScrobblerManga(
-			id = 1,
-			name = "",
-			altName = null,
-			cover = "",
-			url = ""
-		)
+		return null
 	}
 
 	private fun ScrobblerMangaInfo(json: JSONObject) = ScrobblerMangaInfo(
 		id = json.getLong("id"),
 		name = json.getString("title"),
 		cover = json.getJSONObject("main_picture").getString("large"),
-		url = "https://myanimelist.net/manga/${json.getLong("id")}",
+		url = "$BASE_WEB_URL/manga/${json.getLong("id")}",
 		descriptionHtml = json.getString("synopsis"),
 	)
 

@@ -2,7 +2,12 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.os.SystemClock
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transformLatest
 
 fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
 	var isFirstCall = true
@@ -11,6 +16,8 @@ fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
 			action(it)
 			isFirstCall = false
 		}
+	}.onCompletion {
+		isFirstCall = true
 	}
 }
 

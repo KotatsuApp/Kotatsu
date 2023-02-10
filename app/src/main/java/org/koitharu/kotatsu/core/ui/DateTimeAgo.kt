@@ -5,7 +5,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import org.koitharu.kotatsu.utils.ext.format
-import java.util.*
+import java.util.Date
 
 sealed class DateTimeAgo : ListModel {
 
@@ -17,6 +17,8 @@ sealed class DateTimeAgo : ListModel {
 		}
 
 		override fun toString() = "just_now"
+
+		override fun equals(other: Any?): Boolean = other === JustNow
 	}
 
 	class MinutesAgo(val minutes: Int) : DateTimeAgo() {
@@ -60,6 +62,8 @@ sealed class DateTimeAgo : ListModel {
 		}
 
 		override fun toString() = "today"
+
+		override fun equals(other: Any?): Boolean = other === Today
 	}
 
 	object Yesterday : DateTimeAgo() {
@@ -68,6 +72,8 @@ sealed class DateTimeAgo : ListModel {
 		}
 
 		override fun toString() = "yesterday"
+
+		override fun equals(other: Any?): Boolean = other === Yesterday
 	}
 
 	class DaysAgo(val days: Int) : DateTimeAgo() {
@@ -119,5 +125,7 @@ sealed class DateTimeAgo : ListModel {
 		}
 
 		override fun toString() = "long_ago"
+
+		override fun equals(other: Any?): Boolean = other === LongAgo
 	}
 }

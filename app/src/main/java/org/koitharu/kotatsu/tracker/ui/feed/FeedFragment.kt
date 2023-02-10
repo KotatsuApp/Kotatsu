@@ -41,8 +41,6 @@ class FeedFragment :
 	private val viewModel by viewModels<FeedViewModel>()
 
 	private var feedAdapter: FeedAdapter? = null
-	private var paddingVertical = 0
-	private var paddingHorizontal = 0
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -57,8 +55,6 @@ class FeedFragment :
 			setHasFixedSize(true)
 			addOnScrollListener(PaginationScrollListener(4, this@FeedFragment))
 			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-			paddingHorizontal = spacing
-			paddingVertical = resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
 			val decoration = TypedSpacingItemDecoration(
 				FeedAdapter.ITEM_TYPE_FEED to 0,
 				fallbackSpacing = spacing,

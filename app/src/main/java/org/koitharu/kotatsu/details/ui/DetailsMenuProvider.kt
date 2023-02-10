@@ -21,7 +21,7 @@ import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesB
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
-import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
+import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorBottomSheet
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.utils.ShareHelper
 

@@ -4,7 +4,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import okio.IOException
 import org.koitharu.kotatsu.core.network.CommonHeaders
-import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
+import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
 
 private const val USER_AGENT_SHIKIMORI = "Kotatsu"
 

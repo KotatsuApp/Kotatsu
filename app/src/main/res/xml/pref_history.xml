@@ -22,23 +22,20 @@
 
 	<PreferenceCategory android:title="@string/tracking">
 
-		<PreferenceScreen
-			android:fragment="org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment"
-			android:icon="@drawable/ic_shikimori"
+		<Preference
 			android:key="shikimori"
-			android:title="@string/shikimori" />
+			android:title="@string/shikimori"
+			app:icon="@drawable/ic_shikimori" />
 
-		<PreferenceScreen
-			android:fragment="org.koitharu.kotatsu.scrobbling.mal.ui.MALSettingsFragment"
-			android:key="mal"
-			android:icon="@drawable/ic_mal"
-			android:title="@string/mal" />
-
-		<PreferenceScreen
-			android:fragment="org.koitharu.kotatsu.scrobbling.anilist.ui.AniListSettingsFragment"
-			android:icon="@drawable/ic_anilist"
+		<Preference
 			android:key="anilist"
-			android:title="@string/anilist" />
+			android:title="@string/anilist"
+			app:icon="@drawable/ic_anilist" />
+
+		<Preference
+			android:key="mal"
+			android:title="@string/mal"
+			app:icon="@drawable/ic_mal" />
 
 	</PreferenceCategory>
 

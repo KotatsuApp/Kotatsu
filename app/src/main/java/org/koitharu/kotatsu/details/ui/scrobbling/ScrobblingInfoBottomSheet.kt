@@ -21,9 +21,9 @@ import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.databinding.SheetScrobblingBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.image.ui.ImageActivity
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingInfo
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
-import org.koitharu.kotatsu.scrobbling.ui.selector.ScrobblingSelectorBottomSheet
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
+import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorBottomSheet
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.newImageRequest

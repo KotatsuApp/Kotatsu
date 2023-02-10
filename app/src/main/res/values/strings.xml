@@ -416,4 +416,6 @@
 	<string name="theme_name_mion">Mion</string>
 	<string name="theme_name_rikka">Rikka</string>
 	<string name="theme_name_sakura">Sakura</string>
+	<string name="nothing_here">There is nothing here</string>
+	<string name="scrobbling_empty_hint">To track reading progress, select Menu → Track on the manga details screen.</string>
 </resources>

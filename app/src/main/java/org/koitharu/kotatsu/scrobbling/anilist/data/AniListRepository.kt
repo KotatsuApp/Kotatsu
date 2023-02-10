@@ -15,13 +15,12 @@ import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.parsers.util.toIntUp
-import org.koitharu.kotatsu.scrobbling.data.ScrobblerRepository
-import org.koitharu.kotatsu.scrobbling.data.ScrobblerStorage
-import org.koitharu.kotatsu.scrobbling.data.ScrobblingEntity
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerManga
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerMangaInfo
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerUser
+import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
+import org.koitharu.kotatsu.scrobbling.common.data.ScrobblingEntity
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerMangaInfo
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import kotlin.math.roundToInt
 
 private const val REDIRECT_URI = "kotatsu://anilist-auth"
@@ -36,7 +35,7 @@ class AniListRepository(
 	private val okHttp: OkHttpClient,
 	private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
-) : ScrobblerRepository {
+) : org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository {
 
 	override val oauthUrl: String
 		get() = "${BASE_URL}oauth/authorize?client_id=${BuildConfig.ANILIST_CLIENT_ID}&" +

@@ -84,5 +84,8 @@ sealed interface ExploreItem : ListModel {
 		@StringRes actionStringRes: Int,
 	) : EmptyState(icon, textPrimary, textSecondary, actionStringRes), ExploreItem
 
-	object Loading : ExploreItem
+	object Loading : ExploreItem {
+
+		override fun equals(other: Any?): Boolean = other === Loading
+	}
 }

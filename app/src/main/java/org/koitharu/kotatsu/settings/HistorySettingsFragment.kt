@@ -20,7 +20,8 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
-import org.koitharu.kotatsu.scrobbling.data.ScrobblerRepository
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.common.ui.config.ScrobblerConfigActivity
 import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
@@ -130,28 +131,28 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			AppSettings.KEY_SHIKIMORI -> {
 				if (!shikimoriRepository.isAuthorized) {
 					launchScrobblerAuth(shikimoriRepository)
-					true
 				} else {
-					super.onPreferenceTreeClick(preference)
+					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.SHIKIMORI))
 				}
+				true
 			}
 
 			AppSettings.KEY_MAL -> {
 				if (!malRepository.isAuthorized) {
 					launchScrobblerAuth(malRepository)
-					true
 				} else {
-					super.onPreferenceTreeClick(preference)
+					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.MAL))
 				}
+				true
 			}
 
 			AppSettings.KEY_ANILIST -> {
 				if (!aniListRepository.isAuthorized) {
 					launchScrobblerAuth(aniListRepository)
-					true
 				} else {
-					super.onPreferenceTreeClick(preference)
+					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.ANILIST))
 				}
+				true
 			}
 
 			else -> super.onPreferenceTreeClick(preference)
@@ -217,7 +218,10 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 			}.show()
 	}
 
-	private fun bindScrobblerSummary(key: String, repository: ScrobblerRepository) {
+	private fun bindScrobblerSummary(
+		key: String,
+		repository: org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository
+	) {
 		val pref = findPreference<Preference>(key) ?: return
 		if (!repository.isAuthorized) {
 			pref.setSummary(R.string.disabled)
@@ -242,7 +246,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 		}
 	}
 
-	private fun launchScrobblerAuth(repository: ScrobblerRepository) {
+	private fun launchScrobblerAuth(repository: org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository) {
 		runCatching {
 			val intent = Intent(Intent.ACTION_VIEW)
 			intent.data = Uri.parse(repository.oauthUrl)

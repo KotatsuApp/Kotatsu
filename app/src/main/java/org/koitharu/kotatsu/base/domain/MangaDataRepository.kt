@@ -4,11 +4,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Size
 import androidx.room.withTransaction
-import java.io.File
-import java.io.InputStream
-import java.util.zip.ZipFile
-import javax.inject.Inject
-import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -17,7 +12,11 @@ import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.*
+import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
+import org.koitharu.kotatsu.core.db.entity.toEntities
+import org.koitharu.kotatsu.core.db.entity.toEntity
+import org.koitharu.kotatsu.core.db.entity.toManga
+import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.ReaderMode
@@ -27,6 +26,11 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
+import java.io.File
+import java.io.InputStream
+import java.util.zip.ZipFile
+import javax.inject.Inject
+import kotlin.math.roundToInt
 
 private const val MIN_WEBTOON_RATIO = 2
 
@@ -121,7 +125,7 @@ class MangaDataRepository @Inject constructor(
 			val request = Request.Builder()
 				.url(url)
 				.get()
-				.header(CommonHeaders.REFERER, page.referer)
+				.tag(MangaSource::class.java, page.source)
 				.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
 				.build()
 			okHttpClient.newCall(request).await().use {

@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.scrobbling.shikimori.domain
 
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.scrobbling.domain.Scrobbler
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblerService
-import org.koitharu.kotatsu.scrobbling.domain.model.ScrobblingStatus
+import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.settings
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -24,9 +23,6 @@ import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.scrobbling.anilist.ui.AniListSettingsFragment
-import org.koitharu.kotatsu.scrobbling.mal.ui.MALSettingsFragment
-import org.koitharu.kotatsu.scrobbling.shikimori.ui.ShikimoriSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
@@ -126,10 +122,8 @@ class SettingsActivity :
 
 	private fun openDefaultFragment() {
 		val fragment = when (intent?.action) {
-			Intent.ACTION_VIEW -> handleUri(intent.data) ?: return
 			ACTION_READER -> ReaderSettingsFragment()
 			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
-			ACTION_SHIKIMORI -> ShikimoriSettingsFragment()
 			ACTION_HISTORY -> HistorySettingsFragment()
 			ACTION_TRACKER -> TrackerSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
@@ -145,21 +139,6 @@ class SettingsActivity :
 		}
 	}
 
-	private fun handleUri(uri: Uri?): Fragment? {
-		when (uri?.host) {
-			HOST_SHIKIMORI_AUTH ->
-				return ShikimoriSettingsFragment.newInstance(authCode = uri.getQueryParameter("code"))
-
-			HOST_ANILIST_AUTH ->
-				return AniListSettingsFragment.newInstance(authCode = uri.getQueryParameter("code"))
-
-			HOST_MAL_AUTH ->
-				return MALSettingsFragment.newInstance(authCode = uri.getQueryParameter("code"))
-		}
-		finishAfterTransition()
-		return null
-	}
-
 	companion object {
 
 		private const val ACTION_READER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_READER_SETTINGS"
@@ -171,19 +150,11 @@ class SettingsActivity :
 		private const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
 		private const val EXTRA_SOURCE = "source"
 
-		private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
-		private const val HOST_ANILIST_AUTH = "anilist-auth"
-		private const val HOST_MAL_AUTH = "mal-auth"
-
 		fun newIntent(context: Context) = Intent(context, SettingsActivity::class.java)
 
 		fun newReaderSettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_READER)
-
-		fun newShikimoriSettingsIntent(context: Context) =
-			Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_SHIKIMORI)
 
 		fun newSuggestionsSettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
