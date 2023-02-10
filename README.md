@@ -24,7 +24,7 @@ Download APK directly from GitHub:
 * Tablet-optimized Material You UI
 * Standard and Webtoon-optimized reader
 * Notifications about new chapters with updates feed
-* Integration with manga tracking services: Shikimori, AniList, MAL (coming soon)
+* Integration with manga tracking services: Shikimori, AniList, MyAnimeList
 * Password/fingerprint protect access to the app
 * History and favourites [synchronization](https://github.com/KotatsuApp/kotatsu-syncserver) across devices
 
