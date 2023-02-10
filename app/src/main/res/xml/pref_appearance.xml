@@ -22,24 +22,34 @@
 		android:summary="@string/black_dark_theme_summary"
 		android:title="@string/black_dark_theme" />
 
+	<PreferenceCategory android:title="Manga list">
+
+		<ListPreference
+			android:entries="@array/list_modes"
+			android:key="list_mode_2"
+			android:title="@string/list_mode"
+			app:useSimpleSummaryProvider="true" />
+
+		<org.koitharu.kotatsu.settings.utils.SliderPreference
+			android:key="grid_size"
+			android:stepSize="5"
+			android:title="@string/grid_size"
+			android:valueFrom="50"
+			android:valueTo="150"
+			app:defaultValue="100" />
+
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
+			android:key="reading_indicators"
+			android:summary="@string/show_reading_indicators_summary"
+			android:title="@string/show_reading_indicators" />
+
+	</PreferenceCategory>
+
 	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
 		android:key="app_locale"
 		android:title="@string/language"
 		app:allowDividerAbove="true" />
-
-	<ListPreference
-		android:entries="@array/list_modes"
-		android:key="list_mode_2"
-		android:title="@string/list_mode"
-		app:useSimpleSummaryProvider="true" />
-
-	<org.koitharu.kotatsu.settings.utils.SliderPreference
-		android:key="grid_size"
-		android:stepSize="5"
-		android:title="@string/grid_size"
-		android:valueFrom="50"
-		android:valueTo="150"
-		app:defaultValue="100" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"

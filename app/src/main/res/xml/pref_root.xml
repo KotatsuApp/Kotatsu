@@ -25,6 +25,11 @@
 		android:title="@string/reader_settings" />
 
 	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.ServicesSettingsFragment"
+		android:icon="@drawable/ic_services"
+		android:title="@string/services" />
+
+	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment"
 		android:icon="@drawable/ic_feed"
 		android:title="@string/check_for_new_chapters" />

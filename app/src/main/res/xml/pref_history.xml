@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
-
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
-		android:key="reading_indicators"
-		android:summary="@string/show_reading_indicators_summary"
-		android:title="@string/show_reading_indicators" />
+	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<SwitchPreferenceCompat
 		android:key="history_exclude_nsfw"
@@ -19,25 +12,6 @@
 		android:key="dynamic_shortcuts"
 		android:summary="@string/history_shortcuts_summary"
 		android:title="@string/history_shortcuts" />
-
-	<PreferenceCategory android:title="@string/tracking">
-
-		<Preference
-			android:key="shikimori"
-			android:title="@string/shikimori"
-			app:icon="@drawable/ic_shikimori" />
-
-		<Preference
-			android:key="anilist"
-			android:title="@string/anilist"
-			app:icon="@drawable/ic_anilist" />
-
-		<Preference
-			android:key="mal"
-			android:title="@string/mal"
-			app:icon="@drawable/ic_mal" />
-
-	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/data_deletion">
 

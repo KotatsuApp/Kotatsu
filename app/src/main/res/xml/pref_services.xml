@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<Preference
+		android:key="sync"
+		android:persistent="false"
+		android:summary="@string/sync_title"
+		android:title="@string/sync" />
+
+	<PreferenceCategory android:title="@string/tracking">
+
+		<Preference
+			android:key="shikimori"
+			android:title="@string/shikimori"
+			app:icon="@drawable/ic_shikimori" />
+
+		<Preference
+			android:key="anilist"
+			android:title="@string/anilist"
+			app:icon="@drawable/ic_anilist" />
+
+		<Preference
+			android:key="mal"
+			android:title="@string/mal"
+			app:icon="@drawable/ic_mal" />
+
+	</PreferenceCategory>
+
+</PreferenceScreen>
