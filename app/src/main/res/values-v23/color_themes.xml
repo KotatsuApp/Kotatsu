@@ -174,4 +174,33 @@
 		<item name="colorSurfaceInverse">#352F30</item>
 		<item name="colorPrimaryInverse">#FFB1C8</item>
 	</style>
+
+	<style name="Theme.Kotatsu.Kanade">
+		<item name="colorPrimary">#5E5E5E</item>
+		<item name="colorOnPrimary">#FFFFFF</item>
+		<item name="colorPrimaryContainer">#BDBDBD</item>
+		<item name="colorOnPrimaryContainer">#494949</item>
+		<item name="colorSecondary">#757575</item>
+		<item name="colorOnSecondary">#FFFFFF</item>
+		<item name="colorSecondaryContainer">#CCCCCC</item>
+		<item name="colorOnSecondaryContainer">#474747</item>
+		<item name="colorTertiary">#434343</item>
+		<item name="colorOnTertiary">#FFFFFF</item>
+		<item name="colorTertiaryContainer">#919191</item>
+		<item name="colorOnTertiaryContainer">#373737</item>
+		<item name="colorError">#BA1A1A</item>
+		<item name="colorErrorContainer">#FFDAD6</item>
+		<item name="colorOnError">#FFFFFF</item>
+		<item name="colorOnErrorContainer">#410002</item>
+		<item name="android:colorBackground">#E4E4E4</item>
+		<item name="colorOnBackground">#202020</item>
+		<item name="colorSurface">#E4E4E4</item>
+		<item name="colorOnSurface">#272727</item>
+		<item name="colorSurfaceVariant">#CCCCCC</item>
+		<item name="colorOnSurfaceVariant">#616161</item>
+		<item name="colorOutline">#818181</item>
+		<item name="colorOnSurfaceInverse">#FAEEEF</item>
+		<item name="colorSurfaceInverse">#E4E4E4</item>
+		<item name="colorPrimaryInverse">#8F8F8F</item>
+	</style>
 </resources>
