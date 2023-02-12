@@ -55,4 +55,25 @@
     <string name="download_complete">تم التنزيل</string>
     <string name="text_clear_history_prompt">هل تريد محو سجل القراءة بالكامل بشكل دائم؟</string>
     <string name="_s_deleted_from_local_storage">حذفت من تخزين محلي</string>
+    <string name="_s_removed_from_history">\"%s\" تم ازالته من السجل</string>
+    <string name="wait_for_loading_finish">انتظر حتى ينتهي التحميل …</string>
+    <string name="save_page">احفظ الصفحة</string>
+    <string name="page_saved">حفظت</string>
+    <string name="standard">اساسي</string>
+    <string name="no_description">لا يوجد وصف</string>
+    <string name="history_and_cache">التاريخ وذاكرة التخزين المؤقت</string>
+    <string name="clear_pages_cache">مسح ذاكرة التخزين المؤقت للصفحة</string>
+    <string name="cache">ذاكرة التخزين المؤقت</string>
+    <string name="webtoon">ويبتون</string>
+    <string name="read_mode">وضع القراءة</string>
+    <string name="search_on_s">بحث على %s</string>
+    <string name="delete_manga">حذف المانغا</string>
+    <string name="text_delete_local_manga">حذف \"%s\" من الجهاز نهائيا؟</string>
+    <string name="reader_settings">إعدادات القراءة</string>
+    <string name="switch_pages">تغییر صفحات</string>
+    <string name="delete">حذف</string>
+    <string name="share_image">شارك الصورة</string>
+    <string name="text_file_not_supported">إما أن تختار ملف ZIP أو CBZ.</string>
+    <string name="_import">استورد</string>
+    <string name="operation_not_supported">هذا خيار غير مدعم</string>
 </resources>
