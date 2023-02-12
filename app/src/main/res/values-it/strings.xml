@@ -303,7 +303,7 @@
     <string name="appwidget_shelf_description">Manga dai preferiti</string>
     <string name="appwidget_recent_description">I manga letti di recente</string>
     <string name="report">Segnala</string>
-    <string name="tracking">Tracciamento</string>
+    <string name="tracking">Monitoraggio</string>
     <string name="status_reading">Lettura</string>
     <string name="status_re_reading">Rilettura</string>
     <string name="status_on_hold">In attesa</string>
@@ -316,7 +316,7 @@
     <string name="logout">Esci</string>
     <string name="status_planned">Pianificato</string>
     <string name="status_completed">Finito</string>
-    <string name="status_dropped">Abbandonato</string>
+    <string name="status_dropped">Caduto</string>
     <string name="invalid_domain_message">Dominio non valido</string>
     <string name="select_range">Seleziona l\'intervallo</string>
     <string name="not_found_404">Contenuto non trovato o rimosso</string>
@@ -407,4 +407,10 @@
     <string name="theme_name_october">Ottobre</string>
     <string name="theme_name_dynamic">Dinamico</string>
     <string name="color_theme">Schema colori</string>
+    <string name="theme_name_asuka"></string>
+    <string name="show_in_grid_view">Mostra nella vista griglia</string>
+    <string name="theme_name_miku"></string>
+    <string name="scrobbling_empty_hint">Per tenere traccia dell\'avanzamento della lettura, seleziona Menu → Traccia nella schermata dei dettagli del manga.</string>
+    <string name="nothing_here">Non c\'è niente qui</string>
+    <string name="services">Servizi</string>
 </resources>

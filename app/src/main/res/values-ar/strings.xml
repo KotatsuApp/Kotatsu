@@ -76,4 +76,6 @@
     <string name="text_file_not_supported">إما أن تختار ملف ZIP أو CBZ.</string>
     <string name="_import">استورد</string>
     <string name="operation_not_supported">هذا خيار غير مدعم</string>
+    <string name="grid_size">حجم الشبكة</string>
+    <string name="volume_buttons">أزرار الصوت</string>
 </resources>

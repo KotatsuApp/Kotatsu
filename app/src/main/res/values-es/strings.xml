@@ -414,4 +414,9 @@
     <string name="theme_name_rikka">Rikka</string>
     <string name="theme_name_sakura">Sakura</string>
     <string name="theme_name_miku">Miku</string>
+    <string name="nothing_here">No hay nada aquí</string>
+    <string name="theme_name_mamimi">Mamimi</string>
+    <string name="theme_name_kanade">Canadé</string>
+    <string name="scrobbling_empty_hint">Para realizar un seguimiento del progreso de la lectura, seleccione Menú → Seguimiento en la pantalla de detalles del manga.</string>
+    <string name="services">Servicios</string>
 </resources>
