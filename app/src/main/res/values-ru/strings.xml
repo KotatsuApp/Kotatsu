@@ -403,4 +403,5 @@
     <string name="share_logs">Поделиться логами</string>
     <string name="enable_logging">Включить логирование</string>
     <string name="enable_logging_summary">Записывать некоторые действия для отладки</string>
+    <string name="show_suspicious_content">Отображать сомнительный контент</string>
 </resources>
