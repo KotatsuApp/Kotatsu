@@ -5,7 +5,6 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
@@ -14,6 +13,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsLiveData
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.settings.tools.model.StorageUsage
+import javax.inject.Inject
 
 @HiltViewModel
 class ToolsViewModel @Inject constructor(
@@ -25,7 +25,7 @@ class ToolsViewModel @Inject constructor(
 	val appUpdate = appUpdateRepository.observeAvailableUpdate()
 		.asLiveData(viewModelScope.coroutineContext)
 
-	val storageUsage: LiveData<StorageUsage> = liveData(
+	val storageUsage: LiveData<StorageUsage?> = liveData(
 		context = viewModelScope.coroutineContext + Dispatchers.Default,
 	) {
 		emit(collectStorageUsage())

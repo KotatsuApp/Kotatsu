@@ -34,9 +34,8 @@
 			android:visibility="gone"
 			tools:visibility="visible" />
 
-		<include
-			android:id="@+id/layout_storage"
-			layout="@layout/layout_memory_usage"
+		<org.koitharu.kotatsu.settings.tools.views.MemoryUsageView
+			android:id="@+id/memory_usage_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content" />
 
