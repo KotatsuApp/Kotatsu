@@ -402,4 +402,15 @@
     <string name="enable_logging">启用日志记录</string>
     <string name="share_logs">分享日志</string>
     <string name="enable_logging_summary">出于调试目的记录某些操作</string>
+    <string name="show_suspicious_content">显示可疑内容</string>
+    <string name="theme_name_dynamic">动态</string>
+    <string name="color_theme">颜色方案</string>
+    <string name="theme_name_mint">薄荷绿</string>
+    <string name="theme_name_october">October</string>
+    <string name="show_in_grid_view">用网格视图显示</string>
+    <string name="theme_name_miku">Miku</string>
+    <string name="theme_name_asuka">Asuka</string>
+    <string name="theme_name_mion">Mion</string>
+    <string name="theme_name_rikka">Rikka</string>
+    <string name="theme_name_sakura">Sakura</string>
 </resources>
