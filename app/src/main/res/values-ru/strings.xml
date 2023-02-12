@@ -7,14 +7,14 @@
     <string name="history">История</string>
     <string name="error_occurred">Произошла ошибка</string>
     <string name="network_error">Ошибка сети</string>
-    <string name="details">Подробности</string>
+    <string name="details">Подробный</string>
     <string name="chapters">Главы</string>
     <string name="list">Список</string>
     <string name="detailed_list">Подробный список</string>
-    <string name="grid">Таблица</string>
+    <string name="grid">Сетка</string>
     <string name="list_mode">Вид списка</string>
     <string name="settings">Настройки</string>
-    <string name="remote_sources">Онлайн каталоги</string>
+    <string name="remote_sources">Источники контента</string>
     <string name="loading_">Загрузка…</string>
     <string name="chapter_d_of_d">Глава %1$d из %2$d</string>
     <string name="close">Закрыть</string>
@@ -48,7 +48,7 @@
     <string name="theme">Тема</string>
     <string name="light">Светлая</string>
     <string name="dark">Тёмная</string>
-    <string name="automatic">Как в системе</string>
+    <string name="automatic">Системная</string>
     <string name="pages">Страницы</string>
     <string name="clear">Очистить</string>
     <string name="text_clear_history_prompt">Очистить всю историю чтения полностью\?</string>
@@ -123,7 +123,7 @@
     <string name="text_local_holder_secondary">Сохраните что-нибудь из онлайн-каталога или импортируйте из файла.</string>
     <string name="manga_shelf">Полка</string>
     <string name="recent_manga">Недавнее</string>
-    <string name="pages_animation">Анимация листания</string>
+    <string name="pages_animation">Анимация пролистывания</string>
     <string name="manga_save_location">Папка для загрузок</string>
     <string name="not_available">Недоступно</string>
     <string name="cannot_find_available_storage">Нет доступного хранилища</string>
@@ -226,7 +226,7 @@
     <string name="system_default">По умолчанию</string>
     <string name="exclude_nsfw_from_history">Исключить NSFW мангу из истории</string>
     <string name="error_empty_name">Вы должны ввести имя</string>
-    <string name="show_pages_numbers">Показывать номера страницы</string>
+    <string name="show_pages_numbers">Нумерация страниц</string>
     <string name="enabled_sources">Включенные источники</string>
     <string name="available_sources">Доступные источники</string>
     <string name="dynamic_theme">Динамическая тема</string>
@@ -249,7 +249,7 @@
     <string name="importing_progress">Импорт манги: %1$d из %2$d</string>
     <string name="reset_filter">Сбросить фильтр</string>
     <string name="find_genre">Поиск по жанрам</string>
-    <string name="onboard_text">Выберите языки, на которых Вы хоите читать мангу. Это можно будет изменить позже в настройках.</string>
+    <string name="onboard_text">Выберите языки, на которых Вы хотите читать мангу. Это можно будет изменить позже в настройках.</string>
     <string name="never">Никогда</string>
     <string name="only_using_wifi">Только по Wi-Fi</string>
     <string name="always">Всегда</string>
@@ -395,7 +395,7 @@
     <string name="network_unavailable">Сеть недоступна</string>
     <string name="clear_new_chapters_counters">Также очистить информацию о новых главах</string>
     <string name="server_error">Внутренняя ошибка сервера (%1$d). Повторите попытку позже</string>
-    <string name="compact">Компактно</string>
+    <string name="compact">Компактный</string>
     <string name="source_disabled">Источник отключен</string>
     <string name="prefetch_content">Предварительная загрузка содержимого</string>
     <string name="mark_as_current">Пометить как текущую</string>
@@ -408,4 +408,15 @@
     <string name="theme_name_dynamic">Динамическая</string>
     <string name="color_theme">Цветовая схема</string>
     <string name="theme_name_october">Октябрь</string>
+    <string name="show_in_grid_view">Показать в виде сетки</string>
+    <string name="theme_name_miku">Мику</string>
+    <string name="theme_name_asuka">Аска</string>
+    <string name="theme_name_mion">Мион</string>
+    <string name="theme_name_rikka">Рикка</string>
+    <string name="theme_name_sakura">Сакура</string>
+    <string name="services">Службы</string>
+    <string name="theme_name_mamimi">Мамими</string>
+    <string name="theme_name_kanade">Канаде</string>
+    <string name="scrobbling_empty_hint">Чтобы отслеживать прогресс чтения, выберите «Меню» → «Отслеживать» на экране сведений о манге.</string>
+    <string name="nothing_here">Здесь ничего нет</string>
 </resources>
