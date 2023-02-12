@@ -403,4 +403,15 @@
     <string name="share_logs">Compartir los registros</string>
     <string name="enable_logging_summary">Grabar algunas acciones para depurar</string>
     <string name="enable_logging">Activar el registro</string>
+    <string name="show_suspicious_content">Mostrar contenido sospechoso</string>
+    <string name="theme_name_mint">Mint</string>
+    <string name="theme_name_dynamic">Dinámico</string>
+    <string name="color_theme">Esquema de colores</string>
+    <string name="theme_name_october">Octubre</string>
+    <string name="show_in_grid_view">Mostrar en vista de cuadrícula</string>
+    <string name="theme_name_asuka">Asuka</string>
+    <string name="theme_name_mion">Mion</string>
+    <string name="theme_name_rikka">Rikka</string>
+    <string name="theme_name_sakura">Sakura</string>
+    <string name="theme_name_miku">Miku</string>
 </resources>
