@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.shelf.domain.ShelfSection
 import org.koitharu.kotatsu.utils.ext.connectivityManager
+import org.koitharu.kotatsu.utils.ext.filterToSet
 import org.koitharu.kotatsu.utils.ext.getEnumValue
 import org.koitharu.kotatsu.utils.ext.observe
 import org.koitharu.kotatsu.utils.ext.putEnumValue
@@ -183,7 +184,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		}
 
 	var hiddenSources: Set<String>
-		get() = prefs.getStringSet(KEY_SOURCES_HIDDEN, null) ?: emptySet()
+		get() = prefs.getStringSet(KEY_SOURCES_HIDDEN, null)?.filterToSet { name ->
+			remoteSources.any { it.name == name }
+		}.orEmpty()
 		set(value) = prefs.edit { putStringSet(KEY_SOURCES_HIDDEN, value) }
 
 	val isSourcesSelected: Boolean

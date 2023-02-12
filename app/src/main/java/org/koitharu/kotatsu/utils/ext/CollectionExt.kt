@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.utils.ext
 
 import androidx.collection.ArraySet
-import java.util.*
+import java.util.Collections
 
 fun <T> MutableList<T>.move(sourceIndex: Int, targetIndex: Int) {
 	if (sourceIndex <= targetIndex) {
@@ -11,14 +11,12 @@ fun <T> MutableList<T>.move(sourceIndex: Int, targetIndex: Int) {
 	}
 }
 
-@Suppress("FunctionName")
 inline fun <T> MutableSet(size: Int, init: (index: Int) -> T): MutableSet<T> {
 	val set = ArraySet<T>(size)
 	repeat(size) { index -> set.add(init(index)) }
 	return set
 }
 
-@Suppress("FunctionName")
 inline fun <T> Set(size: Int, init: (index: Int) -> T): Set<T> = when (size) {
 	0 -> emptySet()
 	1 -> Collections.singleton(init(0))
@@ -38,4 +36,8 @@ fun <K, V> Map<K, V>.findKeyByValue(value: V): K? {
 		}
 	}
 	return null
+}
+
+inline fun <T> Collection<T>.filterToSet(predicate: (T) -> Boolean): Set<T> {
+	return filterTo(ArraySet(size), predicate)
 }
