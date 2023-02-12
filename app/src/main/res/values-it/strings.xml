@@ -407,9 +407,7 @@
     <string name="theme_name_october">Ottobre</string>
     <string name="theme_name_dynamic">Dinamico</string>
     <string name="color_theme">Schema colori</string>
-    <string name="theme_name_asuka"></string>
     <string name="show_in_grid_view">Mostra nella vista griglia</string>
-    <string name="theme_name_miku"></string>
     <string name="scrobbling_empty_hint">Per tenere traccia dell\'avanzamento della lettura, seleziona Menu → Traccia nella schermata dei dettagli del manga.</string>
     <string name="nothing_here">Non c\'è niente qui</string>
     <string name="services">Servizi</string>
