@@ -398,4 +398,14 @@
     <string name="source_disabled">Source désactivée</string>
     <string name="prefetch_content">Préchargement du contenu</string>
     <string name="mark_as_current">Marquer comme actuel</string>
+    <string name="share_logs">Partager les journaux</string>
+    <string name="enable_logging">Activer la journalisation</string>
+    <string name="enable_logging_summary">Enregistrer certaines actions à des fins de débogage</string>
+    <string name="language">Langue</string>
+    <string name="show_suspicious_content">Afficher le contenu suspect</string>
+    <string name="theme_name_mint">Menthe</string>
+    <string name="theme_name_dynamic">Dynamique</string>
+    <string name="color_theme">Schéma de couleurs</string>
+    <string name="theme_name_october">Octobre</string>
+    <string name="show_in_grid_view">Afficher en vue grille</string>
 </resources>

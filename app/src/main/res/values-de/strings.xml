@@ -394,4 +394,16 @@
     <string name="prefetch_content">Vorladen von Inhalten</string>
     <string name="mark_as_current">Als aktuell markieren</string>
     <string name="webtoon_zoom">Webtoon-Zoom</string>
+    <string name="share_logs">Protokolle teilen</string>
+    <string name="enable_logging">Protokollierung aktivieren</string>
+    <string name="language">Sprache</string>
+    <string name="enable_logging_summary">Einige Aktionen zu Debug-Zwecken aufzeichnen</string>
+    <string name="history_shortcuts">Kürzlich erstellete Verknüpfungen zeigen</string>
+    <string name="history_shortcuts_summary">Neueste Manga durch langes Drücken auf das Anwendungssymbol verfügbar machen</string>
+    <string name="show_suspicious_content">Verdächtige Inhalte anzeigen</string>
+    <string name="status_dropped">Abgebrochen</string>
+    <string name="color_theme">Farbschema</string>
+    <string name="theme_name_october">Oktober</string>
+    <string name="theme_name_mint">Minze</string>
+    <string name="theme_name_dynamic">Dynamisch</string>
 </resources>
