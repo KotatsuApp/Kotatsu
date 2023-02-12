@@ -398,4 +398,13 @@
     <string name="manga_error_description_pattern">Dettagli dell\'errore:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;1. Prova ad &lt;a href=%2$s&gt;aprire il manga in un browser web&lt;/a&gt; per assicurarsi che sia disponibile sulla sua fonte&lt;br&gt;2. Se è disponibile, inviare una segnalazione di errore agli sviluppatori.</string>
     <string name="text_unsaved_changes_prompt">Salvare o eliminare le modifiche non salvate\?</string>
     <string name="discard">Abbandona</string>
+    <string name="language">Lingua</string>
+    <string name="share_logs">Condividi i registri</string>
+    <string name="enable_logging_summary">Registra alcune azioni a scopo di debug</string>
+    <string name="enable_logging">Abilita la registrazione</string>
+    <string name="show_suspicious_content">Mostra il contenuto sospetto</string>
+    <string name="theme_name_mint">Menta</string>
+    <string name="theme_name_october">Ottobre</string>
+    <string name="theme_name_dynamic">Dinamico</string>
+    <string name="color_theme">Schema colori</string>
 </resources>
