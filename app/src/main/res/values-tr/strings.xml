@@ -402,4 +402,5 @@
     <string name="share_logs">Günlükleri paylaş</string>
     <string name="enable_logging">Günlük kaydını etkinleştir</string>
     <string name="enable_logging_summary">Hata ayıklama amacıyla bazı eylemleri kaydedin</string>
+    <string name="show_suspicious_content">Şüpheli içeriği göster</string>
 </resources>
