@@ -414,4 +414,5 @@
     <string name="removed_from_s">Выдалена з \"%s\"</string>
     <string name="options">Параметры</string>
     <string name="downloading_manga">Спампоўка мангі</string>
+    <string name="seconds_pattern">%s с</string>
 </resources>

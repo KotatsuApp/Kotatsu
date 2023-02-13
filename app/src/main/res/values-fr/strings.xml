@@ -408,4 +408,7 @@
     <string name="color_theme">Schéma de couleurs</string>
     <string name="theme_name_october">Octobre</string>
     <string name="show_in_grid_view">Afficher en vue grille</string>
+    <string name="scrobbling_empty_hint">Pour suivre la progression de la lecture, sélectionnez Menu → Suivre sur l\'écran des détails du manga.</string>
+    <string name="services">Prestations de service</string>
+    <string name="nothing_here">Il n\'y a rien ici</string>
 </resources>
