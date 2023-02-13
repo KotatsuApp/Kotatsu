@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.byte2HexFormatted
 import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
@@ -31,6 +32,7 @@ private const val CERT_SHA1 = "2C:19:C7:E8:07:61:2B:8E:94:51:1B:FD:72:67:07:64:5
 @Singleton
 class AppUpdateRepository @Inject constructor(
 	@ApplicationContext private val context: Context,
+	private val settings: AppSettings,
 	private val okHttp: OkHttpClient,
 ) {
 
@@ -64,7 +66,7 @@ class AppUpdateRepository @Inject constructor(
 			val currentVersion = VersionId(BuildConfig.VERSION_NAME)
 			val available = getAvailableVersions().asArrayList()
 			available.sortBy { it.versionId }
-			if (currentVersion.isStable) {
+			if (currentVersion.isStable && !settings.isUnstableUpdatesAllowed) {
 				available.retainAll { it.versionId.isStable }
 			}
 			available.maxByOrNull { it.versionId }

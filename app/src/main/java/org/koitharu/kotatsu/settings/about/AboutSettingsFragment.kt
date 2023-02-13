@@ -6,12 +6,15 @@ import android.view.View
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
+import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.github.AppVersion
+import org.koitharu.kotatsu.core.github.VersionId
+import org.koitharu.kotatsu.core.github.isStable
 import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.ShareHelper
@@ -30,6 +33,9 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 		findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
 			title = getString(R.string.app_version, BuildConfig.VERSION_NAME)
 			isEnabled = viewModel.isUpdateSupported
+		}
+		findPreference<SwitchPreferenceCompat>(AppSettings.KEY_UPDATES_UNSTABLE)?.run {
+			isEnabled = VersionId(BuildConfig.VERSION_NAME).isStable
 		}
 	}
 

@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 514
-		versionName '4.3.3'
+		versionCode 515
+		versionName '4.4-beta1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -107,7 +107,7 @@ dependencies {
 	implementation 'androidx.recyclerview:recyclerview:1.2.1'
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-beta01'
 	implementation 'androidx.preference:preference-ktx:1.2.0'
-	implementation 'androidx.work:work-runtime-ktx:2.7.1'
+	implementation 'androidx.work:work-runtime-ktx:2.8.0'
 	implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha05'
 	implementation 'com.google.android.material:material:1.8.0'
 	//noinspection LifecycleAnnotationProcessorWithJava8

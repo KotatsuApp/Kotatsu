@@ -170,6 +170,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isDynamicShortcutsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SHORTCUTS, true)
 
+	val isUnstableUpdatesAllowed: Boolean
+		get() = prefs.getBoolean(KEY_UPDATES_UNSTABLE, false)
+
 	fun isContentPrefetchEnabled(): Boolean {
 		val policy = NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
 		return policy.isNetworkAllowed(connectivityManager)
@@ -376,6 +379,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOGGING_ENABLED = "logging"
 		const val KEY_LOGS_SHARE = "logs_share"
 		const val KEY_SOURCES_GRID = "sources_grid"
+		const val KEY_UPDATES_UNSTABLE = "updates_unstable"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

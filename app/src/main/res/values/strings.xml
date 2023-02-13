@@ -421,4 +421,6 @@
 	<string name="nothing_here">There is nothing here</string>
 	<string name="scrobbling_empty_hint">To track reading progress, select Menu → Track on the manga details screen.</string>
 	<string name="services">Services</string>
+	<string name="allow_unstable_updates">Allow unstable updates</string>
+	<string name="allow_unstable_updates_summary">Propose updates to beta versions of the app</string>
 </resources>
