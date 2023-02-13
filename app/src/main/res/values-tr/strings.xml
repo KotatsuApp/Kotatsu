@@ -403,4 +403,10 @@
     <string name="enable_logging">Günlük kaydını etkinleştir</string>
     <string name="enable_logging_summary">Hata ayıklama amacıyla bazı eylemleri kaydedin</string>
     <string name="show_suspicious_content">Şüpheli içeriği göster</string>
+    <string name="services">Hizmetler</string>
+    <string name="scrobbling_empty_hint">Okuma ilerlemesini izlemek için manga ayrıntıları ekranında Menü → İzle\'yi seçin.</string>
+    <string name="nothing_here">burada hiçbir şey yok</string>
+    <string name="theme_name_dynamic">Dinamik</string>
+    <string name="color_theme">renk vurgusu</string>
+    <string name="show_in_grid_view">Izgara görünümünde göster</string>
 </resources>

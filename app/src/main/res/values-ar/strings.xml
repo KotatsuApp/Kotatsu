@@ -78,4 +78,9 @@
     <string name="operation_not_supported">هذا خيار غير مدعم</string>
     <string name="grid_size">حجم الشبكة</string>
     <string name="volume_buttons">أزرار الصوت</string>
+    <string name="taps_on_edges">النقر على حواف الشاشة</string>
+    <string name="_continue">يكمل</string>
+    <string name="network_consumption_warning">هذا يمكن أن يؤدي إلى ارتفاع استهلاك حركة المرور.</string>
+    <string name="dont_ask_again">لا تسأل مرة أخرى</string>
+    <string name="warning">تحذير</string>
 </resources>

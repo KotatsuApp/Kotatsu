@@ -20,7 +20,7 @@
     <string name="favourites">Уподобання</string>
     <string name="history">Історія</string>
     <string name="error_occurred">Сталася помилка</string>
-    <string name="chapters">Розділи</string>
+    <string name="chapters">Глави</string>
     <string name="list">Список</string>
     <string name="detailed_list">Детальний список</string>
     <string name="list_mode">Режим списку</string>
@@ -88,7 +88,7 @@
     <string name="save_manga">Зберегти</string>
     <string name="notifications">Сповіщення</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Увімкнено %1$d з %2$d</string>
-    <string name="new_chapters">Нові розділи</string>
+    <string name="new_chapters">Нові глави</string>
     <string name="download">Завантажити</string>
     <string name="read_from_start">Читати з початку</string>
     <string name="restart">Перезавантажити</string>
@@ -399,4 +399,21 @@
     <string name="source_disabled">Джерело відключено</string>
     <string name="mark_as_current">Позначити як актуальне</string>
     <string name="language">Мова</string>
+    <string name="theme_name_kanade">Канаде</string>
+    <string name="services">Служби</string>
+    <string name="nothing_here">Тут нічого нема</string>
+    <string name="scrobbling_empty_hint">Щоб відстежувати прогрес читання, виберіть Меню → Відстежити на екрані деталей манги.</string>
+    <string name="theme_name_miku">Міку</string>
+    <string name="theme_name_asuka">Аска</string>
+    <string name="theme_name_mion">Міон</string>
+    <string name="theme_name_rikka">Рікка</string>
+    <string name="theme_name_sakura">Сакура</string>
+    <string name="share_logs">Поділиться логами</string>
+    <string name="enable_logging">Увімкнути логування</string>
+    <string name="enable_logging_summary">Записувати деякі дії з метою подальшого налагодження</string>
+    <string name="theme_name_mamimi">Мамімі</string>
+    <string name="show_suspicious_content">Показувати сумнівний контент</string>
+    <string name="theme_name_dynamic">Динамічний</string>
+    <string name="color_theme">Колірний акцент</string>
+    <string name="show_in_grid_view">Показати у вигляді сітки</string>
 </resources>
