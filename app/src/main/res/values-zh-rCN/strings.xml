@@ -413,4 +413,9 @@
     <string name="theme_name_mion">Mion</string>
     <string name="theme_name_rikka">Rikka</string>
     <string name="theme_name_sakura">Sakura</string>
+    <string name="services">服务</string>
+    <string name="theme_name_mamimi">Mamimi</string>
+    <string name="theme_name_kanade">Kanade</string>
+    <string name="nothing_here">这里什么也没有</string>
+    <string name="scrobbling_empty_hint">要跟踪阅读进度，在漫画详情屏幕上选中“菜单→ 跟踪。</string>
 </resources>
