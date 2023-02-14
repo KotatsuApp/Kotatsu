@@ -1,9 +1,6 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.selector
 
-import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +17,7 @@ import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
+import org.koitharu.kotatsu.base.ui.util.CollapseActionViewCallback
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.databinding.SheetScrobblingSelectorBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -43,7 +41,6 @@ class ScrobblingSelectorBottomSheet :
 	View.OnClickListener,
 	MenuItem.OnActionExpandListener,
 	SearchView.OnQueryTextListener,
-	DialogInterface.OnKeyListener,
 	TabLayout.OnTabSelectedListener,
 	ListStateHolderListener {
 
@@ -53,6 +50,8 @@ class ScrobblingSelectorBottomSheet :
 	@Inject
 	lateinit var coil: ImageLoader
 
+	private var collapsibleActionViewCallback: CollapseActionViewCallback? = null
+
 	private val viewModel by assistedViewModels {
 		viewModelFactory.create(
 			requireArguments().requireParcelable<ParcelableManga>(MangaIntent.KEY_MANGA).manga,
@@ -61,12 +60,6 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingSelectorBinding {
 		return SheetScrobblingSelectorBinding.inflate(inflater, container, false)
-	}
-
-	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		return super.onCreateDialog(savedInstanceState).also {
-			it.setOnKeyListener(this)
-		}
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,6 +95,11 @@ class ScrobblingSelectorBottomSheet :
 		}
 	}
 
+	override fun onDestroyView() {
+		super.onDestroyView()
+		collapsibleActionViewCallback = null
+	}
+
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_done -> viewModel.onDoneClick()
@@ -126,6 +124,7 @@ class ScrobblingSelectorBottomSheet :
 
 	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
 		setExpanded(isExpanded = true, isLocked = true)
+		collapsibleActionViewCallback?.onMenuItemActionExpand(item)
 		return true
 	}
 
@@ -133,6 +132,7 @@ class ScrobblingSelectorBottomSheet :
 		val searchView = (item.actionView as? SearchView) ?: return false
 		searchView.setQuery("", false)
 		searchView.post { setExpanded(isExpanded = false, isLocked = false) }
+		collapsibleActionViewCallback?.onMenuItemActionCollapse(item)
 		return true
 	}
 
@@ -146,19 +146,6 @@ class ScrobblingSelectorBottomSheet :
 	}
 
 	override fun onQueryTextChange(newText: String?): Boolean = false
-
-	override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			val menuItem = binding.headerBar.menu.findItem(R.id.action_search) ?: return false
-			if (menuItem.isActionViewExpanded) {
-				if (event?.action == KeyEvent.ACTION_UP) {
-					menuItem.collapseActionView()
-				}
-				return true
-			}
-		}
-		return false
-	}
 
 	override fun onTabSelected(tab: TabLayout.Tab) {
 		viewModel.setScrobblerIndex(tab.position)
@@ -193,6 +180,9 @@ class ScrobblingSelectorBottomSheet :
 		searchView.setOnQueryTextListener(this)
 		searchView.setIconifiedByDefault(false)
 		searchView.queryHint = searchMenuItem.title
+		collapsibleActionViewCallback = CollapseActionViewCallback(searchMenuItem).also {
+			onBackPressedDispatcher.addCallback(it)
+		}
 	}
 
 	private fun initTabs() {

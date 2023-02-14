@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.browser
 
-interface BrowserCallback {
+interface BrowserCallback : OnHistoryChangedListener {
 
 	fun onLoadingStateChanged(isLoading: Boolean)
 

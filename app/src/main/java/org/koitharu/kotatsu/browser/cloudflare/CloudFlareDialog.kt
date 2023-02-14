@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebSettings
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isInvisible
 import androidx.fragment.app.setFragmentResult
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.Headers
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
+import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
@@ -30,6 +32,8 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 
 	@Inject
 	lateinit var cookieJar: MutableCookieJar
+
+	private var onBackPressedCallback: WebViewBackPressedCallback? = null
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -58,11 +62,19 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 	override fun onDestroyView() {
 		binding.webView.stopLoading()
 		binding.webView.destroy()
+		onBackPressedCallback = null
 		super.onDestroyView()
 	}
 
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
 		return super.onBuildDialog(builder).setNegativeButton(android.R.string.cancel, null)
+	}
+
+	override fun onDialogCreated(dialog: AlertDialog) {
+		super.onDialogCreated(dialog)
+		onBackPressedCallback = WebViewBackPressedCallback(binding.webView).also {
+			dialog.onBackPressedDispatcher.addCallback(it)
+		}
 	}
 
 	override fun onResume() {
@@ -87,6 +99,10 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 	override fun onCheckPassed() {
 		pendingResult.putBoolean(EXTRA_RESULT, true)
 		dismissAllowingStateLoss()
+	}
+
+	override fun onHistoryChanged() {
+		onBackPressedCallback?.onHistoryChanged()
 	}
 
 	companion object {

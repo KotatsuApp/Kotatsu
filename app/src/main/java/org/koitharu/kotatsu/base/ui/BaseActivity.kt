@@ -82,6 +82,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = if (item.itemId == android.R.id.home) {
+		@Suppress("DEPRECATION")
 		onBackPressed()
 		true
 	} else super.onOptionsItemSelected(item)
@@ -130,7 +131,8 @@ abstract class BaseActivity<B : ViewBinding> :
 		window.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
 	}
 
-	@Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
+	@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+	@Deprecated("Should not be used")
 	override fun onBackPressed() {
 		if ( // https://issuetracker.google.com/issues/139738913
 			Build.VERSION.SDK_INT == Build.VERSION_CODES.Q &&

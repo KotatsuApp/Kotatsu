@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import androidx.activity.OnBackPressedDispatcher
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -29,6 +30,9 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 
 	val isExpanded: Boolean
 		get() = behavior?.state == BottomSheetBehavior.STATE_EXPANDED
+
+	val onBackPressedDispatcher: OnBackPressedDispatcher
+		get() = (requireDialog() as AppBottomSheetDialog).onBackPressedDispatcher
 
 	final override fun onCreateView(
 		inflater: LayoutInflater,

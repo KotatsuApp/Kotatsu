@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.SparseIntArray
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
@@ -84,6 +85,7 @@ class MainActivity :
 	private val viewModel by viewModels<MainViewModel>()
 	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()
 	private val voiceInputLauncher = registerForActivityResult(VoiceInputContract(), VoiceInputCallback())
+	private val closeSearchCallback = CloseSearchCallback()
 	private lateinit var navigationDelegate: MainNavigationDelegate
 
 	override val appBar: AppBarLayout
@@ -121,8 +123,9 @@ class MainActivity :
 		navigationDelegate.addOnFragmentChangedListener(this)
 		navigationDelegate.onCreate(savedInstanceState)
 
-		onBackPressedDispatcher.addCallback(navigationDelegate)
 		onBackPressedDispatcher.addCallback(ExitCallback(this, binding.container))
+		onBackPressedDispatcher.addCallback(navigationDelegate)
+		onBackPressedDispatcher.addCallback(closeSearchCallback)
 
 		if (savedInstanceState == null) {
 			onFirstStart()
@@ -140,21 +143,6 @@ class MainActivity :
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
 		adjustSearchUI(isSearchOpened(), animate = false)
-	}
-
-	override fun onBackPressed() {
-		val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
-		binding.searchView.clearFocus()
-		when {
-			fragment != null -> supportFragmentManager.commit {
-				setReorderingAllowed(true)
-				remove(fragment)
-				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-				runOnCommit { onSearchClosed() }
-			}
-
-			else -> super.onBackPressed()
-		}
 	}
 
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
@@ -300,11 +288,13 @@ class MainActivity :
 
 	private fun onSearchOpened() {
 		adjustSearchUI(isOpened = true, animate = true)
+		closeSearchCallback.isEnabled = true
 	}
 
 	private fun onSearchClosed() {
 		binding.searchView.hideKeyboard()
 		adjustSearchUI(isOpened = false, animate = true)
+		closeSearchCallback.isEnabled = false
 	}
 
 	private fun showNav(visible: Boolean) {
@@ -403,6 +393,25 @@ class MainActivity :
 		override fun onActivityResult(result: String?) {
 			if (result != null) {
 				binding.searchView.query = result
+			}
+		}
+	}
+
+	private inner class CloseSearchCallback : OnBackPressedCallback(false) {
+
+		override fun handleOnBackPressed() {
+			val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
+			binding.searchView.clearFocus()
+			if (fragment == null) {
+				// this should not happen but who knows
+				isEnabled = false
+				return
+			}
+			supportFragmentManager.commit {
+				setReorderingAllowed(true)
+				remove(fragment)
+				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+				runOnCommit { onSearchClosed() }
 			}
 		}
 	}

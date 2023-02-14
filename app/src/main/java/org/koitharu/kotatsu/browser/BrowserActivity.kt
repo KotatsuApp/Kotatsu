@@ -20,6 +20,8 @@ import com.google.android.material.R as materialR
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
 
+	private lateinit var onBackPressedCallback: WebViewBackPressedCallback
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityBrowserBinding.inflate(layoutInflater))
@@ -33,6 +35,8 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		}
 		binding.webView.webViewClient = BrowserClient(this)
 		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)
+		onBackPressedCallback = WebViewBackPressedCallback(binding.webView)
+		onBackPressedDispatcher.addCallback(onBackPressedCallback)
 		if (savedInstanceState != null) {
 			return
 		}
@@ -84,14 +88,6 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onBackPressed() {
-		if (binding.webView.canGoBack()) {
-			binding.webView.goBack()
-		} else {
-			super.onBackPressed()
-		}
-	}
-
 	override fun onPause() {
 		binding.webView.onPause()
 		super.onPause()
@@ -114,6 +110,10 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {
 		this.title = title
 		supportActionBar?.subtitle = subtitle
+	}
+
+	override fun onHistoryChanged() {
+		onBackPressedCallback.onHistoryChanged()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

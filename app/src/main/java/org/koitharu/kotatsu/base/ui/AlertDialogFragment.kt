@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -38,6 +39,8 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 	}
 
 	open fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder = builder
+
+	open fun onDialogCreated(dialog: AlertDialog) = Unit
 
 	protected fun bindingOrNull(): B? = viewBinding
 

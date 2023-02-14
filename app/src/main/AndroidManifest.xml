@@ -24,6 +24,7 @@
 		android:allowBackup="true"
 		android:backupAgent="org.koitharu.kotatsu.settings.backup.AppBackupAgent"
 		android:dataExtractionRules="@xml/backup_rules"
+		android:enableOnBackInvokedCallback="true"
 		android:fullBackupContent="@xml/backup_content"
 		android:fullBackupOnly="true"
 		android:icon="@mipmap/ic_launcher"

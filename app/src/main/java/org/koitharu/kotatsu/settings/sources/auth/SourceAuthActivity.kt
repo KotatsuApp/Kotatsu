@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.browser.ProgressChromeClient
+import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -34,6 +35,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 	@Inject
 	lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
+	private lateinit var onBackPressedCallback: WebViewBackPressedCallback
 	private lateinit var authProvider: MangaParserAuthProvider
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -66,6 +68,8 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		}
 		binding.webView.webViewClient = BrowserClient(this)
 		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)
+		onBackPressedCallback = WebViewBackPressedCallback(binding.webView)
+		onBackPressedDispatcher.addCallback(onBackPressedCallback)
 		if (savedInstanceState != null) {
 			return
 		}
@@ -103,14 +107,6 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onBackPressed() {
-		if (binding.webView.canGoBack()) {
-			binding.webView.goBack()
-		} else {
-			super.onBackPressed()
-		}
-	}
-
 	override fun onPause() {
 		binding.webView.onPause()
 		super.onPause()
@@ -133,6 +129,10 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {
 		this.title = title
 		supportActionBar?.subtitle = subtitle
+	}
+
+	override fun onHistoryChanged() {
+		onBackPressedCallback.onHistoryChanged()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

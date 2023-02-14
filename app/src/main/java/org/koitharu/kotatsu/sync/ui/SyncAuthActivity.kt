@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.isGone
@@ -28,6 +29,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 
 	private var accountAuthenticatorResponse: AccountAuthenticatorResponse? = null
 	private var resultBundle: Bundle? = null
+	private val pageBackCallback = PageBackCallback()
 
 	private val viewModel by viewModels<SyncAuthViewModel>()
 
@@ -44,9 +46,13 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		binding.editEmail.addTextChangedListener(EmailTextWatcher(binding.buttonNext))
 		binding.editPassword.addTextChangedListener(PasswordTextWatcher(binding.buttonDone))
 
+		onBackPressedDispatcher.addCallback(pageBackCallback)
+
 		viewModel.onTokenObtained.observe(this, ::onTokenReceived)
 		viewModel.onError.observe(this, ::onError)
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
+
+		pageBackCallback.update()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -59,27 +65,23 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		)
 	}
 
-	@Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-	override fun onBackPressed() {
-		if (binding.switcher.isVisible && binding.switcher.displayedChild > 0) {
-			binding.switcher.showPrevious()
-		} else {
-			super.onBackPressed()
-		}
-	}
-
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_cancel -> {
 				setResult(RESULT_CANCELED)
 				finish()
 			}
+
 			R.id.button_next -> {
 				binding.switcher.showNext()
+				pageBackCallback.update()
 			}
+
 			R.id.button_back -> {
 				binding.switcher.showPrevious()
+				pageBackCallback.update()
 			}
+
 			R.id.button_done -> {
 				viewModel.obtainToken(
 					email = binding.editEmail.text.toString(),
@@ -105,6 +107,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		TransitionManager.beginDelayedTransition(binding.root, Fade())
 		binding.switcher.isGone = isLoading
 		binding.layoutProgress.isVisible = isLoading
+		pageBackCallback.update()
 	}
 
 	private fun onError(error: Throwable) {
@@ -159,6 +162,18 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		override fun afterTextChanged(s: Editable?) {
 			val text = s?.toString()
 			button.isEnabled = text != null && text.length >= 4
+		}
+	}
+
+	private inner class PageBackCallback : OnBackPressedCallback(false) {
+
+		override fun handleOnBackPressed() {
+			binding.switcher.showPrevious()
+			update()
+		}
+
+		fun update() {
+			isEnabled = binding.switcher.isVisible && binding.switcher.displayedChild > 0
 		}
 	}
 }
