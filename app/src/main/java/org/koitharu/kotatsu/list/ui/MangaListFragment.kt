@@ -327,7 +327,7 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_save -> {
-				DownloadService.confirmAndStart(requireContext(), selectedItems)
+				DownloadService.confirmAndStart(binding.recyclerView, selectedItems)
 				mode.finish()
 				true
 			}

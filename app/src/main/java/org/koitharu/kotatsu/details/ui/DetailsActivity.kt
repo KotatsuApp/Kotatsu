@@ -277,7 +277,7 @@ class DetailsActivity :
 				)
 			}
 			setNeutralButton(R.string.download) { _, _ ->
-				DownloadService.start(this@DetailsActivity, remoteManga, setOf(chapterId))
+				DownloadService.start(binding.appbar, remoteManga, setOf(chapterId))
 			}
 			setCancelable(true)
 		}.show()

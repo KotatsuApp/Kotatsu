@@ -86,7 +86,7 @@ class DetailsMenuProvider(
 					if (chaptersCount > 5 || branches.size > 1) {
 						showSaveConfirmation(it, chaptersCount, branches)
 					} else {
-						DownloadService.start(activity, it)
+						DownloadService.start(snackbarHost, it)
 					}
 				}
 			}
@@ -140,7 +140,7 @@ class DetailsMenuProvider(
 				val chaptersIds = manga.chapters?.mapNotNullToSet { c ->
 					if (c.branch in selectedBranches) c.id else null
 				}
-				DownloadService.start(activity, manga, chaptersIds)
+				DownloadService.start(snackbarHost, manga, chaptersIds)
 			}
 		} else {
 			dialogBuilder.setMessage(
@@ -149,7 +149,7 @@ class DetailsMenuProvider(
 					activity.resources.getQuantityString(R.plurals.chapters, chaptersCount, chaptersCount),
 				),
 			).setPositiveButton(R.string.save) { _, _ ->
-				DownloadService.start(activity, manga)
+				DownloadService.start(snackbarHost, manga)
 			}
 		}
 		dialogBuilder.show()

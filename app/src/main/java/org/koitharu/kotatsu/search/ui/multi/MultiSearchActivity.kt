@@ -164,7 +164,7 @@ class MultiSearchActivity :
 			}
 
 			R.id.action_save -> {
-				DownloadService.confirmAndStart(this, collectSelectedItems())
+				DownloadService.confirmAndStart(binding.recyclerView, collectSelectedItems())
 				mode.finish()
 				true
 			}

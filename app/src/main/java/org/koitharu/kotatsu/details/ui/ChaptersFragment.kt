@@ -96,7 +96,7 @@ class ChaptersFragment :
 		return when (item.itemId) {
 			R.id.action_save -> {
 				DownloadService.start(
-					context ?: return false,
+					binding.recyclerViewChapters,
 					viewModel.getRemoteManga() ?: viewModel.manga.value ?: return false,
 					selectionController?.snapshot(),
 				)

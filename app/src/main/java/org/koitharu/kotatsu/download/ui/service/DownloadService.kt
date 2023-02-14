@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
-import android.widget.Toast
+import android.view.View
 import androidx.annotation.MainThread
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
@@ -15,6 +15,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,7 @@ import org.koitharu.kotatsu.base.ui.BaseService
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.download.domain.DownloadManager
 import org.koitharu.kotatsu.download.domain.DownloadState
+import org.koitharu.kotatsu.download.ui.DownloadsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.utils.ext.throttle
@@ -218,37 +220,38 @@ class DownloadService : BaseService() {
 		private const val EXTRA_CHAPTERS_IDS = "chapters_ids"
 		private const val EXTRA_CANCEL_ID = "cancel_id"
 
-		fun start(context: Context, manga: Manga, chaptersIds: Collection<Long>? = null) {
+		fun start(view: View, manga: Manga, chaptersIds: Collection<Long>? = null) {
 			if (chaptersIds?.isEmpty() == true) {
 				return
 			}
-			val intent = Intent(context, DownloadService::class.java)
+			val intent = Intent(view.context, DownloadService::class.java)
 			intent.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
 			if (chaptersIds != null) {
 				intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
 			}
-			ContextCompat.startForegroundService(context, intent)
-			Toast.makeText(context, R.string.manga_downloading_, Toast.LENGTH_SHORT).show()
+			ContextCompat.startForegroundService(view.context, intent)
+			showStartedSnackbar(view)
 		}
 
-		fun start(context: Context, manga: Collection<Manga>) {
+		fun start(view: View, manga: Collection<Manga>) {
 			if (manga.isEmpty()) {
 				return
 			}
 			for (item in manga) {
-				val intent = Intent(context, DownloadService::class.java)
+				val intent = Intent(view.context, DownloadService::class.java)
 				intent.putExtra(EXTRA_MANGA, ParcelableManga(item, withChapters = false))
-				ContextCompat.startForegroundService(context, intent)
+				ContextCompat.startForegroundService(view.context, intent)
 			}
+			showStartedSnackbar(view)
 		}
 
-		fun confirmAndStart(context: Context, items: Set<Manga>) {
-			MaterialAlertDialogBuilder(context)
+		fun confirmAndStart(view: View, items: Set<Manga>) {
+			MaterialAlertDialogBuilder(view.context)
 				.setTitle(R.string.save_manga)
 				.setMessage(R.string.batch_manga_save_confirm)
 				.setNegativeButton(android.R.string.cancel, null)
 				.setPositiveButton(R.string.save) { _, _ ->
-					start(context, items)
+					start(view, items)
 				}.show()
 		}
 
@@ -263,6 +266,13 @@ class DownloadService : BaseService() {
 				return intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga
 			}
 			return null
+		}
+
+		private fun showStartedSnackbar(view: View) {
+			Snackbar.make(view, R.string.download_started, Snackbar.LENGTH_LONG)
+				.setAction(R.string.details) {
+					it.context.startActivity(DownloadsActivity.newIntent(it.context))
+				}.show()
 		}
 	}
 }

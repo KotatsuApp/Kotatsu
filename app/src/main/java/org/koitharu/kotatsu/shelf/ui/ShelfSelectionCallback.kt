@@ -68,7 +68,7 @@ class ShelfSelectionCallback(
 			}
 
 			R.id.action_save -> {
-				DownloadService.confirmAndStart(context, collectSelectedItems(controller))
+				DownloadService.confirmAndStart(recyclerView, collectSelectedItems(controller))
 				mode.finish()
 				true
 			}
@@ -125,7 +125,7 @@ class ShelfSelectionCallback(
 		if (ids.isEmpty()) {
 			return
 		}
-		MaterialAlertDialogBuilder(context ?: return)
+		MaterialAlertDialogBuilder(context)
 			.setTitle(R.string.delete_manga)
 			.setMessage(context.getString(R.string.text_delete_local_manga_batch))
 			.setPositiveButton(R.string.delete) { _, _ ->
