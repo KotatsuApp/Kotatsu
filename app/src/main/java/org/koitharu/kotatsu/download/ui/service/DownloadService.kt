@@ -66,7 +66,7 @@ class DownloadService : BaseService() {
 		val intentFilter = IntentFilter()
 		intentFilter.addAction(ACTION_DOWNLOAD_CANCEL)
 		intentFilter.addAction(ACTION_DOWNLOAD_RESUME)
-		registerReceiver(controlReceiver, intentFilter)
+		ContextCompat.registerReceiver(this, controlReceiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -154,9 +154,6 @@ class DownloadService : BaseService() {
 		emit(state)
 		!state.isTerminal
 	}
-
-	private val DownloadState.isTerminal: Boolean
-		get() = this is DownloadState.Done || this is DownloadState.Cancelled || (this is DownloadState.Error && !canRetry)
 
 	@MainThread
 	private fun stopSelfIfIdle() {

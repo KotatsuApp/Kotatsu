@@ -11,8 +11,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:minHeight="@dimen/manga_list_details_item_height"
-		android:orientation="horizontal"
-		android:padding="4dp">
+		android:orientation="horizontal">
 
 		<com.google.android.material.imageview.ShapeableImageView
 			android:id="@+id/imageView_cover"
@@ -31,8 +30,8 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
-			android:layout_marginTop="4dp"
-			android:layout_marginEnd="8dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="12dp"
 			android:ellipsize="end"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceTitleSmall"
@@ -47,11 +46,11 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="4dp"
-			android:layout_marginEnd="8dp"
+			android:layout_marginEnd="12dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
-			tools:progress="25"/>
+			tools:progress="25" />
 
 		<TextView
 			android:id="@+id/textView_status"
@@ -59,7 +58,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="4dp"
-			android:layout_marginEnd="8dp"
+			android:layout_marginEnd="12dp"
 			android:ellipsize="end"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceBodySmall"
@@ -72,7 +71,7 @@
 			android:id="@+id/textView_percent"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginEnd="8dp"
+			android:layout_marginEnd="12dp"
 			android:textAppearance="?attr/textAppearanceBodyMedium"
 			app:layout_constraintBaseline_toBaselineOf="@id/textView_status"
 			app:layout_constraintEnd_toEndOf="parent"
@@ -84,7 +83,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="4dp"
-			android:layout_marginEnd="8dp"
+			android:layout_marginEnd="12dp"
 			android:ellipsize="end"
 			android:maxLines="4"
 			android:textAppearance="?attr/textAppearanceBodySmall"
@@ -98,6 +97,8 @@
 			style="@style/Widget.Material3.Button.TextButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginEnd="4dp"
+			android:layout_marginBottom="4dp"
 			android:text="@string/try_again"
 			android:visibility="gone"
 			app:layout_constraintBottom_toBottomOf="parent"
@@ -111,6 +112,8 @@
 			style="@style/Widget.Material3.Button.TextButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginEnd="4dp"
+			android:layout_marginBottom="4dp"
 			android:text="@android:string/cancel"
 			android:visibility="gone"
 			app:layout_constraintBottom_toBottomOf="parent"

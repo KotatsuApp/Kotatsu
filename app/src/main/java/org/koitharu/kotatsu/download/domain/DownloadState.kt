@@ -9,6 +9,13 @@ sealed interface DownloadState {
 	val manga: Manga
 	val cover: Drawable?
 
+	override fun equals(other: Any?): Boolean
+
+	override fun hashCode(): Int
+
+	val isTerminal: Boolean
+		get() = this is Done || this is Cancelled || (this is Error && !canRetry)
+
 	class Queued(
 		override val startId: Int,
 		override val manga: Manga,
