@@ -419,4 +419,7 @@
     <string name="theme_name_kanade">Canadé</string>
     <string name="scrobbling_empty_hint">Para realizar un seguimiento del progreso de la lectura, seleccione Menú → Seguimiento en la pantalla de detalles del manga.</string>
     <string name="services">Servicios</string>
+    <string name="allow_unstable_updates_summary">Actualizaciones propuestas para las versiones beta de la aplicación</string>
+    <string name="allow_unstable_updates">Permitir actualizaciones inestables</string>
+    <string name="download_started">Descarga iniciada</string>
 </resources>
