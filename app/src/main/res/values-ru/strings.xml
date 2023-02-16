@@ -7,7 +7,7 @@
     <string name="history">История</string>
     <string name="error_occurred">Произошла ошибка</string>
     <string name="network_error">Ошибка сети</string>
-    <string name="details">Подробный</string>
+    <string name="details">Подробности</string>
     <string name="chapters">Главы</string>
     <string name="list">Список</string>
     <string name="detailed_list">Подробный список</string>
@@ -419,4 +419,7 @@
     <string name="theme_name_kanade">Канадэ</string>
     <string name="scrobbling_empty_hint">Чтобы отслеживать прогресс чтения, выберите «Меню» → «Отслеживать» на экране сведений о манге.</string>
     <string name="nothing_here">Здесь ничего нет</string>
+    <string name="download_started">Загрузка началась</string>
+    <string name="allow_unstable_updates">Разрешить нестабильные обновления</string>
+    <string name="allow_unstable_updates_summary">Предлагать обновления до бета-версий приложения</string>
 </resources>
