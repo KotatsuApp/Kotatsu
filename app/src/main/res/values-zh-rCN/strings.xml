@@ -418,4 +418,7 @@
     <string name="theme_name_kanade">Kanade</string>
     <string name="nothing_here">这里什么也没有</string>
     <string name="scrobbling_empty_hint">要跟踪阅读进度，在漫画详情屏幕上选中“菜单→ 跟踪。</string>
+    <string name="allow_unstable_updates">允许不稳定更新</string>
+    <string name="allow_unstable_updates_summary">提示更新到测试版</string>
+    <string name="download_started">已开始下载</string>
 </resources>
