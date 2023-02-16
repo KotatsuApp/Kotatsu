@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="details">विवरण</string>
+    <string name="chapters">अध्याय</string>
+    <string name="nothing_found">कुछ भी नहीं मिला</string>
+    <string name="history_is_empty">अभी तक कोई इतिहास नहीं है</string>
+    <string name="read">पढ़ना</string>
+    <string name="add_to_favourites">इसे पसंद करें</string>
+    <string name="add">जोड़ना</string>
+    <string name="save">बचाना</string>
+    <string name="newest">नवीनतम</string>
+    <string name="light">रोशनी</string>
+    <string name="dark">अँधेरा</string>
+    <string name="close">बंद करना</string>
+    <string name="try_again">पुनः प्रयास करें</string>
+    <string name="you_have_not_favourites_yet">अभी तक कोई पसंदीदा नहीं है</string>
+    <string name="remove">निकालना</string>
+    <string name="by_name">नाम</string>
+    <string name="popular">लोकप्रिय</string>
+</resources>
