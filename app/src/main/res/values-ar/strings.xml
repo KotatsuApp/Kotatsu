@@ -83,4 +83,7 @@
     <string name="network_consumption_warning">هذا يمكن أن يؤدي إلى ارتفاع استهلاك حركة المرور.</string>
     <string name="dont_ask_again">لا تسأل مرة أخرى</string>
     <string name="warning">تحذير</string>
+    <string name="cancelling_">إلغاء…</string>
+    <string name="error">خطاء</string>
+    <string name="clear_search_history">مسح تاريخ البحث</string>
 </resources>
