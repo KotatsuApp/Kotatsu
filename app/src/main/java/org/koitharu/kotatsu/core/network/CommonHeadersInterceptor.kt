@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.network
 import android.os.Build
 import android.util.Log
 import dagger.Lazy
+import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -11,6 +12,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mergeWith
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -39,10 +41,16 @@ class CommonHeadersInterceptor @Inject constructor(
 			headersBuilder[CommonHeaders.USER_AGENT] = userAgentFallback
 		}
 		if (headersBuilder[CommonHeaders.REFERER] == null && repository != null) {
-			headersBuilder[CommonHeaders.REFERER] = "https://${repository.domain}/"
+			headersBuilder.trySet(CommonHeaders.REFERER, "https://${repository.domain}/")
 		}
 		val newRequest = request.newBuilder().headers(headersBuilder.build()).build()
 		return repository?.intercept(ProxyChain(chain, newRequest)) ?: chain.proceed(newRequest)
+	}
+
+	private fun Headers.Builder.trySet(name: String, value: String) = try {
+		set(name, value)
+	} catch (e: IllegalArgumentException) {
+		e.printStackTraceDebug()
 	}
 
 	private class ProxyChain(
