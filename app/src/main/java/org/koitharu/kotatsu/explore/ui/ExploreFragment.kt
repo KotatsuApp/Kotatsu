@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
+import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import javax.inject.Inject
 
@@ -70,6 +71,7 @@ class ExploreFragment :
 			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 			paddingHorizontal = spacing
 		}
+		addMenuProvider(ExploreMenuProvider(view.context, viewModel))
 		viewModel.content.observe(viewLifecycleOwner) {
 			exploreAdapter?.items = it
 		}
@@ -162,6 +164,7 @@ class ExploreFragment :
 		} else {
 			LinearLayoutManager(requireContext())
 		}
+		activity?.invalidateOptionsMenu()
 	}
 
 	private inner class SourceMenuListener(

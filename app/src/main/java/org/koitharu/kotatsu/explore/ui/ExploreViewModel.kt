@@ -69,6 +69,10 @@ class ExploreViewModel @Inject constructor(
 		}
 	}
 
+	fun setGridMode(value: Boolean) {
+		settings.isSourcesGridMode = value
+	}
+
 	private fun createContentFlow() = settings.observe()
 		.filter {
 			it == AppSettings.KEY_SOURCES_HIDDEN ||
