@@ -164,9 +164,10 @@
 		<item name="iconGravity">start</item>
 		<item name="android:insetTop">2dp</item>
 		<item name="android:insetBottom">2dp</item>
-		<item name="iconTint">?attr/colorSecondary</item>
+		<item name="iconTint">?attr/colorPrimaryDark</item>
 		<item name="android:gravity">start|center_vertical</item>
 		<item name="android:textAppearance">?textAppearanceButton</item>
+		<item name="backgroundTint">@color/colored_button</item>
 	</style>
 
 	<style name="Widget.Kotatsu.TextView.Indicator" parent="Widget.MaterialComponents.TextView">
