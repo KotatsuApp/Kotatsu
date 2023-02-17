@@ -86,7 +86,6 @@
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
-		<item name="hintTextAppearance">?textAppearanceBodyMedium</item>
 		<item name="queryBackground">@null</item>
 		<item name="android:textColorHint">?attr/colorControlNormal</item>
 		<item name="android:textSize">18sp</item>

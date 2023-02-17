@@ -3,6 +3,9 @@ package org.koitharu.kotatsu.search.ui.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.TextAppearanceSpan
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -12,11 +15,11 @@ import android.view.inputmethod.EditorInfo
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
-import com.google.android.material.R as materialR
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.utils.ext.drawableEnd
 import org.koitharu.kotatsu.utils.ext.drawableStart
+import com.google.android.material.R as materialR
 
 private const val DRAWABLE_END = 2
 
@@ -30,6 +33,10 @@ class SearchEditText @JvmOverloads constructor(
 	private val clearIcon = ContextCompat.getDrawable(context, materialR.drawable.abc_ic_clear_material)
 	private val voiceIcon = ContextCompat.getDrawable(context, R.drawable.ic_voice_input)
 	private var isEmpty = text.isNullOrEmpty()
+
+	init {
+		wrapHint()
+	}
 
 	var isVoiceSearchEnabled: Boolean = false
 		set(value) {
@@ -123,5 +130,17 @@ class SearchEditText @JvmOverloads constructor(
 		if (icon !== drawableEnd) {
 			setCompoundDrawablesRelativeWithIntrinsicBounds(drawableStart, null, icon, null)
 		}
+	}
+
+	private fun wrapHint() {
+		val rawHint = hint?.toString() ?: return
+		val formatted = SpannableString(rawHint)
+		formatted.setSpan(
+			TextAppearanceSpan(context, materialR.style.TextAppearance_Material3_SearchView),
+			0,
+			formatted.length,
+			Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+		)
+		hint = formatted
 	}
 }

@@ -327,8 +327,10 @@ class MainActivity :
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
 			}
-			MangaPrefetchService.prefetchLast(this@MainActivity)
-			requestNotificationsPermission()
+			whenResumed {
+				MangaPrefetchService.prefetchLast(this@MainActivity)
+				requestNotificationsPermission()
+			}
 		}
 	}
 
