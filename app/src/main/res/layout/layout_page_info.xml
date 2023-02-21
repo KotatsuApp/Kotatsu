@@ -5,15 +5,13 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:parentTag="android.widget.FrameLayout">
 
-	<!-- https://github.com/material-components/material-components-android/issues/2028 -->
-	<ProgressBar
+	<com.google.android.material.progressindicator.CircularProgressIndicator
 		android:id="@+id/progressBar"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:indeterminate="true"
-		android:max="100"
-		tools:viewBindingType="android.widget.ProgressBar" />
+		android:max="100" />
 
 	<LinearLayout
 		android:id="@+id/layout_error"
@@ -46,6 +44,12 @@
 			android:layout_marginTop="16dp"
 			android:text="@string/try_again" />
 
-	</LinearLayout>
+		<Button
+			android:id="@+id/button_error_details"
+			style="@style/Widget.Material3.Button.TextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/details" />
 
+	</LinearLayout>
 </merge>

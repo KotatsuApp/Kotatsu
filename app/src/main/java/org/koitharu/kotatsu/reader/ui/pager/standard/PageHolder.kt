@@ -33,8 +33,8 @@ open class PageHolder(
 		binding.ssiv.bindToLifecycle(owner)
 		binding.ssiv.isEagerLoadingEnabled = !isLowRamDevice(context)
 		binding.ssiv.addOnImageEventListener(delegate)
-		@Suppress("LeakingThis")
 		bindingInfo.buttonRetry.setOnClickListener(this)
+		bindingInfo.buttonErrorDetails.setOnClickListener(this)
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
@@ -115,6 +115,7 @@ open class PageHolder(
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return)
+			R.id.button_error_details -> delegate.showErrorDetails(v.context)
 		}
 	}
 

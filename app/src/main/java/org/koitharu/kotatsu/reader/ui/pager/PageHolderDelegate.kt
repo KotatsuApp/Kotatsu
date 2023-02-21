@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
+import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
@@ -59,6 +60,11 @@ class PageHolderDelegate(
 		}
 	}
 
+	fun showErrorDetails(context: Context) {
+		val e = error ?: return
+		ExceptionResolver.showDetails(context, e)
+	}
+
 	fun onAttachedToWindow() {
 		readerSettings.observeForever(this)
 	}
@@ -87,6 +93,7 @@ class PageHolderDelegate(
 	}
 
 	override fun onImageLoadError(e: Throwable) {
+		e.printStackTraceDebug()
 		val file = this.file
 		error = e
 		if (state == State.LOADED && e is IOException && file != null && file.exists()) {

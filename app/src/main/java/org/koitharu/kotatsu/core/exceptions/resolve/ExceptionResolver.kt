@@ -1,11 +1,15 @@
 package org.koitharu.kotatsu.core.exceptions.resolve
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Headers
 import org.koitharu.kotatsu.R
@@ -17,6 +21,7 @@ import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import org.koitharu.kotatsu.utils.TaggedActivityResult
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.isSuccess
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -95,5 +100,21 @@ class ExceptionResolver private constructor(
 		}
 
 		fun canResolve(e: Throwable) = getResolveStringId(e) != 0
+
+		fun showDetails(context: Context, e: Throwable) {
+			val stackTrace = e.stackTraceToString()
+			val dialog = MaterialAlertDialogBuilder(context)
+				.setTitle(e.getDisplayMessage(context.resources))
+				.setMessage(stackTrace)
+				.setPositiveButton(androidx.preference.R.string.copy) { _, _ ->
+					val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+					clipboardManager.setPrimaryClip(
+						ClipData.newPlainText(context.getString(R.string.error), stackTrace),
+					)
+				}
+				.setNegativeButton(R.string.close, null)
+				.create()
+			dialog.show()
+		}
 	}
 }

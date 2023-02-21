@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.utils.GoneOnInvisibleListener
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hideCompat
 import org.koitharu.kotatsu.utils.ext.ifZero
-import org.koitharu.kotatsu.utils.ext.setProgressCompat
 import org.koitharu.kotatsu.utils.ext.showCompat
 
 class WebtoonHolder(
@@ -40,6 +39,7 @@ class WebtoonHolder(
 		binding.ssiv.regionDecoderFactory = SkiaPooledImageRegionDecoder.Factory()
 		binding.ssiv.addOnImageEventListener(delegate)
 		bindingInfo.buttonRetry.setOnClickListener(this)
+		bindingInfo.buttonErrorDetails.setOnClickListener(this)
 	}
 
 	override fun onBind(data: ReaderPage) {
@@ -104,6 +104,7 @@ class WebtoonHolder(
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return)
+			R.id.button_error_details -> delegate.showErrorDetails(v.context)
 		}
 	}
 
