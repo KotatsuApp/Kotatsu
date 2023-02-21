@@ -78,4 +78,12 @@
     <string name="operation_not_supported">Αυτή η λειτουργία δεν υποστηρίζεται</string>
     <string name="read_mode">Λειτουργία ανάγνωσης</string>
     <string name="grid_size">Μέγεθος πλέγματος</string>
+    <string name="theme_name_mamimi">Μαμίμι</string>
+    <string name="theme_name_kanade">Κανάντε</string>
+    <string name="nothing_here">Δεν υπάρχει τίποτα εδώ</string>
+    <string name="theme_name_miku">Μίκου</string>
+    <string name="theme_name_asuka">Άσουκα</string>
+    <string name="theme_name_mion">Μιόν</string>
+    <string name="theme_name_rikka">Ρίκκα</string>
+    <string name="theme_name_sakura">Σακούρα</string>
 </resources>

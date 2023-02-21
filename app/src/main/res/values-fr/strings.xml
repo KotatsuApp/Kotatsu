@@ -411,4 +411,14 @@
     <string name="scrobbling_empty_hint">Pour suivre la progression de la lecture, sélectionnez Menu → Suivre sur l\'écran des détails du manga.</string>
     <string name="services">Prestations de service</string>
     <string name="nothing_here">Il n\'y a rien ici</string>
+    <string name="theme_name_sakura">Sakura</string>
+    <string name="theme_name_rikka">Rikka</string>
+    <string name="theme_name_miku">Miku</string>
+    <string name="theme_name_asuka">Asuka</string>
+    <string name="theme_name_mion">Mion</string>
+    <string name="theme_name_mamimi">Mamimi</string>
+    <string name="allow_unstable_updates">Autoriser les mises à jour instables</string>
+    <string name="download_started">Téléchargement commencé</string>
+    <string name="theme_name_kanade">Kanade</string>
+    <string name="allow_unstable_updates_summary">Proposer des mises à jour des versions bêta de l\'application</string>
 </resources>
