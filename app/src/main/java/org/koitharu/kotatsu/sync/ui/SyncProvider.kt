@@ -14,15 +14,17 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 import org.koitharu.kotatsu.core.db.*
+import org.koitharu.kotatsu.core.logs.FileLogger
+import org.koitharu.kotatsu.core.logs.SyncLogger
 import java.util.concurrent.Callable
 
 abstract class SyncProvider : ContentProvider() {
 
-	private val database by lazy {
-		val appContext = checkNotNull(context?.applicationContext)
-		val entryPoint = EntryPointAccessors.fromApplication(appContext, SyncProviderEntryPoint::class.java)
-		entryPoint.database()
+	private val entryPoint by lazy {
+		EntryPointAccessors.fromApplication(checkNotNull(context), SyncProviderEntryPoint::class.java)
 	}
+	private val database by lazy { entryPoint.database }
+	private val logger by lazy { entryPoint.logger }
 
 	private val supportedTables = setOf(
 		TABLE_FAVOURITES,
@@ -50,6 +52,7 @@ abstract class SyncProvider : ContentProvider() {
 			.selection(selection, selectionArgs)
 			.orderBy(sortOrder)
 			.create()
+		logger.log("query: ${sqlQuery.sql}")
 		return database.openHelper.readableDatabase.query(sqlQuery)
 	}
 
@@ -62,6 +65,7 @@ abstract class SyncProvider : ContentProvider() {
 		if (values == null || table == null) {
 			return null
 		}
+		logger.log { "insert: $table [$values]" }
 		val db = database.openHelper.writableDatabase
 		if (db.insert(table, SQLiteDatabase.CONFLICT_IGNORE, values) < 0) {
 			db.update(table, values)
@@ -71,6 +75,7 @@ abstract class SyncProvider : ContentProvider() {
 
 	override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
 		val table = getTableName(uri) ?: return 0
+		logger.log { "delete: $table ($selection) : ($selectionArgs)" }
 		return database.openHelper.writableDatabase.delete(table, selection, selectionArgs)
 	}
 
@@ -79,6 +84,7 @@ abstract class SyncProvider : ContentProvider() {
 		if (values == null || table == null) {
 			return 0
 		}
+		logger.log { "update: $table ($selection) : ($selectionArgs) [$values]" }
 		return database.openHelper.writableDatabase
 			.update(table, SQLiteDatabase.CONFLICT_IGNORE, values, selection, selectionArgs)
 	}
@@ -119,6 +125,10 @@ abstract class SyncProvider : ContentProvider() {
 	@EntryPoint
 	@InstallIn(SingletonComponent::class)
 	interface SyncProviderEntryPoint {
-		fun database(): MangaDatabase
+
+		val database: MangaDatabase
+
+		@get:SyncLogger
+		val logger: FileLogger
 	}
 }

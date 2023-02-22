@@ -22,10 +22,19 @@ object LoggersModule {
 	) = FileLogger(context, settings, "tracker")
 
 	@Provides
+	@SyncLogger
+	fun provideSyncLogger(
+		@ApplicationContext context: Context,
+		settings: AppSettings,
+	) = FileLogger(context, settings, "sync")
+
+	@Provides
 	@ElementsIntoSet
 	fun provideAllLoggers(
 		@TrackerLogger trackerLogger: FileLogger,
+		@SyncLogger syncLogger: FileLogger,
 	): Set<@JvmSuppressWildcards FileLogger> = arraySetOf(
 		trackerLogger,
+		syncLogger,
 	)
 }

@@ -68,6 +68,12 @@ class FileLogger(
 		postFlush()
 	}
 
+	inline fun log(messageProducer: () -> String) {
+		if (isEnabled) {
+			log(messageProducer())
+		}
+	}
+
 	suspend fun flush() {
 		if (!isEnabled) {
 			return
