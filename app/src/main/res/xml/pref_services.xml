@@ -4,6 +4,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<Preference
+		android:enabled="@bool/is_sync_enabled"
 		android:key="sync"
 		android:persistent="false"
 		android:summary="@string/sync_title"
