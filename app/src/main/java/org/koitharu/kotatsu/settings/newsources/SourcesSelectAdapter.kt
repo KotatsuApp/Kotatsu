@@ -1,19 +1,18 @@
-package org.koitharu.kotatsu.settings.sources.adapter
+package org.koitharu.kotatsu.settings.newsources
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigDiffCallback
+import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
+import org.koitharu.kotatsu.settings.sources.adapter.sourceConfigItemCheckableDelegate
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
-class SourceConfigAdapter(
+class SourcesSelectAdapter(
 	listener: SourceConfigListener,
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 ) : AsyncListDifferDelegationAdapter<SourceConfigItem>(
 	SourceConfigDiffCallback(),
-	sourceConfigHeaderDelegate(),
-	sourceConfigGroupDelegate(listener),
-	sourceConfigItemDelegate2(listener, coil, lifecycleOwner),
-	sourceConfigEmptySearchDelegate(),
-	sourceConfigTipDelegate(listener),
+	sourceConfigItemCheckableDelegate(listener, coil, lifecycleOwner),
 )

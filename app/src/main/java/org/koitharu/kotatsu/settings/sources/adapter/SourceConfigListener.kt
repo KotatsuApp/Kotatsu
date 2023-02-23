@@ -1,15 +1,13 @@
 package org.koitharu.kotatsu.settings.sources.adapter
 
-import androidx.recyclerview.widget.RecyclerView
+import org.koitharu.kotatsu.base.ui.list.OnTipCloseListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 
-interface SourceConfigListener {
+interface SourceConfigListener : OnTipCloseListener<SourceConfigItem.Tip> {
 
 	fun onItemSettingsClick(item: SourceConfigItem.SourceItem)
 
 	fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean)
-
-	fun onDragHandleTouch(holder: RecyclerView.ViewHolder)
 
 	fun onHeaderClick(header: SourceConfigItem.LocaleGroup)
 }

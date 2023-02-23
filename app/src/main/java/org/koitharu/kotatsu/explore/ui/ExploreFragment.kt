@@ -16,11 +16,10 @@ import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
-import org.koitharu.kotatsu.base.ui.util.ReversibleAction
+import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.base.ui.util.SpanSizeResolver
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
@@ -77,7 +76,7 @@ class ExploreFragment :
 		}
 		viewModel.onError.observe(viewLifecycleOwner, ::onError)
 		viewModel.onOpenManga.observe(viewLifecycleOwner, ::onOpenManga)
-		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
+		viewModel.onActionDone.observe(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 		viewModel.isGrid.observe(viewLifecycleOwner, ::onGridModeChanged)
 	}
 
@@ -143,17 +142,6 @@ class ExploreFragment :
 	private fun onOpenManga(manga: Manga) {
 		val intent = DetailsActivity.newIntent(context ?: return, manga)
 		startActivity(intent)
-	}
-
-	private fun onActionDone(action: ReversibleAction) {
-		val handle = action.handle
-		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
-		val snackbar = Snackbar.make(binding.recyclerView, action.stringResId, length)
-		if (handle != null) {
-			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
-		}
-		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
-		snackbar.show()
 	}
 
 	private fun onGridModeChanged(isGrid: Boolean) {

@@ -15,7 +15,7 @@
 	<string name="grid">Grid</string>
 	<string name="list_mode">List mode</string>
 	<string name="settings">Settings</string>
-	<string name="remote_sources">Remote sources</string>
+	<string name="remote_sources">Manga sources</string>
 	<string name="loading_">Loading…</string>
 	<string name="computing_">Computing…</string>
 	<string name="chapter_d_of_d">Chapter %1$d of %2$d</string>
@@ -424,4 +424,6 @@
 	<string name="allow_unstable_updates">Allow unstable updates</string>
 	<string name="allow_unstable_updates_summary">Propose updates to beta versions of the app</string>
 	<string name="download_started">Download started</string>
+	<string name="got_it">Got it</string>
+	<string name="sources_reorder_tip">Tap and hold on an item to reorder them</string>
 </resources>

@@ -7,17 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogOnboardBinding
-import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class NewSourcesDialogFragment :
@@ -36,7 +34,7 @@ class NewSourcesDialogFragment :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val adapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
+		val adapter = SourcesSelectAdapter(this, coil, viewLifecycleOwner)
 		binding.recyclerView.adapter = adapter
 		binding.textViewTitle.setText(R.string.new_sources_text)
 
@@ -61,9 +59,9 @@ class NewSourcesDialogFragment :
 		viewModel.onItemEnabledChanged(item, isEnabled)
 	}
 
-	override fun onDragHandleTouch(holder: RecyclerView.ViewHolder) = Unit
-
 	override fun onHeaderClick(header: SourceConfigItem.LocaleGroup) = Unit
+
+	override fun onCloseTip(tip: SourceConfigItem.Tip) = Unit
 
 	companion object {
 

@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.settings.sources.model
 
-import android.net.Uri
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
@@ -73,6 +73,33 @@ sealed interface SourceConfigItem {
 			result = 31 * result + summary.hashCode()
 			result = 31 * result + isEnabled.hashCode()
 			result = 31 * result + isDraggable.hashCode()
+			return result
+		}
+	}
+
+	class Tip(
+		val key: String,
+		@DrawableRes val iconResId: Int,
+		@StringRes val textResId: Int,
+	) : SourceConfigItem {
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+
+			other as Tip
+
+			if (key != other.key) return false
+			if (iconResId != other.iconResId) return false
+			if (textResId != other.textResId) return false
+
+			return true
+		}
+
+		override fun hashCode(): Int {
+			var result = key.hashCode()
+			result = 31 * result + iconResId
+			result = 31 * result + textResId
 			return result
 		}
 	}

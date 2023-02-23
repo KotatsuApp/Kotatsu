@@ -3,20 +3,25 @@ package org.koitharu.kotatsu.settings.sources
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.*
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.ReversibleHandle
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
+import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.map
 import org.koitharu.kotatsu.utils.ext.move
+import java.util.Locale
+import java.util.TreeMap
+import javax.inject.Inject
 
 private const val KEY_ENABLED = "!"
+private const val TIP_REORDER = "src_reorder"
 
 @HiltViewModel
 class SourcesSettingsViewModel @Inject constructor(
@@ -24,6 +29,8 @@ class SourcesSettingsViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	val items = MutableLiveData<List<SourceConfigItem>>(emptyList())
+	val onActionDone = SingleLiveEvent<ReversibleAction>()
+
 	private val expandedGroups = HashSet<String?>()
 	private var searchQuery: String? = null
 
@@ -58,6 +65,11 @@ class SourcesSettingsViewModel @Inject constructor(
 		}
 		if (isEnabled) {
 			settings.markKnownSources(setOf(source))
+		} else {
+			val rollback = ReversibleHandle {
+				setEnabled(source, true)
+			}
+			onActionDone.postCall(ReversibleAction(R.string.source_disabled, rollback))
 		}
 		buildList()
 	}
@@ -80,6 +92,11 @@ class SourcesSettingsViewModel @Inject constructor(
 
 	fun performSearch(query: String?) {
 		searchQuery = query?.trim()
+		buildList()
+	}
+
+	fun onTipClosed(item: SourceConfigItem.Tip) {
+		settings.closeTip(item.key)
 		buildList()
 	}
 
@@ -110,10 +127,13 @@ class SourcesSettingsViewModel @Inject constructor(
 				it.locale
 			}
 		}
-		val result = ArrayList<SourceConfigItem>(sources.size + map.size + 1)
+		val result = ArrayList<SourceConfigItem>(sources.size + map.size + 2)
 		val enabledSources = map.remove(KEY_ENABLED)
 		if (!enabledSources.isNullOrEmpty()) {
 			result += SourceConfigItem.Header(R.string.enabled_sources)
+			if (settings.isTipEnabled(TIP_REORDER)) {
+				result += SourceConfigItem.Tip(TIP_REORDER, R.drawable.ic_tap_reorder, R.string.sources_reorder_tip)
+			}
 			enabledSources.mapTo(result) {
 				SourceConfigItem.SourceItem(
 					source = it,

@@ -293,6 +293,18 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		return list
 	}
 
+	fun isTipEnabled(tip: String): Boolean {
+		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
+	}
+
+	fun closeTip(tip: String) {
+		val closedTips = prefs.getStringSet(KEY_TIPS_CLOSED, emptySet()).orEmpty()
+		if (tip in closedTips) {
+			return
+		}
+		prefs.edit { putStringSet(KEY_TIPS_CLOSED, closedTips + tip) }
+	}
+
 	fun subscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
 		prefs.registerOnSharedPreferenceChangeListener(listener)
 	}
@@ -380,6 +392,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOGS_SHARE = "logs_share"
 		const val KEY_SOURCES_GRID = "sources_grid"
 		const val KEY_UPDATES_UNSTABLE = "updates_unstable"
+		const val KEY_TIPS_CLOSED = "tips_closed"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

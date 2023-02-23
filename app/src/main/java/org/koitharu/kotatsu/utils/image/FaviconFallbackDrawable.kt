@@ -36,7 +36,7 @@ class FaviconFallbackDrawable(
 	override fun onBoundsChange(bounds: Rect) {
 		super.onBoundsChange(bounds)
 		val innerWidth = bounds.width() - (paint.strokeWidth * 2f)
-		paint.textSize = getTextSizeForWidth(innerWidth, "100%")
+		paint.textSize = getTextSizeForWidth(innerWidth, letter) * 0.5f
 		paint.getTextBounds(letter, 0, letter.length, textBounds)
 		invalidateSelf()
 	}
