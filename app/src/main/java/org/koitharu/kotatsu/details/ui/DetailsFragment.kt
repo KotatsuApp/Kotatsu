@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
@@ -68,6 +69,9 @@ class DetailsFragment :
 
 	@Inject
 	lateinit var coil: ImageLoader
+
+	@Inject
+	lateinit var tagHighlighter: MangaTagHighlighter
 
 	private val viewModel by activityViewModels<DetailsViewModel>()
 
@@ -321,7 +325,7 @@ class DetailsFragment :
 			manga.tags.map { tag ->
 				ChipsView.ChipModel(
 					title = tag.title,
-					icon = 0,
+					tint = tagHighlighter.getTint(tag),
 					data = tag,
 					isCheckable = false,
 					isChecked = false,

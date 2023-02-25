@@ -3,15 +3,16 @@ package org.koitharu.kotatsu.base.ui.widgets
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View.OnClickListener
-import androidx.annotation.DrawableRes
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import com.google.android.material.R as materialR
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.ext.castOrNull
 import org.koitharu.kotatsu.utils.ext.getThemeColorStateList
+import com.google.android.material.R as materialR
 
 class ChipsView @JvmOverloads constructor(
 	context: Context,
@@ -75,12 +76,12 @@ class ChipsView @JvmOverloads constructor(
 
 	private fun bindChip(chip: Chip, model: ChipModel) {
 		chip.text = model.title
-		if (model.icon == 0) {
-			chip.isChipIconVisible = false
+		val tint = if (model.tint == 0) {
+			null
 		} else {
-			chip.isChipIconVisible = true
-			chip.setChipIconResource(model.icon)
+			ContextCompat.getColorStateList(context, model.tint)
 		}
+		chip.buttonTintList = tint
 		chip.isClickable = onChipClickListener != null || model.isCheckable
 		chip.isCheckable = model.isCheckable
 		chip.isChecked = model.isChecked
@@ -92,6 +93,7 @@ class ChipsView @JvmOverloads constructor(
 		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
 		chip.setChipDrawable(drawable)
 		chip.isCheckedIconVisible = true
+		chip.isChipIconVisible = false
 		chip.setCheckedIconResource(R.drawable.ic_check)
 		chip.checkedIconTint = context.getThemeColorStateList(materialR.attr.colorControlNormal)
 		chip.isCloseIconVisible = onChipCloseClickListener != null
@@ -113,7 +115,7 @@ class ChipsView @JvmOverloads constructor(
 	}
 
 	class ChipModel(
-		@DrawableRes val icon: Int,
+		@ColorRes val tint: Int,
 		val title: CharSequence,
 		val isCheckable: Boolean,
 		val isChecked: Boolean,
@@ -126,7 +128,7 @@ class ChipsView @JvmOverloads constructor(
 
 			other as ChipModel
 
-			if (icon != other.icon) return false
+			if (tint != other.tint) return false
 			if (title != other.title) return false
 			if (isCheckable != other.isCheckable) return false
 			if (isChecked != other.isChecked) return false
@@ -136,7 +138,7 @@ class ChipsView @JvmOverloads constructor(
 		}
 
 		override fun hashCode(): Int {
-			var result = icon
+			var result = tint.hashCode()
 			result = 31 * result + title.hashCode()
 			result = 31 * result + isCheckable.hashCode()
 			result = 31 * result + isChecked.hashCode()

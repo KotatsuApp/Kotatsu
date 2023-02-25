@@ -236,7 +236,7 @@ class ShelfViewModel @Inject constructor(
 			return
 		}
 		destination += ShelfSectionModel.Local(
-			items = local.toUi(ListMode.GRID, this),
+			items = local.toUi(ListMode.GRID, this, null),
 			showAllButtonText = R.string.show_all,
 		)
 	}
@@ -251,7 +251,7 @@ class ShelfViewModel @Inject constructor(
 		for ((category, list) in favourites) {
 			if (list.isNotEmpty()) {
 				destination += ShelfSectionModel.Favourites(
-					items = list.toUi(ListMode.GRID, this),
+					items = list.toUi(ListMode.GRID, this, null),
 					category = category,
 					showAllButtonText = R.string.show_all,
 				)

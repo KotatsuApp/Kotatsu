@@ -6,7 +6,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
@@ -16,7 +21,12 @@ import org.koitharu.kotatsu.core.exceptions.CompositeException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
@@ -104,7 +114,7 @@ class MultiSearchViewModel @AssistedInject constructor(
 			async(dispatcher) {
 				runCatchingCancellable {
 					val list = mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
-						.toUi(ListMode.GRID)
+						.toUi(ListMode.GRID, null)
 					if (list.isNotEmpty()) {
 						MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list)
 					} else {
