@@ -37,6 +37,21 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 				}
 			}
 
+			is ConfigKey.UserAgent -> {
+				EditTextPreference(requireContext()).apply {
+					summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
+					setOnBindEditTextListener(
+						EditTextBindListener(
+							inputType = EditorInfo.TYPE_CLASS_TEXT,
+							hint = key.defaultValue,
+							validator = null,
+						),
+					)
+					setTitle(R.string.user_agent)
+					setDialogTitle(R.string.user_agent)
+				}
+			}
+
 			is ConfigKey.ShowSuspiciousContent -> {
 				SwitchPreferenceCompat(requireContext()).apply {
 					setDefaultValue(key.defaultValue)

@@ -23,6 +23,7 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 	@Suppress("UNCHECKED_CAST")
 	override fun <T> get(key: ConfigKey<T>): T {
 		return when (key) {
+			is ConfigKey.UserAgent -> prefs.getString(key.key, key.defaultValue).ifNullOrEmpty { key.defaultValue }
 			is ConfigKey.Domain -> prefs.getString(key.key, key.defaultValue).ifNullOrEmpty { key.defaultValue }
 			is ConfigKey.ShowSuspiciousContent -> prefs.getBoolean(key.key, key.defaultValue)
 		} as T
