@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -30,7 +29,6 @@ class SearchViewModel @AssistedInject constructor(
 	@Assisted private val query: String,
 	repositoryFactory: MangaRepository.Factory,
 	settings: AppSettings,
-	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings) {
 
 	private val repository = repositoryFactory.create(source)
@@ -59,7 +57,7 @@ class SearchViewModel @AssistedInject constructor(
 
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
-				list.toUi(result, mode, tagHighlighter)
+				list.toUi(result, mode)
 				when {
 					error != null -> result += error.toErrorFooter()
 					hasNext -> result += LoadingFooter

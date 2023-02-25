@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -39,7 +38,6 @@ class HistoryListViewModel @Inject constructor(
 	private val repository: HistoryRepository,
 	private val settings: AppSettings,
 	private val trackingRepository: TrackingRepository,
-	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings) {
 
 	val isGroupingEnabled = MutableLiveData<Boolean>()
@@ -120,7 +118,7 @@ class HistoryListViewModel @Inject constructor(
 			val percent = if (showPercent) history.percent else PROGRESS_NONE
 			result += when (mode) {
 				ListMode.LIST -> manga.toListModel(counter, percent)
-				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter, percent, tagHighlighter)
+				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter, percent)
 				ListMode.GRID -> manga.toGridModel(counter, percent)
 			}
 		}

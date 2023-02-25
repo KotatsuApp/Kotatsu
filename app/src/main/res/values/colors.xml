@@ -22,5 +22,4 @@
 	<color name="selector_foreground">#29000000</color>
 	<color name="divider_default">#1F000000</color>
 	<color name="status_bar_incognito">#334800E0</color>
-	<color name="warning">#FFA726</color>
 </resources>

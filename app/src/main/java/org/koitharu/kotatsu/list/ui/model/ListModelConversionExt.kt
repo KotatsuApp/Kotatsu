@@ -4,7 +4,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
@@ -14,10 +13,7 @@ import org.koitharu.kotatsu.utils.ext.ifZero
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-fun Manga.toListModel(
-	counter: Int,
-	progress: Float,
-) = MangaListModel(
+fun Manga.toListModel(counter: Int, progress: Float) = MangaListModel(
 	id = id,
 	title = title,
 	subtitle = tags.joinToString(", ") { it.title },
@@ -27,11 +23,7 @@ fun Manga.toListModel(
 	progress = progress,
 )
 
-fun Manga.toListDetailedModel(
-	counter: Int,
-	progress: Float,
-	tagHighlighter: MangaTagHighlighter?,
-) = MangaListDetailedModel(
+fun Manga.toListDetailedModel(counter: Int, progress: Float) = MangaListDetailedModel(
 	id = id,
 	title = title,
 	subtitle = altTitle,
@@ -39,15 +31,7 @@ fun Manga.toListDetailedModel(
 	manga = this,
 	counter = counter,
 	progress = progress,
-	tags = tags.map {
-		ChipsView.ChipModel(
-			tint = tagHighlighter?.getTint(it) ?: 0,
-			title = it.title,
-			isCheckable = false,
-			isChecked = false,
-			data = it,
-		)
-	},
+	tags = tags.map { ChipsView.ChipModel(0, it.title, false, false, it) },
 )
 
 fun Manga.toGridModel(counter: Int, progress: Float) = MangaGridModel(
@@ -62,21 +46,18 @@ fun Manga.toGridModel(counter: Int, progress: Float) = MangaGridModel(
 suspend fun List<Manga>.toUi(
 	mode: ListMode,
 	extraProvider: ListExtraProvider,
-	tagHighlighter: MangaTagHighlighter?,
-): List<MangaItemModel> = toUi(ArrayList(size), mode, extraProvider, tagHighlighter)
+): List<MangaItemModel> = toUi(ArrayList(size), mode, extraProvider)
 
 fun List<Manga>.toUi(
 	mode: ListMode,
-	tagHighlighter: MangaTagHighlighter?,
-): List<MangaItemModel> = toUi(ArrayList(size), mode, tagHighlighter)
+): List<MangaItemModel> = toUi(ArrayList(size), mode)
 
 fun <C : MutableCollection<in MangaItemModel>> List<Manga>.toUi(
 	destination: C,
 	mode: ListMode,
-	tagHighlighter: MangaTagHighlighter?,
 ): C = when (mode) {
 	ListMode.LIST -> mapTo(destination) { it.toListModel(0, PROGRESS_NONE) }
-	ListMode.DETAILED_LIST -> mapTo(destination) { it.toListDetailedModel(0, PROGRESS_NONE, tagHighlighter) }
+	ListMode.DETAILED_LIST -> mapTo(destination) { it.toListDetailedModel(0, PROGRESS_NONE) }
 	ListMode.GRID -> mapTo(destination) { it.toGridModel(0, PROGRESS_NONE) }
 }
 
@@ -84,14 +65,13 @@ suspend fun <C : MutableCollection<in MangaItemModel>> List<Manga>.toUi(
 	destination: C,
 	mode: ListMode,
 	extraProvider: ListExtraProvider,
-	tagHighlighter: MangaTagHighlighter?,
 ): C = when (mode) {
 	ListMode.LIST -> mapTo(destination) {
 		it.toListModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
 	}
 
 	ListMode.DETAILED_LIST -> mapTo(destination) {
-		it.toListDetailedModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id), tagHighlighter)
+		it.toListDetailedModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
 	}
 
 	ListMode.GRID -> mapTo(destination) {

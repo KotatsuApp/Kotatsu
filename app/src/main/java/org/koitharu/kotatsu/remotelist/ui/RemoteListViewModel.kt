@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -50,7 +49,6 @@ class RemoteListViewModel @AssistedInject constructor(
 	private val searchRepository: MangaSearchRepository,
 	settings: AppSettings,
 	dataRepository: MangaDataRepository,
-	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings), OnFilterChangedListener {
 
 	private val repository = mangaRepositoryFactory.create(source) as RemoteMangaRepository
@@ -77,7 +75,7 @@ class RemoteListViewModel @AssistedInject constructor(
 				list == null -> add(LoadingState)
 				list.isEmpty() -> add(createEmptyState(header.hasSelectedTags))
 				else -> {
-					list.toUi(this, mode, tagHighlighter)
+					list.toUi(this, mode)
 					when {
 						error != null -> add(error.toErrorFooter())
 						hasNext -> add(LoadingFooter)
@@ -194,7 +192,7 @@ class RemoteListViewModel @AssistedInject constructor(
 		val result = LinkedList<ChipsView.ChipModel>()
 		for (tag in tags) {
 			val model = ChipsView.ChipModel(
-				tint = 0,
+				icon = 0,
 				title = tag.title,
 				isCheckable = true,
 				isChecked = selectedTags.remove(tag),
@@ -208,7 +206,7 @@ class RemoteListViewModel @AssistedInject constructor(
 		}
 		for (tag in selectedTags) {
 			val model = ChipsView.ChipModel(
-				tint = 0,
+				icon = 0,
 				title = tag.title,
 				isCheckable = true,
 				isChecked = true,
