@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
@@ -36,6 +37,7 @@ class FavouritesListViewModel @AssistedInject constructor(
 	private val trackingRepository: TrackingRepository,
 	private val historyRepository: HistoryRepository,
 	private val settings: AppSettings,
+	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings), ListExtraProvider {
 
 	var categoryName: String? = null
@@ -71,7 +73,7 @@ class FavouritesListViewModel @AssistedInject constructor(
 				),
 			)
 
-			else -> list.toUi(mode, this)
+			else -> list.toUi(mode, this, tagHighlighter)
 		}
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))

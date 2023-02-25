@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -46,6 +47,7 @@ class LocalListViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
+	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings), ListExtraProvider {
 
 	val onMangaRemoved = SingleLiveEvent<Unit>()
@@ -76,7 +78,7 @@ class LocalListViewModel @Inject constructor(
 
 			else -> buildList(list.size + 1) {
 				add(createHeader(list, tags, order))
-				list.toUi(this, mode, this@LocalListViewModel)
+				list.toUi(this, mode, this@LocalListViewModel, tagHighlighter)
 			}
 		}
 	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
@@ -170,7 +172,7 @@ class LocalListViewModel @Inject constructor(
 		val chips = LinkedList<ChipsView.ChipModel>()
 		for ((tag, _) in topTags) {
 			val model = ChipsView.ChipModel(
-				icon = 0,
+				tint = 0,
 				title = tag.title,
 				isCheckable = true,
 				isChecked = tag in selectedTags,

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -30,6 +31,7 @@ class UpdatesViewModel @Inject constructor(
 	private val repository: TrackingRepository,
 	private val settings: AppSettings,
 	private val historyRepository: HistoryRepository,
+	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings) {
 
 	override val content = combine(
@@ -69,7 +71,7 @@ class UpdatesViewModel @Inject constructor(
 			val percent = if (showPercent) historyRepository.getProgress(manga.id) else PROGRESS_NONE
 			when (mode) {
 				ListMode.LIST -> manga.toListModel(counter, percent)
-				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter, percent)
+				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter, percent, tagHighlighter)
 				ListMode.GRID -> manga.toGridModel(counter, percent)
 			}
 		}
