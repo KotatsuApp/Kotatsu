@@ -421,4 +421,5 @@
     <string name="allow_unstable_updates">允许不稳定更新</string>
     <string name="allow_unstable_updates_summary">提示更新到测试版</string>
     <string name="download_started">已开始下载</string>
+    <string name="user_agent">UserAgent 标头</string>
 </resources>
