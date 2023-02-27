@@ -422,4 +422,5 @@
     <string name="allow_unstable_updates_summary">Actualizaciones propuestas para las versiones beta de la aplicación</string>
     <string name="allow_unstable_updates">Permitir actualizaciones inestables</string>
     <string name="download_started">Descarga iniciada</string>
+    <string name="user_agent">Encabezado del agente de usuario</string>
 </resources>
