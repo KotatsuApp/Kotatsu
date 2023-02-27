@@ -409,4 +409,15 @@
     <string name="theme_name_dynamic">Dinamik</string>
     <string name="color_theme">renk vurgusu</string>
     <string name="show_in_grid_view">Izgara görünümünde göster</string>
+    <string name="theme_name_mamimi">Mamimi</string>
+    <string name="theme_name_kanade">Kanade</string>
+    <string name="user_agent">UserAgent başlığı</string>
+    <string name="allow_unstable_updates_summary">Uygulamanın beta sürümleri için güncellemeler öner</string>
+    <string name="allow_unstable_updates">Kararsız güncellemelere izin ver</string>
+    <string name="download_started">İndirme başladı</string>
+    <string name="theme_name_miku">Miku</string>
+    <string name="theme_name_asuka">Asuka</string>
+    <string name="theme_name_mion">Mion</string>
+    <string name="theme_name_rikka">Rikka</string>
+    <string name="theme_name_sakura">Sakura</string>
 </resources>
