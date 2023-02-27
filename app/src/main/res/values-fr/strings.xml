@@ -421,4 +421,5 @@
     <string name="download_started">Téléchargement commencé</string>
     <string name="theme_name_kanade">Kanade</string>
     <string name="allow_unstable_updates_summary">Proposer des mises à jour des versions bêta de l\'application</string>
+    <string name="user_agent">En-tête UserAgent</string>
 </resources>
