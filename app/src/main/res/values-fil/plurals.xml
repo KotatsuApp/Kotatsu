@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="items">
-        <item quantity="one">%1$d (na) aytem</item>
-        <item quantity="other">%1$d (na mga) aytem</item>
+        <item quantity="one">%1$d aytem</item>
+        <item quantity="other">%1$d (na) aytem</item>
     </plurals>
     <plurals name="pages">
-        <item quantity="one">Kabuuang %1$d (na) pahina</item>
-        <item quantity="other">Kabuuang %1$d (na) mga pahina</item>
+        <item quantity="one">"Kabuuang %1$d  pahina"</item>
+        <item quantity="other">Kabuuang %1$d (na) pahina</item>
     </plurals>
     <plurals name="minutes_ago">
         <item quantity="one">%1$d minutong nakakalipas</item>
@@ -14,15 +14,15 @@
     </plurals>
     <plurals name="new_chapters">
         <item quantity="one">%1$d bagong kabanata</item>
-        <item quantity="other">%1$d bagong (mga) kabanata</item>
+        <item quantity="other">%1$d mga bagong kabanata</item>
     </plurals>
     <plurals name="chapters">
-        <item quantity="one">%1$d (na) kabanata</item>
-        <item quantity="other">%1$d (na mga) kabanata</item>
+        <item quantity="one">"%1$d  kabanata"</item>
+        <item quantity="other">%1$d (na) kabanata</item>
     </plurals>
     <plurals name="chapters_from_x">
-        <item quantity="one">%1$d (na) kabanata mula sa %2$d</item>
-        <item quantity="other">%1$d (na) mga kabanata mula sa %2$d</item>
+        <item quantity="one">%1$d kabanata mula sa %2$d</item>
+        <item quantity="other">%1$d (na) kabanata mula sa %2$d</item>
     </plurals>
     <plurals name="hours_ago">
         <item quantity="one">%1$d oras ang nakalipas</item>

@@ -96,6 +96,9 @@ interface AppModule {
 				writeTimeout(20, TimeUnit.SECONDS)
 				cookieJar(cookieJar)
 				dns(DoHManager(cache, settings))
+				if (settings.isSSLBypassEnabled) {
+					bypassSSLErrors()
+				}
 				cache(cache)
 				addInterceptor(GZipInterceptor())
 				addInterceptor(commonHeadersInterceptor)

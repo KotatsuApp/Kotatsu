@@ -426,4 +426,6 @@
 	<string name="download_started">Download started</string>
 	<string name="got_it">Got it</string>
 	<string name="sources_reorder_tip">Tap and hold on an item to reorder them</string>
+	<string name="user_agent">UserAgent header</string>
+	<string name="settings_apply_restart_required">Please restart the application to apply these changes</string>
 </resources>

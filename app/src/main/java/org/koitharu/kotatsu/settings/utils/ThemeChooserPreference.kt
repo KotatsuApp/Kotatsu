@@ -19,6 +19,7 @@ import androidx.preference.PreferenceViewHolder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.ColorScheme
 import org.koitharu.kotatsu.databinding.ItemColorSchemeBinding
+import java.lang.ref.WeakReference
 
 class ThemeChooserPreference @JvmOverloads constructor(
 	context: Context,
@@ -68,7 +69,7 @@ class ThemeChooserPreference @JvmOverloads constructor(
 		}
 		scrollView.viewTreeObserver.run {
 			scrollPersistListener?.let { removeOnScrollChangedListener(it) }
-			scrollPersistListener = ScrollPersistListener(scrollView, lastScrollPosition)
+			scrollPersistListener = ScrollPersistListener(WeakReference(scrollView), lastScrollPosition)
 			addOnScrollChangedListener(scrollPersistListener)
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -106,7 +107,6 @@ class ThemeChooserPreference @JvmOverloads constructor(
 		}
 		super.onRestoreInstanceState(state.superState)
 		lastScrollPosition[0] = state.scrollPosition
-		// notifyChanged()
 	}
 
 	private fun setValueInternal(enumName: String, notifyChanged: Boolean) {
@@ -152,11 +152,12 @@ class ThemeChooserPreference @JvmOverloads constructor(
 	}
 
 	private class ScrollPersistListener(
-		private val scrollView: HorizontalScrollView,
+		private val scrollViewRef: WeakReference<HorizontalScrollView>,
 		private val lastScrollPosition: IntArray,
 	) : ViewTreeObserver.OnScrollChangedListener {
 
 		override fun onScrollChanged() {
+			val scrollView = scrollViewRef.get() ?: return
 			lastScrollPosition[0] = scrollView.scrollX
 		}
 	}

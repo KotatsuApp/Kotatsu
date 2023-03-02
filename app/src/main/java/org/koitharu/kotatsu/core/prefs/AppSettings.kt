@@ -255,6 +255,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
 
+	val isSSLBypassEnabled: Boolean
+		get() = prefs.getBoolean(KEY_SSL_BYPASS, false)
+
 	var localListOrder: SortOrder
 		get() = prefs.getEnumValue(KEY_LOCAL_LIST_ORDER, SortOrder.NEWEST)
 		set(value) = prefs.edit { putEnumValue(KEY_LOCAL_LIST_ORDER, value) }
@@ -393,6 +396,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SOURCES_GRID = "sources_grid"
 		const val KEY_UPDATES_UNSTABLE = "updates_unstable"
 		const val KEY_TIPS_CLOSED = "tips_closed"
+		const val KEY_SSL_BYPASS = "ssl_bypass"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
