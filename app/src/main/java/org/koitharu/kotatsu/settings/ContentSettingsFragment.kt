@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
@@ -84,6 +85,10 @@ class ContentSettingsFragment :
 
 			AppSettings.KEY_SOURCES_HIDDEN -> {
 				bindRemoteSourcesSummary()
+			}
+
+			AppSettings.KEY_SSL_BYPASS -> {
+				Snackbar.make(listView, R.string.settings_apply_restart_required, Snackbar.LENGTH_INDEFINITE).show()
 			}
 		}
 	}

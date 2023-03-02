@@ -21,12 +21,6 @@
 		app:allowDividerAbove="true" />
 
 	<ListPreference
-		android:entries="@array/doh_providers"
-		android:key="doh"
-		android:title="@string/dns_over_https"
-		app:useSimpleSummaryProvider="true" />
-
-	<ListPreference
 		android:defaultValue="0"
 		android:entries="@array/network_policy"
 		android:entryValues="@array/values_network_policy"
@@ -55,6 +49,17 @@
 		android:valueFrom="1"
 		android:valueTo="5"
 		app:defaultValue="2" />
+
+	<ListPreference
+		android:entries="@array/doh_providers"
+		android:key="doh"
+		android:title="@string/dns_over_https"
+		app:allowDividerAbove="true"
+		app:useSimpleSummaryProvider="true" />
+
+	<SwitchPreferenceCompat
+		android:key="ssl_bypass"
+		android:title="Ignore SSL errors" />
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"

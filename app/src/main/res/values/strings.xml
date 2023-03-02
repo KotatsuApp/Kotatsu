@@ -425,4 +425,5 @@
 	<string name="allow_unstable_updates_summary">Propose updates to beta versions of the app</string>
 	<string name="download_started">Download started</string>
 	<string name="user_agent">UserAgent header</string>
+	<string name="settings_apply_restart_required">Please restart the application to apply these changes</string>
 </resources>
