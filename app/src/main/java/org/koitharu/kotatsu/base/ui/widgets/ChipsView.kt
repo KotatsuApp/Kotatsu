@@ -1,10 +1,13 @@
 package org.koitharu.kotatsu.base.ui.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View.OnClickListener
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.getColorStateListOrThrow
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
@@ -28,6 +31,8 @@ class ChipsView @JvmOverloads constructor(
 	private val chipOnCloseListener = OnClickListener {
 		onChipCloseClickListener?.onChipCloseClick(it as Chip, it.tag)
 	}
+	private val defaultChipStrokeColor: ColorStateList
+	private val defaultChipTextColor: ColorStateList
 	var onChipClickListener: OnChipClickListener? = null
 		set(value) {
 			field = value
@@ -40,6 +45,14 @@ class ChipsView @JvmOverloads constructor(
 			val isCloseIconVisible = value != null
 			children.forEach { (it as? Chip)?.isCloseIconVisible = isCloseIconVisible }
 		}
+
+	init {
+		@SuppressLint("CustomViewStyleable")
+		val a = context.obtainStyledAttributes(null, materialR.styleable.Chip, 0, R.style.Widget_Kotatsu_Chip)
+		defaultChipStrokeColor = a.getColorStateListOrThrow(materialR.styleable.Chip_chipStrokeColor)
+		defaultChipTextColor = a.getColorStateListOrThrow(materialR.styleable.Chip_android_textColor)
+		a.recycle()
+	}
 
 	override fun requestLayout() {
 		if (isLayoutSuppressedCompat) {
@@ -81,7 +94,10 @@ class ChipsView @JvmOverloads constructor(
 		} else {
 			ContextCompat.getColorStateList(context, model.tint)
 		}
-		chip.buttonTintList = tint
+		chip.chipIconTint = tint
+		chip.checkedIconTint = tint
+		chip.chipStrokeColor = tint ?: defaultChipStrokeColor
+		chip.setTextColor(tint ?: defaultChipTextColor)
 		chip.isClickable = onChipClickListener != null || model.isCheckable
 		chip.isCheckable = model.isCheckable
 		chip.isChecked = model.isChecked

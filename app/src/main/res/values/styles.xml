@@ -94,7 +94,7 @@
 	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
 		<item name="chipSurfaceColor">?attr/colorSurface</item>
 		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
-		<item name="strokeColor">?attr/colorOutline</item>
+		<item name="chipStrokeColor">?attr/colorOutline</item>
 		<item name="rippleColor">?attr/colorControlHighlight</item>
 
 		<!-- Custom chip states -->
