@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -23,7 +22,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +32,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
-import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.exceptions.resolve.DialogErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
@@ -51,13 +49,10 @@ import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.IdlingDetector
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
-import org.koitharu.kotatsu.utils.ext.isReportable
 import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 import org.koitharu.kotatsu.utils.ext.postDelayed
-import org.koitharu.kotatsu.utils.ext.report
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -116,7 +111,21 @@ class ReaderActivity :
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
 
-		viewModel.onError.observe(this, this::onError)
+		viewModel.onError.observe(
+			this,
+			DialogErrorObserver(
+				host = binding.container,
+				fragment = null,
+				resolver = exceptionResolver,
+				onResolved = { isResolved ->
+					if (isResolved) {
+						viewModel.reload()
+					} else if (viewModel.content.value?.pages.isNullOrEmpty()) {
+						finishAfterTransition()
+					}
+				},
+			),
+		)
 		viewModel.readerMode.observe(this, this::onInitReader)
 		viewModel.onPageSaved.observe(this, this::onPageSaved)
 		viewModel.uiState.observeWithPrevious(this, this::onUiStateChanged)
@@ -216,22 +225,6 @@ class ReaderActivity :
 		val menu = binding.toolbarBottom.menu
 		menu.findItem(R.id.action_bookmark).isVisible = hasPages
 		menu.findItem(R.id.action_pages_thumbs).isVisible = hasPages
-	}
-
-	private fun onError(e: Throwable) {
-		val listener = ErrorDialogListener(e)
-		val dialog = MaterialAlertDialogBuilder(this)
-			.setTitle(R.string.error_occurred)
-			.setMessage(e.getDisplayMessage(resources))
-			.setNegativeButton(R.string.close, listener)
-			.setOnCancelListener(listener)
-		val resolveTextId = ExceptionResolver.getResolveStringId(e)
-		if (resolveTextId != 0) {
-			dialog.setPositiveButton(resolveTextId, listener)
-		} else if (e.isReportable()) {
-			dialog.setPositiveButton(R.string.report, listener)
-		}
-		dialog.show()
 	}
 
 	override fun onGridTouch(area: Int) {
@@ -393,40 +386,6 @@ class ReaderActivity :
 			binding.slider.isVisible = true
 		} else {
 			binding.slider.isVisible = false
-		}
-	}
-
-	private inner class ErrorDialogListener(
-		private val exception: Throwable,
-	) : DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
-
-		override fun onClick(dialog: DialogInterface?, which: Int) {
-			if (which == DialogInterface.BUTTON_POSITIVE) {
-				dialog?.dismiss()
-				if (ExceptionResolver.canResolve(exception)) {
-					tryResolve(exception)
-				} else {
-					exception.report()
-				}
-			} else {
-				onCancel(dialog)
-			}
-		}
-
-		override fun onCancel(dialog: DialogInterface?) {
-			if (viewModel.content.value?.pages.isNullOrEmpty()) {
-				finishAfterTransition()
-			}
-		}
-
-		private fun tryResolve(e: Throwable) {
-			lifecycleScope.launch {
-				if (exceptionResolver.resolve(e)) {
-					viewModel.reload()
-				} else {
-					onCancel(null)
-				}
-			}
 		}
 	}
 

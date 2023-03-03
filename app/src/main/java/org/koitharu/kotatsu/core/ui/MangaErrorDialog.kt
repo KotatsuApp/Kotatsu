@@ -12,24 +12,20 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.databinding.DialogMangaErrorBinding
-import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.utils.ext.report
-import org.koitharu.kotatsu.utils.ext.requireParcelable
 import org.koitharu.kotatsu.utils.ext.requireSerializable
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 class MangaErrorDialog : AlertDialogFragment<DialogMangaErrorBinding>() {
 
-	private lateinit var error: Throwable
-	private lateinit var manga: Manga
+	private lateinit var exception: ParseException
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		val args = requireArguments()
-		manga = args.requireParcelable<ParcelableManga>(ARG_MANGA).manga
-		error = args.requireSerializable(ARG_ERROR)
+		exception = args.requireSerializable(ARG_ERROR)
 	}
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): DialogMangaErrorBinding {
@@ -42,8 +38,8 @@ class MangaErrorDialog : AlertDialogFragment<DialogMangaErrorBinding>() {
 			movementMethod = LinkMovementMethod.getInstance()
 			text = context.getString(
 				R.string.manga_error_description_pattern,
-				this@MangaErrorDialog.error.message?.htmlEncode().orEmpty(),
-				manga.publicUrl,
+				exception.message?.htmlEncode().orEmpty(),
+				exception.url,
 			).parseAsHtml(HtmlCompat.FROM_HTML_MODE_LEGACY)
 		}
 	}
@@ -54,7 +50,7 @@ class MangaErrorDialog : AlertDialogFragment<DialogMangaErrorBinding>() {
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.report) { _, _ ->
 				dismiss()
-				error.report()
+				exception.report()
 			}.setTitle(R.string.error_occurred)
 	}
 
@@ -62,10 +58,8 @@ class MangaErrorDialog : AlertDialogFragment<DialogMangaErrorBinding>() {
 
 		private const val TAG = "MangaErrorDialog"
 		private const val ARG_ERROR = "error"
-		private const val ARG_MANGA = "manga"
 
-		fun show(fm: FragmentManager, manga: Manga, error: Throwable) = MangaErrorDialog().withArgs(2) {
-			putParcelable(ARG_MANGA, ParcelableManga(manga, false))
+		fun show(fm: FragmentManager, error: ParseException) = MangaErrorDialog().withArgs(1) {
 			putSerializable(ARG_ERROR, error)
 		}.show(fm, TAG)
 	}

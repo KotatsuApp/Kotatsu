@@ -1,14 +1,12 @@
 package org.koitharu.kotatsu.base.ui.util
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.view.View
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
+import org.koitharu.kotatsu.utils.ext.findActivity
 
 class ReversibleActionObserver(
 	private val snackbarHost: View,
@@ -28,11 +26,5 @@ class ReversibleActionObserver(
 			snackbar.anchorView = it.bottomNav
 		}
 		snackbar.show()
-	}
-
-	private fun Context.findActivity(): Activity? = when (this) {
-		is Activity -> this
-		is ContextWrapper -> baseContext.findActivity()
-		else -> null
 	}
 }

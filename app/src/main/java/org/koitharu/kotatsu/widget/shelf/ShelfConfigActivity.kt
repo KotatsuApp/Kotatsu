@@ -11,17 +11,16 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import com.google.android.material.R as materialR
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ShelfConfigActivity :
@@ -58,7 +57,7 @@ class ShelfConfigActivity :
 		viewModel.checkedId = config.categoryId
 
 		viewModel.content.observe(this, this::onContentChanged)
-		viewModel.onError.observe(this, this::onError)
+		viewModel.onError.observe(this, SnackbarErrorObserver(binding.recyclerView, null))
 	}
 
 	override fun onClick(v: View) {
@@ -103,11 +102,6 @@ class ShelfConfigActivity :
 
 	private fun onContentChanged(categories: List<CategoryItem>) {
 		adapter.items = categories
-	}
-
-	private fun onError(e: Throwable) {
-		Snackbar.make(binding.recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
-			.show()
 	}
 
 	private fun updateWidget() {

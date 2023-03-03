@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -25,7 +26,6 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 import javax.inject.Inject
 
@@ -75,7 +75,7 @@ class FeedFragment :
 		)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
-		viewModel.onError.observe(viewLifecycleOwner, this::onError)
+		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onFeedCleared.observe(viewLifecycleOwner) {
 			onFeedCleared()
 		}
@@ -113,16 +113,6 @@ class FeedFragment :
 			binding.recyclerView,
 			R.string.updates_feed_cleared,
 			Snackbar.LENGTH_LONG,
-		)
-		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
-		snackbar.show()
-	}
-
-	private fun onError(e: Throwable) {
-		val snackbar = Snackbar.make(
-			binding.recyclerView,
-			e.getDisplayMessage(resources),
-			Snackbar.LENGTH_SHORT,
 		)
 		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
 		snackbar.show()

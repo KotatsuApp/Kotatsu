@@ -31,9 +31,8 @@ import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
-import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
-import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -55,7 +54,6 @@ import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import org.koitharu.kotatsu.utils.ext.clearItemDecorations
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.resolveDp
@@ -128,7 +126,7 @@ abstract class MangaListFragment :
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
-		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
 	}
 
@@ -173,18 +171,6 @@ abstract class MangaListFragment :
 
 	private fun onListChanged(list: List<ListModel>) {
 		listAdapter?.setItems(list, listCommitCallback)
-	}
-
-	private fun onError(e: Throwable) {
-		if (e is CloudFlareProtectedException) {
-			CloudFlareDialog.newInstance(e.url, e.headers).show(childFragmentManager, CloudFlareDialog.TAG)
-		} else {
-			Snackbar.make(
-				binding.recyclerView,
-				e.getDisplayMessage(resources),
-				Snackbar.LENGTH_SHORT,
-			).show()
-		}
 	}
 
 	private fun onActionDone(action: ReversibleAction) {

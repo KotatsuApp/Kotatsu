@@ -1,9 +1,11 @@
 package org.koitharu.kotatsu.utils.ext
 
+import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
+import android.content.ContextWrapper
 import android.content.OperationApplicationException
 import android.content.SharedPreferences
 import android.content.SyncResult
@@ -171,4 +173,10 @@ fun Resources.getLocalesConfig(): LocaleListCompat {
 		e.printStackTraceDebug()
 	}
 	return LocaleListCompat.forLanguageTags(tagsList.complete())
+}
+
+fun Context.findActivity(): Activity? = when (this) {
+	is Activity -> this
+	is ContextWrapper -> baseContext.findActivity()
+	else -> null
 }

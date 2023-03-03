@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.FragmentShelfBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -36,7 +37,6 @@ import org.koitharu.kotatsu.shelf.ui.adapter.ShelfListEventListener
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -82,7 +82,7 @@ class ShelfFragment :
 		addMenuProvider(ShelfMenuProvider(view.context, childFragmentManager, viewModel))
 
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
-		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
 	}
 
@@ -133,16 +133,6 @@ class ShelfFragment :
 
 	private fun onListChanged(list: List<ListModel>) {
 		adapter?.items = list
-	}
-
-	private fun onError(e: Throwable) {
-		val snackbar = Snackbar.make(
-			binding.recyclerView,
-			e.getDisplayMessage(resources),
-			Snackbar.LENGTH_SHORT,
-		)
-		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
-		snackbar.show()
 	}
 
 	private fun onActionDone(action: ReversibleAction) {

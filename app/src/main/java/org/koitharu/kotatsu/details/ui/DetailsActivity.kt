@@ -29,10 +29,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
-import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
-import org.koitharu.kotatsu.core.ui.MangaErrorDialog
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -45,7 +44,6 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.ViewBadge
 import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.isReportable
 import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 import javax.inject.Inject
@@ -105,7 +103,19 @@ class DetailsActivity :
 		viewModel.manga.observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
-		viewModel.onError.observe(this, ::onError)
+		viewModel.onError.observe(
+			this,
+			SnackbarErrorObserver(
+				host = binding.containerDetails,
+				fragment = null,
+				resolver = exceptionResolver,
+				onResolved = { isResolved ->
+					if (isResolved) {
+						viewModel.reload()
+					}
+				},
+			),
+		)
 		viewModel.onShowToast.observe(this) {
 			makeSnackbar(getString(it), Snackbar.LENGTH_SHORT).show()
 		}
@@ -189,37 +199,6 @@ class DetailsActivity :
 			Toast.LENGTH_SHORT,
 		).show()
 		finishAfterTransition()
-	}
-
-	private fun onError(e: Throwable) {
-		val manga = viewModel.manga.value
-		when {
-			ExceptionResolver.canResolve(e) -> {
-				resolveError(e)
-			}
-
-			manga == null -> {
-				Toast.makeText(this, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
-				finishAfterTransition()
-			}
-
-			else -> {
-				val snackbar = makeSnackbar(
-					e.getDisplayMessage(resources),
-					if (viewModel.manga.value?.chapters == null) {
-						Snackbar.LENGTH_INDEFINITE
-					} else {
-						Snackbar.LENGTH_LONG
-					},
-				)
-				if (e.isReportable()) {
-					snackbar.setAction(R.string.details) {
-						MangaErrorDialog.show(supportFragmentManager, manga, e)
-					}
-				}
-				snackbar.show()
-			}
-		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
