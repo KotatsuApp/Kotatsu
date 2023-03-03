@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.utils.ext.crossfade
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.source
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 
@@ -66,12 +67,12 @@ fun sourceConfigItemCheckableDelegate(
 		binding.switchToggle.isChecked = item.isEnabled
 		binding.textViewDescription.textAndVisible = item.summary
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
-		binding.imageViewIcon.newImageRequest(item.source.faviconUri(), item.source)?.run {
+		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			crossfade(context)
 			error(fallbackIcon)
 			placeholder(fallbackIcon)
 			fallback(fallbackIcon)
-			lifecycle(lifecycleOwner)
+			source(item.source)
 			enqueueWith(coil)
 		}
 	}
@@ -107,12 +108,12 @@ fun sourceConfigItemDelegate2(
 		binding.imageViewConfig.isVisible = item.isEnabled
 		binding.textViewDescription.textAndVisible = item.summary
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
-		binding.imageViewIcon.newImageRequest(item.source.faviconUri(), item.source)?.run {
+		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			crossfade(context)
 			error(fallbackIcon)
 			placeholder(fallbackIcon)
 			fallback(fallbackIcon)
-			lifecycle(lifecycleOwner)
+			source(item.source)
 			enqueueWith(coil)
 		}
 	}

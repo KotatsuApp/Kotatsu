@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
@@ -12,6 +13,7 @@ import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 
 fun emptyStateListAD(
 	coil: ImageLoader,
+	lifecycleOwner: LifecycleOwner,
 	listener: ListStateHolderListener?,
 ) = adapterDelegateViewBinding<EmptyState, ListModel, ItemEmptyStateBinding>(
 	{ inflater, parent -> ItemEmptyStateBinding.inflate(inflater, parent, false) },
@@ -22,7 +24,7 @@ fun emptyStateListAD(
 	}
 
 	bind {
-		binding.icon.newImageRequest(item.icon)?.enqueueWith(coil)
+		binding.icon.newImageRequest(lifecycleOwner, item.icon)?.enqueueWith(coil)
 		binding.textPrimary.setText(item.textPrimary)
 		binding.textSecondary.setTextAndVisible(item.textSecondary)
 		if (listener != null) {

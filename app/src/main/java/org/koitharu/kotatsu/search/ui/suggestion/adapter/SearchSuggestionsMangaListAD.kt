@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.source
 
 fun searchSuggestionMangaListAD(
 	coil: ImageLoader,
@@ -55,12 +56,12 @@ private fun searchSuggestionMangaGridAD(
 	}
 
 	bind {
-		binding.imageViewCover.newImageRequest(item.coverUrl, item.source)?.run {
+		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
-			lifecycle(lifecycleOwner)
+			source(item.source)
 			enqueueWith(coil)
 		}
 		binding.textViewTitle.text = item.title

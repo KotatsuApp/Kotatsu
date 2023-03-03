@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.source
 import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 
 fun searchSuggestionSourceAD(
@@ -31,11 +32,11 @@ fun searchSuggestionSourceAD(
 		binding.textViewTitle.text = item.source.title
 		binding.switchLocal.isChecked = item.isEnabled
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
-		binding.imageViewCover.newImageRequest(item.source.faviconUri(), item.source)?.run {
+		binding.imageViewCover.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)
 			error(fallbackIcon)
-			lifecycle(lifecycleOwner)
+			source(item.source)
 			enqueueWith(coil)
 		}
 	}

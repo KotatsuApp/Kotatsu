@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.source
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 
 fun mangaListItemAD(
@@ -34,12 +35,12 @@ fun mangaListItemAD(
 	bind {
 		binding.textViewTitle.text = item.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle
-		binding.imageViewCover.newImageRequest(item.coverUrl, item.source)?.run {
+		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
-			lifecycle(lifecycleOwner)
+			source(item.source)
 			enqueueWith(coil)
 		}
 		badge = itemView.bindBadge(badge, item.counter)

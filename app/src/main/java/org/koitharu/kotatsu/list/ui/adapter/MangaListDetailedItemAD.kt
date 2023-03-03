@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.source
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 
@@ -51,13 +52,13 @@ fun mangaListDetailedItemAD(
 		binding.textViewTitle.text = item.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle
 		binding.progressView.setPercent(item.progress, MangaListAdapter.PAYLOAD_PROGRESS in payloads)
-		binding.imageViewCover.newImageRequest(item.coverUrl, item.source)?.run {
+		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			size(CoverSizeResolver(binding.imageViewCover))
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
-			lifecycle(lifecycleOwner)
+			source(item.source)
 			enqueueWith(coil)
 		}
 		binding.chipsTags.setChips(item.tags)

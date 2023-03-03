@@ -4,9 +4,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.model.ListHeader2
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.MangaGridModel
+import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
+import kotlin.jvm.internal.Intrinsics
 
 open class MangaListAdapter(
 	coil: ImageLoader,
@@ -24,7 +30,7 @@ open class MangaListAdapter(
 			.addDelegate(ITEM_TYPE_DATE, relatedDateItemAD())
 			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(listener))
 			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(listener))
-			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(coil, listener))
+			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
 			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD(listener))
 			.addDelegate(ITEM_TYPE_HEADER_2, listHeader2AD(listener))
 	}
@@ -35,20 +41,25 @@ open class MangaListAdapter(
 			oldItem is MangaListModel && newItem is MangaListModel -> {
 				oldItem.id == newItem.id
 			}
+
 			oldItem is MangaListDetailedModel && newItem is MangaListDetailedModel -> {
 				oldItem.id == newItem.id
 			}
+
 			oldItem is MangaGridModel && newItem is MangaGridModel -> {
 				oldItem.id == newItem.id
 			}
+
 			oldItem is DateTimeAgo && newItem is DateTimeAgo -> {
 				oldItem == newItem
 			}
+
 			oldItem is ListHeader && newItem is ListHeader -> {
 				oldItem.textRes == newItem.textRes &&
 					oldItem.text == newItem.text &&
 					oldItem.dateTimeAgo == newItem.dateTimeAgo
 			}
+
 			else -> oldItem.javaClass == newItem.javaClass
 		}
 
@@ -65,6 +76,7 @@ open class MangaListAdapter(
 					} else {
 					}
 				}
+
 				is ListHeader2 -> Unit
 				else -> super.getChangePayload(oldItem, newItem)
 			}

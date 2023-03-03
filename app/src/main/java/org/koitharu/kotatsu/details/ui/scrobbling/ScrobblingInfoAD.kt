@@ -23,11 +23,10 @@ fun scrobblingInfoAD(
 	}
 
 	bind {
-		binding.imageViewCover.newImageRequest(item.coverUrl /* TODO */, null)?.run {
+		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
-			lifecycle(lifecycleOwner)
 			enqueueWith(coil)
 		}
 		binding.textViewTitle.text = item.title

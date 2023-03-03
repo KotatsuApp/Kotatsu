@@ -77,13 +77,12 @@ fun categoryAD(
 			)
 		}
 		repeat(coverViews.size) { i ->
-			coverViews[i].newImageRequest(item.covers.getOrNull(i))?.run {
+			coverViews[i].newImageRequest(lifecycleOwner, item.covers.getOrNull(i))?.run {
 				placeholder(R.drawable.ic_placeholder)
 				fallback(fallback)
 				crossfade(crossFadeDuration * (i + 1))
 				error(R.drawable.ic_error_placeholder)
 				allowRgb565(true)
-				lifecycle(lifecycleOwner)
 				enqueueWith(coil)
 			}
 		}

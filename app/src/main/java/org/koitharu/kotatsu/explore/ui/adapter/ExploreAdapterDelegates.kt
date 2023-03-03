@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.setTextAndVisible
+import org.koitharu.kotatsu.utils.ext.source
 import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 
 fun exploreButtonsAD(
@@ -76,11 +77,11 @@ fun exploreSourceListItemAD(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
-		binding.imageViewIcon.newImageRequest(item.source.faviconUri(), item.source)?.run {
+		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)
 			error(fallbackIcon)
-			lifecycle(lifecycleOwner)
+			source(item.source)
 			enqueueWith(coil)
 		}
 	}
@@ -107,11 +108,11 @@ fun exploreSourceGridItemAD(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
-		binding.imageViewIcon.newImageRequest(item.source.faviconUri())?.run {
+		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)
 			error(fallbackIcon)
-			lifecycle(lifecycleOwner)
+			source(item.source)
 			enqueueWith(coil)
 		}
 	}

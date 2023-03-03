@@ -345,7 +345,7 @@ class DetailsFragment :
 			.size(CoverSizeResolver(binding.imageViewCover))
 			.data(imageUrl)
 			.tag(manga.source)
-			.crossfade(context)
+			.crossfade(requireContext())
 			.lifecycle(viewLifecycleOwner)
 			.placeholderMemoryCacheKey(manga.coverUrl)
 		val previousDrawable = lastResult?.drawable

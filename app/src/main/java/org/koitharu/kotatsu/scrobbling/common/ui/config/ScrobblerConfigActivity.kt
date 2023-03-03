@@ -125,7 +125,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 			return
 		}
 		binding.imageViewAvatar.isVisible = true
-		binding.imageViewAvatar.newImageRequest(user.avatar, null)
+		binding.imageViewAvatar.newImageRequest(this, user.avatar)
 			?.enqueueWith(coil)
 	}
 

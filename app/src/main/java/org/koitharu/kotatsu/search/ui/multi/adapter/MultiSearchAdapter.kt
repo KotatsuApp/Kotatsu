@@ -5,13 +5,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import kotlin.jvm.internal.Intrinsics
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
-import org.koitharu.kotatsu.list.ui.adapter.*
+import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
+import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
+import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
+import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchListModel
+import kotlin.jvm.internal.Intrinsics
 
 class MultiSearchAdapter(
 	lifecycleOwner: LifecycleOwner,
@@ -38,7 +42,7 @@ class MultiSearchAdapter(
 			)
 			.addDelegate(loadingStateAD())
 			.addDelegate(loadingFooterAD())
-			.addDelegate(emptyStateListAD(coil, listener))
+			.addDelegate(emptyStateListAD(coil, lifecycleOwner, listener))
 			.addDelegate(errorStateListAD(listener))
 	}
 
@@ -49,6 +53,7 @@ class MultiSearchAdapter(
 				oldItem is MultiSearchListModel && newItem is MultiSearchListModel -> {
 					oldItem.source == newItem.source
 				}
+
 				else -> oldItem.javaClass == newItem.javaClass
 			}
 		}

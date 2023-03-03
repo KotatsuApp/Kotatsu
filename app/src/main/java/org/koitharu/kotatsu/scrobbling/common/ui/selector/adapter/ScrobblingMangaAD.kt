@@ -27,12 +27,11 @@ fun scrobblingMangaAD(
 	bind {
 		binding.textViewTitle.text = item.name
 		binding.textViewSubtitle.textAndVisible = item.altName
-		binding.imageViewCover.newImageRequest(item.cover)?.run {
+		binding.imageViewCover.newImageRequest(lifecycleOwner, item.cover)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
-			lifecycle(lifecycleOwner)
 			enqueueWith(coil)
 		}
 	}
