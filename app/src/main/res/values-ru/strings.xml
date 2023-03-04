@@ -422,4 +422,6 @@
     <string name="download_started">Загрузка началась</string>
     <string name="allow_unstable_updates">Разрешить нестабильные обновления</string>
     <string name="allow_unstable_updates_summary">Предлагать обновления до бета-версий приложения</string>
+    <string name="settings_apply_restart_required">Пожалуйста, перезапустите приложение, чтобы применить эти изменения</string>
+    <string name="user_agent">Заголовок UserAgent</string>
 </resources>
