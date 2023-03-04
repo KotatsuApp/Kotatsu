@@ -396,4 +396,5 @@
     <string name="reader_control_ltr">Controle de leitura ergonômico</string>
     <string name="color_correction_hint">As configurações de cor escolhidas serão lembradas para esse mangá</string>
     <string name="discard">Descartar</string>
+    <string name="language">Idioma</string>
 </resources>
