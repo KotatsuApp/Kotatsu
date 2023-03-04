@@ -416,4 +416,7 @@
     <string name="theme_name_dynamic">Динамічний</string>
     <string name="color_theme">Колірний акцент</string>
     <string name="show_in_grid_view">Показати у вигляді сітки</string>
+    <string name="allow_unstable_updates">Дозволити нестабільні оновлення</string>
+    <string name="allow_unstable_updates_summary">Пропонувати оновлення до бета-версій додатку</string>
+    <string name="download_started">Завантаження розпочато</string>
 </resources>
