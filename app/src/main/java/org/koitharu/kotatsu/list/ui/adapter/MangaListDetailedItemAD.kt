@@ -61,6 +61,9 @@ fun mangaListDetailedItemAD(
 			source(item.source)
 			enqueueWith(coil)
 		}
+		if (payloads.isEmpty()) {
+			binding.scrollViewTags.scrollTo(0, 0)
+		}
 		binding.chipsTags.setChips(item.tags)
 		binding.ratingBar.isVisible = item.manga.hasRating
 		binding.ratingBar.rating = binding.ratingBar.numStars * item.manga.rating

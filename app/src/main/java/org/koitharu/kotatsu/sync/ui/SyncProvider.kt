@@ -52,7 +52,7 @@ abstract class SyncProvider : ContentProvider() {
 			.selection(selection, selectionArgs)
 			.orderBy(sortOrder)
 			.create()
-		logger.log("query: ${sqlQuery.sql}")
+		logger.log("query: ${sqlQuery.sql} (${selectionArgs.contentToString()})")
 		return database.openHelper.readableDatabase.query(sqlQuery)
 	}
 
@@ -75,7 +75,7 @@ abstract class SyncProvider : ContentProvider() {
 
 	override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
 		val table = getTableName(uri) ?: return 0
-		logger.log { "delete: $table ($selection) : ($selectionArgs)" }
+		logger.log { "delete: $table ($selection) : (${selectionArgs.contentToString()})" }
 		return database.openHelper.writableDatabase.delete(table, selection, selectionArgs)
 	}
 
@@ -84,7 +84,7 @@ abstract class SyncProvider : ContentProvider() {
 		if (values == null || table == null) {
 			return 0
 		}
-		logger.log { "update: $table ($selection) : ($selectionArgs) [$values]" }
+		logger.log { "update: $table ($selection) : (${selectionArgs.contentToString()}) [$values]" }
 		return database.openHelper.writableDatabase
 			.update(table, SQLiteDatabase.CONFLICT_IGNORE, values, selection, selectionArgs)
 	}
