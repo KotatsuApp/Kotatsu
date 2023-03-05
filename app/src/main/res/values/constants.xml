@@ -9,6 +9,13 @@
 	<string name="url_error_report" translatable="false">https://acra.rumblur.space/report</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
 	<string name="url_sync_server" translatable="false">http://86.57.183.214:8081</string>
+	<string name="shikimori_clientId" translatable="false">Mw6F0tPEOgyV7F9U9Twg50Q8SndMY7hzIOfXg0AX_XU</string>
+	<string name="shikimori_clientSecret" translatable="false">euBMt1GGRSDpVIFQVPxZrO7Kh6X4gWyv0dABuj4B-M8</string>
+	<string name="anilist_clientId" translatable="false">9887</string>
+	<string name="anilist_clientSecret" translatable="false">wrMqFosItQWsmB8dtAHfIFPDt15FfQi2ZGiKkJoW</string>
+	<string name="mal_clientId" translatable="false">6cd8e6349e9a36bc1fc1ab97703c9fd1</string>
+	<string name="acra_login" translatable="false">SxhkCVnqVLbGogvi</string>
+	<string name="acra_password" translatable="false">xPDACTLHnHU9Nfjv</string>
 	<string-array name="values_theme" translatable="false">
 		<item>-1</item>
 		<item>1</item>

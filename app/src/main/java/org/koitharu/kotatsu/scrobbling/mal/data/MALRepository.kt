@@ -1,16 +1,19 @@
 package org.koitharu.kotatsu.scrobbling.mal.data
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.FormBody
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
 import org.koitharu.kotatsu.parsers.util.parseJson
+import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
@@ -25,17 +28,19 @@ private const val BASE_API_URL = "https://api.myanimelist.net/v2"
 private const val AVATAR_STUB = "https://cdn.myanimelist.net/images/questionmark_50.gif"
 
 class MALRepository(
+	@ApplicationContext context: Context,
 	private val okHttp: OkHttpClient,
 	private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
-) : org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository {
+) : ScrobblerRepository {
 
+	private val clientId = context.getString(R.string.mal_clientId)
 	private var codeVerifier: String = getPKCEChallengeCode()
 
 	override val oauthUrl: String
 		get() = "$BASE_WEB_URL/v1/oauth2/authorize?" +
 			"response_type=code" +
-			"&client_id=${BuildConfig.MAL_CLIENT_ID}" +
+			"&client_id=$clientId" +
 			"&redirect_uri=$REDIRECT_URI" +
 			"&code_challenge=$codeVerifier" +
 			"&code_challenge_method=plain"
@@ -51,7 +56,7 @@ class MALRepository(
 	override suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
 		if (code != null) {
-			body.add("client_id", BuildConfig.MAL_CLIENT_ID)
+			body.add("client_id", clientId)
 			body.add("grant_type", "authorization_code")
 			body.add("code", code)
 			body.add("redirect_uri", REDIRECT_URI)
@@ -205,5 +210,4 @@ class MALRepository(
 		avatar = json.getString("picture") ?: AVATAR_STUB,
 		service = ScrobblerService.MAL,
 	)
-
 }

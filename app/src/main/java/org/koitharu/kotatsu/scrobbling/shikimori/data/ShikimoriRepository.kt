@@ -1,11 +1,13 @@
 package org.koitharu.kotatsu.scrobbling.shikimori.data
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.FormBody
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
@@ -28,13 +30,17 @@ private const val BASE_URL = "https://shikimori.one/"
 private const val MANGA_PAGE_SIZE = 10
 
 class ShikimoriRepository(
+	@ApplicationContext context: Context,
 	private val okHttp: OkHttpClient,
 	private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
 ) : ScrobblerRepository {
 
+	private val clientId = context.getString(R.string.shikimori_clientId)
+	private val clientSecret = context.getString(R.string.shikimori_clientSecret)
+
 	override val oauthUrl: String
-		get() = "${BASE_URL}oauth/authorize?client_id=${BuildConfig.SHIKIMORI_CLIENT_ID}&" +
+		get() = "${BASE_URL}oauth/authorize?client_id=$clientId&" +
 			"redirect_uri=$REDIRECT_URI&response_type=code&scope="
 
 	override val isAuthorized: Boolean
@@ -42,8 +48,8 @@ class ShikimoriRepository(
 
 	override suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
-		body.add("client_id", BuildConfig.SHIKIMORI_CLIENT_ID)
-		body.add("client_secret", BuildConfig.SHIKIMORI_CLIENT_SECRET)
+		body.add("client_id", clientId)
+		body.add("client_secret", clientSecret)
 		if (code != null) {
 			body.add("grant_type", "authorization_code")
 			body.add("redirect_uri", REDIRECT_URI)
@@ -98,13 +104,13 @@ class ShikimoriRepository(
 		return if (pageOffset != 0) list.drop(pageOffset) else list
 	}
 
-	override suspend fun createRate(mangaId: Long, shikiMangaId: Long) {
+	override suspend fun createRate(mangaId: Long, scrobblerMangaId: Long) {
 		val user = cachedUser ?: loadUser()
 		val payload = JSONObject()
 		payload.put(
 			"user_rate",
 			JSONObject().apply {
-				put("target_id", shikiMangaId)
+				put("target_id", scrobblerMangaId)
 				put("target_type", "Manga")
 				put("user_id", user.id)
 			},

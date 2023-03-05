@@ -20,15 +20,6 @@ allprojects {
 	}
 }
 
-String localProperty(String name, String defaultValue = 'null') {
-	Properties localProperties = new Properties()
-	project.rootProject.file('local.properties').withInputStream { localProperties.load(it) }
-
-	def value = localProperties[name]
-
-	return value != null ? value : defaultValue
-}
-
 String currentBranch() {
 	def branchName = ""
 	try {

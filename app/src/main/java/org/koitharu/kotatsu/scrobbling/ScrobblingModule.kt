@@ -36,6 +36,7 @@ object ScrobblingModule {
 	@Provides
 	@Singleton
 	fun provideShikimoriRepository(
+		@ApplicationContext context: Context,
 		@ScrobblerType(ScrobblerService.SHIKIMORI) storage: ScrobblerStorage,
 		database: MangaDatabase,
 		authenticator: ShikimoriAuthenticator,
@@ -47,12 +48,13 @@ object ScrobblingModule {
 				addInterceptor(CurlLoggingInterceptor())
 			}
 		}.build()
-		return ShikimoriRepository(okHttp, storage, database)
+		return ShikimoriRepository(context, okHttp, storage, database)
 	}
 
 	@Provides
 	@Singleton
 	fun provideMALRepository(
+		@ApplicationContext context: Context,
 		@ScrobblerType(ScrobblerService.MAL) storage: ScrobblerStorage,
 		database: MangaDatabase,
 		authenticator: MALAuthenticator,
@@ -64,12 +66,13 @@ object ScrobblingModule {
 				addInterceptor(CurlLoggingInterceptor())
 			}
 		}.build()
-		return MALRepository(okHttp, storage, database)
+		return MALRepository(context, okHttp, storage, database)
 	}
 
 	@Provides
 	@Singleton
 	fun provideAniListRepository(
+		@ApplicationContext context: Context,
 		@ScrobblerType(ScrobblerService.ANILIST) storage: ScrobblerStorage,
 		database: MangaDatabase,
 		authenticator: AniListAuthenticator,
@@ -81,7 +84,7 @@ object ScrobblingModule {
 				addInterceptor(CurlLoggingInterceptor())
 			}
 		}.build()
-		return AniListRepository(okHttp, storage, database)
+		return AniListRepository(context, okHttp, storage, database)
 	}
 
 	@Provides
