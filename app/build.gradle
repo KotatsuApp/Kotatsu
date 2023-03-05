@@ -8,15 +8,15 @@ plugins {
 
 android {
 	compileSdk = 33
-	buildToolsVersion = '33.0.1'
+	buildToolsVersion = '33.0.2'
 	namespace = 'org.koitharu.kotatsu'
 
 	defaultConfig {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 519
-		versionName '4.4.3'
+		versionCode 520
+		versionName '4.4.4'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
