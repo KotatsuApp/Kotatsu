@@ -138,7 +138,7 @@ class DownloadManager @AssistedInject constructor(
 						for ((pageIndex, page) in pages.withIndex()) {
 							runFailsafe(outState, pausingHandle) {
 								val url = repo.getPageUrl(page)
-								val file = cache[url]
+								val file = cache.get(url)
 									?: downloadFile(url, page.referer, destination, tempFileName, repo.source)
 								output.addPage(
 									chapter = chapter,
