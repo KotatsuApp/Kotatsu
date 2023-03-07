@@ -30,7 +30,7 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		size = FileSize.MEGABYTES.convert(200, FileSize.BYTES),
 	)
 
-	suspend fun get(url: String): File? = withContext(Dispatchers.IO) {
+	suspend fun get(url: String): File? = runInterruptible(Dispatchers.IO) {
 		lruCache.get(url)?.takeIfReadable()
 	}
 
