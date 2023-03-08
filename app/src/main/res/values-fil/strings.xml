@@ -41,7 +41,7 @@
     <string name="large_manga_save_confirm">Ang manga na ito ay may %s. I-save ang lahat ng ito\?</string>
     <string name="notifications">Mga abiso</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d ng %2$d sa</string>
-    <string name="new_chapters">Bagong mga kabanata</string>
+    <string name="new_chapters">Mga bagong kabanata</string>
     <string name="read_from_start">Basahin mula sa simula</string>
     <string name="restart">I-restart</string>
     <string name="categories_">Mga kategorya…</string>
