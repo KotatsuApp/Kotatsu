@@ -12,7 +12,7 @@
     </plurals>
     <plurals name="new_chapters">
         <item quantity="one">%1$d новая глава</item>
-        <item quantity="few">%1$d новых главы</item>
+        <item quantity="few">%1$d новые главы</item>
         <item quantity="many">%1$d новых глав</item>
         <item quantity="other">%1$d новых глав</item>
     </plurals>
