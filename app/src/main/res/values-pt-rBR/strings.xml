@@ -410,4 +410,7 @@
     <string name="theme_name_rikka">Rikka</string>
     <string name="theme_name_sakura">Sakura</string>
     <string name="source_disabled">Fonte desativada</string>
+    <string name="enable_logging_summary">Gravar algumas ações para propósitos de depuração</string>
+    <string name="theme_name_mamimi">Mamimi</string>
+    <string name="theme_name_miku">Miku</string>
 </resources>
