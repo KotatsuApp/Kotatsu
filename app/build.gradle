@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 520
-		versionName '4.4.4'
+		versionCode 521
+		versionName '4.4.5'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -78,7 +78,8 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:e8d299782b') {
+	//noinspection GradleDependency
+	implementation('com.github.KotatsuApp:kotatsu-parsers:413f4a2f10') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -132,7 +133,7 @@ dependencies {
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
 	testImplementation 'junit:junit:4.13.2'
-	testImplementation 'org.json:json:20220924'
+	testImplementation 'org.json:json:20230227'
 	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
 	androidTestImplementation 'androidx.test:runner:1.5.2'
