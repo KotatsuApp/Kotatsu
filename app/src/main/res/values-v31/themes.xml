@@ -53,4 +53,11 @@
 		<item name="android:panelColorBackground">@color/m3_sys_color_dynamic_light_inverse_primary</item>
 	</style>
 
+	<style name="Base.V31.Kotatsu" parent="Base.V27.Kotatsu">
+		<item name="android:windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
+		<item name="android:windowSplashScreenAnimationDuration">800</item>
+	</style>
+
+	<style name="Theme.Kotatsu" parent="Base.V31.Kotatsu" />
+
 </resources>

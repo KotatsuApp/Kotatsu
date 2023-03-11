@@ -24,4 +24,5 @@
 	<color name="status_bar_incognito">#334800E0</color>
 	<color name="warning">#E65100</color>
 	<color name="launcher_background">#FFFFFF</color>
+	<color name="splash_primary">#90CAF9</color>
 </resources>
