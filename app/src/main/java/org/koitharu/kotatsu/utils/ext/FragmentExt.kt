@@ -9,9 +9,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.Serializable
 import kotlin.coroutines.resume
-import kotlinx.coroutines.suspendCancellableCoroutine
 
 inline fun <T : Fragment> T.withArgs(size: Int, block: Bundle.() -> Unit): T {
 	val b = Bundle(size)
@@ -48,7 +48,7 @@ fun Fragment.addMenuProvider(provider: MenuProvider) {
 
 suspend fun Fragment.awaitViewLifecycle(): LifecycleOwner = suspendCancellableCoroutine { cont ->
 	val liveData = viewLifecycleOwnerLiveData
-	val observer = object : Observer<LifecycleOwner> {
+	val observer = object : Observer<LifecycleOwner?> {
 		override fun onChanged(result: LifecycleOwner?) {
 			if (result != null) {
 				liveData.removeObserver(this)

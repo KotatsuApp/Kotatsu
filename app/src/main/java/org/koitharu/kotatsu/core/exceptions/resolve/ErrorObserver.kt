@@ -19,7 +19,7 @@ abstract class ErrorObserver(
 	protected val fragment: Fragment?,
 	private val resolver: ExceptionResolver?,
 	private val onResolved: Consumer<Boolean>?,
-) : Observer<Throwable> {
+) : Observer<Throwable?> {
 
 	protected val activity = host.context.findActivity()
 

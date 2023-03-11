@@ -12,22 +12,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 
+@Deprecated("Migrate to SavedStateHandle in vm")
 @MainThread
 inline fun <reified VM : ViewModel> ComponentActivity.assistedViewModels(
 	noinline viewModelProducer: (SavedStateHandle) -> VM,
 ): Lazy<VM> = viewModels {
-	object : AbstractSavedStateViewModelFactory(this, intent.extras) {
+	object : AbstractSavedStateViewModelFactory(this@assistedViewModels, intent.extras) {
 		override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
 			return requireNotNull(modelClass.cast(viewModelProducer(handle)))
 		}
 	}
 }
 
+@Deprecated("Migrate to SavedStateHandle in vm")
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.assistedViewModels(
 	noinline viewModelProducer: (SavedStateHandle) -> VM,
 ): Lazy<VM> = viewModels {
-	object : AbstractSavedStateViewModelFactory(this, arguments) {
+	object : AbstractSavedStateViewModelFactory(this@assistedViewModels, arguments) {
 		override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
 			return requireNotNull(modelClass.cast(viewModelProducer(handle)))
 		}

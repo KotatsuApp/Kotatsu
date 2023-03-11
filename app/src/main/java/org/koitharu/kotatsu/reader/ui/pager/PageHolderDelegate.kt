@@ -104,7 +104,7 @@ class PageHolderDelegate(
 		}
 	}
 
-	override fun onChanged(t: ReaderSettings?) {
+	override fun onChanged(t: ReaderSettings) {
 		if (state == State.SHOWN) {
 			callback.onImageShowing(readerSettings)
 		}

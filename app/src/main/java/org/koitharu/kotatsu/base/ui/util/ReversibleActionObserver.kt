@@ -10,7 +10,7 @@ import org.koitharu.kotatsu.utils.ext.findActivity
 
 class ReversibleActionObserver(
 	private val snackbarHost: View,
-) : Observer<ReversibleAction> {
+) : Observer<ReversibleAction?> {
 
 	override fun onChanged(action: ReversibleAction?) {
 		if (action == null) {

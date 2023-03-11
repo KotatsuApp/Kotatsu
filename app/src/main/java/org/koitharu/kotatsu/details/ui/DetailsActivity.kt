@@ -310,7 +310,7 @@ class DetailsActivity :
 
 	private class PrefetchObserver(
 		private val context: Context,
-	) : Observer<List<ChapterListItem>> {
+	) : Observer<List<ChapterListItem>?> {
 
 		private var isCalled = false
 
