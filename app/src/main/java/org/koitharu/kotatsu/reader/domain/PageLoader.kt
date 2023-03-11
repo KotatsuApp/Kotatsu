@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +12,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -54,11 +53,11 @@ class PageLoader @Inject constructor(
 
 	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
 	private val convertLock = Mutex()
+	private val prefetchLock = Mutex()
 	private var repository: MangaRepository? = null
 	private val prefetchQueue = LinkedList<MangaPage>()
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
-	private val emptyProgressFlow: StateFlow<Float> = MutableStateFlow(-1f)
 
 	override fun close() {
 		loaderScope.cancel()
@@ -71,8 +70,8 @@ class PageLoader @Inject constructor(
 		return repository is RemoteMangaRepository && settings.isPagesPreloadEnabled()
 	}
 
-	fun prefetch(pages: List<ReaderPage>) {
-		synchronized(prefetchQueue) {
+	fun prefetch(pages: List<ReaderPage>) = loaderScope.launch {
+		prefetchLock.withLock {
 			for (page in pages.asReversed()) {
 				if (tasks.containsKey(page.id)) {
 					continue
@@ -89,18 +88,13 @@ class PageLoader @Inject constructor(
 	}
 
 	fun loadPageAsync(page: MangaPage, force: Boolean): ProgressDeferred<File, Float> {
-		if (!force) {
-			cache[page.url]?.let {
-				return getCompletedTask(it)
-			}
-		}
 		var task = tasks[page.id]
 		if (force) {
 			task?.cancel()
 		} else if (task?.isCancelled == false) {
 			return task
 		}
-		task = loadPageAsyncImpl(page)
+		task = loadPageAsyncImpl(page, force)
 		synchronized(tasks) {
 			tasks[page.id] = task
 		}
@@ -130,23 +124,26 @@ class PageLoader @Inject constructor(
 		return getRepository(page.source).getPageUrl(page)
 	}
 
-	private fun onIdle() {
-		synchronized(prefetchQueue) {
+	private fun onIdle() = loaderScope.launch {
+		prefetchLock.withLock {
 			while (prefetchQueue.isNotEmpty()) {
-				val page = prefetchQueue.pollFirst() ?: return
-				if (cache[page.url] == null) {
+				val page = prefetchQueue.pollFirst() ?: return@launch
+				if (cache.get(page.url) == null) {
 					synchronized(tasks) {
-						tasks[page.id] = loadPageAsyncImpl(page)
+						tasks[page.id] = loadPageAsyncImpl(page, false)
 					}
-					return
+					return@launch
 				}
 			}
 		}
 	}
 
-	private fun loadPageAsyncImpl(page: MangaPage): ProgressDeferred<File, Float> {
+	private fun loadPageAsyncImpl(page: MangaPage, skipCache: Boolean): ProgressDeferred<File, Float> {
 		val progress = MutableStateFlow(PROGRESS_UNDEFINED)
 		val deferred = loaderScope.async {
+			if (!skipCache) {
+				cache.get(page.url)?.let { return@async it }
+			}
 			counter.incrementAndGet()
 			try {
 				loadPageImpl(page, progress)
@@ -205,11 +202,6 @@ class PageLoader @Inject constructor(
 				}
 			}
 		}
-	}
-
-	private fun getCompletedTask(file: File): ProgressDeferred<File, Float> {
-		val deferred = CompletableDeferred(file)
-		return ProgressDeferred(deferred, emptyProgressFlow)
 	}
 
 	private class InternalErrorHandler : AbstractCoroutineContextElement(CoroutineExceptionHandler),

@@ -4,6 +4,7 @@ import android.content.Context
 import com.tomclaw.cache.DiskLruCache
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
@@ -30,8 +31,8 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		size = FileSize.MEGABYTES.convert(200, FileSize.BYTES),
 	)
 
-	operator fun get(url: String): File? {
-		return lruCache.get(url)?.takeIfReadable()
+	suspend fun get(url: String): File? = runInterruptible(Dispatchers.IO) {
+		lruCache.get(url)?.takeIfReadable()
 	}
 
 	suspend fun put(url: String, inputStream: InputStream): File = withContext(Dispatchers.IO) {

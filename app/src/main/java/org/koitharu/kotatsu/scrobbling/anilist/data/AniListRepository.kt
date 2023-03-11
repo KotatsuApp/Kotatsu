@@ -1,12 +1,14 @@
 package org.koitharu.kotatsu.scrobbling.anilist.data
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.exception.GraphQLException
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -15,6 +17,7 @@ import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.parsers.util.toIntUp
+import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
@@ -32,13 +35,17 @@ private const val REQUEST_MUTATION = "mutation"
 private const val KEY_SCORE_FORMAT = "score_format"
 
 class AniListRepository(
+	@ApplicationContext context: Context,
 	private val okHttp: OkHttpClient,
 	private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
-) : org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository {
+) : ScrobblerRepository {
+
+	private val clientId = context.getString(R.string.anilist_clientId)
+	private val clientSecret = context.getString(R.string.anilist_clientSecret)
 
 	override val oauthUrl: String
-		get() = "${BASE_URL}oauth/authorize?client_id=${BuildConfig.ANILIST_CLIENT_ID}&" +
+		get() = "${BASE_URL}oauth/authorize?client_id=$clientId&" +
 			"redirect_uri=${REDIRECT_URI}&response_type=code"
 
 	override val isAuthorized: Boolean
@@ -48,8 +55,8 @@ class AniListRepository(
 
 	override suspend fun authorize(code: String?) {
 		val body = FormBody.Builder()
-		body.add("client_id", BuildConfig.ANILIST_CLIENT_ID)
-		body.add("client_secret", BuildConfig.ANILIST_CLIENT_SECRET)
+		body.add("client_id", clientId)
+		body.add("client_secret", clientSecret)
 		if (code != null) {
 			body.add("grant_type", "authorization_code")
 			body.add("redirect_uri", REDIRECT_URI)
