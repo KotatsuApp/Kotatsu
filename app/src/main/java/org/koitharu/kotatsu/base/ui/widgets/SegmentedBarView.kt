@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.base.ui.widgets
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Outline
@@ -7,30 +9,36 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.graphics.ColorUtils
-import com.google.android.material.R as materialR
-import kotlin.random.Random
 import org.koitharu.kotatsu.parsers.util.replaceWith
+import org.koitharu.kotatsu.utils.ext.getAnimationDuration
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 import org.koitharu.kotatsu.utils.ext.resolveDp
+import kotlin.random.Random
+import com.google.android.material.R as materialR
 
 class SegmentedBarView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	defStyleAttr: Int = 0,
-) : View(context, attrs, defStyleAttr) {
+) : View(context, attrs, defStyleAttr), ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val segmentsData = ArrayList<Segment>()
 	private val segmentsSizes = ArrayList<Float>()
 	private val outlineColor = context.getThemeColor(materialR.attr.colorOutline)
 	private var cornerSize = 0f
+	private var scaleFactor = 1f
+	private var scaleAnimator: ValueAnimator? = null
 
 	var segments: List<Segment>
 		get() = segmentsData
 		set(value) {
+			scaleAnimator?.cancel()
+			scaleAnimator = null
 			segmentsData.replaceWith(value)
 			updateSizes()
 			invalidate()
@@ -79,12 +87,47 @@ class SegmentedBarView @JvmOverloads constructor(
 		canvas.drawRoundRect(0f, 0f, w, height.toFloat(), cornerSize, cornerSize, paint)
 	}
 
+	override fun onAnimationStart(animation: Animator) = Unit
+
+	override fun onAnimationEnd(animation: Animator) {
+		if (scaleAnimator === animation) {
+			scaleAnimator = null
+		}
+	}
+
+	override fun onAnimationUpdate(animation: ValueAnimator) {
+		scaleFactor = animation.animatedValue as Float
+		updateSizes()
+		invalidate()
+	}
+
+	override fun onAnimationCancel(animation: Animator) = Unit
+
+	override fun onAnimationRepeat(animation: Animator) = Unit
+
+	fun animateSegments(value: List<Segment>) {
+		scaleAnimator?.cancel()
+		scaleFactor = 0f
+		segmentsData.replaceWith(value)
+		updateSizes()
+		invalidate()
+		val animator = ValueAnimator.ofFloat(0f, 1f)
+		animator.duration = context.getAnimationDuration(android.R.integer.config_longAnimTime)
+		animator.interpolator = DecelerateInterpolator()
+		animator.addUpdateListener(this@SegmentedBarView)
+		animator.addListener(this@SegmentedBarView)
+		scaleAnimator = animator
+		animator.start()
+	}
+
 	private fun updateSizes() {
 		segmentsSizes.clear()
 		segmentsSizes.ensureCapacity(segmentsData.size + 1)
 		var w = width.toFloat()
-		for (segment in segmentsData) {
-			val segmentWidth = (w * segment.percent).coerceAtLeast(cornerSize)
+		val maxScale = (scaleFactor * (segments.size - 1)).coerceAtLeast(1f)
+		for ((index, segment) in segmentsData.withIndex()) {
+			val scale = (scaleFactor * (index + 1) / maxScale).coerceAtMost(1f)
+			val segmentWidth = (w * segment.percent).coerceAtLeast(cornerSize) * scale
 			segmentsSizes.add(segmentWidth)
 			w -= segmentWidth
 		}
