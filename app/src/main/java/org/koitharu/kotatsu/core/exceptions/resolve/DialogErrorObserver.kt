@@ -6,7 +6,7 @@ import androidx.core.util.Consumer
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ui.MangaErrorDialog
+import org.koitharu.kotatsu.core.ui.ErrorDetailsDialog
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
@@ -37,7 +37,7 @@ class DialogErrorObserver(
 			val fm = fragmentManager
 			if (fm != null) {
 				dialogBuilder.setPositiveButton(R.string.details) { _, _ ->
-					MangaErrorDialog.show(fm, error)
+					ErrorDetailsDialog.show(fm, error, error.url)
 				}
 			}
 		}

@@ -23,8 +23,10 @@ import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
+import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
 @AndroidEntryPoint
@@ -127,10 +129,17 @@ class SettingsActivity :
 			ACTION_HISTORY -> HistorySettingsFragment()
 			ACTION_TRACKER -> TrackerSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
-				intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
+				intent.getSerializableExtraCompat(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
 			)
 
 			ACTION_MANAGE_SOURCES -> SourcesSettingsFragment()
+			Intent.ACTION_VIEW -> {
+				when (intent.data?.host) {
+					HOST_ABOUT -> AboutSettingsFragment()
+					else -> SettingsHeadersFragment()
+				}
+			}
+
 			else -> SettingsHeadersFragment()
 		}
 		supportFragmentManager.commit {
@@ -146,9 +155,9 @@ class SettingsActivity :
 		private const val ACTION_TRACKER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_TRACKER"
 		private const val ACTION_HISTORY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_HISTORY"
 		private const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
-		private const val ACTION_SHIKIMORI = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SHIKIMORI_SETTINGS"
 		private const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
 		private const val EXTRA_SOURCE = "source"
+		private const val HOST_ABOUT = "about"
 
 		fun newIntent(context: Context) = Intent(context, SettingsActivity::class.java)
 
