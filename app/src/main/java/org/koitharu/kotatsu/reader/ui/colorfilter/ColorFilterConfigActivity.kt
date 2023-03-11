@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -25,10 +26,8 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.decodeRegion
 import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -42,15 +41,7 @@ class ColorFilterConfigActivity :
 	@Inject
 	lateinit var coil: ImageLoader
 
-	@Inject
-	lateinit var viewModelFactory: ColorFilterConfigViewModel.Factory
-
-	private val viewModel: ColorFilterConfigViewModel by assistedViewModels {
-		viewModelFactory.create(
-			manga = checkNotNull(intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga),
-			page = checkNotNull(intent.getParcelableExtraCompat<ParcelableMangaPages>(EXTRA_PAGES)?.pages?.firstOrNull()),
-		)
-	}
+	private val viewModel: ColorFilterConfigViewModel by viewModels()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -144,8 +135,8 @@ class ColorFilterConfigActivity :
 
 	companion object {
 
-		private const val EXTRA_PAGES = "pages"
-		private const val EXTRA_MANGA = "manga_id"
+		const val EXTRA_PAGES = "pages"
+		const val EXTRA_MANGA = "manga_id"
 
 		fun newIntent(context: Context, manga: Manga, page: MangaPage) =
 			Intent(context, ColorFilterConfigActivity::class.java)

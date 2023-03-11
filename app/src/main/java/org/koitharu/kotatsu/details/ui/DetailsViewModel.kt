@@ -7,12 +7,11 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.text.getSpans
 import androidx.core.text.parseAsHtml
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,9 +54,11 @@ import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.io.IOException
+import javax.inject.Inject
 
-class DetailsViewModel @AssistedInject constructor(
-	@Assisted intent: MangaIntent,
+@HiltViewModel
+class DetailsViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	private val historyRepository: HistoryRepository,
 	favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
@@ -71,7 +72,7 @@ class DetailsViewModel @AssistedInject constructor(
 ) : BaseViewModel() {
 
 	private val delegate = MangaDetailsDelegate(
-		intent = intent,
+		intent = MangaIntent(savedStateHandle),
 		mangaDataRepository = mangaDataRepository,
 		historyRepository = historyRepository,
 		localMangaRepository = localMangaRepository,
@@ -320,11 +321,5 @@ class DetailsViewModel @AssistedInject constructor(
 			errorEvent.call(IllegalStateException("Scrobbler [$index] is not available"))
 		}
 		return scrobbler
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(intent: MangaIntent): DetailsViewModel
 	}
 }

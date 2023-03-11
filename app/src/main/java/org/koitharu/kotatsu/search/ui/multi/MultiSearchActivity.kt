@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
@@ -31,7 +32,6 @@ import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import javax.inject.Inject
@@ -40,17 +40,12 @@ import javax.inject.Inject
 class MultiSearchActivity :
 	BaseActivity<ActivitySearchMultiBinding>(),
 	MangaListListener,
-	ListSelectionController.Callback {
-
-	@Inject
-	lateinit var viewModelFactory: MultiSearchViewModel.Factory
+	ListSelectionController.Callback2 {
 
 	@Inject
 	lateinit var coil: ImageLoader
 
-	private val viewModel by assistedViewModels<MultiSearchViewModel> {
-		viewModelFactory.create(intent.getStringExtra(EXTRA_QUERY).orEmpty())
-	}
+	private val viewModel by viewModels<MultiSearchViewModel>()
 	private lateinit var adapter: MultiSearchAdapter
 	private lateinit var selectionController: ListSelectionController
 
@@ -139,17 +134,16 @@ class MultiSearchActivity :
 
 	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
 
-	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
+		binding.recyclerView.invalidateNestedItemDecorations()
+	}
+
+	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_remote, menu)
 		return true
 	}
 
-	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-		mode.title = selectionController.count.toString()
-		return true
-	}
-
-	override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_share -> {
 				ShareHelper(this).shareMangaLinks(collectSelectedItems())
@@ -173,17 +167,13 @@ class MultiSearchActivity :
 		}
 	}
 
-	override fun onSelectionChanged(count: Int) {
-		binding.recyclerView.invalidateNestedItemDecorations()
-	}
-
 	private fun collectSelectedItems(): Set<Manga> {
 		return viewModel.getItems(selectionController.peekCheckedIds())
 	}
 
 	companion object {
 
-		private const val EXTRA_QUERY = "query"
+		const val EXTRA_QUERY = "query"
 
 		fun newIntent(context: Context, query: String) =
 			Intent(context, MultiSearchActivity::class.java)

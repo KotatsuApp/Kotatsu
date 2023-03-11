@@ -8,8 +8,8 @@ import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.list.ui.MangaListFragment
@@ -19,21 +19,12 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
-import org.koitharu.kotatsu.utils.ext.serializableArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 
 @AndroidEntryPoint
 class RemoteListFragment : MangaListFragment() {
 
-	@Inject
-	lateinit var viewModelFactory: RemoteListViewModel.Factory
-
-	public override val viewModel by assistedViewModels {
-		viewModelFactory.create(source)
-	}
-
-	private val source by serializableArgument<MangaSource>(ARG_SOURCE)
+	public override val viewModel by viewModels<RemoteListViewModel>()
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
@@ -74,13 +65,15 @@ class RemoteListFragment : MangaListFragment() {
 
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 			R.id.action_source_settings -> {
-				startActivity(SettingsActivity.newSourceSettingsIntent(requireContext(), source))
+				startActivity(SettingsActivity.newSourceSettingsIntent(requireContext(), viewModel.source))
 				true
 			}
+
 			R.id.action_filter -> {
 				onFilterClick(null)
 				true
 			}
+
 			else -> false
 		}
 
@@ -90,7 +83,7 @@ class RemoteListFragment : MangaListFragment() {
 			}
 			val intent = SearchActivity.newIntent(
 				context = this@RemoteListFragment.context ?: return false,
-				source = source,
+				source = viewModel.source,
 				query = query,
 			)
 			startActivity(intent)
@@ -113,7 +106,7 @@ class RemoteListFragment : MangaListFragment() {
 
 	companion object {
 
-		private const val ARG_SOURCE = "provider"
+		const val ARG_SOURCE = "provider"
 
 		fun newInstance(provider: MangaSource) = RemoteListFragment().withArgs(1) {
 			putSerializable(ARG_SOURCE, provider)

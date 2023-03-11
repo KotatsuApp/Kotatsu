@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -22,7 +23,6 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.hideCompat
@@ -35,14 +35,9 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	OnListItemClickListener<ScrobblingInfo>, View.OnClickListener {
 
 	@Inject
-	lateinit var viewModelFactory: ScrobblerConfigViewModel.Factory
-
-	@Inject
 	lateinit var coil: ImageLoader
 
-	private val viewModel: ScrobblerConfigViewModel by assistedViewModels {
-		viewModelFactory.create(requireNotNull(getScrobblerService(intent)))
-	}
+	private val viewModel: ScrobblerConfigViewModel by viewModels()
 
 	private var paddingVertical = 0
 	private var paddingHorizontal = 0
@@ -150,30 +145,14 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 
 	companion object {
 
-		private const val EXTRA_SERVICE_ID = "service"
+		const val EXTRA_SERVICE_ID = "service"
 
-		private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
-		private const val HOST_ANILIST_AUTH = "anilist-auth"
-		private const val HOST_MAL_AUTH = "mal-auth"
+		const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
+		const val HOST_ANILIST_AUTH = "anilist-auth"
+		const val HOST_MAL_AUTH = "mal-auth"
 
 		fun newIntent(context: Context, service: ScrobblerService) =
 			Intent(context, ScrobblerConfigActivity::class.java)
 				.putExtra(EXTRA_SERVICE_ID, service.id)
-
-		private fun getScrobblerService(
-			intent: Intent
-		): ScrobblerService? {
-			val serviceId = intent.getIntExtra(EXTRA_SERVICE_ID, 0)
-			if (serviceId != 0) {
-				return enumValues<ScrobblerService>().first { it.id == serviceId }
-			}
-			val uri = intent.data ?: return null
-			return when (uri.host) {
-				HOST_SHIKIMORI_AUTH -> ScrobblerService.SHIKIMORI
-				HOST_ANILIST_AUTH -> ScrobblerService.ANILIST
-				HOST_MAL_AUTH -> ScrobblerService.MAL
-				else -> null
-			}
-		}
 	}
 }

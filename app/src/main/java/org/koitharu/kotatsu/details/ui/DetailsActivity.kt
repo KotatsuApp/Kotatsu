@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.isGone
@@ -42,7 +43,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.ViewBadge
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.utils.ext.textAndVisible
@@ -59,16 +59,11 @@ class DetailsActivity :
 		get() = binding.headerChapters
 
 	@Inject
-	lateinit var viewModelFactory: DetailsViewModel.Factory
-
-	@Inject
 	lateinit var shortcutsUpdater: ShortcutsUpdater
 
 	private lateinit var viewBadge: ViewBadge
 
-	private val viewModel: DetailsViewModel by assistedViewModels {
-		viewModelFactory.create(MangaIntent(intent))
-	}
+	private val viewModel: DetailsViewModel by viewModels()
 	private lateinit var chaptersMenuProvider: ChaptersMenuProvider
 
 	private val downloadReceiver = object : BroadcastReceiver() {

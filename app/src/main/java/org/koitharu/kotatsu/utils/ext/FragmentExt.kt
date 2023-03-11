@@ -23,6 +23,7 @@ inline fun <T : Fragment> T.withArgs(size: Int, block: Bundle.() -> Unit): T {
 val Fragment.viewLifecycleScope
 	inline get() = viewLifecycleOwner.lifecycle.coroutineScope
 
+@Deprecated("")
 fun <T : Serializable> Fragment.serializableArgument(name: String): Lazy<T> {
 	return lazy(LazyThreadSafetyMode.NONE) {
 		@Suppress("UNCHECKED_CAST")
@@ -32,6 +33,7 @@ fun <T : Serializable> Fragment.serializableArgument(name: String): Lazy<T> {
 	}
 }
 
+@Deprecated("")
 fun Fragment.stringArgument(name: String) = lazy(LazyThreadSafetyMode.NONE) {
 	arguments?.getString(name)
 }

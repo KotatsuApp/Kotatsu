@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import coil.ImageLoader
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,10 +27,8 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.adapter.ScrobblerMangaSelectionDecoration
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.adapter.ScrobblerSelectorAdapter
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.requireParcelable
 import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
 
@@ -45,18 +44,11 @@ class ScrobblingSelectorBottomSheet :
 	ListStateHolderListener {
 
 	@Inject
-	lateinit var viewModelFactory: ScrobblingSelectorViewModel.Factory
-
-	@Inject
 	lateinit var coil: ImageLoader
 
 	private var collapsibleActionViewCallback: CollapseActionViewCallback? = null
 
-	private val viewModel by assistedViewModels {
-		viewModelFactory.create(
-			requireArguments().requireParcelable<ParcelableManga>(MangaIntent.KEY_MANGA).manga,
-		)
-	}
+	private val viewModel by viewModels<ScrobblingSelectorViewModel>()
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingSelectorBinding {
 		return SheetScrobblingSelectorBinding.inflate(inflater, container, false)

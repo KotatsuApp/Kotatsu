@@ -6,10 +6,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -56,15 +55,15 @@ import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireValue
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.util.Date
+import javax.inject.Inject
 import javax.inject.Provider
 
 private const val BOUNDS_PAGE_OFFSET = 2
 private const val PREFETCH_LIMIT = 10
 
-class ReaderViewModel @AssistedInject constructor(
-	@Assisted private val intent: MangaIntent,
-	@Assisted initialState: ReaderState?,
-	@Assisted private val preselectedBranch: String?,
+@HiltViewModel
+class ReaderViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
@@ -74,10 +73,13 @@ class ReaderViewModel @AssistedInject constructor(
 	pageLoaderFactory: Provider<PageLoader>,
 ) : BaseViewModel() {
 
+	private val intent = MangaIntent(savedStateHandle)
+	private val preselectedBranch = savedStateHandle.get<String>(ReaderActivity.EXTRA_BRANCH)
+
 	private var loadingJob: Job? = null
 	private var pageSaveJob: Job? = null
 	private var bookmarkJob: Job? = null
-	private val currentState = MutableStateFlow(initialState)
+	private val currentState = MutableStateFlow<ReaderState?>(savedStateHandle[ReaderActivity.EXTRA_STATE])
 	private val mangaData = MutableStateFlow(intent.manga)
 	private val chapters: LongSparseArray<MangaChapter>
 		get() = chaptersLoader.chapters
@@ -392,16 +394,6 @@ class ReaderViewModel @AssistedInject constructor(
 		val pagePercent = (pageIndex + 1) / pagesCount.toFloat()
 		val ppc = 1f / chaptersCount
 		return ppc * chapterIndex + ppc * pagePercent
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(
-			intent: MangaIntent,
-			initialState: ReaderState?,
-			preselectedBranch: String?,
-		): ReaderViewModel
 	}
 }
 

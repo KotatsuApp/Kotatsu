@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.lifecycle.SavedStateHandle
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import java.io.Serializable
 
@@ -45,5 +46,11 @@ inline fun <reified T : Serializable> Bundle.requireSerializable(key: String): T
 inline fun <reified T : Parcelable> Bundle.requireParcelable(key: String): T {
 	return checkNotNull(getParcelableCompat(key)) {
 		"Parcelable of type \"${T::class.java.name}\" not found at \"$key\""
+	}
+}
+
+fun <T> SavedStateHandle.require(key: String): T {
+	return checkNotNull(get(key)) {
+		"Value $key not found in SavedStateHandle or has a wrong type"
 	}
 }

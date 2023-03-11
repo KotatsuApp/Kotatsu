@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import javax.inject.Provider
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -23,10 +22,13 @@ import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.utils.ext.getParcelableCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
+import javax.inject.Provider
 
 @AndroidEntryPoint
 class PagesThumbnailsSheet :
@@ -117,9 +119,9 @@ class PagesThumbnailsSheet :
 			(parentFragment as? OnPageSelectListener)
 				?: (activity as? OnPageSelectListener)
 			)?.run {
-			onPageSelected(item)
-			dismiss()
-		}
+				onPageSelected(item)
+				dismiss()
+			}
 	}
 
 	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
@@ -135,7 +137,7 @@ class PagesThumbnailsSheet :
 	}
 
 	private fun getPageLoader(): PageLoader {
-		val viewModel = (activity as? ReaderActivity)?.viewModel
+		val viewModel = (activity as? ReaderActivity)?.viewModels<ReaderViewModel>()?.value
 		return viewModel?.pageLoader ?: pageLoaderProvider.get().also { pageLoader = it }
 	}
 

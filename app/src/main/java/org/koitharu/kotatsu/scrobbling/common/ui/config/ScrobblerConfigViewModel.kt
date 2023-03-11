@@ -1,10 +1,10 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.config
 
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -24,12 +25,16 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.onFirst
+import org.koitharu.kotatsu.utils.ext.require
+import javax.inject.Inject
 
-class ScrobblerConfigViewModel @AssistedInject constructor(
-	@Assisted scrobblerService: ScrobblerService,
+@HiltViewModel
+class ScrobblerConfigViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 ) : BaseViewModel() {
 
+	private val scrobblerService = getScrobblerService(savedStateHandle)
 	private val scrobbler = scrobblers.first { it.scrobblerService == scrobblerService }
 
 	val titleResId = scrobbler.scrobblerService.titleResId
@@ -90,9 +95,19 @@ class ScrobblerConfigViewModel @AssistedInject constructor(
 		return result
 	}
 
-	@AssistedFactory
-	interface Factory {
-
-		fun create(service: ScrobblerService): ScrobblerConfigViewModel
+	private fun getScrobblerService(
+		savedStateHandle: SavedStateHandle,
+	): ScrobblerService {
+		val serviceId = savedStateHandle.get<Int>(ScrobblerConfigActivity.EXTRA_SERVICE_ID) ?: 0
+		if (serviceId != 0) {
+			return enumValues<ScrobblerService>().first { it.id == serviceId }
+		}
+		val uri = savedStateHandle.require<Uri>(BaseActivity.EXTRA_DATA)
+		return when (uri.host) {
+			ScrobblerConfigActivity.HOST_SHIKIMORI_AUTH -> ScrobblerService.SHIKIMORI
+			ScrobblerConfigActivity.HOST_ANILIST_AUTH -> ScrobblerService.ANILIST
+			ScrobblerConfigActivity.HOST_MAL_AUTH -> ScrobblerService.MAL
+			else -> error("Wrong scrobbler uri: $uri")
+		}
 	}
 }

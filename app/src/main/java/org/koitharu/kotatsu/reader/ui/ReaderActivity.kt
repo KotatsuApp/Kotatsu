@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.WindowInsetsCompat
@@ -48,14 +49,11 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.IdlingDetector
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
-import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
 import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 import org.koitharu.kotatsu.utils.ext.postDelayed
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ReaderActivity :
@@ -68,18 +66,9 @@ class ReaderActivity :
 	OnApplyWindowInsetsListener,
 	IdlingDetector.Callback {
 
-	@Inject
-	lateinit var viewModelFactory: ReaderViewModel.Factory
-
 	private val idlingDetector = IdlingDetector(TimeUnit.SECONDS.toMillis(10), this)
 
-	val viewModel by assistedViewModels {
-		viewModelFactory.create(
-			intent = MangaIntent(intent),
-			initialState = intent?.getParcelableExtraCompat(EXTRA_STATE),
-			preselectedBranch = intent?.getStringExtra(EXTRA_BRANCH),
-		)
-	}
+	private val viewModel: ReaderViewModel by viewModels()
 
 	override var pageSwitchDelay: Float
 		get() = pageSwitchTimer.delaySec
@@ -392,8 +381,8 @@ class ReaderActivity :
 	companion object {
 
 		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
-		private const val EXTRA_STATE = "state"
-		private const val EXTRA_BRANCH = "branch"
+		const val EXTRA_STATE = "state"
+		const val EXTRA_BRANCH = "branch"
 		private const val TOAST_DURATION = 1500L
 
 		fun newIntent(context: Context, manga: Manga): Intent {

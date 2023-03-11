@@ -4,43 +4,37 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Filter
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import com.google.android.material.R as materialR
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.base.ui.util.DefaultTextWatcher
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.titleRes
 import org.koitharu.kotatsu.databinding.ActivityCategoryEditBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getSerializableCompat
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class FavouritesCategoryEditActivity :
 	BaseActivity<ActivityCategoryEditBinding>(),
 	AdapterView.OnItemClickListener,
 	View.OnClickListener,
-	TextWatcher {
+	DefaultTextWatcher {
 
-	@Inject
-	lateinit var viewModelFactory: FavouritesCategoryEditViewModel.Factory
-
-	private val viewModel by assistedViewModels<FavouritesCategoryEditViewModel> {
-		viewModelFactory.create(intent.getLongExtra(EXTRA_ID, NO_ID))
-	}
+	private val viewModel by viewModels<FavouritesCategoryEditViewModel>()
 	private var selectedSortOrder: SortOrder? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,10 +80,6 @@ class FavouritesCategoryEditActivity :
 			)
 		}
 	}
-
-	override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	override fun afterTextChanged(s: Editable?) {
 		binding.buttonDone.isEnabled = !s.isNullOrBlank()
@@ -167,9 +157,9 @@ class FavouritesCategoryEditActivity :
 
 	companion object {
 
-		private const val EXTRA_ID = "id"
+		const val EXTRA_ID = "id"
+		const val NO_ID = -1L
 		private const val KEY_SORT_ORDER = "sort"
-		private const val NO_ID = -1L
 
 		fun newIntent(context: Context, id: Long = NO_ID): Intent {
 			return Intent(context, FavouritesCategoryEditActivity::class.java)
