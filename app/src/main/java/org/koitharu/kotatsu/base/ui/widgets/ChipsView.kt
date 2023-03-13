@@ -14,7 +14,6 @@ import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.ext.castOrNull
-import org.koitharu.kotatsu.utils.ext.getThemeColorStateList
 import com.google.android.material.R as materialR
 
 class ChipsView @JvmOverloads constructor(
@@ -33,6 +32,7 @@ class ChipsView @JvmOverloads constructor(
 	}
 	private val defaultChipStrokeColor: ColorStateList
 	private val defaultChipTextColor: ColorStateList
+	private val defaultChipIconTint: ColorStateList
 	var onChipClickListener: OnChipClickListener? = null
 		set(value) {
 			field = value
@@ -51,6 +51,7 @@ class ChipsView @JvmOverloads constructor(
 		val a = context.obtainStyledAttributes(null, materialR.styleable.Chip, 0, R.style.Widget_Kotatsu_Chip)
 		defaultChipStrokeColor = a.getColorStateListOrThrow(materialR.styleable.Chip_chipStrokeColor)
 		defaultChipTextColor = a.getColorStateListOrThrow(materialR.styleable.Chip_android_textColor)
+		defaultChipIconTint = a.getColorStateListOrThrow(materialR.styleable.Chip_chipIconTint)
 		a.recycle()
 	}
 
@@ -94,8 +95,8 @@ class ChipsView @JvmOverloads constructor(
 		} else {
 			ContextCompat.getColorStateList(context, model.tint)
 		}
-		chip.chipIconTint = tint
-		chip.checkedIconTint = tint
+		chip.chipIconTint = tint ?: defaultChipIconTint
+		chip.checkedIconTint = tint ?: defaultChipIconTint
 		chip.chipStrokeColor = tint ?: defaultChipStrokeColor
 		chip.setTextColor(tint ?: defaultChipTextColor)
 		chip.isClickable = onChipClickListener != null || model.isCheckable
@@ -111,7 +112,7 @@ class ChipsView @JvmOverloads constructor(
 		chip.isCheckedIconVisible = true
 		chip.isChipIconVisible = false
 		chip.setCheckedIconResource(R.drawable.ic_check)
-		chip.checkedIconTint = context.getThemeColorStateList(materialR.attr.colorControlNormal)
+		chip.checkedIconTint = defaultChipIconTint
 		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)

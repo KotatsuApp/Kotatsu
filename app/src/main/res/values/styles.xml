@@ -95,6 +95,7 @@
 		<item name="chipSurfaceColor">?attr/colorSurface</item>
 		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
 		<item name="chipStrokeColor">?attr/colorOutline</item>
+		<item name="chipIconTint">?attr/colorControlNormal</item>
 		<item name="rippleColor">?attr/colorControlHighlight</item>
 
 		<!-- Custom chip states -->
