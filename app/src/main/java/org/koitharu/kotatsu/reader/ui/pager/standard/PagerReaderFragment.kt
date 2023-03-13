@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
@@ -27,6 +28,9 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	@Inject
 	lateinit var networkState: NetworkState
 
+	@Inject
+	lateinit var pageLoader: PageLoader
+
 	private var pagesAdapter: PagesAdapter? = null
 
 	override fun onInflateView(
@@ -39,7 +43,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 		super.onViewCreated(view, savedInstanceState)
 		pagesAdapter = PagesAdapter(
 			lifecycleOwner = viewLifecycleOwner,
-			loader = viewModel.pageLoader,
+			loader = pageLoader,
 			settings = viewModel.readerSettings,
 			networkState = networkState,
 			exceptionResolver = exceptionResolver,

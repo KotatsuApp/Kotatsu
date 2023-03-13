@@ -56,7 +56,6 @@ import org.koitharu.kotatsu.utils.ext.requireValue
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.util.Date
 import javax.inject.Inject
-import javax.inject.Provider
 
 private const val BOUNDS_PAGE_OFFSET = 2
 private const val PREFETCH_LIMIT = 10
@@ -70,7 +69,7 @@ class ReaderViewModel @Inject constructor(
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 	private val pageSaveHelper: PageSaveHelper,
-	pageLoaderFactory: Provider<PageLoader>,
+	private val pageLoader: PageLoader,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -84,7 +83,6 @@ class ReaderViewModel @Inject constructor(
 	private val chapters: LongSparseArray<MangaChapter>
 		get() = chaptersLoader.chapters
 
-	val pageLoader = pageLoaderFactory.get()
 	private val chaptersLoader = ChaptersLoader(mangaRepositoryFactory)
 
 	val readerMode = MutableLiveData<ReaderMode>()
@@ -148,10 +146,10 @@ class ReaderViewModel @Inject constructor(
 			}.launchIn(viewModelScope)
 	}
 
-	override fun onCleared() {
+	/*override fun onCleared() {
 		pageLoader.close()
 		super.onCleared()
-	}
+	}*/
 
 	fun reload() {
 		loadingJob?.cancel()

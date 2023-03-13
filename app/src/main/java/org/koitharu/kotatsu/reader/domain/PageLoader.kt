@@ -5,6 +5,9 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
+import dagger.hilt.android.ActivityRetainedLifecycle
+import dagger.hilt.android.lifecycle.RetainedLifecycle
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +21,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okio.Closeable
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -42,12 +44,18 @@ import kotlin.coroutines.CoroutineContext
 private const val PROGRESS_UNDEFINED = -1f
 private const val PREFETCH_LIMIT_DEFAULT = 10
 
+@ActivityRetainedScoped
 class PageLoader @Inject constructor(
+	lifecycle: ActivityRetainedLifecycle,
 	private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
-) : Closeable {
+) : RetainedLifecycle.OnClearedListener {
+
+	init {
+		lifecycle.addOnClearedListener(this)
+	}
 
 	val loaderScope = CoroutineScope(SupervisorJob() + InternalErrorHandler() + Dispatchers.Default)
 
@@ -59,7 +67,7 @@ class PageLoader @Inject constructor(
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
 
-	override fun close() {
+	override fun onCleared() {
 		loaderScope.cancel()
 		synchronized(tasks) {
 			tasks.clear()

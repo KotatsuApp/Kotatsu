@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
@@ -28,6 +29,9 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	@Inject
 	lateinit var networkState: NetworkState
 
+	@Inject
+	lateinit var pageLoader: PageLoader
+
 	private var pagerAdapter: ReversedPagesAdapter? = null
 
 	override fun onInflateView(
@@ -40,7 +44,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 		super.onViewCreated(view, savedInstanceState)
 		pagerAdapter = ReversedPagesAdapter(
 			lifecycleOwner = viewLifecycleOwner,
-			loader = viewModel.pageLoader,
+			loader = pageLoader,
 			settings = viewModel.readerSettings,
 			networkState = networkState,
 			exceptionResolver = exceptionResolver,
