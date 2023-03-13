@@ -51,10 +51,10 @@ fun Fragment.addMenuProvider(provider: MenuProvider) {
 suspend fun Fragment.awaitViewLifecycle(): LifecycleOwner = suspendCancellableCoroutine { cont ->
 	val liveData = viewLifecycleOwnerLiveData
 	val observer = object : Observer<LifecycleOwner?> {
-		override fun onChanged(result: LifecycleOwner?) {
-			if (result != null) {
+		override fun onChanged(value: LifecycleOwner?) {
+			if (value != null) {
 				liveData.removeObserver(this)
-				cont.resume(result)
+				cont.resume(value)
 			}
 		}
 	}

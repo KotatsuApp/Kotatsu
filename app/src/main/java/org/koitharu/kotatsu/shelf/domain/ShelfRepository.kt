@@ -24,7 +24,9 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ShelfRepository @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,

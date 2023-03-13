@@ -9,13 +9,11 @@ import dagger.hilt.android.ActivityRetainedLifecycle
 import dagger.hilt.android.lifecycle.RetainedLifecycle
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -30,6 +28,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import org.koitharu.kotatsu.utils.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.withProgress
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
@@ -57,7 +56,7 @@ class PageLoader @Inject constructor(
 		lifecycle.addOnClearedListener(this)
 	}
 
-	val loaderScope = CoroutineScope(SupervisorJob() + InternalErrorHandler() + Dispatchers.Default)
+	val loaderScope = RetainedLifecycleCoroutineScope(lifecycle) + InternalErrorHandler() + Dispatchers.Default
 
 	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
 	private val convertLock = Mutex()
@@ -68,7 +67,6 @@ class PageLoader @Inject constructor(
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
 
 	override fun onCleared() {
-		loaderScope.cancel()
 		synchronized(tasks) {
 			tasks.clear()
 		}

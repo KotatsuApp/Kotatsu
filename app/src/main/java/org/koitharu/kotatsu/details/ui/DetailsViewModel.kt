@@ -7,7 +7,6 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.text.getSpans
 import androidx.core.text.parseAsHtml
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -27,12 +26,9 @@ import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.MangaDataRepository
-import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.details.domain.BranchComparator
@@ -58,26 +54,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
-	savedStateHandle: SavedStateHandle,
 	private val historyRepository: HistoryRepository,
 	favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
 	trackingRepository: TrackingRepository,
-	mangaDataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val imageGetter: Html.ImageGetter,
-	mangaRepositoryFactory: MangaRepository.Factory,
+	private val delegate: MangaDetailsDelegate,
 ) : BaseViewModel() {
-
-	private val delegate = MangaDetailsDelegate(
-		intent = MangaIntent(savedStateHandle),
-		mangaDataRepository = mangaDataRepository,
-		historyRepository = historyRepository,
-		localMangaRepository = localMangaRepository,
-		mangaRepositoryFactory = mangaRepositoryFactory,
-	)
 
 	private var loadingJob: Job
 

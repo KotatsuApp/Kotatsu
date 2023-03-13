@@ -1,17 +1,18 @@
 package org.koitharu.kotatsu.download.domain
 
+import android.app.Service
 import android.content.Context
 import android.webkit.MimeTypeMap
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.RetainedLifecycle
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ServiceScoped
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
@@ -35,19 +36,22 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.utils.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.progress.PausingProgressJob
 import java.io.File
+import javax.inject.Inject
 
 private const val MAX_FAILSAFE_ATTEMPTS = 2
 private const val DOWNLOAD_ERROR_DELAY = 500L
 private const val SLOWDOWN_DELAY = 200L
 
-class DownloadManager @AssistedInject constructor(
-	@Assisted private val coroutineScope: CoroutineScope,
+@ServiceScoped
+class DownloadManager @Inject constructor(
+	service: Service,
 	@ApplicationContext private val context: Context,
 	private val imageLoader: ImageLoader,
 	private val okHttp: OkHttpClient,
@@ -64,6 +68,7 @@ class DownloadManager @AssistedInject constructor(
 		androidx.core.R.dimen.compat_notification_large_icon_max_height,
 	)
 	private val semaphore = Semaphore(settings.downloadsParallelism)
+	private val coroutineScope = (service as LifecycleService).lifecycleScope
 
 	fun downloadManga(
 		manga: Manga,
@@ -261,11 +266,5 @@ class DownloadManager @AssistedInject constructor(
 		block()
 	} finally {
 		localMangaRepository.unlockManga(manga.id)
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(coroutineScope: CoroutineScope): DownloadManager
 	}
 }

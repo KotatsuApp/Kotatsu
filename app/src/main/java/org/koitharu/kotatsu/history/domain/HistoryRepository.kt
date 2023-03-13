@@ -27,9 +27,11 @@ import org.koitharu.kotatsu.scrobbling.common.domain.tryScrobble
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
 import javax.inject.Inject
+import javax.inject.Singleton
 
 const val PROGRESS_NONE = -1f
 
+@Singleton
 class HistoryRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val trackingRepository: TrackingRepository,
@@ -37,7 +39,7 @@ class HistoryRepository @Inject constructor(
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 ) {
 
-	suspend fun getList(offset: Int, limit: Int = 20): List<Manga> {
+	suspend fun getList(offset: Int, limit: Int): List<Manga> {
 		val entities = db.historyDao.findAll(offset, limit)
 		return entities.map { it.manga.toManga(it.tags.toMangaTags()) }
 	}
@@ -135,7 +137,7 @@ class HistoryRepository @Inject constructor(
 
 	/**
 	 * Try to replace one manga with another one
-	 * Useful for replacing saved manga on deleting it with remove source
+	 * Useful for replacing saved manga on deleting it with remote source
 	 */
 	suspend fun deleteOrSwap(manga: Manga, alternative: Manga?) {
 		if (alternative == null || db.mangaDao.update(alternative.toEntity()) <= 0) {

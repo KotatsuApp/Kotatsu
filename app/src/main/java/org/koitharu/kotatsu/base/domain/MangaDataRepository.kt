@@ -30,10 +30,12 @@ import java.io.File
 import java.io.InputStream
 import java.util.zip.ZipFile
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.math.roundToInt
 
 private const val MIN_WEBTOON_RATIO = 2
 
+@Singleton
 class MangaDataRepository @Inject constructor(
 	private val okHttpClient: OkHttpClient,
 	private val db: MangaDatabase,

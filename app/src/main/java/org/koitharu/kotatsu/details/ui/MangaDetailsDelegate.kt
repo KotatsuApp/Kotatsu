@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.details.ui
 
+import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
@@ -17,15 +19,17 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import javax.inject.Inject
 
-class MangaDetailsDelegate(
-	private val intent: MangaIntent,
+@ViewModelScoped
+class MangaDetailsDelegate @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	private val mangaDataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val localMangaRepository: LocalMangaRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
-
+	private val intent = MangaIntent(savedStateHandle)
 	private val mangaData = MutableStateFlow(intent.manga)
 
 	val selectedBranch = MutableStateFlow<String?>(null)

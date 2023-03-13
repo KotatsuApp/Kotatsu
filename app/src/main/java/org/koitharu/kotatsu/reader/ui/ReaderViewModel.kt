@@ -70,6 +70,7 @@ class ReaderViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val pageSaveHelper: PageSaveHelper,
 	private val pageLoader: PageLoader,
+	private val chaptersLoader: ChaptersLoader,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -82,8 +83,6 @@ class ReaderViewModel @Inject constructor(
 	private val mangaData = MutableStateFlow(intent.manga)
 	private val chapters: LongSparseArray<MangaChapter>
 		get() = chaptersLoader.chapters
-
-	private val chaptersLoader = ChaptersLoader(mangaRepositoryFactory)
 
 	val readerMode = MutableLiveData<ReaderMode>()
 	val onPageSaved = SingleLiveEvent<Uri?>()
