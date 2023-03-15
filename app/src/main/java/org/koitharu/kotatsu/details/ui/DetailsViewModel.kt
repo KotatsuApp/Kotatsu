@@ -46,7 +46,6 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.io.IOException
@@ -107,7 +106,7 @@ class DetailsViewModel @Inject constructor(
 
 	val bookmarks = delegate.manga.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val description = delegate.manga
 		.distinctUntilChangedBy { it?.description.orEmpty() }
@@ -119,7 +118,7 @@ class DetailsViewModel @Inject constructor(
 				emit(description.parseAsHtml().filterSpans())
 				emit(description.parseAsHtml(imageGetter = imageGetter).filterSpans())
 			}
-		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
+		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 	val isScrobblingAvailable: Boolean
@@ -141,7 +140,7 @@ class DetailsViewModel @Inject constructor(
 		delegate.selectedBranch,
 	) { branches, selected ->
 		branches.indexOf(selected)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, -1)
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, -1)
 
 	val selectedBranchName = delegate.selectedBranch
 		.asFlowLiveData(viewModelScope.coroutineContext, null)
@@ -151,7 +150,7 @@ class DetailsViewModel @Inject constructor(
 		isLoading.asFlow(),
 	) { m, loading ->
 		m != null && m.chapters.isNullOrEmpty() && !loading
-	}.asLiveDataDistinct(viewModelScope.coroutineContext, false)
+	}.asFlowLiveData(viewModelScope.coroutineContext, false)
 
 	val chapters = combine(
 		combine(

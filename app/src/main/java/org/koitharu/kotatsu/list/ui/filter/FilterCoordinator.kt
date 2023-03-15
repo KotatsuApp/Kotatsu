@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.text.Collator
@@ -37,7 +37,7 @@ class FilterCoordinator(
 	private var availableTagsDeferred = loadTagsAsync()
 
 	val items: LiveData<List<FilterItem>> = getItemsFlow()
-		.asLiveDataDistinct(coroutineScope.coroutineContext + Dispatchers.Default, listOf(FilterItem.Loading))
+		.asFlowLiveData(coroutineScope.coroutineContext + Dispatchers.Default, listOf(FilterItem.Loading))
 
 	init {
 		observeState()

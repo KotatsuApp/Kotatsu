@@ -28,7 +28,6 @@ import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import javax.inject.Inject
 
@@ -52,7 +51,7 @@ class FavouritesListViewModel @Inject constructor(
 	} else {
 		repository.observeCategory(categoryId)
 			.map { it?.order }
-			.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
+			.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, null)
 	}
 
 	override val content = combine(

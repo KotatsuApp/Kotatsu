@@ -51,7 +51,7 @@ open class PageHolder(
 
 	override fun onLoadingStarted() {
 		bindingInfo.layoutError.isVisible = false
-		bindingInfo.progressBar.showCompat()
+		bindingInfo.progressBar.show()
 		binding.ssiv.recycle()
 	}
 
@@ -109,7 +109,7 @@ open class PageHolder(
 	}
 
 	override fun onImageShown() {
-		bindingInfo.progressBar.hideCompat()
+		bindingInfo.progressBar.hide()
 	}
 
 	override fun onClick(v: View) {
@@ -125,6 +125,6 @@ open class PageHolder(
 			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again },
 		)
 		bindingInfo.layoutError.isVisible = true
-		bindingInfo.progressBar.hideCompat()
+		bindingInfo.progressBar.hide()
 	}
 }

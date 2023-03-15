@@ -2,14 +2,13 @@ package org.koitharu.kotatsu.browser
 
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import android.widget.ProgressBar
 import androidx.core.view.isVisible
-import org.koitharu.kotatsu.utils.ext.setProgressCompat
+import com.google.android.material.progressindicator.BaseProgressIndicator
 
 private const val PROGRESS_MAX = 100
 
 class ProgressChromeClient(
-	private val progressIndicator: ProgressBar,
+	private val progressIndicator: BaseProgressIndicator<*>,
 ) : WebChromeClient() {
 
 	init {

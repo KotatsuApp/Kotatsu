@@ -3,8 +3,6 @@ package org.koitharu.kotatsu.favourites.ui.categories
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.*
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +14,11 @@ import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.mapItems
 import org.koitharu.kotatsu.utils.ext.requireValue
+import java.util.Collections
+import javax.inject.Inject
 
 @HiltViewModel
 class FavouritesCategoriesViewModel @Inject constructor(
@@ -39,7 +39,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 				category = it,
 				isReorderMode = false,
 			)
-		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val detalizedCategories = combine(
 		repository.observeCategoriesWithCovers(),
@@ -62,7 +62,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 				),
 			)
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	fun deleteCategory(id: Long) {
 		launchJob {

@@ -2,14 +2,14 @@ package org.koitharu.kotatsu.settings.protect
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.md5
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
+import javax.inject.Inject
 
 @HiltViewModel
 class ProtectSetupViewModel @Inject constructor(
@@ -20,7 +20,7 @@ class ProtectSetupViewModel @Inject constructor(
 
 	val isSecondStep = firstPassword.map {
 		it != null
-	}.asLiveDataDistinct(viewModelScope.coroutineContext, false)
+	}.asFlowLiveData(viewModelScope.coroutineContext, false)
 	val onPasswordSet = SingleLiveEvent<Unit>()
 	val onPasswordMismatch = SingleLiveEvent<Unit>()
 	val onClearText = SingleLiveEvent<Unit>()

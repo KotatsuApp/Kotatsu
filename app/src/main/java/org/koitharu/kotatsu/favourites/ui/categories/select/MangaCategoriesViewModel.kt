@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet.Companion.KEY_MANGA_LIST
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,7 +33,7 @@ class MangaCategoriesViewModel @Inject constructor(
 				isChecked = it.id in checked,
 			)
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	fun setChecked(categoryId: Long, isChecked: Boolean) {
 		launchJob(Dispatchers.Default) {

@@ -22,7 +22,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.model.ScrobblerHint
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.require
 import org.koitharu.kotatsu.utils.ext.requireValue
@@ -70,7 +70,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 				},
 			)
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	val selectedItemId = MutableLiveData(NO_ID)
 	val searchQuery = MutableLiveData(manga.title)

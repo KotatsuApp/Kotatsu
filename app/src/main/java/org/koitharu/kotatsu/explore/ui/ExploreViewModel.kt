@@ -25,7 +25,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,7 +49,7 @@ class ExploreViewModel @Inject constructor(
 		} else {
 			createContentFlow()
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(ExploreItem.Loading))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(ExploreItem.Loading))
 
 	fun openRandom() {
 		launchLoadingJob(Dispatchers.Default) {

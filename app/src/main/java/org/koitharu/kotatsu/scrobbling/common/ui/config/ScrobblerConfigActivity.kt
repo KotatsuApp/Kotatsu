@@ -25,9 +25,7 @@ import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaA
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.hideCompat
 import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.showCompat
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -126,9 +124,9 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.progressBar.run {
 			if (isLoading) {
-				showCompat()
+				show()
 			} else {
-				hideCompat()
+				hide()
 			}
 		}
 	}

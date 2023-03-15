@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.bookmarks.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -18,7 +17,8 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
+import javax.inject.Inject
 
 @HiltViewModel
 class BookmarksViewModel @Inject constructor(
@@ -43,7 +43,7 @@ class BookmarksViewModel @Inject constructor(
 			}
 		}
 		.catch { e -> emit(listOf(e.toErrorState(canRetry = false))) }
-		.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+		.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	fun removeBookmarks(ids: Map<Manga, Set<Long>>) {
 		launchJob(Dispatchers.Default) {
