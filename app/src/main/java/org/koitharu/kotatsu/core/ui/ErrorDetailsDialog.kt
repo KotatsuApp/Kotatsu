@@ -47,6 +47,7 @@ class ErrorDetailsDialog : AlertDialogFragment<DialogErrorDetailsBinding>() {
 		}
 	}
 
+	@Suppress("NAME_SHADOWING")
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
 		val builder = super.onBuildDialog(builder)
 			.setCancelable(true)

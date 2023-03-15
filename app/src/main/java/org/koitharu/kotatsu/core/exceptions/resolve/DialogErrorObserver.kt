@@ -22,22 +22,22 @@ class DialogErrorObserver(
 		fragment: Fragment?,
 	) : this(host, fragment, null, null)
 
-	override fun onChanged(error: Throwable?) {
-		if (error == null) {
+	override fun onChanged(value: Throwable?) {
+		if (value == null) {
 			return
 		}
-		val listener = DialogListener(error)
+		val listener = DialogListener(value)
 		val dialogBuilder = MaterialAlertDialogBuilder(activity ?: host.context)
-			.setMessage(error.getDisplayMessage(host.context.resources))
+			.setMessage(value.getDisplayMessage(host.context.resources))
 			.setNegativeButton(R.string.close, listener)
 			.setOnCancelListener(listener)
-		if (canResolve(error)) {
-			dialogBuilder.setPositiveButton(ExceptionResolver.getResolveStringId(error), listener)
-		} else if (error is ParseException) {
+		if (canResolve(value)) {
+			dialogBuilder.setPositiveButton(ExceptionResolver.getResolveStringId(value), listener)
+		} else if (value is ParseException) {
 			val fm = fragmentManager
 			if (fm != null) {
 				dialogBuilder.setPositiveButton(R.string.details) { _, _ ->
-					ErrorDetailsDialog.show(fm, error, error.url)
+					ErrorDetailsDialog.show(fm, value, value.url)
 				}
 			}
 		}

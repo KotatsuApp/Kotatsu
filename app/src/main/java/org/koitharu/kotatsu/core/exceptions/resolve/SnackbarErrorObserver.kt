@@ -22,23 +22,23 @@ class SnackbarErrorObserver(
 		fragment: Fragment?,
 	) : this(host, fragment, null, null)
 
-	override fun onChanged(error: Throwable?) {
-		if (error == null) {
+	override fun onChanged(value: Throwable?) {
+		if (value == null) {
 			return
 		}
-		val snackbar = Snackbar.make(host, error.getDisplayMessage(host.context.resources), Snackbar.LENGTH_SHORT)
+		val snackbar = Snackbar.make(host, value.getDisplayMessage(host.context.resources), Snackbar.LENGTH_SHORT)
 		if (activity is BottomNavOwner) {
 			snackbar.anchorView = activity.bottomNav
 		}
-		if (canResolve(error)) {
-			snackbar.setAction(ExceptionResolver.getResolveStringId(error)) {
-				resolve(error)
+		if (canResolve(value)) {
+			snackbar.setAction(ExceptionResolver.getResolveStringId(value)) {
+				resolve(value)
 			}
-		} else if (error is ParseException) {
+		} else if (value is ParseException) {
 			val fm = fragmentManager
 			if (fm != null) {
 				snackbar.setAction(R.string.details) {
-					ErrorDetailsDialog.show(fm, error, error.url)
+					ErrorDetailsDialog.show(fm, value, value.url)
 				}
 			}
 		}

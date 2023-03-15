@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityImageBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.utils.ext.indicator
 import javax.inject.Inject
 
@@ -57,7 +58,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>() {
 			.data(url)
 			.memoryCachePolicy(CachePolicy.DISABLED)
 			.lifecycle(this)
-			.tag(intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource)
+			.tag(intent.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE))
 			.target(SsivTarget(binding.ssiv))
 			.indicator(binding.progressBar)
 			.enqueueWith(coil)

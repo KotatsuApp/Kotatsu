@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.children
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -86,7 +87,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {
 		val reversedPages = pages.asReversed()
-		viewLifecycleScope.launchWhenCreated {
+		viewLifecycleScope.launch {
 			val items = async {
 				pagerAdapter?.setItems(reversedPages)
 			}
@@ -94,7 +95,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 				val position = reversedPages.indexOfLast {
 					it.chapterId == pendingState.chapterId && it.index == pendingState.page
 				}
-				items.await() ?: return@launchWhenCreated
+				items.await() ?: return@launch
 				if (position != -1) {
 					binding.pager.setCurrentItem(position, false)
 					notifyPageChanged(position)

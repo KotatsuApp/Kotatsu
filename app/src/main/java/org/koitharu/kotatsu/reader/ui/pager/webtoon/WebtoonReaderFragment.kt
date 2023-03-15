@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -62,13 +63,13 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 	}
 
 	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {
-		viewLifecycleScope.launchWhenCreated {
+		viewLifecycleScope.launch {
 			val setItems = async { webtoonAdapter?.setItems(pages) }
 			if (pendingState != null) {
 				val position = pages.indexOfFirst {
 					it.chapterId == pendingState.chapterId && it.index == pendingState.page
 				}
-				setItems.await() ?: return@launchWhenCreated
+				setItems.await() ?: return@launch
 				if (position != -1) {
 					with(binding.recyclerView) {
 						firstVisibleItemPosition = position

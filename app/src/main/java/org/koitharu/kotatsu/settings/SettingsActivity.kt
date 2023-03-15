@@ -90,6 +90,7 @@ class SettingsActivity :
 		}
 	}
 
+	@Suppress("DEPRECATION")
 	override fun onPreferenceStartFragment(
 		caller: PreferenceFragmentCompat,
 		pref: Preference,

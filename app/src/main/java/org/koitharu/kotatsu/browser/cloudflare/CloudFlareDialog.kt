@@ -20,20 +20,24 @@ import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.databinding.FragmentCloudflareBinding
-import org.koitharu.kotatsu.utils.ext.stringArgument
 import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), CloudFlareCallback {
 
-	private val url by stringArgument(ARG_URL)
+	private lateinit var url: String
 	private val pendingResult = Bundle(1)
 
 	@Inject
 	lateinit var cookieJar: MutableCookieJar
 
 	private var onBackPressedCallback: WebViewBackPressedCallback? = null
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		url = requireArguments().getString(ARG_URL).orEmpty()
+	}
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -50,12 +54,12 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 			databaseEnabled = true
 			userAgentString = arguments?.getString(ARG_UA) ?: CommonHeadersInterceptor.userAgentChrome
 		}
-		binding.webView.webViewClient = CloudFlareClient(cookieJar, this, url.orEmpty())
+		binding.webView.webViewClient = CloudFlareClient(cookieJar, this, url)
 		CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webView, true)
-		if (url.isNullOrEmpty()) {
+		if (url.isEmpty()) {
 			dismissAllowingStateLoss()
 		} else {
-			binding.webView.loadUrl(url.orEmpty())
+			binding.webView.loadUrl(url)
 		}
 	}
 

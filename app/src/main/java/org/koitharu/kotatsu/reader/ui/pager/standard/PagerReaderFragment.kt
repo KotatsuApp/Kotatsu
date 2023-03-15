@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.children
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -71,7 +72,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 	}
 
 	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {
-		viewLifecycleScope.launchWhenCreated {
+		viewLifecycleScope.launch {
 			val items = async {
 				pagesAdapter?.setItems(pages)
 			}
@@ -79,7 +80,7 @@ class PagerReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 				val position = pages.indexOfFirst {
 					it.chapterId == pendingState.chapterId && it.index == pendingState.page
 				}
-				items.await() ?: return@launchWhenCreated
+				items.await() ?: return@launch
 				if (position != -1) {
 					binding.pager.setCurrentItem(position, false)
 					notifyPageChanged(position)

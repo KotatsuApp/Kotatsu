@@ -309,13 +309,13 @@ class DetailsActivity :
 
 		private var isCalled = false
 
-		override fun onChanged(t: List<ChapterListItem>?) {
-			if (t.isNullOrEmpty()) {
+		override fun onChanged(value: List<ChapterListItem>?) {
+			if (value.isNullOrEmpty()) {
 				return
 			}
 			if (!isCalled) {
 				isCalled = true
-				val item = t.find { it.hasFlag(ChapterListItem.FLAG_CURRENT) } ?: t.first()
+				val item = value.find { it.hasFlag(ChapterListItem.FLAG_CURRENT) } ?: value.first()
 				MangaPrefetchService.prefetchPages(context, item.chapter)
 			}
 		}

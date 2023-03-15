@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.TaggedActivityResult
+import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -42,7 +43,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityBrowserBinding.inflate(layoutInflater))
-		val source = intent?.getSerializableExtra(EXTRA_SOURCE) as? MangaSource
+		val source = intent?.getSerializableExtraCompat(EXTRA_SOURCE) as? MangaSource
 		if (source == null) {
 			finishAfterTransition()
 			return

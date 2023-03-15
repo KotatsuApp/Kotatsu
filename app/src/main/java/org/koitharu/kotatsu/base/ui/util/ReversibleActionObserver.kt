@@ -12,13 +12,13 @@ class ReversibleActionObserver(
 	private val snackbarHost: View,
 ) : Observer<ReversibleAction?> {
 
-	override fun onChanged(action: ReversibleAction?) {
-		if (action == null) {
+	override fun onChanged(value: ReversibleAction?) {
+		if (value == null) {
 			return
 		}
-		val handle = action.handle
+		val handle = value.handle
 		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
-		val snackbar = Snackbar.make(snackbarHost, action.stringResId, length)
+		val snackbar = Snackbar.make(snackbarHost, value.stringResId, length)
 		if (handle != null) {
 			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
 		}

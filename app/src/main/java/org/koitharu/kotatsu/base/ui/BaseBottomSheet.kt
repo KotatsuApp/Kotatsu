@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.base.ui
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.AppBottomSheetDialog
-import org.koitharu.kotatsu.utils.ext.displayCompat
+import org.koitharu.kotatsu.utils.ext.findActivity
+import org.koitharu.kotatsu.utils.ext.getDisplaySize
 import com.google.android.material.R as materialR
 
 abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
@@ -41,21 +41,20 @@ abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 	): View {
 		val binding = onInflateView(inflater, container)
 		viewBinding = binding
+		return binding.root
+	}
 
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 		// Enforce max width for tablets
 		val width = resources.getDimensionPixelSize(R.dimen.bottom_sheet_width)
 		if (width > 0) {
 			behavior?.maxWidth = width
 		}
-
-		// Set peek height to 50% display height
-		requireContext().displayCompat?.let {
-			val metrics = DisplayMetrics()
-			it.getRealMetrics(metrics)
-			behavior?.peekHeight = (metrics.heightPixels * 0.4).toInt()
+		// Set peek height to 40% display height
+		binding.root.context.findActivity()?.getDisplaySize()?.let {
+			behavior?.peekHeight = (it.height() * 0.4).toInt()
 		}
-
-		return binding.root
 	}
 
 	override fun onDestroyView() {

@@ -26,7 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
+import androidx.lifecycle.withResumed
 import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
@@ -310,11 +310,11 @@ class MainActivity :
 	private fun onFirstStart() {
 		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
 			when {
-				!settings.isSourcesSelected -> whenResumed {
+				!settings.isSourcesSelected -> withResumed {
 					OnboardDialogFragment.showWelcome(supportFragmentManager)
 				}
 
-				settings.newSources.isNotEmpty() -> whenResumed {
+				settings.newSources.isNotEmpty() -> withResumed {
 					NewSourcesDialogFragment.show(supportFragmentManager)
 				}
 			}
@@ -322,7 +322,7 @@ class MainActivity :
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
 			}
-			whenResumed {
+			withResumed {
 				MangaPrefetchService.prefetchLast(this@MainActivity)
 				requestNotificationsPermission()
 			}
