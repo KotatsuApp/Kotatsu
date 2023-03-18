@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils.progress
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+@Deprecated("Should be replaced with Float")
 @Parcelize
 data class Progress(
 	val value: Int,

@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
@@ -15,7 +15,6 @@ import org.koitharu.kotatsu.databinding.DialogImportBinding
 
 class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.OnClickListener {
 
-	private val viewModel by activityViewModels<LocalListViewModel>()
 	private val importFileCall = registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) {
 		startImport(it)
 	}
@@ -48,7 +47,12 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 	}
 
 	private fun startImport(uris: Collection<Uri>) {
-		ImportService.start(requireContext(), uris)
+		if (uris.isEmpty()) {
+			return
+		}
+		val ctx = requireContext()
+		ImportWorker.start(ctx, uris)
+		Toast.makeText(ctx, R.string.import_will_start_soon, Toast.LENGTH_LONG).show()
 		dismiss()
 	}
 

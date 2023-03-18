@@ -22,6 +22,7 @@ abstract class LocalMangaOutput(
 
 	abstract suspend fun cleanup()
 
+	// TODO remove
 	abstract fun sortChaptersByName()
 
 	companion object {

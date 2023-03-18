@@ -141,7 +141,7 @@ class LocalListViewModel @Inject constructor(
 	}
 
 	private fun cleanup() {
-		if (!DownloadService.isRunning && !ImportService.isRunning && !LocalChaptersRemoveService.isRunning) {
+		if (!DownloadService.isRunning && !LocalChaptersRemoveService.isRunning) {
 			viewModelScope.launch {
 				runCatchingCancellable {
 					repository.cleanup()

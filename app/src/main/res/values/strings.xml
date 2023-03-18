@@ -278,7 +278,7 @@
 	<string name="download_slowdown">Download slowdown</string>
 	<string name="download_slowdown_summary">Helps avoid blocking your IP address</string>
 	<string name="local_manga_processing">Saved manga processing</string>
-	<string name="chapters_will_removed_background">Chapters will be removed in the background. It can take some time</string>
+	<string name="chapters_will_removed_background">Chapters will be removed in the background</string>
 	<string name="canceled">Canceled</string>
 	<string name="account_already_exists">Account already exists</string>
 	<string name="back">Back</string>
@@ -428,4 +428,6 @@
 	<string name="sources_reorder_tip">Tap and hold on an item to reorder them</string>
 	<string name="user_agent">UserAgent header</string>
 	<string name="settings_apply_restart_required">Please restart the application to apply these changes</string>
+	<string name="comics_archive_import_description">You can select one or more .cbz or .zip files, each file will be recognized as a separate manga.</string>
+	<string name="folder_with_images_import_description">You can select a directory with archives or images. Each archive (or subdirectory) will be recognized as a chapter.</string>
 </resources>
