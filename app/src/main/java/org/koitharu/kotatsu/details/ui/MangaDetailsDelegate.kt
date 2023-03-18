@@ -53,7 +53,7 @@ class MangaDetailsDelegate @Inject constructor(
 				val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatchingCancellable null
 				mangaRepositoryFactory.create(m.source).getDetails(m)
 			} else {
-				localMangaRepository.findSavedManga(manga)
+				localMangaRepository.findSavedManga(manga)?.manga
 			}
 		}.onFailure { error ->
 			error.printStackTraceDebug()

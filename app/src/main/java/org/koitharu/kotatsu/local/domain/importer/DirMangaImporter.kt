@@ -6,9 +6,10 @@ import android.webkit.MimeTypeMap
 import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageManager
-import org.koitharu.kotatsu.local.domain.CbzMangaOutput
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.local.data.input.LocalMangaInput
+import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -24,17 +25,16 @@ import java.io.File
 class DirMangaImporter(
 	private val context: Context,
 	storageManager: LocalStorageManager,
-	private val localMangaRepository: LocalMangaRepository,
 ) : MangaImporter(storageManager) {
 
 	private val contentResolver = context.contentResolver
 
-	override suspend fun import(uri: Uri): Manga {
+	override suspend fun import(uri: Uri): LocalManga {
 		val root = requireNotNull(DocumentFile.fromTreeUri(context, uri)) {
 			"Provided uri $uri is not a tree"
 		}
 		val manga = Manga(root)
-		val output = CbzMangaOutput.get(getOutputDir(), manga)
+		val output = LocalMangaOutput.getOrCreate(getOutputDir(), manga)
 		try {
 			val dest = output.use {
 				addPages(
@@ -46,9 +46,9 @@ class DirMangaImporter(
 				it.sortChaptersByName()
 				it.mergeWithExisting()
 				it.finish()
-				it.file
+				it.rootFile
 			}
-			return localMangaRepository.getFromFile(dest)
+			return LocalMangaInput.of(dest).getManga()
 		} finally {
 			withContext(NonCancellable) {
 				output.cleanup()
@@ -57,7 +57,7 @@ class DirMangaImporter(
 		}
 	}
 
-	private suspend fun addPages(output: CbzMangaOutput, root: DocumentFile, path: String, state: State) {
+	private suspend fun addPages(output: LocalMangaOutput, root: DocumentFile, path: String, state: State) {
 		var number = 0
 		for (file in root.listFiles().sortedWith(compareBy(AlphanumComparator()) { it.name.orEmpty() })) {
 			when {

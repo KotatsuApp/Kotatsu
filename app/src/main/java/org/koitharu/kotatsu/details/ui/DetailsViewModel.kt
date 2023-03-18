@@ -187,7 +187,7 @@ class DetailsViewModel @Inject constructor(
 			return
 		}
 		launchLoadingJob(Dispatchers.Default) {
-			val manga = if (m.source == MangaSource.LOCAL) m else localMangaRepository.findSavedManga(m)
+			val manga = if (m.source == MangaSource.LOCAL) m else localMangaRepository.findSavedManga(m)?.manga
 			checkNotNull(manga) { "Cannot find saved manga for ${m.title}" }
 			val original = localMangaRepository.getRemoteManga(manga)
 			localMangaRepository.delete(manga) || throw IOException("Unable to delete file")

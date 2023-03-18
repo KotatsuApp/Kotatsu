@@ -4,18 +4,17 @@ import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalStorageManager
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
-import org.koitharu.kotatsu.local.data.LocalStorageManager
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
-import org.koitharu.kotatsu.parsers.model.Manga
 
 abstract class MangaImporter(
 	protected val storageManager: LocalStorageManager,
 ) {
 
-	abstract suspend fun import(uri: Uri): Manga
+	abstract suspend fun import(uri: Uri): LocalManga
 
 	suspend fun getOutputDir(): File {
 		return storageManager.getDefaultWriteableDir() ?: throw IOException("External files dir unavailable")
@@ -24,13 +23,12 @@ abstract class MangaImporter(
 	class Factory @Inject constructor(
 		@ApplicationContext private val context: Context,
 		private val storageManager: LocalStorageManager,
-		private val localMangaRepository: LocalMangaRepository,
 	) {
 
 		fun create(uri: Uri): MangaImporter {
 			return when {
-				isDir(uri) -> DirMangaImporter(context, storageManager, localMangaRepository)
-				else -> ZipMangaImporter(storageManager, localMangaRepository)
+				isDir(uri) -> DirMangaImporter(context, storageManager)
+				else -> ZipMangaImporter(storageManager)
 			}
 		}
 

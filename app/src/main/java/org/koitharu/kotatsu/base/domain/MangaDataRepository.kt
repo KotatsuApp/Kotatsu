@@ -128,7 +128,7 @@ class MangaDataRepository @Inject constructor(
 				.url(url)
 				.get()
 				.tag(MangaSource::class.java, page.source)
-				.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
+				.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
 				.build()
 			okHttpClient.newCall(request).await().use {
 				runInterruptible(Dispatchers.IO) {

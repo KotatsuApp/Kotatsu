@@ -79,7 +79,7 @@ class ImportService : CoroutineIntentService() {
 
 	private suspend fun importImpl(uri: Uri): Manga {
 		val importer = importerFactory.create(uri)
-		return importer.import(uri)
+		return importer.import(uri).manga
 	}
 
 	private fun sendBroadcast(manga: Manga) {

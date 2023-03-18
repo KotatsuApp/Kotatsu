@@ -1,40 +1,38 @@
-package org.koitharu.kotatsu.local.domain
+package org.koitharu.kotatsu.local.data.output
 
 import androidx.annotation.WorkerThread
-import java.io.File
-import java.util.zip.ZipFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
-import okio.Closeable
 import org.koitharu.kotatsu.core.zip.ZipOutput
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.readText
+import java.io.File
+import java.util.zip.ZipFile
 
-class CbzMangaOutput(
-	val file: File,
+class LocalMangaZipOutput(
+	rootFile: File,
 	manga: Manga,
-) : Closeable {
+) : LocalMangaOutput(rootFile) {
 
-	private val output = ZipOutput(File(file.path + ".tmp"))
+	private val output = ZipOutput(File(rootFile.path + ".tmp"))
 	private val index = MangaIndex(null)
 
 	init {
 		index.setMangaInfo(manga, false)
 	}
 
-	suspend fun mergeWithExisting() {
-		if (file.exists()) {
+	override suspend fun mergeWithExisting() {
+		if (rootFile.exists()) {
 			runInterruptible(Dispatchers.IO) {
-				mergeWith(file)
+				mergeWith(rootFile)
 			}
 		}
 	}
 
-	suspend fun addCover(file: File, ext: String) {
+	override suspend fun addCover(file: File, ext: String) {
 		val name = buildString {
 			append(FILENAME_PATTERN.format(0, 0, 0))
 			if (ext.isNotEmpty() && ext.length <= 4) {
@@ -48,7 +46,7 @@ class CbzMangaOutput(
 		index.setCoverEntry(name)
 	}
 
-	suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) {
+	override suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) {
 		val name = buildString {
 			append(FILENAME_PATTERN.format(chapter.branch.hashCode(), chapter.number, pageNumber))
 			if (ext.isNotEmpty() && ext.length <= 4) {
@@ -62,17 +60,19 @@ class CbzMangaOutput(
 		index.addChapter(chapter)
 	}
 
-	suspend fun finish() {
+	override suspend fun flushChapter(chapter: MangaChapter) = Unit
+
+	override suspend fun finish() {
 		runInterruptible(Dispatchers.IO) {
 			output.put(ENTRY_NAME_INDEX, index.toString())
 			output.finish()
 			output.close()
 		}
-		file.deleteAwait()
-		output.file.renameTo(file)
+		rootFile.deleteAwait()
+		output.file.renameTo(rootFile)
 	}
 
-	suspend fun cleanup() {
+	override suspend fun cleanup() {
 		output.file.deleteAwait()
 	}
 
@@ -80,7 +80,7 @@ class CbzMangaOutput(
 		output.close()
 	}
 
-	fun sortChaptersByName() {
+	override fun sortChaptersByName() {
 		index.sortChaptersByName()
 	}
 
@@ -111,17 +111,9 @@ class CbzMangaOutput(
 
 		private const val FILENAME_PATTERN = "%08d_%03d%03d"
 
-		const val ENTRY_NAME_INDEX = "index.json"
-
-		fun get(root: File, manga: Manga): CbzMangaOutput {
-			val name = manga.title.toFileNameSafe() + ".cbz"
-			val file = File(root, name)
-			return CbzMangaOutput(file, manga)
-		}
-
 		@WorkerThread
-		fun filterChapters(subject: CbzMangaOutput, idsToRemove: Set<Long>) {
-			ZipFile(subject.file).use { zip ->
+		fun filterChapters(subject: LocalMangaZipOutput, idsToRemove: Set<Long>) {
+			ZipFile(subject.rootFile).use { zip ->
 				val index = MangaIndex(zip.readText(zip.getEntry(ENTRY_NAME_INDEX)))
 				idsToRemove.forEach { id -> index.removeChapter(id) }
 				val patterns = requireNotNull(index.getMangaInfo()?.chapters).map {
@@ -133,12 +125,15 @@ class CbzMangaOutput(
 						entry.name == ENTRY_NAME_INDEX -> {
 							subject.output.put(ENTRY_NAME_INDEX, index.toString())
 						}
+
 						entry.isDirectory -> {
 							subject.output.addDirectory(entry.name)
 						}
+
 						entry.name == coverEntryName -> {
 							subject.output.copyEntryFrom(zip, entry)
 						}
+
 						else -> {
 							val name = entry.name.substringBefore('.')
 							if (patterns.any { it.matches(name) }) {
@@ -149,8 +144,8 @@ class CbzMangaOutput(
 				}
 				subject.output.finish()
 				subject.output.close()
-				subject.file.delete()
-				subject.output.file.renameTo(subject.file)
+				subject.rootFile.delete()
+				subject.output.file.renameTo(subject.rootFile)
 			}
 		}
 	}

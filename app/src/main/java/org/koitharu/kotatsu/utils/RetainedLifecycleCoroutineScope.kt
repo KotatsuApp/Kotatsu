@@ -19,6 +19,5 @@ class RetainedLifecycleCoroutineScope(
 
 	override fun onCleared() {
 		coroutineContext.cancel()
-		lifecycle.removeOnClearedListener(this)
 	}
 }

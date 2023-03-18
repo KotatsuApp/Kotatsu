@@ -8,7 +8,6 @@ import androidx.lifecycle.lifecycleScope
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
-import dagger.hilt.android.lifecycle.RetainedLifecycle
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ServiceScoped
 import kotlinx.coroutines.CancellationException
@@ -31,12 +30,12 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.ui.service.PausingHandle
 import org.koitharu.kotatsu.local.data.PagesCache
-import org.koitharu.kotatsu.local.domain.CbzMangaOutput
+import org.koitharu.kotatsu.local.data.input.LocalMangaInput
+import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
-import org.koitharu.kotatsu.utils.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
@@ -111,7 +110,7 @@ class DownloadManager @Inject constructor(
 				val destination = localMangaRepository.getOutputDir()
 				checkNotNull(destination) { context.getString(R.string.cannot_find_available_storage) }
 				val tempFileName = "${manga.id}_$startId.tmp"
-				var output: CbzMangaOutput? = null
+				var output: LocalMangaOutput? = null
 				try {
 					if (manga.source == MangaSource.LOCAL) {
 						manga = localMangaRepository.getRemoteManga(manga)
@@ -120,9 +119,9 @@ class DownloadManager @Inject constructor(
 					val repo = mangaRepositoryFactory.create(manga.source)
 					outState.value = DownloadState.Preparing(startId, manga, cover)
 					val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
-					output = CbzMangaOutput.get(destination, data)
+					output = LocalMangaOutput.getOrCreate(destination, data)
 					val coverUrl = data.largeCoverUrl ?: data.coverUrl
-					downloadFile(coverUrl, data.publicUrl, destination, tempFileName, repo.source).let { file ->
+					downloadFile(coverUrl, destination, tempFileName, repo.source).let { file ->
 						output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
 					}
 					val chapters = checkNotNull(
@@ -144,7 +143,7 @@ class DownloadManager @Inject constructor(
 							runFailsafe(outState, pausingHandle) {
 								val url = repo.getPageUrl(page)
 								val file = cache.get(url)
-									?: downloadFile(url, page.referer, destination, tempFileName, repo.source)
+									?: downloadFile(url, destination, tempFileName, repo.source)
 								output.addPage(
 									chapter = chapter,
 									file = file,
@@ -166,11 +165,12 @@ class DownloadManager @Inject constructor(
 								delay(SLOWDOWN_DELAY)
 							}
 						}
+						output.flushChapter(chapter)
 					}
 					outState.value = DownloadState.PostProcessing(startId, data, cover)
 					output.mergeWithExisting()
 					output.finish()
-					val localManga = localMangaRepository.getFromFile(output.file)
+					val localManga = LocalMangaInput.of(output.rootFile).getManga().manga
 					outState.value = DownloadState.Done(startId, data, cover, localManga)
 				} catch (e: CancellationException) {
 					outState.value = DownloadState.Cancelled(startId, manga, cover)
@@ -216,16 +216,14 @@ class DownloadManager @Inject constructor(
 
 	private suspend fun downloadFile(
 		url: String,
-		referer: String,
 		destination: File,
 		tempFileName: String,
 		source: MangaSource,
 	): File {
 		val request = Request.Builder()
 			.url(url)
-			.header(CommonHeaders.REFERER, referer)
 			.tag(MangaSource::class.java, source)
-			.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
+			.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
 			.get()
 			.build()
 		val call = okHttp.newCall(request)
