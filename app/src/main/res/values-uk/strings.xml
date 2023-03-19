@@ -20,7 +20,7 @@
     <string name="favourites">Уподобання</string>
     <string name="history">Історія</string>
     <string name="error_occurred">Сталася помилка</string>
-    <string name="chapters">Глави</string>
+    <string name="chapters">Розділи</string>
     <string name="list">Список</string>
     <string name="detailed_list">Детальний список</string>
     <string name="list_mode">Режим списку</string>
@@ -64,7 +64,7 @@
     <string name="cache">Кеш</string>
     <string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
     <string name="standard">Стандартний</string>
-    <string name="webtoon">Вебтун</string>
+    <string name="webtoon">Манхва</string>
     <string name="read_mode">Режим читання</string>
     <string name="grid_size">Розмір сітки</string>
     <string name="search_on_s">Пошук по %s</string>
@@ -88,7 +88,7 @@
     <string name="save_manga">Зберегти</string>
     <string name="notifications">Сповіщення</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Увімкнено %1$d з %2$d</string>
-    <string name="new_chapters">Нові глави</string>
+    <string name="new_chapters">Нові розділи</string>
     <string name="download">Завантажити</string>
     <string name="read_from_start">Читати з початку</string>
     <string name="restart">Перезавантажити</string>
@@ -419,4 +419,6 @@
     <string name="allow_unstable_updates">Дозволити нестабільні оновлення</string>
     <string name="allow_unstable_updates_summary">Пропонувати оновлення до бета-версій додатку</string>
     <string name="download_started">Завантаження розпочато</string>
+    <string name="user_agent">Заголовок UserAgent</string>
+    <string name="settings_apply_restart_required">Перезапустіть програму, щоб застосувати зміни</string>
 </resources>
