@@ -83,10 +83,6 @@ class LocalMangaDirOutput(
 		}
 	}
 
-	override fun sortChaptersByName() {
-		index.sortChaptersByName()
-	}
-
 	suspend fun deleteChapter(chapterId: Long) {
 		val chapter = checkNotNull(index.getMangaInfo()?.chapters) {
 			"No chapters found"

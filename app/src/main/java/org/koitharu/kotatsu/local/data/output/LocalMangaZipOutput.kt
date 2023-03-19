@@ -80,10 +80,6 @@ class LocalMangaZipOutput(
 		output.close()
 	}
 
-	override fun sortChaptersByName() {
-		index.sortChaptersByName()
-	}
-
 	@WorkerThread
 	private fun mergeWith(other: File) {
 		var otherIndex: MangaIndex? = null

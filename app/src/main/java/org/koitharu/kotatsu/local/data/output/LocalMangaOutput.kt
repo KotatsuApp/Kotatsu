@@ -22,9 +22,6 @@ abstract class LocalMangaOutput(
 
 	abstract suspend fun cleanup()
 
-	// TODO remove
-	abstract fun sortChaptersByName()
-
 	companion object {
 
 		const val ENTRY_NAME_INDEX = "index.json"

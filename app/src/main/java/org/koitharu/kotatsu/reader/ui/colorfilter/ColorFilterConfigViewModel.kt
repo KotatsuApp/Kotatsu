@@ -47,7 +47,6 @@ class ColorFilterConfigViewModel @Inject constructor(
 				MangaPage(
 					id = page.id,
 					url = url,
-					referer = page.referer,
 					preview = page.preview,
 					source = page.source,
 				),

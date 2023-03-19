@@ -70,7 +70,6 @@ class ChapterPagesTest {
 	private fun page(chapterId: Long) = ReaderPage(
 		id = Random.nextLong(),
 		url = "http://localhost",
-		referer = "http://localhost",
 		preview = null,
 		chapterId = chapterId,
 		index = Random.nextInt(),

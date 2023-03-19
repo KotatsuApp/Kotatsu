@@ -132,7 +132,6 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 						id = entryUri.longHashCode(),
 						url = entryUri,
 						preview = null,
-						referer = chapter.url,
 						source = MangaSource.LOCAL,
 					)
 				}

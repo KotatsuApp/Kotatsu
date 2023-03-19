@@ -96,7 +96,6 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 						id = pageUri.longHashCode(),
 						url = pageUri,
 						preview = null,
-						referer = chapter.url,
 						source = MangaSource.LOCAL,
 					)
 				}
@@ -113,7 +112,6 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 							id = pageUri.longHashCode(),
 							url = pageUri,
 							preview = null,
-							referer = chapter.url,
 							source = MangaSource.LOCAL,
 						)
 					}
