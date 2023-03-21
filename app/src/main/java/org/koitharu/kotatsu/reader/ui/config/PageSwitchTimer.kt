@@ -6,7 +6,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.slider.LabelFormatter
-import kotlin.math.roundToLong
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -14,7 +13,9 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.ui.ReaderControlDelegate
+import kotlin.math.roundToLong
 
+@Deprecated("")
 class PageSwitchTimer(
 	private val listener: ReaderControlDelegate.OnInteractionListener,
 	private val lifecycleOwner: LifecycleOwner,

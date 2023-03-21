@@ -139,7 +139,7 @@
 					android:contentDescription="@string/automatic_scroll"
 					android:labelFor="@id/textView_timer"
 					android:valueFrom="0"
-					android:valueTo="20"
+					android:valueTo="1"
 					app:labelBehavior="floating"
 					app:layout_constraintBottom_toBottomOf="parent"
 					app:layout_constraintEnd_toEndOf="parent"

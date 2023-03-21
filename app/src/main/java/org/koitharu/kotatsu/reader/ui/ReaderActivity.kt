@@ -40,7 +40,6 @@ import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.reader.ui.config.PageSwitchTimer
 import org.koitharu.kotatsu.reader.ui.config.ReaderConfigBottomSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
@@ -70,16 +69,16 @@ class ReaderActivity :
 
 	private val viewModel: ReaderViewModel by viewModels()
 
-	override var pageSwitchDelay: Float
-		get() = pageSwitchTimer.delaySec
+	override var autoScrollSpeed: Float
+		get() = scrollTimer.speed
 		set(value) {
-			pageSwitchTimer.delaySec = value
+			scrollTimer.speed = value
 		}
 
 	override val readerMode: ReaderMode?
 		get() = readerManager.currentMode
 
-	private lateinit var pageSwitchTimer: PageSwitchTimer
+	private lateinit var scrollTimer: ScrollTimer
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
 	private var gestureInsets: Insets = Insets.NONE
@@ -92,7 +91,7 @@ class ReaderActivity :
 		readerManager = ReaderManager(supportFragmentManager, R.id.container)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
-		pageSwitchTimer = PageSwitchTimer(this, this)
+		scrollTimer = ScrollTimer(this, this)
 		controlDelegate = ReaderControlDelegate(settings, this, this)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		binding.slider.setLabelFormatter(PageLabelFormatter())
@@ -134,7 +133,6 @@ class ReaderActivity :
 
 	override fun onUserInteraction() {
 		super.onUserInteraction()
-		pageSwitchTimer.onUserInteraction()
 		idlingDetector.onUserInteraction()
 	}
 
@@ -335,6 +333,10 @@ class ReaderActivity :
 
 	override fun switchPageBy(delta: Int) {
 		readerManager.currentReader?.switchPageBy(delta)
+	}
+
+	override fun scrollBy(delta: Int): Boolean {
+		return readerManager.currentReader?.scrollBy(delta) ?: false
 	}
 
 	override fun toggleUiVisibility() {

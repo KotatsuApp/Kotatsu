@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultCallback
+import androidx.annotation.FloatRange
 import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -23,7 +24,6 @@ import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
-import org.koitharu.kotatsu.utils.ext.setValueRounded
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 
@@ -32,7 +32,7 @@ class ReaderConfigBottomSheet :
 	ActivityResultCallback<Uri?>,
 	View.OnClickListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener,
-	Slider.OnSliderTouchListener {
+	Slider.OnChangeListener {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
 	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
@@ -62,11 +62,10 @@ class ReaderConfigBottomSheet :
 		binding.buttonScreenRotate.setOnClickListener(this)
 		binding.buttonSettings.setOnClickListener(this)
 		binding.buttonColorFilter.setOnClickListener(this)
-		binding.sliderTimer.addOnSliderTouchListener(this)
-		binding.sliderTimer.setLabelFormatter(PageSwitchTimer.DelayLabelFormatter(view.resources))
+		binding.sliderTimer.addOnChangeListener(this)
 
 		findCallback()?.run {
-			binding.sliderTimer.setValueRounded(pageSwitchDelay)
+			binding.sliderTimer.value = autoScrollSpeed
 		}
 	}
 
@@ -111,10 +110,8 @@ class ReaderConfigBottomSheet :
 		mode = newMode
 	}
 
-	override fun onStartTrackingTouch(slider: Slider) = Unit
-
-	override fun onStopTrackingTouch(slider: Slider) {
-		findCallback()?.pageSwitchDelay = slider.value
+	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
+		findCallback()?.autoScrollSpeed = value
 	}
 
 	override fun onActivityResult(uri: Uri?) {
@@ -138,7 +135,8 @@ class ReaderConfigBottomSheet :
 
 	interface Callback {
 
-		var pageSwitchDelay: Float
+		@get:FloatRange(from = 0.0, to = 1.0)
+		var autoScrollSpeed: Float
 
 		fun onReaderModeChanged(mode: ReaderMode)
 	}

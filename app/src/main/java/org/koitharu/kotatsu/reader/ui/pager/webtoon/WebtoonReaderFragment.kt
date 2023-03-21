@@ -114,6 +114,11 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 		binding.recyclerView.firstVisibleItemPosition = position
 	}
 
+	override fun scrollBy(delta: Int): Boolean {
+		binding.recyclerView.nestedScrollBy(0, delta)
+		return true
+	}
+
 	private inner class PageScrollListener : WebtoonRecyclerView.OnPageScrollListener() {
 
 		override fun onPageChanged(recyclerView: WebtoonRecyclerView, index: Int) {

@@ -42,18 +42,22 @@ class ReaderControlDelegate(
 				listener.toggleUiVisibility()
 				view.playSoundEffect(SoundEffectConstants.CLICK)
 			}
+
 			GridTouchHelper.AREA_TOP -> if (isTapSwitchEnabled) {
 				listener.switchPageBy(-1)
 				view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
 			}
+
 			GridTouchHelper.AREA_LEFT -> if (isTapSwitchEnabled) {
 				listener.switchPageBy(if (isReaderTapsReversed()) 1 else -1)
 				view.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT)
 			}
+
 			GridTouchHelper.AREA_BOTTOM -> if (isTapSwitchEnabled) {
 				listener.switchPageBy(1)
 				view.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN)
 			}
+
 			GridTouchHelper.AREA_RIGHT -> if (isTapSwitchEnabled) {
 				listener.switchPageBy(if (isReaderTapsReversed()) -1 else 1)
 				view.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT)
@@ -68,12 +72,14 @@ class ReaderControlDelegate(
 		} else {
 			false
 		}
+
 		KeyEvent.KEYCODE_VOLUME_DOWN -> if (isVolumeKeysSwitchEnabled) {
 			listener.switchPageBy(1)
 			true
 		} else {
 			false
 		}
+
 		KeyEvent.KEYCODE_SPACE,
 		KeyEvent.KEYCODE_PAGE_DOWN,
 		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN,
@@ -82,10 +88,12 @@ class ReaderControlDelegate(
 			listener.switchPageBy(1)
 			true
 		}
+
 		KeyEvent.KEYCODE_DPAD_RIGHT -> {
 			listener.switchPageBy(if (isReaderTapsReversed()) -1 else 1)
 			true
 		}
+
 		KeyEvent.KEYCODE_PAGE_UP,
 		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_UP,
 		KeyEvent.KEYCODE_DPAD_UP,
@@ -93,14 +101,17 @@ class ReaderControlDelegate(
 			listener.switchPageBy(-1)
 			true
 		}
+
 		KeyEvent.KEYCODE_DPAD_LEFT -> {
 			listener.switchPageBy(if (isReaderTapsReversed()) 1 else -1)
 			true
 		}
+
 		KeyEvent.KEYCODE_DPAD_CENTER -> {
 			listener.toggleUiVisibility()
 			true
 		}
+
 		else -> false
 	}
 
@@ -127,6 +138,8 @@ class ReaderControlDelegate(
 		val readerMode: ReaderMode?
 
 		fun switchPageBy(delta: Int)
+
+		fun scrollBy(delta: Int): Boolean
 
 		fun toggleUiVisibility()
 	}
