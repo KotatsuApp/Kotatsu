@@ -381,7 +381,8 @@ class ReaderViewModel @Inject constructor(
 	}
 
 	private fun computePercent(chapterId: Long, pageIndex: Int): Float {
-		val chapters = manga?.chapters ?: return PROGRESS_NONE
+		val branch = chapters[chapterId]?.branch
+		val chapters = manga?.getChapters(branch) ?: return PROGRESS_NONE
 		val chaptersCount = chapters.size
 		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }
 		val pagesCount = chaptersLoader.getPagesCount(chapterId)

@@ -265,7 +265,7 @@ class DetailsViewModel @Inject constructor(
 	fun markChapterAsCurrent(chapterId: Long) {
 		launchJob(Dispatchers.Default) {
 			val manga = checkNotNull(delegate.manga.value)
-			val chapters = checkNotNull(manga.chapters)
+			val chapters = checkNotNull(manga.getChapters(selectedBranchValue))
 			val chapterIndex = chapters.indexOfFirst { it.id == chapterId }
 			check(chapterIndex in chapters.indices) { "Chapter not found" }
 			val percent = chapterIndex / chapters.size.toFloat()

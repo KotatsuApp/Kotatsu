@@ -195,9 +195,7 @@ class TrackWorker @AssistedInject constructor(
 				builder.setDefaults(defaults)
 			}
 		}
-		withContext(Dispatchers.Main) {
-			notificationManager.notify(TAG, id, builder.build())
-		}
+		notificationManager.notify(TAG, id, builder.build())
 	}
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
@@ -214,13 +212,17 @@ class TrackWorker @AssistedInject constructor(
 			channel.enableLights(false)
 			notificationManager.createNotificationChannel(channel)
 		}
-
-		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID).setContentTitle(title)
-			.setPriority(NotificationCompat.PRIORITY_MIN).setDefaults(0)
-			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark)).setSilent(true)
-			.setProgress(0, 0, true).setSmallIcon(android.R.drawable.stat_notify_sync)
-			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED).setOngoing(true).build()
-
+		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
+			.setContentTitle(title)
+			.setPriority(NotificationCompat.PRIORITY_MIN)
+			.setDefaults(0)
+			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
+			.setSilent(true)
+			.setProgress(0, 0, true)
+			.setSmallIcon(android.R.drawable.stat_notify_sync)
+			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
+			.setOngoing(true)
+			.build()
 		return ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
 	}
 
@@ -243,16 +245,21 @@ class TrackWorker @AssistedInject constructor(
 
 		fun setup(context: Context) {
 			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-			val request =
-				PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS).setConstraints(constraints).addTag(TAG)
-					.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES).build()
+			val request = PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS)
+				.setConstraints(constraints)
+				.addTag(TAG)
+				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
+				.build()
 			WorkManager.getInstance(context).enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
 		}
 
 		fun startNow(context: Context) {
 			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-			val request = OneTimeWorkRequestBuilder<TrackWorker>().setConstraints(constraints).addTag(TAG_ONESHOT)
-				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST).build()
+			val request = OneTimeWorkRequestBuilder<TrackWorker>()
+				.setConstraints(constraints)
+				.addTag(TAG_ONESHOT)
+				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+				.build()
 			WorkManager.getInstance(context).enqueue(request)
 		}
 
