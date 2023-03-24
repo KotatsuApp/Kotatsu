@@ -142,5 +142,7 @@ class ReaderControlDelegate(
 		fun scrollBy(delta: Int): Boolean
 
 		fun toggleUiVisibility()
+
+		fun isReaderResumed(): Boolean
 	}
 }

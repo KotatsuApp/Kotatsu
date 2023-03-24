@@ -1,44 +1,65 @@
 package org.koitharu.kotatsu.reader.ui
 
-import androidx.annotation.FloatRange
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.lifecycleScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import kotlin.math.roundToLong
 
-private const val MIN_SPEED = 0.1
-private const val MAX_DELAY = 80L
-private const val MAX_SWITCH_DELAY = 20_000L
+private const val MAX_DELAY = 60L
+private const val MAX_SWITCH_DELAY = 12_000L
+private const val INTERACTION_SKIP_MS = 1_000L
 
-class ScrollTimer(
-	private val lifecycleOwner: LifecycleOwner,
-	private val listener: ReaderControlDelegate.OnInteractionListener,
+class ScrollTimer @AssistedInject constructor(
+	@Assisted private val listener: ReaderControlDelegate.OnInteractionListener,
+	@Assisted lifecycleOwner: LifecycleOwner,
+	settings: AppSettings,
 ) {
 
+	private val coroutineScope = lifecycleOwner.lifecycleScope
 	private var job: Job? = null
 	private var delayMs: Long = 10L
 	private var pageSwitchDelay: Long = 100L
+	private var skip = 0L
 
-	@FloatRange(from = 0.0, to = 1.0)
-	var speed: Float = 0f
+	var isEnabled: Boolean = false
 		set(value) {
 			if (field != value) {
 				field = value
-				onSpeedChanged()
+				restartJob()
 			}
 		}
 
-	private fun onSpeedChanged() {
-		if (speed < MIN_SPEED) {
+	init {
+		settings.observeAsFlow(AppSettings.KEY_READER_AUTOSCROLL_SPEED) {
+			readerAutoscrollSpeed
+		}.flowOn(Dispatchers.Default)
+			.onEach {
+				onSpeedChanged(it)
+			}.launchIn(coroutineScope)
+	}
+
+	fun onUserInteraction() {
+		skip = INTERACTION_SKIP_MS
+	}
+
+	private fun onSpeedChanged(speed: Float) {
+		if (speed <= 0f) {
 			delayMs = 0L
 			pageSwitchDelay = 0L
 		} else {
-			val speedFactor = 1 - speed + MIN_SPEED
+			val speedFactor = 1 - speed
 			delayMs = (MAX_DELAY * speedFactor).roundToLong()
 			pageSwitchDelay = (MAX_SWITCH_DELAY * speedFactor).roundToLong()
 		}
@@ -49,24 +70,39 @@ class ScrollTimer(
 
 	private fun restartJob() {
 		job?.cancel()
-		if (delayMs == 0L) {
+		skip = 0
+		if (!isEnabled || delayMs == 0L) {
 			job = null
 			return
 		}
-		job = lifecycleOwner.lifecycle.coroutineScope.launch {
-			lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-				var accumulator = 0L
-				while (isActive) {
-					delay(delayMs)
-					if (!listener.scrollBy(1)) {
-						accumulator += delayMs
-					}
-					if (accumulator >= pageSwitchDelay) {
-						listener.switchPageBy(1)
-						accumulator -= pageSwitchDelay
-					}
+		job = coroutineScope.launch {
+			var accumulator = 0L
+			while (isActive) {
+				delay(delayMs)
+				if (!listener.isReaderResumed()) {
+					continue
+				}
+				skip -= delayMs
+				if (skip > 0) {
+					continue
+				}
+				if (!listener.scrollBy(1)) {
+					accumulator += delayMs
+				}
+				if (accumulator >= pageSwitchDelay) {
+					listener.switchPageBy(1)
+					accumulator -= pageSwitchDelay
 				}
 			}
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(
+			lifecycleOwner: LifecycleOwner,
+			listener: ReaderControlDelegate.OnInteractionListener,
+		): ScrollTimer
 	}
 }

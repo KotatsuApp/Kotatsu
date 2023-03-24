@@ -53,6 +53,7 @@ import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 import org.koitharu.kotatsu.utils.ext.postDelayed
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ReaderActivity :
@@ -69,14 +70,17 @@ class ReaderActivity :
 
 	private val viewModel: ReaderViewModel by viewModels()
 
-	override var autoScrollSpeed: Float
-		get() = scrollTimer.speed
-		set(value) {
-			scrollTimer.speed = value
-		}
-
 	override val readerMode: ReaderMode?
 		get() = readerManager.currentMode
+
+	override var isAutoScrollEnabled: Boolean
+		get() = scrollTimer.isEnabled
+		set(value) {
+			scrollTimer.isEnabled = value
+		}
+
+	@Inject
+	lateinit var scrollTimerFactory: ScrollTimer.Factory
 
 	private lateinit var scrollTimer: ScrollTimer
 	private lateinit var touchHelper: GridTouchHelper
@@ -91,7 +95,7 @@ class ReaderActivity :
 		readerManager = ReaderManager(supportFragmentManager, R.id.container)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
-		scrollTimer = ScrollTimer(this, this)
+		scrollTimer = scrollTimerFactory.create(this, this)
 		controlDelegate = ReaderControlDelegate(settings, this, this)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		binding.slider.setLabelFormatter(PageLabelFormatter())
@@ -133,6 +137,7 @@ class ReaderActivity :
 
 	override fun onUserInteraction() {
 		super.onUserInteraction()
+		scrollTimer.onUserInteraction()
 		idlingDetector.onUserInteraction()
 	}
 
@@ -341,6 +346,11 @@ class ReaderActivity :
 
 	override fun toggleUiVisibility() {
 		setUiIsVisible(!binding.appbarTop.isVisible)
+	}
+
+	override fun isReaderResumed(): Boolean {
+		val reader = readerManager.currentReader ?: return false
+		return reader.isResumed && supportFragmentManager.fragments.lastOrNull() === reader
 	}
 
 	private fun onReaderBarChanged(isBarEnabled: Boolean) {

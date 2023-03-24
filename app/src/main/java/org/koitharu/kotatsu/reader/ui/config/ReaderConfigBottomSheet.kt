@@ -5,19 +5,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.activity.result.ActivityResultCallback
-import androidx.annotation.FloatRange
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.core.prefs.observeAsLiveData
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.ui.PageSaveContract
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
@@ -26,18 +32,23 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.ScreenOrientationHelper
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ReaderConfigBottomSheet :
 	BaseBottomSheet<SheetReaderConfigBinding>(),
 	ActivityResultCallback<Uri?>,
 	View.OnClickListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener,
-	Slider.OnChangeListener {
+	Slider.OnChangeListener, CompoundButton.OnCheckedChangeListener {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
 	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
 	private var orientationHelper: ScreenOrientationHelper? = null
 	private lateinit var mode: ReaderMode
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -63,9 +74,17 @@ class ReaderConfigBottomSheet :
 		binding.buttonSettings.setOnClickListener(this)
 		binding.buttonColorFilter.setOnClickListener(this)
 		binding.sliderTimer.addOnChangeListener(this)
+		binding.switchScrollTimer.setOnCheckedChangeListener(this)
 
+		settings.observeAsLiveData(
+			context = lifecycleScope.coroutineContext + Dispatchers.Default,
+			key = AppSettings.KEY_READER_AUTOSCROLL_SPEED,
+			valueProducer = { readerAutoscrollSpeed },
+		).observe(viewLifecycleOwner) {
+			binding.sliderTimer.value = it
+		}
 		findCallback()?.run {
-			binding.sliderTimer.value = autoScrollSpeed
+			binding.switchScrollTimer.isChecked = isAutoScrollEnabled
 		}
 	}
 
@@ -93,6 +112,16 @@ class ReaderConfigBottomSheet :
 		}
 	}
 
+	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
+		when (buttonView.id) {
+			R.id.switch_scroll_timer -> {
+				findCallback()?.isAutoScrollEnabled = isChecked
+				binding.labelTimer.isVisible = isChecked
+				binding.sliderTimer.isVisible = isChecked
+			}
+		}
+	}
+
 	override fun onButtonChecked(group: MaterialButtonToggleGroup?, checkedId: Int, isChecked: Boolean) {
 		if (!isChecked) {
 			return
@@ -111,7 +140,9 @@ class ReaderConfigBottomSheet :
 	}
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
-		findCallback()?.autoScrollSpeed = value
+		if (fromUser) {
+			settings.readerAutoscrollSpeed = value
+		}
 	}
 
 	override fun onActivityResult(uri: Uri?) {
@@ -135,8 +166,7 @@ class ReaderConfigBottomSheet :
 
 	interface Callback {
 
-		@get:FloatRange(from = 0.0, to = 1.0)
-		var autoScrollSpeed: Float
+		var isAutoScrollEnabled: Boolean
 
 		fun onReaderModeChanged(mode: ReaderMode)
 	}

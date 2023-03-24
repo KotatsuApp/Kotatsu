@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.provider.Settings
+import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
@@ -265,6 +266,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isWebtoonZoomEnable: Boolean
 		get() = prefs.getBoolean(KEY_WEBTOON_ZOOM, true)
 
+	@get:FloatRange(from = 0.0, to = 1.0)
+	var readerAutoscrollSpeed: Float
+		get() = prefs.getFloat(KEY_READER_AUTOSCROLL_SPEED, 0f)
+		set(@FloatRange(from = 0.0, to = 1.0) value) = prefs.edit { putFloat(KEY_READER_AUTOSCROLL_SPEED, value) }
+
 	fun isPagesPreloadEnabled(): Boolean {
 		val policy = NetworkPolicy.from(prefs.getString(KEY_PAGES_PRELOAD, null), NetworkPolicy.NON_METERED)
 		return policy.isNetworkAllowed(connectivityManager)
@@ -397,6 +403,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_UPDATES_UNSTABLE = "updates_unstable"
 		const val KEY_TIPS_CLOSED = "tips_closed"
 		const val KEY_SSL_BYPASS = "ssl_bypass"
+		const val KEY_READER_AUTOSCROLL_SPEED = "as_speed"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
