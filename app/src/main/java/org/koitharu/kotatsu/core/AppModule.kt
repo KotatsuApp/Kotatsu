@@ -86,6 +86,7 @@ interface AppModule {
 		fun provideOkHttpClient(
 			localStorageManager: LocalStorageManager,
 			commonHeadersInterceptor: CommonHeadersInterceptor,
+			mirrorSwitchInterceptor: MirrorSwitchInterceptor,
 			cookieJar: CookieJar,
 			settings: AppSettings,
 		): OkHttpClient {
@@ -103,6 +104,7 @@ interface AppModule {
 				addInterceptor(GZipInterceptor())
 				addInterceptor(commonHeadersInterceptor)
 				addInterceptor(CloudFlareInterceptor())
+				addInterceptor(mirrorSwitchInterceptor)
 				if (BuildConfig.DEBUG) {
 					addInterceptor(CurlLoggingInterceptor())
 				}

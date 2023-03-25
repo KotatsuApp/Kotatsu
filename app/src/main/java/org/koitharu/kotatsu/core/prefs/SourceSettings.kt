@@ -28,4 +28,12 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 			is ConfigKey.ShowSuspiciousContent -> prefs.getBoolean(key.key, key.defaultValue)
 		} as T
 	}
+
+	operator fun <T> set(key: ConfigKey<T>, value: T) = prefs.edit {
+		when (key) {
+			is ConfigKey.Domain -> putString(key.key, value as String?)
+			is ConfigKey.ShowSuspiciousContent -> putBoolean(key.key, value as Boolean)
+			is ConfigKey.UserAgent -> putString(key.key, value as String?)
+		}
+	}
 }
