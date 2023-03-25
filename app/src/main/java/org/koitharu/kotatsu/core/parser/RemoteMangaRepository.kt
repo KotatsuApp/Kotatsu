@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -9,6 +10,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.cache.SafeDeferred
 import org.koitharu.kotatsu.core.prefs.SourceSettings
@@ -77,7 +79,7 @@ class RemoteMangaRepository(
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		cache.getPages(source, chapter.url)?.let { return it }
 		val pages = asyncSafe {
-			parser.getPages(chapter)
+			parser.getPages(chapter).distinctById()
 		}
 		cache.putPages(source, chapter.url, pages)
 		return pages.await()
@@ -107,5 +109,21 @@ class RemoteMangaRepository(
 				runCatchingCancellable { block() }
 			},
 		)
+	}
+
+	private fun List<MangaPage>.distinctById(): List<MangaPage> {
+		if (isEmpty()) {
+			return emptyList()
+		}
+		val result = ArrayList<MangaPage>(size)
+		val set = HashSet<Long>(size)
+		for (page in this) {
+			if (set.add(page.id)) {
+				result.add(page)
+			} else if (BuildConfig.DEBUG) {
+				Log.w(null, "Duplicate page: $page")
+			}
+		}
+		return result
 	}
 }
