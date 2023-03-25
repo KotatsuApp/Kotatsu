@@ -59,7 +59,7 @@ android {
 		]
 	}
 	lint {
-		abortOnError false
+		abortOnError true
 		disable 'MissingTranslation', 'PrivateResource', 'NotifyDataSetChanged'
 	}
 	testOptions {
