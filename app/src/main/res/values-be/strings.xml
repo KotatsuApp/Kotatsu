@@ -326,7 +326,8 @@
     <string name="clear_all_history">Ачысціць усю гісторыю</string>
     <string name="history_cleared">Гісторыя ачышчана</string>
     <string name="incognito_mode">Рэжым інкогніта</string>
-    <string name="categories_delete_confirm">Вы ўпэўнены, што хочаце выдаліць выбраныя абраныя катэгорыі\? Уся манга ў ім будзе страчана, і гэта нельга будзе адрабіць.</string>
+    <string name="categories_delete_confirm">Вы ўпэўнены, што хочаце выдаліць выбраныя абраныя катэгорыі\?
+\nУся манга ў ім будзе страчана, і гэта нельга будзе адрабіць.</string>
     <string name="no_bookmarks_summary">Вы можаце стварыць закладку падчас чытання мангі</string>
     <string name="saved_manga">Захаваная манга</string>
     <string name="enter_email_text">Каб працягнуць, увядзіце свой адрас электроннай пошты</string>
@@ -415,4 +416,9 @@
     <string name="options">Параметры</string>
     <string name="downloading_manga">Спампоўка мангі</string>
     <string name="seconds_pattern">%s с</string>
+    <string name="user_agent">Загаловак UserAgent</string>
+    <string name="allow_unstable_updates">Дазволіць нестабільныя абнаўленні</string>
+    <string name="allow_unstable_updates_summary">Прапануйце абнаўленні да бэта-версій праграмы</string>
+    <string name="download_started">Спампоўка пачалася</string>
+    <string name="settings_apply_restart_required">Калі ласка, перазапусціце праграму каб прымяніць змены</string>
 </resources>

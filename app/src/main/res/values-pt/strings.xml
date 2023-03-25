@@ -397,4 +397,22 @@
     <string name="color_correction_hint">As configurações de cor escolhidas serão lembradas para esse mangá</string>
     <string name="discard">Descartar</string>
     <string name="language">Idioma</string>
+    <string name="theme_name_mamimi">Mamimi</string>
+    <string name="nothing_here">Não há nada aqui</string>
+    <string name="services">Serviços</string>
+    <string name="enable_logging_summary">Gravar algumas ações para propósitos de depuração</string>
+    <string name="allow_unstable_updates">Permitir atualizações instáveis</string>
+    <string name="download_started">Descarga iniciada</string>
+    <string name="share_logs">Compartilhar registos</string>
+    <string name="enable_logging">Ativar registos</string>
+    <string name="theme_name_miku">Miku</string>
+    <string name="theme_name_rikka">Rikka</string>
+    <string name="theme_name_sakura">Sakura</string>
+    <string name="show_suspicious_content">Exibir conteúdo suspeito</string>
+    <string name="theme_name_dynamic">Dinâmico</string>
+    <string name="color_theme">Esquema de cores</string>
+    <string name="show_in_grid_view">Mostrar na visualização em grade</string>
+    <string name="theme_name_asuka">Asuka</string>
+    <string name="theme_name_mion">Mion</string>
+    <string name="settings_apply_restart_required">Por favor, reinicie o app para aplicar essas mudanças</string>
 </resources>

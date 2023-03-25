@@ -6,9 +6,9 @@
 	<string name="url_twitter" translatable="false">https://twitter.com/kotatsuapp</string>
 	<string name="url_reddit" translatable="false">https://reddit.com/user/kotatsuapp</string>
 	<string name="url_weblate" translatable="false">https://hosted.weblate.org/engage/kotatsu</string>
-	<string name="url_error_report" translatable="false">https://acra.rumblur.space/report</string>
+	<string name="url_error_report" translatable="false">https://acra.kotatsu.app/report</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
-	<string name="url_sync_server" translatable="false">http://86.57.183.214:8081</string>
+	<string name="url_sync_server" translatable="false">https://sync.kotatsu.app</string>
 	<string name="shikimori_clientId" translatable="false">Mw6F0tPEOgyV7F9U9Twg50Q8SndMY7hzIOfXg0AX_XU</string>
 	<string name="shikimori_clientSecret" translatable="false">euBMt1GGRSDpVIFQVPxZrO7Kh6X4gWyv0dABuj4B-M8</string>
 	<string name="anilist_clientId" translatable="false">9887</string>
