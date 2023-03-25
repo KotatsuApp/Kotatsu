@@ -118,7 +118,6 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 						id = entryUri.longHashCode(),
 						url = entryUri,
 						preview = null,
-						referer = chapter.url,
 						source = MangaSource.LOCAL,
 					)
 				}

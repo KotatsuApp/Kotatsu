@@ -52,7 +52,6 @@ fun Parcel.readManga() = Manga(
 fun MangaPage.writeToParcel(out: Parcel) {
 	out.writeLong(id)
 	out.writeString(url)
-	out.writeString(referer)
 	out.writeString(preview)
 	out.writeSerializable(source)
 }
@@ -60,7 +59,6 @@ fun MangaPage.writeToParcel(out: Parcel) {
 fun Parcel.readMangaPage() = MangaPage(
 	id = readLong(),
 	url = requireNotNull(readString()),
-	referer = requireNotNull(readString()),
 	preview = readString(),
 	source = checkNotNull(readSerializableCompat()),
 )

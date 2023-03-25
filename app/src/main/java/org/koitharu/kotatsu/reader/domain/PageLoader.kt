@@ -185,7 +185,6 @@ class PageLoader @Inject constructor(
 			val request = Request.Builder()
 				.url(pageUrl)
 				.get()
-				.header(CommonHeaders.REFERER, page.referer)
 				.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
 				.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
 				.tag(MangaSource::class.java, page.source)
