@@ -12,9 +12,10 @@ import org.koitharu.kotatsu.base.ui.dialog.RememberSelectionDialogListener
 import org.koitharu.kotatsu.local.ui.ImportDialogFragment
 import org.koitharu.kotatsu.shelf.ui.config.ShelfSettingsActivity
 import org.koitharu.kotatsu.shelf.ui.config.size.ShelfSizeBottomSheet
-import org.koitharu.kotatsu.utils.ext.startOfDay
-import java.util.Date
-import java.util.concurrent.TimeUnit
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import com.google.android.material.R as materialR
 
 class ShelfMenuProvider(
@@ -69,13 +70,13 @@ class ShelfMenuProvider(
 			.setIcon(R.drawable.ic_delete)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.clear) { _, _ ->
-				val minDate = when (selectionListener.selection) {
-					0 -> System.currentTimeMillis() - TimeUnit.HOURS.toMillis(2)
-					1 -> Date().startOfDay()
-					2 -> 0L
+				val minInstant = when (selectionListener.selection) {
+					0 -> Instant.now().minus(2, ChronoUnit.HOURS)
+					1 -> LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
+					2 -> Instant.EPOCH
 					else -> return@setPositiveButton
 				}
-				viewModel.clearHistory(minDate)
+				viewModel.clearHistory(minInstant.toEpochMilli())
 			}.show()
 	}
 }
