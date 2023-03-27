@@ -31,7 +31,7 @@ android {
 			applicationIdSuffix = '.debug'
 		}
 		release {
-			multiDexEnabled false
+			multiDexEnabled true
 			minifyEnabled true
 			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -47,6 +47,7 @@ android {
 	compileOptions {
 		sourceCompatibility JavaVersion.VERSION_17
 		targetCompatibility JavaVersion.VERSION_17
+		coreLibraryDesugaringEnabled true
 	}
 	kotlinOptions {
 		jvmTarget = JavaVersion.VERSION_17.toString()
@@ -78,6 +79,8 @@ afterEvaluate {
 	}
 }
 dependencies {
+	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+
 	//noinspection GradleDependency
 	implementation('com.github.KotatsuApp:kotatsu-parsers:92bfc7e9fa') {
 		exclude group: 'org.json', module: 'json'
