@@ -47,7 +47,7 @@ fun File.getStorageName(context: Context): String = runCatching {
 fun Uri.toFileOrNull() = if (scheme == "file") path?.let(::File) else null
 
 suspend fun File.deleteAwait() = withContext(Dispatchers.IO) {
-	delete()
+	delete() || deleteRecursively()
 }
 
 fun ContentResolver.resolveName(uri: Uri): String? {

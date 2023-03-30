@@ -39,8 +39,7 @@ class ExceptionResolver private constructor(
 		sourceAuthContract = fragment.registerForActivityResult(SourceAuthActivity.Contract(), this)
 	}
 
-	override fun onActivityResult(result: TaggedActivityResult?) {
-		result ?: return
+	override fun onActivityResult(result: TaggedActivityResult) {
 		continuations.remove(result.tag)?.resume(result.isSuccess)
 	}
 

@@ -34,9 +34,10 @@ class LocalMangaDirOutput(
 			}
 		}
 		runInterruptible(Dispatchers.IO) {
-			file.copyTo(File(rootFile, name))
+			file.copyTo(File(rootFile, name), overwrite = true)
 		}
 		index.setCoverEntry(name)
+		flushIndex()
 	}
 
 	override suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) {
@@ -59,12 +60,11 @@ class LocalMangaDirOutput(
 	override suspend fun flushChapter(chapter: MangaChapter) {
 		val output = chaptersOutput.remove(chapter) ?: return
 		output.flushAndFinish()
+		flushIndex()
 	}
 
 	override suspend fun finish() {
-		runInterruptible(Dispatchers.IO) {
-			File(rootFile, ENTRY_NAME_INDEX).writeText(index.toString())
-		}
+		flushIndex()
 		for (output in chaptersOutput.values) {
 			output.flushAndFinish()
 		}
@@ -101,6 +101,10 @@ class LocalMangaDirOutput(
 
 	private fun chapterFileName(chapter: MangaChapter): String {
 		return "${chapter.number}_${chapter.name.toFileNameSafe()}".take(18) + ".cbz"
+	}
+
+	private suspend fun flushIndex() = runInterruptible(Dispatchers.IO) {
+		File(rootFile, ENTRY_NAME_INDEX).writeText(index.toString())
 	}
 
 	companion object {

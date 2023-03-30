@@ -12,11 +12,9 @@ import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageManager
-import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.TempFileFilter
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.data.output.LocalMangaDirOutput
-import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaZipOutput
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -27,10 +25,9 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.AlphanumComparator
 import org.koitharu.kotatsu.utils.CompositeMutex
 import org.koitharu.kotatsu.utils.ext.deleteAwait
-import org.koitharu.kotatsu.utils.ext.readText
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.io.File
-import java.util.zip.ZipFile
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -114,16 +111,11 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 	}
 
 	suspend fun getRemoteManga(localManga: Manga): Manga? {
-		val file = runCatching {
-			Uri.parse(localManga.url).toFile()
-		}.getOrNull() ?: return null
-		return runInterruptible(Dispatchers.IO) {
-			ZipFile(file).use { zip ->
-				val entry = zip.getEntry(LocalMangaOutput.ENTRY_NAME_INDEX)
-				val index = entry?.let(zip::readText)?.let(::MangaIndex)
-				index?.getMangaInfo()
-			}
-		}
+		return runCatchingCancellable {
+			LocalMangaInput.of(localManga).getMangaInfo()
+		}.onFailure {
+			it.printStackTraceDebug()
+		}.getOrNull()
 	}
 
 	suspend fun findSavedManga(remoteManga: Manga): LocalManga? {
