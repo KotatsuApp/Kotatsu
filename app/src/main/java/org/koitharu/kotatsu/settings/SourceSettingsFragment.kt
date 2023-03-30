@@ -39,9 +39,9 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 	private val exceptionResolver = ExceptionResolver(this)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
 		source = requireArguments().requireSerializable(EXTRA_SOURCE)
 		repository = mangaRepositoryFactory.create(source) as? RemoteMangaRepository
+		super.onCreate(savedInstanceState)
 	}
 
 	override fun onResume() {
