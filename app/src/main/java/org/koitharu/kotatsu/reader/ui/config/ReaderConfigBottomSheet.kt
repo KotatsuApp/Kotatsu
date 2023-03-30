@@ -81,7 +81,10 @@ class ReaderConfigBottomSheet :
 			key = AppSettings.KEY_READER_AUTOSCROLL_SPEED,
 			valueProducer = { readerAutoscrollSpeed },
 		).observe(viewLifecycleOwner) {
-			binding.sliderTimer.value = it
+			binding.sliderTimer.value = it.coerceIn(
+				binding.sliderTimer.valueFrom,
+				binding.sliderTimer.valueTo,
+			)
 		}
 		findCallback()?.run {
 			binding.switchScrollTimer.isChecked = isAutoScrollEnabled
