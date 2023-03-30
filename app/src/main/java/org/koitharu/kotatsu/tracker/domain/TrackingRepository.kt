@@ -113,7 +113,7 @@ class TrackingRepository @Inject constructor(
 		db.withTransaction {
 			val track = getOrCreateTrack(updates.manga.id).mergeWith(updates)
 			db.tracksDao.upsert(track)
-			if (updates.isValid /*&& updates.newChapters.isNotEmpty()*/) {
+			if (updates.isValid && updates.newChapters.isNotEmpty()) {
 				updatePercent(updates)
 				val logEntity = TrackLogEntity(
 					mangaId = updates.manga.id,
