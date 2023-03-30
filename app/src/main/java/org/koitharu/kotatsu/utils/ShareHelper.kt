@@ -85,7 +85,11 @@ class ShareHelper(private val context: Context) {
 		val intentBuilder = ShareCompat.IntentBuilder(context)
 			.setType(TYPE_TEXT)
 		for (logger in loggers) {
-			val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", logger.file)
+			val logFile = logger.file
+			if (!logFile.exists()) {
+				continue
+			}
+			val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", logFile)
 			intentBuilder.addStream(uri)
 		}
 		intentBuilder.setChooserTitle(R.string.share_logs)
