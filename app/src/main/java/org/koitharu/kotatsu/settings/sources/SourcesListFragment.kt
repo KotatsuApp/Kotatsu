@@ -33,7 +33,7 @@ import org.koitharu.kotatsu.utils.ext.getItem
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SourcesSettingsFragment :
+class SourcesListFragment :
 	BaseFragment<FragmentSettingsSourcesBinding>(),
 	SourceConfigListener,
 	RecyclerViewOwner {
@@ -42,7 +42,7 @@ class SourcesSettingsFragment :
 	lateinit var coil: ImageLoader
 
 	private var reorderHelper: ItemTouchHelper? = null
-	private val viewModel by viewModels<SourcesSettingsViewModel>()
+	private val viewModel by viewModels<SourcesListViewModel>()
 
 	override val recyclerView: RecyclerView
 		get() = binding.recyclerView

@@ -24,7 +24,7 @@ import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
-import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
+import org.koitharu.kotatsu.settings.sources.SourcesListFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.utils.ext.isScrolledToTop
@@ -133,7 +133,7 @@ class SettingsActivity :
 				intent.getSerializableExtraCompat(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
 			)
 
-			ACTION_MANAGE_SOURCES -> SourcesSettingsFragment()
+			ACTION_MANAGE_SOURCES -> SourcesListFragment()
 			Intent.ACTION_VIEW -> {
 				when (intent.data?.host) {
 					HOST_ABOUT -> AboutSettingsFragment()
