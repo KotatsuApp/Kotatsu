@@ -17,8 +17,8 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import kotlin.math.roundToLong
 
-private const val MAX_DELAY = 60L
-private const val MAX_SWITCH_DELAY = 12_000L
+private const val MAX_DELAY = 20L
+private const val MAX_SWITCH_DELAY = 10_000L
 private const val INTERACTION_SKIP_MS = 1_000L
 
 class ScrollTimer @AssistedInject constructor(

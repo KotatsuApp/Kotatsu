@@ -137,7 +137,7 @@
 				android:contentDescription="@string/automatic_scroll"
 				android:labelFor="@id/switch_scroll_timer"
 				android:valueFrom="0.2"
-				android:valueTo="1"
+				android:valueTo="0.9"
 				android:visibility="gone"
 				app:labelBehavior="gone"
 				tools:visibility="visible" />
