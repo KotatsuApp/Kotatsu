@@ -19,7 +19,8 @@ import kotlin.math.roundToLong
 
 private const val MAX_DELAY = 20L
 private const val MAX_SWITCH_DELAY = 10_000L
-private const val INTERACTION_SKIP_MS = 1_000L
+private const val INTERACTION_SKIP_MS = 2_000L
+private const val SPEED_FACTOR_DELTA = 0.02f
 
 class ScrollTimer @AssistedInject constructor(
 	@Assisted private val listener: ReaderControlDelegate.OnInteractionListener,
@@ -31,7 +32,7 @@ class ScrollTimer @AssistedInject constructor(
 	private var job: Job? = null
 	private var delayMs: Long = 10L
 	private var pageSwitchDelay: Long = 100L
-	private var skip = 0L
+	private var resumeAt = 0L
 
 	var isEnabled: Boolean = false
 		set(value) {
@@ -51,7 +52,7 @@ class ScrollTimer @AssistedInject constructor(
 	}
 
 	fun onUserInteraction() {
-		skip = INTERACTION_SKIP_MS
+		resumeAt = System.currentTimeMillis() + INTERACTION_SKIP_MS
 	}
 
 	private fun onSpeedChanged(speed: Float) {
@@ -70,20 +71,29 @@ class ScrollTimer @AssistedInject constructor(
 
 	private fun restartJob() {
 		job?.cancel()
-		skip = 0
+		resumeAt = 0L
 		if (!isEnabled || delayMs == 0L) {
 			job = null
 			return
 		}
 		job = coroutineScope.launch {
 			var accumulator = 0L
+			var speedFactor = 1f
 			while (isActive) {
-				delay(delayMs)
-				if (!listener.isReaderResumed()) {
-					continue
+				if (isPaused()) {
+					speedFactor = (speedFactor - SPEED_FACTOR_DELTA).coerceAtLeast(0f)
+				} else if (speedFactor < 1f) {
+					speedFactor = (speedFactor + SPEED_FACTOR_DELTA).coerceAtMost(1f)
 				}
-				skip -= delayMs
-				if (skip > 0) {
+				if (speedFactor == 1f) {
+					delay(delayMs)
+				} else if (speedFactor == 0f) {
+					delayUntilResumed()
+					continue
+				} else {
+					delay((delayMs * (1f + speedFactor * 2)).toLong())
+				}
+				if (!listener.isReaderResumed()) {
 					continue
 				}
 				if (!listener.scrollBy(1)) {
@@ -94,6 +104,16 @@ class ScrollTimer @AssistedInject constructor(
 					accumulator -= pageSwitchDelay
 				}
 			}
+		}
+	}
+
+	private fun isPaused(): Boolean {
+		return resumeAt > System.currentTimeMillis()
+	}
+
+	private suspend fun delayUntilResumed() {
+		while (isPaused()) {
+			delay(resumeAt - System.currentTimeMillis())
 		}
 	}
 
