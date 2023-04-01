@@ -127,7 +127,9 @@ class SegmentedBarView @JvmOverloads constructor(
 		val maxScale = (scaleFactor * (segments.size - 1)).coerceAtLeast(1f)
 		for ((index, segment) in segmentsData.withIndex()) {
 			val scale = (scaleFactor * (index + 1) / maxScale).coerceAtMost(1f)
-			val segmentWidth = (w * segment.percent).coerceAtLeast(cornerSize) * scale
+			val segmentWidth = (w * segment.percent).coerceAtLeast(
+				if (index == 0) height.toFloat() else cornerSize,
+			) * scale
 			segmentsSizes.add(segmentWidth)
 			w -= segmentWidth
 		}
