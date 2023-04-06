@@ -408,4 +408,17 @@
     <string name="download_started">Nagsimula na ang pag-download</string>
     <string name="color_theme">Scheme ng kulay</string>
     <string name="theme_name_miku">Miku</string>
+    <string name="user_agent">Header ng UserAgent</string>
+    <string name="cache">Cache</string>
+    <string name="text_file_sizes">B|kB|MB|GB|TB</string>
+    <string name="standard">Standard</string>
+    <string name="webtoon">Webtoon</string>
+    <string name="read_mode">Read mode</string>
+    <string name="error">Error</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="external_storage">External storage</string>
+    <string name="vibration">Vibration</string>
+    <string name="domain">Domain</string>
+    <string name="light_indicator">LED indicator</string>
+    <string name="settings_apply_restart_required">Mangyaring i-restart ang application upang ilapat ang mga pagbabagong ito</string>
 </resources>
