@@ -14,8 +14,7 @@ import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.TempFileFilter
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
-import org.koitharu.kotatsu.local.data.output.LocalMangaDirOutput
-import org.koitharu.kotatsu.local.data.output.LocalMangaZipOutput
+import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
@@ -90,21 +89,7 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) {
 		lockManga(manga.id)
 		try {
-			val uri = Uri.parse(manga.url)
-			val file = uri.toFile()
-			if (file.isDirectory) {
-				LocalMangaDirOutput(file, manga).use { output ->
-					for (id in ids) {
-						output.deleteChapter(id)
-					}
-					output.finish()
-				}
-			} else {
-				runInterruptible(Dispatchers.IO) {
-					val cbz = LocalMangaZipOutput(file, manga)
-					LocalMangaZipOutput.filterChapters(cbz, ids)
-				}
-			}
+			LocalMangaUtil(manga).deleteChapters(ids)
 		} finally {
 			unlockManga(manga.id)
 		}

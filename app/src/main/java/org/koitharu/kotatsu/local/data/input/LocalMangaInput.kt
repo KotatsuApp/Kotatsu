@@ -9,7 +9,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import java.io.File
 
-abstract class LocalMangaInput(
+sealed class LocalMangaInput(
 	protected val root: File,
 ) {
 

@@ -6,7 +6,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import java.io.File
 
-abstract class LocalMangaOutput(
+sealed class LocalMangaOutput(
 	val rootFile: File,
 ) : Closeable {
 
