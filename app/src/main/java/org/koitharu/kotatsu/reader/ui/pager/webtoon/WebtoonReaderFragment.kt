@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
 import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
+import org.koitharu.kotatsu.utils.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import javax.inject.Inject
 
@@ -103,11 +104,13 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 	}
 
 	override fun switchPageBy(delta: Int) {
-		binding.recyclerView.smoothScrollBy(
-			0,
-			(binding.recyclerView.height * 0.9).toInt() * delta,
-			scrollInterpolator,
-		)
+		with(binding.recyclerView) {
+			if (context.isAnimationsEnabled) {
+				smoothScrollBy(0, (height * 0.9).toInt() * delta, scrollInterpolator)
+			} else {
+				nestedScrollBy(0, (height * 0.9).toInt() * delta)
+			}
+		}
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {

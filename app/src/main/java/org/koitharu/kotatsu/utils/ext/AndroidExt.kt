@@ -135,6 +135,9 @@ fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float,
 val Context.animatorDurationScale: Float
 	get() = Settings.Global.getFloat(this.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
 
+val Context.isAnimationsEnabled: Boolean
+	get() = animatorDurationScale > 0f
+
 fun ViewPropertyAnimator.applySystemAnimatorScale(context: Context): ViewPropertyAnimator = apply {
 	this.duration = (this.duration * context.animatorDurationScale).toLong()
 }

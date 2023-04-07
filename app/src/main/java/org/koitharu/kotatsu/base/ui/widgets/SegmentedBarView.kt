@@ -12,12 +12,11 @@ import android.view.ViewOutlineProvider
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
-import androidx.core.graphics.ColorUtils
 import org.koitharu.kotatsu.parsers.util.replaceWith
 import org.koitharu.kotatsu.utils.ext.getAnimationDuration
 import org.koitharu.kotatsu.utils.ext.getThemeColor
+import org.koitharu.kotatsu.utils.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.utils.ext.resolveDp
-import kotlin.random.Random
 import com.google.android.material.R as materialR
 
 class SegmentedBarView @JvmOverloads constructor(
@@ -34,29 +33,10 @@ class SegmentedBarView @JvmOverloads constructor(
 	private var scaleFactor = 1f
 	private var scaleAnimator: ValueAnimator? = null
 
-	var segments: List<Segment>
-		get() = segmentsData
-		set(value) {
-			scaleAnimator?.cancel()
-			scaleAnimator = null
-			segmentsData.replaceWith(value)
-			updateSizes()
-			invalidate()
-		}
-
 	init {
 		paint.strokeWidth = context.resources.resolveDp(1f)
 		outlineProvider = OutlineProvider()
 		clipToOutline = true
-
-		if (isInEditMode) {
-			segments = List(Random.nextInt(3, 5)) {
-				Segment(
-					percent = Random.nextFloat(),
-					color = ColorUtils.HSLToColor(floatArrayOf(Random.nextInt(0, 360).toFloat(), 0.5f, 0.5f)),
-				)
-			}
-		}
 	}
 
 	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -107,8 +87,15 @@ class SegmentedBarView @JvmOverloads constructor(
 
 	fun animateSegments(value: List<Segment>) {
 		scaleAnimator?.cancel()
-		scaleFactor = 0f
 		segmentsData.replaceWith(value)
+		if (!context.isAnimationsEnabled) {
+			scaleAnimator = null
+			scaleFactor = 1f
+			updateSizes()
+			invalidate()
+			return
+		}
+		scaleFactor = 0f
 		updateSizes()
 		invalidate()
 		val animator = ValueAnimator.ofFloat(0f, 1f)
@@ -124,7 +111,7 @@ class SegmentedBarView @JvmOverloads constructor(
 		segmentsSizes.clear()
 		segmentsSizes.ensureCapacity(segmentsData.size + 1)
 		var w = width.toFloat()
-		val maxScale = (scaleFactor * (segments.size - 1)).coerceAtLeast(1f)
+		val maxScale = (scaleFactor * (segmentsData.size - 1)).coerceAtLeast(1f)
 		for ((index, segment) in segmentsData.withIndex()) {
 			val scale = (scaleFactor * (index + 1) / maxScale).coerceAtMost(1f)
 			val segmentWidth = (w * segment.percent).coerceAtLeast(

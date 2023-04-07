@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
+import org.koitharu.kotatsu.utils.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.utils.ext.recyclerView
 import org.koitharu.kotatsu.utils.ext.resetTransformations
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -74,15 +75,17 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	override fun switchPageBy(delta: Int) {
 		with(binding.pager) {
-			setCurrentItem(currentItem - delta, true)
+			setCurrentItem(currentItem - delta, context.isAnimationsEnabled)
 		}
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
-		binding.pager.setCurrentItem(
-			reversed(position),
-			smooth && (binding.pager.currentItem - position).absoluteValue < PagerReaderFragment.SMOOTH_SCROLL_LIMIT,
-		)
+		with(binding.pager) {
+			setCurrentItem(
+				reversed(position),
+				smooth && context.isAnimationsEnabled && (currentItem - position).absoluteValue < PagerReaderFragment.SMOOTH_SCROLL_LIMIT,
+			)
+		}
 	}
 
 	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {

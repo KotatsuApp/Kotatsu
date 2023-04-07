@@ -15,6 +15,8 @@ import org.koitharu.kotatsu.explore.ui.ExploreFragment
 import org.koitharu.kotatsu.settings.tools.ToolsFragment
 import org.koitharu.kotatsu.shelf.ui.ShelfFragment
 import org.koitharu.kotatsu.tracker.ui.feed.FeedFragment
+import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
+import org.koitharu.kotatsu.utils.ext.isAnimationsEnabled
 import java.util.LinkedList
 
 private const val TAG_PRIMARY = "primary"
@@ -44,7 +46,11 @@ class MainNavigationDelegate(
 			return
 		}
 		val recyclerView = fragment.recyclerView
-		recyclerView.smoothScrollToPosition(0)
+		if (recyclerView.context.isAnimationsEnabled) {
+			recyclerView.smoothScrollToPosition(0)
+		} else {
+			recyclerView.firstVisibleItemPosition = 0
+		}
 	}
 
 	override fun handleOnBackPressed() {
