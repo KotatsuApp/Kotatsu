@@ -8,10 +8,12 @@ import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.databinding.ItemBookmarkBinding
+import org.koitharu.kotatsu.utils.ext.decodeRegion
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.source
+import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 
 fun bookmarkListAD(
 	coil: ImageLoader,
@@ -27,10 +29,12 @@ fun bookmarkListAD(
 
 	bind {
 		binding.imageViewThumb.newImageRequest(lifecycleOwner, item.imageUrl)?.run {
+			size(CoverSizeResolver(binding.imageViewThumb))
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
+			decodeRegion(item.scroll)
 			source(item.manga.source)
 			enqueueWith(coil)
 		}

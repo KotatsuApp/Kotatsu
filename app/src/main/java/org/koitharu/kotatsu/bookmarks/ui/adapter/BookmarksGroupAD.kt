@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.source
+import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 
 fun bookmarksGroupAD(
 	coil: ImageLoader,
@@ -54,6 +55,7 @@ fun bookmarksGroupAD(
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
+			size(CoverSizeResolver(binding.imageViewCover))
 			source(item.manga.source)
 			enqueueWith(coil)
 		}

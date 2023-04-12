@@ -54,9 +54,10 @@ fun ImageRequest.Builder.indicator(indicator: BaseProgressIndicator<*>): ImageRe
 	return listener(ImageRequestIndicatorListener(indicator))
 }
 
-fun ImageRequest.Builder.decodeRegion(): ImageRequest.Builder {
-	return decoderFactory(RegionBitmapDecoder.Factory())
-}
+fun ImageRequest.Builder.decodeRegion(
+	scroll: Int = RegionBitmapDecoder.SCROLL_UNDEFINED,
+): ImageRequest.Builder = decoderFactory(RegionBitmapDecoder.Factory())
+	.setParameter(RegionBitmapDecoder.PARAM_SCROLL, scroll)
 
 @Suppress("SpellCheckingInspection")
 fun ImageRequest.Builder.crossfade(context: Context): ImageRequest.Builder {
