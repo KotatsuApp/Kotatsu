@@ -75,6 +75,7 @@ class ReaderViewModel @Inject constructor(
 
 	private val intent = MangaIntent(savedStateHandle)
 	private val preselectedBranch = savedStateHandle.get<String>(ReaderActivity.EXTRA_BRANCH)
+	private val isIncognito = savedStateHandle.get<Boolean>(ReaderActivity.EXTRA_INCOGNITO) ?: false
 
 	private var loadingJob: Job? = null
 	private var pageSaveJob: Job? = null
@@ -145,11 +146,6 @@ class ReaderViewModel @Inject constructor(
 			}.launchIn(viewModelScope)
 	}
 
-	/*override fun onCleared() {
-		pageLoader.close()
-		super.onCleared()
-	}*/
-
 	fun reload() {
 		loadingJob?.cancel()
 		loadImpl()
@@ -174,6 +170,9 @@ class ReaderViewModel @Inject constructor(
 	fun saveCurrentState(state: ReaderState? = null) {
 		if (state != null) {
 			currentState.value = state
+		}
+		if (isIncognito) {
+			return
 		}
 		val readerState = state ?: currentState.value ?: return
 		historyRepository.saveStateAsync(
@@ -318,9 +317,11 @@ class ReaderViewModel @Inject constructor(
 
 			chaptersLoader.loadSingleChapter(manga, requireNotNull(currentState.value).chapterId)
 			// save state
-			currentState.value?.let {
-				val percent = computePercent(it.chapterId, it.page)
-				historyRepository.addOrUpdate(manga, it.chapterId, it.page, it.scroll, percent)
+			if (!isIncognito) {
+				currentState.value?.let {
+					val percent = computePercent(it.chapterId, it.page)
+					historyRepository.addOrUpdate(manga, it.chapterId, it.page, it.scroll, percent)
+				}
 			}
 			notifyStateChanged()
 			content.postValue(ReaderContent(chaptersLoader.snapshot(), currentState.value))

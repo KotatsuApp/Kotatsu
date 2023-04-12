@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
@@ -94,6 +95,7 @@ class BookmarksFragment :
 		if (selectionController?.onItemClick(item.manga, item.pageId) != true) {
 			val intent = ReaderActivity.newIntent(view.context, item)
 			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+			Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 		}
 	}
 

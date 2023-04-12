@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
@@ -40,7 +41,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
@@ -63,7 +63,6 @@ import javax.inject.Inject
 class DetailsFragment :
 	BaseFragment<FragmentDetailsBinding>(),
 	View.OnClickListener,
-	View.OnLongClickListener,
 	ChipsView.OnChipClickListener,
 	OnListItemClickListener<Bookmark> {
 
@@ -101,6 +100,7 @@ class DetailsFragment :
 			ReaderActivity.newIntent(view.context, item),
 			scaleUpActivityOptionsOf(view).toBundle(),
 		)
+		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
 
 	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
@@ -265,43 +265,6 @@ class DetailsFragment :
 					scaleUpActivityOptionsOf(v).toBundle(),
 				)
 			}
-		}
-	}
-
-	override fun onLongClick(v: View): Boolean {
-		when (v.id) {
-			R.id.button_read -> {
-				if (viewModel.historyInfo.value?.history == null) {
-					return false
-				}
-				val menu = PopupMenu(v.context, v)
-				menu.inflate(R.menu.popup_read)
-				menu.setOnMenuItemClickListener { menuItem ->
-					when (menuItem.itemId) {
-						R.id.action_read -> {
-							val branch = viewModel.selectedBranchValue
-							startActivity(
-								ReaderActivity.newIntent(
-									context = context ?: return@setOnMenuItemClickListener false,
-									manga = viewModel.manga.value ?: return@setOnMenuItemClickListener false,
-									state = viewModel.chapters.value?.firstOrNull { c ->
-										c.chapter.branch == branch
-									}?.let { c ->
-										ReaderState(c.chapter.id, 0, 0)
-									},
-								),
-							)
-							true
-						}
-
-						else -> false
-					}
-				}
-				menu.show()
-				return true
-			}
-
-			else -> return false
 		}
 	}
 

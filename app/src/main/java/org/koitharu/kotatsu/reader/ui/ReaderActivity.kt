@@ -395,6 +395,7 @@ class ReaderActivity :
 		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
 		const val EXTRA_STATE = "state"
 		const val EXTRA_BRANCH = "branch"
+		const val EXTRA_INCOGNITO = "incognito"
 		private const val TOAST_DURATION = 1500L
 
 		fun newIntent(context: Context, manga: Manga): Intent {
@@ -415,8 +416,13 @@ class ReaderActivity :
 		}
 
 		fun newIntent(context: Context, bookmark: Bookmark): Intent {
-			val state = ReaderState(bookmark.chapterId, bookmark.page, bookmark.scroll)
+			val state = ReaderState(
+				chapterId = bookmark.chapterId,
+				page = bookmark.page,
+				scroll = bookmark.scroll,
+			)
 			return newIntent(context, bookmark.manga, state)
+				.putExtra(EXTRA_INCOGNITO, true)
 		}
 
 		fun newIntent(context: Context, mangaId: Long): Intent {
