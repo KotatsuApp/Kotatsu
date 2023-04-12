@@ -12,6 +12,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogImportBinding
+import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
+import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
 
 class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.OnClickListener {
 
@@ -20,6 +22,9 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 	}
 	private val importDirCall = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
 		startImport(listOfNotNull(it))
+	}
+	private val backupSelectCall = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+		restoreBackup(it)
 	}
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): DialogImportBinding {
@@ -37,12 +42,14 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 		super.onViewCreated(view, savedInstanceState)
 		binding.buttonDir.setOnClickListener(this)
 		binding.buttonFile.setOnClickListener(this)
+		binding.buttonBackup.setOnClickListener(this)
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_file -> importFileCall.launch(arrayOf("*/*"))
 			R.id.button_dir -> importDirCall.launch(null)
+			R.id.button_backup -> backupSelectCall.launch(arrayOf("*/*"))
 		}
 	}
 
@@ -53,6 +60,12 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 		val ctx = requireContext()
 		ImportWorker.start(ctx, uris)
 		Toast.makeText(ctx, R.string.import_will_start_soon, Toast.LENGTH_LONG).show()
+		dismiss()
+	}
+
+	private fun restoreBackup(uri: Uri?) {
+		RestoreDialogFragment.newInstance(uri ?: return)
+			.show(parentFragmentManager, BackupDialogFragment.TAG)
 		dismiss()
 	}
 

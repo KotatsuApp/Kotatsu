@@ -431,4 +431,5 @@
 	<string name="comics_archive_import_description">You can select one or more .cbz or .zip files, each file will be recognized as a separate manga.</string>
 	<string name="folder_with_images_import_description">You can select a directory with archives or images. Each archive (or subdirectory) will be recognized as a chapter.</string>
 	<string name="speed">Speed</string>
+	<string name="restore_backup_description">Import a previously created backup of user data</string>
 </resources>

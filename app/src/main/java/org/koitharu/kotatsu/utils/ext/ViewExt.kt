@@ -165,6 +165,9 @@ fun RecyclerView.invalidateNestedItemDecorations() {
 	}
 }
 
+val View.parentView: ViewGroup?
+	get() = parent as? ViewGroup
+
 val View.parents: Sequence<ViewParent>
 	get() = sequence {
 		var p: ViewParent? = parent
