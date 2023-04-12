@@ -48,13 +48,14 @@ class FavouritesCategoryEditViewModel @Inject constructor(
 		title: String,
 		sortOrder: SortOrder,
 		isTrackerEnabled: Boolean,
+		isVisibleOnShelf: Boolean,
 	) {
 		launchLoadingJob(Dispatchers.Default) {
 			check(title.isNotEmpty())
 			if (categoryId == NO_ID) {
-				repository.createCategory(title, sortOrder, isTrackerEnabled)
+				repository.createCategory(title, sortOrder, isTrackerEnabled, isVisibleOnShelf)
 			} else {
-				repository.updateCategory(categoryId, title, sortOrder, isTrackerEnabled)
+				repository.updateCategory(categoryId, title, sortOrder, isTrackerEnabled, isVisibleOnShelf)
 			}
 			onSaved.postCall(Unit)
 		}

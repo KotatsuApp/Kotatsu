@@ -77,6 +77,7 @@ class FavouritesCategoryEditActivity :
 				title = binding.editName.text?.toString()?.trim().orEmpty(),
 				sortOrder = getSelectedSortOrder(),
 				isTrackerEnabled = binding.switchTracker.isChecked,
+				isVisibleOnShelf = binding.switchShelf.isChecked,
 			)
 		}
 	}
@@ -112,6 +113,9 @@ class FavouritesCategoryEditActivity :
 		val sortText = getString((category?.order ?: SortOrder.NEWEST).titleRes)
 		binding.editSort.setText(sortText, false)
 		binding.switchTracker.isChecked = category?.isTrackingEnabled ?: true
+		binding.switchTracker.jumpDrawablesToCurrentState()
+		binding.switchShelf.isChecked = category?.isVisibleInLibrary ?: true
+		binding.switchShelf.jumpDrawablesToCurrentState()
 	}
 
 	private fun onError(e: Throwable) {
@@ -123,6 +127,7 @@ class FavouritesCategoryEditActivity :
 		binding.editSort.isEnabled = !isLoading
 		binding.editName.isEnabled = !isLoading
 		binding.switchTracker.isEnabled = !isLoading
+		binding.switchShelf.isEnabled = !isLoading
 		if (isLoading) {
 			binding.textViewError.isVisible = false
 		}

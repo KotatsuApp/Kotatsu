@@ -1,12 +1,18 @@
 package org.koitharu.kotatsu.favourites.domain
 
 import androidx.room.withTransaction
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.base.domain.ReversibleHandle
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.*
+import org.koitharu.kotatsu.core.db.entity.SortOrder
+import org.koitharu.kotatsu.core.db.entity.toEntities
+import org.koitharu.kotatsu.core.db.entity.toEntity
+import org.koitharu.kotatsu.core.db.entity.toManga
+import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
@@ -15,6 +21,8 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import org.koitharu.kotatsu.utils.ext.mapItems
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class FavouritesRepository @Inject constructor(
@@ -83,7 +91,12 @@ class FavouritesRepository @Inject constructor(
 		return db.favouriteCategoriesDao.find(id.toInt()).toFavouriteCategory()
 	}
 
-	suspend fun createCategory(title: String, sortOrder: SortOrder, isTrackerEnabled: Boolean): FavouriteCategory {
+	suspend fun createCategory(
+		title: String,
+		sortOrder: SortOrder,
+		isTrackerEnabled: Boolean,
+		isVisibleOnShelf: Boolean,
+	): FavouriteCategory {
 		val entity = FavouriteCategoryEntity(
 			title = title,
 			createdAt = System.currentTimeMillis(),
@@ -92,7 +105,7 @@ class FavouritesRepository @Inject constructor(
 			order = sortOrder.name,
 			track = isTrackerEnabled,
 			deletedAt = 0L,
-			isVisibleInLibrary = true,
+			isVisibleInLibrary = isVisibleOnShelf,
 		)
 		val id = db.favouriteCategoriesDao.insert(entity)
 		val category = entity.toFavouriteCategory(id)
@@ -100,8 +113,14 @@ class FavouritesRepository @Inject constructor(
 		return category
 	}
 
-	suspend fun updateCategory(id: Long, title: String, sortOrder: SortOrder, isTrackerEnabled: Boolean) {
-		db.favouriteCategoriesDao.update(id, title, sortOrder.name, isTrackerEnabled)
+	suspend fun updateCategory(
+		id: Long,
+		title: String,
+		sortOrder: SortOrder,
+		isTrackerEnabled: Boolean,
+		isVisibleOnShelf: Boolean,
+	) {
+		db.favouriteCategoriesDao.update(id, title, sortOrder.name, isTrackerEnabled, isVisibleOnShelf)
 	}
 
 	suspend fun updateCategory(id: Long, isVisibleInLibrary: Boolean) {
