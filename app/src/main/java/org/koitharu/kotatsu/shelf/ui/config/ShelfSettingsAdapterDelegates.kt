@@ -43,6 +43,7 @@ fun shelfSectionAD(
 		bind {
 			binding.textViewTitle.setText(item.section.titleResId)
 			binding.switchToggle.isChecked = item.isChecked
+			binding.switchToggle.jumpDrawablesToCurrentState()
 		}
 	}
 
@@ -63,6 +64,7 @@ fun shelfCategoryAD(
 		bind {
 			binding.root.text = item.title
 			binding.root.isChecked = item.isChecked
+			binding.root.jumpDrawablesToCurrentState()
 		}
 	}
 

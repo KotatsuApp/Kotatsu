@@ -17,9 +17,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.GoneOnInvisibleListener
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hideCompat
 import org.koitharu.kotatsu.utils.ext.ifZero
-import org.koitharu.kotatsu.utils.ext.showCompat
 
 class WebtoonHolder(
 	owner: LifecycleOwner,
@@ -63,7 +61,7 @@ class WebtoonHolder(
 
 	override fun onLoadingStarted() {
 		bindingInfo.layoutError.isVisible = false
-		bindingInfo.progressBar.showCompat()
+		bindingInfo.progressBar.show()
 		binding.ssiv.recycle()
 	}
 
@@ -98,13 +96,13 @@ class WebtoonHolder(
 	}
 
 	override fun onImageShown() {
-		bindingInfo.progressBar.hideCompat()
+		bindingInfo.progressBar.hide()
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return)
-			R.id.button_error_details -> delegate.showErrorDetails(v.context)
+			R.id.button_error_details -> delegate.showErrorDetails(boundData?.url)
 		}
 	}
 
@@ -114,7 +112,7 @@ class WebtoonHolder(
 			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again },
 		)
 		bindingInfo.layoutError.isVisible = true
-		bindingInfo.progressBar.hideCompat()
+		bindingInfo.progressBar.hide()
 	}
 
 	fun getScrollY() = binding.ssiv.getScroll()

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +15,7 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.WindowInsetsCompat
@@ -23,7 +23,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -34,14 +33,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
-import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.exceptions.resolve.DialogErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.reader.ui.config.PageSwitchTimer
 import org.koitharu.kotatsu.reader.ui.config.ReaderConfigBottomSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
@@ -50,14 +48,9 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.IdlingDetector
 import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
-import org.koitharu.kotatsu.utils.ext.isReportable
 import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 import org.koitharu.kotatsu.utils.ext.postDelayed
-import org.koitharu.kotatsu.utils.ext.report
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -73,29 +66,23 @@ class ReaderActivity :
 	OnApplyWindowInsetsListener,
 	IdlingDetector.Callback {
 
-	@Inject
-	lateinit var viewModelFactory: ReaderViewModel.Factory
-
 	private val idlingDetector = IdlingDetector(TimeUnit.SECONDS.toMillis(10), this)
 
-	val viewModel by assistedViewModels {
-		viewModelFactory.create(
-			intent = MangaIntent(intent),
-			initialState = intent?.getParcelableExtraCompat(EXTRA_STATE),
-			preselectedBranch = intent?.getStringExtra(EXTRA_BRANCH),
-		)
-	}
-
-	override var pageSwitchDelay: Float
-		get() = pageSwitchTimer.delaySec
-		set(value) {
-			pageSwitchTimer.delaySec = value
-		}
+	private val viewModel: ReaderViewModel by viewModels()
 
 	override val readerMode: ReaderMode?
 		get() = readerManager.currentMode
 
-	private lateinit var pageSwitchTimer: PageSwitchTimer
+	override var isAutoScrollEnabled: Boolean
+		get() = scrollTimer.isEnabled
+		set(value) {
+			scrollTimer.isEnabled = value
+		}
+
+	@Inject
+	lateinit var scrollTimerFactory: ScrollTimer.Factory
+
+	private lateinit var scrollTimer: ScrollTimer
 	private lateinit var touchHelper: GridTouchHelper
 	private lateinit var controlDelegate: ReaderControlDelegate
 	private var gestureInsets: Insets = Insets.NONE
@@ -108,7 +95,7 @@ class ReaderActivity :
 		readerManager = ReaderManager(supportFragmentManager, R.id.container)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
-		pageSwitchTimer = PageSwitchTimer(this, this)
+		scrollTimer = scrollTimerFactory.create(this, this)
 		controlDelegate = ReaderControlDelegate(settings, this, this)
 		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		binding.slider.setLabelFormatter(PageLabelFormatter())
@@ -116,7 +103,21 @@ class ReaderActivity :
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
 
-		viewModel.onError.observe(this, this::onError)
+		viewModel.onError.observe(
+			this,
+			DialogErrorObserver(
+				host = binding.container,
+				fragment = null,
+				resolver = exceptionResolver,
+				onResolved = { isResolved ->
+					if (isResolved) {
+						viewModel.reload()
+					} else if (viewModel.content.value?.pages.isNullOrEmpty()) {
+						finishAfterTransition()
+					}
+				},
+			),
+		)
 		viewModel.readerMode.observe(this, this::onInitReader)
 		viewModel.onPageSaved.observe(this, this::onPageSaved)
 		viewModel.uiState.observeWithPrevious(this, this::onUiStateChanged)
@@ -136,7 +137,7 @@ class ReaderActivity :
 
 	override fun onUserInteraction() {
 		super.onUserInteraction()
-		pageSwitchTimer.onUserInteraction()
+		scrollTimer.onUserInteraction()
 		idlingDetector.onUserInteraction()
 	}
 
@@ -216,22 +217,6 @@ class ReaderActivity :
 		val menu = binding.toolbarBottom.menu
 		menu.findItem(R.id.action_bookmark).isVisible = hasPages
 		menu.findItem(R.id.action_pages_thumbs).isVisible = hasPages
-	}
-
-	private fun onError(e: Throwable) {
-		val listener = ErrorDialogListener(e)
-		val dialog = MaterialAlertDialogBuilder(this)
-			.setTitle(R.string.error_occurred)
-			.setMessage(e.getDisplayMessage(resources))
-			.setNegativeButton(R.string.close, listener)
-			.setOnCancelListener(listener)
-		val resolveTextId = ExceptionResolver.getResolveStringId(e)
-		if (resolveTextId != 0) {
-			dialog.setPositiveButton(resolveTextId, listener)
-		} else if (e.isReportable()) {
-			dialog.setPositiveButton(R.string.report, listener)
-		}
-		dialog.show()
 	}
 
 	override fun onGridTouch(area: Int) {
@@ -355,8 +340,17 @@ class ReaderActivity :
 		readerManager.currentReader?.switchPageBy(delta)
 	}
 
+	override fun scrollBy(delta: Int): Boolean {
+		return readerManager.currentReader?.scrollBy(delta) ?: false
+	}
+
 	override fun toggleUiVisibility() {
 		setUiIsVisible(!binding.appbarTop.isVisible)
+	}
+
+	override fun isReaderResumed(): Boolean {
+		val reader = readerManager.currentReader ?: return false
+		return reader.isResumed && supportFragmentManager.fragments.lastOrNull() === reader
 	}
 
 	private fun onReaderBarChanged(isBarEnabled: Boolean) {
@@ -396,45 +390,12 @@ class ReaderActivity :
 		}
 	}
 
-	private inner class ErrorDialogListener(
-		private val exception: Throwable,
-	) : DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
-
-		override fun onClick(dialog: DialogInterface?, which: Int) {
-			if (which == DialogInterface.BUTTON_POSITIVE) {
-				dialog?.dismiss()
-				if (ExceptionResolver.canResolve(exception)) {
-					tryResolve(exception)
-				} else {
-					exception.report()
-				}
-			} else {
-				onCancel(dialog)
-			}
-		}
-
-		override fun onCancel(dialog: DialogInterface?) {
-			if (viewModel.content.value?.pages.isNullOrEmpty()) {
-				finishAfterTransition()
-			}
-		}
-
-		private fun tryResolve(e: Throwable) {
-			lifecycleScope.launch {
-				if (exceptionResolver.resolve(e)) {
-					viewModel.reload()
-				} else {
-					onCancel(null)
-				}
-			}
-		}
-	}
-
 	companion object {
 
 		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
-		private const val EXTRA_STATE = "state"
-		private const val EXTRA_BRANCH = "branch"
+		const val EXTRA_STATE = "state"
+		const val EXTRA_BRANCH = "branch"
+		const val EXTRA_INCOGNITO = "incognito"
 		private const val TOAST_DURATION = 1500L
 
 		fun newIntent(context: Context, manga: Manga): Intent {
@@ -455,8 +416,13 @@ class ReaderActivity :
 		}
 
 		fun newIntent(context: Context, bookmark: Bookmark): Intent {
-			val state = ReaderState(bookmark.chapterId, bookmark.page, bookmark.scroll)
+			val state = ReaderState(
+				chapterId = bookmark.chapterId,
+				page = bookmark.page,
+				scroll = bookmark.scroll,
+			)
 			return newIntent(context, bookmark.manga, state)
+				.putExtra(EXTRA_INCOGNITO, true)
 		}
 
 		fun newIntent(context: Context, mangaId: Long): Intent {

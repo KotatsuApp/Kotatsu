@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
@@ -39,7 +41,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
@@ -62,12 +63,14 @@ import javax.inject.Inject
 class DetailsFragment :
 	BaseFragment<FragmentDetailsBinding>(),
 	View.OnClickListener,
-	View.OnLongClickListener,
 	ChipsView.OnChipClickListener,
 	OnListItemClickListener<Bookmark> {
 
 	@Inject
 	lateinit var coil: ImageLoader
+
+	@Inject
+	lateinit var tagHighlighter: MangaTagHighlighter
 
 	private val viewModel by activityViewModels<DetailsViewModel>()
 
@@ -97,6 +100,7 @@ class DetailsFragment :
 			ReaderActivity.newIntent(view.context, item),
 			scaleUpActivityOptionsOf(view).toBundle(),
 		)
+		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
 
 	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
@@ -264,43 +268,6 @@ class DetailsFragment :
 		}
 	}
 
-	override fun onLongClick(v: View): Boolean {
-		when (v.id) {
-			R.id.button_read -> {
-				if (viewModel.historyInfo.value?.history == null) {
-					return false
-				}
-				val menu = PopupMenu(v.context, v)
-				menu.inflate(R.menu.popup_read)
-				menu.setOnMenuItemClickListener { menuItem ->
-					when (menuItem.itemId) {
-						R.id.action_read -> {
-							val branch = viewModel.selectedBranchValue
-							startActivity(
-								ReaderActivity.newIntent(
-									context = context ?: return@setOnMenuItemClickListener false,
-									manga = viewModel.manga.value ?: return@setOnMenuItemClickListener false,
-									state = viewModel.chapters.value?.firstOrNull { c ->
-										c.chapter.branch == branch
-									}?.let { c ->
-										ReaderState(c.chapter.id, 0, 0)
-									},
-								),
-							)
-							true
-						}
-
-						else -> false
-					}
-				}
-				menu.show()
-				return true
-			}
-
-			else -> return false
-		}
-	}
-
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag ?: return
 		startActivity(MangaListActivity.newIntent(requireContext(), setOf(tag)))
@@ -321,7 +288,7 @@ class DetailsFragment :
 			manga.tags.map { tag ->
 				ChipsView.ChipModel(
 					title = tag.title,
-					icon = 0,
+					tint = tagHighlighter.getTint(tag),
 					data = tag,
 					isCheckable = false,
 					isChecked = false,
@@ -341,7 +308,7 @@ class DetailsFragment :
 			.size(CoverSizeResolver(binding.imageViewCover))
 			.data(imageUrl)
 			.tag(manga.source)
-			.crossfade(context)
+			.crossfade(requireContext())
 			.lifecycle(viewLifecycleOwner)
 			.placeholderMemoryCacheKey(manga.coverUrl)
 		val previousDrawable = lastResult?.drawable

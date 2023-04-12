@@ -18,7 +18,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
-import kotlin.text.Typography.dagger
+import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
 
 @AndroidEntryPoint
 class MangaListActivity :
@@ -33,7 +33,7 @@ class MangaListActivity :
 		setContentView(ActivityContainerBinding.inflate(layoutInflater))
 		val tags = intent.getParcelableExtraCompat<ParcelableMangaTags>(EXTRA_TAGS)?.tags
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		val source = intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: tags?.firstOrNull()?.source
+		val source = intent.getSerializableExtraCompat(EXTRA_SOURCE) ?: tags?.firstOrNull()?.source
 		if (source == null) {
 			finishAfterTransition()
 			return

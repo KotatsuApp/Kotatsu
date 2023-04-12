@@ -20,7 +20,7 @@ class ScrobblingMangaAdapter(
 	init {
 		delegatesManager.addDelegate(scrobblingMangaAD(clickListener, coil, lifecycleOwner))
 			.addDelegate(scrobblingHeaderAD())
-			.addDelegate(emptyStateListAD(coil, null))
+			.addDelegate(emptyStateListAD(coil, lifecycleOwner, null))
 	}
 
 	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {

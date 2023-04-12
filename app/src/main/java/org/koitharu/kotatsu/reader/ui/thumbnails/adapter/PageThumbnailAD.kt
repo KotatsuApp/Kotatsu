@@ -57,7 +57,7 @@ fun pageThumbnailAD(
 			ImageRequest.Builder(context)
 				.data(file)
 				.size(thumbSize)
-				.decodeRegion()
+				.decodeRegion(0)
 				.allowRgb565(isLowRamDevice(context))
 				.build(),
 		).drawable

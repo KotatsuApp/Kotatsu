@@ -15,7 +15,7 @@
 	<string name="grid">Grid</string>
 	<string name="list_mode">List mode</string>
 	<string name="settings">Settings</string>
-	<string name="remote_sources">Remote sources</string>
+	<string name="remote_sources">Manga sources</string>
 	<string name="loading_">Loading…</string>
 	<string name="computing_">Computing…</string>
 	<string name="chapter_d_of_d">Chapter %1$d of %2$d</string>
@@ -278,7 +278,7 @@
 	<string name="download_slowdown">Download slowdown</string>
 	<string name="download_slowdown_summary">Helps avoid blocking your IP address</string>
 	<string name="local_manga_processing">Saved manga processing</string>
-	<string name="chapters_will_removed_background">Chapters will be removed in the background. It can take some time</string>
+	<string name="chapters_will_removed_background">Chapters will be removed in the background</string>
 	<string name="canceled">Canceled</string>
 	<string name="account_already_exists">Account already exists</string>
 	<string name="back">Back</string>
@@ -377,7 +377,7 @@
 	<string name="import_completed_hint">You can delete the original file from storage to save space</string>
 	<string name="import_will_start_soon">Import will start soon</string>
 	<string name="feed">Feed</string>
-	<string name="manga_error_description_pattern">Error details:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Try to &lt;a href="%2$s"&gt;open manga in a web browser&lt;/a&gt; to ensure it is available on its source&lt;br&gt;2. If it is available, send an error report to the developers.</string>
+	<string name="manga_error_description_pattern">Error details:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Try to &lt;a href="%2$s"&gt;open manga in a web browser&lt;/a&gt; to ensure it is available on its source&lt;br&gt;2. Make sure you are using the &lt;a href="kotatsu://about"&gt;latest version of Kotatsu&lt;/a&gt;&lt;br&gt;3. If it is available, send an error report to the developers.</string>
 	<string name="history_shortcuts">Show recent manga shortcuts</string>
 	<string name="history_shortcuts_summary">Make recent manga available by long pressing on application icon</string>
 	<string name="reader_control_ltr_summary">Tap on the right edge or pressing the right key always switches to the next page</string>
@@ -424,6 +424,13 @@
 	<string name="allow_unstable_updates">Allow unstable updates</string>
 	<string name="allow_unstable_updates_summary">Propose updates to beta versions of the app</string>
 	<string name="download_started">Download started</string>
+	<string name="got_it">Got it</string>
+	<string name="sources_reorder_tip">Tap and hold on an item to reorder them</string>
 	<string name="user_agent">UserAgent header</string>
 	<string name="settings_apply_restart_required">Please restart the application to apply these changes</string>
+	<string name="comics_archive_import_description">You can select one or more .cbz or .zip files, each file will be recognized as a separate manga.</string>
+	<string name="folder_with_images_import_description">You can select a directory with archives or images. Each archive (or subdirectory) will be recognized as a chapter.</string>
+	<string name="speed">Speed</string>
+	<string name="restore_backup_description">Import a previously created backup of user data</string>
+	<string name="show_on_shelf">Show on the Shelf</string>
 </resources>

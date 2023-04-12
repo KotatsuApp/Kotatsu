@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.local.data
+package org.koitharu.kotatsu.local.data.util
 
 import okhttp3.internal.closeQuietly
 import okio.Closeable

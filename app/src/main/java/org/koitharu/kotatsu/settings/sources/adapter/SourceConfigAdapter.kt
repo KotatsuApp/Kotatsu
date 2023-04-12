@@ -13,7 +13,7 @@ class SourceConfigAdapter(
 	SourceConfigDiffCallback(),
 	sourceConfigHeaderDelegate(),
 	sourceConfigGroupDelegate(listener),
-	sourceConfigItemDelegate(listener, coil, lifecycleOwner),
-	sourceConfigDraggableItemDelegate(listener),
+	sourceConfigItemDelegate2(listener, coil, lifecycleOwner),
 	sourceConfigEmptySearchDelegate(),
+	sourceConfigTipDelegate(listener),
 )

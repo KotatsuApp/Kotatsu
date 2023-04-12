@@ -1,7 +1,12 @@
 package org.koitharu.kotatsu.settings.sources
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.MenuProvider
@@ -11,10 +16,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -24,9 +29,11 @@ import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
+import org.koitharu.kotatsu.utils.ext.getItem
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class SourcesSettingsFragment :
+class SourcesListFragment :
 	BaseFragment<FragmentSettingsSourcesBinding>(),
 	SourceConfigListener,
 	RecyclerViewOwner {
@@ -35,7 +42,7 @@ class SourcesSettingsFragment :
 	lateinit var coil: ImageLoader
 
 	private var reorderHelper: ItemTouchHelper? = null
-	private val viewModel by viewModels<SourcesSettingsViewModel>()
+	private val viewModel by viewModels<SourcesListViewModel>()
 
 	override val recyclerView: RecyclerView
 		get() = binding.recyclerView
@@ -63,6 +70,7 @@ class SourcesSettingsFragment :
 		viewModel.items.observe(viewLifecycleOwner) {
 			sourcesAdapter.items = it
 		}
+		viewModel.onActionDone.observe(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 		addMenuProvider(SourcesMenuProvider())
 	}
 
@@ -89,12 +97,12 @@ class SourcesSettingsFragment :
 		viewModel.setEnabled(item.source, isEnabled)
 	}
 
-	override fun onDragHandleTouch(holder: RecyclerView.ViewHolder) {
-		reorderHelper?.startDrag(holder)
-	}
-
 	override fun onHeaderClick(header: SourceConfigItem.LocaleGroup) {
 		viewModel.expandOrCollapse(header.localeId)
+	}
+
+	override fun onCloseTip(tip: SourceConfigItem.Tip) {
+		viewModel.onTipClosed(tip)
 	}
 
 	private inner class SourcesMenuProvider :
@@ -117,6 +125,7 @@ class SourcesSettingsFragment :
 				viewModel.disableAll()
 				true
 			}
+
 			else -> false
 		}
 
@@ -140,7 +149,7 @@ class SourcesSettingsFragment :
 
 	private inner class SourcesReorderCallback : ItemTouchHelper.SimpleCallback(
 		ItemTouchHelper.DOWN or ItemTouchHelper.UP,
-		0,
+		ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
 	) {
 
 		override fun onMove(
@@ -161,8 +170,31 @@ class SourcesSettingsFragment :
 			target.bindingAdapterPosition,
 		)
 
-		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
+		override fun getDragDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+			val item = viewHolder.getItem(SourceConfigItem.SourceItem::class.java)
+			return if (item != null && item.isDraggable) {
+				super.getDragDirs(recyclerView, viewHolder)
+			} else {
+				0
+			}
+		}
 
-		override fun isLongPressDragEnabled() = false
+		override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+			val item = viewHolder.getItem(SourceConfigItem.Tip::class.java)
+			return if (item != null) {
+				super.getSwipeDirs(recyclerView, viewHolder)
+			} else {
+				0
+			}
+		}
+
+		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+			val item = viewHolder.getItem(SourceConfigItem.Tip::class.java)
+			if (item != null) {
+				viewModel.onTipClosed(item)
+			}
+		}
+
+		override fun isLongPressDragEnabled() = true
 	}
 }

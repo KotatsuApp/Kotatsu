@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okio.buffer
 import okio.source
+import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import java.util.zip.ZipFile
 
 class CbzFetcher(

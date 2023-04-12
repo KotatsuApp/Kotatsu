@@ -86,7 +86,17 @@
 		<activity
 			android:name="org.koitharu.kotatsu.settings.SettingsActivity"
 			android:exported="true"
-			android:label="@string/settings" />
+			android:label="@string/settings">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:scheme="kotatsu" />
+				<data android:host="about" />
+			</intent-filter>
+		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.browser.BrowserActivity"
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
@@ -145,6 +155,9 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data android:scheme="kotatsu" />
+				<data android:host="shikimori-auth" />
+				<data android:host="anilist-auth" />
+				<data android:host="mal-auth" />
 			</intent-filter>
 
 		</activity>
@@ -154,7 +167,6 @@
 			android:foregroundServiceType="dataSync"
 			android:stopWithTask="false" />
 		<service android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService" />
-		<service android:name="org.koitharu.kotatsu.local.ui.ImportService" />
 		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />

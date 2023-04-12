@@ -2,9 +2,10 @@ package org.koitharu.kotatsu.download.ui
 
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -17,9 +18,10 @@ import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.onFirst
+import org.koitharu.kotatsu.utils.ext.source
 
 fun downloadItemAD(
-	scope: CoroutineScope,
+	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
 ) = adapterDelegateViewBinding<DownloadItem, DownloadItem, ItemDownloadBinding>(
 	{ inflater, parent -> ItemDownloadBinding.inflate(inflater, parent, false) },
@@ -43,10 +45,11 @@ fun downloadItemAD(
 	bind {
 		job?.cancel()
 		job = item.progressAsFlow().onFirst { state ->
-			binding.imageViewCover.newImageRequest(state.manga.coverUrl, state.manga.source)?.run {
+			binding.imageViewCover.newImageRequest(lifecycleOwner, state.manga.coverUrl)?.run {
 				placeholder(state.cover)
 				fallback(R.drawable.ic_placeholder)
 				error(R.drawable.ic_error_placeholder)
+				source(state.manga.source)
 				allowRgb565(true)
 				enqueueWith(coil)
 			}
@@ -127,7 +130,7 @@ fun downloadItemAD(
 					binding.buttonResume.isVisible = false
 				}
 			}
-		}.launchIn(scope)
+		}.launchIn(lifecycleOwner.lifecycleScope)
 	}
 
 	onViewRecycled {

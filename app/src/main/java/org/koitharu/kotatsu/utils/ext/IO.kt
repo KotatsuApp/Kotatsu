@@ -13,9 +13,11 @@ import java.io.OutputStream
 
 suspend fun InputStream.copyToSuspending(
 	out: OutputStream,
-	bufferSize: Int = DEFAULT_BUFFER_SIZE
+	bufferSize: Int = DEFAULT_BUFFER_SIZE,
+	progressState: MutableStateFlow<Float>? = null,
 ): Long = withContext(Dispatchers.IO) {
 	val job = currentCoroutineContext()[Job]
+	val total = available()
 	var bytesCopied: Long = 0
 	val buffer = ByteArray(bufferSize)
 	var bytes = read(buffer)
@@ -25,6 +27,9 @@ suspend fun InputStream.copyToSuspending(
 		job?.ensureActive()
 		bytes = read(buffer)
 		job?.ensureActive()
+		if (progressState != null && total > 0) {
+			progressState.value = bytesCopied / total.toFloat()
+		}
 	}
 	bytesCopied
 }

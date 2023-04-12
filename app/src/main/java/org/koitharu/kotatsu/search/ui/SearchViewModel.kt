@@ -1,9 +1,8 @@
 package org.koitharu.kotatsu.search.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -21,17 +21,20 @@ import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
+import org.koitharu.kotatsu.utils.ext.require
+import javax.inject.Inject
 
-class SearchViewModel @AssistedInject constructor(
-	@Assisted source: MangaSource,
-	@Assisted private val query: String,
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	repositoryFactory: MangaRepository.Factory,
 	settings: AppSettings,
+	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings) {
 
-	private val repository = repositoryFactory.create(source)
+	private val query = savedStateHandle.require<String>(SearchFragment.ARG_QUERY)
+	private val repository = repositoryFactory.create(savedStateHandle.require(SearchFragment.ARG_SOURCE))
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private val listError = MutableStateFlow<Throwable?>(null)
@@ -57,7 +60,7 @@ class SearchViewModel @AssistedInject constructor(
 
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
-				list.toUi(result, mode)
+				list.toUi(result, mode, tagHighlighter)
 				when {
 					error != null -> result += error.toErrorFooter()
 					hasNext -> result += LoadingFooter
@@ -65,7 +68,7 @@ class SearchViewModel @AssistedInject constructor(
 				result
 			}
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
 		loadList(append = false)
@@ -108,11 +111,5 @@ class SearchViewModel @AssistedInject constructor(
 				listError.value = e
 			}
 		}
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(source: MangaSource, query: String): SearchViewModel
 	}
 }

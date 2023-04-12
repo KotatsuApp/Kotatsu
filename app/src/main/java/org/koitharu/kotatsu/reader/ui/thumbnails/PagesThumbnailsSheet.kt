@@ -8,8 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import javax.inject.Provider
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -22,11 +20,11 @@ import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.utils.ext.getParcelableCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PagesThumbnailsSheet :
@@ -38,7 +36,7 @@ class PagesThumbnailsSheet :
 	lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
 	@Inject
-	lateinit var pageLoaderProvider: Provider<PageLoader>
+	lateinit var pageLoader: PageLoader
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -49,7 +47,6 @@ class PagesThumbnailsSheet :
 	private lateinit var thumbnails: List<PageThumbnail>
 	private var spanResolver: MangaListSpanResolver? = null
 	private var currentPageIndex = -1
-	private var pageLoader: PageLoader? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -77,11 +74,10 @@ class PagesThumbnailsSheet :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		val title = arguments?.getString(ARG_TITLE)
 		spanResolver = MangaListSpanResolver(view.resources)
 		with(binding.headerBar) {
-			toolbar.title = title
-			toolbar.subtitle = null
+			title = arguments?.getString(ARG_TITLE)
+			subtitle = null
 			addOnExpansionChangeListener(this@PagesThumbnailsSheet)
 		}
 
@@ -93,7 +89,7 @@ class PagesThumbnailsSheet :
 				dataSet = thumbnails,
 				coil = coil,
 				scope = viewLifecycleScope,
-				loader = getPageLoader(),
+				loader = pageLoader,
 				clickListener = this@PagesThumbnailsSheet,
 			)
 			addOnLayoutChangeListener(spanResolver)
@@ -108,8 +104,6 @@ class PagesThumbnailsSheet :
 	override fun onDestroyView() {
 		super.onDestroyView()
 		spanResolver = null
-		pageLoader?.close()
-		pageLoader = null
 	}
 
 	override fun onItemClick(item: MangaPage, view: View) {
@@ -117,26 +111,21 @@ class PagesThumbnailsSheet :
 			(parentFragment as? OnPageSelectListener)
 				?: (activity as? OnPageSelectListener)
 			)?.run {
-			onPageSelected(item)
-			dismiss()
-		}
+				onPageSelected(item)
+				dismiss()
+			}
 	}
 
 	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
 		if (isExpanded) {
-			headerBar.toolbar.subtitle = resources.getQuantityString(
+			headerBar.subtitle = resources.getQuantityString(
 				R.plurals.pages,
 				thumbnails.size,
 				thumbnails.size,
 			)
 		} else {
-			headerBar.toolbar.subtitle = null
+			headerBar.subtitle = null
 		}
-	}
-
-	private fun getPageLoader(): PageLoader {
-		val viewModel = (activity as? ReaderActivity)?.viewModel
-		return viewModel?.pageLoader ?: pageLoaderProvider.get().also { pageLoader = it }
 	}
 
 	companion object {

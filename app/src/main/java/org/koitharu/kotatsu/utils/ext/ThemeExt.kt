@@ -2,14 +2,11 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.content.Context
 import android.graphics.Color
-import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
-import androidx.annotation.StyleRes
 import androidx.core.content.res.use
 import androidx.core.graphics.ColorUtils
-import androidx.core.widget.TextViewCompat
 
 fun Context.getThemeDrawable(
 	@AttrRes resId: Int,
@@ -45,10 +42,4 @@ fun Context.getThemeColorStateList(
 	@AttrRes resId: Int,
 ) = obtainStyledAttributes(intArrayOf(resId)).use {
 	it.getColorStateList(0)
-}
-
-fun TextView.setThemeTextAppearance(@AttrRes resId: Int, @StyleRes fallback: Int) {
-	context.obtainStyledAttributes(intArrayOf(resId)).use {
-		TextViewCompat.setTextAppearance(this, it.getResourceId(0, fallback))
-	}
 }

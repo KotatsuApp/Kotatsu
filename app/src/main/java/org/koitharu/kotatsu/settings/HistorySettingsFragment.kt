@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +19,7 @@ import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.utils.ext.awaitStateAtLeast
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import javax.inject.Inject
@@ -51,17 +53,17 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 		findPreference<Preference>(AppSettings.KEY_PAGES_CACHE_CLEAR)?.bindSummaryToCacheSize(CacheDir.PAGES)
 		findPreference<Preference>(AppSettings.KEY_THUMBS_CACHE_CLEAR)?.bindSummaryToCacheSize(CacheDir.THUMBS)
 		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { pref ->
-			viewLifecycleScope.launchWhenResumed {
+			viewLifecycleScope.launch {
+				lifecycle.awaitStateAtLeast(Lifecycle.State.RESUMED)
 				val items = searchRepository.getSearchHistoryCount()
-				pref.summary =
-					pref.context.resources.getQuantityString(R.plurals.items, items, items)
+				pref.summary = pref.context.resources.getQuantityString(R.plurals.items, items, items)
 			}
 		}
 		findPreference<Preference>(AppSettings.KEY_UPDATES_FEED_CLEAR)?.let { pref ->
-			viewLifecycleScope.launchWhenResumed {
+			viewLifecycleScope.launch {
+				lifecycle.awaitStateAtLeast(Lifecycle.State.RESUMED)
 				val items = trackerRepo.getLogsCount()
-				pref.summary =
-					pref.context.resources.getQuantityString(R.plurals.items, items, items)
+				pref.summary = pref.context.resources.getQuantityString(R.plurals.items, items, items)
 			}
 		}
 	}

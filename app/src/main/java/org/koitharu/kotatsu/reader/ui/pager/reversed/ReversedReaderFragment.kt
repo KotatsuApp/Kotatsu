@@ -8,14 +8,17 @@ import android.view.ViewGroup
 import androidx.core.view.children
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
+import org.koitharu.kotatsu.utils.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.utils.ext.recyclerView
 import org.koitharu.kotatsu.utils.ext.resetTransformations
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
@@ -27,6 +30,9 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	@Inject
 	lateinit var networkState: NetworkState
+
+	@Inject
+	lateinit var pageLoader: PageLoader
 
 	private var pagerAdapter: ReversedPagesAdapter? = null
 
@@ -40,7 +46,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 		super.onViewCreated(view, savedInstanceState)
 		pagerAdapter = ReversedPagesAdapter(
 			lifecycleOwner = viewLifecycleOwner,
-			loader = viewModel.pageLoader,
+			loader = pageLoader,
 			settings = viewModel.readerSettings,
 			networkState = networkState,
 			exceptionResolver = exceptionResolver,
@@ -69,20 +75,22 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	override fun switchPageBy(delta: Int) {
 		with(binding.pager) {
-			setCurrentItem(currentItem - delta, true)
+			setCurrentItem(currentItem - delta, context.isAnimationsEnabled)
 		}
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
-		binding.pager.setCurrentItem(
-			reversed(position),
-			smooth && (binding.pager.currentItem - position).absoluteValue < PagerReaderFragment.SMOOTH_SCROLL_LIMIT,
-		)
+		with(binding.pager) {
+			setCurrentItem(
+				reversed(position),
+				smooth && context.isAnimationsEnabled && (currentItem - position).absoluteValue < PagerReaderFragment.SMOOTH_SCROLL_LIMIT,
+			)
+		}
 	}
 
 	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {
 		val reversedPages = pages.asReversed()
-		viewLifecycleScope.launchWhenCreated {
+		viewLifecycleScope.launch {
 			val items = async {
 				pagerAdapter?.setItems(reversedPages)
 			}
@@ -90,7 +98,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 				val position = reversedPages.indexOfLast {
 					it.chapterId == pendingState.chapterId && it.index == pendingState.page
 				}
-				items.await() ?: return@launchWhenCreated
+				items.await() ?: return@launch
 				if (position != -1) {
 					binding.pager.setCurrentItem(position, false)
 					notifyPageChanged(position)

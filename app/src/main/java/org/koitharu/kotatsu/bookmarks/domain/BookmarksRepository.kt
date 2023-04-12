@@ -17,7 +17,9 @@ import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.mapItems
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import javax.inject.Singleton
 
+@Singleton
 class BookmarksRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {

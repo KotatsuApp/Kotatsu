@@ -6,7 +6,10 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
+import androidx.core.content.res.use
 import androidx.core.view.isGone
+import androidx.core.widget.TextViewCompat
 
 var TextView.textAndVisible: CharSequence?
 	get() = text?.takeIf { visibility == View.VISIBLE }
@@ -61,3 +64,9 @@ var TextView.isBold: Boolean
 		}
 		setTypeface(typeface, style)
 	}
+
+fun TextView.setThemeTextAppearance(@AttrRes resId: Int, @StyleRes fallback: Int) {
+	context.obtainStyledAttributes(intArrayOf(resId)).use {
+		TextViewCompat.setTextAppearance(this, it.getResourceId(0, fallback))
+	}
+}

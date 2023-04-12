@@ -29,7 +29,7 @@ class FeedAdapter(
 			.addDelegate(ITEM_TYPE_LOADING_STATE, loadingStateAD())
 			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(listener))
 			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(listener))
-			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(coil, listener))
+			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
 			.addDelegate(ITEM_TYPE_DATE_HEADER, relatedDateItemAD())
 	}
 

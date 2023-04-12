@@ -22,7 +22,9 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import javax.inject.Singleton
 
+@Singleton
 class MangaSearchRepository @Inject constructor(
 	private val settings: AppSettings,
 	private val db: MangaDatabase,

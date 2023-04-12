@@ -2,34 +2,39 @@ package org.koitharu.kotatsu.scrobbling.common.ui.selector
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView.NO_ID
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.model.ScrobblerHint
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.require
 import org.koitharu.kotatsu.utils.ext.requireValue
+import javax.inject.Inject
 
-class ScrobblingSelectorViewModel @AssistedInject constructor(
-	@Assisted val manga: Manga,
+@HiltViewModel
+class ScrobblingSelectorViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 ) : BaseViewModel() {
+
+	val manga = savedStateHandle.require<ParcelableManga>(MangaIntent.KEY_MANGA).manga
 
 	val availableScrobblers = scrobblers.filter { it.isAvailable }
 
@@ -65,7 +70,7 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 				},
 			)
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	val selectedItemId = MutableLiveData(NO_ID)
 	val searchQuery = MutableLiveData(manga.title)
@@ -172,10 +177,4 @@ class ScrobblingSelectorViewModel @AssistedInject constructor(
 		textSecondary = 0,
 		actionStringRes = R.string.try_again,
 	)
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(manga: Manga): ScrobblingSelectorViewModel
-	}
 }

@@ -5,20 +5,20 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
+import dagger.hilt.android.ActivityRetainedLifecycle
+import dagger.hilt.android.lifecycle.RetainedLifecycle
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okio.Closeable
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import org.koitharu.kotatsu.utils.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.withProgress
 import org.koitharu.kotatsu.utils.progress.ProgressDeferred
@@ -42,14 +43,20 @@ import kotlin.coroutines.CoroutineContext
 private const val PROGRESS_UNDEFINED = -1f
 private const val PREFETCH_LIMIT_DEFAULT = 10
 
+@ActivityRetainedScoped
 class PageLoader @Inject constructor(
+	lifecycle: ActivityRetainedLifecycle,
 	private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
-) : Closeable {
+) : RetainedLifecycle.OnClearedListener {
 
-	val loaderScope = CoroutineScope(SupervisorJob() + InternalErrorHandler() + Dispatchers.Default)
+	init {
+		lifecycle.addOnClearedListener(this)
+	}
+
+	val loaderScope = RetainedLifecycleCoroutineScope(lifecycle) + InternalErrorHandler() + Dispatchers.Default
 
 	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
 	private val convertLock = Mutex()
@@ -59,8 +66,7 @@ class PageLoader @Inject constructor(
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
 
-	override fun close() {
-		loaderScope.cancel()
+	override fun onCleared() {
 		synchronized(tasks) {
 			tasks.clear()
 		}
@@ -186,7 +192,7 @@ class PageLoader @Inject constructor(
 				.url(pageUrl)
 				.get()
 				.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
-				.cacheControl(CommonHeaders.CACHE_CONTROL_DISABLED)
+				.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
 				.tag(MangaSource::class.java, page.source)
 				.build()
 			okHttp.newCall(request).await().use { response ->

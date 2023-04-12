@@ -1,15 +1,10 @@
 package org.koitharu.kotatsu.settings.backup
 
 import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.MutableLiveData
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
-import java.io.FileNotFoundException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.base.ui.BaseViewModel
@@ -18,10 +13,15 @@ import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import org.koitharu.kotatsu.utils.progress.Progress
+import java.io.File
+import java.io.FileNotFoundException
+import javax.inject.Inject
 
-class RestoreViewModel @AssistedInject constructor(
-	@Assisted uri: Uri?,
+@HiltViewModel
+class RestoreViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	private val repository: BackupRepository,
 	@ApplicationContext context: Context,
 ) : BaseViewModel() {
@@ -31,9 +31,8 @@ class RestoreViewModel @AssistedInject constructor(
 
 	init {
 		launchLoadingJob {
-			if (uri == null) {
-				throw FileNotFoundException()
-			}
+			val uri = savedStateHandle.get<String>(RestoreDialogFragment.ARG_FILE)
+				?.toUriOrNull() ?: throw FileNotFoundException()
 			val contentResolver = context.contentResolver
 
 			val backup = runInterruptible(Dispatchers.IO) {
@@ -64,11 +63,5 @@ class RestoreViewModel @AssistedInject constructor(
 				backup.file.delete()
 			}
 		}
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(uri: Uri?): RestoreViewModel
 	}
 }

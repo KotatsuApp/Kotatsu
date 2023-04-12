@@ -18,6 +18,8 @@ import org.koitharu.kotatsu.utils.ext.clearItemDecorations
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
 import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.source
+import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 
 fun bookmarksGroupAD(
 	coil: ImageLoader,
@@ -48,12 +50,13 @@ fun bookmarksGroupAD(
 			binding.recyclerView.addItemDecoration(spacingDecoration)
 			selectionController.attachToRecyclerView(item.manga, binding.recyclerView)
 		}
-		binding.imageViewCover.newImageRequest(item.manga.coverUrl, item.manga.source)?.run {
+		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
-			lifecycle(lifecycleOwner)
+			size(CoverSizeResolver(binding.imageViewCover))
+			source(item.manga.source)
 			enqueueWith(coil)
 		}
 		binding.textViewTitle.text = item.manga.title

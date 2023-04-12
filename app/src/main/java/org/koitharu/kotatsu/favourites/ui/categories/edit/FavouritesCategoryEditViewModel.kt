@@ -1,26 +1,29 @@
 package org.koitharu.kotatsu.favourites.ui.categories.edit
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity.Companion.EXTRA_ID
+import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity.Companion.NO_ID
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import javax.inject.Inject
 
-private const val NO_ID = -1L
-
-class FavouritesCategoryEditViewModel @AssistedInject constructor(
-	@Assisted private val categoryId: Long,
+@HiltViewModel
+class FavouritesCategoryEditViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	private val repository: FavouritesRepository,
 	private val settings: AppSettings,
 ) : BaseViewModel() {
+
+	private val categoryId = savedStateHandle[EXTRA_ID] ?: NO_ID
 
 	val onSaved = SingleLiveEvent<Unit>()
 	val category = MutableLiveData<FavouriteCategory?>()
@@ -30,12 +33,14 @@ class FavouritesCategoryEditViewModel @AssistedInject constructor(
 	}
 
 	init {
-		launchLoadingJob {
-			category.value = if (categoryId != NO_ID) {
-				repository.getCategory(categoryId)
-			} else {
-				null
-			}
+		launchLoadingJob(Dispatchers.Default) {
+			category.postValue(
+				if (categoryId != NO_ID) {
+					repository.getCategory(categoryId)
+				} else {
+					null
+				},
+			)
 		}
 	}
 
@@ -43,21 +48,16 @@ class FavouritesCategoryEditViewModel @AssistedInject constructor(
 		title: String,
 		sortOrder: SortOrder,
 		isTrackerEnabled: Boolean,
+		isVisibleOnShelf: Boolean,
 	) {
-		launchLoadingJob {
+		launchLoadingJob(Dispatchers.Default) {
 			check(title.isNotEmpty())
 			if (categoryId == NO_ID) {
-				repository.createCategory(title, sortOrder, isTrackerEnabled)
+				repository.createCategory(title, sortOrder, isTrackerEnabled, isVisibleOnShelf)
 			} else {
-				repository.updateCategory(categoryId, title, sortOrder, isTrackerEnabled)
+				repository.updateCategory(categoryId, title, sortOrder, isTrackerEnabled, isVisibleOnShelf)
 			}
-			onSaved.call(Unit)
+			onSaved.postCall(Unit)
 		}
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(categoryId: Long): FavouritesCategoryEditViewModel
 	}
 }

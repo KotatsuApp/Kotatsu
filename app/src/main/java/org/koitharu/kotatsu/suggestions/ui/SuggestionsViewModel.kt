@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class SuggestionsViewModel @Inject constructor(
 	repository: SuggestionRepository,
 	settings: AppSettings,
+	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings) {
 
 	override val content = combine(
@@ -38,7 +40,7 @@ class SuggestionsViewModel @Inject constructor(
 				),
 			)
 
-			else -> list.toUi(mode)
+			else -> list.toUi(mode, tagHighlighter)
 		}
 	}.onStart {
 		loadingCounter.increment()

@@ -14,10 +14,10 @@ import coil.decode.ImageSource
 import coil.fetch.SourceResult
 import coil.request.Options
 import coil.size.*
-import kotlin.math.roundToInt
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import kotlin.math.roundToInt
 
 class RegionBitmapDecoder(
 	private val source: ImageSource,
@@ -83,14 +83,22 @@ class RegionBitmapDecoder(
 		val dstRatio = dstWidth / dstHeight.toDouble()
 		val rect = if (srcRatio < dstRatio) {
 			// probably manga
-			Rect(0, 0, srcWidth, (srcWidth / dstRatio).toInt())
+			Rect(0, 0, srcWidth, (srcWidth / dstRatio).toInt().coerceAtLeast(1))
 		} else {
-			Rect(0, 0, (srcHeight / dstRatio).toInt(), srcHeight)
+			Rect(0, 0, (srcHeight / dstRatio).toInt().coerceAtLeast(1), srcHeight)
 		}
-		rect.offsetTo(
-			(srcWidth - rect.width()) / 2,
-			(srcHeight - rect.height()) / 2,
-		)
+		val scroll = options.parameters.value(PARAM_SCROLL) ?: SCROLL_UNDEFINED
+		if (scroll == SCROLL_UNDEFINED) {
+			rect.offsetTo(
+				(srcWidth - rect.width()) / 2,
+				(srcHeight - rect.height()) / 2,
+			)
+		} else {
+			rect.offsetTo(
+				(srcWidth - rect.width()) / 2,
+				(scroll * dstRatio).toInt().coerceAtMost(srcHeight - rect.height()),
+			)
+		}
 
 		// Calculate the image's sample size.
 		inSampleSize = DecodeUtils.calculateInSampleSize(
@@ -148,21 +156,26 @@ class RegionBitmapDecoder(
 
 		override fun hashCode() = javaClass.hashCode()
 	}
-}
 
-private const val DEFAULT_MAX_PARALLELISM = 4
+	companion object {
 
-private inline fun Size.widthPx(scale: Scale, original: () -> Int): Int {
-	return if (isOriginal) original() else width.toPx(scale)
-}
+		const val PARAM_SCROLL = "scroll"
+		const val SCROLL_UNDEFINED = -1
+		private const val DEFAULT_MAX_PARALLELISM = 4
 
-private inline fun Size.heightPx(scale: Scale, original: () -> Int): Int {
-	return if (isOriginal) original() else height.toPx(scale)
-}
+		private inline fun Size.widthPx(scale: Scale, original: () -> Int): Int {
+			return if (isOriginal) original() else width.toPx(scale)
+		}
 
-private fun Dimension.toPx(scale: Scale) = pxOrElse {
-	when (scale) {
-		Scale.FILL -> Int.MIN_VALUE
-		Scale.FIT -> Int.MAX_VALUE
+		private inline fun Size.heightPx(scale: Scale, original: () -> Int): Int {
+			return if (isOriginal) original() else height.toPx(scale)
+		}
+
+		private fun Dimension.toPx(scale: Scale) = pxOrElse {
+			when (scale) {
+				Scale.FILL -> Int.MIN_VALUE
+				Scale.FIT -> Int.MAX_VALUE
+			}
+		}
 	}
 }

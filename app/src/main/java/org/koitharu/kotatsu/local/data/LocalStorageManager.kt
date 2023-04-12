@@ -5,9 +5,6 @@ import android.content.Context
 import android.os.StatFs
 import androidx.annotation.WorkerThread
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -17,9 +14,13 @@ import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import okhttp3.Cache
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.local.data.util.observe
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.utils.ext.computeSize
 import org.koitharu.kotatsu.utils.ext.getStorageName
+import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val DIR_NAME = "manga"
 private const val CACHE_DISK_PERCENTAGE = 0.02

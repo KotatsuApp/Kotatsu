@@ -4,17 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.databinding.ActivityScrobblerConfigBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
@@ -22,13 +23,9 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.hideCompat
 import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.showCompat
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,14 +33,9 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	OnListItemClickListener<ScrobblingInfo>, View.OnClickListener {
 
 	@Inject
-	lateinit var viewModelFactory: ScrobblerConfigViewModel.Factory
-
-	@Inject
 	lateinit var coil: ImageLoader
 
-	private val viewModel: ScrobblerConfigViewModel by assistedViewModels {
-		viewModelFactory.create(requireNotNull(getScrobblerService(intent)))
-	}
+	private val viewModel: ScrobblerConfigViewModel by viewModels()
 
 	private var paddingVertical = 0
 	private var paddingHorizontal = 0
@@ -72,7 +64,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		viewModel.content.observe(this, listAdapter::setItems)
 		viewModel.user.observe(this, this::onUserChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
-		viewModel.onError.observe(this, this::onError)
+		viewModel.onError.observe(this, SnackbarErrorObserver(binding.recyclerView, null))
 		viewModel.onLoggedOut.observe(this) {
 			finishAfterTransition()
 		}
@@ -125,26 +117,18 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 			return
 		}
 		binding.imageViewAvatar.isVisible = true
-		binding.imageViewAvatar.newImageRequest(user.avatar, null)
+		binding.imageViewAvatar.newImageRequest(this, user.avatar)
 			?.enqueueWith(coil)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		binding.progressBar.run {
 			if (isLoading) {
-				showCompat()
+				show()
 			} else {
-				hideCompat()
+				hide()
 			}
 		}
-	}
-
-	private fun onError(e: Throwable) {
-		Snackbar.make(
-			binding.recyclerView,
-			e.getDisplayMessage(resources),
-			Snackbar.LENGTH_LONG,
-		).show()
 	}
 
 	private fun showUserDialog() {
@@ -159,30 +143,14 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 
 	companion object {
 
-		private const val EXTRA_SERVICE_ID = "service"
+		const val EXTRA_SERVICE_ID = "service"
 
-		private const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
-		private const val HOST_ANILIST_AUTH = "anilist-auth"
-		private const val HOST_MAL_AUTH = "mal-auth"
+		const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
+		const val HOST_ANILIST_AUTH = "anilist-auth"
+		const val HOST_MAL_AUTH = "mal-auth"
 
 		fun newIntent(context: Context, service: ScrobblerService) =
 			Intent(context, ScrobblerConfigActivity::class.java)
 				.putExtra(EXTRA_SERVICE_ID, service.id)
-
-		private fun getScrobblerService(
-			intent: Intent
-		): ScrobblerService? {
-			val serviceId = intent.getIntExtra(EXTRA_SERVICE_ID, 0)
-			if (serviceId != 0) {
-				return enumValues<ScrobblerService>().first { it.id == serviceId }
-			}
-			val uri = intent.data ?: return null
-			return when (uri.host) {
-				HOST_SHIKIMORI_AUTH -> ScrobblerService.SHIKIMORI
-				HOST_ANILIST_AUTH -> ScrobblerService.ANILIST
-				HOST_MAL_AUTH -> ScrobblerService.MAL
-				else -> null
-			}
-		}
 	}
 }

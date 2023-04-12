@@ -9,5 +9,16 @@
 	<color name="selector_foreground">#29FFFFFF</color>
 	<color name="divider_default">#1FFFFFFF</color>
 	<color name="status_bar_incognito">#260052</color>
+	<color name="warning">#FB8C00</color>
+	<color name="launcher_background">#000000</color>
+	<color name="splash_primary">#0C4091</color>
 
+	<!-- Color schemes colors -->
+	<color name="background_miku">#191C1C</color>
+	<color name="background_asuka">#201A1A</color>
+	<color name="background_mion">#1A1C19</color>
+	<color name="background_rikka">#28202B</color>
+	<color name="background_sakura">#201C1D</color>
+	<color name="background_mamimi">#232B33</color>
+	<color name="background_kanade">#272727</color>
 </resources>

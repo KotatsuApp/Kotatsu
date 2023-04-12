@@ -26,14 +26,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
+import androidx.lifecycle.withResumed
 import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,6 +40,7 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -62,7 +62,6 @@ import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import org.koitharu.kotatsu.utils.VoiceInputContract
 import org.koitharu.kotatsu.utils.ext.drawableEnd
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.hideKeyboard
 import org.koitharu.kotatsu.utils.ext.resolve
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
@@ -132,7 +131,7 @@ class MainActivity :
 		}
 
 		viewModel.onOpenReader.observe(this, this::onOpenReader)
-		viewModel.onError.observe(this, this::onError)
+		viewModel.onError.observe(this, SnackbarErrorObserver(binding.container, null))
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
@@ -252,10 +251,6 @@ class MainActivity :
 		startActivity(ReaderActivity.newIntent(this, manga), options)
 	}
 
-	private fun onError(e: Throwable) {
-		Snackbar.make(binding.container, e.getDisplayMessage(resources), Snackbar.LENGTH_SHORT).show()
-	}
-
 	private fun onCountersChanged(counters: SparseIntArray) {
 		repeat(counters.size) { i ->
 			val id = counters.keyAt(i)
@@ -315,11 +310,11 @@ class MainActivity :
 	private fun onFirstStart() {
 		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
 			when {
-				!settings.isSourcesSelected -> whenResumed {
+				!settings.isSourcesSelected -> withResumed {
 					OnboardDialogFragment.showWelcome(supportFragmentManager)
 				}
 
-				settings.newSources.isNotEmpty() -> whenResumed {
+				settings.newSources.isNotEmpty() -> withResumed {
 					NewSourcesDialogFragment.show(supportFragmentManager)
 				}
 			}
@@ -327,7 +322,7 @@ class MainActivity :
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
 			}
-			whenResumed {
+			withResumed {
 				MangaPrefetchService.prefetchLast(this@MainActivity)
 				requestNotificationsPermission()
 			}

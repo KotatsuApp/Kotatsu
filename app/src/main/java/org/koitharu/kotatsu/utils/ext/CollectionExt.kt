@@ -41,3 +41,7 @@ fun <K, V> Map<K, V>.findKeyByValue(value: V): K? {
 inline fun <T> Collection<T>.filterToSet(predicate: (T) -> Boolean): Set<T> {
 	return filterTo(ArraySet(size), predicate)
 }
+
+fun <T> Sequence<T>.toListSorted(comparator: Comparator<T>): List<T> {
+	return toMutableList().apply { sortWith(comparator) }
+}

@@ -2,10 +2,9 @@ package org.koitharu.kotatsu.favourites.ui.list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -13,8 +12,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.ARG_CATEGORY_ID
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
@@ -27,16 +28,20 @@ import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import javax.inject.Inject
 
-class FavouritesListViewModel @AssistedInject constructor(
-	@Assisted val categoryId: Long,
+@HiltViewModel
+class FavouritesListViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	private val repository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val historyRepository: HistoryRepository,
 	private val settings: AppSettings,
+	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings), ListExtraProvider {
+
+	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
 
 	var categoryName: String? = null
 		private set
@@ -46,7 +51,7 @@ class FavouritesListViewModel @AssistedInject constructor(
 	} else {
 		repository.observeCategory(categoryId)
 			.map { it?.order }
-			.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
+			.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, null)
 	}
 
 	override val content = combine(
@@ -71,7 +76,7 @@ class FavouritesListViewModel @AssistedInject constructor(
 				),
 			)
 
-			else -> list.toUi(mode, this)
+			else -> list.toUi(mode, this, tagHighlighter)
 		}
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
@@ -130,11 +135,5 @@ class FavouritesListViewModel @AssistedInject constructor(
 		} else {
 			PROGRESS_NONE
 		}
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(categoryId: Long): FavouritesListViewModel
 	}
 }

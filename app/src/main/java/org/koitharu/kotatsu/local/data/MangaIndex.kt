@@ -1,15 +1,21 @@
 package org.koitharu.kotatsu.local.data
 
+import androidx.annotation.WorkerThread
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaState
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.json.getBooleanOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.utils.AlphanumComparator
+import java.io.File
 
 class MangaIndex(source: String?) {
 
@@ -126,6 +132,20 @@ class MangaIndex(source: String?) {
 		json.put("chapters", newJo)
 	}
 
+	fun clear() {
+		val keys = json.keys()
+		while (keys.hasNext()) {
+			json.remove(keys.next())
+		}
+	}
+
+	fun setFrom(other: MangaIndex) {
+		clear()
+		other.json.keys().forEach { key ->
+			json.putOpt(key, other.json.opt(key))
+		}
+	}
+
 	private fun getChapters(json: JSONObject, source: MangaSource): List<MangaChapter> {
 		val chapters = ArrayList<MangaChapter>(json.length())
 		for (k in json.keys()) {
@@ -150,5 +170,19 @@ class MangaIndex(source: String?) {
 		json.toString(4)
 	} else {
 		json.toString()
+	}
+
+	companion object {
+
+		@WorkerThread
+		fun read(file: File): MangaIndex? {
+			if (file.exists() && file.canRead()) {
+				val text = file.readText()
+				if (text.length > 2) {
+					return MangaIndex(text)
+				}
+			}
+			return null
+		}
 	}
 }

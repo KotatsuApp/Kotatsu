@@ -31,8 +31,7 @@ class AboutLinksPreference @JvmOverloads constructor(
 			binding.btn4pda,
 			binding.btnDiscord,
 			binding.btnGithub,
-			binding.btnReddit,
-			binding.btnTwitter,
+			binding.btnTelegram,
 		).forEach { button ->
 			TooltipCompat.setTooltipText(button, button.contentDescription)
 			button.setOnClickListener(this)
@@ -43,8 +42,7 @@ class AboutLinksPreference @JvmOverloads constructor(
 		val urlResId = when (v.id) {
 			R.id.btn_4pda -> R.string.url_forpda
 			R.id.btn_discord -> R.string.url_discord
-			R.id.btn_twitter -> R.string.url_twitter
-			R.id.btn_reddit -> R.string.url_reddit
+			R.id.btn_telegram -> R.string.url_telegram
 			R.id.btn_github -> R.string.url_github
 			else -> return
 		}
@@ -59,7 +57,7 @@ class AboutLinksPreference @JvmOverloads constructor(
 					Intent.createChooser(intent, title)
 				} else {
 					intent
-				}
+				},
 			)
 		} catch (_: ActivityNotFoundException) {
 		}

@@ -94,7 +94,8 @@
 	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
 		<item name="chipSurfaceColor">?attr/colorSurface</item>
 		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
-		<item name="strokeColor">?attr/colorOutline</item>
+		<item name="chipStrokeColor">?attr/colorOutline</item>
+		<item name="chipIconTint">?attr/colorControlNormal</item>
 		<item name="rippleColor">?attr/colorControlHighlight</item>
 
 		<!-- Custom chip states -->
@@ -151,6 +152,19 @@
 		<item name="android:insetLeft">6dp</item>
 		<item name="android:insetTop">2dp</item>
 		<item name="android:insetBottom">2dp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.TwoLinesItemView" parent="">
+		<item name="backgroundFillColor">@color/list_item_background_color</item>
+		<item name="shapeAppearance">?attr/shapeAppearanceCornerLarge</item>
+		<item name="android:insetRight">6dp</item>
+		<item name="android:insetLeft">6dp</item>
+		<item name="android:insetTop">2dp</item>
+		<item name="android:insetBottom">2dp</item>
+		<item name="android:orientation">horizontal</item>
+		<item name="android:textColor">@color/list_item_text_color</item>
+		<item name="titleTextAppearance">?attr/textAppearanceButton</item>
+		<item name="subtitleTextAppearance">?attr/textAppearanceBodySmall</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ExploreButton" parent="Widget.Material3.Button.TonalButton.Icon">

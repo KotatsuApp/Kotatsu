@@ -18,7 +18,6 @@ import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.browser.ProgressChromeClient
 import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
-import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -26,6 +25,7 @@ import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.TaggedActivityResult
+import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -42,7 +42,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityBrowserBinding.inflate(layoutInflater))
-		val source = intent?.getSerializableExtra(EXTRA_SOURCE) as? MangaSource
+		val source = intent?.getSerializableExtraCompat(EXTRA_SOURCE) as? MangaSource
 		if (source == null) {
 			finishAfterTransition()
 			return
@@ -63,8 +63,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		}
 		with(binding.webView.settings) {
 			javaScriptEnabled = true
-			userAgentString = repository.headers?.get(CommonHeaders.USER_AGENT)
-				?: CommonHeadersInterceptor.userAgentFallback
+			userAgentString = CommonHeadersInterceptor.userAgentChrome
 		}
 		binding.webView.webViewClient = BrowserClient(this)
 		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)

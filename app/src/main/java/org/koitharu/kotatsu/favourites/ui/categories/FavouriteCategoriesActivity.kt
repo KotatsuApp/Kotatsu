@@ -18,11 +18,11 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
@@ -31,7 +31,6 @@ import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEdit
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import javax.inject.Inject
 
@@ -72,7 +71,7 @@ class FavouriteCategoriesActivity :
 		onBackPressedDispatcher.addCallback(exitReorderModeCallback)
 
 		viewModel.detalizedCategories.observe(this, ::onCategoriesChanged)
-		viewModel.onError.observe(this, ::onError)
+		viewModel.onError.observe(this, SnackbarErrorObserver(binding.recyclerView, null))
 		viewModel.isInReorderMode.observe(this, ::onReorderModeChanged)
 	}
 
@@ -144,11 +143,6 @@ class FavouriteCategoriesActivity :
 	private fun onCategoriesChanged(categories: List<ListModel>) {
 		adapter.items = categories
 		invalidateOptionsMenu()
-	}
-
-	private fun onError(e: Throwable) {
-		Snackbar.make(binding.recyclerView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG)
-			.show()
 	}
 
 	private fun onReorderModeChanged(isReorderMode: Boolean) {

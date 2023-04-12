@@ -3,8 +3,7 @@
 	<string name="url_github" translatable="false">https://github.com/KotatsuApp/Kotatsu</string>
 	<string name="url_discord" translatable="false">https://discord.gg/NNJ5RgVBC5</string>
 	<string name="url_forpda" translatable="false">https://4pda.to/forum/index.php?showtopic=697669</string>
-	<string name="url_twitter" translatable="false">https://twitter.com/kotatsuapp</string>
-	<string name="url_reddit" translatable="false">https://reddit.com/user/kotatsuapp</string>
+	<string name="url_telegram" translatable="false">https://t.me/kotatsuapp</string>
 	<string name="url_weblate" translatable="false">https://hosted.weblate.org/engage/kotatsu</string>
 	<string name="url_error_report" translatable="false">https://acra.kotatsu.app/report</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
@@ -44,5 +43,11 @@
 		<item>1</item>
 		<item>2</item>
 		<item>0</item>
+	</string-array>
+	<string-array name="genres_warnlist" translatable="false">
+		<item>yaoi</item>
+		<item>яой</item>
+		<item>yuri</item>
+		<item>юри</item>
 	</string-array>
 </resources>

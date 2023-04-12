@@ -23,9 +23,11 @@ import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import java.util.Date
 import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val NO_ID = 0L
 
+@Singleton
 class TrackingRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
@@ -112,6 +114,7 @@ class TrackingRepository @Inject constructor(
 			val track = getOrCreateTrack(updates.manga.id).mergeWith(updates)
 			db.tracksDao.upsert(track)
 			if (updates.isValid && updates.newChapters.isNotEmpty()) {
+				updatePercent(updates)
 				val logEntity = TrackLogEntity(
 					mangaId = updates.manga.id,
 					chapters = updates.newChapters.joinToString("\n") { x -> x.name },
@@ -173,6 +176,21 @@ class TrackingRepository @Inject constructor(
 			lastCheck = 0L,
 			lastNotifiedChapterId = 0L,
 		)
+	}
+
+	private suspend fun updatePercent(updates: MangaUpdates) {
+		val history = db.historyDao.find(updates.manga.id) ?: return
+		val chapters = updates.manga.chapters
+		if (chapters.isNullOrEmpty()) {
+			return
+		}
+		val chapterIndex = chapters.indexOfFirst { it.id == history.chapterId }
+		if (chapterIndex < 0) {
+			return
+		}
+		val position = (chapters.size - updates.newChapters.size) * history.percent
+		val newPercent = position / chapters.size.toFloat()
+		db.historyDao.update(history.copy(percent = newPercent))
 	}
 
 	private fun TrackEntity.mergeWith(updates: MangaUpdates): TrackEntity {

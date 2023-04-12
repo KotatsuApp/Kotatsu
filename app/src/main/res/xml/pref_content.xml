@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment"
+		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesListFragment"
 		android:key="remote_sources"
 		android:title="@string/remote_sources" />
 

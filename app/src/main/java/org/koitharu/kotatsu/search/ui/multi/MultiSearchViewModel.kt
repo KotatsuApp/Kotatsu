@@ -2,11 +2,15 @@ package org.koitharu.kotatsu.search.ui.multi
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import kotlinx.coroutines.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
@@ -16,17 +20,24 @@ import org.koitharu.kotatsu.core.exceptions.CompositeException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.list.ui.model.*
+import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import javax.inject.Inject
 
 private const val MAX_PARALLELISM = 4
 private const val MIN_HAS_MORE_ITEMS = 8
 
-class MultiSearchViewModel @AssistedInject constructor(
-	@Assisted initialQuery: String,
+@HiltViewModel
+class MultiSearchViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : BaseViewModel() {
@@ -36,7 +47,7 @@ class MultiSearchViewModel @AssistedInject constructor(
 	private val loadingData = MutableStateFlow(false)
 	private var listError = MutableStateFlow<Throwable?>(null)
 
-	val query = MutableLiveData(initialQuery)
+	val query = MutableLiveData(savedStateHandle.get<String>(MultiSearchActivity.EXTRA_QUERY).orEmpty())
 	val list: LiveData<List<ListModel>> = combine(
 		listData,
 		loadingData,
@@ -59,10 +70,10 @@ class MultiSearchViewModel @AssistedInject constructor(
 			loading -> list + LoadingFooter
 			else -> list
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
-		doSearch(initialQuery)
+		doSearch(query.value.orEmpty())
 	}
 
 	fun getItems(ids: Set<Long>): Set<Manga> {
@@ -104,7 +115,7 @@ class MultiSearchViewModel @AssistedInject constructor(
 			async(dispatcher) {
 				runCatchingCancellable {
 					val list = mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
-						.toUi(ListMode.GRID)
+						.toUi(ListMode.GRID, null)
 					if (list.isNotEmpty()) {
 						MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list)
 					} else {
@@ -134,11 +145,5 @@ class MultiSearchViewModel @AssistedInject constructor(
 				else -> throw CompositeException(errors)
 			}
 		}
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(initialQuery: String): MultiSearchViewModel
 	}
 }

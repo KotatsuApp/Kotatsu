@@ -1,21 +1,21 @@
 package org.koitharu.kotatsu.download.ui
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import kotlinx.coroutines.CoroutineScope
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.utils.progress.PausingProgressJob
 
 typealias DownloadItem = PausingProgressJob<DownloadState>
 
 class DownloadsAdapter(
-	scope: CoroutineScope,
+	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
 ) : AsyncListDifferDelegationAdapter<DownloadItem>(DiffCallback()) {
 
 	init {
-		delegatesManager.addDelegate(downloadItemAD(scope, coil))
+		delegatesManager.addDelegate(downloadItemAD(lifecycleOwner, coil))
 		setHasStableIds(true)
 	}
 

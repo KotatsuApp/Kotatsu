@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
-import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
@@ -60,9 +59,9 @@ class PageHolderDelegate(
 		}
 	}
 
-	fun showErrorDetails(context: Context) {
+	fun showErrorDetails(url: String?) {
 		val e = error ?: return
-		ExceptionResolver.showDetails(context, e)
+		exceptionResolver.showDetails(e, url)
 	}
 
 	fun onAttachedToWindow() {
@@ -104,7 +103,7 @@ class PageHolderDelegate(
 		}
 	}
 
-	override fun onChanged(t: ReaderSettings?) {
+	override fun onChanged(value: ReaderSettings) {
 		if (state == State.SHOWN) {
 			callback.onImageShowing(readerSettings)
 		}

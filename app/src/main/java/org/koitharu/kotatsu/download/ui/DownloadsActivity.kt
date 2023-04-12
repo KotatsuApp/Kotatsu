@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.lifecycle.lifecycleScope
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -27,7 +26,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		val adapter = DownloadsAdapter(lifecycleScope, coil)
+		val adapter = DownloadsAdapter(this, coil)
 		val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 		binding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing))
 		binding.recyclerView.setHasFixedSize(true)

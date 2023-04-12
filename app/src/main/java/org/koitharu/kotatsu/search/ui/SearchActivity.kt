@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
+import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.utils.ext.showKeyboard
 
 @AndroidEntryPoint
@@ -26,7 +27,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchBinding.inflate(layoutInflater))
-		source = intent.getSerializableExtra(EXTRA_SOURCE) as? MangaSource ?: run {
+		source = intent.getSerializableExtraCompat(EXTRA_SOURCE) ?: run {
 			finishAfterTransition()
 			return
 		}

@@ -1,7 +1,12 @@
 package org.koitharu.kotatsu.bookmarks.ui
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
@@ -10,7 +15,6 @@ import androidx.fragment.app.viewModels
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
@@ -24,6 +28,7 @@ import org.koitharu.kotatsu.bookmarks.data.ids
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksGroupAdapter
 import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -32,9 +37,9 @@ import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.SnackbarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class BookmarksFragment :
@@ -76,7 +81,7 @@ class BookmarksFragment :
 		binding.recyclerView.addItemDecoration(spacingDecoration)
 
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
-		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
 	}
 
@@ -90,6 +95,7 @@ class BookmarksFragment :
 		if (selectionController?.onItemClick(item.manga, item.pageId) != true) {
 			val intent = ReaderActivity.newIntent(view.context, item)
 			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+			Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 		}
 	}
 
@@ -132,6 +138,7 @@ class BookmarksFragment :
 				mode.finish()
 				true
 			}
+
 			else -> false
 		}
 	}
@@ -152,14 +159,6 @@ class BookmarksFragment :
 
 	private fun onListChanged(list: List<ListModel>) {
 		adapter?.items = list
-	}
-
-	private fun onError(e: Throwable) {
-		Snackbar.make(
-			binding.recyclerView,
-			e.getDisplayMessage(resources),
-			Snackbar.LENGTH_SHORT,
-		).show()
 	}
 
 	private fun onActionDone(action: ReversibleAction) {

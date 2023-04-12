@@ -1,22 +1,26 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.ids
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet.Companion.KEY_MANGA_LIST
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
-import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
+import javax.inject.Inject
 
-class MangaCategoriesViewModel @AssistedInject constructor(
-	@Assisted private val manga: List<Manga>,
+@HiltViewModel
+class MangaCategoriesViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	private val favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
+
+	private val manga = requireNotNull(savedStateHandle.get<List<ParcelableManga>>(KEY_MANGA_LIST)).map { it.manga }
 
 	val content = combine(
 		favouritesRepository.observeCategories(),
@@ -29,7 +33,7 @@ class MangaCategoriesViewModel @AssistedInject constructor(
 				isChecked = it.id in checked,
 			)
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	fun setChecked(categoryId: Long, isChecked: Boolean) {
 		launchJob(Dispatchers.Default) {
@@ -60,11 +64,5 @@ class MangaCategoriesViewModel @AssistedInject constructor(
 			}
 			result
 		}
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(manga: List<Manga>): MangaCategoriesViewModel
 	}
 }

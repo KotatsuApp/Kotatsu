@@ -51,6 +51,8 @@ abstract class BaseReader<B : ViewBinding> : BaseFragment<B>() {
 
 	abstract fun switchPageTo(position: Int, smooth: Boolean)
 
+	open fun scrollBy(delta: Int): Boolean = false
+
 	abstract fun getCurrentState(): ReaderState?
 
 	protected abstract fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?)

@@ -5,15 +5,17 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	android:background="?android:windowBackground"
 	android:gravity="center_vertical"
-	android:minHeight="?android:listPreferredItemHeightSmall"
-	android:orientation="horizontal">
+	android:orientation="horizontal"
+	android:paddingVertical="@dimen/margin_small"
+	android:paddingStart="?listPreferredItemPaddingStart"
+	android:paddingEnd="?listPreferredItemPaddingEnd">
 
 	<com.google.android.material.imageview.ShapeableImageView
 		android:id="@+id/imageView_icon"
 		android:layout_width="32dp"
 		android:layout_height="32dp"
-		android:layout_marginHorizontal="?listPreferredItemPaddingStart"
 		android:background="?colorControlHighlight"
 		android:labelFor="@id/textView_title"
 		android:scaleType="fitCenter"
@@ -23,7 +25,6 @@
 	<LinearLayout
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_marginVertical="8dp"
 		android:layout_marginStart="?android:listPreferredItemPaddingStart"
 		android:layout_marginEnd="?android:listPreferredItemPaddingEnd"
 		android:layout_weight="1"
@@ -50,10 +51,34 @@
 
 	</LinearLayout>
 
-	<com.google.android.material.materialswitch.MaterialSwitch
-		android:id="@+id/switch_toggle"
+	<ImageView
+		android:id="@+id/imageView_config"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginEnd="?listPreferredItemPaddingEnd" />
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/settings"
+		android:padding="@dimen/margin_small"
+		android:scaleType="center"
+		android:src="@drawable/ic_settings" />
+
+	<ImageView
+		android:id="@+id/imageView_add"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/add"
+		android:padding="@dimen/margin_small"
+		android:scaleType="center"
+		android:src="@drawable/ic_add" />
+
+	<ImageView
+		android:id="@+id/imageView_remove"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/remove"
+		android:padding="@dimen/margin_small"
+		android:scaleType="center"
+		android:src="@drawable/ic_delete" />
 
 </LinearLayout>

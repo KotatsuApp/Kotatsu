@@ -1,23 +1,28 @@
 package org.koitharu.kotatsu.reader.ui.colorfilter
 
 import androidx.lifecycle.MutableLiveData
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
+import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity.Companion.EXTRA_MANGA
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import javax.inject.Inject
 
-class ColorFilterConfigViewModel @AssistedInject constructor(
-	@Assisted private val manga: Manga,
-	@Assisted page: MangaPage,
+@HiltViewModel
+class ColorFilterConfigViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val mangaDataRepository: MangaDataRepository,
 ) : BaseViewModel() {
+
+	private val manga = checkNotNull(savedStateHandle.get<ParcelableManga>(EXTRA_MANGA)?.manga)
 
 	private var initialColorFilter: ReaderColorFilter? = null
 	val colorFilter = MutableLiveData<ReaderColorFilter?>(null)
@@ -28,18 +33,23 @@ class ColorFilterConfigViewModel @AssistedInject constructor(
 		get() = colorFilter.value != initialColorFilter
 
 	init {
+		val page = checkNotNull(
+			savedStateHandle.get<ParcelableMangaPages>(ColorFilterConfigActivity.EXTRA_PAGES)?.pages?.firstOrNull(),
+		)
 		launchLoadingJob {
 			initialColorFilter = mangaDataRepository.getColorFilter(manga.id)
 			colorFilter.value = initialColorFilter
 		}
-		launchLoadingJob {
+		launchLoadingJob(Dispatchers.Default) {
 			val repository = mangaRepositoryFactory.create(page.source)
 			val url = repository.getPageUrl(page)
-			preview.value = MangaPage(
-				id = page.id,
-				url = url,
-				preview = page.preview,
-				source = page.source,
+			preview.postValue(
+				MangaPage(
+					id = page.id,
+					url = url,
+					preview = page.preview,
+					source = page.source,
+				),
 			)
 		}
 	}
@@ -59,15 +69,9 @@ class ColorFilterConfigViewModel @AssistedInject constructor(
 	}
 
 	fun save() {
-		launchLoadingJob {
+		launchLoadingJob(Dispatchers.Default) {
 			mangaDataRepository.saveColorFilter(manga, colorFilter.value)
-			onDismiss.call(Unit)
+			onDismiss.postCall(Unit)
 		}
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(manga: Manga, page: MangaPage): ColorFilterConfigViewModel
 	}
 }

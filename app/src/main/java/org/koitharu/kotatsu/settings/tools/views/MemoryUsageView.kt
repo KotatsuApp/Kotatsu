@@ -40,7 +40,7 @@ class MemoryUsageView @JvmOverloads constructor(
 		val otherSegment = SegmentedBarView.Segment(usage?.otherCache?.percent ?: 0f, segmentColor(3))
 
 		with(binding) {
-			bar.segments = listOf(storageSegment, pagesSegment, otherSegment).filter { it.percent > 0f }
+			bar.animateSegments(listOf(storageSegment, pagesSegment, otherSegment).filter { it.percent > 0f })
 			labelStorage.text = formatLabel(usage?.savedManga, R.string.saved_manga)
 			labelPagesCache.text = formatLabel(usage?.pagesCache, R.string.pages_cache)
 			labelOtherCache.text = formatLabel(usage?.otherCache, R.string.other_cache)

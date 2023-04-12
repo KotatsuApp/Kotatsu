@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -33,7 +34,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.io.IOException
@@ -46,6 +47,7 @@ class LocalListViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
+	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings), ListExtraProvider {
 
 	val onMangaRemoved = SingleLiveEvent<Unit>()
@@ -76,10 +78,10 @@ class LocalListViewModel @Inject constructor(
 
 			else -> buildList(list.size + 1) {
 				add(createHeader(list, tags, order))
-				list.toUi(this, mode, this@LocalListViewModel)
+				list.toUi(this, mode, this@LocalListViewModel, tagHighlighter)
 			}
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
 		onRefresh()
@@ -139,7 +141,7 @@ class LocalListViewModel @Inject constructor(
 	}
 
 	private fun cleanup() {
-		if (!DownloadService.isRunning && !ImportService.isRunning && !LocalChaptersRemoveService.isRunning) {
+		if (!DownloadService.isRunning && !LocalChaptersRemoveService.isRunning) {
 			viewModelScope.launch {
 				runCatchingCancellable {
 					repository.cleanup()
@@ -170,7 +172,7 @@ class LocalListViewModel @Inject constructor(
 		val chips = LinkedList<ChipsView.ChipModel>()
 		for ((tag, _) in topTags) {
 			val model = ChipsView.ChipModel(
-				icon = 0,
+				tint = 0,
 				title = tag.title,
 				isCheckable = true,
 				isChecked = tag in selectedTags,

@@ -1,16 +1,19 @@
 package org.koitharu.kotatsu.reader.domain
 
 import android.util.LongSparseArray
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import javax.inject.Inject
 
 private const val PAGES_TRIM_THRESHOLD = 120
 
-class ChaptersLoader(
+@ViewModelScoped
+class ChaptersLoader @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 

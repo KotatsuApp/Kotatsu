@@ -45,8 +45,11 @@ class RemoteMangaRepository(
 			getConfig().defaultSortOrder = value
 		}
 
-	val domain: String
+	var domain: String
 		get() = parser.domain
+		set(value) {
+			getConfig()[parser.configKeyDomain] = value
+		}
 
 	val headers: Headers?
 		get() = parser.headers
@@ -95,6 +98,10 @@ class RemoteMangaRepository(
 
 	fun getConfigKeys(): List<ConfigKey<*>> = ArrayList<ConfigKey<*>>().also {
 		parser.onCreateConfig(it)
+	}
+
+	fun getAvailableMirrors(): List<String> {
+		return parser.configKeyDomain.presetValues?.toList().orEmpty()
 	}
 
 	private fun getConfig() = parser.config as SourceSettings

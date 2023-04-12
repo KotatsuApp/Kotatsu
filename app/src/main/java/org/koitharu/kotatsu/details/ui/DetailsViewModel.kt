@@ -10,9 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,12 +26,9 @@ import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.MangaDataRepository
-import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.details.domain.BranchComparator
@@ -51,32 +46,23 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.io.IOException
+import javax.inject.Inject
 
-class DetailsViewModel @AssistedInject constructor(
-	@Assisted intent: MangaIntent,
+@HiltViewModel
+class DetailsViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	favouritesRepository: FavouritesRepository,
 	private val localMangaRepository: LocalMangaRepository,
 	trackingRepository: TrackingRepository,
-	mangaDataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val imageGetter: Html.ImageGetter,
-	mangaRepositoryFactory: MangaRepository.Factory,
+	private val delegate: MangaDetailsDelegate,
 ) : BaseViewModel() {
-
-	private val delegate = MangaDetailsDelegate(
-		intent = intent,
-		mangaDataRepository = mangaDataRepository,
-		historyRepository = historyRepository,
-		localMangaRepository = localMangaRepository,
-		mangaRepositoryFactory = mangaRepositoryFactory,
-	)
 
 	private var loadingJob: Job
 
@@ -120,7 +106,7 @@ class DetailsViewModel @AssistedInject constructor(
 
 	val bookmarks = delegate.manga.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val description = delegate.manga
 		.distinctUntilChangedBy { it?.description.orEmpty() }
@@ -132,7 +118,7 @@ class DetailsViewModel @AssistedInject constructor(
 				emit(description.parseAsHtml().filterSpans())
 				emit(description.parseAsHtml(imageGetter = imageGetter).filterSpans())
 			}
-		}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, null)
+		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, null)
 
 	val onMangaRemoved = SingleLiveEvent<Manga>()
 	val isScrobblingAvailable: Boolean
@@ -154,7 +140,7 @@ class DetailsViewModel @AssistedInject constructor(
 		delegate.selectedBranch,
 	) { branches, selected ->
 		branches.indexOf(selected)
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, -1)
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, -1)
 
 	val selectedBranchName = delegate.selectedBranch
 		.asFlowLiveData(viewModelScope.coroutineContext, null)
@@ -164,7 +150,7 @@ class DetailsViewModel @AssistedInject constructor(
 		isLoading.asFlow(),
 	) { m, loading ->
 		m != null && m.chapters.isNullOrEmpty() && !loading
-	}.asLiveDataDistinct(viewModelScope.coroutineContext, false)
+	}.asFlowLiveData(viewModelScope.coroutineContext, false)
 
 	val chapters = combine(
 		combine(
@@ -201,7 +187,7 @@ class DetailsViewModel @AssistedInject constructor(
 			return
 		}
 		launchLoadingJob(Dispatchers.Default) {
-			val manga = if (m.source == MangaSource.LOCAL) m else localMangaRepository.findSavedManga(m)
+			val manga = if (m.source == MangaSource.LOCAL) m else localMangaRepository.findSavedManga(m)?.manga
 			checkNotNull(manga) { "Cannot find saved manga for ${m.title}" }
 			val original = localMangaRepository.getRemoteManga(manga)
 			localMangaRepository.delete(manga) || throw IOException("Unable to delete file")
@@ -279,7 +265,7 @@ class DetailsViewModel @AssistedInject constructor(
 	fun markChapterAsCurrent(chapterId: Long) {
 		launchJob(Dispatchers.Default) {
 			val manga = checkNotNull(delegate.manga.value)
-			val chapters = checkNotNull(manga.chapters)
+			val chapters = checkNotNull(manga.getChapters(selectedBranchValue))
 			val chapterIndex = chapters.indexOfFirst { it.id == chapterId }
 			check(chapterIndex in chapters.indices) { "Chapter not found" }
 			val percent = chapterIndex / chapters.size.toFloat()
@@ -320,11 +306,5 @@ class DetailsViewModel @AssistedInject constructor(
 			errorEvent.call(IllegalStateException("Scrobbler [$index] is not available"))
 		}
 		return scrobbler
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(intent: MangaIntent): DetailsViewModel
 	}
 }

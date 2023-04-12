@@ -20,7 +20,6 @@ import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,7 +55,7 @@ class MainViewModel @Inject constructor(
 		a[R.id.nav_tools] = if (appUpdate != null) 1 else 0
 		a[R.id.nav_feed] = tracks
 		a
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, SparseIntArray(0))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, SparseIntArray(0))
 
 	init {
 		launchJob {

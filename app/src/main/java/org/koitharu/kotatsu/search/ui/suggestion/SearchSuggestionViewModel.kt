@@ -134,7 +134,7 @@ class SearchSuggestionViewModel @Inject constructor(
 
 	private fun mapTags(tags: List<MangaTag>): List<ChipsView.ChipModel> = tags.map { tag ->
 		ChipsView.ChipModel(
-			icon = 0,
+			tint = 0,
 			title = tag.title,
 			data = tag,
 			isCheckable = false,

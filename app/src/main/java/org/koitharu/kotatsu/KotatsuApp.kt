@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import javax.inject.Inject
 
@@ -125,6 +126,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 				.setClassInstanceLimit(LocalMangaRepository::class.java, 1)
 				.setClassInstanceLimit(PagesCache::class.java, 1)
 				.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
+				.setClassInstanceLimit(PageLoader::class.java, 1)
 				.penaltyLog()
 				.build(),
 		)

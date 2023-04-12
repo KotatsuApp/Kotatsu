@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityShelfSettingsBinding
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ShelfSettingsActivity :
@@ -28,7 +29,7 @@ class ShelfSettingsActivity :
 		setContentView(ActivityShelfSettingsBinding.inflate(layoutInflater))
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(com.google.android.material.R.drawable.abc_ic_clear_material)
+			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		binding.buttonDone.setOnClickListener(this)
 		val settingsAdapter = ShelfSettingsAdapter(this)

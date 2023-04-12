@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser
 
+import androidx.annotation.AnyThread
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -42,6 +43,7 @@ interface MangaRepository {
 
 		private val cache = EnumMap<MangaSource, WeakReference<RemoteMangaRepository>>(MangaSource::class.java)
 
+		@AnyThread
 		fun create(source: MangaSource): MangaRepository {
 			if (source == MangaSource.LOCAL) {
 				return localMangaRepository

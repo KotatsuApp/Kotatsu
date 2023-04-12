@@ -6,28 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.toUriOrNull
 import org.koitharu.kotatsu.utils.ext.withArgs
 import org.koitharu.kotatsu.utils.progress.Progress
 
 @AndroidEntryPoint
 class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
-	@Inject
-	lateinit var viewModelFactory: RestoreViewModel.Factory
-
-	private val viewModel by assistedViewModels {
-		viewModelFactory.create(arguments?.getString(ARG_FILE)?.toUriOrNull())
-	}
+	private val viewModel: RestoreViewModel by viewModels()
 
 	override fun onInflateView(
 		inflater: LayoutInflater,
@@ -74,12 +67,14 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		when {
 			result.isAllSuccess -> builder.setTitle(R.string.data_restored)
 				.setMessage(R.string.data_restored_success)
+
 			result.isAllFailed -> builder.setTitle(R.string.error)
 				.setMessage(
 					result.failures.map {
 						it.getDisplayMessage(resources)
 					}.distinct().joinToString("\n"),
 				)
+
 			else -> builder.setTitle(R.string.data_restored)
 				.setMessage(R.string.data_restored_with_errors)
 		}

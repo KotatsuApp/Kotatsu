@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.base.ui
 
+import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
@@ -59,6 +59,12 @@ abstract class BaseActivity<B : ViewBinding> :
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		insetsDelegate.handleImeInsets = true
+		putDataToExtras(intent)
+	}
+
+	override fun onNewIntent(intent: Intent?) {
+		putDataToExtras(intent)
+		super.onNewIntent(intent)
 	}
 
 	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
@@ -131,17 +137,12 @@ abstract class BaseActivity<B : ViewBinding> :
 		window.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
 	}
 
-	@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-	@Deprecated("Should not be used")
-	override fun onBackPressed() {
-		if ( // https://issuetracker.google.com/issues/139738913
-			Build.VERSION.SDK_INT == Build.VERSION_CODES.Q &&
-			isTaskRoot &&
-			supportFragmentManager.backStackEntryCount == 0
-		) {
-			finishAfterTransition()
-		} else {
-			super.onBackPressed()
-		}
+	private fun putDataToExtras(intent: Intent?) {
+		intent?.putExtra(EXTRA_DATA, intent.data)
+	}
+
+	companion object {
+
+		const val EXTRA_DATA = "data"
 	}
 }

@@ -22,8 +22,8 @@ import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import org.koitharu.kotatsu.utils.ext.awaitViewLifecycle
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.requireSerializable
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
-import org.koitharu.kotatsu.utils.ext.serializableArgument
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
@@ -34,9 +34,15 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 	@Inject
 	lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
-	private val source by serializableArgument<MangaSource>(EXTRA_SOURCE)
+	private lateinit var source: MangaSource
 	private var repository: RemoteMangaRepository? = null
 	private val exceptionResolver = ExceptionResolver(this)
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		source = requireArguments().requireSerializable(EXTRA_SOURCE)
+		repository = mangaRepositoryFactory.create(source) as? RemoteMangaRepository
+		super.onCreate(savedInstanceState)
+	}
 
 	override fun onResume() {
 		super.onResume()
@@ -45,8 +51,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		preferenceManager.sharedPreferencesName = source.name
-		val repo = mangaRepositoryFactory.create(source) as? RemoteMangaRepository ?: return
-		repository = repo
+		val repo = repository ?: return
 		addPreferencesFromResource(R.xml.pref_source)
 		addPreferencesFromRepository(repo)
 

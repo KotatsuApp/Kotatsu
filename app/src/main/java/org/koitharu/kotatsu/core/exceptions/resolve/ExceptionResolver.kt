@@ -1,27 +1,23 @@
 package org.koitharu.kotatsu.core.exceptions.resolve
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Headers
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.ui.ErrorDetailsDialog
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import org.koitharu.kotatsu.utils.TaggedActivityResult
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.isSuccess
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -43,9 +39,12 @@ class ExceptionResolver private constructor(
 		sourceAuthContract = fragment.registerForActivityResult(SourceAuthActivity.Contract(), this)
 	}
 
-	override fun onActivityResult(result: TaggedActivityResult?) {
-		result ?: return
+	override fun onActivityResult(result: TaggedActivityResult) {
 		continuations.remove(result.tag)?.resume(result.isSuccess)
+	}
+
+	fun showDetails(e: Throwable, url: String?) {
+		ErrorDetailsDialog.show(getFragmentManager(), e, url)
 	}
 
 	suspend fun resolve(e: Throwable): Boolean = when (e) {
@@ -100,21 +99,5 @@ class ExceptionResolver private constructor(
 		}
 
 		fun canResolve(e: Throwable) = getResolveStringId(e) != 0
-
-		fun showDetails(context: Context, e: Throwable) {
-			val stackTrace = e.stackTraceToString()
-			val dialog = MaterialAlertDialogBuilder(context)
-				.setTitle(e.getDisplayMessage(context.resources))
-				.setMessage(stackTrace)
-				.setPositiveButton(androidx.preference.R.string.copy) { _, _ ->
-					val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-					clipboardManager.setPrimaryClip(
-						ClipData.newPlainText(context.getString(R.string.error), stackTrace),
-					)
-				}
-				.setNegativeButton(R.string.close, null)
-				.create()
-			dialog.show()
-		}
 	}
 }

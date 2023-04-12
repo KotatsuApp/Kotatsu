@@ -7,14 +7,17 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
 import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
+import org.koitharu.kotatsu.utils.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import javax.inject.Inject
 
@@ -23,6 +26,9 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
 	@Inject
 	lateinit var networkState: NetworkState
+
+	@Inject
+	lateinit var pageLoader: PageLoader
 
 	private val scrollInterpolator = AccelerateDecelerateInterpolator()
 	private var webtoonAdapter: WebtoonAdapter? = null
@@ -36,7 +42,7 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 		super.onViewCreated(view, savedInstanceState)
 		webtoonAdapter = WebtoonAdapter(
 			lifecycleOwner = viewLifecycleOwner,
-			loader = viewModel.pageLoader,
+			loader = pageLoader,
 			settings = viewModel.readerSettings,
 			networkState = networkState,
 			exceptionResolver = exceptionResolver,
@@ -58,13 +64,13 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 	}
 
 	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {
-		viewLifecycleScope.launchWhenCreated {
+		viewLifecycleScope.launch {
 			val setItems = async { webtoonAdapter?.setItems(pages) }
 			if (pendingState != null) {
 				val position = pages.indexOfFirst {
 					it.chapterId == pendingState.chapterId && it.index == pendingState.page
 				}
-				setItems.await() ?: return@launchWhenCreated
+				setItems.await() ?: return@launch
 				if (position != -1) {
 					with(binding.recyclerView) {
 						firstVisibleItemPosition = position
@@ -98,15 +104,22 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 	}
 
 	override fun switchPageBy(delta: Int) {
-		binding.recyclerView.smoothScrollBy(
-			0,
-			(binding.recyclerView.height * 0.9).toInt() * delta,
-			scrollInterpolator,
-		)
+		with(binding.recyclerView) {
+			if (context.isAnimationsEnabled) {
+				smoothScrollBy(0, (height * 0.9).toInt() * delta, scrollInterpolator)
+			} else {
+				nestedScrollBy(0, (height * 0.9).toInt() * delta)
+			}
+		}
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
 		binding.recyclerView.firstVisibleItemPosition = position
+	}
+
+	override fun scrollBy(delta: Int): Boolean {
+		binding.recyclerView.nestedScrollBy(0, delta)
+		return true
 	}
 
 	private inner class PageScrollListener : WebtoonRecyclerView.OnPageScrollListener() {

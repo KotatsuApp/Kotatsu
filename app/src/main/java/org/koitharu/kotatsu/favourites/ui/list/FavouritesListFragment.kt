@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
@@ -14,20 +15,12 @@ import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.assistedViewModels
 import org.koitharu.kotatsu.utils.ext.withArgs
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener {
 
-	@Inject
-	lateinit var viewModelFactory: FavouritesListViewModel.Factory
-
-	override val viewModel by assistedViewModels { viewModelFactory.create(categoryId) }
-
-	private val categoryId: Long
-		get() = arguments?.getLong(ARG_CATEGORY_ID) ?: NO_ID
+	override val viewModel by viewModels<FavouritesListViewModel>()
 
 	override val isSwipeRefreshEnabled = false
 
@@ -83,7 +76,7 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 	companion object {
 
 		const val NO_ID = 0L
-		private const val ARG_CATEGORY_ID = "category_id"
+		const val ARG_CATEGORY_ID = "category_id"
 
 		fun newInstance(categoryId: Long) = FavouritesListFragment().withArgs(1) {
 			putLong(ARG_CATEGORY_ID, categoryId)

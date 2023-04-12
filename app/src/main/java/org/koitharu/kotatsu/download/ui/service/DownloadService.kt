@@ -44,12 +44,11 @@ import kotlin.collections.set
 @AndroidEntryPoint
 class DownloadService : BaseService() {
 
-	private lateinit var downloadManager: DownloadManager
 	private lateinit var downloadNotification: DownloadNotification
 	private lateinit var wakeLock: PowerManager.WakeLock
 
 	@Inject
-	lateinit var downloadManagerFactory: DownloadManager.Factory
+	lateinit var downloadManager: DownloadManager
 
 	private val jobs = LinkedHashMap<Int, PausingProgressJob<DownloadState>>()
 	private val jobCount = MutableStateFlow(0)
@@ -61,7 +60,6 @@ class DownloadService : BaseService() {
 		downloadNotification = DownloadNotification(this)
 		wakeLock = (applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
-		downloadManager = downloadManagerFactory.create(lifecycleScope)
 		wakeLock.acquire(TimeUnit.HOURS.toMillis(8))
 		DownloadNotification.createChannel(this)
 		startForeground(DownloadNotification.ID_GROUP, downloadNotification.buildGroupNotification())

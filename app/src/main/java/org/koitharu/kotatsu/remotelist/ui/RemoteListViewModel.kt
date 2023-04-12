@@ -1,10 +1,9 @@
 package org.koitharu.kotatsu.remotelist.ui
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,6 +18,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -37,20 +37,25 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
-import org.koitharu.kotatsu.utils.ext.asLiveDataDistinct
+import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.require
 import java.util.LinkedList
+import javax.inject.Inject
 
 private const val FILTER_MIN_INTERVAL = 250L
 
-class RemoteListViewModel @AssistedInject constructor(
-	@Assisted source: MangaSource,
+@HiltViewModel
+class RemoteListViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
 	private val searchRepository: MangaSearchRepository,
 	settings: AppSettings,
 	dataRepository: MangaDataRepository,
+	private val tagHighlighter: MangaTagHighlighter,
 ) : MangaListViewModel(settings), OnFilterChangedListener {
 
+	val source = savedStateHandle.require<MangaSource>(RemoteListFragment.ARG_SOURCE)
 	private val repository = mangaRepositoryFactory.create(source) as RemoteMangaRepository
 	private val filter = FilterCoordinator(repository, dataRepository, viewModelScope)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
@@ -75,7 +80,7 @@ class RemoteListViewModel @AssistedInject constructor(
 				list == null -> add(LoadingState)
 				list.isEmpty() -> add(createEmptyState(header.hasSelectedTags))
 				else -> {
-					list.toUi(this, mode)
+					list.toUi(this, mode, tagHighlighter)
 					when {
 						error != null -> add(error.toErrorFooter())
 						hasNext -> add(LoadingFooter)
@@ -83,7 +88,7 @@ class RemoteListViewModel @AssistedInject constructor(
 				}
 			}
 		}
-	}.asLiveDataDistinct(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
 		filter.observeState()
@@ -192,7 +197,7 @@ class RemoteListViewModel @AssistedInject constructor(
 		val result = LinkedList<ChipsView.ChipModel>()
 		for (tag in tags) {
 			val model = ChipsView.ChipModel(
-				icon = 0,
+				tint = 0,
 				title = tag.title,
 				isCheckable = true,
 				isChecked = selectedTags.remove(tag),
@@ -206,7 +211,7 @@ class RemoteListViewModel @AssistedInject constructor(
 		}
 		for (tag in selectedTags) {
 			val model = ChipsView.ChipModel(
-				icon = 0,
+				tint = 0,
 				title = tag.title,
 				isCheckable = true,
 				isChecked = true,
@@ -215,11 +220,5 @@ class RemoteListViewModel @AssistedInject constructor(
 			result.addFirst(model)
 		}
 		return result
-	}
-
-	@AssistedFactory
-	interface Factory {
-
-		fun create(source: MangaSource): RemoteListViewModel
 	}
 }
