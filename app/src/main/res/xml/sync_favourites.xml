@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
+<sync-adapter
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:accountType="@string/account_type_sync"
 	android:allowParallelSyncs="false"
-	android:contentAuthority="org.koitharu.kotatsu.favourites"
+	android:contentAuthority="${applicationId}.favourites"
 	android:isAlwaysSyncable="true"
 	android:supportsUploading="true"
 	android:userVisible="true" />

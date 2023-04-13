@@ -107,7 +107,7 @@ class DownloadManager @Inject constructor(
 		withMangaLock(manga) {
 			semaphore.withPermit {
 				outState.value = DownloadState.Preparing(startId, manga, null)
-				val destination = localMangaRepository.getOutputDir()
+				val destination = localMangaRepository.getOutputDir(manga)
 				checkNotNull(destination) { context.getString(R.string.cannot_find_available_storage) }
 				val tempFileName = "${manga.id}_$startId.tmp"
 				var output: LocalMangaOutput? = null

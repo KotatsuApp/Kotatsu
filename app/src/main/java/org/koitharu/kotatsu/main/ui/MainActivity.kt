@@ -44,6 +44,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.local.ui.LocalStorageCleanupWorker
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -321,6 +322,7 @@ class MainActivity :
 			withContext(Dispatchers.Default) {
 				TrackWorker.setup(applicationContext)
 				SuggestionsWorker.setup(applicationContext)
+				LocalStorageCleanupWorker.enqueue(applicationContext)
 			}
 			withResumed {
 				MangaPrefetchService.prefetchLast(this@MainActivity)

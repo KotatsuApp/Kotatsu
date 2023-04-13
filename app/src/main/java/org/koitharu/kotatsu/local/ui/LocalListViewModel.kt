@@ -18,7 +18,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
@@ -35,7 +34,6 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import java.io.IOException
 import java.util.LinkedList
@@ -85,7 +83,6 @@ class LocalListViewModel @Inject constructor(
 
 	init {
 		onRefresh()
-		cleanup()
 		watchDirectories()
 	}
 
@@ -137,18 +134,6 @@ class LocalListViewModel @Inject constructor(
 			throw e
 		} catch (e: Throwable) {
 			listError.value = e
-		}
-	}
-
-	private fun cleanup() {
-		if (!DownloadService.isRunning && !LocalChaptersRemoveService.isRunning) {
-			viewModelScope.launch {
-				runCatchingCancellable {
-					repository.cleanup()
-				}.onFailure { error ->
-					error.printStackTraceDebug()
-				}
-			}
 		}
 	}
 

@@ -36,20 +36,14 @@ sealed class LocalMangaOutput(
 		}
 
 		private fun getImpl(root: File, manga: Manga, onlyIfExists: Boolean): LocalMangaOutput? {
-			val name = manga.title.toFileNameSafe()
-			val file = File(root, name)
-			return if (file.exists()) {
-				if (file.isDirectory) {
-					LocalMangaDirOutput(file, manga)
-				} else {
-					LocalMangaZipOutput(file, manga)
-				}
-			} else {
-				if (onlyIfExists) {
-					null
-				} else {
-					LocalMangaDirOutput(file, manga)
-				}
+			val fileName = manga.title.toFileNameSafe()
+			val dir = File(root, fileName)
+			val zip = File(root, "$fileName.cbz")
+			return when {
+				dir.isDirectory -> LocalMangaDirOutput(dir, manga)
+				zip.isFile -> LocalMangaZipOutput(zip, manga)
+				!onlyIfExists -> LocalMangaDirOutput(dir, manga)
+				else -> null
 			}
 		}
 	}

@@ -33,7 +33,7 @@ abstract class MediatorStateFlow<T>(initialValue: T) : StateFlow<T> {
 		delegate.value = v
 	}
 
-	abstract fun onActive()
+	protected abstract fun onActive()
 
-	abstract fun onInactive()
+	protected abstract fun onInactive()
 }

@@ -16,9 +16,12 @@ fun sourceLocaleAD(
 		listener.onItemCheckedChanged(item, isChecked)
 	}
 
-	bind {
+	bind { payloads ->
 		binding.textViewTitle.text = item.title ?: getString(R.string.different_languages)
 		binding.textViewDescription.textAndVisible = item.summary
 		binding.switchToggle.isChecked = item.isChecked
+		if (payloads.isEmpty()) {
+			binding.switchToggle.jumpDrawablesToCurrentState()
+		}
 	}
 }

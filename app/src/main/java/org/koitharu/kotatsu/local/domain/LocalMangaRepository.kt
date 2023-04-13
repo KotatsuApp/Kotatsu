@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.TempFileFilter
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
+import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -128,11 +129,21 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 
 	override suspend fun getTags() = emptySet<MangaTag>()
 
-	suspend fun getOutputDir(): File? {
-		return storageManager.getDefaultWriteableDir()
+	suspend fun getOutputDir(manga: Manga): File? {
+		val defaultDir = storageManager.getDefaultWriteableDir()
+		if (defaultDir != null && LocalMangaOutput.get(defaultDir, manga) != null) {
+			return defaultDir
+		}
+		return storageManager.getWriteableDirs()
+			.firstOrNull {
+				LocalMangaOutput.get(it, manga) != null
+			} ?: defaultDir
 	}
 
-	suspend fun cleanup() {
+	suspend fun cleanup(): Boolean {
+		if (locks.isNotEmpty()) {
+			return false
+		}
 		val dirs = storageManager.getWriteableDirs()
 		runInterruptible(Dispatchers.IO) {
 			dirs.flatMap { dir ->
@@ -141,6 +152,7 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 				file.delete()
 			}
 		}
+		return true
 	}
 
 	suspend fun lockManga(id: Long) {

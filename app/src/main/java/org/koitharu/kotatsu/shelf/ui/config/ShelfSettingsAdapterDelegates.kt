@@ -40,10 +40,12 @@ fun shelfSectionAD(
 		binding.switchToggle.setOnCheckedChangeListener(eventListener)
 		binding.imageViewHandle.setOnTouchListener(eventListener)
 
-		bind {
+		bind { payloads ->
 			binding.textViewTitle.setText(item.section.titleResId)
 			binding.switchToggle.isChecked = item.isChecked
-			binding.switchToggle.jumpDrawablesToCurrentState()
+			if (payloads.isEmpty()) {
+				binding.switchToggle.jumpDrawablesToCurrentState()
+			}
 		}
 	}
 
@@ -61,10 +63,12 @@ fun shelfCategoryAD(
 			end = binding.root.paddingStart,
 		)
 
-		bind {
+		bind { payloads ->
 			binding.root.text = item.title
 			binding.root.isChecked = item.isChecked
-			binding.root.jumpDrawablesToCurrentState()
+			if (payloads.isEmpty()) {
+				binding.root.jumpDrawablesToCurrentState()
+			}
 		}
 	}
 
