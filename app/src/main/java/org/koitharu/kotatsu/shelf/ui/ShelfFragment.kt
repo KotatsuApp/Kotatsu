@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.base.ui.list.NestedScrollStateHandle
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
@@ -47,6 +48,7 @@ class ShelfFragment :
 	@Inject
 	lateinit var settings: AppSettings
 
+	private var nestedScrollStateHandle: NestedScrollStateHandle? = null
 	private val viewModel by viewModels<ShelfViewModel>()
 	private var adapter: ShelfAdapter? = null
 	private var selectionController: SectionedSelectionController<ShelfSectionModel>? = null
@@ -60,6 +62,7 @@ class ShelfFragment :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		nestedScrollStateHandle = NestedScrollStateHandle(savedInstanceState, KEY_NESTED_SCROLL)
 		val sizeResolver = ItemSizeResolver(resources, settings)
 		selectionController = SectionedSelectionController(
 			activity = requireActivity(),
@@ -72,6 +75,7 @@ class ShelfFragment :
 			listener = this,
 			sizeResolver = sizeResolver,
 			selectionController = checkNotNull(selectionController),
+			nestedScrollStateHandle = checkNotNull(nestedScrollStateHandle),
 		)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.setHasFixedSize(true)
@@ -82,10 +86,16 @@ class ShelfFragment :
 		viewModel.onActionDone.observe(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 	}
 
+	override fun onSaveInstanceState(outState: Bundle) {
+		super.onSaveInstanceState(outState)
+		nestedScrollStateHandle?.onSaveInstanceState(outState)
+	}
+
 	override fun onDestroyView() {
 		super.onDestroyView()
 		adapter = null
 		selectionController = null
+		nestedScrollStateHandle = null
 	}
 
 	override fun onItemClick(item: Manga, section: ShelfSectionModel, view: View) {
@@ -132,6 +142,8 @@ class ShelfFragment :
 	}
 
 	companion object {
+
+		private const val KEY_NESTED_SCROLL = "nested_scroll"
 
 		fun newInstance() = ShelfFragment()
 	}

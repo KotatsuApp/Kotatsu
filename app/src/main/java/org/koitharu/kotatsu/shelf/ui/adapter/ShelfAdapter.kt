@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import org.koitharu.kotatsu.base.ui.list.NestedScrollStateHandle
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
@@ -24,6 +25,7 @@ class ShelfAdapter(
 	listener: ShelfListEventListener,
 	sizeResolver: ItemSizeResolver,
 	selectionController: SectionedSelectionController<ShelfSectionModel>,
+	nestedScrollStateHandle: NestedScrollStateHandle,
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()), FastScroller.SectionIndexer {
 
 	init {
@@ -37,6 +39,7 @@ class ShelfAdapter(
 					sizeResolver = sizeResolver,
 					selectionController = selectionController,
 					listener = listener,
+					nestedScrollStateHandle = nestedScrollStateHandle,
 				),
 			)
 			.addDelegate(loadingStateAD())

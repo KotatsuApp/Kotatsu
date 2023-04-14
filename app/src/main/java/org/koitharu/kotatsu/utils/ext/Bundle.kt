@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.core.content.IntentCompat
+import androidx.core.os.BundleCompat
 import androidx.lifecycle.SavedStateHandle
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import java.io.Serializable
@@ -14,11 +16,11 @@ import java.io.Serializable
 // https://issuetracker.google.com/issues/240585930
 
 inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String): T? {
-	return getParcelable(key) as T?
+	return BundleCompat.getParcelable(this, key, T::class.java)
 }
 
 inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? {
-	return getParcelableExtra(key) as T?
+	return IntentCompat.getParcelableExtra(this, key, T::class.java)
 }
 
 inline fun <reified T : Serializable> Intent.getSerializableExtraCompat(key: String): T? {
