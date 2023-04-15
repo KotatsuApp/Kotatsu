@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +34,7 @@ import javax.inject.Inject
 class FeedFragment :
 	BaseFragment<FragmentFeedBinding>(),
 	PaginationScrollListener.Callback,
-	MangaListListener {
+	MangaListListener, SwipeRefreshLayout.OnRefreshListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -64,7 +65,7 @@ class FeedFragment :
 		with(binding.swipeRefreshLayout) {
 			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
 			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
-			isEnabled = false
+			setOnRefreshListener(this@FeedFragment)
 		}
 		addMenuProvider(
 			FeedMenuProvider(
@@ -92,6 +93,10 @@ class FeedFragment :
 		binding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
+	}
+
+	override fun onRefresh() {
+		TrackWorker.startNow(context ?: return)
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit

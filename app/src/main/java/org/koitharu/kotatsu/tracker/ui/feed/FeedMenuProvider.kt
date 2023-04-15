@@ -6,7 +6,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.core.view.MenuProvider
-import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -28,13 +27,6 @@ class FeedMenuProvider(
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 		R.id.action_update -> {
 			TrackWorker.startNow(context)
-			val snackbar = Snackbar.make(
-				snackbarHost,
-				R.string.feed_will_update_soon,
-				Snackbar.LENGTH_LONG,
-			)
-			snackbar.anchorView = anchorView
-			snackbar.show()
 			true
 		}
 
