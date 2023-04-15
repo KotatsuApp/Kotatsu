@@ -10,7 +10,10 @@
 }
 -keep public class ** extends org.koitharu.kotatsu.base.ui.BaseFragment
 -keep class org.koitharu.kotatsu.core.db.entity.* { *; }
--dontwarn okhttp3.internal.platform.ConscryptPlatform
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
 
 -keep class org.koitharu.kotatsu.core.exceptions.* { *; }
 -keep class org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment
