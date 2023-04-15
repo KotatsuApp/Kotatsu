@@ -1,7 +1,12 @@
 package org.koitharu.kotatsu.sync.domain
 
 import android.accounts.Account
-import android.content.*
+import android.content.ContentProviderClient
+import android.content.ContentProviderOperation
+import android.content.ContentProviderResult
+import android.content.Context
+import android.content.OperationApplicationException
+import android.content.SyncResult
 import android.database.Cursor
 import android.net.Uri
 import androidx.annotation.WorkerThread
@@ -11,7 +16,12 @@ import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.db.*
+import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
+import org.koitharu.kotatsu.core.db.TABLE_FAVOURITE_CATEGORIES
+import org.koitharu.kotatsu.core.db.TABLE_HISTORY
+import org.koitharu.kotatsu.core.db.TABLE_MANGA
+import org.koitharu.kotatsu.core.db.TABLE_MANGA_TAGS
+import org.koitharu.kotatsu.core.db.TABLE_TAGS
 import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.data.SyncAuthenticator
@@ -22,9 +32,6 @@ import org.koitharu.kotatsu.utils.ext.toContentValues
 import org.koitharu.kotatsu.utils.ext.toJson
 import org.koitharu.kotatsu.utils.ext.toRequestBody
 import java.util.concurrent.TimeUnit
-
-const val AUTHORITY_HISTORY = "org.koitharu.kotatsu.history"
-const val AUTHORITY_FAVOURITES = "org.koitharu.kotatsu.favourites"
 
 private const val FIELD_TIMESTAMP = "timestamp"
 
@@ -38,6 +45,8 @@ class SyncHelper(
 	private val provider: ContentProviderClient,
 ) {
 
+	private val authorityHistory = context.getString(R.string.sync_authority_history)
+	private val authorityFavourites = context.getString(R.string.sync_authority_favourites)
 	private val httpClient = OkHttpClient.Builder()
 		.authenticator(SyncAuthenticator(context, account, SyncAuthApi(context, OkHttpClient())))
 		.addInterceptor(SyncInterceptor(context, account))
@@ -86,13 +95,13 @@ class SyncHelper(
 	}
 
 	private fun upsertHistory(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
-		val uri = uri(AUTHORITY_HISTORY, TABLE_HISTORY)
+		val uri = uri(authorityHistory, TABLE_HISTORY)
 		val operations = ArrayList<ContentProviderOperation>()
 		operations += ContentProviderOperation.newDelete(uri)
 			.withSelection("updated_at < ?", arrayOf(timestamp.toString()))
 			.build()
 		json.mapJSONTo(operations) { jo ->
-			operations.addAll(upsertManga(jo.removeJSONObject("manga"), AUTHORITY_HISTORY))
+			operations.addAll(upsertManga(jo.removeJSONObject("manga"), authorityHistory))
 			ContentProviderOperation.newInsert(uri)
 				.withValues(jo.toContentValues())
 				.build()
@@ -101,7 +110,7 @@ class SyncHelper(
 	}
 
 	private fun upsertFavouriteCategories(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
-		val uri = uri(AUTHORITY_FAVOURITES, TABLE_FAVOURITE_CATEGORIES)
+		val uri = uri(authorityFavourites, TABLE_FAVOURITE_CATEGORIES)
 		val operations = ArrayList<ContentProviderOperation>()
 		operations += ContentProviderOperation.newDelete(uri)
 			.withSelection("created_at < ?", arrayOf(timestamp.toString()))
@@ -115,13 +124,13 @@ class SyncHelper(
 	}
 
 	private fun upsertFavourites(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
-		val uri = uri(AUTHORITY_FAVOURITES, TABLE_FAVOURITES)
+		val uri = uri(authorityFavourites, TABLE_FAVOURITES)
 		val operations = ArrayList<ContentProviderOperation>()
 		operations += ContentProviderOperation.newDelete(uri)
 			.withSelection("created_at < ?", arrayOf(timestamp.toString()))
 			.build()
 		json.mapJSONTo(operations) { jo ->
-			operations.addAll(upsertManga(jo.removeJSONObject("manga"), AUTHORITY_FAVOURITES))
+			operations.addAll(upsertManga(jo.removeJSONObject("manga"), authorityFavourites))
 			ContentProviderOperation.newInsert(uri)
 				.withValues(jo.toContentValues())
 				.build()
@@ -142,25 +151,25 @@ class SyncHelper(
 					contentValuesOf(
 						"manga_id" to json.getLong("manga_id"),
 						"tag_id" to tag.getLong("tag_id"),
-					)
+					),
 				).build()
 		}
 		result.add(
 			0,
 			ContentProviderOperation.newInsert(uri(authority, TABLE_MANGA))
 				.withValues(json.toContentValues())
-				.build()
+				.build(),
 		)
 		return result
 	}
 
 	private fun getHistory(): JSONArray {
-		return provider.query(AUTHORITY_HISTORY, TABLE_HISTORY).use { cursor ->
+		return provider.query(authorityHistory, TABLE_HISTORY).use { cursor ->
 			val json = JSONArray()
 			if (cursor.moveToFirst()) {
 				do {
 					val jo = cursor.toJson()
-					jo.put("manga", getManga(AUTHORITY_HISTORY, jo.getLong("manga_id")))
+					jo.put("manga", getManga(authorityHistory, jo.getLong("manga_id")))
 					json.put(jo)
 				} while (cursor.moveToNext())
 			}
@@ -169,12 +178,12 @@ class SyncHelper(
 	}
 
 	private fun getFavourites(): JSONArray {
-		return provider.query(AUTHORITY_FAVOURITES, TABLE_FAVOURITES).use { cursor ->
+		return provider.query(authorityFavourites, TABLE_FAVOURITES).use { cursor ->
 			val json = JSONArray()
 			if (cursor.moveToFirst()) {
 				do {
 					val jo = cursor.toJson()
-					jo.put("manga", getManga(AUTHORITY_FAVOURITES, jo.getLong("manga_id")))
+					jo.put("manga", getManga(authorityFavourites, jo.getLong("manga_id")))
 					json.put(jo)
 				} while (cursor.moveToNext())
 			}
@@ -183,7 +192,7 @@ class SyncHelper(
 	}
 
 	private fun getFavouriteCategories(): JSONArray {
-		return provider.query(AUTHORITY_FAVOURITES, TABLE_FAVOURITE_CATEGORIES).use { cursor ->
+		return provider.query(authorityFavourites, TABLE_FAVOURITE_CATEGORIES).use { cursor ->
 			val json = JSONArray()
 			if (cursor.moveToFirst()) {
 				do {
@@ -247,15 +256,15 @@ class SyncHelper(
 		val deletedAt = System.currentTimeMillis() - defaultGcPeriod
 		val selection = "deleted_at != 0 AND deleted_at < ?"
 		val args = arrayOf(deletedAt.toString())
-		provider.delete(uri(AUTHORITY_FAVOURITES, TABLE_FAVOURITES), selection, args)
-		provider.delete(uri(AUTHORITY_FAVOURITES, TABLE_FAVOURITE_CATEGORIES), selection, args)
+		provider.delete(uri(authorityFavourites, TABLE_FAVOURITES), selection, args)
+		provider.delete(uri(authorityFavourites, TABLE_FAVOURITE_CATEGORIES), selection, args)
 	}
 
 	private fun gcHistory() {
 		val deletedAt = System.currentTimeMillis() - defaultGcPeriod
 		val selection = "deleted_at != 0 AND deleted_at < ?"
 		val args = arrayOf(deletedAt.toString())
-		provider.delete(uri(AUTHORITY_HISTORY, TABLE_HISTORY), selection, args)
+		provider.delete(uri(authorityHistory, TABLE_HISTORY), selection, args)
 	}
 
 	private fun ContentProviderClient.query(authority: String, table: String): Cursor {

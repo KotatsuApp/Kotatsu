@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="account_type_sync" translatable="false">org.kotatsu.debug.sync</string>
+	<string name="sync_authority_history" translatable="false">org.koitharu.kotatsu.debug.history</string>
+	<string name="sync_authority_favourites" translatable="false">org.koitharu.kotatsu.debug.favourites</string>
 </resources>

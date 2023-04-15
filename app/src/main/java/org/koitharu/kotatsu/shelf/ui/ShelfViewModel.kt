@@ -34,6 +34,7 @@ import org.koitharu.kotatsu.shelf.domain.ShelfContent
 import org.koitharu.kotatsu.shelf.domain.ShelfRepository
 import org.koitharu.kotatsu.shelf.domain.ShelfSection
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
+import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
@@ -46,6 +47,7 @@ class ShelfViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
+	syncController: SyncController,
 	networkState: NetworkState,
 ) : BaseViewModel(), ListExtraProvider {
 
@@ -62,6 +64,12 @@ class ShelfViewModel @Inject constructor(
 		.catch { e ->
 			emit(listOf(e.toErrorState(canRetry = false)))
 		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+
+	init {
+		launchJob(Dispatchers.Default) {
+			syncController.requestFullSync()
+		}
+	}
 
 	override suspend fun getCounter(mangaId: Long): Int {
 		return if (settings.isTrackerEnabled) {

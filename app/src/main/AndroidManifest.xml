@@ -227,13 +227,13 @@
 		</provider>
 		<provider
 			android:name="org.koitharu.kotatsu.sync.ui.favourites.FavouritesSyncProvider"
-			android:authorities="${applicationId}.favourites"
+			android:authorities="@string/sync_authority_favourites"
 			android:exported="false"
 			android:label="@string/favourites"
 			android:syncable="true" />
 		<provider
 			android:name="org.koitharu.kotatsu.sync.ui.history.HistorySyncProvider"
-			android:authorities="${applicationId}.history"
+			android:authorities="@string/sync_authority_history"
 			android:exported="false"
 			android:label="@string/history"
 			android:syncable="true" />

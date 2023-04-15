@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:accountType="@string/account_type_sync"
 	android:allowParallelSyncs="false"
-	android:contentAuthority="${applicationId}.history"
+	android:contentAuthority="@string/sync_authority_history"
 	android:isAlwaysSyncable="true"
 	android:supportsUploading="true"
 	android:userVisible="true" />

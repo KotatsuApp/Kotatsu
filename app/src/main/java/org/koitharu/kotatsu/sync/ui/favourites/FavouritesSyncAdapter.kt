@@ -27,7 +27,7 @@ class FavouritesSyncAdapter(context: Context) : AbstractThreadedSyncAdapter(cont
 		val syncHelper = SyncHelper(context, account, provider)
 		runCatchingCancellable {
 			syncHelper.syncFavourites(syncResult)
-			SyncController(context).setLastSync(account, authority, System.currentTimeMillis())
+			SyncController.setLastSync(context, account, authority, System.currentTimeMillis())
 		}.onFailure(syncResult::onError)
 	}
 }
