@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.ui.config.ScrobblerConfigActivity
 import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
+import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
@@ -36,6 +37,9 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 
 	@Inject
 	lateinit var malRepository: MALRepository
+
+	@Inject
+	lateinit var syncController: SyncController
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_services)
@@ -143,7 +147,11 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 				AccountManager.get(requireContext()).getAccountsByType(type).firstOrNull()
 			}
 			findPreference<Preference>(AppSettings.KEY_SYNC)?.run {
-				summary = account?.name ?: getString(R.string.sync_title)
+				summary = when {
+					account == null -> getString(R.string.sync_title)
+					syncController.isEnabled(account) -> account.name
+					else -> getString(R.string.disabled)
+				}
 			}
 		}
 	}

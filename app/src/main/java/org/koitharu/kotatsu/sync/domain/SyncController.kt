@@ -49,6 +49,16 @@ class SyncController @Inject constructor(
 		)
 	}
 
+	fun isEnabled(account: Account): Boolean {
+		return ContentResolver.getMasterSyncAutomatically() && (ContentResolver.getSyncAutomatically(
+			account,
+			authorityFavourites,
+		) || ContentResolver.getSyncAutomatically(
+			account,
+			authorityHistory,
+		))
+	}
+
 	fun getLastSync(account: Account, authority: String): Long {
 		val key = "last_sync_" + authority.substringAfterLast('.')
 		val rawValue = am.getUserData(account, key) ?: return 0L
