@@ -44,11 +44,11 @@ android {
 		androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
 	}
 	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_1_8
-		targetCompatibility JavaVersion.VERSION_1_8
+		sourceCompatibility JavaVersion.VERSION_17
+		targetCompatibility JavaVersion.VERSION_17
 	}
 	kotlinOptions {
-		jvmTarget = JavaVersion.VERSION_1_8.toString()
+		jvmTarget = JavaVersion.VERSION_17.toString()
 		freeCompilerArgs += [
 			'-opt-in=kotlin.ExperimentalStdlibApi',
 			'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
@@ -78,11 +78,11 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:5e3fddb652') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:749f682ef9') {
 		exclude group: 'org.json', module: 'json'
 	}
 
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.10'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.20'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
