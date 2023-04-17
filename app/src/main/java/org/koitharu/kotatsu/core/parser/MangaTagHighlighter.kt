@@ -13,7 +13,13 @@ class MangaTagHighlighter @Inject constructor(
 	@ApplicationContext context: Context,
 ) {
 
-	private val dict = context.resources.getStringArray(R.array.genres_warnlist).toSet()
+	private val dict by lazy {
+		context.resources.openRawResource(R.raw.tags_redlist).use {
+			val set = HashSet<String>()
+			it.bufferedReader().forEachLine { x -> set.add(x) }
+			set
+		}
+	}
 
 	@ColorRes
 	fun getTint(tag: MangaTag): Int {
