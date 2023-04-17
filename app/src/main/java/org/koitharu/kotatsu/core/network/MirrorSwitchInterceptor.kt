@@ -4,6 +4,8 @@ import dagger.Lazy
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.internal.canParseAsIpAddress
 import okhttp3.internal.closeQuietly
 import okhttp3.internal.publicsuffix.PublicSuffixDatabase
@@ -23,9 +25,11 @@ class MirrorSwitchInterceptor @Inject constructor(
 		return try {
 			val response = chain.proceed(request)
 			if (response.isFailed) {
+				val responseCopy = response.copy()
+				response.closeQuietly()
 				trySwitchMirror(request, chain)?.also {
-					response.close()
-				} ?: response
+					responseCopy.closeQuietly()
+				} ?: responseCopy
 			} else {
 				response
 			}
@@ -84,5 +88,15 @@ class MirrorSwitchInterceptor @Inject constructor(
 		}
 		val domain = PublicSuffixDatabase.get().getEffectiveTldPlusOne(host) ?: return null
 		return host.removeSuffix(domain) + newDomain
+	}
+
+	private fun Response.copy(): Response {
+		return newBuilder()
+			.body(body?.copy())
+			.build()
+	}
+
+	private fun ResponseBody.copy(): ResponseBody {
+		return source().readByteArray().toResponseBody(contentType())
 	}
 }
