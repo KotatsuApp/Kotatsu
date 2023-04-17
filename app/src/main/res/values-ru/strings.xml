@@ -48,7 +48,7 @@
 	<string name="theme">Тема</string>
 	<string name="light">Светлая</string>
 	<string name="dark">Тёмная</string>
-	<string name="automatic">Автоматически</string>
+	<string name="automatic">Системная</string>
 	<string name="pages">Страницы</string>
 	<string name="clear">Очистить</string>
 	<string name="text_clear_history_prompt">Очистить всю историю чтения полностью\?</string>
@@ -238,7 +238,7 @@
 	<string name="suggestions">Рекомендации</string>
 	<string name="suggestions_enable">Включить рекомендации</string>
 	<string name="suggestions_summary">Предлагать мангу на основе Ваших предпочтений</string>
-	<string name="suggestions_info">Все данные анализируются локально на устройстве. Ваши персональные данные не передаются в какие-либо сервисы</string>
+	<string name="suggestions_info">Все данные анализируются только локально на этом устройстве и никуда не отправляются.</string>
 	<string name="text_suggestion_holder">Начните читать мангу, чтобы получать персональные предложения</string>
 	<string name="exclude_nsfw_from_suggestions">Не предлагать NSFW мангу</string>
 	<string name="enabled">Включено</string>
@@ -373,7 +373,7 @@
 	<string name="import_will_start_soon">Импорт скоро начнётся</string>
 	<string name="feed">Лента</string>
 	<string name="downloading_manga">Загрузка манги</string>
-	<string name="manga_error_description_pattern">Информация об ошибке:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Попробуйте &lt;a href=%2$s&gt;открыть мангу в веб-браузере&lt;/a&gt;, чтобы убедиться, что она доступна в источнике&lt;br&gt;2. Убедитесь, что вы используете &lt;a href=kotatsu://about&gt;последнюю версию Kotatsu&lt;/a&gt;&lt;br&gt;3. Если она доступна, отправьте отчёт об ошибке разработчикам.</string>
+	<string name="manga_error_description_pattern">Сведения об ошибке:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Попробуйте &lt;a href=%2$s&gt;открыть мангу в веб-браузере&lt;/a&gt;, чтобы убедиться, что она доступна в источнике&lt;br&gt;2. Убедитесь, что вы используете &lt;a href=kotatsu://about&gt;последнюю версию Kotatsu&lt;/a&gt;&lt;br&gt;3. Если возможно, отправьте отчёт об ошибке разработчикам.</string>
 	<string name="history_shortcuts">Показывать ярлыки последней прочитанной манги</string>
 	<string name="history_shortcuts_summary">Сделать недавно прочитанную мангу доступной по долгому нажатию на иконку приложения</string>
 	<string name="reader_control_ltr_summary">Нажатие на правый край или нажатие правой клавиши всегда переключает на следующую страницу</string>
@@ -421,7 +421,7 @@
 	<string name="allow_unstable_updates_summary">Предлагать обновления до бета-версий приложения</string>
 	<string name="settings_apply_restart_required">Пожалуйста, перезапустите приложение, чтобы применить эти изменения</string>
 	<string name="user_agent">Заголовок UserAgent</string>
-	<string name="got_it">Понятно</string>
+	<string name="got_it">Понял</string>
 	<string name="sources_reorder_tip">Нажмите и удерживайте элемент, чтобы изменить их порядок</string>
 	<string name="comics_archive_import_description">Вы можете выбрать один или несколько файлов .cbz или .zip, каждый файл будет распознан как отдельная манга.</string>
 	<string name="folder_with_images_import_description">Вы можете выбрать каталог с архивами или изображениями. Каждый архив (или подкаталог) будет распознан как глава.</string>
