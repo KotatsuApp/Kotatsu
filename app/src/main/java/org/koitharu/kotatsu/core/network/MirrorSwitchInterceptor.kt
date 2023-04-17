@@ -23,9 +23,9 @@ class MirrorSwitchInterceptor @Inject constructor(
 		return try {
 			val response = chain.proceed(request)
 			if (response.isFailed) {
-				val responseCopy = response.newBuilder().build()
-				response.close()
-				trySwitchMirror(request, chain) ?: responseCopy
+				trySwitchMirror(request, chain)?.also {
+					response.close()
+				} ?: response
 			} else {
 				response
 			}

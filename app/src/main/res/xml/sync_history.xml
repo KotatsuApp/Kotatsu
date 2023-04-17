@@ -6,4 +6,4 @@
 	android:contentAuthority="@string/sync_authority_history"
 	android:isAlwaysSyncable="true"
 	android:supportsUploading="true"
-	android:userVisible="true" />
+	android:userVisible="@bool/is_sync_enabled" />
