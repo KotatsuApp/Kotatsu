@@ -1,10 +1,13 @@
 package org.koitharu.kotatsu.settings
 
+import okhttp3.HttpUrl
 import okhttp3.internal.toCanonicalHost
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.utils.EditTextValidator
 
 class DomainValidator : EditTextValidator() {
+
+	private val urlBuilder = HttpUrl.Builder()
 
 	override fun validate(text: String): ValidationResult {
 		val trimmed = text.trim()
@@ -18,13 +21,7 @@ class DomainValidator : EditTextValidator() {
 		}
 	}
 
-	private fun checkCharacters(value: String): Boolean {
-		for (i in value.indices) {
-			val c = value[i]
-			if (c !in '\u0020'..'\u007e') {
-				return false
-			}
-		}
-		return true
-	}
+	private fun checkCharacters(value: String): Boolean = runCatching {
+		urlBuilder.host(value)
+	}.isSuccess
 }
