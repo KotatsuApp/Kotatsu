@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONArray
+import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.await
@@ -28,6 +30,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val CERT_SHA1 = "2C:19:C7:E8:07:61:2B:8E:94:51:1B:FD:72:67:07:64:5D:C2:58:AE"
+private const val CONTENT_TYPE_APK = "application/vnd.android.package-archive"
 
 @Singleton
 class AppUpdateRepository @Inject constructor(
@@ -46,7 +49,9 @@ class AppUpdateRepository @Inject constructor(
 			.url("https://api.github.com/repos/KotatsuApp/Kotatsu/releases?page=1&per_page=10")
 		val jsonArray = okHttp.newCall(request.build()).await().parseJsonArray()
 		return jsonArray.mapJSONNotNull { json ->
-			val asset = json.optJSONArray("assets")?.optJSONObject(0) ?: return@mapJSONNotNull null
+			val asset = json.optJSONArray("assets")?.find { jo ->
+				jo.optString("content_type") == CONTENT_TYPE_APK
+			} ?: return@mapJSONNotNull null
 			AppVersion(
 				id = json.getLong("id"),
 				url = json.getString("html_url"),
@@ -103,4 +108,15 @@ class AppUpdateRepository @Inject constructor(
 	}.onFailure { error ->
 		error.printStackTraceDebug()
 	}.getOrNull()
+
+	private inline fun JSONArray.find(predicate: (JSONObject) -> Boolean): JSONObject? {
+		val size = length()
+		for (i in 0 until size) {
+			val jo = getJSONObject(i)
+			if (predicate(jo)) {
+				return jo
+			}
+		}
+		return null
+	}
 }
