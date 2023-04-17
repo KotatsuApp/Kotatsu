@@ -46,7 +46,7 @@ import javax.inject.Inject
 
 private const val MAX_FAILSAFE_ATTEMPTS = 2
 private const val DOWNLOAD_ERROR_DELAY = 500L
-private const val SLOWDOWN_DELAY = 200L
+private const val SLOWDOWN_DELAY = 150L
 
 @ServiceScoped
 class DownloadManager @Inject constructor(
@@ -252,6 +252,7 @@ class DownloadManager @Inject constructor(
 		imageLoader.execute(
 			ImageRequest.Builder(context)
 				.data(manga.coverUrl)
+				.allowHardware(false)
 				.tag(manga.source)
 				.size(coverWidth, coverHeight)
 				.scale(Scale.FILL)
