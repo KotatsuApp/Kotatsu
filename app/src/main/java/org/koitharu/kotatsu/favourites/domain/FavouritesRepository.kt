@@ -142,8 +142,8 @@ class FavouritesRepository @Inject constructor(
 	suspend fun removeCategories(ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouriteCategoriesDao.delete(id)
 				db.favouritesDao.deleteAll(id)
+				db.favouriteCategoriesDao.delete(id)
 			}
 		}
 		// run after transaction success

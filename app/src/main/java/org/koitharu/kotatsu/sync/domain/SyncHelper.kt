@@ -65,14 +65,17 @@ class SyncHelper(
 			.url("$baseUrl/resource/$TABLE_FAVOURITES")
 			.post(data.toRequestBody())
 			.build()
-		val response = httpClient.newCall(request).execute().parseJsonOrNull() ?: return
-		val timestamp = response.getLong(FIELD_TIMESTAMP)
-		val categoriesResult = upsertFavouriteCategories(response.getJSONArray(TABLE_FAVOURITE_CATEGORIES), timestamp)
-		syncResult.stats.numDeletes += categoriesResult.first().count?.toLong() ?: 0L
-		syncResult.stats.numInserts += categoriesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
-		val favouritesResult = upsertFavourites(response.getJSONArray(TABLE_FAVOURITES), timestamp)
-		syncResult.stats.numDeletes += favouritesResult.first().count?.toLong() ?: 0L
-		syncResult.stats.numInserts += favouritesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
+		val response = httpClient.newCall(request).execute().parseJsonOrNull()
+		if (response != null) {
+			val timestamp = response.getLong(FIELD_TIMESTAMP)
+			val categoriesResult =
+				upsertFavouriteCategories(response.getJSONArray(TABLE_FAVOURITE_CATEGORIES), timestamp)
+			syncResult.stats.numDeletes += categoriesResult.first().count?.toLong() ?: 0L
+			syncResult.stats.numInserts += categoriesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
+			val favouritesResult = upsertFavourites(response.getJSONArray(TABLE_FAVOURITES), timestamp)
+			syncResult.stats.numDeletes += favouritesResult.first().count?.toLong() ?: 0L
+			syncResult.stats.numInserts += favouritesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
+		}
 		gcFavourites()
 	}
 
@@ -84,13 +87,15 @@ class SyncHelper(
 			.url("$baseUrl/resource/$TABLE_HISTORY")
 			.post(data.toRequestBody())
 			.build()
-		val response = httpClient.newCall(request).execute().parseJsonOrNull() ?: return
-		val result = upsertHistory(
-			json = response.getJSONArray(TABLE_HISTORY),
-			timestamp = response.getLong(FIELD_TIMESTAMP),
-		)
-		syncResult.stats.numDeletes += result.first().count?.toLong() ?: 0L
-		syncResult.stats.numInserts += result.drop(1).sumOf { it.count?.toLong() ?: 0L }
+		val response = httpClient.newCall(request).execute().parseJsonOrNull()
+		if (response != null) {
+			val result = upsertHistory(
+				json = response.getJSONArray(TABLE_HISTORY),
+				timestamp = response.getLong(FIELD_TIMESTAMP),
+			)
+			syncResult.stats.numDeletes += result.first().count?.toLong() ?: 0L
+			syncResult.stats.numInserts += result.drop(1).sumOf { it.count?.toLong() ?: 0L }
+		}
 		gcHistory()
 	}
 
