@@ -23,7 +23,6 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	private val differ = AsyncListDiffer(this, DiffCallback())
 
 	init {
-		setHasStableIds(true)
 		stateRestorationPolicy = StateRestorationPolicy.PREVENT
 	}
 
@@ -51,8 +50,6 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 
 	open fun getItemOrNull(position: Int) = differ.currentList.getOrNull(position)
 
-	override fun getItemId(position: Int) = differ.currentList[position].id
-
 	final override fun getItemCount() = differ.currentList.size
 
 	final override fun onCreateViewHolder(
@@ -77,7 +74,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	private class DiffCallback : DiffUtil.ItemCallback<ReaderPage>() {
 
 		override fun areItemsTheSame(oldItem: ReaderPage, newItem: ReaderPage): Boolean {
-			return oldItem.id == newItem.id
+			return oldItem.id == newItem.id && oldItem.chapterId == newItem.chapterId
 		}
 
 		override fun areContentsTheSame(oldItem: ReaderPage, newItem: ReaderPage): Boolean {
