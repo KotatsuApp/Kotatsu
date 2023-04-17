@@ -14,7 +14,7 @@
     <string name="grid">Табліца</string>
     <string name="list_mode">Выгляд спісу</string>
     <string name="settings">Налады</string>
-    <string name="remote_sources">Анлайн крыніцы</string>
+    <string name="remote_sources">Крыніцы мангі</string>
     <string name="loading_">Загрузка…</string>
     <string name="chapter_d_of_d">Глава %1$d з %2$d</string>
     <string name="close">Закрыць</string>
@@ -243,7 +243,7 @@
     <string name="enabled">Уключаны</string>
     <string name="exclude_nsfw_from_suggestions">Не прапануйце мангу NSFW</string>
     <string name="text_suggestion_holder">Пачніце чытаць мангу, і вы атрымаеце персаналізаваныя прапановы</string>
-    <string name="suggestions_info">Усе дадзеныя аналізуюцца лакальна на гэтай прыладзе. Перадача вашых персанальных дадзеных якім-небудзь сэрвісам не ажыццяўляецца</string>
+    <string name="suggestions_info">Усе даныя аналізуюцца толькі лакальна на гэтай прыладзе і нікуды не адпраўляюцца.</string>
     <string name="suggestions_summary">Прапануеце мангу, заснаваную на вашых перавагах</string>
     <string name="suggestions_enable">Уключыць прапановы</string>
     <string name="suggestions">Прапанова</string>
@@ -269,7 +269,7 @@
     <string name="appwidget_recent_description">Манга, якую вы нядаўна чыталі</string>
     <string name="suggestions_updating">Абнаўленне рэкамендацый</string>
     <string name="local_manga_processing">Апрацоўка захаванай мангі</string>
-    <string name="chapters_will_removed_background">Главы будуць выдаленыя ш фонавым рэжыме. Гэта можа заняць нейкі час</string>
+    <string name="chapters_will_removed_background">Раздзелы будуць выдалены ў фонавым рэжыме</string>
     <string name="check_new_chapters_title">Правяраць новыя главы і паведамляць пра іх</string>
     <string name="show_notification_new_chapters_on">Вы будзеце атрымліваць апавяшчэнні пра абнаўленні мангі, якую вы чытаеце</string>
     <string name="show_notification_new_chapters_off">Вы не будзеце атрымліваць паведамленні, але новыя главы будуць паказаны ў спісе</string>
@@ -354,7 +354,7 @@
     <string name="email_enter_hint">Каб працягнуць, увядзіце свой адрас электроннай пошты</string>
     <string name="import_completed_hint">Вы можаце выдаліць зыходны файл са сховішча, каб зэканоміць месца</string>
     <string name="import_will_start_soon">Хутка пачнецца імпарт</string>
-    <string name="manga_error_description_pattern">Дэталі памылкі:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Паспрабуйце &lt;a href=%2$s&gt;адкрыць мангу ў вэб-браўзеры&lt;/a&gt;, каб пераканацца, што яна даступная ў крыніцы&lt;br&gt;2. Калі ён даступны, адпраўце распрацоўнікам справаздачу аб памылцы.</string>
+    <string name="manga_error_description_pattern">Дэталі памылкі:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Паспрабуйце &lt;a href=%2$s&gt;адкрыць мангу ў вэб-браўзеры&lt;/a&gt;, каб пераканацца, што яна даступная ў крыніцы&lt;br&gt;2. Упэўніцеся, што вы выкарыстоўваеце &lt;a href=kotatsu://about&gt;апошнюю версію Kotatsu&lt;/a&gt;&lt;br&gt;3. Калі ён даступны, адпраўце распрацоўнікам справаздачу аб памылцы.</string>
     <string name="history_shortcuts">Паказаць апошнія ярлыкі мангі</string>
     <string name="history_shortcuts_summary">Зрабіце нядаўнюю мангу даступнай, доўга націскаючы на значок праграмы</string>
     <string name="reader_control_ltr_summary">Дакрананне да правага краю або націсканне правай клавішы заўсёды пераключае на наступную старонку</string>
@@ -421,4 +421,11 @@
     <string name="allow_unstable_updates_summary">Прапануйце абнаўленні да бэта-версій праграмы</string>
     <string name="download_started">Спампоўка пачалася</string>
     <string name="settings_apply_restart_required">Калі ласка, перазапусціце праграму каб прымяніць змены</string>
+    <string name="got_it">Зразумеў</string>
+    <string name="sources_reorder_tip">Націсніце і ўтрымлівайце элемент, каб змяніць іх парадак</string>
+    <string name="comics_archive_import_description">Вы можаце выбраць адзін або некалькі файлаў .cbz або .zip, кожны файл будзе распазнаны як асобная манга.</string>
+    <string name="folder_with_images_import_description">Вы можаце выбраць каталог з архівамі або выявамі. Кожны архіў (ці падкаталог) будзе прызнаны раздзелам.</string>
+    <string name="speed">Хуткасць</string>
+    <string name="restore_backup_description">Імпарт раней створанай рэзервовай копіі дадзеных карыстальніка</string>
+    <string name="show_on_shelf">Паказаць на паліцы</string>
 </resources>

@@ -25,7 +25,7 @@
     <string name="detailed_list">Детальний список</string>
     <string name="list_mode">Режим списку</string>
     <string name="settings">Налаштування</string>
-    <string name="remote_sources">Віддалені джерела</string>
+    <string name="remote_sources">Джерела манги</string>
     <string name="loading_">Завантаження…</string>
     <string name="computing_">Обчислення…</string>
     <string name="chapter_d_of_d">Розділ %1$d із %2$d</string>
@@ -192,7 +192,7 @@
     <string name="screenshots_policy">Політика щодо знімків екрана</string>
     <string name="screenshots_allow">Дозволити</string>
     <string name="suggestions_summary">Пропонувати манґу на основі ваших уподобань</string>
-    <string name="suggestions_info">Усі дані аналізуються локально на цьому пристрої. Передача ваших персональних даних у будь-які сервіси не здійснюється</string>
+    <string name="suggestions_info">Усі дані аналізуються лише локально на цьому пристрої й ніколи нікуди не надсилаються.</string>
     <string name="text_suggestion_holder">Почніть читати манґу, і ви отримаєте персоналізовані пропозиції</string>
     <string name="enabled">Увімкнено</string>
     <string name="disabled">Вимкнено</string>
@@ -274,7 +274,7 @@
     <string name="suggestions_excluded_genres">Виключити жанри</string>
     <string name="suggestions_excluded_genres_summary">Укажіть жанри, які ви не хочете бачити в пропозиціях</string>
     <string name="download_slowdown_summary">Допомагає уникнути блокування вашої IP-адреси</string>
-    <string name="chapters_will_removed_background">Розділи будуть видалені у фоновому режимі. Це може зайняти деякий час</string>
+    <string name="chapters_will_removed_background">Розділи буде видалено у фоновому режимі</string>
     <string name="check_new_chapters_title">Перевіряти наявність нових розділів і повідомляти про них</string>
     <string name="show_notification_new_chapters_on">Ви будете отримувати повідомлення про оновлення манґи, яку ви читаєте</string>
     <string name="notifications_enable">Увімкнути сповіщення</string>
@@ -373,7 +373,7 @@
     <string name="removed_from_favourites">Видалено з уподобань</string>
     <string name="other_cache">Інший кеш</string>
     <string name="memory_usage_pattern">%s - %s</string>
-    <string name="manga_error_description_pattern">Деталі помилки:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Спробуйте &lt;a href=%2$s&gt;відкрити манґу у веб-браузері&lt;/a&gt;, щоб переконатися, що вона доступна в джерелі&lt;br&gt;2. Якщо вона доступна, то надішліть звіт про помилку розробникам.</string>
+    <string name="manga_error_description_pattern">Деталі помилки:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Спробуйте &lt;a href=%2$s&gt;відкрити мангу у веб-браузері&lt;/a&gt;, щоб переконатися, що вона доступна в джерелі&lt;br&gt;2. Переконайтеся, що ви використовуєте &lt;a href=kotatsu://about&gt;останню версію Kotatsu&lt;/a&gt;&lt;br&gt;3. Якщо він доступний, надішліть звіт про помилку розробникам.</string>
     <string name="history_shortcuts">Показувати ярлики останньої прочитаної манґи</string>
     <string name="history_shortcuts_summary">Зробити нещодавно прочитану манґу доступною за довгим натисканням на іконку застосунку</string>
     <string name="reader_control_ltr_summary">Натискання на правий край або натискання правої клавіші завжди переходить на наступну сторінку</string>
@@ -421,4 +421,11 @@
     <string name="download_started">Завантаження розпочато</string>
     <string name="user_agent">Заголовок UserAgent</string>
     <string name="settings_apply_restart_required">Перезапустіть програму, щоб застосувати зміни</string>
+    <string name="got_it">Зрозумів</string>
+    <string name="comics_archive_import_description">Ви можете вибрати один або кілька файлів .cbz або .zip, кожен файл буде розпізнано як окрема манга.</string>
+    <string name="folder_with_images_import_description">Ви можете вибрати каталог з архівами або зображеннями. Кожен архів (або підкаталог) буде розпізнано як розділ.</string>
+    <string name="speed">Швидкість</string>
+    <string name="restore_backup_description">Імпортуйте раніше створену резервну копію даних користувача</string>
+    <string name="show_on_shelf">Показати на полиці</string>
+    <string name="sources_reorder_tip">Натисніть і утримуйте елемент, щоб змінити його порядок</string>
 </resources>
