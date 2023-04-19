@@ -272,7 +272,7 @@
     <string name="batch_manga_save_confirm">下载所有选定的漫画及其所有章节吗\? 这会消耗大量的流量和存储空间。</string>
     <string name="download_slowdown_summary">有助于避免阻断你的IP地址</string>
     <string name="local_manga_processing">保存的漫画处理</string>
-    <string name="chapters_will_removed_background">章节将在后台被删除。</string>
+    <string name="chapters_will_removed_background">章节将在后台被删除</string>
     <string name="hide">隐藏</string>
     <string name="show_notification_new_chapters_off">你将不会收到通知但新的章节将在列表中突出显示</string>
     <string name="notifications_enable">启用通知</string>
