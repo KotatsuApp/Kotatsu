@@ -48,7 +48,7 @@
     <string name="detailed_list">详细列表</string>
     <string name="grid">网格</string>
     <string name="list_mode">列表模式</string>
-    <string name="remote_sources">远程源</string>
+    <string name="remote_sources">漫画源</string>
     <string name="loading_">加载中…</string>
     <string name="computing_">计算中…</string>
     <string name="chapter_d_of_d">%1$d/%2$d章节</string>
@@ -59,7 +59,7 @@
     <string name="history_is_empty">尚无历史</string>
     <string name="read">阅读</string>
     <string name="you_have_not_favourites_yet">尚无收藏夹</string>
-    <string name="add_to_favourites">收藏这个</string>
+    <string name="add_to_favourites">收藏此漫画</string>
     <string name="add_new_category">新分类</string>
     <string name="add">添加</string>
     <string name="enter_category_name">输入分类名称</string>
@@ -272,7 +272,7 @@
     <string name="batch_manga_save_confirm">下载所有选定的漫画及其所有章节吗\? 这会消耗大量的流量和存储空间。</string>
     <string name="download_slowdown_summary">有助于避免阻断你的IP地址</string>
     <string name="local_manga_processing">保存的漫画处理</string>
-    <string name="chapters_will_removed_background">章节将在后台被删除. 这可能需要一些时间</string>
+    <string name="chapters_will_removed_background">章节将在后台被删除。</string>
     <string name="hide">隐藏</string>
     <string name="show_notification_new_chapters_off">你将不会收到通知但新的章节将在列表中突出显示</string>
     <string name="notifications_enable">启用通知</string>
@@ -313,7 +313,7 @@
     <string name="exclude_nsfw_from_history_summary">标记为NSFW的漫画将永远不会被添加到历史中你的进度也不会被保存</string>
     <string name="clear_cookies_summary">可以在出现一些问题时提供帮助. 所有授权将被视为无效</string>
     <string name="show_all">显示全部</string>
-    <string name="manga_error_description_pattern">错误详情：&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1.尝试&lt;a href=%2$s&gt;在网络浏览器中打开漫画&lt;/a&gt;以确保在其来源中可用&lt;br&gt;2.如果可用，请向开发人员发送错误报告。</string>
+    <string name="manga_error_description_pattern">错误详情：&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1.尝试&lt;a href=%2$s&gt;在网络浏览器中打开漫画&lt;/a&gt;以确保在其来源中可用&lt;br&gt;2. 请确保您使用的是&lt;a href=kotatsu://about&gt;最新版本的Kotatsu&lt;/a&gt;&lt;br&gt;3.如果可用，请向开发人员发送错误报告。</string>
     <string name="invalid_domain_message">无效域名</string>
     <string name="text_shelf_holder_primary">此处将显示你的漫画</string>
     <string name="text_shelf_holder_secondary">在【浏览】页面搜索想要阅读的漫画</string>
@@ -421,4 +421,11 @@
     <string name="download_started">已开始下载</string>
     <string name="user_agent">UserAgent 标头</string>
     <string name="settings_apply_restart_required">要应用这些更改请重启程序</string>
+    <string name="sources_reorder_tip">点击并长按项目排序</string>
+    <string name="got_it">知道了</string>
+    <string name="speed">速度</string>
+    <string name="restore_backup_description">导入先前创建的用户数据备份</string>
+    <string name="show_on_shelf">在书架上显示</string>
+    <string name="comics_archive_import_description">您可以选择一个或多个cbz或zip文件，每个文件都将识别为一个单独的漫画。</string>
+    <string name="folder_with_images_import_description">您可以选择一个包含压缩包或图片的文件夹。每个压缩包（或子文件夹）都会被识别为一个章节。</string>
 </resources>
