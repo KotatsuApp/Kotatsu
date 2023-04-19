@@ -18,8 +18,10 @@ import org.koitharu.kotatsu.utils.progress.ImageRequestIndicatorListener
 
 fun ImageView.newImageRequest(lifecycleOwner: LifecycleOwner, data: Any?): ImageRequest.Builder? {
 	val current = CoilUtils.result(this)
-	if (current != null && current.request.data == data) {
-		return null
+	if (current?.request?.lifecycle === lifecycleOwner.lifecycle) {
+		if (current is SuccessResult && current.request.data == data) {
+			return null
+		}
 	}
 	return ImageRequest.Builder(context)
 		.data(data)
