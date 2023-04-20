@@ -8,6 +8,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
@@ -27,7 +28,6 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.local.data.importer.SingleMangaImporter
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
@@ -99,11 +99,12 @@ class ImportWorker @AssistedInject constructor(
 			notification.setSubText(manga.title)
 			val intent = DetailsActivity.newIntent(applicationContext, manga)
 			notification.setContentIntent(
-				PendingIntent.getActivity(
+				PendingIntentCompat.getActivity(
 					applicationContext,
 					manga.id.toInt(),
 					intent,
-					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+					PendingIntent.FLAG_UPDATE_CURRENT,
+					false,
 				),
 			).setAutoCancel(true)
 				.setVisibility(

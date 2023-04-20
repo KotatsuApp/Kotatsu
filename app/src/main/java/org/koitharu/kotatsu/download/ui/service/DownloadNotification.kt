@@ -10,6 +10,7 @@ import android.text.format.DateUtils
 import android.util.SparseArray
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.HtmlCompat
@@ -28,7 +29,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class DownloadNotification(private val context: Context) {
@@ -37,18 +37,20 @@ class DownloadNotification(private val context: Context) {
 	private val states = SparseArray<DownloadState>()
 	private val groupBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
 
-	private val queueIntent = PendingIntent.getActivity(
+	private val queueIntent = PendingIntentCompat.getActivity(
 		context,
 		REQUEST_QUEUE,
 		DownloadsActivity.newIntent(context),
-		PendingIntentCompat.FLAG_IMMUTABLE,
+		0,
+		false,
 	)
 
-	private val localListIntent = PendingIntent.getActivity(
+	private val localListIntent = PendingIntentCompat.getActivity(
 		context,
 		REQUEST_LIST_LOCAL,
 		MangaListActivity.newIntent(context, MangaSource.LOCAL),
-		PendingIntentCompat.FLAG_IMMUTABLE,
+		0,
+		false,
 	)
 
 	init {
@@ -78,31 +80,37 @@ class DownloadNotification(private val context: Context) {
 					progress++
 					context.getString(R.string.cancelling_)
 				}
+
 				is DownloadState.Done -> {
 					progress++
 					context.getString(R.string.download_complete)
 				}
+
 				is DownloadState.Error -> {
 					isAllDone = false
 					context.getString(R.string.error)
 				}
+
 				is DownloadState.PostProcessing -> {
 					progress++
 					isInProgress = true
 					isAllDone = false
 					context.getString(R.string.processing_)
 				}
+
 				is DownloadState.Preparing -> {
 					isAllDone = false
 					isInProgress = true
 					context.getString(R.string.preparing_)
 				}
+
 				is DownloadState.Progress -> {
 					isAllDone = false
 					isInProgress = true
 					progress += state.percent
 					context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
 				}
+
 				is DownloadState.Queued -> {
 					isAllDone = false
 					isInProgress = true
@@ -158,21 +166,23 @@ class DownloadNotification(private val context: Context) {
 		private val cancelAction = NotificationCompat.Action(
 			materialR.drawable.material_ic_clear_black_24dp,
 			context.getString(android.R.string.cancel),
-			PendingIntent.getBroadcast(
+			PendingIntentCompat.getBroadcast(
 				context,
 				startId * 2,
 				DownloadService.getCancelIntent(startId),
-				PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+				PendingIntent.FLAG_CANCEL_CURRENT,
+				false,
 			),
 		)
 		private val retryAction = NotificationCompat.Action(
 			R.drawable.ic_restart_black,
 			context.getString(R.string.try_again),
-			PendingIntent.getBroadcast(
+			PendingIntentCompat.getBroadcast(
 				context,
 				startId * 2 + 1,
 				DownloadService.getResumeIntent(startId),
-				PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+				PendingIntent.FLAG_CANCEL_CURRENT,
+				false,
 			),
 		)
 
@@ -213,6 +223,7 @@ class DownloadNotification(private val context: Context) {
 					builder.setOngoing(true)
 					builder.priority = NotificationCompat.PRIORITY_DEFAULT
 				}
+
 				is DownloadState.Done -> {
 					builder.setProgress(0, 0, false)
 					builder.setContentText(context.getString(R.string.download_complete))
@@ -226,6 +237,7 @@ class DownloadNotification(private val context: Context) {
 					builder.setWhen(System.currentTimeMillis())
 					builder.priority = NotificationCompat.PRIORITY_DEFAULT
 				}
+
 				is DownloadState.Error -> {
 					val message = state.error.getDisplayMessage(context.resources)
 					builder.setProgress(0, 0, false)
@@ -244,6 +256,7 @@ class DownloadNotification(private val context: Context) {
 					}
 					builder.priority = NotificationCompat.PRIORITY_DEFAULT
 				}
+
 				is DownloadState.PostProcessing -> {
 					builder.setProgress(1, 0, true)
 					builder.setContentText(context.getString(R.string.processing_))
@@ -251,6 +264,7 @@ class DownloadNotification(private val context: Context) {
 					builder.setOngoing(true)
 					builder.priority = NotificationCompat.PRIORITY_DEFAULT
 				}
+
 				is DownloadState.Queued -> {
 					builder.setProgress(0, 0, false)
 					builder.setContentText(context.getString(R.string.queued))
@@ -259,6 +273,7 @@ class DownloadNotification(private val context: Context) {
 					builder.addAction(cancelAction)
 					builder.priority = NotificationCompat.PRIORITY_LOW
 				}
+
 				is DownloadState.Preparing -> {
 					builder.setProgress(1, 0, true)
 					builder.setContentText(context.getString(R.string.preparing_))
@@ -267,6 +282,7 @@ class DownloadNotification(private val context: Context) {
 					builder.addAction(cancelAction)
 					builder.priority = NotificationCompat.PRIORITY_DEFAULT
 				}
+
 				is DownloadState.Progress -> {
 					builder.setProgress(state.max, state.progress, false)
 					val percent = context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
@@ -302,11 +318,12 @@ class DownloadNotification(private val context: Context) {
 		manager.notify(ID_GROUP, notification)
 	}
 
-	private fun createMangaIntent(context: Context, manga: Manga) = PendingIntent.getActivity(
+	private fun createMangaIntent(context: Context, manga: Manga) = PendingIntentCompat.getActivity(
 		context,
 		manga.hashCode(),
 		DetailsActivity.newIntent(context, manga),
-		PendingIntent.FLAG_CANCEL_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+		PendingIntent.FLAG_CANCEL_CURRENT,
+		false,
 	)
 
 	companion object {

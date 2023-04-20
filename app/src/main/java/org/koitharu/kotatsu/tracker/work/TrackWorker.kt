@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.core.app.NotificationCompat.VISIBILITY_SECRET
+import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
 import androidx.lifecycle.LiveData
@@ -45,7 +46,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
-import org.koitharu.kotatsu.utils.PendingIntentCompat
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
 import org.koitharu.kotatsu.utils.ext.trySetForeground
@@ -170,11 +170,12 @@ class TrackWorker @AssistedInject constructor(
 			setStyle(style)
 			val intent = DetailsActivity.newIntent(applicationContext, manga)
 			setContentIntent(
-				PendingIntent.getActivity(
+				PendingIntentCompat.getActivity(
 					applicationContext,
 					id,
 					intent,
-					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_IMMUTABLE,
+					PendingIntent.FLAG_UPDATE_CURRENT,
+					false,
 				),
 			)
 			setAutoCancel(true)

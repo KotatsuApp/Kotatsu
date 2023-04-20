@@ -7,9 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
+import androidx.core.app.PendingIntentCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.utils.PendingIntentCompat
 
 class RecentWidgetProvider : AppWidgetProvider() {
 
@@ -27,12 +27,14 @@ class RecentWidgetProvider : AppWidgetProvider() {
 			val intent = Intent(context, ReaderActivity::class.java)
 			intent.action = ReaderActivity.ACTION_MANGA_READ
 			views.setPendingIntentTemplate(
-				R.id.stackView, PendingIntent.getActivity(
+				R.id.stackView,
+				PendingIntentCompat.getActivity(
 					context,
 					0,
 					intent,
-					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntentCompat.FLAG_MUTABLE
-				)
+					PendingIntent.FLAG_UPDATE_CURRENT,
+					true,
+				),
 			)
 			views.setEmptyView(R.id.stackView, R.id.textView_holder)
 			appWidgetManager.updateAppWidget(id, views)
