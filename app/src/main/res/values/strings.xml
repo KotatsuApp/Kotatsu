@@ -433,4 +433,5 @@
     <string name="speed">Speed</string>
     <string name="restore_backup_description">Import a previously created backup of user data</string>
     <string name="show_on_shelf">Show on the Shelf</string>
+    <string name="sync_auth_hint">You can sign in into an existing account or create a new one</string>
 </resources>

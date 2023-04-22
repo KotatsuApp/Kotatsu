@@ -55,7 +55,7 @@
 				android:layout_alignParentEnd="true"
 				android:layout_marginTop="30dp"
 				app:errorIconDrawable="@null"
-				app:helperText="You can sign in into an existing account or create a new one"
+				app:helperText="@string/sync_auth_hint"
 				app:hintEnabled="false">
 
 				<com.google.android.material.textfield.TextInputEditText
@@ -107,7 +107,7 @@
 				android:layout_alignParentEnd="true"
 				android:layout_marginTop="12dp"
 				android:gravity="center_horizontal"
-				android:text="@string/enter_email_text"
+				android:text="@string/enter_password"
 				android:textAppearance="?textAppearanceSubtitle1" />
 
 			<com.google.android.material.textfield.TextInputLayout
@@ -121,7 +121,6 @@
 				android:layout_marginTop="30dp"
 				app:endIconMode="password_toggle"
 				app:errorIconDrawable="@null"
-				app:helperText="You can sign in into an existing account or create a new one"
 				app:hintEnabled="false">
 
 				<com.google.android.material.textfield.TextInputEditText
