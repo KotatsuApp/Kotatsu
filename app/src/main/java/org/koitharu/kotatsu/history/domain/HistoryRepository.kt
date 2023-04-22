@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.history.domain
 
 import androidx.room.withTransaction
+import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -27,11 +28,10 @@ import org.koitharu.kotatsu.scrobbling.common.domain.tryScrobble
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.mapItems
 import javax.inject.Inject
-import javax.inject.Singleton
 
 const val PROGRESS_NONE = -1f
 
-@Singleton
+@Reusable
 class HistoryRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val trackingRepository: TrackingRepository,

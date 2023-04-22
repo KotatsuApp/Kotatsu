@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Size
 import androidx.room.withTransaction
+import dagger.Reusable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -30,12 +31,11 @@ import java.io.File
 import java.io.InputStream
 import java.util.zip.ZipFile
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.math.roundToInt
 
 private const val MIN_WEBTOON_RATIO = 2
 
-@Singleton
+@Reusable
 class MangaDataRepository @Inject constructor(
 	private val okHttpClient: OkHttpClient,
 	private val db: MangaDatabase,

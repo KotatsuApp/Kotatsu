@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
 import androidx.room.withTransaction
+import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -23,11 +24,10 @@ import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import java.util.Date
 import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val NO_ID = 0L
 
-@Singleton
+@Reusable
 class TrackingRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {

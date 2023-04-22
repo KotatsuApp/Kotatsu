@@ -169,7 +169,6 @@ interface AppModule {
 		}
 
 		@Provides
-		@Singleton
 		@ElementsIntoSet
 		fun provideDatabaseObservers(
 			widgetUpdater: WidgetUpdater,
@@ -184,7 +183,6 @@ interface AppModule {
 		)
 
 		@Provides
-		@Singleton
 		@ElementsIntoSet
 		fun provideActivityLifecycleCallbacks(
 			appProtectHelper: AppProtectHelper,

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.favourites.domain
 
 import androidx.room.withTransaction
+import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
@@ -22,9 +23,8 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import org.koitharu.kotatsu.utils.ext.mapItems
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@Reusable
 class FavouritesRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val channels: TrackerNotificationChannels,
