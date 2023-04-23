@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.toList
+import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,10 +29,14 @@ class MangaLoaderContextImpl @Inject constructor(
 	@ApplicationContext private val androidContext: Context,
 ) : MangaLoaderContext() {
 
+	private var webViewCached: WeakReference<WebView>? = null
+
 	@SuppressLint("SetJavaScriptEnabled")
 	override suspend fun evaluateJs(script: String): String? = withContext(Dispatchers.Main) {
-		val webView = WebView(androidContext)
-		webView.settings.javaScriptEnabled = true
+		val webView = webViewCached?.get() ?: WebView(androidContext).also {
+			it.settings.javaScriptEnabled = true
+			webViewCached = WeakReference(it)
+		}
 		suspendCoroutine { cont ->
 			webView.evaluateJavascript(script) { result ->
 				cont.resume(result?.takeUnless { it == "null" })

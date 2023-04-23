@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.service.DownloadService
@@ -44,6 +45,9 @@ class MultiSearchActivity :
 
 	@Inject
 	lateinit var coil: ImageLoader
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private val viewModel by viewModels<MultiSearchViewModel>()
 	private lateinit var adapter: MultiSearchAdapter

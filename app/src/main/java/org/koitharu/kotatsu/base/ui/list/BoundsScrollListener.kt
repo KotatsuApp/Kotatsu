@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 abstract class BoundsScrollListener(private val offsetTop: Int, private val offsetBottom: Int) :
 	RecyclerView.OnScrollListener() {
 
-	constructor(offset: Int = 0) : this(offset, offset)
-
 	override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 		super.onScrolled(recyclerView, dx, dy)
 		val layoutManager = (recyclerView.layoutManager as? LinearLayoutManager) ?: return

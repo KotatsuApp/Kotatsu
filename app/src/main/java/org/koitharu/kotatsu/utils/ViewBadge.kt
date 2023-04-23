@@ -1,11 +1,14 @@
 package org.koitharu.kotatsu.utils
 
 import android.view.View
+import androidx.annotation.OptIn
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.badge.ExperimentalBadgeUtils
 
+@OptIn(ExperimentalBadgeUtils::class)
 class ViewBadge(
 	private val anchor: View,
 	lifecycleOwner: LifecycleOwner,

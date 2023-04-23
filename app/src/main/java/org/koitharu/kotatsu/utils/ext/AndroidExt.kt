@@ -40,7 +40,6 @@ import org.json.JSONException
 import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.InternalResourceHelper
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import kotlin.math.roundToLong
@@ -108,7 +107,7 @@ fun SyncResult.onError(error: Throwable) {
 
 fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float, alphaFactor: Float = 0.7f) {
 	navigationBarColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-		!InternalResourceHelper.getBoolean(context, "config_navBarNeedsScrim", true)
+		!context.getSystemBoolean("config_navBarNeedsScrim", true)
 	) {
 		Color.TRANSPARENT
 	} else {

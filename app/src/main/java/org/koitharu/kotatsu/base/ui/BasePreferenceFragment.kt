@@ -9,12 +9,13 @@ import androidx.core.view.updatePadding
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.settings.SettingsHeadersFragment
+import javax.inject.Inject
 
+@Suppress("LeakingThis")
 @AndroidEntryPoint
 abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	PreferenceFragmentCompat(),
@@ -24,7 +25,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	@Inject
 	lateinit var settings: AppSettings
 
-	@Suppress("LeakingThis")
+	@JvmField
 	protected val insetsDelegate = WindowInsetsDelegate(this)
 
 	override val recyclerView: RecyclerView
@@ -55,7 +56,6 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 		)
 	}
 
-	@Suppress("UsePropertyAccessSyntax")
 	protected fun setTitle(title: CharSequence) {
 		(parentFragment as? SettingsHeadersFragment)?.setTitle(title)
 			?: activity?.setTitle(title)

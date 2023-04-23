@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 
+@Suppress("LeakingThis")
 abstract class BaseFragment<B : ViewBinding> :
 	Fragment(),
 	WindowInsetsDelegate.WindowInsetsListener {
@@ -19,10 +20,10 @@ abstract class BaseFragment<B : ViewBinding> :
 	protected val binding: B
 		get() = checkNotNull(viewBinding)
 
-	@Suppress("LeakingThis")
+	@JvmField
 	protected val exceptionResolver = ExceptionResolver(this)
 
-	@Suppress("LeakingThis")
+	@JvmField
 	protected val insetsDelegate = WindowInsetsDelegate(this)
 
 	protected val actionModeDelegate: ActionModeDelegate

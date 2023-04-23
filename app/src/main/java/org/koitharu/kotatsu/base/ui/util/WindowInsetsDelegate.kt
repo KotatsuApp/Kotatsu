@@ -10,8 +10,10 @@ class WindowInsetsDelegate(
 	private val listener: WindowInsetsListener,
 ) : OnApplyWindowInsetsListener, View.OnLayoutChangeListener {
 
+	@JvmField
 	var handleImeInsets: Boolean = false
 
+	@JvmField
 	var interceptingWindowInsetsListener: OnApplyWindowInsetsListener? = null
 
 	private var lastInsets: Insets? = null

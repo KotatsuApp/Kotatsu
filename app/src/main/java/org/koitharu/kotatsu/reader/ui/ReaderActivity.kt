@@ -35,6 +35,7 @@ import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.exceptions.resolve.DialogErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -65,6 +66,9 @@ class ReaderActivity :
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener,
 	IdlingDetector.Callback {
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private val idlingDetector = IdlingDetector(TimeUnit.SECONDS.toMillis(10), this)
 

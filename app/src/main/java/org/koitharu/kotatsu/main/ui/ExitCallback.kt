@@ -12,13 +12,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 
 class ExitCallback(
-	private val activity: BaseActivity<*>,
+	private val activity: MainActivity,
 	private val snackbarHost: View,
 ) : OnBackPressedCallback(false) {
 

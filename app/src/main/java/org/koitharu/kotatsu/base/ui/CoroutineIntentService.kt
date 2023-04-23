@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.base.ui
 
-import android.app.Service
 import android.content.Intent
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,7 +19,7 @@ abstract class CoroutineIntentService : BaseService() {
 	final override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		super.onStartCommand(intent, flags, startId)
 		launchCoroutine(intent, startId)
-		return Service.START_REDELIVER_INTENT
+		return START_REDELIVER_INTENT
 	}
 
 	private fun launchCoroutine(intent: Intent?, startId: Int) = lifecycleScope.launch(errorHandler(startId)) {

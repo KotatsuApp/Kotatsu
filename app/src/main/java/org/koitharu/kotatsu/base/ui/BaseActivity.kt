@@ -26,34 +26,33 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.base.ui.util.BaseActivityEntryPoint
 import org.koitharu.kotatsu.base.ui.util.WindowInsetsDelegate
-import org.koitharu.kotatsu.base.ui.util.inject
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.ext.getThemeColor
-import javax.inject.Inject
 
+@Suppress("LeakingThis")
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
 	WindowInsetsDelegate.WindowInsetsListener {
 
-	@Inject
-	lateinit var settings: AppSettings
+	private var isAmoledTheme = false
 
 	protected lateinit var binding: B
 		private set
 
-	@Suppress("LeakingThis")
+	@JvmField
 	protected val exceptionResolver = ExceptionResolver(this)
 
-	@Suppress("LeakingThis")
+	@JvmField
 	protected val insetsDelegate = WindowInsetsDelegate(this)
 
+	@JvmField
 	val actionModeDelegate = ActionModeDelegate()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		EntryPointAccessors.fromApplication(this, BaseActivityEntryPoint::class.java).inject(this)
+		val settings = EntryPointAccessors.fromApplication(this, BaseActivityEntryPoint::class.java).settings
+		isAmoledTheme = settings.isAmoledTheme
 		setTheme(settings.colorScheme.styleResId)
-		if (settings.isAmoledTheme) {
+		if (isAmoledTheme) {
 			setTheme(R.style.ThemeOverlay_Kotatsu_Amoled)
 		}
 		super.onCreate(savedInstanceState)
@@ -108,7 +107,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	protected fun isDarkAmoledTheme(): Boolean {
 		val uiMode = resources.configuration.uiMode
 		val isNight = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-		return isNight && settings.isAmoledTheme
+		return isNight && isAmoledTheme
 	}
 
 	@CallSuper

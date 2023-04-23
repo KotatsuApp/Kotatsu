@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.scrobbling.mal.data
 
 import android.content.Context
+import android.util.Base64
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.FormBody
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -20,7 +21,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerMangaInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
-import org.koitharu.kotatsu.utils.PKCEGenerator
+import java.security.SecureRandom
 
 private const val REDIRECT_URI = "kotatsu://mal-auth"
 private const val BASE_WEB_URL = "https://myanimelist.net"
@@ -35,7 +36,7 @@ class MALRepository(
 ) : ScrobblerRepository {
 
 	private val clientId = context.getString(R.string.mal_clientId)
-	private var codeVerifier: String = getPKCEChallengeCode()
+	private val codeVerifier: String by lazy(::generateCodeVerifier)
 
 	override val oauthUrl: String
 		get() = "$BASE_WEB_URL/v1/oauth2/authorize?" +
@@ -177,11 +178,6 @@ class MALRepository(
 		storage.clear()
 	}
 
-	private fun getPKCEChallengeCode(): String {
-		codeVerifier = PKCEGenerator.generateCodeVerifier()
-		return codeVerifier
-	}
-
 	private fun jsonToManga(json: JSONObject): ScrobblerManga? {
 		for (i in 0 until json.length()) {
 			val node = json.getJSONObject("node")
@@ -210,4 +206,10 @@ class MALRepository(
 		avatar = json.getString("picture") ?: AVATAR_STUB,
 		service = ScrobblerService.MAL,
 	)
+
+	private fun generateCodeVerifier(): String {
+		val codeVerifier = ByteArray(50)
+		SecureRandom().nextBytes(codeVerifier)
+		return Base64.encodeToString(codeVerifier, Base64.NO_WRAP or Base64.NO_PADDING or Base64.URL_SAFE)
+	}
 }

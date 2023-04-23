@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.base.ui.util
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
 import org.koitharu.kotatsu.base.ui.DefaultActivityLifecycleCallbacks
 import java.util.WeakHashMap
 import javax.inject.Inject
@@ -22,6 +23,6 @@ class ActivityRecreationHandle @Inject constructor() : DefaultActivityLifecycleC
 
 	fun recreateAll() {
 		val snapshot = activities.keys.toList()
-		snapshot.forEach { it.recreate() }
+		snapshot.forEach { ActivityCompat.recreate(it) }
 	}
 }

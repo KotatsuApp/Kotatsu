@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -68,6 +69,7 @@ import org.koitharu.kotatsu.utils.ext.resolve
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.utils.ext.tryLaunch
+import javax.inject.Inject
 import com.google.android.material.R as materialR
 
 private const val TAG_SEARCH = "search"
@@ -81,6 +83,9 @@ class MainActivity :
 	View.OnFocusChangeListener,
 	SearchSuggestionListener,
 	MainNavigationDelegate.OnFragmentChangedListener {
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private val viewModel by viewModels<MainViewModel>()
 	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()

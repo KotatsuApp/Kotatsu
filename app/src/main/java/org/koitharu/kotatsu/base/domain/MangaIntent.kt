@@ -11,9 +11,9 @@ import org.koitharu.kotatsu.utils.ext.getParcelableCompat
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 
 class MangaIntent private constructor(
-	val manga: Manga?,
-	val mangaId: Long,
-	val uri: Uri?,
+	@JvmField val manga: Manga?,
+	@JvmField val mangaId: Long,
+	@JvmField val uri: Uri?,
 ) {
 
 	constructor(intent: Intent?) : this(
