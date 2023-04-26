@@ -26,7 +26,7 @@
     <string name="zoom_mode_fit_center">Tilpass sentrum</string>
     <string name="scale_mode">Skaleringsmodus</string>
     <string name="report_github">Opprett feilrapport på GitHub</string>
-    <string name="right_to_left">Høyre-til-venstre (←)</string>
+    <string name="right_to_left">Høyre-til-venstre</string>
     <string name="no_update_available">Ingen tilgjengelige oppdateringer</string>
     <string name="update_check_failed">Kunne ikke se etter oppdateringer</string>
     <string name="checking_for_updates">Ser etter oppdateringer …</string>
@@ -76,7 +76,7 @@
     <string name="text_clear_history_prompt">Fjern all lesehistorikk for godt\?</string>
     <string name="read">Les</string>
     <string name="nothing_found">Resultatløst</string>
-    <string name="remote_sources">Kilder annensteds hen</string>
+    <string name="remote_sources">Manga-kilder</string>
     <string name="read_more">Les mer</string>
     <string name="backup_saved">Sikkerhetskopi lagret</string>
     <string name="welcome">Velkommen</string>
@@ -202,7 +202,7 @@
     <string name="list">Liste</string>
     <string name="chapters">Kapittel</string>
     <string name="details">Detaljer</string>
-    <string name="network_error">Kunne ikke koble til Internet</string>
+    <string name="network_error">Nettverksfeil</string>
     <string name="error_occurred">En feil inntraff</string>
     <string name="history">Historikk</string>
     <string name="favourites">Favoritter</string>
@@ -347,4 +347,5 @@
     <string name="different_languages">Forskjellige språk</string>
     <string name="enable_logging">Skru på loggføring</string>
     <string name="storage_usage">Lagringsbruk</string>
+    <string name="sync_auth_hint">Du kan logge med en eksisterende konto, eller opprette en ny</string>
 </resources>
