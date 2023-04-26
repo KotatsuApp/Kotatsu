@@ -16,7 +16,12 @@ class MangaTagHighlighter @Inject constructor(
 	private val dict by lazy {
 		context.resources.openRawResource(R.raw.tags_redlist).use {
 			val set = HashSet<String>()
-			it.bufferedReader().forEachLine { x -> set.add(x) }
+			it.bufferedReader().forEachLine { x ->
+				val line = x.trim()
+				if (line.isNotEmpty()) {
+					set.add(line)
+				}
+			}
 			set
 		}
 	}

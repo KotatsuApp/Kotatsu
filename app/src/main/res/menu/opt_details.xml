@@ -40,7 +40,7 @@
 	<item
 		android:id="@+id/action_related"
 		android:orderInCategory="50"
-		android:title="@string/related"
+		android:title="@string/find_similar"
 		app:showAsAction="never" />
 
 	<item

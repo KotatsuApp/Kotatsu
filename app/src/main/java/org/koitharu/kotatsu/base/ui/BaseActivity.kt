@@ -61,6 +61,11 @@ abstract class BaseActivity<B : ViewBinding> :
 		putDataToExtras(intent)
 	}
 
+	override fun onPostCreate(savedInstanceState: Bundle?) {
+		super.onPostCreate(savedInstanceState)
+		onBackPressedDispatcher.addCallback(actionModeDelegate)
+	}
+
 	override fun onNewIntent(intent: Intent?) {
 		putDataToExtras(intent)
 		super.onNewIntent(intent)

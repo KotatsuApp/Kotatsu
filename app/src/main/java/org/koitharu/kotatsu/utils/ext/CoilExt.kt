@@ -53,7 +53,11 @@ fun ImageResult.toBitmapOrNull() = when (this) {
 }
 
 fun ImageRequest.Builder.indicator(indicator: BaseProgressIndicator<*>): ImageRequest.Builder {
-	return listener(ImageRequestIndicatorListener(indicator))
+	return listener(ImageRequestIndicatorListener(listOf(indicator)))
+}
+
+fun ImageRequest.Builder.indicator(indicators: List<BaseProgressIndicator<*>>): ImageRequest.Builder {
+	return listener(ImageRequestIndicatorListener(indicators))
 }
 
 fun ImageRequest.Builder.decodeRegion(

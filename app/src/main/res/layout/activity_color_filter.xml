@@ -53,6 +53,16 @@
 				app:strokeWidth="1dp"
 				tools:src="@sample/covers" />
 
+			<com.google.android.material.progressindicator.CircularProgressIndicator
+				android:id="@+id/progress_before"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:indeterminate="true"
+				app:layout_constraintBottom_toBottomOf="@id/imageView_before"
+				app:layout_constraintEnd_toEndOf="@id/imageView_before"
+				app:layout_constraintStart_toStartOf="@id/imageView_before"
+				app:layout_constraintTop_toTopOf="@id/imageView_before" />
+
 			<ImageView
 				android:id="@+id/imageView_arrow"
 				android:layout_width="wrap_content"
@@ -79,6 +89,16 @@
 				app:strokeColor="?colorOutline"
 				app:strokeWidth="1dp"
 				tools:src="@sample/covers" />
+
+			<com.google.android.material.progressindicator.CircularProgressIndicator
+				android:id="@+id/progress_after"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:indeterminate="true"
+				app:layout_constraintBottom_toBottomOf="@id/imageView_after"
+				app:layout_constraintEnd_toEndOf="@id/imageView_after"
+				app:layout_constraintStart_toStartOf="@id/imageView_after"
+				app:layout_constraintTop_toTopOf="@id/imageView_after" />
 
 			<TextView
 				android:id="@+id/textView_brightness"

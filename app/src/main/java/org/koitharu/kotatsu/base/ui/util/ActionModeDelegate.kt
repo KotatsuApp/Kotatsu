@@ -1,10 +1,11 @@
 package org.koitharu.kotatsu.base.ui.util
 
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.view.ActionMode
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
-class ActionModeDelegate {
+class ActionModeDelegate : OnBackPressedCallback(false) {
 
 	private var activeActionMode: ActionMode? = null
 	private var listeners: MutableList<ActionModeListener>? = null
@@ -12,13 +13,19 @@ class ActionModeDelegate {
 	val isActionModeStarted: Boolean
 		get() = activeActionMode != null
 
+	override fun handleOnBackPressed() {
+		activeActionMode?.finish()
+	}
+
 	fun onSupportActionModeStarted(mode: ActionMode) {
 		activeActionMode = mode
+		isEnabled = true
 		listeners?.forEach { it.onActionModeStarted(mode) }
 	}
 
 	fun onSupportActionModeFinished(mode: ActionMode) {
 		activeActionMode = null
+		isEnabled = false
 		listeners?.forEach { it.onActionModeFinished(mode) }
 	}
 

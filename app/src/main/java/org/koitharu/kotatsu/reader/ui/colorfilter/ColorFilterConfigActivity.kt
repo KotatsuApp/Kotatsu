@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import org.koitharu.kotatsu.utils.ext.decodeRegion
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.indicator
 import org.koitharu.kotatsu.utils.ext.setValueRounded
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -110,6 +111,7 @@ class ColorFilterConfigActivity :
 			.scale(Scale.FILL)
 			.decodeRegion()
 			.tag(preview.source)
+			.indicator(listOf(binding.progressBefore, binding.progressAfter))
 			.error(R.drawable.ic_error_placeholder)
 			.size(ViewSizeResolver(binding.imageViewBefore))
 			.allowRgb565(false)
