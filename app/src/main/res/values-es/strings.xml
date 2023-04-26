@@ -428,4 +428,5 @@
     <string name="restore_backup_description">Importar una copia de seguridad de los datos del usuario creada previamente</string>
     <string name="show_on_shelf">Mostrar en la estantería</string>
     <string name="got_it">Entendido</string>
+    <string name="sync_auth_hint">Puedes acceder a una cuenta existente o crear una nueva</string>
 </resources>
