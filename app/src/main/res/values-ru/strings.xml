@@ -428,4 +428,6 @@
     <string name="speed">Скорость</string>
     <string name="restore_backup_description">Импорт ранее созданной резервной копии пользовательских данных</string>
     <string name="show_on_shelf">Показать на полке</string>
+    <string name="find_similar">Найти похожие</string>
+    <string name="sync_auth_hint">Вы можете войти в существующую учетную запись или создать новую</string>
 </resources>
