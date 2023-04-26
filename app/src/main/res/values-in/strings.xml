@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="close_menu">Tutup bilah</string>
     <string name="open_menu">Buka bilah</string>
-    <string name="local_storage">Penyimpanan lokal</string>
+    <string name="local_storage">Sumber lokal</string>
     <string name="favourites">Favorit</string>
     <string name="history">Riwayat</string>
     <string name="error_occurred">Terjadi kesalahan</string>
@@ -17,7 +17,7 @@
     <string name="chapter_d_of_d">Bab %1$d dari %2$d</string>
     <string name="close">Tutup</string>
     <string name="try_again">Coba lagi</string>
-    <string name="nothing_found">Tidak ada yang ditemukan</string>
+    <string name="nothing_found">Nihil</string>
     <string name="history_is_empty">Belum ada riwayat</string>
     <string name="read">Baca</string>
     <string name="you_have_not_favourites_yet">Belum ada favorit</string>
@@ -192,7 +192,7 @@
     <string name="suggestions">Saran</string>
     <string name="suggestions_enable">Aktifkan saran</string>
     <string name="suggestions_summary">Sarankan komik berdasarkan preferensi Anda</string>
-    <string name="suggestions_info">Semua data dianalisis secara lokal di perangkat ini. Tidak ada transfer data personal ke layanan apa pun</string>
+    <string name="suggestions_info">Semua data hanya dianalisis secara lokal pada perangkat ini dan tidak pernah dikirim ke mana pun.</string>
     <string name="text_suggestion_holder">Mulai membaca komik dan Anda akan mendapatkan saran yang dipersonalisasi</string>
     <string name="exclude_nsfw_from_suggestions">Jangan menyarankan komik NSFW</string>
     <string name="always">Selalu</string>
@@ -222,7 +222,7 @@
     <string name="download_slowdown">Perlambat unduhan</string>
     <string name="suggestions_updating">Pembaruan saran</string>
     <string name="download_slowdown_summary">Membantu menghidari pemblokiran alamat IP Anda</string>
-    <string name="chapters_will_removed_background">Bab akan dihapus di latar belakang. Akan memakan beberapa waktu</string>
+    <string name="chapters_will_removed_background">Bab akan dihapus di latar belakang</string>
     <string name="hide">Sembunyikan</string>
     <string name="new_sources_text">Tersedia sumber komik baru</string>
     <string name="check_new_chapters_title">Periksa bab baru dan beri tahu tentang itu</string>
@@ -240,7 +240,7 @@
     <string name="bookmark_added">Markah ditambahkan</string>
     <string name="undo">Urung</string>
     <string name="removed_from_history">Dihapus dari riwayat</string>
-    <string name="default_mode">Mode pembaca</string>
+    <string name="default_mode">Mode baca</string>
     <string name="detect_reader_mode">Otomatis deteksi mode pembaca</string>
     <string name="detect_reader_mode_summary">Secara otomatis mendeteksi jika komik itu webtoon</string>
     <string name="create_category">Kategori baru</string>
@@ -339,7 +339,7 @@
     <string name="folder_with_images">Folder dengan gambar</string>
     <string name="import_completed_hint">Anda bisa menghapus berkas asli dari penyimpanan untuk menghemat ruang</string>
     <string name="feed">Umpan</string>
-    <string name="manga_error_description_pattern">Detail kesalahan:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Coba untuk &lt;a href=%2$s&gt;membuka komik di peramban web&lt;/a&gt; untuk memastikan bahwa itu tersedia di sumbernya&lt;br&gt;2. Jika tersedia, kirim laporan kesalahan ke pengembang.</string>
+    <string name="manga_error_description_pattern">Detail kesalahan:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Coba &lt;a href=%2$s&gt;buka komik di browser&lt;/a&gt; untuk memastikan komik tersedia di sumbernya&lt;br&gt;2. Pastikan Anda menggunakan &lt;a href=kotatsu://about&gt;Kotatsu versi terbaru&lt;/a&gt;&lt;br&gt;3. Jika tersedia, kirim laporan kesalahan ke pengembang.</string>
     <string name="brightness">Kecerahan</string>
     <string name="contrast">Kontras</string>
     <string name="reset">Atur Ulang</string>
@@ -359,8 +359,8 @@
     <string name="clear_cookies_summary">Bisa membantu dalam beberapa masalah. Seluruh otorisasi akan menjadi tidak valid</string>
     <string name="manage">Kelola</string>
     <string name="no_manga_sources_text">Aktifkan sumber komik untuk membaca komik daring</string>
-    <string name="categories_delete_confirm">Apakah Anda yakin ingin menghapus kategori favorit yang dipilih\?
-\nSemua komik di sana akan hilang dan ini tidak bisa diurungkan.</string>
+    <string name="categories_delete_confirm">Yakin ingin menghapus kategori favorit yang dipilih\?
+\nSemua komik di dalamnya akan hilang dan ini tidak dapat dibatalkan.</string>
     <string name="reorder">Atur Ulang</string>
     <string name="saved_manga">Komik tersimpan</string>
     <string name="confirm_exit">Tekan Kembali lagi untuk keluar</string>
@@ -421,4 +421,12 @@
     <string name="webtoon_zoom_summary">Izinkan gerakan memperbesar/memperkecil tampilan dalam mode webtoon (beta)</string>
     <string name="different_languages">Berbagai bahasa</string>
     <string name="network_unavailable">Jaringan tidak tersedia</string>
+    <string name="got_it">Mengerti</string>
+    <string name="sources_reorder_tip">Ketuk dan tahan item untuk menyusun ulang</string>
+    <string name="comics_archive_import_description">Anda dapat memilih satu atau beberapa file .cbz atau .zip, setiap file akan dikenali sebagai komik terpisah.</string>
+    <string name="folder_with_images_import_description">Anda dapat memilih direktori yang berisi arsip atau gambar. Setiap arsip (atau subdirektori) akan dikenali sebagai sebuah bab.</string>
+    <string name="speed">Kecepatan</string>
+    <string name="restore_backup_description">Impor cadangan data pengguna yang dibuat sebelumnya</string>
+    <string name="show_on_shelf">Tampilkan di Rak</string>
+    <string name="sync_auth_hint">Anda dapat masuk ke akun yang sudah ada atau membuat akun baru</string>
 </resources>
