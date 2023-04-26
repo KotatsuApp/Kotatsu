@@ -1,12 +1,25 @@
 package org.koitharu.kotatsu.core.model
 
 import androidx.core.os.LocaleListCompat
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.utils.ext.iterator
 
 fun Collection<Manga>.ids() = mapToSet { it.id }
+
+fun Collection<ChapterListItem>.countChaptersByBranch(): Int {
+	if (size <= 1) {
+		return size
+	}
+	val acc = HashMap<String?, Int>()
+	for (item in this) {
+		val branch = item.chapter.branch
+		acc[branch] = (acc[branch] ?: 0) + 1
+	}
+	return acc.values.max()
+}
 
 fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 	val ch = chapters

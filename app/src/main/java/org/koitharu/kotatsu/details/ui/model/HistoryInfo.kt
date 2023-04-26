@@ -36,8 +36,13 @@ class HistoryInfo(
 	}
 }
 
-fun HistoryInfo(manga: Manga?, history: MangaHistory?, isIncognitoMode: Boolean): HistoryInfo {
-	val chapters = manga?.chapters
+fun HistoryInfo(
+	manga: Manga?,
+	branch: String?,
+	history: MangaHistory?,
+	isIncognitoMode: Boolean
+): HistoryInfo {
+	val chapters = manga?.getChapters(branch)
 	return HistoryInfo(
 		totalChapters = chapters?.size ?: -1,
 		currentChapter = if (history != null && !chapters.isNullOrEmpty()) {

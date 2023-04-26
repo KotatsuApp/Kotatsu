@@ -95,13 +95,14 @@ class DetailsViewModel @Inject constructor(
 
 	val historyInfo: LiveData<HistoryInfo> = combine(
 		delegate.manga,
+		delegate.selectedBranch,
 		history,
 		historyRepository.observeShouldSkip(delegate.manga),
-	) { m, h, im ->
-		HistoryInfo(m, h, im)
+	) { m, b, h, im ->
+		HistoryInfo(m, b, h, im)
 	}.asFlowLiveData(
 		context = viewModelScope.coroutineContext + Dispatchers.Default,
-		defaultValue = HistoryInfo(null, null, false),
+		defaultValue = HistoryInfo(null, null, null, false),
 	)
 
 	val bookmarks = delegate.manga.flatMapLatest {

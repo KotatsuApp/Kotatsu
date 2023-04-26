@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.domain
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.annotation.AnyThread
 import androidx.collection.LongSparseArray
 import androidx.collection.set
 import dagger.hilt.android.ActivityRetainedLifecycle
@@ -76,6 +77,7 @@ class PageLoader @Inject constructor(
 		return repository is RemoteMangaRepository && settings.isPagesPreloadEnabled()
 	}
 
+	@AnyThread
 	fun prefetch(pages: List<ReaderPage>) = loaderScope.launch {
 		prefetchLock.withLock {
 			for (page in pages.asReversed()) {

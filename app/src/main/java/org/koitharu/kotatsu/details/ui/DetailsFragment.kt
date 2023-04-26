@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
+import org.koitharu.kotatsu.core.model.countChaptersByBranch
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -177,12 +178,9 @@ class DetailsFragment :
 		if (chapters.isNullOrEmpty()) {
 			infoLayout.textViewChapters.isVisible = false
 		} else {
+			val count = chapters.countChaptersByBranch()
 			infoLayout.textViewChapters.isVisible = true
-			infoLayout.textViewChapters.text = resources.getQuantityString(
-				R.plurals.chapters,
-				chapters.size,
-				chapters.size,
-			)
+			infoLayout.textViewChapters.text = resources.getQuantityString(R.plurals.chapters, count, count)
 		}
 	}
 

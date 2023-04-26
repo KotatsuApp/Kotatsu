@@ -15,9 +15,6 @@ import androidx.annotation.AttrRes
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.R as materialR
-import java.text.SimpleDateFormat
-import java.util.*
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
@@ -25,6 +22,9 @@ import org.koitharu.kotatsu.utils.ext.getThemeColor
 import org.koitharu.kotatsu.utils.ext.measureDimension
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.resolveDp
+import java.text.SimpleDateFormat
+import java.util.Date
+import com.google.android.material.R as materialR
 
 class ReaderInfoBarView @JvmOverloads constructor(
 	context: Context,
@@ -121,15 +121,14 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	fun update(state: ReaderUiState?) {
 		text = if (state != null) {
-			val percent = state.computePercent()
 			context.getString(
 				R.string.reader_info_pattern,
 				state.chapterNumber,
 				state.chaptersTotal,
 				state.currentPage + 1,
 				state.totalPages,
-			) + if (percent in 0f..1f) {
-				"     " + context.getString(R.string.percent_string_pattern, (percent * 100).format())
+			) + if (state.percent in 0f..1f) {
+				"     " + context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
 			} else {
 				""
 			}

@@ -4,6 +4,8 @@ import android.net.Uri
 import android.util.LongSparseArray
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnyThread
+import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -13,6 +15,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -80,6 +83,7 @@ class ReaderViewModel @Inject constructor(
 	private var loadingJob: Job? = null
 	private var pageSaveJob: Job? = null
 	private var bookmarkJob: Job? = null
+	private var stateChangeJob: Job? = null
 	private val currentState = MutableStateFlow<ReaderState?>(savedStateHandle[ReaderActivity.EXTRA_STATE])
 	private val mangaData = MutableStateFlow(intent.manga)
 	private val chapters: LongSparseArray<MangaChapter>
@@ -143,7 +147,7 @@ class ReaderViewModel @Inject constructor(
 		settings.observe()
 			.onEach { key ->
 				if (key == AppSettings.KEY_READER_SLIDER) notifyStateChanged()
-			}.launchIn(viewModelScope)
+			}.launchIn(viewModelScope + Dispatchers.Default)
 	}
 
 	fun reload() {
@@ -234,26 +238,31 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
-	// TODO move to background?
+	@MainThread
 	fun onCurrentPageChanged(position: Int) {
-		val pages = content.value?.pages ?: return
-		pages.getOrNull(position)?.let { page ->
-			currentState.update { cs ->
-				cs?.copy(chapterId = page.chapterId, page = page.index)
+		val prevJob = stateChangeJob
+		stateChangeJob = launchJob(Dispatchers.Default) {
+			prevJob?.cancelAndJoin()
+			val pages = content.value?.pages ?: return@launchJob
+			pages.getOrNull(position)?.let { page ->
+				currentState.update { cs ->
+					cs?.copy(chapterId = page.chapterId, page = page.index)
+				}
 			}
-		}
-		notifyStateChanged()
-		if (pages.isEmpty() || loadingJob?.isActive == true) {
-			return
-		}
-		if (position <= BOUNDS_PAGE_OFFSET) {
-			loadPrevNextChapter(pages.first().chapterId, isNext = false)
-		}
-		if (position >= pages.size - BOUNDS_PAGE_OFFSET) {
-			loadPrevNextChapter(pages.last().chapterId, isNext = true)
-		}
-		if (pageLoader.isPrefetchApplicable()) {
-			pageLoader.prefetch(pages.trySublist(position + 1, position + PREFETCH_LIMIT))
+			notifyStateChanged()
+			if (pages.isEmpty() || loadingJob?.isActive == true) {
+				return@launchJob
+			}
+			ensureActive()
+			if (position <= BOUNDS_PAGE_OFFSET) {
+				loadPrevNextChapter(pages.first().chapterId, isNext = false)
+			}
+			if (position >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
+				loadPrevNextChapter(pages.last().chapterId, isNext = true)
+			}
+			if (pageLoader.isPrefetchApplicable()) {
+				pageLoader.prefetch(pages.trySublist(position + 1, position + PREFETCH_LIMIT))
+			}
 		}
 	}
 
@@ -328,6 +337,7 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
+	@AnyThread
 	private fun loadPrevNextChapter(currentId: Long, isNext: Boolean) {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			chaptersLoader.loadPrevNextChapter(mangaData.requireValue(), currentId, isNext)
@@ -365,7 +375,7 @@ class ReaderViewModel @Inject constructor(
 		}.getOrDefault(defaultMode)
 	}
 
-	@AnyThread
+	@WorkerThread
 	private fun notifyStateChanged() {
 		val state = getCurrentState()
 		val chapter = state?.chapterId?.let(chapters::get)
@@ -373,10 +383,11 @@ class ReaderViewModel @Inject constructor(
 			mangaName = manga?.title,
 			chapterName = chapter?.name,
 			chapterNumber = chapter?.number ?: 0,
-			chaptersTotal = chapters.size(),
+			chaptersTotal = manga?.getChapters(chapter?.branch)?.size ?: 0,
 			totalPages = if (chapter != null) chaptersLoader.getPagesCount(chapter.id) else 0,
 			currentPage = state?.page ?: 0,
 			isSliderEnabled = settings.isReaderSliderEnabled,
+			percent = if (state != null) computePercent(state.chapterId, state.page) else PROGRESS_NONE,
 		)
 		uiState.postValue(newState)
 	}
