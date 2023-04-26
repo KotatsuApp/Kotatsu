@@ -16,7 +16,7 @@
     <string name="grid">Grade</string>
     <string name="list_mode">Modo de lista</string>
     <string name="settings">Configurações</string>
-    <string name="remote_sources">Fontes remotas</string>
+    <string name="remote_sources">Fontes de manga</string>
     <string name="loading_">Carregando…</string>
     <string name="chapter_d_of_d">Capítulo %1$d de %2$d</string>
     <string name="close">Fechar</string>
@@ -204,7 +204,7 @@
     <string name="suggestions">Sugestões</string>
     <string name="suggestions_enable">Ativar sugestões</string>
     <string name="suggestions_summary">Sugerir mangá com base em suas preferências</string>
-    <string name="suggestions_info">Todos os dados são analisados localmente neste dispositivo. Não há transferência de seus dados pessoais para nenhum serviço</string>
+    <string name="suggestions_info">Todos os dados são analisados apenas localmente neste dispositivo e nunca são enviados para qualquer lugar.</string>
     <string name="text_suggestion_holder">Comece a ler mangá e você receberá sugestões personalizadas</string>
     <string name="exclude_nsfw_from_suggestions">Não sugira mangá NSFW</string>
     <string name="history_is_empty">Sem histórico ainda</string>
@@ -267,12 +267,12 @@
     <string name="suggestions_excluded_genres_summary">Especifique os gêneros que você não deseja ver nas sugestões</string>
     <string name="removal_completed">Remoção concluída</string>
     <string name="text_delete_local_manga_batch">Excluir itens selecionados do dispositivo permanentemente\?</string>
-    <string name="batch_manga_save_confirm">Tem certeza de que deseja baixar todos os mangás selecionados com todos os seus capítulos\? Essa ação pode consumir muito tráfego e armazenamento</string>
+    <string name="batch_manga_save_confirm">Tem certeza de que deseja baixar todos os mangás selecionados com todos e seus capítulos\? Essa ação pode consumir muito tráfego e armazenamento.</string>
     <string name="hide">Esconder</string>
     <string name="download_slowdown">Baixar lentidão</string>
     <string name="download_slowdown_summary">Ajuda a evitar o bloqueio do seu endereço IP</string>
     <string name="local_manga_processing">Processamento de mangá salvo</string>
-    <string name="chapters_will_removed_background">Os capítulos serão removidos em segundo plano. Pode levar algum tempo</string>
+    <string name="chapters_will_removed_background">Os capítulos serão removidos em segundo plano</string>
     <string name="parallel_downloads">Downloads paralelos</string>
     <string name="new_sources_text">Novas fontes de mangá estão disponíveis</string>
     <string name="check_new_chapters_title">Verifique se há novos capítulos e notifique sobre isso</string>
@@ -336,7 +336,7 @@
     <string name="select_range">Selecionar intervalo</string>
     <string name="disable_all">Desabilitar tudo</string>
     <string name="no_chapters">Sem capítulos</string>
-    <string name="manga_error_description_pattern">Detalhes do erro:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Tente &lt;a href=%2$s&gt;abrir o mangá em um navegador de internet&lt;/a&gt;para garantir que ele está disponível na fonte&lt;br&gt;2. Se estiver disponível, envie um relatório de erro para os desenvolvedores.</string>
+    <string name="manga_error_description_pattern">Detalhes do erro:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Tente &lt;a href=%2$s&gt;abrir o mangá em um navegador da web&lt;/a&gt; para garantir que ele esteja disponível em sua fonte&lt;br&gt;2. Verifique se você está usando a &lt;ahref=kotatsu://about&gt;versão mais recente do Kotatsu&lt;/a&gt;&lt;br&gt;3. Se estiver disponível, envie um relatório de erro para os desenvolvedores.</string>
     <string name="feed">Feed</string>
     <string name="history_shortcuts_summary">Torne os mangás recentes visíveis pressionando o ícone do aplicativo</string>
     <string name="no_manga_sources_text">Habilite as fontes de maná para ler online</string>
@@ -413,4 +413,20 @@
     <string name="enable_logging_summary">Gravar algumas ações para propósitos de depuração</string>
     <string name="theme_name_mamimi">Mamimi</string>
     <string name="theme_name_miku">Miku</string>
+    <string name="theme_name_kanade">Kanade</string>
+    <string name="scrobbling_empty_hint">Para acompanhar o progresso da leitura, selecione Menu → Rastrear na tela de detalhes do mangá.</string>
+    <string name="clear_new_chapters_counters">Também informações claras sobre novos capítulos</string>
+    <string name="sync_auth_hint">Você pode entrar em uma conta existente ou criar uma nova</string>
+    <string name="allow_unstable_updates_summary">Propor atualizações para versões beta do aplicativo</string>
+    <string name="comics_archive_import_description">Você pode selecionar um ou mais arquivos .cbz ou .zip, cada arquivo será reconhecido como um mangá separado.</string>
+    <string name="folder_with_images_import_description">Você pode selecionar um diretório com arquivos ou imagens. Cada arquivo (ou subdiretório) será reconhecido como um capítulo.</string>
+    <string name="speed">Velocidade</string>
+    <string name="restore_backup_description">Importar um backup criado anteriormente dos dados do usuário</string>
+    <string name="show_on_shelf">Mostrar na Prateleira</string>
+    <string name="got_it">Entendi</string>
+    <string name="sources_reorder_tip">Toque e segure em um item para reordená-lo</string>
+    <string name="user_agent">Cabeçalho UserAgent</string>
+    <string name="reader_slider">Mostrar controle deslizante de troca de página</string>
+    <string name="webtoon_zoom">Zoom Webtoon</string>
+    <string name="webtoon_zoom_summary">Permitir gesto de aumentar/diminuir o zoom no modo webtoon (beta)</string>
 </resources>
