@@ -429,4 +429,5 @@
     <string name="show_on_shelf">Mostrar en la estantería</string>
     <string name="got_it">Entendido</string>
     <string name="sync_auth_hint">Puedes acceder a una cuenta existente o crear una nueva</string>
+    <string name="find_similar">Buscar similares</string>
 </resources>
