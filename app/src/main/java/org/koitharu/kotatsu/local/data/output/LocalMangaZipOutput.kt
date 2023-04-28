@@ -60,7 +60,7 @@ class LocalMangaZipOutput(
 		index.addChapter(chapter)
 	}
 
-	override suspend fun flushChapter(chapter: MangaChapter) = Unit
+	override suspend fun flushChapter(chapter: MangaChapter): Boolean = false
 
 	override suspend fun finish() {
 		runInterruptible(Dispatchers.IO) {

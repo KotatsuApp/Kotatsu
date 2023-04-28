@@ -57,10 +57,11 @@ class LocalMangaDirOutput(
 		index.addChapter(chapter)
 	}
 
-	override suspend fun flushChapter(chapter: MangaChapter) {
-		val output = chaptersOutput.remove(chapter) ?: return
+	override suspend fun flushChapter(chapter: MangaChapter): Boolean {
+		val output = chaptersOutput.remove(chapter) ?: return false
 		output.flushAndFinish()
 		flushIndex()
+		return true
 	}
 
 	override suspend fun finish() {

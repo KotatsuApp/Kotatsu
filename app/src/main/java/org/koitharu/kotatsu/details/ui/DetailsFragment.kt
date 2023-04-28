@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.net.toUri
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -19,7 +18,6 @@ import coil.request.ImageRequest
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
@@ -46,7 +44,6 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.utils.FileSize
-import org.koitharu.kotatsu.utils.ext.computeSize
 import org.koitharu.kotatsu.utils.ext.crossfade
 import org.koitharu.kotatsu.utils.ext.drawableTop
 import org.koitharu.kotatsu.utils.ext.enqueueWith
@@ -55,8 +52,6 @@ import org.koitharu.kotatsu.utils.ext.measureHeight
 import org.koitharu.kotatsu.utils.ext.resolveDp
 import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.utils.ext.textAndVisible
-import org.koitharu.kotatsu.utils.ext.toFileOrNull
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 import javax.inject.Inject
 
@@ -94,6 +89,7 @@ class DetailsFragment :
 		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, ::onChaptersChanged)
+		viewModel.localSize.observe(viewLifecycleOwner, ::onLocalSizeChanged)
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
@@ -150,20 +146,9 @@ class DetailsFragment :
 			}
 			if (manga.source == MangaSource.LOCAL) {
 				infoLayout.textViewSource.isVisible = false
-				val file = manga.url.toUri().toFileOrNull()
-				if (file != null) {
-					viewLifecycleScope.launch {
-						val size = file.computeSize()
-						infoLayout.textViewSize.text = FileSize.BYTES.format(requireContext(), size)
-						infoLayout.textViewSize.isVisible = true
-					}
-				} else {
-					infoLayout.textViewSize.isVisible = false
-				}
 			} else {
 				infoLayout.textViewSource.text = manga.source.title
 				infoLayout.textViewSource.isVisible = true
-				infoLayout.textViewSize.isVisible = false
 			}
 
 			infoLayout.textViewNsfw.isVisible = manga.isNsfw
@@ -189,6 +174,16 @@ class DetailsFragment :
 			binding.textViewDescription.setText(R.string.no_description)
 		} else {
 			binding.textViewDescription.text = description
+		}
+	}
+
+	private fun onLocalSizeChanged(size: Long) {
+		val textView = binding.infoLayout.textViewSize
+		if (size == 0L) {
+			textView.isVisible = false
+		} else {
+			textView.text = FileSize.BYTES.format(textView.context, size)
+			textView.isVisible = true
 		}
 	}
 

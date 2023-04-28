@@ -44,7 +44,7 @@ class ShelfAdapter(
 			)
 			.addDelegate(loadingStateAD())
 			.addDelegate(loadingFooterAD())
-			.addDelegate(emptyHintAD(listener))
+			.addDelegate(emptyHintAD(coil, lifecycleOwner, listener))
 			.addDelegate(emptyStateListAD(coil, lifecycleOwner, listener))
 			.addDelegate(errorStateListAD(listener))
 	}

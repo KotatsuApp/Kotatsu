@@ -6,8 +6,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.LocalManga
@@ -106,21 +107,24 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 
 	suspend fun findSavedManga(remoteManga: Manga): LocalManga? {
 		val files = getAllFiles()
-		val input = files.firstNotNullOfOrNull { file ->
-			LocalMangaInput.of(file).takeIf {
-				runCatchingCancellable {
-					it.getMangaInfo()
-				}.getOrNull()?.id == remoteManga.id
-			}
+		if (files.isEmpty()) {
+			return null
 		}
-		return input?.getManga()
-	}
-
-	suspend fun watchReadableDirs(): Flow<File> {
-		val filter = TempFileFilter()
-		val dirs = storageManager.getReadableDirs()
-		return storageManager.observe(dirs)
-			.filterNot { filter.accept(it, it.name) }
+		return channelFlow {
+			for (file in files) {
+				launch {
+					val mangaInput = LocalMangaInput.of(file)
+					runCatchingCancellable {
+						val mangaInfo = mangaInput.getMangaInfo()
+						if (mangaInfo != null && mangaInfo.id == remoteManga.id) {
+							send(mangaInput)
+						}
+					}.onFailure {
+						it.printStackTraceDebug()
+					}
+				}
+			}
+		}.firstOrNull()?.getManga()
 	}
 
 	override val sortOrders = setOf(SortOrder.ALPHABETICAL, SortOrder.RATING)
@@ -149,7 +153,7 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 			dirs.flatMap { dir ->
 				dir.listFiles(TempFileFilter())?.toList().orEmpty()
 			}.forEach { file ->
-				file.delete()
+				file.deleteRecursively()
 			}
 		}
 		return true

@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.model.ScrobblerHint
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
+import org.koitharu.kotatsu.utils.ext.emitValue
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.require
 import org.koitharu.kotatsu.utils.ext.requireValue
@@ -135,7 +136,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 		}
 		doneJob = launchJob(Dispatchers.Default) {
 			currentScrobbler.linkManga(manga.id, targetId)
-			onClose.postCall(Unit)
+			onClose.emitCall(Unit)
 		}
 	}
 
@@ -154,7 +155,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 			try {
 				val info = currentScrobbler.getScrobblingInfoOrNull(manga.id)
 				if (info != null) {
-					selectedItemId.postValue(info.targetId)
+					selectedItemId.emitValue(info.targetId)
 				}
 			} finally {
 				loadList(append = false)

@@ -9,10 +9,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -24,6 +26,10 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 
 	@Inject
 	lateinit var localMangaRepository: LocalMangaRepository
+
+	@Inject
+	@LocalStorageChanges
+	lateinit var localStorageChanges: MutableSharedFlow<LocalManga?>
 
 	override fun onCreate() {
 		super.onCreate()
@@ -41,10 +47,7 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 		startForeground()
 		val mangaWithChapters = localMangaRepository.getDetails(manga)
 		localMangaRepository.deleteChapters(mangaWithChapters, chaptersIds)
-		sendBroadcast(
-			Intent(DownloadService.ACTION_DOWNLOAD_COMPLETE)
-				.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false)),
-		)
+		localStorageChanges.emit(LocalManga(manga))
 		ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
 	}
 

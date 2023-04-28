@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.ext.toUriOrNull
-import org.koitharu.kotatsu.utils.progress.Progress
 import java.io.File
 import java.io.FileNotFoundException
 import javax.inject.Inject
@@ -26,7 +25,7 @@ class RestoreViewModel @Inject constructor(
 	@ApplicationContext context: Context,
 ) : BaseViewModel() {
 
-	val progress = MutableLiveData<Progress?>(null)
+	val progress = MutableLiveData(-1f)
 	val onRestoreDone = SingleLiveEvent<CompositeResult>()
 
 	init {
@@ -47,16 +46,16 @@ class RestoreViewModel @Inject constructor(
 			try {
 				val result = CompositeResult()
 
-				progress.value = Progress(0, 3)
+				progress.value = 0f
 				result += repository.restoreHistory(backup.getEntry(BackupEntry.HISTORY))
 
-				progress.value = Progress(1, 3)
+				progress.value = 0.3f
 				result += repository.restoreCategories(backup.getEntry(BackupEntry.CATEGORIES))
 
-				progress.value = Progress(2, 3)
+				progress.value = 0.6f
 				result += repository.restoreFavourites(backup.getEntry(BackupEntry.FAVOURITES))
 
-				progress.value = Progress(3, 3)
+				progress.value = 1f
 				onRestoreDone.call(result)
 			} finally {
 				backup.close()

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.download.ui.service
 
+import android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -56,7 +57,6 @@ class DownloadService : BaseService() {
 
 	override fun onCreate() {
 		super.onCreate()
-		isRunning = true
 		downloadNotification = DownloadNotification(this)
 		wakeLock = (applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager)
 			.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "kotatsu:downloading")
@@ -93,7 +93,6 @@ class DownloadService : BaseService() {
 		if (wakeLock.isHeld) {
 			wakeLock.release()
 		}
-		isRunning = false
 		super.onDestroy()
 	}
 
@@ -205,12 +204,6 @@ class DownloadService : BaseService() {
 
 	companion object {
 
-		var isRunning: Boolean = false
-			private set
-
-		@Deprecated("Use LocalMangaRepository.watchReadableDirs instead")
-		const val ACTION_DOWNLOAD_COMPLETE = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_COMPLETE"
-
 		private const val ACTION_DOWNLOAD_CANCEL = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_CANCEL"
 		private const val ACTION_DOWNLOAD_RESUME = "${BuildConfig.APPLICATION_ID}.action.ACTION_DOWNLOAD_RESUME"
 
@@ -258,13 +251,6 @@ class DownloadService : BaseService() {
 
 		fun getResumeIntent(startId: Int) = Intent(ACTION_DOWNLOAD_RESUME)
 			.putExtra(EXTRA_CANCEL_ID, startId)
-
-		fun getDownloadedManga(intent: Intent?): Manga? {
-			if (intent?.action == ACTION_DOWNLOAD_COMPLETE) {
-				return intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga
-			}
-			return null
-		}
 
 		private fun showStartedSnackbar(view: View) {
 			Snackbar.make(view, R.string.download_started, Snackbar.LENGTH_LONG)

@@ -1,7 +1,13 @@
 package org.koitharu.kotatsu.utils
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.yield
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
@@ -27,6 +33,7 @@ class CompositeMutexTest {
 			}
 		}
 		yield()
+		assertEquals(1, mutex.size)
 		mutex.unlock(1)
 		val tryLock = withTimeoutOrNull(1000) {
 			mutex.lock(1)

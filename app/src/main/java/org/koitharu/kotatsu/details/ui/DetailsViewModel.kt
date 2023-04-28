@@ -4,6 +4,7 @@ import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import androidx.core.net.toUri
 import androidx.core.text.getSpans
 import androidx.core.text.parseAsHtml
 import androidx.lifecycle.LiveData
@@ -14,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -36,6 +38,8 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -46,8 +50,10 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
+import org.koitharu.kotatsu.utils.ext.computeSize
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import org.koitharu.kotatsu.utils.ext.toFileOrNull
 import java.io.IOException
 import javax.inject.Inject
 
@@ -62,6 +68,7 @@ class DetailsViewModel @Inject constructor(
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val imageGetter: Html.ImageGetter,
 	private val delegate: MangaDetailsDelegate,
+	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job
@@ -108,6 +115,23 @@ class DetailsViewModel @Inject constructor(
 	val bookmarks = delegate.manga.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+
+	val localSize = combine(
+		delegate.manga,
+		delegate.relatedManga,
+	) { m1, m2 ->
+		val url = when {
+			m1?.source == MangaSource.LOCAL -> m1.url
+			m2?.source == MangaSource.LOCAL -> m2.url
+			else -> null
+		}
+		if (url != null) {
+			val file = url.toUri().toFileOrNull()
+			file?.computeSize() ?: 0L
+		} else {
+			0L
+		}
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, 0)
 
 	val description = delegate.manga
 		.distinctUntilChangedBy { it?.description.orEmpty() }
@@ -174,6 +198,10 @@ class DetailsViewModel @Inject constructor(
 
 	init {
 		loadingJob = doLoad()
+		launchJob(Dispatchers.Default) {
+			localStorageChanges
+				.collect { onDownloadComplete(it) }
+		}
 	}
 
 	fun reload() {
@@ -195,7 +223,7 @@ class DetailsViewModel @Inject constructor(
 			runCatchingCancellable {
 				historyRepository.deleteOrSwap(manga, original)
 			}
-			onMangaRemoved.postCall(manga)
+			onMangaRemoved.emitCall(manga)
 		}
 	}
 
@@ -220,26 +248,6 @@ class DetailsViewModel @Inject constructor(
 
 	fun performChapterSearch(query: String?) {
 		chaptersQuery.value = query?.trim().orEmpty()
-	}
-
-	fun onDownloadComplete(downloadedManga: Manga) {
-		val currentManga = delegate.manga.value ?: return
-		if (currentManga.id != downloadedManga.id) {
-			return
-		}
-		if (currentManga.source == MangaSource.LOCAL) {
-			reload()
-		} else {
-			viewModelScope.launch(Dispatchers.Default) {
-				runCatchingCancellable {
-					localMangaRepository.getDetails(downloadedManga)
-				}.onSuccess {
-					delegate.relatedManga.value = it
-				}.onFailure {
-					it.printStackTraceDebug()
-				}
-			}
-		}
 	}
 
 	fun updateScrobbling(index: Int, rating: Float, status: ScrobblingStatus?) {
@@ -284,6 +292,27 @@ class DetailsViewModel @Inject constructor(
 		}
 		return filter {
 			it.chapter.name.contains(query, ignoreCase = true)
+		}
+	}
+
+	private suspend fun onDownloadComplete(downloadedManga: LocalManga?) {
+		downloadedManga ?: return
+		val currentManga = delegate.manga.value ?: return
+		if (currentManga.id != downloadedManga.manga.id) {
+			return
+		}
+		if (currentManga.source == MangaSource.LOCAL) {
+			reload()
+		} else {
+			viewModelScope.launch(Dispatchers.Default) {
+				runCatchingCancellable {
+					localMangaRepository.getDetails(downloadedManga.manga)
+				}.onSuccess {
+					delegate.relatedManga.value = it
+				}.onFailure {
+					it.printStackTraceDebug()
+				}
+			}
 		}
 	}
 

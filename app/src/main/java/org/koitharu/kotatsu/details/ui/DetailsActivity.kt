@@ -1,9 +1,7 @@
 package org.koitharu.kotatsu.details.ui
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -66,13 +64,6 @@ class DetailsActivity :
 	private val viewModel: DetailsViewModel by viewModels()
 	private lateinit var chaptersMenuProvider: ChaptersMenuProvider
 
-	private val downloadReceiver = object : BroadcastReceiver() {
-		override fun onReceive(context: Context?, intent: Intent?) {
-			val downloadedManga = DownloadService.getDownloadedManga(intent) ?: return
-			viewModel.onDownloadComplete(downloadedManga)
-		}
-	}
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDetailsBinding.inflate(layoutInflater))
@@ -130,7 +121,6 @@ class DetailsActivity :
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
 
-		registerReceiver(downloadReceiver, IntentFilter(DownloadService.ACTION_DOWNLOAD_COMPLETE))
 		addMenuProvider(
 			DetailsMenuProvider(
 				activity = this,
@@ -140,11 +130,6 @@ class DetailsActivity :
 			),
 		)
 		binding.headerChapters?.addOnExpansionChangeListener(this) ?: addMenuProvider(chaptersMenuProvider)
-	}
-
-	override fun onDestroy() {
-		unregisterReceiver(downloadReceiver)
-		super.onDestroy()
 	}
 
 	override fun onClick(v: View) {

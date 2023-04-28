@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.utils.image
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.Html
+import androidx.annotation.WorkerThread
 import coil.ImageLoader
 import coil.executeBlocking
 import coil.request.ImageRequest
@@ -14,6 +15,7 @@ class CoilImageGetter @Inject constructor(
 	private val coil: ImageLoader,
 ) : Html.ImageGetter {
 
+	@WorkerThread
 	override fun getDrawable(source: String?): Drawable? {
 		return coil.executeBlocking(
 			ImageRequest.Builder(context)

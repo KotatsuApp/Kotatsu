@@ -60,9 +60,9 @@ class MainViewModel @Inject constructor(
 	}
 
 	fun openLastReader() {
-		launchLoadingJob {
+		launchLoadingJob(Dispatchers.Default) {
 			val manga = historyRepository.getLastOrNull() ?: throw EmptyHistoryException()
-			onOpenReader.call(manga)
+			onOpenReader.emitCall(manga)
 		}
 	}
 }

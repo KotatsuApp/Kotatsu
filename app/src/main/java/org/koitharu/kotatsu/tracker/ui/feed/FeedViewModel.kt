@@ -56,7 +56,7 @@ class FeedViewModel @Inject constructor(
 			if (clearCounters) {
 				repository.clearCounters()
 			}
-			onFeedCleared.postCall(Unit)
+			onFeedCleared.emitCall(Unit)
 		}
 	}
 

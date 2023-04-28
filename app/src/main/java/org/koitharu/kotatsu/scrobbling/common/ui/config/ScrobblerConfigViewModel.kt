@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
+import org.koitharu.kotatsu.utils.ext.emitValue
 import org.koitharu.kotatsu.utils.ext.onFirst
 import org.koitharu.kotatsu.utils.ext.require
 import javax.inject.Inject
@@ -51,22 +52,22 @@ class ScrobblerConfigViewModel @Inject constructor(
 
 	init {
 		scrobbler.user
-			.onEach { user.postValue(it) }
+			.onEach { user.emitValue(it) }
 			.launchIn(viewModelScope + Dispatchers.Default)
 	}
 
 	fun onAuthCodeReceived(authCode: String) {
 		launchLoadingJob(Dispatchers.Default) {
 			val newUser = scrobbler.authorize(authCode)
-			user.postValue(newUser)
+			user.emitValue(newUser)
 		}
 	}
 
 	fun logout() {
 		launchLoadingJob(Dispatchers.Default) {
 			scrobbler.logout()
-			user.postValue(null)
-			onLoggedOut.postCall(Unit)
+			user.emitValue(null)
+			onLoggedOut.emitCall(Unit)
 		}
 	}
 

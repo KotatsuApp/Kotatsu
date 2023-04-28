@@ -5,13 +5,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
@@ -19,6 +20,8 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -32,6 +35,7 @@ class ShelfRepository @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val trackingRepository: TrackingRepository,
 	private val db: MangaDatabase,
+	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 ) {
 
 	fun observeShelfContent(): Flow<ShelfContent> = combine(
@@ -43,16 +47,15 @@ class ShelfRepository @Inject constructor(
 		ShelfContent(history, favorites, updated, local)
 	}
 
-	fun observeLocalManga(sortOrder: SortOrder): Flow<List<Manga>> {
-		return flow {
-			emit(null)
-			emitAll(localMangaRepository.watchReadableDirs())
-		}.mapLatest {
-			localMangaRepository.getList(0, null, sortOrder)
-		}
+	private fun observeLocalManga(sortOrder: SortOrder): Flow<List<Manga>> {
+		return localStorageChanges
+			.onStart { emit(null) }
+			.mapLatest {
+				localMangaRepository.getList(0, null, sortOrder)
+			}.distinctUntilChanged()
 	}
 
-	fun observeFavourites(): Flow<Map<FavouriteCategory, List<Manga>>> {
+	private fun observeFavourites(): Flow<Map<FavouriteCategory, List<Manga>>> {
 		return db.favouriteCategoriesDao.observeAll()
 			.flatMapLatest { categories ->
 				val cats = categories.filter { it.isVisibleInLibrary }

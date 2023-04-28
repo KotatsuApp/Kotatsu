@@ -6,9 +6,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.utils.FileSize
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.longHashCode
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.ext.subdir
 import org.koitharu.kotatsu.utils.ext.takeIfReadable
 import org.koitharu.kotatsu.utils.ext.takeIfWriteable
@@ -20,47 +23,41 @@ import javax.inject.Singleton
 @Singleton
 class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 
-	private val cacheDir = checkNotNull(findSuitableDir(context)) {
-		val dirs = (context.externalCacheDirs + context.cacheDir).joinToString(";") {
-			it?.absolutePath.toString()
+	private val cacheDir = SuspendLazy {
+		val dirs = context.externalCacheDirs + context.cacheDir
+		dirs.firstNotNullOf {
+			it?.subdir(CacheDir.PAGES.dir)?.takeIfWriteable()
 		}
-		"Cannot find any suitable directory for PagesCache: [$dirs]"
 	}
-	private val lruCache = createDiskLruCacheSafe(
-		dir = cacheDir,
-		size = FileSize.MEGABYTES.convert(200, FileSize.BYTES),
-	)
+	private val lruCache = SuspendLazy {
+		val dir = cacheDir.get()
+		val size = FileSize.MEGABYTES.convert(200, FileSize.BYTES)
+		runCatchingCancellable {
+			DiskLruCache.create(dir, size)
+		}.recoverCatching { error ->
+			error.printStackTraceDebug()
+			dir.deleteRecursively()
+			dir.mkdir()
+			DiskLruCache.create(dir, size)
+		}.getOrThrow()
+	}
 
-	suspend fun get(url: String): File? = runInterruptible(Dispatchers.IO) {
-		lruCache.get(url)?.takeIfReadable()
+	suspend fun get(url: String): File? {
+		val cache = lruCache.get()
+		return runInterruptible(Dispatchers.IO) {
+			cache.get(url)?.takeIfReadable()
+		}
 	}
 
 	suspend fun put(url: String, inputStream: InputStream): File = withContext(Dispatchers.IO) {
-		val file = File(cacheDir.parentFile, url.longHashCode().toString())
+		val file = File(cacheDir.get().parentFile, url.longHashCode().toString())
 		try {
 			file.outputStream().use { out ->
 				inputStream.copyToSuspending(out)
 			}
-			lruCache.put(url, file)
+			lruCache.get().put(url, file)
 		} finally {
 			file.delete()
 		}
-	}
-}
-
-private fun createDiskLruCacheSafe(dir: File, size: Long): DiskLruCache {
-	return try {
-		DiskLruCache.create(dir, size)
-	} catch (e: Exception) {
-		dir.deleteRecursively()
-		dir.mkdir()
-		DiskLruCache.create(dir, size)
-	}
-}
-
-private fun findSuitableDir(context: Context): File? {
-	val dirs = context.externalCacheDirs + context.cacheDir
-	return dirs.firstNotNullOfOrNull {
-		it?.subdir(CacheDir.PAGES.dir)?.takeIfWriteable()
 	}
 }

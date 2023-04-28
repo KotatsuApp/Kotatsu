@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
@@ -29,6 +30,8 @@ import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.download.ui.service.PausingHandle
+import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
@@ -58,6 +61,7 @@ class DownloadManager @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
 ) {
 
 	private val coverWidth = context.resources.getDimensionPixelSize(
@@ -165,13 +169,18 @@ class DownloadManager @Inject constructor(
 								delay(SLOWDOWN_DELAY)
 							}
 						}
-						output.flushChapter(chapter)
+						if (output.flushChapter(chapter)) {
+							runCatchingCancellable {
+								localStorageChanges.emit(LocalMangaInput.of(output.rootFile).getManga())
+							}.onFailure(Throwable::printStackTraceDebug)
+						}
 					}
 					outState.value = DownloadState.PostProcessing(startId, data, cover)
 					output.mergeWithExisting()
 					output.finish()
-					val localManga = LocalMangaInput.of(output.rootFile).getManga().manga
-					outState.value = DownloadState.Done(startId, data, cover, localManga)
+					val localManga = LocalMangaInput.of(output.rootFile).getManga()
+					localStorageChanges.emit(localManga)
+					outState.value = DownloadState.Done(startId, data, cover, localManga.manga)
 				} catch (e: CancellationException) {
 					outState.value = DownloadState.Cancelled(startId, manga, cover)
 					throw e

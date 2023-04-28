@@ -20,6 +20,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.ElementsIntoSet
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.BuildConfig
@@ -40,6 +43,8 @@ import org.koitharu.kotatsu.core.parser.favicon.FaviconFetcher
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
+import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -205,5 +210,16 @@ interface AppModule {
 				MemoryContentCache(application)
 			}
 		}
+
+		@Provides
+		@Singleton
+		@LocalStorageChanges
+		fun provideMutableLocalStorageChangesFlow(): MutableSharedFlow<LocalManga?> = MutableSharedFlow()
+
+		@Provides
+		@LocalStorageChanges
+		fun provideLocalStorageChangesFlow(
+			@LocalStorageChanges flow: MutableSharedFlow<LocalManga?>,
+		): SharedFlow<LocalManga?> = flow.asSharedFlow()
 	}
 }

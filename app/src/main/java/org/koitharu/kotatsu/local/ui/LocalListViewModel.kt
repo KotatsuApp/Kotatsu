@@ -9,11 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
@@ -27,6 +26,8 @@ import org.koitharu.kotatsu.list.ui.model.ListHeader2
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -46,6 +47,7 @@ class LocalListViewModel @Inject constructor(
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 	private val tagHighlighter: MangaTagHighlighter,
+	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 ) : MangaListViewModel(settings), ListExtraProvider {
 
 	val onMangaRemoved = SingleLiveEvent<Unit>()
@@ -83,7 +85,14 @@ class LocalListViewModel @Inject constructor(
 
 	init {
 		onRefresh()
-		watchDirectories()
+		launchJob(Dispatchers.Default) {
+			localStorageChanges
+				.collectLatest {
+					if (refreshJob?.isActive != true) {
+						doRefresh()
+					}
+				}
+		}
 	}
 
 	override fun onUpdateFilter(tags: Set<MangaTag>) {
@@ -108,21 +117,19 @@ class LocalListViewModel @Inject constructor(
 	}
 
 	fun delete(ids: Set<Long>) {
-		launchLoadingJob {
-			withContext(Dispatchers.Default) {
-				val itemsToRemove = checkNotNull(mangaList.value).filter { it.id in ids }
-				for (manga in itemsToRemove) {
-					val original = repository.getRemoteManga(manga)
-					repository.delete(manga) || throw IOException("Unable to delete file")
-					runCatchingCancellable {
-						historyRepository.deleteOrSwap(manga, original)
-					}
-					mangaList.update { list ->
-						list?.filterNot { it.id == manga.id }
-					}
+		launchLoadingJob(Dispatchers.Default) {
+			val itemsToRemove = checkNotNull(mangaList.value).filter { it.id in ids }
+			for (manga in itemsToRemove) {
+				val original = repository.getRemoteManga(manga)
+				repository.delete(manga) || throw IOException("Unable to delete file")
+				runCatchingCancellable {
+					historyRepository.deleteOrSwap(manga, original)
+				}
+				mangaList.update { list ->
+					list?.filterNot { it.id == manga.id }
 				}
 			}
-			onMangaRemoved.call(Unit)
+			onMangaRemoved.emitCall(Unit)
 		}
 	}
 
@@ -134,15 +141,6 @@ class LocalListViewModel @Inject constructor(
 			throw e
 		} catch (e: Throwable) {
 			listError.value = e
-		}
-	}
-
-	private fun watchDirectories() {
-		viewModelScope.launch(Dispatchers.Default) {
-			repository.watchReadableDirs()
-				.collectLatest {
-					doRefresh()
-				}
 		}
 	}
 

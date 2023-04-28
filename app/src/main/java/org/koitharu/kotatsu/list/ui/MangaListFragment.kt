@@ -17,11 +17,9 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.ImageLoader
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.reverseAsync
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.base.ui.list.FitHeightGridLayoutManager
 import org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager
@@ -30,7 +28,7 @@ import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.base.ui.util.ReversibleAction
+import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -46,7 +44,6 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
-import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
@@ -127,7 +124,7 @@ abstract class MangaListFragment :
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
-		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
+		viewModel.onActionDone.observe(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 	}
 
 	override fun onDestroyView() {
@@ -171,17 +168,6 @@ abstract class MangaListFragment :
 
 	private fun onListChanged(list: List<ListModel>) {
 		listAdapter?.setItems(list, listCommitCallback)
-	}
-
-	private fun onActionDone(action: ReversibleAction) {
-		val handle = action.handle
-		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
-		val snackbar = Snackbar.make(binding.recyclerView, action.stringResId, length)
-		snackbar.anchorView = (activity as? BottomNavOwner)?.bottomNav
-		if (handle != null) {
-			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
-		}
-		snackbar.show()
 	}
 
 	private fun resolveException(e: Throwable) {

@@ -7,15 +7,10 @@ import androidx.annotation.WorkerThread
 import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import okhttp3.Cache
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.local.data.util.observe
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.utils.ext.computeSize
 import org.koitharu.kotatsu.utils.ext.getStorageName
@@ -36,6 +31,7 @@ class LocalStorageManager @Inject constructor(
 	val contentResolver: ContentResolver
 		get() = context.contentResolver
 
+	@WorkerThread
 	fun createHttpCache(): Cache {
 		val directory = File(context.externalCacheDir ?: context.cacheDir, "http")
 		directory.mkdirs()
@@ -79,14 +75,6 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	fun getStorageDisplayName(file: File) = file.getStorageName(context)
-
-	fun observe(files: List<File>): Flow<File> {
-		if (files.isEmpty()) {
-			return emptyFlow()
-		}
-		return files.asFlow()
-			.flatMapMerge(files.size) { it.observe() }
-	}
 
 	@WorkerThread
 	private fun getConfiguredStorageDirs(): MutableSet<File> {

@@ -48,7 +48,7 @@ class BookmarksViewModel @Inject constructor(
 	fun removeBookmarks(ids: Map<Manga, Set<Long>>) {
 		launchJob(Dispatchers.Default) {
 			val handle = repository.removeBookmarks(ids)
-			onActionDone.postCall(ReversibleAction(R.string.bookmarks_removed, handle))
+			onActionDone.emitCall(ReversibleAction(R.string.bookmarks_removed, handle))
 		}
 	}
 }

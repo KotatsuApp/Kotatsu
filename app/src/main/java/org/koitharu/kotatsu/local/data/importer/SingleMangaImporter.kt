@@ -6,11 +6,13 @@ import androidx.documentfile.provider.DocumentFile
 import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
@@ -23,16 +25,19 @@ import javax.inject.Inject
 class SingleMangaImporter @Inject constructor(
 	@ApplicationContext private val context: Context,
 	private val storageManager: LocalStorageManager,
+	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
 ) {
 
 	private val contentResolver = context.contentResolver
 
 	suspend fun import(uri: Uri, progressState: MutableStateFlow<Float>?): LocalManga {
-		return if (isDirectory(uri)) {
+		val result = if (isDirectory(uri)) {
 			importDirectory(uri, progressState)
 		} else {
 			importFile(uri, progressState)
 		}
+		localStorageChanges.emit(result)
+		return result
 	}
 
 	private suspend fun importFile(uri: Uri, progressState: MutableStateFlow<Float>?): LocalManga {

@@ -5,7 +5,10 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.coroutines.EmptyCoroutineContext
 
 class SingleLiveEvent<T> : LiveData<T>() {
 
@@ -32,5 +35,16 @@ class SingleLiveEvent<T> : LiveData<T>() {
 	@AnyThread
 	fun postCall(newValue: T) {
 		postValue(newValue)
+	}
+
+	suspend fun emitCall(newValue: T) {
+		val dispatcher = Dispatchers.Main.immediate
+		if (dispatcher.isDispatchNeeded(EmptyCoroutineContext)) {
+			withContext(dispatcher) {
+				setValue(newValue)
+			}
+		} else {
+			setValue(newValue)
+		}
 	}
 }

@@ -82,7 +82,7 @@ class SourcesListViewModel @Inject constructor(
 				val rollback = ReversibleHandle {
 					setEnabled(source, true)
 				}
-				onActionDone.postCall(ReversibleAction(R.string.source_disabled, rollback))
+				onActionDone.emitCall(ReversibleAction(R.string.source_disabled, rollback))
 			}
 			buildList()
 		}

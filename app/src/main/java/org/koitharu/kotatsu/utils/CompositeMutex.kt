@@ -1,45 +1,43 @@
 package org.koitharu.kotatsu.utils
 
 import androidx.collection.ArrayMap
-import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.LinkedList
 import kotlin.coroutines.coroutineContext
-import kotlin.coroutines.resume
 
 class CompositeMutex<T : Any> : Set<T> {
 
-	private val data = ArrayMap<T, MutableList<CancellableContinuation<Unit>>>()
+	private val state = ArrayMap<T, MutableStateFlow<Boolean>>()
 	private val mutex = Mutex()
 
 	override val size: Int
-		get() = data.size
+		get() = state.size
 
 	override fun contains(element: T): Boolean {
-		return data.containsKey(element)
+		return state.containsKey(element)
 	}
 
 	override fun containsAll(elements: Collection<T>): Boolean {
-		return elements.all { x -> data.containsKey(x) }
+		return elements.all { x -> state.containsKey(x) }
 	}
 
 	override fun isEmpty(): Boolean {
-		return data.isEmpty
+		return state.isEmpty
 	}
 
 	override fun iterator(): Iterator<T> {
-		return data.keys.iterator()
+		return state.keys.iterator()
 	}
 
 	suspend fun lock(element: T) {
 		while (coroutineContext.isActive) {
 			waitForRemoval(element)
 			mutex.withLock {
-				if (data[element] == null) {
-					data[element] = LinkedList<CancellableContinuation<Unit>>()
+				if (state[element] == null) {
+					state[element] = MutableStateFlow(false)
 					return
 				}
 			}
@@ -47,23 +45,13 @@ class CompositeMutex<T : Any> : Set<T> {
 	}
 
 	fun unlock(element: T) {
-		val continuations = checkNotNull(data.remove(element)) {
+		checkNotNull(state.remove(element)) {
 			"CompositeMutex is not locked for $element"
-		}
-		continuations.forEach { c ->
-			if (c.isActive) {
-				c.resume(Unit)
-			}
-		}
+		}.value = true
 	}
 
 	private suspend fun waitForRemoval(element: T) {
-		val list = data[element] ?: return
-		suspendCancellableCoroutine { continuation ->
-			list.add(continuation)
-			continuation.invokeOnCancellation {
-				list.remove(continuation)
-			}
-		}
+		val flow = state[element] ?: return
+		flow.first { it }
 	}
 }

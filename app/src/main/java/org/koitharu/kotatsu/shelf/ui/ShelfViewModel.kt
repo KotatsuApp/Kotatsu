@@ -7,7 +7,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
@@ -60,10 +59,9 @@ class ShelfViewModel @Inject constructor(
 		repository.observeShelfContent(),
 	) { sections, isTrackerEnabled, isConnected, content ->
 		mapList(content, isTrackerEnabled, sections, isConnected)
-	}.debounce(500)
-		.catch { e ->
-			emit(listOf(e.toErrorState(canRetry = false)))
-		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.catch { e ->
+		emit(listOf(e.toErrorState(canRetry = false)))
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	init {
 		launchJob(Dispatchers.Default) {
@@ -93,7 +91,7 @@ class ShelfViewModel @Inject constructor(
 		}
 		launchJob(Dispatchers.Default) {
 			val handle = favouritesRepository.removeFromCategory(category.id, ids)
-			onActionDone.postCall(ReversibleAction(R.string.removed_from_favourites, handle))
+			onActionDone.emitCall(ReversibleAction(R.string.removed_from_favourites, handle))
 		}
 	}
 
@@ -103,14 +101,14 @@ class ShelfViewModel @Inject constructor(
 		}
 		launchJob(Dispatchers.Default) {
 			val handle = historyRepository.delete(ids)
-			onActionDone.postCall(ReversibleAction(R.string.removed_from_history, handle))
+			onActionDone.emitCall(ReversibleAction(R.string.removed_from_history, handle))
 		}
 	}
 
 	fun deleteLocal(ids: Set<Long>) {
 		launchLoadingJob(Dispatchers.Default) {
 			repository.deleteLocalManga(ids)
-			onActionDone.postCall(ReversibleAction(R.string.removal_completed, null))
+			onActionDone.emitCall(ReversibleAction(R.string.removal_completed, null))
 		}
 	}
 
@@ -123,7 +121,7 @@ class ShelfViewModel @Inject constructor(
 				historyRepository.deleteAfter(minDate)
 				R.string.removed_from_history
 			}
-			onActionDone.postCall(ReversibleAction(stringRes, null))
+			onActionDone.emitCall(ReversibleAction(stringRes, null))
 		}
 	}
 

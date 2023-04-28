@@ -1,12 +1,18 @@
 package org.koitharu.kotatsu.utils
 
 import androidx.lifecycle.LiveData
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 private const val DEFAULT_TIMEOUT = 5_000L
 
@@ -51,11 +57,16 @@ class FlowLiveData<T>(
 	private inner class Collector : FlowCollector<T> {
 
 		private var previousValue: Any? = value
+		private val dispatcher = Dispatchers.Main.immediate
 
 		override suspend fun emit(value: T) {
 			if (previousValue != value) {
 				previousValue = value
-				withContext(Dispatchers.Main.immediate) {
+				if (dispatcher.isDispatchNeeded(EmptyCoroutineContext)) {
+					withContext(dispatcher) {
+						setValue(value)
+					}
+				} else {
 					setValue(value)
 				}
 			}

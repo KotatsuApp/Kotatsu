@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
@@ -28,7 +27,6 @@ import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,9 +40,6 @@ class FavouritesListViewModel @Inject constructor(
 ) : MangaListViewModel(settings), ListExtraProvider {
 
 	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
-
-	var categoryName: String? = null
-		private set
 
 	val sortOrder: LiveData<SortOrder?> = if (categoryId == NO_ID) {
 		MutableLiveData(null)
@@ -82,18 +77,6 @@ class FavouritesListViewModel @Inject constructor(
 		emit(listOf(it.toErrorState(canRetry = false)))
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
-	init {
-		if (categoryId != NO_ID) {
-			launchJob {
-				categoryName = withContext(Dispatchers.Default) {
-					runCatchingCancellable {
-						repository.getCategory(categoryId).title
-					}.getOrNull()
-				}
-			}
-		}
-	}
-
 	override fun onRefresh() = Unit
 
 	override fun onRetry() = Unit
@@ -108,7 +91,7 @@ class FavouritesListViewModel @Inject constructor(
 			} else {
 				repository.removeFromCategory(categoryId, ids)
 			}
-			onActionDone.postCall(ReversibleAction(R.string.removed_from_favourites, handle))
+			onActionDone.emitCall(ReversibleAction(R.string.removed_from_favourites, handle))
 		}
 	}
 

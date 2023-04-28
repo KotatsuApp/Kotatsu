@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity.Companion.EXTRA_MANGA
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.emitValue
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,7 +44,7 @@ class ColorFilterConfigViewModel @Inject constructor(
 		launchLoadingJob(Dispatchers.Default) {
 			val repository = mangaRepositoryFactory.create(page.source)
 			val url = repository.getPageUrl(page)
-			preview.postValue(
+			preview.emitValue(
 				MangaPage(
 					id = page.id,
 					url = url,
@@ -71,7 +72,7 @@ class ColorFilterConfigViewModel @Inject constructor(
 	fun save() {
 		launchLoadingJob(Dispatchers.Default) {
 			mangaDataRepository.saveColorFilter(manga, colorFilter.value)
-			onDismiss.postCall(Unit)
+			onDismiss.emitCall(Unit)
 		}
 	}
 }

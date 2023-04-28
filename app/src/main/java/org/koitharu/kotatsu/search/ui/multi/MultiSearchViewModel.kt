@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.utils.asFlowLiveData
+import org.koitharu.kotatsu.utils.ext.emitValue
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import javax.inject.Inject
@@ -96,7 +97,7 @@ class MultiSearchViewModel @Inject constructor(
 				listError.value = null
 				listData.value = emptyList()
 				loadingData.value = true
-				query.postValue(q)
+				query.emitValue(q)
 				searchImpl(q)
 			} catch (e: CancellationException) {
 				throw e

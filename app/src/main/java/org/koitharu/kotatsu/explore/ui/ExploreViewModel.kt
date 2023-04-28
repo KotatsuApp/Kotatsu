@@ -54,7 +54,7 @@ class ExploreViewModel @Inject constructor(
 	fun openRandom() {
 		launchLoadingJob(Dispatchers.Default) {
 			val manga = exploreRepository.findRandomManga(tagsLimit = 8)
-			onOpenManga.postCall(manga)
+			onOpenManga.emitCall(manga)
 		}
 	}
 
@@ -64,7 +64,7 @@ class ExploreViewModel @Inject constructor(
 			val rollback = ReversibleHandle {
 				settings.hiddenSources -= source.name
 			}
-			onActionDone.postCall(ReversibleAction(R.string.source_disabled, rollback))
+			onActionDone.emitCall(ReversibleAction(R.string.source_disabled, rollback))
 		}
 	}
 

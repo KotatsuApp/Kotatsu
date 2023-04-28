@@ -53,6 +53,7 @@ import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
+import org.koitharu.kotatsu.utils.ext.emitValue
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import org.koitharu.kotatsu.utils.ext.requireValue
@@ -202,12 +203,12 @@ class ReaderViewModel @Inject constructor(
 			prevJob?.cancelAndJoin()
 			try {
 				val dest = pageSaveHelper.savePage(pageLoader, page, saveLauncher)
-				onPageSaved.postCall(dest)
+				onPageSaved.emitCall(dest)
 			} catch (e: CancellationException) {
 				throw e
 			} catch (e: Exception) {
 				e.printStackTraceDebug()
-				onPageSaved.postCall(null)
+				onPageSaved.emitCall(null)
 			}
 		}
 	}
@@ -285,7 +286,7 @@ class ReaderViewModel @Inject constructor(
 				percent = computePercent(state.chapterId, state.page),
 			)
 			bookmarksRepository.addBookmark(bookmark)
-			onShowToast.postCall(R.string.bookmark_added)
+			onShowToast.emitCall(R.string.bookmark_added)
 		}
 	}
 
@@ -322,7 +323,7 @@ class ReaderViewModel @Inject constructor(
 
 			val branch = chapters[currentState.value?.chapterId ?: 0L]?.branch
 			mangaData.value = manga.filterChapters(branch)
-			readerMode.postValue(mode)
+			readerMode.emitValue(mode)
 
 			chaptersLoader.loadSingleChapter(manga, requireNotNull(currentState.value).chapterId)
 			// save state
@@ -333,7 +334,7 @@ class ReaderViewModel @Inject constructor(
 				}
 			}
 			notifyStateChanged()
-			content.postValue(ReaderContent(chaptersLoader.snapshot(), currentState.value))
+			content.emitValue(ReaderContent(chaptersLoader.snapshot(), currentState.value))
 		}
 	}
 
@@ -341,7 +342,7 @@ class ReaderViewModel @Inject constructor(
 	private fun loadPrevNextChapter(currentId: Long, isNext: Boolean) {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			chaptersLoader.loadPrevNextChapter(mangaData.requireValue(), currentId, isNext)
-			content.postValue(ReaderContent(chaptersLoader.snapshot(), null))
+			content.emitValue(ReaderContent(chaptersLoader.snapshot(), null))
 		}
 	}
 

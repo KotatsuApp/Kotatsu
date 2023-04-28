@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
+import org.koitharu.kotatsu.utils.ext.emitValue
 import javax.inject.Inject
 
 private const val DEBOUNCE_TIMEOUT = 500L
@@ -97,7 +98,7 @@ class SearchSuggestionViewModel @Inject constructor(
 			buildSearchSuggestion(searchQuery, hiddenSources)
 		}.distinctUntilChanged()
 			.onEach {
-				suggestion.postValue(it)
+				suggestion.emitValue(it)
 			}.launchIn(viewModelScope + Dispatchers.Default)
 	}
 

@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITE_CATEGORIES
 import org.koitharu.kotatsu.core.db.removeObserverAsync
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import org.koitharu.kotatsu.utils.ext.emitValue
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +32,7 @@ class TrackerSettingsViewModel @Inject constructor(
 
 	private fun updateCategoriesCount() {
 		launchJob(Dispatchers.Default) {
-			categoriesCount.postValue(repository.getCategoriesCount())
+			categoriesCount.emitValue(repository.getCategoriesCount())
 		}
 	}
 

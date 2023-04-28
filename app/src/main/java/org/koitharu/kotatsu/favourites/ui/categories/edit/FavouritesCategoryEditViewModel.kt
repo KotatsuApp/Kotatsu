@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEdit
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity.Companion.NO_ID
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.utils.ext.emitValue
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,7 +35,7 @@ class FavouritesCategoryEditViewModel @Inject constructor(
 
 	init {
 		launchLoadingJob(Dispatchers.Default) {
-			category.postValue(
+			category.emitValue(
 				if (categoryId != NO_ID) {
 					repository.getCategory(categoryId)
 				} else {
@@ -57,7 +58,7 @@ class FavouritesCategoryEditViewModel @Inject constructor(
 			} else {
 				repository.updateCategory(categoryId, title, sortOrder, isTrackerEnabled, isVisibleOnShelf)
 			}
-			onSaved.postCall(Unit)
+			onSaved.emitCall(Unit)
 		}
 	}
 }

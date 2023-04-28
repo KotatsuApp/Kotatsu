@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.local.data
 
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import java.io.File
@@ -8,6 +10,8 @@ class LocalManga(
 	val file: File,
 	val manga: Manga,
 ) {
+
+	constructor(manga: Manga) : this(manga.url.toUri().toFile(), manga)
 
 	var createdAt: Long = -1L
 		private set

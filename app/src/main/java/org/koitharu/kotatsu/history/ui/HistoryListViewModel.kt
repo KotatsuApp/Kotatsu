@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.list.ui.model.toListModel
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.daysDiff
+import org.koitharu.kotatsu.utils.ext.emitValue
 import org.koitharu.kotatsu.utils.ext.onFirst
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -45,7 +46,7 @@ class HistoryListViewModel @Inject constructor(
 	val isGroupingEnabled = MutableLiveData<Boolean>()
 
 	private val historyGrouping = settings.observeAsFlow(AppSettings.KEY_HISTORY_GROUPING) { isHistoryGroupingEnabled }
-		.onEach { isGroupingEnabled.postValue(it) }
+		.onEach { isGroupingEnabled.emitValue(it) }
 
 	override val content = combine(
 		repository.observeAllWithHistory(),
@@ -77,7 +78,7 @@ class HistoryListViewModel @Inject constructor(
 	override fun onRetry() = Unit
 
 	fun clearHistory() {
-		launchLoadingJob {
+		launchLoadingJob(Dispatchers.Default) {
 			repository.clear()
 		}
 	}
@@ -88,7 +89,7 @@ class HistoryListViewModel @Inject constructor(
 		}
 		launchJob(Dispatchers.Default) {
 			val handle = repository.delete(ids)
-			onActionDone.postCall(ReversibleAction(R.string.removed_from_history, handle))
+			onActionDone.emitCall(ReversibleAction(R.string.removed_from_history, handle))
 		}
 	}
 

@@ -161,7 +161,7 @@ class RemoteListViewModel @Inject constructor(
 				e.printStackTraceDebug()
 				listError.value = e
 				if (!mangaList.value.isNullOrEmpty()) {
-					errorEvent.postCall(e)
+					errorEvent.emitCall(e)
 				}
 			}
 		}
