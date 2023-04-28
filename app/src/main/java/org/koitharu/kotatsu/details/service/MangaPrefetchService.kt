@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import javax.inject.Inject
 
@@ -95,7 +96,12 @@ class MangaPrefetchService : CoroutineIntentService() {
 			val intent = Intent(context, MangaPrefetchService::class.java)
 			intent.action = ACTION_PREFETCH_PAGES
 			intent.putExtra(EXTRA_CHAPTER, ParcelableMangaChapters(listOf(chapter)))
-			context.startService(intent)
+			try {
+				context.startService(intent)
+			} catch (e: IllegalStateException) {
+				// probably app is in background
+				e.printStackTraceDebug()
+			}
 		}
 
 		fun prefetchLast(context: Context) {

@@ -5,5 +5,5 @@ import okio.IOException
 
 class CloudFlareProtectedException(
 	val url: String,
-	val headers: Headers,
+	@Transient val headers: Headers,
 ) : IOException("Protected by CloudFlare")
