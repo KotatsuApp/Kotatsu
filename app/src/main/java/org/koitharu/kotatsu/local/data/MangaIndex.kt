@@ -84,7 +84,7 @@ class MangaIndex(source: String?) {
 
 	fun getCoverEntry(): String? = json.getStringOrNull("cover_entry")
 
-	fun addChapter(chapter: MangaChapter) {
+	fun addChapter(chapter: MangaChapter, filename: String?) {
 		val chapters = json.getJSONObject("chapters")
 		if (!chapters.has(chapter.id.toString())) {
 			val jo = JSONObject()
@@ -95,12 +95,17 @@ class MangaIndex(source: String?) {
 			jo.put("scanlator", chapter.scanlator)
 			jo.put("branch", chapter.branch)
 			jo.put("entries", "%08d_%03d\\d{3}".format(chapter.branch.hashCode(), chapter.number))
+			jo.put("file", filename)
 			chapters.put(chapter.id.toString(), jo)
 		}
 	}
 
 	fun removeChapter(id: Long): Boolean {
 		return json.getJSONObject("chapters").remove(id.toString()) != null
+	}
+
+	fun getChapterFileName(chapterId: Long): String? {
+		return json.optJSONObject("chapters")?.optJSONObject(chapterId.toString())?.getStringOrNull("file")
 	}
 
 	fun setCoverEntry(name: String) {

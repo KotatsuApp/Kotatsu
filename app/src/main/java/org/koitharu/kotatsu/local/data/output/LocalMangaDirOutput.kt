@@ -54,7 +54,7 @@ class LocalMangaDirOutput(
 		runInterruptible(Dispatchers.IO) {
 			output.put(name, file)
 		}
-		index.addChapter(chapter)
+		index.addChapter(chapter, chapterFileName(chapter))
 	}
 
 	override suspend fun flushChapter(chapter: MangaChapter): Boolean {
@@ -105,7 +105,18 @@ class LocalMangaDirOutput(
 	}
 
 	private fun chapterFileName(chapter: MangaChapter): String {
-		return "${chapter.number}_${chapter.name.toFileNameSafe()}".take(18) + ".cbz"
+		index.getChapterFileName(chapter.id)?.let {
+			return it
+		}
+		val baseName = "${chapter.number}_${chapter.name.toFileNameSafe()}".take(18)
+		var i = 0
+		while (true) {
+			val name = (if (i == 0) baseName else baseName + "_$i") + ".cbz"
+			if (!File(rootFile, name).exists()) {
+				return name
+			}
+			i++
+		}
 	}
 
 	private suspend fun flushIndex() = runInterruptible(Dispatchers.IO) {

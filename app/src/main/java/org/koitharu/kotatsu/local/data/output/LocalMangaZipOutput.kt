@@ -57,7 +57,7 @@ class LocalMangaZipOutput(
 		runInterruptible(Dispatchers.IO) {
 			output.put(name, file)
 		}
-		index.addChapter(chapter)
+		index.addChapter(chapter, null)
 	}
 
 	override suspend fun flushChapter(chapter: MangaChapter): Boolean = false
@@ -98,7 +98,7 @@ class LocalMangaZipOutput(
 		}
 		otherIndex?.getMangaInfo()?.chapters?.let { chapters ->
 			for (chapter in chapters) {
-				index.addChapter(chapter)
+				index.addChapter(chapter, null)
 			}
 		}
 	}
