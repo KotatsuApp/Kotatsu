@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
-import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
@@ -95,11 +94,7 @@ class ChaptersFragment :
 	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_save -> {
-				DownloadService.start(
-					binding.recyclerViewChapters,
-					viewModel.getRemoteManga() ?: viewModel.manga.value ?: return false,
-					selectionController?.snapshot(),
-				)
+				viewModel.download(selectionController?.snapshot())
 				mode.finish()
 				true
 			}

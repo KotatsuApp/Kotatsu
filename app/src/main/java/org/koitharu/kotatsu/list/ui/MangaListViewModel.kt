@@ -11,13 +11,16 @@ import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsLiveData
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
 
 abstract class MangaListViewModel(
 	private val settings: AppSettings,
+	private val downloadScheduler: DownloadWorker.Scheduler,
 ) : BaseViewModel() {
 
 	abstract val content: LiveData<List<ListModel>>
@@ -30,10 +33,18 @@ abstract class MangaListViewModel(
 		key = AppSettings.KEY_GRID_SIZE,
 		valueProducer = { gridSize / 100f },
 	)
+	val onDownloadStarted = SingleLiveEvent<Unit>()
 
 	open fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 
 	abstract fun onRefresh()
 
 	abstract fun onRetry()
+
+	fun download(items: Set<Manga>) {
+		launchJob(Dispatchers.Default) {
+			downloadScheduler.schedule(items)
+			onDownloadStarted.emitCall(Unit)
+		}
+	}
 }

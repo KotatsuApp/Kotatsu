@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.exceptions.CompositeException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
@@ -27,6 +28,7 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.emitValue
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
@@ -41,12 +43,14 @@ class MultiSearchViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val downloadScheduler: DownloadWorker.Scheduler,
 ) : BaseViewModel() {
 
 	private var searchJob: Job? = null
 	private val listData = MutableStateFlow<List<MultiSearchListModel>>(emptyList())
 	private val loadingData = MutableStateFlow(false)
 	private var listError = MutableStateFlow<Throwable?>(null)
+	val onDownloadStarted = SingleLiveEvent<Unit>()
 
 	val query = MutableLiveData(savedStateHandle.get<String>(MultiSearchActivity.EXTRA_QUERY).orEmpty())
 	val list: LiveData<List<ListModel>> = combine(
@@ -106,6 +110,13 @@ class MultiSearchViewModel @Inject constructor(
 			} finally {
 				loadingData.value = false
 			}
+		}
+	}
+
+	fun download(items: Set<Manga>) {
+		launchJob(Dispatchers.Default) {
+			downloadScheduler.schedule(items)
+			onDownloadStarted.emitCall(Unit)
 		}
 	}
 

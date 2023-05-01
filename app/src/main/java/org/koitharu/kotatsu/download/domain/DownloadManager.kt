@@ -45,6 +45,7 @@ import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.progress.PausingProgressJob
 import java.io.File
+import java.util.UUID
 import javax.inject.Inject
 
 private const val MAX_FAILSAFE_ATTEMPTS = 2
@@ -76,10 +77,10 @@ class DownloadManager @Inject constructor(
 	fun downloadManga(
 		manga: Manga,
 		chaptersIds: LongArray?,
-		startId: Int,
+		startId: UUID,
 	): PausingProgressJob<DownloadState> {
 		val stateFlow = MutableStateFlow<DownloadState>(
-			DownloadState.Queued(startId = startId, manga = manga, cover = null),
+			DownloadState.Queued(uuid = startId, manga = manga),
 		)
 		val pausingHandle = PausingHandle()
 		val job = coroutineScope.launch(Dispatchers.Default + errorStateHandler(stateFlow)) {
@@ -88,7 +89,7 @@ class DownloadManager @Inject constructor(
 			} catch (e: CancellationException) { // handle cancellation if not handled already
 				val state = stateFlow.value
 				if (state !is DownloadState.Cancelled) {
-					stateFlow.value = DownloadState.Cancelled(startId, state.manga, state.cover)
+					stateFlow.value = DownloadState.Cancelled(startId, state.manga)
 				}
 				throw e
 			}
@@ -101,16 +102,15 @@ class DownloadManager @Inject constructor(
 		chaptersIds: LongArray?,
 		outState: MutableStateFlow<DownloadState>,
 		pausingHandle: PausingHandle,
-		startId: Int,
+		startId: UUID,
 	) {
 		@Suppress("NAME_SHADOWING")
 		var manga = manga
 		val chaptersIdsSet = chaptersIds?.toMutableSet()
-		val cover = loadCover(manga)
-		outState.value = DownloadState.Queued(startId, manga, cover)
+		outState.value = DownloadState.Queued(startId, manga)
 		withMangaLock(manga) {
 			semaphore.withPermit {
-				outState.value = DownloadState.Preparing(startId, manga, null)
+				outState.value = DownloadState.Preparing(startId, manga)
 				val destination = localMangaRepository.getOutputDir(manga)
 				checkNotNull(destination) { context.getString(R.string.cannot_find_available_storage) }
 				val tempFileName = "${manga.id}_$startId.tmp"
@@ -121,7 +121,7 @@ class DownloadManager @Inject constructor(
 							?: error("Cannot obtain remote manga instance")
 					}
 					val repo = mangaRepositoryFactory.create(manga.source)
-					outState.value = DownloadState.Preparing(startId, manga, cover)
+					outState.value = DownloadState.Preparing(startId, manga)
 					val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
 					output = LocalMangaOutput.getOrCreate(destination, data)
 					val coverUrl = data.largeCoverUrl ?: data.coverUrl
@@ -156,13 +156,13 @@ class DownloadManager @Inject constructor(
 								)
 							}
 							outState.value = DownloadState.Progress(
-								startId = startId,
+								uuid = startId,
 								manga = data,
-								cover = cover,
 								totalChapters = chapters.size,
 								currentChapter = chapterIndex,
 								totalPages = pages.size,
 								currentPage = pageIndex,
+								timeLeft = 0L,
 							)
 
 							if (settings.isDownloadsSlowdownEnabled) {
@@ -175,18 +175,18 @@ class DownloadManager @Inject constructor(
 							}.onFailure(Throwable::printStackTraceDebug)
 						}
 					}
-					outState.value = DownloadState.PostProcessing(startId, data, cover)
+					outState.value = DownloadState.PostProcessing(startId, data)
 					output.mergeWithExisting()
 					output.finish()
 					val localManga = LocalMangaInput.of(output.rootFile).getManga()
 					localStorageChanges.emit(localManga)
-					outState.value = DownloadState.Done(startId, data, cover, localManga.manga)
+					outState.value = DownloadState.Done(startId, data, localManga.manga)
 				} catch (e: CancellationException) {
-					outState.value = DownloadState.Cancelled(startId, manga, cover)
+					outState.value = DownloadState.Cancelled(startId, manga)
 					throw e
 				} catch (e: Throwable) {
 					e.printStackTraceDebug()
-					outState.value = DownloadState.Error(startId, manga, cover, e, false)
+					outState.value = DownloadState.Error(startId, manga, e, false)
 				} finally {
 					withContext(NonCancellable) {
 						output?.closeQuietly()
@@ -210,7 +210,7 @@ class DownloadManager @Inject constructor(
 			} catch (e: IOException) {
 				if (countDown <= 0) {
 					val state = outState.value
-					outState.value = DownloadState.Error(state.startId, state.manga, state.cover, e, true)
+					outState.value = DownloadState.Error(state.uuid, state.manga, e, true)
 					countDown = MAX_FAILSAFE_ATTEMPTS
 					pausingHandle.pause()
 					pausingHandle.awaitResumed()
@@ -249,9 +249,8 @@ class DownloadManager @Inject constructor(
 			throwable.printStackTraceDebug()
 			val prevValue = outState.value
 			outState.value = DownloadState.Error(
-				startId = prevValue.startId,
+				uuid = prevValue.uuid,
 				manga = prevValue.manga,
-				cover = prevValue.cover,
 				error = throwable,
 				canRetry = false,
 			)

@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
@@ -48,7 +49,8 @@ class LocalListViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val tagHighlighter: MangaTagHighlighter,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
-) : MangaListViewModel(settings), ListExtraProvider {
+	downloadScheduler: DownloadWorker.Scheduler,
+) : MangaListViewModel(settings, downloadScheduler), ListExtraProvider {
 
 	val onMangaRemoved = SingleLiveEvent<Unit>()
 	val sortOrder = MutableLiveData(settings.localListOrder)

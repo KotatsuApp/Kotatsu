@@ -10,7 +10,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
-import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -68,7 +67,7 @@ class ShelfSelectionCallback(
 			}
 
 			R.id.action_save -> {
-				DownloadService.confirmAndStart(recyclerView, collectSelectedItems(controller))
+				viewModel.download(collectSelectedItems(controller))
 				mode.finish()
 				true
 			}

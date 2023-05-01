@@ -17,10 +17,11 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
@@ -89,6 +90,8 @@ class MultiSearchActivity :
 
 		viewModel.query.observe(this) { title = it }
 		viewModel.list.observe(this) { adapter.items = it }
+		viewModel.onError.observe(this, SnackbarErrorObserver(binding.recyclerView, null))
+		viewModel.onDownloadStarted.observe(this, DownloadStartedObserver(binding.recyclerView))
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -162,7 +165,7 @@ class MultiSearchActivity :
 			}
 
 			R.id.action_save -> {
-				DownloadService.confirmAndStart(binding.recyclerView, collectSelectedItems())
+				viewModel.download(collectSelectedItems())
 				mode.finish()
 				true
 			}

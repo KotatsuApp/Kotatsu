@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.ARG_CATEGORY_ID
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
@@ -37,7 +38,8 @@ class FavouritesListViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val settings: AppSettings,
 	private val tagHighlighter: MangaTagHighlighter,
-) : MangaListViewModel(settings), ListExtraProvider {
+	downloadScheduler: DownloadWorker.Scheduler,
+) : MangaListViewModel(settings, downloadScheduler), ListExtraProvider {
 
 	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
 

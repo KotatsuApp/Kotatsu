@@ -37,10 +37,19 @@ fun ImageView.disposeImageRequest() {
 
 fun ImageRequest.Builder.enqueueWith(loader: ImageLoader) = loader.enqueue(build())
 
-fun ImageResult.requireBitmap() = when (this) {
-	is SuccessResult -> drawable.toBitmap()
+fun ImageResult.getDrawableOrThrow() = when (this) {
+	is SuccessResult -> drawable
 	is ErrorResult -> throw throwable
 }
+
+@Deprecated(
+	"",
+	ReplaceWith(
+		"getDrawableOrThrow().toBitmap()",
+		"androidx.core.graphics.drawable.toBitmap",
+	),
+)
+fun ImageResult.requireBitmap() = getDrawableOrThrow().toBitmap()
 
 fun ImageResult.toBitmapOrNull() = when (this) {
 	is SuccessResult -> try {

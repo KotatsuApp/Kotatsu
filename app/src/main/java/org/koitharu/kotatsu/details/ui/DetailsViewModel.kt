@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalManga
@@ -69,11 +70,13 @@ class DetailsViewModel @Inject constructor(
 	private val imageGetter: Html.ImageGetter,
 	private val delegate: MangaDetailsDelegate,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
+	private val downloadScheduler: DownloadWorker.Scheduler,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job
 
 	val onShowToast = SingleLiveEvent<Int>()
+	val onDownloadStarted = SingleLiveEvent<Unit>()
 
 	private val history = historyRepository.observeOne(delegate.mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
@@ -279,6 +282,16 @@ class DetailsViewModel @Inject constructor(
 			check(chapterIndex in chapters.indices) { "Chapter not found" }
 			val percent = chapterIndex / chapters.size.toFloat()
 			historyRepository.addOrUpdate(manga = manga, chapterId = chapterId, page = 0, scroll = 0, percent = percent)
+		}
+	}
+
+	fun download(chaptersIds: Set<Long>?) {
+		launchJob(Dispatchers.Default) {
+			downloadScheduler.schedule(
+				getRemoteManga() ?: checkNotNull(manga.value),
+				chaptersIds,
+			)
+			onDownloadStarted.emitCall(Unit)
 		}
 	}
 

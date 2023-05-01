@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.filter.FilterCoordinator
 import org.koitharu.kotatsu.list.ui.filter.FilterItem
@@ -53,7 +54,8 @@ class RemoteListViewModel @Inject constructor(
 	settings: AppSettings,
 	dataRepository: MangaDataRepository,
 	private val tagHighlighter: MangaTagHighlighter,
-) : MangaListViewModel(settings), OnFilterChangedListener {
+	downloadScheduler: DownloadWorker.Scheduler,
+) : MangaListViewModel(settings, downloadScheduler), OnFilterChangedListener {
 
 	val source = savedStateHandle.require<MangaSource>(RemoteListFragment.ARG_SOURCE)
 	private val repository = mangaRepositoryFactory.create(source) as RemoteMangaRepository

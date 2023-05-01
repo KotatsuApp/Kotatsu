@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.graphics.Insets
-import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,8 +19,6 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 	@Inject
 	lateinit var coil: ImageLoader
 
-	private lateinit var serviceConnection: DownloadsConnection
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
@@ -31,12 +28,6 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>() {
 		binding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing))
 		binding.recyclerView.setHasFixedSize(true)
 		binding.recyclerView.adapter = adapter
-		serviceConnection = DownloadsConnection(this, this)
-		serviceConnection.items.observe(this) { items ->
-			adapter.items = items
-			binding.textViewHolder.isVisible = items.isNullOrEmpty()
-		}
-		serviceConnection.bind()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

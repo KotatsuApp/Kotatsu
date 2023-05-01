@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
@@ -24,7 +25,8 @@ class SuggestionsViewModel @Inject constructor(
 	repository: SuggestionRepository,
 	settings: AppSettings,
 	private val tagHighlighter: MangaTagHighlighter,
-) : MangaListViewModel(settings) {
+	downloadScheduler: DownloadWorker.Scheduler,
+) : MangaListViewModel(settings, downloadScheduler) {
 
 	override val content = combine(
 		repository.observeAll(),

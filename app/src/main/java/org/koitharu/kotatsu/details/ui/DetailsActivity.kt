@@ -35,7 +35,6 @@ import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
-import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
@@ -236,7 +235,7 @@ class DetailsActivity :
 				)
 			}
 			setNeutralButton(R.string.download) { _, _ ->
-				DownloadService.start(binding.appbar, remoteManga, setOf(chapterId))
+				viewModel.download(setOf(chapterId))
 			}
 			setCancelable(true)
 		}.show()

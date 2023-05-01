@@ -1,13 +1,25 @@
 package org.koitharu.kotatsu.download.domain
 
 import android.graphics.drawable.Drawable
+import androidx.work.Data
 import org.koitharu.kotatsu.parsers.model.Manga
+import java.util.UUID
 
 sealed interface DownloadState {
 
-	val startId: Int
+	val uuid: UUID
 	val manga: Manga
-	val cover: Drawable?
+
+	@Deprecated("")
+	val cover: Drawable? get() = null
+
+	@Deprecated("")
+	val startId: Int get() = uuid.hashCode()
+
+	fun toWorkData(): Data = Data.Builder()
+		.putString(DATA_UUID, uuid.toString())
+		.putLong(DATA_MANGA_ID, manga.id)
+		.build()
 
 	override fun equals(other: Any?): Boolean
 
@@ -17,9 +29,8 @@ sealed interface DownloadState {
 		get() = this is Done || this is Cancelled || (this is Error && !canRetry)
 
 	class Queued(
-		override val startId: Int,
+		override val uuid: UUID,
 		override val manga: Manga,
-		override val cover: Drawable?,
 	) : DownloadState {
 
 		override fun equals(other: Any?): Boolean {
@@ -28,25 +39,22 @@ sealed interface DownloadState {
 
 			other as Queued
 
-			if (startId != other.startId) return false
+			if (uuid != other.uuid) return false
 			if (manga != other.manga) return false
-			if (cover != other.cover) return false
 
 			return true
 		}
 
 		override fun hashCode(): Int {
-			var result = startId
+			var result = uuid.hashCode()
 			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
 			return result
 		}
 	}
 
 	class Preparing(
-		override val startId: Int,
+		override val uuid: UUID,
 		override val manga: Manga,
-		override val cover: Drawable?,
 	) : DownloadState {
 
 		override fun equals(other: Any?): Boolean {
@@ -55,29 +63,27 @@ sealed interface DownloadState {
 
 			other as Preparing
 
-			if (startId != other.startId) return false
+			if (uuid != other.uuid) return false
 			if (manga != other.manga) return false
-			if (cover != other.cover) return false
 
 			return true
 		}
 
 		override fun hashCode(): Int {
-			var result = startId
+			var result = uuid.hashCode()
 			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
 			return result
 		}
 	}
 
 	class Progress(
-		override val startId: Int,
+		override val uuid: UUID,
 		override val manga: Manga,
-		override val cover: Drawable?,
 		val totalChapters: Int,
 		val currentChapter: Int,
 		val totalPages: Int,
 		val currentPage: Int,
+		val timeLeft: Long,
 	) : DownloadState {
 
 		val max: Int = totalChapters * totalPages
@@ -92,9 +98,8 @@ sealed interface DownloadState {
 
 			other as Progress
 
-			if (startId != other.startId) return false
+			if (uuid != other.uuid) return false
 			if (manga != other.manga) return false
-			if (cover != other.cover) return false
 			if (totalChapters != other.totalChapters) return false
 			if (currentChapter != other.currentChapter) return false
 			if (totalPages != other.totalPages) return false
@@ -104,9 +109,8 @@ sealed interface DownloadState {
 		}
 
 		override fun hashCode(): Int {
-			var result = startId
+			var result = uuid.hashCode()
 			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
 			result = 31 * result + totalChapters
 			result = 31 * result + currentChapter
 			result = 31 * result + totalPages
@@ -116,9 +120,8 @@ sealed interface DownloadState {
 	}
 
 	class Done(
-		override val startId: Int,
+		override val uuid: UUID,
 		override val manga: Manga,
-		override val cover: Drawable?,
 		val localManga: Manga,
 	) : DownloadState {
 
@@ -128,27 +131,25 @@ sealed interface DownloadState {
 
 			other as Done
 
-			if (startId != other.startId) return false
+			if (uuid != other.uuid) return false
 			if (manga != other.manga) return false
-			if (cover != other.cover) return false
 			if (localManga != other.localManga) return false
 
 			return true
 		}
 
 		override fun hashCode(): Int {
-			var result = startId
+			var result = uuid.hashCode()
 			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
 			result = 31 * result + localManga.hashCode()
 			return result
 		}
 	}
 
 	class Error(
-		override val startId: Int,
+		override val uuid: UUID,
 		override val manga: Manga,
-		override val cover: Drawable?,
+
 		val error: Throwable,
 		val canRetry: Boolean,
 	) : DownloadState {
@@ -159,9 +160,8 @@ sealed interface DownloadState {
 
 			other as Error
 
-			if (startId != other.startId) return false
+			if (uuid != other.uuid) return false
 			if (manga != other.manga) return false
-			if (cover != other.cover) return false
 			if (error != other.error) return false
 			if (canRetry != other.canRetry) return false
 
@@ -169,9 +169,8 @@ sealed interface DownloadState {
 		}
 
 		override fun hashCode(): Int {
-			var result = startId
+			var result = uuid.hashCode()
 			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
 			result = 31 * result + error.hashCode()
 			result = 31 * result + canRetry.hashCode()
 			return result
@@ -179,9 +178,8 @@ sealed interface DownloadState {
 	}
 
 	class Cancelled(
-		override val startId: Int,
+		override val uuid: UUID,
 		override val manga: Manga,
-		override val cover: Drawable?,
 	) : DownloadState {
 
 		override fun equals(other: Any?): Boolean {
@@ -190,25 +188,22 @@ sealed interface DownloadState {
 
 			other as Cancelled
 
-			if (startId != other.startId) return false
+			if (uuid != other.uuid) return false
 			if (manga != other.manga) return false
-			if (cover != other.cover) return false
 
 			return true
 		}
 
 		override fun hashCode(): Int {
-			var result = startId
+			var result = uuid.hashCode()
 			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
 			return result
 		}
 	}
 
 	class PostProcessing(
-		override val startId: Int,
+		override val uuid: UUID,
 		override val manga: Manga,
-		override val cover: Drawable?,
 	) : DownloadState {
 
 		override fun equals(other: Any?): Boolean {
@@ -217,18 +212,22 @@ sealed interface DownloadState {
 
 			other as PostProcessing
 
-			if (startId != other.startId) return false
+			if (uuid != other.uuid) return false
 			if (manga != other.manga) return false
-			if (cover != other.cover) return false
 
 			return true
 		}
 
 		override fun hashCode(): Int {
-			var result = startId
+			var result = uuid.hashCode()
 			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
 			return result
 		}
+	}
+
+	companion object {
+
+		private const val DATA_UUID = "id"
+		private const val DATA_MANGA_ID = "manga_id"
 	}
 }
