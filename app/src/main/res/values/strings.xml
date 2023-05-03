@@ -435,4 +435,5 @@
 	<string name="show_on_shelf">Show on the Shelf</string>
 	<string name="sync_auth_hint">You can sign in into an existing account or create a new one</string>
 	<string name="find_similar">Find similar</string>
+	<string name="kitsu" translatable="false">Kitsu</string>
 </resources>

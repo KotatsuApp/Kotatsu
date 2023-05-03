@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.ui.config.ScrobblerConfigActivity
+import org.koitharu.kotatsu.scrobbling.kitsu.data.KitsuRepository
 import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.sync.domain.SyncController
@@ -39,6 +40,9 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 	lateinit var malRepository: MALRepository
 
 	@Inject
+	lateinit var kitsuRepository: KitsuRepository
+
+	@Inject
 	lateinit var syncController: SyncController
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -50,6 +54,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 		bindScrobblerSummary(AppSettings.KEY_SHIKIMORI, shikimoriRepository)
 		bindScrobblerSummary(AppSettings.KEY_ANILIST, aniListRepository)
 		bindScrobblerSummary(AppSettings.KEY_MAL, malRepository)
+		bindScrobblerSummary(AppSettings.KEY_KITSU, kitsuRepository)
 		bindSyncSummary()
 	}
 
@@ -78,6 +83,15 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 					launchScrobblerAuth(aniListRepository)
 				} else {
 					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.ANILIST))
+				}
+				true
+			}
+
+			AppSettings.KEY_KITSU -> {
+				if (!kitsuRepository.isAuthorized) {
+					launchScrobblerAuth(kitsuRepository)
+				} else {
+					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.KITSU))
 				}
 				true
 			}
