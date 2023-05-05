@@ -11,7 +11,7 @@
     <string name="favourites">お気に入り</string>
     <string name="error_occurred">エラーが発生しました</string>
     <string name="details">詳細</string>
-    <string name="chapters">チャプター</string>
+    <string name="chapters">章</string>
     <string name="list">リスト</string>
     <string name="detailed_list">詳細リスト</string>
     <string name="grid">グリッド</string>
@@ -55,8 +55,8 @@
     <string name="history_and_cache">履歴とキャッシュ</string>
     <string name="clear_pages_cache">ページのキャッシュをクリアする</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
-    <string name="close_menu">閉じる</string>
-    <string name="open_menu">開く</string>
+    <string name="close_menu">メニューを閉じる</string>
+    <string name="open_menu">メニューを開く</string>
     <string name="settings">設定</string>
     <string name="light">ライトテーマ</string>
     <string name="filter">フィルター</string>
