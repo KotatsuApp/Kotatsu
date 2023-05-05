@@ -9,9 +9,13 @@ class Throttler(
 	private var lastTick = 0L
 
 	fun throttle(): Boolean {
-		val prevValue = lastTick
-		lastTick = SystemClock.elapsedRealtime()
-		return lastTick > prevValue + timeoutMs
+		val now = SystemClock.elapsedRealtime()
+		return if (lastTick + timeoutMs <= now) {
+			lastTick = now
+			true
+		} else {
+			false
+		}
 	}
 
 	fun reset() {

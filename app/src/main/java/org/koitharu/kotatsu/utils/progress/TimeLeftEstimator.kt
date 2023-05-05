@@ -42,9 +42,14 @@ class TimeLeftEstimator {
 		return if (eta < tooLargeTime) eta else NO_TIME
 	}
 
+	fun getEta(): Long {
+		val etl = getEstimatedTimeLeft()
+		return if (etl == NO_TIME) NO_TIME else System.currentTimeMillis() + etl
+	}
+
 	private class Tick(
-		val value: Int,
-		val total: Int,
-		val time: Long,
+		@JvmField val value: Int,
+		@JvmField val total: Int,
+		@JvmField val time: Long,
 	)
 }

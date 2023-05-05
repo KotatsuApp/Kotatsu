@@ -17,14 +17,16 @@ import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
-import dagger.Reusable
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState2
-import org.koitharu.kotatsu.download.ui.DownloadsActivity
+import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.format
@@ -34,16 +36,15 @@ import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import java.util.UUID
-import javax.inject.Inject
 import com.google.android.material.R as materialR
 
 private const val CHANNEL_ID = "download"
 private const val GROUP_ID = "downloads"
 
-@Reusable
-class DownloadNotificationFactory @Inject constructor(
+class DownloadNotificationFactory @AssistedInject constructor(
 	@ApplicationContext private val context: Context,
 	private val coil: ImageLoader,
+	@Assisted private val uuid: UUID,
 ) {
 
 	private val covers = HashMap<Manga, Drawable>()
@@ -64,6 +65,30 @@ class DownloadNotificationFactory @Inject constructor(
 		false,
 	)
 
+	private val actionCancel by lazy {
+		NotificationCompat.Action(
+			materialR.drawable.material_ic_clear_black_24dp,
+			context.getString(android.R.string.cancel),
+			WorkManager.getInstance(context).createCancelPendingIntent(uuid),
+		)
+	}
+
+	private val actionPause by lazy {
+		NotificationCompat.Action(
+			R.drawable.ic_action_pause,
+			context.getString(R.string.pause),
+			PausingReceiver.createPausePendingIntent(context, uuid),
+		)
+	}
+
+	private val actionResume by lazy {
+		NotificationCompat.Action(
+			R.drawable.ic_action_resume,
+			context.getString(R.string.resume),
+			PausingReceiver.createResumePendingIntent(context, uuid),
+		)
+	}
+
 	init {
 		createChannel()
 		builder.setOnlyAlertOnce(true)
@@ -73,6 +98,7 @@ class DownloadNotificationFactory @Inject constructor(
 		builder.setSilent(true)
 		builder.setGroup(GROUP_ID)
 		builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+		builder.priority = NotificationCompat.PRIORITY_DEFAULT
 	}
 
 	suspend fun create(state: DownloadState2?): Notification = mutex.withLock {
@@ -93,21 +119,12 @@ class DownloadNotificationFactory @Inject constructor(
 				NotificationCompat.VISIBILITY_PUBLIC
 			},
 		)
-		when (state?.state) {
-			null -> Unit
-			DownloadState2.State.CANCELLED -> {
-				builder.setProgress(1, 0, true)
-				builder.setContentText(context.getString(R.string.cancelling_))
-				builder.setContentIntent(null)
-				builder.setStyle(null)
-				builder.setOngoing(true)
-				builder.priority = NotificationCompat.PRIORITY_DEFAULT
-			}
-
-			DownloadState2.State.DONE -> {
+		when {
+			state == null -> Unit
+			state.localManga != null -> { // downloaded, final state
 				builder.setProgress(0, 0, false)
 				builder.setContentText(context.getString(R.string.download_complete))
-				builder.setContentIntent(createMangaIntent(context, state.localManga?.manga))
+				builder.setContentIntent(createMangaIntent(context, state.localManga.manga))
 				builder.setAutoCancel(true)
 				builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
 				builder.setCategory(null)
@@ -115,12 +132,26 @@ class DownloadNotificationFactory @Inject constructor(
 				builder.setOngoing(false)
 				builder.setShowWhen(true)
 				builder.setWhen(System.currentTimeMillis())
-				builder.priority = NotificationCompat.PRIORITY_DEFAULT
 			}
 
-			DownloadState2.State.FAILED -> {
-				val message = state.error?.getDisplayMessage(context.resources)
-					?: context.getString(R.string.error_occurred)
+			state.isPaused -> { // paused (with error or manually)
+				builder.setProgress(state.max, state.progress, false)
+				val percent = context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
+				builder.setContentText(percent)
+				builder.setContentText(
+					state.error?.getDisplayMessage(context.resources)
+						?: context.getString(R.string.paused),
+				)
+				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
+				builder.setStyle(null)
+				builder.setOngoing(true)
+				builder.setSmallIcon(R.drawable.ic_stat_paused)
+				builder.addAction(actionCancel)
+				builder.addAction(actionResume)
+			}
+
+			state.error != null -> { // error, final state
+				val message = state.error.getDisplayMessage(context.resources)
 				builder.setProgress(0, 0, false)
 				builder.setSmallIcon(android.R.drawable.stat_notify_error)
 				builder.setSubText(context.getString(R.string.error))
@@ -131,23 +162,17 @@ class DownloadNotificationFactory @Inject constructor(
 				builder.setShowWhen(true)
 				builder.setWhen(System.currentTimeMillis())
 				builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
-				builder.priority = NotificationCompat.PRIORITY_DEFAULT
 			}
 
-			DownloadState2.State.PREPARING -> {
-				builder.setProgress(1, 0, true)
-				builder.setContentText(context.getString(R.string.preparing_))
-				builder.setStyle(null)
-				builder.setOngoing(true)
-				builder.addAction(createCancelAction(state.id))
-				builder.priority = NotificationCompat.PRIORITY_DEFAULT
-			}
-
-			DownloadState2.State.PROGRESS -> {
+			else -> {
 				builder.setProgress(state.max, state.progress, false)
 				val percent = context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
-				if (state.timeLeft > 0L) {
-					val eta = DateUtils.getRelativeTimeSpanString(state.timeLeft, 0L, DateUtils.SECOND_IN_MILLIS)
+				if (state.eta > 0L) {
+					val eta = DateUtils.getRelativeTimeSpanString(
+						state.eta,
+						System.currentTimeMillis(),
+						DateUtils.SECOND_IN_MILLIS,
+					)
 					builder.setContentText(eta)
 					builder.setSubText(percent)
 				} else {
@@ -156,11 +181,9 @@ class DownloadNotificationFactory @Inject constructor(
 				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 				builder.setStyle(null)
 				builder.setOngoing(true)
-				builder.addAction(createCancelAction(state.id))
-				builder.priority = NotificationCompat.PRIORITY_DEFAULT
+				builder.addAction(actionCancel)
+				builder.addAction(actionPause)
 			}
-
-			DownloadState2.State.PAUSED -> TODO()
 		}
 		return builder.build()
 	}
@@ -175,12 +198,6 @@ class DownloadNotificationFactory @Inject constructor(
 		},
 		PendingIntent.FLAG_CANCEL_CURRENT,
 		false,
-	)
-
-	private fun createCancelAction(uuid: UUID) = NotificationCompat.Action(
-		materialR.drawable.material_ic_clear_black_24dp,
-		context.getString(android.R.string.cancel),
-		WorkManager.getInstance(context).createCancelPendingIntent(uuid),
 	)
 
 	private suspend fun getCover(manga: Manga) = covers[manga] ?: run {
@@ -216,5 +233,11 @@ class DownloadNotificationFactory @Inject constructor(
 				manager.createNotificationChannel(channel)
 			}
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(uuid: UUID): DownloadNotificationFactory
 	}
 }

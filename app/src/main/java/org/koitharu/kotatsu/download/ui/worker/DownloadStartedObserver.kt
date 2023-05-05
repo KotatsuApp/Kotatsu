@@ -4,7 +4,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.download.ui.DownloadsActivity
+import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.utils.ext.findActivity
 

@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.databinding.FragmentToolsBinding
-import org.koitharu.kotatsu.download.ui.DownloadsActivity
+import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.about.AppUpdateDialog
 
