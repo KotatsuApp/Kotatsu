@@ -100,7 +100,7 @@ dependencies {
 	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.work:work-runtime-ktx:2.8.1'
 	implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha05'
-	implementation 'com.google.android.material:material:1.8.0'
+	implementation 'com.google.android.material:material:1.9.0'
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.6.1'
 
