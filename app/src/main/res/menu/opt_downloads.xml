@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/action_pause"
+		android:icon="@drawable/ic_action_pause"
+		android:title="@string/pause"
+		android:visible="false"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
+		android:id="@+id/action_resume"
+		android:icon="@drawable/ic_action_resume"
+		android:title="@string/resume"
+		android:visible="false"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
+		android:id="@+id/action_cancel_all"
+		android:title="@string/cancel_all"
+		app:showAsAction="never" />
+
+	<item
+		android:id="@+id/action_remove_completed"
+		android:title="@string/remove_completed"
+		app:showAsAction="never" />
+
+</menu>

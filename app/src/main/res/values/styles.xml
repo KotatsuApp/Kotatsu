@@ -238,6 +238,10 @@
 		<item name="cornerSize">16dp</item>
 	</style>
 
+	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Medium" parent="">
+		<item name="cornerSize">12dp</item>
+	</style>
+
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Small" parent="">
 		<item name="cornerSize">6dp</item>
 	</style>

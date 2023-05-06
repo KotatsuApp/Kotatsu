@@ -10,7 +10,7 @@ data class DownloadState2(
 	val manga: Manga,
 	val isIndeterminate: Boolean,
 	val isPaused: Boolean = false,
-	val error: Throwable? = null,
+	val error: String? = null,
 	val totalChapters: Int = 0,
 	val currentChapter: Int = 0,
 	val totalPages: Int = 0,
@@ -29,13 +29,19 @@ data class DownloadState2(
 	val isFinalState: Boolean
 		get() = localManga != null || (error != null && !isPaused)
 
+	val isParticularProgress: Boolean
+		get() = localManga == null && error == null && !isPaused && max > 0 && !isIndeterminate
+
 	fun toWorkData() = Data.Builder()
 		.putLong(DATA_MANGA_ID, manga.id)
 		.putInt(DATA_MAX, max)
 		.putInt(DATA_PROGRESS, progress)
 		.putLong(DATA_ETA, eta)
 		.putLong(DATA_TIMESTAMP, timestamp)
-		.putString(DATA_ERROR, error?.toString())
+		.putString(DATA_ERROR, error)
+		.putInt(DATA_CHAPTERS, totalChapters)
+		.putBoolean(DATA_INDETERMINATE, isIndeterminate)
+		.putBoolean(DATA_PAUSED, isPaused)
 		.build()
 
 	companion object {
@@ -43,18 +49,29 @@ data class DownloadState2(
 		private const val DATA_MANGA_ID = "manga_id"
 		private const val DATA_MAX = "max"
 		private const val DATA_PROGRESS = "progress"
+		private const val DATA_CHAPTERS = "chapter"
 		private const val DATA_ETA = "eta"
 		private const val DATA_TIMESTAMP = "timestamp"
 		private const val DATA_ERROR = "error"
+		private const val DATA_INDETERMINATE = "indeterminate"
+		private const val DATA_PAUSED = "paused"
 
 		fun getMangaId(data: Data): Long = data.getLong(DATA_MANGA_ID, 0L)
 
-		fun getMax(data: Data) = data.getInt(DATA_MAX, 0)
+		fun isIndeterminate(data: Data): Boolean = data.getBoolean(DATA_INDETERMINATE, false)
 
-		fun getProgress(data: Data) = data.getInt(DATA_PROGRESS, 0)
+		fun isPaused(data: Data): Boolean = data.getBoolean(DATA_PAUSED, false)
 
-		fun getEta(data: Data) = data.getLong(DATA_ETA, -1L)
+		fun getMax(data: Data): Int = data.getInt(DATA_MAX, 0)
 
-		fun getTimestamp(data: Data) = Date(data.getLong(DATA_TIMESTAMP, 0L))
+		fun getError(data: Data): String? = data.getString(DATA_ERROR)
+
+		fun getProgress(data: Data): Int = data.getInt(DATA_PROGRESS, 0)
+
+		fun getEta(data: Data): Long = data.getLong(DATA_ETA, -1L)
+
+		fun getTimestamp(data: Data): Date = Date(data.getLong(DATA_TIMESTAMP, 0L))
+
+		fun getTotalChapters(data: Data): Int = data.getInt(DATA_CHAPTERS, 0)
 	}
 }

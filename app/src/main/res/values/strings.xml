@@ -438,4 +438,6 @@
 	<string name="pause">Pause</string>
 	<string name="resume">Resume</string>
 	<string name="paused">Paused</string>
+	<string name="remove_completed">Remove completed</string>
+	<string name="cancel_all">Cancel all</string>
 </resources>

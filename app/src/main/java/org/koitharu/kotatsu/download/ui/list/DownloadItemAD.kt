@@ -12,9 +12,9 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.source
+import org.koitharu.kotatsu.utils.ext.textAndVisible
 
 fun downloadItemAD(
 	lifecycleOwner: LifecycleOwner,
@@ -26,18 +26,25 @@ fun downloadItemAD(
 
 	val percentPattern = context.resources.getString(R.string.percent_string_pattern)
 
-	val clickListener = View.OnClickListener { v ->
-		when (v.id) {
-			R.id.button_cancel -> listener.onCancelClick(item)
-			R.id.button_resume -> listener.onResumeClick(item)
-			R.id.button_pause -> listener.onPauseClick(item)
-			else -> listener.onItemClick(item, v)
+	val clickListener = object : View.OnClickListener, View.OnLongClickListener {
+		override fun onClick(v: View) {
+			when (v.id) {
+				R.id.button_cancel -> listener.onCancelClick(item)
+				R.id.button_resume -> listener.onResumeClick(item)
+				R.id.button_pause -> listener.onPauseClick(item)
+				else -> listener.onItemClick(item, v)
+			}
+		}
+
+		override fun onLongClick(v: View): Boolean {
+			return listener.onItemLongClick(item, v)
 		}
 	}
 	binding.buttonCancel.setOnClickListener(clickListener)
 	binding.buttonPause.setOnClickListener(clickListener)
 	binding.buttonResume.setOnClickListener(clickListener)
 	itemView.setOnClickListener(clickListener)
+	itemView.setOnLongClickListener(clickListener)
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.manga.title
@@ -55,54 +62,74 @@ fun downloadItemAD(
 				binding.textViewStatus.setText(R.string.queued)
 				binding.progressBar.isIndeterminate = false
 				binding.progressBar.isVisible = false
+				binding.progressBar.isEnabled = true
 				binding.textViewPercent.isVisible = false
 				binding.textViewDetails.isVisible = false
 				binding.buttonCancel.isVisible = true
 				binding.buttonResume.isVisible = false
+				binding.buttonPause.isVisible = false
 			}
 
 			WorkInfo.State.RUNNING -> {
-				binding.textViewStatus.setText(R.string.manga_downloading_)
-				binding.progressBar.isIndeterminate = false
+				binding.textViewStatus.setText(
+					if (item.isPaused) R.string.paused else R.string.manga_downloading_,
+				)
+				binding.progressBar.isIndeterminate = item.isIndeterminate
 				binding.progressBar.isVisible = true
 				binding.progressBar.max = item.max
+				binding.progressBar.isEnabled = !item.isPaused
 				binding.progressBar.setProgressCompat(item.progress, payloads.isNotEmpty())
 				binding.textViewPercent.text = percentPattern.format((item.percent * 100f).format(1))
 				binding.textViewPercent.isVisible = true
-				binding.textViewDetails.isVisible = false
+				binding.textViewDetails.textAndVisible = item.getEtaString()
 				binding.buttonCancel.isVisible = true
-				binding.buttonResume.isVisible = false
+				binding.buttonResume.isVisible = item.isPaused
+				binding.buttonPause.isVisible = item.canPause
 			}
 
 			WorkInfo.State.SUCCEEDED -> {
 				binding.textViewStatus.setText(R.string.download_complete)
 				binding.progressBar.isIndeterminate = false
 				binding.progressBar.isVisible = false
+				binding.progressBar.isEnabled = true
 				binding.textViewPercent.isVisible = false
-				binding.textViewDetails.isVisible = false
+				if (item.totalChapters > 0) {
+					binding.textViewDetails.text = context.resources.getQuantityString(
+						R.plurals.chapters,
+						item.totalChapters,
+						item.totalChapters,
+					)
+					binding.textViewDetails.isVisible = true
+				} else {
+					binding.textViewDetails.isVisible = false
+				}
 				binding.buttonCancel.isVisible = false
 				binding.buttonResume.isVisible = false
+				binding.buttonPause.isVisible = false
 			}
 
 			WorkInfo.State.FAILED -> {
 				binding.textViewStatus.setText(R.string.error_occurred)
 				binding.progressBar.isIndeterminate = false
 				binding.progressBar.isVisible = false
+				binding.progressBar.isEnabled = true
 				binding.textViewPercent.isVisible = false
-				binding.textViewDetails.text = item.error?.getDisplayMessage(context.resources)
-				binding.textViewDetails.isVisible = true
+				binding.textViewDetails.textAndVisible = item.error
 				binding.buttonCancel.isVisible = false
-				binding.buttonResume.isVisible = true
+				binding.buttonResume.isVisible = false
+				binding.buttonPause.isVisible = false
 			}
 
 			WorkInfo.State.CANCELLED -> {
 				binding.textViewStatus.setText(R.string.canceled)
 				binding.progressBar.isIndeterminate = false
 				binding.progressBar.isVisible = false
+				binding.progressBar.isEnabled = true
 				binding.textViewPercent.isVisible = false
 				binding.textViewDetails.isVisible = false
 				binding.buttonCancel.isVisible = false
 				binding.buttonResume.isVisible = false
+				binding.buttonPause.isVisible = false
 			}
 		}
 	}

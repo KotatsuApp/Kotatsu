@@ -32,7 +32,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import java.util.UUID
@@ -138,10 +137,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 				builder.setProgress(state.max, state.progress, false)
 				val percent = context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
 				builder.setContentText(percent)
-				builder.setContentText(
-					state.error?.getDisplayMessage(context.resources)
-						?: context.getString(R.string.paused),
-				)
+				builder.setContentText(state.error)
 				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 				builder.setStyle(null)
 				builder.setOngoing(true)
@@ -151,17 +147,16 @@ class DownloadNotificationFactory @AssistedInject constructor(
 			}
 
 			state.error != null -> { // error, final state
-				val message = state.error.getDisplayMessage(context.resources)
 				builder.setProgress(0, 0, false)
 				builder.setSmallIcon(android.R.drawable.stat_notify_error)
 				builder.setSubText(context.getString(R.string.error))
-				builder.setContentText(message)
+				builder.setContentText(state.error)
 				builder.setAutoCancel(true)
 				builder.setOngoing(false)
 				builder.setCategory(NotificationCompat.CATEGORY_ERROR)
 				builder.setShowWhen(true)
 				builder.setWhen(System.currentTimeMillis())
-				builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+				builder.setStyle(NotificationCompat.BigTextStyle().bigText(state.error))
 			}
 
 			else -> {

@@ -18,7 +18,7 @@ class DownloadsAdapter(
 ) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()) {
 
 	init {
-		delegatesManager.addDelegate(downloadItemAD(lifecycleOwner, coil, listener))
+		delegatesManager.addDelegate(ITEM_TYPE_DOWNLOAD, downloadItemAD(lifecycleOwner, coil, listener))
 			.addDelegate(loadingStateAD())
 			.addDelegate(emptyStateListAD(coil, lifecycleOwner, null))
 			.addDelegate(relatedDateItemAD())
@@ -57,5 +57,9 @@ class DownloadsAdapter(
 				else -> super.getChangePayload(oldItem, newItem)
 			}
 		}
+	}
+
+	companion object {
+		const val ITEM_TYPE_DOWNLOAD = 0
 	}
 }

@@ -6,13 +6,13 @@ import android.webkit.MimeTypeMap
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
 import androidx.lifecycle.asFlow
+import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.Operation
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -48,8 +48,11 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.utils.WorkManagerHelper
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
+import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.progress.TimeLeftEstimator
@@ -99,7 +102,7 @@ class DownloadWorker @AssistedInject constructor(
 			Result.retry()
 		} catch (e: Exception) {
 			e.printStackTraceDebug()
-			currentState = currentState.copy(error = e)
+			currentState = currentState.copy(error = e.getDisplayMessage(applicationContext.resources), eta = -1L)
 			Result.failure(currentState.toWorkData())
 		}
 	}
@@ -131,9 +134,11 @@ class DownloadWorker @AssistedInject constructor(
 				val repo = mangaRepositoryFactory.create(manga.source)
 				val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
 				output = LocalMangaOutput.getOrCreate(destination, data)
-				val coverUrl = data.largeCoverUrl ?: data.coverUrl
-				downloadFile(coverUrl, destination, tempFileName, repo.source).let { file ->
-					output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
+				val coverUrl = data.largeCoverUrl.ifNullOrEmpty { data.coverUrl }
+				if (coverUrl.isNotEmpty()) {
+					downloadFile(coverUrl, destination, tempFileName, repo.source).let { file ->
+						output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
+					}
 				}
 				val chapters = checkNotNull(
 					if (chaptersIdsSet == null) {
@@ -168,6 +173,7 @@ class DownloadWorker @AssistedInject constructor(
 								currentChapter = chapterIndex,
 								totalPages = pages.size,
 								currentPage = pageIndex,
+								isIndeterminate = false,
 								eta = timeLeftEstimator.getEta(),
 							),
 						)
@@ -182,15 +188,15 @@ class DownloadWorker @AssistedInject constructor(
 						}.onFailure(Throwable::printStackTraceDebug)
 					}
 				}
-				publishState(currentState.copy(isIndeterminate = true))
+				publishState(currentState.copy(isIndeterminate = true, eta = -1L))
 				output.mergeWithExisting()
 				output.finish()
 				val localManga = LocalMangaInput.of(output.rootFile).getManga()
 				localStorageChanges.emit(localManga)
-				publishState(currentState.copy(localManga = localManga))
+				publishState(currentState.copy(localManga = localManga, eta = -1L))
 			} catch (e: Exception) {
 				if (e !is CancellationException) {
-					publishState(currentState.copy(error = e))
+					publishState(currentState.copy(error = e.getDisplayMessage(applicationContext.resources)))
 				}
 				throw e
 			} finally {
@@ -209,7 +215,7 @@ class DownloadWorker @AssistedInject constructor(
 		block: suspend () -> R,
 	): R {
 		if (pausingHandle.isPaused) {
-			publishState(currentState.copy(isPaused = true))
+			publishState(currentState.copy(isPaused = true, eta = -1L))
 			pausingHandle.awaitResumed()
 			publishState(currentState.copy(isPaused = false))
 		}
@@ -219,7 +225,13 @@ class DownloadWorker @AssistedInject constructor(
 				return block()
 			} catch (e: IOException) {
 				if (countDown <= 0) {
-					publishState(currentState.copy(isPaused = true, error = e))
+					publishState(
+						currentState.copy(
+							isPaused = true,
+							error = e.getDisplayMessage(applicationContext.resources),
+							eta = -1L,
+						),
+					)
 					countDown = MAX_FAILSAFE_ATTEMPTS
 					pausingHandle.pause()
 					pausingHandle.awaitResumed()
@@ -255,8 +267,9 @@ class DownloadWorker @AssistedInject constructor(
 	}
 
 	private suspend fun publishState(state: DownloadState2) {
+		val previousState = currentState
 		currentState = state
-		if (!state.isPaused && state.max > 0) {
+		if (previousState.isParticularProgress && state.isParticularProgress) {
 			timeLeftEstimator.tick(state.progress, state.max)
 		} else {
 			timeLeftEstimator.emptyTick()
@@ -267,6 +280,8 @@ class DownloadWorker @AssistedInject constructor(
 			notificationManager.notify(id.toString(), id.hashCode(), notification)
 		} else if (notificationThrottler.throttle()) {
 			notificationManager.notify(id.hashCode(), notification)
+		} else {
+			return
 		}
 		setProgress(state.toWorkData())
 	}
@@ -294,7 +309,7 @@ class DownloadWorker @AssistedInject constructor(
 			if (!chaptersIds.isNullOrEmpty()) {
 				data.putLongArray(CHAPTERS_IDS, chaptersIds.toLongArray())
 			}
-			scheduleImpl(listOf(data.build())).await()
+			scheduleImpl(listOf(data.build()))
 		}
 
 		suspend fun schedule(manga: Collection<Manga>) {
@@ -304,7 +319,7 @@ class DownloadWorker @AssistedInject constructor(
 					.putLong(MANGA_ID, it.id)
 					.build()
 			}
-			scheduleImpl(data).await()
+			scheduleImpl(data)
 		}
 
 		fun observeWorks(): Flow<List<WorkInfo>> = workManager
@@ -315,7 +330,29 @@ class DownloadWorker @AssistedInject constructor(
 			workManager.cancelWorkById(id).await()
 		}
 
-		private fun scheduleImpl(data: Collection<Data>): Operation {
+		suspend fun cancelAll() {
+			workManager.cancelAllWorkByTag(TAG).await()
+		}
+
+		fun pause(id: UUID) {
+			val intent = PausingReceiver.getPauseIntent(id)
+			context.sendBroadcast(intent)
+		}
+
+		fun resume(id: UUID) {
+			val intent = PausingReceiver.getResumeIntent(id)
+			context.sendBroadcast(intent)
+		}
+
+		suspend fun delete(id: UUID) {
+			WorkManagerHelper(workManager).deleteWork(id)
+		}
+
+		suspend fun removeCompleted() {
+			workManager.pruneWork().await()
+		}
+
+		private suspend fun scheduleImpl(data: Collection<Data>) {
 			val constraints = Constraints.Builder()
 				.setRequiresStorageNotLow(true)
 				.setRequiredNetworkType(NetworkType.CONNECTED)
@@ -324,12 +361,13 @@ class DownloadWorker @AssistedInject constructor(
 				OneTimeWorkRequestBuilder<DownloadWorker>()
 					.setConstraints(constraints)
 					.addTag(TAG)
-					.keepResultsForAtLeast(3, TimeUnit.DAYS)
+					.keepResultsForAtLeast(7, TimeUnit.DAYS)
+					.setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
 					.setInputData(inputData)
 					.setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
 					.build()
 			}
-			return workManager.enqueue(requests)
+			workManager.enqueue(requests).await()
 		}
 	}
 

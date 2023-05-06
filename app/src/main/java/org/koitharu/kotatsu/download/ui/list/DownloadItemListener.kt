@@ -9,6 +9,4 @@ interface DownloadItemListener : OnListItemClickListener<DownloadItemModel> {
 	fun onPauseClick(item: DownloadItemModel)
 
 	fun onResumeClick(item: DownloadItemModel)
-
-	fun onRetryClick(item: DownloadItemModel)
 }

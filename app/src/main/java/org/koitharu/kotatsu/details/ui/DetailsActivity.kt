@@ -35,6 +35,7 @@ import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
+import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
@@ -119,6 +120,7 @@ class DetailsActivity :
 			binding.buttonDropdown.isVisible = it.size > 1
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
+		viewModel.onDownloadStarted.observe(this, DownloadStartedObserver(binding.containerDetails))
 
 		addMenuProvider(
 			DetailsMenuProvider(
