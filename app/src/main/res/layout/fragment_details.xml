@@ -53,7 +53,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@tools:sample/backgrounds/scenic[5]" />
+			tools:text="@tools:sample/lorem" />
 
 		<TextView
 			android:id="@+id/textView_subtitle"
