@@ -428,4 +428,6 @@
     <string name="restore_backup_description">Імпортуйте раніше створену резервну копію даних користувача</string>
     <string name="show_on_shelf">Показати на полиці</string>
     <string name="sources_reorder_tip">Натисніть і утримуйте елемент, щоб змінити його порядок</string>
+    <string name="sync_auth_hint">Ви можете увійти в існуючий обліковий запис або створити новий</string>
+    <string name="find_similar">Знайти схожі</string>
 </resources>

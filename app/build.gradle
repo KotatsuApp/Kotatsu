@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 539
-		versionName '5.0.1'
+		versionCode 540
+		versionName '5.0.2'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -78,7 +78,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:3e349d3db3') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:96b9ac36f3') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -99,7 +99,7 @@ dependencies {
 	implementation 'androidx.viewpager2:viewpager2:1.1.0-beta01'
 	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha05'
-	implementation 'com.google.android.material:material:1.8.0'
+	implementation 'com.google.android.material:material:1.9.0'
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.6.1'
 	implementation 'androidx.work:work-runtime-ktx:2.8.1'

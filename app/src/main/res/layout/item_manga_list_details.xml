@@ -20,7 +20,7 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-			tools:src="@sample/covers" />
+			tools:src="@tools:sample/backgrounds/scenic" />
 
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 			android:id="@+id/progressView"
@@ -44,7 +44,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@sample/titles" />
+			tools:text="@tools:sample/lorem" />
 
 		<TextView
 			android:id="@+id/textView_subtitle"

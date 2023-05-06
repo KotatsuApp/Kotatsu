@@ -4,6 +4,7 @@ package org.koitharu.kotatsu.list.ui.adapter
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.cardview.widget.CardView
 import androidx.core.view.doOnNextLayout
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
@@ -16,7 +17,7 @@ fun View.bindBadge(badge: BadgeDrawable?, counter: Int): BadgeDrawable? {
 		val badgeDrawable = badge ?: initBadge(this)
 		badgeDrawable.number = counter
 		badgeDrawable.isVisible = true
-		badgeDrawable.align()
+		badgeDrawable.align(this)
 		badgeDrawable
 	} else {
 		badge?.isVisible = false
@@ -34,12 +35,17 @@ private fun initBadge(anchor: View): BadgeDrawable {
 	badge.maxCharacterCount = resources.getInteger(R.integer.manga_badge_max_character_count)
 	anchor.doOnNextLayout {
 		BadgeUtils.attachBadgeDrawable(badge, it)
-		badge.align()
+		badge.align(it)
 	}
 	return badge
 }
 
-private fun BadgeDrawable.align() {
-	horizontalOffset = intrinsicWidth
-	verticalOffset = intrinsicHeight
+private fun BadgeDrawable.align(anchor: View) {
+	val extraOffset = if (anchor is CardView) {
+		(anchor.radius / 2f).toInt()
+	} else {
+		0
+	}
+	horizontalOffset = intrinsicWidth + extraOffset
+	verticalOffset = intrinsicHeight + extraOffset
 }
