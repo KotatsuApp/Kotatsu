@@ -158,13 +158,21 @@
 				<data android:host="shikimori-auth" />
 				<data android:host="anilist-auth" />
 				<data android:host="mal-auth" />
+				<data android:host="kitsu-auth" />
 			</intent-filter>
 
 		</activity>
 		<activity
 			android:name=".scrobbling.kitsu.ui.KitsuAuthActivity"
 			android:exported="false"
-			android:label="@string/kitsu" />
+			android:label="@string/kitsu"
+			tools:ignore="AppLinkUrlError">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:scheme="kotatsu+kitsu" />
+			</intent-filter>
+		</activity>
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
