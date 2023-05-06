@@ -436,4 +436,5 @@
 	<string name="sync_auth_hint">You can sign in into an existing account or create a new one</string>
 	<string name="find_similar">Find similar</string>
 	<string name="kitsu" translatable="false">Kitsu</string>
+	<string name="email_password_enter_hint">Enter your email and password to continue</string>
 </resources>

@@ -161,6 +161,10 @@
 			</intent-filter>
 
 		</activity>
+		<activity
+			android:name=".scrobbling.kitsu.ui.KitsuAuthActivity"
+			android:exported="false"
+			android:label="@string/kitsu" />
 
 		<service
 			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"

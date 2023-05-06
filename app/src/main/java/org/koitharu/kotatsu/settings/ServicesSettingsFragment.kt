@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.ui.config.ScrobblerConfigActivity
 import org.koitharu.kotatsu.scrobbling.kitsu.data.KitsuRepository
+import org.koitharu.kotatsu.scrobbling.kitsu.ui.KitsuAuthActivity
 import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.sync.domain.SyncController
@@ -146,6 +147,9 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 
 	private fun launchScrobblerAuth(repository: org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository) {
 		runCatching {
+			if (repository.oauthUrl.isBlank()) {
+				startActivity(KitsuAuthActivity.newIntent(requireContext()))
+			}
 			val intent = Intent(Intent.ACTION_VIEW)
 			intent.data = Uri.parse(repository.oauthUrl)
 			startActivity(intent)
