@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
+import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import org.koitharu.kotatsu.utils.progress.PausingProgressJob
@@ -124,9 +125,11 @@ class DownloadManager @Inject constructor(
 					outState.value = DownloadState.Preparing(startId, manga, cover)
 					val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
 					output = LocalMangaOutput.getOrCreate(destination, data)
-					val coverUrl = data.largeCoverUrl ?: data.coverUrl
-					downloadFile(coverUrl, destination, tempFileName, repo.source).let { file ->
-						output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
+					val coverUrl = data.largeCoverUrl.ifNullOrEmpty { data.coverUrl }
+					if (coverUrl.isNotEmpty()) {
+						downloadFile(coverUrl, destination, tempFileName, repo.source).let { file ->
+							output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
+						}
 					}
 					val chapters = checkNotNull(
 						if (chaptersIdsSet == null) {

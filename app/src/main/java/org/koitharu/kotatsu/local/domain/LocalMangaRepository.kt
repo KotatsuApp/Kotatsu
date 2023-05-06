@@ -6,12 +6,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.TempFileFilter
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
@@ -35,7 +37,10 @@ import javax.inject.Singleton
 private const val MAX_PARALLELISM = 4
 
 @Singleton
-class LocalMangaRepository @Inject constructor(private val storageManager: LocalStorageManager) : MangaRepository {
+class LocalMangaRepository @Inject constructor(
+	private val storageManager: LocalStorageManager,
+	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
+) : MangaRepository {
 
 	override val source = MangaSource.LOCAL
 	private val locks = CompositeMutex<Long>()
@@ -85,13 +90,18 @@ class LocalMangaRepository @Inject constructor(private val storageManager: Local
 
 	suspend fun delete(manga: Manga): Boolean {
 		val file = Uri.parse(manga.url).toFile()
-		return file.deleteAwait()
+		val result = file.deleteAwait()
+		if (result) {
+			localStorageChanges.emit(null)
+		}
+		return result
 	}
 
 	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) {
 		lockManga(manga.id)
 		try {
 			LocalMangaUtil(manga).deleteChapters(ids)
+			localStorageChanges.emit(LocalManga(manga))
 		} finally {
 			unlockManga(manga.id)
 		}

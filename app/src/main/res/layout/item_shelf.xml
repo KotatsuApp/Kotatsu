@@ -24,7 +24,7 @@
 			android:layout_height="@dimen/widget_cover_height"
 			android:scaleType="centerCrop"
 			tools:ignore="ContentDescription"
-			tools:src="@sample/covers" />
+			tools:src="@tools:sample/backgrounds/scenic" />
 
 		<TextView
 			android:id="@+id/textView_title"
@@ -35,7 +35,7 @@
 			android:lines="2"
 			android:padding="2dp"
 			android:textColor="?android:attr/textColorPrimary"
-			tools:text="@sample/titles" />
+			tools:text="@tools:sample/lorem" />
 
 	</LinearLayout>
 
