@@ -27,7 +27,7 @@
 				android:scaleType="centerCrop"
 				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 				tools:ignore="ContentDescription"
-				tools:src="@sample/covers[5]" />
+				tools:src="@tools:sample/backgrounds/scenic[5]" />
 
 			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 				android:id="@+id/progressView"
@@ -50,7 +50,7 @@
 			android:textColor="?android:attr/textColorPrimary"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/thumbnail"
-			tools:text="@sample/titles[5]" />
+			tools:text="@tools:sample/lorem" />
 
 	</LinearLayout>
 

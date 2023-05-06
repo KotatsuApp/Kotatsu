@@ -21,7 +21,7 @@
 			android:layout_alignParentTop="true"
 			android:contentDescription="@null"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
-			tools:src="@sample/covers[7]" />
+			tools:src="@tools:sample/backgrounds/scenic[7]" />
 
 		<TextView
 			android:id="@+id/textView_title"
@@ -36,7 +36,7 @@
 			android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
 			app:drawableTint="?colorControlNormal"
 			tools:drawableEndCompat="@drawable/ic_shikimori"
-			tools:text="@sample/titles[5]" />
+			tools:text="@tools:sample/lorem" />
 
 		<RatingBar
 			android:id="@+id/ratingBar"

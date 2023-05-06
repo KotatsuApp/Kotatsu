@@ -33,7 +33,7 @@
 			app:layout_constraintTop_toBottomOf="@id/dragHandle"
 			app:layout_constraintWidth_percent="0.3"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-			tools:background="@sample/covers[9]"
+			tools:background="@tools:sample/backgrounds/scenic"
 			tools:ignore="ContentDescription,UnusedAttribute" />
 
 		<ImageView
@@ -61,7 +61,7 @@
 			app:layout_constraintEnd_toStartOf="@id/button_menu"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/dragHandle"
-			tools:text="@sample/titles[9]" />
+			tools:text="@tools:sample/backgrounds/scenic[9]" />
 
 		<ImageButton
 			android:id="@+id/button_menu"

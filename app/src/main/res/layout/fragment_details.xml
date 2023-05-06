@@ -29,7 +29,7 @@
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintWidth_percent="0.3"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-			tools:background="@sample/covers[5]"
+			tools:background="@tools:sample/backgrounds/scenic[5]"
 			tools:ignore="ContentDescription,UnusedAttribute" />
 
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
@@ -53,7 +53,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@sample/titles[5]" />
+			tools:text="@tools:sample/backgrounds/scenic[5]" />
 
 		<TextView
 			android:id="@+id/textView_subtitle"
