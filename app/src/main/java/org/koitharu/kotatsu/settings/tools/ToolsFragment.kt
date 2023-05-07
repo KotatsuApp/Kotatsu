@@ -42,7 +42,10 @@ class ToolsFragment :
 		binding.memoryUsageView.setManageButtonOnClickListener(this)
 
 		viewModel.isIncognitoModeEnabled.observe(viewLifecycleOwner) {
-			binding.switchIncognito.isChecked = it
+			if (binding.switchIncognito.isChecked != it) {
+				binding.switchIncognito.isChecked = it
+				binding.switchIncognito.jumpDrawablesToCurrentState()
+			}
 		}
 		viewModel.storageUsage.observe(viewLifecycleOwner) {
 			binding.memoryUsageView.bind(it)
