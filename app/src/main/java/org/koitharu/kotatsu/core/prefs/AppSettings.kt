@@ -388,6 +388,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_EXIT_CONFIRM = "exit_confirm"
 		const val KEY_INCOGNITO_MODE = "incognito"
 		const val KEY_SYNC = "sync"
+		const val KEY_SYNC_SETTINGS = "sync_settings"
 		const val KEY_READER_BAR = "reader_bar"
 		const val KEY_READER_SLIDER = "reader_slider"
 		const val KEY_SHORTCUTS = "dynamic_shortcuts"

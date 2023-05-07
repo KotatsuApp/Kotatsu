@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.data.SyncAuthenticator
 import org.koitharu.kotatsu.sync.data.SyncInterceptor
+import org.koitharu.kotatsu.sync.data.SyncSettings
 import org.koitharu.kotatsu.utils.GZipInterceptor
 import org.koitharu.kotatsu.utils.ext.parseJsonOrNull
 import org.koitharu.kotatsu.utils.ext.toContentValues
@@ -41,18 +42,20 @@ private const val FIELD_TIMESTAMP = "timestamp"
 @WorkerThread
 class SyncHelper(
 	context: Context,
-	account: Account,
+	private val account: Account,
 	private val provider: ContentProviderClient,
 ) {
 
 	private val authorityHistory = context.getString(R.string.sync_authority_history)
 	private val authorityFavourites = context.getString(R.string.sync_authority_favourites)
+	private val settings = SyncSettings(context, account)
 	private val httpClient = OkHttpClient.Builder()
-		.authenticator(SyncAuthenticator(context, account, SyncAuthApi(context, OkHttpClient())))
+		.authenticator(SyncAuthenticator(context, account, settings, SyncAuthApi(OkHttpClient())))
 		.addInterceptor(SyncInterceptor(context, account))
 		.addInterceptor(GZipInterceptor())
 		.build()
-	private val baseUrl = context.getString(R.string.url_sync_server)
+	private val baseUrl: String
+		get() = "http://${settings.host}"
 	private val defaultGcPeriod: Long // gc period if sync enabled
 		get() = TimeUnit.DAYS.toMillis(4)
 

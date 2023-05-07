@@ -10,6 +10,7 @@ import android.widget.EditText
 import androidx.annotation.ArrayRes
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
+import androidx.core.content.withStyledAttributes
 import androidx.preference.EditTextPreference
 import org.koitharu.kotatsu.R
 
@@ -25,6 +26,12 @@ class AutoCompleteTextViewPreference @JvmOverloads constructor(
 
 	init {
 		super.setOnBindEditTextListener(autoCompleteBindListener)
+		context.withStyledAttributes(attrs, R.styleable.AutoCompleteTextViewPreference, defStyleAttr, defStyleRes) {
+			val entriesId = getResourceId(R.styleable.AutoCompleteTextViewPreference_android_entries, 0)
+			if (entriesId != 0) {
+				setEntries(entriesId)
+			}
+		}
 	}
 
 	fun setEntries(@ArrayRes arrayResId: Int) {

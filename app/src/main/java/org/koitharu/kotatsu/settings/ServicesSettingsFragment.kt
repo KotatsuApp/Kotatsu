@@ -153,6 +153,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 					else -> getString(R.string.disabled)
 				}
 			}
+			findPreference<Preference>(AppSettings.KEY_SYNC_SETTINGS)?.isEnabled = account != null
 		}
 	}
 }

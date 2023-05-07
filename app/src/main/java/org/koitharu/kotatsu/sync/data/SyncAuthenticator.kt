@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.R
 class SyncAuthenticator(
 	context: Context,
 	private val account: Account,
+	private val syncSettings: SyncSettings,
 	private val authApi: SyncAuthApi,
 ) : Authenticator {
 
@@ -30,6 +31,7 @@ class SyncAuthenticator(
 	private fun tryRefreshToken() = runCatching {
 		runBlocking {
 			authApi.authenticate(
+				syncSettings.host,
 				account.name,
 				accountManager.getPassword(account),
 			)

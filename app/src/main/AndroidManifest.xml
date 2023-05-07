@@ -95,6 +95,7 @@
 
 				<data android:scheme="kotatsu" />
 				<data android:host="about" />
+				<data android:host="sync-settings" />
 			</intent-filter>
 		</activity>
 		<activity

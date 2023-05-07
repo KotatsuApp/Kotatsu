@@ -11,8 +11,8 @@ import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentResultListener
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -20,12 +20,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySyncAuthBinding
+import org.koitharu.kotatsu.sync.data.SyncSettings
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 
 @AndroidEntryPoint
-class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickListener {
+class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickListener, FragmentResultListener {
 
 	private var accountAuthenticatorResponse: AccountAuthenticatorResponse? = null
 	private var resultBundle: Bundle? = null
@@ -43,6 +44,8 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		binding.buttonNext.setOnClickListener(this)
 		binding.buttonBack.setOnClickListener(this)
 		binding.buttonDone.setOnClickListener(this)
+		binding.layoutProgress.setOnClickListener(this)
+		binding.buttonSettings.setOnClickListener(this)
 		binding.editEmail.addTextChangedListener(EmailTextWatcher(binding.buttonNext))
 		binding.editPassword.addTextChangedListener(PasswordTextWatcher(binding.buttonDone))
 
@@ -52,6 +55,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		viewModel.onError.observe(this, ::onError)
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
 
+		supportFragmentManager.setFragmentResultListener(SyncHostDialogFragment.REQUEST_KEY, this, this)
 		pageBackCallback.update()
 	}
 
@@ -73,12 +77,14 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 			}
 
 			R.id.button_next -> {
-				binding.switcher.showNext()
+				binding.groupLogin.isVisible = false
+				binding.groupPassword.isVisible = true
 				pageBackCallback.update()
 			}
 
 			R.id.button_back -> {
-				binding.switcher.showPrevious()
+				binding.groupPassword.isVisible = false
+				binding.groupLogin.isVisible = true
 				pageBackCallback.update()
 			}
 
@@ -88,7 +94,16 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 					password = binding.editPassword.text.toString(),
 				)
 			}
+
+			R.id.button_settings -> {
+				SyncHostDialogFragment.show(supportFragmentManager)
+			}
 		}
+	}
+
+	override fun onFragmentResult(requestKey: String, result: Bundle) {
+		val host = result.getString(SyncHostDialogFragment.KEY_HOST) ?: return
+		viewModel.host.value = host
 	}
 
 	override fun finish() {
@@ -105,7 +120,6 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 			return
 		}
 		TransitionManager.beginDelayedTransition(binding.root, Fade())
-		binding.switcher.isGone = isLoading
 		binding.layoutProgress.isVisible = isLoading
 		pageBackCallback.update()
 	}
@@ -121,8 +135,10 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 	private fun onTokenReceived(authResult: SyncAuthResult) {
 		val am = AccountManager.get(this)
 		val account = Account(authResult.email, getString(R.string.account_type_sync))
+		val userdata = Bundle(1)
+		userdata.putString(SyncSettings.KEY_HOST, authResult.host)
 		val result = Bundle()
-		if (am.addAccountExplicitly(account, authResult.password, Bundle())) {
+		if (am.addAccountExplicitly(account, authResult.password, userdata)) {
 			result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name)
 			result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type)
 			result.putString(AccountManager.KEY_AUTHTOKEN, authResult.token)
@@ -168,12 +184,13 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 	private inner class PageBackCallback : OnBackPressedCallback(false) {
 
 		override fun handleOnBackPressed() {
-			binding.switcher.showPrevious()
+			binding.groupLogin.isVisible = true
+			binding.groupPassword.isVisible = false
 			update()
 		}
 
 		fun update() {
-			isEnabled = binding.switcher.isVisible && binding.switcher.displayedChild > 0
+			isEnabled = !binding.layoutProgress.isVisible && binding.groupPassword.isVisible
 		}
 	}
 }

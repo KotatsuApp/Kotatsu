@@ -137,6 +137,7 @@ class SettingsActivity :
 			Intent.ACTION_VIEW -> {
 				when (intent.data?.host) {
 					HOST_ABOUT -> AboutSettingsFragment()
+					HOST_SYNC_SETTINGS -> SyncSettingsFragment()
 					else -> SettingsHeadersFragment()
 				}
 			}
@@ -159,6 +160,7 @@ class SettingsActivity :
 		private const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
 		private const val EXTRA_SOURCE = "source"
 		private const val HOST_ABOUT = "about"
+		private const val HOST_SYNC_SETTINGS = "sync-settings"
 
 		fun newIntent(context: Context) = Intent(context, SettingsActivity::class.java)
 

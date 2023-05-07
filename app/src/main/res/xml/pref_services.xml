@@ -10,6 +10,12 @@
 		android:summary="@string/sync_title"
 		android:title="@string/sync" />
 
+	<PreferenceScreen
+		android:enabled="false"
+		android:fragment="org.koitharu.kotatsu.settings.SyncSettingsFragment"
+		android:key="sync_settings"
+		android:title="@string/sync_settings" />
+
 	<PreferenceCategory android:title="@string/tracking">
 
 		<Preference

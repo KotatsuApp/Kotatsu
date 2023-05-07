@@ -103,4 +103,8 @@
 		<attr name="cornerSizeBottomRight" />
 	</declare-styleable>
 
+	<declare-styleable name="AutoCompleteTextViewPreference">
+		<attr name="android:entries" />
+	</declare-styleable>
+
 </resources>
