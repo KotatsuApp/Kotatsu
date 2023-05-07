@@ -165,6 +165,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
 		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
 
+	val isMirrorSwitchingAvailable: Boolean
+		get() = prefs.getBoolean(KEY_MIRROR_SWITCHING, true)
+
 	val isExitConfirmationEnabled: Boolean
 		get() = prefs.getBoolean(KEY_EXIT_CONFIRM, false)
 
@@ -405,6 +408,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_TIPS_CLOSED = "tips_closed"
 		const val KEY_SSL_BYPASS = "ssl_bypass"
 		const val KEY_READER_AUTOSCROLL_SPEED = "as_speed"
+		const val KEY_MIRROR_SWITCHING = "mirror_switching"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

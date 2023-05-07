@@ -11,6 +11,7 @@ import okhttp3.internal.closeQuietly
 import okhttp3.internal.publicsuffix.PublicSuffixDatabase
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,10 +19,14 @@ import javax.inject.Singleton
 @Singleton
 class MirrorSwitchInterceptor @Inject constructor(
 	private val mangaRepositoryFactoryLazy: Lazy<MangaRepository.Factory>,
+	private val settings: AppSettings,
 ) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
 		val request = chain.request()
+		if (!settings.isMirrorSwitchingAvailable) {
+			return chain.proceed(request)
+		}
 		return try {
 			val response = chain.proceed(request)
 			if (response.isFailed) {
