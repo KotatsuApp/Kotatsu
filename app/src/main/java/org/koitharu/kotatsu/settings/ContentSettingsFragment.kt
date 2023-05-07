@@ -7,17 +7,20 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.base.ui.dialog.StorageSelectDialog
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.util.names
-import org.koitharu.kotatsu.settings.utils.SliderPreference
 import org.koitharu.kotatsu.utils.ext.getStorageName
+import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import java.io.File
@@ -35,16 +38,12 @@ class ContentSettingsFragment :
 	@Inject
 	lateinit var contentCache: ContentCache
 
+	@Inject
+	lateinit var downloadsScheduler: DownloadWorker.Scheduler
+
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_content)
 		findPreference<Preference>(AppSettings.KEY_PREFETCH_CONTENT)?.isVisible = contentCache.isCachingEnabled
-		findPreference<SliderPreference>(AppSettings.KEY_DOWNLOADS_PARALLELISM)?.run {
-			summary = value.toString()
-			setOnPreferenceChangeListener { preference, newValue ->
-				preference.summary = newValue.toString()
-				true
-			}
-		}
 		findPreference<ListPreference>(AppSettings.KEY_DOH)?.run {
 			entryValues = arrayOf(
 				DoHProvider.NONE,
@@ -87,6 +86,10 @@ class ContentSettingsFragment :
 				bindRemoteSourcesSummary()
 			}
 
+			AppSettings.KEY_DOWNLOADS_WIFI -> {
+				updateDownloadsConstraints()
+			}
+
 			AppSettings.KEY_SSL_BYPASS -> {
 				Snackbar.make(listView, R.string.settings_apply_restart_required, Snackbar.LENGTH_INDEFINITE).show()
 			}
@@ -124,6 +127,22 @@ class ContentSettingsFragment :
 		findPreference<Preference>(AppSettings.KEY_REMOTE_SOURCES)?.run {
 			val total = settings.remoteMangaSources.size
 			summary = getString(R.string.enabled_d_of_d, total - settings.hiddenSources.size, total)
+		}
+	}
+
+	private fun updateDownloadsConstraints() {
+		val preference = findPreference<Preference>(AppSettings.KEY_DOWNLOADS_WIFI)
+		viewLifecycleScope.launch {
+			try {
+				preference?.isEnabled = false
+				withContext(Dispatchers.Default) {
+					downloadsScheduler.updateConstraints()
+				}
+			} catch (e: Exception) {
+				e.printStackTraceDebug()
+			} finally {
+				preference?.isEnabled = true
+			}
 		}
 	}
 }

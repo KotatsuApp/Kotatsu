@@ -48,6 +48,7 @@ import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.utils.WorkManagerHelper
 import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
@@ -297,6 +298,7 @@ class DownloadWorker @AssistedInject constructor(
 	class Scheduler @Inject constructor(
 		@ApplicationContext private val context: Context,
 		private val dataRepository: MangaDataRepository,
+		private val settings: AppSettings,
 	) {
 
 		private val workManager: WorkManager
@@ -349,13 +351,34 @@ class DownloadWorker @AssistedInject constructor(
 		}
 
 		suspend fun removeCompleted() {
-			workManager.pruneWork().await()
+			val helper = WorkManagerHelper(workManager)
+			val finishedWorks = helper.getFinishedWorkInfosByTag(TAG)
+			helper.deleteWorks(finishedWorks.mapToSet { it.id })
+		}
+
+		suspend fun updateConstraints() {
+			val constraints = Constraints.Builder()
+				.setRequiresStorageNotLow(true)
+				.setRequiredNetworkType(if (settings.isDownloadsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+				.build()
+			val helper = WorkManagerHelper(workManager)
+			val works = helper.getWorkInfosByTag(TAG)
+			for (work in works) {
+				if (work.state.isFinished) {
+					continue
+				}
+				val request = OneTimeWorkRequestBuilder<DownloadWorker>()
+					.setConstraints(constraints)
+					.setId(work.id)
+					.build()
+				helper.updateWork(request)
+			}
 		}
 
 		private suspend fun scheduleImpl(data: Collection<Data>) {
 			val constraints = Constraints.Builder()
 				.setRequiresStorageNotLow(true)
-				.setRequiredNetworkType(NetworkType.CONNECTED)
+				.setRequiredNetworkType(if (settings.isDownloadsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
 				.build()
 			val requests = data.map { inputData ->
 				OneTimeWorkRequestBuilder<DownloadWorker>()
@@ -364,7 +387,7 @@ class DownloadWorker @AssistedInject constructor(
 					.keepResultsForAtLeast(7, TimeUnit.DAYS)
 					.setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
 					.setInputData(inputData)
-					.setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
+					.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 					.build()
 			}
 			workManager.enqueue(requests).await()

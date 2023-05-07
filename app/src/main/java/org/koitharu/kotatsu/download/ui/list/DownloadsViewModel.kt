@@ -43,22 +43,22 @@ class DownloadsViewModel @Inject constructor(
 	private val cacheMutex = Mutex()
 	private val works = workScheduler.observeWorks()
 		.mapLatest { it.toDownloadsList() }
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	val items = works.map {
-		it.toUiList()
+		it?.toUiList() ?: listOf(LoadingState)
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
 
 	val hasPausedWorks = works.map {
-		it.any { x -> x.canResume }
+		it?.any { x -> x.canResume } == true
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	val hasActiveWorks = works.map {
-		it.any { x -> x.canPause }
+		it?.any { x -> x.canPause } == true
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	val hasCancellableWorks = works.map {
-		it.any { x -> !x.workState.isFinished }
+		it?.any { x -> !x.workState.isFinished } == true
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
 
 	fun cancel(id: UUID) {
@@ -69,7 +69,7 @@ class DownloadsViewModel @Inject constructor(
 
 	fun cancel(ids: Set<Long>) {
 		launchJob(Dispatchers.Default) {
-			val snapshot = works.value
+			val snapshot = works.value ?: return@launchJob
 			for (work in snapshot) {
 				if (work.id.mostSignificantBits in ids) {
 					workScheduler.cancel(work.id)
@@ -85,7 +85,7 @@ class DownloadsViewModel @Inject constructor(
 	}
 
 	fun pause(ids: Set<Long>) {
-		val snapshot = works.value
+		val snapshot = works.value ?: return
 		for (work in snapshot) {
 			if (work.id.mostSignificantBits in ids) {
 				workScheduler.pause(work.id)
@@ -94,7 +94,7 @@ class DownloadsViewModel @Inject constructor(
 	}
 
 	fun pauseAll() {
-		val snapshot = works.value
+		val snapshot = works.value ?: return
 		for (work in snapshot) {
 			if (work.canPause) {
 				workScheduler.pause(work.id)
@@ -103,7 +103,7 @@ class DownloadsViewModel @Inject constructor(
 	}
 
 	fun resumeAll() {
-		val snapshot = works.value
+		val snapshot = works.value ?: return
 		for (work in snapshot) {
 			if (work.workState == WorkInfo.State.RUNNING && work.isPaused) {
 				workScheduler.resume(work.id)
@@ -112,7 +112,7 @@ class DownloadsViewModel @Inject constructor(
 	}
 
 	fun resume(ids: Set<Long>) {
-		val snapshot = works.value
+		val snapshot = works.value ?: return
 		for (work in snapshot) {
 			if (work.id.mostSignificantBits in ids) {
 				workScheduler.resume(work.id)
@@ -122,7 +122,7 @@ class DownloadsViewModel @Inject constructor(
 
 	fun remove(ids: Set<Long>) {
 		launchJob(Dispatchers.Default) {
-			val snapshot = works.value
+			val snapshot = works.value ?: return@launchJob
 			for (work in snapshot) {
 				if (work.id.mostSignificantBits in ids) {
 					workScheduler.delete(work.id)
@@ -138,12 +138,12 @@ class DownloadsViewModel @Inject constructor(
 	}
 
 	fun snapshot(ids: Set<Long>): Collection<DownloadItemModel> {
-		return works.value.filterTo(ArrayList(ids.size)) { x -> x.id.mostSignificantBits in ids }
+		return works.value?.filterTo(ArrayList(ids.size)) { x -> x.id.mostSignificantBits in ids }.orEmpty()
 	}
 
-	fun allIds(): Set<Long> = works.value.mapToSet {
+	fun allIds(): Set<Long> = works.value?.mapToSet {
 		it.id.mostSignificantBits
-	}
+	} ?: emptySet()
 
 	private suspend fun List<WorkInfo>.toDownloadsList(): List<DownloadItemModel> {
 		if (isEmpty()) {
