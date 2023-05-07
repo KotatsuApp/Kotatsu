@@ -48,7 +48,7 @@ class ImportWorker @AssistedInject constructor(
 		val uri = inputData.getString(DATA_URI)?.toUriOrNull() ?: return Result.failure()
 		setForeground(getForegroundInfo())
 		val result = runCatchingCancellable {
-			importer.import(uri, null).manga
+			importer.import(uri).manga
 		}
 		val notification = buildNotification(result)
 		notificationManager.notify(uri.hashCode(), notification)

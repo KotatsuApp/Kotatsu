@@ -32,6 +32,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.internal.closeQuietly
 import okio.IOException
+import okio.buffer
+import okio.sink
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.core.network.CommonHeaders
@@ -50,12 +52,12 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.utils.WorkManagerHelper
-import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import org.koitharu.kotatsu.utils.ext.writeAllCancellable
 import org.koitharu.kotatsu.utils.progress.TimeLeftEstimator
 import java.io.File
 import java.util.UUID
@@ -261,8 +263,10 @@ class DownloadWorker @AssistedInject constructor(
 		val call = okHttp.newCall(request)
 		val file = File(destination, tempFileName)
 		val response = call.clone().await()
-		file.outputStream().use { out ->
-			checkNotNull(response.body).byteStream().copyToSuspending(out)
+		checkNotNull(response.body).use { body ->
+			file.sink(append = false).buffer().use {
+				it.writeAllCancellable(body.source())
+			}
 		}
 		return file
 	}

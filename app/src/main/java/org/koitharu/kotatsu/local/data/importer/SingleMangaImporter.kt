@@ -7,16 +7,19 @@ import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.withContext
+import okio.buffer
+import okio.sink
+import okio.source
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
-import org.koitharu.kotatsu.utils.ext.copyToSuspending
 import org.koitharu.kotatsu.utils.ext.resolveName
+import org.koitharu.kotatsu.utils.ext.writeAllCancellable
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
@@ -30,17 +33,17 @@ class SingleMangaImporter @Inject constructor(
 
 	private val contentResolver = context.contentResolver
 
-	suspend fun import(uri: Uri, progressState: MutableStateFlow<Float>?): LocalManga {
+	suspend fun import(uri: Uri): LocalManga {
 		val result = if (isDirectory(uri)) {
-			importDirectory(uri, progressState)
+			importDirectory(uri)
 		} else {
-			importFile(uri, progressState)
+			importFile(uri)
 		}
 		localStorageChanges.emit(result)
 		return result
 	}
 
-	private suspend fun importFile(uri: Uri, progressState: MutableStateFlow<Float>?): LocalManga {
+	private suspend fun importFile(uri: Uri): LocalManga = withContext(Dispatchers.IO) {
 		val contentResolver = storageManager.contentResolver
 		val name = contentResolver.resolveName(uri) ?: throw IOException("Cannot fetch name from uri: $uri")
 		if (!CbzFilter.isFileSupported(name)) {
@@ -50,14 +53,14 @@ class SingleMangaImporter @Inject constructor(
 		runInterruptible {
 			contentResolver.openInputStream(uri)
 		}?.use { source ->
-			dest.outputStream().use { output ->
-				source.copyToSuspending(output, progressState = progressState)
+			dest.sink().buffer().use { output ->
+				output.writeAllCancellable(source.source())
 			}
 		} ?: throw IOException("Cannot open input stream: $uri")
-		return LocalMangaInput.of(dest).getManga()
+		LocalMangaInput.of(dest).getManga()
 	}
 
-	private suspend fun importDirectory(uri: Uri, progressState: MutableStateFlow<Float>?): LocalManga {
+	private suspend fun importDirectory(uri: Uri): LocalManga {
 		val root = requireNotNull(DocumentFile.fromTreeUri(context, uri)) {
 			"Provided uri $uri is not a tree"
 		}
@@ -80,9 +83,9 @@ class SingleMangaImporter @Inject constructor(
 				docFile.copyTo(subDir)
 			}
 		} else {
-			inputStream().use { input ->
-				File(destDir, requireName()).outputStream().use { output ->
-					input.copyToSuspending(output)
+			inputStream().source().use { input ->
+				File(destDir, requireName()).sink().buffer().use { output ->
+					output.writeAllCancellable(input)
 				}
 			}
 		}

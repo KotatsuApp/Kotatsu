@@ -12,11 +12,14 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okio.IOException
+import okio.buffer
+import okio.sink
+import okio.source
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.reader.domain.PageLoader
-import org.koitharu.kotatsu.utils.ext.copyToSuspending
+import org.koitharu.kotatsu.utils.ext.writeAllCancellable
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.Continuation
@@ -49,10 +52,10 @@ class PageSaveHelper @Inject constructor(
 			}
 		}
 		runInterruptible(Dispatchers.IO) {
-			contentResolver.openOutputStream(destination)
+			contentResolver.openOutputStream(destination)?.sink()?.buffer()
 		}?.use { output ->
-			pageFile.inputStream().use { input ->
-				input.copyToSuspending(output)
+			pageFile.source().use { input ->
+				output.writeAllCancellable(input)
 			}
 		} ?: throw IOException("Output stream is null")
 		return destination
