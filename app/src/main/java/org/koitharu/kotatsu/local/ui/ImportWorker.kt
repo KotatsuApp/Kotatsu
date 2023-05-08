@@ -75,7 +75,7 @@ class ImportWorker @AssistedInject constructor(
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_sys_download)
 			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-			.setOngoing(true)
+			.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 			.build()
 
 		return ForegroundInfo(FOREGROUND_NOTIFICATION_ID, notification)

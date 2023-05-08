@@ -8,7 +8,18 @@ import androidx.annotation.FloatRange
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
-import androidx.work.*
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ForegroundInfo
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -66,13 +77,13 @@ class SuggestionsWorker @AssistedInject constructor(
 		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
 			.setContentTitle(title)
 			.setPriority(NotificationCompat.PRIORITY_MIN)
+			.setCategory(NotificationCompat.CATEGORY_SERVICE)
 			.setDefaults(0)
 			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)
 			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
-			.setOngoing(true)
 			.build()
 
 		return ForegroundInfo(WORKER_NOTIFICATION_ID, notification)

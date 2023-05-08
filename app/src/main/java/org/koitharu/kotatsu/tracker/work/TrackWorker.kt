@@ -75,6 +75,7 @@ class TrackWorker @AssistedInject constructor(
 		} finally {
 			withContext(NonCancellable) {
 				logger.flush()
+				notificationManager.cancel(WORKER_NOTIFICATION_ID)
 			}
 		}
 	}
@@ -179,6 +180,7 @@ class TrackWorker @AssistedInject constructor(
 				),
 			)
 			setAutoCancel(true)
+			setCategory(NotificationCompat.CATEGORY_PROMO)
 			setVisibility(if (manga.isNsfw) VISIBILITY_SECRET else VISIBILITY_PUBLIC)
 			color = colorPrimary
 			setShortcutId(manga.id.toString())
@@ -216,13 +218,13 @@ class TrackWorker @AssistedInject constructor(
 		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
 			.setContentTitle(title)
 			.setPriority(NotificationCompat.PRIORITY_MIN)
+			.setCategory(NotificationCompat.CATEGORY_SERVICE)
 			.setDefaults(0)
 			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)
 			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
-			.setOngoing(true)
 			.build()
 		return ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
 	}
