@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemCategoryCheckableMultipleBinding
 import org.koitharu.kotatsu.databinding.ItemShelfSectionDraggableBinding
 import org.koitharu.kotatsu.shelf.domain.ShelfSection
+import org.koitharu.kotatsu.utils.ext.setChecked
 
 @SuppressLint("ClickableViewAccessibility")
 fun shelfSectionAD(
@@ -42,10 +43,7 @@ fun shelfSectionAD(
 
 		bind { payloads ->
 			binding.textViewTitle.setText(item.section.titleResId)
-			binding.switchToggle.isChecked = item.isChecked
-			if (payloads.isEmpty()) {
-				binding.switchToggle.jumpDrawablesToCurrentState()
-			}
+			binding.switchToggle.setChecked(item.isChecked, payloads.isNotEmpty())
 		}
 	}
 
@@ -65,10 +63,7 @@ fun shelfCategoryAD(
 
 		bind { payloads ->
 			binding.root.text = item.title
-			binding.root.isChecked = item.isChecked
-			if (payloads.isEmpty()) {
-				binding.root.jumpDrawablesToCurrentState()
-			}
+			binding.root.setChecked(item.isChecked, payloads.isNotEmpty())
 		}
 	}
 

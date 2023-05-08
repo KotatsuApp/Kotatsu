@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 import org.koitharu.kotatsu.utils.ext.getSerializableCompat
+import org.koitharu.kotatsu.utils.ext.setChecked
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
@@ -112,10 +113,8 @@ class FavouritesCategoryEditActivity :
 		selectedSortOrder = category?.order
 		val sortText = getString((category?.order ?: SortOrder.NEWEST).titleRes)
 		binding.editSort.setText(sortText, false)
-		binding.switchTracker.isChecked = category?.isTrackingEnabled ?: true
-		binding.switchTracker.jumpDrawablesToCurrentState()
-		binding.switchShelf.isChecked = category?.isVisibleInLibrary ?: true
-		binding.switchShelf.jumpDrawablesToCurrentState()
+		binding.switchTracker.setChecked(category?.isTrackingEnabled ?: true, false)
+		binding.switchShelf.setChecked(category?.isVisibleInLibrary ?: true, false)
 	}
 
 	private fun onError(e: Throwable) {

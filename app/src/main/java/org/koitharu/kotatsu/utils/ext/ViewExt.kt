@@ -7,6 +7,7 @@ import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.view.inputmethod.InputMethodManager
+import android.widget.Checkable
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -191,4 +192,12 @@ fun View.measureDimension(desiredSize: Int, measureSpec: Int): Int {
 		}
 	}
 	return result
+}
+
+fun <V> V.setChecked(checked: Boolean, animate: Boolean) where V : View, V : Checkable {
+	val skipAnimation = !animate && checked != isChecked
+	isChecked = checked
+	if (skipAnimation) {
+		jumpDrawablesToCurrentState()
+	}
 }

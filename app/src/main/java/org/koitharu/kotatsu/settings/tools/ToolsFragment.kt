@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.databinding.FragmentToolsBinding
 import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.about.AppUpdateDialog
+import org.koitharu.kotatsu.utils.ext.setChecked
 
 @AndroidEntryPoint
 class ToolsFragment :
@@ -42,10 +43,7 @@ class ToolsFragment :
 		binding.memoryUsageView.setManageButtonOnClickListener(this)
 
 		viewModel.isIncognitoModeEnabled.observe(viewLifecycleOwner) {
-			if (binding.switchIncognito.isChecked != it) {
-				binding.switchIncognito.isChecked = it
-				binding.switchIncognito.jumpDrawablesToCurrentState()
-			}
+			binding.switchIncognito.setChecked(it, false)
 		}
 		viewModel.storageUsage.observe(viewLifecycleOwner) {
 			binding.memoryUsageView.bind(it)

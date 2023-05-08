@@ -4,6 +4,7 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemSourceLocaleBinding
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
+import org.koitharu.kotatsu.utils.ext.setChecked
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 
 fun sourceLocaleAD(
@@ -19,9 +20,6 @@ fun sourceLocaleAD(
 	bind { payloads ->
 		binding.textViewTitle.text = item.title ?: getString(R.string.different_languages)
 		binding.textViewDescription.textAndVisible = item.summary
-		binding.switchToggle.isChecked = item.isChecked
-		if (payloads.isEmpty()) {
-			binding.switchToggle.jumpDrawablesToCurrentState()
-		}
+		binding.switchToggle.setChecked(item.isChecked, payloads.isNotEmpty())
 	}
 }
