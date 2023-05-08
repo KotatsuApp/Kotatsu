@@ -172,7 +172,7 @@ class DownloadsViewModel @Inject constructor(
 	}
 
 	private suspend fun WorkInfo.toUiModel(): DownloadItemModel? {
-		val workData = if (progress != Data.EMPTY) progress else outputData
+		val workData = if (outputData == Data.EMPTY) progress else outputData
 		val mangaId = DownloadState2.getMangaId(workData)
 		if (mangaId == 0L) return null
 		val manga = getManga(mangaId) ?: return null
@@ -187,7 +187,7 @@ class DownloadsViewModel @Inject constructor(
 			progress = DownloadState2.getProgress(workData),
 			eta = DownloadState2.getEta(workData),
 			timestamp = DownloadState2.getTimestamp(workData),
-			totalChapters = DownloadState2.getTotalChapters(workData),
+			totalChapters = DownloadState2.getDownloadedChapters(workData).size,
 		)
 	}
 

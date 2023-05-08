@@ -57,6 +57,10 @@ class WorkManagerHelper(
 		return workManagerImpl.getWorkInfos(query).await()
 	}
 
+	suspend fun getWorkInfoById(id: UUID): WorkInfo? {
+		return workManagerImpl.getWorkInfoById(id).await()
+	}
+
 	suspend fun updateWork(request: WorkRequest): WorkManager.UpdateResult {
 		return workManagerImpl.updateWork(request).await()
 	}

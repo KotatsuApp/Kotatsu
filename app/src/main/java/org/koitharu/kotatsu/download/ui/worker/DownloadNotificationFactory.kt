@@ -133,11 +133,29 @@ class DownloadNotificationFactory @AssistedInject constructor(
 				builder.setWhen(System.currentTimeMillis())
 			}
 
+			state.isStopped -> {
+				builder.setProgress(0, 0, false)
+				builder.setContentText(context.getString(R.string.queued))
+				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
+				builder.setStyle(null)
+				builder.setOngoing(true)
+				builder.setSmallIcon(R.drawable.ic_stat_paused)
+				builder.addAction(actionCancel)
+			}
+
 			state.isPaused -> { // paused (with error or manually)
 				builder.setProgress(state.max, state.progress, false)
-				val percent = context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
-				builder.setContentText(percent)
-				builder.setContentText(state.error)
+				val percent = if (state.percent >= 0) {
+					context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
+				} else {
+					null
+				}
+				if (state.error != null) {
+					builder.setContentText(state.error)
+					builder.setSubText(percent)
+				} else {
+					builder.setContentText(percent)
+				}
 				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 				builder.setStyle(null)
 				builder.setOngoing(true)
@@ -161,7 +179,11 @@ class DownloadNotificationFactory @AssistedInject constructor(
 
 			else -> {
 				builder.setProgress(state.max, state.progress, false)
-				val percent = context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
+				val percent = if (state.percent >= 0f) {
+					context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
+				} else {
+					null
+				}
 				if (state.eta > 0L) {
 					val eta = DateUtils.getRelativeTimeSpanString(
 						state.eta,

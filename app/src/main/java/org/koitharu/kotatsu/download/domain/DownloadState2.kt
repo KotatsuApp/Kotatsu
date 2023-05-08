@@ -10,6 +10,7 @@ data class DownloadState2(
 	val manga: Manga,
 	val isIndeterminate: Boolean,
 	val isPaused: Boolean = false,
+	val isStopped: Boolean = false,
 	val error: String? = null,
 	val totalChapters: Int = 0,
 	val currentChapter: Int = 0,
@@ -17,6 +18,7 @@ data class DownloadState2(
 	val currentPage: Int = 0,
 	val eta: Long = -1L,
 	val localManga: LocalManga? = null,
+	val downloadedChapters: LongArray = LongArray(0),
 	val timestamp: Long = System.currentTimeMillis(),
 ) {
 
@@ -30,7 +32,7 @@ data class DownloadState2(
 		get() = localManga != null || (error != null && !isPaused)
 
 	val isParticularProgress: Boolean
-		get() = localManga == null && error == null && !isPaused && max > 0 && !isIndeterminate
+		get() = localManga == null && error == null && !isPaused && !isStopped && max > 0 && !isIndeterminate
 
 	fun toWorkData() = Data.Builder()
 		.putLong(DATA_MANGA_ID, manga.id)
@@ -39,7 +41,7 @@ data class DownloadState2(
 		.putLong(DATA_ETA, eta)
 		.putLong(DATA_TIMESTAMP, timestamp)
 		.putString(DATA_ERROR, error)
-		.putInt(DATA_CHAPTERS, totalChapters)
+		.putLongArray(DATA_CHAPTERS, downloadedChapters)
 		.putBoolean(DATA_INDETERMINATE, isIndeterminate)
 		.putBoolean(DATA_PAUSED, isPaused)
 		.build()
@@ -72,6 +74,6 @@ data class DownloadState2(
 
 		fun getTimestamp(data: Data): Date = Date(data.getLong(DATA_TIMESTAMP, 0L))
 
-		fun getTotalChapters(data: Data): Int = data.getInt(DATA_CHAPTERS, 0)
+		fun getDownloadedChapters(data: Data): LongArray = data.getLongArray(DATA_CHAPTERS) ?: LongArray(0)
 	}
 }

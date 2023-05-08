@@ -48,6 +48,7 @@ import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.mapToSet
@@ -82,7 +83,9 @@ class DownloadWorker @AssistedInject constructor(
 	private val notificationManager = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 	@Volatile
-	private lateinit var currentState: DownloadState2
+	private var lastPublishedState: DownloadState2? = null
+	private val currentState: DownloadState2
+		get() = checkNotNull(lastPublishedState)
 
 	private val pausingHandle = PausingHandle()
 	private val timeLeftEstimator = TimeLeftEstimator()
@@ -94,30 +97,44 @@ class DownloadWorker @AssistedInject constructor(
 		val mangaId = inputData.getLong(MANGA_ID, 0L)
 		val manga = mangaDataRepository.findMangaById(mangaId) ?: return Result.failure()
 		val chaptersIds = inputData.getLongArray(CHAPTERS_IDS)?.takeUnless { it.isEmpty() }
-		currentState = DownloadState2(manga, isIndeterminate = true)
+		val downloadedIds = getDoneChapters()
+		lastPublishedState = DownloadState2(manga, isIndeterminate = true)
 		return try {
-			downloadMangaImpl(chaptersIds)
+			downloadMangaImpl(chaptersIds, downloadedIds)
 			Result.success(currentState.toWorkData())
 		} catch (e: CancellationException) {
+			withContext(NonCancellable) {
+				val notification = notificationFactory.create(currentState.copy(isStopped = true))
+				notificationManager.notify(id.hashCode(), notification)
+			}
 			throw e
 		} catch (e: IOException) {
 			e.printStackTraceDebug()
 			Result.retry()
 		} catch (e: Exception) {
 			e.printStackTraceDebug()
-			currentState = currentState.copy(error = e.getDisplayMessage(applicationContext.resources), eta = -1L)
-			Result.failure(currentState.toWorkData())
+			Result.failure(
+				currentState.copy(
+					error = e.getDisplayMessage(applicationContext.resources),
+					eta = -1L,
+				).toWorkData(),
+			)
+		} finally {
+			notificationManager.cancel(id.hashCode())
 		}
 	}
 
 	override suspend fun getForegroundInfo() = ForegroundInfo(
 		id.hashCode(),
-		notificationFactory.create(null),
+		notificationFactory.create(lastPublishedState),
 	)
 
-	private suspend fun downloadMangaImpl(chaptersIds: LongArray?) {
+	private suspend fun downloadMangaImpl(
+		includedIds: LongArray?,
+		excludedIds: LongArray,
+	) {
 		var manga = currentState.manga
-		val chaptersIdsSet = chaptersIds?.toMutableSet()
+		val chaptersToSkip = excludedIds.toMutableSet()
 		withMangaLock(manga) {
 			ContextCompat.registerReceiver(
 				applicationContext,
@@ -135,26 +152,24 @@ class DownloadWorker @AssistedInject constructor(
 						?: error("Cannot obtain remote manga instance")
 				}
 				val repo = mangaRepositoryFactory.create(manga.source)
-				val data = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
-				output = LocalMangaOutput.getOrCreate(destination, data)
-				val coverUrl = data.largeCoverUrl.ifNullOrEmpty { data.coverUrl }
+				val mangaDetails = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
+				output = LocalMangaOutput.getOrCreate(destination, mangaDetails)
+				val coverUrl = mangaDetails.largeCoverUrl.ifNullOrEmpty { mangaDetails.coverUrl }
 				if (coverUrl.isNotEmpty()) {
 					downloadFile(coverUrl, destination, tempFileName, repo.source).let { file ->
 						output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
 					}
 				}
-				val chapters = checkNotNull(
-					if (chaptersIdsSet == null) {
-						data.chapters
-					} else {
-						data.chapters?.filter { x -> chaptersIdsSet.remove(x.id) }
-					},
-				) { "Chapters list must not be null" }
-				check(chapters.isNotEmpty()) { "Chapters list must not be empty" }
-				check(chaptersIdsSet.isNullOrEmpty()) {
-					"${chaptersIdsSet?.size} of ${chaptersIds?.size} requested chapters not found in manga"
-				}
+				val chapters = getChapters(mangaDetails, includedIds)
 				for ((chapterIndex, chapter) in chapters.withIndex()) {
+					if (chaptersToSkip.remove(chapter.id)) {
+						publishState(
+							currentState.copy(
+								downloadedChapters = currentState.downloadedChapters + chapter.id,
+							),
+						)
+						continue
+					}
 					val pages = runFailsafe(pausingHandle) {
 						repo.getPages(chapter)
 					}
@@ -190,6 +205,11 @@ class DownloadWorker @AssistedInject constructor(
 							localStorageChanges.emit(LocalMangaInput.of(output.rootFile).getManga())
 						}.onFailure(Throwable::printStackTraceDebug)
 					}
+					publishState(
+						currentState.copy(
+							downloadedChapters = currentState.downloadedChapters + chapter.id,
+						),
+					)
 				}
 				publishState(currentState.copy(isIndeterminate = true, eta = -1L))
 				output.mergeWithExisting()
@@ -273,7 +293,7 @@ class DownloadWorker @AssistedInject constructor(
 
 	private suspend fun publishState(state: DownloadState2) {
 		val previousState = currentState
-		currentState = state
+		lastPublishedState = state
 		if (previousState.isParticularProgress && state.isParticularProgress) {
 			timeLeftEstimator.tick(state.progress, state.max)
 		} else {
@@ -289,6 +309,30 @@ class DownloadWorker @AssistedInject constructor(
 			return
 		}
 		setProgress(state.toWorkData())
+	}
+
+	private suspend fun getDoneChapters(): LongArray {
+		val work = WorkManagerHelper(WorkManager.getInstance(applicationContext)).getWorkInfoById(id)
+			?: return LongArray(0)
+		return DownloadState2.getDownloadedChapters(work.progress)
+	}
+
+	private fun getChapters(
+		manga: Manga,
+		includedIds: LongArray?,
+	): List<MangaChapter> {
+		val chapters = checkNotNull(manga.chapters?.toMutableList()) {
+			"Chapters list must not be null"
+		}
+		if (includedIds != null) {
+			val chaptersIdsSet = includedIds.toMutableSet()
+			chapters.retainAll { x -> chaptersIdsSet.remove(x.id) }
+			check(chaptersIdsSet.isEmpty()) {
+				"${chaptersIdsSet.size} of ${includedIds.size} requested chapters not found in manga"
+			}
+		}
+		check(chapters.isNotEmpty()) { "Chapters list must not be empty" }
+		return chapters
 	}
 
 	private suspend inline fun <T> withMangaLock(manga: Manga, block: () -> T) = try {
