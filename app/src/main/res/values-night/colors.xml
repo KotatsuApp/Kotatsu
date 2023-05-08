@@ -8,7 +8,7 @@
 	<color name="scrollbar">#66FFFFFF</color>
 	<color name="selector_foreground">#29FFFFFF</color>
 	<color name="divider_default">#1FFFFFFF</color>
-	<color name="status_bar_incognito">#260052</color>
+	<color name="status_bar_incognito">#66311B92</color>
 	<color name="warning">#FB8C00</color>
 	<color name="launcher_background">#000000</color>
 	<color name="splash_primary">#0C4091</color>

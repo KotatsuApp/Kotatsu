@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.base.ui
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
@@ -47,6 +48,8 @@ abstract class BaseActivity<B : ViewBinding> :
 
 	@JvmField
 	val actionModeDelegate = ActionModeDelegate()
+
+	private var defaultStatusBarColor = Color.TRANSPARENT
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		val settings = EntryPointAccessors.fromApplication(this, BaseActivityEntryPoint::class.java).settings
@@ -131,6 +134,7 @@ abstract class BaseActivity<B : ViewBinding> :
 				topMargin = insets.top
 			}
 		}
+		defaultStatusBarColor = window.statusBarColor
 		window.statusBarColor = actionModeColor
 	}
 
@@ -138,7 +142,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		actionModeDelegate.onSupportActionModeFinished(mode)
-		window.statusBarColor = getThemeColor(android.R.attr.statusBarColor)
+		window.statusBarColor = defaultStatusBarColor
 	}
 
 	private fun putDataToExtras(intent: Intent?) {
