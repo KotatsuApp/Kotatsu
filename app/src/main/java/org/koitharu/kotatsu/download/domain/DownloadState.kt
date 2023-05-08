@@ -6,7 +6,7 @@ import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.util.Date
 
-data class DownloadState2(
+data class DownloadState(
 	val manga: Manga,
 	val isIndeterminate: Boolean,
 	val isPaused: Boolean = false,
@@ -45,6 +45,50 @@ data class DownloadState2(
 		.putBoolean(DATA_INDETERMINATE, isIndeterminate)
 		.putBoolean(DATA_PAUSED, isPaused)
 		.build()
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as DownloadState
+
+		if (manga != other.manga) return false
+		if (isIndeterminate != other.isIndeterminate) return false
+		if (isPaused != other.isPaused) return false
+		if (isStopped != other.isStopped) return false
+		if (error != other.error) return false
+		if (totalChapters != other.totalChapters) return false
+		if (currentChapter != other.currentChapter) return false
+		if (totalPages != other.totalPages) return false
+		if (currentPage != other.currentPage) return false
+		if (eta != other.eta) return false
+		if (localManga != other.localManga) return false
+		if (!downloadedChapters.contentEquals(other.downloadedChapters)) return false
+		if (timestamp != other.timestamp) return false
+		if (max != other.max) return false
+		if (progress != other.progress) return false
+		return percent == other.percent
+	}
+
+	override fun hashCode(): Int {
+		var result = manga.hashCode()
+		result = 31 * result + isIndeterminate.hashCode()
+		result = 31 * result + isPaused.hashCode()
+		result = 31 * result + isStopped.hashCode()
+		result = 31 * result + (error?.hashCode() ?: 0)
+		result = 31 * result + totalChapters
+		result = 31 * result + currentChapter
+		result = 31 * result + totalPages
+		result = 31 * result + currentPage
+		result = 31 * result + eta.hashCode()
+		result = 31 * result + (localManga?.hashCode() ?: 0)
+		result = 31 * result + downloadedChapters.contentHashCode()
+		result = 31 * result + timestamp.hashCode()
+		result = 31 * result + max
+		result = 31 * result + progress
+		result = 31 * result + percent.hashCode()
+		return result
+	}
 
 	companion object {
 

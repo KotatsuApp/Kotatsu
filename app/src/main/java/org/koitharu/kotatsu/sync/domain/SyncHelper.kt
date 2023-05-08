@@ -26,7 +26,7 @@ import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.data.SyncAuthenticator
 import org.koitharu.kotatsu.sync.data.SyncInterceptor
-import org.koitharu.kotatsu.utils.GZipInterceptor
+import org.koitharu.kotatsu.core.network.GZipInterceptor
 import org.koitharu.kotatsu.utils.ext.parseJsonOrNull
 import org.koitharu.kotatsu.utils.ext.toContentValues
 import org.koitharu.kotatsu.utils.ext.toJson

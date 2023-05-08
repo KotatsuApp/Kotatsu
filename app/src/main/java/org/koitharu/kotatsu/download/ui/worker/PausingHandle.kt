@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.download.ui.service
+package org.koitharu.kotatsu.download.ui.worker
 
 import androidx.annotation.AnyThread
 import kotlinx.coroutines.flow.MutableStateFlow

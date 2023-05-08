@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.download.ui.worker
+package org.koitharu.kotatsu.utils
 
 import android.os.SystemClock
 

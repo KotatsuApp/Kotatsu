@@ -39,8 +39,7 @@ import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.download.domain.DownloadState2
-import org.koitharu.kotatsu.download.ui.service.PausingHandle
+import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.PagesCache
@@ -52,6 +51,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.utils.Throttler
 import org.koitharu.kotatsu.utils.WorkManagerHelper
 import org.koitharu.kotatsu.utils.ext.deleteAwait
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
@@ -83,8 +83,8 @@ class DownloadWorker @AssistedInject constructor(
 	private val notificationManager = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 	@Volatile
-	private var lastPublishedState: DownloadState2? = null
-	private val currentState: DownloadState2
+	private var lastPublishedState: DownloadState? = null
+	private val currentState: DownloadState
 		get() = checkNotNull(lastPublishedState)
 
 	private val pausingHandle = PausingHandle()
@@ -98,7 +98,7 @@ class DownloadWorker @AssistedInject constructor(
 		val manga = mangaDataRepository.findMangaById(mangaId) ?: return Result.failure()
 		val chaptersIds = inputData.getLongArray(CHAPTERS_IDS)?.takeUnless { it.isEmpty() }
 		val downloadedIds = getDoneChapters()
-		lastPublishedState = DownloadState2(manga, isIndeterminate = true)
+		lastPublishedState = DownloadState(manga, isIndeterminate = true)
 		return try {
 			downloadMangaImpl(chaptersIds, downloadedIds)
 			Result.success(currentState.toWorkData())
@@ -291,7 +291,7 @@ class DownloadWorker @AssistedInject constructor(
 		return file
 	}
 
-	private suspend fun publishState(state: DownloadState2) {
+	private suspend fun publishState(state: DownloadState) {
 		val previousState = currentState
 		lastPublishedState = state
 		if (previousState.isParticularProgress && state.isParticularProgress) {
@@ -314,7 +314,7 @@ class DownloadWorker @AssistedInject constructor(
 	private suspend fun getDoneChapters(): LongArray {
 		val work = WorkManagerHelper(WorkManager.getInstance(applicationContext)).getWorkInfoById(id)
 			?: return LongArray(0)
-		return DownloadState2.getDownloadedChapters(work.progress)
+		return DownloadState.getDownloadedChapters(work.progress)
 	}
 
 	private fun getChapters(

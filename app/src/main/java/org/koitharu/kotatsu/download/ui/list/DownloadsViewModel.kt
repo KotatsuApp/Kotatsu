@@ -19,7 +19,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
-import org.koitharu.kotatsu.download.domain.DownloadState2
+import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -173,21 +173,21 @@ class DownloadsViewModel @Inject constructor(
 
 	private suspend fun WorkInfo.toUiModel(): DownloadItemModel? {
 		val workData = if (outputData == Data.EMPTY) progress else outputData
-		val mangaId = DownloadState2.getMangaId(workData)
+		val mangaId = DownloadState.getMangaId(workData)
 		if (mangaId == 0L) return null
 		val manga = getManga(mangaId) ?: return null
 		return DownloadItemModel(
 			id = id,
 			workState = state,
 			manga = manga,
-			error = DownloadState2.getError(workData),
-			isIndeterminate = DownloadState2.isIndeterminate(workData),
-			isPaused = DownloadState2.isPaused(workData),
-			max = DownloadState2.getMax(workData),
-			progress = DownloadState2.getProgress(workData),
-			eta = DownloadState2.getEta(workData),
-			timestamp = DownloadState2.getTimestamp(workData),
-			totalChapters = DownloadState2.getDownloadedChapters(workData).size,
+			error = DownloadState.getError(workData),
+			isIndeterminate = DownloadState.isIndeterminate(workData),
+			isPaused = DownloadState.isPaused(workData),
+			max = DownloadState.getMax(workData),
+			progress = DownloadState.getProgress(workData),
+			eta = DownloadState.getEta(workData),
+			timestamp = DownloadState.getTimestamp(workData),
+			totalChapters = DownloadState.getDownloadedChapters(workData).size,
 		)
 	}
 

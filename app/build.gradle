@@ -102,6 +102,12 @@ dependencies {
 	implementation 'com.google.android.material:material:1.9.0'
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.6.1'
+
+	/**
+	 * TODO: check
+	 * https://issuetracker.google.com/issues/270245927
+	 * https://issuetracker.google.com/issues/280504155
+	 */
 	implementation 'androidx.work:work-runtime-ktx:2.8.1'
 	//noinspection GradleDependency
 	implementation('com.google.guava:guava:31.1-android') {

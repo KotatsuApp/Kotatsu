@@ -25,7 +25,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.domain.DownloadState2
+import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -100,7 +100,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		builder.priority = NotificationCompat.PRIORITY_DEFAULT
 	}
 
-	suspend fun create(state: DownloadState2?): Notification = mutex.withLock {
+	suspend fun create(state: DownloadState?): Notification = mutex.withLock {
 		builder.setContentTitle(state?.manga?.title ?: context.getString(R.string.preparing_))
 		builder.setContentText(context.getString(R.string.manga_downloading_))
 		builder.setProgress(1, 0, true)

@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.PatternMatcher
 import androidx.core.app.PendingIntentCompat
-import org.koitharu.kotatsu.download.ui.service.PausingHandle
 import org.koitharu.kotatsu.utils.ext.toUUIDOrNull
 import java.util.UUID
 
