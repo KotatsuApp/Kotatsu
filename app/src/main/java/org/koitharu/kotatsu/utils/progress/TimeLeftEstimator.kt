@@ -19,6 +19,9 @@ class TimeLeftEstimator {
 			emptyTick()
 			return
 		}
+		if (lastTick?.value == value) {
+			return
+		}
 		val tick = Tick(value, total, SystemClock.elapsedRealtime())
 		lastTick?.let {
 			val ticksCount = value - it.value

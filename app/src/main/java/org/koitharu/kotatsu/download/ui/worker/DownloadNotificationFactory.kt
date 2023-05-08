@@ -101,8 +101,13 @@ class DownloadNotificationFactory @AssistedInject constructor(
 	}
 
 	suspend fun create(state: DownloadState?): Notification = mutex.withLock {
-		builder.setContentTitle(state?.manga?.title ?: context.getString(R.string.preparing_))
-		builder.setContentText(context.getString(R.string.manga_downloading_))
+		if (state == null) {
+			builder.setContentTitle(context.getString(R.string.manga_downloading_))
+			builder.setContentText(context.getString(R.string.preparing_))
+		} else {
+			builder.setContentTitle(state.manga.title)
+			builder.setContentText(context.getString(R.string.manga_downloading_))
+		}
 		builder.setProgress(1, 0, true)
 		builder.setSmallIcon(android.R.drawable.stat_sys_download)
 		builder.setContentIntent(queueIntent)
