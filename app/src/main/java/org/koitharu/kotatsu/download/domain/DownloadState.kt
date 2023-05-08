@@ -1,234 +1,123 @@
 package org.koitharu.kotatsu.download.domain
 
-import android.graphics.drawable.Drawable
+import androidx.work.Data
+import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
+import java.util.Date
 
-sealed interface DownloadState {
+data class DownloadState(
+	val manga: Manga,
+	val isIndeterminate: Boolean,
+	val isPaused: Boolean = false,
+	val isStopped: Boolean = false,
+	val error: String? = null,
+	val totalChapters: Int = 0,
+	val currentChapter: Int = 0,
+	val totalPages: Int = 0,
+	val currentPage: Int = 0,
+	val eta: Long = -1L,
+	val localManga: LocalManga? = null,
+	val downloadedChapters: LongArray = LongArray(0),
+	val timestamp: Long = System.currentTimeMillis(),
+) {
 
-	val startId: Int
-	val manga: Manga
-	val cover: Drawable?
+	val max: Int = totalChapters * totalPages
 
-	override fun equals(other: Any?): Boolean
+	val progress: Int = totalPages * currentChapter + currentPage + 1
 
-	override fun hashCode(): Int
+	val percent: Float = if (max > 0) progress.toFloat() / max else PROGRESS_NONE
 
-	val isTerminal: Boolean
-		get() = this is Done || this is Cancelled || (this is Error && !canRetry)
+	val isFinalState: Boolean
+		get() = localManga != null || (error != null && !isPaused)
 
-	class Queued(
-		override val startId: Int,
-		override val manga: Manga,
-		override val cover: Drawable?,
-	) : DownloadState {
+	val isParticularProgress: Boolean
+		get() = localManga == null && error == null && !isPaused && !isStopped && max > 0 && !isIndeterminate
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
+	fun toWorkData() = Data.Builder()
+		.putLong(DATA_MANGA_ID, manga.id)
+		.putInt(DATA_MAX, max)
+		.putInt(DATA_PROGRESS, progress)
+		.putLong(DATA_ETA, eta)
+		.putLong(DATA_TIMESTAMP, timestamp)
+		.putString(DATA_ERROR, error)
+		.putLongArray(DATA_CHAPTERS, downloadedChapters)
+		.putBoolean(DATA_INDETERMINATE, isIndeterminate)
+		.putBoolean(DATA_PAUSED, isPaused)
+		.build()
 
-			other as Queued
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
 
-			if (startId != other.startId) return false
-			if (manga != other.manga) return false
-			if (cover != other.cover) return false
+		other as DownloadState
 
-			return true
-		}
-
-		override fun hashCode(): Int {
-			var result = startId
-			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
-			return result
-		}
+		if (manga != other.manga) return false
+		if (isIndeterminate != other.isIndeterminate) return false
+		if (isPaused != other.isPaused) return false
+		if (isStopped != other.isStopped) return false
+		if (error != other.error) return false
+		if (totalChapters != other.totalChapters) return false
+		if (currentChapter != other.currentChapter) return false
+		if (totalPages != other.totalPages) return false
+		if (currentPage != other.currentPage) return false
+		if (eta != other.eta) return false
+		if (localManga != other.localManga) return false
+		if (!downloadedChapters.contentEquals(other.downloadedChapters)) return false
+		if (timestamp != other.timestamp) return false
+		if (max != other.max) return false
+		if (progress != other.progress) return false
+		return percent == other.percent
 	}
 
-	class Preparing(
-		override val startId: Int,
-		override val manga: Manga,
-		override val cover: Drawable?,
-	) : DownloadState {
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as Preparing
-
-			if (startId != other.startId) return false
-			if (manga != other.manga) return false
-			if (cover != other.cover) return false
-
-			return true
-		}
-
-		override fun hashCode(): Int {
-			var result = startId
-			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
-			return result
-		}
+	override fun hashCode(): Int {
+		var result = manga.hashCode()
+		result = 31 * result + isIndeterminate.hashCode()
+		result = 31 * result + isPaused.hashCode()
+		result = 31 * result + isStopped.hashCode()
+		result = 31 * result + (error?.hashCode() ?: 0)
+		result = 31 * result + totalChapters
+		result = 31 * result + currentChapter
+		result = 31 * result + totalPages
+		result = 31 * result + currentPage
+		result = 31 * result + eta.hashCode()
+		result = 31 * result + (localManga?.hashCode() ?: 0)
+		result = 31 * result + downloadedChapters.contentHashCode()
+		result = 31 * result + timestamp.hashCode()
+		result = 31 * result + max
+		result = 31 * result + progress
+		result = 31 * result + percent.hashCode()
+		return result
 	}
 
-	class Progress(
-		override val startId: Int,
-		override val manga: Manga,
-		override val cover: Drawable?,
-		val totalChapters: Int,
-		val currentChapter: Int,
-		val totalPages: Int,
-		val currentPage: Int,
-	) : DownloadState {
+	companion object {
 
-		val max: Int = totalChapters * totalPages
+		private const val DATA_MANGA_ID = "manga_id"
+		private const val DATA_MAX = "max"
+		private const val DATA_PROGRESS = "progress"
+		private const val DATA_CHAPTERS = "chapter"
+		private const val DATA_ETA = "eta"
+		private const val DATA_TIMESTAMP = "timestamp"
+		private const val DATA_ERROR = "error"
+		private const val DATA_INDETERMINATE = "indeterminate"
+		private const val DATA_PAUSED = "paused"
 
-		val progress: Int = totalPages * currentChapter + currentPage + 1
+		fun getMangaId(data: Data): Long = data.getLong(DATA_MANGA_ID, 0L)
 
-		val percent: Float = progress.toFloat() / max
+		fun isIndeterminate(data: Data): Boolean = data.getBoolean(DATA_INDETERMINATE, false)
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
+		fun isPaused(data: Data): Boolean = data.getBoolean(DATA_PAUSED, false)
 
-			other as Progress
+		fun getMax(data: Data): Int = data.getInt(DATA_MAX, 0)
 
-			if (startId != other.startId) return false
-			if (manga != other.manga) return false
-			if (cover != other.cover) return false
-			if (totalChapters != other.totalChapters) return false
-			if (currentChapter != other.currentChapter) return false
-			if (totalPages != other.totalPages) return false
-			if (currentPage != other.currentPage) return false
+		fun getError(data: Data): String? = data.getString(DATA_ERROR)
 
-			return true
-		}
+		fun getProgress(data: Data): Int = data.getInt(DATA_PROGRESS, 0)
 
-		override fun hashCode(): Int {
-			var result = startId
-			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
-			result = 31 * result + totalChapters
-			result = 31 * result + currentChapter
-			result = 31 * result + totalPages
-			result = 31 * result + currentPage
-			return result
-		}
-	}
+		fun getEta(data: Data): Long = data.getLong(DATA_ETA, -1L)
 
-	class Done(
-		override val startId: Int,
-		override val manga: Manga,
-		override val cover: Drawable?,
-		val localManga: Manga,
-	) : DownloadState {
+		fun getTimestamp(data: Data): Date = Date(data.getLong(DATA_TIMESTAMP, 0L))
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as Done
-
-			if (startId != other.startId) return false
-			if (manga != other.manga) return false
-			if (cover != other.cover) return false
-			if (localManga != other.localManga) return false
-
-			return true
-		}
-
-		override fun hashCode(): Int {
-			var result = startId
-			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
-			result = 31 * result + localManga.hashCode()
-			return result
-		}
-	}
-
-	class Error(
-		override val startId: Int,
-		override val manga: Manga,
-		override val cover: Drawable?,
-		val error: Throwable,
-		val canRetry: Boolean,
-	) : DownloadState {
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as Error
-
-			if (startId != other.startId) return false
-			if (manga != other.manga) return false
-			if (cover != other.cover) return false
-			if (error != other.error) return false
-			if (canRetry != other.canRetry) return false
-
-			return true
-		}
-
-		override fun hashCode(): Int {
-			var result = startId
-			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
-			result = 31 * result + error.hashCode()
-			result = 31 * result + canRetry.hashCode()
-			return result
-		}
-	}
-
-	class Cancelled(
-		override val startId: Int,
-		override val manga: Manga,
-		override val cover: Drawable?,
-	) : DownloadState {
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as Cancelled
-
-			if (startId != other.startId) return false
-			if (manga != other.manga) return false
-			if (cover != other.cover) return false
-
-			return true
-		}
-
-		override fun hashCode(): Int {
-			var result = startId
-			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
-			return result
-		}
-	}
-
-	class PostProcessing(
-		override val startId: Int,
-		override val manga: Manga,
-		override val cover: Drawable?,
-	) : DownloadState {
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as PostProcessing
-
-			if (startId != other.startId) return false
-			if (manga != other.manga) return false
-			if (cover != other.cover) return false
-
-			return true
-		}
-
-		override fun hashCode(): Int {
-			var result = startId
-			result = 31 * result + manga.hashCode()
-			result = 31 * result + (cover?.hashCode() ?: 0)
-			return result
-		}
+		fun getDownloadedChapters(data: Data): LongArray = data.getLongArray(DATA_CHAPTERS) ?: LongArray(0)
 	}
 }

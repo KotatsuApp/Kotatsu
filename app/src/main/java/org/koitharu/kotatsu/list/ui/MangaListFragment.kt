@@ -34,7 +34,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.service.DownloadService
+import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter.Companion.ITEM_TYPE_MANGA_GRID
@@ -125,6 +125,7 @@ abstract class MangaListFragment :
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observe(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
+		viewModel.onDownloadStarted.observe(viewLifecycleOwner, DownloadStartedObserver(binding.recyclerView))
 	}
 
 	override fun onDestroyView() {
@@ -299,7 +300,7 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_save -> {
-				DownloadService.confirmAndStart(binding.recyclerView, selectedItems)
+				viewModel.download(selectedItems)
 				mode.finish()
 				true
 			}

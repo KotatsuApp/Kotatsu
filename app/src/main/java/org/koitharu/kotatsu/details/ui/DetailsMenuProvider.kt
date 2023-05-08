@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
-import org.koitharu.kotatsu.download.ui.service.DownloadService
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -86,7 +85,7 @@ class DetailsMenuProvider(
 					if (chaptersCount > 5 || branches.size > 1) {
 						showSaveConfirmation(it, chaptersCount, branches)
 					} else {
-						DownloadService.start(snackbarHost, it)
+						viewModel.download(null)
 					}
 				}
 			}
@@ -140,7 +139,7 @@ class DetailsMenuProvider(
 				val chaptersIds = manga.chapters?.mapNotNullToSet { c ->
 					if (c.branch in selectedBranches) c.id else null
 				}
-				DownloadService.start(snackbarHost, manga, chaptersIds)
+				viewModel.download(chaptersIds)
 			}
 		} else {
 			dialogBuilder.setMessage(
@@ -149,7 +148,7 @@ class DetailsMenuProvider(
 					activity.resources.getQuantityString(R.plurals.chapters, chaptersCount, chaptersCount),
 				),
 			).setPositiveButton(R.string.save) { _, _ ->
-				DownloadService.start(snackbarHost, manga)
+				viewModel.download(null)
 			}
 		}
 		dialogBuilder.show()

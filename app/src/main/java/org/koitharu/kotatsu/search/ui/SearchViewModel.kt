@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -31,7 +32,8 @@ class SearchViewModel @Inject constructor(
 	repositoryFactory: MangaRepository.Factory,
 	settings: AppSettings,
 	private val tagHighlighter: MangaTagHighlighter,
-) : MangaListViewModel(settings) {
+	downloadScheduler: DownloadWorker.Scheduler,
+) : MangaListViewModel(settings, downloadScheduler) {
 
 	private val query = savedStateHandle.require<String>(SearchFragment.ARG_QUERY)
 	private val repository = repositoryFactory.create(savedStateHandle.require(SearchFragment.ARG_SOURCE))

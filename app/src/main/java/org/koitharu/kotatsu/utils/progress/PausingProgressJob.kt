@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.utils.progress
 import androidx.annotation.AnyThread
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
-import org.koitharu.kotatsu.download.ui.service.PausingHandle
+import org.koitharu.kotatsu.download.ui.worker.PausingHandle
 
 class PausingProgressJob<P>(
 	job: Job,

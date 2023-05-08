@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -32,7 +33,8 @@ class UpdatesViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val historyRepository: HistoryRepository,
 	private val tagHighlighter: MangaTagHighlighter,
-) : MangaListViewModel(settings) {
+	downloadScheduler: DownloadWorker.Scheduler,
+) : MangaListViewModel(settings, downloadScheduler) {
 
 	override val content = combine(
 		repository.observeUpdatedManga(),

@@ -41,15 +41,4 @@
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		tools:listitem="@layout/item_download" />
 
-	<TextView
-		android:id="@+id/textView_holder"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:layout_margin="20dp"
-		android:gravity="center"
-		android:text="@string/text_downloads_holder"
-		android:textAppearance="?attr/textAppearanceBody2"
-		tools:visibility="visible" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

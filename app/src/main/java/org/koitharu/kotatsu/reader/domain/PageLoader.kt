@@ -20,6 +20,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okio.source
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -186,7 +187,7 @@ class PageLoader @Inject constructor(
 					val entry = zip.getEntry(uri.fragment)
 					zip.getInputStream(entry)
 				}.use {
-					cache.put(pageUrl, it)
+					cache.put(pageUrl, it.source())
 				}
 			}
 		} else {
@@ -204,8 +205,8 @@ class PageLoader @Inject constructor(
 				val body = checkNotNull(response.body) {
 					"Null response"
 				}
-				body.withProgress(progress).byteStream().use {
-					cache.put(pageUrl, it)
+				body.withProgress(progress).use {
+					cache.put(pageUrl, it.source())
 				}
 			}
 		}

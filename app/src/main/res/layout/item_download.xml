@@ -3,26 +3,25 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	style="?materialCardViewFilledStyle"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	app:cardCornerRadius="16dp">
+	android:layout_height="wrap_content">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:minHeight="@dimen/manga_list_details_item_height"
-		android:orientation="horizontal">
+		android:paddingBottom="12dp">
 
 		<com.google.android.material.imageview.ShapeableImageView
 			android:id="@+id/imageView_cover"
-			android:layout_width="92dp"
-			android:layout_height="0dp"
-			android:orientation="vertical"
+			android:layout_width="64dp"
+			android:layout_height="64dp"
+			android:layout_marginStart="12dp"
+			android:layout_marginTop="12dp"
 			android:scaleType="centerCrop"
-			app:layout_constraintDimensionRatio="H,13:18"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Medium"
 			tools:src="@tools:sample/backgrounds/scenic" />
 
 		<TextView
@@ -30,7 +29,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
-			android:layout_marginTop="8dp"
+			android:layout_marginTop="12dp"
 			android:layout_marginEnd="12dp"
 			android:ellipsize="end"
 			android:singleLine="true"
@@ -40,16 +39,25 @@
 			app:layout_constraintTop_toTopOf="parent"
 			tools:text="@tools:sample/lorem" />
 
+		<androidx.constraintlayout.widget.Barrier
+			android:id="@+id/barrier_top"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:barrierDirection="bottom"
+			app:constraint_referenced_ids="imageView_cover, textView_status" />
+
 		<com.google.android.material.progressindicator.LinearProgressIndicator
 			android:id="@+id/progressBar"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="16dp"
-			android:layout_marginTop="4dp"
+			android:layout_marginStart="12dp"
+			android:layout_marginTop="12dp"
 			android:layout_marginEnd="12dp"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/textView_title"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/barrier_top"
+			app:trackColor="?colorPrimaryContainer"
+			app:trackCornerRadius="12dp"
 			tools:progress="25" />
 
 		<TextView
@@ -64,7 +72,7 @@
 			android:textAppearance="?attr/textAppearanceBodySmall"
 			app:layout_constraintEnd_toStartOf="@id/textView_percent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/progressBar"
+			app:layout_constraintTop_toBottomOf="@id/textView_title"
 			tools:text="@string/manga_downloading_" />
 
 		<TextView
@@ -72,8 +80,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="12dp"
+			android:layout_marginBottom="12dp"
 			android:textAppearance="?attr/textAppearanceBodyMedium"
-			app:layout_constraintBaseline_toBaselineOf="@id/textView_status"
+			app:layout_constraintBottom_toTopOf="@id/barrier_top"
 			app:layout_constraintEnd_toEndOf="parent"
 			tools:text="25%" />
 
@@ -87,39 +96,47 @@
 			android:ellipsize="end"
 			android:maxLines="4"
 			android:textAppearance="?attr/textAppearanceBodySmall"
-			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/textView_percent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_status"
 			tools:text="@tools:sample/lorem[3]" />
 
 		<Button
-			android:id="@+id/button_resume"
-			style="@style/Widget.Material3.Button.TextButton"
+			android:id="@+id/button_pause"
+			style="?materialButtonOutlinedStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginEnd="4dp"
-			android:layout_marginBottom="4dp"
-			android:text="@string/try_again"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="12dp"
+			android:text="@string/pause"
 			android:visibility="gone"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/button_cancel"
-			app:layout_constraintTop_toBottomOf="@id/textView_details"
-			app:layout_constraintVertical_bias="1"
+			app:layout_constraintEnd_toStartOf="@id/button_resume"
+			app:layout_constraintTop_toBottomOf="@id/progressBar"
 			tools:visibility="visible" />
 
 		<Button
-			android:id="@+id/button_cancel"
-			style="@style/Widget.Material3.Button.TextButton"
+			android:id="@+id/button_resume"
+			style="?materialButtonOutlinedStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginEnd="4dp"
-			android:layout_marginBottom="4dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="12dp"
+			android:text="@string/resume"
+			android:visibility="gone"
+			app:layout_constraintEnd_toStartOf="@id/button_cancel"
+			app:layout_constraintTop_toBottomOf="@id/progressBar" />
+
+		<Button
+			android:id="@+id/button_cancel"
+			style="?materialButtonOutlinedStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="12dp"
 			android:text="@android:string/cancel"
 			android:visibility="gone"
-			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/textView_details"
-			app:layout_constraintVertical_bias="1"
+			app:layout_constraintTop_toBottomOf="@id/progressBar"
 			tools:visibility="visible" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

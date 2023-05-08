@@ -441,4 +441,11 @@
 	<string name="ignore_ssl_errors">Ignore SSL errors</string>
 	<string name="mirror_switching">Choose mirror automatically</string>
 	<string name="mirror_switching_summary">Automatically switch domains for remote sources on errors if mirrors are available</string>
+	<string name="pause">Pause</string>
+	<string name="resume">Resume</string>
+	<string name="paused">Paused</string>
+	<string name="remove_completed">Remove completed</string>
+	<string name="cancel_all">Cancel all</string>
+	<string name="downloads_wifi_only">Download only via Wi-Fi</string>
+	<string name="downloads_wifi_only_summary">Stop downloading when switching to a mobile network</string>
 </resources>

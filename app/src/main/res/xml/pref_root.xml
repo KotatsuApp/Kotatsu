@@ -35,6 +35,11 @@
 		android:title="@string/check_for_new_chapters" />
 
 	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
+		android:icon="@drawable/ic_backup_restore"
+		android:title="@string/backup_restore" />
+
+	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.about.AboutSettingsFragment"
 		android:icon="@drawable/ic_info_outline"
 		android:title="@string/about" />

@@ -129,7 +129,7 @@
 			android:name="org.koitharu.kotatsu.settings.protect.ProtectSetupActivity"
 			android:windowSoftInputMode="adjustResize" />
 		<activity
-			android:name="org.koitharu.kotatsu.download.ui.DownloadsActivity"
+			android:name="org.koitharu.kotatsu.download.ui.list.DownloadsActivity"
 			android:label="@string/downloads"
 			android:launchMode="singleTop" />
 		<activity android:name="org.koitharu.kotatsu.image.ui.ImageActivity" />

@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MangaWithHistory
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
@@ -41,7 +42,8 @@ class HistoryListViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val trackingRepository: TrackingRepository,
 	private val tagHighlighter: MangaTagHighlighter,
-) : MangaListViewModel(settings) {
+	downloadScheduler: DownloadWorker.Scheduler,
+) : MangaListViewModel(settings, downloadScheduler) {
 
 	val isGroupingEnabled = MutableLiveData<Boolean>()
 
