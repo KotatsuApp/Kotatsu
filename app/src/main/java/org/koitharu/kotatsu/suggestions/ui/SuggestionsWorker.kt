@@ -79,7 +79,6 @@ class SuggestionsWorker @AssistedInject constructor(
 			.setPriority(NotificationCompat.PRIORITY_MIN)
 			.setCategory(NotificationCompat.CATEGORY_SERVICE)
 			.setDefaults(0)
-			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)
