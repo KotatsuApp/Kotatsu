@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.utils.ext
 
+import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
 import java.util.Collections
 
@@ -44,4 +45,18 @@ inline fun <T> Collection<T>.filterToSet(predicate: (T) -> Boolean): Set<T> {
 
 fun <T> Sequence<T>.toListSorted(comparator: Comparator<T>): List<T> {
 	return toMutableList().apply { sortWith(comparator) }
+}
+
+fun <T> List<T>.takeMostFrequent(limit: Int): List<T> {
+	val map = ArrayMap<T, Int>(size)
+	for (item in this) {
+		map[item] = map.getOrDefault(item, 0) + 1
+	}
+	val entries = map.entries.sortedByDescending { it.value }
+	val count = minOf(limit, entries.size)
+	return buildList(count) {
+		repeat(count) { i ->
+			add(entries[i].key)
+		}
+	}
 }

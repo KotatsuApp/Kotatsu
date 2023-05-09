@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.shelf.domain.ShelfSection
 import org.koitharu.kotatsu.utils.ext.connectivityManager
 import org.koitharu.kotatsu.utils.ext.filterToSet
@@ -250,6 +251,18 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
 
+	val isSuggestionsNotificationAvailable: Boolean
+		get() = prefs.getBoolean(KEY_SUGGESTIONS_NOTIFICATIONS, true)
+
+	val suggestionsTagsBlacklist: Set<String>
+		get() {
+			val string = prefs.getString(KEY_SUGGESTIONS_EXCLUDE_TAGS, null)?.trimEnd(' ', ',')
+			if (string.isNullOrEmpty()) {
+				return emptySet()
+			}
+			return string.split(',').mapToSet { it.trim() }
+		}
+
 	val isReaderBarEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_BAR, true)
 
@@ -279,6 +292,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		return policy.isNetworkAllowed(connectivityManager)
 	}
 
+	@Deprecated("")
 	fun getSuggestionsTagsBlacklistRegex(): Regex? {
 		val string = prefs.getString(KEY_SUGGESTIONS_EXCLUDE_TAGS, null)?.trimEnd(' ', ',')
 		if (string.isNullOrEmpty()) {
@@ -381,6 +395,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SUGGESTIONS = "suggestions"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
+		const val KEY_SUGGESTIONS_NOTIFICATIONS = "suggestions_notifications"
 		const val KEY_SHIKIMORI = "shikimori"
 		const val KEY_ANILIST = "anilist"
 		const val KEY_MAL = "mal"

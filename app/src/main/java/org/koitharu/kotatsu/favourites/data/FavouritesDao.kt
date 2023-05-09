@@ -17,6 +17,10 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE deleted_at = 0 GROUP BY manga_id ORDER BY created_at DESC")
 	abstract suspend fun findAll(): List<FavouriteManga>
 
+	@Transaction
+	@Query("SELECT * FROM favourites WHERE deleted_at = 0 GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit")
+	abstract suspend fun findLast(limit: Int): List<FavouriteManga>
+
 	fun observeAll(order: SortOrder): Flow<List<FavouriteManga>> {
 		val orderBy = getOrderBy(order)
 

@@ -9,6 +9,8 @@ import org.koitharu.kotatsu.utils.ext.iterator
 
 fun Collection<Manga>.ids() = mapToSet { it.id }
 
+fun Collection<Manga>.distinctById() = distinctBy { it.id }
+
 fun Collection<ChapterListItem>.countChaptersByBranch(): Int {
 	if (size <= 1) {
 		return size

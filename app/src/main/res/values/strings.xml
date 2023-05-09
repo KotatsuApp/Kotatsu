@@ -448,4 +448,7 @@
 	<string name="cancel_all">Cancel all</string>
 	<string name="downloads_wifi_only">Download only via Wi-Fi</string>
 	<string name="downloads_wifi_only_summary">Stop downloading when switching to a mobile network</string>
+	<string name="suggestion_manga">Suggestion: %s</string>
+	<string name="suggestions_notifications_summary">Sometimes show notifications with suggested manga</string>
+	<string name="more">More</string>
 </resources>
