@@ -8,6 +8,7 @@ import okhttp3.Response
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.DATABASE_VERSION
+import org.koitharu.kotatsu.core.network.CommonHeaders
 
 class SyncInterceptor(
 	context: Context,
@@ -21,7 +22,7 @@ class SyncInterceptor(
 		val token = accountManager.peekAuthToken(account, tokenType)
 		val requestBuilder = chain.request().newBuilder()
 		if (token != null) {
-			requestBuilder.header("Authorization", "Bearer $token")
+			requestBuilder.header(CommonHeaders.AUTHORIZATION, "Bearer $token")
 		}
 		requestBuilder.header("X-App-Version", BuildConfig.VERSION_CODE.toString())
 		requestBuilder.header("X-Db-Version", DATABASE_VERSION.toString())

@@ -92,7 +92,6 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		createChannel()
 		builder.setOnlyAlertOnce(true)
 		builder.setDefaults(0)
-		builder.color = ContextCompat.getColor(context, R.color.blue_primary)
 		builder.foregroundServiceBehavior = NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 		builder.setSilent(true)
 		builder.setGroup(GROUP_ID)

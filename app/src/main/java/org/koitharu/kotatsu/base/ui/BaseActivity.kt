@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.base.ui
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
@@ -122,10 +123,14 @@ abstract class BaseActivity<B : ViewBinding> :
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
 		actionModeDelegate.onSupportActionModeStarted(mode)
-		val actionModeColor = ColorUtils.compositeColors(
-			ContextCompat.getColor(this, com.google.android.material.R.color.m3_appbar_overlay_color),
-			getThemeColor(com.google.android.material.R.attr.colorSurface),
-		)
+		val actionModeColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			ColorUtils.compositeColors(
+				ContextCompat.getColor(this, com.google.android.material.R.color.m3_appbar_overlay_color),
+				getThemeColor(com.google.android.material.R.attr.colorSurface),
+			)
+		} else {
+			ContextCompat.getColor(this, R.color.kotatsu_secondaryContainer)
+		}
 		val insets = ViewCompat.getRootWindowInsets(binding.root)
 			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
 		findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar).apply {

@@ -182,7 +182,6 @@ class TrackWorker @AssistedInject constructor(
 			setAutoCancel(true)
 			setCategory(NotificationCompat.CATEGORY_PROMO)
 			setVisibility(if (manga.isNsfw) VISIBILITY_SECRET else VISIBILITY_PUBLIC)
-			color = colorPrimary
 			setShortcutId(manga.id.toString())
 			priority = NotificationCompat.PRIORITY_DEFAULT
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -220,7 +219,6 @@ class TrackWorker @AssistedInject constructor(
 			.setPriority(NotificationCompat.PRIORITY_MIN)
 			.setCategory(NotificationCompat.CATEGORY_SERVICE)
 			.setDefaults(0)
-			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)

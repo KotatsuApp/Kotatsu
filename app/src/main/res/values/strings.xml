@@ -451,4 +451,6 @@
 	<string name="suggestion_manga">Suggestion: %s</string>
 	<string name="suggestions_notifications_summary">Sometimes show notifications with suggested manga</string>
 	<string name="more">More</string>
+	<string name="enable">Enable</string>
+	<string name="no_thanks">No thanks</string>
 </resources>

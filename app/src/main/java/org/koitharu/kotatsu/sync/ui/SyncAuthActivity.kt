@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
@@ -54,6 +55,9 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		viewModel.onTokenObtained.observe(this, ::onTokenReceived)
 		viewModel.onError.observe(this, ::onError)
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
+		viewModel.onAccountAlreadyExists.observe(this) {
+			onAccountAlreadyExists()
+		}
 
 		supportFragmentManager.setFragmentResultListener(SyncHostDialogFragment.REQUEST_KEY, this, this)
 		pageBackCallback.update()
@@ -149,6 +153,16 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		resultBundle = result
 		setResult(RESULT_OK)
 		finish()
+	}
+
+	private fun onAccountAlreadyExists() {
+		Toast.makeText(this, R.string.account_already_exists, Toast.LENGTH_SHORT)
+			.show()
+		accountAuthenticatorResponse?.onError(
+			AccountManager.ERROR_CODE_UNSUPPORTED_OPERATION,
+			getString(R.string.account_already_exists),
+		)
+		super.finishAfterTransition()
 	}
 
 	private class EmailTextWatcher(

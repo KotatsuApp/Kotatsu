@@ -20,8 +20,9 @@ class SyncAuthApi @Inject constructor(
 		val body = JSONObject(
 			mapOf("email" to email, "password" to password),
 		).toRequestBody()
+		val scheme = getScheme(host)
 		val request = Request.Builder()
-			.url("http://$host/auth")
+			.url("$scheme://$host/auth")
 			.post(body)
 			.build()
 		val response = okHttpClient.newCall(request).await()
@@ -32,5 +33,14 @@ class SyncAuthApi @Inject constructor(
 			val message = response.use { checkNotNull(it.body).string() }.removeSurrounding('"')
 			throw SyncApiException(message, code)
 		}
+	}
+
+	private suspend fun getScheme(host: String): String {
+		val request = Request.Builder()
+			.url("http://$host/")
+			.head()
+			.build()
+		val response = okHttpClient.newCall(request).await()
+		return response.request.url.scheme
 	}
 }

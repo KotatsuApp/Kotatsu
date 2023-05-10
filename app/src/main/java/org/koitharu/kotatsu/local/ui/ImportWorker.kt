@@ -70,7 +70,6 @@ class ImportWorker @AssistedInject constructor(
 			.setContentTitle(title)
 			.setPriority(NotificationCompat.PRIORITY_MIN)
 			.setDefaults(0)
-			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_sys_download)
@@ -85,7 +84,6 @@ class ImportWorker @AssistedInject constructor(
 		val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 			.setDefaults(0)
-			.setColor(ContextCompat.getColor(applicationContext, R.color.blue_primary_dark))
 			.setSilent(true)
 		result.onSuccess { manga ->
 			notification.setLargeIcon(
