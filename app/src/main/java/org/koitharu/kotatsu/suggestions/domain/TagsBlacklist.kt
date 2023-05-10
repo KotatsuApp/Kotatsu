@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.suggestions.domain
 
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.utils.ext.almostEquals
 
 class TagsBlacklist(
@@ -11,6 +12,9 @@ class TagsBlacklist(
 	fun isNotEmpty() = tags.isNotEmpty()
 
 	operator fun contains(manga: Manga): Boolean {
+		if (tags.isEmpty()) {
+			return false
+		}
 		for (mangaTag in manga.tags) {
 			for (tagTitle in tags) {
 				if (mangaTag.title.almostEquals(tagTitle, threshold)) {
@@ -19,5 +23,9 @@ class TagsBlacklist(
 			}
 		}
 		return false
+	}
+
+	operator fun contains(tag: MangaTag): Boolean = tags.any {
+		it.almostEquals(tag.title, threshold)
 	}
 }

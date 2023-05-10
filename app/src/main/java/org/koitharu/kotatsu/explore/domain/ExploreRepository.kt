@@ -1,11 +1,12 @@
 package org.koitharu.kotatsu.explore.domain
 
-import javax.inject.Inject
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
+import javax.inject.Inject
 
 class ExploreRepository @Inject constructor(
 	private val settings: AppSettings,
@@ -14,9 +15,9 @@ class ExploreRepository @Inject constructor(
 ) {
 
 	suspend fun findRandomManga(tagsLimit: Int): Manga {
-		val blacklistTagRegex = settings.getSuggestionsTagsBlacklistRegex()
+		val blacklistTagRegex = TagsBlacklist(settings.suggestionsTagsBlacklist, 0.4f)
 		val allTags = historyRepository.getPopularTags(tagsLimit).filterNot {
-			blacklistTagRegex?.containsMatchIn(it.title) ?: false
+			it in blacklistTagRegex
 		}
 		val tag = allTags.randomOrNull()
 		val source = checkNotNull(tag?.source ?: settings.getMangaSources(includeHidden = false).randomOrNull()) {
@@ -32,7 +33,7 @@ class ExploreRepository @Inject constructor(
 			if (settings.isSuggestionsExcludeNsfw && item.isNsfw) {
 				continue
 			}
-			if (blacklistTagRegex != null && item.tags.any { x -> blacklistTagRegex.containsMatchIn(x.title) }) {
+			if (item in blacklistTagRegex) {
 				continue
 			}
 			return item

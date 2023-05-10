@@ -245,8 +245,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isDownloadsWiFiOnly: Boolean
 		get() = prefs.getBoolean(KEY_DOWNLOADS_WIFI, false)
 
-	val isSuggestionsEnabled: Boolean
+	var isSuggestionsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS, false)
+		set(value) = prefs.edit { putBoolean(KEY_SUGGESTIONS, value) }
 
 	val isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
@@ -290,19 +291,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	fun isPagesPreloadEnabled(): Boolean {
 		val policy = NetworkPolicy.from(prefs.getString(KEY_PAGES_PRELOAD, null), NetworkPolicy.NON_METERED)
 		return policy.isNetworkAllowed(connectivityManager)
-	}
-
-	@Deprecated("")
-	fun getSuggestionsTagsBlacklistRegex(): Regex? {
-		val string = prefs.getString(KEY_SUGGESTIONS_EXCLUDE_TAGS, null)?.trimEnd(' ', ',')
-		if (string.isNullOrEmpty()) {
-			return null
-		}
-		val tags = string.split(',')
-		val regex = tags.joinToString(prefix = "(", separator = "|", postfix = ")") { tag ->
-			Regex.escape(tag.trim())
-		}
-		return Regex(regex, RegexOption.IGNORE_CASE)
 	}
 
 	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
