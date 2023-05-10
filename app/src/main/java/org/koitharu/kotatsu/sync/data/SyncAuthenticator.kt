@@ -9,6 +9,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.network.CommonHeaders
 
 class SyncAuthenticator(
 	context: Context,
@@ -24,7 +25,7 @@ class SyncAuthenticator(
 		val newToken = tryRefreshToken() ?: return null
 		accountManager.setAuthToken(account, tokenType, newToken)
 		return response.request.newBuilder()
-			.header("Authorization", "Bearer $newToken")
+			.header(CommonHeaders.AUTHORIZATION, "Bearer $newToken")
 			.build()
 	}
 

@@ -54,8 +54,11 @@ class SyncHelper(
 		.addInterceptor(SyncInterceptor(context, account))
 		.addInterceptor(GZipInterceptor())
 		.build()
-	private val baseUrl: String
-		get() = "http://${settings.host}"
+	private val baseUrl: String by lazy {
+		val host = settings.host
+		val scheme = getScheme(host)
+		"$scheme://$host"
+	}
 	private val defaultGcPeriod: Long // gc period if sync enabled
 		get() = TimeUnit.DAYS.toMillis(4)
 
@@ -258,6 +261,15 @@ class SyncHelper(
 			}
 		}
 		return requireNotNull(tag)
+	}
+
+	private fun getScheme(host: String): String {
+		val request = Request.Builder()
+			.url("http://$host/")
+			.head()
+			.build()
+		val response = httpClient.newCall(request).execute()
+		return response.request.url.scheme
 	}
 
 	private fun gcFavourites() {
