@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -96,7 +95,6 @@ class ExploreViewModel @Inject constructor(
 		}
 		.onStart { emit("") }
 		.map { settings.getMangaSources(includeHidden = false) }
-		.distinctUntilChanged()
 		.combine(gridMode) { content, grid -> buildList(content, grid) }
 
 	private fun buildList(sources: List<MangaSource>, isGrid: Boolean): List<ExploreItem> {
