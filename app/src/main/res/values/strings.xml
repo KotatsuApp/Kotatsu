@@ -448,4 +448,6 @@
 	<string name="cancel_all">Cancel all</string>
 	<string name="downloads_wifi_only">Download only via Wi-Fi</string>
 	<string name="downloads_wifi_only_summary">Stop downloading when switching to a mobile network</string>
+	<string name="enable">Enable</string>
+	<string name="no_thanks">No thanks</string>
 </resources>
