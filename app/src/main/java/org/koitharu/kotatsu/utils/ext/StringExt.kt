@@ -29,8 +29,8 @@ fun String.toUUIDOrNull(): UUID? = try {
  */
 fun String.almostEquals(other: String, @FloatRange(from = 0.0) threshold: Float): Boolean {
 	if (threshold == 0f) {
-		return equals(other)
+		return equals(other, ignoreCase = true)
 	}
-	val diff = levenshteinDistance(other) / ((length + other.length) / 2f)
+	val diff = lowercase().levenshteinDistance(other.lowercase()) / ((length + other.length) / 2f)
 	return diff < threshold
 }

@@ -122,7 +122,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		if (seed.isEmpty() || sources.isEmpty()) {
 			return 0
 		}
-		val tagsBlacklist = TagsBlacklist(appSettings.suggestionsTagsBlacklist, 0.3f)
+		val tagsBlacklist = TagsBlacklist(appSettings.suggestionsTagsBlacklist, TAG_EQ_THRESHOLD)
 		val tags = seed.flatMap { it.tags.map { x -> x.title } }.takeMostFrequent(10)
 
 		val producer = channelFlow {
@@ -149,7 +149,9 @@ class SuggestionsWorker @AssistedInject constructor(
 				val manga = suggestions[Random.nextInt(0, suggestions.size / 3)]
 				val details = mangaRepositoryFactory.create(manga.manga.source)
 					.getDetails(manga.manga)
-				showNotification(details)
+				if (details !in tagsBlacklist) {
+					showNotification(details)
+				}
 			}.onFailure {
 				it.printStackTraceDebug()
 			}
@@ -167,7 +169,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		val order = preferredSortOrders.first { it in availableOrders }
 		val availableTags = repository.getTags()
 		val tag = tags.firstNotNullOfOrNull { title ->
-			availableTags.find { x -> x.title.almostEquals(title, threshold = 0.3f) }
+			availableTags.find { x -> x.title.almostEquals(title, TAG_EQ_THRESHOLD) }
 		}
 		val list = repository.getList(0, setOfNotNull(tag), order).asArrayList()
 		if (appSettings.isSuggestionsExcludeNsfw) {
@@ -270,10 +272,19 @@ class SuggestionsWorker @AssistedInject constructor(
 	private fun computeRelevance(mangaTags: Set<MangaTag>, allTags: List<String>): Float {
 		val maxWeight = (allTags.size + allTags.size + 1 - mangaTags.size) * mangaTags.size / 2.0
 		val weight = mangaTags.sumOf { tag ->
-			val index = allTags.indexOf(tag.title)
+			val index = allTags.inexactIndexOf(tag.title, TAG_EQ_THRESHOLD)
 			if (index < 0) 0 else allTags.size - index
 		}
 		return (weight / maxWeight).pow(2.0).toFloat()
+	}
+
+	private fun Iterable<String>.inexactIndexOf(element: String, threshold: Float): Int {
+		forEachIndexed { i, t ->
+			if (t.almostEquals(element, threshold)) {
+				return i
+			}
+		}
+		return -1
 	}
 
 	companion object {
@@ -286,6 +297,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		private const val WORKER_NOTIFICATION_ID = 36
 		private const val MAX_RESULTS = 80
 		private const val MAX_RAW_RESULTS = 200
+		private const val TAG_EQ_THRESHOLD = 0.4f
 
 		private val preferredSortOrders = listOf(
 			SortOrder.UPDATED,
