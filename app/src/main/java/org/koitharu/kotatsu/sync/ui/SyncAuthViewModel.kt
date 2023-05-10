@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.sync.ui
 
+import android.accounts.AccountManager
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,10 +20,21 @@ class SyncAuthViewModel @Inject constructor(
 	private val api: SyncAuthApi,
 ) : BaseViewModel() {
 
+	val onAccountAlreadyExists = SingleLiveEvent<Unit>()
 	val onTokenObtained = SingleLiveEvent<SyncAuthResult>()
 	val host = MutableLiveData("")
 
 	private val defaultHost = context.getString(R.string.sync_host_default)
+
+	init {
+		launchJob(Dispatchers.Default) {
+			val am = AccountManager.get(context)
+			val accounts = am.getAccountsByType(context.getString(R.string.account_type_sync))
+			if (accounts.isNotEmpty()) {
+				onAccountAlreadyExists.emitCall(Unit)
+			}
+		}
+	}
 
 	fun obtainToken(email: String, password: String) {
 		val hostValue = host.value.ifNullOrEmpty { defaultHost }
