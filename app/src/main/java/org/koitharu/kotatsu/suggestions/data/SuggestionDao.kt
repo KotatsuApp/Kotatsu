@@ -1,6 +1,11 @@
 package org.koitharu.kotatsu.suggestions.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -9,6 +14,10 @@ abstract class SuggestionDao {
 	@Transaction
 	@Query("SELECT * FROM suggestions ORDER BY relevance DESC")
 	abstract fun observeAll(): Flow<List<SuggestionWithManga>>
+
+	@Transaction
+	@Query("SELECT * FROM suggestions ORDER BY relevance DESC LIMIT :limit")
+	abstract fun observeAll(limit: Int): Flow<List<SuggestionWithManga>>
 
 	@Query("SELECT COUNT(*) FROM suggestions")
 	abstract suspend fun count(): Int

@@ -22,6 +22,12 @@ class SuggestionRepository @Inject constructor(
 		}
 	}
 
+	fun observeAll(limit: Int): Flow<List<Manga>> {
+		return db.suggestionDao.observeAll(limit).mapItems {
+			it.manga.toManga(it.tags.toMangaTags())
+		}
+	}
+
 	suspend fun clear() {
 		db.suggestionDao.deleteAll()
 	}

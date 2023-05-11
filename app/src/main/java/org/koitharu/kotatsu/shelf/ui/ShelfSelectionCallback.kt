@@ -43,7 +43,9 @@ class ShelfSelectionCallback(
 	): Boolean {
 		val checkedIds = controller.peekCheckedIds().entries
 		val singleKey = checkedIds.singleOrNull { (_, ids) -> ids.isNotEmpty() }?.key
-		menu.findItem(R.id.action_remove)?.isVisible = singleKey != null && singleKey !is ShelfSectionModel.Updated
+		menu.findItem(R.id.action_remove)?.isVisible = singleKey != null &&
+			singleKey !is ShelfSectionModel.Updated &&
+			singleKey !is ShelfSectionModel.Suggestions
 		menu.findItem(R.id.action_save)?.isVisible = singleKey !is ShelfSectionModel.Local
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
@@ -82,6 +84,8 @@ class ShelfSelectionCallback(
 						showDeletionConfirm(ids, mode)
 						return true
 					}
+
+					is ShelfSectionModel.Suggestions -> return false
 				}
 				mode.finish()
 				true

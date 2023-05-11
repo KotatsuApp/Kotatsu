@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.shelf.ui.adapter.ShelfAdapter
 import org.koitharu.kotatsu.shelf.ui.adapter.ShelfListEventListener
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
+import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import javax.inject.Inject
@@ -118,6 +119,7 @@ class ShelfFragment :
 			is ShelfSectionModel.Favourites -> FavouritesActivity.newIntent(view.context, section.category)
 			is ShelfSectionModel.Updated -> UpdatesActivity.newIntent(view.context)
 			is ShelfSectionModel.Local -> MangaListActivity.newIntent(view.context, MangaSource.LOCAL)
+			is ShelfSectionModel.Suggestions -> SuggestionsActivity.newIntent(view.context)
 		}
 		startActivity(intent)
 	}

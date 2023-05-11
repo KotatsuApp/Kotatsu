@@ -9,6 +9,7 @@ class ShelfContent(
 	val favourites: Map<FavouriteCategory, List<Manga>>,
 	val updated: Map<Manga, Int>,
 	val local: List<Manga>,
+	val suggestions: List<Manga>,
 ) {
 
 	override fun equals(other: Any?): Boolean {
@@ -21,8 +22,7 @@ class ShelfContent(
 		if (favourites != other.favourites) return false
 		if (updated != other.updated) return false
 		if (local != other.local) return false
-
-		return true
+		return suggestions == other.suggestions
 	}
 
 	override fun hashCode(): Int {
@@ -30,6 +30,7 @@ class ShelfContent(
 		result = 31 * result + favourites.hashCode()
 		result = 31 * result + updated.hashCode()
 		result = 31 * result + local.hashCode()
+		result = 31 * result + suggestions.hashCode()
 		return result
 	}
 }

@@ -73,4 +73,5 @@ private val ShelfSection.titleResId: Int
 		ShelfSection.LOCAL -> R.string.local_storage
 		ShelfSection.UPDATED -> R.string.updated
 		ShelfSection.FAVORITES -> R.string.favourites
+		ShelfSection.SUGGESTIONS -> R.string.suggestions
 	}

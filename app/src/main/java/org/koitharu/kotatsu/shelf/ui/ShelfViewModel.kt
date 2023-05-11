@@ -58,10 +58,11 @@ class ShelfViewModel @Inject constructor(
 	val content: LiveData<List<ListModel>> = combine(
 		settings.observeAsFlow(AppSettings.KEY_SHELF_SECTIONS) { shelfSections },
 		settings.observeAsFlow(AppSettings.KEY_TRACKER_ENABLED) { isTrackerEnabled },
+		settings.observeAsFlow(AppSettings.KEY_SUGGESTIONS) { isSuggestionsEnabled },
 		networkState,
 		repository.observeShelfContent(),
-	) { sections, isTrackerEnabled, isConnected, content ->
-		mapList(content, isTrackerEnabled, sections, isConnected)
+	) { sections, isTrackerEnabled, isSuggestionsEnabled, isConnected, content ->
+		mapList(content, isTrackerEnabled, isSuggestionsEnabled, sections, isConnected)
 	}.catch { e ->
 		emit(listOf(e.toErrorState(canRetry = false)))
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
@@ -157,6 +158,7 @@ class ShelfViewModel @Inject constructor(
 	private suspend fun mapList(
 		content: ShelfContent,
 		isTrackerEnabled: Boolean,
+		isSuggestionsEnabled: Boolean,
 		sections: List<ShelfSection>,
 		isNetworkAvailable: Boolean,
 	): List<ListModel> {
@@ -171,6 +173,9 @@ class ShelfViewModel @Inject constructor(
 					}
 
 					ShelfSection.FAVORITES -> mapFavourites(result, content.favourites)
+					ShelfSection.SUGGESTIONS -> if (isSuggestionsEnabled) {
+						mapSuggestions(result, content.suggestions)
+					}
 				}
 			}
 		} else {
@@ -190,6 +195,7 @@ class ShelfViewModel @Inject constructor(
 					ShelfSection.LOCAL -> mapLocal(result, content.local)
 					ShelfSection.UPDATED -> Unit
 					ShelfSection.FAVORITES -> Unit
+					ShelfSection.SUGGESTIONS -> Unit
 				}
 			}
 		}
@@ -253,6 +259,19 @@ class ShelfViewModel @Inject constructor(
 		}
 		destination += ShelfSectionModel.Local(
 			items = local.toUi(ListMode.GRID, this, null),
+			showAllButtonText = R.string.show_all,
+		)
+	}
+
+	private suspend fun mapSuggestions(
+		destination: MutableList<in ShelfSectionModel.Suggestions>,
+		suggestions: List<Manga>,
+	) {
+		if (suggestions.isEmpty()) {
+			return
+		}
+		destination += ShelfSectionModel.Suggestions(
+			items = suggestions.toUi(ListMode.GRID, this, null),
 			showAllButtonText = R.string.show_all,
 		)
 	}

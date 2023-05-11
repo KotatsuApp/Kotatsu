@@ -35,9 +35,7 @@ sealed interface ShelfSectionModel : ListModel {
 			other as History
 
 			if (showAllButtonText != other.showAllButtonText) return false
-			if (items != other.items) return false
-
-			return true
+			return items == other.items
 		}
 
 		override fun hashCode(): Int {
@@ -67,9 +65,7 @@ sealed interface ShelfSectionModel : ListModel {
 
 			if (category != other.category) return false
 			if (showAllButtonText != other.showAllButtonText) return false
-			if (items != other.items) return false
-
-			return true
+			return items == other.items
 		}
 
 		override fun hashCode(): Int {
@@ -98,9 +94,7 @@ sealed interface ShelfSectionModel : ListModel {
 			other as Updated
 
 			if (items != other.items) return false
-			if (showAllButtonText != other.showAllButtonText) return false
-
-			return true
+			return showAllButtonText == other.showAllButtonText
 		}
 
 		override fun hashCode(): Int {
@@ -128,9 +122,35 @@ sealed interface ShelfSectionModel : ListModel {
 			other as Local
 
 			if (items != other.items) return false
-			if (showAllButtonText != other.showAllButtonText) return false
+			return showAllButtonText == other.showAllButtonText
+		}
 
-			return true
+		override fun hashCode(): Int {
+			var result = items.hashCode()
+			result = 31 * result + showAllButtonText
+			return result
+		}
+
+		override fun toString(): String = key
+	}
+
+	class Suggestions(
+		override val items: List<MangaItemModel>,
+		override val showAllButtonText: Int,
+	) : ShelfSectionModel {
+
+		override val key = "suggestions"
+
+		override fun getTitle(resources: Resources) = resources.getString(R.string.suggestions)
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+
+			other as Suggestions
+
+			if (items != other.items) return false
+			return showAllButtonText == other.showAllButtonText
 		}
 
 		override fun hashCode(): Int {

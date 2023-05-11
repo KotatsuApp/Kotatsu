@@ -11,7 +11,6 @@ import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.work.WorkManager
 import coil.ImageLoader
@@ -155,8 +154,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 					null
 				}
 				if (state.error != null) {
-					builder.setContentText(state.error)
-					builder.setSubText(percent)
+					builder.setContentText(context.getString(R.string.download_summary_pattern, percent, state.error))
 				} else {
 					builder.setContentText(percent)
 				}
@@ -183,22 +181,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 
 			else -> {
 				builder.setProgress(state.max, state.progress, false)
-				val percent = if (state.percent >= 0f) {
-					context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
-				} else {
-					null
-				}
-				if (state.eta > 0L) {
-					val eta = DateUtils.getRelativeTimeSpanString(
-						state.eta,
-						System.currentTimeMillis(),
-						DateUtils.SECOND_IN_MILLIS,
-					)
-					builder.setContentText(eta)
-					builder.setSubText(percent)
-				} else {
-					builder.setContentText(percent)
-				}
+				builder.setContentText(getProgressString(state.percent, state.eta))
 				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 				builder.setStyle(null)
 				builder.setOngoing(true)
@@ -207,6 +190,29 @@ class DownloadNotificationFactory @AssistedInject constructor(
 			}
 		}
 		return builder.build()
+	}
+
+	private fun getProgressString(percent: Float, eta: Long): CharSequence? {
+		val percentString = if (percent >= 0f) {
+			context.getString(R.string.percent_string_pattern, (percent * 100).format())
+		} else {
+			null
+		}
+		val etaString = if (eta > 0L) {
+			DateUtils.getRelativeTimeSpanString(
+				eta,
+				System.currentTimeMillis(),
+				DateUtils.SECOND_IN_MILLIS,
+			)
+		} else {
+			null
+		}
+		return when {
+			percentString == null && etaString == null -> null
+			percentString != null && etaString == null -> percentString
+			percentString == null && etaString != null -> etaString
+			else -> context.getString(R.string.download_summary_pattern, percentString, etaString)
+		}
 	}
 
 	private fun createMangaIntent(context: Context, manga: Manga?) = PendingIntentCompat.getActivity(

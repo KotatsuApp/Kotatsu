@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import javax.inject.Inject
@@ -34,6 +35,7 @@ class ShelfRepository @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
 	private val trackingRepository: TrackingRepository,
+	private val suggestionRepository: SuggestionRepository,
 	private val db: MangaDatabase,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 ) {
@@ -43,8 +45,9 @@ class ShelfRepository @Inject constructor(
 		observeLocalManga(SortOrder.UPDATED),
 		observeFavourites(),
 		trackingRepository.observeUpdatedManga(),
-	) { history, local, favorites, updated ->
-		ShelfContent(history, favorites, updated, local)
+		suggestionRepository.observeAll(16),
+	) { history, local, favorites, updated, suggestions ->
+		ShelfContent(history, favorites, updated, local, suggestions)
 	}
 
 	private fun observeLocalManga(sortOrder: SortOrder): Flow<List<Manga>> {

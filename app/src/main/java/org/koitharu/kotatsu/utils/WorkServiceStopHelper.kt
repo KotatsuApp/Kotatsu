@@ -10,6 +10,8 @@ import androidx.work.impl.foreground.SystemForegroundService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 
@@ -27,8 +29,10 @@ class WorkServiceStopHelper(
 			WorkManager.getInstance(context)
 				.getWorkInfosLiveData(WorkQuery.fromStates(WorkInfo.State.RUNNING))
 				.asFlow()
+				.map { it.isEmpty() }
+				.distinctUntilChanged()
 				.collectLatest {
-					if (it.isEmpty()) {
+					if (it) {
 						delay(1_000)
 						stopWorkerService()
 					}

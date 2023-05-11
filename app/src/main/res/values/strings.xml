@@ -361,7 +361,7 @@
 	<string name="options">Options</string>
 	<string name="not_found_404">Content not found or removed</string>
 	<string name="downloading_manga">Downloading manga</string>
-	<string name="download_summary_pattern" translatable="false">&lt;b&gt;%1$s&lt;/b&gt; %2$s</string>
+	<string name="download_summary_pattern" translatable="false">%1$s · %2$s</string>
 	<string name="incognito_mode">Incognito mode</string>
 	<string name="app_update_available_s">Application update available: %s</string>
 	<string name="no_chapters">No chapters</string>
