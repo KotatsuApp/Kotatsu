@@ -445,4 +445,15 @@
     <string name="downloads_wifi_only">Скачивать только через Wi-Fi</string>
     <string name="no_thanks">Нет</string>
     <string name="enable">Включить</string>
+    <string name="more">Ещё</string>
+    <string name="cancel_all_downloads_confirm">Все активные загрузки будут отменены, частично загруженные данные будут утеряны</string>
+    <string name="text_downloads_list_holder">У Вас нет ни одной загрузки</string>
+    <string name="downloads_resumed">Загрузки возобновлены</string>
+    <string name="downloads_paused">Загрузки приостановлены</string>
+    <string name="downloads_removed">Загрузки удалены</string>
+    <string name="downloads_cancelled">Загрузки отменены</string>
+    <string name="suggestion_manga">Рекомендация: %s</string>
+    <string name="suggestions_notifications_summary">Иногда показывать уведомления с рекомендуемой мангой</string>
+    <string name="remove_completed_downloads_confirm">Ваша история загрузок будет удалена</string>
+    <string name="suggestions_enable_prompt">Хотите ли Вы получать персонализированные рекомендации манги\?</string>
 </resources>
