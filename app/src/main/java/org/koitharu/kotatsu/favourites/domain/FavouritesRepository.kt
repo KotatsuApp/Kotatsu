@@ -12,12 +12,12 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.SortOrder
 import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
-import org.koitharu.kotatsu.core.db.entity.toManga
-import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
+import org.koitharu.kotatsu.favourites.data.toManga
+import org.koitharu.kotatsu.favourites.data.toMangaList
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
@@ -32,22 +32,27 @@ class FavouritesRepository @Inject constructor(
 
 	suspend fun getAllManga(): List<Manga> {
 		val entities = db.favouritesDao.findAll()
-		return entities.map { it.manga.toManga(it.tags.toMangaTags()) }
+		return entities.toMangaList()
+	}
+
+	suspend fun getLastManga(limit: Int): List<Manga> {
+		val entities = db.favouritesDao.findLast(limit)
+		return entities.toMangaList()
 	}
 
 	fun observeAll(order: SortOrder): Flow<List<Manga>> {
 		return db.favouritesDao.observeAll(order)
-			.mapItems { it.manga.toManga(it.tags.toMangaTags()) }
+			.mapItems { it.toManga() }
 	}
 
 	suspend fun getManga(categoryId: Long): List<Manga> {
 		val entities = db.favouritesDao.findAll(categoryId)
-		return entities.map { it.manga.toManga(it.tags.toMangaTags()) }
+		return entities.toMangaList()
 	}
 
 	fun observeAll(categoryId: Long, order: SortOrder): Flow<List<Manga>> {
 		return db.favouritesDao.observeAll(categoryId, order)
-			.mapItems { it.manga.toManga(it.tags.toMangaTags()) }
+			.mapItems { it.toManga() }
 	}
 
 	fun observeAll(categoryId: Long): Flow<List<Manga>> {

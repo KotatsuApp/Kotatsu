@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.explore.ui
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -16,6 +17,7 @@ import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.base.ui.dialog.TwoButtonsAlertDialog
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
@@ -76,6 +78,9 @@ class ExploreFragment :
 		viewModel.onOpenManga.observe(viewLifecycleOwner, ::onOpenManga)
 		viewModel.onActionDone.observe(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 		viewModel.isGrid.observe(viewLifecycleOwner, ::onGridModeChanged)
+		viewModel.onShowSuggestionsTip.observe(viewLifecycleOwner) {
+			showSuggestionsTip()
+		}
 	}
 
 	override fun onDestroyView() {
@@ -141,6 +146,19 @@ class ExploreFragment :
 			LinearLayoutManager(requireContext())
 		}
 		activity?.invalidateOptionsMenu()
+	}
+
+	private fun showSuggestionsTip() {
+		val listener = DialogInterface.OnClickListener { _, which ->
+			viewModel.respondSuggestionTip(which == DialogInterface.BUTTON_POSITIVE)
+		}
+		TwoButtonsAlertDialog.Builder(requireContext())
+			.setIcon(R.drawable.ic_suggestion)
+			.setTitle(R.string.suggestions_enable_prompt)
+			.setPositiveButton(R.string.enable, listener)
+			.setNegativeButton(R.string.no_thanks, listener)
+			.create()
+			.show()
 	}
 
 	private inner class SourceMenuListener(

@@ -4,6 +4,7 @@ import android.os.SystemClock
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -42,4 +43,12 @@ fun <T> Flow<T>.throttle(timeoutMillis: (T) -> Long): Flow<T> {
 
 fun <T> StateFlow<T?>.requireValue(): T = checkNotNull(value) {
 	"StateFlow value is null"
+}
+
+fun <T> Flow<Collection<T>>.flatten(): Flow<T> = flow {
+	collect { value ->
+		for (item in value) {
+			emit(item)
+		}
+	}
 }

@@ -448,6 +448,9 @@
 	<string name="cancel_all">Cancel all</string>
 	<string name="downloads_wifi_only">Download only via Wi-Fi</string>
 	<string name="downloads_wifi_only_summary">Stop downloading when switching to a mobile network</string>
+	<string name="suggestion_manga">Suggestion: %s</string>
+	<string name="suggestions_notifications_summary">Sometimes show notifications with suggested manga</string>
+	<string name="more">More</string>
 	<string name="enable">Enable</string>
 	<string name="no_thanks">No thanks</string>
 	<string name="cancel_all_downloads_confirm">All active downloads will be cancelled, partially downloaded data will be lost</string>
@@ -457,4 +460,5 @@
 	<string name="downloads_paused">Downloads have been paused</string>
 	<string name="downloads_removed">Downloads have been removed</string>
 	<string name="downloads_cancelled">Downloads have been cancelled</string>
+	<string name="suggestions_enable_prompt">Do you want to receive personalized manga suggestions?</string>
 </resources>

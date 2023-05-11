@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -27,6 +26,8 @@ import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import javax.inject.Inject
 
+private const val TIP_SUGGESTIONS = "suggestions"
+
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
 	private val settings: AppSettings,
@@ -41,6 +42,7 @@ class ExploreViewModel @Inject constructor(
 
 	val onOpenManga = SingleLiveEvent<Manga>()
 	val onActionDone = SingleLiveEvent<ReversibleAction>()
+	val onShowSuggestionsTip = SingleLiveEvent<Unit>()
 	val isGrid = gridMode.asFlowLiveData(viewModelScope.coroutineContext)
 
 	val content: LiveData<List<ExploreItem>> = isLoading.asFlow().flatMapLatest { loading ->
@@ -50,6 +52,14 @@ class ExploreViewModel @Inject constructor(
 			createContentFlow()
 		}
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(ExploreItem.Loading))
+
+	init {
+		launchJob(Dispatchers.Default) {
+			if (!settings.isSuggestionsEnabled && settings.isTipEnabled(TIP_SUGGESTIONS)) {
+				onShowSuggestionsTip.emitCall(Unit)
+			}
+		}
+	}
 
 	fun openRandom() {
 		launchLoadingJob(Dispatchers.Default) {
@@ -72,6 +82,11 @@ class ExploreViewModel @Inject constructor(
 		settings.isSourcesGridMode = value
 	}
 
+	fun respondSuggestionTip(isAccepted: Boolean) {
+		settings.isSuggestionsEnabled = isAccepted
+		settings.closeTip(TIP_SUGGESTIONS)
+	}
+
 	private fun createContentFlow() = settings.observe()
 		.filter {
 			it == AppSettings.KEY_SOURCES_HIDDEN ||
@@ -80,7 +95,6 @@ class ExploreViewModel @Inject constructor(
 		}
 		.onStart { emit("") }
 		.map { settings.getMangaSources(includeHidden = false) }
-		.distinctUntilChanged()
 		.combine(gridMode) { content, grid -> buildList(content, grid) }
 
 	private fun buildList(sources: List<MangaSource>, isGrid: Boolean): List<ExploreItem> {
