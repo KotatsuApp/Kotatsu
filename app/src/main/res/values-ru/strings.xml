@@ -429,5 +429,18 @@
     <string name="restore_backup_description">Импорт ранее созданной резервной копии пользовательских данных</string>
     <string name="show_on_shelf">Показать на полке</string>
     <string name="find_similar">Найти похожие</string>
-    <string name="sync_auth_hint">Вы можете войти в существующую учетную запись или создать новую</string>
+    <string name="sync_auth_hint">Вы можете войти в уже существующий аккаунт или же создать новый</string>
+    <string name="ignore_ssl_errors">Игнорировать ошибки SSL</string>
+    <string name="mirror_switching">Выбрать зеркало автоматически</string>
+    <string name="mirror_switching_summary">Автоматически переключать домены для удалённых источников при ошибках, если доступны зеркала</string>
+    <string name="pause">Пауза</string>
+    <string name="resume">Возобновить</string>
+    <string name="remove_completed">Удаление завершено</string>
+    <string name="cancel_all">Отменить всё</string>
+    <string name="sync_settings">Настройки синхронизации</string>
+    <string name="sync_host_description">Вы можете использовать собственный сервер синхронизации или сервер по умолчанию. Не изменяйте эту настройку, если не уверены, что делаете.</string>
+    <string name="server_address">Адрес сервера</string>
+    <string name="downloads_wifi_only_summary">Останавливать загрузку при переключении на мобильную сеть</string>
+    <string name="paused">Приостановлено</string>
+    <string name="downloads_wifi_only">Скачивать только через Wi-Fi</string>
 </resources>

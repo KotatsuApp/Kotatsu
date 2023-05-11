@@ -428,6 +428,19 @@
     <string name="restore_backup_description">Імпортуйте раніше створену резервну копію даних користувача</string>
     <string name="show_on_shelf">Показати на полиці</string>
     <string name="sources_reorder_tip">Натисніть і утримуйте елемент, щоб змінити його порядок</string>
-    <string name="sync_auth_hint">Ви можете увійти в існуючий обліковий запис або створити новий</string>
+    <string name="sync_auth_hint">Ви можете увійти в існуючий аккаунт, або створити новий</string>
     <string name="find_similar">Знайти схожі</string>
+    <string name="sync_settings">Параметри синхронізації</string>
+    <string name="server_address">Адреса сервера</string>
+    <string name="sync_host_description">Ви можете використовувати власний сервер синхронізації або сервер за замовчуванням. Не змінюйте це, якщо ви не впевнені, що робите.</string>
+    <string name="ignore_ssl_errors">Ігноруйте помилки SSL</string>
+    <string name="mirror_switching">Виберіть дзеркало автоматично</string>
+    <string name="paused">Призупинено</string>
+    <string name="remove_completed">Видалення завершено</string>
+    <string name="downloads_wifi_only">Завантажувати тільки через Wi-Fi</string>
+    <string name="cancel_all">Скасувати все</string>
+    <string name="mirror_switching_summary">Автоматично перемикайте домени для віддалених джерел у разі помилок, якщо дзеркала доступні</string>
+    <string name="resume">Відновити</string>
+    <string name="pause">Пауза</string>
+    <string name="downloads_wifi_only_summary">Зупинити завантаження при переході на мобільну мережу</string>
 </resources>
