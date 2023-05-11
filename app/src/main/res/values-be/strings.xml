@@ -430,4 +430,17 @@
     <string name="show_on_shelf">Паказаць на паліцы</string>
     <string name="find_similar">Знайсці падобныя</string>
     <string name="sync_auth_hint">Вы можаце ўвайсці ў існуючы ўліковы запіс або стварыць новы</string>
+    <string name="sync_settings">Налады сінхранізацыі</string>
+    <string name="server_address">Адрас сервера</string>
+    <string name="mirror_switching">Выберыце люстэрка аўтаматычна</string>
+    <string name="mirror_switching_summary">Аўтаматычна пераключаць дамены для аддаленых крыніц у выпадку памылак, калі даступныя люстэркі</string>
+    <string name="ignore_ssl_errors">Ігнараваць памылкі SSL</string>
+    <string name="resume">Аднавіць</string>
+    <string name="paused">Прыпынена</string>
+    <string name="cancel_all">Адмяніць усё</string>
+    <string name="downloads_wifi_only">Спампаваць толькі праз Wi-Fi</string>
+    <string name="sync_host_description">Вы можаце выкарыстоўваць уласны сервер сінхранізацыі або сервер па змаўчанні. Не змяняйце гэта, калі вы не ўпэўненыя, што робіце.</string>
+    <string name="pause">Паўза</string>
+    <string name="remove_completed">Выдаленне завершана</string>
+    <string name="downloads_wifi_only_summary">Спыніць загрузку пры пераключэнні на мабільную сетку</string>
 </resources>
