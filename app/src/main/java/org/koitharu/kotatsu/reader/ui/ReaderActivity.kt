@@ -407,10 +407,11 @@ class ReaderActivity :
 				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 		}
 
-		fun newIntent(context: Context, manga: Manga, branch: String?): Intent {
+		fun newIntent(context: Context, manga: Manga, branch: String?, isIncognitoMode: Boolean): Intent {
 			return Intent(context, ReaderActivity::class.java)
 				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
 				.putExtra(EXTRA_BRANCH, branch)
+				.putExtra(EXTRA_INCOGNITO, isIncognitoMode)
 		}
 
 		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {

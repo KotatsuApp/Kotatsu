@@ -162,7 +162,7 @@ class ShelfViewModel @Inject constructor(
 		sections: List<ShelfSection>,
 		isNetworkAvailable: Boolean,
 	): List<ListModel> {
-		val result = ArrayList<ListModel>(content.favourites.keys.size + 3)
+		val result = ArrayList<ListModel>(content.favourites.keys.size + sections.size)
 		if (isNetworkAvailable) {
 			for (section in sections) {
 				when (section) {

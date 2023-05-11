@@ -14,11 +14,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.toManga
-import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
+import org.koitharu.kotatsu.favourites.data.toMangaList
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
@@ -93,7 +92,7 @@ class ShelfRepository @Inject constructor(
 		categories.map { cat ->
 			val category = cat.toFavouriteCategory()
 			db.favouritesDao.observeAll(category.id, category.order)
-				.map { category to it.map { x -> x.manga.toManga(x.tags.toMangaTags()) } }
+				.map { category to it.toMangaList() }
 		},
 	) { array -> array.toMap() }
 }

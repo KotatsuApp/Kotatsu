@@ -7,6 +7,7 @@ import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -42,6 +43,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.ViewBadge
 import org.koitharu.kotatsu.utils.ext.getDisplayMessage
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 import javax.inject.Inject
@@ -51,7 +53,7 @@ class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
 	View.OnClickListener,
 	BottomSheetHeaderBar.OnExpansionChangeListener,
-	NoModalBottomSheetOwner {
+	NoModalBottomSheetOwner, View.OnLongClickListener, PopupMenu.OnMenuItemClickListener {
 
 	override val bsHeader: BottomSheetHeaderBar?
 		get() = binding.headerChapters
@@ -72,6 +74,7 @@ class DetailsActivity :
 			setDisplayShowTitleEnabled(false)
 		}
 		binding.buttonRead.setOnClickListener(this)
+		binding.buttonRead.setOnLongClickListener(this)
 		binding.buttonDropdown.setOnClickListener(this)
 		viewBadge = ViewBadge(binding.buttonRead, this)
 
@@ -134,25 +137,32 @@ class DetailsActivity :
 	}
 
 	override fun onClick(v: View) {
-		val manga = viewModel.manga.value ?: return
 		when (v.id) {
-			R.id.button_read -> {
-				val chapterId = viewModel.historyInfo.value?.history?.chapterId
-				if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
-					showChapterMissingDialog(chapterId)
-				} else {
-					startActivity(
-						ReaderActivity.newIntent(
-							context = this,
-							manga = manga,
-							branch = viewModel.selectedBranchValue,
-						),
-					)
-				}
-			}
-
+			R.id.button_read -> openReader(isIncognitoMode = false)
 			R.id.button_dropdown -> showBranchPopupMenu()
 		}
+	}
+
+	override fun onLongClick(v: View): Boolean = when (v.id) {
+		R.id.button_read -> {
+			val menu = PopupMenu(v.context, v)
+			menu.inflate(R.menu.popup_read)
+			menu.setOnMenuItemClickListener(this)
+			menu.setForceShowIcon(true)
+			menu.show()
+			true
+		}
+
+		else -> false
+	}
+
+	override fun onMenuItemClick(item: MenuItem): Boolean = when (item.itemId) {
+		R.id.action_incognito -> {
+			openReader(isIncognitoMode = true)
+			true
+		}
+
+		else -> false
 	}
 
 	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
@@ -258,13 +268,22 @@ class DetailsActivity :
 		menu.show()
 	}
 
-	private fun resolveError(e: Throwable) {
-		lifecycleScope.launch {
-			if (exceptionResolver.resolve(e)) {
-				viewModel.reload()
-			} else if (viewModel.manga.value == null) {
-				Toast.makeText(this@DetailsActivity, e.getDisplayMessage(resources), Toast.LENGTH_LONG).show()
-				finishAfterTransition()
+	private fun openReader(isIncognitoMode: Boolean) {
+		val manga = viewModel.manga.value ?: return
+		val chapterId = viewModel.historyInfo.value?.history?.chapterId
+		if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
+			showChapterMissingDialog(chapterId)
+		} else {
+			startActivity(
+				ReaderActivity.newIntent(
+					context = this,
+					manga = manga,
+					branch = viewModel.selectedBranchValue,
+					isIncognitoMode = isIncognitoMode,
+				),
+			)
+			if (isIncognitoMode) {
+				Toast.makeText(this, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 			}
 		}
 	}

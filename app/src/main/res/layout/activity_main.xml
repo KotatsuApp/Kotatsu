@@ -91,7 +91,6 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
 		android:clickable="true"
-		app:layout_insetEdge="bottom"
 		app:menu="@menu/nav_bottom"
 		tools:ignore="KeyboardInaccessibleWidget" />
 
