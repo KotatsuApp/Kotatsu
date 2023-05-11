@@ -68,21 +68,6 @@
 		<item name="tabRippleColor">@color/ripple_toolbar</item>
 	</style>
 
-	<style name="Widget.Kotatsu.SuperTabs" parent="Widget.Material3.TabLayout">
-		<item name="tabGravity">center</item>
-		<item name="tabIndicator">@drawable/tab_selector_drawable</item>
-		<item name="tabIndicatorColor">@color/tab_indicator_foreground</item>
-		<item name="tabIndicatorFullWidth">true</item>
-		<item name="tabIndicatorGravity">center</item>
-		<item name="tabMinWidth">75dp</item>
-		<item name="tabMode">scrollable</item>
-		<item name="tabRippleColor">@color/ripple_toolbar</item>
-		<item name="tabPaddingStart">8dp</item>
-		<item name="tabPaddingEnd">8dp</item>
-		<item name="dividerThickness">0dp</item>
-		<item name="android:clipChildren">false</item>
-	</style>
-
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
@@ -217,10 +202,6 @@
 	<style name="TextAppearance.Kotatsu.SectionHeader2" parent="TextAppearance.Material3.LabelSmall">
 		<item name="android:textColor">?colorPrimary</item>
 		<item name="android:textAllCaps">true</item>
-	</style>
-
-	<style name="TextAppearance.Kotatsu.ActionBar.Title" parent="TextAppearance.Material3.TitleLarge">
-		<item name="android:textColor">?attr/colorPrimary</item>
 	</style>
 
 	<style name="TextAppearance.Kotatsu.GridTitle" parent="TextAppearance.Material3.TitleSmall" />

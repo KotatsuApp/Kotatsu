@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <plurals name="minutes_ago">
-        <item quantity="one">Il y a %1$d minute</item>
-        <item quantity="other">Il y a %1$d minutes</item>
-    </plurals>
-    <plurals name="pages">
-        <item quantity="one">%1$d page au total</item>
-        <item quantity="other">%1$d pages au total</item>
-    </plurals>
-    <plurals name="items">
-        <item quantity="one">%1$d élément</item>
-        <item quantity="other">%1$d éléments</item>
-    </plurals>
-    <plurals name="new_chapters">
-        <item quantity="one">%1$d nouveau chapitre</item>
-        <item quantity="other">%1$d nouveaux chapitres</item>
-    </plurals>
-    <plurals name="chapters">
-        <item quantity="one">%1$d chapitre</item>
-        <item quantity="other">%1$d chapitres</item>
-    </plurals>
-    <plurals name="chapters_from_x">
-        <item quantity="one">%1$d chapitre de %2$d</item>
-        <item quantity="other">%1$d chapitres de %2$d</item>
-    </plurals>
-    <plurals name="hours_ago">
-        <item quantity="one">Il y a %1$d heure</item>
-        <item quantity="other">Il y a %1$d heures</item>
-    </plurals>
-    <plurals name="days_ago">
-        <item quantity="one">Il y a %1$d jour</item>
-        <item quantity="other">Il y a %1$d jours</item>
-    </plurals>
+	<plurals name="minutes_ago">
+		<item quantity="one">Il y a %1$d minute</item>
+		<item quantity="other">Il y a %1$d minutes</item>
+	</plurals>
+	<plurals name="pages">
+		<item quantity="one">%1$d page au total</item>
+		<item quantity="other">%1$d pages au total</item>
+	</plurals>
+	<plurals name="items">
+		<item quantity="one">%1$d élément</item>
+		<item quantity="other">%1$d éléments</item>
+	</plurals>
+	<plurals name="new_chapters">
+		<item quantity="one">%1$d nouveau chapitre</item>
+		<item quantity="other">%1$d nouveaux chapitres</item>
+	</plurals>
+	<plurals name="chapters">
+		<item quantity="one">%1$d chapitre</item>
+		<item quantity="other">%1$d chapitres</item>
+	</plurals>
+	<plurals name="hours_ago">
+		<item quantity="one">Il y a %1$d heure</item>
+		<item quantity="other">Il y a %1$d heures</item>
+	</plurals>
+	<plurals name="days_ago">
+		<item quantity="one">Il y a %1$d jour</item>
+		<item quantity="other">Il y a %1$d jours</item>
+	</plurals>
 </resources>
