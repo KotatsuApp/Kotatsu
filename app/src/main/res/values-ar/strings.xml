@@ -51,7 +51,6 @@
     <string name="add_new_category">قائمة جديدة</string>
     <string name="download_complete">تم التنزيل</string>
     <string name="text_clear_history_prompt">هل تريد محو سجل القراءة بالكامل بشكل دائم؟</string>
-    <string name="_s_deleted_from_local_storage"></string>
     <string name="save_page">احفظ الصفحة</string>
     <string name="page_saved">حفظت</string>
     <string name="standard">اساسي</string>
