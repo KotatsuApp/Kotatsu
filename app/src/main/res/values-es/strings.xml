@@ -430,4 +430,19 @@
     <string name="got_it">Entendido</string>
     <string name="sync_auth_hint">Puedes acceder a una cuenta existente o crear una nueva</string>
     <string name="find_similar">Buscar similares</string>
+    <string name="sync_settings">Parámetros de sincronización</string>
+    <string name="server_address">Dirección del servidor</string>
+    <string name="ignore_ssl_errors">Ignorar los errores SSL</string>
+    <string name="mirror_switching">Elige un espejo automáticamente</string>
+    <string name="mirror_switching_summary">Cambio automático de dominios para las fuentes remotas en caso de error si hay réplicas disponibles</string>
+    <string name="pause">Pausar</string>
+    <string name="resume">Reanudar</string>
+    <string name="remove_completed">Eliminación completa</string>
+    <string name="cancel_all">Cancelar todo</string>
+    <string name="downloads_wifi_only">Descargar solo por WiFi</string>
+    <string name="downloads_wifi_only_summary">Detener la descarga al cambiar a una red móvil</string>
+    <string name="sync_host_description">Puedes utilizar un servidor de sincronización propio o uno predeterminado. No cambies esto si no estás seguro de lo que haces.</string>
+    <string name="paused">Pausado</string>
+    <string name="enable">Activar</string>
+    <string name="no_thanks">No, gracias</string>
 </resources>
