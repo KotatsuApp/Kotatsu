@@ -242,7 +242,7 @@
     <string name="exclude_nsfw_from_suggestions">Ne pas suggérer de mangas osés</string>
     <string name="suggestions_enable">Activer les suggestions</string>
     <string name="suggestions_summary">Suggérer des mangas en fonction de vos préférences</string>
-    <string name="suggestions_info">Toutes les données sont analysées localement sur cet appareil. Vos données personnelles ne sont pas transférées à d\'autres services</string>
+    <string name="suggestions_info">Toutes les données sont analysées localement sur cet appareil et ne sont jamais envoyées ailleurs.</string>
     <string name="text_suggestion_holder">Commencez à lire des mangas et vous recevrez des suggestions personnalisées</string>
     <string name="filter_load_error">Impossible de charger la liste des genres</string>
     <string name="enabled">Activé</string>
@@ -428,4 +428,21 @@
     <string name="comics_archive_import_description">Vous pouvez sélectionner un ou plusieurs fichiers .cbz ou .zip, chaque fichier sera reconnu comme un manga séparé.</string>
     <string name="show_on_shelf">Afficher sur l\'étagère</string>
     <string name="sources_reorder_tip">Appuyez sur un élément et maintenez-le enfoncé pour le réorganiser</string>
+    <string name="find_similar">Trouver des similaires</string>
+    <string name="downloads_wifi_only_summary">Arrêter le téléchargement lors du passage à un réseau mobile</string>
+    <string name="sync_auth_hint">Vous pouvez vous connecter à un compte existant ou en créer un nouveau</string>
+    <string name="server_address">Adresse du serveur</string>
+    <string name="sync_host_description">Vous pouvez utiliser un serveur de synchronisation autohébergé ou un serveur par défaut. Ne modifiez pas ce paramètre si vous n\'êtes pas sûr·e de ce que vous faites.</string>
+    <string name="remove_completed">Retrait terminé</string>
+    <string name="enable">Activer</string>
+    <string name="no_thanks">Non merci</string>
+    <string name="sync_settings">Paramètres de synchronisation</string>
+    <string name="ignore_ssl_errors">Ignorer les erreurs SSL</string>
+    <string name="mirror_switching">Choisir le miroir automatiquement</string>
+    <string name="mirror_switching_summary">Changement automatique de domaine pour les sources distantes en cas d\'erreur si des miroirs sont disponibles</string>
+    <string name="pause">Mettre en pause</string>
+    <string name="resume">Reprendre</string>
+    <string name="paused">En pause</string>
+    <string name="cancel_all">Tout annuler</string>
+    <string name="downloads_wifi_only">Téléchargement uniquement via Wi-Fi</string>
 </resources>

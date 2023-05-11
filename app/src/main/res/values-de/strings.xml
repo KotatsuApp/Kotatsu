@@ -206,7 +206,7 @@
     <string name="protect_application">App schützen</string>
     <string name="wrong_password">Falsches Passwort</string>
     <string name="enter_password">Passwort eingeben</string>
-    <string name="dont_check">Nicht suchen</string>
+    <string name="dont_check">Nicht prüfen</string>
     <string name="domain">Domäne</string>
     <string name="gestures_only">Nur Gesten</string>
     <string name="chapter_is_missing">Kapitel fehlt</string>
@@ -435,4 +435,14 @@
     <string name="mirror_switching_summary">Wechsel bei Fehlern automatisch die Domains für Manga-Quellen, falls Mirrors verfügbar sind</string>
     <string name="status_re_reading">Lese erneut</string>
     <string name="sync_auth_hint">Du kannst dich mit einem bestehenden Account anmelden oder einen neuen erstellen</string>
+    <string name="user_agent">UserAgent-Kopfzeile</string>
+    <string name="enable">Aktivieren</string>
+    <string name="no_thanks">Nein danke</string>
+    <string name="pause">Pausieren</string>
+    <string name="resume">Fortsetzen</string>
+    <string name="paused">Pausiert</string>
+    <string name="remove_completed">Entfernung abgeschlossen</string>
+    <string name="cancel_all">Alle abbrechen</string>
+    <string name="downloads_wifi_only">Nur über Wi-Fi herunterladen</string>
+    <string name="downloads_wifi_only_summary">Beenden des Herunterladens beim Wechsel zu einem Mobilfunknetz</string>
 </resources>
