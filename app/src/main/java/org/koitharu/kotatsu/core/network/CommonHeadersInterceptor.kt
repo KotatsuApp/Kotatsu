@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mergeWith
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import java.net.IDN
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,7 +42,8 @@ class CommonHeadersInterceptor @Inject constructor(
 			headersBuilder[CommonHeaders.USER_AGENT] = userAgentFallback
 		}
 		if (headersBuilder[CommonHeaders.REFERER] == null && repository != null) {
-			headersBuilder.trySet(CommonHeaders.REFERER, "https://${repository.domain}/")
+			val idn = IDN.toASCII(repository.domain)
+			headersBuilder.trySet(CommonHeaders.REFERER, "https://$idn/")
 		}
 		val newRequest = request.newBuilder().headers(headersBuilder.build()).build()
 		return repository?.intercept(ProxyChain(chain, newRequest)) ?: chain.proceed(newRequest)
