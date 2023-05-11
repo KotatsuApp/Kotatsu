@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.PausingReceiver
@@ -60,6 +61,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		viewModel.items.observe(this) {
 			downloadsAdapter.items = it
 		}
+		viewModel.onActionDone.observe(this, ReversibleActionObserver(binding.recyclerView))
 		val menuObserver = Observer<Any> { _ -> invalidateOptionsMenu() }
 		viewModel.hasActiveWorks.observe(this, menuObserver)
 		viewModel.hasPausedWorks.observe(this, menuObserver)

@@ -18,6 +18,7 @@ import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaDataRepository
 import org.koitharu.kotatsu.base.ui.BaseViewModel
+import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.utils.SingleLiveEvent
 import org.koitharu.kotatsu.utils.asFlowLiveData
 import org.koitharu.kotatsu.utils.ext.daysDiff
 import java.util.Date
@@ -44,6 +46,8 @@ class DownloadsViewModel @Inject constructor(
 	private val works = workScheduler.observeWorks()
 		.mapLatest { it.toDownloadsList() }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
+
+	val onActionDone = SingleLiveEvent<ReversibleAction>()
 
 	val items = works.map {
 		it?.toUiList() ?: listOf(LoadingState)
@@ -75,12 +79,14 @@ class DownloadsViewModel @Inject constructor(
 					workScheduler.cancel(work.id)
 				}
 			}
+			onActionDone.emitCall(ReversibleAction(R.string.downloads_cancelled, null))
 		}
 	}
 
 	fun cancelAll() {
 		launchJob(Dispatchers.Default) {
 			workScheduler.cancelAll()
+			onActionDone.emitCall(ReversibleAction(R.string.downloads_cancelled, null))
 		}
 	}
 
@@ -91,23 +97,34 @@ class DownloadsViewModel @Inject constructor(
 				workScheduler.pause(work.id)
 			}
 		}
+		onActionDone.call(ReversibleAction(R.string.downloads_paused, null))
 	}
 
 	fun pauseAll() {
 		val snapshot = works.value ?: return
+		var isPaused = false
 		for (work in snapshot) {
 			if (work.canPause) {
 				workScheduler.pause(work.id)
+				isPaused = true
 			}
+		}
+		if (isPaused) {
+			onActionDone.call(ReversibleAction(R.string.downloads_paused, null))
 		}
 	}
 
 	fun resumeAll() {
 		val snapshot = works.value ?: return
+		var isResumed = false
 		for (work in snapshot) {
 			if (work.workState == WorkInfo.State.RUNNING && work.isPaused) {
 				workScheduler.resume(work.id)
+				isResumed = true
 			}
+		}
+		if (isResumed) {
+			onActionDone.call(ReversibleAction(R.string.downloads_resumed, null))
 		}
 	}
 
@@ -118,6 +135,7 @@ class DownloadsViewModel @Inject constructor(
 				workScheduler.resume(work.id)
 			}
 		}
+		onActionDone.call(ReversibleAction(R.string.downloads_resumed, null))
 	}
 
 	fun remove(ids: Set<Long>) {
@@ -128,12 +146,14 @@ class DownloadsViewModel @Inject constructor(
 					workScheduler.delete(work.id)
 				}
 			}
+			onActionDone.emitCall(ReversibleAction(R.string.downloads_removed, null))
 		}
 	}
 
 	fun removeCompleted() {
 		launchJob(Dispatchers.Default) {
 			workScheduler.removeCompleted()
+			onActionDone.emitCall(ReversibleAction(R.string.downloads_removed, null))
 		}
 	}
 
@@ -207,7 +227,7 @@ class DownloadsViewModel @Inject constructor(
 	private fun emptyStateList() = listOf(
 		EmptyState(
 			icon = R.drawable.ic_empty_common,
-			textPrimary = R.string.text_downloads_holder,
+			textPrimary = R.string.text_downloads_list_holder,
 			textSecondary = 0,
 			actionStringRes = 0,
 		),

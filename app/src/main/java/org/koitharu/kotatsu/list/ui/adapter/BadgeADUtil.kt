@@ -10,6 +10,7 @@ import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.badge.ExperimentalBadgeUtils
 import org.koitharu.kotatsu.R
+import com.google.android.material.R as materialR
 
 @CheckResult
 fun View.bindBadge(badge: BadgeDrawable?, counter: Int): BadgeDrawable? {
@@ -44,7 +45,7 @@ private fun BadgeDrawable.align(anchor: View) {
 	val extraOffset = if (anchor is CardView) {
 		(anchor.radius / 2f).toInt()
 	} else {
-		0
+		anchor.resources.getDimensionPixelOffset(materialR.dimen.m3_badge_offset)
 	}
 	horizontalOffset = intrinsicWidth + extraOffset
 	verticalOffset = intrinsicHeight + extraOffset

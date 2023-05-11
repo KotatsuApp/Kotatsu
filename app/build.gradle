@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 540
-		versionName '5.0.2'
+		versionCode 541
+		versionName '5.1-a1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -103,11 +103,6 @@ dependencies {
 	//noinspection LifecycleAnnotationProcessorWithJava8
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.6.1'
 
-	/**
-	 * TODO: check
-	 * https://issuetracker.google.com/issues/270245927
-	 * https://issuetracker.google.com/issues/280504155
-	 */
 	implementation 'androidx.work:work-runtime-ktx:2.8.1'
 	//noinspection GradleDependency
 	implementation('com.google.guava:guava:31.1-android') {

@@ -17,7 +17,7 @@
 
 	<item
 		android:id="@+id/action_cancel"
-		android:icon="@drawable/abc_ic_clear_material"
+		android:icon="@drawable/ic_cancel_multiple"
 		android:title="@android:string/cancel"
 		app:showAsAction="ifRoom|withText" />
 

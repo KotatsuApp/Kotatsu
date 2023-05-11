@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.utils.WorkServiceStopHelper
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 import javax.inject.Inject
 
@@ -56,6 +57,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 		processLifecycleScope.launch(Dispatchers.Default) {
 			setupDatabaseObservers()
 		}
+		WorkServiceStopHelper(applicationContext).setup()
 	}
 
 	override fun attachBaseContext(base: Context?) {
