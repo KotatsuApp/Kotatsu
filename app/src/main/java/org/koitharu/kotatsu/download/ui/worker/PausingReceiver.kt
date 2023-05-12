@@ -17,8 +17,10 @@ class PausingReceiver(
 
 	override fun onReceive(context: Context, intent: Intent?) {
 		val uuid = intent?.getStringExtra(EXTRA_UUID)?.toUUIDOrNull()
-		assert(uuid == id)
-		when (intent?.action) {
+		if (uuid != id) {
+			return
+		}
+		when (intent.action) {
 			ACTION_RESUME -> pausingHandle.resume()
 			ACTION_PAUSE -> pausingHandle.pause()
 		}

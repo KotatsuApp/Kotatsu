@@ -200,7 +200,7 @@ class PageLoader @Inject constructor(
 				.build()
 			okHttp.newCall(request).await().use { response ->
 				check(response.isSuccessful) {
-					"Invalid response: ${response.code} ${response.message}"
+					"Invalid response: ${response.code} ${response.message} at $pageUrl"
 				}
 				val body = checkNotNull(response.body) {
 					"Null response"
