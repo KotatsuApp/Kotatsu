@@ -163,10 +163,6 @@
 
 		</activity>
 
-		<service
-			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
-			android:foregroundServiceType="dataSync"
-			android:stopWithTask="false" />
 		<service android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService" />
 		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"
@@ -241,7 +237,13 @@
 		<provider
 			android:name="androidx.startup.InitializationProvider"
 			android:authorities="${applicationId}.androidx-startup"
-			tools:node="remove" />
+			android:exported="false"
+			tools:node="remove">
+			<meta-data
+				android:name="androidx.work.WorkManagerInitializer"
+				android:value="androidx.startup"
+				tools:node="remove" />
+		</provider>
 
 		<receiver
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider"

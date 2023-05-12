@@ -92,5 +92,5 @@
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodySmall"
 		android:textColor="?android:attr/textColorPrimary"
-		tools:text="@string/theme_name_mint" />
+		tools:text="@string/theme_name_miku" />
 </LinearLayout>

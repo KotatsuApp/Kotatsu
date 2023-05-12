@@ -83,7 +83,7 @@ dependencies {
 	}
 
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.21'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
 	implementation 'androidx.core:core-ktx:1.10.0'
@@ -140,14 +140,14 @@ dependencies {
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20230227'
-	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0'
 
 	androidTestImplementation 'androidx.test:runner:1.5.2'
 	androidTestImplementation 'androidx.test:rules:1.5.0'
 	androidTestImplementation 'androidx.test:core-ktx:1.5.0'
 	androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
 
-	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0'
 
 	androidTestImplementation 'androidx.room:room-testing:2.5.1'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.14.0'

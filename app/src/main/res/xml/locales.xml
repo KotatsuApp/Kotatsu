@@ -26,4 +26,11 @@
 	<locale android:name="uk" />
 	<locale android:name="zh-CN" />
 	<locale android:name="zh-TW" />
+	<locale android:name="fil" />
+	<locale android:name="hi" />
+	<locale android:name="kk" />
+	<locale android:name="ko" />
+	<locale android:name="ne" />
+	<locale android:name="nn" />
+	<locale android:name="vi" />
 </locale-config>

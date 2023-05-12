@@ -207,6 +207,7 @@ class ShikimoriRepository(
 		descriptionHtml = json.getString("description_html"),
 	)
 
+	@Suppress("FunctionName")
 	private fun ShikimoriUser(json: JSONObject) = ScrobblerUser(
 		id = json.getLong("id"),
 		nickname = json.getString("nickname"),

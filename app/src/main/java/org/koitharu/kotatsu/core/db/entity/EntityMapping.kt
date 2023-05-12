@@ -1,7 +1,10 @@
 package org.koitharu.kotatsu.core.db.entity
 
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.parsers.model.*
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaState
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.utils.ext.longHashCode
@@ -66,7 +69,6 @@ fun SortOrder(name: String, fallback: SortOrder): SortOrder = runCatching {
 	SortOrder.valueOf(name)
 }.getOrDefault(fallback)
 
-@Suppress("FunctionName")
 fun MangaState(name: String): MangaState? = runCatching {
 	MangaState.valueOf(name)
 }.getOrNull()

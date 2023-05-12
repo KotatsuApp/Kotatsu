@@ -4,8 +4,8 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:8.0.0'
-		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20'
+		classpath 'com.android.tools.build:gradle:8.0.1'
+		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.21'
 		classpath 'com.google.dagger:hilt-android-gradle-plugin:2.45'
 	}
 }
@@ -18,16 +18,6 @@ allprojects {
 			url 'https://jitpack.io'
 		}
 	}
-}
-
-String currentBranch() {
-	def branchName = ""
-	try {
-		branchName = "git rev-parse --abbrev-ref HEAD".execute().text.trim()
-	} catch (ignored) {
-		println "Git not found"
-	}
-	return branchName
 }
 
 task clean(type: Delete) {

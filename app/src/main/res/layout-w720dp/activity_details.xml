@@ -83,6 +83,7 @@
 			android:paddingHorizontal="@dimen/margin_normal"
 			android:singleLine="true"
 			android:textAppearance="?textAppearanceTitleMedium"
+			tools:ignore="InconsistentLayout"
 			tools:text="@string/chapter_d_of_d" />
 
 		<TextView

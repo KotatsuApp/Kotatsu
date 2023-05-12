@@ -200,6 +200,7 @@ class MALRepository(
 		descriptionHtml = json.getString("synopsis"),
 	)
 
+	@Suppress("FunctionName")
 	private fun MALUser(json: JSONObject) = ScrobblerUser(
 		id = json.getLong("id"),
 		nickname = json.getString("name"),

@@ -241,6 +241,7 @@ class AniListRepository(
 		descriptionHtml = json.getString("description"),
 	)
 
+	@Suppress("FunctionName")
 	private fun AniListUser(json: JSONObject) = ScrobblerUser(
 		id = json.getLong("id"),
 		nickname = json.getString("name"),

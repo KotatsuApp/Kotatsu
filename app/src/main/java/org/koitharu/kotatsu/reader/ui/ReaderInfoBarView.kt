@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -179,6 +180,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		}
 	}
 
+	@SuppressLint("DiscouragedApi")
 	private fun getSystemUiDimensionOffset(name: String, fallback: Int = 0): Int = runCatching {
 		val manager = context.packageManager
 		val resources = manager.getResourcesForApplication("com.android.systemui")

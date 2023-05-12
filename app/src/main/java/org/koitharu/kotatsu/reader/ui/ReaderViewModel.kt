@@ -19,6 +19,8 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
@@ -34,6 +36,7 @@ import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
+import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
@@ -75,6 +78,7 @@ class ReaderViewModel @Inject constructor(
 	private val pageSaveHelper: PageSaveHelper,
 	private val pageLoader: PageLoader,
 	private val chaptersLoader: ChaptersLoader,
+	private val shortcutsUpdater: ShortcutsUpdater,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -149,6 +153,10 @@ class ReaderViewModel @Inject constructor(
 			.onEach { key ->
 				if (key == AppSettings.KEY_READER_SLIDER) notifyStateChanged()
 			}.launchIn(viewModelScope + Dispatchers.Default)
+		launchJob(Dispatchers.Default) {
+			val mangaId = mangaData.filterNotNull().first().id
+			shortcutsUpdater.notifyMangaOpened(mangaId)
+		}
 	}
 
 	fun reload() {

@@ -83,6 +83,7 @@
 		app:layout_behavior="org.koitharu.kotatsu.main.ui.MainActionButtonBehavior"
 		app:layout_dodgeInsetEdges="bottom"
 		app:layout_insetEdge="bottom"
+		tools:ignore="InconsistentLayout"
 		tools:visibility="visible" />
 
 	<org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView

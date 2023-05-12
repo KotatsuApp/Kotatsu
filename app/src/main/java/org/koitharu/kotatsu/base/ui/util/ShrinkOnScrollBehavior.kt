@@ -10,9 +10,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 
 open class ShrinkOnScrollBehavior : Behavior<ExtendedFloatingActionButton> {
 
-	@Suppress("unused")
 	constructor() : super()
-	@Suppress("unused")
 	constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
 	override fun onStartNestedScroll(

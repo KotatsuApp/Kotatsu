@@ -33,7 +33,9 @@ open class PageHolder(
 		binding.ssiv.bindToLifecycle(owner)
 		binding.ssiv.isEagerLoadingEnabled = !isLowRamDevice(context)
 		binding.ssiv.addOnImageEventListener(delegate)
+		@Suppress("LeakingThis")
 		bindingInfo.buttonRetry.setOnClickListener(this)
+		@Suppress("LeakingThis")
 		bindingInfo.buttonErrorDetails.setOnClickListener(this)
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}

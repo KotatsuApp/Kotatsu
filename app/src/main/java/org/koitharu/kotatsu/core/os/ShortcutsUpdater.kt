@@ -11,6 +11,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.room.InvalidationTracker
 import coil.ImageLoader
 import coil.request.ImageRequest
@@ -27,9 +28,9 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.utils.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
-import org.koitharu.kotatsu.utils.ext.requireBitmap
 import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -92,6 +93,14 @@ class ShortcutsUpdater @Inject constructor(
 		return manager.maxShortcutCountPerActivity > 0
 	}
 
+	fun notifyMangaOpened(mangaId: Long) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+			return
+		}
+		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
+		manager.reportShortcutUsed(mangaId.toString())
+	}
+
 	@RequiresApi(Build.VERSION_CODES.N_MR1)
 	private suspend fun updateShortcutsImpl() = runCatchingCancellable {
 		val manager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
@@ -122,7 +131,7 @@ class ShortcutsUpdater @Inject constructor(
 					.precision(Precision.EXACT)
 					.scale(Scale.FILL)
 					.build(),
-			).requireBitmap()
+			).getDrawableOrThrow().toBitmap()
 		}.fold(
 			onSuccess = { IconCompat.createWithAdaptiveBitmap(it) },
 			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },

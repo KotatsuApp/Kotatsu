@@ -66,7 +66,7 @@ fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 fun View.measureHeight(): Int {
 	val vh = height
 	return if (vh == 0) {
-		measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+		measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
 		measuredHeight
 	} else vh
 }
@@ -74,7 +74,7 @@ fun View.measureHeight(): Int {
 fun View.measureWidth(): Int {
 	val vw = width
 	return if (vw == 0) {
-		measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+		measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
 		measuredWidth
 	} else vw
 }
@@ -178,7 +178,6 @@ val View.parents: Sequence<ViewParent>
 		}
 	}
 
-@Suppress("unused")
 fun View.measureDimension(desiredSize: Int, measureSpec: Int): Int {
 	var result: Int
 	val specMode = MeasureSpec.getMode(measureSpec)

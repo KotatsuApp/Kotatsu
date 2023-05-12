@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.graphics.drawable.toBitmap
 import coil.ImageLoader
 import coil.executeBlocking
 import coil.request.ImageRequest
@@ -16,7 +17,7 @@ import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.replaceWith
-import org.koitharu.kotatsu.utils.ext.requireBitmap
+import org.koitharu.kotatsu.utils.ext.getDrawableOrThrow
 
 class ShelfListFactory(
 	private val context: Context,
@@ -67,7 +68,7 @@ class ShelfListFactory(
 					.tag(item.source)
 					.transformations(transformation)
 					.build(),
-			).requireBitmap()
+			).getDrawableOrThrow().toBitmap()
 		}.onSuccess { cover ->
 			views.setImageViewBitmap(R.id.imageView_cover, cover)
 		}.onFailure {
