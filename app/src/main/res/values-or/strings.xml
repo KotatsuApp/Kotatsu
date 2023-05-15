@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="history">ଇତିଵୃତ୍ତି</string>
+    <string name="details">ଵିଵରଣୀ</string>
+    <string name="settings">ସେଟିଂ</string>
+    <string name="suggestion_manga">ପରାମର୍ଶ: %s</string>
+</resources>
