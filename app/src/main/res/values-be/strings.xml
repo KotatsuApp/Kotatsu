@@ -395,7 +395,7 @@
     <string name="downloads_wifi_only">Спампаваць толькі праз Wi-Fi</string>
     <string name="sync_host_description">Вы можаце выкарыстоўваць уласны сервер сінхранізацыі або сервер па змаўчанні. Не змяняйце гэта, калі вы не ўпэўненыя, што робіце.</string>
     <string name="pause">Паўза</string>
-    <string name="remove_completed">Выдаленне завершана</string>
+    <string name="remove_completed">Выдаліць завершаныя</string>
     <string name="downloads_wifi_only_summary">Спыніць загрузку пры пераключэнні на мабільную сетку</string>
     <string name="suggestions_notifications_summary">Часам паказваць апавяшчэнні з прапанаванай мангай</string>
     <string name="more">Больш</string>
