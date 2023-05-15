@@ -390,7 +390,7 @@
     <string name="ignore_ssl_errors">Ігноруйте помилки SSL</string>
     <string name="mirror_switching">Виберіть дзеркало автоматично</string>
     <string name="paused">Призупинено</string>
-    <string name="remove_completed">Видалення завершено</string>
+    <string name="remove_completed">Видалити завершені</string>
     <string name="downloads_wifi_only">Завантажувати тільки через Wi-Fi</string>
     <string name="cancel_all">Скасувати все</string>
     <string name="mirror_switching_summary">Автоматично перемикайте домени для віддалених джерел у разі помилок, якщо дзеркала доступні</string>
