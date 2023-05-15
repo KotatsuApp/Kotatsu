@@ -19,10 +19,13 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.internal.closeQuietly
+import okio.Closeable
+import okio.buffer
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.local.data.CacheDir
+import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import java.net.HttpURLConnection
@@ -54,7 +57,9 @@ class FaviconFetcher(
 		val icon = checkNotNull(favicons.find(sizePx)) { "No favicons found" }
 		val response = loadIcon(icon.url, mangaSource)
 		val responseBody = response.requireBody()
-		val source = writeToDiskCache(responseBody)?.toImageSource() ?: responseBody.toImageSource()
+		val source = writeToDiskCache(responseBody)?.toImageSource()?.also {
+			response.closeQuietly()
+		} ?: responseBody.toImageSource(response)
 		return SourceResult(
 			source = source,
 			mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(icon.type),
@@ -71,7 +76,7 @@ class FaviconFetcher(
 		options.tags.asMap().forEach { request.tag(it.key as Class<Any>, it.value) }
 		val response = okHttpClient.newCall(request.build()).await()
 		if (!response.isSuccessful && response.code != HttpURLConnection.HTTP_NOT_MODIFIED) {
-			response.body?.closeQuietly()
+			response.closeQuietly()
 			throw HttpException(response)
 		}
 		return response
@@ -116,8 +121,12 @@ class FaviconFetcher(
 		return ImageSource(data, fileSystem, diskCacheKey, this)
 	}
 
-	private fun ResponseBody.toImageSource(): ImageSource {
-		return ImageSource(source(), options.context, FaviconMetadata(mangaSource))
+	private fun ResponseBody.toImageSource(response: Closeable): ImageSource {
+		return ImageSource(
+			source().withExtraCloseable(response).buffer(),
+			options.context,
+			FaviconMetadata(mangaSource),
+		)
 	}
 
 	private fun Response.toDataSource(): DataSource {

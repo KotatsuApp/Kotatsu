@@ -200,3 +200,9 @@ fun <V> V.setChecked(checked: Boolean, animate: Boolean) where V : View, V : Che
 		jumpDrawablesToCurrentState()
 	}
 }
+
+var View.isRtl: Boolean
+	get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
+	set(value) {
+		layoutDirection = if (value) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
+	}

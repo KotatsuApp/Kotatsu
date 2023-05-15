@@ -13,8 +13,8 @@ import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
+import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import org.koitharu.kotatsu.utils.ext.doOnPageChanged
@@ -26,7 +26,7 @@ import javax.inject.Inject
 import kotlin.math.absoluteValue
 
 @AndroidEntryPoint
-class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
+class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() {
 
 	@Inject
 	lateinit var networkState: NetworkState
@@ -70,6 +70,7 @@ class ReversedReaderFragment : BaseReader<FragmentReaderStandardBinding>() {
 
 	override fun onDestroyView() {
 		pagerAdapter = null
+		binding.pager.adapter = null
 		super.onDestroyView()
 	}
 

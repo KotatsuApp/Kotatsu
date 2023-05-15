@@ -12,8 +12,8 @@ import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.reader.ui.pager.BaseReader
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
+import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
 import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
@@ -22,7 +22,7 @@ import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
+class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>() {
 
 	@Inject
 	lateinit var networkState: NetworkState
@@ -60,6 +60,7 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
 	override fun onDestroyView() {
 		webtoonAdapter = null
+		binding.recyclerView.adapter = null
 		super.onDestroyView()
 	}
 

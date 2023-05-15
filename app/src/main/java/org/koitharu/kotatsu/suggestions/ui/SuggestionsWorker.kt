@@ -28,6 +28,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
@@ -100,6 +101,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			.setPriority(NotificationCompat.PRIORITY_MIN)
 			.setCategory(NotificationCompat.CATEGORY_SERVICE)
 			.setDefaults(0)
+			.setOngoing(true)
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)
@@ -145,15 +147,27 @@ class SuggestionsWorker @AssistedInject constructor(
 			.take(MAX_RESULTS)
 		suggestionRepository.replace(suggestions)
 		if (appSettings.isSuggestionsNotificationAvailable) {
-			runCatchingCancellable {
-				val manga = suggestions[Random.nextInt(0, suggestions.size / 3)]
-				val details = mangaRepositoryFactory.create(manga.manga.source)
-					.getDetails(manga.manga)
-				if (details !in tagsBlacklist) {
+			for (i in 0..3) {
+				try {
+					val manga = suggestions[Random.nextInt(0, suggestions.size / 3)]
+					val details = mangaRepositoryFactory.create(manga.manga.source)
+						.getDetails(manga.manga)
+					if (details.rating > 0 && details.rating < RATING_MIN) {
+						continue
+					}
+					if (details.isNsfw && appSettings.isSuggestionsExcludeNsfw) {
+						continue
+					}
+					if (details in tagsBlacklist) {
+						continue
+					}
 					showNotification(details)
+					break
+				} catch (e: CancellationException) {
+					throw e
+				} catch (e: Exception) {
+					e.printStackTraceDebug()
 				}
-			}.onFailure {
-				it.printStackTraceDebug()
 			}
 		}
 		return suggestions.size
@@ -178,7 +192,8 @@ class SuggestionsWorker @AssistedInject constructor(
 		if (blacklist.isNotEmpty()) {
 			list.removeAll { manga -> manga in blacklist }
 		}
-		list
+		list.shuffle()
+		list.take(MAX_SOURCE_RESULTS)
 	}.onFailure {
 		it.printStackTraceDebug()
 	}.getOrDefault(emptyList())
@@ -296,8 +311,10 @@ class SuggestionsWorker @AssistedInject constructor(
 		private const val MANGA_CHANNEL_ID = "suggestions"
 		private const val WORKER_NOTIFICATION_ID = 36
 		private const val MAX_RESULTS = 80
+		private const val MAX_SOURCE_RESULTS = 14
 		private const val MAX_RAW_RESULTS = 200
 		private const val TAG_EQ_THRESHOLD = 0.4f
+		private const val RATING_MIN = 0.5f
 
 		private val preferredSortOrders = listOf(
 			SortOrder.UPDATED,

@@ -50,6 +50,7 @@ import org.koitharu.kotatsu.utils.GridTouchHelper
 import org.koitharu.kotatsu.utils.IdlingDetector
 import org.koitharu.kotatsu.utils.ShareHelper
 import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
+import org.koitharu.kotatsu.utils.ext.isRtl
 import org.koitharu.kotatsu.utils.ext.observeWithPrevious
 import org.koitharu.kotatsu.utils.ext.postDelayed
 import org.koitharu.kotatsu.utils.ext.setValueRounded
@@ -156,6 +157,7 @@ class ReaderActivity :
 		if (binding.appbarTop.isVisible) {
 			lifecycle.postDelayed(hideUiRunnable, TimeUnit.SECONDS.toMillis(1))
 		}
+		binding.slider.isRtl = mode == ReaderMode.REVERSED
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {

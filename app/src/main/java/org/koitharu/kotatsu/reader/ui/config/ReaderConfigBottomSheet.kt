@@ -11,7 +11,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
@@ -148,8 +147,8 @@ class ReaderConfigBottomSheet :
 		}
 	}
 
-	override fun onActivityResult(uri: Uri?) {
-		viewModel.onActivityResult(uri)
+	override fun onActivityResult(result: Uri?) {
+		viewModel.onActivityResult(result)
 		dismissAllowingStateLoss()
 	}
 
@@ -157,7 +156,6 @@ class ReaderConfigBottomSheet :
 		val helper = ScreenOrientationHelper(requireActivity())
 		orientationHelper = helper
 		helper.observeAutoOrientation()
-			.flowWithLifecycle(lifecycle)
 			.onEach {
 				binding.buttonScreenRotate.isGone = it
 			}.launchIn(viewLifecycleScope)

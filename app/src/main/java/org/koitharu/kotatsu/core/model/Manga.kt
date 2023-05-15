@@ -3,8 +3,8 @@ package org.koitharu.kotatsu.core.model
 import androidx.core.os.LocaleListCompat
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.utils.ext.iterator
 
 fun Collection<Manga>.ids() = mapToSet { it.id }
@@ -35,15 +35,22 @@ fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 		}
 	}
 	val groups = ch.groupBy { it.branch }
+	if (groups.size == 1) {
+		return groups.keys.first()
+	}
+	val candidates = HashMap<String?, List<MangaChapter>>(groups.size)
 	for (locale in LocaleListCompat.getAdjustedDefault()) {
-		var language = locale.getDisplayLanguage(locale).toTitleCase(locale)
-		if (groups.containsKey(language)) {
-			return language
-		}
-		language = locale.getDisplayName(locale).toTitleCase(locale)
-		if (groups.containsKey(language)) {
-			return language
+		val displayLanguage = locale.getDisplayLanguage(locale)
+		val displayName = locale.getDisplayName(locale)
+		for (branch in groups.keys) {
+			if (branch != null && (
+					branch.contains(displayLanguage, ignoreCase = true) ||
+						branch.contains(displayName, ignoreCase = true)
+					)
+			) {
+				candidates[branch] = groups[branch] ?: continue
+			}
 		}
 	}
-	return groups.maxByOrNull { it.value.size }?.key
+	return candidates.ifEmpty { groups }.maxByOrNull { it.value.size }?.key
 }

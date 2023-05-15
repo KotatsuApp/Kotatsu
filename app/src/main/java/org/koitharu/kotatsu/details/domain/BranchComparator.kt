@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.details.domain
 
-class BranchComparator : Comparator<String?> {
+import org.koitharu.kotatsu.details.ui.model.MangaBranch
 
-	override fun compare(o1: String?, o2: String?): Int = compareValues(o1, o2)
+class BranchComparator : Comparator<MangaBranch> {
+
+	override fun compare(o1: MangaBranch, o2: MangaBranch): Int = compareValues(o1.name, o2.name)
 }

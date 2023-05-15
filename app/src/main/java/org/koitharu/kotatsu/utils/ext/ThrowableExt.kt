@@ -54,7 +54,9 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 
 	is IOException -> getDisplayMessage(message, resources) ?: localizedMessage
 	else -> localizedMessage
-} ?: resources.getString(R.string.error_occurred)
+}.ifNullOrEmpty {
+	resources.getString(R.string.error_occurred)
+}
 
 private fun getDisplayMessage(msg: String?, resources: Resources): String? = when {
 	msg.isNullOrEmpty() -> null

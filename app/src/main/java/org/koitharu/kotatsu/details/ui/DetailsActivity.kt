@@ -1,12 +1,12 @@
 package org.koitharu.kotatsu.details.ui
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -19,31 +19,31 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.domain.MangaIntent
 import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.base.ui.dialog.RecyclerViewAlertDialog
+import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
+import org.koitharu.kotatsu.details.ui.adapter.branchAD
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
+import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.utils.ViewBadge
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.utils.ext.textAndVisible
 import javax.inject.Inject
@@ -53,7 +53,9 @@ class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
 	View.OnClickListener,
 	BottomSheetHeaderBar.OnExpansionChangeListener,
-	NoModalBottomSheetOwner, View.OnLongClickListener, PopupMenu.OnMenuItemClickListener {
+	NoModalBottomSheetOwner,
+	View.OnLongClickListener,
+	PopupMenu.OnMenuItemClickListener {
 
 	override val bsHeader: BottomSheetHeaderBar?
 		get() = binding.headerChapters
@@ -254,18 +256,19 @@ class DetailsActivity :
 	}
 
 	private fun showBranchPopupMenu() {
-		val menu = PopupMenu(this, binding.headerChapters ?: binding.buttonDropdown)
-		val currentBranch = viewModel.selectedBranchValue
-		for (branch in viewModel.branches.value ?: return) {
-			val item = menu.menu.add(R.id.group_branches, Menu.NONE, Menu.NONE, branch)
-			item.isChecked = branch == currentBranch
+		var dialog: DialogInterface? = null
+		val listener = OnListItemClickListener<MangaBranch> { item, _ ->
+			viewModel.setSelectedBranch(item.name)
+			dialog?.dismiss()
 		}
-		menu.menu.setGroupCheckable(R.id.group_branches, true, true)
-		menu.setOnMenuItemClickListener { item ->
-			viewModel.setSelectedBranch(item.title?.toString())
-			true
-		}
-		menu.show()
+		dialog = RecyclerViewAlertDialog.Builder<MangaBranch>(this)
+			.addAdapterDelegate(branchAD(listener))
+			.setCancelable(true)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setTitle(R.string.translations)
+			.setItems(viewModel.branches.value.orEmpty())
+			.create()
+			.also { it.show() }
 	}
 
 	private fun openReader(isIncognitoMode: Boolean) {

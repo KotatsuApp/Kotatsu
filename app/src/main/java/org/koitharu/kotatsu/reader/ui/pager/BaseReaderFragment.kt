@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.utils.ext.getParcelableCompat
 
 private const val KEY_STATE = "state"
 
-abstract class BaseReader<B : ViewBinding> : BaseFragment<B>() {
+abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>() {
 
 	protected val viewModel by activityViewModels<ReaderViewModel>()
 	private var stateToSave: ReaderState? = null

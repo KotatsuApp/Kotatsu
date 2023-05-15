@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -124,18 +125,20 @@ class DetailsMenuProvider(
 		return true
 	}
 
-	private fun showSaveConfirmation(manga: Manga, chaptersCount: Int, branches: List<String?>) {
+	private fun showSaveConfirmation(manga: Manga, chaptersCount: Int, branches: List<MangaBranch>) {
 		val dialogBuilder = MaterialAlertDialogBuilder(activity)
 			.setTitle(R.string.save_manga)
 			.setNegativeButton(android.R.string.cancel, null)
 		if (branches.size > 1) {
-			val items = Array(branches.size) { i -> branches[i].orEmpty() }
-			val currentBranch = viewModel.selectedBranchIndex.value ?: -1
+			val items = Array(branches.size) { i -> branches[i].name.orEmpty() }
+			val currentBranch = branches.indexOfFirst { it.isSelected }
 			val checkedIndices = BooleanArray(branches.size) { i -> i == currentBranch }
 			dialogBuilder.setMultiChoiceItems(items, checkedIndices) { _, i, checked ->
 				checkedIndices[i] = checked
 			}.setPositiveButton(R.string.save) { _, _ ->
-				val selectedBranches = branches.filterIndexedTo(HashSet()) { i, _ -> checkedIndices[i] }
+				val selectedBranches = branches.mapIndexedNotNullTo(HashSet()) { i, b ->
+					if (checkedIndices[i]) b.name else null
+				}
 				val chaptersIds = manga.chapters?.mapNotNullToSet { c ->
 					if (c.branch in selectedBranches) c.id else null
 				}

@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.PendingIntentCompat
-import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -71,6 +70,7 @@ class ImportWorker @AssistedInject constructor(
 			.setPriority(NotificationCompat.PRIORITY_MIN)
 			.setDefaults(0)
 			.setSilent(true)
+			.setOngoing(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_sys_download)
 			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)

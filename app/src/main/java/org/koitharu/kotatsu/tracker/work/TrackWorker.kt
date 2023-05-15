@@ -219,6 +219,7 @@ class TrackWorker @AssistedInject constructor(
 			.setPriority(NotificationCompat.PRIORITY_MIN)
 			.setCategory(NotificationCompat.CATEGORY_SERVICE)
 			.setDefaults(0)
+			.setOngoing(true)
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)

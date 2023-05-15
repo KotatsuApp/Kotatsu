@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
+import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -44,7 +45,6 @@ import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
@@ -158,17 +158,15 @@ class DetailsViewModel @Inject constructor(
 		scrobblingInfo.filterNotNull()
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
-	val branches: LiveData<List<String?>> = delegate.manga.map {
-		val chapters = it?.chapters ?: return@map emptyList()
-		chapters.mapToSet { x -> x.branch }.sortedWith(BranchComparator())
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
-
-	val selectedBranchIndex = combine(
-		branches.asFlow(),
+	val branches: LiveData<List<MangaBranch>> = combine(
+		delegate.manga,
 		delegate.selectedBranch,
-	) { branches, selected ->
-		branches.indexOf(selected)
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, -1)
+	) { m, b ->
+		val chapters = m?.chapters ?: return@combine emptyList()
+		chapters.groupBy { x -> x.branch }
+			.map { x -> MangaBranch(x.key, x.value.size, x.key == b) }
+			.sortedWith(BranchComparator())
+	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val selectedBranchName = delegate.selectedBranch
 		.asFlowLiveData(viewModelScope.coroutineContext, null)

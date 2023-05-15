@@ -4,7 +4,7 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.reader.ui.pager.BaseReader
+import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonReaderFragment
@@ -15,7 +15,7 @@ class ReaderManager(
 	@IdRes private val containerResId: Int,
 ) {
 
-	private val modeMap = EnumMap<ReaderMode, Class<out BaseReader<*>>>(ReaderMode::class.java)
+	private val modeMap = EnumMap<ReaderMode, Class<out BaseReaderFragment<*>>>(ReaderMode::class.java)
 
 	init {
 		modeMap[ReaderMode.STANDARD] = PagerReaderFragment::class.java
@@ -23,8 +23,8 @@ class ReaderManager(
 		modeMap[ReaderMode.WEBTOON] = WebtoonReaderFragment::class.java
 	}
 
-	val currentReader: BaseReader<*>?
-		get() = fragmentManager.findFragmentById(containerResId) as? BaseReader<*>
+	val currentReader: BaseReaderFragment<*>?
+		get() = fragmentManager.findFragmentById(containerResId) as? BaseReaderFragment<*>
 
 	val currentMode: ReaderMode?
 		get() {
@@ -40,7 +40,7 @@ class ReaderManager(
 		}
 	}
 
-	fun replace(reader: BaseReader<*>) {
+	fun replace(reader: BaseReaderFragment<*>) {
 		fragmentManager.commit {
 			setReorderingAllowed(true)
 			replace(containerResId, reader)
