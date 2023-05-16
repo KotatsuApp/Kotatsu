@@ -31,7 +31,8 @@ sealed class LocalMangaInput(
 		}
 
 		@JvmStatic
-		protected fun zipUri(file: File, entryName: String) = "cbz://${file.path}#$entryName"
+		protected fun zipUri(file: File, entryName: String): String =
+			Uri.fromParts("cbz", file.path, entryName).toString()
 
 		@JvmStatic
 		protected fun Manga.copy2(
