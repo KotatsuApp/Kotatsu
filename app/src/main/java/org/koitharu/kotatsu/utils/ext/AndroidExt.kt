@@ -19,6 +19,7 @@ import android.provider.Settings
 import android.view.View
 import android.view.ViewPropertyAnimator
 import android.view.Window
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityOptionsCompat
@@ -169,4 +170,19 @@ fun Context.findActivity(): Activity? = when (this) {
 	is Activity -> this
 	is ContextWrapper -> baseContext.findActivity()
 	else -> null
+}
+
+inline fun Activity.catchingWebViewUnavailability(block: () -> Unit): Boolean {
+	return try {
+		block()
+		true
+	} catch (e: Exception) {
+		if (e.isWebViewUnavailable()) {
+			Toast.makeText(this, R.string.web_view_unavailable, Toast.LENGTH_LONG).show()
+			finishAfterTransition()
+			false
+		} else {
+			throw e
+		}
+	}
 }

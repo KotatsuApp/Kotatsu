@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import org.koitharu.kotatsu.utils.ext.catchingWebViewUnavailability
 import com.google.android.material.R as materialR
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -24,7 +25,9 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(ActivityBrowserBinding.inflate(layoutInflater))
+		if (!catchingWebViewUnavailability { setContentView(ActivityBrowserBinding.inflate(layoutInflater)) }) {
+			return
+		}
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)

@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.utils.ext
 
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
+import android.util.AndroidRuntimeException
 import androidx.collection.arraySetOf
 import kotlinx.coroutines.CancellationException
 import okio.FileNotFoundException
@@ -93,4 +94,9 @@ inline fun <R> runCatchingCancellable(block: () -> R): Result<R> {
 	} catch (e: Throwable) {
 		Result.failure(e)
 	}
+}
+
+fun Throwable.isWebViewUnavailable(): Boolean {
+	return (this is AndroidRuntimeException && message?.contains("WebView") == true) ||
+		cause?.isWebViewUnavailable() == true
 }
