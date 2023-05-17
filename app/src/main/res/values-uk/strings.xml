@@ -410,4 +410,6 @@
     <string name="downloads_removed">Завантаження видалено</string>
     <string name="downloads_cancelled">Завантаження скасовано</string>
     <string name="suggestions_enable_prompt">Хочете отримувати персоналізовані пропозиції щодо манги\?</string>
+    <string name="web_view_unavailable">WebView недоступний: перевірте, чи встановлено провайдер WebView</string>
+    <string name="translations">Переклади</string>
 </resources>

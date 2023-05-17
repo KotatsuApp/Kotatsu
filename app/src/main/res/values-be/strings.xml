@@ -410,4 +410,6 @@
     <string name="downloads_paused">Спампоўкі прыпыненыя</string>
     <string name="downloads_removed">Спампоўкі выдалены</string>
     <string name="downloads_cancelled">Спампоўкі былі адменены</string>
+    <string name="translations">Пераклады</string>
+    <string name="web_view_unavailable">WebView недаступны: праверце, ці ўсталяваны пастаўшчык WebView</string>
 </resources>
