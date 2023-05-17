@@ -70,6 +70,9 @@ class BottomSheetHeaderBar @JvmOverloads constructor(
 			binding.toolbar.subtitle = value
 		}
 
+	val isExpanded: Boolean
+		get() = binding.dragHandle.isGone
+
 	init {
 		setBackgroundResource(R.drawable.sheet_toolbar_background)
 		layoutTransition = LayoutTransition().apply {

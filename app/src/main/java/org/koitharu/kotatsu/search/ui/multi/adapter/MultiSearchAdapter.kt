@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchListModel
 import kotlin.jvm.internal.Intrinsics
 
@@ -52,6 +53,10 @@ class MultiSearchAdapter(
 			return when {
 				oldItem is MultiSearchListModel && newItem is MultiSearchListModel -> {
 					oldItem.source == newItem.source
+				}
+
+				oldItem is LoadingFooter && newItem is LoadingFooter -> {
+					oldItem.key == newItem.key
 				}
 
 				else -> oldItem.javaClass == newItem.javaClass

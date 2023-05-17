@@ -7,12 +7,14 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 
 fun listHeaderAD(
-	listener: ListHeaderClickListener,
+	listener: ListHeaderClickListener?,
 ) = adapterDelegateViewBinding<ListHeader, ListModel, ItemHeaderButtonBinding>(
 	{ inflater, parent -> ItemHeaderButtonBinding.inflate(inflater, parent, false) },
 ) {
-	binding.buttonMore.setOnClickListener {
-		listener.onListHeaderClick(item, it)
+	if (listener != null) {
+		binding.buttonMore.setOnClickListener {
+			listener.onListHeaderClick(item, it)
+		}
 	}
 
 	bind {

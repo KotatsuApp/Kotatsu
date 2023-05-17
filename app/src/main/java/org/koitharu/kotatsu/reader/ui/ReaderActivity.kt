@@ -40,8 +40,8 @@ import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.ui.config.ReaderConfigBottomSheet
+import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
@@ -180,17 +180,13 @@ class ReaderActivity :
 			}
 
 			R.id.action_pages_thumbs -> {
-				val pages = viewModel.getCurrentChapterPages()
-				if (!pages.isNullOrEmpty()) {
-					PagesThumbnailsSheet.show(
-						supportFragmentManager,
-						pages,
-						title?.toString().orEmpty(),
-						readerManager.currentReader?.getCurrentState()?.page ?: -1,
-					)
-				} else {
-					return false
-				}
+				val state = viewModel.getCurrentState() ?: return false
+				PagesThumbnailsSheet.show(
+					supportFragmentManager,
+					viewModel.manga ?: return false,
+					state.chapterId,
+					state.page,
+				)
 			}
 
 			R.id.action_bookmark -> {
@@ -259,17 +255,19 @@ class ReaderActivity :
 	}
 
 	override fun onChapterChanged(chapter: MangaChapter) {
-		viewModel.switchChapter(chapter.id)
+		viewModel.switchChapter(chapter.id, 0)
 	}
 
-	override fun onPageSelected(page: MangaPage) {
+	override fun onPageSelected(page: ReaderPage) {
 		lifecycleScope.launch(Dispatchers.Default) {
 			val pages = viewModel.content.value?.pages ?: return@launch
-			val index = pages.indexOfFirst { it.id == page.id }
+			val index = pages.indexOfFirst { it.chapterId == page.chapterId && it.id == page.id }
 			if (index != -1) {
 				withContext(Dispatchers.Main) {
 					readerManager.currentReader?.switchPageTo(index, true)
 				}
+			} else {
+				viewModel.switchChapter(page.chapterId, page.index)
 			}
 		}
 	}

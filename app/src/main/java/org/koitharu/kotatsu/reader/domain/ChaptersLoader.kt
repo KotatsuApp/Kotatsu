@@ -63,6 +63,10 @@ class ChaptersLoader @Inject constructor(
 		return chapterPages.size(chapterId)
 	}
 
+	fun last() = chapterPages.last()
+
+	fun first() = chapterPages.first()
+
 	fun snapshot() = chapterPages.toList()
 
 	private suspend fun loadChapter(manga: Manga, chapterId: Long): List<ReaderPage> {

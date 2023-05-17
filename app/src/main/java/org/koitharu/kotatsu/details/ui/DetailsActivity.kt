@@ -43,6 +43,7 @@ import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.utils.ViewBadge
 import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.utils.ext.textAndVisible
@@ -158,13 +159,28 @@ class DetailsActivity :
 		else -> false
 	}
 
-	override fun onMenuItemClick(item: MenuItem): Boolean = when (item.itemId) {
-		R.id.action_incognito -> {
-			openReader(isIncognitoMode = true)
-			true
-		}
+	override fun onMenuItemClick(item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.action_incognito -> {
+				openReader(isIncognitoMode = true)
+				true
+			}
 
-		else -> false
+			R.id.action_pages_thumbs -> {
+				val history = viewModel.historyInfo.value?.history
+				PagesThumbnailsSheet.show(
+					fm = supportFragmentManager,
+					manga = viewModel.manga.value ?: return false,
+					chapterId = history?.chapterId
+						?: viewModel.chapters.value?.firstOrNull()?.chapter?.id
+						?: return false,
+					currentPage = history?.page ?: 0,
+				)
+				true
+			}
+
+			else -> false
+		}
 	}
 
 	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {

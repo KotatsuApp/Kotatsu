@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import kotlin.jvm.internal.Intrinsics
 
@@ -59,6 +60,10 @@ class ShelfAdapter(
 		override fun areItemsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
 			return when {
 				oldItem is ShelfSectionModel && newItem is ShelfSectionModel -> {
+					oldItem.key == newItem.key
+				}
+
+				oldItem is LoadingFooter && newItem is LoadingFooter -> {
 					oldItem.key == newItem.key
 				}
 

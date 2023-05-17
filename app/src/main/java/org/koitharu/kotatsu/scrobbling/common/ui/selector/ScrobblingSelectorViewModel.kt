@@ -58,7 +58,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 	) { list, error, isHasNextPage ->
 		if (list.isNotEmpty()) {
 			if (isHasNextPage) {
-				list + LoadingFooter
+				list + LoadingFooter()
 			} else {
 				list
 			}
@@ -66,7 +66,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 			listOf(
 				when {
 					error != null -> errorHint(error)
-					isHasNextPage -> LoadingFooter
+					isHasNextPage -> LoadingFooter()
 					else -> emptyResultsHint()
 				},
 			)

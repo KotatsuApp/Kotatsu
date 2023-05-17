@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.ui
 
 import com.google.android.material.slider.Slider
+import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 
 class ReaderSliderListener(
@@ -41,6 +42,7 @@ class ReaderSliderListener(
 	private fun switchPageToIndex(index: Int) {
 		val pages = viewModel.getCurrentChapterPages()
 		val page = pages?.getOrNull(index) ?: return
-		pageSelectListener.onPageSelected(page)
+		val chapterId = viewModel.getCurrentState()?.chapterId ?: return
+		pageSelectListener.onPageSelected(ReaderPage(page, index, chapterId))
 	}
 }

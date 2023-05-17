@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -41,9 +42,6 @@ import java.util.zip.ZipFile
 import javax.inject.Inject
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
-
-private const val PROGRESS_UNDEFINED = -1f
-private const val PREFETCH_LIMIT_DEFAULT = 10
 
 @ActivityRetainedScoped
 class PageLoader @Inject constructor(
@@ -179,7 +177,7 @@ class PageLoader @Inject constructor(
 		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
 		val uri = Uri.parse(pageUrl)
-		return if (uri.scheme == "cbz") {
+		return if (CbzFilter.isUriSupported(uri)) {
 			runInterruptible(Dispatchers.IO) {
 				ZipFile(uri.schemeSpecificPart)
 			}.use { zip ->
@@ -191,13 +189,7 @@ class PageLoader @Inject constructor(
 				}
 			}
 		} else {
-			val request = Request.Builder()
-				.url(pageUrl)
-				.get()
-				.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
-				.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
-				.tag(MangaSource::class.java, page.source)
-				.build()
+			val request = createPageRequest(page, pageUrl)
 			okHttp.newCall(request).await().use { response ->
 				check(response.isSuccessful) {
 					"Invalid response: ${response.code} ${response.message} at $pageUrl"
@@ -218,6 +210,19 @@ class PageLoader @Inject constructor(
 		override fun handleException(context: CoroutineContext, exception: Throwable) {
 			exception.printStackTraceDebug()
 		}
+	}
 
+	companion object {
+
+		private const val PROGRESS_UNDEFINED = -1f
+		private const val PREFETCH_LIMIT_DEFAULT = 10
+
+		fun createPageRequest(page: MangaPage, pageUrl: String) = Request.Builder()
+			.url(pageUrl)
+			.get()
+			.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
+			.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
+			.tag(MangaSource::class.java, page.source)
+			.build()
 	}
 }

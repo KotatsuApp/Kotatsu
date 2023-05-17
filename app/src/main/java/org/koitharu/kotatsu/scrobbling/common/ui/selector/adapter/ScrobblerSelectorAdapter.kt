@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.model.ScrobblerHint
 import kotlin.jvm.internal.Intrinsics
@@ -34,6 +35,7 @@ class ScrobblerSelectorAdapter(
 				oldItem === newItem -> true
 				oldItem is ScrobblerManga && newItem is ScrobblerManga -> oldItem.id == newItem.id
 				oldItem is ScrobblerHint && newItem is ScrobblerHint -> oldItem.textPrimary == newItem.textPrimary
+				oldItem is LoadingFooter && newItem is LoadingFooter -> oldItem.key == newItem.key
 				else -> false
 			}
 		}
