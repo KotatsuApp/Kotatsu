@@ -263,7 +263,7 @@
     <string name="tracking">Pelacakan</string>
     <string name="logout">Keluar</string>
     <string name="sync">Sinkronisasi</string>
-    <string name="send">Terkirim</string>
+    <string name="send">Kirim</string>
     <string name="status_reading">Dibaca</string>
     <string name="status_on_hold">Ditunda</string>
     <string name="invalid_domain_message">Domain tidak valid</string>
