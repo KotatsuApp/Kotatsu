@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
 import org.koitharu.kotatsu.utils.ext.processLifecycleScope
@@ -82,6 +85,15 @@ class FileLogger(
 		flushImpl()
 	}
 
+	@WorkerThread
+	fun flushBlocking() {
+		if (!isEnabled) {
+			return
+		}
+		runBlockingSafe { flushJob?.cancelAndJoin() }
+		runBlockingSafe { flushImpl() }
+	}
+
 	private fun postFlush() {
 		if (flushJob?.isActive == true) {
 			return
@@ -96,10 +108,10 @@ class FileLogger(
 		}
 	}
 
-	private suspend fun flushImpl() {
+	private suspend fun flushImpl() = withContext(NonCancellable) {
 		mutex.withLock {
 			if (buffer.isEmpty()) {
-				return
+				return@withContext
 			}
 			runInterruptible(Dispatchers.IO) {
 				if (file.length() > MAX_SIZE_BYTES) {
@@ -130,5 +142,10 @@ class FileLogger(
 			}
 		}
 		bakFile.delete()
+	}
+
+	private inline fun runBlockingSafe(crossinline block: suspend () -> Unit) = try {
+		runBlocking(NonCancellable) { block() }
+	} catch (_: InterruptedException) {
 	}
 }

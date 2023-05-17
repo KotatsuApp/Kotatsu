@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.utils
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import org.koitharu.kotatsu.BuildConfig
@@ -84,6 +85,7 @@ class ShareHelper(private val context: Context) {
 	fun shareLogs(loggers: Collection<FileLogger>) {
 		val intentBuilder = ShareCompat.IntentBuilder(context)
 			.setType(TYPE_TEXT)
+		var hasLogs = false
 		for (logger in loggers) {
 			val logFile = logger.file
 			if (!logFile.exists()) {
@@ -91,8 +93,13 @@ class ShareHelper(private val context: Context) {
 			}
 			val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", logFile)
 			intentBuilder.addStream(uri)
+			hasLogs = true
 		}
-		intentBuilder.setChooserTitle(R.string.share_logs)
-		intentBuilder.startChooser()
+		if (hasLogs) {
+			intentBuilder.setChooserTitle(R.string.share_logs)
+			intentBuilder.startChooser()
+		} else {
+			Toast.makeText(context, R.string.nothing_here, Toast.LENGTH_SHORT).show()
+		}
 	}
 }

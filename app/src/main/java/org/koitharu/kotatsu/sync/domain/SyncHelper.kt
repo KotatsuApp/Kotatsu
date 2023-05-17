@@ -13,6 +13,7 @@ import androidx.annotation.WorkerThread
 import androidx.core.content.contentValuesOf
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.R
@@ -22,7 +23,9 @@ import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.db.TABLE_MANGA
 import org.koitharu.kotatsu.core.db.TABLE_MANGA_TAGS
 import org.koitharu.kotatsu.core.db.TABLE_TAGS
+import org.koitharu.kotatsu.core.logs.LoggersModule
 import org.koitharu.kotatsu.core.network.GZipInterceptor
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.data.SyncAuthenticator
@@ -61,6 +64,7 @@ class SyncHelper(
 	}
 	private val defaultGcPeriod: Long // gc period if sync enabled
 		get() = TimeUnit.DAYS.toMillis(4)
+	private val logger = LoggersModule.provideSyncLogger(context, AppSettings(context))
 
 	fun syncFavourites(syncResult: SyncResult) {
 		val data = JSONObject()
@@ -71,7 +75,7 @@ class SyncHelper(
 			.url("$baseUrl/resource/$TABLE_FAVOURITES")
 			.post(data.toRequestBody())
 			.build()
-		val response = httpClient.newCall(request).execute().parseJsonOrNull()
+		val response = httpClient.newCall(request).execute().log().parseJsonOrNull()
 		if (response != null) {
 			val timestamp = response.getLong(FIELD_TIMESTAMP)
 			val categoriesResult =
@@ -93,7 +97,7 @@ class SyncHelper(
 			.url("$baseUrl/resource/$TABLE_HISTORY")
 			.post(data.toRequestBody())
 			.build()
-		val response = httpClient.newCall(request).execute().parseJsonOrNull()
+		val response = httpClient.newCall(request).execute().log().parseJsonOrNull()
 		if (response != null) {
 			val result = upsertHistory(
 				json = response.getJSONArray(TABLE_HISTORY),
@@ -103,6 +107,19 @@ class SyncHelper(
 			syncResult.stats.numInserts += result.drop(1).sumOf { it.count?.toLong() ?: 0L }
 		}
 		gcHistory()
+	}
+
+	fun onError(e: Throwable) {
+		if (logger.isEnabled) {
+			logger.log("Sync error", e)
+		}
+	}
+
+	fun onSyncComplete(result: SyncResult) {
+		if (logger.isEnabled) {
+			logger.log("Sync finshed: ${result.toDebugString()}")
+			logger.flushBlocking()
+		}
 	}
 
 	private fun upsertHistory(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
@@ -298,4 +315,10 @@ class SyncHelper(
 	private fun JSONObject.removeJSONObject(name: String) = remove(name) as JSONObject
 
 	private fun JSONObject.removeJSONArray(name: String) = remove(name) as JSONArray
+
+	private fun Response.log() = apply {
+		if (logger.isEnabled) {
+			logger.log("$code ${request.url}")
+		}
+	}
 }

@@ -28,6 +28,10 @@ class FavouritesSyncAdapter(context: Context) : AbstractThreadedSyncAdapter(cont
 		runCatchingCancellable {
 			syncHelper.syncFavourites(syncResult)
 			SyncController.setLastSync(context, account, authority, System.currentTimeMillis())
-		}.onFailure(syncResult::onError)
+		}.onFailure { e ->
+			syncResult.onError(e)
+			syncHelper.onError(e)
+		}
+		syncHelper.onSyncComplete(syncResult)
 	}
 }

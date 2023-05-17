@@ -14,8 +14,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 import org.koitharu.kotatsu.core.db.*
-import org.koitharu.kotatsu.core.logs.FileLogger
-import org.koitharu.kotatsu.core.logs.SyncLogger
 import java.util.concurrent.Callable
 
 abstract class SyncProvider : ContentProvider() {
@@ -24,7 +22,6 @@ abstract class SyncProvider : ContentProvider() {
 		EntryPointAccessors.fromApplication(checkNotNull(context), SyncProviderEntryPoint::class.java)
 	}
 	private val database by lazy { entryPoint.database }
-	private val logger by lazy { entryPoint.logger }
 
 	private val supportedTables = setOf(
 		TABLE_FAVOURITES,
@@ -52,7 +49,6 @@ abstract class SyncProvider : ContentProvider() {
 			.selection(selection, selectionArgs)
 			.orderBy(sortOrder)
 			.create()
-		logger.log("query: ${sqlQuery.sql} (${selectionArgs.contentToString()})")
 		return database.openHelper.readableDatabase.query(sqlQuery)
 	}
 
@@ -65,7 +61,6 @@ abstract class SyncProvider : ContentProvider() {
 		if (values == null || table == null) {
 			return null
 		}
-		logger.log { "insert: $table [$values]" }
 		val db = database.openHelper.writableDatabase
 		if (db.insert(table, SQLiteDatabase.CONFLICT_IGNORE, values) < 0) {
 			db.update(table, values)
@@ -75,7 +70,6 @@ abstract class SyncProvider : ContentProvider() {
 
 	override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
 		val table = getTableName(uri) ?: return 0
-		logger.log { "delete: $table ($selection) : (${selectionArgs.contentToString()})" }
 		return database.openHelper.writableDatabase.delete(table, selection, selectionArgs)
 	}
 
@@ -84,7 +78,6 @@ abstract class SyncProvider : ContentProvider() {
 		if (values == null || table == null) {
 			return 0
 		}
-		logger.log { "update: $table ($selection) : (${selectionArgs.contentToString()}) [$values]" }
 		return database.openHelper.writableDatabase
 			.update(table, SQLiteDatabase.CONFLICT_IGNORE, values, selection, selectionArgs)
 	}
@@ -127,8 +120,5 @@ abstract class SyncProvider : ContentProvider() {
 	interface SyncProviderEntryPoint {
 
 		val database: MangaDatabase
-
-		@get:SyncLogger
-		val logger: FileLogger
 	}
 }

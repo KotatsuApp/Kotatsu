@@ -28,6 +28,10 @@ class HistorySyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context
 		runCatchingCancellable {
 			syncHelper.syncHistory(syncResult)
 			SyncController.setLastSync(context, account, authority, System.currentTimeMillis())
-		}.onFailure(syncResult::onError)
+		}.onFailure { e ->
+			syncResult.onError(e)
+			syncHelper.onError(e)
+		}
+		syncHelper.onSyncComplete(syncResult)
 	}
 }
