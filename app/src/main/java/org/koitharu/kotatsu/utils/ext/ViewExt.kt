@@ -54,6 +54,11 @@ var RecyclerView.firstVisibleItemPosition: Int
 		}
 	}
 
+val RecyclerView.visibleItemCount: Int
+	get() = (layoutManager as? LinearLayoutManager)?.run {
+		findLastVisibleItemPosition() - findFirstVisibleItemPosition()
+	} ?: 0
+
 fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	if (visibility != View.VISIBLE) {
 		return false

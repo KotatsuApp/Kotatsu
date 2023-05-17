@@ -252,6 +252,7 @@ class ReaderViewModel @Inject constructor(
 		val prevJob = stateChangeJob
 		stateChangeJob = launchJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
+			loadingJob?.join()
 			val pages = content.value?.pages ?: return@launchJob
 			pages.getOrNull(position)?.let { page ->
 				currentState.update { cs ->
@@ -263,11 +264,11 @@ class ReaderViewModel @Inject constructor(
 				return@launchJob
 			}
 			ensureActive()
-			if (position <= BOUNDS_PAGE_OFFSET) {
-				loadPrevNextChapter(pages.first().chapterId, isNext = false)
-			}
 			if (position >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
 				loadPrevNextChapter(pages.last().chapterId, isNext = true)
+			}
+			if (position <= BOUNDS_PAGE_OFFSET) {
+				loadPrevNextChapter(pages.first().chapterId, isNext = false)
 			}
 			if (pageLoader.isPrefetchApplicable()) {
 				pageLoader.prefetch(pages.trySublist(position + 1, position + PREFETCH_LIMIT))
@@ -348,7 +349,9 @@ class ReaderViewModel @Inject constructor(
 
 	@AnyThread
 	private fun loadPrevNextChapter(currentId: Long, isNext: Boolean) {
+		val prevJob = loadingJob
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
+			prevJob?.join()
 			chaptersLoader.loadPrevNextChapter(mangaData.requireValue(), currentId, isNext)
 			content.emitValue(ReaderContent(chaptersLoader.snapshot(), null))
 		}
