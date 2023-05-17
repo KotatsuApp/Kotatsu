@@ -410,4 +410,6 @@
     <string name="suggestions_notifications_summary">Иногда показывать уведомления с рекомендуемой мангой</string>
     <string name="remove_completed_downloads_confirm">Ваша история загрузок будет удалена</string>
     <string name="suggestions_enable_prompt">Хотите ли Вы получать персонализированные рекомендации манги\?</string>
+    <string name="translations">Переводы</string>
+    <string name="web_view_unavailable">WebView недоступен: проверьте, установлен ли провайдер WebView</string>
 </resources>
