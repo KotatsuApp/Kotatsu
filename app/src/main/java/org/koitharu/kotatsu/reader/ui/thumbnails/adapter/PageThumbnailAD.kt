@@ -1,91 +1,63 @@
 package org.koitharu.kotatsu.reader.ui.thumbnails.adapter
 
-import android.graphics.drawable.Drawable
+import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.Size
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
-import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import org.koitharu.kotatsu.utils.ext.decodeRegion
-import org.koitharu.kotatsu.utils.ext.isLowRamDevice
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import org.koitharu.kotatsu.utils.ext.disposeImageRequest
+import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.newImageRequest
 import org.koitharu.kotatsu.utils.ext.setTextColorAttr
+import org.koitharu.kotatsu.utils.ext.source
 import com.google.android.material.R as materialR
 
 fun pageThumbnailAD(
 	coil: ImageLoader,
-	scope: CoroutineScope,
-	loader: PageLoader,
-	clickListener: OnListItemClickListener<MangaPage>,
-) = adapterDelegateViewBinding<PageThumbnail, PageThumbnail, ItemPageThumbBinding>(
+	lifecycleOwner: LifecycleOwner,
+	clickListener: OnListItemClickListener<PageThumbnail>,
+) = adapterDelegateViewBinding<PageThumbnail, ListModel, ItemPageThumbBinding>(
 	{ inflater, parent -> ItemPageThumbBinding.inflate(inflater, parent, false) },
 ) {
-	var job: Job? = null
+
 	val gridWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.preferred_grid_width)
 	val thumbSize = Size(
 		width = gridWidth,
 		height = (gridWidth / 13f * 18f).toInt(),
 	)
 
-	suspend fun loadPageThumbnail(item: PageThumbnail): Drawable? = withContext(Dispatchers.Default) {
-		item.page.preview?.let { url ->
-			coil.execute(
-				ImageRequest.Builder(context)
-					.data(url)
-					.tag(item.page.source)
-					.size(thumbSize)
-					.scale(Scale.FILL)
-					.allowRgb565(true)
-					.build(),
-			).drawable
-		}?.let { drawable ->
-			return@withContext drawable
-		}
-		val file = loader.loadPage(item.page, force = false)
-		coil.execute(
-			ImageRequest.Builder(context)
-				.data(file)
-				.size(thumbSize)
-				.decodeRegion(0)
-				.allowRgb565(isLowRamDevice(context))
-				.build(),
-		).drawable
-	}
-
-	binding.root.setOnClickListener {
-		clickListener.onItemClick(item.page, itemView)
-	}
+	val clickListenerAdapter = AdapterDelegateClickListenerAdapter(this, clickListener)
+	binding.root.setOnClickListener(clickListenerAdapter)
+	binding.root.setOnLongClickListener(clickListenerAdapter)
 
 	bind {
-		job?.cancel()
-		binding.imageViewThumb.setImageDrawable(null)
+		val data: Any = item.page.preview?.takeUnless { it.isEmpty() } ?: item.page.toMangaPage()
+		binding.imageViewThumb.newImageRequest(lifecycleOwner, data)?.run {
+			placeholder(R.drawable.ic_placeholder)
+			fallback(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
+			size(thumbSize)
+			scale(Scale.FILL)
+			allowRgb565(true)
+			decodeRegion(0)
+			source(item.page.source)
+			enqueueWith(coil)
+		}
 		with(binding.textViewNumber) {
 			setBackgroundResource(if (item.isCurrent) R.drawable.bg_badge_accent else R.drawable.bg_badge_empty)
 			setTextColorAttr(if (item.isCurrent) materialR.attr.colorOnTertiary else android.R.attr.textColorPrimary)
 			text = (item.number).toString()
 		}
-		job = scope.launch {
-			val drawable = runCatchingCancellable {
-				loadPageThumbnail(item)
-			}.getOrNull()
-			binding.imageViewThumb.setImageDrawable(drawable)
-		}
 	}
 
 	onViewRecycled {
-		job?.cancel()
-		job = null
-		binding.imageViewThumb.setImageDrawable(null)
+		binding.imageViewThumb.disposeImageRequest()
 	}
 }

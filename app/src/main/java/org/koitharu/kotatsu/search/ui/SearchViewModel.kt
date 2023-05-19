@@ -65,7 +65,7 @@ class SearchViewModel @Inject constructor(
 				list.toUi(result, mode, tagHighlighter)
 				when {
 					error != null -> result += error.toErrorFooter()
-					hasNext -> result += LoadingFooter
+					hasNext -> result += LoadingFooter()
 				}
 				result
 			}

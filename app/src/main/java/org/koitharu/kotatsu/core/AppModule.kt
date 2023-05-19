@@ -46,8 +46,10 @@ import org.koitharu.kotatsu.local.data.CbzFetcher
 import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
+import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
+import org.koitharu.kotatsu.reader.ui.thumbnails.MangaPageFetcher
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import org.koitharu.kotatsu.settings.backup.BackupObserver
 import org.koitharu.kotatsu.sync.domain.SyncController
@@ -136,6 +138,7 @@ interface AppModule {
 			@ApplicationContext context: Context,
 			okHttpClient: OkHttpClient,
 			mangaRepositoryFactory: MangaRepository.Factory,
+			pagesCache: PagesCache,
 		): ImageLoader {
 			val httpClientFactory = {
 				okHttpClient.newBuilder()
@@ -162,6 +165,7 @@ interface AppModule {
 						.add(SvgDecoder.Factory())
 						.add(CbzFetcher.Factory())
 						.add(FaviconFetcher.Factory(context, okHttpClient, mangaRepositoryFactory))
+						.add(MangaPageFetcher.Factory(context, okHttpClient, pagesCache, mangaRepositoryFactory))
 						.build(),
 				).build()
 		}

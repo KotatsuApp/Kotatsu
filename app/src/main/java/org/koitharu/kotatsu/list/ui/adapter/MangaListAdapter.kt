@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.core.ui.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListHeader2
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
@@ -58,6 +59,10 @@ open class MangaListAdapter(
 				oldItem.textRes == newItem.textRes &&
 					oldItem.text == newItem.text &&
 					oldItem.dateTimeAgo == newItem.dateTimeAgo
+			}
+
+			oldItem is LoadingFooter && newItem is LoadingFooter -> {
+				oldItem.key == newItem.key
 			}
 
 			else -> oldItem.javaClass == newItem.javaClass

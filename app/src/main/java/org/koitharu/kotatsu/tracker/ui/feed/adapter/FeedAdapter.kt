@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.adapter.relatedDateItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.tracker.ui.feed.model.FeedItem
 import kotlin.jvm.internal.Intrinsics
 
@@ -42,6 +43,10 @@ class FeedAdapter(
 
 			oldItem is DateTimeAgo && newItem is DateTimeAgo -> {
 				oldItem == newItem
+			}
+
+			oldItem is LoadingFooter && newItem is LoadingFooter -> {
+				oldItem.key == newItem.key
 			}
 
 			else -> oldItem.javaClass == newItem.javaClass

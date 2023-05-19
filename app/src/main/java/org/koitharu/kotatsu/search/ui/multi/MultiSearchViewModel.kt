@@ -72,7 +72,7 @@ class MultiSearchViewModel @Inject constructor(
 				},
 			)
 
-			loading -> list + LoadingFooter
+			loading -> list + LoadingFooter()
 			else -> list
 		}
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))

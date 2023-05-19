@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.parsers.model.Manga
 import kotlin.jvm.internal.Intrinsics
 
@@ -52,6 +53,10 @@ class BookmarksGroupAdapter(
 			return when {
 				oldItem is BookmarksGroup && newItem is BookmarksGroup -> {
 					oldItem.manga.id == newItem.manga.id
+				}
+
+				oldItem is LoadingFooter && newItem is LoadingFooter -> {
+					oldItem.key == newItem.key
 				}
 
 				else -> oldItem.javaClass == newItem.javaClass

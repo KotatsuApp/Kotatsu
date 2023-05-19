@@ -85,7 +85,7 @@ class RemoteListViewModel @Inject constructor(
 					list.toUi(this, mode, tagHighlighter)
 					when {
 						error != null -> add(error.toErrorFooter())
-						hasNext -> add(LoadingFooter)
+						hasNext -> add(LoadingFooter())
 					}
 				}
 			}

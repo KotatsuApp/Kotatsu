@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.local.data
 
+import android.net.Uri
 import java.io.File
 import java.io.FileFilter
 import java.io.FilenameFilter
@@ -20,6 +21,11 @@ class CbzFilter : FileFilter, FilenameFilter {
 		fun isFileSupported(name: String): Boolean {
 			val ext = name.substringAfterLast('.', "").lowercase(Locale.ROOT)
 			return ext == "cbz" || ext == "zip"
+		}
+
+		fun isUriSupported(uri: Uri): Boolean {
+			val scheme = uri.scheme?.lowercase(Locale.ROOT)
+			return scheme != null && scheme == "cbz" || scheme == "zip"
 		}
 	}
 }

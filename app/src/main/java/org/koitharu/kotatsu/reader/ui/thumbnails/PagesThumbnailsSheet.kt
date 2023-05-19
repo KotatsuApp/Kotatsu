@@ -5,38 +5,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.base.ui.BaseBottomSheet
+import org.koitharu.kotatsu.base.ui.list.BoundsScrollListener
 import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.base.ui.list.ScrollListenerInvalidationObserver
 import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
-import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
-import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
-import org.koitharu.kotatsu.utils.ext.getParcelableCompat
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.TargetScrollObserver
+import org.koitharu.kotatsu.utils.LoggingAdapterDataObserver
+import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class PagesThumbnailsSheet :
 	BaseBottomSheet<SheetPagesBinding>(),
-	OnListItemClickListener<MangaPage>,
+	OnListItemClickListener<PageThumbnail>,
 	BottomSheetHeaderBar.OnExpansionChangeListener {
 
-	@Inject
-	lateinit var mangaRepositoryFactory: MangaRepository.Factory
-
-	@Inject
-	lateinit var pageLoader: PageLoader
+	private val viewModel by viewModels<PagesThumbnailsViewModel>()
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -44,27 +46,13 @@ class PagesThumbnailsSheet :
 	@Inject
 	lateinit var settings: AppSettings
 
-	private lateinit var thumbnails: List<PageThumbnail>
+	private var thumbnailsAdapter: PageThumbnailAdapter? = null
 	private var spanResolver: MangaListSpanResolver? = null
-	private var currentPageIndex = -1
+	private var scrollListener: ScrollListener? = null
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		val pages = arguments?.getParcelableCompat<ParcelableMangaPages>(ARG_PAGES)?.pages
-		if (pages.isNullOrEmpty()) {
-			dismissAllowingStateLoss()
-			return
-		}
-		currentPageIndex = requireArguments().getInt(ARG_CURRENT, currentPageIndex)
-		val repository = mangaRepositoryFactory.create(pages.first().source)
-		thumbnails = pages.mapIndexed { i, x ->
-			PageThumbnail(
-				number = i + 1,
-				isCurrent = i == currentPageIndex,
-				repository = repository,
-				page = x,
-			)
-		}
+	private val spanSizeLookup = SpanSizeLookup()
+	private val listCommitCallback = Runnable {
+		spanSizeLookup.invalidateCache()
 	}
 
 	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetPagesBinding {
@@ -73,74 +61,116 @@ class PagesThumbnailsSheet :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-
 		spanResolver = MangaListSpanResolver(view.resources)
 		with(binding.headerBar) {
-			title = arguments?.getString(ARG_TITLE)
+			title = viewModel.title
 			subtitle = null
 			addOnExpansionChangeListener(this@PagesThumbnailsSheet)
 		}
-
+		thumbnailsAdapter = PageThumbnailAdapter(
+			coil = coil,
+			lifecycleOwner = viewLifecycleOwner,
+			clickListener = this@PagesThumbnailsSheet,
+		)
 		with(binding.recyclerView) {
 			addItemDecoration(
 				SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)),
 			)
-			adapter = PageThumbnailAdapter(
-				dataSet = thumbnails,
-				coil = coil,
-				scope = viewLifecycleScope,
-				loader = pageLoader,
-				clickListener = this@PagesThumbnailsSheet,
-			)
+			adapter = thumbnailsAdapter
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver?.setGridSize(settings.gridSize / 100f, this)
-			if (currentPageIndex > 0) {
-				val offset = resources.getDimensionPixelOffset(R.dimen.preferred_grid_width)
-				(layoutManager as GridLayoutManager).scrollToPositionWithOffset(currentPageIndex, offset)
-			}
+			addOnScrollListener(ScrollListener().also { scrollListener = it })
+			(layoutManager as GridLayoutManager).spanSizeLookup = spanSizeLookup
+			thumbnailsAdapter?.registerAdapterDataObserver(
+				ScrollListenerInvalidationObserver(this, checkNotNull(scrollListener)),
+			)
+			thumbnailsAdapter?.registerAdapterDataObserver(TargetScrollObserver(this))
+			thumbnailsAdapter?.registerAdapterDataObserver(LoggingAdapterDataObserver("THUMB"))
 		}
+		viewModel.thumbnails.observe(viewLifecycleOwner) {
+			thumbnailsAdapter?.setItems(it, listCommitCallback)
+		}
+		viewModel.branch.observe(viewLifecycleOwner) {
+			onExpansionStateChanged(binding.headerBar, binding.headerBar.isExpanded)
+		}
+		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 	}
 
 	override fun onDestroyView() {
-		super.onDestroyView()
 		spanResolver = null
+		scrollListener = null
+		thumbnailsAdapter = null
+		spanSizeLookup.invalidateCache()
+		super.onDestroyView()
 	}
 
-	override fun onItemClick(item: MangaPage, view: View) {
-		(
-			(parentFragment as? OnPageSelectListener)
-				?: (activity as? OnPageSelectListener)
-			)?.run {
-				onPageSelected(item)
-				dismiss()
-			}
+	override fun onItemClick(item: PageThumbnail, view: View) {
+		val listener = (parentFragment as? OnPageSelectListener) ?: (activity as? OnPageSelectListener)
+		if (listener != null) {
+			listener.onPageSelected(item.page)
+		} else {
+			val state = ReaderState(item.page.chapterId, item.page.index, 0)
+			val intent = ReaderActivity.newIntent(view.context, viewModel.manga, state)
+			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+		}
+		dismiss()
 	}
 
 	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
 		if (isExpanded) {
-			headerBar.subtitle = resources.getQuantityString(
-				R.plurals.pages,
-				thumbnails.size,
-				thumbnails.size,
-			)
+			headerBar.subtitle = viewModel.branch.value
 		} else {
 			headerBar.subtitle = null
 		}
 	}
 
+	private inner class ScrollListener : BoundsScrollListener(3, 3) {
+
+		override fun onScrolledToStart(recyclerView: RecyclerView) {
+			viewModel.loadPrevChapter()
+		}
+
+		override fun onScrolledToEnd(recyclerView: RecyclerView) {
+			viewModel.loadNextChapter()
+		}
+	}
+
+	private inner class SpanSizeLookup : GridLayoutManager.SpanSizeLookup() {
+
+		init {
+			isSpanIndexCacheEnabled = true
+			isSpanGroupIndexCacheEnabled = true
+		}
+
+		override fun getSpanSize(position: Int): Int {
+			val total =
+				(binding.recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
+			return when (thumbnailsAdapter?.getItemViewType(position)) {
+				PageThumbnailAdapter.ITEM_TYPE_THUMBNAIL -> 1
+				else -> total
+			}
+		}
+
+		fun invalidateCache() {
+			invalidateSpanGroupIndexCache()
+			invalidateSpanIndexCache()
+		}
+	}
+
 	companion object {
 
-		private const val ARG_PAGES = "pages"
-		private const val ARG_TITLE = "title"
-		private const val ARG_CURRENT = "current"
+		const val ARG_MANGA = "manga"
+		const val ARG_CURRENT_PAGE = "current"
+		const val ARG_CHAPTER_ID = "chapter_id"
 
 		private const val TAG = "PagesThumbnailsSheet"
 
-		fun show(fm: FragmentManager, pages: List<MangaPage>, title: String, currentPage: Int) =
+		fun show(fm: FragmentManager, manga: Manga, chapterId: Long, currentPage: Int = -1) {
 			PagesThumbnailsSheet().withArgs(3) {
-				putParcelable(ARG_PAGES, ParcelableMangaPages(pages))
-				putString(ARG_TITLE, title)
-				putInt(ARG_CURRENT, currentPage)
+				putParcelable(ARG_MANGA, ParcelableManga(manga, true))
+				putLong(ARG_CHAPTER_ID, chapterId)
+				putInt(ARG_CURRENT_PAGE, currentPage)
 			}.show(fm, TAG)
+		}
 	}
 }
