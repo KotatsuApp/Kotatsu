@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import okhttp3.Cache
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.BuildConfig
@@ -90,14 +91,19 @@ interface AppModule {
 
 		@Provides
 		@Singleton
-		fun provideOkHttpClient(
+		fun provideHttpCache(
 			localStorageManager: LocalStorageManager,
+		): Cache = localStorageManager.createHttpCache()
+
+		@Provides
+		@Singleton
+		fun provideOkHttpClient(
+			cache: Cache,
 			commonHeadersInterceptor: CommonHeadersInterceptor,
 			mirrorSwitchInterceptor: MirrorSwitchInterceptor,
 			cookieJar: CookieJar,
 			settings: AppSettings,
 		): OkHttpClient {
-			val cache = localStorageManager.createHttpCache()
 			return OkHttpClient.Builder().apply {
 				connectTimeout(20, TimeUnit.SECONDS)
 				readTimeout(60, TimeUnit.SECONDS)
@@ -108,6 +114,7 @@ interface AppModule {
 					bypassSSLErrors()
 				}
 				cache(cache)
+				addNetworkInterceptor(CacheLimitInterceptor())
 				addInterceptor(GZipInterceptor())
 				addInterceptor(commonHeadersInterceptor)
 				addInterceptor(CloudFlareInterceptor())

@@ -8,7 +8,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
+import okhttp3.Cache
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
@@ -40,6 +43,9 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	lateinit var cookieJar: MutableCookieJar
 
 	@Inject
+	lateinit var cache: Cache
+
+	@Inject
 	lateinit var shortcutsUpdater: ShortcutsUpdater
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -52,6 +58,7 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_PAGES_CACHE_CLEAR)?.bindSummaryToCacheSize(CacheDir.PAGES)
 		findPreference<Preference>(AppSettings.KEY_THUMBS_CACHE_CLEAR)?.bindSummaryToCacheSize(CacheDir.THUMBS)
+		findPreference<Preference>(AppSettings.KEY_HTTP_CACHE_CLEAR)?.bindSummaryToHttpCacheSize()
 		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { pref ->
 			viewLifecycleScope.launch {
 				lifecycle.awaitStateAtLeast(Lifecycle.State.RESUMED)
@@ -87,6 +94,11 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 
 			AppSettings.KEY_SEARCH_HISTORY_CLEAR -> {
 				clearSearchHistory(preference)
+				true
+			}
+
+			AppSettings.KEY_HTTP_CACHE_CLEAR -> {
+				clearHttpCache()
 				true
 			}
 
@@ -129,6 +141,32 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	private fun Preference.bindSummaryToCacheSize(dir: CacheDir) = viewLifecycleScope.launch {
 		val size = storageManager.computeCacheSize(dir)
 		summary = FileSize.BYTES.format(context, size)
+	}
+
+	private fun Preference.bindSummaryToHttpCacheSize() = viewLifecycleScope.launch {
+		val size = runInterruptible(Dispatchers.IO) { cache.size() }
+		summary = FileSize.BYTES.format(context, size)
+	}
+
+	private fun clearHttpCache() {
+		val preference = findPreference<Preference>(AppSettings.KEY_HTTP_CACHE_CLEAR) ?: return
+		val ctx = preference.context.applicationContext
+		viewLifecycleScope.launch {
+			try {
+				preference.isEnabled = false
+				val size = runInterruptible(Dispatchers.IO) {
+					cache.evictAll()
+					cache.size()
+				}
+				preference.summary = FileSize.BYTES.format(ctx, size)
+			} catch (e: CancellationException) {
+				throw e
+			} catch (e: Exception) {
+				preference.summary = e.getDisplayMessage(ctx.resources)
+			} finally {
+				preference.isEnabled = true
+			}
+		}
 	}
 
 	private fun clearSearchHistory(preference: Preference) {

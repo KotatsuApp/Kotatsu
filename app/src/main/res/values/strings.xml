@@ -416,4 +416,5 @@
 	<string name="suggestions_enable_prompt">Do you want to receive personalized manga suggestions?</string>
 	<string name="translations">Translations</string>
 	<string name="web_view_unavailable">WebView not available: check if WebView provider is installed</string>
+	<string name="clear_network_cache">Clear network cache</string>
 </resources>
