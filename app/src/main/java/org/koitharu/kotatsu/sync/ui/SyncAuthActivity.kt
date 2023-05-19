@@ -84,12 +84,14 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 				viewBinding.groupLogin.isVisible = false
 				viewBinding.groupPassword.isVisible = true
 				pageBackCallback.update()
+				viewBinding.editPassword.requestFocus()
 			}
 
 			R.id.button_back -> {
 				viewBinding.groupPassword.isVisible = false
 				viewBinding.groupLogin.isVisible = true
 				pageBackCallback.update()
+				viewBinding.editEmail.requestFocus()
 			}
 
 			R.id.button_done -> {
@@ -200,6 +202,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		override fun handleOnBackPressed() {
 			viewBinding.groupLogin.isVisible = true
 			viewBinding.groupPassword.isVisible = false
+			viewBinding.editEmail.requestFocus()
 			update()
 		}
 
