@@ -417,4 +417,5 @@
 	<string name="translations">Translations</string>
 	<string name="web_view_unavailable">WebView not available: check if WebView provider is installed</string>
 	<string name="invalid_value_message">Invalid value</string>
+	<string name="clear_network_cache">Clear network cache</string>
 </resources>

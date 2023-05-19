@@ -345,6 +345,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"
 		const val KEY_PAGES_CACHE_CLEAR = "pages_cache_clear"
+		const val KEY_HTTP_CACHE_CLEAR = "http_cache_clear"
 		const val KEY_COOKIES_CLEAR = "cookies_clear"
 		const val KEY_THUMBS_CACHE_CLEAR = "thumbs_cache_clear"
 		const val KEY_SEARCH_HISTORY_CLEAR = "search_history_clear"
