@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.widget.shelf.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 
 class CategorySelectAdapter(

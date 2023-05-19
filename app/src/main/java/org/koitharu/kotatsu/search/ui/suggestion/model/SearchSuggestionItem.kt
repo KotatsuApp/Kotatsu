@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.search.ui.suggestion.model
 
-import android.net.Uri
-import org.koitharu.kotatsu.base.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.areItemsEquals
@@ -42,9 +41,7 @@ sealed interface SearchSuggestionItem {
 
 			other as RecentQuery
 
-			if (query != other.query) return false
-
-			return true
+			return query == other.query
 		}
 
 		override fun hashCode(): Int {
@@ -64,9 +61,7 @@ sealed interface SearchSuggestionItem {
 			other as Source
 
 			if (source != other.source) return false
-			if (isEnabled != other.isEnabled) return false
-
-			return true
+			return isEnabled == other.isEnabled
 		}
 
 		override fun hashCode(): Int {
@@ -86,9 +81,7 @@ sealed interface SearchSuggestionItem {
 
 			other as Tags
 
-			if (tags != other.tags) return false
-
-			return true
+			return tags == other.tags
 		}
 
 		override fun hashCode(): Int {

@@ -5,8 +5,8 @@ import android.view.View.OnLayoutChangeListener
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.view.ActionMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import org.koitharu.kotatsu.base.ui.util.ActionModeListener
-import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+import org.koitharu.kotatsu.core.ui.util.ActionModeListener
+import org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
 
 class ChaptersBottomSheetMediator(
 	bottomSheet: View,

@@ -11,10 +11,10 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.prefs.SourceSettings
+import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.utils.ext.toList
 import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject

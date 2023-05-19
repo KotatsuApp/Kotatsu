@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.favourites.ui.categories.select.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 
 class MangaCategoriesAdapter(

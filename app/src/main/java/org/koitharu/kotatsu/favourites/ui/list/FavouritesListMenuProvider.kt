@@ -7,7 +7,7 @@ import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import androidx.core.view.forEach
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ui.titleRes
+import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.parsers.model.SortOrder

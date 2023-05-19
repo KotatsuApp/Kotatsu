@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
@@ -17,9 +16,11 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
-import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -28,8 +29,6 @@ import org.koitharu.kotatsu.settings.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
-import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.getItem
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,20 +44,15 @@ class SourcesListFragment :
 	private val viewModel by viewModels<SourcesListViewModel>()
 
 	override val recyclerView: RecyclerView
-		get() = binding.recyclerView
+		get() = requireViewBinding().recyclerView
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = FragmentSettingsSourcesBinding.inflate(inflater, container, false)
 
-	override fun onResume() {
-		super.onResume()
-		activity?.setTitle(R.string.remote_sources)
-	}
-
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentSettingsSourcesBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		val sourcesAdapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
@@ -74,13 +68,18 @@ class SourcesListFragment :
 		addMenuProvider(SourcesMenuProvider())
 	}
 
+	override fun onResume() {
+		super.onResume()
+		activity?.setTitle(R.string.remote_sources)
+	}
+
 	override fun onDestroyView() {
 		reorderHelper = null
 		super.onDestroyView()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
+		requireViewBinding().recyclerView.updatePadding(
 			bottom = insets.bottom,
 			left = insets.left,
 			right = insets.right,

@@ -13,10 +13,10 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
@@ -41,10 +41,10 @@ class ShelfConfigActivity :
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		adapter = CategorySelectAdapter(this)
-		binding.recyclerView.adapter = adapter
-		binding.buttonDone.isVisible = true
-		binding.buttonDone.setOnClickListener(this)
-		binding.fabAdd.hide()
+		viewBinding.recyclerView.adapter = adapter
+		viewBinding.buttonDone.isVisible = true
+		viewBinding.buttonDone.setOnClickListener(this)
+		viewBinding.fabAdd.hide()
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
 			AppWidgetManager.INVALID_APPWIDGET_ID,
@@ -57,7 +57,7 @@ class ShelfConfigActivity :
 		viewModel.checkedId = config.categoryId
 
 		viewModel.content.observe(this, this::onContentChanged)
-		viewModel.onError.observe(this, SnackbarErrorObserver(binding.recyclerView, null))
+		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 	}
 
 	override fun onClick(v: View) {
@@ -79,17 +79,17 @@ class ShelfConfigActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+		viewBinding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			rightMargin = topMargin + insets.right
 			leftMargin = topMargin + insets.left
 			bottomMargin = topMargin + insets.bottom
 		}
-		binding.recyclerView.updatePadding(
+		viewBinding.recyclerView.updatePadding(
 			left = insets.left,
 			right = insets.right,
 			bottom = insets.bottom,
 		)
-		with(binding.toolbar) {
+		with(viewBinding.toolbar) {
 			updatePadding(
 				left = insets.left,
 				right = insets.right,

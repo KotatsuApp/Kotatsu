@@ -9,11 +9,11 @@ import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.util.ext.setValueRounded
+import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
 import org.koitharu.kotatsu.databinding.SheetShelfSizeBinding
-import org.koitharu.kotatsu.utils.ext.setValueRounded
-import org.koitharu.kotatsu.utils.progress.IntPercentLabelFormatter
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -26,13 +26,13 @@ class ShelfSizeBottomSheet :
 	lateinit var settings: AppSettings
 	private var labelFormatter: LabelFormatter? = null
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetShelfSizeBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetShelfSizeBinding {
 		return SheetShelfSizeBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-		labelFormatter = IntPercentLabelFormatter(view.context)
+	override fun onViewBindingCreated(binding: SheetShelfSizeBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
+		labelFormatter = IntPercentLabelFormatter(binding.root.context)
 		binding.sliderGrid.addOnChangeListener(this)
 		binding.buttonSmall.setOnClickListener(this)
 		binding.buttonLarge.setOnClickListener(this)
@@ -47,11 +47,11 @@ class ShelfSizeBottomSheet :
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
 		settings.gridSize = value.toInt()
-		binding.textViewLabel.text = labelFormatter?.getFormattedValue(value)
+		requireViewBinding().textViewLabel.text = labelFormatter?.getFormattedValue(value)
 	}
 
 	override fun onClick(v: View) {
-		val slider = binding.sliderGrid
+		val slider = requireViewBinding().sliderGrid
 		when (v.id) {
 			R.id.button_small -> slider.setValueRounded(slider.value - slider.stepSize)
 			R.id.button_large -> slider.setValueRounded(slider.value + slider.stepSize)

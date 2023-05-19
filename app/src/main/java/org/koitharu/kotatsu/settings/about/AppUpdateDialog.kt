@@ -8,7 +8,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.noties.markwon.Markwon
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
-import org.koitharu.kotatsu.utils.FileSize
+import org.koitharu.kotatsu.core.util.FileSize
 import com.google.android.material.R as materialR
 
 class AppUpdateDialog(private val context: Context) {

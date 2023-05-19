@@ -78,7 +78,7 @@
 			app:layout_goneMarginTop="12dp"
 			tools:ignore="UnusedAttribute">
 
-			<org.koitharu.kotatsu.base.ui.widgets.ChipsView
+			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
 				android:id="@+id/chips_tags"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

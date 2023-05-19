@@ -7,10 +7,10 @@ import android.content.Context
 import android.content.SyncResult
 import android.os.Bundle
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.onError
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.sync.domain.SyncHelper
-import org.koitharu.kotatsu.utils.ext.onError
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
 
 class HistorySyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context, true) {
 

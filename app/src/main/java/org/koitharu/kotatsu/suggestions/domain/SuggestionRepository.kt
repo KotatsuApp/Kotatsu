@@ -7,9 +7,9 @@ import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
+import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
-import org.koitharu.kotatsu.utils.ext.mapItems
 import javax.inject.Inject
 
 class SuggestionRepository @Inject constructor(

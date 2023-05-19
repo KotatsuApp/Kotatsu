@@ -3,12 +3,12 @@ package org.koitharu.kotatsu.local.data.output
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.util.ext.deleteAwait
+import org.koitharu.kotatsu.core.util.ext.readText
 import org.koitharu.kotatsu.core.zip.ZipOutput
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.utils.ext.deleteAwait
-import org.koitharu.kotatsu.utils.ext.readText
 import java.io.File
 import java.util.zip.ZipFile
 

@@ -2,12 +2,12 @@ package org.koitharu.kotatsu.core.model.parcelable
 
 import android.os.Parcel
 import androidx.core.os.ParcelCompat
+import org.koitharu.kotatsu.core.util.ext.readParcelableCompat
+import org.koitharu.kotatsu.core.util.ext.readSerializableCompat
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.utils.ext.readParcelableCompat
-import org.koitharu.kotatsu.utils.ext.readSerializableCompat
 
 fun Manga.writeToParcel(out: Parcel, flags: Int, withChapters: Boolean) {
 	out.writeLong(id)

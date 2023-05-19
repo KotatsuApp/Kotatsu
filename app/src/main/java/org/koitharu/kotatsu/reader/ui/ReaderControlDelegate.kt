@@ -8,7 +8,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.utils.GridTouchHelper
+import org.koitharu.kotatsu.core.util.GridTouchHelper
 
 class ReaderControlDelegate(
 	private val settings: AppSettings,

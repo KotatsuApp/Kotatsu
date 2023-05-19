@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.PatternMatcher
 import androidx.core.app.PendingIntentCompat
-import org.koitharu.kotatsu.utils.ext.toUUIDOrNull
+import org.koitharu.kotatsu.core.util.ext.toUUIDOrNull
 import java.util.UUID
 
 class PausingReceiver(

@@ -30,13 +30,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.MangaIntent
-import org.koitharu.kotatsu.base.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.exceptions.resolve.DialogErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.core.ui.BaseFullscreenActivity
+import org.koitharu.kotatsu.core.util.GridTouchHelper
+import org.koitharu.kotatsu.core.util.IdlingDetector
+import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
+import org.koitharu.kotatsu.core.util.ext.isRtl
+import org.koitharu.kotatsu.core.util.ext.observeWithPrevious
+import org.koitharu.kotatsu.core.util.ext.postDelayed
+import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -46,14 +54,6 @@ import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.utils.GridTouchHelper
-import org.koitharu.kotatsu.utils.IdlingDetector
-import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.hasGlobalPoint
-import org.koitharu.kotatsu.utils.ext.isRtl
-import org.koitharu.kotatsu.utils.ext.observeWithPrevious
-import org.koitharu.kotatsu.utils.ext.postDelayed
-import org.koitharu.kotatsu.utils.ext.setValueRounded
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -102,16 +102,16 @@ class ReaderActivity :
 		touchHelper = GridTouchHelper(this, this)
 		scrollTimer = scrollTimerFactory.create(this, this)
 		controlDelegate = ReaderControlDelegate(settings, this, this)
-		binding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
-		binding.slider.setLabelFormatter(PageLabelFormatter())
-		ReaderSliderListener(this, viewModel).attachToSlider(binding.slider)
+		viewBinding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
+		viewBinding.slider.setLabelFormatter(PageLabelFormatter())
+		ReaderSliderListener(this, viewModel).attachToSlider(viewBinding.slider)
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
 
 		viewModel.onError.observe(
 			this,
 			DialogErrorObserver(
-				host = binding.container,
+				host = viewBinding.container,
 				fragment = null,
 				resolver = exceptionResolver,
 				onResolved = { isResolved ->
@@ -134,8 +134,8 @@ class ReaderActivity :
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, this::onBookmarkStateChanged)
 		viewModel.onShowToast.observe(this) { msgId ->
-			Snackbar.make(binding.container, msgId, Snackbar.LENGTH_SHORT)
-				.setAnchorView(binding.appbarBottom)
+			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
+				.setAnchorView(viewBinding.appbarBottom)
 				.show()
 		}
 	}
@@ -154,10 +154,10 @@ class ReaderActivity :
 		if (readerManager.currentMode != mode) {
 			readerManager.replace(mode)
 		}
-		if (binding.appbarTop.isVisible) {
+		if (viewBinding.appbarTop.isVisible) {
 			lifecycle.postDelayed(hideUiRunnable, TimeUnit.SECONDS.toMillis(1))
 		}
-		binding.slider.isRtl = mode == ReaderMode.REVERSED
+		viewBinding.slider.isRtl = mode == ReaderMode.REVERSED
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -210,29 +210,29 @@ class ReaderActivity :
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		val hasPages = !viewModel.content.value?.pages.isNullOrEmpty()
-		binding.layoutLoading.isVisible = isLoading && !hasPages
+		viewBinding.layoutLoading.isVisible = isLoading && !hasPages
 		if (isLoading && hasPages) {
-			binding.toastView.show(R.string.loading_)
+			viewBinding.toastView.show(R.string.loading_)
 		} else {
-			binding.toastView.hide()
+			viewBinding.toastView.hide()
 		}
-		val menu = binding.toolbarBottom.menu
+		val menu = viewBinding.toolbarBottom.menu
 		menu.findItem(R.id.action_bookmark).isVisible = hasPages
 		menu.findItem(R.id.action_pages_thumbs).isVisible = hasPages
 	}
 
 	override fun onGridTouch(area: Int) {
-		controlDelegate.onGridTouch(area, binding.container)
+		controlDelegate.onGridTouch(area, viewBinding.container)
 	}
 
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
 		return if (
 			rawX <= gestureInsets.left ||
 			rawY <= gestureInsets.top ||
-			rawX >= binding.root.width - gestureInsets.right ||
-			rawY >= binding.root.height - gestureInsets.bottom ||
-			binding.appbarTop.hasGlobalPoint(rawX, rawY) ||
-			binding.appbarBottom?.hasGlobalPoint(rawX, rawY) == true
+			rawX >= viewBinding.root.width - gestureInsets.right ||
+			rawY >= viewBinding.root.height - gestureInsets.bottom ||
+			viewBinding.appbarTop.hasGlobalPoint(rawX, rawY) ||
+			viewBinding.appbarBottom?.hasGlobalPoint(rawX, rawY) == true
 		) {
 			false
 		} else {
@@ -279,14 +279,14 @@ class ReaderActivity :
 
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
-			Snackbar.make(binding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
-				.setAnchorView(binding.appbarBottom)
+			Snackbar.make(viewBinding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
+				.setAnchorView(viewBinding.appbarBottom)
 				.setAction(R.string.share) {
 					ShareHelper(this).shareImage(uri)
 				}.show()
 		} else {
-			Snackbar.make(binding.container, R.string.error_occurred, Snackbar.LENGTH_SHORT)
-				.setAnchorView(binding.appbarBottom)
+			Snackbar.make(viewBinding.container, R.string.error_occurred, Snackbar.LENGTH_SHORT)
+				.setAnchorView(viewBinding.appbarBottom)
 				.show()
 		}
 	}
@@ -300,18 +300,18 @@ class ReaderActivity :
 	}
 
 	private fun setUiIsVisible(isUiVisible: Boolean) {
-		if (binding.appbarTop.isVisible != isUiVisible) {
+		if (viewBinding.appbarTop.isVisible != isUiVisible) {
 			val transition = TransitionSet()
 				.setOrdering(TransitionSet.ORDERING_TOGETHER)
-				.addTransition(Slide(Gravity.TOP).addTarget(binding.appbarTop))
-				.addTransition(Fade().addTarget(binding.infoBar))
-			binding.appbarBottom?.let { bottomBar ->
+				.addTransition(Slide(Gravity.TOP).addTarget(viewBinding.appbarTop))
+				.addTransition(Fade().addTarget(viewBinding.infoBar))
+			viewBinding.appbarBottom?.let { bottomBar ->
 				transition.addTransition(Slide(Gravity.BOTTOM).addTarget(bottomBar))
 			}
-			TransitionManager.beginDelayedTransition(binding.root, transition)
-			binding.appbarTop.isVisible = isUiVisible
-			binding.appbarBottom?.isVisible = isUiVisible
-			binding.infoBar.isGone = isUiVisible || (viewModel.isInfoBarEnabled.value == false)
+			TransitionManager.beginDelayedTransition(viewBinding.root, transition)
+			viewBinding.appbarTop.isVisible = isUiVisible
+			viewBinding.appbarBottom?.isVisible = isUiVisible
+			viewBinding.infoBar.isGone = isUiVisible || (viewModel.isInfoBarEnabled.value == false)
 			if (isUiVisible) {
 				showSystemUI()
 			} else {
@@ -323,12 +323,12 @@ class ReaderActivity :
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
 		val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-		binding.appbarTop.updatePadding(
+		viewBinding.appbarTop.updatePadding(
 			top = systemBars.top,
 			right = systemBars.right,
 			left = systemBars.left,
 		)
-		binding.appbarBottom?.updatePadding(
+		viewBinding.appbarBottom?.updatePadding(
 			bottom = systemBars.bottom,
 			right = systemBars.right,
 			left = systemBars.left,
@@ -349,7 +349,7 @@ class ReaderActivity :
 	}
 
 	override fun toggleUiVisibility() {
-		setUiIsVisible(!binding.appbarTop.isVisible)
+		setUiIsVisible(!viewBinding.appbarTop.isVisible)
 	}
 
 	override fun isReaderResumed(): Boolean {
@@ -358,21 +358,21 @@ class ReaderActivity :
 	}
 
 	private fun onReaderBarChanged(isBarEnabled: Boolean) {
-		binding.infoBar.isVisible = isBarEnabled && binding.appbarTop.isGone
+		viewBinding.infoBar.isVisible = isBarEnabled && viewBinding.appbarTop.isGone
 	}
 
 	private fun onBookmarkStateChanged(isAdded: Boolean) {
-		val menuItem = binding.toolbarBottom.menu.findItem(R.id.action_bookmark) ?: return
+		val menuItem = viewBinding.toolbarBottom.menu.findItem(R.id.action_bookmark) ?: return
 		menuItem.setTitle(if (isAdded) R.string.bookmark_remove else R.string.bookmark_add)
 		menuItem.setIcon(if (isAdded) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
 	}
 
 	private fun onUiStateChanged(uiState: ReaderUiState?, previous: ReaderUiState?) {
 		title = uiState?.chapterName ?: uiState?.mangaName ?: getString(R.string.loading_)
-		binding.infoBar.update(uiState)
+		viewBinding.infoBar.update(uiState)
 		if (uiState == null) {
 			supportActionBar?.subtitle = null
-			binding.slider.isVisible = false
+			viewBinding.slider.isVisible = false
 			return
 		}
 		supportActionBar?.subtitle = if (uiState.chapterNumber in 1..uiState.chaptersTotal) {
@@ -382,15 +382,15 @@ class ReaderActivity :
 		}
 		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
 			if (!uiState.chapterName.isNullOrEmpty()) {
-				binding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
+				viewBinding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
 			}
 		}
 		if (uiState.isSliderAvailable()) {
-			binding.slider.valueTo = uiState.totalPages.toFloat() - 1
-			binding.slider.setValueRounded(uiState.currentPage.toFloat())
-			binding.slider.isVisible = true
+			viewBinding.slider.valueTo = uiState.totalPages.toFloat() - 1
+			viewBinding.slider.setValueRounded(uiState.currentPage.toFloat())
+			viewBinding.slider.isVisible = true
 		} else {
-			binding.slider.isVisible = false
+			viewBinding.slider.isVisible = false
 		}
 	}
 

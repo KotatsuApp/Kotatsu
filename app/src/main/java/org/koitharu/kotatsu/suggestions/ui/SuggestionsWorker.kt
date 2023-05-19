@@ -38,6 +38,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.almostEquals
+import org.koitharu.kotatsu.core.util.ext.asArrayList
+import org.koitharu.kotatsu.core.util.ext.flatten
+import org.koitharu.kotatsu.core.util.ext.takeMostFrequent
+import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
+import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.domain.HistoryRepository
@@ -45,18 +51,12 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
-import org.koitharu.kotatsu.utils.ext.almostEquals
-import org.koitharu.kotatsu.utils.ext.asArrayList
-import org.koitharu.kotatsu.utils.ext.flatten
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
-import org.koitharu.kotatsu.utils.ext.takeMostFrequent
-import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
-import org.koitharu.kotatsu.utils.ext.trySetForeground
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 import kotlin.random.Random
@@ -74,6 +74,10 @@ class SuggestionsWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, params) {
 
 	override suspend fun doWork(): Result {
+		if (!appSettings.isSuggestionsEnabled) {
+			suggestionRepository.clear()
+			return Result.success()
+		}
 		trySetForeground()
 		val count = doWorkImpl()
 		val outputData = workDataOf(DATA_COUNT to count)
@@ -112,10 +116,6 @@ class SuggestionsWorker @AssistedInject constructor(
 	}
 
 	private suspend fun doWorkImpl(): Int {
-		if (!appSettings.isSuggestionsEnabled) {
-			suggestionRepository.clear()
-			return 0
-		}
 		val seed = (
 			historyRepository.getList(0, 20) +
 				favouritesRepository.getLastManga(20)

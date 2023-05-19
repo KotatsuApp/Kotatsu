@@ -13,13 +13,13 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseFragment
 import org.koitharu.kotatsu.core.github.AppVersion
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.databinding.FragmentToolsBinding
 import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.about.AppUpdateDialog
-import org.koitharu.kotatsu.utils.ext.setChecked
 
 @AndroidEntryPoint
 class ToolsFragment :
@@ -29,12 +29,12 @@ class ToolsFragment :
 
 	private val viewModel by viewModels<ToolsViewModel>()
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentToolsBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentToolsBinding {
 		return FragmentToolsBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentToolsBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.buttonSettings.setOnClickListener(this)
 		binding.buttonDownloads.setOnClickListener(this)
 		binding.cardUpdate.buttonChangelog.setOnClickListener(this)
@@ -75,18 +75,18 @@ class ToolsFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
+		requireViewBinding().root.updatePadding(
 			bottom = insets.bottom,
 		)
 	}
 
 	private fun onAppUpdateAvailable(version: AppVersion?) {
 		if (version == null) {
-			binding.cardUpdate.root.isVisible = false
+			requireViewBinding().cardUpdate.root.isVisible = false
 			return
 		}
-		binding.cardUpdate.textSecondary.text = getString(R.string.new_version_s, version.name)
-		binding.cardUpdate.root.isVisible = true
+		requireViewBinding().cardUpdate.textSecondary.text = getString(R.string.new_version_s, version.name)
+		requireViewBinding().cardUpdate.root.isVisible = true
 	}
 
 	companion object {

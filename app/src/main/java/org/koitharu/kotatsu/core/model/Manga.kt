@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.core.model
 
 import androidx.core.os.LocaleListCompat
+import org.koitharu.kotatsu.core.util.ext.iterator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.utils.ext.iterator
 
 fun Collection<Manga>.ids() = mapToSet { it.id }
 

@@ -6,17 +6,17 @@ import coil.size.Scale
 import coil.size.Size
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.decodeRegion
+import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.setTextColorAttr
+import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
-import org.koitharu.kotatsu.utils.ext.decodeRegion
-import org.koitharu.kotatsu.utils.ext.disposeImageRequest
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.setTextColorAttr
-import org.koitharu.kotatsu.utils.ext.source
 import com.google.android.material.R as materialR
 
 fun pageThumbnailAD(

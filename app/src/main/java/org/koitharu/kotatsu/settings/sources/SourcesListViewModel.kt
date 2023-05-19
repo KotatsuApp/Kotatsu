@@ -9,18 +9,18 @@ import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.ReversibleHandle
-import org.koitharu.kotatsu.base.ui.BaseViewModel
-import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BaseViewModel
+import org.koitharu.kotatsu.core.ui.util.ReversibleAction
+import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
+import org.koitharu.kotatsu.core.util.SingleLiveEvent
+import org.koitharu.kotatsu.core.util.ext.map
+import org.koitharu.kotatsu.core.util.ext.move
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
-import org.koitharu.kotatsu.utils.SingleLiveEvent
-import org.koitharu.kotatsu.utils.ext.map
-import org.koitharu.kotatsu.utils.ext.move
 import java.util.Locale
 import java.util.TreeMap
 import javax.inject.Inject
@@ -65,8 +65,7 @@ class SourcesListViewModel @Inject constructor(
 	fun canReorder(oldPos: Int, newPos: Int): Boolean {
 		val snapshot = items.value?.toMutableList() ?: return false
 		if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isEnabled != true) return false
-		if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isEnabled != true) return false
-		return true
+		return (snapshot[newPos] as? SourceConfigItem.SourceItem)?.isEnabled == true
 	}
 
 	fun setEnabled(source: MangaSource, isEnabled: Boolean) {

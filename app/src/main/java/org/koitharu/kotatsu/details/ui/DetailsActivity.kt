@@ -24,14 +24,17 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.MangaIntent
-import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.dialog.RecyclerViewAlertDialog
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.dialog.RecyclerViewAlertDialog
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
+import org.koitharu.kotatsu.core.util.ViewBadge
+import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
+import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.adapter.branchAD
@@ -44,9 +47,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
-import org.koitharu.kotatsu.utils.ViewBadge
-import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
-import org.koitharu.kotatsu.utils.ext.textAndVisible
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -59,7 +59,7 @@ class DetailsActivity :
 	PopupMenu.OnMenuItemClickListener {
 
 	override val bsHeader: BottomSheetHeaderBar?
-		get() = binding.headerChapters
+		get() = viewBinding.headerChapters
 
 	@Inject
 	lateinit var shortcutsUpdater: ShortcutsUpdater
@@ -76,16 +76,16 @@ class DetailsActivity :
 			setDisplayHomeAsUpEnabled(true)
 			setDisplayShowTitleEnabled(false)
 		}
-		binding.buttonRead.setOnClickListener(this)
-		binding.buttonRead.setOnLongClickListener(this)
-		binding.buttonDropdown.setOnClickListener(this)
-		viewBadge = ViewBadge(binding.buttonRead, this)
+		viewBinding.buttonRead.setOnClickListener(this)
+		viewBinding.buttonRead.setOnLongClickListener(this)
+		viewBinding.buttonDropdown.setOnClickListener(this)
+		viewBadge = ViewBadge(viewBinding.buttonRead, this)
 
-		chaptersMenuProvider = if (binding.layoutBottom != null) {
-			val bsMediator = ChaptersBottomSheetMediator(checkNotNull(binding.layoutBottom))
+		chaptersMenuProvider = if (viewBinding.layoutBottom != null) {
+			val bsMediator = ChaptersBottomSheetMediator(checkNotNull(viewBinding.layoutBottom))
 			actionModeDelegate.addListener(bsMediator)
-			checkNotNull(binding.headerChapters).addOnExpansionChangeListener(bsMediator)
-			checkNotNull(binding.headerChapters).addOnLayoutChangeListener(bsMediator)
+			checkNotNull(viewBinding.headerChapters).addOnExpansionChangeListener(bsMediator)
+			checkNotNull(viewBinding.headerChapters).addOnLayoutChangeListener(bsMediator)
 			onBackPressedDispatcher.addCallback(bsMediator)
 			ChaptersMenuProvider(viewModel, bsMediator)
 		} else {
@@ -98,7 +98,7 @@ class DetailsActivity :
 		viewModel.onError.observe(
 			this,
 			SnackbarErrorObserver(
-				host = binding.containerDetails,
+				host = viewBinding.containerDetails,
 				fragment = null,
 				resolver = exceptionResolver,
 				onResolved = { isResolved ->
@@ -113,30 +113,30 @@ class DetailsActivity :
 		}
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
 		viewModel.selectedBranchName.observe(this) {
-			binding.headerChapters?.subtitle = it
-			binding.textViewSubtitle?.textAndVisible = it
+			viewBinding.headerChapters?.subtitle = it
+			viewBinding.textViewSubtitle?.textAndVisible = it
 		}
 		viewModel.isChaptersReversed.observe(this) {
-			binding.headerChapters?.invalidateMenu() ?: invalidateOptionsMenu()
+			viewBinding.headerChapters?.invalidateMenu() ?: invalidateOptionsMenu()
 		}
 		viewModel.favouriteCategories.observe(this) {
 			invalidateOptionsMenu()
 		}
 		viewModel.branches.observe(this) {
-			binding.buttonDropdown.isVisible = it.size > 1
+			viewBinding.buttonDropdown.isVisible = it.size > 1
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
-		viewModel.onDownloadStarted.observe(this, DownloadStartedObserver(binding.containerDetails))
+		viewModel.onDownloadStarted.observe(this, DownloadStartedObserver(viewBinding.containerDetails))
 
 		addMenuProvider(
 			DetailsMenuProvider(
 				activity = this,
 				viewModel = viewModel,
-				snackbarHost = binding.containerChapters,
+				snackbarHost = viewBinding.containerChapters,
 				shortcutsUpdater = shortcutsUpdater,
 			),
 		)
-		binding.headerChapters?.addOnExpansionChangeListener(this) ?: addMenuProvider(chaptersMenuProvider)
+		viewBinding.headerChapters?.addOnExpansionChangeListener(this) ?: addMenuProvider(chaptersMenuProvider)
 	}
 
 	override fun onClick(v: View) {
@@ -189,16 +189,16 @@ class DetailsActivity :
 		} else {
 			headerBar.removeMenuProvider(chaptersMenuProvider)
 		}
-		binding.buttonRead.isGone = isExpanded
+		viewBinding.buttonRead.isGone = isExpanded
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
 		title = manga.title
 		val hasChapters = !manga.chapters.isNullOrEmpty()
-		binding.buttonRead.isEnabled = hasChapters
+		viewBinding.buttonRead.isEnabled = hasChapters
 		invalidateOptionsMenu()
 		showBottomSheet(manga.chapters != null)
-		binding.groupHeader?.isVisible = hasChapters
+		viewBinding.groupHeader?.isVisible = hasChapters
 	}
 
 	private fun onMangaRemoved(manga: Manga) {
@@ -211,17 +211,17 @@ class DetailsActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
+		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
 		if (insets.bottom > 0) {
-			window.setNavigationBarTransparentCompat(this, binding.layoutBottom?.elevation ?: 0f, 0.9f)
+			window.setNavigationBarTransparentCompat(this, viewBinding.layoutBottom?.elevation ?: 0f, 0.9f)
 		}
 	}
 
 	private fun onHistoryChanged(info: HistoryInfo) {
-		with(binding.buttonRead) {
+		with(viewBinding.buttonRead) {
 			if (info.history != null) {
 				setText(R.string._continue)
 				setIconResource(if (info.isIncognitoMode) R.drawable.ic_incognito else R.drawable.ic_play)
@@ -236,8 +236,8 @@ class DetailsActivity :
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
 			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
 		}
-		binding.headerChapters?.title = text
-		binding.textViewTitle?.text = text
+		viewBinding.headerChapters?.title = text
+		viewBinding.textViewTitle?.text = text
 	}
 
 	private fun onNewChaptersChanged(newChapters: Int) {
@@ -307,22 +307,22 @@ class DetailsActivity :
 		}
 	}
 
-	private fun isTabletLayout() = binding.layoutBottom == null
+	private fun isTabletLayout() = viewBinding.layoutBottom == null
 
 	private fun showBottomSheet(isVisible: Boolean) {
-		val view = binding.layoutBottom ?: return
+		val view = viewBinding.layoutBottom ?: return
 		if (view.isVisible == isVisible) return
 		val transition = Slide(Gravity.BOTTOM)
 		transition.addTarget(view)
 		transition.interpolator = AccelerateDecelerateInterpolator()
-		TransitionManager.beginDelayedTransition(binding.root as ViewGroup, transition)
+		TransitionManager.beginDelayedTransition(viewBinding.root as ViewGroup, transition)
 		view.isVisible = isVisible
 	}
 
 	private fun makeSnackbar(text: CharSequence, @BaseTransientBottomBar.Duration duration: Int): Snackbar {
-		val sb = Snackbar.make(binding.containerDetails, text, duration)
-		if (binding.layoutBottom?.isVisible == true) {
-			sb.anchorView = binding.headerChapters
+		val sb = Snackbar.make(viewBinding.containerDetails, text, duration)
+		if (viewBinding.layoutBottom?.isVisible == true) {
+			sb.anchorView = viewBinding.headerChapters
 		}
 		return sb
 	}

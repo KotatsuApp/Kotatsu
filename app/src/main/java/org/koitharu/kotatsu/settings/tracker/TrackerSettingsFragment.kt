@@ -20,13 +20,13 @@ import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.settings.tracker.categories.TrackerCategoriesConfigSheet
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
+import javax.inject.Inject
 
 private const val KEY_IGNORE_DOZE = "ignore_dose"
 
@@ -95,24 +95,29 @@ class TrackerSettingsFragment :
 					startActivity(intent)
 					true
 				}
+
 				channels.areNotificationsDisabled -> {
 					val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
 						.setData(Uri.fromParts("package", requireContext().packageName, null))
 					startActivity(intent)
 					true
 				}
+
 				else -> {
 					super.onPreferenceTreeClick(preference)
 				}
 			}
+
 			AppSettings.KEY_TRACK_CATEGORIES -> {
 				TrackerCategoriesConfigSheet.show(childFragmentManager)
 				true
 			}
+
 			KEY_IGNORE_DOZE -> {
 				startIgnoreDoseActivity(preference.context)
 				true
 			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}

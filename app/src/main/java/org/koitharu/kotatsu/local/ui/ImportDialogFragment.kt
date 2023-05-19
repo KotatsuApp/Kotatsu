@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogImportBinding
 import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
 import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
@@ -27,7 +27,7 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 		restoreBackup(it)
 	}
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): DialogImportBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): DialogImportBinding {
 		return DialogImportBinding.inflate(inflater, container, false)
 	}
 
@@ -38,8 +38,8 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 			.setCancelable(true)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: DialogImportBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.buttonDir.setOnClickListener(this)
 		binding.buttonFile.setOnClickListener(this)
 		binding.buttonBackup.setOnClickListener(this)

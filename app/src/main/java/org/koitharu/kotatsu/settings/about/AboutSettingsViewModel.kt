@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.settings.about
 
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.github.AppVersion
-import org.koitharu.kotatsu.utils.SingleLiveEvent
+import org.koitharu.kotatsu.core.ui.BaseViewModel
+import org.koitharu.kotatsu.core.util.SingleLiveEvent
+import javax.inject.Inject
 
 @HiltViewModel
 class AboutSettingsViewModel @Inject constructor(

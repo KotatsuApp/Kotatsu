@@ -2,10 +2,10 @@ package org.koitharu.kotatsu.settings.onboard.adapter
 
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.setChecked
+import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemSourceLocaleBinding
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
-import org.koitharu.kotatsu.utils.ext.setChecked
-import org.koitharu.kotatsu.utils.ext.textAndVisible
 
 fun sourceLocaleAD(
 	listener: SourceLocaleListener,

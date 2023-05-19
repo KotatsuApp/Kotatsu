@@ -6,7 +6,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.dnsoverhttps.DnsOverHttps
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.net.InetAddress
 import java.net.UnknownHostException
 
@@ -52,8 +52,9 @@ class DoHManager(
 					tryGetByIp("8.8.8.8"),
 					tryGetByIp("2001:4860:4860::8888"),
 					tryGetByIp("2001:4860:4860::8844"),
-				)
+				),
 			).build()
+
 		DoHProvider.CLOUDFLARE -> DnsOverHttps.Builder().client(bootstrapClient)
 			.url("https://cloudflare-dns.com/dns-query".toHttpUrl())
 			.resolvePrivateAddresses(true)
@@ -68,8 +69,9 @@ class DoHManager(
 					tryGetByIp("2606:4700:4700::1001"),
 					tryGetByIp("2606:4700:4700::0064"),
 					tryGetByIp("2606:4700:4700::6400"),
-				)
+				),
 			).build()
+
 		DoHProvider.ADGUARD -> DnsOverHttps.Builder().client(bootstrapClient)
 			.url("https://dns-unfiltered.adguard.com/dns-query".toHttpUrl())
 			.resolvePrivateAddresses(true)
@@ -79,7 +81,7 @@ class DoHManager(
 					tryGetByIp("94.140.14.141"),
 					tryGetByIp("2a10:50c0::1:ff"),
 					tryGetByIp("2a10:50c0::2:ff"),
-				)
+				),
 			).build()
 	}
 

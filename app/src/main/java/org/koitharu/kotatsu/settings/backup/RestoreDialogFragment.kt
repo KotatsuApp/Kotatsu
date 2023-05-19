@@ -3,18 +3,17 @@ package org.koitharu.kotatsu.settings.backup
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.backup.CompositeResult
+import org.koitharu.kotatsu.core.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.withArgs
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -22,13 +21,13 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	private val viewModel: RestoreViewModel by viewModels()
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = DialogProgressBinding.inflate(inflater, container, false)
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: DialogProgressBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.textViewTitle.setText(R.string.restore_backup)
 		binding.textViewSubtitle.setText(R.string.preparing_)
 
@@ -52,7 +51,7 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 	}
 
 	private fun onProgressChanged(value: Float) {
-		with(binding.progressBar) {
+		with(requireViewBinding().progressBar) {
 			isVisible = true
 			val wasIndeterminate = isIndeterminate
 			isIndeterminate = value < 0

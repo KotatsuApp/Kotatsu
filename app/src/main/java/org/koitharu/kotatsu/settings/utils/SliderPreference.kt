@@ -11,7 +11,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.google.android.material.slider.Slider
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.setValueRounded
+import org.koitharu.kotatsu.core.util.ext.setValueRounded
 
 class SliderPreference @JvmOverloads constructor(
 	context: Context,

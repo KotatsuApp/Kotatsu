@@ -12,20 +12,20 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.util.ext.awaitViewLifecycle
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.requireSerializable
+import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
-import org.koitharu.kotatsu.utils.ext.awaitViewLifecycle
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.requireSerializable
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
-import org.koitharu.kotatsu.utils.ext.withArgs
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 @AndroidEntryPoint

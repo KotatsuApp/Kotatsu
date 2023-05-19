@@ -13,7 +13,7 @@
 		app:elevation="0dp"
 		app:liftOnScroll="false">
 
-		<org.koitharu.kotatsu.base.ui.widgets.WindowInsetHolder
+		<org.koitharu.kotatsu.core.ui.widgets.WindowInsetHolder
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_gravity="top"

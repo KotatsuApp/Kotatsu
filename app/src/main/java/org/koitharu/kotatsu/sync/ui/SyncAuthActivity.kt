@@ -19,12 +19,12 @@ import androidx.transition.TransitionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.databinding.ActivitySyncAuthBinding
 import org.koitharu.kotatsu.sync.data.SyncSettings
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 
 @AndroidEntryPoint
 class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickListener, FragmentResultListener {
@@ -41,14 +41,14 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		accountAuthenticatorResponse =
 			intent.getParcelableExtraCompat(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
 		accountAuthenticatorResponse?.onRequestContinued()
-		binding.buttonCancel.setOnClickListener(this)
-		binding.buttonNext.setOnClickListener(this)
-		binding.buttonBack.setOnClickListener(this)
-		binding.buttonDone.setOnClickListener(this)
-		binding.layoutProgress.setOnClickListener(this)
-		binding.buttonSettings.setOnClickListener(this)
-		binding.editEmail.addTextChangedListener(EmailTextWatcher(binding.buttonNext))
-		binding.editPassword.addTextChangedListener(PasswordTextWatcher(binding.buttonDone))
+		viewBinding.buttonCancel.setOnClickListener(this)
+		viewBinding.buttonNext.setOnClickListener(this)
+		viewBinding.buttonBack.setOnClickListener(this)
+		viewBinding.buttonDone.setOnClickListener(this)
+		viewBinding.layoutProgress.setOnClickListener(this)
+		viewBinding.buttonSettings.setOnClickListener(this)
+		viewBinding.editEmail.addTextChangedListener(EmailTextWatcher(viewBinding.buttonNext))
+		viewBinding.editPassword.addTextChangedListener(PasswordTextWatcher(viewBinding.buttonDone))
 
 		onBackPressedDispatcher.addCallback(pageBackCallback)
 
@@ -65,7 +65,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		binding.root.setPadding(
+		viewBinding.root.setPadding(
 			basePadding + insets.left,
 			basePadding + insets.top,
 			basePadding + insets.right,
@@ -81,21 +81,21 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 			}
 
 			R.id.button_next -> {
-				binding.groupLogin.isVisible = false
-				binding.groupPassword.isVisible = true
+				viewBinding.groupLogin.isVisible = false
+				viewBinding.groupPassword.isVisible = true
 				pageBackCallback.update()
 			}
 
 			R.id.button_back -> {
-				binding.groupPassword.isVisible = false
-				binding.groupLogin.isVisible = true
+				viewBinding.groupPassword.isVisible = false
+				viewBinding.groupLogin.isVisible = true
 				pageBackCallback.update()
 			}
 
 			R.id.button_done -> {
 				viewModel.obtainToken(
-					email = binding.editEmail.text.toString(),
-					password = binding.editPassword.text.toString(),
+					email = viewBinding.editEmail.text.toString(),
+					password = viewBinding.editPassword.text.toString(),
 				)
 			}
 
@@ -120,11 +120,11 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		if (isLoading == binding.layoutProgress.isVisible) {
+		if (isLoading == viewBinding.layoutProgress.isVisible) {
 			return
 		}
-		TransitionManager.beginDelayedTransition(binding.root, Fade())
-		binding.layoutProgress.isVisible = isLoading
+		TransitionManager.beginDelayedTransition(viewBinding.root, Fade())
+		viewBinding.layoutProgress.isVisible = isLoading
 		pageBackCallback.update()
 	}
 
@@ -198,13 +198,13 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 	private inner class PageBackCallback : OnBackPressedCallback(false) {
 
 		override fun handleOnBackPressed() {
-			binding.groupLogin.isVisible = true
-			binding.groupPassword.isVisible = false
+			viewBinding.groupLogin.isVisible = true
+			viewBinding.groupPassword.isVisible = false
 			update()
 		}
 
 		fun update() {
-			isEnabled = !binding.layoutProgress.isVisible && binding.groupPassword.isVisible
+			isEnabled = !viewBinding.layoutProgress.isVisible && viewBinding.groupPassword.isVisible
 		}
 	}
 }

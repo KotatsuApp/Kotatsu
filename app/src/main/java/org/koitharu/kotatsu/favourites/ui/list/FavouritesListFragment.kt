@@ -9,13 +9,14 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
-import org.koitharu.kotatsu.core.ui.titleRes
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.model.titleRes
+import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.withArgs
+import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.withArgs
 
 @AndroidEntryPoint
 class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener {
@@ -24,10 +25,10 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 
 	override val isSwipeRefreshEnabled = false
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		if (viewModel.categoryId != NO_ID) {
-			addMenuProvider(FavouritesListMenuProvider(view.context, viewModel))
+			addMenuProvider(FavouritesListMenuProvider(binding.root.context, viewModel))
 		}
 		viewModel.sortOrder.observe(viewLifecycleOwner) { activity?.invalidateOptionsMenu() }
 	}

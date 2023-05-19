@@ -8,9 +8,9 @@ import android.graphics.RectF
 import android.view.View
 import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
+import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import com.google.android.material.R as materialR
-import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class ChaptersSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
 

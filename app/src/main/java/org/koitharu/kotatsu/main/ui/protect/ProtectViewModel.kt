@@ -1,14 +1,14 @@
 package org.koitharu.kotatsu.main.ui.protect
 
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BaseViewModel
+import org.koitharu.kotatsu.core.util.SingleLiveEvent
 import org.koitharu.kotatsu.parsers.util.md5
-import org.koitharu.kotatsu.utils.SingleLiveEvent
+import javax.inject.Inject
 
 private const val PASSWORD_COMPARE_DELAY = 1_000L
 

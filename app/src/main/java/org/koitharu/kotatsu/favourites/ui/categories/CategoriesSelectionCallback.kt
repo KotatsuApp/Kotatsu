@@ -6,7 +6,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import com.google.android.material.R as materialR
 
@@ -41,10 +41,12 @@ class CategoriesSelectionCallback(
 				mode.finish()
 				true
 			}
+
 			R.id.action_remove -> {
 				confirmDeleteCategories(controller.snapshot(), mode)
 				true
 			}
+
 			else -> false
 		}
 	}

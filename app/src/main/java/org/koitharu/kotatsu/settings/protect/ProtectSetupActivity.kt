@@ -17,7 +17,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
 
 private const val MIN_PASSWORD_LENGTH = 4
@@ -36,29 +36,29 @@ class ProtectSetupActivity :
 		super.onCreate(savedInstanceState)
 		window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 		setContentView(ActivitySetupProtectBinding.inflate(layoutInflater))
-		binding.editPassword.addTextChangedListener(this)
-		binding.editPassword.setOnEditorActionListener(this)
-		binding.buttonNext.setOnClickListener(this)
-		binding.buttonCancel.setOnClickListener(this)
+		viewBinding.editPassword.addTextChangedListener(this)
+		viewBinding.editPassword.setOnEditorActionListener(this)
+		viewBinding.buttonNext.setOnClickListener(this)
+		viewBinding.buttonCancel.setOnClickListener(this)
 
-		binding.switchBiometric.isChecked = viewModel.isBiometricEnabled
-		binding.switchBiometric.setOnCheckedChangeListener(this)
+		viewBinding.switchBiometric.isChecked = viewModel.isBiometricEnabled
+		viewBinding.switchBiometric.setOnCheckedChangeListener(this)
 
 		viewModel.isSecondStep.observe(this, this::onStepChanged)
 		viewModel.onPasswordSet.observe(this) {
 			finishAfterTransition()
 		}
 		viewModel.onPasswordMismatch.observe(this) {
-			binding.editPassword.error = getString(R.string.passwords_mismatch)
+			viewBinding.editPassword.error = getString(R.string.passwords_mismatch)
 		}
 		viewModel.onClearText.observe(this) {
-			binding.editPassword.text?.clear()
+			viewBinding.editPassword.text?.clear()
 		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		binding.root.setPadding(
+		viewBinding.root.setPadding(
 			basePadding + insets.left,
 			basePadding + insets.top,
 			basePadding + insets.right,
@@ -70,7 +70,7 @@ class ProtectSetupActivity :
 		when (v.id) {
 			R.id.button_cancel -> finish()
 			R.id.button_next -> viewModel.onNextClick(
-				password = binding.editPassword.text?.toString() ?: return,
+				password = viewBinding.editPassword.text?.toString() ?: return,
 			)
 		}
 	}
@@ -80,8 +80,8 @@ class ProtectSetupActivity :
 	}
 
 	override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-		return if (actionId == EditorInfo.IME_ACTION_DONE && binding.buttonNext.isEnabled) {
-			binding.buttonNext.performClick()
+		return if (actionId == EditorInfo.IME_ACTION_DONE && viewBinding.buttonNext.isEnabled) {
+			viewBinding.buttonNext.performClick()
 			true
 		} else {
 			false
@@ -93,22 +93,22 @@ class ProtectSetupActivity :
 	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	override fun afterTextChanged(s: Editable?) {
-		binding.editPassword.error = null
+		viewBinding.editPassword.error = null
 		val isEnoughLength = (s?.length ?: 0) >= MIN_PASSWORD_LENGTH
-		binding.buttonNext.isEnabled = isEnoughLength
-		binding.layoutPassword.isHelperTextEnabled =
+		viewBinding.buttonNext.isEnabled = isEnoughLength
+		viewBinding.layoutPassword.isHelperTextEnabled =
 			!isEnoughLength || viewModel.isSecondStep.value == true
 	}
 
 	private fun onStepChanged(isSecondStep: Boolean) {
-		binding.buttonCancel.isGone = isSecondStep
-		binding.switchBiometric.isVisible = isSecondStep && isBiometricAvailable()
+		viewBinding.buttonCancel.isGone = isSecondStep
+		viewBinding.switchBiometric.isVisible = isSecondStep && isBiometricAvailable()
 		if (isSecondStep) {
-			binding.layoutPassword.helperText = getString(R.string.repeat_password)
-			binding.buttonNext.setText(R.string.confirm)
+			viewBinding.layoutPassword.helperText = getString(R.string.repeat_password)
+			viewBinding.buttonNext.setText(R.string.confirm)
 		} else {
-			binding.layoutPassword.helperText = getString(R.string.password_length_hint)
-			binding.buttonNext.setText(R.string.next)
+			viewBinding.layoutPassword.helperText = getString(R.string.password_length_hint)
+			viewBinding.buttonNext.setText(R.string.next)
 		}
 	}
 

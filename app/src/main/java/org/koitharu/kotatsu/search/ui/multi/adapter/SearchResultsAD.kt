@@ -7,9 +7,9 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.databinding.ItemListGroupBinding
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
@@ -27,12 +27,12 @@ fun searchResultsAD(
 	listener: OnListItemClickListener<Manga>,
 	itemClickListener: OnListItemClickListener<MultiSearchListModel>,
 ) = adapterDelegateViewBinding<MultiSearchListModel, ListModel, ItemListGroupBinding>(
-	{ layoutInflater, parent -> ItemListGroupBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemListGroupBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	binding.recyclerView.setRecycledViewPool(sharedPool)
 	val adapter = ListDelegationAdapter(
-		mangaGridItemAD(coil, lifecycleOwner, listener, sizeResolver)
+		mangaGridItemAD(coil, lifecycleOwner, listener, sizeResolver),
 	)
 	binding.recyclerView.addItemDecoration(selectionDecoration)
 	binding.recyclerView.adapter = adapter

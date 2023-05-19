@@ -5,8 +5,8 @@ import android.graphics.PointF
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import org.koitharu.kotatsu.core.util.ext.parents
 import org.koitharu.kotatsu.parsers.util.toIntUp
-import org.koitharu.kotatsu.utils.ext.parents
 
 private const val SCROLL_UNKNOWN = -1
 

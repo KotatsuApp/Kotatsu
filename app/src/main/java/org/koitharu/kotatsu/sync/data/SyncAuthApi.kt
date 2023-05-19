@@ -5,10 +5,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import org.koitharu.kotatsu.core.exceptions.SyncApiException
+import org.koitharu.kotatsu.core.util.ext.toRequestBody
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.parsers.util.removeSurrounding
-import org.koitharu.kotatsu.utils.ext.toRequestBody
 import javax.inject.Inject
 
 @Reusable

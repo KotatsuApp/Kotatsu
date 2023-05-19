@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.recyclerview.widget.RecyclerView
-import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
-import java.util.*
+import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
+import java.util.LinkedList
 
 class WebtoonRecyclerView @JvmOverloads constructor(
 	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -60,6 +60,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 				}
 				return consumedByChild
 			}
+
 			dy < 0 -> {
 				val child = getChildAt(childCount - 1) as WebtoonFrameLayout
 				var consumedByChild = child.dispatchVerticalScroll(dy)

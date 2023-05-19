@@ -14,11 +14,14 @@ import androidx.core.view.updatePadding
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
@@ -33,9 +36,6 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
-import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -80,8 +80,8 @@ class MultiSearchActivity :
 			sizeResolver = sizeResolver,
 			selectionDecoration = selectionDecoration,
 		)
-		binding.recyclerView.adapter = adapter
-		binding.recyclerView.setHasFixedSize(true)
+		viewBinding.recyclerView.adapter = adapter
+		viewBinding.recyclerView.setHasFixedSize(true)
 
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
@@ -90,16 +90,16 @@ class MultiSearchActivity :
 
 		viewModel.query.observe(this) { title = it }
 		viewModel.list.observe(this) { adapter.items = it }
-		viewModel.onError.observe(this, SnackbarErrorObserver(binding.recyclerView, null))
-		viewModel.onDownloadStarted.observe(this, DownloadStartedObserver(binding.recyclerView))
+		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
+		viewModel.onDownloadStarted.observe(this, DownloadStartedObserver(viewBinding.recyclerView))
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
+		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
-		binding.recyclerView.updatePadding(
+		viewBinding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
 	}
@@ -142,7 +142,7 @@ class MultiSearchActivity :
 	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
-		binding.recyclerView.invalidateNestedItemDecorations()
+		viewBinding.recyclerView.invalidateNestedItemDecorations()
 	}
 
 	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {

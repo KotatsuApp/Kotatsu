@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.tracker.domain
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import javax.inject.Inject
 import junit.framework.TestCase.*
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -11,8 +10,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koitharu.kotatsu.SampleData
-import org.koitharu.kotatsu.base.domain.MangaDataRepository
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import javax.inject.Inject
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)

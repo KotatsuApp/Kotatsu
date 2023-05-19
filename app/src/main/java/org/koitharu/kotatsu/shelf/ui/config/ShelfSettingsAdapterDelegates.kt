@@ -7,10 +7,10 @@ import android.widget.CompoundButton
 import androidx.core.view.updatePaddingRelative
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.databinding.ItemCategoryCheckableMultipleBinding
 import org.koitharu.kotatsu.databinding.ItemShelfSectionDraggableBinding
 import org.koitharu.kotatsu.shelf.domain.ShelfSection
-import org.koitharu.kotatsu.utils.ext.setChecked
 
 @SuppressLint("ClickableViewAccessibility")
 fun shelfSectionAD(

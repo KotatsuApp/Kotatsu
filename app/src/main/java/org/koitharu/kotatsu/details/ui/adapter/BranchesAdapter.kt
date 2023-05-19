@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.details.ui.adapter
 
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
 
 class BranchesAdapter(

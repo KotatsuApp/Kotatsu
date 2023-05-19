@@ -23,13 +23,13 @@ import coil.request.ImageRequest
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
+import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.local.data.importer.SingleMangaImporter
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
-import org.koitharu.kotatsu.utils.ext.toUriOrNull
 
 @HiltWorker
 class ImportWorker @AssistedInject constructor(

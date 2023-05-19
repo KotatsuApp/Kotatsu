@@ -7,19 +7,19 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.NestedScrollStateHandle
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
-import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
-import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.core.ui.list.NestedScrollStateHandle
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
+import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.core.util.ext.removeItemDecoration
+import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ItemListGroupBinding
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
-import org.koitharu.kotatsu.utils.ext.removeItemDecoration
-import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 
 fun shelfGroupAD(
 	sharedPool: RecyclerView.RecycledViewPool,

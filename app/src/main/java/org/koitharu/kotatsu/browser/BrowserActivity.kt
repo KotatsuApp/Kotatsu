@@ -12,10 +12,10 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.catchingWebViewUnavailability
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
-import org.koitharu.kotatsu.utils.ext.catchingWebViewUnavailability
 import com.google.android.material.R as materialR
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -32,13 +32,13 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		with(binding.webView.settings) {
+		with(viewBinding.webView.settings) {
 			javaScriptEnabled = true
 			userAgentString = CommonHeadersInterceptor.userAgentChrome
 		}
-		binding.webView.webViewClient = BrowserClient(this)
-		binding.webView.webChromeClient = ProgressChromeClient(binding.progressBar)
-		onBackPressedCallback = WebViewBackPressedCallback(binding.webView)
+		viewBinding.webView.webViewClient = BrowserClient(this)
+		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
+		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView)
 		onBackPressedDispatcher.addCallback(onBackPressedCallback)
 		if (savedInstanceState != null) {
 			return
@@ -51,18 +51,18 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 				intent?.getStringExtra(EXTRA_TITLE) ?: getString(R.string.loading_),
 				url,
 			)
-			binding.webView.loadUrl(url)
+			viewBinding.webView.loadUrl(url)
 		}
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
-		binding.webView.saveState(outState)
+		viewBinding.webView.saveState(outState)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		binding.webView.restoreState(savedInstanceState)
+		viewBinding.webView.restoreState(savedInstanceState)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -73,14 +73,14 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		android.R.id.home -> {
-			binding.webView.stopLoading()
+			viewBinding.webView.stopLoading()
 			finishAfterTransition()
 			true
 		}
 
 		R.id.action_browser -> {
 			val intent = Intent(Intent.ACTION_VIEW)
-			intent.data = Uri.parse(binding.webView.url)
+			intent.data = Uri.parse(viewBinding.webView.url)
 			try {
 				startActivity(Intent.createChooser(intent, item.title))
 			} catch (_: ActivityNotFoundException) {
@@ -92,22 +92,22 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 	}
 
 	override fun onPause() {
-		binding.webView.onPause()
+		viewBinding.webView.onPause()
 		super.onPause()
 	}
 
 	override fun onResume() {
 		super.onResume()
-		binding.webView.onResume()
+		viewBinding.webView.onResume()
 	}
 
 	override fun onDestroy() {
 		super.onDestroy()
-		binding.webView.destroy()
+		viewBinding.webView.destroy()
 	}
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.progressBar.isVisible = isLoading
+		viewBinding.progressBar.isVisible = isLoading
 	}
 
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {
@@ -120,10 +120,10 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.appbar.updatePadding(
+		viewBinding.appbar.updatePadding(
 			top = insets.top,
 		)
-		binding.root.updatePadding(
+		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 			bottom = insets.bottom,

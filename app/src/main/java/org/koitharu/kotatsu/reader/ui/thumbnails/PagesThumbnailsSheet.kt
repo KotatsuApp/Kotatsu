@@ -11,15 +11,17 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.list.BoundsScrollListener
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.base.ui.list.ScrollListenerInvalidationObserver
-import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.list.BoundsScrollListener
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.ScrollListenerInvalidationObserver
+import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -27,9 +29,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.TargetScrollObserver
-import org.koitharu.kotatsu.utils.LoggingAdapterDataObserver
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
-import org.koitharu.kotatsu.utils.ext.withArgs
+import org.koitharu.kotatsu.util.LoggingAdapterDataObserver
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -55,13 +55,13 @@ class PagesThumbnailsSheet :
 		spanSizeLookup.invalidateCache()
 	}
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetPagesBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetPagesBinding {
 		return SheetPagesBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-		spanResolver = MangaListSpanResolver(view.resources)
+	override fun onViewBindingCreated(binding: SheetPagesBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
+		spanResolver = MangaListSpanResolver(binding.root.resources)
 		with(binding.headerBar) {
 			title = viewModel.title
 			subtitle = null
@@ -143,8 +143,7 @@ class PagesThumbnailsSheet :
 		}
 
 		override fun getSpanSize(position: Int): Int {
-			val total =
-				(binding.recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
+			val total = (viewBinding?.recyclerView?.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
 			return when (thumbnailsAdapter?.getItemViewType(position)) {
 				PageThumbnailAdapter.ITEM_TYPE_THUMBNAIL -> 1
 				else -> total

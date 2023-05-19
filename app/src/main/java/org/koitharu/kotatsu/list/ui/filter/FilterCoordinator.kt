@@ -13,12 +13,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.MangaDataRepository
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.util.asFlowLiveData
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.utils.asFlowLiveData
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.text.Collator
 import java.util.Locale
 import java.util.TreeSet
@@ -188,9 +188,7 @@ class FilterCoordinator(
 
 			if (tags != other.tags) return false
 			if (isLoading != other.isLoading) return false
-			if (isError != other.isError) return false
-
-			return true
+			return isError == other.isError
 		}
 
 		override fun hashCode(): Int {

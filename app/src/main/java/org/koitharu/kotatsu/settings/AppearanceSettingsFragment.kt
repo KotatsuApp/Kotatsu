@@ -16,19 +16,19 @@ import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.base.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
+import org.koitharu.kotatsu.core.util.ext.getLocalesConfig
+import org.koitharu.kotatsu.core.util.ext.map
+import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
+import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.settings.utils.ActivityListPreference
 import org.koitharu.kotatsu.settings.utils.SliderPreference
-import org.koitharu.kotatsu.utils.ext.getLocalesConfig
-import org.koitharu.kotatsu.utils.ext.map
-import org.koitharu.kotatsu.utils.ext.setDefaultValueCompat
-import org.koitharu.kotatsu.utils.ext.toList
 import java.util.Locale
 import javax.inject.Inject
 

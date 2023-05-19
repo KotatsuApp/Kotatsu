@@ -11,13 +11,13 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.github.VersionId
 import org.koitharu.kotatsu.core.github.isStable
 import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.utils.ShareHelper
+import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.util.ShareHelper
 import javax.inject.Inject
 
 @AndroidEntryPoint

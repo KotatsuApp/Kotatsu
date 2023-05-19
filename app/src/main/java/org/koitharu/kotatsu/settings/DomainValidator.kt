@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.settings
 
 import okhttp3.HttpUrl
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.EditTextValidator
+import org.koitharu.kotatsu.core.util.EditTextValidator
 
 class DomainValidator : EditTextValidator() {
 

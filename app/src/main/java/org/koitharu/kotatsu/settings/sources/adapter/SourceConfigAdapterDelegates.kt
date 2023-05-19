@@ -8,21 +8,21 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.OnTipCloseListener
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
+import org.koitharu.kotatsu.core.ui.image.FaviconFallbackDrawable
+import org.koitharu.kotatsu.core.ui.list.OnTipCloseListener
+import org.koitharu.kotatsu.core.util.ext.crossfade
+import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.source
+import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemExpandableBinding
 import org.koitharu.kotatsu.databinding.ItemFilterHeaderBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigBinding
 import org.koitharu.kotatsu.databinding.ItemSourceConfigCheckableBinding
 import org.koitharu.kotatsu.databinding.ItemTipBinding
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
-import org.koitharu.kotatsu.utils.ext.crossfade
-import org.koitharu.kotatsu.utils.ext.disposeImageRequest
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.source
-import org.koitharu.kotatsu.utils.ext.textAndVisible
-import org.koitharu.kotatsu.utils.image.FaviconFallbackDrawable
 
 fun sourceConfigHeaderDelegate() =
 	adapterDelegateViewBinding<SourceConfigItem.Header, SourceConfigItem, ItemFilterHeaderBinding>(

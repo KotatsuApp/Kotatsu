@@ -18,18 +18,18 @@ import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.decodeRegion
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.indicator
+import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.databinding.ActivityColorFilterBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
-import org.koitharu.kotatsu.utils.ext.decodeRegion
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.indicator
-import org.koitharu.kotatsu.utils.ext.setValueRounded
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -51,13 +51,13 @@ class ColorFilterConfigActivity :
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		binding.sliderBrightness.addOnChangeListener(this)
-		binding.sliderContrast.addOnChangeListener(this)
+		viewBinding.sliderBrightness.addOnChangeListener(this)
+		viewBinding.sliderContrast.addOnChangeListener(this)
 		val formatter = PercentLabelFormatter(resources)
-		binding.sliderContrast.setLabelFormatter(formatter)
-		binding.sliderBrightness.setLabelFormatter(formatter)
-		binding.buttonDone.setOnClickListener(this)
-		binding.buttonReset.setOnClickListener(this)
+		viewBinding.sliderContrast.setLabelFormatter(formatter)
+		viewBinding.sliderBrightness.setLabelFormatter(formatter)
+		viewBinding.buttonDone.setOnClickListener(this)
+		viewBinding.buttonReset.setOnClickListener(this)
 
 		onBackPressedDispatcher.addCallback(ColorFilterConfigBackPressedDispatcher(this, viewModel))
 
@@ -86,22 +86,22 @@ class ColorFilterConfigActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
+		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
-		binding.scrollView.updatePadding(
+		viewBinding.scrollView.updatePadding(
 			bottom = insets.bottom,
 		)
-		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+		viewBinding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			topMargin = insets.top
 		}
 	}
 
 	private fun onColorFilterChanged(readerColorFilter: ReaderColorFilter?) {
-		binding.sliderBrightness.setValueRounded(readerColorFilter?.brightness ?: 0f)
-		binding.sliderContrast.setValueRounded(readerColorFilter?.contrast ?: 0f)
-		binding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
+		viewBinding.sliderBrightness.setValueRounded(readerColorFilter?.brightness ?: 0f)
+		viewBinding.sliderContrast.setValueRounded(readerColorFilter?.contrast ?: 0f)
+		viewBinding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
 	}
 
 	private fun onPreviewChanged(preview: MangaPage?) {
@@ -111,18 +111,18 @@ class ColorFilterConfigActivity :
 			.scale(Scale.FILL)
 			.decodeRegion()
 			.tag(preview.source)
-			.indicator(listOf(binding.progressBefore, binding.progressAfter))
+			.indicator(listOf(viewBinding.progressBefore, viewBinding.progressAfter))
 			.error(R.drawable.ic_error_placeholder)
-			.size(ViewSizeResolver(binding.imageViewBefore))
+			.size(ViewSizeResolver(viewBinding.imageViewBefore))
 			.allowRgb565(false)
-			.target(ShadowViewTarget(binding.imageViewBefore, binding.imageViewAfter))
+			.target(ShadowViewTarget(viewBinding.imageViewBefore, viewBinding.imageViewAfter))
 			.enqueueWith(coil)
 	}
 
 	private fun onLoadingChanged(isLoading: Boolean) {
-		binding.sliderContrast.isEnabled = !isLoading
-		binding.sliderBrightness.isEnabled = !isLoading
-		binding.buttonDone.isEnabled = !isLoading
+		viewBinding.sliderContrast.isEnabled = !isLoading
+		viewBinding.sliderBrightness.isEnabled = !isLoading
+		viewBinding.buttonDone.isEnabled = !isLoading
 	}
 
 	private class PercentLabelFormatter(resources: Resources) : LabelFormatter {

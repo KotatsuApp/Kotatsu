@@ -10,13 +10,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationBarView
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
 import org.koitharu.kotatsu.settings.tools.ToolsFragment
 import org.koitharu.kotatsu.shelf.ui.ShelfFragment
 import org.koitharu.kotatsu.tracker.ui.feed.FeedFragment
-import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
-import org.koitharu.kotatsu.utils.ext.isAnimationsEnabled
 import java.util.LinkedList
 
 private const val TAG_PRIMARY = "primary"

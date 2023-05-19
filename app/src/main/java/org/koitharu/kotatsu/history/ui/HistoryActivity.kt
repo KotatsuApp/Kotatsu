@@ -9,10 +9,9 @@ import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
-import kotlin.text.Typography.dagger
 
 @AndroidEntryPoint
 class HistoryActivity :
@@ -20,7 +19,7 @@ class HistoryActivity :
 	AppBarOwner {
 
 	override val appBar: AppBarLayout
-		get() = binding.appbar
+		get() = viewBinding.appbar
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -37,7 +36,7 @@ class HistoryActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
+		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)

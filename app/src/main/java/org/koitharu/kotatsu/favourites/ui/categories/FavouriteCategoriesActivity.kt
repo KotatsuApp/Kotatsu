@@ -20,10 +20,11 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoriesAdapter
@@ -31,7 +32,6 @@ import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEdit
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -61,17 +61,17 @@ class FavouriteCategoriesActivity :
 			activity = this,
 			decoration = CategoriesSelectionDecoration(this),
 			registryOwner = this,
-			callback = CategoriesSelectionCallback(binding.recyclerView, viewModel),
+			callback = CategoriesSelectionCallback(viewBinding.recyclerView, viewModel),
 		)
-		binding.buttonDone.setOnClickListener(this)
-		selectionController.attachToRecyclerView(binding.recyclerView)
-		binding.recyclerView.setHasFixedSize(true)
-		binding.recyclerView.adapter = adapter
-		binding.fabAdd.setOnClickListener(this)
+		viewBinding.buttonDone.setOnClickListener(this)
+		selectionController.attachToRecyclerView(viewBinding.recyclerView)
+		viewBinding.recyclerView.setHasFixedSize(true)
+		viewBinding.recyclerView.adapter = adapter
+		viewBinding.fabAdd.setOnClickListener(this)
 		onBackPressedDispatcher.addCallback(exitReorderModeCallback)
 
 		viewModel.detalizedCategories.observe(this, ::onCategoriesChanged)
-		viewModel.onError.observe(this, SnackbarErrorObserver(binding.recyclerView, null))
+		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 		viewModel.isInReorderMode.observe(this, ::onReorderModeChanged)
 	}
 
@@ -126,16 +126,16 @@ class FavouriteCategoriesActivity :
 	override fun onEmptyActionClick() = Unit
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+		viewBinding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			rightMargin = topMargin + insets.right
 			leftMargin = topMargin + insets.left
 			bottomMargin = topMargin + insets.bottom
 		}
-		binding.root.updatePadding(
+		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
-		binding.recyclerView.updatePadding(
+		viewBinding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
 	}
@@ -149,21 +149,21 @@ class FavouriteCategoriesActivity :
 		val transition = Fade().apply {
 			duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 		}
-		TransitionManager.beginDelayedTransition(binding.toolbar, transition)
+		TransitionManager.beginDelayedTransition(viewBinding.toolbar, transition)
 		reorderHelper?.attachToRecyclerView(null)
 		reorderHelper = if (isReorderMode) {
 			selectionController.clear()
-			binding.fabAdd.hide()
+			viewBinding.fabAdd.hide()
 			ItemTouchHelper(ReorderHelperCallback()).apply {
-				attachToRecyclerView(binding.recyclerView)
+				attachToRecyclerView(viewBinding.recyclerView)
 			}
 		} else {
-			binding.fabAdd.show()
+			viewBinding.fabAdd.show()
 			null
 		}
-		binding.recyclerView.isNestedScrollingEnabled = !isReorderMode
+		viewBinding.recyclerView.isNestedScrollingEnabled = !isReorderMode
 		invalidateOptionsMenu()
-		binding.buttonDone.isVisible = isReorderMode
+		viewBinding.buttonDone.isVisible = isReorderMode
 		exitReorderModeCallback.isEnabled = isReorderMode
 	}
 

@@ -7,11 +7,11 @@ import android.text.style.RelativeSizeSpan
 import androidx.core.text.buildSpannedString
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.databinding.ItemCheckableNewBinding
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 fun branchAD(
 	clickListener: OnListItemClickListener<MangaBranch>,

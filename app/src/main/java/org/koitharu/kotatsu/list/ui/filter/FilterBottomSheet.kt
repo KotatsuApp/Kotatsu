@@ -3,18 +3,17 @@ package org.koitharu.kotatsu.list.ui.filter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.util.CollapseActionViewCallback
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.util.CollapseActionViewCallback
+import org.koitharu.kotatsu.core.util.ext.parentFragmentViewModels
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
-import org.koitharu.kotatsu.utils.ext.parentFragmentViewModels
 
 class FilterBottomSheet :
 	BaseBottomSheet<SheetFilterBinding>(),
@@ -25,12 +24,12 @@ class FilterBottomSheet :
 	private val viewModel by parentFragmentViewModels<RemoteListViewModel>()
 	private var collapsibleActionViewCallback: CollapseActionViewCallback? = null
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
 		return SheetFilterBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: SheetFilterBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		val adapter = FilterAdapter(viewModel, this)
 		binding.recyclerView.adapter = adapter
 		viewModel.filterItems.observe(viewLifecycleOwner, adapter::setItems)
@@ -65,13 +64,13 @@ class FilterBottomSheet :
 
 	override fun onCurrentListChanged(previousList: MutableList<FilterItem>, currentList: MutableList<FilterItem>) {
 		if (currentList.size > previousList.size && view != null) {
-			(binding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 0)
+			(requireViewBinding().recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 0)
 		}
 	}
 
 	private fun initOptionsMenu() {
-		binding.headerBar.inflateMenu(R.menu.opt_filter)
-		val searchMenuItem = binding.headerBar.menu.findItem(R.id.action_search)
+		requireViewBinding().headerBar.inflateMenu(R.menu.opt_filter)
+		val searchMenuItem = requireViewBinding().headerBar.menu.findItem(R.id.action_search)
 		searchMenuItem.setOnActionExpandListener(this)
 		val searchView = searchMenuItem.actionView as SearchView
 		searchView.setOnQueryTextListener(this)

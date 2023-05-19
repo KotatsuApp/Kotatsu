@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.search.ui.suggestion.adapter
 
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem

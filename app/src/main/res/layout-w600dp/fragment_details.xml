@@ -112,7 +112,7 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
 
-		<org.koitharu.kotatsu.base.ui.widgets.ChipsView
+		<org.koitharu.kotatsu.core.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
 			tools:listitem="@layout/item_scrobbling_info"
 			tools:visibility="visible" />
 
-		<org.koitharu.kotatsu.base.ui.widgets.SelectableTextView
+		<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
 			android:id="@+id/textView_description"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"

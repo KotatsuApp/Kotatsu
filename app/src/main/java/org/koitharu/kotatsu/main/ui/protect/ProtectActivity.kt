@@ -19,10 +19,10 @@ import androidx.biometric.BiometricPrompt.AuthenticationCallback
 import androidx.core.graphics.Insets
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.databinding.ActivityProtectBinding
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
 
 @AndroidEntryPoint
 class ProtectActivity :
@@ -37,10 +37,10 @@ class ProtectActivity :
 		super.onCreate(savedInstanceState)
 		window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 		setContentView(ActivityProtectBinding.inflate(layoutInflater))
-		binding.editPassword.setOnEditorActionListener(this)
-		binding.editPassword.addTextChangedListener(this)
-		binding.buttonNext.setOnClickListener(this)
-		binding.buttonCancel.setOnClickListener(this)
+		viewBinding.editPassword.setOnEditorActionListener(this)
+		viewBinding.editPassword.addTextChangedListener(this)
+		viewBinding.buttonNext.setOnClickListener(this)
+		viewBinding.buttonCancel.setOnClickListener(this)
 
 		viewModel.onError.observe(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
@@ -54,13 +54,13 @@ class ProtectActivity :
 	override fun onStart() {
 		super.onStart()
 		if (!useFingerprint()) {
-			binding.editPassword.requestFocus()
+			viewBinding.editPassword.requestFocus()
 		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		binding.root.setPadding(
+		viewBinding.root.setPadding(
 			basePadding + insets.left,
 			basePadding + insets.top,
 			basePadding + insets.right,
@@ -70,14 +70,14 @@ class ProtectActivity :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_next -> viewModel.tryUnlock(binding.editPassword.text?.toString().orEmpty())
+			R.id.button_next -> viewModel.tryUnlock(viewBinding.editPassword.text?.toString().orEmpty())
 			R.id.button_cancel -> finish()
 		}
 	}
 
 	override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-		return if (actionId == EditorInfo.IME_ACTION_DONE && binding.buttonNext.isEnabled) {
-			binding.buttonNext.performClick()
+		return if (actionId == EditorInfo.IME_ACTION_DONE && viewBinding.buttonNext.isEnabled) {
+			viewBinding.buttonNext.performClick()
 			true
 		} else {
 			false
@@ -89,16 +89,16 @@ class ProtectActivity :
 	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	override fun afterTextChanged(s: Editable?) {
-		binding.layoutPassword.error = null
-		binding.buttonNext.isEnabled = !s.isNullOrEmpty()
+		viewBinding.layoutPassword.error = null
+		viewBinding.buttonNext.isEnabled = !s.isNullOrEmpty()
 	}
 
 	private fun onError(e: Throwable) {
-		binding.layoutPassword.error = e.getDisplayMessage(resources)
+		viewBinding.layoutPassword.error = e.getDisplayMessage(resources)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.layoutPassword.isEnabled = !isLoading
+		viewBinding.layoutPassword.isEnabled = !isLoading
 	}
 
 	private fun useFingerprint(): Boolean {

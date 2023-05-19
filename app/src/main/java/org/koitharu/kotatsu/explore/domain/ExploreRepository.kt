@@ -2,14 +2,14 @@ package org.koitharu.kotatsu.explore.domain
 
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.almostEquals
+import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
-import org.koitharu.kotatsu.utils.ext.almostEquals
-import org.koitharu.kotatsu.utils.ext.asArrayList
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 class ExploreRepository @Inject constructor(

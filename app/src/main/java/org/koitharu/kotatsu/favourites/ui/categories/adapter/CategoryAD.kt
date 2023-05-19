@@ -15,14 +15,14 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.animatorDurationScale
+import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ItemCategoryBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.utils.ext.animatorDurationScale
-import org.koitharu.kotatsu.utils.ext.disposeImageRequest
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.getThemeColor
-import org.koitharu.kotatsu.utils.ext.newImageRequest
 
 fun categoryAD(
 	coil: ImageLoader,

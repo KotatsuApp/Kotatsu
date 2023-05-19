@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.settings
 
 import android.os.Bundle
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 
 class RootSettingsFragment : BasePreferenceFragment(R.string.settings) {
 

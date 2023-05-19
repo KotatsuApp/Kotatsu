@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.core.db.migrations.Migration6To7
 import org.koitharu.kotatsu.core.db.migrations.Migration7To8
 import org.koitharu.kotatsu.core.db.migrations.Migration8To9
 import org.koitharu.kotatsu.core.db.migrations.Migration9To10
+import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoriesDao
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
@@ -46,7 +47,6 @@ import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 import org.koitharu.kotatsu.tracker.data.TrackEntity
 import org.koitharu.kotatsu.tracker.data.TrackLogEntity
 import org.koitharu.kotatsu.tracker.data.TracksDao
-import org.koitharu.kotatsu.utils.ext.processLifecycleScope
 
 const val DATABASE_VERSION = 15
 

@@ -16,14 +16,15 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.dialog.TwoButtonsAlertDialog
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
-import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
-import org.koitharu.kotatsu.base.ui.util.SpanSizeResolver
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.dialog.TwoButtonsAlertDialog
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.ui.util.SpanSizeResolver
+import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
@@ -36,7 +37,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
-import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,14 +54,14 @@ class ExploreFragment :
 	private var paddingHorizontal = 0
 
 	override val recyclerView: RecyclerView
-		get() = binding.recyclerView
+		get() = requireViewBinding().recyclerView
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentExploreBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentExploreBinding {
 		return FragmentExploreBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentExploreBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this)
 		with(binding.recyclerView) {
 			adapter = exploreAdapter
@@ -70,7 +70,7 @@ class ExploreFragment :
 			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 			paddingHorizontal = spacing
 		}
-		addMenuProvider(ExploreMenuProvider(view.context, viewModel))
+		addMenuProvider(ExploreMenuProvider(binding.root.context, viewModel))
 		viewModel.content.observe(viewLifecycleOwner) {
 			exploreAdapter?.items = it
 		}
@@ -89,7 +89,7 @@ class ExploreFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
+		requireViewBinding().recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
 	}
@@ -138,7 +138,7 @@ class ExploreFragment :
 	}
 
 	private fun onGridModeChanged(isGrid: Boolean) {
-		binding.recyclerView.layoutManager = if (isGrid) {
+		requireViewBinding().recyclerView.layoutManager = if (isGrid) {
 			GridLayoutManager(requireContext(), 4).also { lm ->
 				lm.spanSizeLookup = ExploreGridSpanSizeLookup(checkNotNull(exploreAdapter), lm)
 			}

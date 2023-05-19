@@ -3,8 +3,8 @@ package org.koitharu.kotatsu.history.ui
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.core.ui.DateTimeAgo
+import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
+import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 

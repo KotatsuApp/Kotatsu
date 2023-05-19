@@ -19,14 +19,24 @@ import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.base.ui.widgets.ChipsView
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.countChaptersByBranch
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.ext.crossfade
+import org.koitharu.kotatsu.core.util.ext.drawableTop
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.measureHeight
+import org.koitharu.kotatsu.core.util.ext.resolveDp
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
@@ -43,16 +53,6 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
-import org.koitharu.kotatsu.utils.FileSize
-import org.koitharu.kotatsu.utils.ext.crossfade
-import org.koitharu.kotatsu.utils.ext.drawableTop
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
-import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.resolveDp
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
-import org.koitharu.kotatsu.utils.ext.textAndVisible
-import org.koitharu.kotatsu.utils.image.CoverSizeResolver
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -70,13 +70,13 @@ class DetailsFragment :
 
 	private val viewModel by activityViewModels<DetailsViewModel>()
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = FragmentDetailsBinding.inflate(inflater, container, false)
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentDetailsBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.textViewAuthor.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
 		binding.infoLayout.textViewSource.setOnClickListener(this)
@@ -114,7 +114,7 @@ class DetailsFragment :
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
-		with(binding) {
+		with(requireViewBinding()) {
 			// Main
 			loadCover(manga)
 			textViewTitle.text = manga.title
@@ -159,7 +159,7 @@ class DetailsFragment :
 	}
 
 	private fun onChaptersChanged(chapters: List<ChapterListItem>?) {
-		val infoLayout = binding.infoLayout
+		val infoLayout = requireViewBinding().infoLayout
 		if (chapters.isNullOrEmpty()) {
 			infoLayout.textViewChapters.isVisible = false
 		} else {
@@ -171,14 +171,14 @@ class DetailsFragment :
 
 	private fun onDescriptionChanged(description: CharSequence?) {
 		if (description.isNullOrBlank()) {
-			binding.textViewDescription.setText(R.string.no_description)
+			requireViewBinding().textViewDescription.setText(R.string.no_description)
 		} else {
-			binding.textViewDescription.text = description
+			requireViewBinding().textViewDescription.text = description
 		}
 	}
 
 	private fun onLocalSizeChanged(size: Long) {
-		val textView = binding.infoLayout.textViewSize
+		val textView = requireViewBinding().infoLayout.textViewSize
 		if (size == 0L) {
 			textView.isVisible = false
 		} else {
@@ -188,41 +188,41 @@ class DetailsFragment :
 	}
 
 	private fun onHistoryChanged(history: HistoryInfo) {
-		binding.progressView.setPercent(history.history?.percent ?: PROGRESS_NONE, animate = true)
+		requireViewBinding().progressView.setPercent(history.history?.percent ?: PROGRESS_NONE, animate = true)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		if (isLoading) {
-			binding.progressBar.show()
+			requireViewBinding().progressBar.show()
 		} else {
-			binding.progressBar.hide()
+			requireViewBinding().progressBar.hide()
 		}
 	}
 
 	private fun onBookmarksChanged(bookmarks: List<Bookmark>) {
-		var adapter = binding.recyclerViewBookmarks.adapter as? BookmarksAdapter
-		binding.groupBookmarks.isGone = bookmarks.isEmpty()
+		var adapter = requireViewBinding().recyclerViewBookmarks.adapter as? BookmarksAdapter
+		requireViewBinding().groupBookmarks.isGone = bookmarks.isEmpty()
 		if (adapter != null) {
 			adapter.items = bookmarks
 		} else {
 			adapter = BookmarksAdapter(coil, viewLifecycleOwner, this)
 			adapter.items = bookmarks
-			binding.recyclerViewBookmarks.adapter = adapter
+			requireViewBinding().recyclerViewBookmarks.adapter = adapter
 			val spacing = resources.getDimensionPixelOffset(R.dimen.bookmark_list_spacing)
-			binding.recyclerViewBookmarks.addItemDecoration(SpacingItemDecoration(spacing))
+			requireViewBinding().recyclerViewBookmarks.addItemDecoration(SpacingItemDecoration(spacing))
 		}
 	}
 
 	private fun onScrobblingInfoChanged(scrobblings: List<ScrobblingInfo>) {
-		var adapter = binding.recyclerViewScrobbling.adapter as? ScrollingInfoAdapter
-		binding.recyclerViewScrobbling.isGone = scrobblings.isEmpty()
+		var adapter = requireViewBinding().recyclerViewScrobbling.adapter as? ScrollingInfoAdapter
+		requireViewBinding().recyclerViewScrobbling.isGone = scrobblings.isEmpty()
 		if (adapter != null) {
 			adapter.items = scrobblings
 		} else {
 			adapter = ScrollingInfoAdapter(viewLifecycleOwner, coil, childFragmentManager)
 			adapter.items = scrobblings
-			binding.recyclerViewScrobbling.adapter = adapter
-			binding.recyclerViewScrobbling.addItemDecoration(ScrobblingItemDecoration())
+			requireViewBinding().recyclerViewScrobbling.adapter = adapter
+			requireViewBinding().recyclerViewScrobbling.addItemDecoration(ScrobblingItemDecoration())
 		}
 	}
 
@@ -267,7 +267,7 @@ class DetailsFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
+		requireViewBinding().root.updatePadding(
 			bottom = (
 				(activity as? NoModalBottomSheetOwner)?.bsHeader?.measureHeight()
 					?.plus(insets.bottom)?.plus(resources.resolveDp(16))
@@ -277,7 +277,7 @@ class DetailsFragment :
 	}
 
 	private fun bindTags(manga: Manga) {
-		binding.chipsTags.setChips(
+		requireViewBinding().chipsTags.setChips(
 			manga.tags.map { tag ->
 				ChipsView.ChipModel(
 					title = tag.title,
@@ -292,13 +292,13 @@ class DetailsFragment :
 
 	private fun loadCover(manga: Manga) {
 		val imageUrl = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }
-		val lastResult = CoilUtils.result(binding.imageViewCover)
+		val lastResult = CoilUtils.result(requireViewBinding().imageViewCover)
 		if (lastResult?.request?.data == imageUrl) {
 			return
 		}
 		val request = ImageRequest.Builder(context ?: return)
-			.target(binding.imageViewCover)
-			.size(CoverSizeResolver(binding.imageViewCover))
+			.target(requireViewBinding().imageViewCover)
+			.size(CoverSizeResolver(requireViewBinding().imageViewCover))
 			.data(imageUrl)
 			.tag(manga.source)
 			.crossfade(requireContext())

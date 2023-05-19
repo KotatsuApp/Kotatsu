@@ -11,16 +11,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.withArgs
 
 @AndroidEntryPoint
 class FavouriteCategoriesBottomSheet :
@@ -33,13 +33,13 @@ class FavouriteCategoriesBottomSheet :
 
 	private var adapter: MangaCategoriesAdapter? = null
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = SheetFavoriteCategoriesBinding.inflate(inflater, container, false)
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: SheetFavoriteCategoriesBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		adapter = MangaCategoriesAdapter(this)
 		binding.recyclerViewCategories.adapter = adapter
 		binding.buttonDone.setOnClickListener(this)

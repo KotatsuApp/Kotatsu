@@ -17,12 +17,12 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.measureDimension
+import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
-import org.koitharu.kotatsu.utils.ext.getThemeColor
-import org.koitharu.kotatsu.utils.ext.measureDimension
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.resolveDp
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.text.SimpleDateFormat
 import java.util.Date
 import com.google.android.material.R as materialR

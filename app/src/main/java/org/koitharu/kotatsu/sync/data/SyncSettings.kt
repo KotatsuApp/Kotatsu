@@ -7,7 +7,7 @@ import androidx.annotation.WorkerThread
 import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import javax.inject.Inject
 
 @Reusable

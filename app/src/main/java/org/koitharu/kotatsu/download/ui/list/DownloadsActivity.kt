@@ -15,10 +15,10 @@ import androidx.lifecycle.Observer
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
-import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.PausingReceiver
@@ -51,7 +51,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 			registryOwner = this,
 			callback = this,
 		)
-		with(binding.recyclerView) {
+		with(viewBinding.recyclerView) {
 			setHasFixedSize(true)
 			addItemDecoration(decoration)
 			adapter = downloadsAdapter
@@ -61,7 +61,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		viewModel.items.observe(this) {
 			downloadsAdapter.items = it
 		}
-		viewModel.onActionDone.observe(this, ReversibleActionObserver(binding.recyclerView))
+		viewModel.onActionDone.observe(this, ReversibleActionObserver(viewBinding.recyclerView))
 		val menuObserver = Observer<Any> { _ -> invalidateOptionsMenu() }
 		viewModel.hasActiveWorks.observe(this, menuObserver)
 		viewModel.hasPausedWorks.observe(this, menuObserver)
@@ -69,12 +69,12 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
+		viewBinding.recyclerView.updatePadding(
 			left = insets.left + listSpacing,
 			right = insets.right + listSpacing,
 			bottom = insets.bottom,
 		)
-		binding.toolbar.updatePadding(
+		viewBinding.toolbar.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
@@ -104,7 +104,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
-		binding.recyclerView.invalidateItemDecorations()
+		viewBinding.recyclerView.invalidateItemDecorations()
 	}
 
 	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {

@@ -14,12 +14,15 @@ import coil.ImageLoader
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.MangaIntent
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.base.ui.util.CollapseActionViewCallback
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
+import org.koitharu.kotatsu.core.ui.util.CollapseActionViewCallback
+import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingSelectorBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -27,9 +30,6 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.adapter.ScrobblerMangaSelectionDecoration
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.adapter.ScrobblerSelectorAdapter
-import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,14 +50,14 @@ class ScrobblingSelectorBottomSheet :
 
 	private val viewModel by viewModels<ScrobblingSelectorViewModel>()
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingSelectorBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingSelectorBinding {
 		return SheetScrobblingSelectorBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: SheetScrobblingSelectorBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		val listAdapter = ScrobblerSelectorAdapter(viewLifecycleOwner, coil, this, this)
-		val decoration = ScrobblerMangaSelectionDecoration(view.context)
+		val decoration = ScrobblerMangaSelectionDecoration(binding.root.context)
 		with(binding.recyclerView) {
 			adapter = listAdapter
 			addItemDecoration(decoration)
@@ -133,7 +133,7 @@ class ScrobblingSelectorBottomSheet :
 			return false
 		}
 		viewModel.search(query)
-		binding.headerBar.menu.findItem(R.id.action_search)?.collapseActionView()
+		requireViewBinding().headerBar.menu.findItem(R.id.action_search)?.collapseActionView()
 		return true
 	}
 
@@ -149,11 +149,11 @@ class ScrobblingSelectorBottomSheet :
 		if (!isExpanded) {
 			setExpanded(isExpanded = true, isLocked = behavior?.isDraggable == false)
 		}
-		binding.recyclerView.firstVisibleItemPosition = 0
+		requireViewBinding().recyclerView.firstVisibleItemPosition = 0
 	}
 
 	private fun openSearch() {
-		val menuItem = binding.headerBar.menu.findItem(R.id.action_search) ?: return
+		val menuItem = requireViewBinding().headerBar.menu.findItem(R.id.action_search) ?: return
 		menuItem.expandActionView()
 	}
 
@@ -165,8 +165,8 @@ class ScrobblingSelectorBottomSheet :
 	}
 
 	private fun initOptionsMenu() {
-		binding.headerBar.inflateMenu(R.menu.opt_shiki_selector)
-		val searchMenuItem = binding.headerBar.menu.findItem(R.id.action_search)
+		requireViewBinding().headerBar.inflateMenu(R.menu.opt_shiki_selector)
+		val searchMenuItem = requireViewBinding().headerBar.menu.findItem(R.id.action_search)
 		searchMenuItem.setOnActionExpandListener(this)
 		val searchView = searchMenuItem.actionView as SearchView
 		searchView.setOnQueryTextListener(this)
@@ -179,7 +179,7 @@ class ScrobblingSelectorBottomSheet :
 
 	private fun initTabs() {
 		val entries = viewModel.availableScrobblers
-		val tabs = binding.tabs
+		val tabs = requireViewBinding().tabs
 		if (entries.size <= 1) {
 			tabs.isVisible = false
 			return

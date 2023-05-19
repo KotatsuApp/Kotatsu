@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
 import androidx.preference.ListPreference
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 
 class ActivityListPreference : ListPreference {
 

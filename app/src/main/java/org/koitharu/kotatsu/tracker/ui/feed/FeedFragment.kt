@@ -12,10 +12,12 @@ import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
+import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
+import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -26,8 +28,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -43,13 +43,13 @@ class FeedFragment :
 
 	private var feedAdapter: FeedAdapter? = null
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = FragmentFeedBinding.inflate(inflater, container, false)
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentFeedBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this)
 		with(binding.recyclerView) {
 			adapter = feedAdapter
@@ -80,7 +80,7 @@ class FeedFragment :
 		viewModel.onFeedCleared.observe(viewLifecycleOwner) {
 			onFeedCleared()
 		}
-		TrackWorker.getIsRunningLiveData(view.context.applicationContext)
+		TrackWorker.getIsRunningLiveData(binding.root.context.applicationContext)
 			.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
 	}
 
@@ -90,7 +90,7 @@ class FeedFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
+		requireViewBinding().recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
 	}
@@ -115,7 +115,7 @@ class FeedFragment :
 
 	private fun onFeedCleared() {
 		val snackbar = Snackbar.make(
-			binding.recyclerView,
+			requireViewBinding().recyclerView,
 			R.string.updates_feed_cleared,
 			Snackbar.LENGTH_LONG,
 		)
@@ -124,7 +124,7 @@ class FeedFragment :
 	}
 
 	private fun onIsTrackerRunningChanged(isRunning: Boolean) {
-		binding.swipeRefreshLayout.isRefreshing = isRunning
+		requireViewBinding().swipeRefreshLayout.isRefreshing = isRunning
 	}
 
 	override fun onScrolledToEnd() {

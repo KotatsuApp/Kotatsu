@@ -26,15 +26,15 @@ import org.koitharu.kotatsu.core.db.TABLE_TAGS
 import org.koitharu.kotatsu.core.logs.LoggersModule
 import org.koitharu.kotatsu.core.network.GZipInterceptor
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.parseJsonOrNull
+import org.koitharu.kotatsu.core.util.ext.toContentValues
+import org.koitharu.kotatsu.core.util.ext.toJson
+import org.koitharu.kotatsu.core.util.ext.toRequestBody
 import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.data.SyncAuthenticator
 import org.koitharu.kotatsu.sync.data.SyncInterceptor
 import org.koitharu.kotatsu.sync.data.SyncSettings
-import org.koitharu.kotatsu.utils.ext.parseJsonOrNull
-import org.koitharu.kotatsu.utils.ext.toContentValues
-import org.koitharu.kotatsu.utils.ext.toJson
-import org.koitharu.kotatsu.utils.ext.toRequestBody
 import java.util.concurrent.TimeUnit
 
 private const val FIELD_TIMESTAMP = "timestamp"

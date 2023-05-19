@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.list.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
@@ -10,12 +9,12 @@ import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.util.ext.setValueRounded
+import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
 import org.koitharu.kotatsu.databinding.DialogListModeBinding
-import org.koitharu.kotatsu.utils.ext.setValueRounded
-import org.koitharu.kotatsu.utils.progress.IntPercentLabelFormatter
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -27,13 +26,13 @@ class ListModeBottomSheet :
 	@Inject
 	lateinit var settings: AppSettings
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = DialogListModeBinding.inflate(inflater, container, false)
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: DialogListModeBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		val mode = settings.listMode
 		binding.buttonList.isChecked = mode == ListMode.LIST
 		binding.buttonListDetailed.isChecked = mode == ListMode.DETAILED_LIST
@@ -41,7 +40,7 @@ class ListModeBottomSheet :
 		binding.textViewGridTitle.isVisible = mode == ListMode.GRID
 		binding.sliderGrid.isVisible = mode == ListMode.GRID
 
-		binding.sliderGrid.setLabelFormatter(IntPercentLabelFormatter(view.context))
+		binding.sliderGrid.setLabelFormatter(IntPercentLabelFormatter(binding.root.context))
 		binding.sliderGrid.setValueRounded(settings.gridSize.toFloat())
 		binding.sliderGrid.addOnChangeListener(this)
 
@@ -58,8 +57,8 @@ class ListModeBottomSheet :
 			R.id.button_grid -> ListMode.GRID
 			else -> return
 		}
-		binding.textViewGridTitle.isVisible = mode == ListMode.GRID
-		binding.sliderGrid.isVisible = mode == ListMode.GRID
+		requireViewBinding().textViewGridTitle.isVisible = mode == ListMode.GRID
+		requireViewBinding().sliderGrid.isVisible = mode == ListMode.GRID
 		settings.listMode = mode
 	}
 

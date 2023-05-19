@@ -8,15 +8,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
-import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
+import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.flattenTo
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
-import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
 
 class ShelfSelectionCallback(
 	private val recyclerView: RecyclerView,

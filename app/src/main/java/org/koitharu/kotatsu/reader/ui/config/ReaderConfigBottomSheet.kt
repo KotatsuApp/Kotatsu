@@ -19,18 +19,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.observeAsLiveData
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.util.ScreenOrientationHelper
+import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.ui.PageSaveContract
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.utils.ScreenOrientationHelper
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
-import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -56,12 +56,12 @@ class ReaderConfigBottomSheet :
 			?: ReaderMode.STANDARD
 	}
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetReaderConfigBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetReaderConfigBinding {
 		return SheetReaderConfigBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: SheetReaderConfigBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		observeScreenOrientation()
 		binding.buttonStandard.isChecked = mode == ReaderMode.STANDARD
 		binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
@@ -118,8 +118,8 @@ class ReaderConfigBottomSheet :
 		when (buttonView.id) {
 			R.id.switch_scroll_timer -> {
 				findCallback()?.isAutoScrollEnabled = isChecked
-				binding.labelTimer.isVisible = isChecked
-				binding.sliderTimer.isVisible = isChecked
+				requireViewBinding().labelTimer.isVisible = isChecked
+				requireViewBinding().sliderTimer.isVisible = isChecked
 			}
 		}
 	}
@@ -157,7 +157,7 @@ class ReaderConfigBottomSheet :
 		orientationHelper = helper
 		helper.observeAutoOrientation()
 			.onEach {
-				binding.buttonScreenRotate.isGone = it
+				requireViewBinding().buttonScreenRotate.isGone = it
 			}.launchIn(viewLifecycleScope)
 	}
 

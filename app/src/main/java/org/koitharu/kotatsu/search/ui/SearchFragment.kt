@@ -5,10 +5,10 @@ import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.utils.ext.withArgs
 
 @AndroidEntryPoint
 class SearchFragment : MangaListFragment() {

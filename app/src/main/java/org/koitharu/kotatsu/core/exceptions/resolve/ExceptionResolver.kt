@@ -12,13 +12,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
-import org.koitharu.kotatsu.core.ui.ErrorDetailsDialog
+import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
+import org.koitharu.kotatsu.core.util.TaggedActivityResult
+import org.koitharu.kotatsu.core.util.isSuccess
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
-import org.koitharu.kotatsu.utils.TaggedActivityResult
-import org.koitharu.kotatsu.utils.isSuccess
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.preference.Preference
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.settings.utils.RingtonePickContract
 
 class NotificationSettingsLegacyFragment :
@@ -56,6 +56,7 @@ class NotificationSettingsLegacyFragment :
 				ringtonePickContract.launch(settings.notificationSound)
 				true
 			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}

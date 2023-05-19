@@ -11,9 +11,9 @@ import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import okhttp3.Cache
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.computeSize
+import org.koitharu.kotatsu.core.util.ext.getStorageName
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.utils.ext.computeSize
-import org.koitharu.kotatsu.utils.ext.getStorageName
 import java.io.File
 import javax.inject.Inject
 

@@ -20,18 +20,26 @@ import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.FitHeightGridLayoutManager
-import org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
-import org.koitharu.kotatsu.base.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
-import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.list.FitHeightGridLayoutManager
+import org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
+import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
+import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
+import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.clearItemDecorations
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.measureHeight
+import org.koitharu.kotatsu.core.util.ext.resolveDp
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
@@ -48,14 +56,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.addMenuProvider
-import org.koitharu.kotatsu.utils.ext.clearItemDecorations
-import org.koitharu.kotatsu.utils.ext.getThemeColor
-import org.koitharu.kotatsu.utils.ext.measureHeight
-import org.koitharu.kotatsu.utils.ext.resolveDp
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -88,18 +88,18 @@ abstract class MangaListFragment :
 	protected val selectedItems: Set<Manga>
 		get() = collectSelectedItems()
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = FragmentListBinding.inflate(inflater, container, false)
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		listAdapter = onCreateAdapter()
-		spanResolver = MangaListSpanResolver(view.resources)
+		spanResolver = MangaListSpanResolver(binding.root.resources)
 		selectionController = ListSelectionController(
 			activity = requireActivity(),
-			decoration = MangaSelectionDecoration(view.context),
+			decoration = MangaSelectionDecoration(binding.root.context),
 			registryOwner = this,
 			callback = this,
 		)
@@ -163,7 +163,7 @@ abstract class MangaListFragment :
 
 	@CallSuper
 	override fun onRefresh() {
-		binding.swipeRefreshLayout.isRefreshing = true
+		requireViewBinding().swipeRefreshLayout.isRefreshing = true
 		viewModel.onRefresh()
 	}
 
@@ -185,10 +185,10 @@ abstract class MangaListFragment :
 
 	@CallSuper
 	protected open fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.swipeRefreshLayout.isEnabled = binding.swipeRefreshLayout.isRefreshing ||
+		requireViewBinding().swipeRefreshLayout.isEnabled = requireViewBinding().swipeRefreshLayout.isRefreshing ||
 			isSwipeRefreshEnabled && !isLoading
 		if (!isLoading) {
-			binding.swipeRefreshLayout.isRefreshing = false
+			requireViewBinding().swipeRefreshLayout.isRefreshing = false
 		}
 	}
 
@@ -201,15 +201,15 @@ abstract class MangaListFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
+		requireViewBinding().recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
-		binding.recyclerView.fastScroller.updateLayoutParams<MarginLayoutParams> {
+		requireViewBinding().recyclerView.fastScroller.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = insets.bottom
 		}
 		if (activity is MainActivity) {
 			val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
-			binding.swipeRefreshLayout.setProgressViewOffset(
+			requireViewBinding().swipeRefreshLayout.setProgressViewOffset(
 				true,
 				headerHeight + resources.resolveDp(-72),
 				headerHeight + resources.resolveDp(10),
@@ -233,12 +233,12 @@ abstract class MangaListFragment :
 
 	private fun onGridScaleChanged(scale: Float) {
 		spanSizeLookup.invalidateCache()
-		spanResolver?.setGridSize(scale, binding.recyclerView)
+		spanResolver?.setGridSize(scale, requireViewBinding().recyclerView)
 	}
 
 	private fun onListModeChanged(mode: ListMode) {
 		spanSizeLookup.invalidateCache()
-		with(binding.recyclerView) {
+		with(requireViewBinding().recyclerView) {
 			clearItemDecorations()
 			removeOnLayoutChangeListener(spanResolver)
 			when (mode) {
@@ -269,7 +269,7 @@ abstract class MangaListFragment :
 					addOnLayoutChangeListener(spanResolver)
 				}
 			}
-			selectionController?.attachToRecyclerView(binding.recyclerView)
+			selectionController?.attachToRecyclerView(requireViewBinding().recyclerView)
 		}
 	}
 
@@ -310,16 +310,16 @@ abstract class MangaListFragment :
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
-		binding.recyclerView.invalidateItemDecorations()
+		requireViewBinding().recyclerView.invalidateItemDecorations()
 	}
 
 	override fun onFastScrollStart(fastScroller: FastScroller) {
 		(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
-		binding.swipeRefreshLayout.isEnabled = false
+		requireViewBinding().swipeRefreshLayout.isEnabled = false
 	}
 
 	override fun onFastScrollStop(fastScroller: FastScroller) {
-		binding.swipeRefreshLayout.isEnabled = isSwipeRefreshEnabled
+		requireViewBinding().swipeRefreshLayout.isEnabled = isSwipeRefreshEnabled
 	}
 
 	private fun collectSelectedItems(): Set<Manga> {
@@ -343,7 +343,7 @@ abstract class MangaListFragment :
 
 		override fun getSpanSize(position: Int): Int {
 			val total =
-				(binding.recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
+				(requireViewBinding().recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
 			return when (listAdapter?.getItemViewType(position)) {
 				ITEM_TYPE_MANGA_GRID -> 1
 				else -> total

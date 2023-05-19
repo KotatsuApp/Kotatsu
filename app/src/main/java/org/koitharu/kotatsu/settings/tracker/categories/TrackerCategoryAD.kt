@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.settings.tracker.categories
 
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import org.koitharu.kotatsu.base.ui.list.AdapterDelegateClickListenerAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ItemCategoryCheckableMultipleBinding
 
 fun trackerCategoryAD(

@@ -8,11 +8,11 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.dialog.RememberSelectionDialogListener
+import org.koitharu.kotatsu.core.ui.dialog.RememberSelectionDialogListener
+import org.koitharu.kotatsu.core.util.ext.startOfDay
 import org.koitharu.kotatsu.local.ui.ImportDialogFragment
 import org.koitharu.kotatsu.shelf.ui.config.ShelfSettingsActivity
 import org.koitharu.kotatsu.shelf.ui.config.size.ShelfSizeBottomSheet
-import org.koitharu.kotatsu.utils.ext.startOfDay
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import com.google.android.material.R as materialR

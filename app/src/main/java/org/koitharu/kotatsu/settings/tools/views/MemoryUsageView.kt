@@ -11,11 +11,11 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.widgets.SegmentedBarView
+import org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView
+import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.databinding.LayoutMemoryUsageBinding
 import org.koitharu.kotatsu.settings.tools.model.StorageUsage
-import org.koitharu.kotatsu.utils.FileSize
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 
 class MemoryUsageView @JvmOverloads constructor(
 	context: Context,

@@ -12,18 +12,19 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.utils.ShareHelper
-import org.koitharu.kotatsu.utils.ext.addMenuProvider
 
 class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener {
 
 	override val viewModel by viewModels<LocalListViewModel>()
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		addMenuProvider(LocalListMenuProvider(this::onEmptyActionClick))
 		viewModel.onMangaRemoved.observe(viewLifecycleOwner) { onItemRemoved() }
 	}
@@ -34,7 +35,7 @@ class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener
 
 	override fun onFilterClick(view: View?) {
 		super.onFilterClick(view)
-		val menu = PopupMenu(requireContext(), view ?: binding.recyclerView)
+		val menu = PopupMenu(requireContext(), view ?: requireViewBinding().recyclerView)
 		menu.inflate(R.menu.popup_order)
 		menu.setOnMenuItemClickListener(this)
 		menu.show()
@@ -53,12 +54,14 @@ class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener
 				showDeletionConfirm(selectedItemsIds, mode)
 				true
 			}
+
 			R.id.action_share -> {
 				val files = selectedItems.map { it.url.toUri().toFile() }
 				ShareHelper(requireContext()).shareCbz(files)
 				mode.finish()
 				true
 			}
+
 			else -> super.onActionItemClicked(controller, mode, item)
 		}
 	}
@@ -87,7 +90,7 @@ class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener
 	}
 
 	private fun onItemRemoved() {
-		Snackbar.make(binding.recyclerView, R.string.removal_completed, Snackbar.LENGTH_SHORT).show()
+		Snackbar.make(requireViewBinding().recyclerView, R.string.removal_completed, Snackbar.LENGTH_SHORT).show()
 	}
 
 	companion object {

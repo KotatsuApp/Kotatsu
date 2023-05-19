@@ -12,12 +12,15 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.os.NetworkState
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.ifZero
+import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.*
+import org.koitharu.kotatsu.util.ext.*
 
 open class PageHolder(
 	owner: LifecycleOwner,
@@ -31,7 +34,7 @@ open class PageHolder(
 
 	init {
 		binding.ssiv.bindToLifecycle(owner)
-		binding.ssiv.isEagerLoadingEnabled = !isLowRamDevice(context)
+		binding.ssiv.isEagerLoadingEnabled = !context.isLowRamDevice()
 		binding.ssiv.addOnImageEventListener(delegate)
 		@Suppress("LeakingThis")
 		bindingInfo.buttonRetry.setOnClickListener(this)

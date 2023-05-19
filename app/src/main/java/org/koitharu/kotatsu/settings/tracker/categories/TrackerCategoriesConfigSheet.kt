@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.SheetBaseBinding
 
 @AndroidEntryPoint
@@ -22,12 +22,12 @@ class TrackerCategoriesConfigSheet :
 
 	private val viewModel by viewModels<TrackerCategoriesConfigViewModel>()
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetBaseBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetBaseBinding {
 		return SheetBaseBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: SheetBaseBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.headerBar.setTitle(R.string.favourites_categories)
 		binding.buttonDone.isVisible = true
 		binding.buttonDone.setOnClickListener(this)

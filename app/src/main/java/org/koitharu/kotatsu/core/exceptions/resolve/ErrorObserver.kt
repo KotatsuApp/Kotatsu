@@ -11,8 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.koitharu.kotatsu.utils.ext.findActivity
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
+import org.koitharu.kotatsu.core.util.ext.findActivity
+import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 
 abstract class ErrorObserver(
 	protected val host: View,

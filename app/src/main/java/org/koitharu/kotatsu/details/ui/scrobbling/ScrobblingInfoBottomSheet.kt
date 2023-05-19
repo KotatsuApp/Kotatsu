@@ -17,18 +17,18 @@ import androidx.fragment.app.activityViewModels
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorBottomSheet
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
-import org.koitharu.kotatsu.utils.ext.newImageRequest
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
-import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,15 +52,16 @@ class ScrobblingInfoBottomSheet :
 		scrobblerIndex = requireArguments().getInt(ARG_INDEX, scrobblerIndex)
 	}
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingBinding {
 		return SheetScrobblingBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: SheetScrobblingBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
 		viewModel.onError.observe(viewLifecycleOwner) {
-			Toast.makeText(view.context, it.getDisplayMessage(view.resources), Toast.LENGTH_SHORT).show()
+			Toast.makeText(binding.root.context, it.getDisplayMessage(binding.root.resources), Toast.LENGTH_SHORT)
+				.show()
 		}
 
 		binding.spinnerStatus.onItemSelectedListener = this
@@ -69,7 +70,7 @@ class ScrobblingInfoBottomSheet :
 		binding.imageViewCover.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 
-		menu = PopupMenu(view.context, binding.buttonMenu).apply {
+		menu = PopupMenu(binding.root.context, binding.buttonMenu).apply {
 			inflate(R.menu.opt_scrobbling)
 			setOnMenuItemClickListener(this@ScrobblingInfoBottomSheet)
 		}
@@ -83,7 +84,7 @@ class ScrobblingInfoBottomSheet :
 	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 		viewModel.updateScrobbling(
 			index = scrobblerIndex,
-			rating = binding.ratingBar.rating / binding.ratingBar.numStars,
+			rating = requireViewBinding().ratingBar.rating / requireViewBinding().ratingBar.numStars,
 			status = enumValues<ScrobblingStatus>().getOrNull(position),
 		)
 	}
@@ -95,7 +96,7 @@ class ScrobblingInfoBottomSheet :
 			viewModel.updateScrobbling(
 				index = scrobblerIndex,
 				rating = rating / ratingBar.numStars,
-				status = enumValues<ScrobblingStatus>().getOrNull(binding.spinnerStatus.selectedItemPosition),
+				status = enumValues<ScrobblingStatus>().getOrNull(requireViewBinding().spinnerStatus.selectedItemPosition),
 			)
 		}
 	}
@@ -117,13 +118,13 @@ class ScrobblingInfoBottomSheet :
 			dismissAllowingStateLoss()
 			return
 		}
-		binding.textViewTitle.text = scrobbling.title
-		binding.ratingBar.rating = scrobbling.rating * binding.ratingBar.numStars
-		binding.textViewDescription.text = scrobbling.description
-		binding.spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
-		binding.imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
-		binding.imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
-		binding.imageViewCover.newImageRequest(viewLifecycleOwner, scrobbling.coverUrl)?.apply {
+		requireViewBinding().textViewTitle.text = scrobbling.title
+		requireViewBinding().ratingBar.rating = scrobbling.rating * requireViewBinding().ratingBar.numStars
+		requireViewBinding().textViewDescription.text = scrobbling.description
+		requireViewBinding().spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
+		requireViewBinding().imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
+		requireViewBinding().imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
+		requireViewBinding().imageViewCover.newImageRequest(viewLifecycleOwner, scrobbling.coverUrl)?.apply {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)

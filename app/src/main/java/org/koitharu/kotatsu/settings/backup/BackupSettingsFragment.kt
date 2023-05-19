@@ -8,9 +8,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 
 class BackupSettingsFragment :
 	BasePreferenceFragment(R.string.backup_restore),
@@ -18,7 +18,7 @@ class BackupSettingsFragment :
 
 	private val backupSelectCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocument(),
-		this
+		this,
 	)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -31,17 +31,19 @@ class BackupSettingsFragment :
 				BackupDialogFragment().show(childFragmentManager, BackupDialogFragment.TAG)
 				true
 			}
+
 			AppSettings.KEY_RESTORE -> {
 				try {
 					backupSelectCall.launch(arrayOf("*/*"))
 				} catch (e: ActivityNotFoundException) {
 					e.printStackTraceDebug()
 					Snackbar.make(
-						listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT
+						listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
 					).show()
 				}
 				true
 			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
 	}

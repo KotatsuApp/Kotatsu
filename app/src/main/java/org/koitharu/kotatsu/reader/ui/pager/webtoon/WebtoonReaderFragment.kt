@@ -2,23 +2,22 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.os.NetworkState
+import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
+import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.utils.ext.findCenterViewPosition
-import org.koitharu.kotatsu.utils.ext.firstVisibleItemPosition
-import org.koitharu.kotatsu.utils.ext.isAnimationsEnabled
-import org.koitharu.kotatsu.utils.ext.viewLifecycleScope
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,13 +32,13 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 	private val scrollInterpolator = AccelerateDecelerateInterpolator()
 	private var webtoonAdapter: WebtoonAdapter? = null
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = FragmentReaderWebtoonBinding.inflate(inflater, container, false)
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentReaderWebtoonBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		webtoonAdapter = WebtoonAdapter(
 			lifecycleOwner = viewLifecycleOwner,
 			loader = pageLoader,
@@ -60,7 +59,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 
 	override fun onDestroyView() {
 		webtoonAdapter = null
-		binding.recyclerView.adapter = null
+		requireViewBinding().recyclerView.adapter = null
 		super.onDestroyView()
 	}
 
@@ -73,7 +72,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 				}
 				setItems.await() ?: return@launch
 				if (position != -1) {
-					with(binding.recyclerView) {
+					with(requireViewBinding().recyclerView) {
 						firstVisibleItemPosition = position
 						post {
 							(findViewHolderForAdapterPosition(position) as? WebtoonHolder)
@@ -88,7 +87,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		}
 	}
 
-	override fun getCurrentState(): ReaderState? = bindingOrNull()?.run {
+	override fun getCurrentState(): ReaderState? = viewBinding?.run {
 		val currentItem = recyclerView.findCenterViewPosition()
 		val adapter = recyclerView.adapter as? BaseReaderAdapter<*>
 		val page = adapter?.getItemOrNull(currentItem) ?: return@run null
@@ -105,7 +104,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 	}
 
 	override fun switchPageBy(delta: Int) {
-		with(binding.recyclerView) {
+		with(requireViewBinding().recyclerView) {
 			if (context.isAnimationsEnabled) {
 				smoothScrollBy(0, (height * 0.9).toInt() * delta, scrollInterpolator)
 			} else {
@@ -115,11 +114,11 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 	}
 
 	override fun switchPageTo(position: Int, smooth: Boolean) {
-		binding.recyclerView.firstVisibleItemPosition = position
+		requireViewBinding().recyclerView.firstVisibleItemPosition = position
 	}
 
 	override fun scrollBy(delta: Int): Boolean {
-		binding.recyclerView.nestedScrollBy(0, delta)
+		requireViewBinding().recyclerView.nestedScrollBy(0, delta)
 		return true
 	}
 

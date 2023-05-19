@@ -7,7 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.dialog.CheckBoxAlertDialog
+import org.koitharu.kotatsu.core.ui.dialog.CheckBoxAlertDialog
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 

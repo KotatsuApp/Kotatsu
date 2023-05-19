@@ -12,7 +12,7 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityShelfSettingsBinding
 import com.google.android.material.R as materialR
 
@@ -31,9 +31,9 @@ class ShelfSettingsActivity :
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		binding.buttonDone.setOnClickListener(this)
+		viewBinding.buttonDone.setOnClickListener(this)
 		val settingsAdapter = ShelfSettingsAdapter(this)
-		with(binding.recyclerView) {
+		with(viewBinding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = settingsAdapter
 			reorderHelper = ItemTouchHelper(SectionsReorderCallback()).also {
@@ -58,14 +58,14 @@ class ShelfSettingsActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
+		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
-		binding.recyclerView.updatePadding(
+		viewBinding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
-		binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+		viewBinding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			topMargin = insets.top
 		}
 	}

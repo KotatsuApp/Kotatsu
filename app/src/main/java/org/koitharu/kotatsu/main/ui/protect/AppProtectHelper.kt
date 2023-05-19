@@ -4,13 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import org.acra.dialog.CrashReportDialog
-import org.koitharu.kotatsu.base.ui.DefaultActivityLifecycleCallbacks
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.DefaultActivityLifecycleCallbacks
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AppProtectHelper @Inject constructor(private val settings: AppSettings) : DefaultActivityLifecycleCallbacks {
+class AppProtectHelper @Inject constructor(private val settings: AppSettings) :
+	DefaultActivityLifecycleCallbacks {
 
 	private var isUnlocked = settings.appPassword.isNullOrEmpty()
 

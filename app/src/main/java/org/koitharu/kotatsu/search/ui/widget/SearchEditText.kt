@@ -16,9 +16,9 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.drawableEnd
+import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
-import org.koitharu.kotatsu.utils.ext.drawableEnd
-import org.koitharu.kotatsu.utils.ext.drawableStart
 import com.google.android.material.R as materialR
 
 private const val DRAWABLE_END = 2

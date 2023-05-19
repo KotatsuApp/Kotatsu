@@ -13,13 +13,14 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.NestedScrollStateHandle
-import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
-import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
-import org.koitharu.kotatsu.base.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.list.NestedScrollStateHandle
+import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.databinding.FragmentShelfBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
@@ -35,7 +36,6 @@ import org.koitharu.kotatsu.shelf.ui.adapter.ShelfListEventListener
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
-import org.koitharu.kotatsu.utils.ext.addMenuProvider
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -56,14 +56,14 @@ class ShelfFragment :
 	private var selectionController: SectionedSelectionController<ShelfSectionModel>? = null
 
 	override val recyclerView: RecyclerView
-		get() = binding.recyclerView
+		get() = requireViewBinding().recyclerView
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentShelfBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentShelfBinding {
 		return FragmentShelfBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentShelfBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		nestedScrollStateHandle = NestedScrollStateHandle(savedInstanceState, KEY_NESTED_SCROLL)
 		val sizeResolver = ItemSizeResolver(resources, settings)
 		selectionController = SectionedSelectionController(
@@ -81,7 +81,7 @@ class ShelfFragment :
 		)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.setHasFixedSize(true)
-		addMenuProvider(ShelfMenuProvider(view.context, childFragmentManager, viewModel))
+		addMenuProvider(ShelfMenuProvider(binding.root.context, childFragmentManager, viewModel))
 
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
@@ -136,7 +136,7 @@ class ShelfFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
+		requireViewBinding().recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
 	}

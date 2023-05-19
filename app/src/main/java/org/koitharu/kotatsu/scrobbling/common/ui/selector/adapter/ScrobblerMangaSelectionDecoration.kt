@@ -7,9 +7,9 @@ import android.graphics.RectF
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_ID
+import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
-import org.koitharu.kotatsu.utils.ext.getItem
 
 class ScrobblerMangaSelectionDecoration(context: Context) : MangaSelectionDecoration(context) {
 

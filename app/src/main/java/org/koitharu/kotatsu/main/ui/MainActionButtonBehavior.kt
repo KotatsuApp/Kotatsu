@@ -6,8 +6,8 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import org.koitharu.kotatsu.base.ui.util.ShrinkOnScrollBehavior
-import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
+import org.koitharu.kotatsu.core.ui.util.ShrinkOnScrollBehavior
+import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
 
 class MainActionButtonBehavior : ShrinkOnScrollBehavior {
 

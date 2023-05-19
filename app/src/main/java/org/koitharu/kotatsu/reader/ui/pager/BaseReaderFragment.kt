@@ -1,14 +1,13 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
 import android.os.Bundle
-import android.view.View
 import androidx.core.graphics.Insets
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
-import org.koitharu.kotatsu.base.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.util.ext.getParcelableCompat
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
-import org.koitharu.kotatsu.utils.ext.getParcelableCompat
 
 private const val KEY_STATE = "state"
 
@@ -17,8 +16,8 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>() {
 	protected val viewModel by activityViewModels<ReaderViewModel>()
 	private var stateToSave: ReaderState? = null
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: B, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		var restoredState = savedInstanceState?.getParcelableCompat<ReaderState>(KEY_STATE)
 
 		viewModel.content.observe(viewLifecycleOwner) {

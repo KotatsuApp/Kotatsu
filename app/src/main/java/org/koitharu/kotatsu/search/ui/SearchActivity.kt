@@ -11,12 +11,12 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.showKeyboard
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
-import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
-import org.koitharu.kotatsu.utils.ext.showKeyboard
 
 @AndroidEntryPoint
 class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQueryTextListener {
@@ -34,7 +34,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 		val query = intent.getStringExtra(EXTRA_QUERY)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
-		with(binding.searchView) {
+		with(viewBinding.searchView) {
 			queryHint = getString(R.string.search_on_s, source.title)
 			setOnQueryTextListener(this@SearchActivity)
 
@@ -48,11 +48,11 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.toolbar.updatePadding(
+		viewBinding.toolbar.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
-		binding.container.updatePadding(
+		viewBinding.container.updatePadding(
 			bottom = insets.bottom,
 		)
 	}
@@ -67,7 +67,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 			setReorderingAllowed(true)
 			replace(R.id.container, SearchFragment.newInstance(source, q))
 		}
-		binding.searchView.clearFocus()
+		viewBinding.searchView.clearFocus()
 		searchSuggestionViewModel.saveQuery(q)
 		return true
 	}
@@ -75,13 +75,13 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	override fun onQueryTextChange(newText: String?): Boolean = false
 
 	private fun onIncognitoModeChanged(isIncognito: Boolean) {
-		var options = binding.searchView.imeOptions
+		var options = viewBinding.searchView.imeOptions
 		options = if (isIncognito) {
 			options or EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING
 		} else {
 			options and EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING.inv()
 		}
-		binding.searchView.imeOptions = options
+		viewBinding.searchView.imeOptions = options
 	}
 
 	companion object {

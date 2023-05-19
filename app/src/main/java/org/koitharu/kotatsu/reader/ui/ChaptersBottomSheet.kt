@@ -7,18 +7,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseBottomSheet
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaChapters
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.getParcelableCompat
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
-import org.koitharu.kotatsu.utils.ext.getParcelableCompat
-import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -28,12 +28,12 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 	@Inject
 	lateinit var settings: AppSettings
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): SheetChaptersBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetChaptersBinding {
 		return SheetChaptersBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: SheetChaptersBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		val chapters = arguments?.getParcelableCompat<ParcelableMangaChapters>(ARG_CHAPTERS)?.chapters
 		if (chapters.isNullOrEmpty()) {
 			dismissAllowingStateLoss()

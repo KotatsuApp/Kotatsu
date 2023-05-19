@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.base.ui.list.NestedScrollStateHandle
-import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
-import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
+import org.koitharu.kotatsu.core.ui.list.NestedScrollStateHandle
+import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
+import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.adapter.emptyHintAD
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD

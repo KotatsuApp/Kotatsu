@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
-import org.koitharu.kotatsu.utils.AlphanumComparator
 import java.io.File
 
 class MangaIndex(source: String?) {
@@ -126,7 +125,7 @@ class MangaIndex(source: String?) {
 			item.put("id", id)
 			list.add(item)
 		}
-		val comparator = AlphanumComparator()
+		val comparator = org.koitharu.kotatsu.core.util.AlphanumComparator()
 		list.sortWith(compareBy(comparator) { it.getString("name") })
 		val newJo = JSONObject()
 		list.forEachIndexed { i, obj ->

@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.core.network
 
 import android.annotation.SuppressLint
 import okhttp3.OkHttpClient
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext

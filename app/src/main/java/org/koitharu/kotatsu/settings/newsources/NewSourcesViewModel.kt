@@ -3,12 +3,12 @@ package org.koitharu.kotatsu.settings.newsources
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import org.koitharu.kotatsu.base.ui.BaseViewModel
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BaseViewModel
+import org.koitharu.kotatsu.core.util.ext.mapToSet
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
-import org.koitharu.kotatsu.utils.ext.mapToSet
+import javax.inject.Inject
 
 @HiltViewModel
 class NewSourcesViewModel @Inject constructor(

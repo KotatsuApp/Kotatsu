@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.util.CompositeMutex
+import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -25,11 +27,8 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.utils.AlphanumComparator
-import org.koitharu.kotatsu.utils.CompositeMutex
-import org.koitharu.kotatsu.utils.ext.deleteAwait
-import org.koitharu.kotatsu.utils.ext.printStackTraceDebug
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -65,7 +64,7 @@ class LocalMangaRepository @Inject constructor(
 			list.retainAll { x -> x.containsTags(tags) }
 		}
 		when (sortOrder) {
-			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(AlphanumComparator()) { x -> x.manga.title })
+			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.manga.title })
 			SortOrder.RATING -> list.sortByDescending { it.manga.rating }
 			SortOrder.NEWEST,
 			SortOrder.UPDATED,

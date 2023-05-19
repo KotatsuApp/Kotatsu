@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.base.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.cache.StubContentCache
@@ -41,6 +40,12 @@ import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.favicon.FaviconFetcher
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.image.CoilImageGetter
+import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
+import org.koitharu.kotatsu.core.util.IncognitoModeIndicator
+import org.koitharu.kotatsu.core.util.ext.activityManager
+import org.koitharu.kotatsu.core.util.ext.connectivityManager
+import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
 import org.koitharu.kotatsu.local.data.LocalManga
@@ -53,11 +58,6 @@ import org.koitharu.kotatsu.reader.ui.thumbnails.MangaPageFetcher
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import org.koitharu.kotatsu.settings.backup.BackupObserver
 import org.koitharu.kotatsu.sync.domain.SyncController
-import org.koitharu.kotatsu.utils.IncognitoModeIndicator
-import org.koitharu.kotatsu.utils.ext.activityManager
-import org.koitharu.kotatsu.utils.ext.connectivityManager
-import org.koitharu.kotatsu.utils.ext.isLowRamDevice
-import org.koitharu.kotatsu.utils.image.CoilImageGetter
 import org.koitharu.kotatsu.widget.WidgetUpdater
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -159,7 +159,7 @@ interface AppModule {
 				.transformationDispatcher(Dispatchers.Default)
 				.diskCache(diskCacheFactory)
 				.logger(if (BuildConfig.DEBUG) DebugLogger() else null)
-				.allowRgb565(isLowRamDevice(context))
+				.allowRgb565(context.isLowRamDevice())
 				.components(
 					ComponentRegistry.Builder()
 						.add(SvgDecoder.Factory())

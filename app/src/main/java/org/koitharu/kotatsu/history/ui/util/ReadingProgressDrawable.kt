@@ -1,14 +1,19 @@
 package org.koitharu.kotatsu.history.ui.util
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import androidx.annotation.StyleRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.ColorUtils
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.scale
 import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
-import org.koitharu.kotatsu.utils.ext.scale
 
 class ReadingProgressDrawable(
 	context: Context,

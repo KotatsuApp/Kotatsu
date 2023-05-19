@@ -59,7 +59,7 @@ android {
 	}
 	lint {
 		abortOnError true
-		disable 'MissingTranslation', 'PrivateResource', 'NotifyDataSetChanged'
+		disable 'MissingTranslation', 'PrivateResource', 'NotifyDataSetChanged', 'SetJavaScriptEnabled'
 	}
 	testOptions {
 		unitTests.includeAndroidResources true

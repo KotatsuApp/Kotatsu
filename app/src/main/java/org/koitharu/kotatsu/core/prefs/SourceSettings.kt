@@ -2,13 +2,13 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import androidx.core.content.edit
+import org.koitharu.kotatsu.core.util.ext.getEnumValue
+import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.utils.ext.getEnumValue
-import org.koitharu.kotatsu.utils.ext.ifNullOrEmpty
-import org.koitharu.kotatsu.utils.ext.putEnumValue
 
 private const val KEY_SORT_ORDER = "sort_order"
 

@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.main.ui.owners
 
-import org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+import org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
 
 interface NoModalBottomSheetOwner {
 

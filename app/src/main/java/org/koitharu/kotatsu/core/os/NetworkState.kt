@@ -6,8 +6,8 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import kotlinx.coroutines.flow.first
-import org.koitharu.kotatsu.utils.MediatorStateFlow
-import org.koitharu.kotatsu.utils.ext.isOnline
+import org.koitharu.kotatsu.core.util.MediatorStateFlow
+import org.koitharu.kotatsu.core.util.ext.isOnline
 
 class NetworkState(
 	private val connectivityManager: ConnectivityManager,

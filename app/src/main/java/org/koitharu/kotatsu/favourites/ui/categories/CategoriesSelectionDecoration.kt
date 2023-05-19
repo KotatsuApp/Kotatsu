@@ -9,10 +9,10 @@ import android.view.View
 import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.core.util.ext.getItem
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
-import org.koitharu.kotatsu.utils.ext.getItem
-import org.koitharu.kotatsu.utils.ext.getThemeColor
 import com.google.android.material.R as materialR
 
 class CategoriesSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
@@ -22,7 +22,7 @@ class CategoriesSelectionDecoration(context: Context) : AbstractSelectionItemDec
 	private val strokeColor = context.getThemeColor(materialR.attr.colorPrimary, Color.RED)
 	private val fillColor = ColorUtils.setAlphaComponent(
 		ColorUtils.blendARGB(strokeColor, context.getThemeColor(materialR.attr.colorSurface), 0.8f),
-		0x74
+		0x74,
 	)
 	private val padding = context.resources.getDimension(R.dimen.grid_spacing_outer)
 

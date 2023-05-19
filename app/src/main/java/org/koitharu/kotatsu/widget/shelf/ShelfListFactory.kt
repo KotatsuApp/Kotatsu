@@ -12,12 +12,12 @@ import coil.size.Size
 import coil.transform.RoundedCornersTransformation
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.MangaIntent
+import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
+import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.replaceWith
-import org.koitharu.kotatsu.utils.ext.getDrawableOrThrow
 
 class ShelfListFactory(
 	private val context: Context,

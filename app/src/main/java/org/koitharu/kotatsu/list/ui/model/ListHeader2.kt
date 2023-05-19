@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.list.ui.model
 
-import org.koitharu.kotatsu.base.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.parsers.model.SortOrder
 
 class ListHeader2(
@@ -16,10 +16,9 @@ class ListHeader2(
 		other as ListHeader2
 
 		if (chips != other.chips) return false
-		if (sortOrder != other.sortOrder) return false
+		return sortOrder == other.sortOrder
 		// Not need to check hasSelectedTags
 
-		return true
 	}
 
 	override fun hashCode(): Int {

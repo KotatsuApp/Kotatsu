@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.cache.SafeDeferred
 import org.koitharu.kotatsu.core.prefs.SourceSettings
+import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -25,8 +26,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.domain
-import org.koitharu.kotatsu.utils.ext.processLifecycleScope
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 
 class RemoteMangaRepository(
 	private val parser: MangaParser,

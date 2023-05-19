@@ -7,7 +7,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.StringRes
-import org.koitharu.kotatsu.utils.ext.getParcelableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 
 class RingtonePickContract(@StringRes private val titleResId: Int) : ActivityResultContract<Uri?, Uri?>() {
 

@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.list.ui.model
 
 import android.content.Context
 import androidx.annotation.StringRes
-import org.koitharu.kotatsu.core.ui.DateTimeAgo
+import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 
 class ListHeader private constructor(
 	val text: CharSequence?,
@@ -46,9 +46,7 @@ class ListHeader private constructor(
 		if (textRes != other.textRes) return false
 		if (dateTimeAgo != other.dateTimeAgo) return false
 		if (buttonTextRes != other.buttonTextRes) return false
-		if (payload != other.payload) return false
-
-		return true
+		return payload == other.payload
 	}
 
 	override fun hashCode(): Int {

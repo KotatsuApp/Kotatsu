@@ -11,7 +11,7 @@
 	android:paddingEnd="?listPreferredItemPaddingEnd"
 	android:paddingBottom="16dp">
 
-	<org.koitharu.kotatsu.base.ui.widgets.CheckableImageView
+	<org.koitharu.kotatsu.core.ui.widgets.CheckableImageView
 		android:id="@+id/imageView_indicator"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

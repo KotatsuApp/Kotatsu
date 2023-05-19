@@ -12,9 +12,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
@@ -23,8 +25,6 @@ import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.utils.RecyclerViewScrollCallback
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import kotlin.math.roundToInt
 
 class ChaptersFragment :
@@ -37,17 +37,17 @@ class ChaptersFragment :
 	private var chaptersAdapter: ChaptersAdapter? = null
 	private var selectionController: ListSelectionController? = null
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = FragmentChaptersBinding.inflate(inflater, container, false)
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentChaptersBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		chaptersAdapter = ChaptersAdapter(this)
 		selectionController = ListSelectionController(
 			activity = requireActivity(),
-			decoration = ChaptersSelectionDecoration(view.context),
+			decoration = ChaptersSelectionDecoration(binding.root.context),
 			registryOwner = this,
 			callback = this,
 		)
@@ -108,7 +108,7 @@ class ChaptersFragment :
 					else -> {
 						LocalChaptersRemoveService.start(requireContext(), manga, ids)
 						Snackbar.make(
-							binding.recyclerViewChapters,
+							requireViewBinding().recyclerViewChapters,
 							R.string.chapters_will_removed_background,
 							Snackbar.LENGTH_LONG,
 						).show()
@@ -185,7 +185,7 @@ class ChaptersFragment :
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
-		binding.recyclerViewChapters.invalidateItemDecorations()
+		requireViewBinding().recyclerViewChapters.invalidateItemDecorations()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
@@ -196,7 +196,10 @@ class ChaptersFragment :
 			val position = list.indexOfFirst { it.hasFlag(ChapterListItem.FLAG_CURRENT) } - 1
 			if (position > 0) {
 				val offset = (resources.getDimensionPixelSize(R.dimen.chapter_list_item_height) * 0.6).roundToInt()
-				adapter.setItems(list, RecyclerViewScrollCallback(binding.recyclerViewChapters, position, offset))
+				adapter.setItems(
+					list,
+					RecyclerViewScrollCallback(requireViewBinding().recyclerViewChapters, position, offset),
+				)
 			} else {
 				adapter.items = list
 			}
@@ -206,6 +209,6 @@ class ChaptersFragment :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.progressBar.isVisible = isLoading
+		requireViewBinding().progressBar.isVisible = isLoading
 	}
 }

@@ -8,12 +8,11 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.databinding.ActivityContainerBinding
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
-import kotlin.text.Typography.dagger
 
 @AndroidEntryPoint
 class FavouritesActivity : BaseActivity<ActivityContainerBinding>() {
@@ -37,7 +36,7 @@ class FavouritesActivity : BaseActivity<ActivityContainerBinding>() {
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
+		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)

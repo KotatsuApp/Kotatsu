@@ -4,15 +4,15 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.settings.utils.MultiAutoCompleteTextViewPreference
 import org.koitharu.kotatsu.settings.utils.TagsAutoCompleteProvider
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SuggestionsSettingsFragment :

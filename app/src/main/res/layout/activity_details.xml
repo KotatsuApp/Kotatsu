@@ -48,7 +48,7 @@
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet"
 		tools:visibility="visible">
 
-		<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+		<org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
 			android:id="@+id/header_chapters"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
 				tools:enabled="true"
 				tools:icon="@drawable/ic_read" />
 
-		</org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar>
+		</org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar>
 
 		<androidx.fragment.app.FragmentContainerView
 			android:id="@+id/container_chapters"

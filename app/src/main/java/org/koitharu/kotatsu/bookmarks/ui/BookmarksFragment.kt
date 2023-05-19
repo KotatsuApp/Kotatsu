@@ -16,19 +16,21 @@ import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.domain.reverseAsync
-import org.koitharu.kotatsu.base.ui.BaseFragment
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.base.ui.list.SectionedSelectionController
-import org.koitharu.kotatsu.base.ui.list.decor.AbstractSelectionItemDecoration
-import org.koitharu.kotatsu.base.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.base.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.base.ui.util.ReversibleAction
 import org.koitharu.kotatsu.bookmarks.data.ids
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksGroupAdapter
 import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
+import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
+import org.koitharu.kotatsu.core.ui.util.ReversibleAction
+import org.koitharu.kotatsu.core.ui.util.reverseAsync
+import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -37,8 +39,6 @@ import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.SnackbarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.utils.ext.invalidateNestedItemDecorations
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -56,12 +56,12 @@ class BookmarksFragment :
 	private var adapter: BookmarksGroupAdapter? = null
 	private var selectionController: SectionedSelectionController<Manga>? = null
 
-	override fun onInflateView(inflater: LayoutInflater, container: ViewGroup?): FragmentListSimpleBinding {
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentListSimpleBinding {
 		return FragmentListSimpleBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentListSimpleBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		selectionController = SectionedSelectionController(
 			activity = requireActivity(),
 			owner = this,
@@ -77,7 +77,7 @@ class BookmarksFragment :
 		)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.setHasFixedSize(true)
-		val spacingDecoration = SpacingItemDecoration(view.resources.getDimensionPixelOffset(R.dimen.grid_spacing))
+		val spacingDecoration = SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
 		binding.recyclerView.addItemDecoration(spacingDecoration)
 
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
@@ -114,7 +114,7 @@ class BookmarksFragment :
 	override fun onFastScrollStop(fastScroller: FastScroller) = Unit
 
 	override fun onSelectionChanged(controller: SectionedSelectionController<Manga>, count: Int) {
-		binding.recyclerView.invalidateNestedItemDecorations()
+		requireViewBinding().recyclerView.invalidateNestedItemDecorations()
 	}
 
 	override fun onCreateActionMode(
@@ -149,10 +149,10 @@ class BookmarksFragment :
 	): AbstractSelectionItemDecoration = BookmarksSelectionDecoration(requireContext())
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
+		requireViewBinding().recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
-		binding.recyclerView.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+		requireViewBinding().recyclerView.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			bottomMargin = insets.bottom
 		}
 	}

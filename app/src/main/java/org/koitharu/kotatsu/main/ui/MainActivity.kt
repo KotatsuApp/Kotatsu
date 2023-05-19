@@ -38,10 +38,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.os.VoiceInputContract
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
+import org.koitharu.kotatsu.core.util.ext.drawableEnd
+import org.koitharu.kotatsu.core.util.ext.hideKeyboard
+import org.koitharu.kotatsu.core.util.ext.resolve
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
+import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -62,13 +69,6 @@ import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.shelf.ui.ShelfFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import org.koitharu.kotatsu.utils.VoiceInputContract
-import org.koitharu.kotatsu.utils.ext.drawableEnd
-import org.koitharu.kotatsu.utils.ext.hideKeyboard
-import org.koitharu.kotatsu.utils.ext.resolve
-import org.koitharu.kotatsu.utils.ext.scaleUpActivityOptionsOf
-import org.koitharu.kotatsu.utils.ext.setNavigationBarTransparentCompat
-import org.koitharu.kotatsu.utils.ext.tryLaunch
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -94,41 +94,42 @@ class MainActivity :
 	private lateinit var navigationDelegate: MainNavigationDelegate
 
 	override val appBar: AppBarLayout
-		get() = binding.appbar
+		get() = viewBinding.appbar
 
 	override val bottomNav: SlidingBottomNavigationView?
-		get() = binding.bottomNav
+		get() = viewBinding.bottomNav
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
 
 		if (bottomNav != null) {
-			ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+			ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { _, insets ->
 				if (insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom > 0) {
 					val elevation = bottomNav?.elevation ?: 0f
 					window.setNavigationBarTransparentCompat(this@MainActivity, elevation)
 				}
 				insets
 			}
-			ViewCompat.requestApplyInsets(binding.root)
+			ViewCompat.requestApplyInsets(viewBinding.root)
 		}
 
-		with(binding.searchView) {
+		with(viewBinding.searchView) {
 			onFocusChangeListener = this@MainActivity
 			searchSuggestionListener = this@MainActivity
 		}
 		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
 
-		binding.fab?.setOnClickListener(this)
-		binding.navRail?.headerView?.setOnClickListener(this)
-		binding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
+		viewBinding.fab?.setOnClickListener(this)
+		viewBinding.navRail?.headerView?.setOnClickListener(this)
+		viewBinding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
-		navigationDelegate = MainNavigationDelegate(checkNotNull(bottomNav ?: binding.navRail), supportFragmentManager)
+		navigationDelegate =
+			MainNavigationDelegate(checkNotNull(bottomNav ?: viewBinding.navRail), supportFragmentManager)
 		navigationDelegate.addOnFragmentChangedListener(this)
 		navigationDelegate.onCreate(savedInstanceState)
 
-		onBackPressedDispatcher.addCallback(ExitCallback(this, binding.container))
+		onBackPressedDispatcher.addCallback(ExitCallback(this, viewBinding.container))
 		onBackPressedDispatcher.addCallback(navigationDelegate)
 		onBackPressedDispatcher.addCallback(closeSearchCallback)
 
@@ -137,7 +138,7 @@ class MainActivity :
 		}
 
 		viewModel.onOpenReader.observe(this, this::onOpenReader)
-		viewModel.onError.observe(this, SnackbarErrorObserver(binding.container, null))
+		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.container, null))
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
@@ -153,13 +154,13 @@ class MainActivity :
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
 		adjustFabVisibility(topFragment = fragment)
 		if (fromUser) {
-			binding.appbar.setExpanded(true)
+			viewBinding.appbar.setExpanded(true)
 		}
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		if (item.itemId == android.R.id.home && !isSearchOpened()) {
-			binding.searchView.requestFocus()
+			viewBinding.searchView.requestFocus()
 			return true
 		}
 		return super.onOptionsItemSelected(item)
@@ -173,7 +174,7 @@ class MainActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.root.updatePadding(
+		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
@@ -198,7 +199,7 @@ class MainActivity :
 	}
 
 	override fun onQueryClick(query: String, submit: Boolean) {
-		binding.searchView.query = query
+		viewBinding.searchView.query = query
 		if (submit) {
 			if (query.isNotEmpty()) {
 				startActivity(MultiSearchActivity.newIntent(this, query))
@@ -216,16 +217,16 @@ class MainActivity :
 	}
 
 	override fun onVoiceSearchClick() {
-		val options = binding.searchView.drawableEnd?.bounds?.let { bounds ->
+		val options = viewBinding.searchView.drawableEnd?.bounds?.let { bounds ->
 			ActivityOptionsCompat.makeScaleUpAnimation(
-				binding.searchView,
+				viewBinding.searchView,
 				bounds.centerX(),
 				bounds.centerY(),
 				bounds.width(),
 				bounds.height(),
 			)
 		}
-		voiceInputLauncher.tryLaunch(binding.searchView.hint?.toString(), options)
+		voiceInputLauncher.tryLaunch(viewBinding.searchView.hint?.toString(), options)
 	}
 
 	override fun onSourceToggle(source: MangaSource, isEnabled: Boolean) {
@@ -250,7 +251,7 @@ class MainActivity :
 	}
 
 	private fun onOpenReader(manga: Manga) {
-		val fab = binding.fab ?: binding.navRail?.headerView
+		val fab = viewBinding.fab ?: viewBinding.navRail?.headerView
 		val options = fab?.let {
 			scaleUpActivityOptionsOf(it).toBundle()
 		}
@@ -270,17 +271,17 @@ class MainActivity :
 	}
 
 	private fun onIncognitoModeChanged(isIncognito: Boolean) {
-		var options = binding.searchView.imeOptions
+		var options = viewBinding.searchView.imeOptions
 		options = if (isIncognito) {
 			options or EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING
 		} else {
 			options and EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING.inv()
 		}
-		binding.searchView.imeOptions = options
+		viewBinding.searchView.imeOptions = options
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.fab?.isEnabled = !isLoading
+		viewBinding.fab?.isEnabled = !isLoading
 	}
 
 	private fun onResumeEnabledChanged(isEnabled: Boolean) {
@@ -293,7 +294,7 @@ class MainActivity :
 	}
 
 	private fun onSearchClosed() {
-		binding.searchView.hideKeyboard()
+		viewBinding.searchView.hideKeyboard()
 		adjustSearchUI(isOpened = false, animate = true)
 		closeSearchCallback.isEnabled = false
 	}
@@ -306,7 +307,7 @@ class MainActivity :
 				hide()
 			}
 		}
-		binding.navRail?.isVisible = visible
+		viewBinding.navRail?.isVisible = visible
 	}
 
 	private fun isSearchOpened(): Boolean {
@@ -341,7 +342,7 @@ class MainActivity :
 		topFragment: Fragment? = navigationDelegate.primaryFragment,
 		isSearchOpened: Boolean = isSearchOpened(),
 	) {
-		val fab = binding.fab ?: return
+		val fab = viewBinding.fab ?: return
 		if (
 			isResumeEnabled &&
 			!actionModeDelegate.isActionModeStarted &&
@@ -360,22 +361,22 @@ class MainActivity :
 
 	private fun adjustSearchUI(isOpened: Boolean, animate: Boolean) {
 		if (animate) {
-			TransitionManager.beginDelayedTransition(binding.appbar)
+			TransitionManager.beginDelayedTransition(viewBinding.appbar)
 		}
 		val appBarScrollFlags = if (isOpened) {
 			SCROLL_FLAG_NO_SCROLL
 		} else {
 			SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
 		}
-		binding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> { scrollFlags = appBarScrollFlags }
-		binding.insetsHolder.updateLayoutParams<AppBarLayout.LayoutParams> { scrollFlags = appBarScrollFlags }
-		binding.toolbarCard.background = if (isOpened) {
+		viewBinding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> { scrollFlags = appBarScrollFlags }
+		viewBinding.insetsHolder.updateLayoutParams<AppBarLayout.LayoutParams> { scrollFlags = appBarScrollFlags }
+		viewBinding.toolbarCard.background = if (isOpened) {
 			null
 		} else {
 			ContextCompat.getDrawable(this, R.drawable.toolbar_background)
 		}
 		val padding = if (isOpened) 0 else resources.getDimensionPixelOffset(R.dimen.margin_normal)
-		binding.appbar.updatePadding(left = padding, right = padding)
+		viewBinding.appbar.updatePadding(left = padding, right = padding)
 		adjustFabVisibility(isSearchOpened = isOpened)
 		supportActionBar?.setHomeAsUpIndicator(
 			if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
@@ -396,7 +397,7 @@ class MainActivity :
 
 		override fun onActivityResult(result: String?) {
 			if (result != null) {
-				binding.searchView.query = result
+				viewBinding.searchView.query = result
 			}
 		}
 	}
@@ -405,7 +406,7 @@ class MainActivity :
 
 		override fun handleOnBackPressed() {
 			val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
-			binding.searchView.clearFocus()
+			viewBinding.searchView.clearFocus()
 			if (fragment == null) {
 				// this should not happen but who knows
 				isEnabled = false

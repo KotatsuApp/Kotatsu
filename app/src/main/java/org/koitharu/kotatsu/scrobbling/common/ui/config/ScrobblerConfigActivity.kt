@@ -12,10 +12,13 @@ import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.base.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
+import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ActivityScrobblerConfigBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
@@ -23,9 +26,6 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
-import org.koitharu.kotatsu.utils.ext.disposeImageRequest
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.newImageRequest
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -47,7 +47,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		val listAdapter = ScrobblingMangaAdapter(this, coil, this)
-		with(binding.recyclerView) {
+		with(viewBinding.recyclerView) {
 			adapter = listAdapter
 			setHasFixedSize(true)
 			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
@@ -59,12 +59,12 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 			)
 			addItemDecoration(decoration)
 		}
-		binding.imageViewAvatar.setOnClickListener(this)
+		viewBinding.imageViewAvatar.setOnClickListener(this)
 
 		viewModel.content.observe(this, listAdapter::setItems)
 		viewModel.user.observe(this, this::onUserChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
-		viewModel.onError.observe(this, SnackbarErrorObserver(binding.recyclerView, null))
+		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 		viewModel.onLoggedOut.observe(this) {
 			finishAfterTransition()
 		}
@@ -81,7 +81,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.recyclerView.updatePadding(
+		viewBinding.recyclerView.updatePadding(
 			left = insets.left + paddingHorizontal,
 			right = insets.right + paddingHorizontal,
 			bottom = insets.bottom + paddingVertical,
@@ -112,17 +112,17 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 
 	private fun onUserChanged(user: ScrobblerUser?) {
 		if (user == null) {
-			binding.imageViewAvatar.disposeImageRequest()
-			binding.imageViewAvatar.isVisible = false
+			viewBinding.imageViewAvatar.disposeImageRequest()
+			viewBinding.imageViewAvatar.isVisible = false
 			return
 		}
-		binding.imageViewAvatar.isVisible = true
-		binding.imageViewAvatar.newImageRequest(this, user.avatar)
+		viewBinding.imageViewAvatar.isVisible = true
+		viewBinding.imageViewAvatar.newImageRequest(this, user.avatar)
 			?.enqueueWith(coil)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		binding.progressBar.run {
+		viewBinding.progressBar.run {
 			if (isLoading) {
 				show()
 			} else {

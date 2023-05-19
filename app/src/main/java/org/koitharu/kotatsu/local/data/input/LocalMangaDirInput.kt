@@ -4,6 +4,9 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.util.ext.listFilesRecursive
+import org.koitharu.kotatsu.core.util.ext.longHashCode
+import org.koitharu.kotatsu.core.util.ext.toListSorted
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.ImageFileFilter
 import org.koitharu.kotatsu.local.data.LocalManga
@@ -14,10 +17,6 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toCamelCase
-import org.koitharu.kotatsu.utils.AlphanumComparator
-import org.koitharu.kotatsu.utils.ext.listFilesRecursive
-import org.koitharu.kotatsu.utils.ext.longHashCode
-import org.koitharu.kotatsu.utils.ext.toListSorted
 import java.io.File
 import java.util.zip.ZipFile
 
@@ -89,7 +88,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 		val file = chapter.url.toUri().toFile()
 		if (file.isDirectory) {
 			file.listFilesRecursive(ImageFileFilter())
-				.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
+				.toListSorted(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.name })
 				.map {
 					val pageUri = it.toUri().toString()
 					MangaPage(
@@ -105,7 +104,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 					.asSequence()
 					.filter { x -> !x.isDirectory }
 					.map { it.name }
-					.toListSorted(AlphanumComparator())
+					.toListSorted(org.koitharu.kotatsu.core.util.AlphanumComparator())
 					.map {
 						val pageUri = zipUri(file, it)
 						MangaPage(
@@ -122,7 +121,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 	private fun String.toHumanReadable() = replace("_", " ").toCamelCase()
 
 	private fun getChaptersFiles(): List<File> = root.listFilesRecursive(CbzFilter())
-		.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
+		.toListSorted(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.name })
 
 	private fun findFirstImageEntry(): String? {
 		val filter = ImageFileFilter()

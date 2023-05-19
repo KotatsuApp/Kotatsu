@@ -15,11 +15,11 @@ import okio.IOException
 import okio.buffer
 import okio.sink
 import okio.source
-import org.koitharu.kotatsu.base.domain.MangaDataRepository
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
+import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.reader.domain.PageLoader
-import org.koitharu.kotatsu.utils.ext.writeAllCancellable
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.Continuation

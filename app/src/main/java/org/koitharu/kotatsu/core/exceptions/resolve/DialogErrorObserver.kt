@@ -6,9 +6,9 @@ import androidx.core.util.Consumer
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ui.ErrorDetailsDialog
+import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.parsers.exception.ParseException
-import org.koitharu.kotatsu.utils.ext.getDisplayMessage
 
 class DialogErrorObserver(
 	host: View,

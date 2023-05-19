@@ -1,10 +1,8 @@
 package org.koitharu.kotatsu.browser.cloudflare
 
-import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebSettings
@@ -14,13 +12,13 @@ import androidx.fragment.app.setFragmentResult
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.Headers
-import org.koitharu.kotatsu.base.ui.AlertDialogFragment
 import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
+import org.koitharu.kotatsu.core.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentCloudflareBinding
-import org.koitharu.kotatsu.utils.ext.withArgs
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -39,14 +37,13 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 		url = requireArguments().getString(ARG_URL).orEmpty()
 	}
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = FragmentCloudflareBinding.inflate(inflater, container, false)
 
-	@SuppressLint("SetJavaScriptEnabled")
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: FragmentCloudflareBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		with(binding.webView.settings) {
 			javaScriptEnabled = true
 			cacheMode = WebSettings.LOAD_DEFAULT
@@ -64,8 +61,8 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 	}
 
 	override fun onDestroyView() {
-		binding.webView.stopLoading()
-		binding.webView.destroy()
+		requireViewBinding().webView.stopLoading()
+		requireViewBinding().webView.destroy()
 		onBackPressedCallback = null
 		super.onDestroyView()
 	}
@@ -76,18 +73,18 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 
 	override fun onDialogCreated(dialog: AlertDialog) {
 		super.onDialogCreated(dialog)
-		onBackPressedCallback = WebViewBackPressedCallback(binding.webView).also {
+		onBackPressedCallback = WebViewBackPressedCallback(requireViewBinding().webView).also {
 			dialog.onBackPressedDispatcher.addCallback(it)
 		}
 	}
 
 	override fun onResume() {
 		super.onResume()
-		binding.webView.onResume()
+		requireViewBinding().webView.onResume()
 	}
 
 	override fun onPause() {
-		binding.webView.onPause()
+		requireViewBinding().webView.onPause()
 		super.onPause()
 	}
 
@@ -97,7 +94,7 @@ class CloudFlareDialog : AlertDialogFragment<FragmentCloudflareBinding>(), Cloud
 	}
 
 	override fun onPageLoaded() {
-		bindingOrNull()?.progressBar?.isInvisible = true
+		viewBinding?.progressBar?.isInvisible = true
 	}
 
 	override fun onCheckPassed() {

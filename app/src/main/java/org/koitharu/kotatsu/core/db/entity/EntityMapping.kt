@@ -1,13 +1,13 @@
 package org.koitharu.kotatsu.core.db.entity
 
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
-import org.koitharu.kotatsu.utils.ext.longHashCode
 
 // Entity to model
 

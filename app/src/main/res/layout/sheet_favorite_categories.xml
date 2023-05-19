@@ -7,7 +7,7 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+	<org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
 		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
 			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
 			android:text="@string/done" />
 
-	</org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar>
+	</org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar>
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_categories"

@@ -5,14 +5,14 @@ import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ui.titleRes
+import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.databinding.ItemCheckableNewBinding
 import org.koitharu.kotatsu.databinding.ItemFilterHeaderBinding
 
 fun filterSortDelegate(
 	listener: OnFilterChangedListener,
 ) = adapterDelegateViewBinding<FilterItem.Sort, FilterItem, ItemCheckableNewBinding>(
-	{ layoutInflater, parent -> ItemCheckableNewBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemCheckableNewBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	itemView.setOnClickListener {
@@ -28,7 +28,7 @@ fun filterSortDelegate(
 fun filterTagDelegate(
 	listener: OnFilterChangedListener,
 ) = adapterDelegateViewBinding<FilterItem.Tag, FilterItem, ItemCheckableNewBinding>(
-	{ layoutInflater, parent -> ItemCheckableNewBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemCheckableNewBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	itemView.setOnClickListener {
@@ -42,7 +42,7 @@ fun filterTagDelegate(
 }
 
 fun filterHeaderDelegate() = adapterDelegateViewBinding<FilterItem.Header, FilterItem, ItemFilterHeaderBinding>(
-	{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemFilterHeaderBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	bind {

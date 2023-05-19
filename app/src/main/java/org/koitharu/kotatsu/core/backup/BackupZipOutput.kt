@@ -5,10 +5,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okio.Closeable
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.format
 import org.koitharu.kotatsu.core.zip.ZipOutput
-import org.koitharu.kotatsu.utils.ext.format
 import java.io.File
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import java.util.zip.Deflater
 
 class BackupZipOutput(val file: File) : Closeable {

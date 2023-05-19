@@ -3,20 +3,19 @@ package org.koitharu.kotatsu.settings.onboard
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.util.ext.showAllowStateLoss
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.DialogOnboardBinding
 import org.koitharu.kotatsu.settings.onboard.adapter.SourceLocaleListener
 import org.koitharu.kotatsu.settings.onboard.adapter.SourceLocalesAdapter
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
-import org.koitharu.kotatsu.utils.ext.showAllowStateLoss
-import org.koitharu.kotatsu.utils.ext.withArgs
 
 @AndroidEntryPoint
 class OnboardDialogFragment :
@@ -33,7 +32,7 @@ class OnboardDialogFragment :
 		}
 	}
 
-	override fun onInflateView(
+	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 	) = DialogOnboardBinding.inflate(inflater, container, false)
@@ -52,8 +51,8 @@ class OnboardDialogFragment :
 		return builder
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun onViewBindingCreated(binding: DialogOnboardBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
 		val adapter = SourceLocalesAdapter(this)
 		binding.recyclerView.adapter = adapter
 		binding.textViewTitle.setText(R.string.onboard_text)

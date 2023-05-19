@@ -41,14 +41,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
+import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
-import org.koitharu.kotatsu.utils.ext.runCatchingCancellable
-import org.koitharu.kotatsu.utils.ext.toBitmapOrNull
-import org.koitharu.kotatsu.utils.ext.trySetForeground
 import java.util.concurrent.TimeUnit
 
 @HiltWorker
@@ -84,9 +84,7 @@ class TrackWorker @AssistedInject constructor(
 		if (!settings.isTrackerEnabled) {
 			return Result.success(workDataOf(0, 0))
 		}
-		if (TAG in tags) { // not expedited
-			trySetForeground()
-		}
+		trySetForeground()
 		val tracks = tracker.getAllTracks()
 		logger.log("Total ${tracks.size} tracks")
 		if (tracks.isEmpty()) {

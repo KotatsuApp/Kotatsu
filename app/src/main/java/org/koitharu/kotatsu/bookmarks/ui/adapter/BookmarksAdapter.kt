@@ -4,8 +4,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.base.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 
 class BookmarksAdapter(
 	coil: ImageLoader,
@@ -13,7 +13,7 @@ class BookmarksAdapter(
 	clickListener: OnListItemClickListener<Bookmark>,
 ) : AsyncListDifferDelegationAdapter<Bookmark>(
 	DiffCallback(),
-	bookmarkListAD(coil, lifecycleOwner, clickListener)
+	bookmarkListAD(coil, lifecycleOwner, clickListener),
 ) {
 
 	private class DiffCallback : DiffUtil.ItemCallback<Bookmark>() {

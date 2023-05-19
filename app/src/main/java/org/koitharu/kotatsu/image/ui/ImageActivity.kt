@@ -17,12 +17,12 @@ import coil.target.ViewTarget
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.base.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.indicator
 import org.koitharu.kotatsu.databinding.ActivityImageBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.utils.ext.enqueueWith
-import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
-import org.koitharu.kotatsu.utils.ext.indicator
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,7 +42,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>() {
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		with(binding.toolbar) {
+		with(viewBinding.toolbar) {
 			updatePadding(
 				left = insets.left,
 				right = insets.right,
@@ -59,8 +59,8 @@ class ImageActivity : BaseActivity<ActivityImageBinding>() {
 			.memoryCachePolicy(CachePolicy.DISABLED)
 			.lifecycle(this)
 			.tag(intent.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE))
-			.target(SsivTarget(binding.ssiv))
-			.indicator(binding.progressBar)
+			.target(SsivTarget(viewBinding.ssiv))
+			.indicator(viewBinding.progressBar)
 			.enqueueWith(coil)
 	}
 

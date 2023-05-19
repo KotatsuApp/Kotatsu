@@ -1,13 +1,13 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import org.koitharu.kotatsu.core.ui.titleRes
+import org.koitharu.kotatsu.core.ui.model.titleRes
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ItemHeader2Binding
 import org.koitharu.kotatsu.list.ui.model.ListHeader2
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.utils.ext.isAnimationsEnabled
-import org.koitharu.kotatsu.utils.ext.setTextAndVisible
 
 fun listHeader2AD(
 	listener: MangaListListener,

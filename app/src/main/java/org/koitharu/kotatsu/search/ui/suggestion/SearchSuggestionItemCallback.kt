@@ -2,9 +2,9 @@ package org.koitharu.kotatsu.search.ui.suggestion
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SEARCH_SUGGESTION_ITEM_TYPE_QUERY
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
-import org.koitharu.kotatsu.utils.ext.getItem
 
 class SearchSuggestionItemCallback(
 	private val listener: SuggestionItemListener,
@@ -12,7 +12,7 @@ class SearchSuggestionItemCallback(
 
 	private val movementFlags = makeMovementFlags(
 		0,
-		ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+		ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
 	)
 
 	override fun getMovementFlags(

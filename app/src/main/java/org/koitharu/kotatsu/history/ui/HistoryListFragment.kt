@@ -3,15 +3,15 @@ package org.koitharu.kotatsu.history.ui
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.utils.ext.addMenuProvider
 
 @AndroidEntryPoint
 class HistoryListFragment : MangaListFragment() {
@@ -19,9 +19,9 @@ class HistoryListFragment : MangaListFragment() {
 	override val viewModel by viewModels<HistoryListViewModel>()
 	override val isSwipeRefreshEnabled = false
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-		addMenuProvider(HistoryListMenuProvider(view.context, viewModel))
+	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
+		addMenuProvider(HistoryListMenuProvider(binding.root.context, viewModel))
 		viewModel.isGroupingEnabled.observe(viewLifecycleOwner) {
 			activity?.invalidateOptionsMenu()
 		}
@@ -48,6 +48,7 @@ class HistoryListFragment : MangaListFragment() {
 				mode.finish()
 				true
 			}
+
 			else -> super.onActionItemClicked(controller, mode, item)
 		}
 	}

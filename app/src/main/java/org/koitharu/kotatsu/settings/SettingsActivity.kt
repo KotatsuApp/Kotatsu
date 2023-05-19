@@ -18,16 +18,16 @@ import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.base.ui.BaseActivity
-import org.koitharu.kotatsu.base.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.isScrolledToTop
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesListFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
-import org.koitharu.kotatsu.utils.ext.getSerializableExtraCompat
-import org.koitharu.kotatsu.utils.ext.isScrolledToTop
 
 @AndroidEntryPoint
 class SettingsActivity :
@@ -37,7 +37,7 @@ class SettingsActivity :
 	FragmentManager.OnBackStackChangedListener {
 
 	override val appBar: AppBarLayout
-		get() = binding.appbar
+		get() = viewBinding.appbar
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -51,7 +51,7 @@ class SettingsActivity :
 
 	override fun onTitleChanged(title: CharSequence?, color: Int) {
 		super.onTitleChanged(title, color)
-		binding.collapsingToolbarLayout?.title = title
+		viewBinding.collapsingToolbarLayout?.title = title
 	}
 
 	override fun onStart() {
@@ -86,7 +86,7 @@ class SettingsActivity :
 		val fragment = supportFragmentManager.findFragmentById(R.id.container) as? RecyclerViewOwner ?: return
 		val recyclerView = fragment.recyclerView
 		recyclerView.post {
-			binding.appbar.setExpanded(recyclerView.isScrolledToTop, false)
+			viewBinding.appbar.setExpanded(recyclerView.isScrolledToTop, false)
 		}
 	}
 
@@ -104,11 +104,11 @@ class SettingsActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		binding.appbar.updatePadding(
+		viewBinding.appbar.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
-		binding.container.updatePadding(
+		viewBinding.container.updatePadding(
 			left = insets.left,
 			right = insets.right,
 		)
