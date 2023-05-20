@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.io.File
+import java.net.Proxy
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -62,6 +63,7 @@ class ContentSettingsFragment :
 			if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled,
 		)
 		bindRemoteSourcesSummary()
+		bindProxySummary()
 		settings.subscribe(this)
 	}
 
@@ -92,6 +94,12 @@ class ContentSettingsFragment :
 
 			AppSettings.KEY_SSL_BYPASS -> {
 				Snackbar.make(listView, R.string.settings_apply_restart_required, Snackbar.LENGTH_INDEFINITE).show()
+			}
+
+			AppSettings.KEY_PROXY_TYPE,
+			AppSettings.KEY_PROXY_ADDRESS,
+			AppSettings.KEY_PROXY_PORT -> {
+				bindProxySummary()
 			}
 		}
 	}
@@ -127,6 +135,19 @@ class ContentSettingsFragment :
 		findPreference<Preference>(AppSettings.KEY_REMOTE_SOURCES)?.run {
 			val total = settings.remoteMangaSources.size
 			summary = getString(R.string.enabled_d_of_d, total - settings.hiddenSources.size, total)
+		}
+	}
+
+	private fun bindProxySummary() {
+		findPreference<Preference>(AppSettings.KEY_PROXY)?.run {
+			val type = settings.proxyType
+			val address = settings.proxyAddress
+			val port = settings.proxyPort
+			summary = if (type == Proxy.Type.DIRECT || address.isNullOrEmpty() || port == 0) {
+				context.getString(R.string.disabled)
+			} else {
+				"$type $address:$port"
+			}
 		}
 	}
 

@@ -417,4 +417,8 @@
 	<string name="translations">Translations</string>
 	<string name="web_view_unavailable">WebView not available: check if WebView provider is installed</string>
 	<string name="clear_network_cache">Clear network cache</string>
+	<string name="type">Type</string>
+	<string name="address">Address</string>
+	<string name="port">Port</string>
+	<string name="proxy">Proxy</string>
 </resources>

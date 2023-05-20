@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.shelf.domain.ShelfSection
 import java.io.File
+import java.net.Proxy
 import java.util.Collections
 import java.util.EnumSet
 import java.util.Locale
@@ -276,6 +277,18 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isSSLBypassEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SSL_BYPASS, false)
 
+	val proxyType: Proxy.Type
+		get() {
+			val raw = prefs.getString(KEY_PROXY_TYPE, null) ?: return Proxy.Type.DIRECT
+			return enumValues<Proxy.Type>().find { it.name == raw } ?: Proxy.Type.DIRECT
+		}
+
+	val proxyAddress: String?
+		get() = prefs.getString(KEY_PROXY_ADDRESS, null)
+
+	val proxyPort: Int
+		get() = prefs.getString(KEY_PROXY_PORT, null)?.toIntOrNull() ?: 0
+
 	var localListOrder: SortOrder
 		get() = prefs.getEnumValue(KEY_LOCAL_LIST_ORDER, SortOrder.NEWEST)
 		set(value) = prefs.edit { putEnumValue(KEY_LOCAL_LIST_ORDER, value) }
@@ -413,6 +426,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SSL_BYPASS = "ssl_bypass"
 		const val KEY_READER_AUTOSCROLL_SPEED = "as_speed"
 		const val KEY_MIRROR_SWITCHING = "mirror_switching"
+		const val KEY_PROXY = "proxy"
+		const val KEY_PROXY_TYPE = "proxy_type"
+		const val KEY_PROXY_ADDRESS = "proxy_address"
+		const val KEY_PROXY_PORT = "proxy_port"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

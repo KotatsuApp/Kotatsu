@@ -6,7 +6,7 @@ import org.koitharu.kotatsu.core.util.EditTextValidator
 
 class EditTextBindListener(
 	private val inputType: Int,
-	private val hint: String,
+	private val hint: String?,
 	private val validator: EditTextValidator?,
 ) : EditTextPreference.OnBindEditTextListener {
 
