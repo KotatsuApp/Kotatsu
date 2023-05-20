@@ -23,7 +23,10 @@ import org.koitharu.kotatsu.scrobbling.common.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerMangaInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerType
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.math.roundToInt
 
 private const val REDIRECT_URI = "kotatsu://anilist-auth"
@@ -34,10 +37,11 @@ private const val REQUEST_QUERY = "query"
 private const val REQUEST_MUTATION = "mutation"
 private const val KEY_SCORE_FORMAT = "score_format"
 
-class AniListRepository(
+@Singleton
+class AniListRepository @Inject constructor(
 	@ApplicationContext context: Context,
-	private val okHttp: OkHttpClient,
-	private val storage: ScrobblerStorage,
+	@ScrobblerType(ScrobblerService.ANILIST) private val okHttp: OkHttpClient,
+	@ScrobblerType(ScrobblerService.ANILIST) private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
 ) : ScrobblerRepository {
 

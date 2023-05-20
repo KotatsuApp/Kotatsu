@@ -1,11 +1,11 @@
-package org.koitharu.kotatsu.core.logs
+package org.koitharu.kotatsu.core.network
 
 import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.SOURCE)
-annotation class TrackerLogger
+annotation class BaseHttpClient
 
 @Qualifier
 @Retention(AnnotationRetention.SOURCE)
-annotation class SyncLogger
+annotation class MangaHttpClient

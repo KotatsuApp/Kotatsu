@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import org.koitharu.kotatsu.core.exceptions.SyncApiException
+import org.koitharu.kotatsu.core.network.BaseHttpClient
 import org.koitharu.kotatsu.core.util.ext.toRequestBody
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.parseJson
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 @Reusable
 class SyncAuthApi @Inject constructor(
-	private val okHttpClient: OkHttpClient,
+	@BaseHttpClient private val okHttpClient: OkHttpClient,
 ) {
 
 	suspend fun authenticate(host: String, email: String, password: String): String {

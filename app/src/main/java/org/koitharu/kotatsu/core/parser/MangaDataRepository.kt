@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
@@ -34,7 +35,7 @@ import kotlin.math.roundToInt
 
 @Reusable
 class MangaDataRepository @Inject constructor(
-	private val okHttpClient: OkHttpClient,
+	@MangaHttpClient private val okHttpClient: OkHttpClient,
 	private val db: MangaDatabase,
 ) {
 

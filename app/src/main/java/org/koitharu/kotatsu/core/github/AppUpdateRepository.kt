@@ -13,6 +13,7 @@ import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.network.BaseHttpClient
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.parsers.util.await
@@ -36,7 +37,7 @@ private const val CONTENT_TYPE_APK = "application/vnd.android.package-archive"
 class AppUpdateRepository @Inject constructor(
 	@ApplicationContext private val context: Context,
 	private val settings: AppSettings,
-	private val okHttp: OkHttpClient,
+	@BaseHttpClient private val okHttp: OkHttpClient,
 ) {
 
 	private val availableUpdate = MutableStateFlow<AppVersion?>(null)

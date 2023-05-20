@@ -23,16 +23,20 @@ import org.koitharu.kotatsu.scrobbling.common.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerMangaInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerType
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val REDIRECT_URI = "kotatsu://shikimori-auth"
 private const val BASE_URL = "https://shikimori.me/"
 private const val MANGA_PAGE_SIZE = 10
 
-class ShikimoriRepository(
+@Singleton
+class ShikimoriRepository @Inject constructor(
 	@ApplicationContext context: Context,
-	private val okHttp: OkHttpClient,
-	private val storage: ScrobblerStorage,
+	@ScrobblerType(ScrobblerService.SHIKIMORI) private val okHttp: OkHttpClient,
+	@ScrobblerType(ScrobblerService.SHIKIMORI) private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
 ) : ScrobblerRepository {
 

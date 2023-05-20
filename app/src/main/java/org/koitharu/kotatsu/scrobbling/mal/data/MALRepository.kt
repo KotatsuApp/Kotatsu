@@ -20,18 +20,22 @@ import org.koitharu.kotatsu.scrobbling.common.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerMangaInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerType
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import java.security.SecureRandom
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val REDIRECT_URI = "kotatsu://mal-auth"
 private const val BASE_WEB_URL = "https://myanimelist.net"
 private const val BASE_API_URL = "https://api.myanimelist.net/v2"
 private const val AVATAR_STUB = "https://cdn.myanimelist.net/images/questionmark_50.gif"
 
-class MALRepository(
+@Singleton
+class MALRepository @Inject constructor(
 	@ApplicationContext context: Context,
-	private val okHttp: OkHttpClient,
-	private val storage: ScrobblerStorage,
+	@ScrobblerType(ScrobblerService.MAL) private val okHttp: OkHttpClient,
+	@ScrobblerType(ScrobblerService.MAL) private val storage: ScrobblerStorage,
 	private val db: MangaDatabase,
 ) : ScrobblerRepository {
 

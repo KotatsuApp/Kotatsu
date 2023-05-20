@@ -36,6 +36,7 @@ import okio.buffer
 import okio.sink
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -69,7 +70,7 @@ import javax.inject.Inject
 class DownloadWorker @AssistedInject constructor(
 	@Assisted appContext: Context,
 	@Assisted params: WorkerParameters,
-	private val okHttp: OkHttpClient,
+	@MangaHttpClient private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
 	private val localMangaRepository: LocalMangaRepository,
 	private val mangaDataRepository: MangaDataRepository,

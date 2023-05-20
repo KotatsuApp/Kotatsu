@@ -22,6 +22,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.source
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -46,7 +47,7 @@ import kotlin.coroutines.CoroutineContext
 @ActivityRetainedScoped
 class PageLoader @Inject constructor(
 	lifecycle: ActivityRetainedLifecycle,
-	private val okHttp: OkHttpClient,
+	@MangaHttpClient private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,

@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.util.ext.toList
@@ -24,7 +25,7 @@ import kotlin.coroutines.suspendCoroutine
 
 @Singleton
 class MangaLoaderContextImpl @Inject constructor(
-	override val httpClient: OkHttpClient,
+	@MangaHttpClient override val httpClient: OkHttpClient,
 	override val cookieJar: MutableCookieJar,
 	@ApplicationContext private val androidContext: Context,
 ) : MangaLoaderContext() {
