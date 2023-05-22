@@ -78,6 +78,13 @@ class DetailsViewModel @Inject constructor(
 	val onShowToast = SingleLiveEvent<Int>()
 	val onDownloadStarted = SingleLiveEvent<Unit>()
 
+	private val mangaData = combine(
+		delegate.onlineManga,
+		delegate.localManga,
+	) { o, l ->
+		o ?: l
+	}.stateIn(viewModelScope, SharingStarted.Lazily, null)
+
 	private val history = historyRepository.observeOne(delegate.mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
@@ -98,16 +105,16 @@ class DetailsViewModel @Inject constructor(
 	private val chaptersReversed = settings.observeAsFlow(AppSettings.KEY_REVERSE_CHAPTERS) { chaptersReverse }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	val manga = delegate.manga.filterNotNull().asLiveData(viewModelScope.coroutineContext)
+	val manga = mangaData.filterNotNull().asLiveData(viewModelScope.coroutineContext)
 	val favouriteCategories = favourite.asLiveData(viewModelScope.coroutineContext)
 	val newChaptersCount = newChapters.asLiveData(viewModelScope.coroutineContext)
 	val isChaptersReversed = chaptersReversed.asLiveData(viewModelScope.coroutineContext)
 
 	val historyInfo: LiveData<HistoryInfo> = combine(
-		delegate.manga,
+		mangaData,
 		delegate.selectedBranch,
 		history,
-		historyRepository.observeShouldSkip(delegate.manga),
+		historyRepository.observeShouldSkip(mangaData),
 	) { m, b, h, im ->
 		HistoryInfo(m, b, h, im)
 	}.asFlowLiveData(
@@ -115,28 +122,21 @@ class DetailsViewModel @Inject constructor(
 		defaultValue = HistoryInfo(null, null, null, false),
 	)
 
-	val bookmarks = delegate.manga.flatMapLatest {
+	val bookmarks = mangaData.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
-	val localSize = combine(
-		delegate.manga,
-		delegate.relatedManga,
-	) { m1, m2 ->
-		val url = when {
-			m1?.source == MangaSource.LOCAL -> m1.url
-			m2?.source == MangaSource.LOCAL -> m2.url
-			else -> null
-		}
-		if (url != null) {
-			val file = url.toUri().toFileOrNull()
-			file?.computeSize() ?: 0L
-		} else {
-			0L
-		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, 0)
+	val localSize = delegate.localManga
+		.map {
+			if (it != null) {
+				val file = it.url.toUri().toFileOrNull()
+				file?.computeSize() ?: 0L
+			} else {
+				0L
+			}
+		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, 0)
 
-	val description = delegate.manga
+	val description = mangaData
 		.distinctUntilChangedBy { it?.description.orEmpty() }
 		.transformLatest {
 			val description = it?.description
@@ -159,10 +159,12 @@ class DetailsViewModel @Inject constructor(
 	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
 
 	val branches: LiveData<List<MangaBranch>> = combine(
-		delegate.manga,
+		delegate.onlineManga,
+		delegate.localManga,
 		delegate.selectedBranch,
-	) { m, b ->
-		val chapters = m?.chapters ?: return@combine emptyList()
+	) { m, l, b ->
+		val chapters = concat(m?.chapters, l?.chapters)
+		if (chapters.isEmpty()) return@combine emptyList()
 		chapters.groupBy { x -> x.branch }
 			.map { x -> MangaBranch(x.key, x.value.size, x.key == b) }
 			.sortedWith(BranchComparator())
@@ -172,21 +174,24 @@ class DetailsViewModel @Inject constructor(
 		.asFlowLiveData(viewModelScope.coroutineContext, null)
 
 	val isChaptersEmpty: LiveData<Boolean> = combine(
-		delegate.manga,
+		delegate.onlineManga,
+		delegate.localManga,
 		isLoading.asFlow(),
-	) { m, loading ->
-		m != null && m.chapters.isNullOrEmpty() && !loading
+	) { manga, local, loading ->
+		(manga != null && manga.chapters.isNullOrEmpty()) &&
+			(local != null && local.chapters.isNullOrEmpty()) &&
+			!loading
 	}.asFlowLiveData(viewModelScope.coroutineContext, false)
 
 	val chapters = combine(
 		combine(
-			delegate.manga,
-			delegate.relatedManga,
+			delegate.onlineManga,
+			delegate.localManga,
 			history,
 			delegate.selectedBranch,
 			newChapters,
-		) { manga, related, history, branch, news ->
-			delegate.mapChapters(manga, related, history, news, branch)
+		) { manga, local, history, branch, news ->
+			mapChapters(manga, local, history, news, branch)
 		},
 		chaptersReversed,
 		chaptersQuery,
@@ -211,7 +216,7 @@ class DetailsViewModel @Inject constructor(
 	}
 
 	fun deleteLocal() {
-		val m = delegate.manga.value
+		val m = delegate.localManga.value
 		if (m == null) {
 			onShowToast.call(R.string.file_not_found)
 			return
@@ -244,7 +249,7 @@ class DetailsViewModel @Inject constructor(
 	}
 
 	fun getRemoteManga(): Manga? {
-		return delegate.relatedManga.value?.takeUnless { it.source == MangaSource.LOCAL }
+		return delegate.onlineManga.value
 	}
 
 	fun performChapterSearch(query: String?) {
@@ -274,7 +279,7 @@ class DetailsViewModel @Inject constructor(
 
 	fun markChapterAsCurrent(chapterId: Long) {
 		launchJob(Dispatchers.Default) {
-			val manga = checkNotNull(delegate.manga.value)
+			val manga = checkNotNull(mangaData.value)
 			val chapters = checkNotNull(manga.getChapters(selectedBranchValue))
 			val chapterIndex = chapters.indexOfFirst { it.id == chapterId }
 			check(chapterIndex in chapters.indices) { "Chapter not found" }
@@ -286,7 +291,7 @@ class DetailsViewModel @Inject constructor(
 	fun download(chaptersIds: Set<Long>?) {
 		launchJob(Dispatchers.Default) {
 			downloadScheduler.schedule(
-				getRemoteManga() ?: checkNotNull(manga.value),
+				delegate.onlineManga.value ?: checkNotNull(manga.value),
 				chaptersIds,
 			)
 			onDownloadStarted.emitCall(Unit)
@@ -308,7 +313,7 @@ class DetailsViewModel @Inject constructor(
 
 	private suspend fun onDownloadComplete(downloadedManga: LocalManga?) {
 		downloadedManga ?: return
-		val currentManga = delegate.manga.value ?: return
+		val currentManga = mangaData.value ?: return
 		if (currentManga.id != downloadedManga.manga.id) {
 			return
 		}
@@ -319,7 +324,7 @@ class DetailsViewModel @Inject constructor(
 				runCatchingCancellable {
 					localMangaRepository.getDetails(downloadedManga.manga)
 				}.onSuccess {
-					delegate.relatedManga.value = it
+					delegate.publishManga(it)
 				}.onFailure {
 					it.printStackTraceDebug()
 				}
@@ -347,5 +352,19 @@ class DetailsViewModel @Inject constructor(
 			errorEvent.call(IllegalStateException("Scrobbler [$index] is not available"))
 		}
 		return scrobbler
+	}
+
+	private fun <T> concat(a: List<T>?, b: List<T>?): List<T> {
+		return when {
+			a == null && b == null -> emptyList<T>()
+			a == null && b != null -> b
+			a != null && b == null -> a
+			a != null && b != null -> buildList<T>(a.size + b.size) {
+				addAll(a)
+				addAll(b)
+			}
+
+			else -> error("This shouldn't have happened")
+		}
 	}
 }

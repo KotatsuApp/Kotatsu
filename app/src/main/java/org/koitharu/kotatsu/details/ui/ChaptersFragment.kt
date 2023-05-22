@@ -73,10 +73,6 @@ class ChaptersFragment :
 		if (selectionController?.onItemClick(item.chapter.id) == true) {
 			return
 		}
-		if (item.hasFlag(ChapterListItem.FLAG_MISSING)) {
-			(activity as? DetailsActivity)?.showChapterMissingDialog(item.chapter.id)
-			return
-		}
 		startActivity(
 			ReaderActivity.newIntent(
 				context = view.context,
@@ -193,7 +189,7 @@ class ChaptersFragment :
 	private fun onChaptersChanged(list: List<ChapterListItem>) {
 		val adapter = chaptersAdapter ?: return
 		if (adapter.itemCount == 0) {
-			val position = list.indexOfFirst { it.hasFlag(ChapterListItem.FLAG_CURRENT) } - 1
+			val position = list.indexOfFirst { it.isCurrent } - 1
 			if (position > 0) {
 				val offset = (resources.getDimensionPixelSize(R.dimen.chapter_list_item_height) * 0.6).roundToInt()
 				adapter.setItems(

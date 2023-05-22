@@ -32,6 +32,9 @@ class ChaptersBottomSheetMediator(
 
 	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
 		isEnabled = isExpanded
+		if (!isExpanded) {
+			unlock()
+		}
 	}
 
 	override fun onLayoutChange(

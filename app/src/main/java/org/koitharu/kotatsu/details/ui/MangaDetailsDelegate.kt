@@ -1,21 +1,23 @@
 package org.koitharu.kotatsu.details.ui
 
 import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.ViewModelLifecycle
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import org.koitharu.kotatsu.core.model.MangaHistory
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import org.koitharu.kotatsu.core.model.getPreferredBranch
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.details.ui.model.ChapterListItem
-import org.koitharu.kotatsu.details.ui.model.toListItem
+import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.history.domain.HistoryRepository
 import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
@@ -24,31 +26,44 @@ import javax.inject.Inject
 @ViewModelScoped
 class MangaDetailsDelegate @Inject constructor(
 	savedStateHandle: SavedStateHandle,
+	lifecycle: ViewModelLifecycle,
 	private val mangaDataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val localMangaRepository: LocalMangaRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	networkState: NetworkState,
 ) {
+	private val viewModelScope = RetainedLifecycleCoroutineScope(lifecycle)
+
 	private val intent = MangaIntent(savedStateHandle)
-	private val mangaData = MutableStateFlow(intent.manga)
+	private val onlineMangaStateFlow = MutableStateFlow<Manga?>(null)
+	private val localMangaStateFlow = MutableStateFlow<Manga?>(null)
+
+	val onlineManga = combine(
+		onlineMangaStateFlow,
+		networkState,
+	) { m, s -> m.takeIf { s } }
+		.stateIn(viewModelScope, SharingStarted.Lazily, null)
+	val localManga = localMangaStateFlow.asStateFlow()
 
 	val selectedBranch = MutableStateFlow<String?>(null)
-
-	// Remote manga for saved and saved for remote
-	val relatedManga = MutableStateFlow<Manga?>(null)
-	val manga: StateFlow<Manga?>
-		get() = mangaData
 	val mangaId = intent.manga?.id ?: intent.mangaId
+
+	init {
+		intent.manga?.let {
+			publishManga(it)
+		}
+	}
 
 	suspend fun doLoad() {
 		var manga = mangaDataRepository.resolveIntent(intent) ?: throw NotFoundException("Cannot find manga", "")
-		mangaData.value = manga
+		publishManga(manga)
 		manga = mangaRepositoryFactory.create(manga.source).getDetails(manga)
 		// find default branch
 		val hist = historyRepository.getOne(manga)
 		selectedBranch.value = manga.getPreferredBranch(hist)
-		mangaData.value = manga
-		relatedManga.value = runCatchingCancellable {
+		publishManga(manga)
+		runCatchingCancellable {
 			if (manga.source == MangaSource.LOCAL) {
 				val m = localMangaRepository.getRemoteManga(manga) ?: return@runCatchingCancellable null
 				mangaRepositoryFactory.create(m.source).getDetails(m)
@@ -57,106 +72,18 @@ class MangaDetailsDelegate @Inject constructor(
 			}
 		}.onFailure { error ->
 			error.printStackTraceDebug()
-		}.getOrNull()
+		}.onSuccess {
+			if (it != null) {
+				publishManga(it)
+			}
+		}
 	}
 
-	fun mapChapters(
-		manga: Manga?,
-		related: Manga?,
-		history: MangaHistory?,
-		newCount: Int,
-		branch: String?,
-	): List<ChapterListItem> {
-		val chapters = manga?.chapters ?: return emptyList()
-		val relatedChapters = related?.chapters
-		return if (related?.source != MangaSource.LOCAL && !relatedChapters.isNullOrEmpty()) {
-			mapChaptersWithSource(chapters, relatedChapters, history?.chapterId, newCount, branch)
+	fun publishManga(manga: Manga) {
+		if (manga.source == MangaSource.LOCAL) {
+			localMangaStateFlow
 		} else {
-			mapChapters(chapters, relatedChapters, history?.chapterId, newCount, branch)
-		}
-	}
-
-	private fun mapChapters(
-		chapters: List<MangaChapter>,
-		downloadedChapters: List<MangaChapter>?,
-		currentId: Long?,
-		newCount: Int,
-		branch: String?,
-	): List<ChapterListItem> {
-		val result = ArrayList<ChapterListItem>(chapters.size)
-		val currentIndex = chapters.indexOfFirst { it.id == currentId }
-		val firstNewIndex = chapters.size - newCount
-		val downloadedIds = downloadedChapters?.mapTo(HashSet(downloadedChapters.size)) { it.id }
-		for (i in chapters.indices) {
-			val chapter = chapters[i]
-			if (chapter.branch != branch) {
-				continue
-			}
-			result += chapter.toListItem(
-				isCurrent = i == currentIndex,
-				isUnread = i > currentIndex,
-				isNew = i >= firstNewIndex,
-				isMissing = false,
-				isDownloaded = downloadedIds?.contains(chapter.id) == true,
-			)
-		}
-		if (result.size < chapters.size / 2) {
-			result.trimToSize()
-		}
-		return result
-	}
-
-	private fun mapChaptersWithSource(
-		chapters: List<MangaChapter>,
-		sourceChapters: List<MangaChapter>,
-		currentId: Long?,
-		newCount: Int,
-		branch: String?,
-	): List<ChapterListItem> {
-		val chaptersMap = chapters.associateByTo(HashMap(chapters.size)) { it.id }
-		val result = ArrayList<ChapterListItem>(sourceChapters.size)
-		val currentIndex = sourceChapters.indexOfFirst { it.id == currentId }
-		val firstNewIndex = sourceChapters.size - newCount
-		for (i in sourceChapters.indices) {
-			val chapter = sourceChapters[i]
-			val localChapter = chaptersMap.remove(chapter.id)
-			if (chapter.branch != branch) {
-				continue
-			}
-			result += localChapter?.toListItem(
-				isCurrent = i == currentIndex,
-				isUnread = i > currentIndex,
-				isNew = i >= firstNewIndex,
-				isMissing = false,
-				isDownloaded = false,
-			) ?: chapter.toListItem(
-				isCurrent = i == currentIndex,
-				isUnread = i > currentIndex,
-				isNew = i >= firstNewIndex,
-				isMissing = true,
-				isDownloaded = false,
-			)
-		}
-		if (chaptersMap.isNotEmpty()) { // some chapters on device but not online source
-			result.ensureCapacity(result.size + chaptersMap.size)
-			chaptersMap.values.mapNotNullTo(result) {
-				if (it.branch == branch) {
-					it.toListItem(
-						isCurrent = false,
-						isUnread = true,
-						isNew = false,
-						isMissing = false,
-						isDownloaded = false,
-					)
-				} else {
-					null
-				}
-			}
-			result.sortBy { it.chapter.number }
-		}
-		if (result.size < sourceChapters.size / 2) {
-			result.trimToSize()
-		}
-		return result
+			onlineMangaStateFlow
+		}.value = manga
 	}
 }

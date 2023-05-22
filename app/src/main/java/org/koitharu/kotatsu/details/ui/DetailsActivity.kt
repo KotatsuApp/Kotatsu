@@ -19,7 +19,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +44,6 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import javax.inject.Inject
 
@@ -244,33 +242,6 @@ class DetailsActivity :
 		viewBadge.counter = newChapters
 	}
 
-	fun showChapterMissingDialog(chapterId: Long) {
-		val remoteManga = viewModel.getRemoteManga()
-		if (remoteManga == null) {
-			val snackbar = makeSnackbar(getString(R.string.chapter_is_missing), Snackbar.LENGTH_SHORT)
-			snackbar.show()
-			return
-		}
-		MaterialAlertDialogBuilder(this).apply {
-			setMessage(R.string.chapter_is_missing_text)
-			setTitle(R.string.chapter_is_missing)
-			setNegativeButton(android.R.string.cancel, null)
-			setPositiveButton(R.string.read) { _, _ ->
-				startActivity(
-					ReaderActivity.newIntent(
-						context = this@DetailsActivity,
-						manga = remoteManga,
-						state = ReaderState(chapterId, 0, 0),
-					),
-				)
-			}
-			setNeutralButton(R.string.download) { _, _ ->
-				viewModel.download(setOf(chapterId))
-			}
-			setCancelable(true)
-		}.show()
-	}
-
 	private fun showBranchPopupMenu() {
 		var dialog: DialogInterface? = null
 		val listener = OnListItemClickListener<MangaBranch> { item, _ ->
@@ -291,7 +262,8 @@ class DetailsActivity :
 		val manga = viewModel.manga.value ?: return
 		val chapterId = viewModel.historyInfo.value?.history?.chapterId
 		if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
-			showChapterMissingDialog(chapterId)
+			val snackbar = makeSnackbar(getString(R.string.chapter_is_missing), Snackbar.LENGTH_SHORT)
+			snackbar.show()
 		} else {
 			startActivity(
 				ReaderActivity.newIntent(
@@ -339,7 +311,7 @@ class DetailsActivity :
 			}
 			if (!isCalled) {
 				isCalled = true
-				val item = value.find { it.hasFlag(ChapterListItem.FLAG_CURRENT) } ?: value.first()
+				val item = value.find { it.isCurrent } ?: value.first()
 				MangaPrefetchService.prefetchPages(context, item.chapter)
 			}
 		}

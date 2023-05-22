@@ -46,7 +46,6 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 				isCurrent = index == currentPosition,
 				isUnread = index > currentPosition,
 				isNew = false,
-				isMissing = false,
 				isDownloaded = false,
 			)
 		}

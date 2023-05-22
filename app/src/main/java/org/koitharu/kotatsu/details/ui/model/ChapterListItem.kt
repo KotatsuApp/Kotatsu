@@ -22,12 +22,17 @@ class ChapterListItem(
 			return field
 		}
 
-	val status: Int
-		get() = flags and MASK_STATUS
+	val isCurrent: Boolean
+		get() = hasFlag(FLAG_CURRENT)
 
-	fun hasFlag(flag: Int): Boolean {
-		return (flags and flag) == flag
-	}
+	val isUnread: Boolean
+		get() = hasFlag(FLAG_UNREAD)
+
+	val isDownloaded: Boolean
+		get() = hasFlag(FLAG_DOWNLOADED)
+
+	val isNew: Boolean
+		get() = hasFlag(FLAG_NEW)
 
 	fun description(): CharSequence? {
 		val scanlator = chapter.scanlator?.takeUnless { it.isBlank() }
@@ -38,6 +43,10 @@ class ChapterListItem(
 		}
 	}
 
+	private fun hasFlag(flag: Int): Boolean {
+		return (flags and flag) == flag
+	}
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false
@@ -46,9 +55,7 @@ class ChapterListItem(
 
 		if (chapter != other.chapter) return false
 		if (flags != other.flags) return false
-		if (uploadDateMs != other.uploadDateMs) return false
-
-		return true
+		return uploadDateMs == other.uploadDateMs
 	}
 
 	override fun hashCode(): Int {
@@ -63,8 +70,6 @@ class ChapterListItem(
 		const val FLAG_UNREAD = 2
 		const val FLAG_CURRENT = 4
 		const val FLAG_NEW = 8
-		const val FLAG_MISSING = 16
 		const val FLAG_DOWNLOADED = 32
-		const val MASK_STATUS = FLAG_UNREAD or FLAG_CURRENT
 	}
 }
