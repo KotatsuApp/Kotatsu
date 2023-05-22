@@ -42,6 +42,7 @@ android {
 	}
 	sourceSets {
 		androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+		main.java.srcDirs += 'src/main/kotlin/'
 	}
 	compileOptions {
 		sourceCompatibility JavaVersion.VERSION_17
