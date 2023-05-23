@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 545
-		versionName '5.1.1'
+		versionCode 546
+		versionName '5.1.2'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -79,7 +79,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:cae7073f87') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:ebcc6391d6') {
 		exclude group: 'org.json', module: 'json'
 	}
 

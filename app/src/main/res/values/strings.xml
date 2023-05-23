@@ -423,4 +423,5 @@
 	<string name="address">Address</string>
 	<string name="port">Port</string>
 	<string name="proxy">Proxy</string>
+	<string name="invalid_value_message">Invalid value</string>
 </resources>
