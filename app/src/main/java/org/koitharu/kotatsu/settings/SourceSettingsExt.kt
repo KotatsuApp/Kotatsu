@@ -44,7 +44,7 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 						EditTextBindListener(
 							inputType = EditorInfo.TYPE_CLASS_TEXT,
 							hint = key.defaultValue,
-							validator = null,
+							validator = HeaderValidator(),
 						),
 					)
 					setTitle(R.string.user_agent)
