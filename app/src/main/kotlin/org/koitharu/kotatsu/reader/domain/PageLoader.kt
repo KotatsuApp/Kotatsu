@@ -74,7 +74,7 @@ class PageLoader @Inject constructor(
 	}
 
 	fun isPrefetchApplicable(): Boolean {
-		return repository is RemoteMangaRepository && settings.isPagesPreloadEnabled()
+		return repository is RemoteMangaRepository && settings.isPagesPreloadEnabled
 	}
 
 	@AnyThread

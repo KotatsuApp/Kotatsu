@@ -116,7 +116,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 				return false
 			}
 			val entryPoint = EntryPointAccessors.fromApplication(context, PrefetchCompanionEntryPoint::class.java)
-			return entryPoint.contentCache.isCachingEnabled && entryPoint.settings.isContentPrefetchEnabled()
+			return entryPoint.contentCache.isCachingEnabled && entryPoint.settings.isContentPrefetchEnabled
 		}
 	}
 }

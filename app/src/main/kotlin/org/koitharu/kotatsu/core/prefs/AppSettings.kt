@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatDelegate
@@ -179,10 +181,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isUnstableUpdatesAllowed: Boolean
 		get() = prefs.getBoolean(KEY_UPDATES_UNSTABLE, false)
 
-	fun isContentPrefetchEnabled(): Boolean {
-		val policy = NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
-		return policy.isNetworkAllowed(connectivityManager)
-	}
+	val isContentPrefetchEnabled: Boolean
+		get() {
+			if (isBackgroundNetworkRestricted()) {
+				return false
+			}
+			val policy = NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
+			return policy.isNetworkAllowed(connectivityManager)
+		}
 
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
@@ -301,10 +307,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getFloat(KEY_READER_AUTOSCROLL_SPEED, 0f)
 		set(@FloatRange(from = 0.0, to = 1.0) value) = prefs.edit { putFloat(KEY_READER_AUTOSCROLL_SPEED, value) }
 
-	fun isPagesPreloadEnabled(): Boolean {
-		val policy = NetworkPolicy.from(prefs.getString(KEY_PAGES_PRELOAD, null), NetworkPolicy.NON_METERED)
-		return policy.isNetworkAllowed(connectivityManager)
-	}
+	val isPagesPreloadEnabled: Boolean
+		get() {
+			if (isBackgroundNetworkRestricted()) {
+				return false
+			}
+			val policy = NetworkPolicy.from(prefs.getString(KEY_PAGES_PRELOAD, null), NetworkPolicy.NON_METERED)
+			return policy.isNetworkAllowed(connectivityManager)
+		}
 
 	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
 		val list = remoteSources.toMutableList()
@@ -341,6 +351,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	}
 
 	fun observe() = prefs.observe()
+
+	private fun isBackgroundNetworkRestricted(): Boolean {
+		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			connectivityManager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
+		} else {
+			false
+		}
+	}
 
 	companion object {
 
