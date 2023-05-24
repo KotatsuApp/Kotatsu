@@ -4,9 +4,7 @@ import androidx.room.withTransaction
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -17,7 +15,6 @@ import org.koitharu.kotatsu.core.db.entity.toMangaTag
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.history.data.HistoryEntity
@@ -159,18 +156,6 @@ class HistoryRepository @Inject constructor(
 			.onStart { emit("") }
 			.map { shouldSkip(manga) }
 			.distinctUntilChanged()
-	}
-
-	fun observeShouldSkip(mangaFlow: Flow<Manga?>): Flow<Boolean> {
-		return mangaFlow
-			.distinctUntilChangedBy { it?.isNsfw }
-			.flatMapLatest { m ->
-				if (m != null) {
-					observeShouldSkip(m)
-				} else {
-					settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled }
-				}
-			}
 	}
 
 	private suspend fun recover(ids: Collection<Long>) {

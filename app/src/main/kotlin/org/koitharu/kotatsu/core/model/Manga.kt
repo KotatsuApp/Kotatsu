@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.core.util.ext.iterator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 
 fun Collection<Manga>.ids() = mapToSet { it.id }
@@ -54,3 +55,6 @@ fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 	}
 	return candidates.ifEmpty { groups }.maxByOrNull { it.value.size }?.key
 }
+
+val Manga.isLocal: Boolean
+	get() = source == MangaSource.LOCAL

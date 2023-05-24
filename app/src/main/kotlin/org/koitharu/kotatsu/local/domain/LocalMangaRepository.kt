@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.CompositeMutex
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
@@ -99,8 +100,11 @@ class LocalMangaRepository @Inject constructor(
 	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) {
 		lockManga(manga.id)
 		try {
-			LocalMangaUtil(manga).deleteChapters(ids)
-			localStorageChanges.emit(LocalManga(manga))
+			val subject = if (manga.isLocal) manga else checkNotNull(findSavedManga(manga)) {
+				"Manga is not stored on local storage"
+			}.manga
+			LocalMangaUtil(subject).deleteChapters(ids)
+			localStorageChanges.emit(LocalManga(subject))
 		} finally {
 			unlockManga(manga.id)
 		}

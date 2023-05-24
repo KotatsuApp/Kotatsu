@@ -160,12 +160,14 @@ class ChaptersFragment :
 		val selectedIds = selectionController?.peekCheckedIds() ?: return false
 		val allItems = chaptersAdapter?.items.orEmpty()
 		val items = allItems.withIndex().filter { (_, x) -> x.chapter.id in selectedIds }
-		menu.findItem(R.id.action_save).isVisible = items.none { (_, x) ->
-			x.chapter.source == MangaSource.LOCAL
+		var canSave = true
+		var canDelete = true
+		items.forEach { (_, x) ->
+			val isLocal = x.isDownloaded || x.chapter.source == MangaSource.LOCAL
+			if (isLocal) canSave = false else canDelete = false
 		}
-		menu.findItem(R.id.action_delete).isVisible = items.all { (_, x) ->
-			x.chapter.source == MangaSource.LOCAL
-		}
+		menu.findItem(R.id.action_save).isVisible = canSave
+		menu.findItem(R.id.action_delete).isVisible = canDelete
 		menu.findItem(R.id.action_select_all).isVisible = items.size < allItems.size
 		menu.findItem(R.id.action_mark_current).isVisible = items.size == 1
 		mode.title = items.size.toString()

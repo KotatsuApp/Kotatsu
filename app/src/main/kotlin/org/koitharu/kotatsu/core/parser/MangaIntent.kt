@@ -12,27 +12,30 @@ import org.koitharu.kotatsu.parsers.model.Manga
 
 class MangaIntent private constructor(
 	@JvmField val manga: Manga?,
-	@JvmField val mangaId: Long,
+	@JvmField val id: Long,
 	@JvmField val uri: Uri?,
 ) {
 
 	constructor(intent: Intent?) : this(
 		manga = intent?.getParcelableExtraCompat<ParcelableManga>(KEY_MANGA)?.manga,
-		mangaId = intent?.getLongExtra(KEY_ID, ID_NONE) ?: ID_NONE,
+		id = intent?.getLongExtra(KEY_ID, ID_NONE) ?: ID_NONE,
 		uri = intent?.data,
 	)
 
 	constructor(savedStateHandle: SavedStateHandle) : this(
 		manga = savedStateHandle.get<ParcelableManga>(KEY_MANGA)?.manga,
-		mangaId = savedStateHandle[KEY_ID] ?: ID_NONE,
+		id = savedStateHandle[KEY_ID] ?: ID_NONE,
 		uri = savedStateHandle[BaseActivity.EXTRA_DATA],
 	)
 
 	constructor(args: Bundle?) : this(
 		manga = args?.getParcelableCompat<ParcelableManga>(KEY_MANGA)?.manga,
-		mangaId = args?.getLong(KEY_ID, ID_NONE) ?: ID_NONE,
+		id = args?.getLong(KEY_ID, ID_NONE) ?: ID_NONE,
 		uri = null,
 	)
+
+	val mangaId: Long
+		get() = if (id != ID_NONE) id else manga?.id ?: uri?.lastPathSegment?.toLongOrNull() ?: ID_NONE
 
 	companion object {
 

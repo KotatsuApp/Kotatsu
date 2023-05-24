@@ -183,7 +183,7 @@ class ReaderActivity :
 				val state = viewModel.getCurrentState() ?: return false
 				PagesThumbnailsSheet.show(
 					supportFragmentManager,
-					viewModel.manga ?: return false,
+					viewModel.manga?.any ?: return false,
 					state.chapterId,
 					state.page,
 				)

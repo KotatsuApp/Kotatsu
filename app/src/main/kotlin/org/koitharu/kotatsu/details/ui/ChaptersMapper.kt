@@ -52,7 +52,7 @@ fun mapChapters(
 				isCurrent = chapter.id == currentId,
 				isUnread = isUnread,
 				isNew = false,
-				isDownloaded = false,
+				isDownloaded = remoteManga != null,
 			)
 		}
 	}

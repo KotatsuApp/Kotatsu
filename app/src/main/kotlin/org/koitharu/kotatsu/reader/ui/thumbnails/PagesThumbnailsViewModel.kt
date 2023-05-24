@@ -12,8 +12,8 @@ import org.koitharu.kotatsu.core.util.ext.emitValue
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.local.domain.DoubleMangaLoader
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
-import org.koitharu.kotatsu.reader.data.filterChapters
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import javax.inject.Inject
 
@@ -22,6 +22,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
 	private val chaptersLoader: ChaptersLoader,
+	private val mangaLoader: DoubleMangaLoader,
 ) : BaseViewModel() {
 
 	private val currentPageIndex: Int = savedStateHandle[PagesThumbnailsSheet.ARG_CURRENT_PAGE] ?: -1
@@ -30,13 +31,9 @@ class PagesThumbnailsViewModel @Inject constructor(
 
 	private val repository = mangaRepositoryFactory.create(manga.source)
 	private val mangaDetails = SuspendLazy {
-		repository.getDetails(manga).let {
-			chaptersLoader.chapters.clear()
+		mangaLoader.load(manga).let {
 			val b = manga.chapters?.find { ch -> ch.id == initialChapterId }?.branch
 			branch.emitValue(b)
-			it.getChapters(b)?.forEach { ch ->
-				chaptersLoader.chapters.put(ch.id, ch)
-			}
 			it.filterChapters(b)
 		}
 	}
@@ -50,7 +47,8 @@ class PagesThumbnailsViewModel @Inject constructor(
 
 	init {
 		loadingJob = launchJob(Dispatchers.Default) {
-			chaptersLoader.loadSingleChapter(mangaDetails.get(), initialChapterId)
+			chaptersLoader.init(mangaDetails.get())
+			chaptersLoader.loadSingleChapter(initialChapterId)
 			updateList()
 		}
 	}
@@ -80,14 +78,14 @@ class PagesThumbnailsViewModel @Inject constructor(
 		val mangaChapters = mangaDetails.tryGet().getOrNull()?.chapters.orEmpty()
 		val hasPrevChapter = snapshot.firstOrNull()?.chapterId != mangaChapters.firstOrNull()?.id
 		val hasNextChapter = snapshot.lastOrNull()?.chapterId != mangaChapters.lastOrNull()?.id
-		val pages = buildList(snapshot.size + chaptersLoader.chapters.size() + 2) {
+		val pages = buildList(snapshot.size + chaptersLoader.size + 2) {
 			if (hasPrevChapter) {
 				add(LoadingFooter(-1))
 			}
 			var previousChapterId = 0L
 			for (page in snapshot) {
 				if (page.chapterId != previousChapterId) {
-					chaptersLoader.chapters[page.chapterId]?.let {
+					chaptersLoader.peekChapter(page.chapterId)?.let {
 						add(ListHeader(it.name, 0, null))
 					}
 					previousChapterId = page.chapterId
