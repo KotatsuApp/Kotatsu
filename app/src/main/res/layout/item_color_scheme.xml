@@ -32,7 +32,7 @@
 				app:layout_constraintTop_toTopOf="parent"
 				tools:ignore="HardcodedText" />
 
-			<org.koitharu.kotatsu.base.ui.widgets.ShapeView
+			<org.koitharu.kotatsu.core.ui.widgets.ShapeView
 				android:id="@+id/shape_1"
 				android:layout_width="0dp"
 				android:layout_height="6dp"
@@ -45,7 +45,7 @@
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintWidth_percent="0.4" />
 
-			<org.koitharu.kotatsu.base.ui.widgets.ShapeView
+			<org.koitharu.kotatsu.core.ui.widgets.ShapeView
 				android:id="@+id/shape_2"
 				android:layout_width="0dp"
 				android:layout_height="6dp"
@@ -59,7 +59,7 @@
 				app:layout_constraintVertical_bias="0.65"
 				app:layout_constraintWidth_percent="0.7" />
 
-			<org.koitharu.kotatsu.base.ui.widgets.ShapeView
+			<org.koitharu.kotatsu.core.ui.widgets.ShapeView
 				android:layout_width="16dp"
 				android:layout_height="16dp"
 				android:background="?colorPrimary"

@@ -37,6 +37,11 @@
 		app:allowDividerAbove="true"
 		app:useSimpleSummaryProvider="true" />
 
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.ProxySettingsFragment"
+		android:key="proxy"
+		android:title="@string/proxy" />
+
 	<SwitchPreferenceCompat
 		android:key="ssl_bypass"
 		android:title="@string/ignore_ssl_errors" />

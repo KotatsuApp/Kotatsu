@@ -53,4 +53,9 @@
 		<item>@string/status_on_hold</item>
 		<item>@string/status_dropped</item>
 	</string-array>
+	<string-array name="proxy_types">
+		<item>@string/disabled</item>
+		<item>HTTP</item>
+		<item>SOCKS (v4/v5)</item>
+	</string-array>
 </resources>

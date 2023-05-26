@@ -6,7 +6,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
+	<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
 		android:id="@+id/recyclerView_chapters"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

@@ -6,4 +6,10 @@
 		android:id="@+id/action_incognito"
 		android:icon="@drawable/ic_incognito"
 		android:title="@string/incognito_mode" />
+
+	<item
+		android:id="@+id/action_pages_thumbs"
+		android:icon="@drawable/ic_grid"
+		android:title="@string/pages" />
+
 </menu>

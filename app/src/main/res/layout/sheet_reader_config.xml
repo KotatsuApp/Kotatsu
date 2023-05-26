@@ -7,7 +7,7 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+	<org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
 		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
 			android:orientation="vertical"
 			android:paddingBottom="@dimen/margin_normal">
 
-			<org.koitharu.kotatsu.base.ui.widgets.ListItemTextView
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_save_page"
 				android:layout_width="match_parent"
 				android:layout_height="?android:listPreferredItemHeightSmall"
@@ -34,7 +34,7 @@
 				android:textAppearance="?attr/textAppearanceButton"
 				app:drawableStartCompat="@drawable/ic_save" />
 
-			<org.koitharu.kotatsu.base.ui.widgets.ListItemTextView
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_screen_rotate"
 				android:layout_width="match_parent"
 				android:layout_height="?android:listPreferredItemHeightSmall"
@@ -142,7 +142,7 @@
 				app:labelBehavior="gone"
 				tools:visibility="visible" />
 
-			<org.koitharu.kotatsu.base.ui.widgets.ListItemTextView
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_color_filter"
 				android:layout_width="match_parent"
 				android:layout_height="?android:listPreferredItemHeightSmall"
@@ -153,7 +153,7 @@
 				android:textAppearance="?attr/textAppearanceButton"
 				app:drawableStartCompat="@drawable/ic_appearance" />
 
-			<org.koitharu.kotatsu.base.ui.widgets.ListItemTextView
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_settings"
 				android:layout_width="match_parent"
 				android:layout_height="?android:listPreferredItemHeightSmall"

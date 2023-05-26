@@ -8,7 +8,7 @@
 	android:animateLayoutChanges="true"
 	android:orientation="vertical">
 
-	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+	<org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
 		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

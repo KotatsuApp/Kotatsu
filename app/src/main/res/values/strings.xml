@@ -47,6 +47,7 @@
 	<string name="theme">Theme</string>
 	<string name="light">Light</string>
 	<string name="dark">Dark</string>
+	<!-- Should be as abstract as possible -->
 	<string name="automatic">Follow system</string>
 	<string name="pages">Pages</string>
 	<string name="clear">Clear</string>
@@ -397,6 +398,7 @@
 	<string name="pause">Pause</string>
 	<string name="resume">Resume</string>
 	<string name="paused">Paused</string>
+	<!-- Menu item; action to remove completed items -->
 	<string name="remove_completed">Remove completed</string>
 	<string name="cancel_all">Cancel all</string>
 	<string name="downloads_wifi_only">Download only via Wi-Fi</string>
@@ -414,4 +416,11 @@
 	<string name="downloads_removed">Downloads have been removed</string>
 	<string name="downloads_cancelled">Downloads have been cancelled</string>
 	<string name="suggestions_enable_prompt">Do you want to receive personalized manga suggestions?</string>
+	<string name="translations">Translations</string>
+	<string name="web_view_unavailable">WebView not available: check if WebView provider is installed</string>
+	<string name="clear_network_cache">Clear network cache</string>
+	<string name="type">Type</string>
+	<string name="address">Address</string>
+	<string name="port">Port</string>
+	<string name="proxy">Proxy</string>
 </resources>

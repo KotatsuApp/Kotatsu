@@ -24,7 +24,7 @@
 		android:stateListAnimator="@null"
 		app:liftOnScroll="false">
 
-		<org.koitharu.kotatsu.base.ui.widgets.WindowInsetHolder
+		<org.koitharu.kotatsu.core.ui.widgets.WindowInsetHolder
 			android:id="@+id/insetsHolder"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
 		tools:ignore="InconsistentLayout"
 		tools:visibility="visible" />
 
-	<org.koitharu.kotatsu.base.ui.widgets.SlidingBottomNavigationView
+	<org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
 		android:id="@+id/bottomNav"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

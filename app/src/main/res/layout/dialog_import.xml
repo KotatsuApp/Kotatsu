@@ -8,7 +8,7 @@
 	android:paddingHorizontal="@dimen/grid_spacing_outer"
 	android:paddingTop="@dimen/margin_normal">
 
-	<org.koitharu.kotatsu.base.ui.widgets.TwoLinesItemView
+	<org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
 		android:id="@+id/button_file"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
 		app:subtitle="@string/comics_archive_import_description"
 		app:title="@string/comics_archive" />
 
-	<org.koitharu.kotatsu.base.ui.widgets.TwoLinesItemView
+	<org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
 		android:id="@+id/button_dir"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginVertical="4dp" />
 
-	<org.koitharu.kotatsu.base.ui.widgets.TwoLinesItemView
+	<org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
 		android:id="@+id/button_backup"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
