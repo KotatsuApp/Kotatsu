@@ -1,9 +1,5 @@
 package org.koitharu.kotatsu.shelf.domain
 
-import dagger.Reusable
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.combine
@@ -18,19 +14,18 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.favourites.data.toMangaList
-import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.shelf.domain.model.ShelfContent
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import javax.inject.Inject
 
-@Reusable
-class ShelfRepository @Inject constructor(
+class ShelfContentObserveUseCase @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
 	private val trackingRepository: TrackingRepository,
@@ -39,7 +34,7 @@ class ShelfRepository @Inject constructor(
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 ) {
 
-	fun observeShelfContent(): Flow<ShelfContent> = combine(
+	operator fun invoke(): Flow<ShelfContent> = combine(
 		historyRepository.observeAllWithHistory(),
 		observeLocalManga(SortOrder.UPDATED),
 		observeFavourites(),
@@ -67,23 +62,6 @@ class ShelfRepository @Inject constructor(
 					observeCategoriesContent(cats)
 				}
 			}
-	}
-
-	suspend fun deleteLocalManga(ids: Set<Long>) {
-		val list = localMangaRepository.getList(0, null, null)
-			.filter { x -> x.id in ids }
-		coroutineScope {
-			list.map { manga ->
-				async {
-					val original = localMangaRepository.getRemoteManga(manga)
-					if (localMangaRepository.delete(manga)) {
-						runCatchingCancellable {
-							historyRepository.deleteOrSwap(manga, original)
-						}
-					}
-				}
-			}.awaitAll()
-		}
 	}
 
 	private fun observeCategoriesContent(

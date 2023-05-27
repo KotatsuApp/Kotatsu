@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.local.domain
+package org.koitharu.kotatsu.local.data
 
 import android.net.Uri
 import androidx.core.net.toFile
@@ -15,13 +15,10 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.CompositeMutex
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
-import org.koitharu.kotatsu.local.data.LocalManga
-import org.koitharu.kotatsu.local.data.LocalStorageChanges
-import org.koitharu.kotatsu.local.data.LocalStorageManager
-import org.koitharu.kotatsu.local.data.TempFileFilter
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage

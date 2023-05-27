@@ -2,13 +2,14 @@ package org.koitharu.kotatsu.sync.ui
 
 import android.accounts.AccountManager
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
@@ -20,9 +21,9 @@ class SyncAuthViewModel @Inject constructor(
 	private val api: SyncAuthApi,
 ) : BaseViewModel() {
 
-	val onAccountAlreadyExists = SingleLiveEvent<Unit>()
-	val onTokenObtained = SingleLiveEvent<SyncAuthResult>()
-	val host = MutableLiveData("")
+	val onAccountAlreadyExists = MutableEventFlow<Unit>()
+	val onTokenObtained = MutableEventFlow<SyncAuthResult>()
+	val host = MutableStateFlow("")
 
 	private val defaultHost = context.getString(R.string.sync_host_default)
 
@@ -31,7 +32,7 @@ class SyncAuthViewModel @Inject constructor(
 			val am = AccountManager.get(context)
 			val accounts = am.getAccountsByType(context.getString(R.string.account_type_sync))
 			if (accounts.isNotEmpty()) {
-				onAccountAlreadyExists.emitCall(Unit)
+				onAccountAlreadyExists.call(Unit)
 			}
 		}
 	}
@@ -40,8 +41,8 @@ class SyncAuthViewModel @Inject constructor(
 		val hostValue = host.value.ifNullOrEmpty { defaultHost }
 		launchLoadingJob(Dispatchers.Default) {
 			val token = api.authenticate(hostValue, email, password)
-			val result = SyncAuthResult(host.value.orEmpty(), email, password, token)
-			onTokenObtained.emitCall(result)
+			val result = SyncAuthResult(host.value, email, password, token)
+			onTokenObtained.call(result)
 		}
 	}
 }

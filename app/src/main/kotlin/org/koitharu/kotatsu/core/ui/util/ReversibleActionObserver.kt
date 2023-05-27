@@ -1,18 +1,15 @@
 package org.koitharu.kotatsu.core.ui.util
 
 import android.view.View
-import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.R
 
 class ReversibleActionObserver(
 	private val snackbarHost: View,
-) : Observer<ReversibleAction?> {
+) : FlowCollector<ReversibleAction> {
 
-	override fun onChanged(value: ReversibleAction?) {
-		if (value == null) {
-			return
-		}
+	override suspend fun emit(value: ReversibleAction) {
 		val handle = value.handle
 		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
 		val snackbar = Snackbar.make(snackbarHost, value.stringResId, length)

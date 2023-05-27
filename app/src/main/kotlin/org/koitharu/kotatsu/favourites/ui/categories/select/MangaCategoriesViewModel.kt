@@ -4,11 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.asFlowLiveData
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet.Companion.KEY_MANGA_LIST
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
@@ -33,7 +35,7 @@ class MangaCategoriesViewModel @Inject constructor(
 				isChecked = it.id in checked,
 			)
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	fun setChecked(categoryId: Long, isChecked: Boolean) {
 		launchJob(Dispatchers.Default) {

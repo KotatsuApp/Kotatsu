@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
-import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderActivity

@@ -5,8 +5,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,35 +26,32 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
-import org.koitharu.kotatsu.core.model.DoubleManga
 import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
-import org.koitharu.kotatsu.core.prefs.observeAsLiveData
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
-import org.koitharu.kotatsu.core.util.ext.emitValue
-import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.requireValue
-import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
-import org.koitharu.kotatsu.local.domain.DoubleMangaLoader
+import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
+import org.koitharu.kotatsu.details.domain.model.DoubleManga
+import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
+import org.koitharu.kotatsu.history.domain.HistoryUpdateUseCase
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
+import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
@@ -70,7 +65,6 @@ private const val PREFETCH_LIMIT = 10
 @HiltViewModel
 class ReaderViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val bookmarksRepository: BookmarksRepository,
@@ -79,7 +73,9 @@ class ReaderViewModel @Inject constructor(
 	private val pageLoader: PageLoader,
 	private val chaptersLoader: ChaptersLoader,
 	private val shortcutsUpdater: ShortcutsUpdater,
-	private val mangaLoader: DoubleMangaLoader,
+	private val doubleMangaLoadUseCase: DoubleMangaLoadUseCase,
+	private val historyUpdateUseCase: HistoryUpdateUseCase,
+	private val detectReaderModeUseCase: DetectReaderModeUseCase,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -95,29 +91,29 @@ class ReaderViewModel @Inject constructor(
 	private val mangaFlow: Flow<Manga?>
 		get() = mangaData.map { it?.any }
 
-	val readerMode = MutableLiveData<ReaderMode>()
-	val onPageSaved = SingleLiveEvent<Uri?>()
-	val onShowToast = SingleLiveEvent<Int>()
-	val uiState = MutableLiveData<ReaderUiState?>(null)
+	val readerMode = MutableStateFlow<ReaderMode?>(null)
+	val onPageSaved = MutableEventFlow<Uri?>()
+	val onShowToast = MutableEventFlow<Int>()
+	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
-	val content = MutableLiveData(ReaderContent(emptyList(), null))
+	val content = MutableStateFlow(ReaderContent(emptyList(), null))
 	val manga: DoubleManga?
 		get() = mangaData.value
 
-	val readerAnimation = settings.observeAsLiveData(
-		context = viewModelScope.coroutineContext + Dispatchers.Default,
+	val readerAnimation = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_READER_ANIMATION,
 		valueProducer = { readerAnimation },
 	)
 
-	val isInfoBarEnabled = settings.observeAsLiveData(
-		context = viewModelScope.coroutineContext + Dispatchers.Default,
+	val isInfoBarEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_READER_BAR,
 		valueProducer = { isReaderBarEnabled },
 	)
 
-	val isWebtoonZoomEnabled = settings.observeAsLiveData(
-		context = viewModelScope.coroutineContext + Dispatchers.Default,
+	val isWebtoonZoomEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_WEBTOON_ZOOM,
 		valueProducer = { isWebtoonZoomEnable },
 	)
@@ -136,9 +132,9 @@ class ReaderViewModel @Inject constructor(
 	) { manga, policy ->
 		policy == ScreenshotsPolicy.BLOCK_ALL ||
 			(policy == ScreenshotsPolicy.BLOCK_NSFW && manga != null && manga.isNsfw)
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
 
-	val isBookmarkAdded: LiveData<Boolean> = currentState.flatMapLatest { state ->
+	val isBookmarkAdded = currentState.flatMapLatest { state ->
 		val manga = mangaData.value?.any
 		if (state == null || manga == null) {
 			flowOf(false)
@@ -146,7 +142,7 @@ class ReaderViewModel @Inject constructor(
 			bookmarksRepository.observeBookmark(manga, state.chapterId, state.page)
 				.map { it != null }
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
 	init {
 		loadImpl()
@@ -173,10 +169,8 @@ class ReaderViewModel @Inject constructor(
 				mode = newMode,
 			)
 			readerMode.value = newMode
-			content.value?.run {
-				content.value = copy(
-					state = getCurrentState(),
-				)
+			content.update {
+				it.copy(state = getCurrentState())
 			}
 		}
 	}
@@ -189,9 +183,9 @@ class ReaderViewModel @Inject constructor(
 			return
 		}
 		val readerState = state ?: currentState.value ?: return
-		historyRepository.saveStateAsync(
+		historyUpdateUseCase.invokeAsync(
 			manga = mangaData.value?.any ?: return,
-			state = readerState,
+			readerState = readerState,
 			percent = computePercent(readerState.chapterId, readerState.page),
 		)
 	}
@@ -212,12 +206,12 @@ class ReaderViewModel @Inject constructor(
 			prevJob?.cancelAndJoin()
 			try {
 				val dest = pageSaveHelper.savePage(pageLoader, page, saveLauncher)
-				onPageSaved.emitCall(dest)
+				onPageSaved.call(dest)
 			} catch (e: CancellationException) {
 				throw e
 			} catch (e: Exception) {
 				e.printStackTraceDebug()
-				onPageSaved.emitCall(null)
+				onPageSaved.call(null)
 			}
 		}
 	}
@@ -233,7 +227,7 @@ class ReaderViewModel @Inject constructor(
 
 	fun getCurrentPage(): MangaPage? {
 		val state = currentState.value ?: return null
-		return content.value?.pages?.find {
+		return content.value.pages.find {
 			it.chapterId == state.chapterId && it.index == state.page
 		}?.toMangaPage()
 	}
@@ -242,9 +236,9 @@ class ReaderViewModel @Inject constructor(
 		val prevJob = loadingJob
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
-			content.postValue(ReaderContent(emptyList(), null))
+			content.value = ReaderContent(emptyList(), null)
 			chaptersLoader.loadSingleChapter(id)
-			content.postValue(ReaderContent(chaptersLoader.snapshot(), ReaderState(id, page, 0)))
+			content.value = ReaderContent(chaptersLoader.snapshot(), ReaderState(id, page, 0))
 		}
 	}
 
@@ -254,7 +248,7 @@ class ReaderViewModel @Inject constructor(
 		stateChangeJob = launchJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			loadingJob?.join()
-			val pages = content.value?.pages ?: return@launchJob
+			val pages = content.value.pages
 			pages.getOrNull(position)?.let { page ->
 				currentState.update { cs ->
 					cs?.copy(chapterId = page.chapterId, page = page.index)
@@ -296,7 +290,7 @@ class ReaderViewModel @Inject constructor(
 				percent = computePercent(state.chapterId, state.page),
 			)
 			bookmarksRepository.addBookmark(bookmark)
-			onShowToast.emitCall(R.string.bookmark_added)
+			onShowToast.call(R.string.bookmark_added)
 		}
 	}
 
@@ -318,32 +312,31 @@ class ReaderViewModel @Inject constructor(
 			var manga =
 				DoubleManga(dataRepository.resolveIntent(intent) ?: throw NotFoundException("Cannot find manga", ""))
 			mangaData.value = manga
-			manga = mangaLoader.load(intent)
+			manga = doubleMangaLoadUseCase(intent)
 			chaptersLoader.init(manga)
 			// determine mode
 			val singleManga = manga.requireAny()
-			val mode = detectReaderMode(singleManga)
 			// obtain state
 			if (currentState.value == null) {
 				currentState.value = historyRepository.getOne(singleManga)?.let {
 					ReaderState(it)
 				} ?: ReaderState(singleManga, preselectedBranch)
 			}
-
+			val mode = detectReaderModeUseCase.invoke(singleManga, currentState.value)
 			val branch = chaptersLoader.peekChapter(currentState.value?.chapterId ?: 0L)?.branch
 			mangaData.value = manga.filterChapters(branch)
-			readerMode.emitValue(mode)
+			readerMode.value = mode
 
 			chaptersLoader.loadSingleChapter(requireNotNull(currentState.value).chapterId)
 			// save state
 			if (!isIncognito) {
 				currentState.value?.let {
 					val percent = computePercent(it.chapterId, it.page)
-					historyRepository.addOrUpdate(singleManga, it.chapterId, it.page, it.scroll, percent)
+					historyUpdateUseCase.invoke(singleManga, it, percent)
 				}
 			}
 			notifyStateChanged()
-			content.emitValue(ReaderContent(chaptersLoader.snapshot(), currentState.value))
+			content.value = ReaderContent(chaptersLoader.snapshot(), currentState.value)
 		}
 	}
 
@@ -353,7 +346,7 @@ class ReaderViewModel @Inject constructor(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.join()
 			chaptersLoader.loadPrevNextChapter(mangaData.requireValue(), currentId, isNext)
-			content.emitValue(ReaderContent(chaptersLoader.snapshot(), null))
+			content.value = ReaderContent(chaptersLoader.snapshot(), null)
 		}
 	}
 
@@ -365,27 +358,6 @@ class ReaderViewModel @Inject constructor(
 		} else {
 			subList(fromIndexBounded, toIndexBounded)
 		}
-	}
-
-	private suspend fun detectReaderMode(manga: Manga): ReaderMode {
-		dataRepository.getReaderMode(manga.id)?.let { return it }
-		val defaultMode = settings.defaultReaderMode
-		if (!settings.isReaderModeDetectionEnabled || defaultMode == ReaderMode.WEBTOON) {
-			return defaultMode
-		}
-		val chapter = currentState.value?.chapterId?.let { chaptersLoader.peekChapter(it) }
-			?: manga.chapters?.randomOrNull()
-			?: error("There are no chapters in this manga")
-		val repo = mangaRepositoryFactory.create(manga.source)
-		val pages = repo.getPages(chapter)
-		return runCatchingCancellable {
-			val isWebtoon = dataRepository.determineMangaIsWebtoon(repo, pages)
-			if (isWebtoon) ReaderMode.WEBTOON else defaultMode
-		}.onSuccess {
-			dataRepository.saveReaderMode(manga, it)
-		}.onFailure {
-			it.printStackTraceDebug()
-		}.getOrDefault(defaultMode)
 	}
 
 	@WorkerThread
@@ -402,7 +374,7 @@ class ReaderViewModel @Inject constructor(
 			isSliderEnabled = settings.isReaderSliderEnabled,
 			percent = if (state != null) computePercent(state.chapterId, state.page) else PROGRESS_NONE,
 		)
-		uiState.postValue(newState)
+		uiState.value = newState
 	}
 
 	private fun computePercent(chapterId: Long, pageIndex: Int): Float {
@@ -417,25 +389,5 @@ class ReaderViewModel @Inject constructor(
 		val pagePercent = (pageIndex + 1) / pagesCount.toFloat()
 		val ppc = 1f / chaptersCount
 		return ppc * chapterIndex + ppc * pagePercent
-	}
-}
-
-/**
- * This function is not a member of the ReaderViewModel
- * because it should work independently of the ViewModel's lifecycle.
- */
-private fun HistoryRepository.saveStateAsync(manga: Manga, state: ReaderState, percent: Float): Job {
-	return processLifecycleScope.launch(Dispatchers.Default) {
-		runCatchingCancellable {
-			addOrUpdate(
-				manga = manga,
-				chapterId = state.chapterId,
-				page = state.page,
-				scroll = state.scroll,
-				percent = percent,
-			)
-		}.onFailure {
-			it.printStackTraceDebug()
-		}
 	}
 }

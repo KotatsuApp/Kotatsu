@@ -24,6 +24,8 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.indicator
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.databinding.ActivityColorFilterBinding
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -64,7 +66,7 @@ class ColorFilterConfigActivity :
 		viewModel.colorFilter.observe(this, this::onColorFilterChanged)
 		viewModel.isLoading.observe(this, this::onLoadingChanged)
 		viewModel.preview.observe(this, this::onPreviewChanged)
-		viewModel.onDismiss.observe(this) {
+		viewModel.onDismiss.observeEvent(this) {
 			finishAfterTransition()
 		}
 	}

@@ -7,10 +7,7 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.net.toUri
 import androidx.core.text.getSpans
 import androidx.core.text.parseAsHtml
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.asFlow
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +15,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -31,27 +28,28 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
-import org.koitharu.kotatsu.core.model.DoubleManga
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
+import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
+import org.koitharu.kotatsu.details.domain.model.DoubleManga
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
-import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
-import org.koitharu.kotatsu.local.domain.DoubleMangaLoader
+import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
@@ -69,7 +67,8 @@ class DetailsViewModel @Inject constructor(
 	private val downloadScheduler: DownloadWorker.Scheduler,
 	private val interactor: DetailsInteractor,
 	savedStateHandle: SavedStateHandle,
-	private val mangaLoader: DoubleMangaLoader,
+	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
+	private val doubleMangaLoadUseCase: DoubleMangaLoadUseCase,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -77,47 +76,46 @@ class DetailsViewModel @Inject constructor(
 	private val doubleManga: MutableStateFlow<DoubleManga?> = MutableStateFlow(intent.manga?.let { DoubleManga(it) })
 	private var loadingJob: Job
 
-	val onShowToast = SingleLiveEvent<Int>()
-	val onDownloadStarted = SingleLiveEvent<Unit>()
+	val onShowToast = MutableEventFlow<Int>()
+	val onDownloadStarted = MutableEventFlow<Unit>()
 
-	private val mangaData = doubleManga.map { it?.any }
+	val manga = doubleManga.map { it?.any }
 		.stateIn(viewModelScope, SharingStarted.Eagerly, doubleManga.value?.any)
 
-	private val history = historyRepository.observeOne(mangaId)
+	val history = historyRepository.observeOne(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
-	private val favourite = interactor.observeIsFavourite(mangaId)
+	val favouriteCategories = interactor.observeIsFavourite(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	private val newChapters = interactor.observeNewChapters(mangaId)
+	val newChaptersCount = interactor.observeNewChapters(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	private val chaptersQuery = MutableStateFlow("")
-	private val selectedBranch = MutableStateFlow<String?>(null)
+	val selectedBranch = MutableStateFlow<String?>(null)
 
-	private val chaptersReversed = settings.observeAsFlow(AppSettings.KEY_REVERSE_CHAPTERS) { chaptersReverse }
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
-
-	val manga = mangaData.filterNotNull().asLiveData(viewModelScope.coroutineContext)
-	val favouriteCategories = favourite.asLiveData(viewModelScope.coroutineContext)
-	val newChaptersCount = newChapters.asLiveData(viewModelScope.coroutineContext)
-	val isChaptersReversed = chaptersReversed.asLiveData(viewModelScope.coroutineContext)
-
-	val historyInfo: LiveData<HistoryInfo> = combine(
-		mangaData,
-		selectedBranch,
-		history,
-		interactor.observeIncognitoMode(mangaData),
-	) { m, b, h, im ->
-		HistoryInfo(m, b, h, im)
-	}.asFlowLiveData(
-		context = viewModelScope.coroutineContext + Dispatchers.Default,
-		defaultValue = HistoryInfo(null, null, null, false),
+	val isChaptersReversed = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_REVERSE_CHAPTERS,
+		valueProducer = { chaptersReverse },
 	)
 
-	val bookmarks = mangaData.flatMapLatest {
+	val historyInfo: StateFlow<HistoryInfo> = combine(
+		manga,
+		selectedBranch,
+		history,
+		interactor.observeIncognitoMode(manga),
+	) { m, b, h, im ->
+		HistoryInfo(m, b, h, im)
+	}.stateIn(
+		scope = viewModelScope + Dispatchers.Default,
+		started = SharingStarted.Eagerly,
+		initialValue = HistoryInfo(null, null, null, false),
+	)
+
+	val bookmarks = manga.flatMapLatest {
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
 
 	val localSize = doubleManga
 		.map {
@@ -128,9 +126,9 @@ class DetailsViewModel @Inject constructor(
 			} else {
 				0L
 			}
-		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, 0)
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(), 0)
 
-	val description = mangaData
+	val description = manga
 		.distinctUntilChangedBy { it?.description.orEmpty() }
 		.transformLatest {
 			val description = it?.description
@@ -140,16 +138,16 @@ class DetailsViewModel @Inject constructor(
 				emit(description.parseAsHtml().filterSpans())
 				emit(description.parseAsHtml(imageGetter = imageGetter).filterSpans())
 			}
-		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, null)
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), null)
 
-	val onMangaRemoved = SingleLiveEvent<Manga>()
+	val onMangaRemoved = MutableEventFlow<Manga>()
 	val isScrobblingAvailable: Boolean
 		get() = scrobblers.any { it.isAvailable }
 
-	val scrobblingInfo: LiveData<List<ScrobblingInfo>> = interactor.observeScrobblingInfo(mangaId)
-		.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	val scrobblingInfo: StateFlow<List<ScrobblingInfo>> = interactor.observeScrobblingInfo(mangaId)
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	val branches: LiveData<List<MangaBranch>> = combine(
+	val branches: StateFlow<List<MangaBranch>> = combine(
 		doubleManga,
 		selectedBranch,
 	) { m, b ->
@@ -158,32 +156,29 @@ class DetailsViewModel @Inject constructor(
 		chapters.groupBy { x -> x.branch }
 			.map { x -> MangaBranch(x.key, x.value.size, x.key == b) }
 			.sortedWith(BranchComparator())
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	val selectedBranchName = selectedBranch
-		.asFlowLiveData(viewModelScope.coroutineContext, null)
-
-	val isChaptersEmpty: LiveData<Boolean> = combine(
+	val isChaptersEmpty: StateFlow<Boolean> = combine(
 		doubleManga,
-		isLoading.asFlow(),
+		isLoading,
 	) { manga, loading ->
 		manga?.any != null && manga.chapters.isNullOrEmpty() && !loading
-	}.asFlowLiveData(viewModelScope.coroutineContext, false)
+	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
 	val chapters = combine(
 		combine(
 			doubleManga,
 			history,
 			selectedBranch,
-			newChapters,
+			newChaptersCount,
 		) { manga, history, branch, news ->
 			mapChapters(manga?.remote, manga?.local, history, news, branch)
 		},
-		chaptersReversed,
+		isChaptersReversed,
 		chaptersQuery,
 	) { list, reversed, query ->
 		(if (reversed) list.asReversed() else list).filterSearch(query)
-	}.asLiveData(viewModelScope.coroutineContext + Dispatchers.Default)
+	}.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
 	val selectedBranchValue: String?
 		get() = selectedBranch.value
@@ -208,8 +203,8 @@ class DetailsViewModel @Inject constructor(
 			return
 		}
 		launchLoadingJob(Dispatchers.Default) {
-			interactor.deleteLocalManga(m)
-			onMangaRemoved.emitCall(m)
+			deleteLocalMangaUseCase(m)
+			onMangaRemoved.call(m)
 		}
 	}
 
@@ -276,12 +271,12 @@ class DetailsViewModel @Inject constructor(
 				doubleManga.requireValue().requireAny(),
 				chaptersIds,
 			)
-			onDownloadStarted.emitCall(Unit)
+			onDownloadStarted.call(Unit)
 		}
 	}
 
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
-		val result = mangaLoader.load(intent)
+		val result = doubleMangaLoadUseCase(intent)
 		val manga = result.requireAny()
 		// find default branch
 		val hist = historyRepository.getOne(manga)
@@ -317,7 +312,7 @@ class DetailsViewModel @Inject constructor(
 	}
 
 	private fun getScrobbler(index: Int): Scrobbler? {
-		val info = scrobblingInfo.value?.getOrNull(index)
+		val info = scrobblingInfo.value.getOrNull(index)
 		val scrobbler = if (info != null) {
 			scrobblers.find { it.scrobblerService == info.scrobbler && it.isAvailable }
 		} else {

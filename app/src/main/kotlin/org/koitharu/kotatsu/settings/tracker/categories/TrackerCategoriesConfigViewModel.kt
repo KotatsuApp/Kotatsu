@@ -4,9 +4,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.asFlowLiveData
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import javax.inject.Inject
 
@@ -16,7 +18,7 @@ class TrackerCategoriesConfigViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	val content = favouritesRepository.observeCategories()
-		.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	private var updateJob: Job? = null
 

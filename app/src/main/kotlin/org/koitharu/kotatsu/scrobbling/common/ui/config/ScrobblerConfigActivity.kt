@@ -19,6 +19,8 @@ import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityScrobblerConfigBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
@@ -64,7 +66,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		viewModel.content.observe(this, listAdapter::setItems)
 		viewModel.user.observe(this, this::onUserChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
-		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
+		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 		viewModel.onLoggedOut.observe(this) {
 			finishAfterTransition()
 		}

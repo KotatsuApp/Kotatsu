@@ -1,23 +1,24 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.config
 
 import android.net.Uri
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
-import org.koitharu.kotatsu.core.util.ext.emitValue
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -40,34 +41,34 @@ class ScrobblerConfigViewModel @Inject constructor(
 
 	val titleResId = scrobbler.scrobblerService.titleResId
 
-	val user = MutableLiveData<ScrobblerUser?>(null)
-	val onLoggedOut = SingleLiveEvent<Unit>()
+	val user = MutableStateFlow<ScrobblerUser?>(null)
+	val onLoggedOut = MutableEventFlow<Unit>()
 
 	val content = scrobbler.observeAllScrobblingInfo()
 		.onStart { loadingCounter.increment() }
 		.onFirst { loadingCounter.decrement() }
-		.catch { errorEvent.postCall(it) }
+		.catch { errorEvent.call(it) }
 		.map { buildContentList(it) }
-		.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	init {
 		scrobbler.user
-			.onEach { user.emitValue(it) }
+			.onEach { user.value = it }
 			.launchIn(viewModelScope + Dispatchers.Default)
 	}
 
 	fun onAuthCodeReceived(authCode: String) {
 		launchLoadingJob(Dispatchers.Default) {
 			val newUser = scrobbler.authorize(authCode)
-			user.emitValue(newUser)
+			user.value = newUser
 		}
 	}
 
 	fun logout() {
 		launchLoadingJob(Dispatchers.Default) {
 			scrobbler.logout()
-			user.emitValue(null)
-			onLoggedOut.emitCall(Unit)
+			user.value = null
+			onLoggedOut.call(Unit)
 		}
 	}
 

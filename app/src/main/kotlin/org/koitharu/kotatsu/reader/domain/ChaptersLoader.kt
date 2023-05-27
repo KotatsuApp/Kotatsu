@@ -4,8 +4,8 @@ import android.util.LongSparseArray
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.koitharu.kotatsu.core.model.DoubleManga
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.details.domain.model.DoubleManga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import javax.inject.Inject

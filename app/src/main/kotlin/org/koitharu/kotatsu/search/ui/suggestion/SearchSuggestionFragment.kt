@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
 import javax.inject.Inject

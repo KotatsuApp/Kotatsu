@@ -1,28 +1,28 @@
 package org.koitharu.kotatsu.history.ui
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.daysDiff
-import org.koitharu.kotatsu.core.util.ext.emitValue
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
-import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.history.domain.MangaWithHistory
-import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
+import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -45,15 +45,16 @@ class HistoryListViewModel @Inject constructor(
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
-	val isGroupingEnabled = MutableLiveData<Boolean>()
-
-	private val historyGrouping = settings.observeAsFlow(AppSettings.KEY_HISTORY_GROUPING) { isHistoryGroupingEnabled }
-		.onEach { isGroupingEnabled.emitValue(it) }
+	val isGroupingEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_HISTORY_GROUPING,
+		valueProducer = { isHistoryGroupingEnabled },
+	)
 
 	override val content = combine(
 		repository.observeAllWithHistory(),
-		historyGrouping,
-		listModeFlow,
+		isGroupingEnabled,
+		listMode,
 	) { list, grouped, mode ->
 		when {
 			list.isEmpty() -> listOf(
@@ -73,7 +74,7 @@ class HistoryListViewModel @Inject constructor(
 		loadingCounter.decrement()
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	override fun onRefresh() = Unit
 
@@ -91,7 +92,7 @@ class HistoryListViewModel @Inject constructor(
 		}
 		launchJob(Dispatchers.Default) {
 			val handle = repository.delete(ids)
-			onActionDone.emitCall(ReversibleAction(R.string.removed_from_history, handle))
+			onActionDone.call(ReversibleAction(R.string.removed_from_history, handle))
 		}
 	}
 

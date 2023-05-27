@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -26,7 +27,7 @@ class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		addMenuProvider(LocalListMenuProvider(this::onEmptyActionClick))
-		viewModel.onMangaRemoved.observe(viewLifecycleOwner) { onItemRemoved() }
+		viewModel.onMangaRemoved.observeEvent(viewLifecycleOwner) { onItemRemoved() }
 	}
 
 	override fun onEmptyActionClick() {

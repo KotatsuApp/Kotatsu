@@ -12,6 +12,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import kotlin.math.roundToInt
@@ -32,8 +34,8 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		binding.textViewSubtitle.setText(R.string.preparing_)
 
 		viewModel.progress.observe(viewLifecycleOwner, this::onProgressChanged)
-		viewModel.onRestoreDone.observe(viewLifecycleOwner, this::onRestoreDone)
-		viewModel.onError.observe(viewLifecycleOwner, this::onError)
+		viewModel.onRestoreDone.observeEvent(viewLifecycleOwner, this::onRestoreDone)
+		viewModel.onError.observeEvent(viewLifecycleOwner, this::onError)
 	}
 
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {

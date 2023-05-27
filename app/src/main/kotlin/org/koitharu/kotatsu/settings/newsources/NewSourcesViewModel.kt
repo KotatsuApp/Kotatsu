@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.settings.newsources
 
 import androidx.core.os.LocaleListCompat
-import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -15,12 +15,8 @@ class NewSourcesViewModel @Inject constructor(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
-	val sources = MutableLiveData<List<SourceConfigItem>>()
+	val sources = MutableStateFlow<List<SourceConfigItem>>(buildList())
 	private val initialList = settings.newSources
-
-	init {
-		buildList()
-	}
 
 	fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
 		if (isEnabled) {
@@ -34,10 +30,10 @@ class NewSourcesViewModel @Inject constructor(
 		settings.markKnownSources(initialList)
 	}
 
-	private fun buildList() {
+	private fun buildList(): List<SourceConfigItem.SourceItem> {
 		val locales = LocaleListCompat.getDefault().mapToSet { it.language }
 		val pendingHidden = HashSet<String>()
-		sources.value = initialList.map {
+		return initialList.map {
 			val locale = it.locale
 			val isEnabledByLocale = locale == null || locale in locales
 			if (!isEnabledByLocale) {
@@ -49,9 +45,10 @@ class NewSourcesViewModel @Inject constructor(
 				isEnabled = isEnabledByLocale,
 				isDraggable = false,
 			)
-		}
-		if (pendingHidden.isNotEmpty()) {
-			settings.hiddenSources += pendingHidden
+		}.also {
+			if (pendingHidden.isNotEmpty()) {
+				settings.hiddenSources += pendingHidden
+			}
 		}
 	}
 }

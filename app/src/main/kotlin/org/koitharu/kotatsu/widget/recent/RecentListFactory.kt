@@ -14,7 +14,7 @@ import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
-import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.replaceWith
 

@@ -17,6 +17,8 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
@@ -57,7 +59,7 @@ class ShelfConfigActivity :
 		viewModel.checkedId = config.categoryId
 
 		viewModel.content.observe(this, this::onContentChanged)
-		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
+		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 	}
 
 	override fun onClick(v: View) {

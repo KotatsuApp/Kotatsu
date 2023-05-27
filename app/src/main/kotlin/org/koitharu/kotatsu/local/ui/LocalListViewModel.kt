@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.local.ui
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
@@ -10,18 +8,20 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
-import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -29,15 +29,14 @@ import org.koitharu.kotatsu.list.ui.model.ListHeader2
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
-import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
-import java.io.IOException
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -49,11 +48,12 @@ class LocalListViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val tagHighlighter: MangaTagHighlighter,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
+	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler), ListExtraProvider {
 
-	val onMangaRemoved = SingleLiveEvent<Unit>()
-	val sortOrder = MutableLiveData(settings.localListOrder)
+	val onMangaRemoved = MutableEventFlow<Unit>()
+	val sortOrder = MutableStateFlow(settings.localListOrder)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val selectedTags = MutableStateFlow<Set<MangaTag>>(emptySet())
@@ -61,8 +61,8 @@ class LocalListViewModel @Inject constructor(
 
 	override val content = combine(
 		mangaList,
-		listModeFlow,
-		sortOrder.asFlow(),
+		listMode,
+		sortOrder,
 		selectedTags,
 		listError,
 	) { list, mode, order, tags, error ->
@@ -83,7 +83,7 @@ class LocalListViewModel @Inject constructor(
 				list.toUi(this, mode, this@LocalListViewModel, tagHighlighter)
 			}
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	init {
 		onRefresh()
@@ -120,18 +120,8 @@ class LocalListViewModel @Inject constructor(
 
 	fun delete(ids: Set<Long>) {
 		launchLoadingJob(Dispatchers.Default) {
-			val itemsToRemove = checkNotNull(mangaList.value).filter { it.id in ids }
-			for (manga in itemsToRemove) {
-				val original = repository.getRemoteManga(manga)
-				repository.delete(manga) || throw IOException("Unable to delete file")
-				runCatchingCancellable {
-					historyRepository.deleteOrSwap(manga, original)
-				}
-				mangaList.update { list ->
-					list?.filterNot { it.id == manga.id }
-				}
-			}
-			onMangaRemoved.emitCall(Unit)
+			deleteLocalMangaUseCase(ids)
+			onMangaRemoved.call(Unit)
 		}
 	}
 

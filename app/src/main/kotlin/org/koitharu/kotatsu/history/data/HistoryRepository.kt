@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.history.domain
+package org.koitharu.kotatsu.history.data
 
 import androidx.room.withTransaction
 import dagger.Reusable
@@ -17,8 +17,7 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
-import org.koitharu.kotatsu.history.data.HistoryEntity
-import org.koitharu.kotatsu.history.data.toMangaHistory
+import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler

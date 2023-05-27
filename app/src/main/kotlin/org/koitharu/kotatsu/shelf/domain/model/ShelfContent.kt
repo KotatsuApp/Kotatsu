@@ -1,7 +1,7 @@
-package org.koitharu.kotatsu.shelf.domain
+package org.koitharu.kotatsu.shelf.domain.model
 
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.history.domain.MangaWithHistory
+import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.parsers.model.Manga
 
 class ShelfContent(

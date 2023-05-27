@@ -18,6 +18,8 @@ import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,7 +47,7 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 		viewModel.isLoading.observe(viewLifecycleOwner) {
 			findPreference<Preference>(AppSettings.KEY_APP_UPDATE)?.isEnabled = !it
 		}
-		viewModel.onUpdateAvailable.observe(viewLifecycleOwner, ::onUpdateAvailable)
+		viewModel.onUpdateAvailable.observeEvent(viewLifecycleOwner, ::onUpdateAvailable)
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {

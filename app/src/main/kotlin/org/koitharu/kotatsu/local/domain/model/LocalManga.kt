@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.local.data
+package org.koitharu.kotatsu.local.domain.model
 
 import androidx.core.net.toFile
 import androidx.core.net.toUri
@@ -38,9 +38,7 @@ class LocalManga(
 		other as LocalManga
 
 		if (manga != other.manga) return false
-		if (file != other.file) return false
-
-		return true
+		return file == other.file
 	}
 
 	override fun hashCode(): Int {

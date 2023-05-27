@@ -22,6 +22,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySyncAuthBinding
 import org.koitharu.kotatsu.sync.data.SyncSettings
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
@@ -52,8 +54,8 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 
 		onBackPressedDispatcher.addCallback(pageBackCallback)
 
-		viewModel.onTokenObtained.observe(this, ::onTokenReceived)
-		viewModel.onError.observe(this, ::onError)
+		viewModel.onTokenObtained.observeEvent(this, ::onTokenReceived)
+		viewModel.onError.observeEvent(this, ::onError)
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
 		viewModel.onAccountAlreadyExists.observe(this) {
 			onAccountAlreadyExists()

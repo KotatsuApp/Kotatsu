@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResultLauncher
@@ -15,7 +16,6 @@ import okio.IOException
 import okio.buffer
 import okio.sink
 import okio.source
-import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
@@ -74,7 +74,7 @@ class PageSaveHelper @Inject constructor(
 		var extension = name.substringAfterLast('.', "")
 		name = name.substringBeforeLast('.')
 		if (extension.length !in 2..4) {
-			val mimeType = MangaDataRepository.getImageMimeType(file)
+			val mimeType = getImageMimeType(file)
 			extension = if (mimeType != null) {
 				MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: EXTENSION_FALLBACK
 			} else {
@@ -82,5 +82,13 @@ class PageSaveHelper @Inject constructor(
 			}
 		}
 		return name.toFileNameSafe().take(MAX_FILENAME_LENGTH) + "." + extension
+	}
+
+	private suspend fun getImageMimeType(file: File): String? = runInterruptible(Dispatchers.IO) {
+		val options = BitmapFactory.Options().apply {
+			inJustDecodeBounds = true
+		}
+		BitmapFactory.decodeFile(file.path, options)?.recycle()
+		options.outMimeType
 	}
 }

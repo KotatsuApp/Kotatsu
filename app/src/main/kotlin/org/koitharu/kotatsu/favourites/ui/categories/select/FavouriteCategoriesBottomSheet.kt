@@ -15,6 +15,8 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
@@ -46,7 +48,7 @@ class FavouriteCategoriesBottomSheet :
 		binding.headerBar.toolbar.setOnMenuItemClickListener(this)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
-		viewModel.onError.observe(viewLifecycleOwner, ::onError)
+		viewModel.onError.observeEvent(viewLifecycleOwner, ::onError)
 	}
 
 	override fun onDestroyView() {

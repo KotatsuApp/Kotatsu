@@ -18,6 +18,7 @@ import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
 
 private const val MIN_PASSWORD_LENGTH = 4

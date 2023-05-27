@@ -1,22 +1,25 @@
 package org.koitharu.kotatsu.list.ui.filter
 
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.core.util.asFlowLiveData
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.text.Collator
@@ -31,13 +34,13 @@ class FilterCoordinator(
 
 	private val currentState = MutableStateFlow(FilterState(repository.defaultSortOrder, emptySet()))
 	private var searchQuery = MutableStateFlow("")
-	private val localTagsDeferred = coroutineScope.async(Dispatchers.Default, CoroutineStart.LAZY) {
+	private val localTags = SuspendLazy {
 		dataRepository.findTags(repository.source)
 	}
 	private var availableTagsDeferred = loadTagsAsync()
 
-	val items: LiveData<List<FilterItem>> = getItemsFlow()
-		.asFlowLiveData(coroutineScope.coroutineContext + Dispatchers.Default, listOf(FilterItem.Loading))
+	val items: StateFlow<List<FilterItem>> = getItemsFlow()
+		.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(FilterItem.Loading))
 
 	init {
 		observeState()
@@ -97,7 +100,7 @@ class FilterCoordinator(
 	}
 
 	private fun getTagsAsFlow() = flow {
-		val localTags = localTagsDeferred.await()
+		val localTags = localTags.get()
 		emit(TagsWrapper(localTags, isLoading = true, isError = false))
 		val remoteTags = tryLoadTags()
 		if (remoteTags == null) {

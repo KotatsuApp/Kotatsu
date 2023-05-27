@@ -1,16 +1,16 @@
 package org.koitharu.kotatsu.reader.ui.colorfilter
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.ext.emitValue
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity.Companion.EXTRA_MANGA
@@ -26,9 +26,9 @@ class ColorFilterConfigViewModel @Inject constructor(
 	private val manga = checkNotNull(savedStateHandle.get<ParcelableManga>(EXTRA_MANGA)?.manga)
 
 	private var initialColorFilter: ReaderColorFilter? = null
-	val colorFilter = MutableLiveData<ReaderColorFilter?>(null)
-	val onDismiss = SingleLiveEvent<Unit>()
-	val preview = MutableLiveData<MangaPage?>(null)
+	val colorFilter = MutableStateFlow<ReaderColorFilter?>(null)
+	val onDismiss = MutableEventFlow<Unit>()
+	val preview = MutableStateFlow<MangaPage?>(null)
 
 	val isChanged: Boolean
 		get() = colorFilter.value != initialColorFilter
@@ -44,13 +44,11 @@ class ColorFilterConfigViewModel @Inject constructor(
 		launchLoadingJob(Dispatchers.Default) {
 			val repository = mangaRepositoryFactory.create(page.source)
 			val url = repository.getPageUrl(page)
-			preview.emitValue(
-				MangaPage(
-					id = page.id,
-					url = url,
-					preview = page.preview,
-					source = page.source,
-				),
+			preview.value = MangaPage(
+				id = page.id,
+				url = url,
+				preview = page.preview,
+				source = page.source,
 			)
 		}
 	}
@@ -72,7 +70,7 @@ class ColorFilterConfigViewModel @Inject constructor(
 	fun save() {
 		launchLoadingJob(Dispatchers.Default) {
 			mangaDataRepository.saveColorFilter(manga, colorFilter.value)
-			onDismiss.emitCall(Unit)
+			onDismiss.call(Unit)
 		}
 	}
 }

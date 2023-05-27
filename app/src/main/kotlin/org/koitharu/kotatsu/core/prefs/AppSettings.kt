@@ -25,7 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.shelf.domain.ShelfSection
+import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 import java.io.File
 import java.net.Proxy
 import java.util.Collections

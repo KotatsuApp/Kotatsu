@@ -22,6 +22,8 @@ import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.util.CollapseActionViewCallback
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingSelectorBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -72,8 +74,8 @@ class ScrobblingSelectorBottomSheet :
 			decoration.checkedItemId = it
 			binding.recyclerView.invalidateItemDecorations()
 		}
-		viewModel.onError.observe(viewLifecycleOwner, ::onError)
-		viewModel.onClose.observe(viewLifecycleOwner) {
+		viewModel.onError.observeEvent(viewLifecycleOwner, ::onError)
+		viewModel.onClose.observeEvent(viewLifecycleOwner) {
 			dismiss()
 		}
 		viewModel.selectedScrobblerIndex.observe(viewLifecycleOwner) { index ->

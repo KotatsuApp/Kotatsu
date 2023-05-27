@@ -1,18 +1,21 @@
 package org.koitharu.kotatsu.bookmarks.ui
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
@@ -25,9 +28,9 @@ class BookmarksViewModel @Inject constructor(
 	private val repository: BookmarksRepository,
 ) : BaseViewModel() {
 
-	val onActionDone = SingleLiveEvent<ReversibleAction>()
+	val onActionDone = MutableEventFlow<ReversibleAction>()
 
-	val content: LiveData<List<ListModel>> = repository.observeBookmarks()
+	val content: StateFlow<List<ListModel>> = repository.observeBookmarks()
 		.map { list ->
 			if (list.isEmpty()) {
 				listOf(
@@ -43,12 +46,12 @@ class BookmarksViewModel @Inject constructor(
 			}
 		}
 		.catch { e -> emit(listOf(e.toErrorState(canRetry = false))) }
-		.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	fun removeBookmarks(ids: Map<Manga, Set<Long>>) {
 		launchJob(Dispatchers.Default) {
 			val handle = repository.removeBookmarks(ids)
-			onActionDone.emitCall(ReversibleAction(R.string.bookmarks_removed, handle))
+			onActionDone.call(ReversibleAction(R.string.bookmarks_removed, handle))
 		}
 	}
 }

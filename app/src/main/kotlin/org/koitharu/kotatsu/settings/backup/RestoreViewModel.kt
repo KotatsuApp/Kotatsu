@@ -1,18 +1,19 @@
 package org.koitharu.kotatsu.settings.backup
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.backup.BackupEntry
 import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import java.io.File
 import java.io.FileNotFoundException
@@ -25,8 +26,8 @@ class RestoreViewModel @Inject constructor(
 	@ApplicationContext context: Context,
 ) : BaseViewModel() {
 
-	val progress = MutableLiveData(-1f)
-	val onRestoreDone = SingleLiveEvent<CompositeResult>()
+	val progress = MutableStateFlow(-1f)
+	val onRestoreDone = MutableEventFlow<CompositeResult>()
 
 	init {
 		launchLoadingJob {

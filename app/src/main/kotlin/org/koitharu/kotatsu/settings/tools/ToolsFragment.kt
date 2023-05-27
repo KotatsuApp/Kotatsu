@@ -15,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.databinding.FragmentToolsBinding
 import org.koitharu.kotatsu.download.ui.list.DownloadsActivity

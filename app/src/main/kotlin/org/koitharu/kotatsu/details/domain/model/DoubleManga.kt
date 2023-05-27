@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.core.model
+package org.koitharu.kotatsu.details.domain.model
 
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter

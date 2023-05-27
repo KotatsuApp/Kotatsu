@@ -1,12 +1,15 @@
 package org.koitharu.kotatsu.shelf.ui
 
 import androidx.collection.ArraySet
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -15,13 +18,13 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.history.domain.MangaWithHistory
-import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
+import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -30,11 +33,12 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.shelf.domain.ShelfContent
-import org.koitharu.kotatsu.shelf.domain.ShelfRepository
-import org.koitharu.kotatsu.shelf.domain.ShelfSection
+import org.koitharu.kotatsu.shelf.domain.ShelfContentObserveUseCase
+import org.koitharu.kotatsu.shelf.domain.model.ShelfContent
+import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
@@ -42,30 +46,31 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShelfViewModel @Inject constructor(
-	private val repository: ShelfRepository,
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 	private val downloadScheduler: DownloadWorker.Scheduler,
+	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
+	shelfContentObserveUseCase: ShelfContentObserveUseCase,
 	syncController: SyncController,
 	networkState: NetworkState,
 ) : BaseViewModel(), ListExtraProvider {
 
-	val onActionDone = SingleLiveEvent<ReversibleAction>()
-	val onDownloadStarted = SingleLiveEvent<Unit>()
+	val onActionDone = MutableEventFlow<ReversibleAction>()
+	val onDownloadStarted = MutableEventFlow<Unit>()
 
-	val content: LiveData<List<ListModel>> = combine(
+	val content: StateFlow<List<ListModel>> = combine(
 		settings.observeAsFlow(AppSettings.KEY_SHELF_SECTIONS) { shelfSections },
 		settings.observeAsFlow(AppSettings.KEY_TRACKER_ENABLED) { isTrackerEnabled },
 		settings.observeAsFlow(AppSettings.KEY_SUGGESTIONS) { isSuggestionsEnabled },
 		networkState,
-		repository.observeShelfContent(),
+		shelfContentObserveUseCase(),
 	) { sections, isTrackerEnabled, isSuggestionsEnabled, isConnected, content ->
 		mapList(content, isTrackerEnabled, isSuggestionsEnabled, sections, isConnected)
 	}.catch { e ->
 		emit(listOf(e.toErrorState(canRetry = false)))
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	init {
 		launchJob(Dispatchers.Default) {
@@ -95,7 +100,7 @@ class ShelfViewModel @Inject constructor(
 		}
 		launchJob(Dispatchers.Default) {
 			val handle = favouritesRepository.removeFromCategory(category.id, ids)
-			onActionDone.emitCall(ReversibleAction(R.string.removed_from_favourites, handle))
+			onActionDone.call(ReversibleAction(R.string.removed_from_favourites, handle))
 		}
 	}
 
@@ -105,14 +110,14 @@ class ShelfViewModel @Inject constructor(
 		}
 		launchJob(Dispatchers.Default) {
 			val handle = historyRepository.delete(ids)
-			onActionDone.emitCall(ReversibleAction(R.string.removed_from_history, handle))
+			onActionDone.call(ReversibleAction(R.string.removed_from_history, handle))
 		}
 	}
 
 	fun deleteLocal(ids: Set<Long>) {
 		launchLoadingJob(Dispatchers.Default) {
-			repository.deleteLocalManga(ids)
-			onActionDone.emitCall(ReversibleAction(R.string.removal_completed, null))
+			deleteLocalMangaUseCase(ids)
+			onActionDone.call(ReversibleAction(R.string.removal_completed, null))
 		}
 	}
 
@@ -125,12 +130,12 @@ class ShelfViewModel @Inject constructor(
 				historyRepository.deleteAfter(minDate)
 				R.string.removed_from_history
 			}
-			onActionDone.emitCall(ReversibleAction(stringRes, null))
+			onActionDone.call(ReversibleAction(stringRes, null))
 		}
 	}
 
 	fun getManga(ids: Set<Long>): Set<Manga> {
-		val snapshot = content.value ?: return emptySet()
+		val snapshot = content.value
 		val result = ArraySet<Manga>(ids.size)
 		for (section in snapshot) {
 			if (section !is ShelfSectionModel) {
@@ -151,7 +156,7 @@ class ShelfViewModel @Inject constructor(
 	fun download(items: Set<Manga>) {
 		launchJob(Dispatchers.Default) {
 			downloadScheduler.schedule(items)
-			onDownloadStarted.emitCall(Unit)
+			onDownloadStarted.call(Unit)
 		}
 	}
 

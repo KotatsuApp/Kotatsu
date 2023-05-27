@@ -6,6 +6,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.util.ext.getParcelableCompat
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 

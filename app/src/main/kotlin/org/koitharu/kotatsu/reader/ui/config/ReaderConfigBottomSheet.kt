@@ -18,12 +18,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.core.prefs.observeAsLiveData
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.util.ScreenOrientationHelper
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
@@ -75,8 +77,8 @@ class ReaderConfigBottomSheet :
 		binding.sliderTimer.addOnChangeListener(this)
 		binding.switchScrollTimer.setOnCheckedChangeListener(this)
 
-		settings.observeAsLiveData(
-			context = lifecycleScope.coroutineContext + Dispatchers.Default,
+		settings.observeAsStateFlow(
+			scope = lifecycleScope + Dispatchers.Default,
 			key = AppSettings.KEY_READER_AUTOSCROLL_SPEED,
 			valueProducer = { readerAutoscrollSpeed },
 		).observe(viewLifecycleOwner) {

@@ -1,18 +1,17 @@
 package org.koitharu.kotatsu.reader.ui.thumbnails
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.ext.emitValue
+import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
-import org.koitharu.kotatsu.local.domain.DoubleMangaLoader
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import javax.inject.Inject
@@ -22,7 +21,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
 	private val chaptersLoader: ChaptersLoader,
-	private val mangaLoader: DoubleMangaLoader,
+	private val doubleMangaLoadUseCase: DoubleMangaLoadUseCase,
 ) : BaseViewModel() {
 
 	private val currentPageIndex: Int = savedStateHandle[PagesThumbnailsSheet.ARG_CURRENT_PAGE] ?: -1
@@ -31,9 +30,9 @@ class PagesThumbnailsViewModel @Inject constructor(
 
 	private val repository = mangaRepositoryFactory.create(manga.source)
 	private val mangaDetails = SuspendLazy {
-		mangaLoader.load(manga).let {
+		doubleMangaLoadUseCase(manga).let {
 			val b = manga.chapters?.find { ch -> ch.id == initialChapterId }?.branch
-			branch.emitValue(b)
+			branch.value = b
 			it.filterChapters(b)
 		}
 	}
@@ -41,8 +40,8 @@ class PagesThumbnailsViewModel @Inject constructor(
 	private var loadingPrevJob: Job? = null
 	private var loadingNextJob: Job? = null
 
-	val thumbnails = MutableLiveData<List<ListModel>>()
-	val branch = MutableLiveData<String?>()
+	val thumbnails = MutableStateFlow<List<ListModel>>(emptyList())
+	val branch = MutableStateFlow<String?>(null)
 	val title = manga.title
 
 	init {
@@ -100,6 +99,6 @@ class PagesThumbnailsViewModel @Inject constructor(
 				add(LoadingFooter(1))
 			}
 		}
-		thumbnails.emitValue(pages)
+		thumbnails.value = pages
 	}
 }

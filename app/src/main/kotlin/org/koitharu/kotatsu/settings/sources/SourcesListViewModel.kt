@@ -1,10 +1,10 @@
 package org.koitharu.kotatsu.settings.sources
 
 import androidx.core.os.LocaleListCompat
-import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -14,11 +14,12 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.map
-import org.koitharu.kotatsu.core.util.ext.move
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.parsers.util.move
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import java.util.Locale
@@ -35,8 +36,8 @@ class SourcesListViewModel @Inject constructor(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
-	val items = MutableLiveData<List<SourceConfigItem>>(emptyList())
-	val onActionDone = SingleLiveEvent<ReversibleAction>()
+	val items = MutableStateFlow<List<SourceConfigItem>>(emptyList())
+	val onActionDone = MutableEventFlow<ReversibleAction>()
 	private val mutex = Mutex()
 
 	private val expandedGroups = HashSet<String?>()
@@ -49,7 +50,7 @@ class SourcesListViewModel @Inject constructor(
 	}
 
 	fun reorderSources(oldPos: Int, newPos: Int): Boolean {
-		val snapshot = items.value?.toMutableList() ?: return false
+		val snapshot = items.value.toMutableList()
 		if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isEnabled != true) return false
 		if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isEnabled != true) return false
 		launchAtomicJob(Dispatchers.Default) {
@@ -63,7 +64,7 @@ class SourcesListViewModel @Inject constructor(
 	}
 
 	fun canReorder(oldPos: Int, newPos: Int): Boolean {
-		val snapshot = items.value?.toMutableList() ?: return false
+		val snapshot = items.value.toMutableList()
 		if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isEnabled != true) return false
 		return (snapshot[newPos] as? SourceConfigItem.SourceItem)?.isEnabled == true
 	}
@@ -81,7 +82,7 @@ class SourcesListViewModel @Inject constructor(
 				val rollback = ReversibleHandle {
 					setEnabled(source, true)
 				}
-				onActionDone.emitCall(ReversibleAction(R.string.source_disabled, rollback))
+				onActionDone.call(ReversibleAction(R.string.source_disabled, rollback))
 			}
 			buildList()
 		}
@@ -126,21 +127,19 @@ class SourcesListViewModel @Inject constructor(
 		val hiddenSources = settings.hiddenSources
 		val query = searchQuery
 		if (!query.isNullOrEmpty()) {
-			items.postValue(
-				sources.mapNotNull {
-					if (!it.title.contains(query, ignoreCase = true)) {
-						return@mapNotNull null
-					}
-					SourceConfigItem.SourceItem(
-						source = it,
-						summary = it.getLocaleTitle(),
-						isEnabled = it.name !in hiddenSources,
-						isDraggable = false,
-					)
-				}.ifEmpty {
-					listOf(SourceConfigItem.EmptySearchResult)
-				},
-			)
+			items.value = sources.mapNotNull {
+				if (!it.title.contains(query, ignoreCase = true)) {
+					return@mapNotNull null
+				}
+				SourceConfigItem.SourceItem(
+					source = it,
+					summary = it.getLocaleTitle(),
+					isEnabled = it.name !in hiddenSources,
+					isDraggable = false,
+				)
+			}.ifEmpty {
+				listOf(SourceConfigItem.EmptySearchResult)
+			}
 			return@runInterruptible
 		}
 		val map = sources.groupByTo(TreeMap(LocaleKeyComparator())) {
@@ -188,7 +187,7 @@ class SourcesListViewModel @Inject constructor(
 				}
 			}
 		}
-		items.postValue(result)
+		items.value = result
 	}
 
 	private fun getLocaleTitle(localeKey: String?): String? {

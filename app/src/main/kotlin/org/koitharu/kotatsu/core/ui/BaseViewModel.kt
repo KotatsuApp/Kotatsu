@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.ui
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CancellationException
@@ -8,9 +7,16 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koitharu.kotatsu.core.ui.util.CountedBooleanLiveData
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
+import org.koitharu.kotatsu.core.util.ext.EventFlow
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -18,16 +24,17 @@ import kotlin.coroutines.EmptyCoroutineContext
 abstract class BaseViewModel : ViewModel() {
 
 	@JvmField
-	protected val loadingCounter = CountedBooleanLiveData()
+	protected val loadingCounter = MutableStateFlow(0)
 
 	@JvmField
-	protected val errorEvent = SingleLiveEvent<Throwable>()
+	protected val errorEvent = MutableEventFlow<Throwable>()
 
-	val onError: LiveData<Throwable>
+	val onError: EventFlow<Throwable>
 		get() = errorEvent
 
-	val isLoading: LiveData<Boolean>
-		get() = loadingCounter
+	val isLoading: StateFlow<Boolean>
+		get() = loadingCounter.map { it > 0 }
+			.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
 	protected fun launchJob(
 		context: CoroutineContext = EmptyCoroutineContext,
@@ -51,7 +58,11 @@ abstract class BaseViewModel : ViewModel() {
 	private fun createErrorHandler() = CoroutineExceptionHandler { _, throwable ->
 		throwable.printStackTraceDebug()
 		if (throwable !is CancellationException) {
-			errorEvent.postCall(throwable)
+			errorEvent.call(throwable)
 		}
 	}
+
+	protected fun MutableStateFlow<Int>.increment() = update { it + 1 }
+
+	protected fun MutableStateFlow<Int>.decrement() = update { it - 1 }
 }

@@ -42,9 +42,11 @@ import org.koitharu.kotatsu.core.util.IdlingDetector
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
 import org.koitharu.kotatsu.core.util.ext.isRtl
-import org.koitharu.kotatsu.core.util.ext.observeWithPrevious
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.postDelayed
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
+import org.koitharu.kotatsu.core.util.ext.zipWithPrevious
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -108,7 +110,7 @@ class ReaderActivity :
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
 
-		viewModel.onError.observe(
+		viewModel.onError.observeEvent(
 			this,
 			DialogErrorObserver(
 				host = viewBinding.container,
@@ -117,23 +119,23 @@ class ReaderActivity :
 				onResolved = { isResolved ->
 					if (isResolved) {
 						viewModel.reload()
-					} else if (viewModel.content.value?.pages.isNullOrEmpty()) {
+					} else if (viewModel.content.value.pages.isEmpty()) {
 						finishAfterTransition()
 					}
 				},
 			),
 		)
 		viewModel.readerMode.observe(this, this::onInitReader)
-		viewModel.onPageSaved.observe(this, this::onPageSaved)
-		viewModel.uiState.observeWithPrevious(this, this::onUiStateChanged)
+		viewModel.onPageSaved.observeEvent(this, this::onPageSaved)
+		viewModel.uiState.zipWithPrevious().observe(this, this::onUiStateChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.content.observe(this) {
-			onLoadingStateChanged(viewModel.isLoading.value == true)
+			onLoadingStateChanged(viewModel.isLoading.value)
 		}
 		viewModel.isScreenshotsBlockEnabled.observe(this, this::setWindowSecure)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, this::onBookmarkStateChanged)
-		viewModel.onShowToast.observe(this) { msgId ->
+		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
 				.setAnchorView(viewBinding.appbarBottom)
 				.show()
@@ -150,7 +152,10 @@ class ReaderActivity :
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 	}
 
-	private fun onInitReader(mode: ReaderMode) {
+	private fun onInitReader(mode: ReaderMode?) {
+		if (mode == null) {
+			return
+		}
 		if (readerManager.currentMode != mode) {
 			readerManager.replace(mode)
 		}
@@ -190,7 +195,7 @@ class ReaderActivity :
 			}
 
 			R.id.action_bookmark -> {
-				if (viewModel.isBookmarkAdded.value == true) {
+				if (viewModel.isBookmarkAdded.value) {
 					viewModel.removeBookmark()
 				} else {
 					viewModel.addBookmark()
@@ -209,7 +214,7 @@ class ReaderActivity :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		val hasPages = !viewModel.content.value?.pages.isNullOrEmpty()
+		val hasPages = viewModel.content.value.pages.isNotEmpty()
 		viewBinding.layoutLoading.isVisible = isLoading && !hasPages
 		if (isLoading && hasPages) {
 			viewBinding.toastView.show(R.string.loading_)
@@ -260,7 +265,7 @@ class ReaderActivity :
 
 	override fun onPageSelected(page: ReaderPage) {
 		lifecycleScope.launch(Dispatchers.Default) {
-			val pages = viewModel.content.value?.pages ?: return@launch
+			val pages = viewModel.content.value.pages
 			val index = pages.indexOfFirst { it.chapterId == page.chapterId && it.id == page.id }
 			if (index != -1) {
 				withContext(Dispatchers.Main) {
@@ -311,7 +316,7 @@ class ReaderActivity :
 			TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			viewBinding.appbarTop.isVisible = isUiVisible
 			viewBinding.appbarBottom?.isVisible = isUiVisible
-			viewBinding.infoBar.isGone = isUiVisible || (viewModel.isInfoBarEnabled.value == false)
+			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
 			if (isUiVisible) {
 				showSystemUI()
 			} else {
@@ -367,7 +372,8 @@ class ReaderActivity :
 		menuItem.setIcon(if (isAdded) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
 	}
 
-	private fun onUiStateChanged(uiState: ReaderUiState?, previous: ReaderUiState?) {
+	private fun onUiStateChanged(pair: Pair<ReaderUiState?, ReaderUiState?>) {
+		val (uiState: ReaderUiState?, previous: ReaderUiState?) = pair
 		title = uiState?.chapterName ?: uiState?.mangaName ?: getString(R.string.loading_)
 		viewBinding.infoBar.update(uiState)
 		if (uiState == null) {

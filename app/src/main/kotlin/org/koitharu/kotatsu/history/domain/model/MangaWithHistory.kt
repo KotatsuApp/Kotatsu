@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.history.domain
+package org.koitharu.kotatsu.history.domain.model
 
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.parsers.model.Manga

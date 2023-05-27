@@ -24,6 +24,10 @@ fun Collection<ChapterListItem>.countChaptersByBranch(): Int {
 	return acc.values.max()
 }
 
+fun Manga.findChapter(id: Long): MangaChapter? {
+	return chapters?.find { it.id == id }
+}
+
 fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 	val ch = chapters
 	if (ch.isNullOrEmpty()) {

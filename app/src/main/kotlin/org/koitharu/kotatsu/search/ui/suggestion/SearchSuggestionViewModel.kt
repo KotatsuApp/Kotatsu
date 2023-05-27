@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.search.ui.suggestion
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +16,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
-import org.koitharu.kotatsu.core.prefs.observeAsLiveData
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.util.ext.emitValue
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
@@ -42,13 +40,13 @@ class SearchSuggestionViewModel @Inject constructor(
 	private val query = MutableStateFlow("")
 	private var suggestionJob: Job? = null
 
-	val isIncognitoModeEnabled = settings.observeAsLiveData(
-		context = viewModelScope.coroutineContext + Dispatchers.Default,
+	val isIncognitoModeEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_INCOGNITO_MODE,
 		valueProducer = { isIncognitoModeEnabled },
 	)
 
-	val suggestion = MutableLiveData<List<SearchSuggestionItem>>()
+	val suggestion = MutableStateFlow<List<SearchSuggestionItem>>(emptyList())
 
 	init {
 		setupSuggestion()
@@ -98,7 +96,7 @@ class SearchSuggestionViewModel @Inject constructor(
 			buildSearchSuggestion(searchQuery, hiddenSources)
 		}.distinctUntilChanged()
 			.onEach {
-				suggestion.emitValue(it)
+				suggestion.value = it
 			}.launchIn(viewModelScope + Dispatchers.Default)
 	}
 

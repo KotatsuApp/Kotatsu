@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.local.data.input
 
 import android.net.Uri
 import androidx.core.net.toFile
-import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage

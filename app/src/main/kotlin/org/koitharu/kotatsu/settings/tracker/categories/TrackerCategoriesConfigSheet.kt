@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.SheetBaseBinding
 
 @AndroidEntryPoint

@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.search.ui.multi
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,17 +10,20 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CompositeException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
-import org.koitharu.kotatsu.core.util.ext.emitValue
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -50,10 +51,10 @@ class MultiSearchViewModel @Inject constructor(
 	private val listData = MutableStateFlow<List<MultiSearchListModel>>(emptyList())
 	private val loadingData = MutableStateFlow(false)
 	private var listError = MutableStateFlow<Throwable?>(null)
-	val onDownloadStarted = SingleLiveEvent<Unit>()
+	val onDownloadStarted = MutableEventFlow<Unit>()
 
-	val query = MutableLiveData(savedStateHandle.get<String>(MultiSearchActivity.EXTRA_QUERY).orEmpty())
-	val list: LiveData<List<ListModel>> = combine(
+	val query = MutableStateFlow(savedStateHandle.get<String>(MultiSearchActivity.EXTRA_QUERY).orEmpty())
+	val list: StateFlow<List<ListModel>> = combine(
 		listData,
 		loadingData,
 		listError,
@@ -75,10 +76,10 @@ class MultiSearchViewModel @Inject constructor(
 			loading -> list + LoadingFooter()
 			else -> list
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	init {
-		doSearch(query.value.orEmpty())
+		doSearch(query.value)
 	}
 
 	fun getItems(ids: Set<Long>): Set<Manga> {
@@ -101,7 +102,7 @@ class MultiSearchViewModel @Inject constructor(
 				listError.value = null
 				listData.value = emptyList()
 				loadingData.value = true
-				query.emitValue(q)
+				query.value = q
 				searchImpl(q)
 			} catch (e: CancellationException) {
 				throw e
@@ -116,7 +117,7 @@ class MultiSearchViewModel @Inject constructor(
 	fun download(items: Set<Manga>) {
 		launchJob(Dispatchers.Default) {
 			downloadScheduler.schedule(items)
-			onDownloadStarted.emitCall(Unit)
+			onDownloadStarted.call(Unit)
 		}
 	}
 

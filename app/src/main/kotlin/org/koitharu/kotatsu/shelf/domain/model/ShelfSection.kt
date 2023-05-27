@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.shelf.domain
+package org.koitharu.kotatsu.shelf.domain.model
 
 enum class ShelfSection {
 

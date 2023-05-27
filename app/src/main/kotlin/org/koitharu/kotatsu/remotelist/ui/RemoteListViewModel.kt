@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.remotelist.ui
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,11 +8,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -21,7 +24,7 @@ import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -65,12 +68,12 @@ class RemoteListViewModel @Inject constructor(
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private var loadingJob: Job? = null
 
-	val filterItems: LiveData<List<FilterItem>>
+	val filterItems: StateFlow<List<FilterItem>>
 		get() = filter.items
 
 	override val content = combine(
 		mangaList,
-		listModeFlow,
+		listMode,
 		createHeaderFlow(),
 		listError,
 		hasNextPage,
@@ -90,7 +93,7 @@ class RemoteListViewModel @Inject constructor(
 				}
 			}
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	init {
 		filter.observeState()
@@ -163,7 +166,7 @@ class RemoteListViewModel @Inject constructor(
 				e.printStackTraceDebug()
 				listError.value = e
 				if (!mangaList.value.isNullOrEmpty()) {
-					errorEvent.emitCall(e)
+					errorEvent.call(e)
 				}
 			}
 		}

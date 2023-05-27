@@ -22,10 +22,7 @@ class SnackbarErrorObserver(
 		fragment: Fragment?,
 	) : this(host, fragment, null, null)
 
-	override fun onChanged(value: Throwable?) {
-		if (value == null) {
-			return
-		}
+	override suspend fun emit(value: Throwable) {
 		val snackbar = Snackbar.make(host, value.getDisplayMessage(host.context.resources), Snackbar.LENGTH_SHORT)
 		if (activity is BottomNavOwner) {
 			snackbar.anchorView = activity.bottomNav

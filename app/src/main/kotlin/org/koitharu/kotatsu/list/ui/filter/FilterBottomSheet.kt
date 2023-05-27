@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.ui.util.CollapseActionViewCallback
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.parentFragmentViewModels
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel

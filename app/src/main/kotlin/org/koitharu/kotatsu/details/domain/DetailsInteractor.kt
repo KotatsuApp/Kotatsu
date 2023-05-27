@@ -6,23 +6,21 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import org.koitharu.kotatsu.core.model.DoubleManga
-import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.details.domain.model.DoubleManga
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.local.data.LocalManga
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
-import java.io.IOException
 import javax.inject.Inject
 
+@Deprecated("")
 class DetailsInteractor @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
@@ -53,18 +51,6 @@ class DetailsInteractor @Inject constructor(
 			scrobblers.map { it.observeScrobblingInfo(mangaId) },
 		) { scrobblingInfo ->
 			scrobblingInfo.filterNotNull()
-		}
-	}
-
-	suspend fun deleteLocalManga(manga: Manga) {
-		val victim = if (manga.isLocal) manga else localMangaRepository.findSavedManga(manga)?.manga
-		checkNotNull(victim) { "Cannot find saved manga for ${manga.title}" }
-		val original = if (manga.isLocal) localMangaRepository.getRemoteManga(manga) else manga
-		localMangaRepository.delete(victim) || throw IOException("Unable to delete file")
-		runCatchingCancellable {
-			historyRepository.deleteOrSwap(victim, original)
-		}.onFailure {
-			it.printStackTraceDebug()
 		}
 	}
 

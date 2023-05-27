@@ -18,10 +18,11 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
@@ -32,6 +33,8 @@ import org.koitharu.kotatsu.core.ui.dialog.RecyclerViewAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
 import org.koitharu.kotatsu.core.util.ViewBadge
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
@@ -90,10 +93,10 @@ class DetailsActivity :
 			ChaptersMenuProvider(viewModel, null)
 		}
 
-		viewModel.manga.observe(this, ::onMangaUpdated)
+		viewModel.manga.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
-		viewModel.onMangaRemoved.observe(this, ::onMangaRemoved)
-		viewModel.onError.observe(
+		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
+		viewModel.onError.observeEvent(
 			this,
 			SnackbarErrorObserver(
 				host = viewBinding.containerDetails,
@@ -106,11 +109,11 @@ class DetailsActivity :
 				},
 			),
 		)
-		viewModel.onShowToast.observe(this) {
+		viewModel.onShowToast.observeEvent(this) {
 			makeSnackbar(getString(it), Snackbar.LENGTH_SHORT).show()
 		}
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
-		viewModel.selectedBranchName.observe(this) {
+		viewModel.selectedBranch.observe(this) {
 			viewBinding.headerChapters?.subtitle = it
 			viewBinding.textViewSubtitle?.textAndVisible = it
 		}
@@ -124,7 +127,7 @@ class DetailsActivity :
 			viewBinding.buttonDropdown.isVisible = it.size > 1
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
-		viewModel.onDownloadStarted.observe(this, DownloadStartedObserver(viewBinding.containerDetails))
+		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.containerDetails))
 
 		addMenuProvider(
 			DetailsMenuProvider(
@@ -165,12 +168,12 @@ class DetailsActivity :
 			}
 
 			R.id.action_pages_thumbs -> {
-				val history = viewModel.historyInfo.value?.history
+				val history = viewModel.historyInfo.value.history
 				PagesThumbnailsSheet.show(
 					fm = supportFragmentManager,
 					manga = viewModel.manga.value ?: return false,
 					chapterId = history?.chapterId
-						?: viewModel.chapters.value?.firstOrNull()?.chapter?.id
+						?: viewModel.chapters.value.firstOrNull()?.chapter?.id
 						?: return false,
 					currentPage = history?.page ?: 0,
 				)
@@ -253,14 +256,14 @@ class DetailsActivity :
 			.setCancelable(true)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setTitle(R.string.translations)
-			.setItems(viewModel.branches.value.orEmpty())
+			.setItems(viewModel.branches.value)
 			.create()
 			.also { it.show() }
 	}
 
 	private fun openReader(isIncognitoMode: Boolean) {
 		val manga = viewModel.manga.value ?: return
-		val chapterId = viewModel.historyInfo.value?.history?.chapterId
+		val chapterId = viewModel.historyInfo.value.history?.chapterId
 		if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
 			val snackbar = makeSnackbar(getString(R.string.chapter_is_missing), Snackbar.LENGTH_SHORT)
 			snackbar.show()
@@ -301,11 +304,11 @@ class DetailsActivity :
 
 	private class PrefetchObserver(
 		private val context: Context,
-	) : Observer<List<ChapterListItem>?> {
+	) : FlowCollector<List<ChapterListItem>?> {
 
 		private var isCalled = false
 
-		override fun onChanged(value: List<ChapterListItem>?) {
+		override suspend fun emit(value: List<ChapterListItem>?) {
 			if (value.isNullOrEmpty()) {
 				return
 			}

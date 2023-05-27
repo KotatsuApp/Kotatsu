@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.ActivityShelfSettingsBinding
 import com.google.android.material.R as materialR
 
@@ -40,8 +41,6 @@ class ShelfSettingsActivity :
 				it.attachToRecyclerView(this)
 			}
 		}
-
-
 		viewModel.content.observe(this) { settingsAdapter.items = it }
 	}
 

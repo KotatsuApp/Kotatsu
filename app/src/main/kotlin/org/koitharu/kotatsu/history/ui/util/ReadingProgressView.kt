@@ -12,7 +12,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
-import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 
 class ReadingProgressView @JvmOverloads constructor(
 	context: Context,

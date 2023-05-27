@@ -7,12 +7,14 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.asFlowLiveData
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -44,7 +46,7 @@ class SearchViewModel @Inject constructor(
 
 	override val content = combine(
 		mangaList,
-		listModeFlow,
+		listMode,
 		listError,
 		hasNextPage,
 	) { list, mode, error, hasNext ->
@@ -70,7 +72,7 @@ class SearchViewModel @Inject constructor(
 				result
 			}
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	init {
 		loadList(append = false)

@@ -21,6 +21,8 @@ import org.koitharu.kotatsu.core.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingBinding
@@ -59,7 +61,7 @@ class ScrobblingInfoBottomSheet :
 	override fun onViewBindingCreated(binding: SheetScrobblingBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
-		viewModel.onError.observe(viewLifecycleOwner) {
+		viewModel.onError.observeEvent(viewLifecycleOwner) {
 			Toast.makeText(binding.root.context, it.getDisplayMessage(binding.root.resources), Toast.LENGTH_SHORT)
 				.show()
 		}
@@ -105,7 +107,7 @@ class ScrobblingInfoBottomSheet :
 		when (v.id) {
 			R.id.button_menu -> menu?.show()
 			R.id.imageView_cover -> {
-				val coverUrl = viewModel.scrobblingInfo.value?.getOrNull(scrobblerIndex)?.coverUrl ?: return
+				val coverUrl = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.coverUrl ?: return
 				val options = scaleUpActivityOptionsOf(v)
 				startActivity(ImageActivity.newIntent(v.context, coverUrl, null), options.toBundle())
 			}
@@ -135,7 +137,7 @@ class ScrobblingInfoBottomSheet :
 	override fun onMenuItemClick(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.action_browser -> {
-				val url = viewModel.scrobblingInfo.value?.getOrNull(scrobblerIndex)?.externalUrl ?: return false
+				val url = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.externalUrl ?: return false
 				val intent = Intent(Intent.ACTION_VIEW, url.toUri())
 				startActivity(
 					Intent.createChooser(intent, getString(R.string.open_in_browser)),
@@ -149,7 +151,7 @@ class ScrobblingInfoBottomSheet :
 
 			R.id.action_edit -> {
 				val manga = viewModel.manga.value ?: return false
-				val scrobblerService = viewModel.scrobblingInfo.value?.getOrNull(scrobblerIndex)?.scrobbler
+				val scrobblerService = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.scrobbler
 				ScrobblingSelectorBottomSheet.show(parentFragmentManager, manga, scrobblerService)
 				dismiss()
 			}

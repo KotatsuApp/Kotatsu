@@ -1,25 +1,28 @@
 package org.koitharu.kotatsu.favourites.ui.list
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.ARG_CATEGORY_ID
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
-import org.koitharu.kotatsu.history.domain.HistoryRepository
-import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -43,12 +46,12 @@ class FavouritesListViewModel @Inject constructor(
 
 	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
 
-	val sortOrder: LiveData<SortOrder?> = if (categoryId == NO_ID) {
-		MutableLiveData(null)
+	val sortOrder: StateFlow<SortOrder?> = if (categoryId == NO_ID) {
+		MutableStateFlow(null)
 	} else {
 		repository.observeCategory(categoryId)
 			.map { it?.order }
-			.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, null)
+			.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 	}
 
 	override val content = combine(
@@ -57,7 +60,7 @@ class FavouritesListViewModel @Inject constructor(
 		} else {
 			repository.observeAll(categoryId)
 		},
-		listModeFlow,
+		listMode,
 	) { list, mode ->
 		when {
 			list.isEmpty() -> listOf(
@@ -77,7 +80,7 @@ class FavouritesListViewModel @Inject constructor(
 		}
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	override fun onRefresh() = Unit
 
@@ -93,7 +96,7 @@ class FavouritesListViewModel @Inject constructor(
 			} else {
 				repository.removeFromCategory(categoryId, ids)
 			}
-			onActionDone.emitCall(ReversibleAction(R.string.removed_from_favourites, handle))
+			onActionDone.call(ReversibleAction(R.string.removed_from_favourites, handle))
 		}
 	}
 

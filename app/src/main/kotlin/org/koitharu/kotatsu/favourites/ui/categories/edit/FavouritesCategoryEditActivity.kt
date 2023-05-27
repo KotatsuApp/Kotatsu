@@ -22,6 +22,8 @@ import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getSerializableCompat
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.databinding.ActivityCategoryEditBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
@@ -50,10 +52,10 @@ class FavouritesCategoryEditActivity :
 		viewBinding.editName.addTextChangedListener(this)
 		afterTextChanged(viewBinding.editName.text)
 
-		viewModel.onSaved.observe(this) { finishAfterTransition() }
+		viewModel.onSaved.observeEvent(this) { finishAfterTransition() }
 		viewModel.category.observe(this, ::onCategoryChanged)
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
-		viewModel.onError.observe(this, ::onError)
+		viewModel.onError.observeEvent(this, ::onError)
 		viewModel.isTrackerEnabled.observe(this) {
 			viewBinding.switchTracker.isVisible = it
 		}

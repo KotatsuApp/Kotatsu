@@ -4,12 +4,15 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -32,7 +35,7 @@ class FeedViewModel @Inject constructor(
 	private val limit = MutableStateFlow(PAGE_SIZE)
 	private val isReady = AtomicBoolean(false)
 
-	val onFeedCleared = SingleLiveEvent<Unit>()
+	val onFeedCleared = MutableEventFlow<Unit>()
 	val content = repository.observeTrackingLog(limit)
 		.map { list ->
 			if (list.isEmpty()) {
@@ -48,7 +51,7 @@ class FeedViewModel @Inject constructor(
 				isReady.set(true)
 				list.mapList()
 			}
-		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	fun clearFeed(clearCounters: Boolean) {
 		launchLoadingJob(Dispatchers.Default) {
@@ -56,7 +59,7 @@ class FeedViewModel @Inject constructor(
 			if (clearCounters) {
 				repository.clearCounters()
 			}
-			onFeedCleared.emitCall(Unit)
+			onFeedCleared.call(Unit)
 		}
 	}
 

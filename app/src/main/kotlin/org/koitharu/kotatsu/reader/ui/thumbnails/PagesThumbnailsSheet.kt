@@ -20,6 +20,8 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.ScrollListenerInvalidationObserver
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
@@ -93,7 +95,7 @@ class PagesThumbnailsSheet :
 		viewModel.branch.observe(viewLifecycleOwner) {
 			onExpansionStateChanged(binding.headerBar, binding.headerBar.isExpanded)
 		}
-		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
+		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 	}
 
 	override fun onDestroyView() {

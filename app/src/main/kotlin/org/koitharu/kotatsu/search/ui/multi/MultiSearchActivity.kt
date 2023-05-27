@@ -21,6 +21,8 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -59,10 +61,8 @@ class MultiSearchActivity :
 		setContentView(ActivitySearchMultiBinding.inflate(layoutInflater))
 		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
 
-		val itemCLickListener = object : OnListItemClickListener<MultiSearchListModel> {
-			override fun onItemClick(item: MultiSearchListModel, view: View) {
-				startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query.value))
-			}
+		val itemCLickListener = OnListItemClickListener<MultiSearchListModel> { item, view ->
+			startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query.value))
 		}
 		val sizeResolver = ItemSizeResolver(resources, settings)
 		val selectionDecoration = MangaSelectionDecoration(this)
@@ -90,8 +90,8 @@ class MultiSearchActivity :
 
 		viewModel.query.observe(this) { title = it }
 		viewModel.list.observe(this) { adapter.items = it }
-		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
-		viewModel.onDownloadStarted.observe(this, DownloadStartedObserver(viewBinding.recyclerView))
+		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
+		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.recyclerView))
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -130,7 +130,7 @@ class MultiSearchActivity :
 	}
 
 	override fun onRetryClick(error: Throwable) {
-		viewModel.doSearch(viewModel.query.value.orEmpty())
+		viewModel.doSearch(viewModel.query.value)
 	}
 
 	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit

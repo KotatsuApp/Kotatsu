@@ -45,6 +45,8 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.core.util.ext.drawableEnd
 import org.koitharu.kotatsu.core.util.ext.hideKeyboard
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.resolve
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
@@ -137,8 +139,8 @@ class MainActivity :
 			onFirstStart()
 		}
 
-		viewModel.onOpenReader.observe(this, this::onOpenReader)
-		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.container, null))
+		viewModel.onOpenReader.observeEvent(this, this::onOpenReader)
+		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.container, null))
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
