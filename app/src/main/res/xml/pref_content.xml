@@ -30,26 +30,6 @@
 		app:useSimpleSummaryProvider="true"
 		tools:isPreferenceVisible="true" />
 
-	<Preference
-		android:key="local_storage"
-		android:persistent="false"
-		android:title="@string/manga_save_location"
-		app:allowDividerAbove="true" />
-
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="downloads_slowdown"
-		android:summary="@string/download_slowdown_summary"
-		android:title="@string/download_slowdown" />
-
-	<org.koitharu.kotatsu.settings.utils.SliderPreference
-		android:key="downloads_parallelism"
-		android:stepSize="1"
-		android:title="@string/parallel_downloads"
-		android:valueFrom="1"
-		android:valueTo="5"
-		app:defaultValue="2" />
-
 	<ListPreference
 		android:entries="@array/doh_providers"
 		android:key="doh"
@@ -57,13 +37,40 @@
 		app:allowDividerAbove="true"
 		app:useSimpleSummaryProvider="true" />
 
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.ProxySettingsFragment"
+		android:key="proxy"
+		android:title="@string/proxy" />
+
 	<SwitchPreferenceCompat
 		android:key="ssl_bypass"
-		android:title="Ignore SSL errors" />
+		android:title="@string/ignore_ssl_errors" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
-		android:title="@string/backup_restore"
-		app:allowDividerAbove="true" />
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="mirror_switching"
+		android:summary="@string/mirror_switching_summary"
+		android:title="@string/mirror_switching" />
+
+	<PreferenceCategory android:title="@string/downloads">
+
+		<Preference
+			android:key="local_storage"
+			android:persistent="false"
+			android:title="@string/manga_save_location" />
+
+		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="downloads_wifi"
+			android:summary="@string/downloads_wifi_only_summary"
+			android:title="@string/downloads_wifi_only" />
+
+		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="downloads_slowdown"
+			android:summary="@string/download_slowdown_summary"
+			android:title="@string/download_slowdown" />
+
+	</PreferenceCategory>
 
 </PreferenceScreen>

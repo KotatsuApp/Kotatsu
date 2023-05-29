@@ -28,8 +28,4 @@
 		<item quantity="one">%1$d kapittel</item>
 		<item quantity="other">%1$d kapittel</item>
 	</plurals>
-	<plurals name="chapters_from_x">
-		<item quantity="one">%1$d kapittel ifrå %2$d</item>
-		<item quantity="other">%1$d kapittel ifrå %2$d</item>
-	</plurals>
 </resources>

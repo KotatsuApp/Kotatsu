@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="close_menu">Cerrar menú</string>
-    <string name="open_menu">Abrir menú</string>
     <string name="local_storage">Dispositivo</string>
     <string name="favourites">Favoritos</string>
     <string name="history">Historial</string>
@@ -27,7 +25,6 @@
     <string name="add_to_favourites">Añadir a favoritos</string>
     <string name="add_new_category">Nueva categoría</string>
     <string name="add">Añadir</string>
-    <string name="enter_category_name">Introduce categoría</string>
     <string name="save">Guardar</string>
     <string name="share">Compartir</string>
     <string name="create_shortcut">Crear acceso directo…</string>
@@ -53,9 +50,7 @@
     <string name="clear">Borrar</string>
     <string name="text_clear_history_prompt">Borrar todo el historial de lectura de forma permanente\?</string>
     <string name="remove">Eliminar</string>
-    <string name="_s_removed_from_history">«%s» retirado del historial</string>
     <string name="_s_deleted_from_local_storage">«%s» borrado del almacenamiento local</string>
-    <string name="wait_for_loading_finish">Espere a que termine de cargar…</string>
     <string name="save_page">Guardar página</string>
     <string name="page_saved">Guardado</string>
     <string name="share_image">Compartir imagen</string>
@@ -66,7 +61,6 @@
     <string name="no_description">Sin descripción</string>
     <string name="history_and_cache">Historial y caché</string>
     <string name="clear_pages_cache">Borrar caché de página</string>
-    <string name="cache">Caché</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="standard">Estándar</string>
     <string name="webtoon">Sitio web</string>
@@ -80,10 +74,6 @@
     <string name="taps_on_edges">Toques de borde</string>
     <string name="volume_buttons">Botones de volumen</string>
     <string name="_continue">Continuar</string>
-    <string name="warning">Advertencia</string>
-    <string name="network_consumption_warning">Esta operación puede consumir mucho tráfico de red</string>
-    <string name="dont_ask_again">No vuelvas a preguntar</string>
-    <string name="cancelling_">Cancelar…</string>
     <string name="error">Error</string>
     <string name="clear_thumbs_cache">Borrar la caché de miniaturas</string>
     <string name="clear_search_history">Borrar el historial de búsqueda</string>
@@ -92,9 +82,7 @@
     <string name="internal_storage">Almacenamiento interno</string>
     <string name="external_storage">Almacenamiento externo</string>
     <string name="domain">Dominio</string>
-    <string name="application_update">Comprobar nuevas versiones de la aplicación</string>
     <string name="app_update_available">Una nueva versión de la aplicación está disponible</string>
-    <string name="show_notification_app_update">Mostrar notificación si una nueva versión está disponible</string>
     <string name="open_in_browser">Abrir en navegador web</string>
     <string name="large_manga_save_confirm">Este manga tiene %s. ¿Quieres guardarlo todo\?</string>
     <string name="save_manga">Guardar</string>
@@ -102,19 +90,12 @@
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Activado %1$d de %2$d</string>
     <string name="new_chapters">Nuevos capítulos</string>
     <string name="download">Descargar</string>
-    <string name="read_from_start">Leer desde el principio</string>
-    <string name="restart">Reiniciar</string>
     <string name="notifications_settings">Configuración de las notificaciones</string>
     <string name="notification_sound">Sonido de las notificaciones</string>
     <string name="light_indicator">Indicador LED</string>
     <string name="vibration">Vibración</string>
     <string name="favourites_categories">Categorías favoritas</string>
-    <string name="categories_">Categorías…</string>
-    <string name="rename">Renombrar</string>
-    <string name="category_delete_confirm">¿Remover la categoría \"%s\" de sus favoritos\?
-\nTodo el manga en esta se perderá.</string>
     <string name="remove_category">Remover</string>
-    <string name="text_categories_holder">Puedes usar categorías para organizar tus favoritos. Pulsa «+» para crear una categoría</string>
     <string name="manga_shelf">Estante</string>
     <string name="recent_manga">Reciente</string>
     <string name="pages_animation">Animación de página</string>
@@ -129,10 +110,8 @@
     <string name="updates">Actualizaciones</string>
     <string name="text_feed_holder">Aquí verás los nuevos episodios del manga que estás leyendo</string>
     <string name="search_results">Resultados de la búsqueda</string>
-    <string name="related">Relación</string>
     <string name="new_version_s">Nueva versión: %s</string>
     <string name="size_s">Tamaño: %s</string>
-    <string name="waiting_for_network">Esperando red…</string>
     <string name="clear_updates_feed">Borrar actualizaciones</string>
     <string name="updates_feed_cleared">Borrar el feed de actualizaciones</string>
     <string name="rotate_screen">Girar pantalla</string>
@@ -149,12 +128,9 @@
     <string name="about">Acerca de</string>
     <string name="app_version">Versión %s</string>
     <string name="check_for_updates">Comprobar actualizaciones</string>
-    <string name="checking_for_updates">Comprobar si hay actualizaciones…</string>
-    <string name="update_check_failed">Fallo en la comprobación de actualizaciones</string>
     <string name="no_update_available">No hay actualizaciones disponibles</string>
     <string name="right_to_left">De derecha a izquierda</string>
     <string name="create_category">Nueva categoría</string>
-    <string name="report_github">Crear incidencia en GitHub</string>
     <string name="scale_mode">Modo de escala</string>
     <string name="zoom_mode_fit_center">Ajuste al centro</string>
     <string name="zoom_mode_fit_height">Ajuste a la altura</string>
@@ -183,7 +159,6 @@
     <string name="captcha_solve">Resolver</string>
     <string name="clear_cookies">Borrar cookies</string>
     <string name="cookies_cleared">Se han eliminado todas las cookies</string>
-    <string name="chapters_checking_progress">Buscando nuevos capítulos: %1$d de %2$d</string>
     <string name="clear_feed">Limpiar feed</string>
     <string name="text_clear_updates_feed_prompt">Todo el historial de actualizaciones se borrará y esta acción no se puede deshacer. ¿Está seguro\?</string>
     <string name="check_for_new_chapters">Comprobación de nuevos capítulos</string>
@@ -191,7 +166,6 @@
     <string name="sign_in">Iniciar sesión</string>
     <string name="auth_required">Debes autorizar para ver este contenido</string>
     <string name="default_s">Por defecto: %s</string>
-    <string name="_and_x_more">…y %1$d más</string>
     <string name="next">Siguiente</string>
     <string name="protect_application_subtitle">Introduce la contraseña que se requerirá cuando se inicie la aplicación</string>
     <string name="confirm">Confirmar</string>
@@ -201,17 +175,13 @@
     <string name="text_history_holder_secondary">Encuentra qué leer en el menú lateral.</string>
     <string name="text_history_holder_primary">Lo que leas se mostrará aquí</string>
     <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
-    <string name="search_only_on_s">Buscar sólo en %s</string>
     <string name="chapter_is_missing">Falta un capítulo</string>
     <string name="about_app_translation_summary">Traducir esta aplicación</string>
-    <string name="about_feedback">Comentarios</string>
     <string name="about_app_translation">Traducción</string>
-    <string name="text_downloads_holder">Actualmente no hay descargas activas</string>
     <string name="queued">En la cola</string>
     <string name="read_more">Leer más</string>
     <string name="backup_saved">Copia de seguridad guardada correctamente</string>
     <string name="welcome">Bienvenido/a</string>
-    <string name="other">Otro</string>
     <string name="genres">Géneros</string>
     <string name="text_search_holder_secondary">Intenta reformular la consulta.</string>
     <string name="text_clear_search_history_prompt">¿Realmente quiere eliminar todas las consultas de búsqueda recientes\?</string>
@@ -219,21 +189,15 @@
     <string name="state_ongoing">En curso</string>
     <string name="chapter_is_missing_text">Este capítulo no aparece en su dispositivo. Descárguelo o léalo en línea.</string>
     <string name="auth_complete">Autorizado</string>
-    <string name="about_feedback_4pda">Tema sobre 4PDA</string>
-    <string name="date_format">Formato de la fecha</string>
     <string name="system_default">Por defecto</string>
     <string name="tracker_warning">Algunos fabricantes pueden cambiar el comportamiento del sistema, lo que podría interrumpir las tareas en segundo plano.</string>
-    <string name="error_empty_name">El nombre no debe estar vacío</string>
     <string name="auth_not_supported_by">No se admite iniciar sesión en %s</string>
     <string name="text_clear_cookies_prompt">Serás desconectado de todas las fuentes</string>
     <string name="exclude_nsfw_from_history">Excluye manga NSFW del historial</string>
     <string name="show_pages_numbers">Mostrar los números de páginas</string>
     <string name="enabled_sources">Fuentes activadas</string>
     <string name="available_sources">Fuentes disponibles</string>
-    <string name="dynamic_theme">Tema dinámico</string>
-    <string name="dynamic_theme_summary">Aplica un tema creado a partir del esquema de colores de su fondo de pantalla</string>
     <string name="computing_">Informática…</string>
-    <string name="importing_progress">Importando manga: %1$d de %2$d</string>
     <string name="screenshots_policy">Política de capturas de pantalla</string>
     <string name="screenshots_allow">Permitir</string>
     <string name="screenshots_block_all">Bloquear siempre</string>
@@ -266,12 +230,10 @@
     <string name="suggestions_excluded_genres">Excluir géneros</string>
     <string name="suggestions_excluded_genres_summary">Especifica los géneros que no quieres ver en las sugerencias</string>
     <string name="removal_completed">Remoción completada</string>
-    <string name="batch_manga_save_confirm">¿Descargar todos los mangas seleccionados y sus capítulos\? Esto puede consumir mucho tráfico y almacenamiento.</string>
     <string name="text_delete_local_manga_batch">¿Eliminar elementos seleccionados del dispositivo de forma permanente\?</string>
     <string name="hide">Ocultar</string>
     <string name="download_slowdown">Ralentización de la descarga</string>
     <string name="new_sources_text">Nuevas fuentes de manga son disponibles</string>
-    <string name="parallel_downloads">Descargas en paralelo</string>
     <string name="download_slowdown_summary">Ayuda a evitar el bloqueo de tu dirección IP</string>
     <string name="local_manga_processing">Procesamiento de manga guardado</string>
     <string name="check_new_chapters_title">Comprueba si hay nuevos capítulos y notifica sobre ellos</string>
@@ -334,12 +296,9 @@
     <string name="storage_usage">Uso del almacenamiento</string>
     <string name="available">Disponible</string>
     <string name="removed_from_favourites">Eliminado de los favoritos</string>
-    <string name="removed_from_s">Eliminado de \"%s\"</string>
     <string name="options">Opciones</string>
     <string name="incognito_mode">Modo incógnito</string>
-    <string name="app_update_available_s">Actualización de la aplicación disponible: %s</string>
     <string name="no_chapters">No hay capítulos</string>
-    <string name="off_short">Apagado</string>
     <string name="reader_info_bar">Mostrar la barra de información en el lector</string>
     <string name="importing_manga">Importando el manga</string>
     <string name="import_completed">Importación completada</string>
@@ -348,7 +307,6 @@
     <string name="back">Atrás</string>
     <string name="sync_title">Sincronizar tus datos</string>
     <string name="text_shelf_holder_primary">Tu manga se mostrará aquí</string>
-    <string name="seconds_pattern">%ss</string>
     <string name="clear_all_history">Borrar todo el historial</string>
     <string name="no_manga_sources">Sin fuentes de manga</string>
     <string name="history_cleared">Historial borrado</string>
@@ -359,11 +317,9 @@
 \nTodos los mangas en ella se perderán y esto no se puede deshacer.</string>
     <string name="explore">Explorar</string>
     <string name="memory_usage_pattern">%s - %s</string>
-    <string name="changelog">Registro de cambios</string>
     <string name="exit_confirmation_summary">Pulse dos veces «Atrás» para salir de la aplicación</string>
     <string name="exit_confirmation">Confirmación de salida</string>
     <string name="pages_cache">Caché de páginas</string>
-    <string name="enter_email_text">Introduce tu correo electrónico para continuar</string>
     <string name="reader_info_pattern">Cap.%1$d/%2$d Pg.%3$d/%4$d</string>
     <string name="saved_manga">Manga guardado</string>
     <string name="automatic_scroll">Desplazamiento automático</string>
@@ -375,7 +331,6 @@
     <string name="history_shortcuts_summary">Hacer que los mangas recientes estén disponibles mediante una pulsación larga en el icono de la aplicación</string>
     <string name="color_correction_hint">Los ajustes de color elegidos serán recordados para este manga</string>
     <string name="feed">Fuente</string>
-    <string name="downloading_manga">Descargando manga</string>
     <string name="history_shortcuts">Mostrar los accesos directos a los mangas recientes</string>
     <string name="reader_control_ltr_summary">Tocando el borde derecho o pulsando la tecla derecha se pasa siempre a la página siguiente</string>
     <string name="reader_control_ltr">Control ergonómico del lector</string>
@@ -387,7 +342,6 @@
     <string name="discard">Descartar</string>
     <string name="error_no_space_left">Sin espacio en dispositivo</string>
     <string name="webtoon_zoom">Zoom de webtoon</string>
-    <string name="webtoon_zoom_summary">Permitir el gesto de acercamiento/alejamiento en modo webtoon (beta)</string>
     <string name="reader_slider">Mostrar el deslizador de cambio de página</string>
     <string name="server_error">Error del servidor (%1$d). Vuelva a intentarlo más tarde</string>
     <string name="clear_new_chapters_counters">Información clara sobre los nuevos capítulos</string>
@@ -430,4 +384,32 @@
     <string name="got_it">Entendido</string>
     <string name="sync_auth_hint">Puedes acceder a una cuenta existente o crear una nueva</string>
     <string name="find_similar">Buscar similares</string>
+    <string name="sync_settings">Parámetros de sincronización</string>
+    <string name="server_address">Dirección del servidor</string>
+    <string name="ignore_ssl_errors">Ignorar los errores SSL</string>
+    <string name="mirror_switching">Elige un espejo automáticamente</string>
+    <string name="mirror_switching_summary">Cambio automático de dominios para las fuentes remotas en caso de error si hay réplicas disponibles</string>
+    <string name="pause">Pausar</string>
+    <string name="resume">Reanudar</string>
+    <string name="remove_completed">Eliminación completa</string>
+    <string name="cancel_all">Cancelar todo</string>
+    <string name="downloads_wifi_only">Descargar solo por WiFi</string>
+    <string name="downloads_wifi_only_summary">Detener la descarga al cambiar a una red móvil</string>
+    <string name="sync_host_description">Puedes utilizar un servidor de sincronización propio o uno predeterminado. No cambies esto si no estás seguro de lo que haces.</string>
+    <string name="paused">Pausado</string>
+    <string name="enable">Activar</string>
+    <string name="no_thanks">No, gracias</string>
+    <string name="text_downloads_list_holder">No tienes descargas</string>
+    <string name="suggestion_manga">Sugerencia: %s</string>
+    <string name="suggestions_notifications_summary">Algunas veces muestra las notificaciones con el manga sugerido</string>
+    <string name="downloads_resumed">Las descargas se han reanudado</string>
+    <string name="more">Más</string>
+    <string name="cancel_all_downloads_confirm">Todas las descargas activas se cancelarán, los datos descargados parcialmente se perderán</string>
+    <string name="remove_completed_downloads_confirm">Tu historial de descargas se borrará permanentemente</string>
+    <string name="downloads_paused">Se han pausado las descargas</string>
+    <string name="downloads_removed">Las descargas se han eliminado</string>
+    <string name="downloads_cancelled">Las descargas se han cancelado</string>
+    <string name="suggestions_enable_prompt">¿Quieres recibir sugerencias sobre mangas personalizadas\?</string>
+    <string name="translations">Traducciones</string>
+    <string name="web_view_unavailable">WebView no está disponible: comprueba si el proveedor de WebView está instalado</string>
 </resources>

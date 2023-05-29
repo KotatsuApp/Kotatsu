@@ -11,7 +11,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
+		<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
 			android:id="@+id/recyclerView"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
@@ -19,7 +19,7 @@
 			android:orientation="vertical"
 			android:paddingHorizontal="@dimen/list_spacing"
 			app:bubbleSize="small"
-			tools:layoutManager="org.koitharu.kotatsu.base.ui.list.FitHeightLinearLayoutManager"
+			tools:layoutManager="org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager"
 			tools:listitem="@layout/item_manga_list" />
 
 	</FrameLayout>

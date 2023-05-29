@@ -16,10 +16,6 @@
         <item quantity="one">%1$d Kapitel</item>
         <item quantity="other">%1$d Kapitel</item>
     </plurals>
-    <plurals name="chapters_from_x">
-        <item quantity="one">%1$d Kapitel aus %2$d</item>
-        <item quantity="other">%1$d Kapitel aus %2$d</item>
-    </plurals>
     <plurals name="minutes_ago">
         <item quantity="one">Vor %1$d Minute</item>
         <item quantity="other">Vor %1$d Minuten</item>
@@ -30,6 +26,6 @@
     </plurals>
     <plurals name="days_ago">
         <item quantity="one">Vor %1$d Tag</item>
-        <item quantity="other">Vor %1$d Tage</item>
+        <item quantity="other">Vor %1$d Tagen</item>
     </plurals>
 </resources>

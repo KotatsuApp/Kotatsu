@@ -95,6 +95,7 @@
 
 				<data android:scheme="kotatsu" />
 				<data android:host="about" />
+				<data android:host="sync-settings" />
 			</intent-filter>
 		</activity>
 		<activity
@@ -128,7 +129,7 @@
 			android:name="org.koitharu.kotatsu.settings.protect.ProtectSetupActivity"
 			android:windowSoftInputMode="adjustResize" />
 		<activity
-			android:name="org.koitharu.kotatsu.download.ui.DownloadsActivity"
+			android:name="org.koitharu.kotatsu.download.ui.list.DownloadsActivity"
 			android:label="@string/downloads"
 			android:launchMode="singleTop" />
 		<activity android:name="org.koitharu.kotatsu.image.ui.ImageActivity" />
@@ -174,10 +175,6 @@
 			</intent-filter>
 		</activity>
 
-		<service
-			android:name="org.koitharu.kotatsu.download.ui.service.DownloadService"
-			android:foregroundServiceType="dataSync"
-			android:stopWithTask="false" />
 		<service android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService" />
 		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"
@@ -252,7 +249,13 @@
 		<provider
 			android:name="androidx.startup.InitializationProvider"
 			android:authorities="${applicationId}.androidx-startup"
-			tools:node="remove" />
+			android:exported="false"
+			tools:node="remove">
+			<meta-data
+				android:name="androidx.work.WorkManagerInitializer"
+				android:value="androidx.startup"
+				tools:node="remove" />
+		</provider>
 
 		<receiver
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider"

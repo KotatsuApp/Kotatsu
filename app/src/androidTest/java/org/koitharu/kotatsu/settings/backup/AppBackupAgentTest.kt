@@ -5,8 +5,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.io.File
-import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
@@ -19,7 +17,9 @@ import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.data.HistoryRepository
+import java.io.File
+import javax.inject.Inject
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -52,6 +52,7 @@ class AppBackupAgentTest {
 			title = SampleData.favouriteCategory.title,
 			sortOrder = SampleData.favouriteCategory.order,
 			isTrackerEnabled = SampleData.favouriteCategory.isTrackingEnabled,
+			isVisibleOnShelf = SampleData.favouriteCategory.isVisibleInLibrary,
 		)
 		favouritesRepository.addToCategory(categoryId = category.id, mangas = listOf(SampleData.manga))
 		historyRepository.addOrUpdate(

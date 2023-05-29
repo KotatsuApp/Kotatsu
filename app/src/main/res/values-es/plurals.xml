@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="pages">
-        <item quantity="one">Total %1$d página</item>
-        <item quantity="other">Total %1$d páginas</item>
+        <item quantity="one">Total de %1$d página</item>
+        <item quantity="many">Total de %1$d páginas</item>
+        <item quantity="other">Total de %1$d páginas</item>
     </plurals>
     <plurals name="items">
         <item quantity="one">%1$d elemento</item>
+        <item quantity="many">%1$d elementos</item>
         <item quantity="other">%1$d elementos</item>
     </plurals>
     <plurals name="new_chapters">
         <item quantity="one">%1$d nuevo capítulo</item>
+        <item quantity="many">%1$d nuevos capítulos</item>
         <item quantity="other">%1$d nuevos capítulos</item>
     </plurals>
     <plurals name="chapters">
         <item quantity="one">%1$d capítulo</item>
+        <item quantity="many">%1$d capítulos</item>
         <item quantity="other">%1$d capítulos</item>
-    </plurals>
-    <plurals name="chapters_from_x">
-        <item quantity="one">%1$d capítulo desde %2$d</item>
-        <item quantity="other">%1$d capítulos desde %2$d</item>
     </plurals>
     <plurals name="minutes_ago">
         <item quantity="one">hace %1$d minuto</item>
+        <item quantity="many">hace %1$d minutos</item>
         <item quantity="other">hace %1$d minutos</item>
     </plurals>
     <plurals name="hours_ago">
         <item quantity="one">hace %1$d hora</item>
+        <item quantity="many">hace %1$d horas</item>
         <item quantity="other">hace %1$d horas</item>
     </plurals>
     <plurals name="days_ago">
         <item quantity="one">hace %1$d día</item>
+        <item quantity="many">hace %1$d días</item>
         <item quantity="other">hace %1$d días</item>
     </plurals>
 </resources>

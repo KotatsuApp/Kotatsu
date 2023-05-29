@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <plurals name="pages">
-        <item quantity="one">कुल %1$d पृष्ठ</item>
-        <item quantity="other">कुल %1$d पृष्ठहरू</item>
-    </plurals>
-    <plurals name="new_chapters">
-        <item quantity="one">%1$d नयाँ अध्याय</item>
-        <item quantity="other">%1$d नयाँ अध्यायहरू</item>
-    </plurals>
-    <plurals name="chapters">
-        <item quantity="one">%1$d अध्याय</item>
-        <item quantity="other">%1$d अध्यायहरू</item>
-    </plurals>
-    <plurals name="minutes_ago">
-        <item quantity="one">%1$d मिनेट पहिले</item>
-        <item quantity="other">%1$d मिनेट पहिले</item>
-    </plurals>
-    <plurals name="hours_ago">
-        <item quantity="one">%1$d घण्टा पहिले</item>
-        <item quantity="other">%1$d घण्टा पहिले</item>
-    </plurals>
-    <plurals name="items">
-        <item quantity="one">%1$d वस्तु</item>
-        <item quantity="other">%1$d वस्तुहरू</item>
-    </plurals>
-    <plurals name="chapters_from_x">
-        <item quantity="one">%2$d बाट %1$d अध्याय</item>
-        <item quantity="other">%2$d बाट %1$d अध्यायहरू</item>
-    </plurals>
-    <plurals name="days_ago">
-        <item quantity="one">%1$d दिन अघि</item>
-        <item quantity="other">%1$d दिन पहिले</item>
-    </plurals>
+	<plurals name="pages">
+		<item quantity="one">कुल %1$d पृष्ठ</item>
+		<item quantity="other">कुल %1$d पृष्ठहरू</item>
+	</plurals>
+	<plurals name="new_chapters">
+		<item quantity="one">%1$d नयाँ अध्याय</item>
+		<item quantity="other">%1$d नयाँ अध्यायहरू</item>
+	</plurals>
+	<plurals name="chapters">
+		<item quantity="one">%1$d अध्याय</item>
+		<item quantity="other">%1$d अध्यायहरू</item>
+	</plurals>
+	<plurals name="minutes_ago">
+		<item quantity="one">%1$d मिनेट पहिले</item>
+		<item quantity="other">%1$d मिनेट पहिले</item>
+	</plurals>
+	<plurals name="hours_ago">
+		<item quantity="one">%1$d घण्टा पहिले</item>
+		<item quantity="other">%1$d घण्टा पहिले</item>
+	</plurals>
+	<plurals name="items">
+		<item quantity="one">%1$d वस्तु</item>
+		<item quantity="other">%1$d वस्तुहरू</item>
+	</plurals>
+	<plurals name="days_ago">
+		<item quantity="one">%1$d दिन अघि</item>
+		<item quantity="other">%1$d दिन पहिले</item>
+	</plurals>
 </resources>

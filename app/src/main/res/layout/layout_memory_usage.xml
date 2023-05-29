@@ -32,7 +32,7 @@
 
 	</LinearLayout>
 
-	<org.koitharu.kotatsu.base.ui.widgets.SegmentedBarView
+	<org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView
 		android:id="@+id/bar"
 		android:layout_width="match_parent"
 		android:layout_height="16dp"

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="close_menu">Закрыць меню</string>
-    <string name="open_menu">Адкрыць меню</string>
     <string name="local_storage">На прыладзе</string>
     <string name="favourites">Абраныя</string>
     <string name="history">Гісторыя</string>
@@ -27,7 +25,6 @@
     <string name="add_to_favourites">Дадаць у абраныя</string>
     <string name="add_new_category">Стварыць катэгорыю</string>
     <string name="add">Дадаць</string>
-    <string name="enter_category_name">Увядзіце назву</string>
     <string name="save">Захаваць</string>
     <string name="share">Падзяліцца</string>
     <string name="create_shortcut">Стварыць ярлык…</string>
@@ -53,9 +50,7 @@
     <string name="clear">Ачысціць</string>
     <string name="text_clear_history_prompt">Вы ўпэўненыя, што жадаеце ачысціць гісторыю\?</string>
     <string name="remove">Выдаліць</string>
-    <string name="_s_removed_from_history">«%s» выдалена з гiсторыi</string>
     <string name="_s_deleted_from_local_storage">«%s» выдалена з прылады</string>
-    <string name="wait_for_loading_finish">Дачакайцеся заканчэння загрузкі…</string>
     <string name="save_page">Захаваць старонку</string>
     <string name="page_saved">Старонка захавана</string>
     <string name="share_image">Падзяліцца выявай</string>
@@ -66,7 +61,6 @@
     <string name="no_description">Няма апісання</string>
     <string name="history_and_cache">Гісторыя і кэш</string>
     <string name="clear_pages_cache">Ачысціць кэш старонак</string>
-    <string name="cache">Кэш</string>
     <string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
     <string name="standard">Стандартны</string>
     <string name="webtoon">Манхва</string>
@@ -80,10 +74,6 @@
     <string name="taps_on_edges">Націск па краях</string>
     <string name="volume_buttons">Кнопкі гучнасці</string>
     <string name="_continue">Працягнцуць</string>
-    <string name="warning">Папярэджванне</string>
-    <string name="network_consumption_warning">Гэтае дзеянне можа прывесці да вялікага расходу трафіка</string>
-    <string name="dont_ask_again">Больш не пытацца</string>
-    <string name="cancelling_">Адмена…</string>
     <string name="error">Памылка</string>
     <string name="clear_thumbs_cache">Ачысціць кэш мініяцюр</string>
     <string name="search_history_cleared">Гісторыя пошуку ачышчана</string>
@@ -92,9 +82,7 @@
     <string name="internal_storage">Унутранае сховішча</string>
     <string name="external_storage">Знешняе сховішча</string>
     <string name="domain">Дамен</string>
-    <string name="application_update">Правяраць на наяўнасць абнаўленняў</string>
     <string name="app_update_available">Даступна абнаўленне праграмы</string>
-    <string name="show_notification_app_update">Паказваць апавяшчэнне пры наяўнасці новай версіі</string>
     <string name="open_in_browser">Адкрыць у браўзеры</string>
     <string name="large_manga_save_confirm">У гэтай манге %s. Вы ўпэўненыя, што хочаце захаваць іх усё\?</string>
     <string name="save_manga">Захаваць мангу</string>
@@ -102,19 +90,12 @@
     <string name="enabled_d_of_d">Уключана %1$d з %2$d</string>
     <string name="new_chapters">Новыя раздзелы</string>
     <string name="download">Спампаваць</string>
-    <string name="read_from_start">Чытаць з пачатку</string>
-    <string name="restart">Перазапусціць</string>
     <string name="notifications_settings">Налады апавяшчэнняў</string>
     <string name="notification_sound">Гук апавяшчэння</string>
     <string name="light_indicator">Светлавая iндыкацыя</string>
     <string name="vibration">Вібрацыя</string>
     <string name="favourites_categories">Катэгорыі абранага</string>
-    <string name="categories_">Катэгорыi…</string>
-    <string name="rename">Перайменаваць</string>
-    <string name="category_delete_confirm">Вы ўпэўнены, што хочаце выдаліць катэгорыю «%s»\?
-\nУся манга з дадзенай катэгорыі будзе страчана.</string>
     <string name="remove_category">Выдаліць катэгорыю</string>
-    <string name="text_categories_holder">Катэгорыі дапамагаюць упарадкоўваць абраную мангу. Націсніце «+», каб стварыць катэгорыю</string>
     <string name="manga_shelf">Паліца з мангай</string>
     <string name="recent_manga">Нядаўняя манга</string>
     <string name="pages_animation">Анімацыя гартання</string>
@@ -129,10 +110,8 @@
     <string name="updates">Абнаўленні</string>
     <string name="text_feed_holder">Тут будуць паказвацца абнаўлення мангі, якую вы чытаеце</string>
     <string name="search_results">Вынікі пошуку</string>
-    <string name="related">Падобныя</string>
     <string name="new_version_s">Новая версія: %s</string>
     <string name="size_s">Памер: %s</string>
-    <string name="waiting_for_network">Чаканне злучэння…</string>
     <string name="clear_updates_feed">Ачысціць стужку абнаўленняў</string>
     <string name="updates_feed_cleared">Стужка абнаўленняў ачышчана</string>
     <string name="rotate_screen">Павярнуць экран</string>
@@ -149,12 +128,9 @@
     <string name="about">Аб праграме</string>
     <string name="app_version">Версія %s</string>
     <string name="check_for_updates">Праверыць абнаўленні</string>
-    <string name="checking_for_updates">Праверка абнаўленняў…</string>
-    <string name="update_check_failed">Памылка пры праверцы абнаўленняў</string>
     <string name="no_update_available">Няма даступных абнаўленняў</string>
     <string name="right_to_left">Справа налева</string>
     <string name="create_category">Стварыць катэгорыю</string>
-    <string name="report_github">Пачаць абмеркаванне праблемы на GitHub</string>
     <string name="scale_mode">Маштабаванне</string>
     <string name="zoom_mode_fit_center">Умясціць у экран</string>
     <string name="zoom_mode_fit_height">Падагнаць па вышыні</string>
@@ -183,7 +159,6 @@
     <string name="captcha_solve">Прайсці</string>
     <string name="clear_cookies">Ачысціць кукi</string>
     <string name="cookies_cleared">Усе кукi выдалены</string>
-    <string name="chapters_checking_progress">Праверка новых частак: %1$d з %2$d</string>
     <string name="clear_feed">Ачысціць стужку</string>
     <string name="text_clear_updates_feed_prompt">Уся гісторыя абнаўленняў будзе ачышчана і яе нельга будзе вярнуць. Вы ўпэўненыя\?</string>
     <string name="check_for_new_chapters">Праверка новых глаў</string>
@@ -191,18 +166,15 @@
     <string name="sign_in">Увайсці</string>
     <string name="auth_required">Для прагляду гэтага кантэнту патрабуецца аўтарызацыя</string>
     <string name="default_s">Прадвызначаны: %s</string>
-    <string name="_and_x_more">…і яшчэ %1$d</string>
     <string name="next">Далей</string>
     <string name="protect_application_subtitle">Калі ласка, увядзіце пароль, які спатрэбіцца пры запуску праграмы</string>
     <string name="confirm">Пацвердзіць</string>
     <string name="password_length_hint">Пароль павінен змяшчаць не менш за 4 сімвалы</string>
-    <string name="search_only_on_s">Пошук толькі па %s</string>
     <string name="text_clear_search_history_prompt">Вы сапраўды хочаце выдаліць усе апошнія пошукавыя запыты\?</string>
     <string name="read_more">Падрабязна</string>
     <string name="tracker_warning">Некаторыя вытворцы могуць змяняць паводзіны сістэмы, што можа парушаць выкананне фонавых задач.</string>
     <string name="backup_saved">Рэзервовая копія паспяхова захавана</string>
     <string name="welcome">Вітаю</string>
-    <string name="other">Іншыя</string>
     <string name="text_local_holder_secondary">Вы можаце захаваць мангу з анлайн-крыніц або імпартаваць з файла.</string>
     <string name="text_local_holder_primary">У вас яшчэ няма ніводнай захаванай мангі</string>
     <string name="text_history_holder_secondary">Вы можаце знайсці, што пачытаць, у бакавым меню.</string>
@@ -211,10 +183,7 @@
     <string name="text_empty_holder_primary">Тут неяк пуста…</string>
     <string name="chapter_is_missing">Глава адсутнічае</string>
     <string name="chapter_is_missing_text">Гэтая глава адсутнічае на вашай прыладзе. Спампуйце ціпрачытайце яе онлайн.</string>
-    <string name="text_downloads_holder">На дадзены момант няма актыўных спамповак</string>
     <string name="queued">У чарзе</string>
-    <string name="about_feedback_4pda">Тэма на 4PDA</string>
-    <string name="about_feedback">Зваротная сувязь</string>
     <string name="about_app_translation_summary">Дапамагчы з перакладам праграмы</string>
     <string name="about_app_translation">Пераклад</string>
     <string name="text_clear_cookies_prompt">Вы выйдзеце з усіх крыніц, у якіх вы аўтарызаваны</string>
@@ -223,17 +192,12 @@
     <string name="genres">Жанры</string>
     <string name="state_finished">Завершана</string>
     <string name="state_ongoing">Ангоінг</string>
-    <string name="date_format">Фармат даты</string>
     <string name="system_default">Па змаўчанні</string>
     <string name="exclude_nsfw_from_history">Не паказваць NSFW мангу з гісторыі</string>
-    <string name="error_empty_name">Імя не можа быць пустым</string>
     <string name="show_pages_numbers">Паказваць нумары старонак</string>
     <string name="enabled_sources">Уключаныя крыніцы</string>
     <string name="available_sources">Даступныя крыніцы</string>
-    <string name="dynamic_theme">Дынамічная тэма</string>
-    <string name="dynamic_theme_summary">Ужывае тэму праграмы, заснаваную на каляровай палітры шпалер на прыладзе</string>
     <string name="computing_">Вылічэнні…</string>
-    <string name="importing_progress">Імпарт мангі: %1$d of %2$d</string>
     <string name="screenshots_allow">Дазваляць</string>
     <string name="screenshots_policy">Палітыка скрыншотаў</string>
     <string name="screenshots_block_all">Заўсёды блакуйце</string>
@@ -287,8 +251,6 @@
     <string name="suggestions_excluded_genres_summary">Укажыце жанры, якія вы не хочаце бачыць у рэкамендацыях</string>
     <string name="text_delete_local_manga_batch">Выдаліць выбраныя элементы з прылады назаўжды\?</string>
     <string name="removal_completed">Выдаленне завершана</string>
-    <string name="batch_manga_save_confirm">Спампаваць усю выбраную мангу і яе раздзелы\? Гэта можа заняць шмат трафіку і сховішча.</string>
-    <string name="parallel_downloads">Спампоўваць паралельна</string>
     <string name="download_slowdown_summary">Дапамагае пазбегнуць блакіроўкі па IP-адрасе</string>
     <string name="bookmark_remove">Выдаліць закладку</string>
     <string name="default_mode">Рэжым па змаўчанні</string>
@@ -330,7 +292,6 @@
 \nУся манга ў ім будзе страчана, і гэта нельга будзе адрабіць.</string>
     <string name="no_bookmarks_summary">Вы можаце стварыць закладку падчас чытання мангі</string>
     <string name="saved_manga">Захаваная манга</string>
-    <string name="enter_email_text">Каб працягнуць, увядзіце свой адрас электроннай пошты</string>
     <string name="theme_name_mamimi">Мамімі</string>
     <string name="scrobbling_empty_hint">Каб адсочваць ход чытання, выберыце Меню → Адсочваць на экране падрабязнасцей мангі.</string>
     <string name="server_error">Памылка сервера (%1$d). Калі ласка паспрабуйце зноў пазней</string>
@@ -343,7 +304,6 @@
     <string name="network_unavailable">Сетка недаступная</string>
     <string name="network_unavailable_hint">Каб чытаць мангу онлайн, уключыце Wi-Fi або мабільную сетку</string>
     <string name="webtoon_zoom">Webtoon зум</string>
-    <string name="webtoon_zoom_summary">Дазволіць жэст павелічэння/памяншэння маштабу ў рэжыме webtoon (бэта-версія)</string>
     <string name="theme_name_dynamic">Дынамічны</string>
     <string name="color_theme">Каляровая гама</string>
     <string name="language">Мова</string>
@@ -386,14 +346,12 @@
     <string name="theme_name_sakura">Сакура</string>
     <string name="no_chapters">Няма раздзелаў</string>
     <string name="automatic_scroll">Аўтаматычная пракрутка</string>
-    <string name="off_short">Выкл.</string>
     <string name="reader_info_pattern">Разд. %1$d/%2$d Стар. %3$d/%4$d</string>
     <string name="reader_info_bar">Паказаць інфармацыйную панэль у праграме чытання</string>
     <string name="comics_archive">Архіў коміксаў</string>
     <string name="folder_with_images">Тэчка з малюнкамі</string>
     <string name="importing_manga">Імпарт мангі</string>
     <string name="import_completed">Імпарт завершаны</string>
-    <string name="app_update_available_s">Даступна абнаўленне праграмы: %s</string>
     <string name="last_2_hours">Апошнія 2 гадзіны</string>
     <string name="no_bookmarks_yet">Закладак пакуль няма</string>
     <string name="bookmarks_removed">Закладкі выдалены</string>
@@ -402,7 +360,6 @@
     <string name="random">Выпадковы</string>
     <string name="reorder">Змяніць парадак</string>
     <string name="empty">Пуста</string>
-    <string name="changelog">Журнал змяненняў</string>
     <string name="explore">Дасьледуйце</string>
     <string name="confirm_exit">Націсніце \"Назад\" яшчэ раз, каб выйсці</string>
     <string name="exit_confirmation_summary">Двойчы націсніце \"Назад\", каб выйсці з праграмы</string>
@@ -412,10 +369,7 @@
     <string name="storage_usage">Выкарыстанне памяці</string>
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="removed_from_favourites">Выдалена з абраных</string>
-    <string name="removed_from_s">Выдалена з \"%s\"</string>
     <string name="options">Параметры</string>
-    <string name="downloading_manga">Спампоўка мангі</string>
-    <string name="seconds_pattern">%s с</string>
     <string name="user_agent">Загаловак UserAgent</string>
     <string name="allow_unstable_updates">Дазволіць нестабільныя абнаўленні</string>
     <string name="allow_unstable_updates_summary">Прапануйце абнаўленні да бэта-версій праграмы</string>
@@ -430,4 +384,32 @@
     <string name="show_on_shelf">Паказаць на паліцы</string>
     <string name="find_similar">Знайсці падобныя</string>
     <string name="sync_auth_hint">Вы можаце ўвайсці ў існуючы ўліковы запіс або стварыць новы</string>
+    <string name="sync_settings">Налады сінхранізацыі</string>
+    <string name="server_address">Адрас сервера</string>
+    <string name="mirror_switching">Выберыце люстэрка аўтаматычна</string>
+    <string name="mirror_switching_summary">Аўтаматычна пераключаць дамены для аддаленых крыніц у выпадку памылак, калі даступныя люстэркі</string>
+    <string name="ignore_ssl_errors">Ігнараваць памылкі SSL</string>
+    <string name="resume">Аднавіць</string>
+    <string name="paused">Прыпынена</string>
+    <string name="cancel_all">Адмяніць усё</string>
+    <string name="downloads_wifi_only">Спампаваць толькі праз Wi-Fi</string>
+    <string name="sync_host_description">Вы можаце выкарыстоўваць уласны сервер сінхранізацыі або сервер па змаўчанні. Не змяняйце гэта, калі вы не ўпэўненыя, што робіце.</string>
+    <string name="pause">Паўза</string>
+    <string name="remove_completed">Выдаліць завершаныя</string>
+    <string name="downloads_wifi_only_summary">Спыніць загрузку пры пераключэнні на мабільную сетку</string>
+    <string name="suggestions_notifications_summary">Часам паказваць апавяшчэнні з прапанаванай мангай</string>
+    <string name="more">Больш</string>
+    <string name="enable">Уключыць</string>
+    <string name="cancel_all_downloads_confirm">Усе актыўныя спампоўкі будуць адменены, часткова спампаваныя даныя будуць страчаны</string>
+    <string name="suggestions_enable_prompt">Хочаце атрымліваць персаналізаваныя прапановы мангі\?</string>
+    <string name="suggestion_manga">Прапанова: %s</string>
+    <string name="no_thanks">Не, дзякуй</string>
+    <string name="remove_completed_downloads_confirm">Ваша гісторыя спамповак будзе выдалена назаўсёды</string>
+    <string name="text_downloads_list_holder">У вас няма загрузак</string>
+    <string name="downloads_resumed">Спампоўкі аднавіліся</string>
+    <string name="downloads_paused">Спампоўкі прыпыненыя</string>
+    <string name="downloads_removed">Спампоўкі выдалены</string>
+    <string name="downloads_cancelled">Спампоўкі былі адменены</string>
+    <string name="translations">Пераклады</string>
+    <string name="web_view_unavailable">WebView недаступны: праверце, ці ўсталяваны пастаўшчык WebView</string>
 </resources>

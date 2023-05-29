@@ -7,8 +7,6 @@
     <string name="list_mode">وضع القائمة</string>
     <string name="settings">إعدادات</string>
     <string name="remote_sources">المصادر البعيدة</string>
-    <string name="close_menu">غلق قائمة</string>
-    <string name="open_menu">فتح قائمة</string>
     <string name="chapters">فصول</string>
     <string name="favourites">المفضلة</string>
     <string name="network_error">‌خطاء في الشبكة</string>
@@ -23,7 +21,6 @@
     <string name="clear_history">محو سجل</string>
     <string name="add_to_favourites">ضع هذا في المفضلة</string>
     <string name="add">أضف</string>
-    <string name="enter_category_name">أدخل اسم القائمة</string>
     <string name="save">حفظ</string>
     <string name="history_is_empty">لا سجل بعد</string>
     <string name="downloads">التحميلات</string>
@@ -54,16 +51,12 @@
     <string name="add_new_category">قائمة جديدة</string>
     <string name="download_complete">تم التنزيل</string>
     <string name="text_clear_history_prompt">هل تريد محو سجل القراءة بالكامل بشكل دائم؟</string>
-    <string name="_s_deleted_from_local_storage">حذفت من تخزين محلي</string>
-    <string name="_s_removed_from_history">\"%s\" تم ازالته من السجل</string>
-    <string name="wait_for_loading_finish">انتظر حتى ينتهي التحميل …</string>
     <string name="save_page">احفظ الصفحة</string>
     <string name="page_saved">حفظت</string>
     <string name="standard">اساسي</string>
     <string name="no_description">لا يوجد وصف</string>
     <string name="history_and_cache">التاريخ وذاكرة التخزين المؤقت</string>
     <string name="clear_pages_cache">مسح ذاكرة التخزين المؤقت للصفحة</string>
-    <string name="cache">ذاكرة التخزين المؤقت</string>
     <string name="webtoon">ويبتون</string>
     <string name="read_mode">وضع القراءة</string>
     <string name="search_on_s">بحث على %s</string>
@@ -80,10 +73,6 @@
     <string name="volume_buttons">أزرار الصوت</string>
     <string name="taps_on_edges">النقر على حواف الشاشة</string>
     <string name="_continue">يكمل</string>
-    <string name="network_consumption_warning">هذا يمكن أن يؤدي إلى ارتفاع استهلاك حركة المرور.</string>
-    <string name="dont_ask_again">لا تسأل مرة أخرى</string>
-    <string name="warning">تحذير</string>
-    <string name="cancelling_">إلغاء…</string>
     <string name="error">خطاء</string>
     <string name="clear_search_history">مسح تاريخ البحث</string>
 </resources>

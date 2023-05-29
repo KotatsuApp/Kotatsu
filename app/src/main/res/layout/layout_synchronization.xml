@@ -31,16 +31,16 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
-			android:text="mail@mail.com"
-			android:textAppearance="?textAppearanceBodyLarge" />
+			android:textAppearance="?textAppearanceBodyLarge"
+			tools:text="mail@mail.com" />
 
 		<TextView
 			android:id="@+id/last_checked"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
-			android:text="Last checked: 6:00 PM"
-			android:textAppearance="?textAppearanceBodySmall" />
+			android:textAppearance="?textAppearanceBodySmall"
+			tools:text="Last checked: 6:00 PM" />
 
 	</LinearLayout>
 
