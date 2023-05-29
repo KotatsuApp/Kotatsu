@@ -15,7 +15,7 @@ import java.util.EnumSet
 class DummyParser(context: MangaLoaderContext) : MangaParser(context, MangaSource.DUMMY) {
 
 	override val configKeyDomain: ConfigKey.Domain
-		get() = ConfigKey.Domain("localhost", null)
+		get() = ConfigKey.Domain("localhost")
 
 	override val sortOrders: Set<SortOrder>
 		get() = EnumSet.allOf(SortOrder::class.java)

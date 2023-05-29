@@ -19,10 +19,12 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 		val preference: Preference = when (key) {
 			is ConfigKey.Domain -> {
 				val presetValues = key.presetValues
-				if (presetValues.isNullOrEmpty()) {
+				if (presetValues.size <= 1) {
 					EditTextPreference(requireContext())
 				} else {
-					AutoCompleteTextViewPreference(requireContext()).apply { entries = presetValues }
+					AutoCompleteTextViewPreference(requireContext()).apply {
+						entries = presetValues.toStringArray()
+					}
 				}.apply {
 					summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
 					setOnBindEditTextListener(
@@ -63,4 +65,8 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 		preference.key = key.key
 		screen.addPreference(preference)
 	}
+}
+
+private fun Array<out String>.toStringArray(): Array<String> {
+	return Array(size) { i -> this[i] as? String ?: "" }
 }
