@@ -19,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
 
 private const val MIN_PASSWORD_LENGTH = 4
@@ -46,13 +47,13 @@ class ProtectSetupActivity :
 		viewBinding.switchBiometric.setOnCheckedChangeListener(this)
 
 		viewModel.isSecondStep.observe(this, this::onStepChanged)
-		viewModel.onPasswordSet.observe(this) {
+		viewModel.onPasswordSet.observeEvent(this) {
 			finishAfterTransition()
 		}
-		viewModel.onPasswordMismatch.observe(this) {
+		viewModel.onPasswordMismatch.observeEvent(this) {
 			viewBinding.editPassword.error = getString(R.string.passwords_mismatch)
 		}
-		viewModel.onClearText.observe(this) {
+		viewModel.onClearText.observeEvent(this) {
 			viewBinding.editPassword.text?.clear()
 		}
 	}

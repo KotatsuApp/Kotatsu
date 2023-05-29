@@ -8,7 +8,7 @@ class Event<T>(
 	private var isConsumed = false
 
 	suspend fun consume(collector: FlowCollector<T>) {
-		if (isConsumed) {
+		if (!isConsumed) {
 			collector.emit(data)
 			isConsumed = true
 		}

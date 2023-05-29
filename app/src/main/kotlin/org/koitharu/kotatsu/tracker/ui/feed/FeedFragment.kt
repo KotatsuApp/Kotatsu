@@ -79,7 +79,7 @@ class FeedFragment :
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
-		viewModel.onFeedCleared.observe(viewLifecycleOwner) {
+		viewModel.onFeedCleared.observeEvent(viewLifecycleOwner) {
 			onFeedCleared()
 		}
 		TrackWorker.observeIsRunning(binding.root.context.applicationContext)

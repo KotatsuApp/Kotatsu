@@ -106,7 +106,7 @@ dependencies {
 
 	implementation 'androidx.work:work-runtime-ktx:2.8.1'
 	//noinspection GradleDependency
-	implementation('com.google.guava:guava:31.1-android') {
+	implementation('com.google.guava:guava:32.0.0-android') {
 		exclude group: 'com.google.guava', module: 'failureaccess'
 		exclude group: 'org.checkerframework', module: 'checker-qual'
 		exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
@@ -116,8 +116,8 @@ dependencies {
 	implementation 'androidx.room:room-ktx:2.5.1'
 	kapt 'androidx.room:room-compiler:2.5.1'
 
-	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
+	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.11.0'
 	implementation 'com.squareup.okio:okio:3.3.0'
 
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
@@ -128,8 +128,8 @@ dependencies {
 	implementation 'androidx.hilt:hilt-work:1.0.0'
 	kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
-	implementation 'io.coil-kt:coil-base:2.3.0'
-	implementation 'io.coil-kt:coil-svg:2.3.0'
+	implementation 'io.coil-kt:coil-base:2.4.0'
+	implementation 'io.coil-kt:coil-svg:2.4.0'
 	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:1b19231b2f'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'

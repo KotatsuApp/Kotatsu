@@ -101,7 +101,7 @@ class RemoteMangaRepository(
 	}
 
 	fun getAvailableMirrors(): List<String> {
-		return parser.configKeyDomain.presetValues?.toList().orEmpty()
+		return parser.configKeyDomain.presetValues.toList()
 	}
 
 	private fun getConfig() = parser.config as SourceSettings

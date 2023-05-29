@@ -18,9 +18,7 @@ sealed interface ExploreItem : ListModel {
 
 			other as Buttons
 
-			if (isSuggestionsEnabled != other.isSuggestionsEnabled) return false
-
-			return true
+			return isSuggestionsEnabled == other.isSuggestionsEnabled
 		}
 
 		override fun hashCode(): Int {
@@ -40,9 +38,7 @@ sealed interface ExploreItem : ListModel {
 			other as Header
 
 			if (titleResId != other.titleResId) return false
-			if (isButtonVisible != other.isButtonVisible) return false
-
-			return true
+			return isButtonVisible == other.isButtonVisible
 		}
 
 		override fun hashCode(): Int {
@@ -64,9 +60,7 @@ sealed interface ExploreItem : ListModel {
 			other as Source
 
 			if (source != other.source) return false
-			if (isGrid != other.isGrid) return false
-
-			return true
+			return isGrid == other.isGrid
 		}
 
 		override fun hashCode(): Int {
@@ -76,7 +70,6 @@ sealed interface ExploreItem : ListModel {
 		}
 	}
 
-	@Deprecated("")
 	class EmptyHint(
 		@DrawableRes icon: Int,
 		@StringRes textPrimary: Int,

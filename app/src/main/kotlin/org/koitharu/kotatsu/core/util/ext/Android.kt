@@ -23,6 +23,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.IntentCompat
+import androidx.core.content.PackageManagerCompat
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
