@@ -18,6 +18,10 @@ import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.getDisplaySize
 import com.google.android.material.R as materialR
 
+@Deprecated(
+	"Use BaseAdaptiveSheet",
+	replaceWith = ReplaceWith("BaseAdaptiveSheet<B>", "org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet"),
+)
 abstract class BaseBottomSheet<B : ViewBinding> : BottomSheetDialogFragment() {
 
 	var viewBinding: B? = null

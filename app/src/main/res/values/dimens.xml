@@ -68,4 +68,5 @@
 	<dimen name="fastscroll_scrollbar_padding_start">6dp</dimen>
 	<dimen name="fastscroll_scrollbar_padding_end">6dp</dimen>
 
+	<dimen name="m3_side_sheet_width">400dp</dimen>
 </resources>

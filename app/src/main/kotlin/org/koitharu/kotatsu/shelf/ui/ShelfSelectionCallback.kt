@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.flattenTo
@@ -63,7 +63,7 @@ class ShelfSelectionCallback(
 			}
 
 			R.id.action_favourite -> {
-				FavouriteCategoriesBottomSheet.show(fragmentManager, collectSelectedItems(controller))
+				FavouriteCategoriesSheet.show(fragmentManager, collectSelectedItems(controller))
 				mode.finish()
 				true
 			}

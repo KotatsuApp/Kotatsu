@@ -52,7 +52,7 @@ import org.koitharu.kotatsu.core.util.ext.zipWithPrevious
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.reader.ui.config.ReaderConfigBottomSheet
+import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
@@ -64,10 +64,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ReaderActivity :
 	BaseFullscreenActivity<ActivityReaderBinding>(),
-	ChaptersBottomSheet.OnChapterChangeListener,
+	ChaptersSheet.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener,
 	OnPageSelectListener,
-	ReaderConfigBottomSheet.Callback,
+	ReaderConfigSheet.Callback,
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener,
 	IdlingDetector.Callback {
@@ -179,7 +179,7 @@ class ReaderActivity :
 			}
 
 			R.id.action_chapters -> {
-				ChaptersBottomSheet.show(
+				ChaptersSheet.show(
 					supportFragmentManager,
 					viewModel.manga?.chapters.orEmpty(),
 					viewModel.getCurrentState()?.chapterId ?: 0L,
@@ -207,7 +207,7 @@ class ReaderActivity :
 			R.id.action_options -> {
 				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 				val currentMode = readerManager.currentMode ?: return false
-				ReaderConfigBottomSheet.show(supportFragmentManager, currentMode)
+				ReaderConfigSheet.show(supportFragmentManager, currentMode)
 			}
 
 			else -> return super.onOptionsItemSelected(item)

@@ -11,7 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
 import org.koitharu.kotatsu.databinding.DialogListModeBinding
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ListModeBottomSheet :
-	BaseBottomSheet<DialogListModeBinding>(),
+	BaseAdaptiveSheet<DialogListModeBinding>(),
 	Slider.OnChangeListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener {
 

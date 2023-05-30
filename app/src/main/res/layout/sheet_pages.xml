@@ -7,7 +7,7 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
 		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" />
@@ -22,11 +22,13 @@
 			android:layout_height="wrap_content"
 			android:clipToPadding="false"
 			android:padding="@dimen/grid_spacing"
+			android:scrollIndicators="top"
 			app:bubbleSize="small"
 			app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
 			app:spanCount="3"
 			app:trackColor="?attr/colorOutline"
-			tools:listitem="@layout/item_page_thumb" />
+			tools:listitem="@layout/item_page_thumb"
+			tools:targetApi="m" />
 
 	</FrameLayout>
 

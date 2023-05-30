@@ -17,7 +17,7 @@ import androidx.fragment.app.activityViewModels
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
@@ -30,12 +30,12 @@ import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
-import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorBottomSheet
+import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ScrobblingInfoBottomSheet :
-	BaseBottomSheet<SheetScrobblingBinding>(),
+class ScrobblingInfoSheet :
+	BaseAdaptiveSheet<SheetScrobblingBinding>(),
 	AdapterView.OnItemSelectedListener,
 	RatingBar.OnRatingBarChangeListener,
 	View.OnClickListener,
@@ -74,7 +74,7 @@ class ScrobblingInfoBottomSheet :
 
 		menu = PopupMenu(binding.root.context, binding.buttonMenu).apply {
 			inflate(R.menu.opt_scrobbling)
-			setOnMenuItemClickListener(this@ScrobblingInfoBottomSheet)
+			setOnMenuItemClickListener(this@ScrobblingInfoSheet)
 		}
 	}
 
@@ -152,7 +152,7 @@ class ScrobblingInfoBottomSheet :
 			R.id.action_edit -> {
 				val manga = viewModel.manga.value ?: return false
 				val scrobblerService = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.scrobbler
-				ScrobblingSelectorBottomSheet.show(parentFragmentManager, manga, scrobblerService)
+				ScrobblingSelectorSheet.show(parentFragmentManager, manga, scrobblerService)
 				dismiss()
 			}
 		}
@@ -164,7 +164,7 @@ class ScrobblingInfoBottomSheet :
 		private const val TAG = "ScrobblingInfoBottomSheet"
 		private const val ARG_INDEX = "index"
 
-		fun show(fm: FragmentManager, index: Int) = ScrobblingInfoBottomSheet().withArgs(1) {
+		fun show(fm: FragmentManager, index: Int) = ScrobblingInfoSheet().withArgs(1) {
 			putInt(ARG_INDEX, index)
 		}.show(fm, TAG)
 	}

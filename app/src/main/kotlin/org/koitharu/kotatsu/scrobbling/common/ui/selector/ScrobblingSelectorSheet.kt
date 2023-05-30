@@ -16,9 +16,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaIntent
-import org.koitharu.kotatsu.core.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
+import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.util.CollapseActionViewCallback
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -35,8 +35,8 @@ import org.koitharu.kotatsu.scrobbling.common.ui.selector.adapter.ScrobblerSelec
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ScrobblingSelectorBottomSheet :
-	BaseBottomSheet<SheetScrobblingSelectorBinding>(),
+class ScrobblingSelectorSheet :
+	BaseAdaptiveSheet<SheetScrobblingSelectorBinding>(),
 	OnListItemClickListener<ScrobblerManga>,
 	PaginationScrollListener.Callback,
 	View.OnClickListener,
@@ -63,7 +63,7 @@ class ScrobblingSelectorBottomSheet :
 		with(binding.recyclerView) {
 			adapter = listAdapter
 			addItemDecoration(decoration)
-			addOnScrollListener(PaginationScrollListener(4, this@ScrobblingSelectorBottomSheet))
+			addOnScrollListener(PaginationScrollListener(4, this@ScrobblingSelectorSheet))
 		}
 		binding.buttonDone.setOnClickListener(this)
 		initOptionsMenu()
@@ -209,7 +209,7 @@ class ScrobblingSelectorBottomSheet :
 		private const val ARG_SCROBBLER = "scrobbler"
 
 		fun show(fm: FragmentManager, manga: Manga, scrobblerService: ScrobblerService?) =
-			ScrobblingSelectorBottomSheet().withArgs(2) {
+			ScrobblingSelectorSheet().withArgs(2) {
 				putParcelable(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = false))
 				if (scrobblerService != null) {
 					putInt(ARG_SCROBBLER, scrobblerService.id)

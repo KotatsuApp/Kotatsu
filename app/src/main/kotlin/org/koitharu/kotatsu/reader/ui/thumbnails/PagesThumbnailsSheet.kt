@@ -14,12 +14,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.ui.list.BoundsScrollListener
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.ScrollListenerInvalidationObserver
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
+import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior
+import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
+import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
@@ -31,14 +32,13 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.TargetScrollObserver
-import org.koitharu.kotatsu.util.LoggingAdapterDataObserver
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class PagesThumbnailsSheet :
-	BaseBottomSheet<SheetPagesBinding>(),
-	OnListItemClickListener<PageThumbnail>,
-	BottomSheetHeaderBar.OnExpansionChangeListener {
+	BaseAdaptiveSheet<SheetPagesBinding>(),
+	AdaptiveSheetCallback,
+	OnListItemClickListener<PageThumbnail> {
 
 	private val viewModel by viewModels<PagesThumbnailsViewModel>()
 
@@ -64,11 +64,6 @@ class PagesThumbnailsSheet :
 	override fun onViewBindingCreated(binding: SheetPagesBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		spanResolver = MangaListSpanResolver(binding.root.resources)
-		with(binding.headerBar) {
-			title = viewModel.title
-			subtitle = null
-			addOnExpansionChangeListener(this@PagesThumbnailsSheet)
-		}
 		thumbnailsAdapter = PageThumbnailAdapter(
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
@@ -87,14 +82,11 @@ class PagesThumbnailsSheet :
 				ScrollListenerInvalidationObserver(this, checkNotNull(scrollListener)),
 			)
 			thumbnailsAdapter?.registerAdapterDataObserver(TargetScrollObserver(this))
-			thumbnailsAdapter?.registerAdapterDataObserver(LoggingAdapterDataObserver("THUMB"))
 		}
 		viewModel.thumbnails.observe(viewLifecycleOwner) {
 			thumbnailsAdapter?.setItems(it, listCommitCallback)
 		}
-		viewModel.branch.observe(viewLifecycleOwner) {
-			onExpansionStateChanged(binding.headerBar, binding.headerBar.isExpanded)
-		}
+		viewModel.branch.observe(viewLifecycleOwner, ::updateTitle)
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 	}
 
@@ -118,13 +110,17 @@ class PagesThumbnailsSheet :
 		dismiss()
 	}
 
-	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
-		if (isExpanded) {
-			headerBar.subtitle = viewModel.branch.value
+	override fun onStateChanged(sheet: View, newState: Int) {
+		viewBinding?.recyclerView?.isFastScrollerEnabled = newState == AdaptiveSheetBehavior.STATE_EXPANDED
+	}
+
+	private fun updateTitle(branch: String?) {
+		val mangaName = viewModel.manga.title
+		viewBinding?.headerBar?.title = if (branch != null) {
+			getString(R.string.manga_branch_title_template, mangaName, branch)
 		} else {
-			headerBar.subtitle = null
+			mangaName
 		}
-		viewBinding?.recyclerView?.isFastScrollerEnabled = isExpanded
 	}
 
 	private inner class ScrollListener : BoundsScrollListener(3, 3) {

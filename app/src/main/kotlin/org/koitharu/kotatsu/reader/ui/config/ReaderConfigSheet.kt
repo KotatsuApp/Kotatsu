@@ -23,7 +23,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
-import org.koitharu.kotatsu.core.ui.BaseBottomSheet
+import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ScreenOrientationHelper
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
@@ -36,8 +36,8 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ReaderConfigBottomSheet :
-	BaseBottomSheet<SheetReaderConfigBinding>(),
+class ReaderConfigSheet :
+	BaseAdaptiveSheet<SheetReaderConfigBinding>(),
 	ActivityResultCallback<Uri?>,
 	View.OnClickListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener,
@@ -59,11 +59,17 @@ class ReaderConfigBottomSheet :
 			?: ReaderMode.STANDARD
 	}
 
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetReaderConfigBinding {
+	override fun onCreateViewBinding(
+		inflater: LayoutInflater,
+		container: ViewGroup?,
+	): SheetReaderConfigBinding {
 		return SheetReaderConfigBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewBindingCreated(binding: SheetReaderConfigBinding, savedInstanceState: Bundle?) {
+	override fun onViewBindingCreated(
+		binding: SheetReaderConfigBinding,
+		savedInstanceState: Bundle?,
+	) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		observeScreenOrientation()
 		binding.buttonStandard.isChecked = mode == ReaderMode.STANDARD
@@ -127,7 +133,11 @@ class ReaderConfigBottomSheet :
 		}
 	}
 
-	override fun onButtonChecked(group: MaterialButtonToggleGroup?, checkedId: Int, isChecked: Boolean) {
+	override fun onButtonChecked(
+		group: MaterialButtonToggleGroup?,
+		checkedId: Int,
+		isChecked: Boolean,
+	) {
 		if (!isChecked) {
 			return
 		}
@@ -180,7 +190,7 @@ class ReaderConfigBottomSheet :
 		private const val TAG = "ReaderConfigBottomSheet"
 		private const val ARG_MODE = "mode"
 
-		fun show(fm: FragmentManager, mode: ReaderMode) = ReaderConfigBottomSheet().withArgs(1) {
+		fun show(fm: FragmentManager, mode: ReaderMode) = ReaderConfigSheet().withArgs(1) {
 			putInt(ARG_MODE, mode.id)
 		}.show(fm, TAG)
 	}

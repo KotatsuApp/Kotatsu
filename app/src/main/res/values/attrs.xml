@@ -93,6 +93,10 @@
 		<attr name="fitStatusBar" format="boolean" />
 	</declare-styleable>
 
+	<declare-styleable name="AdaptiveSheetHeaderBar">
+		<attr name="title" />
+	</declare-styleable>
+
 	<declare-styleable name="ShapeView">
 		<attr name="strokeWidth" />
 		<attr name="strokeColor" />

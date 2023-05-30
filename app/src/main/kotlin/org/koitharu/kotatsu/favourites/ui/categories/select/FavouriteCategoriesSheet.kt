@@ -2,34 +2,29 @@ package org.koitharu.kotatsu.favourites.ui.categories.select
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetFavoriteCategoriesBinding
-import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 
 @AndroidEntryPoint
-class FavouriteCategoriesBottomSheet :
-	BaseBottomSheet<SheetFavoriteCategoriesBinding>(),
-	OnListItemClickListener<MangaCategoryItem>,
-	View.OnClickListener,
-	Toolbar.OnMenuItemClickListener {
+class FavouriteCategoriesSheet :
+	BaseAdaptiveSheet<SheetFavoriteCategoriesBinding>(),
+	OnListItemClickListener<MangaCategoryItem> {
 
 	private val viewModel: MangaCategoriesViewModel by viewModels()
 
@@ -40,13 +35,13 @@ class FavouriteCategoriesBottomSheet :
 		container: ViewGroup?,
 	) = SheetFavoriteCategoriesBinding.inflate(inflater, container, false)
 
-	override fun onViewBindingCreated(binding: SheetFavoriteCategoriesBinding, savedInstanceState: Bundle?) {
+	override fun onViewBindingCreated(
+		binding: SheetFavoriteCategoriesBinding,
+		savedInstanceState: Bundle?,
+	) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		adapter = MangaCategoriesAdapter(this)
 		binding.recyclerViewCategories.adapter = adapter
-		binding.buttonDone.setOnClickListener(this)
-		binding.headerBar.toolbar.setOnMenuItemClickListener(this)
-
 		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
 		viewModel.onError.observeEvent(viewLifecycleOwner, ::onError)
 	}
@@ -56,25 +51,11 @@ class FavouriteCategoriesBottomSheet :
 		super.onDestroyView()
 	}
 
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_done -> dismiss()
-		}
-	}
-
-	override fun onMenuItemClick(item: MenuItem): Boolean {
-		when (item.itemId) {
-			R.id.action_create -> startActivity(FavouritesCategoryEditActivity.newIntent(requireContext()))
-			else -> return false
-		}
-		return true
-	}
-
 	override fun onItemClick(item: MangaCategoryItem, view: View) {
 		viewModel.setChecked(item.id, !item.isChecked)
 	}
 
-	private fun onContentChanged(categories: List<MangaCategoryItem>) {
+	private fun onContentChanged(categories: List<ListModel>) {
 		adapter?.items = categories
 	}
 
@@ -89,11 +70,17 @@ class FavouriteCategoriesBottomSheet :
 
 		fun show(fm: FragmentManager, manga: Manga) = Companion.show(fm, listOf(manga))
 
-		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavouriteCategoriesBottomSheet().withArgs(1) {
-			putParcelableArrayList(
-				KEY_MANGA_LIST,
-				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withChapters = false) },
-			)
-		}.show(fm, TAG)
+		fun show(fm: FragmentManager, manga: Collection<Manga>) =
+			FavouriteCategoriesSheet().withArgs(1) {
+				putParcelableArrayList(
+					KEY_MANGA_LIST,
+					manga.mapTo(ArrayList(manga.size)) {
+						ParcelableManga(
+							it,
+							withChapters = false,
+						)
+					},
+				)
+			}.show(fm, TAG)
 	}
 }

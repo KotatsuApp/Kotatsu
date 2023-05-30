@@ -9,8 +9,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaChapters
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.ui.BaseBottomSheet
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.getParcelableCompat
 import org.koitharu.kotatsu.core.util.ext.withArgs
@@ -23,7 +23,7 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemClickListener<ChapterListItem> {
+class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(), OnListItemClickListener<ChapterListItem> {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -83,7 +83,7 @@ class ChaptersBottomSheet : BaseBottomSheet<SheetChaptersBinding>(), OnListItemC
 			fm: FragmentManager,
 			chapters: List<MangaChapter>,
 			currentId: Long,
-		) = ChaptersBottomSheet().withArgs(2) {
+		) = ChaptersSheet().withArgs(2) {
 			putParcelable(ARG_CHAPTERS, ParcelableMangaChapters(chapters))
 			putLong(ARG_CURRENT_ID, currentId)
 		}.show(fm, TAG)

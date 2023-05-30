@@ -42,7 +42,6 @@ class PagesThumbnailsViewModel @Inject constructor(
 
 	val thumbnails = MutableStateFlow<List<ListModel>>(emptyList())
 	val branch = MutableStateFlow<String?>(null)
-	val title = manga.title
 
 	init {
 		loadingJob = launchJob(Dispatchers.Default) {
