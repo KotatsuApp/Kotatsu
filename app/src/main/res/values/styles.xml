@@ -76,6 +76,14 @@
 		<item name="android:textSize">18sp</item>
 	</style>
 
+	<style name="Widget.Kotatsu.CircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
+		<item name="trackCornerRadius">@dimen/mtrl_progress_indicator_full_rounded_corner_radius</item>
+	</style>
+
+	<style name="Widget.Kotatsu.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
+		<item name="trackCornerRadius">@dimen/mtrl_progress_indicator_full_rounded_corner_radius</item>
+	</style>
+
 	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
 		<item name="chipSurfaceColor">?attr/colorSurface</item>
 		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>

@@ -124,6 +124,7 @@ class PagesThumbnailsSheet :
 		} else {
 			headerBar.subtitle = null
 		}
+		viewBinding?.recyclerView?.isFastScrollerEnabled = isExpanded
 	}
 
 	private inner class ScrollListener : BoundsScrollListener(3, 3) {

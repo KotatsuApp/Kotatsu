@@ -366,6 +366,7 @@ class ReaderViewModel @Inject constructor(
 		val chapter = state?.chapterId?.let { chaptersLoader.peekChapter(it) }
 		val newState = ReaderUiState(
 			mangaName = manga?.any?.title,
+			branch = chapter?.branch,
 			chapterName = chapter?.name,
 			chapterNumber = chapter?.number ?: 0,
 			chaptersTotal = manga?.any?.getChapters(chapter?.branch)?.size ?: 0,

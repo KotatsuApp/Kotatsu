@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.annotation.AttrRes
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
 
@@ -14,6 +15,12 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
 	val fastScroller = FastScroller(context, attrs)
+
+	var isFastScrollerEnabled: Boolean = true
+		set(value) {
+			field = value
+			fastScroller.isVisible = value && isVisible
+		}
 
 	init {
 		fastScroller.id = R.id.fast_scroller
@@ -30,7 +37,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 
 	override fun setVisibility(visibility: Int) {
 		super.setVisibility(visibility)
-		fastScroller.visibility = visibility
+		fastScroller.visibility = if (isFastScrollerEnabled) visibility else GONE
 	}
 
 	override fun onAttachedToWindow() {

@@ -41,7 +41,8 @@ class ReaderConfigBottomSheet :
 	ActivityResultCallback<Uri?>,
 	View.OnClickListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener,
-	Slider.OnChangeListener, CompoundButton.OnCheckedChangeListener {
+	Slider.OnChangeListener,
+	CompoundButton.OnCheckedChangeListener {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
 	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)

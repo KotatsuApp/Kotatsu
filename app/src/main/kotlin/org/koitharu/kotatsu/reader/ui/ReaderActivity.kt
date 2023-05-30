@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
@@ -21,6 +22,7 @@ import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -333,11 +335,11 @@ class ReaderActivity :
 			right = systemBars.right,
 			left = systemBars.left,
 		)
-		viewBinding.appbarBottom?.updatePadding(
-			bottom = systemBars.bottom,
-			right = systemBars.right,
-			left = systemBars.left,
-		)
+		viewBinding.appbarBottom?.updateLayoutParams<MarginLayoutParams> {
+			bottomMargin = systemBars.bottom + topMargin
+			rightMargin = systemBars.right + topMargin
+			leftMargin = systemBars.left + topMargin
+		}
 		return WindowInsetsCompat.Builder(insets)
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
 			.build()
@@ -373,19 +375,15 @@ class ReaderActivity :
 	}
 
 	private fun onUiStateChanged(pair: Pair<ReaderUiState?, ReaderUiState?>) {
-		val (uiState: ReaderUiState?, previous: ReaderUiState?) = pair
-		title = uiState?.chapterName ?: uiState?.mangaName ?: getString(R.string.loading_)
+		val (previous: ReaderUiState?, uiState: ReaderUiState?) = pair
+		title = uiState?.resolveTitle(this) ?: getString(R.string.loading_)
 		viewBinding.infoBar.update(uiState)
 		if (uiState == null) {
 			supportActionBar?.subtitle = null
 			viewBinding.slider.isVisible = false
 			return
 		}
-		supportActionBar?.subtitle = if (uiState.chapterNumber in 1..uiState.chaptersTotal) {
-			getString(R.string.chapter_d_of_d, uiState.chapterNumber, uiState.chaptersTotal)
-		} else {
-			null
-		}
+		supportActionBar?.subtitle = uiState.chapterName
 		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
 			if (!uiState.chapterName.isNullOrEmpty()) {
 				viewBinding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)

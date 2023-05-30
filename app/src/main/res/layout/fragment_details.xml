@@ -218,6 +218,7 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:showAnimationBehavior="inward"
+			app:trackCornerRadius="0dp"
 			tools:visibility="visible" />
 
 		<androidx.constraintlayout.widget.Group

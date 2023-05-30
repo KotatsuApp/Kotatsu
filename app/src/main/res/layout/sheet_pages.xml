@@ -12,16 +12,22 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" />
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/recyclerView"
+	<FrameLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:clipToPadding="false"
-		android:padding="@dimen/grid_spacing"
-		android:scrollbarStyle="outsideOverlay"
-		android:scrollbars="vertical"
-		app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-		app:spanCount="3"
-		tools:listitem="@layout/item_page_thumb" />
+		android:layout_height="match_parent">
+
+		<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
+			android:id="@+id/recyclerView"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:clipToPadding="false"
+			android:padding="@dimen/grid_spacing"
+			app:bubbleSize="small"
+			app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+			app:spanCount="3"
+			app:trackColor="?attr/colorOutline"
+			tools:listitem="@layout/item_page_thumb" />
+
+	</FrameLayout>
 
 </LinearLayout>

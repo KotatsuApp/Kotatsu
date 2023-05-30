@@ -24,6 +24,7 @@ abstract class BaseFullscreenActivity<B : ViewBinding> :
 					WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
 			}
 		}
+		insetsControllerCompat.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 		showSystemUI()
 	}
 
