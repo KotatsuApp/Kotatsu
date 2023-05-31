@@ -7,18 +7,28 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
 		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		app:title="@string/filter" />
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/recyclerView"
+	<FrameLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:clipToPadding="false"
-		android:orientation="vertical"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		tools:listitem="@layout/item_checkable_new" />
+		android:layout_height="match_parent">
+
+		<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
+			android:id="@+id/recyclerView"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:clipToPadding="false"
+			android:orientation="vertical"
+			android:scrollIndicators="top"
+			app:bubbleSize="normal"
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+			app:scrollerOffset="6dp"
+			app:trackColor="?attr/colorOutline"
+			tools:ignore="UnusedAttribute"
+			tools:listitem="@layout/item_checkable_new" />
+	</FrameLayout>
 </LinearLayout>

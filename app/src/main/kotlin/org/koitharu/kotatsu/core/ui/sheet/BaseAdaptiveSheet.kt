@@ -20,6 +20,7 @@ import com.google.android.material.R as materialR
 abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 
 	private var waitingForDismissAllowingStateLoss = false
+	private var isFitToContentsDisabled = false
 
 	var viewBinding: B? = null
 		private set
@@ -87,13 +88,26 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 			b.state = BottomSheetBehavior.STATE_EXPANDED
 		}
 		if (b is AdaptiveSheetBehavior.Bottom) {
-			b.isFitToContents = !isExpanded
+			b.isFitToContents = !isFitToContentsDisabled && !isExpanded
 			val rootView = dialog?.findViewById<View>(materialR.id.design_bottom_sheet)
 			rootView?.updateLayoutParams {
-				height = if (isExpanded) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
+				height = if (isFitToContentsDisabled || isExpanded) {
+					LayoutParams.MATCH_PARENT
+				} else {
+					LayoutParams.WRAP_CONTENT
+				}
 			}
 		}
 		b.isDraggable = !isLocked
+	}
+
+	protected fun disableFitToContents() {
+		isFitToContentsDisabled = true
+		val b = behavior as? AdaptiveSheetBehavior.Bottom ?: return
+		b.isFitToContents = false
+		dialog?.findViewById<View>(materialR.id.design_bottom_sheet)?.updateLayoutParams {
+			height = LayoutParams.MATCH_PARENT
+		}
 	}
 
 	fun requireViewBinding(): B = checkNotNull(viewBinding) {

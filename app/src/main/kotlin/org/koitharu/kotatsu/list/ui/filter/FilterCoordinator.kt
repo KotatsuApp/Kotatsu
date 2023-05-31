@@ -18,6 +18,10 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -39,8 +43,8 @@ class FilterCoordinator(
 	}
 	private var availableTagsDeferred = loadTagsAsync()
 
-	val items: StateFlow<List<FilterItem>> = getItemsFlow()
-		.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(FilterItem.Loading))
+	val items: StateFlow<List<ListModel>> = getItemsFlow()
+		.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	init {
 		observeState()
@@ -115,19 +119,19 @@ class FilterCoordinator(
 		allTags: TagsWrapper,
 		state: FilterState,
 		query: String,
-	): List<FilterItem> {
+	): List<ListModel> {
 		val sortOrders = repository.sortOrders.sortedBy { it.ordinal }
 		val tags = mergeTags(state.tags, allTags.tags).toList()
-		val list = ArrayList<FilterItem>(tags.size + sortOrders.size + 3)
+		val list = ArrayList<ListModel>(tags.size + sortOrders.size + 3)
 		if (query.isEmpty()) {
 			if (sortOrders.isNotEmpty()) {
-				list.add(FilterItem.Header(R.string.sort_order, 0))
+				list.add(ListHeader(R.string.sort_order, 0, null))
 				sortOrders.mapTo(list) {
 					FilterItem.Sort(it, isSelected = it == state.sortOrder)
 				}
 			}
 			if (allTags.isLoading || allTags.isError || tags.isNotEmpty()) {
-				list.add(FilterItem.Header(R.string.genres, state.tags.size))
+				list.add(ListHeader(R.string.genres, 0, null))
 				tags.mapTo(list) {
 					FilterItem.Tag(it, isChecked = it in state.tags)
 				}
@@ -135,7 +139,7 @@ class FilterCoordinator(
 			if (allTags.isError) {
 				list.add(FilterItem.Error(R.string.filter_load_error))
 			} else if (allTags.isLoading) {
-				list.add(FilterItem.Loading)
+				list.add(LoadingFooter())
 			}
 		} else {
 			tags.mapNotNullTo(list) {

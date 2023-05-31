@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.list.ui.filter.FilterBottomSheet
+import org.koitharu.kotatsu.list.ui.filter.FilterSheetFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.SearchActivity
@@ -42,7 +42,7 @@ class RemoteListFragment : MangaListFragment() {
 	}
 
 	override fun onFilterClick(view: View?) {
-		FilterBottomSheet.show(childFragmentManager)
+		FilterSheetFragment.show(childFragmentManager)
 	}
 
 	override fun onEmptyActionClick() {

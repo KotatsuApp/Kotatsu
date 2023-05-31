@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import coil.ImageLoader
@@ -58,6 +57,7 @@ class ScrobblingSelectorSheet :
 
 	override fun onViewBindingCreated(binding: SheetScrobblingSelectorBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
+		disableFitToContents()
 		val listAdapter = ScrobblerSelectorAdapter(viewLifecycleOwner, coil, this, this)
 		val decoration = ScrobblerMangaSelectionDecoration(binding.root.context)
 		with(binding.recyclerView) {
@@ -84,9 +84,7 @@ class ScrobblingSelectorSheet :
 				tab.select()
 			}
 		}
-		viewModel.searchQuery.observe(viewLifecycleOwner) {
-			binding.headerBar.subtitle = it
-		}
+		viewModel.searchQuery.observe(viewLifecycleOwner, ::onSearchQueryChanged)
 	}
 
 	override fun onDestroyView() {
@@ -135,7 +133,7 @@ class ScrobblingSelectorSheet :
 			return false
 		}
 		viewModel.search(query)
-		requireViewBinding().headerBar.menu.findItem(R.id.action_search)?.collapseActionView()
+		requireViewBinding().toolbar.menu.findItem(R.id.action_search)?.collapseActionView()
 		return true
 	}
 
@@ -155,8 +153,12 @@ class ScrobblingSelectorSheet :
 	}
 
 	private fun openSearch() {
-		val menuItem = requireViewBinding().headerBar.menu.findItem(R.id.action_search) ?: return
+		val menuItem = requireViewBinding().toolbar.menu.findItem(R.id.action_search) ?: return
 		menuItem.expandActionView()
+	}
+
+	private fun onSearchQueryChanged(query: String?) {
+
 	}
 
 	private fun onError(e: Throwable) {
@@ -167,8 +169,8 @@ class ScrobblingSelectorSheet :
 	}
 
 	private fun initOptionsMenu() {
-		requireViewBinding().headerBar.inflateMenu(R.menu.opt_shiki_selector)
-		val searchMenuItem = requireViewBinding().headerBar.menu.findItem(R.id.action_search)
+		requireViewBinding().toolbar.inflateMenu(R.menu.opt_shiki_selector)
+		val searchMenuItem = requireViewBinding().toolbar.menu.findItem(R.id.action_search)
 		searchMenuItem.setOnActionExpandListener(this)
 		val searchView = searchMenuItem.actionView as SearchView
 		searchView.setOnQueryTextListener(this)
@@ -182,10 +184,6 @@ class ScrobblingSelectorSheet :
 	private fun initTabs() {
 		val entries = viewModel.availableScrobblers
 		val tabs = requireViewBinding().tabs
-		if (entries.size <= 1) {
-			tabs.isVisible = false
-			return
-		}
 		val selectedId = arguments?.getInt(ARG_SCROBBLER, -1) ?: -1
 		tabs.removeAllTabs()
 		tabs.clearOnTabSelectedListeners()
@@ -200,7 +198,6 @@ class ScrobblingSelectorSheet :
 				tab.select()
 			}
 		}
-		tabs.isVisible = true
 	}
 
 	companion object {

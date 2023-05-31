@@ -34,6 +34,7 @@ import org.koitharu.kotatsu.list.ui.filter.FilterState
 import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader2
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
@@ -68,7 +69,7 @@ class RemoteListViewModel @Inject constructor(
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private var loadingJob: Job? = null
 
-	val filterItems: StateFlow<List<FilterItem>>
+	val filterItems: StateFlow<List<ListModel>>
 		get() = filter.items
 
 	override val content = combine(

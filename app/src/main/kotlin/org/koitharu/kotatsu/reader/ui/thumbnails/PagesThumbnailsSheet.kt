@@ -63,6 +63,7 @@ class PagesThumbnailsSheet :
 
 	override fun onViewBindingCreated(binding: SheetPagesBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
+		addSheetCallback(this)
 		spanResolver = MangaListSpanResolver(binding.root.resources)
 		thumbnailsAdapter = PageThumbnailAdapter(
 			coil = coil,

@@ -81,6 +81,7 @@
 		<attr name="thumbColor" format="color" />
 		<attr name="trackColor" format="color" />
 		<attr name="bubbleTextSize" format="dimension" />
+		<attr name="scrollerOffset" format="dimension" />
 		<attr name="bubbleSize" format="enum">
 			<enum name="normal" value="0" />
 			<enum name="small" value="1" />

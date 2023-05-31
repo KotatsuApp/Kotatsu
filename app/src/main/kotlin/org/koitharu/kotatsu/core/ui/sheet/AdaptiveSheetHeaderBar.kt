@@ -4,14 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowInsets
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.StringRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.withStyledAttributes
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import org.koitharu.kotatsu.R
@@ -28,17 +25,17 @@ class AdaptiveSheetHeaderBar @JvmOverloads constructor(
 	private var sheetBehavior: AdaptiveSheetBehavior? = null
 
 	var title: CharSequence?
-		get() = binding.textViewTitle.text
+		get() = binding.shTextViewTitle.text
 		set(value) {
-			binding.textViewTitle.text = value
+			binding.shTextViewTitle.text = value
 		}
 
-	val isExpanded: Boolean
-		get() = binding.dragHandle.isGone
+	val isTitleVisible: Boolean
+		get() = binding.shLayoutSidesheet.isVisible
 
 	init {
 		orientation = VERTICAL
-		binding.buttonClose.setOnClickListener { dismissSheet() }
+		binding.shButtonClose.setOnClickListener { dismissSheet() }
 		context.withStyledAttributes(
 			attrs,
 			R.styleable.AdaptiveSheetHeaderBar, defStyleAttr,
@@ -49,8 +46,13 @@ class AdaptiveSheetHeaderBar @JvmOverloads constructor(
 
 	override fun onAttachedToWindow() {
 		super.onAttachedToWindow()
-		dispatchInsets(ViewCompat.getRootWindowInsets(this))
-		setBottomSheetBehavior(findParentSheetBehavior())
+		if (isInEditMode) {
+			val isTabled = resources.getBoolean(R.bool.is_tablet)
+			binding.shDragHandle.isGone = isTabled
+			binding.shLayoutSidesheet.isVisible = isTabled
+		} else {
+			setBottomSheetBehavior(findParentSheetBehavior())
+		}
 	}
 
 	override fun onDetachedFromWindow() {
@@ -58,26 +60,17 @@ class AdaptiveSheetHeaderBar @JvmOverloads constructor(
 		super.onDetachedFromWindow()
 	}
 
-	override fun onApplyWindowInsets(insets: WindowInsets?): WindowInsets {
-		dispatchInsets(if (insets != null) WindowInsetsCompat.toWindowInsetsCompat(insets) else null)
-		return super.onApplyWindowInsets(insets)
-	}
-
 	override fun onStateChanged(sheet: View, newState: Int) {
 
 	}
 
 	fun setTitle(@StringRes resId: Int) {
-		binding.textViewTitle.setText(resId)
-	}
-
-	private fun dispatchInsets(insets: WindowInsetsCompat?) {
-
+		binding.shTextViewTitle.setText(resId)
 	}
 
 	private fun setBottomSheetBehavior(behavior: AdaptiveSheetBehavior?) {
-		binding.dragHandle.isVisible = behavior is AdaptiveSheetBehavior.Bottom
-		binding.layoutSidesheet.isVisible = behavior is AdaptiveSheetBehavior.Side
+		binding.shDragHandle.isVisible = behavior is AdaptiveSheetBehavior.Bottom
+		binding.shLayoutSidesheet.isVisible = behavior is AdaptiveSheetBehavior.Side
 		sheetBehavior?.removeCallback(this)
 		sheetBehavior = behavior
 		behavior?.addCallback(this)

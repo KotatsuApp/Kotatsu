@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
-import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -29,6 +28,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
 import javax.inject.Inject
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
@@ -115,11 +115,11 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	private fun onUserChanged(user: ScrobblerUser?) {
 		if (user == null) {
 			viewBinding.imageViewAvatar.disposeImageRequest()
-			viewBinding.imageViewAvatar.isVisible = false
+			viewBinding.imageViewAvatar.setImageResource(materialR.drawable.abc_ic_menu_overflow_material)
 			return
 		}
-		viewBinding.imageViewAvatar.isVisible = true
 		viewBinding.imageViewAvatar.newImageRequest(this, user.avatar)
+			?.placeholder(R.drawable.bg_badge_empty)
 			?.enqueueWith(coil)
 	}
 
