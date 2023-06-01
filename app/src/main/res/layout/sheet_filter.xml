@@ -26,8 +26,6 @@
 			android:scrollIndicators="top"
 			app:bubbleSize="normal"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-			app:scrollerOffset="6dp"
-			app:trackColor="?attr/colorOutline"
 			tools:ignore="UnusedAttribute"
 			tools:listitem="@layout/item_checkable_new" />
 	</FrameLayout>

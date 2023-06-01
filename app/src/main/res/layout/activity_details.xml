@@ -48,38 +48,51 @@
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet"
 		tools:visibility="visible">
 
-		<org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
-			android:id="@+id/header_chapters"
+		<LinearLayout
+			android:id="@+id/layout_bs_header"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
-			app:fitStatusBar="true"
-			tools:menu="@menu/opt_chapters">
+			android:orientation="vertical">
 
-			<ImageView
-				android:id="@+id/button_dropdown"
-				android:layout_width="wrap_content"
+			<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+				android:id="@+id/dragHandle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
+
+			<com.google.android.material.appbar.MaterialToolbar
+				android:id="@+id/toolbar_chapters"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_gravity="start|center_vertical"
-				android:background="?selectableItemBackgroundBorderless"
-				android:padding="@dimen/margin_small"
-				android:src="@drawable/ic_expand_more" />
+				android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
+				tools:menu="@menu/opt_chapters">
 
-			<com.google.android.material.button.MaterialButton
-				android:id="@+id/button_read"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="end|center_vertical"
-				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
-				android:enabled="false"
-				android:text="@string/read"
-				android:textAllCaps="false"
-				app:iconGravity="textStart"
-				app:iconPadding="8dp"
-				tools:enabled="true"
-				tools:icon="@drawable/ic_read" />
+				<ImageView
+					android:id="@+id/button_dropdown"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="start|center_vertical"
+					android:background="?selectableItemBackgroundBorderless"
+					android:contentDescription="@string/translations"
+					android:padding="@dimen/margin_small"
+					android:src="@drawable/ic_expand_more" />
 
-		</org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar>
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_read"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="end|center_vertical"
+					android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+					android:enabled="false"
+					android:text="@string/read"
+					android:textAllCaps="false"
+					app:iconGravity="textStart"
+					app:iconPadding="8dp"
+					tools:enabled="true"
+					tools:icon="@drawable/ic_read" />
+
+			</com.google.android.material.appbar.MaterialToolbar>
+
+		</LinearLayout>
 
 		<androidx.fragment.app.FragmentContainerView
 			android:id="@+id/container_chapters"

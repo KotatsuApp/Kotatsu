@@ -3,14 +3,18 @@ package org.koitharu.kotatsu.details.ui
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
+import java.lang.ref.WeakReference
 
 class ChaptersMenuProvider(
 	private val viewModel: DetailsViewModel,
 	private val bottomSheetMediator: ChaptersBottomSheetMediator?,
-) : MenuProvider, SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
+) : OnBackPressedCallback(false), MenuProvider, SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
+
+	private var searchItemRef: WeakReference<MenuItem>? = null
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 		menuInflater.inflate(R.menu.opt_chapters, menu)
@@ -20,6 +24,7 @@ class ChaptersMenuProvider(
 		searchView.setOnQueryTextListener(this)
 		searchView.setIconifiedByDefault(false)
 		searchView.queryHint = searchMenuItem.title
+		searchItemRef = WeakReference(searchMenuItem)
 	}
 
 	override fun onPrepareMenu(menu: Menu) {
@@ -32,15 +37,22 @@ class ChaptersMenuProvider(
 			viewModel.setChaptersReversed(!menuItem.isChecked)
 			true
 		}
+
 		else -> false
+	}
+
+	override fun handleOnBackPressed() {
+		searchItemRef?.get()?.collapseActionView()
 	}
 
 	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
 		bottomSheetMediator?.lock()
+		isEnabled = true
 		return true
 	}
 
 	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+		isEnabled = false
 		(item.actionView as? SearchView)?.setQuery("", false)
 		viewModel.performChapterSearch(null)
 		bottomSheetMediator?.unlock()

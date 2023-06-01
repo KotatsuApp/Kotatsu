@@ -47,6 +47,7 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(), OnListItemClick
 				isUnread = index > currentPosition,
 				isNew = false,
 				isDownloaded = false,
+				isBookmarked = false,
 			)
 		}
 		binding.recyclerView.adapter = ChaptersAdapter(this).also { adapter ->

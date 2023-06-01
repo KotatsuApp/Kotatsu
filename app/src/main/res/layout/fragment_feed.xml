@@ -22,7 +22,6 @@
 			android:paddingRight="@dimen/list_spacing"
 			android:paddingBottom="@dimen/grid_spacing_outer"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-			app:trackColor="?attr/colorOutline"
 			tools:listitem="@layout/item_feed" />
 
 	</FrameLayout>

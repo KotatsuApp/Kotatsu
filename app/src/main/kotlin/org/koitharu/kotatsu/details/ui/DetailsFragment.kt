@@ -34,7 +34,6 @@ import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.drawableTop
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
-import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
@@ -271,7 +270,7 @@ class DetailsFragment :
 	override fun onWindowInsetsChanged(insets: Insets) {
 		requireViewBinding().root.updatePadding(
 			bottom = (
-				(activity as? NoModalBottomSheetOwner)?.bsHeader?.measureHeight()
+				(activity as? NoModalBottomSheetOwner)?.getBottomSheetCollapsedHeight()
 					?.plus(insets.bottom)?.plus(resources.resolveDp(16))
 				)
 				?: insets.bottom,

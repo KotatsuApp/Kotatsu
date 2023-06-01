@@ -171,8 +171,9 @@ class DetailsViewModel @Inject constructor(
 			history,
 			selectedBranch,
 			newChaptersCount,
-		) { manga, history, branch, news ->
-			mapChapters(manga?.remote, manga?.local, history, news, branch)
+			bookmarks,
+		) { manga, history, branch, news, bookmarks ->
+			mapChapters(manga?.remote, manga?.local, history, news, branch, bookmarks)
 		},
 		isChaptersReversed,
 		chaptersQuery,
@@ -209,8 +210,8 @@ class DetailsViewModel @Inject constructor(
 	}
 
 	fun removeBookmark(bookmark: Bookmark) {
-		launchJob {
-			bookmarksRepository.removeBookmark(bookmark.manga.id, bookmark.pageId)
+		launchJob(Dispatchers.Default) {
+			bookmarksRepository.removeBookmark(bookmark)
 			onShowToast.call(R.string.bookmark_removed)
 		}
 	}
