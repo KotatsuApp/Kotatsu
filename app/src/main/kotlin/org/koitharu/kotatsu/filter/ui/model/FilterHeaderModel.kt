@@ -1,9 +1,10 @@
-package org.koitharu.kotatsu.list.ui.model
+package org.koitharu.kotatsu.filter.ui.model
 
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
 
-class ListHeader2(
+class FilterHeaderModel(
 	val chips: Collection<ChipsView.ChipModel>,
 	val sortOrder: SortOrder?,
 	val hasSelectedTags: Boolean,
@@ -13,7 +14,7 @@ class ListHeader2(
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false
 
-		other as ListHeader2
+		other as FilterHeaderModel
 
 		if (chips != other.chips) return false
 		return sortOrder == other.sortOrder

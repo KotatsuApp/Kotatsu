@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.list.ui.filter
+package org.koitharu.kotatsu.filter.ui
 
 import android.widget.TextView
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.databinding.ItemCheckableMultipleBinding
 import org.koitharu.kotatsu.databinding.ItemCheckableSingleBinding
+import org.koitharu.kotatsu.filter.ui.model.FilterItem
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 fun filterSortDelegate(

@@ -284,6 +284,7 @@ class DetailsFragment :
 				ChipsView.ChipModel(
 					title = tag.title,
 					tint = tagHighlighter.getTint(tag),
+					icon = 0,
 					data = tag,
 					isCheckable = false,
 					isChecked = false,

@@ -1,7 +1,9 @@
-package org.koitharu.kotatsu.list.ui.filter
+package org.koitharu.kotatsu.filter.ui
 
 import androidx.annotation.WorkerThread
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.ViewModelLifecycle
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -17,7 +19,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.ext.lifecycleScope
+import org.koitharu.kotatsu.core.util.ext.require
+import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
+import org.koitharu.kotatsu.filter.ui.model.FilterItem
+import org.koitharu.kotatsu.filter.ui.model.FilterState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
@@ -25,17 +33,26 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
+import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.text.Collator
+import java.util.LinkedList
 import java.util.Locale
 import java.util.TreeSet
+import javax.inject.Inject
 
-class FilterCoordinator(
-	private val repository: RemoteMangaRepository,
+@ViewModelScoped
+class FilterCoordinator @Inject constructor(
+	savedStateHandle: SavedStateHandle,
+	mangaRepositoryFactory: MangaRepository.Factory,
 	dataRepository: MangaDataRepository,
-	private val coroutineScope: CoroutineScope,
-) : OnFilterChangedListener {
+	private val searchRepository: MangaSearchRepository,
+	lifecycle: ViewModelLifecycle,
+) : FilterOwner {
 
+	private val coroutineScope = lifecycle.lifecycleScope
+	private val repository = mangaRepositoryFactory.create(savedStateHandle.require(RemoteListFragment.ARG_SOURCE))
 	private val currentState = MutableStateFlow(FilterState(repository.defaultSortOrder, emptySet()))
 	private var searchQuery = MutableStateFlow("")
 	private val localTags = SuspendLazy {
@@ -43,11 +60,21 @@ class FilterCoordinator(
 	}
 	private var availableTagsDeferred = loadTagsAsync()
 
-	val items: StateFlow<List<ListModel>> = getItemsFlow()
-		.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
+	override val filterItems: StateFlow<List<ListModel>> = getItemsFlow()
+		.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, listOf(LoadingState))
+
+	override val header: StateFlow<FilterHeaderModel> = getHeaderFlow().stateIn(
+		scope = coroutineScope + Dispatchers.Default,
+		started = SharingStarted.Lazily,
+		initialValue = FilterHeaderModel(emptyList(), repository.defaultSortOrder, false),
+	)
 
 	init {
 		observeState()
+	}
+
+	override fun applyFilter(tags: Set<MangaTag>) {
+		setTags(tags)
 	}
 
 	override fun onSortItemClick(item: FilterItem.Sort) {
@@ -95,6 +122,14 @@ class FilterCoordinator(
 		searchQuery.value = query
 	}
 
+	private fun getHeaderFlow() = combine(
+		observeState(),
+		observeAvailableTags(),
+	) { state, available ->
+		val chips = createChipsList(state, available.orEmpty())
+		FilterHeaderModel(chips, state.sortOrder, state.tags.isNotEmpty())
+	}
+
 	private fun getItemsFlow() = combine(
 		getTagsAsFlow(),
 		currentState,
@@ -112,6 +147,48 @@ class FilterCoordinator(
 		} else {
 			emit(TagsWrapper(mergeTags(remoteTags, localTags), isLoading = false, isError = false))
 		}
+	}
+
+	private suspend fun createChipsList(
+		filterState: FilterState,
+		availableTags: Set<MangaTag>,
+	): List<ChipsView.ChipModel> {
+		val selectedTags = filterState.tags.toMutableSet()
+		var tags = searchRepository.getTagsSuggestion("", 6, repository.source)
+		if (tags.isEmpty()) {
+			tags = availableTags.take(6)
+		}
+		if (tags.isEmpty() && selectedTags.isEmpty()) {
+			return emptyList()
+		}
+		val result = LinkedList<ChipsView.ChipModel>()
+		for (tag in tags) {
+			val model = ChipsView.ChipModel(
+				tint = 0,
+				title = tag.title,
+				icon = 0,
+				isCheckable = true,
+				isChecked = selectedTags.remove(tag),
+				data = tag,
+			)
+			if (model.isChecked) {
+				result.addFirst(model)
+			} else {
+				result.addLast(model)
+			}
+		}
+		for (tag in selectedTags) {
+			val model = ChipsView.ChipModel(
+				tint = 0,
+				title = tag.title,
+				icon = 0,
+				isCheckable = true,
+				isChecked = true,
+				data = tag,
+			)
+			result.addFirst(model)
+		}
+		return result
 	}
 
 	@WorkerThread

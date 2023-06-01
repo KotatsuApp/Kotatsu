@@ -1,6 +1,7 @@
-package org.koitharu.kotatsu.list.ui.filter
+package org.koitharu.kotatsu.filter.ui
 
 import androidx.recyclerview.widget.DiffUtil
+import org.koitharu.kotatsu.filter.ui.model.FilterItem
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 

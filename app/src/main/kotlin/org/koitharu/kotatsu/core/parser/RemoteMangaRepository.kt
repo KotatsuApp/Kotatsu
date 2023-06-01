@@ -39,8 +39,8 @@ class RemoteMangaRepository(
 	override val sortOrders: Set<SortOrder>
 		get() = parser.sortOrders
 
-	var defaultSortOrder: SortOrder?
-		get() = getConfig().defaultSortOrder ?: sortOrders.firstOrNull()
+	override var defaultSortOrder: SortOrder
+		get() = getConfig().defaultSortOrder ?: sortOrders.first()
 		set(value) {
 			getConfig().defaultSortOrder = value
 		}

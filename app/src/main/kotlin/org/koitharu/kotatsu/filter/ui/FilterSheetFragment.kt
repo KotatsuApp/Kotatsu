@@ -1,5 +1,6 @@
-package org.koitharu.kotatsu.list.ui.filter
+package org.koitharu.kotatsu.filter.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,20 +11,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
-import org.koitharu.kotatsu.core.ui.util.CollapseActionViewCallback
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.parentFragmentViewModels
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 
 class FilterSheetFragment :
 	BaseAdaptiveSheet<SheetFilterBinding>(),
 	AdaptiveSheetCallback,
 	AsyncListDiffer.ListListener<ListModel> {
 
-	private val viewModel by parentFragmentViewModels<RemoteListViewModel>()
-	private var collapsibleActionViewCallback: CollapseActionViewCallback? = null
+	private val owner by lazy(LazyThreadSafetyMode.NONE) {
+		FilterOwner.from(requireActivity())
+	}
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
 		return SheetFilterBinding.inflate(inflater, container, false)
@@ -32,14 +31,13 @@ class FilterSheetFragment :
 	override fun onViewBindingCreated(binding: SheetFilterBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		addSheetCallback(this)
-		val adapter = FilterAdapter(viewModel, this)
+		val adapter = FilterAdapter(owner, this)
 		binding.recyclerView.adapter = adapter
-		viewModel.filterItems.observe(viewLifecycleOwner, adapter::setItems)
-	}
+		owner.filterItems.observe(viewLifecycleOwner, adapter::setItems)
 
-	override fun onDestroyView() {
-		super.onDestroyView()
-		collapsibleActionViewCallback = null
+		if (dialog == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			binding.recyclerView.scrollIndicators = 0
+		}
 	}
 
 	override fun onCurrentListChanged(previousList: MutableList<ListModel>, currentList: MutableList<ListModel>) {

@@ -40,6 +40,8 @@ import org.koitharu.kotatsu.core.util.IncognitoModeIndicator
 import org.koitharu.kotatsu.core.util.ext.activityManager
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.ListExtraProviderImpl
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
@@ -63,6 +65,9 @@ interface AppModule {
 
 	@Binds
 	fun bindImageGetter(coilImageGetter: CoilImageGetter): Html.ImageGetter
+
+	@Binds
+	fun bindListExtraProvider(impl: ListExtraProviderImpl): ListExtraProvider
 
 	companion object {
 

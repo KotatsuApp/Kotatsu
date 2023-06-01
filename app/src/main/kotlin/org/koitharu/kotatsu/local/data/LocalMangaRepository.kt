@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.CompositeMutex
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
@@ -28,6 +29,7 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.io.File
+import java.util.EnumSet
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,10 +39,19 @@ private const val MAX_PARALLELISM = 4
 class LocalMangaRepository @Inject constructor(
 	private val storageManager: LocalStorageManager,
 	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
+	private val settings: AppSettings,
 ) : MangaRepository {
 
 	override val source = MangaSource.LOCAL
 	private val locks = CompositeMutex<Long>()
+
+	override val sortOrders: Set<SortOrder> = EnumSet.of(SortOrder.ALPHABETICAL, SortOrder.RATING, SortOrder.NEWEST)
+
+	override var defaultSortOrder: SortOrder
+		get() = settings.localListOrder
+		set(value) {
+			settings.localListOrder = value
+		}
 
 	override suspend fun getList(offset: Int, query: String): List<Manga> {
 		if (offset > 0) {
@@ -136,8 +147,6 @@ class LocalMangaRepository @Inject constructor(
 			}
 		}.firstOrNull()?.getManga()
 	}
-
-	override val sortOrders = setOf(SortOrder.ALPHABETICAL, SortOrder.RATING)
 
 	override suspend fun getPageUrl(page: MangaPage) = page.url
 

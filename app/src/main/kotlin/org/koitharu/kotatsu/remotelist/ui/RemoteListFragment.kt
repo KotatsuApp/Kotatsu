@@ -15,8 +15,8 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
+import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.list.ui.filter.FilterSheetFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.SearchActivity
@@ -25,7 +25,7 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 @AndroidEntryPoint
 class RemoteListFragment : MangaListFragment() {
 
-	public override val viewModel by viewModels<RemoteListViewModel>()
+	override val viewModel by viewModels<RemoteListViewModel>()
 
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)

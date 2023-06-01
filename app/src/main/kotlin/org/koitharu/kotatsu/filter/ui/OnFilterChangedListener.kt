@@ -1,4 +1,6 @@
-package org.koitharu.kotatsu.list.ui.filter
+package org.koitharu.kotatsu.filter.ui
+
+import org.koitharu.kotatsu.filter.ui.model.FilterItem
 
 interface OnFilterChangedListener {
 

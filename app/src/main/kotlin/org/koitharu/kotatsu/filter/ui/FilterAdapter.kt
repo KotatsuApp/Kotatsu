@@ -1,9 +1,10 @@
-package org.koitharu.kotatsu.list.ui.filter
+package org.koitharu.kotatsu.filter.ui
 
 import android.content.Context
 import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
+import org.koitharu.kotatsu.filter.ui.model.FilterItem
 import org.koitharu.kotatsu.list.ui.adapter.listSimpleHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD

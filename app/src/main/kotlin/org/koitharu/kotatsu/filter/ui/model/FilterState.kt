@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.list.ui.filter
+package org.koitharu.kotatsu.filter.ui.model
 
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -15,9 +15,7 @@ class FilterState(
 		other as FilterState
 
 		if (sortOrder != other.sortOrder) return false
-		if (tags != other.tags) return false
-
-		return true
+		return tags == other.tags
 	}
 
 	override fun hashCode(): Int {

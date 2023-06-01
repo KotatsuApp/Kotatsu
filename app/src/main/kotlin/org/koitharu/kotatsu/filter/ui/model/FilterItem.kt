@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.list.ui.filter
+package org.koitharu.kotatsu.filter.ui.model
 
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.list.ui.model.ListModel

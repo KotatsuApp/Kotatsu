@@ -22,6 +22,8 @@ interface MangaRepository {
 
 	val sortOrders: Set<SortOrder>
 
+	var defaultSortOrder: SortOrder
+
 	suspend fun getList(offset: Int, query: String): List<Manga>
 
 	suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga>

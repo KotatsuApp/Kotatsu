@@ -8,7 +8,7 @@ import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
 class RetainedLifecycleCoroutineScope(
-	private val lifecycle: RetainedLifecycle,
+	val lifecycle: RetainedLifecycle,
 ) : CoroutineScope, RetainedLifecycle.OnClearedListener {
 
 	override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main.immediate

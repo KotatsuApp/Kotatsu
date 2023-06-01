@@ -43,6 +43,7 @@ fun Manga.toListDetailedModel(
 		ChipsView.ChipModel(
 			tint = tagHighlighter?.getTint(it) ?: 0,
 			title = it.title,
+			icon = 0,
 			isCheckable = false,
 			isChecked = false,
 			data = it,

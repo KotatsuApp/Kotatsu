@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View.OnClickListener
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getColorStateListOrThrow
 import androidx.core.view.children
@@ -101,6 +102,13 @@ class ChipsView @JvmOverloads constructor(
 		chip.setTextColor(tint ?: defaultChipTextColor)
 		chip.isClickable = onChipClickListener != null || model.isCheckable
 		chip.isCheckable = model.isCheckable
+		if (model.icon == 0) {
+			chip.chipIcon = null
+			chip.isChipIconVisible = false
+		} else {
+			chip.setChipIconResource(model.icon)
+			chip.isChipIconVisible = true
+		}
 		chip.isChecked = model.isChecked
 		chip.tag = model.data
 	}
@@ -134,6 +142,7 @@ class ChipsView @JvmOverloads constructor(
 	class ChipModel(
 		@ColorRes val tint: Int,
 		val title: CharSequence,
+		@DrawableRes val icon: Int,
 		val isCheckable: Boolean,
 		val isChecked: Boolean,
 		val data: Any? = null,
@@ -147,6 +156,7 @@ class ChipsView @JvmOverloads constructor(
 
 			if (tint != other.tint) return false
 			if (title != other.title) return false
+			if (icon != other.icon) return false
 			if (isCheckable != other.isCheckable) return false
 			if (isChecked != other.isChecked) return false
 			return data == other.data
@@ -155,6 +165,7 @@ class ChipsView @JvmOverloads constructor(
 		override fun hashCode(): Int {
 			var result = tint.hashCode()
 			result = 31 * result + title.hashCode()
+			result = 31 * result + icon.hashCode()
 			result = 31 * result + isCheckable.hashCode()
 			result = 31 * result + isChecked.hashCode()
 			result = 31 * result + (data?.hashCode() ?: 0)
