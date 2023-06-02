@@ -6,35 +6,27 @@ import android.graphics.ColorMatrixColorFilter
 class ReaderColorFilter(
 	val brightness: Float,
 	val contrast: Float,
+	val isInverted: Boolean,
 ) {
 
 	val isEmpty: Boolean
-		get() = brightness == 0f && contrast == 0f
+		get() = !isInverted && brightness == 0f && contrast == 0f
 
 	fun toColorFilter(): ColorMatrixColorFilter {
 		val cm = ColorMatrix()
-		val scale = brightness + 1f
-		cm.setScale(scale, scale, scale, 1f)
+		if (isInverted) {
+			cm.inverted()
+		}
+		cm.setBrightness(brightness)
 		cm.setContrast(contrast)
 		return ColorMatrixColorFilter(cm)
 	}
 
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as ReaderColorFilter
-
-		if (brightness != other.brightness) return false
-		if (contrast != other.contrast) return false
-
-		return true
-	}
-
-	override fun hashCode(): Int {
-		var result = brightness.hashCode()
-		result = 31 * result + contrast.hashCode()
-		return result
+	private fun ColorMatrix.setBrightness(brightness: Float) {
+		val scale = brightness + 1f
+		val matrix = ColorMatrix()
+		matrix.setScale(scale, scale, scale, 1f)
+		postConcat(matrix)
 	}
 
 	private fun ColorMatrix.setContrast(contrast: Float) {
@@ -48,5 +40,33 @@ class ReaderColorFilter(
 		)
 		val matrix = ColorMatrix(array)
 		postConcat(matrix)
+	}
+
+	private fun ColorMatrix.inverted() {
+		val matrix = floatArrayOf(
+			-1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		)
+		set(matrix)
+	}
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as ReaderColorFilter
+
+		if (brightness != other.brightness) return false
+		if (contrast != other.contrast) return false
+		return isInverted == other.isInverted
+	}
+
+	override fun hashCode(): Int {
+		var result = brightness.hashCode()
+		result = 31 * result + contrast.hashCode()
+		result = 31 * result + isInverted.hashCode()
+		return result
 	}
 }

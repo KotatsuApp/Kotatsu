@@ -428,4 +428,5 @@
 	<string name="downloaded">Downloaded</string>
 	<string name="images_proxy_title">Images optimization proxy</string>
 	<string name="images_procy_description">Use the wsrv.nl service to reduce traffic usage and speed up image loading if possible</string>
+	<string name="invert_colors">Invert colors</string>
 </resources>
