@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.favourites.data.toManga
 import org.koitharu.kotatsu.favourites.data.toMangaList
+import org.koitharu.kotatsu.favourites.domain.model.Cover
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
@@ -66,11 +67,11 @@ class FavouritesRepository @Inject constructor(
 		}.distinctUntilChanged()
 	}
 
-	fun observeCategoriesWithCovers(): Flow<Map<FavouriteCategory, List<String>>> {
+	fun observeCategoriesWithCovers(): Flow<Map<FavouriteCategory, List<Cover>>> {
 		return db.favouriteCategoriesDao.observeAll()
 			.map {
 				db.withTransaction {
-					val res = LinkedHashMap<FavouriteCategory, List<String>>()
+					val res = LinkedHashMap<FavouriteCategory, List<Cover>>()
 					for (entity in it) {
 						val cat = entity.toFavouriteCategory()
 						res[cat] = db.favouritesDao.findCovers(

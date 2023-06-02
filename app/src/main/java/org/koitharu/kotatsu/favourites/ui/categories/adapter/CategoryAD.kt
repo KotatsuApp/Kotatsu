@@ -18,11 +18,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ItemCategoryBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.utils.ext.animatorDurationScale
 import org.koitharu.kotatsu.utils.ext.disposeImageRequest
 import org.koitharu.kotatsu.utils.ext.enqueueWith
+import org.koitharu.kotatsu.utils.ext.getAnimationDuration
 import org.koitharu.kotatsu.utils.ext.getThemeColor
 import org.koitharu.kotatsu.utils.ext.newImageRequest
+import org.koitharu.kotatsu.utils.ext.source
 
 fun categoryAD(
 	coil: ImageLoader,
@@ -53,10 +54,7 @@ fun categoryAD(
 		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 153))
 	val fallback = ColorDrawable(Color.TRANSPARENT)
 	val coverViews = arrayOf(binding.imageViewCover1, binding.imageViewCover2, binding.imageViewCover3)
-	val crossFadeDuration = (
-		context.resources.getInteger(R.integer.config_defaultAnimTime) *
-			context.animatorDurationScale
-		).toInt()
+	val crossFadeDuration = context.getAnimationDuration(R.integer.config_defaultAnimTime).toInt()
 	itemView.setOnClickListener(eventListener)
 	itemView.setOnLongClickListener(eventListener)
 	itemView.setOnTouchListener(eventListener)
@@ -77,9 +75,11 @@ fun categoryAD(
 			)
 		}
 		repeat(coverViews.size) { i ->
-			coverViews[i].newImageRequest(lifecycleOwner, item.covers.getOrNull(i))?.run {
+			val cover = item.covers.getOrNull(i)
+			coverViews[i].newImageRequest(lifecycleOwner, cover?.url)?.run {
 				placeholder(R.drawable.ic_placeholder)
 				fallback(fallback)
+				source(cover?.mangaSource)
 				crossfade(crossFadeDuration * (i + 1))
 				error(R.drawable.ic_error_placeholder)
 				allowRgb565(true)
