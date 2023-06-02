@@ -22,18 +22,19 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.source
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
+import org.koitharu.kotatsu.core.util.ext.ensureSuccess
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.io.File
@@ -51,6 +52,7 @@ class PageLoader @Inject constructor(
 	private val cache: PagesCache,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val imageProxyInterceptor: ImageProxyInterceptor,
 ) : RetainedLifecycle.OnClearedListener {
 
 	init {
@@ -191,10 +193,7 @@ class PageLoader @Inject constructor(
 			}
 		} else {
 			val request = createPageRequest(page, pageUrl)
-			okHttp.newCall(request).await().use { response ->
-				check(response.isSuccessful) {
-					"Invalid response: ${response.code} ${response.message} at $pageUrl"
-				}
+			imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
 				val body = checkNotNull(response.body) {
 					"Null response"
 				}

@@ -277,6 +277,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderSliderEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_SLIDER, true)
 
+	val isImagesProxyEnabled: Boolean
+		get() = prefs.getBoolean(KEY_IMAGES_PROXY, false)
+
 	val dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
 
@@ -448,6 +451,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PROXY_TYPE = "proxy_type"
 		const val KEY_PROXY_ADDRESS = "proxy_address"
 		const val KEY_PROXY_PORT = "proxy_port"
+		const val KEY_IMAGES_PROXY = "images_proxy"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
