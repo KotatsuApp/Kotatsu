@@ -54,9 +54,10 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 	suspend fun put(url: String, source: Source): File = withContext(Dispatchers.IO) {
 		val file = File(cacheDir.get().parentFile, url.longHashCode().toString())
 		try {
-			file.sink(append = false).buffer().use {
+			val bytes = file.sink(append = false).buffer().use {
 				it.writeAllCancellable(source)
 			}
+			check(bytes != 0L) { "No data has been written" }
 			lruCache.get().put(url, file)
 		} finally {
 			file.delete()
