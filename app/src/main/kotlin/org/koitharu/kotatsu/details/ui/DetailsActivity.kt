@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -18,6 +19,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -237,6 +239,9 @@ class DetailsActivity :
 		)
 		if (insets.bottom > 0) {
 			window.setNavigationBarTransparentCompat(this, viewBinding.layoutBottom?.elevation ?: 0f, 0.9f)
+		}
+		viewBinding.cardChapters?.updateLayoutParams<MarginLayoutParams> {
+			bottomMargin = insets.bottom + marginEnd
 		}
 	}
 

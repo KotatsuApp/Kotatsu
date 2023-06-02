@@ -10,6 +10,9 @@ class FilterHeaderModel(
 	val hasSelectedTags: Boolean,
 ) : ListModel {
 
+	val textSummary: String
+		get() = chips.mapNotNull { if (it.isChecked) it.title else null }.joinToString()
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false

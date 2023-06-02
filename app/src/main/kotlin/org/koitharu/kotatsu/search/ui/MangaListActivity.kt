@@ -11,6 +11,9 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -106,11 +109,19 @@ class MangaListActivity :
 				}
 			}
 		}
+		val filterOwner = FilterOwner.from(this)
 		val chipSort = viewBinding.chipSort
 		if (chipSort != null) {
-			FilterOwner.from(this).header.observe(this) {
+			filterOwner.header.observe(this) {
 				chipSort.setTextAndVisible(it.sortOrder?.titleRes ?: 0)
 			}
+		} else {
+			filterOwner.header.map {
+				it.textSummary
+			}.flowOn(Dispatchers.Default)
+				.observe(this) {
+					supportActionBar?.subtitle = it
+				}
 		}
 	}
 

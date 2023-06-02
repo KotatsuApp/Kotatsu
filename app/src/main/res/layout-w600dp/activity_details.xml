@@ -67,8 +67,8 @@
 		android:id="@+id/group_header"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="@id/container_chapters"
+		app:layout_constraintEnd_toEndOf="@id/card_chapters"
+		app:layout_constraintStart_toStartOf="@id/card_chapters"
 		app:layout_constraintTop_toBottomOf="@id/appbar">
 
 		<TextView
@@ -113,27 +113,27 @@
 			android:padding="@dimen/margin_small"
 			android:src="@drawable/ic_expand_more" />
 
-		<View
-			android:id="@+id/divider"
-			android:layout_width="0dp"
-			android:layout_height="1dp"
-			android:layout_below="@id/textView_subtitle"
-			android:layout_alignParentStart="true"
-			android:layout_alignParentEnd="true"
-			android:layout_marginTop="4dp"
-			android:background="?colorSecondaryContainer" />
-
 	</RelativeLayout>
 
-	<androidx.fragment.app.FragmentContainerView
-		android:id="@+id/container_chapters"
-		android:name="org.koitharu.kotatsu.details.ui.ChaptersFragment"
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card_chapters"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/side_card_offset"
+		android:layout_marginEnd="@dimen/side_card_offset"
+		android:layout_marginBottom="@dimen/side_card_offset"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/container_details"
-		app:layout_constraintTop_toBottomOf="@id/group_header"
-		tools:layout="@layout/fragment_chapters" />
+		app:layout_constraintTop_toBottomOf="@id/group_header">
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/container_chapters"
+			android:name="org.koitharu.kotatsu.details.ui.ChaptersFragment"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			tools:layout="@layout/fragment_chapters" />
+
+	</com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
