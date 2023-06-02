@@ -19,14 +19,6 @@
 			android:visibility="gone"
 			tools:visibility="visible" />
 
-		<include
-			android:id="@+id/layout_sync"
-			layout="@layout/layout_synchronization"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:visibility="gone"
-			tools:visibility="visible" />
-
 		<com.google.android.material.divider.MaterialDivider
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"

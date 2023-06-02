@@ -83,6 +83,7 @@ class DetailsFragment :
 		binding.infoLayout.textViewSource.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
+		TitleScrollCoordinator(binding.textViewTitle).attach(binding.scrollView)
 		viewModel.manga.filterNotNull().observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.historyInfo.observe(viewLifecycleOwner, ::onHistoryChanged)

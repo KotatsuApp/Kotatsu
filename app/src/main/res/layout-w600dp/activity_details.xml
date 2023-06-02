@@ -24,12 +24,8 @@
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
-			android:background="@drawable/m3_tabs_background"
-			android:theme="?attr/actionBarTheme"
 			app:layout_scrollFlags="noScroll"
-			tools:ignore="PrivateResource"
 			tools:menu="@menu/opt_details">
-
 
 			<com.google.android.material.button.MaterialButton
 				android:id="@+id/button_read"
@@ -47,6 +43,47 @@
 				tools:enabled="true"
 				tools:icon="@drawable/ic_read" />
 
+			<ImageView
+				android:id="@+id/button_dropdown"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="end"
+				android:background="?selectableItemBackgroundBorderless"
+				android:contentDescription="@string/translations"
+				android:padding="@dimen/margin_small"
+				android:src="@drawable/ic_expand_more" />
+
+			<LinearLayout
+				android:id="@+id/group_header"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="end"
+				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+				android:gravity="center_vertical"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/textView_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:singleLine="true"
+					android:textAppearance="?textAppearanceTitleMedium"
+					tools:ignore="InconsistentLayout"
+					tools:text="@string/chapter_d_of_d" />
+
+				<TextView
+					android:id="@+id/textView_subtitle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:singleLine="true"
+					android:textAppearance="?textAppearanceTitleSmall"
+					android:textColor="?android:textColorSecondary"
+					android:visibility="gone"
+					tools:text="English"
+					tools:visibility="visible" />
+
+			</LinearLayout>
+
 		</com.google.android.material.appbar.MaterialToolbar>
 
 	</com.google.android.material.appbar.AppBarLayout>
@@ -63,69 +100,18 @@
 		app:layout_constraintWidth_percent="0.5"
 		tools:layout="@layout/fragment_details" />
 
-	<RelativeLayout
-		android:id="@+id/group_header"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		app:layout_constraintEnd_toEndOf="@id/card_chapters"
-		app:layout_constraintStart_toStartOf="@id/card_chapters"
-		app:layout_constraintTop_toBottomOf="@id/appbar">
-
-		<TextView
-			android:id="@+id/textView_title"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_alignWithParentIfMissing="true"
-			android:layout_alignParentStart="true"
-			android:layout_alignParentTop="true"
-			android:layout_marginTop="4dp"
-			android:layout_toStartOf="@id/button_dropdown"
-			android:paddingHorizontal="@dimen/margin_normal"
-			android:singleLine="true"
-			android:textAppearance="?textAppearanceTitleMedium"
-			tools:ignore="InconsistentLayout"
-			tools:text="@string/chapter_d_of_d" />
-
-		<TextView
-			android:id="@+id/textView_subtitle"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_alignWithParentIfMissing="true"
-			android:layout_below="@id/textView_title"
-			android:layout_alignParentStart="true"
-			android:layout_toStartOf="@id/button_dropdown"
-			android:paddingHorizontal="@dimen/margin_normal"
-			android:singleLine="true"
-			android:textAppearance="?textAppearanceTitleSmall"
-			android:textColor="?android:textColorSecondary"
-			android:visibility="gone"
-			tools:text="English"
-			tools:visibility="visible" />
-
-		<ImageView
-			android:id="@+id/button_dropdown"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentEnd="true"
-			android:layout_centerVertical="true"
-			android:layout_marginBottom="1dp"
-			android:background="?selectableItemBackgroundBorderless"
-			android:padding="@dimen/margin_small"
-			android:src="@drawable/ic_expand_more" />
-
-	</RelativeLayout>
-
 	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/card_chapters"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:layout_marginStart="@dimen/side_card_offset"
+		android:layout_marginTop="2dp"
 		android:layout_marginEnd="@dimen/side_card_offset"
 		android:layout_marginBottom="@dimen/side_card_offset"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/container_details"
-		app:layout_constraintTop_toBottomOf="@id/group_header">
+		app:layout_constraintTop_toBottomOf="@id/appbar">
 
 		<androidx.fragment.app.FragmentContainerView
 			android:id="@+id/container_chapters"

@@ -24,17 +24,6 @@
 			android:layout_height="wrap_content"
 			android:layout_margin="@dimen/margin_normal"
 			android:visibility="gone"
-			app:layout_constraintEnd_toStartOf="@id/guideline"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			tools:visibility="visible" />
-
-		<include
-			android:id="@+id/layout_sync"
-			layout="@layout/layout_synchronization"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:visibility="gone"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/guideline"
 			app:layout_constraintTop_toTopOf="parent"
@@ -46,7 +35,7 @@
 			android:layout_height="wrap_content"
 			app:layout_constraintEnd_toStartOf="@id/guideline"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/card_update" />
+			app:layout_constraintTop_toTopOf="parent" />
 
 		<com.google.android.material.materialswitch.MaterialSwitch
 			android:id="@+id/switch_incognito"
@@ -63,7 +52,7 @@
 			android:textColor="?attr/colorControlNormal"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/guideline"
-			app:layout_constraintTop_toBottomOf="@id/layout_sync"
+			app:layout_constraintTop_toBottomOf="@id/card_update"
 			app:layout_goneMarginTop="8dp" />
 
 		<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
