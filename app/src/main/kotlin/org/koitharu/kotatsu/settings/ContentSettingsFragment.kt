@@ -146,7 +146,7 @@ class ContentSettingsFragment :
 			summary = if (type == Proxy.Type.DIRECT || address.isNullOrEmpty() || port == 0) {
 				context.getString(R.string.disabled)
 			} else {
-				"$type $address:$port"
+				"$address:$port"
 			}
 		}
 	}

@@ -298,6 +298,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val proxyPort: Int
 		get() = prefs.getString(KEY_PROXY_PORT, null)?.toIntOrNull() ?: 0
 
+	val proxyLogin: String?
+		get() = prefs.getString(KEY_PROXY_LOGIN, null)?.takeUnless { it.isEmpty() }
+
+	val proxyPassword: String?
+		get() = prefs.getString(KEY_PROXY_PASSWORD, null)?.takeUnless { it.isEmpty() }
+
 	var localListOrder: SortOrder
 		get() = prefs.getEnumValue(KEY_LOCAL_LIST_ORDER, SortOrder.NEWEST)
 		set(value) = prefs.edit { putEnumValue(KEY_LOCAL_LIST_ORDER, value) }
@@ -451,6 +457,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PROXY_TYPE = "proxy_type"
 		const val KEY_PROXY_ADDRESS = "proxy_address"
 		const val KEY_PROXY_PORT = "proxy_port"
+		const val KEY_PROXY_AUTH = "proxy_auth"
+		const val KEY_PROXY_LOGIN = "proxy_login"
+		const val KEY_PROXY_PASSWORD = "proxy_password"
 		const val KEY_IMAGES_PROXY = "images_proxy"
 
 		// About
