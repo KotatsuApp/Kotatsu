@@ -55,7 +55,6 @@
 			android:orientation="vertical">
 
 			<com.google.android.material.bottomsheet.BottomSheetDragHandleView
-				style="@style/Widget.Kotatsu.BottomSheet.DragHandle"
 				android:id="@+id/dragHandle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content" />
