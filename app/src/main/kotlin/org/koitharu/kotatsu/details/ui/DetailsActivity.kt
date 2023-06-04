@@ -243,6 +243,9 @@ class DetailsActivity :
 		viewBinding.cardChapters?.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = insets.bottom + marginEnd
 		}
+		viewBinding.dragHandle?.updateLayoutParams<MarginLayoutParams> {
+			bottomMargin = insets.bottom
+		}
 	}
 
 	private fun onHistoryChanged(info: HistoryInfo) {

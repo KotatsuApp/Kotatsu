@@ -24,6 +24,7 @@
 		android:orientation="horizontal"
 		android:paddingVertical="8dp"
 		android:visibility="gone"
+		tools:ignore="UseCompoundDrawables"
 		tools:visibility="visible">
 
 		<TextView
@@ -43,6 +44,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="8dp"
 			android:background="?selectableItemBackgroundBorderless"
+			android:contentDescription="@string/close"
 			android:padding="16dp"
 			app:srcCompat="?actionModeCloseDrawable"
 			app:tint="?colorControlActivated" />

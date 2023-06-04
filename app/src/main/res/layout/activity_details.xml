@@ -48,7 +48,7 @@
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet"
 		tools:visibility="visible">
 
-		<LinearLayout
+		<FrameLayout
 			android:id="@+id/layout_bs_header"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -57,12 +57,17 @@
 			<com.google.android.material.bottomsheet.BottomSheetDragHandleView
 				android:id="@+id/dragHandle"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content" />
+				android:layout_height="?actionBarSize"
+				android:layout_gravity="top"
+				android:paddingTop="0dp"
+				android:paddingBottom="32dp"
+				tools:layout_marginBottom="14dp" />
 
 			<com.google.android.material.appbar.MaterialToolbar
 				android:id="@+id/toolbar_chapters"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
+				android:layout_height="?actionBarSize"
+				android:layout_gravity="bottom"
 				android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
 				tools:menu="@menu/opt_chapters">
 
@@ -92,7 +97,7 @@
 
 			</com.google.android.material.appbar.MaterialToolbar>
 
-		</LinearLayout>
+		</FrameLayout>
 
 		<androidx.fragment.app.FragmentContainerView
 			android:id="@+id/container_chapters"
