@@ -39,6 +39,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 	private var loadingJob: Job? = null
 	private var loadingPrevJob: Job? = null
 	private var loadingNextJob: Job? = null
+	private var isLoadAboveAllowed = false
 
 	val thumbnails = MutableStateFlow<List<ListModel>>(emptyList())
 	val branch = MutableStateFlow<String?>(null)
@@ -51,8 +52,17 @@ class PagesThumbnailsViewModel @Inject constructor(
 		}
 	}
 
+	fun allowLoadAbove() {
+		if (!isLoadAboveAllowed) {
+			loadingJob = launchJob(Dispatchers.Default) {
+				isLoadAboveAllowed = true
+				updateList()
+			}
+		}
+	}
+
 	fun loadPrevChapter() {
-		if (loadingJob?.isActive == true || loadingPrevJob?.isActive == true) {
+		if (!isLoadAboveAllowed || loadingJob?.isActive == true || loadingPrevJob?.isActive == true) {
 			return
 		}
 		loadingPrevJob = loadPrevNextChapter(isNext = false)
@@ -74,7 +84,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 	private suspend fun updateList() {
 		val snapshot = chaptersLoader.snapshot()
 		val mangaChapters = mangaDetails.tryGet().getOrNull()?.chapters.orEmpty()
-		val hasPrevChapter = snapshot.firstOrNull()?.chapterId != mangaChapters.firstOrNull()?.id
+		val hasPrevChapter = isLoadAboveAllowed && snapshot.firstOrNull()?.chapterId != mangaChapters.firstOrNull()?.id
 		val hasNextChapter = snapshot.lastOrNull()?.chapterId != mangaChapters.lastOrNull()?.id
 		val pages = buildList(snapshot.size + chaptersLoader.size + 2) {
 			if (hasPrevChapter) {

@@ -19,7 +19,7 @@
 		<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
 			android:id="@+id/recyclerView"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_height="match_parent"
 			android:clipToPadding="false"
 			android:padding="@dimen/grid_spacing"
 			android:scrollIndicators="top"
