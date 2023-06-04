@@ -13,6 +13,8 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.settings.utils.EditTextBindListener
 import org.koitharu.kotatsu.settings.utils.PasswordSummaryProvider
+import org.koitharu.kotatsu.settings.utils.validation.DomainValidator
+import org.koitharu.kotatsu.settings.utils.validation.PortNumberValidator
 import java.net.Proxy
 
 @AndroidEntryPoint
@@ -32,7 +34,7 @@ class ProxySettingsFragment : BasePreferenceFragment(R.string.proxy),
 			EditTextBindListener(
 				inputType = EditorInfo.TYPE_CLASS_NUMBER,
 				hint = null,
-				validator = null,
+				validator = PortNumberValidator(),
 			),
 		)
 		findPreference<EditTextPreference>(AppSettings.KEY_PROXY_PASSWORD)?.let { pref ->

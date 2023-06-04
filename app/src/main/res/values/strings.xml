@@ -432,4 +432,5 @@
 	<string name="username">Username</string>
 	<string name="password">Password</string>
 	<string name="authorization_optional">Authorization (optional)</string>
+	<string name="invalid_port_number">Invalid port number</string>
 </resources>

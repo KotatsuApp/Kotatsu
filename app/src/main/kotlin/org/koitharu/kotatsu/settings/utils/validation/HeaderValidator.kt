@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings
+package org.koitharu.kotatsu.settings.utils.validation
 
 import okhttp3.Headers
 import org.koitharu.kotatsu.R

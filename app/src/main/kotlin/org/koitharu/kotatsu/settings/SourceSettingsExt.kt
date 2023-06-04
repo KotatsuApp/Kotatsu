@@ -11,6 +11,8 @@ import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.settings.utils.AutoCompleteTextViewPreference
 import org.koitharu.kotatsu.settings.utils.EditTextBindListener
 import org.koitharu.kotatsu.settings.utils.EditTextDefaultSummaryProvider
+import org.koitharu.kotatsu.settings.utils.validation.DomainValidator
+import org.koitharu.kotatsu.settings.utils.validation.HeaderValidator
 
 fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMangaRepository) {
 	val configKeys = repository.getConfigKeys()
