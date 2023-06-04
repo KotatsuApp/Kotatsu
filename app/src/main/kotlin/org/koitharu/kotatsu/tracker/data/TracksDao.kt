@@ -34,9 +34,8 @@ abstract class TracksDao {
 	abstract fun observeNewChapters(mangaId: Long): Flow<Int?>
 
 	@Transaction
-	@MapInfo(valueColumn = "chapters_new")
-	@Query("SELECT manga.*, chapters_new FROM tracks LEFT JOIN manga ON manga.manga_id = tracks.manga_id WHERE chapters_new > 0 ORDER BY chapters_new DESC")
-	abstract fun observeUpdatedManga(): Flow<Map<MangaWithTags, Int>>
+	@Query("SELECT manga.* FROM tracks LEFT JOIN manga ON manga.manga_id = tracks.manga_id WHERE chapters_new > 0 ORDER BY chapters_new DESC")
+	abstract fun observeUpdatedManga(): Flow<List<MangaWithTags>>
 
 	@Query("DELETE FROM tracks")
 	abstract suspend fun clear()

@@ -51,6 +51,12 @@ class HistoryRepository @Inject constructor(
 		}
 	}
 
+	fun observeAll(limit: Int): Flow<List<Manga>> {
+		return db.historyDao.observeAll(limit).mapItems {
+			it.manga.toManga(it.tags.toMangaTags())
+		}
+	}
+
 	fun observeAllWithHistory(): Flow<List<MangaWithHistory>> {
 		return db.historyDao.observeAll().mapItems {
 			MangaWithHistory(

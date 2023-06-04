@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -25,7 +24,6 @@ class LocalListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
 	filter: FilterCoordinator,
-	tagHighlighter: MangaTagHighlighter,
 	settings: AppSettings,
 	downloadScheduler: DownloadWorker.Scheduler,
 	listExtraProvider: ListExtraProvider,
@@ -35,7 +33,6 @@ class LocalListViewModel @Inject constructor(
 	savedStateHandle,
 	mangaRepositoryFactory,
 	filter,
-	tagHighlighter,
 	settings,
 	listExtraProvider,
 	downloadScheduler,

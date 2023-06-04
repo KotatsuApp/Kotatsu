@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.list.ui.model
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.ifZero
@@ -14,34 +13,31 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-fun Manga.toListModel(
-	counter: Int,
-	progress: Float,
+suspend fun Manga.toListModel(
+	extraProvider: ListExtraProvider?
 ) = MangaListModel(
 	id = id,
 	title = title,
 	subtitle = tags.joinToString(", ") { it.title },
 	coverUrl = coverUrl,
 	manga = this,
-	counter = counter,
-	progress = progress,
+	counter = extraProvider?.getCounter(id) ?: 0,
+	progress = extraProvider?.getProgress(id) ?: PROGRESS_NONE,
 )
 
-fun Manga.toListDetailedModel(
-	counter: Int,
-	progress: Float,
-	tagHighlighter: MangaTagHighlighter?,
+suspend fun Manga.toListDetailedModel(
+	extraProvider: ListExtraProvider?,
 ) = MangaListDetailedModel(
 	id = id,
 	title = title,
 	subtitle = altTitle,
 	coverUrl = coverUrl,
 	manga = this,
-	counter = counter,
-	progress = progress,
+	counter = extraProvider?.getCounter(id) ?: 0,
+	progress = extraProvider?.getProgress(id) ?: PROGRESS_NONE,
 	tags = tags.map {
 		ChipsView.ChipModel(
-			tint = tagHighlighter?.getTint(it) ?: 0,
+			tint = extraProvider?.getTagTint(it) ?: 0,
 			title = it.title,
 			icon = 0,
 			isCheckable = false,
@@ -51,53 +47,30 @@ fun Manga.toListDetailedModel(
 	},
 )
 
-fun Manga.toGridModel(counter: Int, progress: Float) = MangaGridModel(
+suspend fun Manga.toGridModel(
+	extraProvider: ListExtraProvider?,
+) = MangaGridModel(
 	id = id,
 	title = title,
 	coverUrl = coverUrl,
 	manga = this,
-	counter = counter,
-	progress = progress,
+	counter = extraProvider?.getCounter(id) ?: 0,
+	progress = extraProvider?.getProgress(id) ?: PROGRESS_NONE,
 )
 
 suspend fun List<Manga>.toUi(
 	mode: ListMode,
 	extraProvider: ListExtraProvider,
-	tagHighlighter: MangaTagHighlighter?,
-): List<MangaItemModel> = toUi(ArrayList(size), mode, extraProvider, tagHighlighter)
-
-fun List<Manga>.toUi(
-	mode: ListMode,
-	tagHighlighter: MangaTagHighlighter?,
-): List<MangaItemModel> = toUi(ArrayList(size), mode, tagHighlighter)
-
-fun <C : MutableCollection<in MangaItemModel>> List<Manga>.toUi(
-	destination: C,
-	mode: ListMode,
-	tagHighlighter: MangaTagHighlighter?,
-): C = when (mode) {
-	ListMode.LIST -> mapTo(destination) { it.toListModel(0, PROGRESS_NONE) }
-	ListMode.DETAILED_LIST -> mapTo(destination) { it.toListDetailedModel(0, PROGRESS_NONE, tagHighlighter) }
-	ListMode.GRID -> mapTo(destination) { it.toGridModel(0, PROGRESS_NONE) }
-}
+): List<MangaItemModel> = toUi(ArrayList(size), mode, extraProvider)
 
 suspend fun <C : MutableCollection<in MangaItemModel>> List<Manga>.toUi(
 	destination: C,
 	mode: ListMode,
 	extraProvider: ListExtraProvider,
-	tagHighlighter: MangaTagHighlighter?,
 ): C = when (mode) {
-	ListMode.LIST -> mapTo(destination) {
-		it.toListModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
-	}
-
-	ListMode.DETAILED_LIST -> mapTo(destination) {
-		it.toListDetailedModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id), tagHighlighter)
-	}
-
-	ListMode.GRID -> mapTo(destination) {
-		it.toGridModel(extraProvider.getCounter(it.id), extraProvider.getProgress(it.id))
-	}
+	ListMode.LIST -> mapTo(destination) { it.toListModel(extraProvider) }
+	ListMode.DETAILED_LIST -> mapTo(destination) { it.toListDetailedModel(extraProvider) }
+	ListMode.GRID -> mapTo(destination) { it.toGridModel(extraProvider) }
 }
 
 fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(

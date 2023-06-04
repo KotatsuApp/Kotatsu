@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.call
@@ -21,8 +20,6 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.ARG_CATEGORY_ID
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
-import org.koitharu.kotatsu.history.data.HistoryRepository
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -30,19 +27,16 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class FavouritesListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val repository: FavouritesRepository,
-	private val trackingRepository: TrackingRepository,
-	private val historyRepository: HistoryRepository,
-	private val settings: AppSettings,
-	private val tagHighlighter: MangaTagHighlighter,
+	private val listExtraProvider: ListExtraProvider,
+	settings: AppSettings,
 	downloadScheduler: DownloadWorker.Scheduler,
-) : MangaListViewModel(settings, downloadScheduler), ListExtraProvider {
+) : MangaListViewModel(settings, downloadScheduler) {
 
 	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
 
@@ -76,7 +70,7 @@ class FavouritesListViewModel @Inject constructor(
 				),
 			)
 
-			else -> list.toUi(mode, this, tagHighlighter)
+			else -> list.toUi(mode, listExtraProvider)
 		}
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
@@ -106,22 +100,6 @@ class FavouritesListViewModel @Inject constructor(
 		}
 		launchJob {
 			repository.setCategoryOrder(categoryId, order)
-		}
-	}
-
-	override suspend fun getCounter(mangaId: Long): Int {
-		return if (settings.isTrackerEnabled) {
-			trackingRepository.getNewChaptersCount(mangaId)
-		} else {
-			0
-		}
-	}
-
-	override suspend fun getProgress(mangaId: Long): Float {
-		return if (settings.isReadingIndicatorsEnabled) {
-			historyRepository.getProgress(mangaId)
-		} else {
-			PROGRESS_NONE
 		}
 	}
 }

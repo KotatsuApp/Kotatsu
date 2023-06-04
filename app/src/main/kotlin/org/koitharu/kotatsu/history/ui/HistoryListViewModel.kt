@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
@@ -21,8 +20,8 @@ import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -31,7 +30,6 @@ import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
 import org.koitharu.kotatsu.list.ui.model.toListModel
-import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -40,8 +38,7 @@ import javax.inject.Inject
 class HistoryListViewModel @Inject constructor(
 	private val repository: HistoryRepository,
 	private val settings: AppSettings,
-	private val trackingRepository: TrackingRepository,
-	private val tagHighlighter: MangaTagHighlighter,
+	private val extraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
@@ -106,7 +103,6 @@ class HistoryListViewModel @Inject constructor(
 		mode: ListMode,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
-		val showPercent = settings.isReadingIndicatorsEnabled
 		var prevDate: DateTimeAgo? = null
 		for ((manga, history) in list) {
 			if (grouped) {
@@ -116,16 +112,10 @@ class HistoryListViewModel @Inject constructor(
 				}
 				prevDate = date
 			}
-			val counter = if (settings.isTrackerEnabled) {
-				trackingRepository.getNewChaptersCount(manga.id)
-			} else {
-				0
-			}
-			val percent = if (showPercent) history.percent else PROGRESS_NONE
 			result += when (mode) {
-				ListMode.LIST -> manga.toListModel(counter, percent)
-				ListMode.DETAILED_LIST -> manga.toListDetailedModel(counter, percent, tagHighlighter)
-				ListMode.GRID -> manga.toGridModel(counter, percent)
+				ListMode.LIST -> manga.toListModel(extraProvider)
+				ListMode.DETAILED_LIST -> manga.toListDetailedModel(extraProvider)
+				ListMode.GRID -> manga.toGridModel(extraProvider)
 			}
 		}
 		return result

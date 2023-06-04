@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class SuggestionsViewModel @Inject constructor(
 	repository: SuggestionRepository,
 	settings: AppSettings,
-	private val tagHighlighter: MangaTagHighlighter,
+	private val extraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
@@ -44,7 +44,7 @@ class SuggestionsViewModel @Inject constructor(
 				),
 			)
 
-			else -> list.toUi(mode, tagHighlighter)
+			else -> list.toUi(mode, extraProvider)
 		}
 	}.onStart {
 		loadingCounter.increment()

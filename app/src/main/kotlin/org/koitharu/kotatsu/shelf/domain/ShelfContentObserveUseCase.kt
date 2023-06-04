@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import javax.inject.Inject
 
+@Suppress("SameParameterValue")
 class ShelfContentObserveUseCase @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
@@ -35,20 +36,20 @@ class ShelfContentObserveUseCase @Inject constructor(
 ) {
 
 	operator fun invoke(): Flow<ShelfContent> = combine(
-		historyRepository.observeAllWithHistory(),
-		observeLocalManga(SortOrder.UPDATED),
+		historyRepository.observeAll(20),
+		observeLocalManga(SortOrder.UPDATED, 20),
 		observeFavourites(),
 		trackingRepository.observeUpdatedManga(),
-		suggestionRepository.observeAll(16),
+		suggestionRepository.observeAll(20),
 	) { history, local, favorites, updated, suggestions ->
 		ShelfContent(history, favorites, updated, local, suggestions)
 	}
 
-	private fun observeLocalManga(sortOrder: SortOrder): Flow<List<Manga>> {
+	private fun observeLocalManga(sortOrder: SortOrder, limit: Int): Flow<List<Manga>> {
 		return localStorageChanges
 			.onStart { emit(null) }
 			.mapLatest {
-				localMangaRepository.getList(0, null, sortOrder)
+				localMangaRepository.getList(0, null, sortOrder).take(limit)
 			}.distinctUntilChanged()
 	}
 

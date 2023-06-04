@@ -23,7 +23,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.countChaptersByBranch
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -45,6 +44,7 @@ import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -67,7 +67,7 @@ class DetailsFragment :
 	lateinit var coil: ImageLoader
 
 	@Inject
-	lateinit var tagHighlighter: MangaTagHighlighter
+	lateinit var tagHighlighter: ListExtraProvider
 
 	private val viewModel by activityViewModels<DetailsViewModel>()
 
@@ -283,7 +283,7 @@ class DetailsFragment :
 			manga.tags.map { tag ->
 				ChipsView.ChipModel(
 					title = tag.title,
-					tint = tagHighlighter.getTint(tag),
+					tint = tagHighlighter.getTagTint(tag),
 					icon = 0,
 					data = tag,
 					isCheckable = false,

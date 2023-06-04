@@ -1,6 +1,10 @@
 package org.koitharu.kotatsu.history.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
@@ -19,6 +23,10 @@ abstract class HistoryDao {
 	@Transaction
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC")
 	abstract fun observeAll(): Flow<List<HistoryWithManga>>
+
+	@Transaction
+	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC LIMIT :limit")
+	abstract fun observeAll(limit: Int): Flow<List<HistoryWithManga>>
 
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM history WHERE deleted_at = 0)")
 	abstract suspend fun findAllManga(): List<MangaEntity>

@@ -23,8 +23,6 @@ import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
-import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -41,21 +39,20 @@ import org.koitharu.kotatsu.shelf.domain.model.ShelfContent
 import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 import org.koitharu.kotatsu.sync.domain.SyncController
-import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class ShelfViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
-	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 	private val downloadScheduler: DownloadWorker.Scheduler,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
+	private val listExtraProvider: ListExtraProvider,
 	shelfContentObserveUseCase: ShelfContentObserveUseCase,
 	syncController: SyncController,
 	networkState: NetworkState,
-) : BaseViewModel(), ListExtraProvider {
+) : BaseViewModel() {
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val onDownloadStarted = MutableEventFlow<Unit>()
@@ -75,22 +72,6 @@ class ShelfViewModel @Inject constructor(
 	init {
 		launchJob(Dispatchers.Default) {
 			syncController.requestFullSync()
-		}
-	}
-
-	override suspend fun getCounter(mangaId: Long): Int {
-		return if (settings.isTrackerEnabled) {
-			trackingRepository.getNewChaptersCount(mangaId)
-		} else {
-			0
-		}
-	}
-
-	override suspend fun getProgress(mangaId: Long): Float {
-		return if (settings.isReadingIndicatorsEnabled) {
-			historyRepository.getProgress(mangaId)
-		} else {
-			PROGRESS_NONE
 		}
 	}
 
@@ -194,7 +175,7 @@ class ShelfViewModel @Inject constructor(
 				when (section) {
 					ShelfSection.HISTORY -> mapHistory(
 						result,
-						content.history.filter { it.manga.source == MangaSource.LOCAL },
+						content.history.filter { it.source == MangaSource.LOCAL },
 					)
 
 					ShelfSection.LOCAL -> mapLocal(result, content.local)
@@ -222,17 +203,14 @@ class ShelfViewModel @Inject constructor(
 
 	private suspend fun mapHistory(
 		destination: MutableList<in ShelfSectionModel.History>,
-		list: List<MangaWithHistory>,
+		list: List<Manga>,
 	) {
 		if (list.isEmpty()) {
 			return
 		}
-		val showPercent = settings.isReadingIndicatorsEnabled
 		destination += ShelfSectionModel.History(
-			items = list.map { (manga, history) ->
-				val counter = getCounter(manga.id)
-				val percent = if (showPercent) history.percent else PROGRESS_NONE
-				manga.toGridModel(counter, percent)
+			items = list.map { manga ->
+				manga.toGridModel(listExtraProvider)
 			},
 			showAllButtonText = R.string.show_all,
 		)
@@ -240,16 +218,15 @@ class ShelfViewModel @Inject constructor(
 
 	private suspend fun mapUpdated(
 		destination: MutableList<in ShelfSectionModel.Updated>,
-		updated: Map<Manga, Int>,
+		updated: List<Manga>,
 	) {
 		if (updated.isEmpty()) {
 			return
 		}
-		val showPercent = settings.isReadingIndicatorsEnabled
+		settings.isReadingIndicatorsEnabled
 		destination += ShelfSectionModel.Updated(
-			items = updated.map { (manga, counter) ->
-				val percent = if (showPercent) getProgress(manga.id) else PROGRESS_NONE
-				manga.toGridModel(counter, percent)
+			items = updated.map { manga ->
+				manga.toGridModel(listExtraProvider)
 			},
 			showAllButtonText = R.string.show_all,
 		)
@@ -263,7 +240,7 @@ class ShelfViewModel @Inject constructor(
 			return
 		}
 		destination += ShelfSectionModel.Local(
-			items = local.toUi(ListMode.GRID, this, null),
+			items = local.toUi(ListMode.GRID, listExtraProvider),
 			showAllButtonText = R.string.show_all,
 		)
 	}
@@ -276,7 +253,7 @@ class ShelfViewModel @Inject constructor(
 			return
 		}
 		destination += ShelfSectionModel.Suggestions(
-			items = suggestions.toUi(ListMode.GRID, this, null),
+			items = suggestions.toUi(ListMode.GRID, listExtraProvider),
 			showAllButtonText = R.string.show_all,
 		)
 	}
@@ -291,7 +268,7 @@ class ShelfViewModel @Inject constructor(
 		for ((category, list) in favourites) {
 			if (list.isNotEmpty()) {
 				destination += ShelfSectionModel.Favourites(
-					items = list.toUi(ListMode.GRID, this, null),
+					items = list.toUi(ListMode.GRID, listExtraProvider),
 					category = category,
 					showAllButtonText = R.string.show_all,
 				)

@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
@@ -42,6 +43,7 @@ private const val MIN_HAS_MORE_ITEMS = 8
 @HiltViewModel
 class MultiSearchViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
+	private val extraProvider: ListExtraProvider,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val downloadScheduler: DownloadWorker.Scheduler,
@@ -128,7 +130,7 @@ class MultiSearchViewModel @Inject constructor(
 			async(dispatcher) {
 				runCatchingCancellable {
 					val list = mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
-						.toUi(ListMode.GRID, null)
+						.toUi(ListMode.GRID, extraProvider)
 					if (list.isNotEmpty()) {
 						MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list)
 					} else {

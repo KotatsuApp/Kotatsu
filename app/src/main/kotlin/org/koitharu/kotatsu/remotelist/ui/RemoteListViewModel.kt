@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
@@ -47,7 +46,6 @@ open class RemoteListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
 	private val filter: FilterCoordinator,
-	private val tagHighlighter: MangaTagHighlighter,
 	settings: AppSettings,
 	listExtraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
@@ -72,7 +70,7 @@ open class RemoteListViewModel @Inject constructor(
 				list == null -> add(LoadingState)
 				list.isEmpty() -> add(createEmptyState(header.value.hasSelectedTags))
 				else -> {
-					list.toUi(this, mode, listExtraProvider, tagHighlighter)
+					list.toUi(this, mode, listExtraProvider)
 					when {
 						error != null -> add(error.toErrorFooter())
 						hasNext -> add(LoadingFooter())

@@ -1,13 +1,12 @@
 package org.koitharu.kotatsu.shelf.domain.model
 
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.parsers.model.Manga
 
 class ShelfContent(
-	val history: List<MangaWithHistory>,
+	val history: List<Manga>,
 	val favourites: Map<FavouriteCategory, List<Manga>>,
-	val updated: Map<Manga, Int>,
+	val updated: List<Manga>,
 	val local: List<Manga>,
 	val suggestions: List<Manga>,
 ) {

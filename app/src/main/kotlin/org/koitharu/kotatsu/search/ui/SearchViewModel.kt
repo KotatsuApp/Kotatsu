@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -33,7 +33,7 @@ class SearchViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	repositoryFactory: MangaRepository.Factory,
 	settings: AppSettings,
-	private val tagHighlighter: MangaTagHighlighter,
+	private val extraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
@@ -64,7 +64,7 @@ class SearchViewModel @Inject constructor(
 
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
-				list.toUi(result, mode, tagHighlighter)
+				list.toUi(result, mode, extraProvider)
 				when {
 					error != null -> result += error.toErrorFooter()
 					hasNext -> result += LoadingFooter()
