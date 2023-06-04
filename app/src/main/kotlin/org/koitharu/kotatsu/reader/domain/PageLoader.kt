@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.RetainedLifecycle
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +33,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.core.util.ext.ensureSuccess
+import org.koitharu.kotatsu.core.util.ext.isNotEmpty
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
@@ -103,7 +105,7 @@ class PageLoader @Inject constructor(
 	}
 
 	fun loadPageAsync(page: MangaPage, force: Boolean): ProgressDeferred<File, Float> {
-		var task = tasks[page.id]
+		var task = tasks[page.id]?.takeIf { it.isValid() }
 		if (force) {
 			task?.cancel()
 		} else if (task?.isCancelled == false) {
@@ -214,6 +216,15 @@ class PageLoader @Inject constructor(
 
 	private fun isLowRam(): Boolean {
 		return context.ramAvailable <= FileSize.MEGABYTES.convert(PREFETCH_MIN_RAM_MB, FileSize.BYTES)
+	}
+
+	private fun Deferred<File>.isValid(): Boolean {
+		return if (isCompleted) {
+			val file = getCompleted()
+			file.exists() && file.isNotEmpty()
+		} else {
+			true
+		}
 	}
 
 	private class InternalErrorHandler : AbstractCoroutineContextElement(CoroutineExceptionHandler),

@@ -87,3 +87,6 @@ fun Throwable.isWebViewUnavailable(): Boolean {
 	return (this is AndroidRuntimeException && message?.contains("WebView") == true) ||
 		cause?.isWebViewUnavailable() == true
 }
+
+@Suppress("FunctionName")
+fun NoSpaceLeftException() = IOException(MSG_NO_SPACE_LEFT)

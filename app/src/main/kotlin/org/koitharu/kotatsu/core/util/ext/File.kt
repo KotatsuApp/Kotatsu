@@ -26,6 +26,8 @@ fun File.takeIfReadable() = takeIf { it.exists() && it.canRead() }
 
 fun File.takeIfWriteable() = takeIf { it.exists() && it.canWrite() }
 
+fun File.isNotEmpty() = length() != 0L
+
 fun ZipFile.readText(entry: ZipEntry) = getInputStream(entry).bufferedReader().use {
 	it.readText()
 }

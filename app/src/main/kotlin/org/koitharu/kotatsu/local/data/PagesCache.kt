@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.local.data
 
 import android.content.Context
+import android.os.StatFs
 import com.tomclaw.cache.DiskLruCache
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,8 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 	}
 	private val lruCache = SuspendLazy {
 		val dir = cacheDir.get()
-		val size = FileSize.MEGABYTES.convert(200, FileSize.BYTES)
+		val availableSize = getAvailableSizeMb()
+		val size = SIZE_DEFAULT.coerceIn(SIZE_MIN, availableSize)
 		runCatchingCancellable {
 			DiskLruCache.create(dir, size)
 		}.recoverCatching { error ->
@@ -62,5 +64,21 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		} finally {
 			file.delete()
 		}
+	}
+
+	private suspend fun getAvailableSizeMb(): Long = runCatchingCancellable {
+		val statFs = StatFs(cacheDir.get().absolutePath)
+		FileSize.BYTES.convert(statFs.availableBytes, FileSize.MEGABYTES)
+	}.onFailure {
+		it.printStackTraceDebug()
+	}.getOrDefault(SIZE_DEFAULT)
+
+	private companion object {
+
+		val SIZE_MIN
+			get() = FileSize.MEGABYTES.convert(20, FileSize.BYTES)
+
+		val SIZE_DEFAULT
+			get() = FileSize.MEGABYTES.convert(200, FileSize.BYTES)
 	}
 }
