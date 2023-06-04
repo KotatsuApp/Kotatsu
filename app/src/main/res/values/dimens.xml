@@ -41,6 +41,7 @@
 	<dimen name="bottom_sheet_width">0dp</dimen>
 	<dimen name="bottom_sheet_handle_size_min">16dp</dimen>
 	<dimen name="bottom_sheet_handle_size_max">24dp</dimen>
+	<dimen name="bottom_sheet_corner_radius">28dp</dimen>
 	<dimen name="dialog_radius">8dp</dimen>
 
 	<dimen name="card_indicator_size">32dp</dimen>

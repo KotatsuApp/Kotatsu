@@ -201,7 +201,7 @@ class DetailsActivity :
 		val toolbar = viewBinding.toolbarChapters ?: return
 		if (isAnimationsEnabled) {
 			val transition = AutoTransition()
-			transition.duration = getAnimationDuration(R.integer.config_tinyAnimTime)
+			transition.duration = getAnimationDuration(R.integer.config_shorterAnimTime)
 			TransitionManager.beginDelayedTransition(toolbar, transition)
 		}
 		if (isExpanded) {
