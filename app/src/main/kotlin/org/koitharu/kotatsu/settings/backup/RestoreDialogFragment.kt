@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -87,10 +88,12 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 	companion object {
 
 		const val ARG_FILE = "file"
-		const val TAG = "RestoreDialogFragment"
+		private const val TAG = "RestoreDialogFragment"
 
-		fun newInstance(uri: Uri) = RestoreDialogFragment().withArgs(1) {
-			putString(ARG_FILE, uri.toString())
+		fun show(fm: FragmentManager, uri: Uri) {
+			RestoreDialogFragment().withArgs(1) {
+				putString(ARG_FILE, uri.toString())
+			}.show(fm, TAG)
 		}
 	}
 }

@@ -433,4 +433,11 @@
 	<string name="password">Password</string>
 	<string name="authorization_optional">Authorization (optional)</string>
 	<string name="invalid_port_number">Invalid port number</string>
+	<string name="network">Network</string>
+	<string name="data_and_privacy">Data and privacy</string>
+	<string name="restore_summary">Restore previously created backup</string>
+	<string name="webtoon_zoom_summary">Allow zoom in gesture in webtoon mode</string>
+	<string name="reader_info_bar_summary">Show the current time and reading progress at the top of the screen</string>
+	<string name="show_pages_numbers_summary">Show page numbers in bottom corner</string>
+	<string name="pages_animation_summary">Animate page switching</string>
 </resources>

@@ -1,7 +1,11 @@
 package org.koitharu.kotatsu.settings
 
+import android.content.ActivityNotFoundException
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
 import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,11 +28,14 @@ import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
+import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
+import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cache) {
+class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privacy), ActivityResultCallback<Uri?> {
 
 	@Inject
 	lateinit var trackerRepo: TrackingRepository
@@ -48,8 +55,13 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 	@Inject
 	lateinit var shortcutsUpdater: ShortcutsUpdater
 
+	private val backupSelectCall = registerForActivityResult(
+		ActivityResultContracts.OpenDocument(),
+		this,
+	)
+
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-		addPreferencesFromResource(R.xml.pref_history)
+		addPreferencesFromResource(R.xml.pref_user_data)
 		findPreference<Preference>(AppSettings.KEY_SHORTCUTS)?.isVisible =
 			shortcutsUpdater.isDynamicShortcutsAvailable()
 	}
@@ -116,7 +128,30 @@ class HistorySettingsFragment : BasePreferenceFragment(R.string.history_and_cach
 				true
 			}
 
+			AppSettings.KEY_BACKUP -> {
+				BackupDialogFragment.show(childFragmentManager)
+				true
+			}
+
+			AppSettings.KEY_RESTORE -> {
+				try {
+					backupSelectCall.launch(arrayOf("*/*"))
+				} catch (e: ActivityNotFoundException) {
+					e.printStackTraceDebug()
+					Snackbar.make(
+						listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
+					).show()
+				}
+				true
+			}
+
 			else -> super.onPreferenceTreeClick(preference)
+		}
+	}
+
+	override fun onActivityResult(result: Uri?) {
+		if (result != null) {
+			RestoreDialogFragment.show(childFragmentManager, result)
 		}
 	}
 

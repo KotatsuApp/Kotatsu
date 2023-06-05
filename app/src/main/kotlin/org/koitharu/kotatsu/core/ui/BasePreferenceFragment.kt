@@ -9,10 +9,10 @@ import androidx.core.view.updatePadding
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
+import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject
 
 @Suppress("LeakingThis")
@@ -44,9 +44,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 
 	override fun onResume() {
 		super.onResume()
-		if (titleId != 0) {
-			setTitle(getString(titleId))
-		}
+		setTitle(if (titleId != 0) getString(titleId) else null)
 	}
 
 	@CallSuper
@@ -56,11 +54,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 		)
 	}
 
-	protected fun setTitle(title: CharSequence) {
-		activity?.let {
-			if (!it.resources.getBoolean(R.bool.is_tablet)) {
-				it.title = title
-			}
-		}
+	protected fun setTitle(title: CharSequence?) {
+		(activity as? SettingsActivity)?.setSectionTitle(title)
 	}
 }

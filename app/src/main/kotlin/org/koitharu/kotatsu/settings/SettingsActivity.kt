@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.isScrolledToTop
+import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -121,6 +122,12 @@ class SettingsActivity :
 		}
 	}
 
+	fun setSectionTitle(title: CharSequence?) {
+		viewBinding.textViewHeader?.apply {
+			textAndVisible = title
+		} ?: setTitle(title ?: getString(R.string.settings))
+	}
+
 	fun openFragment(fragment: Fragment, isFromRoot: Boolean) {
 		val hasFragment = supportFragmentManager.findFragmentById(R.id.container) != null
 		val isMasterDetail = viewBinding.containerMaster != null
@@ -139,7 +146,7 @@ class SettingsActivity :
 		val fragment = when (intent?.action) {
 			ACTION_READER -> ReaderSettingsFragment()
 			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
-			ACTION_HISTORY -> HistorySettingsFragment()
+			ACTION_HISTORY -> UserDataSettingsFragment()
 			ACTION_TRACKER -> TrackerSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 				intent.getSerializableExtraCompat(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -101,6 +102,10 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	companion object {
 
-		const val TAG = "BackupDialogFragment"
+		private const val TAG = "BackupDialogFragment"
+
+		fun show(fm: FragmentManager) {
+			BackupDialogFragment().show(fm, TAG)
+		}
 	}
 }

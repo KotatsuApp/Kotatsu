@@ -3,6 +3,12 @@
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<SwitchPreferenceCompat
+		android:key="protect_app"
+		android:persistent="false"
+		android:summary="@string/protect_application_summary"
+		android:title="@string/protect_application" />
+
+	<SwitchPreferenceCompat
 		android:key="history_exclude_nsfw"
 		android:summary="@string/exclude_nsfw_from_history_summary"
 		android:title="@string/exclude_nsfw_from_history" />
@@ -12,6 +18,22 @@
 		android:key="dynamic_shortcuts"
 		android:summary="@string/history_shortcuts_summary"
 		android:title="@string/history_shortcuts" />
+
+	<PreferenceCategory android:title="@string/backup_restore">
+
+		<Preference
+			android:key="backup"
+			android:persistent="false"
+			android:summary="@string/backup_information"
+			android:title="@string/create_backup" />
+
+		<Preference
+			android:key="restore"
+			android:persistent="false"
+			android:summary="@string/restore_summary"
+			android:title="@string/restore_backup" />
+
+	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/data_deletion">
 

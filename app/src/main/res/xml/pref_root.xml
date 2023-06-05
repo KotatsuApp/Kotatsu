@@ -9,15 +9,10 @@
 		android:title="@string/appearance" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.ContentSettingsFragment"
+		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesListFragment"
 		android:icon="@drawable/ic_manga_source"
 		android:key="content"
-		android:title="@string/content" />
-
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.HistorySettingsFragment"
-		android:icon="@drawable/ic_history"
-		android:title="@string/history_and_cache" />
+		android:title="@string/remote_sources" />
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.ReaderSettingsFragment"
@@ -25,9 +20,19 @@
 		android:title="@string/reader_settings" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.ServicesSettingsFragment"
-		android:icon="@drawable/ic_services"
-		android:title="@string/services" />
+		android:fragment="org.koitharu.kotatsu.settings.NetworkSettingsFragment"
+		android:icon="@drawable/ic_web"
+		android:title="@string/network" />
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.UserDataSettingsFragment"
+		android:icon="@drawable/ic_data_privacy"
+		android:title="@string/data_and_privacy" />
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.DownloadsSettingsFragment"
+		android:icon="@drawable/ic_download"
+		android:title="@string/downloads" />
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment"
@@ -35,9 +40,9 @@
 		android:title="@string/check_for_new_chapters" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.backup.BackupSettingsFragment"
-		android:icon="@drawable/ic_backup_restore"
-		android:title="@string/backup_restore" />
+		android:fragment="org.koitharu.kotatsu.settings.ServicesSettingsFragment"
+		android:icon="@drawable/ic_services"
+		android:title="@string/services" />
 
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.about.AboutSettingsFragment"

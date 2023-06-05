@@ -12,7 +12,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.DialogImportBinding
-import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
 import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
 
 class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.OnClickListener {
@@ -64,9 +63,10 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 	}
 
 	private fun restoreBackup(uri: Uri?) {
-		RestoreDialogFragment.newInstance(uri ?: return)
-			.show(parentFragmentManager, BackupDialogFragment.TAG)
-		dismiss()
+		if (uri != null) {
+			RestoreDialogFragment.show(parentFragmentManager, uri)
+			dismiss()
+		}
 	}
 
 	companion object {
