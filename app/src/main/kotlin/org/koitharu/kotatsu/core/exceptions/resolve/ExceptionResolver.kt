@@ -6,15 +6,13 @@ import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Headers
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
-import org.koitharu.kotatsu.browser.cloudflare.CloudFlareDialog
+import org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
-import org.koitharu.kotatsu.core.util.isSuccess
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -23,20 +21,26 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class ExceptionResolver private constructor(
-	private val activity: FragmentActivity?,
-	private val fragment: Fragment?,
-) : ActivityResultCallback<TaggedActivityResult> {
+class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 
 	private val continuations = ArrayMap<String, Continuation<Boolean>>(1)
-	private lateinit var sourceAuthContract: ActivityResultLauncher<MangaSource>
+	private val activity: FragmentActivity?
+	private val fragment: Fragment?
+	private val sourceAuthContract: ActivityResultLauncher<MangaSource>
+	private val cloudflareContract: ActivityResultLauncher<Pair<String, Headers?>>
 
-	constructor(activity: FragmentActivity) : this(activity = activity, fragment = null) {
+	constructor(activity: FragmentActivity) {
+		this.activity = activity
+		fragment = null
 		sourceAuthContract = activity.registerForActivityResult(SourceAuthActivity.Contract(), this)
+		cloudflareContract = activity.registerForActivityResult(CloudFlareActivity.Contract(), this)
 	}
 
-	constructor(fragment: Fragment) : this(activity = null, fragment = fragment) {
+	constructor(fragment: Fragment) {
+		this.fragment = fragment
+		activity = null
 		sourceAuthContract = fragment.registerForActivityResult(SourceAuthActivity.Contract(), this)
+		cloudflareContract = fragment.registerForActivityResult(CloudFlareActivity.Contract(), this)
 	}
 
 	override fun onActivityResult(result: TaggedActivityResult) {
@@ -58,22 +62,9 @@ class ExceptionResolver private constructor(
 		else -> false
 	}
 
-	private suspend fun resolveCF(url: String, headers: Headers): Boolean {
-		val dialog = CloudFlareDialog.newInstance(url, headers)
-		val fm = getFragmentManager()
-		return suspendCancellableCoroutine { cont ->
-			fm.clearFragmentResult(CloudFlareDialog.TAG)
-			continuations[CloudFlareDialog.TAG] = cont
-			fm.setFragmentResultListener(CloudFlareDialog.TAG, checkNotNull(fragment ?: activity)) { key, result ->
-				continuations.remove(key)?.resume(result.getBoolean(CloudFlareDialog.EXTRA_RESULT))
-			}
-			dialog.show(fm, CloudFlareDialog.TAG)
-			cont.invokeOnCancellation {
-				continuations.remove(CloudFlareDialog.TAG, cont)
-				fm.clearFragmentResultListener(CloudFlareDialog.TAG)
-				dialog.dismissAllowingStateLoss()
-			}
-		}
+	private suspend fun resolveCF(url: String, headers: Headers): Boolean = suspendCoroutine { cont ->
+		continuations[CloudFlareActivity.TAG] = cont
+		cloudflareContract.launch(url to headers)
 	}
 
 	private suspend fun resolveAuthException(source: MangaSource): Boolean = suspendCoroutine { cont ->

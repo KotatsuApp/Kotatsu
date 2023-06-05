@@ -5,7 +5,7 @@ import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.util.UUID
 
-inline fun String?.ifNullOrEmpty(defaultValue: () -> String): String {
+inline fun <C : CharSequence> C?.ifNullOrEmpty(defaultValue: () -> C): C {
 	return if (this.isNullOrEmpty()) defaultValue() else this
 }
 

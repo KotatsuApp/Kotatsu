@@ -103,6 +103,10 @@
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
 		<activity
+			android:name="org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity"
+			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+			android:windowSoftInputMode="adjustResize" />
+		<activity
 			android:name="org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity"
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
