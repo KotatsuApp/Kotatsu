@@ -407,9 +407,14 @@
     <string name="downloads_cancelled">下载被取消</string>
     <string name="suggestions_enable_prompt">你想要接收个人漫画推荐吗？</string>
     <string name="suggestion_manga">推荐：%s</string>
-    <string name="suggestions_notifications_summary">偶尔对建议的漫画显示通知</string>
+    <string name="suggestions_notifications_summary">偶尔显示建议漫画通知</string>
     <string name="more">更多</string>
     <string name="cancel_all_downloads_confirm">所有进行中的下载都将被取消，未下载完成的数据将丢失</string>
     <string name="remove_completed_downloads_confirm">你的下载历史将会永久删除</string>
     <string name="sync_auth_hint">你可以登陆一个已有账号或创建新账号</string>
+    <string name="address">地址</string>
+    <string name="clear_network_cache">清除网络缓存</string>
+    <string name="proxy">代理</string>
+    <string name="type">类型</string>
+    <string name="invalid_value_message">无效值</string>
 </resources>
