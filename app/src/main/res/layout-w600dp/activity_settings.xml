@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical">
+	android:layout_height="match_parent">
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
+		android:elevation="0dp"
 		android:fitsSystemWindows="true"
-		app:elevation="@dimen/design_appbar_elevation"
+		app:elevation="0dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
@@ -25,8 +25,36 @@
 	</com.google.android.material.appbar.AppBarLayout>
 
 	<androidx.fragment.app.FragmentContainerView
-		android:id="@id/container"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+		android:id="@+id/container_master"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/card_details"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		app:layout_constraintWidth_max="400dp"
+		app:layout_constraintWidth_min="320dp"
+		app:layout_constraintWidth_percent="0.35" />
 
-</LinearLayout>
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card_details"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/side_card_offset"
+		android:layout_marginTop="2dp"
+		android:layout_marginEnd="@dimen/side_card_offset"
+		android:layout_marginBottom="@dimen/side_card_offset"
+		app:cardBackgroundColor="?colorBackgroundFloating"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/container_master"
+		app:layout_constraintTop_toBottomOf="@id/appbar">
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
+
+	</com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,7 +26,6 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.settings.SettingsHeadersFragment
 import org.koitharu.kotatsu.settings.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
@@ -90,8 +89,7 @@ class SourcesListFragment :
 
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {
 		val fragment = SourceSettingsFragment.newInstance(item.source)
-		(parentFragment as? SettingsHeadersFragment)?.openFragment(fragment)
-			?: (activity as? SettingsActivity)?.openFragment(fragment)
+		(activity as? SettingsActivity)?.openFragment(fragment, false)
 	}
 
 	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
