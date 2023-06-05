@@ -55,7 +55,6 @@
 	<string name="operation_not_supported">Ця операція не підтримується</string>
 	<string name="text_file_not_supported">Виберіть файл ZIP або CBZ.</string>
 	<string name="no_description">Немає опису</string>
-	<string name="history_and_cache">Історія та кеш</string>
 	<string name="clear_pages_cache">Очистити кеш сторінок</string>
 	<string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
 	<string name="standard">Стандартний</string>
@@ -173,7 +172,6 @@
 	<string name="enabled">Увімкнено</string>
 	<string name="disabled">Вимкнено</string>
 	<string name="reset_filter">Скинути фільтр</string>
-	<string name="find_genre">Знайти жанр</string>
 	<string name="onboard_text">Виберіть мови, якими ви хочете читати манґу. Це можливо змінити пізніше в налаштуваннях.</string>
 	<string name="only_using_wifi">Тільки по Wi-Fi</string>
 	<string name="preload_pages">Попереднє завантаження сторінок</string>
@@ -183,7 +181,6 @@
 	<string name="search_chapters">Знайти розділ</string>
 	<string name="chapters_empty">Немає розділів у цій манзі</string>
 	<string name="percent_string_pattern">%1$s%%</string>
-	<string name="content">Зміст</string>
 	<string name="suggestions_updating">Оновлення пропозицій</string>
 	<string name="text_delete_local_manga_batch">Видалити вибрані елементи з пристрою назавжди\?</string>
 	<string name="removal_completed">Видалення завершено</string>
@@ -195,7 +192,6 @@
 	<string name="clear">Очистити</string>
 	<string name="downloads">Завантаження</string>
 	<string name="automatic">Як в системі</string>
-	<string name="chapter_is_missing_text">Завантажте або прочитайте цей відсутній розділ онлайн.</string>
 	<string name="chapter_is_missing">Розділ відсутній</string>
 	<string name="genres">Жанри</string>
 	<string name="system_default">За замовчуванням</string>

@@ -59,7 +59,6 @@
     <string name="operation_not_supported">Операция не поддерживается</string>
     <string name="text_file_not_supported">Выберите файл в формате CBZ или ZIP.</string>
     <string name="no_description">Описание отсутствует</string>
-    <string name="history_and_cache">История и кэш</string>
     <string name="clear_pages_cache">Очистить кэш страниц</string>
     <string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
     <string name="standard">Стандартный</string>
@@ -183,7 +182,6 @@
     <string name="read_more">Подробнее</string>
     <string name="queued">В очереди</string>
     <string name="chapter_is_missing">Глава отсутствует</string>
-    <string name="chapter_is_missing_text">Скачайте или прочитайте эту недостающую главу онлайн.</string>
     <string name="about_app_translation_summary">Помочь с переводом приложения</string>
     <string name="about_app_translation">Перевод</string>
     <string name="auth_complete">Авторизация выполнена</string>
@@ -212,7 +210,6 @@
     <string name="filter_load_error">Не удалось загрузить список жанров</string>
     <string name="computing_">Вычисление…</string>
     <string name="reset_filter">Сбросить фильтр</string>
-    <string name="find_genre">Поиск по жанрам</string>
     <string name="onboard_text">Выберите языки, на которых Вы хотите читать мангу. Это можно будет изменить позже в настройках.</string>
     <string name="never">Никогда</string>
     <string name="only_using_wifi">Только по Wi-Fi</string>
@@ -224,7 +221,6 @@
     <string name="search_chapters">Найти главу</string>
     <string name="chapters_empty">В этой манге нет глав</string>
     <string name="appearance">Оформление</string>
-    <string name="content">Контент</string>
     <string name="suggestions_updating">Обновление рекомендаций</string>
     <string name="suggestions_excluded_genres">Исключить жанры</string>
     <string name="suggestions_excluded_genres_summary">Укажите жанры, которые Вы не хотите видеть в рекомендациях</string>

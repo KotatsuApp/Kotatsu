@@ -19,7 +19,6 @@
 	<string name="delete">Tanggalin</string>
 	<string name="operation_not_supported">Hindi suportado ang operasyong ito</string>
 	<string name="text_file_not_supported">Pumili ng ZIP o CBZ file.</string>
-	<string name="history_and_cache">Kasaysayan at cache</string>
 	<string name="no_description">Walang paglalarawan</string>
 	<string name="grid_size">Laki ng grid</string>
 	<string name="search_on_s">Hanapin sa %s</string>
@@ -107,7 +106,6 @@
 	<string name="text_suggestion_holder">Simulan ang pagbabasa ng manga at makakakuha ka ng mga personalized na mungkahi</string>
 	<string name="exclude_nsfw_from_suggestions">Huwag magmungkahi ng NSFW manga</string>
 	<string name="enabled">Pinagana</string>
-	<string name="find_genre">Maghanap ng genre</string>
 	<string name="onboard_text">Pumili ng mga wika na gusto mong basahin ang manga. Maaari mo itong baguhin sa ibang pagkakataon sa mga setting.</string>
 	<string name="local_storage">Lokal na storage</string>
 	<string name="favourites">Mga paborito</string>
@@ -184,7 +182,6 @@
 	<string name="protect_application_subtitle">Maglagay ng password para simulan ang app</string>
 	<string name="tracker_warning">Ang ilang device ay may iba\'t ibang gawi ng system, na maaaring masira ang mga gawain sa background.</string>
 	<string name="queued">Nakapila na</string>
-	<string name="chapter_is_missing_text">I-download o basahin ang nawawalang kabanata online.</string>
 	<string name="text_clear_cookies_prompt">Mala-log out ka mula sa lahat ng source</string>
 	<string name="state_finished">Tapos na</string>
 	<string name="text_clear_search_history_prompt">Alisin ang lahat ng kamakailang query sa paghahanap nang permanente\?</string>
@@ -320,7 +317,6 @@
 	<string name="text_delete_local_manga_batch">Permanenteng tanggalin ang mga napiling item sa device\?</string>
 	<string name="chapters_empty">Walang mga kabanata sa manga na ito</string>
 	<string name="suggestions_updating">Nag-a-update ang mga mungkahi</string>
-	<string name="content">Nilalaman</string>
 	<string name="download_slowdown">Pagbagal ng pag-download</string>
 	<string name="chapters_will_removed_background">Tatanggalin ang mga kabanata sa background</string>
 	<string name="canceled">Kinansela</string>

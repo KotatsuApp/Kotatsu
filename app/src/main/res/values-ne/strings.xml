@@ -104,7 +104,6 @@
 	<string name="app_version">संस्करण %s</string>
 	<string name="operation_not_supported">यो अपरेशन समर्थित छैन</string>
 	<string name="no_description">कुनै विवरण छैन</string>
-	<string name="history_and_cache">इतिहास र क्यास</string>
 	<string name="clear_pages_cache">पृष्ठ क्यास खाली गर्नुहोस्</string>
 	<string name="notification_sound">सूचना आवाज</string>
 	<string name="text_local_holder_primary">पहिले केही सेभ गर्नुहोस्</string>

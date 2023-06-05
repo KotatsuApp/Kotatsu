@@ -121,7 +121,6 @@
 	<string name="standard">Standard</string>
 	<string name="text_file_sizes">o|ko|Mo|Go|To</string>
 	<string name="clear_pages_cache">Vider le cache de la page</string>
-	<string name="history_and_cache">Historique et cache</string>
 	<string name="no_description">Aucune description</string>
 	<string name="text_file_not_supported">Choisissez un fichier ZIP ou CBZ.</string>
 	<string name="operation_not_supported">Cette opération n\'est pas prise en charge</string>
@@ -182,7 +181,6 @@
 	<string name="favourites">Favoris</string>
 	<string name="local_storage">Stockage local</string>
 	<string name="chapter_is_missing">Le chapitre est manquant</string>
-	<string name="chapter_is_missing_text">Téléchargez ou lisez ce chapitre manquant en ligne.</string>
 	<string name="queued">En file d\'attente</string>
 	<string name="about_app_translation">Traduction</string>
 	<string name="about_app_translation_summary">Traduire cette application</string>
@@ -214,7 +212,6 @@
 	<string name="only_using_wifi">Uniquement en Wi-Fi</string>
 	<string name="always">Toujours</string>
 	<string name="preload_pages">Précharger les pages</string>
-	<string name="find_genre">Trouver le genre</string>
 	<string name="never">Jamais</string>
 	<string name="reset_filter">Réinitialiser le filtre</string>
 	<string name="onboard_text">Sélectionnez les langues dans lesquelles vous souhaitez lire les mangas. Vous pouvez le changer plus tard dans les paramètres.</string>
@@ -225,7 +222,6 @@
 	<string name="chapters_empty">Pas de chapitres dans ce manga</string>
 	<string name="percent_string_pattern">%1$s%%</string>
 	<string name="appearance">Apparence</string>
-	<string name="content">Contenu</string>
 	<string name="suggestions_updating">Mise à jour des suggestions</string>
 	<string name="suggestions_excluded_genres">Exclure des genres</string>
 	<string name="suggestions_excluded_genres_summary">Spécifiez les genres que vous ne voulez pas voir apparaître dans les suggestions</string>
