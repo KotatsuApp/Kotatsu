@@ -417,4 +417,13 @@
     <string name="address">Adresse</string>
     <string name="port">Port</string>
     <string name="proxy">Proxy</string>
+    <string name="downloaded">Téléchargé</string>
+    <string name="username">Pseudonyme</string>
+    <string name="images_proxy_title">Proxy d\'optimisation des images</string>
+    <string name="invert_colors">Inverser les couleurs</string>
+    <string name="images_procy_description">Utilisez le service wsrv.nl pour réduire le trafic et augmenter la vitesse de chargement des images si possible</string>
+    <string name="manga_branch_title_template">%1$s (%2$s)</string>
+    <string name="password">Mot de passe</string>
+    <string name="invalid_value_message">Valeur invalide</string>
+    <string name="authorization_optional">Autorisation (optionnel)</string>
 </resources>
