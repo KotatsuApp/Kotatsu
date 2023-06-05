@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.flatten
+import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.core.util.ext.takeMostFrequent
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
@@ -227,7 +228,7 @@ class SuggestionsWorker @AssistedInject constructor(
 				).toBitmapOrNull(),
 			)
 			setSmallIcon(R.drawable.ic_stat_suggestion)
-			val description = manga.description?.parseAsHtml(HtmlCompat.FROM_HTML_MODE_COMPACT)
+			val description = manga.description?.parseAsHtml(HtmlCompat.FROM_HTML_MODE_COMPACT)?.sanitize()
 			if (!description.isNullOrBlank()) {
 				val style = NotificationCompat.BigTextStyle()
 				style.bigText(

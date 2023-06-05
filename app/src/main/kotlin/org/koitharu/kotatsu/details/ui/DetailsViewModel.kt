@@ -37,6 +37,7 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.requireValue
+import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
@@ -135,7 +136,7 @@ class DetailsViewModel @Inject constructor(
 			if (description.isNullOrEmpty()) {
 				emit(null)
 			} else {
-				emit(description.parseAsHtml().filterSpans())
+				emit(description.parseAsHtml().filterSpans().sanitize())
 				emit(description.parseAsHtml(imageGetter = imageGetter).filterSpans())
 			}
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), null)

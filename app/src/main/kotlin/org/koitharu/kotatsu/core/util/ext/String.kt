@@ -35,3 +35,9 @@ fun String.almostEquals(other: String, @FloatRange(from = 0.0) threshold: Float)
 	val diff = lowercase().levenshteinDistance(other.lowercase()) / ((length + other.length) / 2f)
 	return diff < threshold
 }
+
+fun CharSequence.sanitize(): CharSequence {
+	return filterNot { c -> c.isReplacement() }
+}
+
+fun Char.isReplacement() = this in '\uFFF0'..'\uFFFF'

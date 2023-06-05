@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingBinding
@@ -122,7 +123,7 @@ class ScrobblingInfoSheet :
 		}
 		requireViewBinding().textViewTitle.text = scrobbling.title
 		requireViewBinding().ratingBar.rating = scrobbling.rating * requireViewBinding().ratingBar.numStars
-		requireViewBinding().textViewDescription.text = scrobbling.description
+		requireViewBinding().textViewDescription.text = scrobbling.description?.sanitize()
 		requireViewBinding().spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
 		requireViewBinding().imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
 		requireViewBinding().imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
