@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <plurals name="new_chapters">
-        <item quantity="zero">%1$d فصل جديد</item>
-        <item quantity="one"/>
-        <item quantity="two"/>
-        <item quantity="few"/>
-        <item quantity="many">%1$d فصول جديدة</item>
-        <item quantity="other"/>
-    </plurals>
-    <plurals name="chapters">
-        <item quantity="zero"/>
-        <item quantity="one">%1$d فصل</item>
-        <item quantity="two">%1$d فصلين</item>
-        <item quantity="few">%1$d بعض فصول</item>
-        <item quantity="many">%1$d عدة فصول</item>
-        <item quantity="other"/>
-    </plurals>
-    <plurals name="pages">
-        <item quantity="zero"></item>
-        <item quantity="one">مجموع %1$d فصل</item>
-        <item quantity="two">مجموع %1$d فصلين</item>
-        <item quantity="few">مجموع %1$d بعض فصول</item>
-        <item quantity="many">مجموع %1$d عدة فصول</item>
-        <item quantity="other">مجموع %1$d فصول اخرى</item>
-    </plurals>
+	<plurals name="new_chapters">
+		<item quantity="zero">%1$d فصل جديد</item>
+		<item quantity="one" />
+		<item quantity="two" />
+		<item quantity="few" />
+		<item quantity="many">%1$d فصول جديدة</item>
+		<item quantity="other" />
+	</plurals>
+	<plurals name="chapters">
+		<item quantity="zero" />
+		<item quantity="one">%1$d فصل</item>
+		<item quantity="two">%1$d فصلين</item>
+		<item quantity="few">%1$d بعض فصول</item>
+		<item quantity="many">%1$d عدة فصول</item>
+		<item quantity="other" />
+	</plurals>
 </resources>

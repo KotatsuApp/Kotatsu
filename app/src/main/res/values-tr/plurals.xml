@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<plurals name="pages">
-		<item quantity="one">Toplam %1$d sayfa</item>
-		<item quantity="other">Toplam %1$d sayfa</item>
-	</plurals>
 	<plurals name="items">
 		<item quantity="one">%1$d öge</item>
 		<item quantity="other">%1$d öge</item>

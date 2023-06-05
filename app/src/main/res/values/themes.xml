@@ -95,14 +95,6 @@
 
 	<style name="ThemeOverlay.Kotatsu.Amoled" parent="" />
 
-	<style name="Theme.Kotatsu.Dialog" parent="">
-		<item name="android:windowNoTitle">true</item>
-		<item name="android:windowIsFloating">true</item>
-		<item name="windowMinWidthMajor">@dimen/abc_dialog_min_width_major</item>
-		<item name="windowMinWidthMinor">@dimen/abc_dialog_min_width_minor</item>
-		<item name="toolbarNavigationButtonStyle">@style/Theme.Kotatsu.ActionMode.CloseButton</item>
-	</style>
-
 	<style name="Theme.Kotatsu.AppWidgetContainer" parent="@style/Theme.MaterialComponents.Light">
 		<item name="android:colorBackground">@android:color/transparent</item>
 		<item name="android:panelColorBackground">@color/kotatsu_primaryContainer</item>

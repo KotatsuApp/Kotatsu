@@ -8,10 +8,6 @@
 		<item quantity="one">%1$d capítulo</item>
 		<item quantity="other">%1$d capítulos</item>
 	</plurals>
-	<plurals name="pages">
-		<item quantity="one">Total de %1$d página</item>
-		<item quantity="other">Total de %1$d páginas</item>
-	</plurals>
 	<plurals name="new_chapters">
 		<item quantity="one">%1$d novo capítulo</item>
 		<item quantity="other">%1$d novos capítulos</item>

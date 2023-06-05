@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<plurals name="pages">
-		<item quantity="one">Totalt %1$d sida</item>
-		<item quantity="other">Totalt %1$d sidor</item>
-	</plurals>
 	<plurals name="items">
 		<item quantity="one">%1$d artikel</item>
 		<item quantity="other">%1$d artiklar</item>

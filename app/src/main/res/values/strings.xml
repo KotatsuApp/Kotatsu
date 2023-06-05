@@ -62,7 +62,6 @@
 	<string name="operation_not_supported">This operation is not supported</string>
 	<string name="text_file_not_supported">Either pick a ZIP or CBZ file.</string>
 	<string name="no_description">No description</string>
-	<string name="history_and_cache">History and cache</string>
 	<string name="clear_pages_cache">Clear page cache</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="standard">Standard</string>
@@ -187,7 +186,6 @@
 	<string name="tracker_warning">Some devices have different system behavior, which may break background tasks.</string>
 	<string name="read_more">Read more</string>
 	<string name="queued">Queued</string>
-	<string name="chapter_is_missing_text">Download or read this missing chapter online.</string>
 	<string name="chapter_is_missing">The chapter is missing</string>
 	<string name="about_app_translation_summary">Translate this app</string>
 	<string name="about_app_translation">Translation</string>
@@ -216,7 +214,6 @@
 	<string name="disabled">Disabled</string>
 	<string name="filter_load_error">Unable to load genres list</string>
 	<string name="reset_filter">Reset filter</string>
-	<string name="find_genre">Find genre</string>
 	<string name="onboard_text">Select languages which you want to read manga. You can change it later in settings.</string>
 	<string name="never">Never</string>
 	<string name="only_using_wifi">Only on Wi-Fi</string>
@@ -229,7 +226,6 @@
 	<string name="chapters_empty">No chapters in this manga</string>
 	<string name="percent_string_pattern">%1$s%%</string>
 	<string name="appearance">Appearance</string>
-	<string name="content">Content</string>
 	<string name="suggestions_updating">Suggestions updating</string>
 	<string name="suggestions_excluded_genres">Exclude genres</string>
 	<string name="suggestions_excluded_genres_summary">Specify genres that you do not want to see in the suggestions</string>

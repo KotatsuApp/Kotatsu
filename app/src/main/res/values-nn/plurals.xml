@@ -16,10 +16,6 @@
 		<item quantity="one">%1$d element</item>
 		<item quantity="other">%1$d element</item>
 	</plurals>
-	<plurals name="pages">
-		<item quantity="one">I alt %1$d side</item>
-		<item quantity="other">I alt %1$d sider</item>
-	</plurals>
 	<plurals name="new_chapters">
 		<item quantity="one">%1$d nytt kapittel</item>
 		<item quantity="other">%1$d nye kapittel</item>
