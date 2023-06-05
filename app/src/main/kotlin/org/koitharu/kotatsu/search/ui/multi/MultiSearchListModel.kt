@@ -8,6 +8,7 @@ class MultiSearchListModel(
 	val source: MangaSource,
 	val hasMore: Boolean,
 	val list: List<MangaItemModel>,
+	val error: Throwable?,
 ) : ListModel {
 
 	override fun equals(other: Any?): Boolean {
@@ -19,14 +20,14 @@ class MultiSearchListModel(
 		if (source != other.source) return false
 		if (hasMore != other.hasMore) return false
 		if (list != other.list) return false
-
-		return true
+		return error == other.error
 	}
 
 	override fun hashCode(): Int {
 		var result = source.hashCode()
 		result = 31 * result + hasMore.hashCode()
 		result = 31 * result + list.hashCode()
+		result = 31 * result + (error?.hashCode() ?: 0)
 		return result
 	}
 }

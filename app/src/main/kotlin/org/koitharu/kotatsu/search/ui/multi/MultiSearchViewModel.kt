@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.withTimeout
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.exceptions.CompositeException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -30,7 +30,6 @@ import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -52,20 +51,17 @@ class MultiSearchViewModel @Inject constructor(
 	private var searchJob: Job? = null
 	private val listData = MutableStateFlow<List<MultiSearchListModel>>(emptyList())
 	private val loadingData = MutableStateFlow(false)
-	private var listError = MutableStateFlow<Throwable?>(null)
 	val onDownloadStarted = MutableEventFlow<Unit>()
 
 	val query = MutableStateFlow(savedStateHandle.get<String>(MultiSearchActivity.EXTRA_QUERY).orEmpty())
 	val list: StateFlow<List<ListModel>> = combine(
 		listData,
 		loadingData,
-		listError,
-	) { list, loading, error ->
+	) { list, loading ->
 		when {
 			list.isEmpty() -> listOf(
 				when {
 					loading -> LoadingState
-					error != null -> error.toErrorState(canRetry = true)
 					else -> EmptyState(
 						icon = R.drawable.ic_empty_common,
 						textPrimary = R.string.nothing_found,
@@ -101,15 +97,12 @@ class MultiSearchViewModel @Inject constructor(
 		searchJob = launchJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			try {
-				listError.value = null
 				listData.value = emptyList()
 				loadingData.value = true
 				query.value = q
 				searchImpl(q)
 			} catch (e: CancellationException) {
 				throw e
-			} catch (e: Throwable) {
-				listError.value = e
 			} finally {
 				loadingData.value = false
 			}
@@ -129,35 +122,28 @@ class MultiSearchViewModel @Inject constructor(
 		val deferredList = sources.map { source ->
 			async(dispatcher) {
 				runCatchingCancellable {
-					val list = mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
-						.toUi(ListMode.GRID, extraProvider)
-					if (list.isNotEmpty()) {
-						MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list)
-					} else {
-						null
+					withTimeout(8_000) {
+						mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
+							.toUi(ListMode.GRID, extraProvider)
 					}
-				}.onFailure {
-					it.printStackTraceDebug()
-				}
+				}.fold(
+					onSuccess = { list ->
+						if (list.isEmpty()) {
+							null
+						} else {
+							MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list, null)
+						}
+					},
+					onFailure = { error ->
+						error.printStackTraceDebug()
+						MultiSearchListModel(source, true, emptyList(), error)
+					},
+				)
 			}
 		}
-
-		val errors = ArrayList<Throwable>()
 		for (deferred in deferredList) {
-			deferred.await()
-				.onSuccess { item ->
-					if (item != null) {
-						listData.update { x -> x + item }
-					}
-				}.onFailure {
-					errors.add(it)
-				}
-		}
-		if (listData.value.isEmpty()) {
-			when (errors.size) {
-				0 -> Unit
-				1 -> throw errors[0]
-				else -> throw CompositeException(errors)
+			deferred.await()?.let { item ->
+				listData.update { x -> x + item }
 			}
 		}
 	}
