@@ -417,4 +417,14 @@
     <string name="port">Порт</string>
     <string name="proxy">Проксі</string>
     <string name="clear_network_cache">Ачысціць сеткавы кэш</string>
+    <string name="manga_branch_title_template">%1$s (%2$s)</string>
+    <string name="invalid_value_message">Няправільнае значэнне</string>
+    <string name="downloaded">Спампавана</string>
+    <string name="images_proxy_title">Проксі для аптымізацыі малюнкаў</string>
+    <string name="username">Імя карыстальніка</string>
+    <string name="invalid_port_number">Няправільны нумар порта</string>
+    <string name="authorization_optional">Аўтарызацыя (неабавязкова)</string>
+    <string name="images_procy_description">Выкарыстоўвайце службу wsrv.nl, каб паменшыць выкарыстанне трафіку і паскорыць загрузку малюнкаў, калі гэта магчыма</string>
+    <string name="password">Пароль</string>
+    <string name="invert_colors">Інвертаваць колеры</string>
 </resources>

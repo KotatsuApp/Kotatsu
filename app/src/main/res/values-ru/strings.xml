@@ -412,4 +412,19 @@
     <string name="suggestions_enable_prompt">Хотите ли Вы получать персонализированные рекомендации манги\?</string>
     <string name="translations">Переводы</string>
     <string name="web_view_unavailable">WebView недоступен: проверьте, установлен ли провайдер WebView</string>
+    <string name="clear_network_cache">Очистить сетевой кеш</string>
+    <string name="address">Адрес</string>
+    <string name="type">Тип</string>
+    <string name="proxy">Прокси</string>
+    <string name="port">Порт</string>
+    <string name="manga_branch_title_template">%1$s (%2$s)</string>
+    <string name="invalid_value_message">Неверное значение</string>
+    <string name="invalid_port_number">Неверный номер порта</string>
+    <string name="username">Имя пользователя</string>
+    <string name="password">Пароль</string>
+    <string name="authorization_optional">Авторизация (необязательна)</string>
+    <string name="downloaded">Скачано</string>
+    <string name="images_proxy_title">Прокси для оптимизации изображений</string>
+    <string name="images_procy_description">Используйте службу wsrv.nl, чтобы уменьшить использование трафика и ускорить загрузку изображений, если это возможно</string>
+    <string name="invert_colors">Инвертировать цвета</string>
 </resources>

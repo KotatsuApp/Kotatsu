@@ -412,4 +412,9 @@
     <string name="suggestions_enable_prompt">Voulez-vous recevoir des suggestions de mangas personnalisées \?</string>
     <string name="web_view_unavailable">WebView non disponible : vérifier si le fournisseur WebView est installé</string>
     <string name="translations">Traductions</string>
+    <string name="clear_network_cache">Effacer le cache réseau</string>
+    <string name="type">Taper</string>
+    <string name="address">Adresse</string>
+    <string name="port">Port</string>
+    <string name="proxy">Proxy</string>
 </resources>
