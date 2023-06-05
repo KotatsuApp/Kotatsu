@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="pages">
-        <item quantity="one">Total de %1$d página</item>
-        <item quantity="many">Total de %1$d páginas</item>
-        <item quantity="other">Total de %1$d páginas</item>
+        <item quantity="one">Página total %1$d</item>
+        <item quantity="many">Páginas totales %1$d</item>
+        <item quantity="other">Página totales %1$d</item>
     </plurals>
     <plurals name="items">
         <item quantity="one">%1$d elemento</item>
