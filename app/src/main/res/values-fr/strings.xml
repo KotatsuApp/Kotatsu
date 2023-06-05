@@ -410,4 +410,6 @@
     <string name="downloads_removed">Les téléchargements ont été supprimés</string>
     <string name="downloads_cancelled">Les téléchargements ont été annulés</string>
     <string name="suggestions_enable_prompt">Voulez-vous recevoir des suggestions de mangas personnalisées \?</string>
+    <string name="web_view_unavailable">WebView non disponible : vérifier si le fournisseur WebView est installé</string>
+    <string name="translations">Traductions</string>
 </resources>
