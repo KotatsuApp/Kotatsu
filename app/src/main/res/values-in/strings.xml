@@ -131,7 +131,7 @@
     <string name="captcha_solve">Selesaikan</string>
     <string name="clear_cookies">Bersihkan kuki</string>
     <string name="cookies_cleared">Semua kuki telah dihapus</string>
-    <string name="clear_feed">Bersihkan umpan</string>
+    <string name="clear_feed">Bersihkan aliran</string>
     <string name="check_for_new_chapters">Periksa bab baru</string>
     <string name="auth_required">Masuk untuk melihat konten ini</string>
     <string name="next">Selanjutnya</string>
@@ -215,10 +215,10 @@
     <string name="vibration">Getaran</string>
     <string name="favourites_categories">Kategori favorit</string>
     <string name="remove_category">Hapus</string>
-    <string name="clear_updates_feed">Bersihkan umpan pembaruan</string>
+    <string name="clear_updates_feed">Bersihkan aliran pembaruan</string>
     <string name="right_to_left">Kanan-ke-kiri</string>
     <string name="rotate_screen">Putar layar</string>
-    <string name="feed_will_update_soon">Pembaruan umpan akan dimulai</string>
+    <string name="feed_will_update_soon">Pembaruan aliran akan dimulai</string>
     <string name="enter_password">Masukkan kata sandi</string>
     <string name="protect_application_summary">Tanya kata sandi ketika memulai Kotatsu</string>
     <string name="about">Tentang</string>
