@@ -8,15 +8,20 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.lifecycle.RetainedLifecycle
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 val processLifecycleScope: LifecycleCoroutineScope
 	inline get() = ProcessLifecycleOwner.get().lifecycleScope
+
+val RetainedLifecycle.lifecycleScope: RetainedLifecycleCoroutineScope
+	inline get() = RetainedLifecycleCoroutineScope(this)
 
 suspend fun Lifecycle.awaitStateAtLeast(state: Lifecycle.State) {
 	if (currentState.isAtLeast(state)) {

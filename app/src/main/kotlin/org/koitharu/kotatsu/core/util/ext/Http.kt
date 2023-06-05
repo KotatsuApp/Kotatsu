@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.util.ext
 
+import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
@@ -21,5 +22,19 @@ fun Response.parseJsonOrNull(): JSONObject? {
 		}
 	} finally {
 		closeQuietly()
+	}
+}
+
+val HttpUrl.isHttpOrHttps: Boolean
+	get() {
+		val s = scheme.lowercase()
+		return s == "https" || s == "http"
+	}
+
+fun Response.ensureSuccess() = apply {
+	if (!isSuccessful || code == HttpURLConnection.HTTP_NO_CONTENT) {
+		val message = "Invalid response: $code $message at ${request.url}"
+		closeQuietly()
+		throw IllegalStateException(message)
 	}
 }

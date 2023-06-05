@@ -1,24 +1,20 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
-import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
-import org.koitharu.kotatsu.databinding.ItemHeader2Binding
-import org.koitharu.kotatsu.list.ui.model.ListHeader2
+import org.koitharu.kotatsu.databinding.FragmentFilterHeaderBinding
+import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaTag
 
+@Deprecated("")
 fun listHeader2AD(
 	listener: MangaListListener,
-) = adapterDelegateViewBinding<ListHeader2, ListModel, ItemHeader2Binding>(
-	{ layoutInflater, parent -> ItemHeader2Binding.inflate(layoutInflater, parent, false) },
+) = adapterDelegateViewBinding<FilterHeaderModel, ListModel, FragmentFilterHeaderBinding>(
+	{ layoutInflater, parent -> FragmentFilterHeaderBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	var ignoreChecking = false
-	binding.textViewFilter.setOnClickListener {
-		listener.onFilterClick(it)
-	}
 	binding.chipsTags.setOnCheckedStateChangeListener { _, _ ->
 		if (!ignoreChecking) {
 			listener.onUpdateFilter(binding.chipsTags.getCheckedData(MangaTag::class.java))
@@ -36,6 +32,5 @@ fun listHeader2AD(
 		ignoreChecking = true
 		binding.chipsTags.setChips(item.chips) // TODO use recyclerview
 		ignoreChecking = false
-		binding.textViewFilter.setTextAndVisible(item.sortOrder?.titleRes ?: 0)
 	}
 }

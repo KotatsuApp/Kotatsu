@@ -57,7 +57,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		viewModel.onTokenObtained.observeEvent(this, ::onTokenReceived)
 		viewModel.onError.observeEvent(this, ::onError)
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
-		viewModel.onAccountAlreadyExists.observe(this) {
+		viewModel.onAccountAlreadyExists.observeEvent(this) {
 			onAccountAlreadyExists()
 		}
 

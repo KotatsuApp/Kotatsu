@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.transition.AutoTransition
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -17,7 +19,9 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,8 +35,11 @@ import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.dialog.RecyclerViewAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
 import org.koitharu.kotatsu.core.util.ViewBadge
+import org.koitharu.kotatsu.core.util.ext.doOnExpansionsChanged
+import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
@@ -49,18 +56,15 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import javax.inject.Inject
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
 	View.OnClickListener,
-	BottomSheetHeaderBar.OnExpansionChangeListener,
 	NoModalBottomSheetOwner,
 	View.OnLongClickListener,
 	PopupMenu.OnMenuItemClickListener {
-
-	override val bsHeader: BottomSheetHeaderBar?
-		get() = viewBinding.headerChapters
 
 	@Inject
 	lateinit var shortcutsUpdater: ShortcutsUpdater
@@ -82,16 +86,22 @@ class DetailsActivity :
 		viewBinding.buttonDropdown.setOnClickListener(this)
 		viewBadge = ViewBadge(viewBinding.buttonRead, this)
 
-		chaptersMenuProvider = if (viewBinding.layoutBottom != null) {
-			val bsMediator = ChaptersBottomSheetMediator(checkNotNull(viewBinding.layoutBottom))
+		if (viewBinding.layoutBottom != null) {
+			val behavior = BottomSheetBehavior.from(checkNotNull(viewBinding.layoutBottom))
+			val bsMediator = ChaptersBottomSheetMediator(behavior)
 			actionModeDelegate.addListener(bsMediator)
-			checkNotNull(viewBinding.headerChapters).addOnExpansionChangeListener(bsMediator)
-			checkNotNull(viewBinding.headerChapters).addOnLayoutChangeListener(bsMediator)
+			checkNotNull(viewBinding.layoutBsHeader).addOnLayoutChangeListener(bsMediator)
 			onBackPressedDispatcher.addCallback(bsMediator)
-			ChaptersMenuProvider(viewModel, bsMediator)
+			chaptersMenuProvider = ChaptersMenuProvider(viewModel, bsMediator)
+			behavior.doOnExpansionsChanged(::onChaptersSheetStateChanged)
+			viewBinding.toolbarChapters?.setNavigationOnClickListener {
+				behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+			}
 		} else {
-			ChaptersMenuProvider(viewModel, null)
+			chaptersMenuProvider = ChaptersMenuProvider(viewModel, null)
+			addMenuProvider(chaptersMenuProvider)
 		}
+		onBackPressedDispatcher.addCallback(chaptersMenuProvider)
 
 		viewModel.manga.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
@@ -114,11 +124,11 @@ class DetailsActivity :
 		}
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
 		viewModel.selectedBranch.observe(this) {
-			viewBinding.headerChapters?.subtitle = it
+			viewBinding.toolbarChapters?.subtitle = it
 			viewBinding.textViewSubtitle?.textAndVisible = it
 		}
 		viewModel.isChaptersReversed.observe(this) {
-			viewBinding.headerChapters?.invalidateMenu() ?: invalidateOptionsMenu()
+			viewBinding.toolbarChapters?.invalidateMenu() ?: invalidateOptionsMenu()
 		}
 		viewModel.favouriteCategories.observe(this) {
 			invalidateOptionsMenu()
@@ -137,7 +147,10 @@ class DetailsActivity :
 				shortcutsUpdater = shortcutsUpdater,
 			),
 		)
-		viewBinding.headerChapters?.addOnExpansionChangeListener(this) ?: addMenuProvider(chaptersMenuProvider)
+	}
+
+	override fun getBottomSheetCollapsedHeight(): Int {
+		return viewBinding.layoutBsHeader?.measureHeight() ?: 0
 	}
 
 	override fun onClick(v: View) {
@@ -184,11 +197,19 @@ class DetailsActivity :
 		}
 	}
 
-	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
+	private fun onChaptersSheetStateChanged(isExpanded: Boolean) {
+		val toolbar = viewBinding.toolbarChapters ?: return
+		if (isAnimationsEnabled) {
+			val transition = AutoTransition()
+			transition.duration = getAnimationDuration(R.integer.config_shorterAnimTime)
+			TransitionManager.beginDelayedTransition(toolbar, transition)
+		}
 		if (isExpanded) {
-			headerBar.addMenuProvider(chaptersMenuProvider)
+			toolbar.addMenuProvider(chaptersMenuProvider)
+			toolbar.setNavigationIcon(materialR.drawable.abc_ic_clear_material)
 		} else {
-			headerBar.removeMenuProvider(chaptersMenuProvider)
+			toolbar.removeMenuProvider(chaptersMenuProvider)
+			toolbar.navigationIcon = null
 		}
 		viewBinding.buttonRead.isGone = isExpanded
 	}
@@ -219,6 +240,12 @@ class DetailsActivity :
 		if (insets.bottom > 0) {
 			window.setNavigationBarTransparentCompat(this, viewBinding.layoutBottom?.elevation ?: 0f, 0.9f)
 		}
+		viewBinding.cardChapters?.updateLayoutParams<MarginLayoutParams> {
+			bottomMargin = insets.bottom + marginEnd
+		}
+		viewBinding.dragHandle?.updateLayoutParams<MarginLayoutParams> {
+			bottomMargin = insets.bottom
+		}
 	}
 
 	private fun onHistoryChanged(info: HistoryInfo) {
@@ -237,7 +264,7 @@ class DetailsActivity :
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
 			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
 		}
-		viewBinding.headerChapters?.title = text
+		viewBinding.toolbarChapters?.title = text
 		viewBinding.textViewTitle?.text = text
 	}
 
@@ -282,8 +309,6 @@ class DetailsActivity :
 		}
 	}
 
-	private fun isTabletLayout() = viewBinding.layoutBottom == null
-
 	private fun showBottomSheet(isVisible: Boolean) {
 		val view = viewBinding.layoutBottom ?: return
 		if (view.isVisible == isVisible) return
@@ -297,7 +322,7 @@ class DetailsActivity :
 	private fun makeSnackbar(text: CharSequence, @BaseTransientBottomBar.Duration duration: Int): Snackbar {
 		val sb = Snackbar.make(viewBinding.containerDetails, text, duration)
 		if (viewBinding.layoutBottom?.isVisible == true) {
-			sb.anchorView = viewBinding.headerChapters
+			sb.anchorView = viewBinding.toolbarChapters
 		}
 		return sb
 	}

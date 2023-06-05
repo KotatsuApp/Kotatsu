@@ -11,6 +11,7 @@
 	<dimen name="grid_spacing">8dp</dimen>
 	<dimen name="list_spacing">8dp</dimen>
 	<dimen name="grid_spacing_outer">2dp</dimen>
+	<dimen name="grid_spacing_outer_double">4dp</dimen>
 	<dimen name="manga_list_item_height">86dp</dimen>
 	<dimen name="manga_list_details_item_height">120dp</dimen>
 	<dimen name="bookmark_item_height">120dp</dimen>
@@ -32,6 +33,7 @@
 	<dimen name="reader_bar_inset_fallback">8dp</dimen>
 	<dimen name="scrobbling_list_spacing">12dp</dimen>
 	<dimen name="explore_grid_width">120dp</dimen>
+	<dimen name="side_card_offset">8dp</dimen>
 
 	<dimen name="search_suggestions_manga_height">124dp</dimen>
 	<dimen name="search_suggestions_manga_spacing">4dp</dimen>
@@ -39,6 +41,7 @@
 	<dimen name="bottom_sheet_width">0dp</dimen>
 	<dimen name="bottom_sheet_handle_size_min">16dp</dimen>
 	<dimen name="bottom_sheet_handle_size_max">24dp</dimen>
+	<dimen name="bottom_sheet_corner_radius">28dp</dimen>
 	<dimen name="dialog_radius">8dp</dimen>
 
 	<dimen name="card_indicator_size">32dp</dimen>
@@ -68,4 +71,5 @@
 	<dimen name="fastscroll_scrollbar_padding_start">6dp</dimen>
 	<dimen name="fastscroll_scrollbar_padding_end">6dp</dimen>
 
+	<dimen name="m3_side_sheet_width">400dp</dimen>
 </resources>

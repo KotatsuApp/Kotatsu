@@ -52,8 +52,14 @@ class BookmarksRepository @Inject constructor(
 		}
 	}
 
-	suspend fun removeBookmark(mangaId: Long, pageId: Long) {
-		db.bookmarksDao.delete(mangaId, pageId)
+	suspend fun removeBookmark(mangaId: Long, chapterId: Long, page: Int) {
+		check(db.bookmarksDao.delete(mangaId, chapterId, page) != 0) {
+			"Bookmark not found"
+		}
+	}
+
+	suspend fun removeBookmark(bookmark: Bookmark) {
+		removeBookmark(bookmark.manga.id, bookmark.chapterId, bookmark.page)
 	}
 
 	suspend fun removeBookmarks(ids: Map<Manga, Set<Long>>): ReversibleHandle {

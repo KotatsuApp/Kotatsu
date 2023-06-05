@@ -40,10 +40,11 @@ import org.koitharu.kotatsu.core.util.IncognitoModeIndicator
 import org.koitharu.kotatsu.core.util.ext.activityManager
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.ListExtraProviderImpl
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
-import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -63,6 +64,9 @@ interface AppModule {
 
 	@Binds
 	fun bindImageGetter(coilImageGetter: CoilImageGetter): Html.ImageGetter
+
+	@Binds
+	fun bindListExtraProvider(impl: ListExtraProviderImpl): ListExtraProvider
 
 	companion object {
 
@@ -86,7 +90,8 @@ interface AppModule {
 			@ApplicationContext context: Context,
 			@MangaHttpClient okHttpClient: OkHttpClient,
 			mangaRepositoryFactory: MangaRepository.Factory,
-			pagesCache: PagesCache,
+			imageProxyInterceptor: ImageProxyInterceptor,
+			pageFetcherFactory: MangaPageFetcher.Factory,
 		): ImageLoader {
 			val diskCacheFactory = {
 				val rootDir = context.externalCacheDir ?: context.cacheDir
@@ -108,7 +113,8 @@ interface AppModule {
 						.add(SvgDecoder.Factory())
 						.add(CbzFetcher.Factory())
 						.add(FaviconFetcher.Factory(context, okHttpClient, mangaRepositoryFactory))
-						.add(MangaPageFetcher.Factory(context, okHttpClient, pagesCache, mangaRepositoryFactory))
+						.add(pageFetcherFactory)
+						.add(imageProxyInterceptor)
 						.build(),
 				).build()
 		}

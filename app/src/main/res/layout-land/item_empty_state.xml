@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="center"
+	android:orientation="vertical"
+	android:paddingHorizontal="32dp">
+
+	<ImageView
+		android:id="@+id/icon"
+		android:layout_width="192dp"
+		android:layout_height="192dp"
+		android:contentDescription="@null"
+		android:scaleType="fitCenter"
+		tools:src="@drawable/ic_empty_favourites" />
+
+	<TextView
+		android:id="@+id/textPrimary"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:gravity="center"
+		android:textAppearance="?attr/textAppearanceTitleLarge"
+		tools:text="@tools:sample/lorem[3]" />
+
+	<TextView
+		android:id="@+id/textSecondary"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:gravity="center"
+		android:textAppearance="?attr/textAppearanceBodyMedium"
+		tools:text="@tools:sample/lorem[15]" />
+
+	<Button
+		android:id="@+id/button_retry"
+		style="@style/Widget.Material3.Button.TonalButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:visibility="gone"
+		tools:text="@string/try_again"
+		tools:visibility="visible" />
+
+</LinearLayout>

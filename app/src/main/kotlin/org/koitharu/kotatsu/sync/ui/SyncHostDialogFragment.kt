@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.databinding.PreferenceDialogAutocompletetextviewBinding
-import org.koitharu.kotatsu.settings.DomainValidator
+import org.koitharu.kotatsu.settings.utils.validation.DomainValidator
 import org.koitharu.kotatsu.sync.data.SyncSettings
 import javax.inject.Inject
 

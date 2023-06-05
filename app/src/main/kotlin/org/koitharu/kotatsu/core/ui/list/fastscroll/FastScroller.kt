@@ -56,6 +56,7 @@ class FastScroller @JvmOverloads constructor(
 	private var bubbleHeight = 0
 	private var handleHeight = 0
 	private var viewHeight = 0
+	private var offset = 0
 	private var hideScrollbar = true
 	private var showBubble = true
 	private var showBubbleAlways = false
@@ -137,6 +138,7 @@ class FastScroller @JvmOverloads constructor(
 			bubbleSize = getBubbleSize(R.styleable.FastScroller_bubbleSize, BubbleSize.NORMAL)
 			val textSize = getDimension(R.styleable.FastScroller_bubbleTextSize, bubbleSize.textSize)
 			binding.bubble.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+			offset = getDimensionPixelOffset(R.styleable.FastScroller_scrollerOffset, offset)
 		}
 
 		setTrackColor(trackColor)
@@ -248,7 +250,7 @@ class FastScroller @JvmOverloads constructor(
 
 				layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
 					height = 0
-					setMargins(0, marginTop, 0, marginBottom)
+					setMargins(offset, marginTop, offset, marginBottom)
 				}
 			}
 
@@ -256,13 +258,13 @@ class FastScroller @JvmOverloads constructor(
 				height = LayoutParams.MATCH_PARENT
 				anchorGravity = GravityCompat.END
 				anchorId = recyclerViewId
-				setMargins(0, marginTop, 0, marginBottom)
+				setMargins(offset, marginTop, offset, marginBottom)
 			}
 
 			is FrameLayout -> layoutParams = (layoutParams as FrameLayout.LayoutParams).apply {
 				height = LayoutParams.MATCH_PARENT
 				gravity = GravityCompat.END
-				setMargins(0, marginTop, 0, marginBottom)
+				setMargins(offset, marginTop, offset, marginBottom)
 			}
 
 			is RelativeLayout -> layoutParams = (layoutParams as RelativeLayout.LayoutParams).apply {
@@ -270,7 +272,7 @@ class FastScroller @JvmOverloads constructor(
 				addRule(RelativeLayout.ALIGN_TOP, recyclerViewId)
 				addRule(RelativeLayout.ALIGN_BOTTOM, recyclerViewId)
 				addRule(RelativeLayout.ALIGN_END, recyclerViewId)
-				setMargins(0, marginTop, 0, marginBottom)
+				setMargins(offset, marginTop, offset, marginBottom)
 			}
 
 			else -> throw IllegalArgumentException("Parent ViewGroup must be a ConstraintLayout, CoordinatorLayout, FrameLayout, or RelativeLayout")

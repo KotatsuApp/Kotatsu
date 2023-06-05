@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.ActivityManager.MemoryInfo
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
@@ -139,6 +140,13 @@ fun Context.getAnimationDuration(@IntegerRes resId: Int): Long {
 fun Context.isLowRamDevice(): Boolean {
 	return activityManager?.isLowRamDevice ?: false
 }
+
+val Context.ramAvailable: Long
+	get() {
+		val result = MemoryInfo()
+		activityManager?.getMemoryInfo(result)
+		return result.availMem
+	}
 
 fun scaleUpActivityOptionsOf(view: View): ActivityOptions = ActivityOptions.makeScaleUpAnimation(
 	view,

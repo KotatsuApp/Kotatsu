@@ -9,7 +9,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -18,22 +17,18 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.filter.ui.FilterCoordinator
+import org.koitharu.kotatsu.filter.ui.FilterOwner
+import org.koitharu.kotatsu.filter.ui.model.FilterState
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.filter.FilterCoordinator
-import org.koitharu.kotatsu.list.ui.filter.FilterItem
-import org.koitharu.kotatsu.list.ui.filter.FilterState
-import org.koitharu.kotatsu.list.ui.filter.OnFilterChangedListener
 import org.koitharu.kotatsu.list.ui.model.EmptyState
-import org.koitharu.kotatsu.list.ui.model.ListHeader2
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
@@ -42,50 +37,42 @@ import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
-import java.util.LinkedList
 import javax.inject.Inject
 
 private const val FILTER_MIN_INTERVAL = 250L
 
 @HiltViewModel
-class RemoteListViewModel @Inject constructor(
+open class RemoteListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
-	private val searchRepository: MangaSearchRepository,
-	settings: AppSettings,
-	dataRepository: MangaDataRepository,
+	private val filter: FilterCoordinator,
 	private val tagHighlighter: MangaTagHighlighter,
+	settings: AppSettings,
+	listExtraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
-) : MangaListViewModel(settings, downloadScheduler), OnFilterChangedListener {
+) : MangaListViewModel(settings, downloadScheduler), FilterOwner by filter {
 
 	val source = savedStateHandle.require<MangaSource>(RemoteListFragment.ARG_SOURCE)
-	private val repository = mangaRepositoryFactory.create(source) as RemoteMangaRepository
-	private val filter = FilterCoordinator(repository, dataRepository, viewModelScope)
+	private val repository = mangaRepositoryFactory.create(source)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private var loadingJob: Job? = null
 
-	val filterItems: StateFlow<List<FilterItem>>
-		get() = filter.items
-
 	override val content = combine(
 		mangaList,
 		listMode,
-		createHeaderFlow(),
 		listError,
 		hasNextPage,
-	) { list, mode, header, error, hasNext ->
+	) { list, mode, error, hasNext ->
 		buildList(list?.size?.plus(2) ?: 2) {
-			add(header)
 			when {
 				list.isNullOrEmpty() && error != null -> add(error.toErrorState(canRetry = true))
 				list == null -> add(LoadingState)
-				list.isEmpty() -> add(createEmptyState(header.hasSelectedTags))
+				list.isEmpty() -> add(createEmptyState(header.value.hasSelectedTags))
 				else -> {
-					list.toUi(this, mode, tagHighlighter)
+					list.toUi(this, mode, listExtraProvider, tagHighlighter)
 					when {
 						error != null -> add(error.toErrorFooter())
 						hasNext -> add(LoadingFooter())
@@ -116,21 +103,11 @@ class RemoteListViewModel @Inject constructor(
 		loadList(filter.snapshot(), append = !mangaList.value.isNullOrEmpty())
 	}
 
-	override fun onSortItemClick(item: FilterItem.Sort) {
-		filter.onSortItemClick(item)
-	}
-
-	override fun onTagItemClick(item: FilterItem.Tag) {
-		filter.onTagItemClick(item)
-	}
-
 	fun loadNextPage() {
 		if (hasNextPage.value && listError.value == null) {
 			loadList(filter.snapshot(), append = true)
 		}
 	}
-
-	fun filterSearch(query: String) = filter.performSearch(query)
 
 	fun resetFilter() = filter.reset()
 
@@ -138,15 +115,11 @@ class RemoteListViewModel @Inject constructor(
 		applyFilter(tags)
 	}
 
-	fun applyFilter(tags: Set<MangaTag>) {
-		filter.setTags(tags)
-	}
-
-	private fun loadList(filterState: FilterState, append: Boolean) {
-		if (loadingJob?.isActive == true) {
-			return
+	protected fun loadList(filterState: FilterState, append: Boolean): Job {
+		loadingJob?.let {
+			if (it.isActive) return it
 		}
-		loadingJob = launchLoadingJob(Dispatchers.Default) {
+		return launchLoadingJob(Dispatchers.Default) {
 			try {
 				listError.value = null
 				val list = repository.getList(
@@ -169,61 +142,13 @@ class RemoteListViewModel @Inject constructor(
 					errorEvent.call(e)
 				}
 			}
-		}
+		}.also { loadingJob = it }
 	}
 
-	private fun createEmptyState(canResetFilter: Boolean) = EmptyState(
+	protected open fun createEmptyState(canResetFilter: Boolean) = EmptyState(
 		icon = R.drawable.ic_empty_common,
 		textPrimary = R.string.nothing_found,
 		textSecondary = 0,
 		actionStringRes = if (canResetFilter) R.string.reset_filter else 0,
 	)
-
-	private fun createHeaderFlow() = combine(
-		filter.observeState(),
-		filter.observeAvailableTags(),
-	) { state, available ->
-		val chips = createChipsList(state, available.orEmpty())
-		ListHeader2(chips, state.sortOrder, state.tags.isNotEmpty())
-	}
-
-	private suspend fun createChipsList(
-		filterState: FilterState,
-		availableTags: Set<MangaTag>,
-	): List<ChipsView.ChipModel> {
-		val selectedTags = filterState.tags.toMutableSet()
-		var tags = searchRepository.getTagsSuggestion("", 6, repository.source)
-		if (tags.isEmpty()) {
-			tags = availableTags.take(6)
-		}
-		if (tags.isEmpty() && selectedTags.isEmpty()) {
-			return emptyList()
-		}
-		val result = LinkedList<ChipsView.ChipModel>()
-		for (tag in tags) {
-			val model = ChipsView.ChipModel(
-				tint = 0,
-				title = tag.title,
-				isCheckable = true,
-				isChecked = selectedTags.remove(tag),
-				data = tag,
-			)
-			if (model.isChecked) {
-				result.addFirst(model)
-			} else {
-				result.addLast(model)
-			}
-		}
-		for (tag in selectedTags) {
-			val model = ChipsView.ChipModel(
-				tint = 0,
-				title = tag.title,
-				isCheckable = true,
-				isChecked = true,
-				data = tag,
-			)
-			result.addFirst(model)
-		}
-		return result
-	}
 }

@@ -45,10 +45,15 @@
 		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet</item>
 	</style>
 
+	<style name="Widget.Kotatsu.BottomSheet.DragHandle" parent="Widget.Material3.BottomSheet.DragHandle">
+		<!-- Fix weird bottom padding -->
+		<item name="android:paddingBottom">0dp</item>
+	</style>
+
 	<style name="ShapeAppearanceOverlay.Kotatsu.BottomSheet" parent="">
 		<item name="cornerFamily">rounded</item>
-		<item name="cornerSizeTopRight">@dimen/dialog_radius</item>
-		<item name="cornerSizeTopLeft">@dimen/dialog_radius</item>
+		<item name="cornerSizeTopRight">@dimen/bottom_sheet_corner_radius</item>
+		<item name="cornerSizeTopLeft">@dimen/bottom_sheet_corner_radius</item>
 		<item name="cornerSizeBottomRight">0dp</item>
 		<item name="cornerSizeBottomLeft">0dp</item>
 	</style>
@@ -74,6 +79,14 @@
 		<item name="queryBackground">@null</item>
 		<item name="android:textColorHint">?attr/colorControlNormal</item>
 		<item name="android:textSize">18sp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.CircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
+		<item name="trackCornerRadius">@dimen/mtrl_progress_indicator_full_rounded_corner_radius</item>
+	</style>
+
+	<style name="Widget.Kotatsu.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
+		<item name="trackCornerRadius">@dimen/mtrl_progress_indicator_full_rounded_corner_radius</item>
 	</style>
 
 	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
@@ -125,6 +138,7 @@
 		<item name="bubbleTextColor">?colorOnTertiary</item>
 		<item name="trackColor">?colorOutline</item>
 		<item name="bubbleSize">normal</item>
+		<item name="scrollerOffset">6dp</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">

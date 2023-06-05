@@ -9,13 +9,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.util.Event
 
 fun <T> Flow<T>.observe(owner: LifecycleOwner, collector: FlowCollector<T>) {
-	if (BuildConfig.DEBUG) {
-		require((this as? StateFlow)?.value !is Event<*>)
-	}
 	val start = if (this is StateFlow) CoroutineStart.UNDISPATCHED else CoroutineStart.DEFAULT
 	owner.lifecycleScope.launch(start = start) {
 		owner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

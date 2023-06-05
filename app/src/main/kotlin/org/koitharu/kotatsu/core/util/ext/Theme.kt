@@ -5,6 +5,7 @@ import android.graphics.Color
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.annotation.Px
 import androidx.core.content.res.use
 import androidx.core.graphics.ColorUtils
 
@@ -20,6 +21,22 @@ fun Context.getThemeColor(
 	@ColorInt fallback: Int = Color.TRANSPARENT,
 ) = obtainStyledAttributes(intArrayOf(resId)).use {
 	it.getColor(0, fallback)
+}
+
+@Px
+fun Context.getThemeDimensionPixelSize(
+	@AttrRes resId: Int,
+	@ColorInt fallback: Int = 0,
+) = obtainStyledAttributes(intArrayOf(resId)).use {
+	it.getDimensionPixelSize(0, fallback)
+}
+
+@Px
+fun Context.getThemeDimensionPixelOffset(
+	@AttrRes resId: Int,
+	@ColorInt fallback: Int = 0,
+) = obtainStyledAttributes(intArrayOf(resId)).use {
+	it.getDimensionPixelOffset(0, fallback)
 }
 
 @ColorInt

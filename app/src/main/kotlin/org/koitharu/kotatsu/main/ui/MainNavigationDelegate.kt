@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.main.ui
 
-import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
@@ -57,7 +56,7 @@ class MainNavigationDelegate(
 		navBar.selectedItemId = R.id.nav_shelf
 	}
 
-	fun onCreate(savedInstanceState: Bundle?) {
+	fun onCreate() {
 		primaryFragment?.let {
 			onFragmentChanged(it, fromUser = false)
 			val itemId = getItemId(it)

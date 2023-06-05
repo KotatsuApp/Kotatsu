@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.core.model.findChapter
+import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -14,7 +15,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.util.ext.printStackTraceDebug
@@ -28,6 +28,7 @@ class DetectReaderModeUseCase @Inject constructor(
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	@MangaHttpClient private val okHttpClient: OkHttpClient,
+	private val imageProxyInterceptor: ImageProxyInterceptor,
 ) {
 
 	suspend operator fun invoke(manga: Manga, state: ReaderState?): ReaderMode {
@@ -70,7 +71,7 @@ class DetectReaderModeUseCase @Inject constructor(
 			}
 		} else {
 			val request = PageLoader.createPageRequest(page, url)
-			okHttpClient.newCall(request).await().use {
+			imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use {
 				runInterruptible(Dispatchers.IO) {
 					getBitmapSize(it.body?.byteStream())
 				}

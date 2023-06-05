@@ -19,7 +19,9 @@ class BookmarksAdapter(
 	private class DiffCallback : DiffUtil.ItemCallback<Bookmark>() {
 
 		override fun areItemsTheSame(oldItem: Bookmark, newItem: Bookmark): Boolean {
-			return oldItem.manga.id == newItem.manga.id && oldItem.pageId == newItem.pageId
+			return oldItem.manga.id == newItem.manga.id &&
+				oldItem.chapterId == newItem.chapterId &&
+				oldItem.page == newItem.page
 		}
 
 		override fun areContentsTheSame(oldItem: Bookmark, newItem: Bookmark): Boolean {

@@ -80,7 +80,7 @@ class ExploreFragment :
 		viewModel.onOpenManga.observeEvent(viewLifecycleOwner, ::onOpenManga)
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 		viewModel.isGrid.observe(viewLifecycleOwner, ::onGridModeChanged)
-		viewModel.onShowSuggestionsTip.observe(viewLifecycleOwner) {
+		viewModel.onShowSuggestionsTip.observeEvent(viewLifecycleOwner) {
 			showSuggestionsTip()
 		}
 	}

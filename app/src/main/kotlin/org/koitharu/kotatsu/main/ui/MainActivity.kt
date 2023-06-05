@@ -129,7 +129,7 @@ class MainActivity :
 		navigationDelegate =
 			MainNavigationDelegate(checkNotNull(bottomNav ?: viewBinding.navRail), supportFragmentManager)
 		navigationDelegate.addOnFragmentChangedListener(this)
-		navigationDelegate.onCreate(savedInstanceState)
+		navigationDelegate.onCreate()
 
 		onBackPressedDispatcher.addCallback(ExitCallback(this, viewBinding.container))
 		onBackPressedDispatcher.addCallback(navigationDelegate)

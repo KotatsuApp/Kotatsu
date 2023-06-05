@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
 import org.koitharu.kotatsu.details.domain.model.DoubleManga
@@ -140,7 +141,9 @@ class ReaderViewModel @Inject constructor(
 			flowOf(false)
 		} else {
 			bookmarksRepository.observeBookmark(manga, state.chapterId, state.page)
-				.map { it != null }
+				.map {
+					it != null && it.chapterId == state.chapterId && it.page == state.page
+				}
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
@@ -285,7 +288,7 @@ class ReaderViewModel @Inject constructor(
 				chapterId = state.chapterId,
 				page = state.page,
 				scroll = state.scroll,
-				imageUrl = page.preview ?: pageLoader.getPageUrl(page),
+				imageUrl = page.preview.ifNullOrEmpty { pageLoader.getPageUrl(page) },
 				createdAt = Date(),
 				percent = computePercent(state.chapterId, state.page),
 			)
@@ -301,8 +304,8 @@ class ReaderViewModel @Inject constructor(
 		bookmarkJob = launchJob {
 			loadingJob?.join()
 			val manga = checkNotNull(mangaData.value?.any)
-			val page = checkNotNull(getCurrentPage()) { "Page not found" }
-			bookmarksRepository.removeBookmark(manga.id, page.id)
+			val state = checkNotNull(getCurrentState())
+			bookmarksRepository.removeBookmark(manga.id, state.chapterId, state.page)
 			onShowToast.call(R.string.bookmark_removed)
 		}
 	}
@@ -366,6 +369,7 @@ class ReaderViewModel @Inject constructor(
 		val chapter = state?.chapterId?.let { chaptersLoader.peekChapter(it) }
 		val newState = ReaderUiState(
 			mangaName = manga?.any?.title,
+			branch = chapter?.branch,
 			chapterName = chapter?.name,
 			chapterNumber = chapter?.number ?: 0,
 			chaptersTotal = manga?.any?.getChapters(chapter?.branch)?.size ?: 0,

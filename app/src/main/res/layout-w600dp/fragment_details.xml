@@ -3,6 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/scrollView"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:clipToPadding="false"
@@ -206,6 +207,7 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:showAnimationBehavior="inward"
+			app:trackCornerRadius="0dp"
 			tools:visibility="visible" />
 
 		<androidx.constraintlayout.widget.Group

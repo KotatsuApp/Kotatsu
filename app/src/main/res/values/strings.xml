@@ -426,4 +426,13 @@
 	<string name="invalid_value_message">Invalid value</string>
 	<string name="kitsu" translatable="false">Kitsu</string>
 	<string name="email_password_enter_hint">Enter your email and password to continue</string>
+	<string name="manga_branch_title_template">%1$s (%2$s)</string>
+	<string name="downloaded">Downloaded</string>
+	<string name="images_proxy_title">Images optimization proxy</string>
+	<string name="images_procy_description">Use the wsrv.nl service to reduce traffic usage and speed up image loading if possible</string>
+	<string name="invert_colors">Invert colors</string>
+	<string name="username">Username</string>
+	<string name="password">Password</string>
+	<string name="authorization_optional">Authorization (optional)</string>
+	<string name="invalid_port_number">Invalid port number</string>
 </resources>

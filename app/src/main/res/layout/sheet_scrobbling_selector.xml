@@ -4,38 +4,53 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
+	android:layout_height="match_parent"
 	android:orientation="vertical">
 
-	<org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
 		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		app:title="@string/tracking">
+		app:title="@string/tracking" />
 
-		<Button
-			android:id="@+id/button_done"
-			style="@style/Widget.Material3.Button.UnelevatedButton"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="end"
-			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
-			android:text="@string/done" />
-
-	</org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar>
-
-	<com.google.android.material.tabs.TabLayout
-		android:id="@+id/tabs"
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/toolbar"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:visibility="gone"
-		app:tabGravity="start"
-		tools:visibility="visible" />
+		android:layout_height="wrap_content">
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<com.google.android.material.tabs.TabLayout
+				android:id="@+id/tabs"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_alignParentStart="true"
+				android:layout_toStartOf="@id/button_done"
+				android:background="@android:color/transparent"
+				android:scrollIndicators="start|end"
+				app:tabGravity="start"
+				app:tabMode="scrollable"
+				tools:ignore="UnusedAttribute" />
+
+			<Button
+				android:id="@+id/button_done"
+				style="@style/Widget.Material3.Button.UnelevatedButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentEnd="true"
+				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+				android:text="@string/done" />
+
+		</RelativeLayout>
+
+	</com.google.android.material.appbar.MaterialToolbar>
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:padding="@dimen/grid_spacing"
 		android:scrollbars="vertical"

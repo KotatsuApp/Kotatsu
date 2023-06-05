@@ -57,7 +57,6 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/barrier_top"
 			app:trackColor="?colorPrimaryContainer"
-			app:trackCornerRadius="12dp"
 			tools:progress="25" />
 
 		<TextView

@@ -11,6 +11,8 @@ import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.settings.utils.AutoCompleteTextViewPreference
 import org.koitharu.kotatsu.settings.utils.EditTextBindListener
 import org.koitharu.kotatsu.settings.utils.EditTextDefaultSummaryProvider
+import org.koitharu.kotatsu.settings.utils.validation.DomainValidator
+import org.koitharu.kotatsu.settings.utils.validation.HeaderValidator
 
 fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMangaRepository) {
 	val configKeys = repository.getConfigKeys()
@@ -19,10 +21,12 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 		val preference: Preference = when (key) {
 			is ConfigKey.Domain -> {
 				val presetValues = key.presetValues
-				if (presetValues.isNullOrEmpty()) {
+				if (presetValues.size <= 1) {
 					EditTextPreference(requireContext())
 				} else {
-					AutoCompleteTextViewPreference(requireContext()).apply { entries = presetValues }
+					AutoCompleteTextViewPreference(requireContext()).apply {
+						entries = presetValues.toStringArray()
+					}
 				}.apply {
 					summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
 					setOnBindEditTextListener(
@@ -63,4 +67,8 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 		preference.key = key.key
 		screen.addPreference(preference)
 	}
+}
+
+private fun Array<out String>.toStringArray(): Array<String> {
+	return Array(size) { i -> this[i] as? String ?: "" }
 }

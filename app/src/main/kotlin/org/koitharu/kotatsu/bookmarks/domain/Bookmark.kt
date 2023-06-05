@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.bookmarks.domain
 
 import org.koitharu.kotatsu.parsers.model.Manga
-import java.util.*
+import java.util.Date
 
 class Bookmark(
 	val manga: Manga,
@@ -27,9 +27,7 @@ class Bookmark(
 		if (scroll != other.scroll) return false
 		if (imageUrl != other.imageUrl) return false
 		if (createdAt != other.createdAt) return false
-		if (percent != other.percent) return false
-
-		return true
+		return percent == other.percent
 	}
 
 	override fun hashCode(): Int {

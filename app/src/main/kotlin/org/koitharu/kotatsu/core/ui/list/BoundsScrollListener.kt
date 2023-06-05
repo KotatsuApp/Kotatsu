@@ -3,8 +3,10 @@ package org.koitharu.kotatsu.core.ui.list
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class BoundsScrollListener(private val offsetTop: Int, private val offsetBottom: Int) :
-	RecyclerView.OnScrollListener() {
+abstract class BoundsScrollListener(
+	@JvmField protected val offsetTop: Int,
+	@JvmField protected val offsetBottom: Int
+) : RecyclerView.OnScrollListener() {
 
 	override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 		super.onScrolled(recyclerView, dx, dy)
@@ -24,9 +26,16 @@ abstract class BoundsScrollListener(private val offsetTop: Int, private val offs
 		if (firstVisibleItemPosition <= offsetTop) {
 			onScrolledToStart(recyclerView)
 		}
+		onPostScrolled(recyclerView, firstVisibleItemPosition, visibleItemCount)
 	}
 
 	abstract fun onScrolledToStart(recyclerView: RecyclerView)
 
 	abstract fun onScrolledToEnd(recyclerView: RecyclerView)
+
+	protected open fun onPostScrolled(
+		recyclerView: RecyclerView,
+		firstVisibleItemPosition: Int,
+		visibleItemCount: Int
+	) = Unit
 }

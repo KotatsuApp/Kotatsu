@@ -6,17 +6,24 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.view.ActionMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
-import org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
+import org.koitharu.kotatsu.core.util.ext.doOnExpansionsChanged
 
 class ChaptersBottomSheetMediator(
-	bottomSheet: View,
+	private val behavior: BottomSheetBehavior<*>,
 ) : OnBackPressedCallback(false),
 	ActionModeListener,
-	BottomSheetHeaderBar.OnExpansionChangeListener,
 	OnLayoutChangeListener {
 
-	private val behavior = BottomSheetBehavior.from(bottomSheet)
 	private var lockCounter = 0
+
+	init {
+		behavior.doOnExpansionsChanged { isExpanded ->
+			isEnabled = isExpanded
+			if (!isExpanded) {
+				unlock()
+			}
+		}
+	}
 
 	override fun handleOnBackPressed() {
 		behavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -28,13 +35,6 @@ class ChaptersBottomSheetMediator(
 
 	override fun onActionModeFinished(mode: ActionMode) {
 		unlock()
-	}
-
-	override fun onExpansionStateChanged(headerBar: BottomSheetHeaderBar, isExpanded: Boolean) {
-		isEnabled = isExpanded
-		if (!isExpanded) {
-			unlock()
-		}
 	}
 
 	override fun onLayoutChange(
@@ -61,6 +61,9 @@ class ChaptersBottomSheetMediator(
 
 	fun unlock() {
 		lockCounter--
+		if (lockCounter < 0) {
+			lockCounter = 0
+		}
 		behavior.isDraggable = lockCounter <= 0
 	}
 }

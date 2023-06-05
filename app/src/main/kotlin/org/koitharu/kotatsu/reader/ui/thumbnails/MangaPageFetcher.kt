@@ -9,21 +9,24 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.request.Options
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
+import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
+import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.mimeType
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import java.util.zip.ZipFile
+import javax.inject.Inject
 
 class MangaPageFetcher(
 	private val context: Context,
@@ -32,6 +35,7 @@ class MangaPageFetcher(
 	private val options: Options,
 	private val page: MangaPage,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val imageProxyInterceptor: ImageProxyInterceptor,
 ) : Fetcher {
 
 	override suspend fun fetch(): FetchResult {
@@ -66,7 +70,7 @@ class MangaPageFetcher(
 			)
 		} else {
 			val request = PageLoader.createPageRequest(page, pageUrl)
-			okHttpClient.newCall(request).await().use { response ->
+			imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use { response ->
 				check(response.isSuccessful) {
 					"Invalid response: ${response.code} ${response.message} at $pageUrl"
 				}
@@ -89,11 +93,12 @@ class MangaPageFetcher(
 		}
 	}
 
-	class Factory(
-		private val context: Context,
-		private val okHttpClient: OkHttpClient,
+	class Factory @Inject constructor(
+		@ApplicationContext private val context: Context,
+		@MangaHttpClient private val okHttpClient: OkHttpClient,
 		private val pagesCache: PagesCache,
 		private val mangaRepositoryFactory: MangaRepository.Factory,
+		private val imageProxyInterceptor: ImageProxyInterceptor,
 	) : Fetcher.Factory<MangaPage> {
 
 		override fun create(data: MangaPage, options: Options, imageLoader: ImageLoader): Fetcher {
@@ -104,6 +109,7 @@ class MangaPageFetcher(
 				page = data,
 				context = context,
 				mangaRepositoryFactory = mangaRepositoryFactory,
+				imageProxyInterceptor = imageProxyInterceptor,
 			)
 		}
 	}

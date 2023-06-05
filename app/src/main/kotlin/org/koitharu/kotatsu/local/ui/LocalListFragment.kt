@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
@@ -16,11 +15,14 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
+import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 
-class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener {
+class LocalListFragment : MangaListFragment() {
 
 	override val viewModel by viewModels<LocalListViewModel>()
 
@@ -35,11 +37,7 @@ class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener
 	}
 
 	override fun onFilterClick(view: View?) {
-		super.onFilterClick(view)
-		val menu = PopupMenu(requireContext(), view ?: requireViewBinding().recyclerView)
-		menu.inflate(R.menu.popup_order)
-		menu.setOnMenuItemClickListener(this)
-		menu.show()
+		FilterSheetFragment.show(childFragmentManager)
 	}
 
 	override fun onScrolledToEnd() = Unit
@@ -67,17 +65,6 @@ class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener
 		}
 	}
 
-	override fun onMenuItemClick(item: MenuItem): Boolean {
-		val order = when (item.itemId) {
-			R.id.action_order_new -> SortOrder.NEWEST
-			R.id.action_order_abs -> SortOrder.ALPHABETICAL
-			R.id.action_order_rating -> SortOrder.RATING
-			else -> return false
-		}
-		viewModel.setSortOrder(order)
-		return true
-	}
-
 	private fun showDeletionConfirm(ids: Set<Long>, mode: ActionMode) {
 		MaterialAlertDialogBuilder(context ?: return)
 			.setTitle(R.string.delete_manga)
@@ -96,6 +83,8 @@ class LocalListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickListener
 
 	companion object {
 
-		fun newInstance() = LocalListFragment()
+		fun newInstance() = LocalListFragment().withArgs(1) {
+			putSerializable(RemoteListFragment.ARG_SOURCE, MangaSource.LOCAL) // required by FilterCoordinator
+		}
 	}
 }

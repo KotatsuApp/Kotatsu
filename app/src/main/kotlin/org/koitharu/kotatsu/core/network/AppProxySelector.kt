@@ -13,6 +13,10 @@ class AppProxySelector(
 	private val settings: AppSettings,
 ) : ProxySelector() {
 
+	init {
+		setDefault(this)
+	}
+
 	private var cachedProxy: Proxy? = null
 
 	override fun select(uri: URI?): List<Proxy> {

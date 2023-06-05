@@ -5,14 +5,12 @@ import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
 import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
-import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -22,7 +20,6 @@ import javax.inject.Inject
 
 @Reusable
 class MangaDataRepository @Inject constructor(
-	@MangaHttpClient private val okHttpClient: OkHttpClient,
 	private val db: MangaDatabase,
 ) {
 
@@ -42,6 +39,7 @@ class MangaDataRepository @Inject constructor(
 				entity.copy(
 					cfBrightness = colorFilter?.brightness ?: 0f,
 					cfContrast = colorFilter?.contrast ?: 0f,
+					cfInvert = colorFilter?.isInverted ?: false,
 				),
 			)
 		}
@@ -84,8 +82,8 @@ class MangaDataRepository @Inject constructor(
 	}
 
 	private fun MangaPrefsEntity.getColorFilterOrNull(): ReaderColorFilter? {
-		return if (cfBrightness != 0f || cfContrast != 0f) {
-			ReaderColorFilter(cfBrightness, cfContrast)
+		return if (cfBrightness != 0f || cfContrast != 0f || cfInvert) {
+			ReaderColorFilter(cfBrightness, cfContrast, cfInvert)
 		} else {
 			null
 		}
@@ -96,5 +94,6 @@ class MangaDataRepository @Inject constructor(
 		mode = -1,
 		cfBrightness = 0f,
 		cfContrast = 0f,
+		cfInvert = false,
 	)
 }

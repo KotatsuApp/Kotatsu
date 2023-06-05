@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.DiffUtil
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
+import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.list.ui.model.ListHeader
-import org.koitharu.kotatsu.list.ui.model.ListHeader2
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
@@ -82,7 +82,7 @@ open class MangaListAdapter(
 					}
 				}
 
-				is ListHeader2 -> Unit
+				is FilterHeaderModel -> Unit
 				else -> super.getChangePayload(oldItem, newItem)
 			}
 		}

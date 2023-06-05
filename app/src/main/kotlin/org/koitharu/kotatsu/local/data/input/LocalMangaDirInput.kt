@@ -130,7 +130,6 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 		}
 		val cbz = root.listFilesRecursive(CbzFilter()).firstOrNull() ?: return null
 		return ZipFile(cbz).use { zip ->
-			val filter = ImageFileFilter()
 			zip.entries().asSequence()
 				.firstOrNull { x -> !x.isDirectory && filter.accept(x) }
 				?.let { entry -> zipUri(cbz, entry.name) }

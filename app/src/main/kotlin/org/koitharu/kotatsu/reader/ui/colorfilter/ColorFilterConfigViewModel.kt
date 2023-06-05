@@ -55,12 +55,32 @@ class ColorFilterConfigViewModel @Inject constructor(
 
 	fun setBrightness(brightness: Float) {
 		val cf = colorFilter.value
-		colorFilter.value = ReaderColorFilter(brightness, cf?.contrast ?: 0f).takeUnless { it.isEmpty }
+		colorFilter.value = ReaderColorFilter(
+			brightness = brightness,
+			contrast = cf?.contrast ?: 0f,
+			isInverted = cf?.isInverted ?: false,
+		).takeUnless { it.isEmpty }
 	}
 
 	fun setContrast(contrast: Float) {
 		val cf = colorFilter.value
-		colorFilter.value = ReaderColorFilter(cf?.brightness ?: 0f, contrast).takeUnless { it.isEmpty }
+		colorFilter.value = ReaderColorFilter(
+			brightness = cf?.brightness ?: 0f,
+			contrast = contrast,
+			isInverted = cf?.isInverted ?: false,
+		).takeUnless { it.isEmpty }
+	}
+
+	fun setInversion(invert: Boolean) {
+		val cf = colorFilter.value
+		if (invert == cf?.isInverted) {
+			return
+		}
+		colorFilter.value = ReaderColorFilter(
+			brightness = cf?.brightness ?: 0f,
+			contrast = cf?.contrast ?: 0f,
+			isInverted = invert,
+		).takeUnless { it.isEmpty }
 	}
 
 	fun reset() {
