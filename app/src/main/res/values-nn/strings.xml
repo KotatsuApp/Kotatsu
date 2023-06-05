@@ -102,6 +102,7 @@
 	<string name="theme">Vising</string>
 	<string name="automatic">Lyd systemet</string>
 	<string name="dark">Mørk</string>
+	<string name="history_and_cache">Historikken og mellomminnet</string>
 	<string name="text_local_holder_primary">Hent noko først</string>
 	<string name="not_available">Ikkje tilgjengeleg</string>
 	<string name="update">Oppdater</string>
@@ -163,8 +164,10 @@
 	<string name="exclude_nsfw_from_suggestions">Ikkje rå mangaar med vakse innhald</string>
 	<string name="enabled">Påslegen</string>
 	<string name="filter_load_error">Kunne ikkje hente inn slaglista</string>
+	<string name="find_genre">Finn slag</string>
 	<string name="various_languages">Ulike mål</string>
 	<string name="percent_string_pattern">%1$s%%</string>
+	<string name="content">Innhald</string>
 	<string name="suggestions_updating">Oppdaterer råd</string>
 	<string name="suggestions_excluded_genres">Utelat slag</string>
 	<string name="removal_completed">Sletta</string>
@@ -323,6 +326,7 @@
 	<string name="check_for_new_chapters">Sjå etter nye kapittel</string>
 	<string name="reverse">Siste øvst</string>
 	<string name="tracker_warning">Nokre einingar har systemåtferd som kan knuse bakgrunnsføreloger.</string>
+	<string name="chapter_is_missing_text">Hent eller les dette saknande kapittelet på nettet.</string>
 	<string name="chapter_is_missing">Saknar kapittelet</string>
 	<string name="search_chapters">Finn kapittel</string>
 	<string name="chapters_empty">Ingen kapittel i denne mangaen</string>

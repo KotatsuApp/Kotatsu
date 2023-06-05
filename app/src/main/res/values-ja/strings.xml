@@ -50,6 +50,7 @@
 	<string name="delete">消去</string>
 	<string name="operation_not_supported">この操作はサポートされていません</string>
 	<string name="no_description">説明がありません</string>
+	<string name="history_and_cache">履歴とキャッシュ</string>
 	<string name="clear_pages_cache">ページのキャッシュをクリアする</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="settings">設定</string>
@@ -147,6 +148,7 @@
 	<string name="zoom_mode_fit_height">高さを合わせる</string>
 	<string name="chapter_is_missing">チャプターがありません</string>
 	<string name="text_clear_updates_feed_prompt">すべての更新履歴を完全に消去しますか？</string>
+	<string name="chapter_is_missing_text">この不足した章をダウンロードしたり、オンラインで読んだりすることができます。</string>
 	<string name="auth_required">このコンテンツを表示するにはサインインしてください</string>
 	<string name="file_not_found">ファイルが見つかりません</string>
 	<string name="password_length_hint">パスワードは4文字以上である必要があります</string>
@@ -210,6 +212,7 @@
 	<string name="enabled">有効</string>
 	<string name="exclude_nsfw_from_suggestions">NSFWのマンガを提案しない</string>
 	<string name="reset_filter">フィルターをリセット</string>
+	<string name="find_genre">ジャンルを探す</string>
 	<string name="only_using_wifi">Wi-Fiのみ使用</string>
 	<string name="never">決して</string>
 	<string name="onboard_text">漫画を読みたい言語を選択します。後で設定から変更することができます。</string>
@@ -221,6 +224,7 @@
 	<string name="search_chapters">チャプターを検索</string>
 	<string name="chapters_empty">この漫画の章はありません</string>
 	<string name="percent_string_pattern">%1$s%%</string>
+	<string name="content">コンテンツ</string>
 	<string name="suggestions_updating">更新のご提案</string>
 	<string name="appearance">外観</string>
 	<string name="suggestions_excluded_genres">ジャンルを除く</string>
@@ -422,4 +426,5 @@
 	<string name="username">ユーザー名</string>
 	<string name="password">パスワード</string>
 	<string name="authorization_optional">オーソライズ（オプション）</string>
+	<string name="invalid_port_number">無効なポート番号です</string>
 </resources>

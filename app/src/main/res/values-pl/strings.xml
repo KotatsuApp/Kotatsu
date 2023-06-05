@@ -140,6 +140,7 @@
 	<string name="only_using_wifi">Tylko na Wi-Fi</string>
 	<string name="screenshots_block_all">Zawsze blokuj</string>
 	<string name="genres">Gatunki</string>
+	<string name="find_genre">Znajdź gatunek</string>
 	<string name="read_more">Czytaj więcej</string>
 	<string name="captcha_solve">Rozwiąż</string>
 	<string name="captcha_required">Wymagane CAPTCHA</string>
@@ -175,6 +176,7 @@
 	<string name="remote_sources">Zewnętrzne źródła</string>
 	<string name="theme">Motyw</string>
 	<string name="automatic">Systemowy</string>
+	<string name="history_and_cache">Historia i pamięć podręczna</string>
 	<string name="clear_pages_cache">Wyczyść pamięć podręczną stron</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="grid_size">Wielkość siatki</string>
@@ -253,6 +255,7 @@
 	<string name="clear_search_history">Wyczyść historię wyszukiwania</string>
 	<string name="operation_not_supported">Ta operacja nie jest obsługiwana</string>
 	<string name="sort_order">Tryb sortowania</string>
+	<string name="content">Treści</string>
 	<string name="filter_load_error">Nie można załadować listy gatunków</string>
 	<string name="status_on_hold">Wstrzymane</string>
 	<string name="status_dropped">Porzucone</string>
@@ -291,6 +294,7 @@
 	<string name="backup_saved">Zapisano kopię zapasową</string>
 	<string name="tracker_warning">Systemy niektórych urządzeń inaczej się zachowują. Może to zakłócać wykonywanie zadań w tle.</string>
 	<string name="queued">W kolejce</string>
+	<string name="chapter_is_missing_text">Pobierz lub przeczytaj ten brakujący rozdział online.</string>
 	<string name="chapter_is_missing">Brak rozdziału</string>
 	<string name="auth_complete">Uprawniony</string>
 	<string name="auth_not_supported_by">Logowanie na %s nie jest obsługiwane</string>

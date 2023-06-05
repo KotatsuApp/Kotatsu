@@ -59,6 +59,7 @@
 	<string name="operation_not_supported">Esta operación no está admitida</string>
 	<string name="text_file_not_supported">Elija un archivo ZIP o bien un archivo CBZ.</string>
 	<string name="no_description">Sin descripción</string>
+	<string name="history_and_cache">Historial y caché</string>
 	<string name="clear_pages_cache">Borrar caché de página</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="standard">Estándar</string>
@@ -186,6 +187,7 @@
 	<string name="text_clear_search_history_prompt">¿Realmente quiere eliminar todas las consultas de búsqueda recientes\?</string>
 	<string name="state_finished">Terminado</string>
 	<string name="state_ongoing">En curso</string>
+	<string name="chapter_is_missing_text">Este capítulo no aparece en su dispositivo. Descárguelo o léalo en línea.</string>
 	<string name="auth_complete">Autorizado</string>
 	<string name="system_default">Por defecto</string>
 	<string name="tracker_warning">Algunos fabricantes pueden cambiar el comportamiento del sistema, lo que podría interrumpir las tareas en segundo plano.</string>
@@ -210,6 +212,7 @@
 	<string name="filter_load_error">No se puede cargar la lista de géneros</string>
 	<string name="screenshots_block_nsfw">Bloqueo en NSFW</string>
 	<string name="logged_in_as">Conectado como %s</string>
+	<string name="find_genre">Encontrar el género</string>
 	<string name="onboard_text">Selecciona los idiomas en los que quieres leer mangas. Puedes cambiarlo más tarde en los ajustes.</string>
 	<string name="reset_filter">Reiniciar el filtro</string>
 	<string name="never">Nunca</string>
@@ -222,6 +225,7 @@
 	<string name="chapters_empty">No hay capítulos en este manga</string>
 	<string name="percent_string_pattern">%1$s%%</string>
 	<string name="appearance">Aspecto</string>
+	<string name="content">Contenido</string>
 	<string name="suggestions_updating">Actualización de las sugerencias</string>
 	<string name="suggestions_excluded_genres">Excluir géneros</string>
 	<string name="suggestions_excluded_genres_summary">Especifica los géneros que no quieres ver en las sugerencias</string>

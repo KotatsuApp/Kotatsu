@@ -51,6 +51,7 @@
 	<string name="page_saved">Kaydet</string>
 	<string name="error_occurred">Bir hata oluştu</string>
 	<string name="remote_sources">Manga kaynakları</string>
+	<string name="history_and_cache">Geçmiş ve önbellek</string>
 	<string name="search_history_cleared">Temizlendi</string>
 	<string name="_continue">Devam</string>
 	<string name="not_available">Müsait değil</string>
@@ -109,6 +110,7 @@
 	<string name="black_dark_theme">Siyah</string>
 	<string name="zoom_mode_keep_start">Başlangıçta tut</string>
 	<string name="clear_feed">Akışı temizle</string>
+	<string name="chapter_is_missing_text">Bu eksik bölümü çevrim içi olarak indirin veya okuyun.</string>
 	<string name="restore_backup">Yedekten geri yükle</string>
 	<string name="update">Güncelle</string>
 	<string name="sign_in">Oturum aç</string>
@@ -210,6 +212,7 @@
 	<string name="disabled">Devre dışı</string>
 	<string name="filter_load_error">Türler listesi yüklenemiyor</string>
 	<string name="reset_filter">Filtreyi sıfırla</string>
+	<string name="find_genre">Tür bul</string>
 	<string name="onboard_text">Manga okumak istediğiniz dilleri seçin. Daha sonra ayarlardan değiştirebilirsiniz.</string>
 	<string name="always">Her zaman</string>
 	<string name="never">Hiçbir zaman</string>
@@ -221,6 +224,7 @@
 	<string name="search_chapters">Bölüm bul</string>
 	<string name="chapters_empty">Bu mangada bölüm yok</string>
 	<string name="percent_string_pattern">%%%1$s</string>
+	<string name="content">İçerik</string>
 	<string name="suggestions_updating">Öneriler güncelleniyor</string>
 	<string name="appearance">Görünüm</string>
 	<string name="suggestions_excluded_genres">Türleri hariç tut</string>
@@ -415,4 +419,12 @@
 	<string name="port">Menü</string>
 	<string name="proxy">Proxy</string>
 	<string name="invalid_value_message">Geçersiz değer</string>
+	<string name="invalid_port_number">Geçersiz port numarası</string>
+	<string name="invert_colors">Renkleri ters çevir</string>
+	<string name="images_proxy_title">Görüntü optimizasyon proxy\'si</string>
+	<string name="password">Şifre</string>
+	<string name="authorization_optional">Doğrulama (isteğe bağlı)</string>
+	<string name="downloaded">İndirildi</string>
+	<string name="images_procy_description">Trafik kullanımını azaltmak ve mümkünse resim yüklemeyi hızlandırmak için wsrv.nl hizmetini kullanın</string>
+	<string name="username">Kullanıcı adı</string>
 </resources>

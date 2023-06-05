@@ -5,6 +5,11 @@
 		<item quantity="many">Il y a %1$d minutes</item>
 		<item quantity="other">Il y a %1$d minutes</item>
 	</plurals>
+	<plurals name="pages">
+		<item quantity="one">%1$d page au total</item>
+		<item quantity="many">%1$d pages au total</item>
+		<item quantity="other">%1$d pages au total</item>
+	</plurals>
 	<plurals name="items">
 		<item quantity="one">%1$d élément</item>
 		<item quantity="many">%1$d éléments</item>

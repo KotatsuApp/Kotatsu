@@ -66,6 +66,7 @@
 	<string name="show_notification_new_chapters_on">你会收到你正在阅读的漫画的更新通知</string>
 	<string name="tracker_warning">一些设备有不同的系统行为，这可能会破坏后台任务。</string>
 	<string name="protect_application_subtitle">输入密码以启动应用程序</string>
+	<string name="chapter_is_missing_text">下载或在线阅读这缺失的章节。</string>
 	<string name="protect_application_summary">在启动Kotatsu时要求输入密码</string>
 	<string name="chapters_empty">这部漫画中没有章节</string>
 	<string name="text_feed_holder">你正在阅读的新章节显示在这里</string>

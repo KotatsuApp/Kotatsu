@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<plurals name="pages">
+		<item quantity="one">Página total %1$d</item>
+		<item quantity="many">Páginas totales %1$d</item>
+		<item quantity="other">Página totales %1$d</item>
+	</plurals>
 	<plurals name="items">
 		<item quantity="one">%1$d elemento</item>
 		<item quantity="many">%1$d elementos</item>

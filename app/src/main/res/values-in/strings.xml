@@ -56,6 +56,7 @@
 	<string name="page_saved">Disimpan</string>
 	<string name="share_image">Bagikan gambar</string>
 	<string name="_import">Impor</string>
+	<string name="history_and_cache">Riwayat dan cache</string>
 	<string name="clear_pages_cache">Bersihkan cache halaman</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="standard">Standar</string>
@@ -170,6 +171,7 @@
 	<string name="disabled">Dinonaktifkan</string>
 	<string name="filter_load_error">Tidak bisa memuat daftar genre</string>
 	<string name="reset_filter">Atur ulang filter</string>
+	<string name="find_genre">Cari genre</string>
 	<string name="onboard_text">Pilih bahasa komik yang ingin Anda baca. Anda bisa mengubahnya nanti di pengaturan.</string>
 	<string name="never">Jangan Pernah</string>
 	<string name="only_using_wifi">Hanya di Wi-Fi</string>
@@ -179,6 +181,7 @@
 	<string name="chapters_empty">Tidak ada bab di komik ini</string>
 	<string name="percent_string_pattern">%1$s%%</string>
 	<string name="appearance">Tampilan</string>
+	<string name="content">Konten</string>
 	<string name="suggestions_excluded_genres">Kecualikan genre</string>
 	<string name="suggestions_excluded_genres_summary">Tentukan genre yang Anda tidak ingin lihat di saran</string>
 	<string name="text_delete_local_manga_batch">Hapus yang dipilih dari perangkat secara permanen\?</string>
@@ -237,6 +240,7 @@
 	<string name="text_clear_updates_feed_prompt">Bersihkan semua riwayat pembaruan secara permanen\?</string>
 	<string name="sign_in">Masuk</string>
 	<string name="default_s">Standar: %s</string>
+	<string name="chapter_is_missing_text">Unduh atau baca bab yang hilang ini secara daring.</string>
 	<string name="about_app_translation_summary">Terjemahkan aplikasi ini</string>
 	<string name="taps_on_edges">Tekan di tepi</string>
 	<string name="large_manga_save_confirm">Komik ini memiliki %s. Simpan semuanya\?</string>
