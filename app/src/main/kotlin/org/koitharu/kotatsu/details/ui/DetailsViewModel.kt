@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -78,6 +80,7 @@ class DetailsViewModel @Inject constructor(
 	private var loadingJob: Job
 
 	val onShowToast = MutableEventFlow<Int>()
+	val onShowTip = MutableEventFlow<Unit>()
 	val onDownloadStarted = MutableEventFlow<Unit>()
 
 	val manga = doubleManga.map { it?.any }
@@ -191,6 +194,12 @@ class DetailsViewModel @Inject constructor(
 			localStorageChanges
 				.collect { onDownloadComplete(it) }
 		}
+		launchJob(Dispatchers.Default) {
+			if (settings.isTipEnabled(DetailsActivity.TIP_BUTTON)) {
+				manga.filterNot { it?.chapters.isNullOrEmpty() }.first()
+				onShowTip.call(Unit)
+			}
+		}
 	}
 
 	fun reload() {
@@ -275,6 +284,10 @@ class DetailsViewModel @Inject constructor(
 			)
 			onDownloadStarted.call(Unit)
 		}
+	}
+
+	fun onButtonTipClosed() {
+		settings.closeTip(DetailsActivity.TIP_BUTTON)
 	}
 
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {

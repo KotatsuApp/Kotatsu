@@ -126,8 +126,10 @@ class MainActivity :
 		viewBinding.navRail?.headerView?.setOnClickListener(this)
 		viewBinding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
-		navigationDelegate =
-			MainNavigationDelegate(checkNotNull(bottomNav ?: viewBinding.navRail), supportFragmentManager)
+		navigationDelegate = MainNavigationDelegate(
+			navBar = checkNotNull(bottomNav ?: viewBinding.navRail),
+			fragmentManager = supportFragmentManager,
+		)
 		navigationDelegate.addOnFragmentChangedListener(this)
 		navigationDelegate.onCreate()
 
@@ -156,6 +158,8 @@ class MainActivity :
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
 		adjustFabVisibility(topFragment = fragment)
 		if (fromUser) {
+			actionModeDelegate.finishActionMode()
+			closeSearchCallback.handleOnBackPressed()
 			viewBinding.appbar.setExpanded(true)
 		}
 	}
@@ -243,13 +247,13 @@ class MainActivity :
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
 		adjustFabVisibility()
-		showNav(false)
+		bottomNav?.hide()
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		adjustFabVisibility()
-		showNav(true)
+		bottomNav?.show()
 	}
 
 	private fun onOpenReader(manga: Manga) {
@@ -301,17 +305,6 @@ class MainActivity :
 		closeSearchCallback.isEnabled = false
 	}
 
-	private fun showNav(visible: Boolean) {
-		bottomNav?.run {
-			if (visible) {
-				show()
-			} else {
-				hide()
-			}
-		}
-		viewBinding.navRail?.isVisible = visible
-	}
-
 	private fun isSearchOpened(): Boolean {
 		return supportFragmentManager.findFragmentByTag(TAG_SEARCH) != null
 	}
@@ -340,7 +333,7 @@ class MainActivity :
 	}
 
 	private fun adjustFabVisibility(
-		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value == true,
+		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value,
 		topFragment: Fragment? = navigationDelegate.primaryFragment,
 		isSearchOpened: Boolean = isSearchOpened(),
 	) {
@@ -383,7 +376,7 @@ class MainActivity :
 		supportActionBar?.setHomeAsUpIndicator(
 			if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
 		)
-		showNav(!isOpened)
+		bottomNav?.showOrHide(!isOpened)
 	}
 
 	private fun requestNotificationsPermission() {

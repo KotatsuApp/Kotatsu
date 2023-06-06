@@ -436,4 +436,5 @@
 	<string name="reader_info_bar_summary">Show the current time and reading progress at the top of the screen</string>
 	<string name="show_pages_numbers_summary">Show page numbers in bottom corner</string>
 	<string name="pages_animation_summary">Animate page switching</string>
+	<string name="details_button_tip">Press and hold the Read button to see more options</string>
 </resources>

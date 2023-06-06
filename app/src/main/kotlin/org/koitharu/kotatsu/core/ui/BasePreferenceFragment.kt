@@ -26,7 +26,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	lateinit var settings: AppSettings
 
 	@JvmField
-	protected val insetsDelegate = WindowInsetsDelegate(this)
+	protected val insetsDelegate = WindowInsetsDelegate()
 
 	override val recyclerView: RecyclerView
 		get() = listView
@@ -35,9 +35,11 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 		super.onViewCreated(view, savedInstanceState)
 		listView.clipToPadding = false
 		insetsDelegate.onViewCreated(view)
+		insetsDelegate.addInsetsListener(this)
 	}
 
 	override fun onDestroyView() {
+		insetsDelegate.removeInsetsListener(this)
 		insetsDelegate.onDestroyView()
 		super.onDestroyView()
 	}

@@ -45,7 +45,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	protected val exceptionResolver = ExceptionResolver(this)
 
 	@JvmField
-	protected val insetsDelegate = WindowInsetsDelegate(this)
+	protected val insetsDelegate = WindowInsetsDelegate()
 
 	@JvmField
 	val actionModeDelegate = ActionModeDelegate()
@@ -62,6 +62,7 @@ abstract class BaseActivity<B : ViewBinding> :
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		insetsDelegate.handleImeInsets = true
+		insetsDelegate.addInsetsListener(this)
 		putDataToExtras(intent)
 	}
 

@@ -14,7 +14,7 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 		get() = activeActionMode != null
 
 	override fun handleOnBackPressed() {
-		activeActionMode?.finish()
+		finishActionMode()
 	}
 
 	fun onSupportActionModeStarted(mode: ActionMode) {
@@ -43,6 +43,10 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 	fun addListener(listener: ActionModeListener, owner: LifecycleOwner) {
 		addListener(listener)
 		owner.lifecycle.addObserver(ListenerLifecycleObserver(listener))
+	}
+
+	fun finishActionMode() {
+		activeActionMode?.finish()
 	}
 
 	private inner class ListenerLifecycleObserver(

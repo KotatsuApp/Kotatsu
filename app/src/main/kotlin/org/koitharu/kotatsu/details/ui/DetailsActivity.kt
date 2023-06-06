@@ -55,6 +55,7 @@ import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -70,6 +71,7 @@ class DetailsActivity :
 	lateinit var shortcutsUpdater: ShortcutsUpdater
 
 	private lateinit var viewBadge: ViewBadge
+	private var buttonTip: WeakReference<ButtonTip>? = null
 
 	private val viewModel: DetailsViewModel by viewModels()
 	private lateinit var chaptersMenuProvider: ChaptersMenuProvider
@@ -122,6 +124,7 @@ class DetailsActivity :
 		viewModel.onShowToast.observeEvent(this) {
 			makeSnackbar(getString(it), Snackbar.LENGTH_SHORT).show()
 		}
+		viewModel.onShowTip.observeEvent(this) { showTip() }
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
 		viewModel.selectedBranch.observe(this) {
 			viewBinding.toolbarChapters?.subtitle = it
@@ -162,6 +165,8 @@ class DetailsActivity :
 
 	override fun onLongClick(v: View): Boolean = when (v.id) {
 		R.id.button_read -> {
+			buttonTip?.get()?.remove()
+			buttonTip = null
 			val menu = PopupMenu(v.context, v)
 			menu.inflate(R.menu.popup_read)
 			menu.setOnMenuItemClickListener(this)
@@ -345,7 +350,15 @@ class DetailsActivity :
 		}
 	}
 
+	private fun showTip() {
+		val tip = ButtonTip(viewBinding.root as ViewGroup, insetsDelegate, viewModel)
+		tip.addToRoot()
+		buttonTip = WeakReference(tip)
+	}
+
 	companion object {
+
+		const val TIP_BUTTON = "btn_read"
 
 		fun newIntent(context: Context, manga: Manga): Intent {
 			return Intent(context, DetailsActivity::class.java)

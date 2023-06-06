@@ -5,10 +5,9 @@ import androidx.core.graphics.Insets
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.util.LinkedList
 
-class WindowInsetsDelegate(
-	private val listener: WindowInsetsListener,
-) : OnApplyWindowInsetsListener, View.OnLayoutChangeListener {
+class WindowInsetsDelegate : OnApplyWindowInsetsListener, View.OnLayoutChangeListener {
 
 	@JvmField
 	var handleImeInsets: Boolean = false
@@ -16,6 +15,7 @@ class WindowInsetsDelegate(
 	@JvmField
 	var interceptingWindowInsetsListener: OnApplyWindowInsetsListener? = null
 
+	private val listeners = LinkedList<WindowInsetsListener>()
 	private var lastInsets: Insets? = null
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
@@ -29,7 +29,7 @@ class WindowInsetsDelegate(
 			handledInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 		}
 		if (newInsets != lastInsets) {
-			listener.onWindowInsetsChanged(newInsets)
+			listeners.forEach { it.onWindowInsetsChanged(newInsets) }
 			lastInsets = newInsets
 		}
 		return handledInsets
@@ -50,6 +50,15 @@ class WindowInsetsDelegate(
 		if (lastInsets == null) { // Listener may not be called
 			onApplyWindowInsets(view, ViewCompat.getRootWindowInsets(view) ?: return)
 		}
+	}
+
+	fun addInsetsListener(listener: WindowInsetsListener) {
+		listeners.add(listener)
+		lastInsets?.let { listener.onWindowInsetsChanged(it) }
+	}
+
+	fun removeInsetsListener(listener: WindowInsetsListener) {
+		listeners.remove(listener)
 	}
 
 	fun onViewCreated(view: View) {
