@@ -134,7 +134,7 @@ class SettingsActivity :
 		supportFragmentManager.commit {
 			setReorderingAllowed(true)
 			replace(R.id.container, fragment)
-			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_MATCH_ACTIVITY_OPEN)
 			if (!isMasterDetail || (hasFragment && !isFromRoot)) {
 				addToBackStack(null)
 			}
@@ -148,6 +148,7 @@ class SettingsActivity :
 			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
 			ACTION_HISTORY -> UserDataSettingsFragment()
 			ACTION_TRACKER -> TrackerSettingsFragment()
+			ACTION_MANAGE_DOWNLOADS -> DownloadsSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 				intent.getSerializableExtraCompat(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
 			)
@@ -177,6 +178,7 @@ class SettingsActivity :
 		private const val ACTION_HISTORY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_HISTORY"
 		private const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
 		private const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
+		private const val ACTION_MANAGE_DOWNLOADS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_DOWNLOADS"
 		private const val EXTRA_SOURCE = "source"
 		private const val HOST_ABOUT = "about"
 		private const val HOST_SYNC_SETTINGS = "sync-settings"
@@ -202,6 +204,10 @@ class SettingsActivity :
 		fun newManageSourcesIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_MANAGE_SOURCES)
+
+		fun newDownloadsSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_MANAGE_DOWNLOADS)
 
 		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
 			Intent(context, SettingsActivity::class.java)

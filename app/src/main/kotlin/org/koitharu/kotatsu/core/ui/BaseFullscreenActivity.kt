@@ -4,9 +4,11 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.viewbinding.ViewBinding
+import org.koitharu.kotatsu.R
 
 abstract class BaseFullscreenActivity<B : ViewBinding> :
 	BaseActivity<B>() {
@@ -18,7 +20,11 @@ abstract class BaseFullscreenActivity<B : ViewBinding> :
 		with(window) {
 			insetsControllerCompat = WindowInsetsControllerCompat(this, decorView)
 			statusBarColor = Color.TRANSPARENT
-			navigationBarColor = Color.TRANSPARENT
+			navigationBarColor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+				ContextCompat.getColor(this@BaseFullscreenActivity, R.color.dim)
+			} else {
+				Color.TRANSPARENT
+			}
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 				attributes.layoutInDisplayCutoutMode =
 					WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES

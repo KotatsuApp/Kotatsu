@@ -244,7 +244,7 @@ class DetailsActivity :
 			bottomMargin = insets.bottom + marginEnd
 		}
 		viewBinding.dragHandle?.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = insets.bottom
+			bottomMargin = insets.top
 		}
 	}
 

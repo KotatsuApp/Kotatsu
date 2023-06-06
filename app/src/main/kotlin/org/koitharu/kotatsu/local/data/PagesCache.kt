@@ -34,8 +34,8 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 	}
 	private val lruCache = SuspendLazy {
 		val dir = cacheDir.get()
-		val availableSize = getAvailableSizeMb()
-		val size = SIZE_DEFAULT.coerceIn(SIZE_MIN, availableSize)
+		val availableSize = (getAvailableSize() * 0.8).toLong()
+		val size = SIZE_DEFAULT.coerceAtMost(availableSize).coerceAtLeast(SIZE_MIN)
 		runCatchingCancellable {
 			DiskLruCache.create(dir, size)
 		}.recoverCatching { error ->
@@ -66,9 +66,9 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		}
 	}
 
-	private suspend fun getAvailableSizeMb(): Long = runCatchingCancellable {
+	private suspend fun getAvailableSize(): Long = runCatchingCancellable {
 		val statFs = StatFs(cacheDir.get().absolutePath)
-		FileSize.BYTES.convert(statFs.availableBytes, FileSize.MEGABYTES)
+		statFs.availableBytes
 	}.onFailure {
 		it.printStackTraceDebug()
 	}.getOrDefault(SIZE_DEFAULT)
