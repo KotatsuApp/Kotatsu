@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.util
+package org.koitharu.kotatsu.core.util
 
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver

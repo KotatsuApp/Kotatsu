@@ -31,7 +31,7 @@ import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
 import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 @AndroidEntryPoint

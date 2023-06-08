@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.scrobbling.anilist.data
 
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 
 enum class ScoreFormat {
 

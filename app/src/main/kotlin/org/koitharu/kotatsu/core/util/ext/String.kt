@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.core.util.ext
 
 import androidx.annotation.FloatRange
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.util.UUID
 
 inline fun <C : CharSequence> C?.ifNullOrEmpty(defaultValue: () -> C): C {

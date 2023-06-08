@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.core.network
 
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Proxy
