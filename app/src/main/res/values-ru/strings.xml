@@ -429,4 +429,6 @@
     <string name="restore_summary">Восстановить ранее созданную резервную копию</string>
     <string name="reader_info_bar_summary">Отображение текущего времени и прогресса чтения в верхней части экрана</string>
     <string name="show_pages_numbers_summary">Показывать номера страниц в нижнем углу</string>
+    <string name="pages_animation_summary">Анимация перелистывания страниц</string>
+    <string name="details_button_tip">Нажмите и удерживайте кнопку «Читать», чтобы просмотреть дополнительные параметры</string>
 </resources>
