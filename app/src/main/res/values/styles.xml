@@ -134,7 +134,7 @@
 		<item name="bubbleTextColor">?colorOnTertiary</item>
 		<item name="trackColor">?colorOutline</item>
 		<item name="bubbleSize">normal</item>
-		<item name="scrollerOffset">6dp</item>
+		<item name="scrollerOffset">@dimen/grid_spacing_outer</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">
