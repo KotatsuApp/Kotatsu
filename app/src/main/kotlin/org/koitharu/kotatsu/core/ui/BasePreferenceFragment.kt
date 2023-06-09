@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject
 
@@ -33,6 +34,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		view.setBackgroundColor(view.context.getThemeColor(android.R.attr.colorBackground))
 		listView.clipToPadding = false
 		insetsDelegate.onViewCreated(view)
 		insetsDelegate.addInsetsListener(this)
