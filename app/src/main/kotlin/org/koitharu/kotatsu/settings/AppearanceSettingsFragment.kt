@@ -13,7 +13,6 @@ import androidx.core.app.LocaleManagerCompat
 import androidx.core.view.postDelayed
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.TwoStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -26,7 +25,6 @@ import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.parsers.util.toTitleCase
-import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.settings.utils.ActivityListPreference
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import java.util.Locale
@@ -50,12 +48,10 @@ class AppearanceSettingsFragment :
 				true
 			}
 		}
-		preferenceScreen?.findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
+		findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
 			entryValues = ListMode.values().names()
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
-		findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)
-			?.isChecked = !settings.appPassword.isNullOrEmpty()
 		findPreference<ActivityListPreference>(AppSettings.KEY_APP_LOCALE)?.run {
 			initLocalePicker(this)
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -93,31 +89,9 @@ class AppearanceSettingsFragment :
 				postRestart()
 			}
 
-			AppSettings.KEY_APP_PASSWORD -> {
-				findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)
-					?.isChecked = !settings.appPassword.isNullOrEmpty()
-			}
-
 			AppSettings.KEY_APP_LOCALE -> {
 				AppCompatDelegate.setApplicationLocales(settings.appLocales)
 			}
-		}
-	}
-
-	override fun onPreferenceTreeClick(preference: Preference): Boolean {
-		return when (preference.key) {
-			AppSettings.KEY_PROTECT_APP -> {
-				val pref = (preference as? TwoStatePreference ?: return false)
-				if (pref.isChecked) {
-					pref.isChecked = false
-					startActivity(Intent(preference.context, ProtectSetupActivity::class.java))
-				} else {
-					settings.appPassword = null
-				}
-				true
-			}
-
-			else -> super.onPreferenceTreeClick(preference)
 		}
 	}
 

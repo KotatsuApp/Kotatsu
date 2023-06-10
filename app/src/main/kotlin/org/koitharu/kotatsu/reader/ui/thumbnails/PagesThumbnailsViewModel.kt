@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
+import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -26,7 +27,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 
 	private val currentPageIndex: Int = savedStateHandle[PagesThumbnailsSheet.ARG_CURRENT_PAGE] ?: -1
 	private val initialChapterId: Long = savedStateHandle[PagesThumbnailsSheet.ARG_CHAPTER_ID] ?: 0L
-	val manga = requireNotNull(savedStateHandle.get<ParcelableManga>(PagesThumbnailsSheet.ARG_MANGA)).manga
+	val manga = savedStateHandle.require<ParcelableManga>(PagesThumbnailsSheet.ARG_MANGA).manga
 
 	private val repository = mangaRepositoryFactory.create(manga.source)
 	private val mangaDetails = SuspendLazy {

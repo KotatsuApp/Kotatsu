@@ -12,6 +12,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.ui.BaseViewModel
+import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet.Companion.KEY_MANGA_LIST
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.CategoriesHeaderItem
@@ -25,7 +26,7 @@ class MangaCategoriesViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 
-	private val manga = requireNotNull(savedStateHandle.get<List<ParcelableManga>>(KEY_MANGA_LIST)).map { it.manga }
+	private val manga = savedStateHandle.require<List<ParcelableManga>>(KEY_MANGA_LIST).map { it.manga }
 	private val header = CategoriesHeaderItem()
 
 	val content: StateFlow<List<ListModel>> = combine(

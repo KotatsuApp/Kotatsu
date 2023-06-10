@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings
+package org.koitharu.kotatsu.settings.sources
 
 import android.view.inputmethod.EditorInfo
 import androidx.preference.EditTextPreference

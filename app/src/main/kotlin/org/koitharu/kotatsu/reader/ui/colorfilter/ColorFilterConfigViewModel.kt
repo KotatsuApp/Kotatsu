@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity.Companion.EXTRA_MANGA
@@ -23,7 +24,7 @@ class ColorFilterConfigViewModel @Inject constructor(
 	private val mangaDataRepository: MangaDataRepository,
 ) : BaseViewModel() {
 
-	private val manga = checkNotNull(savedStateHandle.get<ParcelableManga>(EXTRA_MANGA)?.manga)
+	private val manga = savedStateHandle.require<ParcelableManga>(EXTRA_MANGA).manga
 
 	private var initialColorFilter: ReaderColorFilter? = null
 	val colorFilter = MutableStateFlow<ReaderColorFilter?>(null)
@@ -34,9 +35,7 @@ class ColorFilterConfigViewModel @Inject constructor(
 		get() = colorFilter.value != initialColorFilter
 
 	init {
-		val page = checkNotNull(
-			savedStateHandle.get<ParcelableMangaPages>(ColorFilterConfigActivity.EXTRA_PAGES)?.pages?.firstOrNull(),
-		)
+		val page = savedStateHandle.require<ParcelableMangaPages>(ColorFilterConfigActivity.EXTRA_PAGES).pages.first()
 		launchLoadingJob {
 			initialColorFilter = mangaDataRepository.getColorFilter(manga.id)
 			colorFilter.value = initialColorFilter

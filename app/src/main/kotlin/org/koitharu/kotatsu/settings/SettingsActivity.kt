@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
+import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesListFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 

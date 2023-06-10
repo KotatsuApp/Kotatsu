@@ -16,7 +16,6 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject
 
-@Suppress("LeakingThis")
 @AndroidEntryPoint
 abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	PreferenceFragmentCompat(),
