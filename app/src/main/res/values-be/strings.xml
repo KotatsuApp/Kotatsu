@@ -95,7 +95,7 @@
     <string name="vibration">Вібрацыя</string>
     <string name="favourites_categories">Катэгорыі абранага</string>
     <string name="remove_category">Выдаліць катэгорыю</string>
-    <string name="manga_shelf">Паліца з мангай</string>
+    <string name="manga_shelf">Паліца</string>
     <string name="recent_manga">Нядаўняя манга</string>
     <string name="pages_animation">Анімацыя гартання</string>
     <string name="manga_save_location">Месца спампоўвання мангі</string>
@@ -201,7 +201,7 @@
     <string name="screenshots_block_all">Заўсёды блакуйце</string>
     <string name="screenshots_block_nsfw">Блок на NSFW</string>
     <string name="filter_load_error">Немагчыма загрузіць спіс жанраў</string>
-    <string name="disabled">Непрацаздольны</string>
+    <string name="disabled">Адключаны</string>
     <string name="enabled">Уключаны</string>
     <string name="exclude_nsfw_from_suggestions">Не прапануйце мангу NSFW</string>
     <string name="text_suggestion_holder">Пачніце чытаць мангу, і вы атрымаеце персаналізаваныя прапановы</string>
@@ -255,7 +255,7 @@
     <string name="edit">Змяніць</string>
     <string name="edit_category">Змяніць катэгорыю</string>
     <string name="bookmark_add">Дадаць закладку</string>
-    <string name="undo">Адмяніць</string>
+    <string name="undo">Адмена</string>
     <string name="disable_battery_optimization">Адключыць аптымізацыю акумулятара</string>
     <string name="disable_battery_optimization_summary">Дапамагае з фонавай праверкай абнаўленняў</string>
     <string name="crash_text">Штосьці пайшло не так. Калі ласка, адпраўце справаздачу пра памылку распрацоўшчыкам, каб дапамагчы нам яе выправіць.</string>
@@ -327,7 +327,7 @@
     <string name="enable_logging_summary">Запішыце некаторыя дзеянні для адладкі</string>
     <string name="show_suspicious_content">Паказаць падазроны кантэнт</string>
     <string name="text_shelf_holder_primary">Ваша манга будзе адлюстроўвацца тут</string>
-    <string name="text_shelf_holder_secondary">Знайдзіце, што пачытаць, у раздзеле «Даследаваць»</string>
+    <string name="text_shelf_holder_secondary">Знайдзіце, што пачытаць, у раздзеле «Агляд»</string>
     <string name="canceled">Адменена</string>
     <string name="manage">Кіраваць</string>
     <string name="available">Даступны</string>
@@ -356,7 +356,7 @@
     <string name="random">Выпадковы</string>
     <string name="reorder">Змяніць парадак</string>
     <string name="empty">Пуста</string>
-    <string name="explore">Дасьледуйце</string>
+    <string name="explore">Агляд</string>
     <string name="confirm_exit">Націсніце \"Назад\" яшчэ раз, каб выйсці</string>
     <string name="exit_confirmation_summary">Двойчы націсніце \"Назад\", каб выйсці з праграмы</string>
     <string name="exit_confirmation">Пацверджанне выхаду</string>
@@ -425,7 +425,7 @@
     <string name="invert_colors">Інвертаваць колеры</string>
     <string name="show_pages_numbers_summary">Паказаць нумары старонак у ніжнім куце</string>
     <string name="network">Сетка</string>
-    <string name="data_and_privacy">Дадзеныя і прыватнасць</string>
+    <string name="data_and_privacy">Дадзеныя і канфідэнцыяльнасць</string>
     <string name="webtoon_zoom_summary">Дазволіць жэст для павелічэння ў рэжыме webtoon</string>
     <string name="details_button_tip">Націсніце і ўтрымлівайце кнопку \"Чытаць\", каб убачыць дадатковыя параметры</string>
     <string name="restore_summary">Аднавіць раней створаную рэзервовую копію</string>
