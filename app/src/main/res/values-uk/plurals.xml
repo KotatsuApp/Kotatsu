@@ -12,12 +12,6 @@
 		<item quantity="many">%1$d хвилин тому</item>
 		<item quantity="other">%1$d хвилин тому</item>
 	</plurals>
-	<plurals name="pages">
-		<item quantity="one">Всього %1$d сторінка</item>
-		<item quantity="few">Всього %1$d сторінки</item>
-		<item quantity="many">Всього %1$d сторінок</item>
-		<item quantity="other">Всього %1$d сторінок</item>
-	</plurals>
 	<plurals name="hours_ago">
 		<item quantity="one">%1$d годину тому</item>
 		<item quantity="few">%1$d години тому</item>

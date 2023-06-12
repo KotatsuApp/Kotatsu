@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -11,19 +11,6 @@
 		android:id="@+id/container"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
-
-	<org.koitharu.kotatsu.reader.ui.ReaderToastView
-		android:id="@+id/toastView"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom|center_horizontal"
-		android:layout_marginBottom="20dp"
-		android:background="@drawable/bg_reader_indicator"
-		android:drawablePadding="6dp"
-		android:singleLine="true"
-		android:textAppearance="?attr/textAppearanceBodySmall"
-		android:theme="@style/ThemeOverlay.Material3.Dark"
-		tools:text="@string/loading_" />
 
 	<org.koitharu.kotatsu.reader.ui.ReaderInfoBarView
 		android:id="@+id/infoBar"
@@ -38,36 +25,34 @@
 		android:id="@+id/appbar_top"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="@color/dim"
-		android:elevation="0dp"
-		android:theme="@style/ThemeOverlay.Material3.Dark"
-		app:elevation="0dp">
+		android:elevation="@dimen/m3_card_elevated_elevation"
+		app:elevation="@dimen/m3_card_elevated_elevation"
+		app:liftOnScroll="false">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:elevation="@dimen/m3_card_elevated_elevation"
+			app:elevation="@dimen/m3_card_elevated_elevation"
 			app:popupTheme="@style/ThemeOverlay.Kotatsu" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<com.google.android.material.appbar.AppBarLayout
+	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/appbar_bottom"
+		style="?materialCardViewElevatedStyle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
-		android:background="@color/dim"
-		android:elevation="0dp"
-		android:theme="@style/ThemeOverlay.Material3.Dark"
-		app:elevation="0dp"
-		tools:visibility="gone">
+		android:layout_margin="8dp"
+		app:layout_insetEdge="bottom">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/toolbar_bottom"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:menu="@menu/opt_reader_bottom"
-			app:popupTheme="@style/ThemeOverlay.Kotatsu">
+			app:menu="@menu/opt_reader_bottom">
 
 			<com.google.android.material.slider.Slider
 				android:id="@+id/slider"
@@ -80,7 +65,21 @@
 
 		</com.google.android.material.appbar.MaterialToolbar>
 
-	</com.google.android.material.appbar.AppBarLayout>
+	</com.google.android.material.card.MaterialCardView>
+
+	<org.koitharu.kotatsu.reader.ui.ReaderToastView
+		android:id="@+id/toastView"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|center_horizontal"
+		android:layout_marginBottom="20dp"
+		android:background="@drawable/bg_reader_indicator"
+		android:drawablePadding="6dp"
+		android:singleLine="true"
+		android:textAppearance="?attr/textAppearanceBodySmall"
+		android:theme="@style/ThemeOverlay.Material3.Dark"
+		app:layout_dodgeInsetEdges="bottom"
+		tools:text="@string/loading_" />
 
 	<LinearLayout
 		android:id="@+id/layout_loading"
@@ -94,7 +93,8 @@
 			android:id="@+id/progressBar"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:indeterminate="true" />
+			android:indeterminate="true"
+			app:trackCornerRadius="@dimen/mtrl_progress_indicator_full_rounded_corner_radius" />
 
 		<TextView
 			android:id="@+id/textView_loading"
@@ -106,4 +106,4 @@
 
 	</LinearLayout>
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

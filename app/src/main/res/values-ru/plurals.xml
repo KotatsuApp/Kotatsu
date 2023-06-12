@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<plurals name="pages">
-		<item quantity="one">Всего %1$d страница</item>
-		<item quantity="few">Всего %1$d страницы</item>
-		<item quantity="many">Всего %1$d страниц</item>
-	</plurals>
 	<plurals name="items">
 		<item quantity="one">%1$d элемент</item>
 		<item quantity="few">%1$d элемента</item>

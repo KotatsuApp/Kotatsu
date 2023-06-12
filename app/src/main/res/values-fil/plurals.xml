@@ -4,10 +4,6 @@
 		<item quantity="one">%1$d aytem</item>
 		<item quantity="other">%1$d (na) aytem</item>
 	</plurals>
-	<plurals name="pages">
-		<item quantity="one">"Kabuuang %1$d  pahina"</item>
-		<item quantity="other">Kabuuang %1$d (na) pahina</item>
-	</plurals>
 	<plurals name="minutes_ago">
 		<item quantity="one">%1$d minutong nakakalipas</item>
 		<item quantity="other">%1$d (na) minutong nakakalipas</item>

@@ -3,6 +3,11 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
+	<org.koitharu.kotatsu.settings.utils.ThemeChooserPreference
+		android:key="color_theme"
+		android:title="@string/color_theme"
+		app:isPreferenceVisible="@bool/is_color_themes_available" />
+
 	<ListPreference
 		android:defaultValue="-1"
 		android:entries="@array/themes"
@@ -10,11 +15,6 @@
 		android:key="theme"
 		android:title="@string/theme"
 		app:useSimpleSummaryProvider="true" />
-
-	<org.koitharu.kotatsu.settings.utils.ThemeChooserPreference
-		android:key="color_theme"
-		android:title="@string/color_theme"
-		app:isPreferenceVisible="@bool/is_color_themes_available" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
@@ -46,6 +46,15 @@
 
 	</PreferenceCategory>
 
+	<PreferenceCategory android:title="@string/remote_sources">
+
+		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="sources_grid"
+			android:title="@string/show_in_grid_view" />
+
+	</PreferenceCategory>
+
 	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
 		android:key="app_locale"
 		android:title="@string/language"
@@ -55,13 +64,6 @@
 		android:defaultValue="false"
 		android:key="exit_confirm"
 		android:summary="@string/exit_confirmation_summary"
-		android:title="@string/exit_confirmation"
-		app:allowDividerAbove="true" />
-
-	<SwitchPreferenceCompat
-		android:key="protect_app"
-		android:persistent="false"
-		android:summary="@string/protect_application_summary"
-		android:title="@string/protect_application" />
+		android:title="@string/exit_confirmation" />
 
 </PreferenceScreen>

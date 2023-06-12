@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/scrollView"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:clipToPadding="false"
+	android:paddingHorizontal="12dp"
+	android:scrollbars="none">
+
+	<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+		android:id="@+id/chips_tags"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingVertical="@dimen/margin_small"
+		app:selectionRequired="false"
+		app:singleLine="true"
+		app:singleSelection="false" />
+
+</HorizontalScrollView>

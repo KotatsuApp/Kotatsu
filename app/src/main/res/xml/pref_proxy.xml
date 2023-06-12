@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<ListPreference
+		android:defaultValue="DIRECT"
+		android:entries="@array/proxy_types"
+		android:entryValues="@array/values_proxy_types"
+		android:key="proxy_type"
+		android:title="@string/type"
+		app:useSimpleSummaryProvider="true" />
+
+	<EditTextPreference
+		android:key="proxy_address"
+		android:title="@string/address"
+		app:useSimpleSummaryProvider="true" />
+
+	<EditTextPreference
+		android:key="proxy_port"
+		android:title="@string/port"
+		app:useSimpleSummaryProvider="true" />
+
+	<PreferenceCategory
+		android:key="proxy_auth"
+		android:title="@string/authorization_optional">
+
+		<EditTextPreference
+			android:key="proxy_login"
+			android:title="@string/username"
+			app:useSimpleSummaryProvider="true" />
+
+		<EditTextPreference
+			android:key="proxy_password"
+			android:title="@string/password" />
+
+	</PreferenceCategory>
+
+</PreferenceScreen>

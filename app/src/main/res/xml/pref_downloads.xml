@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<Preference
+		android:key="local_storage"
+		android:persistent="false"
+		android:title="@string/manga_save_location" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="downloads_wifi"
+		android:summary="@string/downloads_wifi_only_summary"
+		android:title="@string/downloads_wifi_only" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="downloads_slowdown"
+		android:summary="@string/download_slowdown_summary"
+		android:title="@string/download_slowdown" />
+
+</PreferenceScreen>

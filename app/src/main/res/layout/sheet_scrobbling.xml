@@ -11,13 +11,14 @@
 		android:layout_height="wrap_content"
 		android:paddingBottom="16dp">
 
-		<com.google.android.material.bottomsheet.BottomSheetDragHandleView
-			android:id="@+id/dragHandle"
+		<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
+			android:id="@+id/headerBar"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+			app:layout_constraintTop_toTopOf="parent"
+			app:title="@string/tracking" />
 
 		<com.google.android.material.imageview.ShapeableImageView
 			android:id="@+id/imageView_cover"
@@ -30,7 +31,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/dragHandle"
+			app:layout_constraintTop_toBottomOf="@id/headerBar"
 			app:layout_constraintWidth_percent="0.3"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 			tools:background="@tools:sample/backgrounds/scenic"
@@ -40,14 +41,14 @@
 			android:id="@+id/imageView_logo"
 			android:layout_width="32dp"
 			android:layout_height="32dp"
-			android:padding="4dp"
 			android:layout_margin="@dimen/card_indicator_offset"
 			android:background="@drawable/bg_badge_accent"
+			android:padding="4dp"
 			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="@id/imageView_cover"
+			app:tint="?attr/colorOnSecondary"
 			tools:ignore="ContentDescription"
-			tools:src="@drawable/ic_shikimori"
-			app:tint="?attr/colorOnSecondary" />
+			tools:src="@drawable/ic_shikimori" />
 
 		<TextView
 			android:id="@+id/textView_title"
@@ -60,7 +61,7 @@
 			android:textAppearance="?attr/textAppearanceHeadlineSmall"
 			app:layout_constraintEnd_toStartOf="@id/button_menu"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/dragHandle"
+			app:layout_constraintTop_toBottomOf="@id/headerBar"
 			tools:text="@tools:sample/lorem[9]" />
 
 		<ImageButton
@@ -68,11 +69,12 @@
 			style="?android:attr/actionOverflowButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="-6dp"
 			android:layout_marginEnd="8dp"
 			android:background="?selectableItemBackgroundBorderless"
 			android:contentDescription="@string/open_in_browser"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/dragHandle"
+			app:layout_constraintTop_toBottomOf="@id/headerBar"
 			app:tint="?android:colorControlNormal" />
 
 		<RatingBar

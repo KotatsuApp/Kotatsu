@@ -10,11 +10,6 @@
 		<item quantity="few">%1$d minuty temu</item>
 		<item quantity="many">%1$d minut temu</item>
 	</plurals>
-	<plurals name="pages">
-		<item quantity="one">Łącznie %1$d strona</item>
-		<item quantity="few">Łącznie %1$d strony</item>
-		<item quantity="many">Łącznie %1$d stron</item>
-	</plurals>
 	<plurals name="hours_ago">
 		<item quantity="one">%1$d godzinę temu</item>
 		<item quantity="few">%1$d godziny temu</item>

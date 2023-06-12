@@ -54,7 +54,6 @@
 	<string name="dark">Mörkt</string>
 	<string name="operation_not_supported">Denna åtgärden stöds inte</string>
 	<string name="no_description">Ingen beskrivning</string>
-	<string name="history_and_cache">Historik och cache</string>
 	<string name="clear">Rensa</string>
 	<string name="text_clear_history_prompt">Rensa all läshistorik permanent\?</string>
 	<string name="_s_deleted_from_local_storage">\"%s\" borttaget från lokal lagring</string>
@@ -121,7 +120,6 @@
 	<string name="tracker_warning">Vissa enheter har olika systembeteende vilket kan ha sönder bakgrundsjobb.</string>
 	<string name="read_more">Läs mer</string>
 	<string name="queued">Köad</string>
-	<string name="chapter_is_missing_text">Ladda ned eller läs det saknade kapitlet online.</string>
 	<string name="chapter_is_missing">Kapitlet saknas</string>
 	<string name="about_app_translation_summary">Översätt denna app</string>
 	<string name="about_app_translation">Översättning</string>
@@ -146,7 +144,6 @@
 	<string name="disabled">Inaktiverad</string>
 	<string name="filter_load_error">Kunde inte ladda genrelistan</string>
 	<string name="reset_filter">Återställ filter</string>
-	<string name="find_genre">Hitta genre</string>
 	<string name="onboard_text">Välj det språk som du vill läsa manga på. Du kan ändra detta i inställningarna senare.</string>
 	<string name="never">Aldrig</string>
 	<string name="only_using_wifi">Endast på Wi-Fi</string>
@@ -158,7 +155,6 @@
 	<string name="search_chapters">Hitta kapitel</string>
 	<string name="chapters_empty">Inga kapitel i denna manga</string>
 	<string name="appearance">Utseende</string>
-	<string name="content">Innehåll</string>
 	<string name="suggestions_updating">Uppdaterar förslag</string>
 	<string name="suggestions_excluded_genres">Uteslut genrer</string>
 	<string name="suggestions_excluded_genres_summary">Ange genrer som du inte vill få förslag på</string>

@@ -42,7 +42,6 @@
 	<string name="delete">Διαγραφή</string>
 	<string name="text_file_not_supported">Επιλέξτε ένα αρχείο ZIP ή CBZ.</string>
 	<string name="no_description">Χωρίς περιγραφή</string>
-	<string name="history_and_cache">Ιστορικό και μνήμη cache</string>
 	<string name="clear_pages_cache">Εκκαθάριση μνήμης cache της σελίδας</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="standard">Τυπικό</string>

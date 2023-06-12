@@ -7,7 +7,6 @@
 	<string name="about_app_translation">Käännös</string>
 	<string name="about_app_translation_summary">Käännä tämä sovellus</string>
 	<string name="chapter_is_missing">Luku puuttuu</string>
-	<string name="chapter_is_missing_text">Tämä luku puuttuu laitteestasi. Lataa tai lue se verkossa.</string>
 	<string name="queued">Jonossa</string>
 	<string name="read_more">Lue lisää</string>
 	<string name="tracker_warning">Jotkin valmistajat voivat muuttaa järjestelmän käyttäytymistä, mikä voi keskeyttää taustatehtäviä.</string>
@@ -125,7 +124,6 @@
 	<string name="standard">Vakio</string>
 	<string name="text_file_sizes">t|kt|Mt|Gt|Tt</string>
 	<string name="clear_pages_cache">Tyhjennä sivujen välimuisti</string>
-	<string name="history_and_cache">Historia ja välimuisti</string>
 	<string name="no_description">Ei kuvausta</string>
 	<string name="text_file_not_supported">Virheellinen tiedosto. Vain ZIP ja CBZ ovat tuettuja.</string>
 	<string name="operation_not_supported">Tätä toimintoa ei tueta</string>
@@ -216,7 +214,6 @@
 	<string name="always">Aina</string>
 	<string name="never">Ei koskaan</string>
 	<string name="reset_filter">Nollaa suodatin</string>
-	<string name="find_genre">Etsi genre</string>
 	<string name="onboard_text">Valitse kielet, joilla haluat lukea mangaa. Voit muuttaa sitä myöhemmin asetuksissa.</string>
 	<string name="logged_in_as">Kirjautunut sisään nimellä %s</string>
 	<string name="nsfw">18+</string>
@@ -225,7 +222,6 @@
 	<string name="various_languages">Eri kieliä</string>
 	<string name="chapters_empty">Ei lukuja tässä mangassa</string>
 	<string name="appearance">Ulkonäkö</string>
-	<string name="content">Sisältö</string>
 	<string name="suggestions_updating">Ehdotukset päivitetään</string>
 	<string name="suggestions_excluded_genres_summary">Määritä genret, joita et halua nähdä ehdotuksissa</string>
 	<string name="suggestions_excluded_genres">Sulje pois genrejä</string>

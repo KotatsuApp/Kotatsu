@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 548
-		versionName '5.1.4'
+		versionCode 551
+		versionName '5.2-b1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -42,6 +42,7 @@ android {
 	}
 	sourceSets {
 		androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+		main.java.srcDirs += 'src/main/kotlin/'
 	}
 	compileOptions {
 		sourceCompatibility JavaVersion.VERSION_17
@@ -59,7 +60,7 @@ android {
 	}
 	lint {
 		abortOnError true
-		disable 'MissingTranslation', 'PrivateResource', 'NotifyDataSetChanged'
+		disable 'MissingTranslation', 'PrivateResource', 'NotifyDataSetChanged', 'SetJavaScriptEnabled'
 	}
 	testOptions {
 		unitTests.includeAndroidResources true
@@ -82,13 +83,13 @@ dependencies {
 		exclude group: 'org.json', module: 'json'
 	}
 
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.21'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
 	implementation 'androidx.core:core-ktx:1.10.1'
 	implementation 'androidx.activity:activity-ktx:1.7.2'
-	implementation 'androidx.fragment:fragment-ktx:1.5.7'
+	implementation 'androidx.fragment:fragment-ktx:1.6.0'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
 	implementation 'androidx.lifecycle:lifecycle-service:2.6.1'
@@ -105,7 +106,7 @@ dependencies {
 
 	implementation 'androidx.work:work-runtime-ktx:2.8.1'
 	//noinspection GradleDependency
-	implementation('com.google.guava:guava:31.1-android') {
+	implementation('com.google.guava:guava:32.0.0-android') {
 		exclude group: 'com.google.guava', module: 'failureaccess'
 		exclude group: 'org.checkerframework', module: 'checker-qual'
 		exclude group: 'com.google.j2objc', module: 'j2objc-annotations'

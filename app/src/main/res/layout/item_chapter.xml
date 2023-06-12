@@ -38,6 +38,7 @@
 			android:id="@+id/textView_title"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:drawablePadding="4dp"
 			android:ellipsize="end"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceBodyLarge"
@@ -55,18 +56,19 @@
 	</LinearLayout>
 
 	<ImageView
-		android:id="@+id/imageView_new"
+		android:id="@+id/imageView_bookmarked"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginEnd="?android:listPreferredItemPaddingEnd"
-		android:src="@drawable/ic_new"
-		app:tint="?colorError" />
+		android:contentDescription="@string/bookmarks"
+		app:srcCompat="@drawable/ic_bookmark" />
 
 	<ImageView
 		android:id="@+id/imageView_downloaded"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginEnd="?android:listPreferredItemPaddingEnd"
-		android:src="@drawable/ic_save_ok" />
+		android:contentDescription="@string/downloaded"
+		app:srcCompat="@drawable/ic_save_ok" />
 
 </LinearLayout>

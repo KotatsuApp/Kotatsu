@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<plurals name="pages">
-		<item quantity="one">कुल %1$d पृष्ठ</item>
-		<item quantity="other">कुल %1$d पृष्ठहरू</item>
-	</plurals>
 	<plurals name="new_chapters">
 		<item quantity="one">%1$d नयाँ अध्याय</item>
 		<item quantity="other">%1$d नयाँ अध्यायहरू</item>

@@ -19,7 +19,6 @@
 	<string name="delete">Tanggalin</string>
 	<string name="operation_not_supported">Hindi suportado ang operasyong ito</string>
 	<string name="text_file_not_supported">Pumili ng ZIP o CBZ file.</string>
-	<string name="history_and_cache">Kasaysayan at cache</string>
 	<string name="no_description">Walang paglalarawan</string>
 	<string name="grid_size">Laki ng grid</string>
 	<string name="search_on_s">Hanapin sa %s</string>
@@ -107,16 +106,15 @@
 	<string name="text_suggestion_holder">Simulan ang pagbabasa ng manga at makakakuha ka ng mga personalized na mungkahi</string>
 	<string name="exclude_nsfw_from_suggestions">Huwag magmungkahi ng NSFW manga</string>
 	<string name="enabled">Pinagana</string>
-	<string name="find_genre">Maghanap ng genre</string>
 	<string name="onboard_text">Pumili ng mga wika na gusto mong basahin ang manga. Maaari mo itong baguhin sa ibang pagkakataon sa mga setting.</string>
 	<string name="local_storage">Lokal na storage</string>
 	<string name="favourites">Mga paborito</string>
-	<string name="history">Nakaraan</string>
+	<string name="history">Kasaysayan</string>
 	<string name="list_mode">Mode na listahan</string>
 	<string name="detailed_list">Detalyadong listahan</string>
 	<string name="grid">Grid</string>
 	<string name="settings">Mga setting</string>
-	<string name="remote_sources">Mga remote na source</string>
+	<string name="remote_sources">Mga source ng Manga</string>
 	<string name="loading_">Naglo-load…</string>
 	<string name="close">Isara</string>
 	<string name="nothing_found">Walang nahanap</string>
@@ -184,14 +182,13 @@
 	<string name="protect_application_subtitle">Maglagay ng password para simulan ang app</string>
 	<string name="tracker_warning">Ang ilang device ay may iba\'t ibang gawi ng system, na maaaring masira ang mga gawain sa background.</string>
 	<string name="queued">Nakapila na</string>
-	<string name="chapter_is_missing_text">I-download o basahin ang nawawalang kabanata online.</string>
 	<string name="text_clear_cookies_prompt">Mala-log out ka mula sa lahat ng source</string>
 	<string name="state_finished">Tapos na</string>
 	<string name="text_clear_search_history_prompt">Alisin ang lahat ng kamakailang query sa paghahanap nang permanente\?</string>
 	<string name="about_app_translation">Pagsasalin</string>
 	<string name="screenshots_block_nsfw">I-block sa NSFW</string>
 	<string name="suggestions_summary">Magmungkahi ng manga batay sa iyong mga kagustuhan</string>
-	<string name="suggestions_info">Ang lahat ng data ay sinusuri nang lokal sa aparatong ito. Walang paglipat ng iyong personal na data sa anumang mga serbisyo</string>
+	<string name="suggestions_info">Ang lahat ng data ay lokal lamang na sinusuri sa device na ito at hindi kailanman ipinadala kahit saan.</string>
 	<string name="disabled">Hindi pinagana</string>
 	<string name="filter_load_error">Hindi ma-load ang listahan ng mga genre</string>
 	<string name="reset_filter">I-reset ang filter</string>
@@ -320,9 +317,8 @@
 	<string name="text_delete_local_manga_batch">Permanenteng tanggalin ang mga napiling item sa device\?</string>
 	<string name="chapters_empty">Walang mga kabanata sa manga na ito</string>
 	<string name="suggestions_updating">Nag-a-update ang mga mungkahi</string>
-	<string name="content">Nilalaman</string>
 	<string name="download_slowdown">Pagbagal ng pag-download</string>
-	<string name="chapters_will_removed_background">Tatanggalin ang mga chapters sa background. Maaari itong tumagal ng ilang oras</string>
+	<string name="chapters_will_removed_background">Tatanggalin ang mga kabanata sa background</string>
 	<string name="canceled">Kinansela</string>
 	<string name="sync_title">I-sync ang iyong data</string>
 	<string name="check_new_chapters_title">Tingnan ang mga bagong kabanata at ipaalam ang tungkol dito</string>
@@ -352,7 +348,7 @@
 	<string name="network_unavailable_hint">I-on ang Wi-Fi o mobile network para magbasa ng manga online</string>
 	<string name="reader_control_ltr_summary">Mag-tap sa kanang gilid o ang pagpindot sa kanang key ay palaging lilipat sa susunod na pahina</string>
 	<string name="reader_slider">Ipakita ang slider ng paglipat ng pahina</string>
-	<string name="manga_error_description_pattern">Mga detalye ng error:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Subukang &lt;a href=%2$s&gt;buksan ang manga sa isang web browser&lt;/a&gt; upang matiyak na magagamit ito sa source&lt;br&gt;nito 2. Kung magagamit ito, magpadala ng isang ulat ng error sa mga developer.</string>
+	<string name="manga_error_description_pattern">Mga detalye ng error:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Subukang &lt;a href=%2$s&gt;magbukas ng manga sa isang web browser&lt;/a&gt; upang matiyak na available ito sa souce&lt;br&gt;2. Tiyaking ginagamit mo ang &lt;a href=kotatsu://about&gt;pinakabagong bersyon ng Kotatsu&lt;/a&gt;&lt;br&gt;3. Kung available ito, magpadala ng ulat ng error sa mga developer.</string>
 	<string name="enable_logging">Paganahin ang pag-log</string>
 	<string name="source_disabled">Hindi pinagana ang source</string>
 	<string name="importing_manga">Pag-import ng manga</string>
@@ -384,4 +380,32 @@
 	<string name="folder_with_images_import_description">Maaari kang pumili ng isang directory na may mga archive o mga larawan. Ang bawat archive (o subdirectory) ay makikilala bilang isang kabanata.</string>
 	<string name="find_similar">Maghanap ng katulad</string>
 	<string name="sync_auth_hint">Maaari kang mag-sign in sa isang umiiral na account o lumikha ng bago</string>
+	<string name="translations">Mga pagsasalin</string>
+	<string name="web_view_unavailable">Hindi available ang WebView: tingnan kung naka-install ang WebView provider</string>
+	<string name="enable">Paganahin</string>
+	<string name="downloads_paused">Na-pause ang mga pag-download</string>
+	<string name="sync_settings">Mga setting ng pag-synchronize</string>
+	<string name="server_address">Address ng server</string>
+	<string name="sync_host_description">Maaari kang gumamit ng self-hosted synchronization server o isang default. Huwag baguhin ito kung hindi ka sigurado sa iyong ginagawa.</string>
+	<string name="ignore_ssl_errors">Huwag pansinin ang mga error sa SSL</string>
+	<string name="mirror_switching">Awtomatikong pumili ng mirror</string>
+	<string name="mirror_switching_summary">Awtomatikong lumipat ng mga domain para sa mga remote source sa mga error kung available ang mga mirror</string>
+	<string name="cancel_all">Kanselahin lahat</string>
+	<string name="downloads_wifi_only">Mag-download lamang sa pamamagitan ng Wi-Fi</string>
+	<string name="downloads_wifi_only_summary">Itigil ang pag-download kapag lumipat sa isang mobile network</string>
+	<string name="paused">Naka-pause</string>
+	<string name="remove_completed">Tanggalin ang nakumpleto na</string>
+	<string name="suggestion_manga">Mga mungkahi: %s</string>
+	<string name="pause">I-pause</string>
+	<string name="suggestions_notifications_summary">Minsang magpakita ng mga notification na may iminungkahing manga</string>
+	<string name="more">Higit pa</string>
+	<string name="no_thanks">Salamat nalang</string>
+	<string name="resume">Ipagpatuloy</string>
+	<string name="cancel_all_downloads_confirm">Ang lahat ng mga aktibong pag download ay kakanselahin, bahagyang na download na data ay mawawala</string>
+	<string name="remove_completed_downloads_confirm">Permanenteng ide-delete ang iyong history ng mga pag-download</string>
+	<string name="text_downloads_list_holder">Wala kang anumang mga pag-download</string>
+	<string name="downloads_resumed">Ipinagpatuloy ang mga pag-download</string>
+	<string name="suggestions_enable_prompt">Gusto mo bang makatanggap ng personalized na mga mungkahi sa manga\?</string>
+	<string name="downloads_removed">Inalis na ang mga download</string>
+	<string name="downloads_cancelled">Nakansela ang mga pag-download</string>
 </resources>

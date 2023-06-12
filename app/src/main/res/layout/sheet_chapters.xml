@@ -7,18 +7,19 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<org.koitharu.kotatsu.base.ui.widgets.BottomSheetHeaderBar
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
 		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		app:title="@string/chapters" />
 
-	<org.koitharu.kotatsu.base.ui.list.fastscroll.FastScrollRecyclerView
+	<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_below="@id/headerBar"
 		android:orientation="vertical"
+		android:scrollIndicators="top"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		tools:listitem="@layout/item_chapter" />

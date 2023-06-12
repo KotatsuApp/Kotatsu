@@ -15,9 +15,6 @@
 	<plurals name="chapters">
 		<item quantity="other">%1$dチャプター</item>
 	</plurals>
-	<plurals name="pages">
-		<item quantity="other">合計%1$dページ</item>
-	</plurals>
 	<plurals name="new_chapters">
 		<item quantity="other">%1$d新しい章</item>
 	</plurals>

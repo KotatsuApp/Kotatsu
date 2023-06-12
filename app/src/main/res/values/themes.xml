@@ -74,6 +74,9 @@
 		<item name="materialSwitchStyle">@style/Widget.Material3.CompoundButton.MaterialSwitch</item>
 		<item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>
 		<item name="collapsingToolbarLayoutStyle">@style/Widget.Material3.CollapsingToolbar.Medium</item>
+		<item name="circularProgressIndicatorStyle">@style/Widget.Kotatsu.CircularProgressIndicator</item>
+		<item name="linearProgressIndicatorStyle">@style/Widget.Kotatsu.LinearProgressIndicator</item>
+		<item name="bottomSheetDragHandleStyle">@style/Widget.Kotatsu.BottomSheet.DragHandle</item>
 
 		<!-- Text appearance -->
 		<item name="actionMenuTextAppearance">@style/TextAppearance.Kotatsu.Menu</item>
@@ -91,14 +94,6 @@
 	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Light" />
 
 	<style name="ThemeOverlay.Kotatsu.Amoled" parent="" />
-
-	<style name="Theme.Kotatsu.Dialog" parent="">
-		<item name="android:windowNoTitle">true</item>
-		<item name="android:windowIsFloating">true</item>
-		<item name="windowMinWidthMajor">@dimen/abc_dialog_min_width_major</item>
-		<item name="windowMinWidthMinor">@dimen/abc_dialog_min_width_minor</item>
-		<item name="toolbarNavigationButtonStyle">@style/Theme.Kotatsu.ActionMode.CloseButton</item>
-	</style>
 
 	<style name="Theme.Kotatsu.AppWidgetContainer" parent="@style/Theme.MaterialComponents.Light">
 		<item name="android:colorBackground">@android:color/transparent</item>
